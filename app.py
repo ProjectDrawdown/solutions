@@ -2,6 +2,7 @@ from flask import Flask, request
 import csv
 import io
 import pprint
+import pandas as pd
 app = Flask(__name__)
 
 
@@ -33,3 +34,11 @@ def unitAdoption():
             outrow.append(float(pds[row][field]) - float(ref[row][field]))
         writer.writerow(outrow)
     return output.getvalue()
+
+
+@app.route("/unitadoptionjson", methods=['POST'])
+def unitAdoptionJson():
+    content = request.json
+    pds = pd.DataFrame.from_records(content['pds'])
+    ref = pd.DataFrame.from_records(content['ref'])
+    return pprint.pformat(pds - ref)
