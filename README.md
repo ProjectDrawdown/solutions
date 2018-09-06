@@ -7,24 +7,29 @@ Project Draw Down model engine. This is intended to be a replacement for the ser
 You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Python 3](https://docs.python.org/3/using/index.html) installed.
 
 Get a copy of this source code:
-```
+
+```sh
 git clone git@gitlab.com:codeearth/drawdown.git
 cd drawdown
 ```
 
 Create and activate a python virtual environment:
-```
+
+```sh
+git clone git@gitlab.com:codeearth/drawdown.git
 python3 -m venv venv
 . venv/bin/activate
 ```
 
 Install dependencies:
-```
+
+```sh
 pip install -r requirements.txt
 ```
 
 Start the application:
-```
+
+```sh
 FLASK_APP=app.py flask run
 ```
 
