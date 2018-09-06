@@ -40,7 +40,7 @@ curl http://127.0.0.1:5000/unitadoption?ref=1,2,3@4,5,6\&pds=3,4,5@6,7,8
 
 # Road Map
 
-See the &lt;code&gt;/earth wiki for an up to date roadmap. 
+See the [&lt;code&gt;/earth wiki](http://codeearth.net/wiki/index.php/Main_Page) for an up to date roadmap. 
 # License
 This program is part of the &lt;code&gt;/earth project. The &lt;code&gt;/earth DD Model Enginge is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at https://gitlab.com/codeearth/ddmodelengine. No part of &lt;code&gt;/earth, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
 
