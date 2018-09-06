@@ -6,7 +6,13 @@ Project Draw Down model engine. This is intended to be a replacement for the ser
 
 See the &gt;code&lt;/earth wiki for an up to date roadmap. 
 # License
-This program is part of the &lt;code&gt;/earth project. The &lt;code&gt;/earth DD Model Enginge is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at https://gitlab.com/codeearth/ddmodelengine. No part of Foo Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
+This program (excluding the Excel code) is part of the &lt;code&gt;/earth project. The &lt;code&gt;/earth DD Model Enginge is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at https://gitlab.com/codeearth/ddmodelengine. No part of Foo Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
+
+The Excel VBA code found in ddexel_models contains [VBA-Web](http://vba-tools.github.io/VBA-Web/) which is released under the MIT License.
+
+The Project Drawdown Excel model file itself will be release under a license which has not yet been decided, but is not released at the time of this writing.
+
+The small bits of code in that model file copyright Robert L. Read are released under the AGPL.
 
 # Contribution
 
