@@ -16,7 +16,6 @@ cd drawdown
 Create and activate a python virtual environment:
 
 ```sh
-git clone git@gitlab.com:codeearth/drawdown.git
 python3 -m venv venv
 . venv/bin/activate
 ```
