@@ -33,6 +33,11 @@ Start the application:
 FLASK_APP=app.py flask run
 ```
 
+Test Query
+```sh
+curl http://127.0.0.1:5000/unitadoption?ref=1,2,3@4,5,6\&pds=3,4,5@6,7,8
+```
+
 # Road Map
 
 See the &gt;code&lt;/earth wiki for an up to date roadmap. 
