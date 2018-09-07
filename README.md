@@ -29,12 +29,12 @@ pip install -r requirements.txt
 Start the application:
 
 ```sh
-FLASK_APP=app.py flask run
+FLASK_APP=app.py FLASK_ENV=development flask run
 ```
 
 Test Query
 ```sh
-curl http://127.0.0.1:5000/unitadoption?ref=1,2,3@4,5,6\&pds=3,4,5@6,7,8
+curl -X POST --data 'ref=a%2Cb%2Cc%0A1%2C2%2C3%0A4%2C5%2C6%0A&pds=a%2Cb%2Cc%0A3%2C4%2C5%0A6%2C7%2C8%0A' 'http://127.0.0.1:5000/unitadoption'
 ```
 
 # Road Map
