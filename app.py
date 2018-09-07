@@ -1,6 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import csv
 import io
+import os
 import pprint
 import pandas as pd
 from model import unitadoption
@@ -8,19 +9,17 @@ from model import unitadoption
 app = Flask(__name__)
 
 
-def to_csv(data, key, logger):
-    '''
-    Helper function to load CSV from input data dictionary.
-    '''
-    csvstr = data[key]
-    csvio = io.StringIO(csvstr)
-    csv = pd.read_csv(csvio)
-    logger.info("%s parsed as:\n%s", key, csv)
-    return csv
+@app.route("/", methods=['GET'])
+def home():
+    '''Simple home page with links to documentation, license and source code'''
+    # Allow overriding of repo URL in environment for people hosting a fork etc.
+    repo = os.getenv('DRAWDOWN_REPO', "https://gitlab.com/codeearth/drawdown")
+    return render_template('home.html', repo=repo)
 
 
 @app.route("/unitadoption", methods=['POST'])
 def unitAdoption():
+    '''Initial version of the API - only implements the na_funits calculation.'''
     ref_sol_funits = to_csv(request.json, 'ref', app.logger)
     pds_sol_funits = to_csv(request.json, 'pds', app.logger)
 
@@ -30,6 +29,7 @@ def unitAdoption():
 
 @app.route("/unitadoption.v2", methods=['POST'])
 def unitAdoption2():
+    '''Second version of the API - implements most of the unit adotion tab.'''
     json = request.json
     ref_sol_funits = to_csv(json, 'ref', app.logger)
     pds_sol_funits = to_csv(json, 'pds', app.logger)
@@ -47,3 +47,14 @@ def unitAdoption2():
     results['life_rep_conv_years'] = ua.life_rep_years(
         life_cap_conv_funits, aau_conv_funits).to_csv()
     return results
+
+
+def to_csv(data, key, logger):
+    '''
+    Helper function to load CSV from input data dictionary.
+    '''
+    csvstr = data[key]
+    csvio = io.StringIO(csvstr)
+    csv = pd.read_csv(csvio)
+    logger.info("%s parsed as:\n%s", key, csv)
+    return csv
