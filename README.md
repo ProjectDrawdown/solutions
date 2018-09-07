@@ -1,6 +1,6 @@
 # drawdown
 
-Project Draw Down model engine. This is intended to be a replacement for the series of interconnected Excel spreadsheets currently used to do the modeling for project draw down. The intention is to create a framework that will allow us to create command line utility that can be run on the workstations of climate scientists who want to adjust the inputs to the Project draw down models. 
+Project Drawdown model engine. This is intended to be a replacement for the series of interconnected Excel spreadsheets currently used to do the modeling for project draw down. The intention is to create a framework that will allow us to create command line utility that can be run on the workstations of climate scientists who want to adjust the inputs to the Project draw down models. 
 
 # Getting started
 
