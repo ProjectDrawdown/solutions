@@ -49,6 +49,35 @@ The Project Drawdown Excel model file itself will be release under a license whi
 
 The small bits of code in that model file copyright Robert L. Read are released under the AGPL.
 
+# The VBA Web-empowered Excel Spreadsheet
+
+## Goals
+
+The current goal of Project Drawdown and this repository is to liberate the data and model methodology from Microsoft Excel and make it freely transparent and hackable in Python.
+
+## Comparing
+
+However, in order to do this gracefully and iteratively, programmers must be able to check their work.
+Until the whole model is computable without Excel, an simple means of testing new Python code implementing ever-greater parts of the model is to compare intermediate with results with those computed by Excel.  Furthermore, at the time of this writing, the easiest way to obtain all data need to compute a model is from within Excel.
+
+In order to make this comparison easier, we have added the [VBA Web](http://vba-tools.github.io/VBA-Web/) software to our spreadsheet. This allows us to post data to a web service implemented in Python. We wrote some specific VBA code to take data from specific tables, convert it to CSV, send it to the service, retrieve the results in CSV, and place the results in a rectangular range of cells on a special tab.
+
+This allows a programmer to test that the numbers produced by the Python model match the Excel model. The particular tab is named "ExtModelCfg".
+
+## Configuration
+
+The ExtModelCfg tab allows a number of important parameters to be set by a user without having to modify VBA. The include flags that that allow you to test locally or remotely, a rudimetary debug level, and the URLs to reach a server hosting the Python web service.
+
+Addtionally, the "ranges" for the input data and the range of the output data are specified here.
+
+## Code
+
+Because the VBA editor for a Mac does not appear to allow a module name to be changed, the webservice code is in a module named "Module 2". The code is straightfoward and was written by an inexpert VBA programmer; you may be able to offer improvements. This code can presumably be easily adopted to test the next, or additional, transfers of functionality to Python. The subroutines are completely parameterized and therefore reusable.
+
 # Contribution
 
 Contributors to the project should submit to the project using the Developer Certificate of Origin.
+
+# Acknowledgements
+
+Many thanks to the contributors of the <code>earth hackathon held at the Internet Archive on Sept. 5,6 and 7 of 2018 which began this project. They are: Robert L. Read, Owen Barton, Denton Gentry, Greg Elin, Henry Poole, and Stephanie Liu, in addition to Project Drawdown scientists and volunteers.
