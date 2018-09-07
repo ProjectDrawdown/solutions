@@ -3,42 +3,22 @@ import csv
 import io
 import pprint
 import pandas as pd
+from model import unitadoption
+
 app = Flask(__name__)
 
 
-def fromCSV(rawcsv):
-    data = []
-    lines = rawcsv.split("@")
-    reader = csv.reader(lines, delimiter=',')
-    for row in reader:
-        data.append(row)
-    return data
+def to_csv(csvstr):
+    csvio = io.StringIO(csvstr)
+    return pd.read_csv(csvio)
 
 
-@app.route("/unitadoption")
+@app.route("/unitadoption", methods=['POST'])
 def unitAdoption():
-    pds = fromCSV(request.args.get('pds'))
-    pprint.pprint(pds)
-    ref = fromCSV(request.args.get('ref'))
-    pprint.pprint(ref)
-    output = io.StringIO()
+    ref_sol_funits = to_csv(request.form['ref'])
+    pds_sol_funits = to_csv(request.form['pds'])
+    app.logger.info("ref parsed as:\n%s", ref_sol_funits)
+    app.logger.info("pds parsed as:\n%s", pds_sol_funits)
 
-    writer = csv.writer(output, delimiter=",")
-    if len(pds) != len(ref):
-        return "PDS and REF CSV length does not match", 400
-    for row in range(len(pds)):
-        outrow = []
-        if len(pds[row]) != len(ref[row]):
-            return "PDS and REF CSV row length does not match", 400
-        for field in range(len(pds[row])):
-            outrow.append(float(pds[row][field]) - float(ref[row][field]))
-        writer.writerow(outrow)
-    return output.getvalue()
-
-
-@app.route("/unitadoptionjson", methods=['POST'])
-def unitAdoptionJson():
-    content = request.json
-    pds = pd.DataFrame.from_records(content['pds'])
-    ref = pd.DataFrame.from_records(content['ref'])
-    return pprint.pformat(pds - ref)
+    ua = unitadoption.UnitAdoption()
+    return ua.na_funits(ref_sol_funits, pds_sol_funits).to_csv()
