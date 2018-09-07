@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import csv
 import io
 import os
@@ -31,22 +31,29 @@ def unitAdoption():
 def unitAdoption2():
     '''Second version of the API - implements most of the unit adoption tab.'''
     json = request.json
-    ref_sol_funits = to_csv(json, 'ref', app.logger)
-    pds_sol_funits = to_csv(json, 'pds', app.logger)
-    aau_sol_funits = to_csv(json, 'aau_sol_funits', app.logger)
-    life_cap_sol_funits = to_csv(json, 'life_cap_sol_funits', app.logger)
-    aau_conv_funits = to_csv(json, 'aau_conv_funits', app.logger)
-    life_cap_conv_funits = to_csv(json, 'life_cap_conv_funits', app.logger)
+    pprint.pprint(json)
+    ref_sol_funits = to_csv(json, 'ref_sol_funits', app.logger)
+    pds_sol_funits = to_csv(json, 'pds_sol_funits', app.logger)
+    aau_sol_funits = json['aau_sol_funits']
+    life_cap_sol_funits = json['life_cap_sol_funits']
+    aau_conv_funits = json['aau_conv_funits']
+    life_cap_conv_funits = json['life_cap_conv_funits']
+    ref_tam_funits = to_csv(json, 'ref_tam_funits', app.logger)
+    pds_tam_funits = to_csv(json, 'pds_tam_funits', app.logger)
 
     ua = unitadoption.UnitAdoption()
     results = dict()
     results['na_funits'] = ua.na_funits(
         ref_sol_funits, pds_sol_funits).to_csv()
+    results['pds_sol_cum_iunits'] = ua.sol_cum_iunits(
+        pds_sol_funits, aau_sol_funits).to_csv()
+    results['ref_sol_cum_iunits'] = ua.sol_cum_iunits(
+        ref_sol_funits, aau_sol_funits).to_csv()
     results['life_rep_sol_years'] = ua.life_rep_years(
-        life_cap_sol_funits, aau_sol_funits).to_csv()
+        life_cap_sol_funits, aau_sol_funits)
     results['life_rep_conv_years'] = ua.life_rep_years(
-        life_cap_conv_funits, aau_conv_funits).to_csv()
-    return results
+        life_cap_conv_funits, aau_conv_funits)
+    return jsonify(results)
 
 
 def to_csv(data, key, logger):
