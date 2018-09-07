@@ -1,6 +1,6 @@
 class UnitAdoption:
     def na_funits(self, ref_sol_funits, pds_sol_funits):
-        """Net annual functional units adopted.
+        '''Net annual functional units adopted.
 
         ref_sol_funits: Reference solution: Annual functional units adopted
         pds_sol_funits: PDS solution: Annual functional units adopted
@@ -16,5 +16,13 @@ class UnitAdoption:
 
         This is used to calculate the Operating Cost, Grid, Fuel, Direct and
         (optionally) Indirect Emissions.
-        """
+        '''
         return pds_sol_funits - ref_sol_funits
+
+    def life_rep_years(self, life_cap_funits, aau_funits):
+        '''Lifetime Replacement for solution/conventional in years
+
+        life_cap_funits: Lifetime Capacity per implementation unit
+        aau_funits: Average Annual Capacity per implementation unit
+        '''
+        return round(life_cap_funits / aau_funits, 0)
