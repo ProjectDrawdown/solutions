@@ -21,4 +21,12 @@ def test_na_funits():
     ua = unitadoption.UnitAdoption()
     result = ua.na_funits(ref, pds).round(FLOAT_ROUND)
     # Confirm that values are equal across the entire array.
-    assert (na_funits == result).all(axis=None)
+    assert (result == na_funits).all(axis=None)
+
+
+def test_life_rep_years():
+    """Test Lifetime Replacement for solution/conventional in years calculation."""
+
+    ua = unitadoption.UnitAdoption()
+    result = ua.life_rep_years(48343.80, 1841.67)
+    assert result == 26.00
