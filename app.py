@@ -8,17 +8,21 @@ from model import unitadoption
 app = Flask(__name__)
 
 
-def to_csv(csvstr):
+def to_csv(data, key, logger):
+    '''
+    Helper function to load CSV from input data dictionary.
+    '''
+    csvstr = data[key]
     csvio = io.StringIO(csvstr)
-    return pd.read_csv(csvio)
+    csv = pd.read_csv(csvio)
+    logger.info("%s parsed as:\n%s", key, csv)
+    return csv
 
 
 @app.route("/unitadoption", methods=['POST'])
 def unitAdoption():
-    ref_sol_funits = to_csv(request.form['ref'])
-    pds_sol_funits = to_csv(request.form['pds'])
-    app.logger.info("ref parsed as:\n%s", ref_sol_funits)
-    app.logger.info("pds parsed as:\n%s", pds_sol_funits)
+    ref_sol_funits = to_csv(request.json, 'ref', app.logger)
+    pds_sol_funits = to_csv(request.json, 'pds', app.logger)
 
     ua = unitadoption.UnitAdoption()
-    return ua.na_funits(ref_sol_funits, pds_sol_funits).to_csv()
+    return ua.na_funits(ref_sol_funits, pds_sol_funits).to_csv(index=False)
