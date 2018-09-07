@@ -74,6 +74,10 @@ Addtionally, the "ranges" for the input data and the range of the output data ar
 
 Because the VBA editor for a Mac does not appear to allow a module name to be changed, the webservice code is in a module named "Module 2". The code is straightfoward and was written by an inexpert VBA programmer; you may be able to offer improvements. This code can presumably be easily adopted to test the next, or additional, transfers of functionality to Python. The subroutines are completely parameterized and therefore reusable.
 
+## Use
+
+The code is invoked by a button with red lettering: TEST FUNCTIONAL UNIT to be found near cell H247 on the tab "Unit Adoption Calculations" of the spreadsheet.
+
 # Contribution
 
 Contributors to the project should submit to the project using the Developer Certificate of Origin.
