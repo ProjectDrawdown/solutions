@@ -34,7 +34,7 @@ FLASK_APP=app.py FLASK_ENV=development flask run
 
 Test Query
 ```sh
-curl -X POST --data 'ref=a%2Cb%2Cc%0A1%2C2%2C3%0A4%2C5%2C6%0A&pds=a%2Cb%2Cc%0A3%2C4%2C5%0A6%2C7%2C8%0A' 'http://127.0.0.1:5000/unitadoption'
+curl -H 'Content-Type: application/json' --data '{"pds":"a,b,c,d\n2,2,5,4\n2,3,4,10","ref":"a,b,c,d\n1,2,3,4\n2,2,4,4"}' 'http://127.0.0.1:5000/unitadoption'
 ```
 
 # Road Map
