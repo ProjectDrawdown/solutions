@@ -6,9 +6,13 @@ results from the spreadsheet, and compares them to expected golden
 values.
 """
 
+import app
 import os.path
 import sys
+import threading
+import time
 import unittest
+import urllib.request
 
 
 excel_present = False
@@ -21,20 +25,70 @@ except ImportError:
   xlwings_present = False
 
 
+
+class ExcelAccessFailed(TimeoutError):
+  pass
+
+
+if sys.platform == 'darwin':  # MacOS
+  import appscript.reference
+  ExcelTimeoutException = appscript.reference.CommandError
+else:
+  ExcelTimeoutException = Exception
+
+
+def excel_read_cell(sheet, cell_name):
+  """Retry reading from Excel a few times, work around flakiness."""
+  for _ in range(0, 5):
+    try:
+      return sheet.range(cell_name).raw_value
+    except ExcelTimeoutException as e:
+      time.sleep(1)
+  raise ExcelAccessFailed
+
+
+
+def run_flask(flask_app):
+  """Start a flask server, for use as the main routine in a thread.
+  
+  auto-reloader on code change only works in main thread, so disable it.
+
+  TODO: should choose a random port, to allow multiple instances of the
+  test to run (for example for continuous integration). Flask does not
+  make it easy to choose a random port.
+  """
+  flask_app.add_url_rule('/quitquitquit', 'quit', view_func=app.shutdown)
+  flask_app.run(debug=True, use_reloader=False)
+
+
 class TestExcelScenarios(unittest.TestCase):
   """Integration tests for Excel <-> HTTP server."""
 
   excel_files_dir = 'excel'
+  flask_app_thread = None
   workbook = None
 
   def setUp(self):
     if not excel_present:
       raise unittest.SkipTest('Microsoft Excel not present on this system.')
+    self.start_flask()
 
   def tearDown(self):
     if self.workbook:
+      excel_app = self.workbook.app
       self.workbook.close()
       self.workbook = None
+      excel_app.quit()
+    if self.flask_app_thread:
+      with urllib.request.urlopen('http://localhost:5000/quitquitquit') as response:
+        _ = response.read()
+      self.flask_app_thread.join()
+
+  def start_flask(self):
+    """start a flask server thread."""
+    flask_app = app.get_app_for_tests()
+    self.flask_app_thread = threading.Thread(target=run_flask, args=(flask_app,))
+    self.flask_app_thread.start()
 
   def open_excel_file(self, filename, sheet_name='Sheet1'):
     """Open an Excel workbook, and prepare to close it automatically later."""
@@ -47,7 +101,7 @@ class TestExcelScenarios(unittest.TestCase):
     filename = os.path.join(self.excel_files_dir, scenario_filename)
     self.assertTrue(os.path.exists(filename))
     sheet = self.open_excel_file(filename=filename, sheet_name='Basic Controls')
-    total_emissions_reduction = sheet.range('F4').raw_value
+    total_emissions_reduction = excel_read_cell(sheet, 'F4')
     total_emissions_reduction_expected = 66.5737
     self.assertAlmostEqual(total_emissions_reduction, total_emissions_reduction_expected, places=3)
 
@@ -58,4 +112,8 @@ if __name__ == '__main__':
     if excel_app:
       excel_app.quit()
       excel_present = True
+    else:
+      print("Microsoft Excel not present, skipping tests.")
+  else:
+    print("xlwings not present, skipping tests.")
   unittest.main()
