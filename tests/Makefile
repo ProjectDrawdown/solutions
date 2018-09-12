@@ -5,7 +5,7 @@ test: *_test.py
 	for d in $(filter %_test.py,$^); do \
 		echo; \
 		echo "Testing $$d"; \
-		python $$d; \
+		PYTHONPATH=${PYTHONPATH}:.. python $$d; \
 	done
 
 lint:

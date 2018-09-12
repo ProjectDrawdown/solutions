@@ -29,7 +29,7 @@ def unitAdoption():
 
 @app.route("/unitadoption.v2", methods=['POST'])
 def unitAdoption2():
-    '''Second version of the API - implements most of the unit adotion tab.'''
+    '''Second version of the API - implements most of the unit adoption tab.'''
     json = request.json
     ref_sol_funits = to_csv(json, 'ref', app.logger)
     pds_sol_funits = to_csv(json, 'pds', app.logger)
@@ -58,3 +58,23 @@ def to_csv(data, key, logger):
     csv = pd.read_csv(csvio)
     logger.info("%s parsed as:\n%s", key, csv)
     return csv
+
+
+def shutdown():
+    '''
+    Shut down the server and exit.
+
+    By default, no route to this function is installed. The production server does not
+    have a URL exposed which will cause it to exit. Unit tests will add a route to
+    the instance they are running within the test, allowing the server to be stopped.
+    '''
+    func = request.environ.get('werkzeug.server.shutdown')
+    func()
+    return 'Server shutting down...'
+
+
+def get_app_for_tests():
+    '''
+    Return the app object for tests to use.
+    '''
+    return app
