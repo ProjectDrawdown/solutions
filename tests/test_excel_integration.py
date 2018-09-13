@@ -6,13 +6,14 @@ results from the spreadsheet, and compares them to expected golden
 values.
 """
 
-import app
 import os.path
 import sys
 import threading
 import time
 import unittest
 import urllib.request
+
+import app
 
 
 excel_present = False
@@ -27,6 +28,7 @@ except ImportError:
 
 
 class ExcelAccessFailed(TimeoutError):
+  """Raised if we timeout communicating with Microsoft Excel."""
   pass
 
 
@@ -34,7 +36,7 @@ if sys.platform == 'darwin':  # MacOS
   import appscript.reference
   ExcelTimeoutException = appscript.reference.CommandError
 else:
-  ExcelTimeoutException = Exception
+  ExcelTimeoutException = None
 
 
 def excel_read_cell(sheet, cell_name):
@@ -42,7 +44,7 @@ def excel_read_cell(sheet, cell_name):
   for _ in range(0, 5):
     try:
       return sheet.range(cell_name).raw_value
-    except ExcelTimeoutException as e:
+    except ExcelTimeoutException:
       time.sleep(1)
   raise ExcelAccessFailed
 
@@ -50,7 +52,7 @@ def excel_read_cell(sheet, cell_name):
 
 def run_flask(flask_app):
   """Start a flask server, for use as the main routine in a thread.
-  
+
   auto-reloader on code change only works in main thread, so disable it.
 
   TODO: should choose a random port, to allow multiple instances of the
@@ -108,9 +110,9 @@ class TestExcelScenarios(unittest.TestCase):
 
 if __name__ == '__main__':
   if xlwings_present:
-    excel_app = xlwings.App()
-    if excel_app:
-      excel_app.quit()
+    excel_app_empty = xlwings.App()
+    if excel_app_empty:
+      excel_app_empty.quit()
       excel_present = True
     else:
       print("Microsoft Excel not present, skipping tests.")
