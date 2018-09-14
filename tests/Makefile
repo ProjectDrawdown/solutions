@@ -1,12 +1,10 @@
 default: test lint
 
-test: *_test.py
+test: $(wildcard test_*.py)
 	set -e; \
-	for d in $(filter %_test.py,$^); do \
-		echo; \
-		echo "Testing $$d"; \
-		PYTHONPATH=${PYTHONPATH}:.. python $$d; \
+	for d in $(filter test_%.py,$^); do \
+		echo "Testing $$d"; PYTHONPATH=${PYTHONPATH}:.. python $$d; \
 	done
 
 lint:
-	pylint --indent-string='  ' --disable=invalid-name *.py
+	PYTHONPATH=${PYTHONPATH}:.. pylint --indent-string='  ' --disable=invalid-name *.py
