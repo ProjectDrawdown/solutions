@@ -44,14 +44,6 @@ def test_life_rep_years(self):
     self.assertAlmostEqual(result, 26.00)
 
 
-def test_life_rep_years():
-    '''Test Lifetime Replacement for solution/conventional in years calculation.'''
-
-    ua = unitadoption.UnitAdoption()
-    result = ua.life_rep_years(48343.80, 1841.67)
-    assert result == 26.00
-
-
 def test_sol_cum_iunits():
     '''Test cumulative solution implementation units installed'''
 
@@ -86,9 +78,9 @@ def test_sol_ann_iunits():
         orient='index', columns=columns)
     life_rep_sol_years = 26.00
     ref_sol_ann_funits = pd.DataFrame.from_dict(
-        dict([(2014, [112.63, 75.00,  0.33]),
-              (2015, [117.07, 75.63,  0.34]),
-              (2016, [121.51, 76.25,  0.34])]),
+        dict([(2014, [0, 0, 0]),
+              (2015, [0.00241, 0.00034, 0.00000]),
+              (2016, [0.00241, 0.00034, 0.00000])]),
         orient='index', columns=columns)
     ua = unitadoption.UnitAdoption()
     result = ua.sol_ann_iunits(
