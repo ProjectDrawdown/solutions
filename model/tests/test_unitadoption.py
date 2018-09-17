@@ -67,9 +67,10 @@ def test_sol_cum_iunits():
                                   check_less_precise=2)
 
 
-def test_sol_ann_iunits():
-    '''Test new implementation units required (including replacement units)'''
+def test_sol_ann_iunits_diff():
+    '''Test new implementation units required.'''
 
+    # First, test the cumulative function.
     columns = ["World", "OECD90", "Eastern Europe"]
     ref_sol_cum_iunits = pd.DataFrame.from_dict(
         dict([(2014, [0.06116, 0.04073, 0.00018]),
@@ -78,14 +79,34 @@ def test_sol_ann_iunits():
         orient='index', columns=columns)
     life_rep_sol_years = 26.00
     ref_sol_ann_funits = pd.DataFrame.from_dict(
-        dict([(2015, [0.00241, 0.00033, 0]),
-              (2016, [0.00241, 0.00034, 0])]),
+        dict([(2015, [0.00241, 0.00033, 0.0]),
+              (2016, [0.00241, 0.00034, 0.0])]),
         orient='index', columns=columns)
     ua = unitadoption.UnitAdoption()
     result = ua.sol_ann_iunits(
-        ref_sol_cum_iunits, life_rep_sol_years)
-    print(ref_sol_ann_funits.info())
-    print(result.info())
+        ref_sol_cum_iunits, life_rep_sol_years).round(5)
+    # Confirm that values are equal across the entire array.
+    assert ref_sol_ann_funits.equals(result)
+
+
+def test_sol_ann_iunits_lifetime():
+    '''Test new implementation units required (including replacement units)'''
+
+    # First, test the cumulative function.
+    columns = ["World", "OECD90", "Eastern Europe"]
+    ref_sol_cum_iunits = pd.DataFrame.from_dict(
+        dict([(2014, [0.06116, 0.04073, 0.00018]),
+              (2015, [0.06357, 0.04106, 0.00018]),
+              (2016, [0.06598, 0.04140, 0.00015])]),
+        orient='index', columns=columns)
+    life_rep_sol_years = 2.00
+    ref_sol_ann_funits = pd.DataFrame.from_dict(
+        dict([(2015, [0.00241, 0.00033, 0.0]),
+              (2016, [0.00241, 0.00034, 0.0])]),
+        orient='index', columns=columns)
+    ua = unitadoption.UnitAdoption()
+    result = ua.sol_ann_iunits(
+        ref_sol_cum_iunits, life_rep_sol_years).round(5)
     # Confirm that values are equal across the entire array.
     pd.testing.assert_frame_equal(result, ref_sol_ann_funits, check_exact=False,
                                   check_less_precise=2)
