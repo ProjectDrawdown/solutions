@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 class UnitAdoption:
     def na_funits(self, ref_sol_funits, pds_sol_funits):
         '''Net annual functional units adopted.
@@ -56,6 +59,22 @@ class UnitAdoption:
         Implementation Units Adopted.  This is also used to Calculate
         First Cost, Marginal First Cost and NPV.
         '''
-        # for index, row in sol_cum_iunits.iterrows():
+        # Output will initially share the same index and columns as the
+        # cumulative values, for easy indexing.
+        output = pd.DataFrame(index=sol_cum_iunits.index.copy(),
+                              columns=sol_cum_iunits.columns.copy())
 
-        return
+        for year, column in sol_cum_iunits.iteritems():
+            prev_value = 0
+            for region, value in column.iteritems():
+                new_value = 0
+
+                delta = value - prev_value
+                if delta > 0:
+                    new_value += delta
+                prev_value = value
+
+                output.set_value(region, year, new_value)
+
+        # Discard the first row of output, since we don't have any values for it.
+        return output[1:]
