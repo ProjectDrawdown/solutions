@@ -1,4 +1,4 @@
-Sept 5 - 8, 2018
+Sept 5 - 7, 2018
 <code>/earth hackathon at the Internet Archive in San Francisco.
 Initial commits to:
 + add a Heroku server app in Python
@@ -7,7 +7,7 @@ Initial commits to:
 + construct unit+integration tests
 + set up continuous integration & deployment
 
-Sept 9 - 15, 2018
+Sept 10 - 14, 2018
 + start/stop a flask server in excel integration test
 + make access to Excel more robust w/ retries for spurious failures
 + add a shell-based test to run a local flask server & check expected values
