@@ -61,25 +61,26 @@ class UnitAdoption:
         '''
         # Output will initially share the same index and columns as the
         # cumulative values, for easy indexing.
-        # output = pd.DataFrame(index=sol_cum_iunits.index.copy(),
-        #                       columns=sol_cum_iunits.columns.copy())
-        output = sol_cum_iunits
+        output = pd.DataFrame(index=sol_cum_iunits.index.copy(),
+                              columns=sol_cum_iunits.columns.copy(), dtype='float64')
 
-        for year, column in sol_cum_iunits.iteritems():
-            prev_value = 0
-            for region, value in column.iteritems():
+        for region, column in sol_cum_iunits.iteritems():
+            for year, value in column.iteritems():
                 new_value = 0
 
                 # Add positive year on year growth.
-                delta = value - prev_value
-                if delta > 0:
-                    new_value += delta
-                prev_value = value
+                if (year - 1) in column:
+                    delta = value - column[year - 1]
+                    if delta > 0:
+                        new_value += delta
 
-                # Add replacement units, if needed.
-                # TODO
+                # Add replacement units, if needed by adding the number of units
+                # added life_rep_years ago, that now need replacement.
+                life_rep_year_target = int(year - life_rep_years)
+                if life_rep_year_target in output.index:
+                    new_value += output.loc[life_rep_year_target].at[region]
 
-                output.set_value(region, year, new_value)
+                output.at[year, region] = new_value
 
         # Discard the first row of output, since we don't have any values for it.
         return output[1:]
