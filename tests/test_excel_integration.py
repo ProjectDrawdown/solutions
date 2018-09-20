@@ -25,6 +25,15 @@ try:
 except ImportError:
   xlwings_present = False
 
+if xlwings_present:
+  excel_app_empty = xlwings.App()
+  if excel_app_empty:
+    excel_app_empty.quit()
+    excel_present = True
+  else:
+    print("Microsoft Excel not present, skipping tests.")
+else:
+  print("xlwings not present, skipping tests.")
 
 
 class ExcelAccessFailed(TimeoutError):
@@ -66,14 +75,16 @@ def run_flask(flask_app):
 class TestExcelScenarios(unittest.TestCase):
   """Integration tests for Excel <-> HTTP server."""
 
-  excel_files_dir = 'excel'
+  excel_files_dir = os.path.dirname(__file__) + os.path.sep + 'excel'
   flask_app_thread = None
   workbook = None
 
   def setUp(self):
     if not excel_present:
       raise unittest.SkipTest('Microsoft Excel not present on this system.')
-    self.start_flask()
+    flask_app = app.get_app_for_tests()
+    self.flask_app_thread = threading.Thread(target=run_flask, args=(flask_app,))
+    self.flask_app_thread.start()
 
   def tearDown(self):
     if self.workbook:
@@ -85,12 +96,6 @@ class TestExcelScenarios(unittest.TestCase):
       with urllib.request.urlopen('http://localhost:5000/quitquitquit') as response:
         _ = response.read()
       self.flask_app_thread.join()
-
-  def start_flask(self):
-    """start a flask server thread."""
-    flask_app = app.get_app_for_tests()
-    self.flask_app_thread = threading.Thread(target=run_flask, args=(flask_app,))
-    self.flask_app_thread.start()
 
   def open_excel_file(self, filename, sheet_name='Sheet1'):
     """Open an Excel workbook, and prepare to close it automatically later."""
@@ -109,13 +114,4 @@ class TestExcelScenarios(unittest.TestCase):
 
 
 if __name__ == '__main__':
-  if xlwings_present:
-    excel_app_empty = xlwings.App()
-    if excel_app_empty:
-      excel_app_empty.quit()
-      excel_present = True
-    else:
-      print("Microsoft Excel not present, skipping tests.")
-  else:
-    print("xlwings not present, skipping tests.")
   unittest.main()
