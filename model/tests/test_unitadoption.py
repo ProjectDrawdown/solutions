@@ -3,6 +3,7 @@
 import unittest
 
 import pandas as pd
+import io
 from model import unitadoption
 
 
@@ -12,22 +13,24 @@ class TestUnitAdoption(unittest.TestCase):
     def test_na_funits(self):
         '''Test net adoption functional units calculation.'''
 
-        columns = ["World", "OECD90", "Eastern Europe"]
-        ref_sol_funits = pd.DataFrame.from_dict(
-            dict([(2014, [112.63, 75.00,  0.33]),
-                  (2015, [117.07, 75.63,  0.34]),
-                  (2016, [121.51, 76.25,  0.34])]),
-            orient='index', columns=columns)
-        pds_sol_funits = pd.DataFrame.from_dict(
-            dict([(2014, [112.63, 75.00, 0.33]),
-                  (2015, [176.24, 0, 0]),
-                  (2016, [272.03, 0, 0])]),
-            orient='index', columns=columns)
-        na_funits = pd.DataFrame.from_dict(
-            dict([(2014, [0, 0, 0]),
-                  (2015, [59.17, -75.63, -0.34]),
-                  (2016, [150.52, -76.25, -0.34])]),
-            orient='index', columns=columns)
+        ref_sol_funits = pd.read_csv(io.StringIO('''
+Year, World, OECD90, Eastern Europe
+2014, 112.63, 75.00, 0.33
+2015, 117.07, 75.63, 0.34
+2016, 121.51, 76.25, 0.34'''), index_col=0)
+
+        pds_sol_funits = pd.read_csv(io.StringIO('''
+Year, World, OECD90, Eastern Europe
+2014, 112.63, 75.00, 0.33
+2015, 176.24, 0, 0
+2016, 272.03, 0, 0'''), index_col=0)
+
+        na_funits = pd.read_csv(io.StringIO('''
+Year, World, OECD90, Eastern Europe
+2014, 0, 0, 0
+2015, 59.17, -75.63, -0.34
+2016, 150.52, -76.25, -0.34'''), index_col=0)
+
         ua = unitadoption.UnitAdoption()
         result = ua.na_funits(ref_sol_funits, pds_sol_funits)
         # Confirm that values are equal across the entire array.
@@ -45,17 +48,19 @@ class TestUnitAdoption(unittest.TestCase):
         '''Test cumulative solution implementation units installed'''
 
         columns = ["World", "OECD90", "Eastern Europe"]
-        ref_sol_funits = pd.DataFrame.from_dict(
-            dict([(2014, [112.63, 75.00,  0.33]),
-                  (2015, [117.07, 75.63,  0.34]),
-                  (2016, [121.51, 76.25,  0.34])]),
-            orient='index', columns=columns)
+        ref_sol_funits = pd.read_csv(io.StringIO('''
+Year, World, OECD90, Eastern Europe
+2014, 112.63, 75.00, 0.33
+2015, 117.07, 75.63, 0.34
+2016, 121.51, 76.25, 0.34'''), index_col=0)
+
         aau_sol_funits = 1841.67
-        ref_sol_cum_iunits = pd.DataFrame.from_dict(
-            dict([(2014, [0.0611, 0.0407, 0.000179]),
-                  (2015, [0.0635, 0.0410, 0.000184]),
-                  (2016, [0.0659, 0.0414, 0.000184])]),
-            orient='index', columns=columns)
+        ref_sol_cum_iunits = pd.read_csv(io.StringIO('''
+Year, World, OECD90, Eastern Europe
+2014, 0.0611, 0.0407, 0.000179
+2015, 0.0635, 0.0410, 0.000184
+2016, 0.0659, 0.0414, 0.000184'''), index_col=0)
+
         ua = unitadoption.UnitAdoption()
         result = ua.sol_cum_iunits(
             ref_sol_funits, aau_sol_funits)
@@ -68,17 +73,18 @@ class TestUnitAdoption(unittest.TestCase):
 
         # Test only the cumulative function - the lifetime should have no effect here.
         # For OEC90, this also tests that negative change in units is not counted.
-        columns = ["World", "OECD90", "Eastern Europe"]
-        ref_sol_cum_iunits = pd.DataFrame.from_dict(
-            dict([(2014, [0.06116, 0.04073, 0.00018]),
-                  (2015, [0.06357, 0.04106, 0.00018]),
-                  (2016, [0.06598, 0.03, 0.00015])]),
-            orient='index', columns=columns)
+        ref_sol_cum_iunits = pd.read_csv(io.StringIO('''
+Year, World, OECD90, Eastern Europe
+2014, 0.06116, 0.04073, 0.00018
+2015, 0.06357, 0.04106, 0.00018
+2016, 0.06598, 0.03, 0.00015'''), index_col=0)
+
         life_rep_sol_years = 26.00
-        ref_sol_ann_funits_diff = pd.DataFrame.from_dict(
-            dict([(2015, [0.00241, 0.00033, 0.0]),
-                  (2016, [0.00241, 0.0, 0.0])]),
-            orient='index', columns=columns)
+        ref_sol_ann_funits_diff = pd.read_csv(io.StringIO('''
+Year, World, OECD90, Eastern Europe
+2015, 0.00241, 0.00033, 0.0
+2016, 0.00241, 0.0, 0.0'''), index_col=0)
+
         ua = unitadoption.UnitAdoption()
         result = ua.sol_ann_iunits(
             ref_sol_cum_iunits, life_rep_sol_years)
@@ -89,10 +95,10 @@ class TestUnitAdoption(unittest.TestCase):
         # Test a 2 year lifetime replacement - 2016 should now include
         # units from 2015, as those now need to be replaced.
         life_rep_sol_years = 1.00
-        ref_sol_ann_funits_lifetime = pd.DataFrame.from_dict(
-            dict([(2015, [0.00241, 0.00033, 0.0]),
-                  (2016, [0.00482, 0.00033, 0.0])]),
-            orient='index', columns=columns)
+        ref_sol_ann_funits_lifetime = pd.read_csv(io.StringIO('''
+Year, World, OECD90, Eastern Europe
+2015, 0.00241, 0.00033, 0.0
+2016, 0.00482, 0.00033, 0.0'''), index_col=0)
         result = ua.sol_ann_iunits(
             ref_sol_cum_iunits, life_rep_sol_years)
         # Confirm that values are equal across the entire array.

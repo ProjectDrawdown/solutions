@@ -83,5 +83,4 @@ class UnitAdoption:
                 output.at[year, region] = new_value
 
         # Discard the first row of output, since we don't have any values for it.
-        output.sort_index(inplace=True)
         return output[1:]
