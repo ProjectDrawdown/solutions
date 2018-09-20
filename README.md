@@ -91,7 +91,7 @@ The four modules below may be thought of as the computational "kernel" of the Dr
    At the end of the code.earth hackathon 9/7/2018, a good start of the Unit Adoption Module had been made but remains to be completed.
 
 2. **First Cost module**  
-   As with the first two modules, this should use VBAWEB to push data to the Python code.
+   As with the Unit Adoption module, this should use VBAWEB to push data to the Python code.
 
    Note that this is the first place in the spreadsheets where there are a number of custom variants, where specific models need to replace the implementation with their own. It is strongly recommended that the Python code not try to accommodate this at this point: it will be much more clear what needs to be done when more of the system is moved out of Excel, attempting to design for model specialization too early is likely to over-design for the problem.
 
@@ -99,7 +99,7 @@ The four modules below may be thought of as the computational "kernel" of the Dr
    This module is similar to the earlier modules, where VBAWEB would push data over to the Python code for processing.
 
 4. **Continue development by CO2 Calcs**  
-   As with the unit adoption implementation tackled first, this would use the VBAWEB module to push data from the spreadsheet over to Python for processing.
+   As with earlier modules, this would use the VBAWEB module to push data from the spreadsheet over to Python for processing.
 
    Test cases should check that the numbers match the values computed by the original (unmodified) spreadsheet.
 
