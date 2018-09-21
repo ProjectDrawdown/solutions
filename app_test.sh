@@ -34,5 +34,15 @@ if [ "${output}" != "${expected}" ]; then
     rc=1
 fi
 
+input='{"advanced_controls":{"pds_2014_cost":1444.93954421485,"conv_2014_cost":2010.03170851964,"pds_first_cost_efficiency_rate":0.196222222222222,"pds_first_cost_below_conv":true,"conv_first_cost_efficiency_rate":0.02},"first_cost":{"pds_learning_increase_mult":2,"conv_learning_increase_mult":2},"unit_adoption":{"pds_tot_soln_iunits_req":[0.061158144891382,0.0956963287565992,0.147709178675075,0.208131559430844,0.276585853638905],"ref_tot_conv_iunits_req":[4.53535289538464,4.8796378165883,5.05302431141252,5.2263750432106,5.39969647677689]}}'
+url='http://127.0.0.1:5000/firstcost'
+output=$(curl --silent -H 'Content-Type: application/json' --data $input $url | tr -d '[:space:]') 
+expected=$(echo '{"conv_install_cost_per_iunit":[0.0,2005749716919.2083,2003709559856.4333,2001740610594.36,1999838071911.3604],"pds_install_cost_per_iunit":[1663888168616.1255,1444939544214.8499,1260211854559.479,1131125771261.7144,1034176540754.2719]}' | tr -d '[:space:]')
+
+if [ "${output}" != "${expected}" ]; then
+    echo "${output} != ${expected}"
+    rc=1
+fi
+
 
 trap 'kill $(jobs -pr)' SIGINT SIGTERM EXIT
