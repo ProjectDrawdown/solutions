@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 class UnitAdoption:
     def na_funits(self, ref_sol_funits, pds_sol_funits):
         '''Net annual functional units adopted.
@@ -26,3 +29,58 @@ class UnitAdoption:
         aau_funits: Average Annual Capacity per implementation unit
         '''
         return round(life_cap_funits / aau_funits, 0)
+
+    def sol_cum_iunits(self, sol_funits, aau_funits):
+        '''Cumulative solution implementation units installed
+
+        sol_funits: Total annual solution functional units
+        aau_funits: Average Annual Capacity per implementation unit
+
+        This takes the Total Annual Functional Units PDS or REF and divides that by
+        the Average Annual Use/production per Solution Implementation Unit
+        to derive the Total Implementation Units Required in each given year PDS or REF.
+
+        This is used to calculate the yearly increase in Implementation
+        Units Adopted of Solution in PDS or REF.  
+        '''
+        return sol_funits / aau_funits
+
+    def sol_ann_iunits(self, sol_cum_iunits, life_rep_years):
+        '''New implementation units required (includes replacement units)
+
+        sol_cum_iunits: Cumulative solution implementation units installed
+        life_rep_years: Lifetime Replacement in years
+
+        Should reflect the unit lifetime assumed in the First Cost tab.
+        For simplicity assumed a fix lifetime rather than a gaussian
+        distribution, but this can be changed if needed. 
+
+        This is used to calculate Advanced Controls Output of Solution
+        Implementation Units Adopted.  This is also used to Calculate
+        First Cost, Marginal First Cost and NPV.
+        '''
+        # Output will initially share the same index and columns as the
+        # cumulative values, for easy indexing.
+        output = pd.DataFrame(index=sol_cum_iunits.index.copy(),
+                              columns=sol_cum_iunits.columns.copy(), dtype='float64')
+
+        for region, column in sol_cum_iunits.iteritems():
+            for year, value in column.iteritems():
+                new_value = 0
+
+                # Add positive year on year growth.
+                if (year - 1) in column:
+                    delta = value - column[year - 1]
+                    if delta > 0:
+                        new_value += delta
+
+                # Add replacement units, if needed by adding the number of units
+                # added life_rep_years ago, that now need replacement.
+                life_rep_year_target = int(year - life_rep_years)
+                if life_rep_year_target in output.index:
+                    new_value += output.loc[life_rep_year_target].at[region]
+
+                output.at[year, region] = new_value
+
+        # Discard the first row of output, since we don't have any values for it.
+        return output[1:]

@@ -34,7 +34,7 @@ FLASK_APP=app.py FLASK_ENV=development flask run
 
 Test Query
 ```sh
-curl -H 'Content-Type: application/json' --data '{"pds":"a,b,c,d\n2,2,5,4\n2,3,4,10","ref":"a,b,c,d\n1,2,3,4\n2,2,4,4"}' 'http://127.0.0.1:5000/unitadoption'
+curl -H 'Content-Type: application/json' --data @sample.json 'http://127.0.0.1:5000/unitadoption.v2'
 ```
 # Understanding the Drawdown solution models: Reference and Summary
 
