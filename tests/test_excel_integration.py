@@ -10,30 +10,21 @@ import os.path
 import sys
 import threading
 import time
-import unittest
 import urllib.request
 
 import app
+import pytest
+xlwings = pytest.importorskip("xlwings")
 
 
-excel_present = False
-xlwings_present = True
+excel_files_dir = os.path.join(os.path.dirname(__file__), 'excel')
 
 
-try:
-  import xlwings
-except ImportError:
-  xlwings_present = False
-
-if xlwings_present:
+def excel_present():
   excel_app_empty = xlwings.App()
   if excel_app_empty:
     excel_app_empty.quit()
-    excel_present = True
-  else:
-    print("Microsoft Excel not present, skipping tests.")
-else:
-  print("xlwings not present, skipping tests.")
+    return True
 
 
 class ExcelAccessFailed(TimeoutError):
@@ -59,7 +50,7 @@ def excel_read_cell(sheet, cell_name):
 
 
 
-def run_flask(flask_app):
+def _run_flask(flask_app):
   """Start a flask server, for use as the main routine in a thread.
 
   auto-reloader on code change only works in main thread, so disable it.
@@ -72,46 +63,38 @@ def run_flask(flask_app):
   flask_app.run(debug=True, use_reloader=False)
 
 
-class TestExcelScenarios(unittest.TestCase):
-  """Integration tests for Excel <-> HTTP server."""
-
-  excel_files_dir = os.path.dirname(__file__) + os.path.sep + 'excel'
-  flask_app_thread = None
-  workbook = None
-
-  def setUp(self):
-    if not excel_present:
-      raise unittest.SkipTest('Microsoft Excel not present on this system.')
-    flask_app = app.get_app_for_tests()
-    self.flask_app_thread = threading.Thread(target=run_flask, args=(flask_app,))
-    self.flask_app_thread.start()
-
-  def tearDown(self):
-    if self.workbook:
-      excel_app = self.workbook.app
-      self.workbook.close()
-      self.workbook = None
-      excel_app.quit()
-    if self.flask_app_thread:
-      with urllib.request.urlopen('http://localhost:5000/quitquitquit') as response:
-        _ = response.read()
-      self.flask_app_thread.join()
-
-  def open_excel_file(self, filename, sheet_name='Sheet1'):
-    """Open an Excel workbook, and prepare to close it automatically later."""
-    self.workbook = xlwings.Book(filename)
-    return self.workbook.sheets[sheet_name]
-
-  def test_SolarPVUtility_RRS_ELECGEN(self):
-    """Test for Excel model file SolarPVUtility_RRS_ELECGEN_*."""
-    scenario_filename = 'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm'
-    filename = os.path.join(self.excel_files_dir, scenario_filename)
-    self.assertTrue(os.path.exists(filename))
-    sheet = self.open_excel_file(filename=filename, sheet_name='Basic Controls')
-    total_emissions_reduction = excel_read_cell(sheet, 'F4')
-    total_emissions_reduction_expected = 66.5737
-    self.assertAlmostEqual(total_emissions_reduction, total_emissions_reduction_expected, places=3)
+@pytest.fixture
+def start_flask():
+  """Pytest fixture to start a local flask server, and stop it at the end."""
+  flask_app = app.get_app_for_tests()
+  flask_app_thread = threading.Thread(target=_run_flask, args=(flask_app,))
+  flask_app_thread.start()
+  yield  # test case will run here.
+  with urllib.request.urlopen('http://localhost:5000/quitquitquit') as response:
+    _ = response.read()
+  flask_app_thread.join()
 
 
-if __name__ == '__main__':
-  unittest.main()
+@pytest.fixture
+def open_excel_file():
+  """Pytest fixture to open an Excel file, and cleanly close it at the end."""
+  scenario_filename = 'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm'
+  filename = os.path.join(excel_files_dir, scenario_filename)
+  assert os.path.exists(filename)
+  workbook = xlwings.Book(filename)
+  yield workbook.sheets['Basic Controls']
+  excel_app = workbook.app
+  workbook.close()
+  excel_app.quit()
+
+
+@pytest.mark.integration
+def test_SolarPVUtility_RRS_ELECGEN(open_excel_file):
+  """Test for Excel model file SolarPVUtility_RRS_ELECGEN_*."""
+  if not excel_present():
+    pytest.skip("Microsoft Excel not present")
+  sheet = open_excel_file
+  total_emissions_reduction = excel_read_cell(sheet, 'F4')
+  total_emissions_reduction_expected = 66.5737
+  assert total_emissions_reduction == pytest.approx(
+      total_emissions_reduction_expected)
