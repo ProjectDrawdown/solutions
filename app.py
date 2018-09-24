@@ -60,26 +60,61 @@ def unitAdoption2():
     return jsonify(results)
 
 
+def pdSeriesYears(js, name):
+  arr = js.get(name, [])
+  year_var_name = name + '_year'
+  start = js.get(year_var_name, 0)
+  stop = start + len(arr)
+  return pd.Series(arr, index=pd.RangeIndex(start=start, stop=stop))
+
+
 @app.route("/firstcost", methods=['POST'])
 def firstCost():
     '''Implements First Cost tab from Excel model implementation.'''
     js = request.get_json(force=True)
-    ac = to_advanced_controls(js, app.logger)
+    ac_rq = to_advanced_controls(js, app.logger)
     fc_rq = js.get('first_cost', {})
     ua_rq = js.get('unit_adoption', {})
     fc = firstcost.FirstCost(
-        ac=ac,
+        ac=ac_rq,
         pds_learning_increase_mult=fc_rq.get('pds_learning_increase_mult', 0),
+        ref_learning_increase_mult=fc_rq.get('ref_learning_increase_mult', 0),
         conv_learning_increase_mult=fc_rq.get('conv_learning_increase_mult', 0))
 
+    soln_pds_tot_iunits_req = pdSeriesYears(ua_rq, 'soln_pds_tot_iunits_req')
+    conv_ref_tot_iunits_req = pdSeriesYears(ua_rq, 'conv_ref_tot_iunits_req')
+    soln_ref_tot_iunits_req = pdSeriesYears(ua_rq, 'soln_ref_tot_iunits_req')
+    soln_pds_new_iunits_req = pdSeriesYears(ua_rq, 'soln_pds_new_iunits_req')
+    soln_ref_new_iunits_req = pdSeriesYears(ua_rq, 'soln_ref_new_iunits_req')
+    conv_ref_new_iunits_req = pdSeriesYears(ua_rq, 'conv_ref_new_iunits_req')
+
     results = dict()
-    pds_tot_soln_iunits_req = pd.Series(ua_rq.get('pds_tot_soln_iunits_req', []))
-    ref_tot_conv_iunits_req = pd.Series(ua_rq.get('ref_tot_conv_iunits_req', []))
-    results['pds_install_cost_per_iunit'] = fc.pds_install_cost_per_iunit(
-        pds_tot_soln_iunits_req=pds_tot_soln_iunits_req,
-        ref_tot_conv_iunits_req=ref_tot_conv_iunits_req).tolist()
-    results['conv_install_cost_per_iunit'] = fc.conv_install_cost_per_iunit(
-        ref_tot_conv_iunits_req=ref_tot_conv_iunits_req).tolist()
+    soln_pds_install_cost_per_iunit = fc.soln_pds_install_cost_per_iunit(
+        soln_pds_tot_iunits_req=soln_pds_tot_iunits_req,
+        conv_ref_tot_iunits_req=conv_ref_tot_iunits_req)
+    results['soln_pds_install_cost_per_iunit'] = soln_pds_install_cost_per_iunit.tolist()
+    conv_ref_install_cost_per_iunit = fc.conv_ref_install_cost_per_iunit(
+        conv_ref_tot_iunits_req=conv_ref_tot_iunits_req)
+    results['conv_ref_install_cost_per_iunit'] = conv_ref_install_cost_per_iunit.tolist()
+    soln_ref_install_cost_per_iunit = fc.soln_ref_install_cost_per_iunit(
+        soln_ref_tot_iunits_req, conv_ref_tot_iunits_req)
+    results['soln_ref_install_cost_per_iunit'] = soln_ref_install_cost_per_iunit.tolist()
+    soln_pds_annual_world_first_cost = fc.soln_pds_annual_world_first_cost(
+        soln_pds_new_iunits_req=soln_pds_new_iunits_req,
+        soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit)
+    results['soln_pds_annual_world_first_cost'] = fc.soln_pds_annual_world_first_cost(
+        soln_pds_new_iunits_req, soln_pds_install_cost_per_iunit).tolist()
+    results['soln_pds_cumulative_install'] = fc.soln_pds_cumulative_install(
+        soln_pds_annual_world_first_cost).tolist()
+    soln_ref_annual_world_first_cost = fc.soln_ref_annual_world_first_cost(
+        soln_ref_new_iunits_req, soln_ref_install_cost_per_iunit)
+    results['soln_ref_annual_world_first_cost'] = soln_ref_annual_world_first_cost.tolist()
+    conv_ref_annual_world_first_cost = fc.conv_ref_annual_world_first_cost(
+        conv_ref_new_iunits_req, conv_ref_install_cost_per_iunit)
+    results['conv_ref_annual_world_first_cost'] = conv_ref_annual_world_first_cost.tolist()
+    results['ref_cumulative_install'] = fc.ref_cumulative_install(
+        conv_ref_annual_world_first_cost, soln_ref_annual_world_first_cost).tolist()
+
     return jsonify(results)
 
 
