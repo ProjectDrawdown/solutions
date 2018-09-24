@@ -13,3 +13,15 @@ Sept 10 - 14, 2018
 + add a shell-based test to run a local flask server & check expected values
 + add Makefiles to run all tests and run pylint
 + add a ChangeLog to report progress
+
+Sep 17 - 21, 2018
++ implemented the first two columns of the First Cost tab, end to end.  
+  Recorded a video demonstrating the Excel side of this: https://youtu.be/-XvpqbkgytM
+  Recorded a video demonstrating test_excel_integration.py: https://youtu.be/HLL7HrFcmjc
+
++ WIP change to move Visual Basic code out of the Excel file and into  
+  external *.bas files, in https://gitlab.com/codeearth/drawdown/tree/excel_files
+  Unfortunately after loading the basic code from external files, something
+  in Excel seems to become corrupted and the spreadsheet can no longer be
+  saved. It just gets an error.
+  We'll work on figuring out why, until then the CL cannot go into the tree.
