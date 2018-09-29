@@ -1,10 +1,14 @@
-from flask import Flask, request, render_template, jsonify
-import csv
+"""Flask App for http://codeearth.net."""
+
 import io
 import os
-import pprint
+
+import advanced_controls
+from flask import Flask, request, render_template, jsonify
 import pandas as pd
+from model import firstcost
 from model import unitadoption
+import werkzeug.exceptions
 
 app = Flask(__name__)
 
@@ -30,16 +34,16 @@ def unitAdoption():
 @app.route("/unitadoption.v2", methods=['POST'])
 def unitAdoption2():
     '''Second version of the API - implements most of the unit adoption tab.'''
-    json = request.json
-    pprint.pprint(json)
-    ref_sol_funits = to_csv(json, 'ref_sol_funits', app.logger)
-    pds_sol_funits = to_csv(json, 'pds_sol_funits', app.logger)
-    aau_sol_funits = json['aau_sol_funits']
-    life_cap_sol_funits = json['life_cap_sol_funits']
-    aau_conv_funits = json['aau_conv_funits']
-    life_cap_conv_funits = json['life_cap_conv_funits']
-    ref_tam_funits = to_csv(json, 'ref_tam_funits', app.logger)
-    pds_tam_funits = to_csv(json, 'pds_tam_funits', app.logger)
+    js = request.get_json(force=True)
+    pprint.pprint(js)
+    ref_sol_funits = to_csv(js, 'ref_sol_funits', app.logger)
+    pds_sol_funits = to_csv(js, 'pds_sol_funits', app.logger)
+    aau_sol_funits = js['aau_sol_funits']
+    life_cap_sol_funits = js['life_cap_sol_funits']
+    aau_conv_funits = js['aau_conv_funits']
+    life_cap_conv_funits = js['life_cap_conv_funits']
+    ref_tam_funits = to_csv(js, 'ref_tam_funits', app.logger)
+    pds_tam_funits = to_csv(js, 'pds_tam_funits', app.logger)
 
     ua = unitadoption.UnitAdoption()
     results = dict()
@@ -56,6 +60,29 @@ def unitAdoption2():
     return jsonify(results)
 
 
+@app.route("/firstcost", methods=['POST'])
+def firstCost():
+    '''Implements First Cost tab from Excel model implementation.'''
+    js = request.get_json(force=True)
+    ac = to_advanced_controls(js, app.logger)
+    fc_rq = js.get('first_cost', {})
+    ua_rq = js.get('unit_adoption', {})
+    fc = firstcost.FirstCost(
+        ac=ac,
+        pds_learning_increase_mult=fc_rq.get('pds_learning_increase_mult', 0),
+        conv_learning_increase_mult=fc_rq.get('conv_learning_increase_mult', 0))
+
+    results = dict()
+    pds_tot_soln_iunits_req = pd.Series(ua_rq.get('pds_tot_soln_iunits_req', []))
+    ref_tot_conv_iunits_req = pd.Series(ua_rq.get('ref_tot_conv_iunits_req', []))
+    results['pds_install_cost_per_iunit'] = fc.pds_install_cost_per_iunit(
+        pds_tot_soln_iunits_req=pds_tot_soln_iunits_req,
+        ref_tot_conv_iunits_req=ref_tot_conv_iunits_req).tolist()
+    results['conv_install_cost_per_iunit'] = fc.conv_install_cost_per_iunit(
+        ref_tot_conv_iunits_req=ref_tot_conv_iunits_req).tolist()
+    return jsonify(results)
+
+
 def to_csv(data, key, logger):
     '''
     Helper function to load CSV from input data dictionary.
@@ -65,6 +92,14 @@ def to_csv(data, key, logger):
     csv = pd.read_csv(csvio)
     logger.info("%s parsed as:\n%s", key, csv)
     return csv
+
+
+def to_advanced_controls(data, logger):
+    '''Helper function to extract advanced controls fields.'''
+    if not data.get('advanced_controls'):
+        raise werkzeug.exceptions.BadRequest('advanced_controls missing')
+    ac = data['advanced_controls']
+    return advanced_controls.AdvancedControls(**ac)
 
 
 def shutdown():

@@ -7,24 +7,29 @@ values.
 """
 
 import os.path
+import pathlib
 import sys
 import threading
 import time
 import urllib.request
 
-import app
 import pytest
+import app
 xlwings = pytest.importorskip("xlwings")
 
 
-excel_files_dir = os.path.join(os.path.dirname(__file__), 'excel')
+excel_orig_files_dir = os.path.join(os.path.dirname(__file__), 'excel')
+excel_mod_files_dir = os.path.join(str(pathlib.Path(
+    os.path.dirname(__file__)).parents[0]), 'ddexcel_models')
 
 
 def excel_present():
+  """Returns true if Microsoft Excel can successfully start."""
   excel_app_empty = xlwings.App()
   if excel_app_empty:
     excel_app_empty.quit()
     return True
+  return False
 
 
 class ExcelAccessFailed(TimeoutError):
@@ -48,6 +53,17 @@ def excel_read_cell(sheet, cell_name):
       time.sleep(1)
   raise ExcelAccessFailed
 
+
+
+def excel_write_cell(sheet, cell_name, value):
+  """Retry writing to Excel a few times, work around flakiness."""
+  for _ in range(0, 20):
+    try:
+      sheet.range(cell_name).value = value
+      return
+    except ExcelTimeoutException:
+      time.sleep(1)
+  raise ExcelAccessFailed
 
 
 def _run_flask(flask_app):
@@ -75,26 +91,42 @@ def start_flask():
   flask_app_thread.join()
 
 
-@pytest.fixture
-def open_excel_file():
-  """Pytest fixture to open an Excel file, and cleanly close it at the end."""
-  scenario_filename = 'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm'
-  filename = os.path.join(excel_files_dir, scenario_filename)
-  assert os.path.exists(filename)
-  workbook = xlwings.Book(filename)
-  yield workbook.sheets['Basic Controls']
-  excel_app = workbook.app
-  workbook.close()
-  excel_app.quit()
+def transpose(l):
+  """Transpose [[1], [2], [3], [4], [5], [6]] to [1, 2, 3, 4, 5, 6]"""
+  return [elem[0] for elem in l]
 
 
 @pytest.mark.integration
-def test_SolarPVUtility_RRS_ELECGEN(open_excel_file):
+def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   """Test for Excel model file SolarPVUtility_RRS_ELECGEN_*."""
   if not excel_present():
     pytest.skip("Microsoft Excel not present")
-  sheet = open_excel_file
-  total_emissions_reduction = excel_read_cell(sheet, 'F4')
-  total_emissions_reduction_expected = 66.5737
-  assert total_emissions_reduction == pytest.approx(
-      total_emissions_reduction_expected)
+  scenario_filename = 'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm'
+  filename = os.path.join(excel_orig_files_dir, scenario_filename)
+  assert os.path.exists(filename)
+  workbook = xlwings.Book(filename)
+  excel_app = workbook.app
+  sheet = workbook.sheets['First Cost']
+  expected_pds_install_cost_per_iunit = transpose(excel_read_cell(sheet, 'C37:C82'))
+  expected_conv_install_cost_per_iunit = transpose(excel_read_cell(sheet, 'O37:O82'))
+  workbook.close()
+  excel_app.quit()
+
+  scenario_filename = 'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18_VBAWEB.xlsm'
+  filename = os.path.join(excel_mod_files_dir, scenario_filename)
+  assert os.path.exists(filename)
+  workbook = xlwings.Book(filename)
+  excel_app = workbook.app
+  sheet = workbook.sheets['ExtModelCfg']
+  excel_write_cell(sheet, 'B23', 1)  # USE_LOCAL_SERVER
+  excel_write_cell(sheet, 'B21', 0)  # DEBUG_LEVEL
+  macro = workbook.macro("AssignNetFunctionalUnits")
+  macro()
+  sheet = workbook.sheets['First Cost']
+  actual_pds_install_cost_per_iunit = transpose(excel_read_cell(sheet, 'C37:C82'))
+  actual_conv_install_cost_per_iunit = transpose(excel_read_cell(sheet, 'O37:O82'))
+  workbook.close()
+  excel_app.quit()
+
+  assert actual_pds_install_cost_per_iunit == pytest.approx(expected_pds_install_cost_per_iunit)
+  assert actual_conv_install_cost_per_iunit == pytest.approx(expected_conv_install_cost_per_iunit)
