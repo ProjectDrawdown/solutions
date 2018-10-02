@@ -92,6 +92,24 @@ def start_flask():
   flask_app_thread.join()
 
 
+def diff_dataframes(d1, d2):
+  """Print where two dataframes differ, useful for debugging pd.testing.assert_frame_equal."""
+  nerrors = 0
+  (nrows, ncols) = d1.shape
+  for r in range(nrows):
+    for c in range(ncols):
+      matches = True
+      if isinstance(d1.iloc[r,c], str) or isinstance(d2.iloc[r,c], str):
+        matches = (d1.iloc[r,c] == d2.iloc[r,c])
+      else:
+        matches = (d1.iloc[r,c] == pytest.approx(d2.iloc[r,c]))
+      if not matches:
+        print("Err [" + str(r) + "][" + str(c) + "] : " + str(d1.iloc[r,c]) + " != " + str(d2.iloc[r,c]))
+        nerrors += 1
+      if nerrors > 10:
+        break
+
+
 @pytest.mark.integration
 def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   """Test for Excel model file SolarPVUtility_RRS_ELECGEN_*."""
@@ -103,7 +121,14 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   workbook = xlwings.Book(filename)
   excel_app = workbook.app
   sheet = workbook.sheets['First Cost']
-  expected_values = pd.DataFrame(excel_read_cell(sheet, 'B37:R82'))
+  fc_expected_values = pd.DataFrame(excel_read_cell(sheet, 'B37:R82'))
+  sheet = workbook.sheets['Unit Adoption Calculations']
+  excel_write_cell(sheet, 'Q307', 'Year')
+  excel_write_cell(sheet, 'AT307', 'Year')
+  excel_write_cell(sheet, 'BF307', 'Year')
+  excel_write_cell(sheet, 'BR307', 'Year')
+  ua_expected_values1 = pd.DataFrame(excel_read_cell(sheet, 'P16:CI115'))
+  ua_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'B134:CB354'))
   workbook.close()
   excel_app.quit()
 
@@ -118,8 +143,13 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   macro = workbook.macro("AssignNetFunctionalUnits")
   macro()
   sheet = workbook.sheets['First Cost']
-  actual_values = pd.DataFrame(excel_read_cell(sheet, 'B37:R82'))
+  fc_actual_values = pd.DataFrame(excel_read_cell(sheet, 'B37:R82'))
+  sheet = workbook.sheets['Unit Adoption Calculations']
+  ua_actual_values1 = pd.DataFrame(excel_read_cell(sheet, 'P16:CI115'))
+  ua_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'B134:CB354'))
   workbook.close()
   excel_app.quit()
 
-  pd.testing.assert_frame_equal(actual_values, expected_values, check_exact=False)
+  pd.testing.assert_frame_equal(fc_actual_values, fc_expected_values, check_exact=False)
+  pd.testing.assert_frame_equal(ua_actual_values1, ua_expected_values1, check_exact=False)
+  pd.testing.assert_frame_equal(ua_actual_values2, ua_expected_values2, check_exact=False)
