@@ -13,6 +13,7 @@ import threading
 import time
 import urllib.request
 
+import pandas as pd
 import pytest
 import app
 xlwings = pytest.importorskip("xlwings")
@@ -91,11 +92,6 @@ def start_flask():
   flask_app_thread.join()
 
 
-def transpose(l):
-  """Transpose [[1], [2], [3], [4], [5], [6]] to [1, 2, 3, 4, 5, 6]"""
-  return [elem[0] for elem in l]
-
-
 @pytest.mark.integration
 def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   """Test for Excel model file SolarPVUtility_RRS_ELECGEN_*."""
@@ -107,8 +103,7 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   workbook = xlwings.Book(filename)
   excel_app = workbook.app
   sheet = workbook.sheets['First Cost']
-  expected_pds_install_cost_per_iunit = transpose(excel_read_cell(sheet, 'C37:C82'))
-  expected_conv_install_cost_per_iunit = transpose(excel_read_cell(sheet, 'O37:O82'))
+  expected_values = pd.DataFrame(excel_read_cell(sheet, 'B37:R82'))
   workbook.close()
   excel_app.quit()
 
@@ -123,10 +118,8 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   macro = workbook.macro("AssignNetFunctionalUnits")
   macro()
   sheet = workbook.sheets['First Cost']
-  actual_pds_install_cost_per_iunit = transpose(excel_read_cell(sheet, 'C37:C82'))
-  actual_conv_install_cost_per_iunit = transpose(excel_read_cell(sheet, 'O37:O82'))
+  actual_values = pd.DataFrame(excel_read_cell(sheet, 'B37:R82'))
   workbook.close()
   excel_app.quit()
 
-  assert actual_pds_install_cost_per_iunit == pytest.approx(expected_pds_install_cost_per_iunit)
-  assert actual_conv_install_cost_per_iunit == pytest.approx(expected_conv_install_cost_per_iunit)
+  pd.testing.assert_frame_equal(actual_values, expected_values, check_exact=False)
