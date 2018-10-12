@@ -158,10 +158,16 @@ class UnitAdoption:
       first_year = soln_pds_funits_adopted.add(omit_world, fill_value=0)
       return first_year.cumsum(axis=0)
 
-    def lifetime_replacement(self):
+    def soln_lifetime_replacement(self):
       return round(self.ac.soln_lifetime_capacity / self.ac.soln_avg_annual_use)
 
-    def soln_pds_new_iunits_reqd(self, soln_pds_tot_iunits_req):
+    def soln_pds_tot_iunits_reqd(self, soln_pds_funits_adopted):
+      """Total iunits required each year.
+      'Unit Adoption Calculations'!AX134:BH181
+      """
+      return soln_pds_funits_adopted / self.ac.soln_avg_annual_use
+
+    def soln_pds_new_iunits_reqd(self, soln_pds_tot_iunits_reqd):
       """New implementation units required (includes replacement units)
 
       Should reflect the unit lifetime assumed in the First Cost tab.
@@ -173,20 +179,63 @@ class UnitAdoption:
       First Cost, Marginal First Cost and NPV.
       'Unit Adoption Calculations'!AG136:AQ182
       """
-      growth = soln_pds_tot_iunits_req.diff().clip_lower(0)[1:]
+      growth = soln_pds_tot_iunits_reqd.diff().clip_lower(0).dropna()
       replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
           dtype='float64')
       for region, column in replacements.iteritems():
         for year, value in column.iteritems():
           # Add replacement units, if needed by adding the number of units
-          # added life_rep_years ago, that now need replacement.
-          replacement_year = int(year - self.lifetime_replacement() - 1)
+          # added soln_lifetime_replacement ago, that now need replacement.
+          replacement_year = int(year - self.soln_lifetime_replacement() - 1)
           if replacement_year in growth.index:
             replacements.at[year, region] = growth.loc[replacement_year].at[region]
-      return (growth + replacements)
+      return growth + replacements
+
+    def soln_pds_big4_iunits_reqd(self, soln_pds_tot_iunits_reqd):
+      """Implementation units required in USA/EU/China/India vs Rest of World.
+      'Unit Adoption Calculations'!AG136:AQ182
+      """
+      result = pd.DataFrame(0, index=soln_pds_tot_iunits_reqd.index.copy(),
+          columns=["Rest of World", "China", "India", "EU", "USA"],
+          dtype='float64')
+      result["China"] = soln_pds_tot_iunits_reqd["China"]
+      result["India"] = soln_pds_tot_iunits_reqd["India"]
+      result["EU"] = soln_pds_tot_iunits_reqd["EU"]
+      result["USA"] = soln_pds_tot_iunits_reqd["USA"]
+      result["Rest of World"] = (soln_pds_tot_iunits_reqd["World"] -
+          soln_pds_tot_iunits_reqd["China"] - soln_pds_tot_iunits_reqd["India"] -
+          soln_pds_tot_iunits_reqd["EU"] - soln_pds_tot_iunits_reqd["USA"])
+      return result
 
     def soln_ref_cumulative_funits(self, soln_ref_funits_adopted):
       return soln_ref_funits_adopted.cumsum(axis=0)
+
+    def soln_ref_tot_iunits_reqd(self, soln_ref_funits_adopted):
+      """'Unit Adoption Calculations'!AX197:BH244"""
+      return soln_ref_funits_adopted / self.ac.soln_avg_annual_use
+
+    def soln_ref_new_iunits_reqd(self, soln_ref_tot_iunits_reqd):
+      """New implementation units required (includes replacement units)
+
+      Should reflect the unit lifetime assumed in the First Cost tab. For
+      simplicity assumed a fix lifetime rather than a gaussian distribution,
+      but this can be changed if needed.
+
+      This table is also used to Calculate  Marginal First Cost and NPV.
+
+      'Unit Adoption Calculations'!AG197:AQ244
+      """
+      growth = soln_ref_tot_iunits_reqd.diff().clip_lower(0).dropna()
+      replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
+          dtype='float64')
+      for region, column in replacements.iteritems():
+        for year, value in column.iteritems():
+          # Add replacement units, if needed by adding the number of units
+          # added soln_lifetime_replacement ago, that now need replacement.
+          replacement_year = int(year - self.soln_lifetime_replacement() - 1)
+          if replacement_year in growth.index:
+            replacements.at[year, region] = growth.loc[replacement_year].at[region]
+      return growth + replacements
 
     def soln_net_annual_funits_adopted(self, soln_ref_funits_adopted, soln_pds_funits_adopted):
       """Net annual functional units adopted.
@@ -205,10 +254,11 @@ class UnitAdoption:
 
       This is used to calculate the Operating Cost, Grid, Fuel, Direct and
       (optionally) Indirect Emissions.
+      'Unit Adoption Calculations'!B251:L298
       """
       return soln_pds_funits_adopted - soln_ref_funits_adopted
 
-    def conv_ref_tot_iunits(self, ref_tam_per_region, soln_ref_funits_adopted):
+    def conv_ref_tot_iunits_reqd(self, ref_tam_per_region, soln_ref_funits_adopted):
       """Total cumulative units of the conventional or legacy practice installed by year.
       
       Reflects the total increase in the installed base units less the installation of
@@ -218,8 +268,9 @@ class UnitAdoption:
       account for current technology mix; for PDS case proposed technology mix needs to
       be reflected here.
       
-      'Unit Adoption Calculations'!Q251:AA298"""
-      return (ref_tam_per_region - soln_ref_funits_adopted) / self.ac.conv_ref_avg_annual_use
+      'Unit Adoption Calculations'!Q251:AA298
+      """
+      return (ref_tam_per_region - soln_ref_funits_adopted) / self.ac.conv_avg_annual_use
 
     def conv_ref_annual_tot_iunits(self, soln_net_annual_funits_adopted):
       """Number of Implementation Units of the Conventional practice/technology that would
@@ -232,7 +283,33 @@ class UnitAdoption:
 
       'Unit Adoption Calculations'!AX251:BH298
       """
-      return soln_net_annual_funits_adopted / self.ac.conv_ref_avg_annual_use
+      return soln_net_annual_funits_adopted / self.ac.conv_avg_annual_use
+
+    def conv_lifetime_replacement(self):
+      return round(self.ac.conv_lifetime_capacity / self.ac.conv_avg_annual_use)
+
+    def conv_ref_new_iunits_reqd(self, conv_ref_annual_tot_iunits):
+      """New implementation units required (includes replacement units)
+
+      Number of Additional Implementation Units of the Conventional practice/technology
+      that would be needed in the REF Scenario to meet the Functional Unit Demand met by
+      the PDS Implementation Units in the PDS Scenario. This is equivalent to the number
+      of Active CONVENTIONAL units that would have been sold/produced in REF but are not
+      sold/produced in PDS scenario, since SOLUTION units are used as a direct
+      replacement for CONVENTIONAL units.
+      'Unit Adoption Calculations'!AG251:AQ298
+      """
+      growth = conv_ref_annual_tot_iunits.diff().clip_lower(0).dropna()
+      replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
+          dtype='float64')
+      for region, column in replacements.iteritems():
+        for year, value in column.iteritems():
+          # Add replacement units, if needed by adding the number of units
+          # added conv_lifetime_replacement ago, that now need replacement.
+          replacement_year = int(year - self.conv_lifetime_replacement() - 1)
+          if replacement_year in growth.index:
+            replacements.at[year, region] = growth.loc[replacement_year].at[region]
+      return growth + replacements
 
     def soln_pds_net_grid_electricity_units_saved(self, soln_net_annual_funits_adopted):
       """Energy Units (e.g. TWh, tonnes oil equivalent, million therms, etc.) are
@@ -252,7 +329,9 @@ class UnitAdoption:
       the average annual electricity used by the conventional technologies/practices
       (specified in the main controls). In some rare cases the energy saved per unit
       installed may vary by region and/or time, in which case a separate tab for that
-      variable may prove necessary."""
+      variable may prove necessary.
+        'Unit Adoption Calculations'!Q307:AA354
+      """
       def calc(x):
         if self.ac.soln_annual_energy_used:
           return (self.ac.soln_annual_energy_used * x) - (self.ac.conv_annual_energy_used * x)
@@ -264,12 +343,15 @@ class UnitAdoption:
       """Fuel consumption avoided annually.
       Fuel avoided = CONVENTIONAL stock avoided * Volume consumed by CONVENTIONAL
           unit per year * Fuel Efficiency of SOLUTION
+        'Unit Adoption Calculations'!AD307:AN354
       """
       m = self.ac.conv_fuel_consumed_per_funit * self.ac.soln_fuel_efficiency_factor
       return soln_net_annual_funits_adopted.multiply(m)
 
     def soln_pds_direct_co2_emissions_saved(self, soln_net_annual_funits_adopted):
-      """Direct emissions of CO2 avoided, in tons."""
+      """Direct emissions of CO2 avoided, in tons.
+        'Unit Adoption Calculations'!AT307:BD354
+      """
       def calc(x):
         return (self.ac.conv_emissions_per_funit * x) - (self.ac.soln_emissions_per_funit * x)
       return soln_net_annual_funits_adopted.applymap(calc)
@@ -280,6 +362,7 @@ class UnitAdoption:
          ch4_per_funit: tons of CH4 per funit, which this routine will convert to CO2 equivalent.
          ch4_co2equiv_per_funit: CH4 emissions per funit which have already been converted to
            CO2 equivalent outside of this routine, and will be added to the total.
+        'Unit Adoption Calculations'!BF307:BP354
       """
       ef = emissions_factors.CO2Equiv(self.ac.co2eq_conversion_source)
       converted = soln_net_annual_funits_adopted * ef.CH4multiplier * ch4_per_funit
@@ -291,6 +374,7 @@ class UnitAdoption:
          n2o_per_funit: tons of N2O per funit, which this routine will convert to CO2 equivalent.
          n2o_co2equiv_per_funit: N2O emissions per funit which have already been converted to
            CO2 equivalent outside of this routine, and will be added to the total.
+        'Unit Adoption Calculations'!BR307:CB354
       """
       ef = emissions_factors.CO2Equiv(self.ac.co2eq_conversion_source)
       converted = soln_net_annual_funits_adopted * ef.N2Omultiplier * n2o_per_funit

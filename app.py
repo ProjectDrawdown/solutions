@@ -170,10 +170,24 @@ def unitAdoption3():
     soln_net_annual_funits_adopted = ua.soln_net_annual_funits_adopted(
         soln_ref_funits_adopted, soln_pds_funits_adopted)
     results['soln_net_annual_funits_adopted'] = format_for_response(soln_net_annual_funits_adopted)
-    results['conv_ref_tot_iunits'] = format_for_response(
-        ua.conv_ref_tot_iunits(ref_tam_per_region, soln_ref_funits_adopted))
-    results['conv_ref_annual_tot_iunits'] = format_for_response(
-        ua.conv_ref_annual_tot_iunits(soln_net_annual_funits_adopted))
+    soln_pds_tot_iunits_reqd = ua.soln_pds_tot_iunits_reqd(soln_pds_funits_adopted)
+    results['soln_pds_tot_iunits_reqd'] = format_for_response(soln_pds_tot_iunits_reqd)
+    results['soln_pds_new_iunits_reqd'] = format_for_response(
+      ua.soln_pds_new_iunits_reqd(soln_pds_tot_iunits_reqd))
+    results['soln_pds_big4_iunits_reqd'] = format_for_response(
+        ua.soln_pds_big4_iunits_reqd(soln_pds_tot_iunits_reqd))
+    soln_ref_tot_iunits_reqd = ua.soln_ref_tot_iunits_reqd(soln_ref_funits_adopted)
+    results['soln_ref_tot_iunits_reqd'] = format_for_response(soln_ref_tot_iunits_reqd)
+    results['soln_ref_new_iunits_reqd'] = format_for_response(
+      ua.soln_ref_new_iunits_reqd(soln_ref_tot_iunits_reqd))
+    results['conv_ref_tot_iunits_reqd'] = format_for_response(
+        ua.conv_ref_tot_iunits_reqd(ref_tam_per_region, soln_ref_funits_adopted))
+    conv_ref_annual_tot_iunits = ua.conv_ref_annual_tot_iunits(soln_net_annual_funits_adopted)
+    results['conv_ref_annual_tot_iunits'] = format_for_response(conv_ref_annual_tot_iunits)
+    results['conv_ref_new_iunits_reqd'] = format_for_response(
+        ua.conv_ref_new_iunits_reqd(conv_ref_annual_tot_iunits))
+    results['conv_lifetime_replacement'] = format_for_response(ua.conv_lifetime_replacement())
+
     results['soln_pds_net_grid_electricity_units_saved'] = format_for_response(
         ua.soln_pds_net_grid_electricity_units_saved(soln_net_annual_funits_adopted))
     results['soln_pds_net_grid_electricity_units_used'] = format_for_response(
@@ -199,8 +213,6 @@ def unitAdoption3():
           n2o_per_funit=ac_rq.n2o_co2_per_twh)
     results['soln_pds_direct_n2o_co2_emissions_saved'] = format_for_response(n2o)
 
-    #results['soln_pds_new_iunits_reqd'] = format_for_response(
-    #  ua.soln_pds_new_iunits_reqd(soln_pds_tot_iunits_reqd))
     results_str = json.dumps(results)
     return Response(response=results_str, status=200, mimetype="application/json")
 

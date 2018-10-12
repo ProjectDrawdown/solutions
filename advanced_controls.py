@@ -31,13 +31,6 @@ class AdvancedControls:
   soln_funit_adoption_2014 (pd.dataframe): vector of the functional unit adoption
      in 2014 for each region.
      "Advanced Controls"!C61:C70
-  conv_ref_avg_annual_use (float): average annual use of the technology/practice,
-     in functional units per implementation unit. This will likely differ
-     significantly based on location, be sure to note which region the data is
-     coming from. If data varies substantially by region, a weighted average may
-     need to be used.
-     E.g. the average annual number of passenger kilometers (pkm) traveled per
-     conventional vehicle.
   soln_energy_efficiency_factor (float): Units of energy reduced per year per
      functional unit installed.
 
@@ -107,6 +100,10 @@ class AdvancedControls:
 
      E.g. the average annual number of passenger kilometers (pkm) traveled per
      electric vehicle.
+  conv_lifetime_capacity (float): as soln_lifetime_capacity but for the conventional
+     technology.
+  conv_avg_annual_use (float): as soln_avg_annual_use but for the conventional
+     technology.
 
   report_start_year (int): first year of results to report (typically 2020).
   report_end_year (int): last year of results to report (typically 2050).
@@ -121,7 +118,6 @@ class AdvancedControls:
                soln_first_cost_below_conv=None,
 
                soln_funit_adoption_2014=None,
-               conv_ref_avg_annual_use=None,
 
                soln_energy_efficiency_factor=None,
                conv_annual_energy_used=None,
@@ -141,6 +137,8 @@ class AdvancedControls:
 
                soln_lifetime_capacity=None,
                soln_avg_annual_use=None,
+               conv_lifetime_capacity=None,
+               conv_avg_annual_use=None,
                report_start_year=None,
                report_end_year=None
                ):
@@ -156,7 +154,6 @@ class AdvancedControls:
       self.soln_funit_adoption_2014.index.name = 'Year'
     else:
       self.soln_funit_adoption_2014 = soln_funit_adoption_2014
-    self.conv_ref_avg_annual_use = conv_ref_avg_annual_use
     self.soln_energy_efficiency_factor = self.value_or_zero(soln_energy_efficiency_factor)
     self.conv_annual_energy_used = self.value_or_zero(conv_annual_energy_used)
     self.soln_annual_energy_used = self.value_or_zero(soln_annual_energy_used)
@@ -174,6 +171,8 @@ class AdvancedControls:
     self.n2o_co2_per_twh = self.value_or_zero(n2o_co2_per_twh)
     self.soln_lifetime_capacity = soln_lifetime_capacity
     self.soln_avg_annual_use = soln_avg_annual_use
+    self.conv_lifetime_capacity = conv_lifetime_capacity
+    self.conv_avg_annual_use = conv_avg_annual_use
     self.report_start_year = report_start_year
     self.report_end_year = report_end_year
 
