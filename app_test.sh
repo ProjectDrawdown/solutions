@@ -34,16 +34,65 @@ if [ "${output}" != "${expected}" ]; then
     rc=1
 fi
 
-input='{"advanced_controls":{"pds_2014_cost":1444.93954421485,"ref_2014_cost":1444.93954421485,"conv_2014_cost":2010.03170851964,"soln_first_cost_efficiency_rate":0.196222222222222,"soln_first_cost_below_conv":true,"conv_first_cost_efficiency_rate":0.02},"first_cost":{"pds_learning_increase_mult":2,"ref_learning_increase_mult":2,"conv_learning_increase_mult":2},"unit_adoption":{"soln_pds_tot_iunits_req":[0.061158144891382,0.0956963287565992,0.147709178675075,0.208131559430844,0.276585853638905],"soln_pds_tot_iunits_req_year":2014,"conv_ref_tot_iunits_req":[4.53535289538464,4.8796378165883,5.05302431141252,5.2263750432106,5.39969647677689],"conv_ref_tot_iunits_req_year":2014,"soln_ref_tot_iunits_req":[0.061158144891382,0.0635681132081653,0.0659780815249495,0.0683880498417336,0.0707980181585176],"soln_ref_tot_iunits_req_year":2014,"soln_pds_new_iunits_req":[0.0345381838652173,0.0520128499184754,0.0604223807557696,0.0684542942080606],"soln_pds_new_iunits_req_year":2015,"soln_ref_new_iunits_req":[0.00240996831678339,0.00240996831678411,0.0024099683167841,0.0024099683167841],"soln_ref_new_iunits_req_year":2015,"conv_ref_new_iunits_req":[0.0119610746639919,0.0184667514288979,0.0215975517088693,0.0245877680921211],"conv_ref_new_iunits_req_year":2015}}'
+require() {
+  output="$1"
+  expected="$2"
+  formatted_output=$(echo "$output" | tr -d '[:space:]' | tr -d '"' )
+  formatted_expected=$(echo "$expected" | tr -d '[:space:]' | tr -d '"' )
+  if [[ "${formatted_output}" =~ "${formatted_expected}" ]]; then
+      return 0
+  fi
+  echo "$(echo "$output" | cut -c1-40) does not contain $(echo "$expected" | cut -c1-40)"
+  return 1
+}
+
+input=$(cat app_test.firstcost_req)
 url='http://127.0.0.1:5000/firstcost'
 output=$(curl --silent -H 'Content-Type: application/json' --data $input $url) 
-formatted_output=$(echo "$output" | tr -d '[:space:]')
-expected=$(echo '{"conv_ref_annual_world_first_cost":[0.0,23990922121.35127,37002006377.57517,43232696345.0553,49171554733.951126],"conv_ref_install_cost_per_iunit":[2010031708519.6401,2005749716919.2083,2003709559856.4333,2001740610594.36,1999838071911.3604],"ref_cumulative_install":[0.0,27473180642.57649,67916850252.30461,114552519226.14102,167090108762.41345],"soln_pds_annual_world_first_cost":[0.0,49905587652.21577,65547210056.68573,68345312033.83885,70793825183.8673],"soln_pds_cumulative_install":[0.0,49905587652.21577,115452797708.90149,183798109742.74036,254591934926.60767],"soln_pds_install_cost_per_iunit":[1663888168616.1255,1444939544214.8499,1260211854559.479,1131125771261.7144,1034176540754.2719],"soln_ref_annual_world_first_cost":[0.0,3482258521.2252207,3441663232.1529527,3402972628.781113,3366034802.32131],"soln_ref_install_cost_per_iunit":[1462645781446.203,1444939544214.8499,1428094804476.7446,1412040401146.059,1396713300701.397]}' | tr -d '[:space:]')
 
-if [ "${formatted_output}" != "${expected}" ]; then
-    echo "${output} != ${expected}"
+require "$output" '"soln_pds_install_cost_per_iunit": [["Year", "World"],"' && \
+require "$output" '"conv_ref_install_cost_per_iunit": [["Year", "World"],' && \
+require "$output" '"soln_ref_install_cost_per_iunit": [["Year", "World"],' && \
+require "$output" '"soln_pds_annual_world_first_cost": [["Year", "World"],' && \
+require "$output" '"soln_pds_cumulative_install": [["Year", "World"],' && \
+require "$output" '"soln_ref_annual_world_first_cost": [["Year", "World"],' && \
+require "$output" '"conv_ref_annual_world_first_cost": [["Year", "World"],' && \
+require "$output" '"ref_cumulative_install": [["Year", "World"],' && \
+true
+
+if [ $? -ne 0 ]; then
     rc=1
 fi
 
+input=$(cat app_test.unitadoption3_req)
+url='http://127.0.0.1:5000/unitadoption.v3'
+output=$(curl --silent -H 'Content-Type: application/json' --data $input $url) 
 
-trap 'kill $(jobs -pr)' SIGINT SIGTERM EXIT
+require "$output" '"ref_population": [["Year",' && \
+require "$output" '"ref_gdp": [["Year",' && \
+require "$output" '"ref_gdp_per_capita": [["Year",' && \
+require "$output" '"ref_tam_per_capita": [["Year",' && \
+require "$output" '"ref_tam_per_gdp_per_capita": [["Year",' && \
+require "$output" '"ref_tam_growth": [["Year",' && \
+require "$output" '"pds_population": [["Year",' && \
+require "$output" '"pds_gdp": [["Year",' && \
+require "$output" '"pds_gdp_per_capita": [["Year",' && \
+require "$output" '"pds_tam_per_capita": [["Year",' && \
+require "$output" '"pds_tam_per_gdp_per_capita": [["Year",' && \
+require "$output" '"pds_tam_growth": [["Year",' && \
+require "$output" '"soln_pds_cumulative_funits": [["Year",' && \
+require "$output" '"soln_ref_cumulative_funits": [["Year",' && \
+require "$output" '"soln_net_annual_funits_adopted": [["Year",' && \
+require "$output" '"conv_ref_tot_iunits": [["Year",' && \
+require "$output" '"conv_ref_annual_tot_iunits": [["Year",' && \
+require "$output" '"soln_pds_net_grid_electricity_units_saved": [["Year",' && \
+require "$output" '"soln_pds_net_grid_electricity_units_used": [["Year",' && \
+require "$output" '"soln_pds_fuel_units_avoided": [["Year",' && \
+require "$output" '"soln_pds_direct_co2_emissions_saved": [["Year",' && \
+require "$output" '"soln_pds_direct_ch4_co2_emissions_saved": [["Year",' && \
+require "$output" '"soln_pds_direct_n2o_co2_emissions_saved": [["Year",' && \
+true
+
+trap 'kill $(jobs -pr) >/dev/null 2>&1' SIGINT SIGTERM EXIT
+
+exit $rc
