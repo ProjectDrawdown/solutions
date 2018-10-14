@@ -142,6 +142,7 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   excel_write_cell(sheet, 'B21', 0)  # DEBUG_LEVEL
   macro = workbook.macro("AssignNetFunctionalUnits")
   macro()
+  time.sleep(5)
   sheet = workbook.sheets['First Cost']
   fc_actual_values = pd.DataFrame(excel_read_cell(sheet, 'B37:R82'))
   sheet = workbook.sheets['Unit Adoption Calculations']

@@ -83,8 +83,14 @@ require "$output" '"pds_tam_growth": [["Year",' && \
 require "$output" '"soln_pds_cumulative_funits": [["Year",' && \
 require "$output" '"soln_ref_cumulative_funits": [["Year",' && \
 require "$output" '"soln_net_annual_funits_adopted": [["Year",' && \
-require "$output" '"conv_ref_tot_iunits": [["Year",' && \
+require "$output" '"soln_pds_tot_iunits_reqd": [["Year",' && \
+require "$output" '"soln_pds_new_iunits_reqd": [["Year",' && \
+require "$output" '"soln_pds_big4_iunits_reqd": [["Year",' && \
+require "$output" '"soln_ref_tot_iunits_reqd": [["Year",' && \
+require "$output" '"soln_ref_new_iunits_reqd": [["Year",' && \
+require "$output" '"conv_ref_tot_iunits_reqd": [["Year",' && \
 require "$output" '"conv_ref_annual_tot_iunits": [["Year",' && \
+require "$output" '"conv_ref_new_iunits_reqd": [["Year",' && \
 require "$output" '"soln_pds_net_grid_electricity_units_saved": [["Year",' && \
 require "$output" '"soln_pds_net_grid_electricity_units_used": [["Year",' && \
 require "$output" '"soln_pds_fuel_units_avoided": [["Year",' && \
