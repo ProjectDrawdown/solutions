@@ -8,6 +8,7 @@ import advanced_controls
 from flask import Flask, request, render_template, jsonify, Response
 import pandas as pd
 from model import firstcost
+from model import operatingcost
 from model import unitadoption
 import werkzeug.exceptions
 
@@ -119,7 +120,7 @@ def firstCost():
         conv_ref_annual_world_first_cost)
     results['ref_cumulative_install'] = format_for_response(fc.ref_cumulative_install(
         conv_ref_annual_world_first_cost, soln_ref_annual_world_first_cost))
-    results_str = json.dumps(results)
+    results_str = json.dumps(results, separators=(',', ':'))
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
@@ -186,7 +187,8 @@ def unitAdoption3():
     results['conv_ref_annual_tot_iunits'] = format_for_response(conv_ref_annual_tot_iunits)
     results['conv_ref_new_iunits_reqd'] = format_for_response(
         ua.conv_ref_new_iunits_reqd(conv_ref_annual_tot_iunits))
-    results['conv_lifetime_replacement'] = format_for_response(ua.conv_lifetime_replacement())
+    results['conv_lifetime_replacement'] = format_for_response(
+        round(ac_rq.conv_lifetime_replacement))
 
     results['soln_pds_net_grid_electricity_units_saved'] = format_for_response(
         ua.soln_pds_net_grid_electricity_units_saved(soln_net_annual_funits_adopted))
@@ -213,7 +215,42 @@ def unitAdoption3():
           n2o_per_funit=ac_rq.n2o_co2_per_twh)
     results['soln_pds_direct_n2o_co2_emissions_saved'] = format_for_response(n2o)
 
-    results_str = json.dumps(results)
+    results_str = json.dumps(results, separators=(',', ':'))
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/operatingcost", methods=['POST'])
+def operatingCost():
+    """Operating Cost module."""
+    js = request.get_json(force=True)
+    ac_rq = to_advanced_controls(js, app.logger)
+    ua_rq = js.get('unit_adoption', {})
+    oc_rq = js.get('operating_cost', {})
+
+    funits = ua_rq.get('soln_net_annual_funits_adopted', [])
+    soln_net_annual_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+    funits = ua_rq.get('soln_pds_tot_iunits_reqd', [])
+    soln_pds_tot_iunits_reqd = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+    funits = ua_rq.get('soln_ref_tot_iunits_reqd', [])
+    soln_ref_tot_iunits_reqd = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+
+    oc = operatingcost.OperatingCost(ac=ac_rq)
+    results = dict()
+    soln_new_funits_per_year = oc.soln_new_funits_per_year(soln_net_annual_funits_adopted)
+    results['soln_new_funits_per_year'] = format_for_response(soln_new_funits_per_year)
+    world = soln_new_funits_per_year['World']
+    world.name = 'New Functional Units each Year'
+    results['soln_new_funits_per_year_world'] = format_for_response(world)
+    soln_pds_net_annual_iunits_reqd = oc.soln_pds_net_annual_iunits_reqd(
+        soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd)
+    results['soln_pds_net_annual_iunits_reqd'] = format_for_response(soln_pds_net_annual_iunits_reqd)
+    soln_pds_new_annual_iunits_reqd = oc.soln_pds_new_annual_iunits_reqd(
+        soln_pds_net_annual_iunits_reqd)
+    results['soln_pds_new_annual_iunits_reqd'] = format_for_response(soln_pds_new_annual_iunits_reqd)
+    results['soln_pds_annual_breakout'] = format_for_response(oc.soln_pds_annual_breakout(
+      soln_new_funits_per_year, soln_pds_new_annual_iunits_reqd))
+
+    results_str = json.dumps(results, separators=(',', ':'))
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
