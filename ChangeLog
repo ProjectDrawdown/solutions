@@ -40,3 +40,12 @@ Oct 8 - 12, 2018
 + incorporated feedback on draft software spec:
   https://docs.google.com/document/d/18nUKV-qltsaSD8kZd5gHswQu82Ot9rg19KIU8_eOisY/comment
 + commenced development on Operating Cost module, ~10% done
+
+Oct 15 - 19, 2018
++ sped up Excel population of results by at least 400%, by pausing
+  calculations at the start and re-enabling after all results have been
+  deserialized. Before and After video: https://youtu.be/O86W_sXxzKw
++ recorded video about the multiple levels of automated testing (unit,
+  integration, and system): https://youtu.be/ipZrQWuMU3w
++ more progress on Operating Cost.
+  implemented annual breakout table, added Excel integration test coverage.
