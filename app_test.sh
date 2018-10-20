@@ -99,6 +99,10 @@ require "$output" '"soln_pds_direct_ch4_co2_emissions_saved": [["Year",' && \
 require "$output" '"soln_pds_direct_n2o_co2_emissions_saved": [["Year",' && \
 true
 
+if [ $? -ne 0 ]; then
+    rc=1
+fi
+
 trap 'kill $(jobs -pr) >/dev/null 2>&1' SIGINT SIGTERM EXIT
 
 exit $rc
