@@ -226,13 +226,23 @@ def operatingCost():
     ac_rq = to_advanced_controls(js, app.logger)
     ua_rq = js.get('unit_adoption', {})
     oc_rq = js.get('operating_cost', {})
+    fc_rq = js.get('first_cost', {})
 
-    funits = ua_rq.get('soln_net_annual_funits_adopted', [])
-    soln_net_annual_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
-    funits = ua_rq.get('soln_pds_tot_iunits_reqd', [])
-    soln_pds_tot_iunits_reqd = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
-    funits = ua_rq.get('soln_ref_tot_iunits_reqd', [])
-    soln_ref_tot_iunits_reqd = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+    p = ua_rq.get('soln_net_annual_funits_adopted', [])
+    soln_net_annual_funits_adopted = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('soln_pds_tot_iunits_reqd', [])
+    soln_pds_tot_iunits_reqd = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('soln_ref_tot_iunits_reqd', [])
+    soln_ref_tot_iunits_reqd = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('conv_ref_annual_tot_iunits', [])
+    conv_ref_annual_tot_iunits = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    conv_ref_net_annual_iunits_reqd = conv_ref_annual_tot_iunits['World']
+
+    p = fc_rq.get('annual_world_first_cost', [])
+    annual_world_first_cost = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    soln_pds_annual_world_first_cost = annual_world_first_cost['soln_pds_annual_world_first_cost']
+    soln_ref_annual_world_first_cost = annual_world_first_cost['soln_ref_annual_world_first_cost']
+    conv_ref_annual_world_first_cost = annual_world_first_cost['conv_ref_annual_world_first_cost']
 
     oc = operatingcost.OperatingCost(ac=ac_rq)
     results = dict()
@@ -247,9 +257,26 @@ def operatingCost():
     soln_pds_new_annual_iunits_reqd = oc.soln_pds_new_annual_iunits_reqd(
         soln_pds_net_annual_iunits_reqd)
     results['soln_pds_new_annual_iunits_reqd'] = format_for_response(soln_pds_new_annual_iunits_reqd)
-    results['soln_pds_annual_breakout'] = format_for_response(oc.soln_pds_annual_breakout(
-      soln_new_funits_per_year, soln_pds_new_annual_iunits_reqd))
+    soln_pds_annual_breakout = oc.soln_pds_annual_breakout(
+      soln_new_funits_per_year=soln_new_funits_per_year['World'],
+      soln_pds_new_annual_iunits_reqd=soln_pds_new_annual_iunits_reqd['World'])
+    results['soln_pds_annual_breakout'] = format_for_response(soln_pds_annual_breakout)
+    conv_ref_new_annual_iunits_reqd = oc.conv_ref_new_annual_iunits_reqd(conv_ref_net_annual_iunits_reqd)
+    results['conv_ref_new_annual_iunits_reqd'] = format_for_response(conv_ref_new_annual_iunits_reqd)
 
+    # Though it looks strange to set conv_new_funits_per_year=soln_new_funits_per_year, that is
+    # what the model does. It is calculating additionality of the PDS on top of the SOLN-REF.
+    conv_ref_annual_breakout = oc.conv_ref_annual_breakout(
+      conv_new_funits_per_year=soln_new_funits_per_year['World'],
+      conv_ref_new_annual_iunits_reqd=conv_ref_new_annual_iunits_reqd)
+    results['conv_ref_annual_breakout'] = format_for_response(conv_ref_annual_breakout)
+
+    results['lifetime_cost_forecast'] = format_for_response(oc.lifetime_cost_forecast(
+      soln_ref_annual_world_first_cost=soln_ref_annual_world_first_cost,
+      conv_ref_annual_world_first_cost=conv_ref_annual_world_first_cost,
+      soln_pds_annual_world_first_cost=soln_pds_annual_world_first_cost,
+      conv_ref_annual_breakout=conv_ref_annual_breakout,
+      soln_pds_annual_breakout=soln_pds_annual_breakout))
     results_str = json.dumps(results, separators=(',', ':'))
     return Response(response=results_str, status=200, mimetype="application/json")
 
