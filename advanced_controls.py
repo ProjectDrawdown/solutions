@@ -107,6 +107,23 @@ class AdvancedControls:
 
   report_start_year (int): first year of results to report (typically 2020).
   report_end_year (int): last year of results to report (typically 2050).
+
+  var_oper_cost_per_funit (float): This is the annual operating cost per functional
+     unit, derived from the SOLUTION.  In most cases this will be expressed as a
+     cost per 'some unit of energy'.
+
+     E.g., $1 per Kwh or $1,000,000,000 per TWh. In terms of transportation, this
+     can be considered the weighted average price of fuel per passenger kilometer.
+     "Advanced Controls"!H128
+  fixed_oper_cost_per_funit (float): This is the annual operating cost per
+     implementation unit, derived from the SOLUTION.  In most cases this will be
+     expressed as a cost per 'some unit of installation size'
+
+     E.g., $10,000 per kw. In terms of transportation, this can be considered the
+     total insurance, and maintenance cost per car. 
+
+     Purchase costs can be amortized here or included as a first cost, but not both.
+     "Advanced Controls"!I128
   """
   def __init__(self,
                pds_2014_cost=None,
@@ -139,8 +156,13 @@ class AdvancedControls:
                soln_avg_annual_use=None,
                conv_lifetime_capacity=None,
                conv_avg_annual_use=None,
+
                report_start_year=None,
-               report_end_year=None
+               report_end_year=None,
+
+               soln_var_oper_cost_per_funit=None,
+               soln_fixed_oper_cost_per_iunit=None,
+               soln_fuel_cost_per_funit=None
                ):
     self.pds_2014_cost = pds_2014_cost
     self.ref_2014_cost = ref_2014_cost
@@ -175,6 +197,9 @@ class AdvancedControls:
     self.conv_avg_annual_use = conv_avg_annual_use
     self.report_start_year = report_start_year
     self.report_end_year = report_end_year
+    self.soln_var_oper_cost_per_funit = soln_var_oper_cost_per_funit
+    self.soln_fixed_oper_cost_per_iunit = soln_fixed_oper_cost_per_iunit
+    self.soln_fuel_cost_per_funit = soln_fuel_cost_per_funit
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.
@@ -191,3 +216,11 @@ class AdvancedControls:
   @property
   def conv_first_cost_learning_rate(self):
     return 1.0 - self.conv_first_cost_efficiency_rate
+
+  @property
+  def soln_lifetime_replacement(self):
+    return self.soln_lifetime_capacity / self.soln_avg_annual_use
+
+  @property
+  def conv_lifetime_replacement(self):
+    return self.conv_lifetime_capacity / self.conv_avg_annual_use

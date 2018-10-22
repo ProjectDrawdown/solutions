@@ -47,3 +47,16 @@ def test_electricity_factors():
   assert ac.soln_energy_efficiency_factor == 0
   assert ac.conv_annual_energy_used == pytest.approx(conv_annual_energy_used)
   assert ac.soln_annual_energy_used == 0
+
+def test_lifetimes():
+  soln_lifetime_capacity = 50000
+  soln_avg_annual_use = 1000
+  conv_lifetime_capacity = 10000
+  conv_avg_annual_use = 3
+  ac = advanced_controls.AdvancedControls(
+      soln_lifetime_capacity=soln_lifetime_capacity,
+      soln_avg_annual_use=soln_avg_annual_use,
+      conv_lifetime_capacity=conv_lifetime_capacity,
+      conv_avg_annual_use=conv_avg_annual_use)
+  assert ac.soln_lifetime_replacement == 50
+  assert ac.conv_lifetime_replacement == pytest.approx(3333.333333333333)

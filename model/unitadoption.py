@@ -158,9 +158,6 @@ class UnitAdoption:
       first_year = soln_pds_funits_adopted.add(omit_world, fill_value=0)
       return first_year.cumsum(axis=0)
 
-    def soln_lifetime_replacement(self):
-      return round(self.ac.soln_lifetime_capacity / self.ac.soln_avg_annual_use)
-
     def soln_pds_tot_iunits_reqd(self, soln_pds_funits_adopted):
       """Total iunits required each year.
       'Unit Adoption Calculations'!AX134:BH181
@@ -186,7 +183,7 @@ class UnitAdoption:
         for year, value in column.iteritems():
           # Add replacement units, if needed by adding the number of units
           # added soln_lifetime_replacement ago, that now need replacement.
-          replacement_year = int(year - self.soln_lifetime_replacement() - 1)
+          replacement_year = int(year - round(self.ac.soln_lifetime_replacement) - 1)
           if replacement_year in growth.index:
             replacements.at[year, region] = growth.loc[replacement_year].at[region]
       return growth + replacements
@@ -232,7 +229,7 @@ class UnitAdoption:
         for year, value in column.iteritems():
           # Add replacement units, if needed by adding the number of units
           # added soln_lifetime_replacement ago, that now need replacement.
-          replacement_year = int(year - self.soln_lifetime_replacement() - 1)
+          replacement_year = int(year - round(self.ac.soln_lifetime_replacement) - 1)
           if replacement_year in growth.index:
             replacements.at[year, region] = growth.loc[replacement_year].at[region]
       return growth + replacements
@@ -285,9 +282,6 @@ class UnitAdoption:
       """
       return soln_net_annual_funits_adopted / self.ac.conv_avg_annual_use
 
-    def conv_lifetime_replacement(self):
-      return round(self.ac.conv_lifetime_capacity / self.ac.conv_avg_annual_use)
-
     def conv_ref_new_iunits_reqd(self, conv_ref_annual_tot_iunits):
       """New implementation units required (includes replacement units)
 
@@ -306,7 +300,7 @@ class UnitAdoption:
         for year, value in column.iteritems():
           # Add replacement units, if needed by adding the number of units
           # added conv_lifetime_replacement ago, that now need replacement.
-          replacement_year = int(year - self.conv_lifetime_replacement() - 1)
+          replacement_year = int(year - self.ac.conv_lifetime_replacement - 1)
           if replacement_year in growth.index:
             replacements.at[year, region] = growth.loc[replacement_year].at[region]
       return growth + replacements
