@@ -130,8 +130,10 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   ua_expected_values1 = pd.DataFrame(excel_read_cell(sheet, 'P16:CI115'))
   ua_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'B134:CB354'))
   sheet = workbook.sheets['Operating Cost']
+  excel_write_cell(sheet, 'A125', 'Year')
   oc_expected_values1 = pd.DataFrame(excel_read_cell(sheet, 'A18:F64'))
-  oc_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'B262:AV386'))
+  oc_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'A125:F250'))
+  oc_expected_values3 = pd.DataFrame(excel_read_cell(sheet, 'B262:AV386'))
   workbook.close()
   excel_app.quit()
 
@@ -153,7 +155,8 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   ua_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'B134:CB354'))
   sheet = workbook.sheets['Operating Cost']
   oc_actual_values1 = pd.DataFrame(excel_read_cell(sheet, 'A18:F64'))
-  oc_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'B262:AV386'))
+  oc_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'A125:F250'))
+  oc_actual_values3 = pd.DataFrame(excel_read_cell(sheet, 'B262:AV386'))
   workbook.close()
   excel_app.quit()
 
@@ -162,3 +165,4 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   pd.testing.assert_frame_equal(ua_actual_values2, ua_expected_values2, check_exact=False)
   pd.testing.assert_frame_equal(oc_actual_values1, oc_expected_values1, check_exact=False)
   pd.testing.assert_frame_equal(oc_actual_values2, oc_expected_values2, check_exact=False)
+  pd.testing.assert_frame_equal(oc_actual_values3, oc_expected_values3, check_exact=False)

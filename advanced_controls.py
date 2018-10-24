@@ -108,14 +108,14 @@ class AdvancedControls:
   report_start_year (int): first year of results to report (typically 2020).
   report_end_year (int): last year of results to report (typically 2050).
 
-  var_oper_cost_per_funit (float): This is the annual operating cost per functional
+  soln_var_oper_cost_per_funit (float): This is the annual operating cost per functional
      unit, derived from the SOLUTION.  In most cases this will be expressed as a
      cost per 'some unit of energy'.
 
      E.g., $1 per Kwh or $1,000,000,000 per TWh. In terms of transportation, this
      can be considered the weighted average price of fuel per passenger kilometer.
      "Advanced Controls"!H128
-  fixed_oper_cost_per_funit (float): This is the annual operating cost per
+  soln_fixed_oper_cost_per_funit (float): This is the annual operating cost per
      implementation unit, derived from the SOLUTION.  In most cases this will be
      expressed as a cost per 'some unit of installation size'
 
@@ -124,6 +124,13 @@ class AdvancedControls:
 
      Purchase costs can be amortized here or included as a first cost, but not both.
      "Advanced Controls"!I128
+  soln_fuel_cost_per_funit (float): Fuel/consumable cost per functional unit.
+     "Advanced Controls"!K128
+  conv_var_oper_cost_per_funit: as soln_var_oper_cost_per_funit. "Advanced Controls"!H95
+  conv_fixed_oper_cost_per_iunit: as soln_fixed_oper_cost_per_funit. "Advanced Controls"!I95
+  conv_fuel_cost_per_funit: as soln_fuel_cost_per_funit "Advanced Controls"!K95
+
+  npv_discount_rate: discount rate for Net Present Value calculations. "Advanced Controls"!B141
   """
   def __init__(self,
                pds_2014_cost=None,
@@ -162,7 +169,12 @@ class AdvancedControls:
 
                soln_var_oper_cost_per_funit=None,
                soln_fixed_oper_cost_per_iunit=None,
-               soln_fuel_cost_per_funit=None
+               soln_fuel_cost_per_funit=None,
+               conv_var_oper_cost_per_funit=None,
+               conv_fixed_oper_cost_per_iunit=None,
+               conv_fuel_cost_per_funit=None,
+
+               npv_discount_rate=None
                ):
     self.pds_2014_cost = pds_2014_cost
     self.ref_2014_cost = ref_2014_cost
@@ -200,6 +212,10 @@ class AdvancedControls:
     self.soln_var_oper_cost_per_funit = soln_var_oper_cost_per_funit
     self.soln_fixed_oper_cost_per_iunit = soln_fixed_oper_cost_per_iunit
     self.soln_fuel_cost_per_funit = soln_fuel_cost_per_funit
+    self.conv_var_oper_cost_per_funit = conv_var_oper_cost_per_funit
+    self.conv_fixed_oper_cost_per_iunit = conv_fixed_oper_cost_per_iunit
+    self.conv_fuel_cost_per_funit = conv_fuel_cost_per_funit
+    self.npv_discount_rate = npv_discount_rate
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.
