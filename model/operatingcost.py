@@ -19,6 +19,49 @@ class OperatingCost:
   def __init__(self, ac):
     self.ac = ac
 
+  def soln_pds_annual_operating_cost(self, soln_pds_annual_breakout):
+    """Total operating cost per year.
+       'Operating Cost'!D19:D64
+    """
+    result = soln_pds_annual_breakout.sum(axis=1)
+    result.name = 'Annual Operating Cost of Technology/Solution'
+    result.index.name = 'Year'
+    return result
+
+  def soln_pds_cumulative_operating_cost(self, soln_pds_annual_operating_cost):
+    """Cumulative operating cost.
+       'Operating Cost'!E19:E64
+    """
+    result = soln_pds_annual_operating_cost.cumsum()
+    result.name = 'Cumulative Operating Cost of Technology/Solution'
+    return result
+
+  def conv_ref_annual_operating_cost(self, conv_ref_annual_breakout):
+    """Total operating cost per year.
+       'Operating Cost'!K19:K64
+    """
+    result = conv_ref_annual_breakout.sum(axis=1)
+    result.name = 'Annual Operating Cost of Conventional'
+    result.index.name = 'Year'
+    return result
+
+  def conv_ref_cumulative_operating_cost(self, conv_ref_annual_operating_cost):
+    """Cumulative operating cost.
+       'Operating Cost'!L19:L64
+    """
+    result = conv_ref_annual_operating_cost.cumsum()
+    result.name = 'Cumulative Operating Cost of Conventional'
+    return result
+
+  def marginal_annual_operating_cost(self, soln_pds_annual_operating_cost,
+      conv_ref_annual_operating_cost):
+    """Marginal operating cost, difference between soln_pds and conv_ref.
+       'Operating Cost'!D69:D114
+    """
+    result = conv_ref_annual_operating_cost - soln_pds_annual_operating_cost
+    result.name = 'Marginal  Operating Costs/Savings'
+    return result.dropna()
+
   def soln_new_funits_per_year(self, soln_net_annual_funits_adopted):
     """New functional units required each year.
        'Operating Cost'!F19:F64

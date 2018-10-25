@@ -3,7 +3,7 @@
 import os.path
 
 import pandas as pd
-from model import emissions_factors
+from model import emissionsfactors
 
 
 class UnitAdoption:
@@ -358,7 +358,7 @@ class UnitAdoption:
            CO2 equivalent outside of this routine, and will be added to the total.
         'Unit Adoption Calculations'!BF307:BP354
       """
-      ef = emissions_factors.CO2Equiv(self.ac.co2eq_conversion_source)
+      ef = emissionsfactors.CO2Equiv(self.ac.co2eq_conversion_source)
       converted = soln_net_annual_funits_adopted * ef.CH4multiplier * ch4_per_funit
       return converted + (soln_net_annual_funits_adopted * ch4_co2equiv_per_funit)
 
@@ -370,6 +370,6 @@ class UnitAdoption:
            CO2 equivalent outside of this routine, and will be added to the total.
         'Unit Adoption Calculations'!BR307:CB354
       """
-      ef = emissions_factors.CO2Equiv(self.ac.co2eq_conversion_source)
+      ef = emissionsfactors.CO2Equiv(self.ac.co2eq_conversion_source)
       converted = soln_net_annual_funits_adopted * ef.N2Omultiplier * n2o_per_funit
       return converted + (soln_net_annual_funits_adopted * n2o_co2equiv_per_funit)

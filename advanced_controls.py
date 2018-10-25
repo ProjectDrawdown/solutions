@@ -3,7 +3,7 @@
 """
 
 import pandas as pd
-from model import emissions_factors
+from model import emissionsfactors as ef
 
 class AdvancedControls:
   """Advanced Controls tab, with defaults set for SolarPVUtility.
@@ -174,7 +174,10 @@ class AdvancedControls:
                conv_fixed_oper_cost_per_iunit=None,
                conv_fuel_cost_per_funit=None,
 
-               npv_discount_rate=None
+               npv_discount_rate=None,
+
+               emissions_grid_source=None,
+               emissions_grid_range=None
                ):
     self.pds_2014_cost = pds_2014_cost
     self.ref_2014_cost = ref_2014_cost
@@ -199,8 +202,7 @@ class AdvancedControls:
     self.n2o_is_co2eq = n2o_is_co2eq
     self.co2eq_conversion_source = None
     if co2eq_conversion_source:
-      self.co2eq_conversion_source = emissions_factors.string_to_conversion_source(
-          co2eq_conversion_source)
+      self.co2eq_conversion_source = ef.string_to_conversion_source(co2eq_conversion_source)
     self.ch4_co2_per_twh = self.value_or_zero(ch4_co2_per_twh)
     self.n2o_co2_per_twh = self.value_or_zero(n2o_co2_per_twh)
     self.soln_lifetime_capacity = soln_lifetime_capacity
@@ -216,6 +218,10 @@ class AdvancedControls:
     self.conv_fixed_oper_cost_per_iunit = conv_fixed_oper_cost_per_iunit
     self.conv_fuel_cost_per_funit = conv_fuel_cost_per_funit
     self.npv_discount_rate = npv_discount_rate
+    if emissions_grid_source:
+      self.emissions_grid_source = ef.string_to_emissions_grid_source(emissions_grid_source)
+    if emissions_grid_range:
+      self.emissions_grid_range = ef.string_to_emissions_grid_range(emissions_grid_range)
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.

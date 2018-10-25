@@ -7,6 +7,7 @@ import os
 import advanced_controls
 from flask import Flask, request, render_template, jsonify, Response
 import pandas as pd
+from model import emissionsfactors
 from model import firstcost
 from model import operatingcost
 from model import unitadoption
@@ -261,7 +262,12 @@ def operatingCost():
       soln_new_funits_per_year=soln_new_funits_per_year['World'],
       soln_pds_new_annual_iunits_reqd=soln_pds_new_annual_iunits_reqd['World'])
     results['soln_pds_annual_breakout'] = format_for_response(soln_pds_annual_breakout)
-    conv_ref_new_annual_iunits_reqd = oc.conv_ref_new_annual_iunits_reqd(conv_ref_net_annual_iunits_reqd)
+    soln_pds_annual_operating_cost = oc.soln_pds_annual_operating_cost(soln_pds_annual_breakout)
+    results['soln_pds_annual_operating_cost'] = format_for_response(soln_pds_annual_operating_cost)
+    results['soln_pds_cumulative_operating_cost'] = format_for_response(
+        oc.soln_pds_cumulative_operating_cost( soln_pds_annual_operating_cost))
+    conv_ref_new_annual_iunits_reqd = oc.conv_ref_new_annual_iunits_reqd(
+        conv_ref_net_annual_iunits_reqd)
     results['conv_ref_new_annual_iunits_reqd'] = format_for_response(conv_ref_new_annual_iunits_reqd)
 
     # Though it looks strange to set conv_new_funits_per_year=soln_new_funits_per_year, that is
@@ -271,12 +277,37 @@ def operatingCost():
       conv_ref_new_annual_iunits_reqd=conv_ref_new_annual_iunits_reqd)
     results['conv_ref_annual_breakout'] = format_for_response(conv_ref_annual_breakout)
 
+    conv_ref_annual_operating_cost = oc.conv_ref_annual_operating_cost(conv_ref_annual_breakout)
+    results['conv_ref_annual_operating_cost'] = format_for_response(conv_ref_annual_operating_cost)
+    results['conv_ref_cumulative_operating_cost'] = format_for_response(
+        oc.conv_ref_cumulative_operating_cost(conv_ref_annual_operating_cost))
+    results['marginal_annual_operating_cost'] = format_for_response(
+        oc.marginal_annual_operating_cost(
+          soln_pds_annual_operating_cost=soln_pds_annual_operating_cost,
+          conv_ref_annual_operating_cost=conv_ref_annual_operating_cost))
+
     results['lifetime_cost_forecast'] = format_for_response(oc.lifetime_cost_forecast(
       soln_ref_annual_world_first_cost=soln_ref_annual_world_first_cost,
       conv_ref_annual_world_first_cost=conv_ref_annual_world_first_cost,
       soln_pds_annual_world_first_cost=soln_pds_annual_world_first_cost,
       conv_ref_annual_breakout=conv_ref_annual_breakout,
       soln_pds_annual_breakout=soln_pds_annual_breakout))
+    results_str = json.dumps(results, separators=(',', ':'))
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/emissionsfactors", methods=['POST'])
+def emissionsFactors():
+    """Emissions Factors module."""
+    js = request.get_json(force=True)
+    ac_rq = to_advanced_controls(js, app.logger)
+
+    ef = emissionsfactors.ElectricityGenOnGrid(ac=ac_rq)
+    results = dict()
+    results['conv_ref_grid_CO2eq_per_KWh'] = format_for_response(ef.conv_ref_grid_CO2eq_per_KWh())
+    results['conv_ref_grid_CO2eq_per_KWh_direct'] = format_for_response(
+        ef.conv_ref_grid_CO2eq_per_KWh_direct())
+
     results_str = json.dumps(results, separators=(',', ':'))
     return Response(response=results_str, status=200, mimetype="application/json")
 
