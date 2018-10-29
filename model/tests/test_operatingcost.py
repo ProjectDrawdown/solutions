@@ -6,6 +6,7 @@ import advanced_controls
 from model import operatingcost
 import numpy as np
 import pandas as pd
+import pytest
 
 csv_files_dir = os.path.dirname(__file__)
 
@@ -163,7 +164,6 @@ def test_conv_ref_annual_breakout():
   expected.index = expected.index.map(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
 
-
 def test_lifetime_cost_forecast():
   soln_ref_annual_world_first_cost = pd.Series(
       soln_ref_annual_world_first_cost_nparray[:, 1],
@@ -198,6 +198,146 @@ def test_lifetime_cost_forecast():
   expected = pd.DataFrame(lifetime_cost_forecast_list[1:],
       columns=lifetime_cost_forecast_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_vs_conv_single_iunit_cashflow():
+  ac = advanced_controls.AdvancedControls(report_end_year=2050,
+      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
+      conv_lifetime_capacity=182411.275767661, conv_avg_annual_use=4946.840187342,
+      conv_var_oper_cost_per_funit=0.00375269040, conv_fuel_cost_per_funit=0.0731,
+      conv_fixed_oper_cost_per_iunit=32.95140431108,
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+      soln_fixed_oper_cost_per_iunit=23.18791293579)
+  oc = operatingcost.OperatingCost(ac=ac)
+  soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
+      index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  conv_ref_install_cost_per_iunit = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
+      index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  result = oc.soln_vs_conv_single_iunit_cashflow(single_iunit_purchase_year=2017,
+      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
+      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
+  expected = pd.Series(soln_vs_conv_single_iunit_cashflow_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_vs_conv_single_iunit_cashflow_purchase_year_2026():
+  ac = advanced_controls.AdvancedControls(report_end_year=2050,
+      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
+      conv_lifetime_capacity=182411.275767661, conv_avg_annual_use=4946.840187342,
+      conv_var_oper_cost_per_funit=0.00375269040, conv_fuel_cost_per_funit=0.0731,
+      conv_fixed_oper_cost_per_iunit=32.95140431108,
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+      soln_fixed_oper_cost_per_iunit=23.18791293579)
+  oc = operatingcost.OperatingCost(ac=ac)
+  soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
+      index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  conv_ref_install_cost_per_iunit = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
+      index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  result = oc.soln_vs_conv_single_iunit_cashflow(single_iunit_purchase_year=2026,
+      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
+      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
+  assert result[2015] == pytest.approx(-18487649169)
+  assert result[2016] == pytest.approx(130616812789)
+
+def test_soln_vs_conv_single_iunit_npv():
+  ac = advanced_controls.AdvancedControls(npv_discount_rate=0.094)
+  oc = operatingcost.OperatingCost(ac=ac)
+  soln_vs_conv_single_iunit_cashflow = pd.Series(soln_vs_conv_single_iunit_cashflow_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
+  soln_vs_conv_single_iunit_cashflow.index = soln_vs_conv_single_iunit_cashflow.index.astype(int)
+  result = oc.soln_vs_conv_single_iunit_npv(single_iunit_purchase_year=2017,
+      soln_vs_conv_single_iunit_cashflow=soln_vs_conv_single_iunit_cashflow)
+  expected = pd.Series(soln_vs_conv_single_iunit_npv_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_npv_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_vs_conv_single_iunit_npv_purchase_year_discount_rate():
+  ac = advanced_controls.AdvancedControls(npv_discount_rate=0.071)
+  oc = operatingcost.OperatingCost(ac=ac)
+  soln_vs_conv_single_iunit_cashflow = pd.Series(soln_vs_conv_single_iunit_cashflow_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
+  result = oc.soln_vs_conv_single_iunit_npv(single_iunit_purchase_year=2025,
+      soln_vs_conv_single_iunit_cashflow=soln_vs_conv_single_iunit_cashflow)
+  expected = pd.Series(soln_vs_conv_single_iunit_npv_purchase_year_discount_rate_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_npv_purchase_year_discount_rate_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_vs_conv_single_iunit_payback():
+  oc = operatingcost.OperatingCost(ac=None)
+  soln_vs_conv_single_iunit_cashflow = pd.Series(soln_vs_conv_single_iunit_cashflow_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
+  soln_vs_conv_single_iunit_cashflow.index = soln_vs_conv_single_iunit_cashflow.index.astype(int)
+  result = oc.soln_vs_conv_single_iunit_payback(soln_vs_conv_single_iunit_cashflow)
+  expected = pd.Series(soln_vs_conv_single_iunit_payback_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_payback_nparray[:, 0], dtype=np.int64)
+  expected.index = expected.index.astype(int)
+  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_vs_conv_single_iunit_payback_discounted():
+  oc = operatingcost.OperatingCost(ac=None)
+  soln_vs_conv_single_iunit_npv = pd.Series(soln_vs_conv_single_iunit_npv_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_npv_nparray[:, 0], dtype=np.float64)
+  soln_vs_conv_single_iunit_npv.index = soln_vs_conv_single_iunit_npv.index.astype(int)
+  result = oc.soln_vs_conv_single_iunit_payback_discounted(soln_vs_conv_single_iunit_npv)
+  expected = pd.Series(soln_vs_conv_single_iunit_payback_discounted_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_payback_discounted_nparray[:, 0], dtype=np.int64)
+  expected.index = expected.index.astype(int)
+  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_only_single_iunit_cashflow():
+  ac = advanced_controls.AdvancedControls(report_end_year=2050,
+      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
+      conv_avg_annual_use=4946.840187342,
+      conv_var_oper_cost_per_funit=0.00375269040, conv_fuel_cost_per_funit=0.0731,
+      conv_fixed_oper_cost_per_iunit=32.95140431108,
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+      soln_fixed_oper_cost_per_iunit=23.18791293579)
+  oc = operatingcost.OperatingCost(ac=ac)
+  soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
+      index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  result = oc.soln_only_single_iunit_cashflow(single_iunit_purchase_year=2017,
+      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit)
+  expected = pd.Series(soln_only_single_iunit_cashflow_nparray[:, 1],
+      index=soln_only_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_only_single_iunit_npv():
+  ac = advanced_controls.AdvancedControls(npv_discount_rate=0.094)
+  oc = operatingcost.OperatingCost(ac=ac)
+  soln_only_single_iunit_cashflow = pd.Series(soln_only_single_iunit_cashflow_nparray[:, 1],
+      index=soln_only_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
+  soln_only_single_iunit_cashflow.index = soln_only_single_iunit_cashflow.index.astype(int)
+  result = oc.soln_only_single_iunit_npv(single_iunit_purchase_year=2017,
+      soln_only_single_iunit_cashflow=soln_only_single_iunit_cashflow)
+  expected = pd.Series(soln_only_single_iunit_npv_nparray[:, 1],
+      index=soln_only_single_iunit_npv_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_only_single_iunit_payback():
+  oc = operatingcost.OperatingCost(ac=None)
+  soln_only_single_iunit_cashflow = pd.Series(soln_only_single_iunit_cashflow_nparray[:, 1],
+      index=soln_only_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
+  soln_only_single_iunit_cashflow.index = soln_only_single_iunit_cashflow.index.astype(int)
+  result = oc.soln_only_single_iunit_payback(soln_only_single_iunit_cashflow)
+  expected = pd.Series(soln_only_single_iunit_payback_nparray[:, 1],
+      index=soln_only_single_iunit_payback_nparray[:, 0], dtype=np.int64)
+  expected.index = expected.index.astype(int)
+  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_only_single_iunit_payback_discounted():
+  oc = operatingcost.OperatingCost(ac=None)
+  soln_only_single_iunit_npv = pd.Series(soln_only_single_iunit_npv_nparray[:, 1],
+      index=soln_only_single_iunit_npv_nparray[:, 0], dtype=np.float64)
+  soln_only_single_iunit_npv.index = soln_only_single_iunit_npv.index.astype(int)
+  result = oc.soln_only_single_iunit_payback_discounted(soln_only_single_iunit_npv)
+  expected = pd.Series(soln_only_single_iunit_payback_discounted_nparray[:, 1],
+      index=soln_only_single_iunit_payback_discounted_nparray[:, 0], dtype=np.int64)
+  expected.index = expected.index.astype(int)
+  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
 
 
 soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
@@ -701,3 +841,266 @@ lifetime_cost_forecast_list = [
     [2135, 0.00, 0.00, 0.00, 0.00], [2136, 0.00, 0.00, 0.00, 0.00],
     [2137, 0.00, 0.00, 0.00, 0.00], [2138, 0.00, 0.00, 0.00, 0.00],
     [2139, 0.00, 0.00, 0.00, 0.00]]
+
+# "First Cost"!C37:C82
+soln_pds_install_cost_per_iunit_nparray = np.array([
+    [2015, 1444939544214.85], [2016, 1260211854559.48], [2017, 1131125771261.71],
+    [2018, 1034176540754.27], [2019, 957914360042.17], [2020, 955853826404.52],
+    [2021, 844363092072.89], [2022, 800615041745.80], [2023, 762954261503.24],
+    [2024, 730136123170.93], [2025, 721678325520.19], [2026, 675595934758.92],
+    [2027, 652654395751.15], [2028, 632005749879.43], [2029, 613318626692.05],
+    [2030, 588974654797.70], [2031, 580807336513.56], [2032, 566583683816.19],
+    [2033, 553503708701.86], [2034, 541440613073.64], [2035, 530286923303.66],
+    [2036, 519950919467.44], [2037, 510353842407.28], [2038, 501427686348.92],
+    [2039, 493113437720.23], [2040, 484074786193.61], [2041, 478121333143.78],
+    [2042, 471358936327.06], [2043, 465037653845.78], [2044, 459126747449.31],
+    [2045, 453599023283.05], [2046, 448430388622.18], [2047, 443599480377.26],
+    [2048, 439087352857.46], [2049, 434877214846.06], [2050, 431361401332.87],
+    [2051, 427305220575.04], [2052, 423918730328.15], [2053, 420784674297.91],
+    [2054, 417894340462.60], [2055, 415240279798.58], [2056, 412816236436.15],
+    [2057, 410617094526.91], [2058, 408638840847.23], [2059, 406878542591.41],
+    [2060, 405334340227.07]])
+
+# "First Cost"!O37:O82
+conv_ref_install_cost_per_iunit_nparray = np.array([
+    [2015, 2005749716919.21], [2016, 2003709559856.43], [2017, 2001740610594.36],
+    [2018, 1999838071911.36], [2019, 1997997609222.97], [2020, 1996215293069.34],
+    [2021, 1994487550260.54], [2022, 1992811122162.61], [2023, 1991183028908.37],
+    [2024, 1989600538551.80], [2025, 1988061140369.17], [2026, 1986562521656.05],
+    [2027, 1985102547485.31], [2028, 1983679242984.24], [2029, 1982290777764.18],
+    [2030, 1980935452196.45], [2031, 1979611685278.25], [2032, 1978318003872.66],
+    [2033, 1977053033140.28], [2034, 1975815488007.72], [2035, 1974604165541.04],
+    [2036, 1973417938111.51], [2037, 1972255747256.95], [2038, 1971116598155.42],
+    [2039, 1969999554639.64], [2040, 1968903734689.63], [2041, 1967828306349.86],
+    [2042, 1966772484023.75], [2043, 1965735525104.47], [2044, 1964716726906.07],
+    [2045, 1963715423863.49], [2046, 1962730984973.61], [2047, 1961762811452.90],
+    [2048, 1960810334590.08], [2049, 1959873013774.63], [2050, 1958950334684.14],
+    [2051, 1958041807615.42], [2052, 1957146965945.90], [2053, 1956265364713.38],
+    [2054, 1955396579303.22], [2055, 1954540204233.54], [2056, 1953695852029.72],
+    [2057, 1952863152180.40], [2058, 1952041750168.08], [2059, 1951231306567.92],
+    [2060, 1950431496209.24]])
+
+# "Operating Cost"!I126:I250
+soln_vs_conv_single_iunit_cashflow_nparray = np.array([
+    [2015, -469994891712], [2016, 130616812789], [2017, 130616812789],
+    [2018, 130616812789], [2019, 130616812789], [2020, 130616812789],
+    [2021, 130616812789], [2022, 130616812789], [2023, 130616812789],
+    [2024, 130616812789], [2025, 130616812789], [2026, 130616812789],
+    [2027, 130616812789], [2028, 130616812789], [2029, 130616812789],
+    [2030, 130616812789], [2031, 130616812789], [2032, 130616812789],
+    [2033, 130616812789], [2034, 130616812789], [2035, 130616812789],
+    [2036, 130616812789], [2037, 130616812789], [2038, 130616812789],
+    [2039, 130616812789], [2040, 130616812789], [2041, 32654203197],
+    [2042, 0], [2043, 0], [2044, 0], [2045, 0], [2046, 0], [2047, 0], [2048, 0],
+    [2049, 0], [2050, 0], [2051, 0], [2052, 0], [2053, 0], [2054, 0], [2055, 0],
+    [2056, 0], [2057, 0], [2058, 0], [2059, 0], [2060, 0], [2061, 0], [2062, 0],
+    [2063, 0], [2064, 0], [2065, 0], [2066, 0], [2067, 0], [2068, 0], [2069, 0],
+    [2070, 0], [2071, 0], [2072, 0], [2073, 0], [2074, 0], [2075, 0], [2076, 0],
+    [2077, 0], [2078, 0], [2079, 0], [2080, 0], [2081, 0], [2082, 0], [2083, 0],
+    [2084, 0], [2085, 0], [2086, 0], [2087, 0], [2088, 0], [2089, 0], [2090, 0],
+    [2091, 0], [2092, 0], [2093, 0], [2094, 0], [2095, 0], [2096, 0], [2097, 0],
+    [2098, 0], [2099, 0], [2100, 0], [2101, 0], [2102, 0], [2103, 0], [2104, 0],
+    [2105, 0], [2106, 0], [2107, 0], [2108, 0], [2109, 0], [2110, 0], [2111, 0],
+    [2112, 0], [2113, 0], [2114, 0], [2115, 0], [2116, 0], [2117, 0], [2118, 0],
+    [2119, 0], [2120, 0], [2121, 0], [2122, 0], [2123, 0], [2124, 0], [2125, 0],
+    [2126, 0], [2127, 0], [2128, 0], [2129, 0], [2130, 0], [2131, 0], [2132, 0],
+    [2133, 0], [2134, 0], [2135, 0], [2136, 0], [2137, 0], [2138, 0], [2139, 0]])
+
+# "Operating Cost"!J126:J250
+soln_vs_conv_single_iunit_npv_nparray = np.array([
+    [2015, -358955962541.30], [2016, 91186342041.03], [2017, 83351318136.23],
+    [2018, 76189504694.91], [2019, 69643057307.96], [2020, 63659101744.02],
+    [2021, 58189306895.81], [2022, 53189494420.31], [2023, 48619281919.84],
+    [2024, 44441756782.30], [2025, 40623178045.98], [2026, 37132703881.15],
+    [2027, 33942142487.34], [2028, 31025724394.28], [2029, 28359894327.50],
+    [2030, 25923120957.49], [2031, 23695722995.88], [2032, 21659710233.89],
+    [2033, 19798638239.39], [2034, 18097475538.75], [2035, 16542482210.92],
+    [2036, 15121098913.09], [2037, 13821845441.58], [2038, 12634228008.76],
+    [2039, 11548654486.98], [2040, 10556356935.08], [2041, 2412330195.40],
+    [2042, 0.0], [2043, 0.0], [2044, 0.0], [2045, 0.0], [2046, 0.0], [2047, 0.0],
+    [2048, 0.0], [2049, 0.0], [2050, 0.0], [2051, 0.0], [2052, 0.0], [2053, 0.0],
+    [2054, 0.0], [2055, 0.0], [2056, 0.0], [2057, 0.0], [2058, 0.0], [2059, 0.0],
+    [2060, 0.0], [2061, 0.0], [2062, 0.0], [2063, 0.0], [2064, 0.0], [2065, 0.0],
+    [2066, 0.0], [2067, 0.0], [2068, 0.0], [2069, 0.0], [2070, 0.0], [2071, 0.0],
+    [2072, 0.0], [2073, 0.0], [2074, 0.0], [2075, 0.0], [2076, 0.0], [2077, 0.0],
+    [2078, 0.0], [2079, 0.0], [2080, 0.0], [2081, 0.0], [2082, 0.0], [2083, 0.0],
+    [2084, 0.0], [2085, 0.0], [2086, 0.0], [2087, 0.0], [2088, 0.0], [2089, 0.0],
+    [2090, 0.0], [2091, 0.0], [2092, 0.0], [2093, 0.0], [2094, 0.0], [2095, 0.0],
+    [2096, 0.0], [2097, 0.0], [2098, 0.0], [2099, 0.0], [2100, 0.0], [2101, 0.0],
+    [2102, 0.0], [2103, 0.0], [2104, 0.0], [2105, 0.0], [2106, 0.0], [2107, 0.0],
+    [2108, 0.0], [2109, 0.0], [2110, 0.0], [2111, 0.0], [2112, 0.0], [2113, 0.0],
+    [2114, 0.0], [2115, 0.0], [2116, 0.0], [2117, 0.0], [2118, 0.0], [2119, 0.0],
+    [2120, 0.0], [2121, 0.0], [2122, 0.0], [2123, 0.0], [2124, 0.0], [2125, 0.0],
+    [2126, 0.0], [2127, 0.0], [2128, 0.0], [2129, 0.0], [2130, 0.0], [2131, 0.0],
+    [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0], [2137, 0.0],
+    [2138, 0.0], [2139, 0.0]])
+
+# "Operating Cost"!J126:J250 with purchase_year=2026, discount_rate=7.1, but
+# holding I126:I250 unchanged
+soln_vs_conv_single_iunit_npv_purchase_year_discount_rate_nparray = np.array([
+    [2015, -221008490609.18], [2016, 57348944906.19], [2017, 53547100752.74],
+    [2018, 49997292953.08], [2019, 46682813214.82], [2020, 43588060891.52],
+    [2021, 40698469553.24], [2022, 38000438425.06], [2023, 35481268370.74],
+    [2024, 33129102120.21], [2025, 30932868459.58], [2026, 28882230120.99],
+    [2027, 26967535126.97], [2028, 25179771360.38], [2029, 23510524146.02],
+    [2030, 21951936644.27], [2031, 20496672870.47], [2032, 19137883165.71],
+    [2033, 17869171956.77], [2034, 16684567653.38], [2035, 15578494540.98],
+    [2036, 14545746536.86], [2037, 13581462686.14], [2038, 12681104282.11],
+    [2039, 11840433503.37], [2040, 11055493467.20], [2041, 2580647401.31],
+    [2042, 0.0], [2043, 0.0], [2044, 0.0], [2045, 0.0], [2046, 0.0], [2047, 0.0],
+    [2048, 0.0], [2049, 0.0], [2050, 0.0], [2051, 0.0], [2052, 0.0], [2053, 0.0],
+    [2054, 0.0], [2055, 0.0], [2056, 0.0], [2057, 0.0], [2058, 0.0], [2059, 0.0],
+    [2060, 0.0], [2061, 0.0], [2062, 0.0], [2063, 0.0], [2064, 0.0], [2065, 0.0],
+    [2066, 0.0], [2067, 0.0], [2068, 0.0], [2069, 0.0], [2070, 0.0], [2071, 0.0],
+    [2072, 0.0], [2073, 0.0], [2074, 0.0], [2075, 0.0], [2076, 0.0], [2077, 0.0],
+    [2078, 0.0], [2079, 0.0], [2080, 0.0], [2081, 0.0], [2082, 0.0], [2083, 0.0],
+    [2084, 0.0], [2085, 0.0], [2086, 0.0], [2087, 0.0], [2088, 0.0], [2089, 0.0],
+    [2090, 0.0], [2091, 0.0], [2092, 0.0], [2093, 0.0], [2094, 0.0], [2095, 0.0],
+    [2096, 0.0], [2097, 0.0], [2098, 0.0], [2099, 0.0], [2100, 0.0], [2101, 0.0],
+    [2102, 0.0], [2103, 0.0], [2104, 0.0], [2105, 0.0], [2106, 0.0], [2107, 0.0],
+    [2108, 0.0], [2109, 0.0], [2110, 0.0], [2111, 0.0], [2112, 0.0], [2113, 0.0],
+    [2114, 0.0], [2115, 0.0], [2116, 0.0], [2117, 0.0], [2118, 0.0], [2119, 0.0],
+    [2120, 0.0], [2121, 0.0], [2122, 0.0], [2123, 0.0], [2124, 0.0], [2125, 0.0],
+    [2126, 0.0], [2127, 0.0], [2128, 0.0], [2129, 0.0], [2130, 0.0], [2131, 0.0],
+    [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0], [2137, 0.0],
+    [2138, 0.0], [2139, 0.0]])
+
+# "Operating Cost"!K126:K250
+soln_vs_conv_single_iunit_payback_nparray = np.array([
+    [2015, 0], [2016, 0], [2017, 0], [2018, 0], [2019, 1], [2020, 1], [2021, 1],
+    [2022, 1], [2023, 1], [2024, 1], [2025, 1], [2026, 1], [2027, 1], [2028, 1],
+    [2029, 1], [2030, 1], [2031, 1], [2032, 1], [2033, 1], [2034, 1], [2035, 1],
+    [2036, 1], [2037, 1], [2038, 1], [2039, 1], [2040, 1], [2041, 1], [2042, 1],
+    [2043, 1], [2044, 1], [2045, 1], [2046, 1], [2047, 1], [2048, 1], [2049, 1],
+    [2050, 1], [2051, 1], [2052, 1], [2053, 1], [2054, 1], [2055, 1], [2056, 1],
+    [2057, 1], [2058, 1], [2059, 1], [2060, 1], [2061, 1], [2062, 1], [2063, 1],
+    [2064, 1], [2065, 1], [2066, 1], [2067, 1], [2068, 1], [2069, 1], [2070, 1],
+    [2071, 1], [2072, 1], [2073, 1], [2074, 1], [2075, 1], [2076, 1], [2077, 1],
+    [2078, 1], [2079, 1], [2080, 1], [2081, 1], [2082, 1], [2083, 1], [2084, 1],
+    [2085, 1], [2086, 1], [2087, 1], [2088, 1], [2089, 1], [2090, 1], [2091, 1],
+    [2092, 1], [2093, 1], [2094, 1], [2095, 1], [2096, 1], [2097, 1], [2098, 1],
+    [2099, 1], [2100, 1], [2101, 1], [2102, 1], [2103, 1], [2104, 1], [2105, 1],
+    [2106, 1], [2107, 1], [2108, 1], [2109, 1], [2110, 1], [2111, 1], [2112, 1],
+    [2113, 1], [2114, 1], [2115, 1], [2116, 1], [2117, 1], [2118, 1], [2119, 1],
+    [2120, 1], [2121, 1], [2122, 1], [2123, 1], [2124, 1], [2125, 1], [2126, 1],
+    [2127, 1], [2128, 1], [2129, 1], [2130, 1], [2131, 1], [2132, 1], [2133, 1],
+    [2134, 1], [2135, 1], [2136, 1], [2137, 1], [2138, 1], [2139, 1]])
+
+# "Operating Cost"!L126:L250
+soln_vs_conv_single_iunit_payback_discounted_nparray = np.array([
+    [2015, 0], [2016, 0], [2017, 0], [2018, 0], [2019, 0], [2020, 1], [2021, 1],
+    [2022, 1], [2023, 1], [2024, 1], [2025, 1], [2026, 1], [2027, 1], [2028, 1],
+    [2029, 1], [2030, 1], [2031, 1], [2032, 1], [2033, 1], [2034, 1], [2035, 1],
+    [2036, 1], [2037, 1], [2038, 1], [2039, 1], [2040, 1], [2041, 1], [2042, 1],
+    [2043, 1], [2044, 1], [2045, 1], [2046, 1], [2047, 1], [2048, 1], [2049, 1],
+    [2050, 1], [2051, 1], [2052, 1], [2053, 1], [2054, 1], [2055, 1], [2056, 1],
+    [2057, 1], [2058, 1], [2059, 1], [2060, 1], [2061, 1], [2062, 1], [2063, 1],
+    [2064, 1], [2065, 1], [2066, 1], [2067, 1], [2068, 1], [2069, 1], [2070, 1],
+    [2071, 1], [2072, 1], [2073, 1], [2074, 1], [2075, 1], [2076, 1], [2077, 1],
+    [2078, 1], [2079, 1], [2080, 1], [2081, 1], [2082, 1], [2083, 1], [2084, 1],
+    [2085, 1], [2086, 1], [2087, 1], [2088, 1], [2089, 1], [2090, 1], [2091, 1],
+    [2092, 1], [2093, 1], [2094, 1], [2095, 1], [2096, 1], [2097, 1], [2098, 1],
+    [2099, 1], [2100, 1], [2101, 1], [2102, 1], [2103, 1], [2104, 1], [2105, 1],
+    [2106, 1], [2107, 1], [2108, 1], [2109, 1], [2110, 1], [2111, 1], [2112, 1],
+    [2113, 1], [2114, 1], [2115, 1], [2116, 1], [2117, 1], [2118, 1], [2119, 1],
+    [2120, 1], [2121, 1], [2122, 1], [2123, 1], [2124, 1], [2125, 1], [2126, 1],
+    [2127, 1], [2128, 1], [2129, 1], [2130, 1], [2131, 1], [2132, 1], [2133, 1],
+    [2134, 1], [2135, 1], [2136, 1], [2137, 1], [2138, 1], [2139, 1]])
+
+# "Operating Cost"!M126:M250
+soln_only_single_iunit_cashflow_nparray = np.array([
+    [2015, -1000508958473], [2016, 130616812789], [2017, 130616812789], [2018, 130616812789],
+    [2019, 130616812789], [2020, 130616812789], [2021, 130616812789], [2022, 130616812789],
+    [2023, 130616812789], [2024, 130616812789], [2025, 130616812789], [2026, 130616812789],
+    [2027, 130616812789], [2028, 130616812789], [2029, 130616812789], [2030, 130616812789],
+    [2031, 130616812789], [2032, 130616812789], [2033, 130616812789], [2034, 130616812789],
+    [2035, 130616812789], [2036, 130616812789], [2037, 130616812789], [2038, 130616812789],
+    [2039, 130616812789], [2040, 130616812789], [2041, 32654203197],
+    [2042, 0.0], [2043, 0.0], [2044, 0.0], [2045, 0.0], [2046, 0.0], [2047, 0.0],
+    [2048, 0.0], [2049, 0.0], [2050, 0.0], [2051, 0.0], [2052, 0.0], [2053, 0.0],
+    [2054, 0.0], [2055, 0.0], [2056, 0.0], [2057, 0.0], [2058, 0.0], [2059, 0.0],
+    [2060, 0.0], [2061, 0.0], [2062, 0.0], [2063, 0.0], [2064, 0.0], [2065, 0.0],
+    [2066, 0.0], [2067, 0.0], [2068, 0.0], [2069, 0.0], [2070, 0.0], [2071, 0.0],
+    [2072, 0.0], [2073, 0.0], [2074, 0.0], [2075, 0.0], [2076, 0.0], [2077, 0.0],
+    [2078, 0.0], [2079, 0.0], [2080, 0.0], [2081, 0.0], [2082, 0.0], [2083, 0.0],
+    [2084, 0.0], [2085, 0.0], [2086, 0.0], [2087, 0.0], [2088, 0.0], [2089, 0.0],
+    [2090, 0.0], [2091, 0.0], [2092, 0.0], [2093, 0.0], [2094, 0.0], [2095, 0.0],
+    [2096, 0.0], [2097, 0.0], [2098, 0.0], [2099, 0.0], [2100, 0.0], [2101, 0.0],
+    [2102, 0.0], [2103, 0.0], [2104, 0.0], [2105, 0.0], [2106, 0.0], [2107, 0.0],
+    [2108, 0.0], [2109, 0.0], [2110, 0.0], [2111, 0.0], [2112, 0.0], [2113, 0.0],
+    [2114, 0.0], [2115, 0.0], [2116, 0.0], [2117, 0.0], [2118, 0.0], [2119, 0.0],
+    [2120, 0.0], [2121, 0.0], [2122, 0.0], [2123, 0.0], [2124, 0.0], [2125, 0.0],
+    [2126, 0.0], [2127, 0.0], [2128, 0.0], [2129, 0.0], [2130, 0.0], [2131, 0.0],
+    [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0], [2137, 0.0],
+    [2138, 0.0], [2139, 0.0]])
+
+# "Operating Cost"!N126:N250
+soln_only_single_iunit_npv_nparray = np.array([
+    [2015, -764133105599], [2016, 91186342041], [2017, 83351318136], [2018, 76189504695],
+    [2019, 69643057308], [2020, 63659101744], [2021, 58189306896], [2022, 53189494420],
+    [2023, 48619281920], [2024, 44441756782], [2025, 40623178046], [2026, 37132703881],
+    [2027, 33942142487], [2028, 31025724394], [2029, 28359894327], [2030, 25923120957],
+    [2031, 23695722996], [2032, 21659710234], [2033, 19798638239], [2034, 18097475539],
+    [2035, 16542482211], [2036, 15121098913], [2037, 13821845442], [2038, 12634228009],
+    [2039, 11548654487], [2040, 10556356935], [2041, 2412330195],
+    [2042, 0.0], [2043, 0.0], [2044, 0.0], [2045, 0.0], [2046, 0.0], [2047, 0.0],
+    [2048, 0.0], [2049, 0.0], [2050, 0.0], [2051, 0.0], [2052, 0.0], [2053, 0.0],
+    [2054, 0.0], [2055, 0.0], [2056, 0.0], [2057, 0.0], [2058, 0.0], [2059, 0.0],
+    [2060, 0.0], [2061, 0.0], [2062, 0.0], [2063, 0.0], [2064, 0.0], [2065, 0.0],
+    [2066, 0.0], [2067, 0.0], [2068, 0.0], [2069, 0.0], [2070, 0.0], [2071, 0.0],
+    [2072, 0.0], [2073, 0.0], [2074, 0.0], [2075, 0.0], [2076, 0.0], [2077, 0.0],
+    [2078, 0.0], [2079, 0.0], [2080, 0.0], [2081, 0.0], [2082, 0.0], [2083, 0.0],
+    [2084, 0.0], [2085, 0.0], [2086, 0.0], [2087, 0.0], [2088, 0.0], [2089, 0.0],
+    [2090, 0.0], [2091, 0.0], [2092, 0.0], [2093, 0.0], [2094, 0.0], [2095, 0.0],
+    [2096, 0.0], [2097, 0.0], [2098, 0.0], [2099, 0.0], [2100, 0.0], [2101, 0.0],
+    [2102, 0.0], [2103, 0.0], [2104, 0.0], [2105, 0.0], [2106, 0.0], [2107, 0.0],
+    [2108, 0.0], [2109, 0.0], [2110, 0.0], [2111, 0.0], [2112, 0.0], [2113, 0.0],
+    [2114, 0.0], [2115, 0.0], [2116, 0.0], [2117, 0.0], [2118, 0.0], [2119, 0.0],
+    [2120, 0.0], [2121, 0.0], [2122, 0.0], [2123, 0.0], [2124, 0.0], [2125, 0.0],
+    [2126, 0.0], [2127, 0.0], [2128, 0.0], [2129, 0.0], [2130, 0.0], [2131, 0.0],
+    [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0], [2137, 0.0],
+    [2138, 0.0], [2139, 0.0]])
+
+# "Operating Cost"!O126:O250
+soln_only_single_iunit_payback_nparray = np.array([
+    [2015, 0], [2016, 0], [2017, 0], [2018, 0], [2019, 0], [2020, 0], [2021, 0],
+    [2022, 0], [2023, 1], [2024, 1], [2025, 1], [2026, 1], [2027, 1], [2028, 1],
+    [2029, 1], [2030, 1], [2031, 1], [2032, 1], [2033, 1], [2034, 1], [2035, 1],
+    [2036, 1], [2037, 1], [2038, 1], [2039, 1], [2040, 1], [2041, 1], [2042, 1],
+    [2043, 1], [2044, 1], [2045, 1], [2046, 1], [2047, 1], [2048, 1], [2049, 1],
+    [2050, 1], [2051, 1], [2052, 1], [2053, 1], [2054, 1], [2055, 1], [2056, 1],
+    [2057, 1], [2058, 1], [2059, 1], [2060, 1], [2061, 1], [2062, 1], [2063, 1],
+    [2064, 1], [2065, 1], [2066, 1], [2067, 1], [2068, 1], [2069, 1], [2070, 1],
+    [2071, 1], [2072, 1], [2073, 1], [2074, 1], [2075, 1], [2076, 1], [2077, 1],
+    [2078, 1], [2079, 1], [2080, 1], [2081, 1], [2082, 1], [2083, 1], [2084, 1],
+    [2085, 1], [2086, 1], [2087, 1], [2088, 1], [2089, 1], [2090, 1], [2091, 1],
+    [2092, 1], [2093, 1], [2094, 1], [2095, 1], [2096, 1], [2097, 1], [2098, 1],
+    [2099, 1], [2100, 1], [2101, 1], [2102, 1], [2103, 1], [2104, 1], [2105, 1],
+    [2106, 1], [2107, 1], [2108, 1], [2109, 1], [2110, 1], [2111, 1], [2112, 1],
+    [2113, 1], [2114, 1], [2115, 1], [2116, 1], [2117, 1], [2118, 1], [2119, 1],
+    [2120, 1], [2121, 1], [2122, 1], [2123, 1], [2124, 1], [2125, 1], [2126, 1],
+    [2127, 1], [2128, 1], [2129, 1], [2130, 1], [2131, 1], [2132, 1], [2133, 1],
+    [2134, 1], [2135, 1], [2136, 1], [2137, 1], [2138, 1], [2139, 1]])
+
+# "Operating Cost"!P126:P250
+soln_only_single_iunit_payback_discounted_nparray = np.array([
+    [2015, 0], [2016, 0], [2017, 0], [2018, 0], [2019, 0], [2020, 0], [2021, 0],
+    [2022, 0], [2023, 0], [2024, 0], [2025, 0], [2026, 0], [2027, 0], [2028, 0],
+    [2029, 0], [2030, 1], [2031, 1], [2032, 1], [2033, 1], [2034, 1], [2035, 1],
+    [2036, 1], [2037, 1], [2038, 1], [2039, 1], [2040, 1], [2041, 1], [2042, 1],
+    [2043, 1], [2044, 1], [2045, 1], [2046, 1], [2047, 1], [2048, 1], [2049, 1],
+    [2050, 1], [2051, 1], [2052, 1], [2053, 1], [2054, 1], [2055, 1], [2056, 1],
+    [2057, 1], [2058, 1], [2059, 1], [2060, 1], [2061, 1], [2062, 1], [2063, 1],
+    [2064, 1], [2065, 1], [2066, 1], [2067, 1], [2068, 1], [2069, 1], [2070, 1],
+    [2071, 1], [2072, 1], [2073, 1], [2074, 1], [2075, 1], [2076, 1], [2077, 1],
+    [2078, 1], [2079, 1], [2080, 1], [2081, 1], [2082, 1], [2083, 1], [2084, 1],
+    [2085, 1], [2086, 1], [2087, 1], [2088, 1], [2089, 1], [2090, 1], [2091, 1],
+    [2092, 1], [2093, 1], [2094, 1], [2095, 1], [2096, 1], [2097, 1], [2098, 1],
+    [2099, 1], [2100, 1], [2101, 1], [2102, 1], [2103, 1], [2104, 1], [2105, 1],
+    [2106, 1], [2107, 1], [2108, 1], [2109, 1], [2110, 1], [2111, 1], [2112, 1],
+    [2113, 1], [2114, 1], [2115, 1], [2116, 1], [2117, 1], [2118, 1], [2119, 1],
+    [2120, 1], [2121, 1], [2122, 1], [2123, 1], [2124, 1], [2125, 1], [2126, 1],
+    [2127, 1], [2128, 1], [2129, 1], [2130, 1], [2131, 1], [2132, 1], [2133, 1],
+    [2134, 1], [2135, 1], [2136, 1], [2137, 1], [2138, 1], [2139, 1]])
+
+

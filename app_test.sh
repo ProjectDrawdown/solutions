@@ -117,6 +117,14 @@ require "$output" '"conv_ref_new_annual_iunits_reqd": [["Year",' && \
 require "$output" '"lifetime_cost_forecast": [["Year",' && \
 require "$output" '"soln_pds_annual_operating_cost": [["Year",' && \
 require "$output" '"soln_pds_cumulative_operating_cost": [["Year",' && \
+require "$output" '"soln_vs_conv_single_iunit_cashflow": [["Year",' && \
+require "$output" '"soln_vs_conv_single_iunit_npv": [["Year",' && \
+require "$output" '"soln_vs_conv_single_iunit_payback": [["Year",' && \
+require "$output" '"soln_vs_conv_single_iunit_npv": [["Year",' && \
+require "$output" '"soln_only_single_iunit_cashflow": [["Year",' && \
+require "$output" '"soln_only_single_iunit_npv": [["Year",' && \
+require "$output" '"soln_only_single_iunit_cashflow": [["Year",' && \
+require "$output" '"soln_only_single_iunit_cashflow": [["Year",' && \
 true
 
 if [ $? -ne 0 ]; then

@@ -29,6 +29,9 @@ class FirstCost:
 
   def soln_pds_install_cost_per_iunit(self, soln_pds_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd):
+    """Install cost per implementation unit in Solution-PDS
+       'First Cost'!C37:C82
+    """
     log_learning_rate = math.log10(self.ac.soln_first_cost_learning_rate)
     log_learning_mult = math.log10(self.pds_learning_increase_mult)
     parameter_b = log_learning_rate / log_learning_mult
@@ -46,6 +49,9 @@ class FirstCost:
       return result_per_kW.combine(conv, lambda x1, x2: max(x1, x2))
 
   def conv_ref_install_cost_per_iunit(self, conv_ref_tot_iunits_reqd):
+    """Install cost per implementation unit in Conventional-REF
+       'First Cost'!O37:O82
+    """
     log_learning_rate = math.log10(self.ac.conv_first_cost_learning_rate)
     log_learning_mult = math.log10(self.conv_learning_increase_mult)
     parameter_b = log_learning_rate / log_learning_mult
@@ -72,6 +78,9 @@ class FirstCost:
 
   def soln_ref_install_cost_per_iunit(self, soln_ref_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd):
+    """Install cost per implementation unit in Solution-REF
+       'First Cost'!L37:L82
+    """
     log_learning_rate = math.log10(self.ac.soln_first_cost_learning_rate)
     log_learning_mult = math.log10(self.ref_learning_increase_mult)
     parameter_b = log_learning_rate / log_learning_mult
@@ -97,24 +106,39 @@ class FirstCost:
 
   def soln_pds_annual_world_first_cost(self, soln_pds_new_iunits_reqd,
       soln_pds_install_cost_per_iunit):
+    """Annual World First Cost (SOLUTION-PDS)
+       'First Cost'!E37:E82
+    """
     result = soln_pds_new_iunits_reqd["World"] * soln_pds_install_cost_per_iunit
     return result.dropna()
 
   def soln_pds_cumulative_install(self, soln_pds_annual_world_first_cost):
+    """Cumulative Install/Implementation (SOLUTION-PDS)
+       'First Cost'!F37:F82
+    """
     return soln_pds_annual_world_first_cost.cumsum()
 
   def soln_ref_annual_world_first_cost(self, soln_ref_new_iunits_reqd,
       soln_ref_install_cost_per_iunit):
+    """Annual World First Cost (SOLUTION-REF)
+       'First Cost'!N37:N82
+    """
     result = soln_ref_new_iunits_reqd["World"] * soln_ref_install_cost_per_iunit
     return result.dropna()
 
   def conv_ref_annual_world_first_cost(self, conv_ref_new_iunits_reqd,
       conv_ref_install_cost_per_iunit):
+    """Annual World First Cost (SOLUTION-REF)
+       'First Cost'!Q37:Q82
+    """
     result = conv_ref_new_iunits_reqd["World"] * conv_ref_install_cost_per_iunit
     return result.dropna()
 
   def ref_cumulative_install(self, conv_ref_annual_world_first_cost,
       soln_ref_annual_world_first_cost):
+    """Cumulative Install / Implementation (CONVENTIONAL-REF + SOLUTION-REF)
+       'First Cost'!R37:R82
+    """
     csum1 = conv_ref_annual_world_first_cost.cumsum()
     csum2 = soln_ref_annual_world_first_cost.cumsum()
     return csum1.add(csum2)

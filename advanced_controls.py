@@ -126,11 +126,17 @@ class AdvancedControls:
      "Advanced Controls"!I128
   soln_fuel_cost_per_funit (float): Fuel/consumable cost per functional unit.
      "Advanced Controls"!K128
-  conv_var_oper_cost_per_funit: as soln_var_oper_cost_per_funit. "Advanced Controls"!H95
-  conv_fixed_oper_cost_per_iunit: as soln_fixed_oper_cost_per_funit. "Advanced Controls"!I95
-  conv_fuel_cost_per_funit: as soln_fuel_cost_per_funit "Advanced Controls"!K95
+  conv_var_oper_cost_per_funit (float): as soln_var_oper_cost_per_funit. "Advanced Controls"!H95
+  conv_fixed_oper_cost_per_iunit (float): as soln_fixed_oper_cost_per_funit. "Advanced Controls"!I95
+  conv_fuel_cost_per_funit (float): as soln_fuel_cost_per_funit "Advanced Controls"!K95
 
-  npv_discount_rate: discount rate for Net Present Value calculations. "Advanced Controls"!B141
+  npv_discount_rate (float): discount rate for Net Present Value calculations. "Advanced Controls"!B141
+
+  emissions_grid_source (string): "IPCC Only" or "Meta Analysis" of multiple studies. "Advanced Controls"!C189
+  emissions_grid_range (string): "mean", "low" or "high" for which estimate to use. "Advanced Controls"!D189
+
+  ref_adoption_regional_data (boolean): whether funit adoption should add the regional
+     data to estimate the World, or perform a separate estimate for the world. "Advanced Controls"!B284
   """
   def __init__(self,
                pds_2014_cost=None,
@@ -177,7 +183,9 @@ class AdvancedControls:
                npv_discount_rate=None,
 
                emissions_grid_source=None,
-               emissions_grid_range=None
+               emissions_grid_range=None,
+
+               ref_adoption_regional_data=None
                ):
     self.pds_2014_cost = pds_2014_cost
     self.ref_2014_cost = ref_2014_cost
@@ -222,6 +230,7 @@ class AdvancedControls:
       self.emissions_grid_source = ef.string_to_emissions_grid_source(emissions_grid_source)
     if emissions_grid_range:
       self.emissions_grid_range = ef.string_to_emissions_grid_range(emissions_grid_range)
+    self.ref_adoption_regional_data = ref_adoption_regional_data
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.
