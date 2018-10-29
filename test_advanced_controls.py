@@ -3,6 +3,7 @@
 import pytest
 
 import advanced_controls
+from model import emissionsfactors as ef
 import pandas as pd
 
 
@@ -60,3 +61,8 @@ def test_lifetimes():
       conv_avg_annual_use=conv_avg_annual_use)
   assert ac.soln_lifetime_replacement == 50
   assert ac.conv_lifetime_replacement == pytest.approx(3333.333333333333)
+
+def test_emissions_grid():
+  ac = advanced_controls.AdvancedControls(emissions_grid_source="IPCC Only", emissions_grid_range="high")
+  assert ac.emissions_grid_source == ef.GRID_SOURCE.IPCC
+  assert ac.emissions_grid_range == ef.GRID_RANGE.HIGH

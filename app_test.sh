@@ -115,11 +115,26 @@ require "$output" '"soln_pds_annual_breakout": [["Year",' && \
 require "$output" '"conv_ref_new_annual_iunits_reqd": [["Year",' && \
 require "$output" '"conv_ref_new_annual_iunits_reqd": [["Year",' && \
 require "$output" '"lifetime_cost_forecast": [["Year",' && \
+require "$output" '"soln_pds_annual_operating_cost": [["Year",' && \
+require "$output" '"soln_pds_cumulative_operating_cost": [["Year",' && \
 true
 
 if [ $? -ne 0 ]; then
     rc=1
 fi
+
+input='{"advanced_controls":{"emissions_grid_source":"ipcc_only","emissions_grid_range":"high"}}'
+url='http://127.0.0.1:5000/emissionsfactors'
+output=$(curl --silent -H 'Content-Type: application/json' --data $input $url) 
+
+require "$output" '"conv_ref_grid_CO2eq_per_KWh": [["Year",' && \
+require "$output" '"conv_ref_grid_CO2eq_per_KWh_direct": [["Year",' && \
+true
+
+if [ $? -ne 0 ]; then
+    rc=1
+fi
+
 
 trap 'kill $(jobs -pr) >/dev/null 2>&1' SIGINT SIGTERM EXIT
 
