@@ -49,3 +49,7 @@ Oct 15 - 19, 2018
   integration, and system): https://youtu.be/ipZrQWuMU3w
 + more progress on Operating Cost.
   implemented annual breakout table, added Excel integration test coverage.
+
+Oct 22 - 26, 2018
++ implement 80% of the Operating Cost module.
++ implement more of the Emissions Factors module, preparing to start on co2calc.
