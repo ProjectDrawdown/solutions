@@ -141,7 +141,15 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   excel_write_cell(sheet, 'A11', 'Year')
   excel_write_cell(sheet, 'A66', 'Year')
   ef_expected_values = pd.DataFrame(excel_read_cell(sheet, 'A11:K112'))
-
+  sheet = workbook.sheets['Adoption Data']
+  excel_write_cell(sheet, 'B45', 'Year')
+  ad_expected_values1 = pd.DataFrame(excel_read_cell(sheet, 'B45:R94'))
+  ad_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'X45:Z94'))
+  ad_expected_values3 = pd.DataFrame(excel_read_cell(sheet, 'AB45:AD94'))
+  ad_expected_values4 = pd.DataFrame(excel_read_cell(sheet, 'BY50:CA96'))
+  ad_expected_values5 = pd.DataFrame(excel_read_cell(sheet, 'CF50:CI96'))
+  ad_expected_values6 = pd.DataFrame(excel_read_cell(sheet, 'CN50:CR96'))
+  ad_expected_values7 = pd.DataFrame(excel_read_cell(sheet, 'CW50:CY96'))
   workbook.close()
   excel_app.quit()
 
@@ -168,6 +176,14 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   oc_actual_values4 = pd.DataFrame(excel_read_cell(sheet, 'I126:P250'))
   sheet = workbook.sheets['Emissions Factors']
   ef_actual_values = pd.DataFrame(excel_read_cell(sheet, 'A11:K112'))
+  sheet = workbook.sheets['Adoption Data']
+  ad_actual_values1 = pd.DataFrame(excel_read_cell(sheet, 'B45:R94'))
+  ad_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'X45:Z94'))
+  ad_actual_values3 = pd.DataFrame(excel_read_cell(sheet, 'AB45:AD94'))
+  ad_actual_values4 = pd.DataFrame(excel_read_cell(sheet, 'BY50:CA96'))
+  ad_actual_values5 = pd.DataFrame(excel_read_cell(sheet, 'CF50:CI96'))
+  ad_actual_values6 = pd.DataFrame(excel_read_cell(sheet, 'CN50:CR96'))
+  ad_actual_values7 = pd.DataFrame(excel_read_cell(sheet, 'CW50:CY96'))
   workbook.close()
   excel_app.quit()
 
@@ -178,5 +194,12 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   pd.testing.assert_frame_equal(oc_actual_values2, oc_expected_values2, check_exact=False)
   pd.testing.assert_frame_equal(oc_actual_values3, oc_expected_values3, check_exact=False)
   pd.testing.assert_frame_equal(oc_actual_values4, oc_expected_values4, check_exact=False)
-  diff_dataframes(ef_actual_values, ef_expected_values)
   pd.testing.assert_frame_equal(ef_actual_values, ef_expected_values, check_exact=False)
+  pd.testing.assert_frame_equal(ad_actual_values1, ad_expected_values1, check_exact=False)
+  diff_dataframes(ad_actual_values2, ad_expected_values2)
+  pd.testing.assert_frame_equal(ad_actual_values2, ad_expected_values2, check_exact=False)
+  pd.testing.assert_frame_equal(ad_actual_values3, ad_expected_values3, check_exact=False)
+  pd.testing.assert_frame_equal(ad_actual_values4, ad_expected_values4, check_exact=False)
+  pd.testing.assert_frame_equal(ad_actual_values5, ad_expected_values5, check_exact=False)
+  pd.testing.assert_frame_equal(ad_actual_values6, ad_expected_values6, check_exact=False)
+  pd.testing.assert_frame_equal(ad_actual_values7, ad_expected_values7, check_exact=False)
