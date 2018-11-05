@@ -8,7 +8,7 @@ class HelperTables:
   """Implementation for the Helper Tables module.
 
   Arguments:
-  ac = advanced_cost.py object, storing settings to control
+  ac = advanced_controls.py object, storing settings to control
     model operation.
   """
   def __init__(self, ac):

@@ -7,6 +7,7 @@ import os
 import advanced_controls
 from flask import Flask, request, render_template, jsonify, Response
 import pandas as pd
+from model import adoptiondata
 from model import emissionsfactors
 from model import firstcost
 from model import operatingcost
@@ -349,6 +350,39 @@ def emissionsFactors():
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
+@app.route("/adoptiondata", methods=['POST'])
+def adoptionData():
+    """Adoption Data module."""
+    js = request.get_json(force=True)
+    ad_rq = js.get('adoption_data', {})
+    sourcename = ad_rq.get('sourcename', '')
+    low_sd = ad_rq.get('low_sd', 1.0)
+    high_sd = ad_rq.get('high_sd', 1.0)
+    growth_choice = ad_rq.get('growth_choice', 'Medium')
+
+    ad = adoptiondata.AdoptionData()
+    results = dict()
+
+    adoption = ad.adoption()
+    results['adoption'] = format_for_response(adoption)
+    min_max_sd = ad.min_max_sd(adoption)
+    results['min_max_sd'] = format_for_response(min_max_sd)
+    low_medium_high = ad.low_medium_high(adoption=adoption, min_max_sd=min_max_sd,
+        sourcename=sourcename, low_sd=low_sd, high_sd=high_sd)
+    results['low_medium_high'] = format_for_response(low_medium_high)
+    results['linear_growth'] = format_for_response(ad.linear_growth(
+      adoption=low_medium_high[growth_choice]))
+    results['poly_degree2_growth'] = format_for_response(ad.poly_degree2_growth(
+      adoption=low_medium_high[growth_choice]))
+    results['poly_degree3_growth'] = format_for_response(ad.poly_degree3_growth(
+      adoption=low_medium_high[growth_choice]))
+    results['exponential_growth'] = format_for_response(ad.exponential_growth(
+      adoption=low_medium_high[growth_choice]))
+
+    results_str = json.dumps(results, separators=(',', ':'))
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
 def to_csv(data, key, logger):
     '''
     Helper function to load CSV from input data dictionary.
@@ -370,9 +404,9 @@ def to_advanced_controls(data, logger):
 
 def format_for_response(df):
   if isinstance(df, pd.DataFrame):
-    return [[df.index.name, *df.columns.tolist()]] + df.reset_index().dropna().values.tolist()
+    return [[df.index.name, *df.columns.tolist()]] + df.reset_index().values.tolist()
   elif isinstance(df, pd.Series):
-    return [[df.index.name, df.name]] + df.reset_index().dropna().values.tolist()
+    return [[df.index.name, df.name]] + df.reset_index().values.tolist()
   else:
     return str(df)
 

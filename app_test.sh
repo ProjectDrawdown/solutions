@@ -8,7 +8,7 @@ for i in {1..5}
 do
     url='http://127.0.0.1:5000/'
     json='Content-Type: application/json'
-    curl --silent -H $json $url >/dev/null 2>&1 && break
+    curl --silent -H "$json" "$url" >/dev/null 2>&1 && break
     sleep 1
 done
 
@@ -16,7 +16,7 @@ rc=0
 
 input='{"pds":"a,b,c,d\n2,2,5,4\n2,3,4,10","ref":"a,b,c,d\n1,2,3,4\n2,2,4,4"}'
 url='http://127.0.0.1:5000/unitadoption'
-output=$(curl --silent -H 'Content-Type: application/json' --data $input $url | tr -d '[:space:]') 
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url" | tr -d '[:space:]') 
 expected=$(echo "a,b,c,d\r\n1,0,2,0\r\n0,1,0,6\r\n" | tr -d '[:space:]')
 
 if [ "${output}" != "${expected}" ]; then
@@ -26,7 +26,7 @@ fi
 
 input='{"pds":"e,f,g,h\n0,0,0,0\n1,2,3,4","ref":"e,f,g,h\n1,2,3,4\n0,0,0,0"}'
 url='http://127.0.0.1:5000/unitadoption'
-output=$(curl --silent -H 'Content-Type: application/json' --data $input $url | tr -d '[:space:]') 
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url" | tr -d '[:space:]') 
 expected=$(echo "e,f,g,h\r\n-1,-2,-3,-4\r\n1,2,3,4\r\n" | tr -d '[:space:]')
 
 if [ "${output}" != "${expected}" ]; then
@@ -48,7 +48,7 @@ require() {
 
 input=$(cat app_test.firstcost_req)
 url='http://127.0.0.1:5000/firstcost'
-output=$(curl --silent -H 'Content-Type: application/json' --data $input $url) 
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
 
 require "$output" '"soln_pds_install_cost_per_iunit": [["Year", "World"],"' && \
 require "$output" '"conv_ref_install_cost_per_iunit": [["Year", "World"],' && \
@@ -66,7 +66,7 @@ fi
 
 input=$(cat app_test.unitadoption3_req)
 url='http://127.0.0.1:5000/unitadoption.v3'
-output=$(curl --silent -H 'Content-Type: application/json' --data $input $url) 
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
 
 require "$output" '"ref_population": [["Year",' && \
 require "$output" '"ref_gdp": [["Year",' && \
@@ -105,7 +105,7 @@ fi
 
 input=$(cat app_test.operatingcost_req)
 url='http://127.0.0.1:5000/operatingcost'
-output=$(curl --silent -H 'Content-Type: application/json' --data $input $url) 
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
 
 require "$output" '"soln_new_funits_per_year": [["Year",' && \
 require "$output" '"soln_new_funits_per_year_world": [["Year",' && \
@@ -131,12 +131,27 @@ if [ $? -ne 0 ]; then
     rc=1
 fi
 
+
 input='{"advanced_controls":{"emissions_grid_source":"ipcc_only","emissions_grid_range":"high"}}'
 url='http://127.0.0.1:5000/emissionsfactors'
-output=$(curl --silent -H 'Content-Type: application/json' --data $input $url) 
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
 
 require "$output" '"conv_ref_grid_CO2eq_per_KWh": [["Year",' && \
 require "$output" '"conv_ref_grid_CO2eq_per_KWh_direct": [["Year",' && \
+true
+
+
+input='{"adoption_data":{"sourcename":"Based on: Greenpeace (2015) Advanced Energy Revolution","low_sd":1,"high_sd":1,"growth_choice":"Medium"}}'
+url='http://127.0.0.1:5000/adoptiondata'
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
+
+require "$output" '"adoption": [["Year",' && \
+require "$output" '"min_max_sd": [["Year",' && \
+require "$output" '"low_medium_high": [["Year",' && \
+require "$output" '"linear_growth": [["Year",' && \
+require "$output" '"poly_degree2_growth": [["Year",' && \
+require "$output" '"poly_degree3_growth": [["Year",' && \
+require "$output" '"exponential_growth": [["Year",' && \
 true
 
 if [ $? -ne 0 ]; then
