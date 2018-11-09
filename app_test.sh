@@ -141,13 +141,13 @@ require "$output" '"conv_ref_grid_CO2eq_per_KWh_direct": [["Year",' && \
 true
 
 
-input='{"adoption_data":{"sourcename":"Based on: Greenpeace (2015) Advanced Energy Revolution","low_sd":1,"high_sd":1,"growth_choice":"Medium"}}'
+input='{"advanced_controls":{"soln_pds_adoption_prognostication_source":"Based on: Greenpeace (2015) Advanced Energy Revolution"},"adoption_data":{"sourcename":"Based on: Greenpeace (2015) Advanced Energy Revolution","low_sd":1,"high_sd":1,"growth_choice":"Medium"}}'
 url='http://127.0.0.1:5000/adoptiondata'
 output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
 
 require "$output" '"adoption": [["Year",' && \
-require "$output" '"min_max_sd": [["Year",' && \
-require "$output" '"low_medium_high": [["Year",' && \
+require "$output" '"adoption_min_max_sd": [["Year",' && \
+require "$output" '"adoption_low_med_high": [["Year",' && \
 require "$output" '"linear_growth": [["Year",' && \
 require "$output" '"poly_degree2_growth": [["Year",' && \
 require "$output" '"poly_degree3_growth": [["Year",' && \

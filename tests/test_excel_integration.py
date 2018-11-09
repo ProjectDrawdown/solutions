@@ -150,6 +150,9 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   ad_expected_values5 = pd.DataFrame(excel_read_cell(sheet, 'CF50:CI96'))
   ad_expected_values6 = pd.DataFrame(excel_read_cell(sheet, 'CN50:CR96'))
   ad_expected_values7 = pd.DataFrame(excel_read_cell(sheet, 'CW50:CY96'))
+  sheet = workbook.sheets['Helper Tables']
+  ht_expected_values1 = pd.DataFrame(excel_read_cell(sheet, 'B26:L73'))
+  ht_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'B90:L137'))
   workbook.close()
   excel_app.quit()
 
@@ -184,6 +187,9 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   ad_actual_values5 = pd.DataFrame(excel_read_cell(sheet, 'CF50:CI96'))
   ad_actual_values6 = pd.DataFrame(excel_read_cell(sheet, 'CN50:CR96'))
   ad_actual_values7 = pd.DataFrame(excel_read_cell(sheet, 'CW50:CY96'))
+  sheet = workbook.sheets['Helper Tables']
+  ht_actual_values1 = pd.DataFrame(excel_read_cell(sheet, 'B26:L73'))
+  ht_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'B90:L137'))
   workbook.close()
   excel_app.quit()
 
@@ -196,10 +202,11 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   pd.testing.assert_frame_equal(oc_actual_values4, oc_expected_values4, check_exact=False)
   pd.testing.assert_frame_equal(ef_actual_values, ef_expected_values, check_exact=False)
   pd.testing.assert_frame_equal(ad_actual_values1, ad_expected_values1, check_exact=False)
-  diff_dataframes(ad_actual_values2, ad_expected_values2)
   pd.testing.assert_frame_equal(ad_actual_values2, ad_expected_values2, check_exact=False)
   pd.testing.assert_frame_equal(ad_actual_values3, ad_expected_values3, check_exact=False)
   pd.testing.assert_frame_equal(ad_actual_values4, ad_expected_values4, check_exact=False)
   pd.testing.assert_frame_equal(ad_actual_values5, ad_expected_values5, check_exact=False)
   pd.testing.assert_frame_equal(ad_actual_values6, ad_expected_values6, check_exact=False)
   pd.testing.assert_frame_equal(ad_actual_values7, ad_expected_values7, check_exact=False)
+  pd.testing.assert_frame_equal(ht_actual_values1, ht_expected_values1, check_exact=False)
+  pd.testing.assert_frame_equal(ht_actual_values2, ht_expected_values2, check_exact=False)
