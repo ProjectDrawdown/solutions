@@ -4,6 +4,7 @@
 
 import pandas as pd
 from model import emissionsfactors as ef
+from model import helpertables as ht
 
 class AdvancedControls:
   """Advanced Controls tab, with defaults set for SolarPVUtility.
@@ -130,13 +131,27 @@ class AdvancedControls:
   conv_fixed_oper_cost_per_iunit (float): as soln_fixed_oper_cost_per_funit. "Advanced Controls"!I95
   conv_fuel_cost_per_funit (float): as soln_fuel_cost_per_funit "Advanced Controls"!K95
 
-  npv_discount_rate (float): discount rate for Net Present Value calculations. "Advanced Controls"!B141
+  npv_discount_rate (float): discount rate for Net Present Value calculations.
+     "Advanced Controls"!B141
 
-  emissions_grid_source (string): "IPCC Only" or "Meta Analysis" of multiple studies. "Advanced Controls"!C189
-  emissions_grid_range (string): "mean", "low" or "high" for which estimate to use. "Advanced Controls"!D189
+  emissions_grid_source (string): "IPCC Only" or "Meta Analysis" of multiple studies.
+     "Advanced Controls"!C189
+  emissions_grid_range (string): "mean", "low" or "high" for which estimate to use.
+     "Advanced Controls"!D189
 
-  ref_adoption_regional_data (boolean): whether funit adoption should add the regional
-     data to estimate the World, or perform a separate estimate for the world. "Advanced Controls"!B284
+  soln_ref_adoption_regional_data (boolean): whether funit adoption should add the regional data
+     to estimate the World, or perform a separate estimate for the world. "Advanced Controls"!B284
+  soln_pds_adoption_regional_data (boolean): as soln_ref_adoption_regional_data.
+     "Advanced Controls"!B246
+  soln_pds_adoption_basis (helpertables.ADOPTION_BASIS): the type of interpolation to fill in
+     adoption data for each year. "Advanced Controls"!B243
+  soln_pds_adoption_prognostication_source (string): the name of one specific data source, or the
+     name of a class of sources (like "Conservative Cases" or "Ambitious Cases"), or "ALL SOURCES"
+     to take the average of all sources. "Advanced Controls"!B265
+  soln_pds_adoption_prognostication_trend (helpertables.ADOPTION_TREND): the type of curve fit
+     to use like 2nd order polynomial or exponential. "Advanced Controls"!B270
+  soln_pds_adoption_prognostication_growth (helpertables.ADOPTION_GROWTH): high, medium, or low
+     projected growth. "Advanced Controls"!C270
   """
   def __init__(self,
                pds_2014_cost=None,
@@ -185,7 +200,12 @@ class AdvancedControls:
                emissions_grid_source=None,
                emissions_grid_range=None,
 
-               ref_adoption_regional_data=None
+               soln_ref_adoption_regional_data=None,
+               soln_pds_adoption_regional_data=None,
+               soln_pds_adoption_basis=None,
+               soln_pds_adoption_prognostication_source=None,
+               soln_pds_adoption_prognostication_trend=None,
+               soln_pds_adoption_prognostication_growth=None
                ):
     self.pds_2014_cost = pds_2014_cost
     self.ref_2014_cost = ref_2014_cost
@@ -208,8 +228,8 @@ class AdvancedControls:
     self.soln_emissions_per_funit = self.value_or_zero(soln_emissions_per_funit)
     self.ch4_is_co2eq = ch4_is_co2eq
     self.n2o_is_co2eq = n2o_is_co2eq
-    self.co2eq_conversion_source = None
-    if co2eq_conversion_source:
+    self.co2eq_conversion_source = co2eq_conversion_source
+    if isinstance(co2eq_conversion_source, str):
       self.co2eq_conversion_source = ef.string_to_conversion_source(co2eq_conversion_source)
     self.ch4_co2_per_twh = self.value_or_zero(ch4_co2_per_twh)
     self.n2o_co2_per_twh = self.value_or_zero(n2o_co2_per_twh)
@@ -226,11 +246,31 @@ class AdvancedControls:
     self.conv_fixed_oper_cost_per_iunit = conv_fixed_oper_cost_per_iunit
     self.conv_fuel_cost_per_funit = conv_fuel_cost_per_funit
     self.npv_discount_rate = npv_discount_rate
-    if emissions_grid_source:
+
+    self.emissions_grid_source = emissions_grid_source
+    if isinstance(emissions_grid_source, str):
       self.emissions_grid_source = ef.string_to_emissions_grid_source(emissions_grid_source)
-    if emissions_grid_range:
+    self.emissions_grid_range = emissions_grid_range
+    if isinstance(emissions_grid_range, str):
       self.emissions_grid_range = ef.string_to_emissions_grid_range(emissions_grid_range)
-    self.ref_adoption_regional_data = ref_adoption_regional_data
+
+    self.soln_ref_adoption_regional_data = soln_ref_adoption_regional_data
+    self.soln_pds_adoption_regional_data = soln_pds_adoption_regional_data
+    self.soln_pds_adoption_basis = soln_pds_adoption_basis
+    if isinstance(soln_pds_adoption_basis, str):
+      self.soln_pds_adoption_basis = ht.string_to_adoption_basis(soln_pds_adoption_basis)
+    self.soln_pds_adoption_prognostication_source = soln_pds_adoption_prognostication_source
+    if isinstance(soln_pds_adoption_prognostication_source, str):
+      # soln_pds_adoption_prognostication_source is supposed to be a list of strings
+      self.soln_pds_adoption_prognostication_source = [soln_pds_adoption_prognostication_source]
+    self.soln_pds_adoption_prognostication_trend = soln_pds_adoption_prognostication_trend
+    if isinstance(soln_pds_adoption_prognostication_trend, str):
+      self.soln_pds_adoption_prognostication_trend = ht.string_to_adoption_prognostication_trend(
+          soln_pds_adoption_prognostication_trend)
+    self.soln_pds_adoption_prognostication_growth = soln_pds_adoption_prognostication_growth
+    if isinstance(soln_pds_adoption_prognostication_growth, str):
+      self.soln_pds_adoption_prognostication_growth = ht.string_to_adoption_prognostication_growth(
+          soln_pds_adoption_prognostication_growth)
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.

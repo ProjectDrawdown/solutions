@@ -21,6 +21,8 @@ def test_string_to_conversion_source():
   assert ef.string_to_conversion_source("Ar4") == ef.CO2EQ_SOURCE.AR4
   assert ef.string_to_conversion_source("SAR") == ef.CO2EQ_SOURCE.SAR
   assert ef.string_to_conversion_source("sar") == ef.CO2EQ_SOURCE.SAR
+  with pytest.raises(ValueError):
+    ef.string_to_conversion_source("invalid")
 
 def test_string_to_emissions_grid_source():
   assert ef.string_to_emissions_grid_source("meta-analysis") == ef.GRID_SOURCE.META
@@ -28,6 +30,8 @@ def test_string_to_emissions_grid_source():
   assert ef.string_to_emissions_grid_source("META ANALYSIS") == ef.GRID_SOURCE.META
   assert ef.string_to_emissions_grid_source("IPCC_ONLY") == ef.GRID_SOURCE.IPCC
   assert ef.string_to_emissions_grid_source("ipcc only") == ef.GRID_SOURCE.IPCC
+  with pytest.raises(ValueError):
+    ef.string_to_conversion_source("invalid")
 
 def test_string_to_emissions_grid_range():
   assert ef.string_to_emissions_grid_range("MEAN") == ef.GRID_RANGE.MEAN
@@ -35,6 +39,8 @@ def test_string_to_emissions_grid_range():
   assert ef.string_to_emissions_grid_range("Median") == ef.GRID_RANGE.MEAN
   assert ef.string_to_emissions_grid_range("high") == ef.GRID_RANGE.HIGH
   assert ef.string_to_emissions_grid_range("LOW") == ef.GRID_RANGE.LOW
+  with pytest.raises(ValueError):
+    ef.string_to_conversion_source("invalid")
 
 def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
   ac = advanced_controls.AdvancedControls(emissions_grid_source="ipcc_only", emissions_grid_range="mean")

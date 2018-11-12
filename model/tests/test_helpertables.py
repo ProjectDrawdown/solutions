@@ -1,15 +1,24 @@
 """Tests for helpertables.py."""
 
+import pathlib
+
 import advanced_controls
 from model import helpertables
 from model import tam
 import numpy as np
 import pandas as pd
+import pytest
+
+
+solution_dir = pathlib.Path(__file__).parents[2].joinpath('solution')
+ref_tam_per_region_filename = solution_dir.joinpath('solarpvutil_ref_tam_per_region.csv')
+pds_tam_per_region_filename = solution_dir.joinpath('solarpvutil_pds_tam_per_region.csv')
+
 
 def test_soln_ref_funits_adopted():
   """Test simple case, compute adoption from linear regression of datapoints."""
-  ac = advanced_controls.AdvancedControls(ref_adoption_regional_data=False)
-  datapoints = pd.DataFrame([
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False)
+  ref_datapoints = pd.DataFrame([
     [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778,
         14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
     [2050, 272.41409799109, 97.40188603589, 0.52311962553, 60.19386560477, 6.43555351544,
@@ -17,17 +26,19 @@ def test_soln_ref_funits_adopted():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
-  tm = tam.TAM()
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
   ref_tam_per_region = tm.ref_tam_per_region()
-  result = ht.soln_ref_funits_adopted(datapoints=datapoints, ref_tam_per_region=ref_tam_per_region)
+  result = ht.soln_ref_funits_adopted(ref_datapoints=ref_datapoints,
+      ref_tam_per_region=ref_tam_per_region)
   expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
 
 def test_soln_ref_funits_adopted_tam_limit():
   """Test when adoption is limited by the Total Addressable Market."""
-  ac = advanced_controls.AdvancedControls(ref_adoption_regional_data=False)
-  datapoints = pd.DataFrame([
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False)
+  ref_datapoints = pd.DataFrame([
     [2014, 100.0, 100.0, 100.0, 100.0], [2050, 200.0, 200.0, 200.0, 200.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
@@ -49,20 +60,23 @@ def test_soln_ref_funits_adopted_tam_limit():
     [2056, 1.0, 1.0, 1.0, 1.0], [2057, 1.0, 1.0, 1.0, 1.0], [2058, 1.0, 1.0, 1.0, 1.0],
     [2059, 1.0, 1.0, 1.0, 1.0], [2060, 1.0, 1.0, 1.0, 1.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
-  result = ht.soln_ref_funits_adopted(datapoints=datapoints, ref_tam_per_region=ref_tam_per_region)
+  result = ht.soln_ref_funits_adopted(ref_datapoints=ref_datapoints,
+      ref_tam_per_region=ref_tam_per_region)
   expected = ref_tam_per_region
   pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
 
 def test_soln_ref_funits_adopted_regional_sums():
-  """Test with ref_adoption_regional_data=True."""
-  ac = advanced_controls.AdvancedControls(ref_adoption_regional_data=True)
-  datapoints = pd.DataFrame([
+  """Test with soln_ref_adoption_regional_data=True."""
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=True)
+  ref_datapoints = pd.DataFrame([
     [2014, 10.0, 3.0, 2.0, 1.0], [2050, 20.0, 3.0, 2.0, 1.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
-  tm = tam.TAM()
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
   ref_tam_per_region = tm.ref_tam_per_region()
-  result = ht.soln_ref_funits_adopted(datapoints=datapoints, ref_tam_per_region=ref_tam_per_region)
+  result = ht.soln_ref_funits_adopted(ref_datapoints=ref_datapoints,
+      ref_tam_per_region=ref_tam_per_region)
   expected = pd.DataFrame([
     [2014, 6.0, 3.0, 2.0, 1.0], [2015, 6.0, 3.0, 2.0, 1.0], [2016, 6.0, 3.0, 2.0, 1.0],
     [2017, 6.0, 3.0, 2.0, 1.0], [2018, 6.0, 3.0, 2.0, 1.0], [2019, 6.0, 3.0, 2.0, 1.0],
@@ -82,6 +96,162 @@ def test_soln_ref_funits_adopted_regional_sums():
     [2059, 6.0, 3.0, 2.0, 1.0], [2060, 6.0, 3.0, 2.0, 1.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
   pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_pds_funits_adopted_single_source():
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      soln_pds_adoption_prognostication_growth='Medium',
+      soln_pds_adoption_prognostication_trend='3rd poly',
+      soln_pds_adoption_prognostication_source=['A'],
+      soln_pds_adoption_basis='Existing Adoption Prognostications')
+  pds_datapoints = pd.DataFrame([
+    [2014, 112.633033, 75.0042456, 0.332383, 21.072504, 1.575078, 14.650619,
+      14.972222, 2.748301, 55.272054, 13.12465],
+    [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  ht = helpertables.HelperTables(ac=ac)
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
+  pds_tam_per_region = tm.pds_tam_per_region()
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:], columns=adoption_low_med_high_list[0],
+      dtype=np.float64).set_index('Year')
+  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints,
+      adoption_low_med_high=adoption_low_med_high, pds_tam_per_region=pds_tam_per_region)
+  expected = pd.DataFrame(soln_pds_funits_adopted_single_source_list[1:],
+      columns=soln_pds_funits_adopted_single_source_list[0]).set_index('Year')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_pds_funits_adopted_3rd_poly_medium():
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      soln_pds_adoption_prognostication_growth='Medium',
+      soln_pds_adoption_prognostication_trend='3rd poly',
+      soln_pds_adoption_basis='Existing Adoption Prognostications')
+  pds_datapoints = pd.DataFrame([
+    [2014, 112.633033, 75.0042456, 0.332383, 21.072504, 1.575078, 14.650619,
+      14.972222, 2.748301, 55.272054, 13.12465],
+    [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  ht = helpertables.HelperTables(ac=ac)
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
+  pds_tam_per_region = tm.pds_tam_per_region()
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
+      columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
+  adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
+  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
+      pds_tam_per_region=pds_tam_per_region)
+  expected = pd.DataFrame(soln_pds_funits_adopted_3rd_poly_medium_list[1:],
+      columns=soln_pds_funits_adopted_3rd_poly_medium_list[0]).set_index('Year')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_pds_funits_adopted_2rd_poly_high():
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      soln_pds_adoption_prognostication_growth='High',
+      soln_pds_adoption_prognostication_trend='2nd poly',
+      soln_pds_adoption_basis='Existing Adoption Prognostications')
+  pds_datapoints = pd.DataFrame([
+    [2014, 112.633033, 75.0042456, 0.332383, 21.072504, 1.575078, 14.650619,
+      14.972222, 2.748301, 55.272054, 13.12465],
+    [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  ht = helpertables.HelperTables(ac=ac)
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
+  pds_tam_per_region = tm.pds_tam_per_region()
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
+      columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
+  adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
+  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
+      pds_tam_per_region=pds_tam_per_region)
+  expected = pd.DataFrame(soln_pds_funits_adopted_2rd_poly_high_list[1:],
+      columns=soln_pds_funits_adopted_2rd_poly_high_list[0]).set_index('Year')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_pds_funits_adopted_exp_low():
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      soln_pds_adoption_prognostication_growth='Low',
+      soln_pds_adoption_prognostication_trend='Exp',
+      soln_pds_adoption_basis='Existing Adoption Prognostications')
+  pds_datapoints = pd.DataFrame([
+    [2014, 112.633033, 75.0042456, 0.332383, 21.072504, 1.575078, 14.650619,
+      14.972222, 2.748301, 55.272054, 13.12465],
+    [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  ht = helpertables.HelperTables(ac=ac)
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
+  pds_tam_per_region = tm.pds_tam_per_region()
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
+      columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
+  adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
+  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
+      pds_tam_per_region=pds_tam_per_region)
+  expected = pd.DataFrame(soln_pds_funits_adopted_exp_low_list[1:],
+      columns=soln_pds_funits_adopted_exp_low_list[0]).set_index('Year')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+
+def test_soln_pds_funits_adopted_linear_medium():
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      soln_pds_adoption_prognostication_growth='Medium',
+      soln_pds_adoption_prognostication_trend='Linear',
+      soln_pds_adoption_basis='Existing Adoption Prognostications')
+  pds_datapoints = pd.DataFrame([
+    [2014, 112.633033, 75.0042456, 0.332383, 21.072504, 1.575078, 14.650619,
+      14.972222, 2.748301, 55.272054, 13.12465],
+    [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  ht = helpertables.HelperTables(ac=ac)
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
+  pds_tam_per_region = tm.pds_tam_per_region()
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
+      columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
+  adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
+  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
+      pds_tam_per_region=pds_tam_per_region)
+  expected = pd.DataFrame(soln_pds_funits_adopted_linear_medium_list[1:],
+      columns=soln_pds_funits_adopted_linear_medium_list[0]).set_index('Year')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+
+def test_string_to_adoption_basis():
+  func = helpertables.string_to_adoption_basis
+  assert func("default linear") == helpertables.ADOPTION_BASIS.LINEAR
+  assert func("default_linear") == helpertables.ADOPTION_BASIS.LINEAR
+  assert func("linear") == helpertables.ADOPTION_BASIS.LINEAR
+  assert func("default s-curve") == helpertables.ADOPTION_BASIS.S_CURVE
+  assert func("default_s_curve") == helpertables.ADOPTION_BASIS.S_CURVE
+  assert func("s_curve") == helpertables.ADOPTION_BASIS.S_CURVE
+  assert func("s-curve") == helpertables.ADOPTION_BASIS.S_CURVE
+  assert func("existing adoption prognostications") == helpertables.ADOPTION_BASIS.PROGNOSTICATION
+  assert func("existing_adoption_prognostications") == helpertables.ADOPTION_BASIS.PROGNOSTICATION
+  assert func("customized s-curve adoption") == helpertables.ADOPTION_BASIS.CUSTOM_S_CURVE
+  assert func("customized_s_curve_adoption") == helpertables.ADOPTION_BASIS.CUSTOM_S_CURVE
+  assert func("fully customized pds") == helpertables.ADOPTION_BASIS.FULLY_CUSTOM
+  with pytest.raises(ValueError):
+    _ = func("invalid")
+
+def test_string_to_adoption_prognostication_trend():
+  func = helpertables.string_to_adoption_prognostication_trend
+  assert func("linear") == helpertables.ADOPTION_PROGNOSTICATION_TREND.LINEAR
+  assert func("2nd poly") == helpertables.ADOPTION_PROGNOSTICATION_TREND.POLY_2ND
+  assert func("2nd_poly") == helpertables.ADOPTION_PROGNOSTICATION_TREND.POLY_2ND
+  assert func("3rd poly") == helpertables.ADOPTION_PROGNOSTICATION_TREND.POLY_3RD
+  assert func("3rd_poly") == helpertables.ADOPTION_PROGNOSTICATION_TREND.POLY_3RD
+  assert func("exponential") == helpertables.ADOPTION_PROGNOSTICATION_TREND.EXPONENTIAL
+  with pytest.raises(ValueError):
+    _ = func("invalid")
+
+def test_string_to_adoption_prognostication_growth():
+  func = helpertables.string_to_adoption_prognostication_growth
+  assert func("low") == helpertables.ADOPTION_PROGNOSTICATION_GROWTH.LOW
+  assert func("medium") == helpertables.ADOPTION_PROGNOSTICATION_GROWTH.MEDIUM
+  assert func("high") == helpertables.ADOPTION_PROGNOSTICATION_GROWTH.HIGH
+  with pytest.raises(ValueError):
+    _ = func("invalid")
 
 
 soln_ref_funits_adopted_list = [
@@ -134,7 +304,8 @@ soln_ref_funits_adopted_list = [
     [2059, 312.35936415553, 103.00129615598, 0.57080369858, 69.97420589485, 7.65067244985, 49.14423990686, 35.71343677485, 17.22989500426, 77.21576538262, 17.23789257185],
     [2060, 316.79772706269, 103.62345283599, 0.57610192892, 71.06091037152, 7.78568566479, 49.91076481837, 36.17435265380, 17.55170820188, 77.70340340347, 17.32929796233]]
 
-soln_pds_funits_adopted_list = [
+# "Helper Tables"!B90:L137
+soln_pds_funits_adopted_single_source_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778, 14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
     [2015, 176.24092107213, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -183,3 +354,266 @@ soln_pds_funits_adopted_list = [
     [2058, 9698.00398968936, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2059, 9831.77207116817, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 9951.12354028110, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+# "Helper Tables"!B90:L137 with "Advanced Controls"!B265 set to "ALL SOURCES"
+soln_pds_funits_adopted_3rd_poly_medium_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2014, 112.6330333333, 75.004246, 0.332383, 21.072504, 1.575078, 14.650619, 14.972222, 2.748301, 55.272054, 13.124650],
+    [2015, 144.0071011993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2016, 178.6238619030, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2017, 216.8684756252, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2018, 258.7172380677, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2019, 304.1464449324, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2020, 353.1323919212, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2021, 405.6513747360, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2022, 461.6796890787, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2023, 521.1936306511, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2024, 584.1694951552, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2025, 650.5835782928, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2026, 720.4121757658, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2027, 793.6315832761, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2028, 870.2180965256, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2029, 950.1480112161, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2030, 1033.3976230496, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2031, 1119.9432277278, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2032, 1209.7611209528, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2033, 1302.8275984264, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2034, 1399.1189558504, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2035, 1498.6114889267, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2036, 1601.2814933573, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2037, 1707.1052648440, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2038, 1816.0590990888, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2039, 1928.1192917933, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2040, 2043.2621386597, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2041, 2161.4639353897, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2042, 2282.7009776852, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2043, 2406.9495612481, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2044, 2534.1859817803, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2045, 2664.3865349837, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2046, 2797.5275165602, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2047, 2933.5852222116, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2048, 3072.5359476398, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2049, 3214.3559885467, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2050, 3359.0216406342, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2051, 3506.5091996042, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2052, 3656.7949611586, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2053, 3809.8552209991, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2054, 3965.6662748278, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2055, 4124.2044183465, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2056, 4285.4459472571, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2057, 4449.3671572614, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2058, 4615.9443440614, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2059, 4785.1538033590, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2060, 4956.9718308559, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+# "Helper Tables"!B90:L137 with "Advanced Controls"!B265 set to "ALL SOURCES"
+# "Advanced Controls"!B270 set to "2nd Poly", "Advanced Controls"!C270 set to High
+soln_pds_funits_adopted_2rd_poly_high_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2014, 112.6330333333, 75.0042455556, 0.3323833333, 21.0725044444, 1.5750777778, 14.6506188889, 14.9722222222, 2.7483011111, 55.2720544444, 13.1246500000],
+    [2015, 145.6042356219, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2016, 219.4306580989, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2017, 297.4816477718, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2018, 379.7572046407, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2019, 466.2573287056, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2020, 556.9820199664, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2021, 651.9312784233, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2022, 751.1051040760, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2023, 854.5034969248, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2024, 962.1264569695, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2025, 1073.9739842102, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2026, 1190.0460786469, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2027, 1310.3427402795, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2028, 1434.8639691081, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2029, 1563.6097651327, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2030, 1696.5801283532, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2031, 1833.7750587697, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2032, 1975.1945563822, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2033, 2120.8386211906, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2034, 2270.7072531950, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2035, 2424.8004523954, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2036, 2583.1182187918, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2037, 2745.6605523841, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2038, 2912.4274531724, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2039, 3083.4189211566, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2040, 3258.6349563369, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2041, 3438.0755587131, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2042, 3621.7407282852, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2043, 3809.6304650534, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2044, 4001.7447690175, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2045, 4198.0836401775, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2046, 4398.6470785336, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2047, 4603.4350840856, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2048, 4812.4476568336, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2049, 5025.6847967775, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2050, 5243.1465039174, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2051, 5464.8327782533, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2052, 5690.7436197852, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2053, 5920.8790285130, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2054, 6155.2390044368, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2055, 6393.8235475566, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2056, 6636.6326578723, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2057, 6883.6663353840, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2058, 7134.9245800917, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2059, 7390.4073919953, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2060, 7650.1147710949, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+# "Helper Tables"!B90:L137 with "Advanced Controls"!B265 set to "ALL SOURCES"
+# "Advanced Controls"!B270 set to "Exp", "Advanced Controls"!C270 set to Low
+soln_pds_funits_adopted_exp_low_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2014, 112.6330333333, 75.0042455556, 0.3323833333, 21.0725044444, 1.5750777778, 14.6506188889, 14.9722222222, 2.7483011111, 55.2720544444, 13.1246500000],
+    [2015, 129.3720916084, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2016, 138.6046760679, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2017, 148.4961400025, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2018, 159.0935040664, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2019, 170.4471445231, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2020, 182.6110327167, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2021, 195.6429916334, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2022, 209.6049707721, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2023, 224.5633406317, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2024, 240.5892082135, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2025, 257.7587550397, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2026, 276.1535992948, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2027, 295.8611838101, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2028, 316.9751917376, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2029, 339.5959918879, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2030, 363.8311158489, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2031, 389.7957691548, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2032, 417.6133789341, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2033, 447.4161806396, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2034, 479.3458466515, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2035, 513.5541597391, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2036, 550.2037345846, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2037, 589.4687907984, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2038, 631.5359810992, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2039, 676.6052785979, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2040, 724.8909274017, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2041, 776.6224610577, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2042, 832.0457936771, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2043, 891.4243889276, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2044, 955.0405124495, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2045, 1023.1965736513, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2046, 1096.2165632602, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2047, 1174.4475934647, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2048, 1258.2615479671, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2049, 1348.0568497927, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2050, 1444.2603552569, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2051, 1547.3293830949, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2052, 1657.7538883999, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2053, 1776.0587917023, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2054, 1902.8064742637, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2055, 2038.5994514457, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2056, 2184.0832368636, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2057, 2339.9494109378, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2058, 2506.9389084324, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2059, 2685.8455406065, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2060, 2877.5197687233, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+# "Helper Tables"!B90:L137 with "Advanced Controls"!B265 set to "ALL SOURCES"
+# "Advanced Controls"!B270 set to "Linear", "Advanced Controls"!C270 set to Medium
+soln_pds_funits_adopted_linear_medium_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2014, 112.6330333333, 75.0042455556, 0.3323833333, 21.0725044444, 1.5750777778, 14.6506188889, 14.9722222222, 2.7483011111, 55.2720544444, 13.1246500000],
+    [2015, -242.7585905873, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2016, -139.9292196561, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2017, -37.0998487248, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2018, 65.7295222064, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2019, 168.5588931376, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2020, 271.3882640689, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2021, 374.2176350001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2022, 477.0470059314, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2023, 579.8763768626, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2024, 682.7057477938, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2025, 785.5351187251, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2026, 888.3644896563, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2027, 991.1938605876, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2028, 1094.0232315188, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2029, 1196.8526024500, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2030, 1299.6819733813, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2031, 1402.5113443125, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2032, 1505.3407152437, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2033, 1608.1700861750, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2034, 1710.9994571062, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2035, 1813.8288280375, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2036, 1916.6581989687, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2037, 2019.4875698999, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2038, 2122.3169408312, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2039, 2225.1463117624, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2040, 2327.9756826936, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2041, 2430.8050536249, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2042, 2533.6344245561, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2043, 2636.4637954874, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2044, 2739.2931664186, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2045, 2842.1225373498, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2046, 2944.9519082811, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2047, 3047.7812792123, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2048, 3150.6106501436, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2049, 3253.4400210748, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2050, 3356.2693920060, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2051, 3459.0987629373, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2052, 3561.9281338685, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2053, 3664.7575047997, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2054, 3767.5868757310, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2055, 3870.4162466622, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2056, 3973.2456175935, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2057, 4076.0749885247, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2058, 4178.9043594559, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2059, 4281.7337303872, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2060, 4384.5631013184, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+# 'Adoption Data'!AB46:AD94
+adoption_low_med_high_list = [['Year', 'Low', 'Medium', 'High'],
+    [2012, 58.200000, 58.200000, 58.200000], [2013, 81.060000, 81.060000, 81.060000],
+    [2014, 112.633033, 112.633033, 112.633033], [2015, 138.403698, 176.240921, 214.078144],
+    [2016, 221.118595, 272.031352, 322.944109], [2017, 312.381791, 383.309352, 454.236913],
+    [2018, 412.974691, 509.379474, 605.784256], [2019, 523.185314, 649.546273, 775.907231],
+    [2020, 500.486594, 654.000000, 807.513406], [2021, 771.946597, 969.388115, 1166.829634],
+    [2022, 909.853893, 1147.672267, 1385.490641], [2023, 1056.253096, 1337.271311, 1618.289526],
+    [2024, 1210.700727, 1537.489801, 1864.278876], [2025, 1265.160143, 1595.400000, 1925.639857],
+    [2026, 1541.862231, 1967.003336, 2392.144441], [2027, 1717.612329, 2194.907488, 2672.202647],
+    [2028, 1899.495352, 2430.649302, 2961.803253], [2029, 2086.990245, 2673.533332, 3260.076420],
+    [2030, 2361.039771, 3040.200000, 3719.360229], [2031, 2476.785301, 3177.946255, 3879.107210],
+    [2032, 2678.020412, 3438.084256, 4198.148100], [2033, 2882.766540, 3702.582689, 4522.398837],
+    [2034, 3090.469022, 3970.746106, 4851.023191], [2035, 3294.571903, 4241.879064, 5189.186224],
+    [2036, 3512.441874, 4515.286114, 5518.130355], [2037, 3725.553339, 4790.271812, 5854.990285],
+    [2038, 3939.272082, 5066.140711, 6193.009340], [2039, 4152.965387, 5342.197365, 6531.429344],
+    [2040, 4394.843061, 5665.200000, 6935.556939], [2041, 4577.714588, 5892.092154, 7206.469721],
+    [2042, 4787.420703, 6164.539397, 7541.658092], [2043, 4994.406010, 6434.392611, 7874.379213],
+    [2044, 5197.943507, 6700.956350, 8203.969193], [2045, 5402.182194, 6963.535167, 8524.888140],
+    [2046, 5591.599994, 7221.433617, 8851.267240], [2047, 5780.112723, 7473.956253, 9167.799784],
+    [2048, 5961.967390, 7720.407630, 9478.847871], [2049, 6136.269626, 7960.092301, 9783.914977],
+    [2050, 6284.441079, 8167.800000, 10051.158921], [2051, 6457.338827, 8416.379743, 10375.420659],
+    [2052, 6604.579123, 8631.591621, 10658.604119], [2053, 6739.190765, 8837.255009, 10935.319253],
+    [2054, 6861.330435, 9032.674462, 11204.018488], [2055, 6969.910301, 9217.154532, 11464.398763],
+    [2056, 7063.805739, 9389.999774, 11716.193809], [2057, 7141.873711, 9550.514742, 11959.155773],
+    [2058, 7202.930366, 9698.003990, 12193.077613], [2059, 7245.770888, 9831.772071, 12417.773254],
+    [2060, 7269.169476, 9951.123540, 12633.077604]]
+
+# 'Adoption Data'!AB46:AD94 with 'Advanced Controls'!$B$265 set to ALL SOURCES
+adoption_low_med_high_all_sources_list = [['Year', 'Low', 'Medium', 'High'],
+    [2012, 58.200000, 58.200000, 58.200000], [2013, 81.060000, 81.060000, 81.060000],
+    [2014, 112.633033, 112.633033, 112.633033], [2015, 105.603550, 143.440773, 181.277995],
+    [2016, 127.118631, 178.031388, 228.944145], [2017, 145.350020, 216.277581, 287.205142],
+    [2018, 161.744158, 258.148941, 354.553723], [2019, 177.256713, 303.617671, 429.978630],
+    [2020, 233.704628, 387.218033, 540.731439], [2021, 207.789889, 405.231407, 602.672926],
+    [2022, 223.508399, 461.326773, 699.145147], [2023, 239.889454, 520.907669, 801.925884],
+    [2024, 257.159907, 583.948981, 910.738056], [2025, 306.997867, 637.237725, 967.477582],
+    [2026, 295.179590, 720.320695, 1145.461801], [2027, 316.304602, 793.599762, 1270.894921],
+    [2028, 339.080224, 870.234174, 1401.388125], [2029, 363.664416, 950.207503, 1536.750591],
+    [2030, 345.183977, 1024.344206, 1703.504435], [2031, 418.893521, 1120.054476, 1821.215430],
+    [2032, 449.820470, 1209.884314, 1969.948158], [2033, 483.134195, 1302.950343, 2122.766492],
+    [2034, 518.953374, 1399.230459, 2279.507544], [2035, 537.792556, 1485.099716, 2432.406876],
+    [2036, 598.513116, 1601.357356, 2604.201597], [2037, 642.433505, 1707.151977, 2771.870450],
+    [2038, 689.205335, 1816.073964, 2942.942594], [2039, 738.875230, 1928.107209, 3117.339187],
+    [2040, 779.316063, 2049.673002, 3320.029942], [2041, 847.028954, 2161.406520, 3475.784087],
+    [2042, 905.512113, 2282.630807, 3659.749502], [2043, 966.891116, 2406.877717, 3846.864319],
+    [2044, 1031.106475, 2534.119318, 4037.132161], [2045, 1119.474313, 2680.827286, 4242.180259],
+    [2046, 1167.661392, 2797.495015, 4427.328638], [2047, 1239.739315, 2933.582846, 4627.426377],
+    [2048, 1314.126484, 3072.566724, 4831.006965], [2049, 1390.607087, 3214.429763, 5038.252438],
+    [2050, 1473.209246, 3356.568167, 5239.927088], [2051, 1541.533750, 3500.574665, 5459.615581],
+    [2052, 1629.989194, 3657.001693, 5684.014191], [2053, 1712.033415, 3810.097659, 5908.161903],
+    [2054, 1794.576241, 3965.920268, 6137.264295], [2055, 1877.190347, 4124.434577, 6371.678808],
+    [2056, 1959.419848, 4285.613883, 6611.807918], [2057, 2040.782840, 4449.423870, 6858.064901],
+    [2058, 2120.769468, 4615.843091, 7110.916715], [2059, 2198.847801, 4784.848984, 7370.850167],
+    [2060, 2274.465696, 4956.419760, 7638.373825]]

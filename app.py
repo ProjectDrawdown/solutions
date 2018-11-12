@@ -7,9 +7,10 @@ import os
 import advanced_controls
 from flask import Flask, request, render_template, jsonify, Response
 import pandas as pd
-from model import adoptiondata
+from model import adoptiondata as ad
 from model import emissionsfactors
 from model import firstcost
+from model import helpertables
 from model import operatingcost
 from model import unitadoption
 import werkzeug.exceptions
@@ -354,30 +355,67 @@ def emissionsFactors():
 def adoptionData():
     """Adoption Data module."""
     js = request.get_json(force=True)
+    ac_rq = to_advanced_controls(js, app.logger)
     ad_rq = js.get('adoption_data', {})
-    sourcename = ad_rq.get('sourcename', '')
+
     low_sd = ad_rq.get('low_sd', 1.0)
     high_sd = ad_rq.get('high_sd', 1.0)
     growth_choice = ad_rq.get('growth_choice', 'Medium')
 
-    ad = adoptiondata.AdoptionData()
     results = dict()
 
-    adoption = ad.adoption()
+    adoption = ad.adoption(adoption_data_filename='solarpvutil_adoptiondata.csv')
     results['adoption'] = format_for_response(adoption)
-    min_max_sd = ad.min_max_sd(adoption)
-    results['min_max_sd'] = format_for_response(min_max_sd)
-    low_medium_high = ad.low_medium_high(adoption=adoption, min_max_sd=min_max_sd,
-        sourcename=sourcename, low_sd=low_sd, high_sd=high_sd)
-    results['low_medium_high'] = format_for_response(low_medium_high)
+    adoption_min_max_sd = ad.adoption_min_max_sd(adoption)
+    results['adoption_min_max_sd'] = format_for_response(adoption_min_max_sd)
+    source = ac_rq.soln_pds_adoption_prognostication_source
+    adoption_low_med_high = ad.adoption_low_med_high(adoption=adoption,
+        adoption_prognostication_source=source,
+        adoption_min_max_sd=adoption_min_max_sd, low_sd=low_sd, high_sd=high_sd)
+    results['adoption_low_med_high'] = format_for_response(adoption_low_med_high)
     results['linear_growth'] = format_for_response(ad.linear_growth(
-      adoption=low_medium_high[growth_choice]))
+      adoption=adoption_low_med_high[growth_choice]))
     results['poly_degree2_growth'] = format_for_response(ad.poly_degree2_growth(
-      adoption=low_medium_high[growth_choice]))
+      adoption=adoption_low_med_high[growth_choice]))
     results['poly_degree3_growth'] = format_for_response(ad.poly_degree3_growth(
-      adoption=low_medium_high[growth_choice]))
+      adoption=adoption_low_med_high[growth_choice]))
     results['exponential_growth'] = format_for_response(ad.exponential_growth(
-      adoption=low_medium_high[growth_choice]))
+      adoption=adoption_low_med_high[growth_choice]))
+
+    results_str = json.dumps(results, separators=(',', ':'))
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/helpertables", methods=['POST'])
+def helperTables():
+    """Helper Tables module."""
+    js = request.get_json(force=True)
+    ac_rq = to_advanced_controls(js, app.logger)
+    ht_rq = js.get('helper_tables', {})
+    ua_rq = js.get('unit_adoption', {})
+    ad_rq = js.get('adoption_data', {})
+
+    dps = ht_rq.get('ref_datapoints', [])
+    ref_datapoints = pd.DataFrame(dps[1:], columns=dps[0]).set_index('Year')
+    dps = ht_rq.get('pds_datapoints', [])
+    pds_datapoints = pd.DataFrame(dps[1:], columns=dps[0]).set_index('Year')
+
+    tpr = ua_rq.get('ref_tam_per_region', [])
+    ref_tam_per_region = pd.DataFrame(tpr[1:], columns=tpr[0]).set_index('Year')
+    tpr = ua_rq.get('pds_tam_per_region', [])
+    pds_tam_per_region = pd.DataFrame(tpr[1:], columns=tpr[0]).set_index('Year')
+
+    lmh = ad_rq.get('adoption_low_med_high', [])
+    adoption_low_med_high = pd.DataFrame(lmh[1:], columns=lmh[0]).set_index('Year')
+
+    ht = helpertables.HelperTables(ac=ac_rq)
+    results = dict()
+
+    results['soln_ref_funits_adopted'] = format_for_response(ht.soln_ref_funits_adopted(
+      ref_datapoints=ref_datapoints, ref_tam_per_region=ref_tam_per_region))
+    results['soln_pds_funits_adopted'] = format_for_response(ht.soln_pds_funits_adopted(
+      pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
+      pds_tam_per_region=pds_tam_per_region))
 
     results_str = json.dumps(results, separators=(',', ':'))
     return Response(response=results_str, status=200, mimetype="application/json")

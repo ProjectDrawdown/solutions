@@ -1,10 +1,16 @@
 """Tests for unitadoption.py."""
 
+import io
+import pathlib
+
 import pandas as pd
 import pytest
-import io
 from model import unitadoption, tam
 import advanced_controls
+
+solution_dir = pathlib.Path(__file__).parents[2].joinpath('solution')
+ref_tam_per_region_filename = solution_dir.joinpath('solarpvutil_ref_tam_per_region.csv')
+pds_tam_per_region_filename = solution_dir.joinpath('solarpvutil_pds_tam_per_region.csv')
 
 
 def test_na_funits():
@@ -126,7 +132,8 @@ def test_ref_gdp_per_capita():
   assert gpc['USA'][2014] == pytest.approx(43.77208)
 
 def test_ref_tam_per_capita():
-  tm = tam.TAM()
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
   tpr = tm.ref_tam_per_region()
   ua = unitadoption.UnitAdoption()
   pop = ua.ref_population()
@@ -136,7 +143,8 @@ def test_ref_tam_per_capita():
   assert tpc['USA'][2059] == pytest.approx(12.21081396314)
 
 def test_ref_tam_per_gdp_per_capita():
-  tm = tam.TAM()
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
   tpr = tm.ref_tam_per_region()
   ua = unitadoption.UnitAdoption()
   pop = ua.ref_population()
@@ -148,7 +156,8 @@ def test_ref_tam_per_gdp_per_capita():
   assert tpgpc['EU'][2060] == pytest.approx(85.95558928452)
 
 def test_ref_tam_growth():
-  tm = tam.TAM()
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
   tpr = tm.ref_tam_per_region()
   ua = unitadoption.UnitAdoption()
   tg = ua.ref_tam_growth(ref_tam_per_region=tpr)
@@ -181,7 +190,8 @@ def test_pds_gdp_per_capita():
   assert gpc['USA'][2014] == pytest.approx(44.49768)
 
 def test_pds_tam_per_capita():
-  tm = tam.TAM()
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
   tpr = tm.pds_tam_per_region()
   ua = unitadoption.UnitAdoption()
   pop = ua.pds_population()
@@ -191,7 +201,8 @@ def test_pds_tam_per_capita():
   assert tpc['USA'][2058] == pytest.approx(13.978179)
 
 def test_pds_tam_per_gdp_per_capita():
-  tm = tam.TAM()
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
   tpr = tm.pds_tam_per_region()
   ua = unitadoption.UnitAdoption()
   pop = ua.pds_population()
@@ -203,7 +214,8 @@ def test_pds_tam_per_gdp_per_capita():
   assert tpgpc['EU'][2060] == pytest.approx(85.955589)
 
 def test_pds_tam_growth():
-  tm = tam.TAM()
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
   tpr = tm.pds_tam_per_region()
   ua = unitadoption.UnitAdoption()
   tg = ua.pds_tam_growth(pds_tam_per_region=tpr)
@@ -332,7 +344,8 @@ def test_soln_net_annual_funits_adopted():
 def test_conv_ref_tot_iunits_reqd():
   ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
   ua = unitadoption.UnitAdoption(ac=ac)
-  tm = tam.TAM()
+  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
+      pds_tam_per_region_filename=pds_tam_per_region_filename)
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
       [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
       [2015, 117.07, 75.63, 0.34, 22.16, 1.71, 15.42, 15.43, 3.07, 55.76, 13.22],

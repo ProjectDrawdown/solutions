@@ -3,74 +3,66 @@
 import numpy as np
 import pandas as pd
 import pytest
-from model import adoptiondata
+from model import adoptiondata as ad
 
 
 def test_adoption_data():
-  ad = adoptiondata.AdoptionData()
-  adopt = ad.adoption()
+  adopt = ad.adoption(adoption_data_filename='solarpvutil_adoptiondata.csv')
   assert adopt['Based on: IEA ETP 2016 4DS'][2035] == pytest.approx(898.010968835815)
   assert adopt['Based on: Greenpeace (2015) Reference'][2027] == pytest.approx(327.712635691309)
 
-def test_min_max_sd():
-  ad = adoptiondata.AdoptionData()
-  adoption = ad.adoption()
-  result = ad.min_max_sd(adoption)
-  expected = pd.DataFrame(min_max_sd_list[1:], columns=min_max_sd_list[0],
+def test_adoption_min_max_sd():
+  adoption = ad.adoption(adoption_data_filename='solarpvutil_adoptiondata.csv')
+  result = ad.adoption_min_max_sd(adoption)
+  expected = pd.DataFrame(adoption_min_max_sd_list[1:], columns=adoption_min_max_sd_list[0],
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_low_medium_high():
-  ad = adoptiondata.AdoptionData()
-  adoption = ad.adoption()
-  min_max_sd = pd.DataFrame(min_max_sd_list[1:], columns=min_max_sd_list[0],
-      dtype=np.float64).set_index('Year')
-  min_max_sd.index = min_max_sd.index.astype(int)
-  result = ad.low_medium_high(
-      adoption=adoption, min_max_sd=min_max_sd,
-      sourcename='Based on: Greenpeace (2015) Advanced Energy Revolution',
-      low_sd=1, high_sd=1)
-  expected = pd.DataFrame(low_med_high_list[1:], columns=low_med_high_list[0],
+def test_adoption_low_med_high():
+  adoption = ad.adoption(adoption_data_filename='solarpvutil_adoptiondata.csv')
+  adoption_min_max_sd = pd.DataFrame(adoption_min_max_sd_list[1:],
+      columns=adoption_min_max_sd_list[0], dtype=np.float64).set_index('Year')
+  adoption_min_max_sd.index = adoption_min_max_sd.index.astype(int)
+  source = ['Based on: Greenpeace (2015) Advanced Energy Revolution']
+  result = ad.adoption_low_med_high(adoption=adoption, adoption_prognostication_source=source,
+      adoption_min_max_sd=adoption_min_max_sd, low_sd=1, high_sd=1)
+  expected = pd.DataFrame(adoption_low_med_high_list[1:], columns=adoption_low_med_high_list[0],
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_linear_growth():
-  ad = adoptiondata.AdoptionData()
-  low_med_high = pd.DataFrame(low_med_high_list[1:], columns=low_med_high_list[0],
-      dtype=np.float64).set_index('Year')
-  result = ad.linear_growth(low_med_high.loc[:, 'Medium'])
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:],
+      columns=adoption_low_med_high_list[0], dtype=np.float64).set_index('Year')
+  result = ad.linear_growth(adoption_low_med_high.loc[:, 'Medium'])
   expected = pd.DataFrame(linear_growth_list[1:], columns=linear_growth_list[0],
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_poly_degree2_growth():
-  ad = adoptiondata.AdoptionData()
-  low_med_high = pd.DataFrame(low_med_high_list[1:], columns=low_med_high_list[0],
-      dtype=np.float64).set_index('Year')
-  result = ad.poly_degree2_growth(low_med_high.loc[:, 'Medium'])
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:],
+      columns=adoption_low_med_high_list[0], dtype=np.float64).set_index('Year')
+  result = ad.poly_degree2_growth(adoption_low_med_high.loc[:, 'Medium'])
   expected = pd.DataFrame(poly_degree2_growth_list[1:], columns=poly_degree2_growth_list[0],
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_poly_degree3_growth():
-  ad = adoptiondata.AdoptionData()
-  low_med_high = pd.DataFrame(low_med_high_list[1:], columns=low_med_high_list[0],
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:], columns=adoption_low_med_high_list[0],
       dtype=np.float64).set_index('Year')
-  result = ad.poly_degree3_growth(low_med_high.loc[:, 'Medium'])
+  result = ad.poly_degree3_growth(adoption_low_med_high.loc[:, 'Medium'])
   expected = pd.DataFrame(poly_degree3_growth_list[1:], columns=poly_degree3_growth_list[0],
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_exponential_growth():
-  ad = adoptiondata.AdoptionData()
-  low_med_high = pd.DataFrame(low_med_high_list[1:], columns=low_med_high_list[0],
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:], columns=adoption_low_med_high_list[0],
       dtype=np.float64).set_index('Year')
-  result = ad.exponential_growth(low_med_high.loc[:, 'Medium'])
+  result = ad.exponential_growth(adoption_low_med_high.loc[:, 'Medium'])
   expected = pd.DataFrame(exponential_growth_list[1:], columns=exponential_growth_list[0],
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
@@ -78,7 +70,7 @@ def test_exponential_growth():
 
 
 # 'Adoption Data'!X46:Z94
-min_max_sd_list = [['Year', 'Min', 'Max', 'S.D'],
+adoption_min_max_sd_list = [['Year', 'Min', 'Max', 'S.D'],
     [2012, 58.200000, 58.200000, 0.000000], [2013, 81.060000, 81.060000, 0.000000],
     [2014, 112.633033, 112.633033, 0.000000], [2015, 94.240258, 218.061459, 37.837223],
     [2016, 115.457997, 272.031352, 50.912757], [2017, 139.360289, 383.309352, 70.927561],
@@ -106,7 +98,7 @@ min_max_sd_list = [['Year', 'Min', 'Max', 'S.D'],
     [2060, 736.909192, 9951.123540, 2681.954064]]
 
 # 'Adoption Data'!AB46:AD94
-low_med_high_list = [['Year', 'Low', 'Medium', 'High'],
+adoption_low_med_high_list = [['Year', 'Low', 'Medium', 'High'],
     [2012, 58.200000, 58.200000, 58.200000], [2013, 81.060000, 81.060000, 81.060000],
     [2014, 112.633033, 112.633033, 112.633033], [2015, 138.403698, 176.240921, 214.078144],
     [2016, 221.118595, 272.031352, 322.944109], [2017, 312.381791, 383.309352, 454.236913],
