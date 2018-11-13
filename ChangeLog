@@ -57,3 +57,8 @@ Oct 22 - 26, 2018
 Oct 29 - Nov 2, 2018
 + completed Operating Cost module.
 + completed Adoption Data module.
+
+Nov 5 - 9, 2018
++ completed 50% of Helper Tables module.
++ start moving solarpvutil specifics out of model/* and into solution/*
++ experimenting with Jupyter notebook support (not checked into repo yet)
