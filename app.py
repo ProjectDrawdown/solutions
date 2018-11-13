@@ -28,44 +28,6 @@ def home():
     return render_template('home.html', repo=repo)
 
 
-@app.route("/unitadoption", methods=['POST'])
-def unitAdoption():
-    '''Initial version of the API - only implements the na_funits calculation.'''
-    ref_sol_funits = to_csv(request.json, 'ref', app.logger)
-    pds_sol_funits = to_csv(request.json, 'pds', app.logger)
-
-    ua = unitadoption.UnitAdoption()
-    return ua.na_funits(ref_sol_funits, pds_sol_funits).to_csv(index=False)
-
-
-@app.route("/unitadoption.v2", methods=['POST'])
-def unitAdoption2():
-    '''Second version of the API - implements most of the unit adoption tab.'''
-    js = request.get_json(force=True)
-    ref_sol_funits = to_csv(js, 'ref_sol_funits', app.logger)
-    pds_sol_funits = to_csv(js, 'pds_sol_funits', app.logger)
-    aau_sol_funits = js['aau_sol_funits']
-    life_cap_sol_funits = js['life_cap_sol_funits']
-    aau_conv_funits = js['aau_conv_funits']
-    life_cap_conv_funits = js['life_cap_conv_funits']
-    ref_tam_funits = to_csv(js, 'ref_tam_funits', app.logger)
-    pds_tam_funits = to_csv(js, 'pds_tam_funits', app.logger)
-
-    ua = unitadoption.UnitAdoption()
-    results = dict()
-    results['na_funits'] = ua.na_funits(
-        ref_sol_funits, pds_sol_funits).to_csv()
-    results['pds_sol_cum_iunits'] = ua.sol_cum_iunits(
-        pds_sol_funits, aau_sol_funits).to_csv()
-    results['ref_sol_cum_iunits'] = ua.sol_cum_iunits(
-        ref_sol_funits, aau_sol_funits).to_csv()
-    results['life_rep_sol_years'] = ua.life_rep_years(
-        life_cap_sol_funits, aau_sol_funits)
-    results['life_rep_conv_years'] = ua.life_rep_years(
-        life_cap_conv_funits, aau_conv_funits)
-    return jsonify(results)
-
-
 @app.route("/firstcost", methods=['POST'])
 def firstCost():
     '''Implements First Cost tab from Excel model implementation.'''

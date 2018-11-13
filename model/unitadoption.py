@@ -13,138 +13,91 @@ class UnitAdoption:
     ac = advanced_cost.py object, storing settings to control
       model operation.
     """
+    csv_files_dir = os.path.dirname(__file__)
+
     def __init__(self, ac=None):
       self.ac = ac
 
-    csv_files_dir = os.path.dirname(__file__)
-
-    def na_funits(self, ref_sol_funits, pds_sol_funits):
-        '''Net annual functional units adopted.
-
-        ref_sol_funits: Reference solution: Annual functional units adopted
-        pds_sol_funits: PDS solution: Annual functional units adopted
-
-        Both inputs and return value is a DataFrame with and index of years,
-        columns for each region and floating point data values.
-
-        This represents the total additional functional units captured either
-        by the CONVENTIONAL mix of technologies/practices in the REF case
-        scenario, OR total growth of the SOLUTION in the PDS scenario,
-        i.e. in addition to the current growth of the SOLUTION in the REF
-        scenario.
-
-        This is used to calculate the Operating Cost, Grid, Fuel, Direct and
-        (optionally) Indirect Emissions.
-        '''
-        return pds_sol_funits - ref_sol_funits
-
-    def life_rep_years(self, life_cap_funits, aau_funits):
-        '''Lifetime Replacement for solution/conventional in years
-
-        life_cap_funits: Lifetime Capacity per implementation unit
-        aau_funits: Average Annual Capacity per implementation unit
-        '''
-        return round(life_cap_funits / aau_funits, 0)
-
-    def sol_cum_iunits(self, sol_funits, aau_funits):
-        '''Cumulative solution implementation units installed
-
-        sol_funits: Total annual solution functional units
-        aau_funits: Average Annual Capacity per implementation unit
-
-        This takes the Total Annual Functional Units PDS or REF and divides that by
-        the Average Annual Use/production per Solution Implementation Unit
-        to derive the Total Implementation Units Required in each given year PDS or REF.
-
-        This is used to calculate the yearly increase in Implementation
-        Units Adopted of Solution in PDS or REF.  
-        '''
-        return sol_funits / aau_funits
-
-    def sol_ann_iunits(self, sol_cum_iunits, life_rep_years):
-        '''New implementation units required (includes replacement units)
-
-        sol_cum_iunits: Cumulative solution implementation units installed
-        life_rep_years: Lifetime Replacement in years
-
-        Should reflect the unit lifetime assumed in the First Cost tab.
-        For simplicity assumed a fix lifetime rather than a gaussian
-        distribution, but this can be changed if needed. 
-
-        This is used to calculate Advanced Controls Output of Solution
-        Implementation Units Adopted.  This is also used to Calculate
-        First Cost, Marginal First Cost and NPV.
-        '''
-        # Output will initially share the same index and columns as the
-        # cumulative values, for easy indexing.
-        output = pd.DataFrame(index=sol_cum_iunits.index.copy(),
-                              columns=sol_cum_iunits.columns.copy(), dtype='float64')
-
-        for region, column in sol_cum_iunits.iteritems():
-            for year, value in column.iteritems():
-                new_value = 0
-
-                # Add positive year on year growth.
-                if (year - 1) in column:
-                    delta = value - column[year - 1]
-                    if delta > 0:
-                        new_value += delta
-
-                # Add replacement units, if needed by adding the number of units
-                # added life_rep_years ago, that now need replacement.
-                replacement_year = int(year - life_rep_years)
-                if replacement_year in output.index:
-                    new_value += output.loc[replacement_year].at[region]
-
-                output.at[year, region] = new_value
-
-        # Discard the first row of output, since we don't have any values for it.
-        return output[1:]
-
     def ref_population(self):
+      """Population by region for the reference case.
+         'Unit Adoption Calculations'!P16:Z63
+      """
       filename = os.path.join(self.csv_files_dir, 'ua_ref_pop_scenario1.csv')
-      return pd.read_csv(filename, header=1, index_col=0, skipinitialspace=True,
-          skiprows=0)
+      return pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+          skiprows=0, skip_blank_lines=True, comment='#')
 
     def ref_gdp(self):
+      """GDP by region for the reference case.
+         'Unit Adoption Calculations'!AB16:AL63
+      """
       filename = os.path.join(self.csv_files_dir, 'ua_ref_gdp_scenario1.csv')
-      return pd.read_csv(filename, header=1, index_col=0, skipinitialspace=True,
-          skiprows=0)
+      return pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+          skiprows=0, skip_blank_lines=True, comment='#')
 
     def ref_gdp_per_capita(self, ref_population, ref_gdp):
+      """GDP per capita for the reference case.
+         'Unit Adoption Calculations'!AN16:AX63
+      """
       return ref_gdp / ref_population
 
     def ref_tam_per_capita(self, ref_tam_per_region, ref_population):
+      """Total Addressable Market per capita for the reference case.
+         'Unit Adoption Calculations'!BA16:BK63
+      """
       return ref_tam_per_region / ref_population
 
     def ref_tam_per_gdp_per_capita(self, ref_tam_per_region, ref_gdp_per_capita):
+      """Total Addressable Market per unit of GDP per capita for the reference case.
+         'Unit Adoption Calculations'!BM16:BW63
+      """
       return ref_tam_per_region / ref_gdp_per_capita
 
     def ref_tam_growth(self, ref_tam_per_region):
+      """Growth in Total Addressable Market for the reference case.
+         'Unit Adoption Calculations'!BY16:CI63
+      """
       calc = ref_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
       calc.loc[2014] = [''] * calc.shape[1]  # empty row
       return calc
 
     def pds_population(self):
+      """Population by region for the Project Drawdown Solution case.
+         'Unit Adoption Calculations'!P68:Z115
+      """
       filename = os.path.join(self.csv_files_dir, 'ua_pds_population.csv')
       return pd.read_csv(filename, header=1, index_col=0, skipinitialspace=True,
           skiprows=0)
 
     def pds_gdp(self):
+      """GDP by region for the Project Drawdown Solution case.
+         'Unit Adoption Calculations'!AB68:AL115
+      """
       filename = os.path.join(self.csv_files_dir, 'ua_pds_gdp_scenario2.csv')
       return pd.read_csv(filename, header=1, index_col=0, skipinitialspace=True,
           skiprows=0)
 
     def pds_gdp_per_capita(self, pds_population, pds_gdp):
+      """GDP per capita for the Project Drawdown Solution case.
+         'Unit Adoption Calculations'!AN68:AX115
+      """
       return pds_gdp / pds_population
 
     def pds_tam_per_capita(self, pds_tam_per_region, pds_population):
+      """Total Addressable Market per capita for the Project Drawdown Solution case.
+         'Unit Adoption Calculations'!BA68:BK115
+      """
       return pds_tam_per_region / pds_population
 
     def pds_tam_per_gdp_per_capita(self, pds_tam_per_region, pds_gdp_per_capita):
+      """Total Addressable Market per unit of GDP per capita for the Project Drawdown Solution case.
+         'Unit Adoption Calculations'!BM68:BW115
+      """
       return pds_tam_per_region / pds_gdp_per_capita
 
     def pds_tam_growth(self, pds_tam_per_region):
+      """Growth in Total Addressable Market for the Project Drawdown Solution case.
+         'Unit Adoption Calculations'!BY68:CI115
+      """
       calc = pds_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
       calc.loc[2014] = [''] * calc.shape[1]  # empty row
       return calc
@@ -208,7 +161,8 @@ class UnitAdoption:
       return soln_ref_funits_adopted.cumsum(axis=0)
 
     def soln_ref_tot_iunits_reqd(self, soln_ref_funits_adopted):
-      """'Unit Adoption Calculations'!AX197:BH244"""
+      """Total implementation units required.
+         'Unit Adoption Calculations'!AX197:BH244"""
       return soln_ref_funits_adopted / self.ac.soln_avg_annual_use
 
     def soln_ref_new_iunits_reqd(self, soln_ref_tot_iunits_reqd):
