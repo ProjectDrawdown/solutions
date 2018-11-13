@@ -6,8 +6,10 @@ import os
 
 import advanced_controls
 from flask import Flask, request, render_template, jsonify, Response
+import numpy as np
 import pandas as pd
 from model import adoptiondata as ad
+from model import co2calcs
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -18,6 +20,18 @@ import werkzeug.exceptions
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False  # minify JSON
+
+
+def json_dumps_default(obj):
+  """Default function for json.dumps."""
+  if isinstance(obj, np.integer):
+    return int(obj)
+  elif isinstance(obj, np.floating):
+    return float(obj)
+  elif isinstance(obj, np.ndarray):
+    return obj.tolist()
+  else:
+    raise TypeError('Unable to JSON encode: ' + repr(obj))
 
 
 @app.route("/", methods=['GET'])
@@ -85,7 +99,7 @@ def firstCost():
         conv_ref_annual_world_first_cost)
     results['ref_cumulative_install'] = format_for_response(fc.ref_cumulative_install(
         conv_ref_annual_world_first_cost, soln_ref_annual_world_first_cost))
-    results_str = json.dumps(results, separators=(',', ':'))
+    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
@@ -180,7 +194,7 @@ def unitAdoption3():
           n2o_per_funit=ac_rq.n2o_co2_per_twh)
     results['soln_pds_direct_n2o_co2_emissions_saved'] = format_for_response(n2o)
 
-    results_str = json.dumps(results, separators=(',', ':'))
+    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
@@ -293,7 +307,7 @@ def operatingCost():
     results['soln_only_single_iunit_payback_discounted'] = format_for_response(
         soln_only_single_iunit_payback_discounted)
 
-    results_str = json.dumps(results, separators=(',', ':'))
+    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
@@ -306,10 +320,9 @@ def emissionsFactors():
     ef = emissionsfactors.ElectricityGenOnGrid(ac=ac_rq)
     results = dict()
     results['conv_ref_grid_CO2eq_per_KWh'] = format_for_response(ef.conv_ref_grid_CO2eq_per_KWh())
-    results['conv_ref_grid_CO2eq_per_KWh_direct'] = format_for_response(
-        ef.conv_ref_grid_CO2eq_per_KWh_direct())
+    results['conv_ref_grid_CO2_per_KWh'] = format_for_response(ef.conv_ref_grid_CO2_per_KWh())
 
-    results_str = json.dumps(results, separators=(',', ':'))
+    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
@@ -344,7 +357,7 @@ def adoptionData():
     results['exponential_growth'] = format_for_response(ad.exponential_growth(
       adoption=adoption_low_med_high[growth_choice]))
 
-    results_str = json.dumps(results, separators=(',', ':'))
+    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
@@ -379,7 +392,111 @@ def helperTables():
       pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
       pds_tam_per_region=pds_tam_per_region))
 
-    results_str = json.dumps(results, separators=(',', ':'))
+    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/co2calcs", methods=['POST'])
+def co2Calcs():
+    """CO2 Calcs module."""
+    js = request.get_json(force=True)
+    ac_rq = to_advanced_controls(js, app.logger)
+    ef_rq = js.get('emissions_factors', {})
+    ua_rq = js.get('unit_adoption', {})
+
+    fuel_in_liters = ef_rq.get('fuel_in_liters', False)
+    p = ef_rq.get('conv_ref_grid_CO2_per_KWh', [])
+    conv_ref_grid_CO2_per_KWh = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ef_rq.get('conv_ref_grid_CO2eq_per_KWh', [])
+    conv_ref_grid_CO2eq_per_KWh = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+
+    p = ua_rq.get('soln_net_annual_funits_adopted', [])
+    soln_net_annual_funits_adopted = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('soln_pds_new_iunits_reqd', [])
+    soln_pds_new_iunits_reqd = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('soln_ref_new_iunits_reqd', [])
+    soln_ref_new_iunits_reqd = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('conv_ref_new_iunits_reqd', [])
+    conv_ref_new_iunits_reqd = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('soln_pds_direct_co2_emissions_saved', [])
+    soln_pds_direct_co2_emissions_saved = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('soln_pds_direct_ch4_co2_emissions_saved', [])
+    soln_pds_direct_ch4_co2_emissions_saved = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('soln_pds_direct_n2o_co2_emissions_saved', [])
+    soln_pds_direct_n2o_co2_emissions_saved = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('soln_pds_net_grid_electricity_units_used', [])
+    soln_pds_net_grid_electricity_units_used = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+    p = ua_rq.get('soln_pds_net_grid_electricity_units_saved', [])
+    soln_pds_net_grid_electricity_units_saved = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
+
+    c2 = co2calcs.CO2Calcs(ac=ac_rq)
+    results = dict()
+
+    co2_reduced_grid_emissions = c2.co2_reduced_grid_emissions(
+        soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
+        conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh)
+    results['co2_reduced_grid_emissions'] = format_for_response(co2_reduced_grid_emissions)
+    co2_replaced_grid_emissions = c2.co2_replaced_grid_emissions(
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+        conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh)
+    results['co2_replaced_grid_emissions'] = format_for_response(co2_replaced_grid_emissions)
+    co2_increased_grid_usage_emissions = c2.co2_increased_grid_usage_emissions(
+        soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+        conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh)
+    results['co2_increased_grid_usage_emissions'] = format_for_response(
+        co2_increased_grid_usage_emissions)
+    co2eq_reduced_grid_emissions = c2.co2eq_reduced_grid_emissions(
+        soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
+        conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh)
+    results['co2eq_reduced_grid_emissions'] = format_for_response(co2eq_reduced_grid_emissions)
+    co2eq_replaced_grid_emissions = c2.co2eq_replaced_grid_emissions(
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+        conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh)
+    results['co2eq_replaced_grid_emissions'] = format_for_response(co2eq_replaced_grid_emissions)
+    co2eq_increased_grid_usage_emissions = c2.co2eq_increased_grid_usage_emissions(
+        soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+        conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh)
+    results['co2eq_increased_grid_usage_emissions'] = format_for_response(
+        co2eq_increased_grid_usage_emissions)
+    co2eq_direct_reduced_emissions = c2.co2eq_direct_reduced_emissions(
+        soln_pds_direct_co2_emissions_saved=soln_pds_direct_co2_emissions_saved,
+        soln_pds_direct_ch4_co2_emissions_saved=soln_pds_direct_ch4_co2_emissions_saved,
+        soln_pds_direct_n2o_co2_emissions_saved=soln_pds_direct_n2o_co2_emissions_saved)
+    results['co2eq_direct_reduced_emissions'] = format_for_response(co2eq_direct_reduced_emissions)
+    co2eq_reduced_fuel_emissions = c2.co2eq_reduced_fuel_emissions(
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+        fuel_in_liters=fuel_in_liters)
+    results['co2eq_reduced_fuel_emissions'] = format_for_response(co2eq_reduced_fuel_emissions)
+    co2eq_net_indirect_emissions = c2.co2eq_net_indirect_emissions(
+        soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
+        soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
+        conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd,
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+    results['co2eq_net_indirect_emissions'] = format_for_response(co2eq_net_indirect_emissions)
+    co2_mmt_reduced = c2.co2_mmt_reduced(co2_reduced_grid_emissions=co2_reduced_grid_emissions,
+        co2_replaced_grid_emissions=co2_replaced_grid_emissions,
+        co2eq_direct_reduced_emissions=co2eq_direct_reduced_emissions,
+        co2eq_reduced_fuel_emissions=co2eq_reduced_fuel_emissions,
+        co2eq_net_indirect_emissions=co2eq_net_indirect_emissions,
+        co2_increased_grid_usage_emissions=co2_increased_grid_usage_emissions)
+    results['co2_mmt_reduced'] = format_for_response(co2_mmt_reduced)
+    co2eq_mmt_reduced = c2.co2eq_mmt_reduced(
+        co2eq_reduced_grid_emissions=co2eq_reduced_grid_emissions,
+        co2eq_replaced_grid_emissions=co2eq_replaced_grid_emissions,
+        co2eq_increased_grid_usage_emissions=co2eq_increased_grid_usage_emissions,
+        co2eq_direct_reduced_emissions=co2eq_direct_reduced_emissions,
+        co2eq_reduced_fuel_emissions=co2eq_reduced_fuel_emissions,
+        co2eq_net_indirect_emissions=co2eq_net_indirect_emissions)
+    results['co2eq_mmt_reduced'] = format_for_response(co2eq_mmt_reduced)
+    co2_ppm_calculator = c2.co2_ppm_calculator(co2_mmt_reduced=co2_mmt_reduced,
+        co2eq_mmt_reduced=co2eq_mmt_reduced)
+    results['co2_ppm_calculator'] = format_for_response(co2_ppm_calculator)
+    ch4_ppm_calculator = pd.DataFrame(0, columns=["PPB", "notused"], index=list(range(2015, 2061)))
+    co2eq_ppm_calculator = c2.co2eq_ppm_calculator(co2_ppm_calculator=co2_ppm_calculator,
+        ch4_ppm_calculator=ch4_ppm_calculator)
+    results['co2eq_ppm_calculator'] = format_for_response(co2eq_ppm_calculator)
+
+    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 

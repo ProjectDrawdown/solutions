@@ -65,9 +65,9 @@ def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
   table = eg.conv_ref_grid_CO2eq_per_KWh()
   assert table.loc[2020, 'World'] == pytest.approx(0.726403172)
 
-def test_conv_ref_grid_CO2eq_per_KWh_direct():
+def test_conv_ref_grid_CO2_per_KWh():
   eg = ef.ElectricityGenOnGrid(ac=None)
-  table = eg.conv_ref_grid_CO2eq_per_KWh_direct()
+  table = eg.conv_ref_grid_CO2_per_KWh()
   assert table.loc[2025, "World"] == pytest.approx(0.484512031)
   assert table.loc[2032, "OECD90"] == pytest.approx(0.392126590)
   assert table.loc[2046, "Eastern Europe"] == pytest.approx(0.659977317)

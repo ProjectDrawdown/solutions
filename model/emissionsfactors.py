@@ -99,7 +99,7 @@ class ElectricityGenOnGrid:
        MESSAGE Base model. Grid emission factors are fixed at 2015 levels
        to reflect the REF case (e.g. no significant technological change).
 
-       'Emissions Factors'!B11:K57
+       'Emissions Factors'!A11:K57
     """
     result = pd.DataFrame(index=list(range(2015, 2061)),
         columns=["World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
@@ -135,12 +135,9 @@ class ElectricityGenOnGrid:
     result.loc[:, "USA"] = 0.665071666
     return result
 
-  def conv_ref_grid_CO2eq_per_KWh_direct(self):
+  def conv_ref_grid_CO2_per_KWh(self):
     """Generation mixes from the AMPERE/MESSAGE WG3 BAU scenario, direct emission
        factors by fuel from the IPCC WG3 Annex III Table A.III.2.
-
-       conv_ref_grid_CO2eq_per_KWh, above, is both direct and indirect emissions.
-       This table is only direct emissions.
        "Emissions Factors"!A66:K112
     """
     result = pd.DataFrame(index=list(range(2015, 2061)),

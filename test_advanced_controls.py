@@ -14,16 +14,20 @@ def test_learning_rate():
         pds_2014_cost=0, ref_2014_cost=0, conv_2014_cost=0,
         soln_first_cost_efficiency_rate=0.2,
         soln_first_cost_below_conv=True,
-        conv_first_cost_efficiency_rate=0.4786)
+        conv_first_cost_efficiency_rate=0.4786,
+        soln_fuel_efficiency_factor=0.1)
     assert ac.soln_first_cost_learning_rate == pytest.approx(0.8)
     assert ac.conv_first_cost_learning_rate == pytest.approx(0.5214)
+    assert ac.soln_fuel_learning_rate == pytest.approx(0.9)
     ac = advanced_controls.AdvancedControls(
         pds_2014_cost=0, ref_2014_cost=0, conv_2014_cost=0,
         soln_first_cost_efficiency_rate=0.33333333,
         soln_first_cost_below_conv=True,
-        conv_first_cost_efficiency_rate=1.0)
+        conv_first_cost_efficiency_rate=1.0,
+        soln_fuel_efficiency_factor=0.0)
     assert ac.soln_first_cost_learning_rate == pytest.approx(0.66666667)
     assert ac.conv_first_cost_learning_rate == pytest.approx(0.0)
+    assert ac.soln_fuel_learning_rate == pytest.approx(1.0)
 
 def test_soln_funit_adoption_2014():
   arg = [['World', 'A', 'B', 'C'], [1, 2, 3, 4]]
@@ -68,6 +72,8 @@ def test_co2eq_conversion_source():
   assert ac.co2eq_conversion_source == ef.CO2EQ_SOURCE.AR5_WITH_FEEDBACK
   ac = advanced_controls.AdvancedControls(co2eq_conversion_source=ef.CO2EQ_SOURCE.AR4)
   assert ac.co2eq_conversion_source == ef.CO2EQ_SOURCE.AR4
+  with pytest.raises(ValueError):
+    _ = advanced_controls.AdvancedControls(co2eq_conversion_source="???")
 
 def test_emissions_grid():
   ac = advanced_controls.AdvancedControls(
@@ -78,6 +84,10 @@ def test_emissions_grid():
       emissions_grid_source=ef.GRID_SOURCE.META, emissions_grid_range=ef.GRID_RANGE.MEAN)
   assert ac.emissions_grid_source == ef.GRID_SOURCE.META
   assert ac.emissions_grid_range == ef.GRID_RANGE.MEAN
+  with pytest.raises(ValueError):
+    _ = advanced_controls.AdvancedControls(emissions_grid_source="???")
+  with pytest.raises(ValueError):
+    _ = advanced_controls.AdvancedControls(emissions_grid_range="???")
 
 def test_soln_pds_adoption_args():
   ac = advanced_controls.AdvancedControls(
@@ -98,3 +108,23 @@ def test_soln_pds_adoption_args():
   assert ac.soln_pds_adoption_prognostication_trend == ht.ADOPTION_PROGNOSTICATION_TREND.EXPONENTIAL
   assert ac.soln_pds_adoption_prognostication_growth == ht.ADOPTION_PROGNOSTICATION_GROWTH.LOW
   assert ac.soln_pds_adoption_prognostication_source == ["test1", "test2"]
+  with pytest.raises(ValueError):
+    _ = advanced_controls.AdvancedControls(soln_pds_adoption_basis="???")
+  with pytest.raises(ValueError):
+    _ = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_trend="???")
+  with pytest.raises(ValueError):
+    _ = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_growth="???")
+
+def test_solution_category():
+  ac = advanced_controls.AdvancedControls(solution_category="REPLACEMENT")
+  assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.REPLACEMENT
+  ac = advanced_controls.AdvancedControls(solution_category="reduction")
+  assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.REDUCTION
+  ac = advanced_controls.AdvancedControls(solution_category="not applicable")
+  assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.NOT_APPLICABLE
+  ac = advanced_controls.AdvancedControls(solution_category="Not_ApPLICaBLe")
+  assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.NOT_APPLICABLE
+  ac = advanced_controls.AdvancedControls(solution_category="NA")
+  assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.NOT_APPLICABLE
+  with pytest.raises(ValueError):
+    _ = advanced_controls.AdvancedControls(solution_category="invalid")
