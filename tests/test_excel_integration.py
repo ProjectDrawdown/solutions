@@ -169,6 +169,10 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   cc_expected_values = pd.DataFrame(excel_read_cell(sheet, 'A9:AW390'))
   # Original Excel uses "" for empty cells, we want to use 0.0.
   cc_expected_values.replace(to_replace="", value=0, inplace=True)
+  # We can't use SolarPVUtil for this, as the tab is hidden and contains only #VALUE errors.
+  #sheet = workbook.sheets['CH4 Calcs']
+  #ch_expected_values = pd.DataFrame(excel_read_cell(sheet, 'A10:AW110'))
+  #ch_expected_values.replace(to_replace="", value=0, inplace=True)
   workbook.close()
   excel_app.quit()
 
@@ -208,6 +212,7 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   ht_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'B90:L137'))
   sheet = workbook.sheets['CO2 Calcs']
   cc_actual_values = pd.DataFrame(excel_read_cell(sheet, 'A9:AW390'))
+  # Original Excel uses "" for empty cells, we want to use 0.0 and have to match in *all* cells.
   cc_actual_values.replace(to_replace="", value=0, inplace=True)
   workbook.close()
   excel_app.quit()
@@ -229,5 +234,4 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   pd.testing.assert_frame_equal(ad_actual_values7, ad_expected_values7, check_exact=False)
   pd.testing.assert_frame_equal(ht_actual_values1, ht_expected_values1, check_exact=False)
   pd.testing.assert_frame_equal(ht_actual_values2, ht_expected_values2, check_exact=False)
-  diff_dataframes(cc_actual_values, cc_expected_values)
   pd.testing.assert_frame_equal(cc_actual_values, cc_expected_values, check_exact=False)
