@@ -89,33 +89,40 @@ The four modules below may be thought of as the computational "kernel" of the Dr
 
 1. **Complete Unit Adoption Calculations module**  
    ~~At the end of the code.earth hackathon 9/7/2018, a good start of the Unit Adoption Module had been made but remains to be completed.~~
-   The Unit Adoption module was completed 10/15/2018.
+
+   The Unit Adoption module was completed Oct 15, 2018.
 
 2. **First Cost module**  
    ~~As with the Unit Adoption module, this should use VBAWEB to push data to the Python code.~~
 
    ~~Note that this is the first place in the spreadsheets where there are a number of custom variants, where specific models need to replace the implementation with their own. It is strongly recommended that the Python code not try to accommodate this at this point: it will be much more clear what needs to be done when more of the system is moved out of Excel, attempting to design for model specialization too early is likely to over-design for the problem.~~
 
-   The First Cost module was completed 10/7/2018.
+   The First Cost module was completed Oct 7, 2018.
 
 3. **Operating Cost**  
    ~~This module is similar to the earlier modules, where VBAWEB would push data over to the Python code for processing.~~
 
-   The Operating Cost module was completed 11/3/2018.
+   The Operating Cost module was completed Nov 3, 2018.
 
 4. **Continue development by CO2 Calcs**  
-   As with earlier modules, this would use the VBAWEB module to push data from the spreadsheet over to Python for processing.
+   ~~As with earlier modules, this would use the VBAWEB module to push data from the spreadsheet over to Python for processing.~~
 
-   Test cases should check that the numbers match the values computed by the original (unmodified) spreadsheet.
+   ~~Test cases should check that the numbers match the values computed by the original (unmodified) spreadsheet.~~
+
+   The CO2 Calcs and CH4 Calcs modules were completed Nov 17, 2018.
 
 ### Preparing Input
 
    A lower priority than the kernel modules are the following &quot;input preparation&quot; or &quot;input processing&quot; modules. These are used to, for example, move from convenient units for data entry to standard units for computation, and to perform other input checking and preparation. In a sense the existing spreadsheet still represents a "gold standard" against which you can test. The issue of how to report errors has not been addressed; feel free to design something awesome.
 
-5. **TAM Data tab**  
-   This is the first module which makes extensive use of interpolation, where the source data is not supplied on an annual basis and so the models interpolate between data points. There are three interpolation implementations in the spreadsheet. Python will need to supply similar interpolation facilities.
+5. **TAM Data**  
+   ~~This is the first module which makes extensive use of interpolation, where the source data is not supplied on an annual basis and so the models interpolate between data points. There are three interpolation implementations in the spreadsheet. Python will need to supply similar interpolation facilities.~~
 
-   The Python implementation may not precisely match the original Excel interpolation values to the Nth bit of precision. The researchers can help determine whether the Python interpolation is reasonable.
+   ~~The Python implementation may not precisely match the original Excel interpolation values to the Nth bit of precision. The researchers can help determine whether the Python interpolation is reasonable.~~
+
+   The different interpolation methods (linear growth, 2nd order polynomial, 3rd order polynomial, and exponential) were completed Nov 4, 2018. The Python result matches the Excel within the normal tolerances for floating point operations.
+
+   The data tables supplied by the TAM Data module remain to be done.
 
 6. **Adoption Data module with interpolation**  
    ~~This is expected to be similar to the TAM Data tab, and also makes extensive use of interpolation.~~
@@ -174,23 +181,10 @@ Until the whole model is computable without Excel, an simple means of testing ne
 
 In order to make this comparison easier, we have added the [VBA-Web](http://vba-tools.github.io/VBA-Web/) software to our spreadsheet.
 (We found the installation of VBA-Web easier to do on a Windows machine than on a Mac.)
-This allows us to post data to a web service implemented in Python.
-We wrote some specific VBA code to take data from specific tables, convert it to CSV, send it to the service,
-retrieve the results in CSV, and place the results in a rectangular range of cells on a special tab.
+This allows us to post data to a web service implemented in Python.  We wrote some specific VBA code to take data from specific tables, send it to the service, retrieve the results in CSV, and place the results in a rectangular range of cells on a special tab.
 
-This allows a programmer to test that the numbers produced by the Python model match the Excel model. The particular tab is named "ExtModelCfg".
+This allows a programmer to test that the numbers produced by the Python model match the Excel model.
 
-## Configuration
-
-The ExtModelCfg tab allows a number of important parameters to be set by a user without having to modify VBA. The include flags that that allow you to test locally or remotely, a rudimentary debug level, and the URLs to reach a server hosting the Python web service.
-
-Additionally, the "ranges" for the input data and the range of the output data are specified here.
-
-## Code
-
-Because the VBA editor for a Mac does not appear to allow a module name to be changed, the webservice code is in a module named "Module 2". The code is straightfoward and was written by an inexpert VBA programmer; you may be able to offer improvements. This code can presumably be easily adopted to test the next, or additional, transfers of functionality to Python. The subroutines are completely parameterized and therefore reusable.
-
-## Use
 
 The code is invoked by a button with red lettering: TEST FUNCTIONAL UNIT to be found near cell H247 on the tab "Unit Adoption Calculations" of the spreadsheet.
 

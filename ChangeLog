@@ -62,3 +62,7 @@ Nov 5 - 9, 2018
 + completed 50% of Helper Tables module.
 + start moving solarpvutil specifics out of model/* and into solution/*
 + experimenting with Jupyter notebook support (not checked into repo yet)
+
+Nov 12 - 16, 2018
++ completed Helper Tables module.
++ completed CO2 Calcs and CH4 Calcs modules.
