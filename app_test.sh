@@ -14,26 +14,6 @@ done
 
 rc=0
 
-input='{"pds":"a,b,c,d\n2,2,5,4\n2,3,4,10","ref":"a,b,c,d\n1,2,3,4\n2,2,4,4"}'
-url='http://127.0.0.1:5000/unitadoption'
-output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url" | tr -d '[:space:]') 
-expected=$(echo "a,b,c,d\r\n1,0,2,0\r\n0,1,0,6\r\n" | tr -d '[:space:]')
-
-if [ "${output}" != "${expected}" ]; then
-    echo "${output} != ${expected}"
-    rc=1
-fi
-
-input='{"pds":"e,f,g,h\n0,0,0,0\n1,2,3,4","ref":"e,f,g,h\n1,2,3,4\n0,0,0,0"}'
-url='http://127.0.0.1:5000/unitadoption'
-output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url" | tr -d '[:space:]') 
-expected=$(echo "e,f,g,h\r\n-1,-2,-3,-4\r\n1,2,3,4\r\n" | tr -d '[:space:]')
-
-if [ "${output}" != "${expected}" ]; then
-    echo "${output} != ${expected}"
-    rc=1
-fi
-
 require() {
   output="$1"
   expected="$2"
@@ -137,7 +117,7 @@ url='http://127.0.0.1:5000/emissionsfactors'
 output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
 
 require "$output" '"conv_ref_grid_CO2eq_per_KWh": [["Year",' && \
-require "$output" '"conv_ref_grid_CO2eq_per_KWh_direct": [["Year",' && \
+require "$output" '"conv_ref_grid_CO2_per_KWh": [["Year",' && \
 true
 
 
@@ -152,6 +132,30 @@ require "$output" '"linear_growth": [["Year",' && \
 require "$output" '"poly_degree2_growth": [["Year",' && \
 require "$output" '"poly_degree3_growth": [["Year",' && \
 require "$output" '"exponential_growth": [["Year",' && \
+true
+
+if [ $? -ne 0 ]; then
+    rc=1
+fi
+
+
+input=$(cat app_test.co2calcs_req)
+url='http://127.0.0.1:5000/co2calcs'
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
+
+require "$output" '"co2_reduced_grid_emissions": [["Year",' && \
+require "$output" '"co2_replaced_grid_emissions": [["Year",' && \
+require "$output" '"co2_increased_grid_usage_emissions": [["Year",' && \
+require "$output" '"co2eq_reduced_grid_emissions": [["Year",' && \
+require "$output" '"co2eq_replaced_grid_emissions": [["Year",' && \
+require "$output" '"co2eq_increased_grid_usage_emissions": [["Year",' && \
+require "$output" '"co2eq_direct_reduced_emissions": [["Year",' && \
+require "$output" '"co2eq_reduced_fuel_emissions": [["Year",' && \
+require "$output" '"co2eq_net_indirect_emissions": [["Year",' && \
+require "$output" '"co2_mmt_reduced": [["Year",' && \
+require "$output" '"co2eq_mmt_reduced": [["Year",' && \
+require "$output" '"co2_ppm_calculator": [["Year",' && \
+require "$output" '"co2eq_ppm_calculator": [["Year",' && \
 true
 
 if [ $? -ne 0 ]; then
