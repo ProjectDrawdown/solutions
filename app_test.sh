@@ -156,6 +156,8 @@ require "$output" '"co2_mmt_reduced": [["Year",' && \
 require "$output" '"co2eq_mmt_reduced": [["Year",' && \
 require "$output" '"co2_ppm_calculator": [["Year",' && \
 require "$output" '"co2eq_ppm_calculator": [["Year",' && \
+require "$output" '"ch4_tons_reduced": [["Year",' && \
+require "$output" '"ch4_ppb_calculator": [["Year",' && \
 true
 
 if [ $? -ne 0 ]; then

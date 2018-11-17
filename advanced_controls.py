@@ -110,10 +110,10 @@ class AdvancedControls:
 
   ch4_is_co2eq (boolean): True if CH4 emissions measurement is in terms of CO2
      equivalent, False if measurement is in units of CH4 mass.
-     derived from "Advanced Controls"!I182
+     derived from "Advanced Controls"!I184
   n2o_is_co2eq (boolean): True if N2O emissions measurement is in terms of CO2
      equivalent, False if measurement is in units of N2O mass.
-     derived from "Advanced Controls"!J182
+     derived from "Advanced Controls"!J184
   co2eq_conversion_source (string): One of the conversion_source names
      defined in model/emissions_factors.py like "AR5 with feedback" or "AR4"
      "Advanced Controls"!I185

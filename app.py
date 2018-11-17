@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from model import adoptiondata as ad
 from model import co2calcs
+from model import ch4calcs
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -495,6 +496,13 @@ def co2Calcs():
     co2eq_ppm_calculator = c2.co2eq_ppm_calculator(co2_ppm_calculator=co2_ppm_calculator,
         ch4_ppm_calculator=ch4_ppm_calculator)
     results['co2eq_ppm_calculator'] = format_for_response(co2eq_ppm_calculator)
+
+    ch4 = ch4calcs.CH4Calcs(ac=ac_rq)
+    ch4_tons_reduced = ch4.ch4_tons_reduced(
+      soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+    results['ch4_tons_reduced'] = format_for_response(ch4_tons_reduced)
+    results['ch4_ppb_calculator'] = format_for_response(ch4.ch4_ppb_calculator(
+      ch4_tons_reduced=ch4_tons_reduced))
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
