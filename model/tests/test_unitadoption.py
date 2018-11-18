@@ -5,12 +5,17 @@ import pathlib
 
 import pandas as pd
 import pytest
-from model import unitadoption, tam
+from model import unitadoption
 import advanced_controls
 
-solution_dir = pathlib.Path(__file__).parents[2].joinpath('solution')
-ref_tam_per_region_filename = solution_dir.joinpath('solarpvutil_ref_tam_per_region.csv')
-pds_tam_per_region_filename = solution_dir.joinpath('solarpvutil_pds_tam_per_region.csv')
+
+this_dir = pathlib.Path(__file__)
+ref_tam_per_region_filename = this_dir.parents[0].joinpath('ref_tam_per_region.csv')
+pds_tam_per_region_filename = this_dir.parents[0].joinpath('pds_tam_per_region.csv')
+ref_tam_per_region = pd.read_csv(ref_tam_per_region_filename, header=0, index_col=0,
+    skipinitialspace=True, comment='#')
+pds_tam_per_region = pd.read_csv(pds_tam_per_region_filename, header=0, index_col=0,
+    skipinitialspace=True, comment='#')
 
 
 def test_ref_population():
@@ -37,35 +42,27 @@ def test_ref_gdp_per_capita():
   assert gpc['USA'][2014] == pytest.approx(43.77208)
 
 def test_ref_tam_per_capita():
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  tpr = tm.ref_tam_per_region()
   ua = unitadoption.UnitAdoption()
   pop = ua.ref_population()
-  tpc = ua.ref_tam_per_capita(ref_tam_per_region=tpr, ref_population=pop)
+  tpc = ua.ref_tam_per_capita(ref_tam_per_region=ref_tam_per_region, ref_population=pop)
   assert tpc['World'][2016] == pytest.approx(3.38350004047)
   assert tpc['Latin America'][2029] == pytest.approx(3.62748818668)
   assert tpc['USA'][2059] == pytest.approx(12.21081396314)
 
 def test_ref_tam_per_gdp_per_capita():
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  tpr = tm.ref_tam_per_region()
   ua = unitadoption.UnitAdoption()
   pop = ua.ref_population()
   gdp = ua.ref_gdp()
   gpc = ua.ref_gdp_per_capita(ref_population=pop, ref_gdp=gdp)
-  tpgpc = ua.ref_tam_per_gdp_per_capita(ref_tam_per_region=tpr, ref_gdp_per_capita=gpc)
+  tpgpc = ua.ref_tam_per_gdp_per_capita(ref_tam_per_region=ref_tam_per_region,
+      ref_gdp_per_capita=gpc)
   assert tpgpc['OECD90'][2014] == pytest.approx(256.68795471511)
   assert tpgpc['China'][2033] == pytest.approx(743.15450999975)
   assert tpgpc['EU'][2060] == pytest.approx(85.95558928452)
 
 def test_ref_tam_growth():
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  tpr = tm.ref_tam_per_region()
   ua = unitadoption.UnitAdoption()
-  tg = ua.ref_tam_growth(ref_tam_per_region=tpr)
+  tg = ua.ref_tam_growth(ref_tam_per_region=ref_tam_per_region)
   assert tg['Eastern Europe'][2015] == pytest.approx(24.26693428425)
   assert tg['India'][2037] == pytest.approx(171.36849827619)
   assert tg['EU'][2060] == pytest.approx(71.14797759969)
@@ -95,35 +92,27 @@ def test_pds_gdp_per_capita():
   assert gpc['USA'][2014] == pytest.approx(44.49768)
 
 def test_pds_tam_per_capita():
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  tpr = tm.pds_tam_per_region()
   ua = unitadoption.UnitAdoption()
   pop = ua.pds_population()
-  tpc = ua.pds_tam_per_capita(pds_tam_per_region=tpr, pds_population=pop)
+  tpc = ua.pds_tam_per_capita(pds_tam_per_region=pds_tam_per_region, pds_population=pop)
   assert tpc['World'][2015] == pytest.approx(3.357451)
   assert tpc['India'][2039] == pytest.approx(2.945601)
   assert tpc['USA'][2058] == pytest.approx(13.978179)
 
 def test_pds_tam_per_gdp_per_capita():
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  tpr = tm.pds_tam_per_region()
   ua = unitadoption.UnitAdoption()
   pop = ua.pds_population()
   gdp = ua.pds_gdp()
   gpc = ua.pds_gdp_per_capita(pds_population=pop, pds_gdp=gdp)
-  tpgpc = ua.pds_tam_per_gdp_per_capita(pds_tam_per_region=tpr, pds_gdp_per_capita=gpc)
+  tpgpc = ua.pds_tam_per_gdp_per_capita(pds_tam_per_region=ref_tam_per_region,
+      pds_gdp_per_capita=gpc)
   assert tpgpc['OECD90'][2015] == pytest.approx(247.759624)
   assert tpgpc['China'][2032] == pytest.approx(759.164408)
   assert tpgpc['EU'][2060] == pytest.approx(85.955589)
 
 def test_pds_tam_growth():
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  tpr = tm.pds_tam_per_region()
   ua = unitadoption.UnitAdoption()
-  tg = ua.pds_tam_growth(pds_tam_per_region=tpr)
+  tg = ua.pds_tam_growth(pds_tam_per_region=ref_tam_per_region)
   assert tg['Eastern Europe'][2015] == pytest.approx(24.266934)
   assert tg['India'][2033] == pytest.approx(159.378951)
   assert tg['USA'][2060] == pytest.approx(33.502722)
@@ -249,14 +238,13 @@ def test_soln_net_annual_funits_adopted():
 def test_conv_ref_tot_iunits_reqd():
   ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
   ua = unitadoption.UnitAdoption(ac=ac)
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
       [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
       [2015, 117.07, 75.63, 0.34, 22.16, 1.71, 15.42, 15.43, 3.07, 55.76, 13.22],
       [2016, 121.51, 76.25, 0.34, 23.25, 1.85, 16.18, 15.89, 3.39, 56.25, 13.31]]
   soln_ref_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
-  result = ua.conv_ref_tot_iunits_reqd(tm.ref_tam_per_region(), soln_ref_funits_adopted)
+  result = ua.conv_ref_tot_iunits_reqd(ref_tam_per_region=ref_tam_per_region,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe'],
       [2014, 4.53535289538, 1.93172544646, 0.40864109200],
       [2015, 4.87963781659, 1.94274331751, 0.41354556337],
