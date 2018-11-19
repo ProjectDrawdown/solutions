@@ -164,6 +164,85 @@ if [ $? -ne 0 ]; then
     rc=1
 fi
 
+input='{"tam_data":{"tamconfig":[["param","World","OECD90","Eastern Europe","Asia (Sans Japan)","Middle East and Africa","Latin America","China","India","EU","USA"],["source_until_2014","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES"],["source_after_2014","Baseline Cases","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES","ALL SOURCES"],["trend","3rd Poly","3rd Poly","3rd Poly","3rd Poly","3rd Poly","3rd Poly","3rd Poly","3rd Poly","3rd Poly","3rd Poly"],["growth","Medium","Medium","Medium","Medium","Medium","Medium","Medium","Medium","Medium","Medium"],["low_sd_mult",1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], ["high_sd_mult",1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]]}}'
+url='http://127.0.0.1:5000/tamdata'
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
+require "$output" '"forecast_data_global": [["Year",' && \
+require "$output" '"forecast_min_max_sd_global": [["Year",' && \
+require "$output" '"forecast_low_med_high_global": [["Year",' && \
+require "$output" '"forecast_trend_linear_global": [["Year",' && \
+require "$output" '"forecast_trend_degree2_global": [["Year",' && \
+require "$output" '"forecast_trend_degree3_global": [["Year",' && \
+require "$output" '"forecast_trend_exponential_global": [["Year",' && \
+require "$output" '"forecast_data_oecd90": [["Year",' && \
+require "$output" '"forecast_min_max_sd_oecd90": [["Year",' && \
+require "$output" '"forecast_low_med_high_oecd90": [["Year",' && \
+require "$output" '"forecast_trend_linear_oecd90": [["Year",' && \
+require "$output" '"forecast_trend_degree2_oecd90": [["Year",' && \
+require "$output" '"forecast_trend_degree3_oecd90": [["Year",' && \
+require "$output" '"forecast_trend_exponential_oecd90": [["Year",' && \
+require "$output" '"forecast_data_eastern_europe": [["Year",' && \
+require "$output" '"forecast_min_max_sd_eastern_europe": [["Year",' && \
+require "$output" '"forecast_low_med_high_eastern_europe": [["Year",' && \
+require "$output" '"forecast_trend_linear_eastern_europe": [["Year",' && \
+require "$output" '"forecast_trend_degree2_eastern_europe": [["Year",' && \
+require "$output" '"forecast_trend_degree3_eastern_europe": [["Year",' && \
+require "$output" '"forecast_trend_exponential_eastern_europe": [["Year",' && \
+require "$output" '"forecast_data_asia_sans_japan": [["Year",' && \
+require "$output" '"forecast_min_max_sd_asia_sans_japan": [["Year",' && \
+require "$output" '"forecast_low_med_high_asia_sans_japan": [["Year",' && \
+require "$output" '"forecast_trend_linear_asia_sans_japan": [["Year",' && \
+require "$output" '"forecast_trend_degree2_asia_sans_japan": [["Year",' && \
+require "$output" '"forecast_trend_degree3_asia_sans_japan": [["Year",' && \
+require "$output" '"forecast_trend_exponential_asia_sans_japan": [["Year",' && \
+require "$output" '"forecast_data_middle_east_and_africa": [["Year",' && \
+require "$output" '"forecast_min_max_sd_middle_east_and_africa": [["Year",' && \
+require "$output" '"forecast_low_med_high_middle_east_and_africa": [["Year",' && \
+require "$output" '"forecast_trend_linear_middle_east_and_africa": [["Year",' && \
+require "$output" '"forecast_trend_degree2_middle_east_and_africa": [["Year",' && \
+require "$output" '"forecast_trend_degree3_middle_east_and_africa": [["Year",' && \
+require "$output" '"forecast_trend_exponential_middle_east_and_africa": [["Year",' && \
+require "$output" '"forecast_data_latin_america": [["Year",' && \
+require "$output" '"forecast_min_max_sd_latin_america": [["Year",' && \
+require "$output" '"forecast_low_med_high_latin_america": [["Year",' && \
+require "$output" '"forecast_trend_linear_latin_america": [["Year",' && \
+require "$output" '"forecast_trend_degree2_latin_america": [["Year",' && \
+require "$output" '"forecast_trend_degree3_latin_america": [["Year",' && \
+require "$output" '"forecast_trend_exponential_latin_america": [["Year",' && \
+require "$output" '"forecast_data_china": [["Year",' && \
+require "$output" '"forecast_min_max_sd_china": [["Year",' && \
+require "$output" '"forecast_low_med_high_china": [["Year",' && \
+require "$output" '"forecast_trend_linear_china": [["Year",' && \
+require "$output" '"forecast_trend_degree2_china": [["Year",' && \
+require "$output" '"forecast_trend_degree3_china": [["Year",' && \
+require "$output" '"forecast_trend_exponential_china": [["Year",' && \
+require "$output" '"forecast_data_india": [["Year",' && \
+require "$output" '"forecast_min_max_sd_india": [["Year",' && \
+require "$output" '"forecast_low_med_high_india": [["Year",' && \
+require "$output" '"forecast_trend_linear_india": [["Year",' && \
+require "$output" '"forecast_trend_degree2_india": [["Year",' && \
+require "$output" '"forecast_trend_degree3_india": [["Year",' && \
+require "$output" '"forecast_trend_exponential_india": [["Year",' && \
+require "$output" '"forecast_data_eu": [["Year",' && \
+require "$output" '"forecast_min_max_sd_eu": [["Year",' && \
+require "$output" '"forecast_low_med_high_eu": [["Year",' && \
+require "$output" '"forecast_trend_linear_eu": [["Year",' && \
+require "$output" '"forecast_trend_degree2_eu": [["Year",' && \
+require "$output" '"forecast_trend_degree3_eu": [["Year",' && \
+require "$output" '"forecast_trend_exponential_eu": [["Year",' && \
+require "$output" '"forecast_data_usa": [["Year",' && \
+require "$output" '"forecast_min_max_sd_usa": [["Year",' && \
+require "$output" '"forecast_low_med_high_usa": [["Year",' && \
+require "$output" '"forecast_trend_linear_usa": [["Year",' && \
+require "$output" '"forecast_trend_degree2_usa": [["Year",' && \
+require "$output" '"forecast_trend_degree3_usa": [["Year",' && \
+require "$output" '"forecast_trend_exponential_usa": [["Year",' && \
+true
+
+if [ $? -ne 0 ]; then
+    rc=1
+fi
+
 
 trap 'kill $(jobs -pr) >/dev/null 2>&1' SIGINT SIGTERM EXIT
 

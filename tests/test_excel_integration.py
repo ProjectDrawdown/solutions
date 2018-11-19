@@ -169,10 +169,26 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   cc_expected_values = pd.DataFrame(excel_read_cell(sheet, 'A9:AW390'))
   # Original Excel uses "" for empty cells, we want to use 0.0.
   cc_expected_values.replace(to_replace="", value=0, inplace=True)
-  # We can't use SolarPVUtil for this, as the tab is hidden and contains only #VALUE errors.
+  # We can't use SolarPVUtil for CH4 Calcs, as the tab is hidden and contains only #VALUE errors.
   #sheet = workbook.sheets['CH4 Calcs']
   #ch_expected_values = pd.DataFrame(excel_read_cell(sheet, 'A10:AW110'))
   #ch_expected_values.replace(to_replace="", value=0, inplace=True)
+  sheet = workbook.sheets['TAM Data']
+  td_expected_values1 = pd.DataFrame(excel_read_cell(sheet, 'C44:Q721'))
+  # We removed the extra spaces from the study names.
+  td_expected_values1 = td_expected_values1.replace(
+      to_replace=['Baseline: Based on-  AMPERE MESSAGE-MACRO Reference',
+        'Conservative: Based on-  IEA ETP 2016 4DS',
+        ' Ambitious: Based on- AMPERE GEM E3 450'],
+      value=['Baseline: Based on- AMPERE MESSAGE-MACRO Reference',
+        'Conservative: Based on- IEA ETP 2016 4DS',
+        'Ambitious: Based on- AMPERE GEM E3 450'])
+  td_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'W44:Y721'))
+  td_expected_values3 = pd.DataFrame(excel_read_cell(sheet, 'AA44:AC721'))
+  td_expected_values4 = pd.DataFrame(excel_read_cell(sheet, 'BX44:BZ721'))
+  td_expected_values5 = pd.DataFrame(excel_read_cell(sheet, 'CE44:CH721'))
+  td_expected_values6 = pd.DataFrame(excel_read_cell(sheet, 'CM44:CQ721'))
+  td_expected_values7 = pd.DataFrame(excel_read_cell(sheet, 'CV44:CX721'))
   workbook.close()
   excel_app.quit()
 
@@ -214,6 +230,14 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   cc_actual_values = pd.DataFrame(excel_read_cell(sheet, 'A9:AW390'))
   # Original Excel uses "" for empty cells, we want to use 0.0 and have to match in *all* cells.
   cc_actual_values.replace(to_replace="", value=0, inplace=True)
+  sheet = workbook.sheets['TAM Data']
+  td_actual_values1 = pd.DataFrame(excel_read_cell(sheet, 'C44:Q721'))
+  td_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'W44:Y721'))
+  td_actual_values3 = pd.DataFrame(excel_read_cell(sheet, 'AA44:AC721'))
+  td_actual_values4 = pd.DataFrame(excel_read_cell(sheet, 'BX44:BZ721'))
+  td_actual_values5 = pd.DataFrame(excel_read_cell(sheet, 'CE44:CH721'))
+  td_actual_values6 = pd.DataFrame(excel_read_cell(sheet, 'CM44:CQ721'))
+  td_actual_values7 = pd.DataFrame(excel_read_cell(sheet, 'CV44:CX721'))
   workbook.close()
   excel_app.quit()
 
@@ -235,3 +259,10 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   pd.testing.assert_frame_equal(ht_actual_values1, ht_expected_values1, check_exact=False)
   pd.testing.assert_frame_equal(ht_actual_values2, ht_expected_values2, check_exact=False)
   pd.testing.assert_frame_equal(cc_actual_values, cc_expected_values, check_exact=False)
+  pd.testing.assert_frame_equal(td_actual_values1, td_expected_values1, check_exact=False)
+  pd.testing.assert_frame_equal(td_actual_values2, td_expected_values2, check_exact=False)
+  pd.testing.assert_frame_equal(td_actual_values3, td_expected_values3, check_exact=False)
+  pd.testing.assert_frame_equal(td_actual_values4, td_expected_values4, check_exact=False)
+  pd.testing.assert_frame_equal(td_actual_values5, td_expected_values5, check_exact=False)
+  pd.testing.assert_frame_equal(td_actual_values6, td_expected_values6, check_exact=False)
+  pd.testing.assert_frame_equal(td_actual_values7, td_expected_values7, check_exact=False)
