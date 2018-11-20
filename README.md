@@ -1,6 +1,6 @@
 # Project Drawdown Model Engine
 
-This is the [Project Drawdown](https://www.drawdown.org/) model engine. This is intended to be a replacement for the series of interconnected Excel spreadsheets currently used to do the modeling for project draw down. The intention is to create a framework that will allow us to create command line utility that can be run on the workstations of climate scientists who want to adjust the inputs to the Project Drawdown models.
+This is the [Project Drawdown](https://www.drawdown.org/) model engine. This is intended to be a replacement for the series of interconnected Excel spreadsheets currently used by the project to do climate solution modeling. The intention is to create an implementation which will allow us to broaden the use of the climate solution models to policymakers, business leaders, and other decisionmakers and interested parties.
 
 # Getting started
 
@@ -38,50 +38,26 @@ curl -H 'Content-Type: application/json' --data @sample.json 'http://127.0.0.1:5
 ```
 # Understanding the Drawdown solution models: Reference and Summary
 
-A formal [documentation](https://gitlab.com/codeearth/drawdown/blob/master/Documentation/Project_Drawdown_Model_Framework_and_Guide.pdf) has been written.
-Need reference to Drawdown documentation here. A simplistic summary for the computer programmer is given below.
+[Documentation of the Excel models](https://gitlab.com/codeearth/drawdown/blob/master/Documentation/Project_Drawdown_Model_Framework_and_Guide.pdf) has been written, as well as a [design doc](https://docs.google.com/document/d/18nUKV-qltsaSD8kZd5gHswQu82Ot9rg19KIU8_eOisY/view) of how we expect the new implementation to be completed. We refer to this development effort as a Remodel, of course.
 
-A model is the computation of three outputs from a large number of inputs. Each of the three outputs is a table which
-with years as rows and regions as columns. The value of a cell in this table is scalar.
+A model is the computation of three outputs from a large number of inputs. Each of the three outputs is a table with years as rows and regions as columns. The value of a cell in this table is scalar.
 
 The three outputs are:
 * CO2 equivalents per year per region
 * Cost of solution per year per region
 * Functional Units per year per region.
 
-The Functional Unit is a type which varies and might be different for every model. A functinal unit is always a good that society needs. For example, it could be Terrawatt hours of electricity or person-miles of travel.
+The Functional Unit is a type which varies and might be different for every model. A functional unit is always a good that society needs. For example, it could be Terawatt hours of electricity or person-miles of travel.
 
-Every solution provides a certain number of functional units per year per region, depending on how the much the solution is adopted. For example, rooftop solar provides Terrawatt hours of electricity, in proportion to the wattage capacity which is installed. Increase adoption provides increased functional units. It may also bring with it increase CO2 emissions, in a proportion depending on its nature. Rooftop solar produces fewer emisions that burning fossil fuel, for example. Each solution also has costs (potentially negative, or benefits) in proportion to its adoption.
+Every solution provides a certain number of functional units per year per region, depending on how the much the solution is adopted. For example, rooftop solar provides Terawatt hours of electricity, in proportion to the wattage capacity which is installed. Increased adoption provides increased functional units. It may also bring with it increased CO2 emissions, in a proportion depending on its nature. Rooftop solar produces fewer emissions that burning fossil fuel, for example. Each solution also has costs (potentially negative, or benefits) in proportion to its adoption.
 
-The input to a given model is the all of the data, such as costs per installed watt of rooftop solar and the expected adoption of the solutin.
+The input to a given model is various data such as costs per installed watt of rooftop solar and the expected adoption of the solution. Additionally, Solutions are typically organized into "low adoption", "medium adoption", and "high adoption" models. Many solutions may use the same model, such as electrical energy as a functional unit.
 
-Additionally, Solutions are typically organized into a "low adoption", "medium adoption", and "high adoption" models.
-
-Many models may use the same model, such as electrical energy as a functional unit.
-
-Each model and functional unit has a notion of a Total Available Market. There is no benefit to install more rooftop solar than the total market for electricity for the globe, for example. The prevents unrealistic optimisim on a single solution, for example.
-
-Ultimately, all solutions interact with each and synergize in certain ways which are beyond the scope of the work in this repo.
+Each model and functional unit has a notion of a Total Available Market. There is no benefit to install more rooftop solar than the total market for electricity for the globe, for example. The prevents unrealistic optimism on a single solution, for example.
 
 Reaching the drawdown point, where humanity ceases to add greenhouses gases to the atmosphere, will require many solutions to be adopted working and to harmonize synergistically.
 
 # Road Map
-
-## Introduction and Methodology
-
-This section describes the main pieces of work that need to be done to complete the port of the models from Excel to Python.
-We believe each of the four "Model Kernel" pieces below can be done using the same methodology.
-
-First, study the spreadsheets to understand the calculations being done by that tab. When you understand them thoroughly, code them in
-Python, hopefully as a separate module and endpoint so that they can be tested independently. Use the numbers in the spreadsheet as a manual test and sanity test of your work.
-
-Then improve the VBA in the spreadsheet to send data directly to your webservice endpoint from Excel and configure it to put the
-resulting tables on a "test tab". This will take some simple programming, but it WILL be in VBA, and therefore perhaps difficult.
-
-When you are fully satisfied, figure out how to chain your piece togeother in pipeline with other pieces (in Python) and then
-perform a full "integration test" to make sure the numbers still match.
-
-Feel free to contact other developers here for advice and questions and code review (a tech lead has not yet been chosen, so contact Robert L. Read until that is done.)
 
 ### Kernel
 
@@ -141,7 +117,7 @@ The four modules below may be thought of as the computational "kernel" of the Dr
 
 Tasks which do not fit into an ordered list of things to be completed:
 
-* Dashboard  
+* **Dashboard**  
    The ultimate goal of this project is to produce a compelling, browser-delivered GUI that will be made available to all researchers and policy makers and the general public to understand the solutions proposed by project drawdown.
 
    A mockup of such an interface has been produced in Java [Need to get link from Chad.]
@@ -152,8 +128,16 @@ Tasks which do not fit into an ordered list of things to be completed:
 
    Consider using D3 or other Javascript charting packages to implement this.
 
-* Data Pipeline Hook Strategy  
+* **Data Pipeline Hook Strategy**  
    &quot;Specialization&quot; is mentioned above as being an issue starting with the First Cost tab, where individual models have often needed to supply their own implementations and formulae. Though it is recommended that a design for this not be started too early so as to benefit from the understanding gained as the system is constructed, it will nonetheless have to be done at some point.
+
+* **Automated testing**  
+   One other goal for the project is to build a model implementation with good coverage by automated tests. There is a [YouTube video which demonstrates the three layers of tests](https://youtu.be/ipZrQWuMU3w) and another which [focuses on the Excel-based system test specifically](https://youtu.be/HLL7HrFcmjc).
+
+   Tests are being constructed at three layers:
+    1. unit tests of each function
+    2. an integration test which starts the webserver and runs test cases
+    3. a system test which starts Excel to compare the original, unmodified spreadsheet to the results from the new implementation
 
 ---
 
@@ -177,7 +161,7 @@ The current goal of Project Drawdown and this repository is to liberate the data
 ## Comparing
 
 However, in order to do this gracefully and iteratively, programmers must be able to check their work.
-Until the whole model is computable without Excel, an simple means of testing new Python code implementing ever-greater parts of the model is to compare intermediate with results with those computed by Excel.  Furthermore, at the time of this writing, the easiest way to obtain all data need to compute a model is from within Excel.
+Until the whole model is computable without Excel, a simple means of testing new Python code implementing ever-greater parts of the model is to compare intermediate with results with those computed by Excel.  Furthermore, at the time of this writing, the easiest way to obtain all data need to compute a model is from within Excel.
 
 In order to make this comparison easier, we have added the [VBA-Web](http://vba-tools.github.io/VBA-Web/) software to our spreadsheet.
 (We found the installation of VBA-Web easier to do on a Windows machine than on a Mac.)
