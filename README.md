@@ -98,7 +98,7 @@ The four modules below may be thought of as the computational "kernel" of the Dr
 
    The different interpolation methods (linear growth, 2nd order polynomial, 3rd order polynomial, and exponential) were completed Nov 4, 2018. The Python result matches the Excel within the normal tolerances for floating point operations.
 
-   The data tables supplied by the TAM Data module remain to be done.
+   The data tables and other calculations supplied by the TAM Data module were implemented Nov 21, 2018.
 
 6. **Adoption Data module with interpolation**  
    ~~This is expected to be similar to the TAM Data tab, and also makes extensive use of interpolation.~~
