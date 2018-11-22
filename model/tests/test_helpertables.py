@@ -4,15 +4,19 @@ import pathlib
 
 import advanced_controls
 from model import helpertables
-from model import tam
 import numpy as np
 import pandas as pd
 import pytest
 
 
-solution_dir = pathlib.Path(__file__).parents[2].joinpath('solution')
-ref_tam_per_region_filename = solution_dir.joinpath('solarpvutil_ref_tam_per_region.csv')
-pds_tam_per_region_filename = solution_dir.joinpath('solarpvutil_pds_tam_per_region.csv')
+this_dir = pathlib.Path(__file__)
+ref_tam_per_region_filename = this_dir.parents[0].joinpath('ref_tam_per_region.csv')
+pds_tam_per_region_filename = this_dir.parents[0].joinpath('pds_tam_per_region.csv')
+
+ref_tam_per_region = pd.read_csv(ref_tam_per_region_filename, header=0, index_col=0,
+    skipinitialspace=True, comment='#')
+pds_tam_per_region = pd.read_csv(pds_tam_per_region_filename, header=0, index_col=0,
+    skipinitialspace=True, comment='#')
 
 
 def test_soln_ref_funits_adopted():
@@ -26,9 +30,6 @@ def test_soln_ref_funits_adopted():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  ref_tam_per_region = tm.ref_tam_per_region()
   result = ht.soln_ref_funits_adopted(ref_datapoints=ref_datapoints,
       ref_tam_per_region=ref_tam_per_region)
   expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
@@ -72,9 +73,6 @@ def test_soln_ref_funits_adopted_regional_sums():
     [2014, 10.0, 3.0, 2.0, 1.0], [2050, 20.0, 3.0, 2.0, 1.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  ref_tam_per_region = tm.ref_tam_per_region()
   result = ht.soln_ref_funits_adopted(ref_datapoints=ref_datapoints,
       ref_tam_per_region=ref_tam_per_region)
   expected = pd.DataFrame([
@@ -110,9 +108,6 @@ def test_soln_pds_funits_adopted_single_source():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  pds_tam_per_region = tm.pds_tam_per_region()
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:], columns=adoption_low_med_high_list[0],
       dtype=np.float64).set_index('Year')
   result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints,
@@ -133,9 +128,6 @@ def test_soln_pds_funits_adopted_3rd_poly_medium():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  pds_tam_per_region = tm.pds_tam_per_region()
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
       columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
   adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
@@ -157,9 +149,6 @@ def test_soln_pds_funits_adopted_2rd_poly_high():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  pds_tam_per_region = tm.pds_tam_per_region()
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
       columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
   adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
@@ -181,9 +170,6 @@ def test_soln_pds_funits_adopted_exp_low():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  pds_tam_per_region = tm.pds_tam_per_region()
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
       columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
   adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
@@ -205,9 +191,6 @@ def test_soln_pds_funits_adopted_linear_medium():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac)
-  tm = tam.TAM(ref_tam_per_region_filename=ref_tam_per_region_filename,
-      pds_tam_per_region_filename=pds_tam_per_region_filename)
-  pds_tam_per_region = tm.pds_tam_per_region()
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
       columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
   adoption_low_med_high.index = adoption_low_med_high.index.astype(int)

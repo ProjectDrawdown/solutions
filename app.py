@@ -3,6 +3,7 @@
 import io
 import json
 import os
+import os.path
 
 import advanced_controls
 from flask import Flask, request, render_template, jsonify, Response
@@ -14,13 +15,16 @@ from model import ch4calcs
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
+from model import interpolation
 from model import operatingcost
+from model import tam
 from model import unitadoption
 import werkzeug.exceptions
 
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False  # minify JSON
+thisdir = os.path.dirname(__file__)
 
 
 def json_dumps_default(obj):
@@ -349,14 +353,14 @@ def adoptionData():
         adoption_prognostication_source=source,
         adoption_min_max_sd=adoption_min_max_sd, low_sd=low_sd, high_sd=high_sd)
     results['adoption_low_med_high'] = format_for_response(adoption_low_med_high)
-    results['linear_growth'] = format_for_response(ad.linear_growth(
-      adoption=adoption_low_med_high[growth_choice]))
-    results['poly_degree2_growth'] = format_for_response(ad.poly_degree2_growth(
-      adoption=adoption_low_med_high[growth_choice]))
-    results['poly_degree3_growth'] = format_for_response(ad.poly_degree3_growth(
-      adoption=adoption_low_med_high[growth_choice]))
-    results['exponential_growth'] = format_for_response(ad.exponential_growth(
-      adoption=adoption_low_med_high[growth_choice]))
+    results['linear_growth'] = format_for_response(interpolation.linear_trend(
+      data=adoption_low_med_high[growth_choice]))
+    results['poly_degree2_growth'] = format_for_response(interpolation.poly_degree2_trend(
+      data=adoption_low_med_high[growth_choice]))
+    results['poly_degree3_growth'] = format_for_response(interpolation.poly_degree3_trend(
+      data=adoption_low_med_high[growth_choice]))
+    results['exponential_growth'] = format_for_response(interpolation.exponential_trend(
+      data=adoption_low_med_high[growth_choice]))
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
@@ -503,6 +507,143 @@ def co2Calcs():
     results['ch4_tons_reduced'] = format_for_response(ch4_tons_reduced)
     results['ch4_ppb_calculator'] = format_for_response(ch4.ch4_ppb_calculator(
       ch4_tons_reduced=ch4_tons_reduced))
+
+    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/tamdata", methods=['POST'])
+def tamData():
+    """TAM Data module."""
+    js = request.get_json(force=True)
+    td_rq = js.get('tam_data', {})
+
+    p = td_rq.get('tamconfig', [])
+    tamconfig = pd.DataFrame(p[1:], columns=p[0]).set_index('param')
+
+    td = tam.TAM(datadir=os.path.join(thisdir, 'solution', 'solarpvutil'), tamconfig=tamconfig)
+    results = dict()
+
+    results['forecast_data_global'] = format_for_response(td.forecast_data_global())
+    results['forecast_min_max_sd_global'] = format_for_response(td.forecast_min_max_sd_global())
+    results['forecast_low_med_high_global'] = format_for_response(td.forecast_low_med_high_global())
+    results['forecast_trend_linear_global'] = format_for_response(
+        td.forecast_trend_global(trend='Linear'))
+    results['forecast_trend_degree2_global'] = format_for_response(
+        td.forecast_trend_global(trend='Degree2'))
+    results['forecast_trend_degree3_global'] = format_for_response(
+        td.forecast_trend_global(trend='Degree3'))
+    results['forecast_trend_exponential_global'] = format_for_response(
+        td.forecast_trend_global(trend='Exponential'))
+    results['forecast_data_oecd90'] = format_for_response(td.forecast_data_oecd90())
+    results['forecast_min_max_sd_oecd90'] = format_for_response(td.forecast_min_max_sd_oecd90())
+    results['forecast_low_med_high_oecd90'] = format_for_response(td.forecast_low_med_high_oecd90())
+    results['forecast_trend_linear_oecd90'] = format_for_response(
+        td.forecast_trend_oecd90(trend='Linear'))
+    results['forecast_trend_degree2_oecd90'] = format_for_response(
+        td.forecast_trend_oecd90(trend='Degree2'))
+    results['forecast_trend_degree3_oecd90'] = format_for_response(
+        td.forecast_trend_oecd90(trend='Degree3'))
+    results['forecast_trend_exponential_oecd90'] = format_for_response(
+        td.forecast_trend_oecd90(trend='Exponential'))
+    results['forecast_data_eastern_europe'] = format_for_response(td.forecast_data_eastern_europe())
+    results['forecast_min_max_sd_eastern_europe'] = format_for_response(
+        td.forecast_min_max_sd_eastern_europe())
+    results['forecast_low_med_high_eastern_europe'] = format_for_response(
+        td.forecast_low_med_high_eastern_europe())
+    results['forecast_trend_linear_eastern_europe'] = format_for_response(
+        td.forecast_trend_eastern_europe(trend='Linear'))
+    results['forecast_trend_degree2_eastern_europe'] = format_for_response(
+        td.forecast_trend_eastern_europe(trend='Degree2'))
+    results['forecast_trend_degree3_eastern_europe'] = format_for_response(
+        td.forecast_trend_eastern_europe(trend='Degree3'))
+    results['forecast_trend_exponential_eastern_europe'] = format_for_response(
+        td.forecast_trend_eastern_europe(trend='Exponential'))
+    results['forecast_data_asia_sans_japan'] = format_for_response(
+        td.forecast_data_asia_sans_japan())
+    results['forecast_min_max_sd_asia_sans_japan'] = format_for_response(
+        td.forecast_min_max_sd_asia_sans_japan())
+    results['forecast_low_med_high_asia_sans_japan'] = format_for_response(
+        td.forecast_low_med_high_asia_sans_japan())
+    results['forecast_trend_linear_asia_sans_japan'] = format_for_response(
+        td.forecast_trend_asia_sans_japan(trend='Linear'))
+    results['forecast_trend_degree2_asia_sans_japan'] = format_for_response(
+        td.forecast_trend_asia_sans_japan(trend='Degree2'))
+    results['forecast_trend_degree3_asia_sans_japan'] = format_for_response(
+        td.forecast_trend_asia_sans_japan(trend='Degree3'))
+    results['forecast_trend_exponential_asia_sans_japan'] = format_for_response(
+        td.forecast_trend_asia_sans_japan(trend='Exponential'))
+    results['forecast_data_middle_east_and_africa'] = format_for_response(
+        td.forecast_data_middle_east_and_africa())
+    results['forecast_min_max_sd_middle_east_and_africa'] = format_for_response(
+        td.forecast_min_max_sd_middle_east_and_africa())
+    results['forecast_low_med_high_middle_east_and_africa'] = format_for_response(
+        td.forecast_low_med_high_middle_east_and_africa())
+    results['forecast_trend_linear_middle_east_and_africa'] = format_for_response(
+        td.forecast_trend_middle_east_and_africa(trend='Linear'))
+    results['forecast_trend_degree2_middle_east_and_africa'] = format_for_response(
+        td.forecast_trend_middle_east_and_africa(trend='Degree2'))
+    results['forecast_trend_degree3_middle_east_and_africa'] = format_for_response(
+        td.forecast_trend_middle_east_and_africa(trend='Degree3'))
+    results['forecast_trend_exponential_middle_east_and_africa'] = format_for_response(
+        td.forecast_trend_middle_east_and_africa(trend='Exponential'))
+    results['forecast_data_latin_america'] = format_for_response(td.forecast_data_latin_america())
+    results['forecast_min_max_sd_latin_america'] = format_for_response(
+        td.forecast_min_max_sd_latin_america())
+    results['forecast_low_med_high_latin_america'] = format_for_response(
+        td.forecast_low_med_high_latin_america())
+    results['forecast_trend_linear_latin_america'] = format_for_response(
+        td.forecast_trend_latin_america(trend='Linear'))
+    results['forecast_trend_degree2_latin_america'] = format_for_response(
+        td.forecast_trend_latin_america(trend='Degree2'))
+    results['forecast_trend_degree3_latin_america'] = format_for_response(
+        td.forecast_trend_latin_america(trend='Degree3'))
+    results['forecast_trend_exponential_latin_america'] = format_for_response(
+        td.forecast_trend_latin_america(trend='Exponential'))
+    results['forecast_data_china'] = format_for_response(td.forecast_data_china())
+    results['forecast_min_max_sd_china'] = format_for_response(td.forecast_min_max_sd_china())
+    results['forecast_low_med_high_china'] = format_for_response(td.forecast_low_med_high_china())
+    results['forecast_trend_linear_china'] = format_for_response(
+        td.forecast_trend_china(trend='Linear'))
+    results['forecast_trend_degree2_china'] = format_for_response(
+        td.forecast_trend_china(trend='Degree2'))
+    results['forecast_trend_degree3_china'] = format_for_response(
+        td.forecast_trend_china(trend='Degree3'))
+    results['forecast_trend_exponential_china'] = format_for_response(
+        td.forecast_trend_china(trend='Exponential'))
+    results['forecast_data_india'] = format_for_response(td.forecast_data_india())
+    results['forecast_min_max_sd_india'] = format_for_response(td.forecast_min_max_sd_india())
+    results['forecast_low_med_high_india'] = format_for_response(td.forecast_low_med_high_india())
+    results['forecast_trend_linear_india'] = format_for_response(
+        td.forecast_trend_india(trend='Linear'))
+    results['forecast_trend_degree2_india'] = format_for_response(
+        td.forecast_trend_india(trend='Degree2'))
+    results['forecast_trend_degree3_india'] = format_for_response(
+        td.forecast_trend_india(trend='Degree3'))
+    results['forecast_trend_exponential_india'] = format_for_response(
+        td.forecast_trend_india(trend='Exponential'))
+    results['forecast_data_eu'] = format_for_response(td.forecast_data_eu())
+    results['forecast_min_max_sd_eu'] = format_for_response(td.forecast_min_max_sd_eu())
+    results['forecast_low_med_high_eu'] = format_for_response(td.forecast_low_med_high_eu())
+    results['forecast_trend_linear_eu'] = format_for_response(
+        td.forecast_trend_eu(trend='Linear'))
+    results['forecast_trend_degree2_eu'] = format_for_response(
+        td.forecast_trend_eu(trend='Degree2'))
+    results['forecast_trend_degree3_eu'] = format_for_response(
+        td.forecast_trend_eu(trend='Degree3'))
+    results['forecast_trend_exponential_eu'] = format_for_response(
+        td.forecast_trend_eu(trend='Exponential'))
+    results['forecast_data_usa'] = format_for_response(td.forecast_data_usa())
+    results['forecast_min_max_sd_usa'] = format_for_response(td.forecast_min_max_sd_usa())
+    results['forecast_low_med_high_usa'] = format_for_response(td.forecast_low_med_high_usa())
+    results['forecast_trend_linear_usa'] = format_for_response(
+        td.forecast_trend_usa(trend='Linear'))
+    results['forecast_trend_degree2_usa'] = format_for_response(
+        td.forecast_trend_usa(trend='Degree2'))
+    results['forecast_trend_degree3_usa'] = format_for_response(
+        td.forecast_trend_usa(trend='Degree3'))
+    results['forecast_trend_exponential_usa'] = format_for_response(
+        td.forecast_trend_usa(trend='Exponential'))
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")

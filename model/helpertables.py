@@ -9,7 +9,7 @@ import enum
 import numpy as np
 import pandas as pd
 
-from model import adoptiondata as ad
+from model import interpolation
 
 ADOPTION_BASIS = enum.Enum('ADOPTION_BASIS',
     'LINEAR S_CURVE PROGNOSTICATION CUSTOM_S_CURVE FULLY_CUSTOM')
@@ -94,13 +94,13 @@ class HelperTables:
     """Return the appropriate growth function for the prognostication_trend."""
     trend = self.ac.soln_pds_adoption_prognostication_trend
     if trend == ADOPTION_PROGNOSTICATION_TREND.LINEAR:
-      return ad.linear_growth
+      return interpolation.linear_trend
     elif trend == ADOPTION_PROGNOSTICATION_TREND.POLY_2ND:
-      return ad.poly_degree2_growth
+      return interpolation.poly_degree2_trend
     elif trend == ADOPTION_PROGNOSTICATION_TREND.POLY_3RD:
-      return ad.poly_degree3_growth
+      return interpolation.poly_degree3_trend
     elif trend == ADOPTION_PROGNOSTICATION_TREND.EXPONENTIAL:
-      return ad.exponential_growth
+      return interpolation.exponential_trend
 
   def _single_source(self, source):
     """Return True is source is a list with one item."""
