@@ -5,7 +5,6 @@ import pathlib
 import numpy as np
 import pandas as pd
 import pytest
-from model import interpolation
 from model import tam
 
 

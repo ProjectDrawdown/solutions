@@ -3,44 +3,48 @@
 Provides adoption data for use in the other modules. The source of the adoption
 data is selectable according to the solution. Helper Tables can pull in one of
 the Linear/2nd order poly/3rd order poly/etc curve fitting implementations
-from adoptiontables.py, or use a simple linear fit implemented here.
+from interpolation.py, or use a simple linear fit implemented here.
 """
 import enum
 import numpy as np
 import pandas as pd
 
+import data_sources
 from model import interpolation
 
 ADOPTION_BASIS = enum.Enum('ADOPTION_BASIS',
     'LINEAR S_CURVE PROGNOSTICATION CUSTOM_S_CURVE FULLY_CUSTOM')
-ADOPTION_PROGNOSTICATION_TREND = enum.Enum('ADOPTION_PROGNOSTICATION_TREND',
-    'LINEAR POLY_2ND POLY_3RD EXPONENTIAL')
 ADOPTION_PROGNOSTICATION_GROWTH = enum.Enum('ADOPTION_PROGNOSTICATION_GROWTH', 'LOW MEDIUM HIGH')
 
 
 class HelperTables:
   """Implementation for the Helper Tables module.
-
-  Arguments:
-  ac = advanced_controls.py object, storing settings to control
-    model operation.
   """
-  def __init__(self, ac):
+  def __init__(self, ac, ref_datapoints, pds_datapoints):
+    """HelperTables.
+       Arguments:
+         ac = advanced_controls.py object, storing settings to control
+           model operation.
+         ref_datapoints: a DataFrame with columns per region and two rows for two years of data.
+         pds_datapoints: a DataFrame with columns per region and two rows for two years of data.
+    """
     self.ac = ac
+    self.ref_datapoints = ref_datapoints
+    self.pds_datapoints = pds_datapoints
+    super()
 
-  def soln_ref_funits_adopted(self, ref_datapoints, ref_tam_per_region):
+  def soln_ref_funits_adopted(self, ref_tam_per_region):
     """Cumulative Adoption in funits, interpolated between two ref_datapoints.
 
-       ref_datapoints: a DataFrame with columns per region and two rows for two years of data.
        ref_tam_per_region: Total Addressable Market dataframe, ex: from tam.py
 
        'Helper Tables'!B26:L73
     """
-    first_year = ref_datapoints.first_valid_index()
+    first_year = self.ref_datapoints.first_valid_index()
     last_year = 2060
     adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
-        columns=ref_datapoints.columns.copy(), dtype='float')
-    adoption = self._linear_forecast(first_year, last_year, ref_datapoints, adoption)
+        columns=self.ref_datapoints.columns.copy(), dtype='float')
+    adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints, adoption)
 
     if self.ac.soln_ref_adoption_regional_data:
       adoption.loc[:, "World"] = 0
@@ -90,51 +94,32 @@ class HelperTables:
       raise NotImplementedError('Unknown soln_pds_adoption_prognostication_growth: ' +
           str(self.ac.soln_pds_adoption_prognostication_growth))
 
-  def _get_trend_func(self):
-    """Return the appropriate growth function for the prognostication_trend."""
-    trend = self.ac.soln_pds_adoption_prognostication_trend
-    if trend == ADOPTION_PROGNOSTICATION_TREND.LINEAR:
-      return interpolation.linear_trend
-    elif trend == ADOPTION_PROGNOSTICATION_TREND.POLY_2ND:
-      return interpolation.poly_degree2_trend
-    elif trend == ADOPTION_PROGNOSTICATION_TREND.POLY_3RD:
-      return interpolation.poly_degree3_trend
-    elif trend == ADOPTION_PROGNOSTICATION_TREND.EXPONENTIAL:
-      return interpolation.exponential_trend
-
-  def _single_source(self, source):
-    """Return True is source is a list with one item."""
-    if source is None:
-      return False
-    if len(source) == 1:
-      return True
-    return False
-
-  def soln_pds_funits_adopted(self, pds_datapoints, adoption_low_med_high, pds_tam_per_region):
+  def soln_pds_funits_adopted(self, adoption_low_med_high, pds_tam_per_region):
     """Cumulative Adoption in funits in the PDS.
 
-       pds_datapoints: a DataFrame with columns per region and two rows for two years of data.
-       adoption_low_med_high: DataFramw with Low/Medium/High columns of World adoption data.
+       adoption_low_med_high: DataFrame with Low/Medium/High columns of World adoption data.
        pds_tam_per_region: Total Addressable Market dataframe, ex: from tam.py
 
        'Helper Tables'!B90:L137
     """
-    first_year = pds_datapoints.first_valid_index()
+    first_year = self.pds_datapoints.first_valid_index()
     last_year = 2060
     adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
-        columns=pds_datapoints.columns.copy(), dtype='float')
+        columns=self.pds_datapoints.columns.copy(), dtype='float')
     source_data = self._get_source_data(adoption_low_med_high)
 
-    if self._single_source(self.ac.soln_pds_adoption_prognostication_source):
+    s = self.ac.soln_pds_adoption_prognostication_source
+    if s and not data_sources.is_group_name(s):
       # single source, so use that one source without curve fitting.
       adoption['World'] = source_data
     elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.LINEAR:
-      adoption = self._linear_forecast(first_year, last_year, pds_datapoints, adoption)
+      adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints, adoption)
     elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.S_CURVE:
       raise NotImplementedError('S-Curve support not implemented')
     elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.PROGNOSTICATION:
-      trend_func = self._get_trend_func()
-      adoption.loc[:, 'World'] = trend_func(source_data).loc[:, 'adoption']
+      trend = self.ac.soln_pds_adoption_prognostication_trend
+      prognost = interpolation.trend_algorithm(data=source_data, trend=trend)
+      adoption.loc[:, 'World'] = prognost.loc[:, 'adoption']
     elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.CUSTOM_S_CURVE:
       raise NotImplementedError('Custom S-Curve support not implemented')
     elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.FULLY_CUSTOM:
@@ -149,7 +134,7 @@ class HelperTables:
       adoption[col] = adoption[col].combine(pds_tam_per_region[col], min)
 
     # Where we have actual data, use the actual data not the interpolation.
-    adoption.loc[first_year] = pds_datapoints.loc[first_year]
+    adoption.loc[first_year] = self.pds_datapoints.loc[first_year]
 
     adoption.name = "soln_pds_funits_adopted"
     adoption.index.name = "Year"
@@ -187,29 +172,6 @@ def string_to_adoption_basis(text):
   if ltext == "fully customized pds":
     return ADOPTION_BASIS.FULLY_CUSTOM
   raise ValueError("invalid adoption basis name=" + str(text))
-
-
-def string_to_adoption_prognostication_trend(text):
-  """Convert the text strings passed from the Excel implementation of the models
-     to the enumerated type defined in this module.
-     "Advanced Controls"!B270
-  """
-  ltext = str(text).lower()
-  if ltext == "linear":
-    return ADOPTION_PROGNOSTICATION_TREND.LINEAR
-  if ltext == "2nd poly":
-    return ADOPTION_PROGNOSTICATION_TREND.POLY_2ND
-  if ltext == "2nd_poly":
-    return ADOPTION_PROGNOSTICATION_TREND.POLY_2ND
-  if ltext == "3rd poly":
-    return ADOPTION_PROGNOSTICATION_TREND.POLY_3RD
-  if ltext == "3rd_poly":
-    return ADOPTION_PROGNOSTICATION_TREND.POLY_3RD
-  if ltext == "exponential":
-    return ADOPTION_PROGNOSTICATION_TREND.EXPONENTIAL
-  if ltext == "exp":
-    return ADOPTION_PROGNOSTICATION_TREND.EXPONENTIAL
-  raise ValueError("invalid adoption prognostication trend name=" + str(text))
 
 
 def string_to_adoption_prognostication_growth(text):

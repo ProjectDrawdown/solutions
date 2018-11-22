@@ -9,7 +9,7 @@ import advanced_controls
 from flask import Flask, request, render_template, jsonify, Response
 import numpy as np
 import pandas as pd
-from model import adoptiondata as ad
+from model import adoptiondata
 from model import co2calcs
 from model import ch4calcs
 from model import emissionsfactors
@@ -24,7 +24,8 @@ import werkzeug.exceptions
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False  # minify JSON
-thisdir = os.path.dirname(__file__)
+
+datadir = os.path.join(os.path.dirname(__file__), 'solution', 'solarpvutil')
 
 
 def json_dumps_default(obj):
@@ -123,81 +124,73 @@ def unitAdoption3():
     funits = ua_rq.get('soln_ref_funits_adopted', [])
     soln_ref_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
 
-    ua = unitadoption.UnitAdoption(ac=ac_rq)
+    ua = unitadoption.UnitAdoption(ac=ac_rq, datadir=datadir)
     results = dict()
-    ref_population = ua.ref_population()
-    results['ref_population'] = format_for_response(ref_population)
-    ref_gdp = ua.ref_gdp()
-    results['ref_gdp'] = format_for_response(ref_gdp)
-    ref_gdp_per_capita = ua.ref_gdp_per_capita(ref_population, ref_gdp)
-    results['ref_gdp_per_capita'] = format_for_response(ref_gdp_per_capita)
+    results['ref_population'] = format_for_response(ua.ref_population())
+    results['ref_gdp'] = format_for_response(ua.ref_gdp())
+    results['ref_gdp_per_capita'] = format_for_response(ua.ref_gdp_per_capita())
     results['ref_tam_per_capita'] = format_for_response(
-        ua.ref_tam_per_capita(ref_tam_per_region, ref_population))
+      ua.ref_tam_per_capita(ref_tam_per_region=ref_tam_per_region))
     results['ref_tam_per_gdp_per_capita'] = format_for_response(
-        ua.ref_tam_per_gdp_per_capita(ref_tam_per_region, ref_gdp_per_capita))
-    results['ref_tam_growth'] = format_for_response(ua.ref_tam_growth(ref_tam_per_region))
-    pds_population = ua.pds_population()
-    results['pds_population'] = format_for_response(pds_population)
-    pds_gdp = ua.pds_gdp()
-    results['pds_gdp'] = format_for_response(pds_gdp)
-    pds_gdp_per_capita = ua.pds_gdp_per_capita(pds_population, pds_gdp)
-    results['pds_gdp_per_capita'] = format_for_response(pds_gdp_per_capita)
+      ua.ref_tam_per_gdp_per_capita(ref_tam_per_region=ref_tam_per_region))
+    results['ref_tam_growth'] = format_for_response(
+      ua.ref_tam_growth(ref_tam_per_region=ref_tam_per_region))
+    results['pds_population'] = format_for_response(ua.pds_population())
+    results['pds_gdp'] = format_for_response(ua.pds_gdp())
+    results['pds_gdp_per_capita'] = format_for_response(ua.pds_gdp_per_capita())
     results['pds_tam_per_capita'] = format_for_response(
-        ua.pds_tam_per_capita(pds_tam_per_region, pds_population))
+      ua.pds_tam_per_capita(pds_tam_per_region=pds_tam_per_region))
     results['pds_tam_per_gdp_per_capita'] = format_for_response(
-        ua.pds_tam_per_gdp_per_capita(pds_tam_per_region, pds_gdp_per_capita))
-    results['pds_tam_growth'] = format_for_response(ua.pds_tam_growth(pds_tam_per_region))
-    s = ua.soln_pds_cumulative_funits(soln_pds_funits_adopted)
+      ua.pds_tam_per_gdp_per_capita(pds_tam_per_region=pds_tam_per_region))
+    results['pds_tam_growth'] = format_for_response(
+      ua.pds_tam_growth(pds_tam_per_region=pds_tam_per_region))
     results['soln_pds_cumulative_funits'] = format_for_response(
-        ua.soln_pds_cumulative_funits(soln_pds_funits_adopted))
+      ua.soln_pds_cumulative_funits(soln_pds_funits_adopted=soln_pds_funits_adopted))
     results['soln_ref_cumulative_funits'] = format_for_response(
-        ua.soln_ref_cumulative_funits(soln_ref_funits_adopted))
+      ua.soln_ref_cumulative_funits(soln_ref_funits_adopted=soln_ref_funits_adopted))
     soln_net_annual_funits_adopted = ua.soln_net_annual_funits_adopted(
-        soln_ref_funits_adopted, soln_pds_funits_adopted)
+      soln_ref_funits_adopted=soln_ref_funits_adopted,
+      soln_pds_funits_adopted=soln_pds_funits_adopted)
     results['soln_net_annual_funits_adopted'] = format_for_response(soln_net_annual_funits_adopted)
-    soln_pds_tot_iunits_reqd = ua.soln_pds_tot_iunits_reqd(soln_pds_funits_adopted)
+    soln_pds_tot_iunits_reqd = ua.soln_pds_tot_iunits_reqd(
+      soln_pds_funits_adopted=soln_pds_funits_adopted)
     results['soln_pds_tot_iunits_reqd'] = format_for_response(soln_pds_tot_iunits_reqd)
     results['soln_pds_new_iunits_reqd'] = format_for_response(
-      ua.soln_pds_new_iunits_reqd(soln_pds_tot_iunits_reqd))
+      ua.soln_pds_new_iunits_reqd(soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd))
     results['soln_pds_big4_iunits_reqd'] = format_for_response(
-        ua.soln_pds_big4_iunits_reqd(soln_pds_tot_iunits_reqd))
+        ua.soln_pds_big4_iunits_reqd(soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd))
     soln_ref_tot_iunits_reqd = ua.soln_ref_tot_iunits_reqd(soln_ref_funits_adopted)
     results['soln_ref_tot_iunits_reqd'] = format_for_response(soln_ref_tot_iunits_reqd)
     results['soln_ref_new_iunits_reqd'] = format_for_response(
-      ua.soln_ref_new_iunits_reqd(soln_ref_tot_iunits_reqd))
+      ua.soln_ref_new_iunits_reqd(soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd))
     results['conv_ref_tot_iunits_reqd'] = format_for_response(
-        ua.conv_ref_tot_iunits_reqd(ref_tam_per_region, soln_ref_funits_adopted))
-    conv_ref_annual_tot_iunits = ua.conv_ref_annual_tot_iunits(soln_net_annual_funits_adopted)
+      ua.conv_ref_tot_iunits_reqd(ref_tam_per_region=ref_tam_per_region,
+        soln_ref_funits_adopted=soln_ref_funits_adopted))
+    conv_ref_annual_tot_iunits = ua.conv_ref_annual_tot_iunits(
+      soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
     results['conv_ref_annual_tot_iunits'] = format_for_response(conv_ref_annual_tot_iunits)
     results['conv_ref_new_iunits_reqd'] = format_for_response(
-        ua.conv_ref_new_iunits_reqd(conv_ref_annual_tot_iunits))
+      ua.conv_ref_new_iunits_reqd(conv_ref_annual_tot_iunits=conv_ref_annual_tot_iunits))
     results['conv_lifetime_replacement'] = format_for_response(
-        round(ac_rq.conv_lifetime_replacement))
+      round(ac_rq.conv_lifetime_replacement))
 
     results['soln_pds_net_grid_electricity_units_saved'] = format_for_response(
-        ua.soln_pds_net_grid_electricity_units_saved(soln_net_annual_funits_adopted))
+      ua.soln_pds_net_grid_electricity_units_saved(
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
     results['soln_pds_net_grid_electricity_units_used'] = format_for_response(
-        ua.soln_pds_net_grid_electricity_units_used(soln_net_annual_funits_adopted))
+      ua.soln_pds_net_grid_electricity_units_used(
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
     results['soln_pds_fuel_units_avoided'] = format_for_response(
-        ua.soln_pds_fuel_units_avoided(soln_net_annual_funits_adopted))
+      ua.soln_pds_fuel_units_avoided(soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
     results['soln_pds_direct_co2_emissions_saved'] = format_for_response(
-        ua.soln_pds_direct_co2_emissions_saved(soln_net_annual_funits_adopted))
-
-    if ac_rq.ch4_is_co2eq:
-      ch4 = ua.soln_pds_direct_ch4_co2_emissions_saved(soln_net_annual_funits_adopted,
-          ch4_co2equiv_per_funit=ac_rq.ch4_co2_per_twh)
-    else:
-      ch4 = ua.soln_pds_direct_ch4_co2_emissions_saved(soln_net_annual_funits_adopted,
-          ch4_per_funit=ac_rq.ch4_co2_per_twh)
-    results['soln_pds_direct_ch4_co2_emissions_saved'] = format_for_response(ch4)
-
-    if ac_rq.n2o_is_co2eq:
-      n2o = ua.soln_pds_direct_n2o_co2_emissions_saved(soln_net_annual_funits_adopted,
-          n2o_co2equiv_per_funit=ac_rq.n2o_co2_per_twh)
-    else:
-      n2o = ua.soln_pds_direct_n2o_co2_emissions_saved(soln_net_annual_funits_adopted,
-          n2o_per_funit=ac_rq.n2o_co2_per_twh)
-    results['soln_pds_direct_n2o_co2_emissions_saved'] = format_for_response(n2o)
+      ua.soln_pds_direct_co2_emissions_saved(
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
+    results['soln_pds_direct_ch4_co2_emissions_saved'] = format_for_response(
+      ua.soln_pds_direct_ch4_co2_emissions_saved(
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
+    results['soln_pds_direct_n2o_co2_emissions_saved'] = format_for_response(
+      ua.soln_pds_direct_n2o_co2_emissions_saved(
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
@@ -338,29 +331,23 @@ def adoptionData():
     ac_rq = to_advanced_controls(js, app.logger)
     ad_rq = js.get('adoption_data', {})
 
-    low_sd = ad_rq.get('low_sd', 1.0)
-    high_sd = ad_rq.get('high_sd', 1.0)
-    growth_choice = ad_rq.get('growth_choice', 'Medium')
+    p = ad_rq.get('adconfig', [])
+    adconfig = pd.DataFrame(p[1:], columns=p[0]).set_index('param')
 
+    ad = adoptiondata.AdoptionData(ac=ac_rq, datadir=datadir, adconfig=adconfig)
     results = dict()
 
-    adoption = ad.adoption(adoption_data_filename='solarpvutil_adoptiondata.csv')
-    results['adoption'] = format_for_response(adoption)
-    adoption_min_max_sd = ad.adoption_min_max_sd(adoption)
-    results['adoption_min_max_sd'] = format_for_response(adoption_min_max_sd)
-    source = ac_rq.soln_pds_adoption_prognostication_source
-    adoption_low_med_high = ad.adoption_low_med_high(adoption=adoption,
-        adoption_prognostication_source=source,
-        adoption_min_max_sd=adoption_min_max_sd, low_sd=low_sd, high_sd=high_sd)
-    results['adoption_low_med_high'] = format_for_response(adoption_low_med_high)
-    results['linear_growth'] = format_for_response(interpolation.linear_trend(
-      data=adoption_low_med_high[growth_choice]))
-    results['poly_degree2_growth'] = format_for_response(interpolation.poly_degree2_trend(
-      data=adoption_low_med_high[growth_choice]))
-    results['poly_degree3_growth'] = format_for_response(interpolation.poly_degree3_trend(
-      data=adoption_low_med_high[growth_choice]))
-    results['exponential_growth'] = format_for_response(interpolation.exponential_trend(
-      data=adoption_low_med_high[growth_choice]))
+    results['adoption_data_global'] = format_for_response(ad.adoption_data_global())
+    results['adoption_min_max_sd_global'] = format_for_response(ad.adoption_min_max_sd_global())
+    results['adoption_low_med_high_global'] = format_for_response(ad.adoption_low_med_high_global())
+    results['adoption_trend_linear_global'] = format_for_response(
+        ad.adoption_trend_global(trend='Linear'))
+    results['adoption_trend_poly_degree2_global'] = format_for_response(
+        ad.adoption_trend_global(trend='Degree2'))
+    results['adoption_trend_poly_degree3_global'] = format_for_response(
+        ad.adoption_trend_global(trend='Degree3'))
+    results['adoption_trend_exponential_global'] = format_for_response(
+        ad.adoption_trend_global(trend='Exponential'))
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
@@ -388,14 +375,14 @@ def helperTables():
     lmh = ad_rq.get('adoption_low_med_high', [])
     adoption_low_med_high = pd.DataFrame(lmh[1:], columns=lmh[0]).set_index('Year')
 
-    ht = helpertables.HelperTables(ac=ac_rq)
+    ht = helpertables.HelperTables(ac=ac_rq, ref_datapoints=ref_datapoints,
+        pds_datapoints=pds_datapoints)
     results = dict()
 
     results['soln_ref_funits_adopted'] = format_for_response(ht.soln_ref_funits_adopted(
-      ref_datapoints=ref_datapoints, ref_tam_per_region=ref_tam_per_region))
+      ref_tam_per_region=ref_tam_per_region))
     results['soln_pds_funits_adopted'] = format_for_response(ht.soln_pds_funits_adopted(
-      pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
-      pds_tam_per_region=pds_tam_per_region))
+      adoption_low_med_high=adoption_low_med_high, pds_tam_per_region=pds_tam_per_region))
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
@@ -521,7 +508,7 @@ def tamData():
     p = td_rq.get('tamconfig', [])
     tamconfig = pd.DataFrame(p[1:], columns=p[0]).set_index('param')
 
-    td = tam.TAM(datadir=os.path.join(thisdir, 'solution', 'solarpvutil'), tamconfig=tamconfig)
+    td = tam.TAM(datadir=datadir, tamconfig=tamconfig)
     results = dict()
 
     results['forecast_data_global'] = format_for_response(td.forecast_data_global())

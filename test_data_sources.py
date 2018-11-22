@@ -56,3 +56,10 @@ def test_all_and_empty_result():
   columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
   assert data_sources.matching_columns(columns, 'Ambitious') == []
   assert data_sources.matching_columns(columns, 'ALL SOURCES') == columns
+
+def test_is_group_name():
+  assert data_sources.is_group_name("Ambitious Cases") == True
+  assert data_sources.is_group_name("Ambitious") == True
+  assert data_sources.is_group_name("ALL SOURCES") == True
+  assert data_sources.is_group_name("not a group name") == False
+

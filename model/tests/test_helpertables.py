@@ -29,9 +29,8 @@ def test_soln_ref_funits_adopted():
         42.24551570326, 31.56519386433, 14.33357622563, 72.82702319498, 16.41524405748]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  ht = helpertables.HelperTables(ac=ac)
-  result = ht.soln_ref_funits_adopted(ref_datapoints=ref_datapoints,
-      ref_tam_per_region=ref_tam_per_region)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None)
+  result = ht.soln_ref_funits_adopted(ref_tam_per_region=ref_tam_per_region)
   expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
@@ -42,7 +41,7 @@ def test_soln_ref_funits_adopted_tam_limit():
   ref_datapoints = pd.DataFrame([
     [2014, 100.0, 100.0, 100.0, 100.0], [2050, 200.0, 200.0, 200.0, 200.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
-  ht = helpertables.HelperTables(ac=ac)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None)
   ref_tam_per_region = pd.DataFrame([
     [2014, 1.0, 1.0, 1.0, 1.0], [2015, 1.0, 1.0, 1.0, 1.0], [2016, 1.0, 1.0, 1.0, 1.0],
     [2017, 1.0, 1.0, 1.0, 1.0], [2018, 1.0, 1.0, 1.0, 1.0], [2019, 1.0, 1.0, 1.0, 1.0],
@@ -61,8 +60,7 @@ def test_soln_ref_funits_adopted_tam_limit():
     [2056, 1.0, 1.0, 1.0, 1.0], [2057, 1.0, 1.0, 1.0, 1.0], [2058, 1.0, 1.0, 1.0, 1.0],
     [2059, 1.0, 1.0, 1.0, 1.0], [2060, 1.0, 1.0, 1.0, 1.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
-  result = ht.soln_ref_funits_adopted(ref_datapoints=ref_datapoints,
-      ref_tam_per_region=ref_tam_per_region)
+  result = ht.soln_ref_funits_adopted(ref_tam_per_region=ref_tam_per_region)
   expected = ref_tam_per_region
   pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
 
@@ -72,9 +70,8 @@ def test_soln_ref_funits_adopted_regional_sums():
   ref_datapoints = pd.DataFrame([
     [2014, 10.0, 3.0, 2.0, 1.0], [2050, 20.0, 3.0, 2.0, 1.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
-  ht = helpertables.HelperTables(ac=ac)
-  result = ht.soln_ref_funits_adopted(ref_datapoints=ref_datapoints,
-      ref_tam_per_region=ref_tam_per_region)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None)
+  result = ht.soln_ref_funits_adopted(ref_tam_per_region=ref_tam_per_region)
   expected = pd.DataFrame([
     [2014, 6.0, 3.0, 2.0, 1.0], [2015, 6.0, 3.0, 2.0, 1.0], [2016, 6.0, 3.0, 2.0, 1.0],
     [2017, 6.0, 3.0, 2.0, 1.0], [2018, 6.0, 3.0, 2.0, 1.0], [2019, 6.0, 3.0, 2.0, 1.0],
@@ -99,7 +96,7 @@ def test_soln_pds_funits_adopted_single_source():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
       soln_pds_adoption_prognostication_growth='Medium',
       soln_pds_adoption_prognostication_trend='3rd poly',
-      soln_pds_adoption_prognostication_source=['A'],
+      soln_pds_adoption_prognostication_source='A',
       soln_pds_adoption_basis='Existing Adoption Prognostications')
   pds_datapoints = pd.DataFrame([
     [2014, 112.633033, 75.0042456, 0.332383, 21.072504, 1.575078, 14.650619,
@@ -107,11 +104,11 @@ def test_soln_pds_funits_adopted_single_source():
     [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  ht = helpertables.HelperTables(ac=ac)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints)
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:], columns=adoption_low_med_high_list[0],
       dtype=np.float64).set_index('Year')
-  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints,
-      adoption_low_med_high=adoption_low_med_high, pds_tam_per_region=pds_tam_per_region)
+  result = ht.soln_pds_funits_adopted(adoption_low_med_high=adoption_low_med_high,
+      pds_tam_per_region=pds_tam_per_region)
   expected = pd.DataFrame(soln_pds_funits_adopted_single_source_list[1:],
       columns=soln_pds_funits_adopted_single_source_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
@@ -127,11 +124,11 @@ def test_soln_pds_funits_adopted_3rd_poly_medium():
     [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  ht = helpertables.HelperTables(ac=ac)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints)
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
       columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
   adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
-  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
+  result = ht.soln_pds_funits_adopted(adoption_low_med_high=adoption_low_med_high,
       pds_tam_per_region=pds_tam_per_region)
   expected = pd.DataFrame(soln_pds_funits_adopted_3rd_poly_medium_list[1:],
       columns=soln_pds_funits_adopted_3rd_poly_medium_list[0]).set_index('Year')
@@ -148,11 +145,11 @@ def test_soln_pds_funits_adopted_2rd_poly_high():
     [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  ht = helpertables.HelperTables(ac=ac)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints)
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
       columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
   adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
-  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
+  result = ht.soln_pds_funits_adopted(adoption_low_med_high=adoption_low_med_high,
       pds_tam_per_region=pds_tam_per_region)
   expected = pd.DataFrame(soln_pds_funits_adopted_2rd_poly_high_list[1:],
       columns=soln_pds_funits_adopted_2rd_poly_high_list[0]).set_index('Year')
@@ -169,11 +166,11 @@ def test_soln_pds_funits_adopted_exp_low():
     [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  ht = helpertables.HelperTables(ac=ac)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints)
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
       columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
   adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
-  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
+  result = ht.soln_pds_funits_adopted(adoption_low_med_high=adoption_low_med_high,
       pds_tam_per_region=pds_tam_per_region)
   expected = pd.DataFrame(soln_pds_funits_adopted_exp_low_list[1:],
       columns=soln_pds_funits_adopted_exp_low_list[0]).set_index('Year')
@@ -190,11 +187,11 @@ def test_soln_pds_funits_adopted_linear_medium():
     [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  ht = helpertables.HelperTables(ac=ac)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints)
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_all_sources_list[1:],
       columns=adoption_low_med_high_all_sources_list[0], dtype=np.float64).set_index('Year')
   adoption_low_med_high.index = adoption_low_med_high.index.astype(int)
-  result = ht.soln_pds_funits_adopted(pds_datapoints=pds_datapoints, adoption_low_med_high=adoption_low_med_high,
+  result = ht.soln_pds_funits_adopted(adoption_low_med_high=adoption_low_med_high,
       pds_tam_per_region=pds_tam_per_region)
   expected = pd.DataFrame(soln_pds_funits_adopted_linear_medium_list[1:],
       columns=soln_pds_funits_adopted_linear_medium_list[0]).set_index('Year')
@@ -214,17 +211,6 @@ def test_string_to_adoption_basis():
   assert func("customized s-curve adoption") == helpertables.ADOPTION_BASIS.CUSTOM_S_CURVE
   assert func("customized_s_curve_adoption") == helpertables.ADOPTION_BASIS.CUSTOM_S_CURVE
   assert func("fully customized pds") == helpertables.ADOPTION_BASIS.FULLY_CUSTOM
-  with pytest.raises(ValueError):
-    _ = func("invalid")
-
-def test_string_to_adoption_prognostication_trend():
-  func = helpertables.string_to_adoption_prognostication_trend
-  assert func("linear") == helpertables.ADOPTION_PROGNOSTICATION_TREND.LINEAR
-  assert func("2nd poly") == helpertables.ADOPTION_PROGNOSTICATION_TREND.POLY_2ND
-  assert func("2nd_poly") == helpertables.ADOPTION_PROGNOSTICATION_TREND.POLY_2ND
-  assert func("3rd poly") == helpertables.ADOPTION_PROGNOSTICATION_TREND.POLY_3RD
-  assert func("3rd_poly") == helpertables.ADOPTION_PROGNOSTICATION_TREND.POLY_3RD
-  assert func("exponential") == helpertables.ADOPTION_PROGNOSTICATION_TREND.EXPONENTIAL
   with pytest.raises(ValueError):
     _ = func("invalid")
 

@@ -85,3 +85,13 @@ def matching_columns(columns, name, groups_only=False):
     if any(candidate.lower() in col.lower() for candidate in candidates):
       result.append(col)
   return result
+
+def is_group_name(name):
+  """Return True if name is a group."""
+  name = name.lower()
+  name = name_mapping.get(name, name)
+  if name.lower() in _cases:
+    return True
+  if name.lower() == "all sources":
+    return True
+  return False
