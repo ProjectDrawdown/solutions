@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from model import firstcost
 
-def test_soln_pds_install_cost_per_iunit_SolarPV_27Aug18():
+def test_soln_pds_install_cost_per_iunit():
   """Test PDS install cost per unit
 
      Values taken from SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18
@@ -23,17 +23,15 @@ def test_soln_pds_install_cost_per_iunit_SolarPV_27Aug18():
       conv_learning_increase_mult=2)
   soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
       columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
-  expected_soln_pds_install_cost_per_iunit = pd.Series(
-      soln_pds_install_cost_per_iunit_nparray[:, 1],
+  expected = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
       index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  integer_index = expected_soln_pds_install_cost_per_iunit.index.astype(int)
-  expected_soln_pds_install_cost_per_iunit.index = integer_index
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "soln_pds_install_cost_per_iunit"
   result = fc.soln_pds_install_cost_per_iunit(soln_pds_tot_iunits_reqd, [])
-  pd.testing.assert_series_equal(result.loc[2015:], expected_soln_pds_install_cost_per_iunit,
-      check_exact=False, check_names=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
-
-def test_conv_ref_install_cost_per_iunit_SolarPV_27Aug18():
+def test_conv_ref_install_cost_per_iunit():
   """Test conventional install cost per unit
 
      Values taken from SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18
@@ -45,22 +43,19 @@ def test_conv_ref_install_cost_per_iunit_SolarPV_27Aug18():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
+  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
+      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
-  expected_conv_ref_install_cost_per_iunit = pd.Series(
-      conv_ref_install_cost_per_iunit_nparray[:, 1],
+  expected = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  integer_index = expected_conv_ref_install_cost_per_iunit.index.astype(int)
-  expected_conv_ref_install_cost_per_iunit.index = integer_index
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "conv_ref_install_cost_per_iunit"
   result = fc.conv_ref_install_cost_per_iunit(conv_ref_tot_iunits_reqd)
-  pd.testing.assert_series_equal(result.loc[2015:], expected_conv_ref_install_cost_per_iunit,
-      check_exact=False, check_names=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
-
-def test_soln_pds_install_cost_per_iunit_SolarPV_27Aug18_not_less_conv():
+def test_soln_pds_install_cost_per_iunit_not_less_conv():
   """Test PDS install cost per unit
 
      Values taken from SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18
@@ -72,25 +67,23 @@ def test_soln_pds_install_cost_per_iunit_SolarPV_27Aug18_not_less_conv():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=False,  # result == conv_ref_install_cost_per_iunit
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
+  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
+      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
       columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
   conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
   # Not a typo, soln_first_cost_below_conv=False so conv_pds_install_cost_per_iunit here.
-  expected_soln_pds_install_cost_per_iunit = pd.Series(
-      conv_ref_install_cost_per_iunit_nparray[:, 1],
+  expected = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  integer_index = expected_soln_pds_install_cost_per_iunit.index.astype(int)
-  expected_soln_pds_install_cost_per_iunit.index = integer_index
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "soln_pds_install_cost_per_iunit"
   result = fc.soln_pds_install_cost_per_iunit(soln_pds_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd)
-  pd.testing.assert_series_equal(result.loc[2015:], expected_soln_pds_install_cost_per_iunit,
-      check_exact=False, check_names=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
-def test_soln_ref_install_cost_per_iunit_SolarPV_27Aug18():
+def test_soln_ref_install_cost_per_iunit():
   """Test PDS install cost per unit
 
      Values taken from SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18
@@ -102,24 +95,22 @@ def test_soln_ref_install_cost_per_iunit_SolarPV_27Aug18():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
+  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
+      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
       columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
   conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
-  expected_soln_ref_install_cost_per_iunit = pd.Series(
-      soln_ref_install_cost_per_iunit_nparray[:, 1],
+  expected = pd.Series(soln_ref_install_cost_per_iunit_nparray[:, 1],
       index=soln_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  integer_index = expected_soln_ref_install_cost_per_iunit.index.astype(int)
-  expected_soln_ref_install_cost_per_iunit.index = integer_index
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "soln_ref_install_cost_per_iunit"
   result = fc.soln_ref_install_cost_per_iunit(soln_ref_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd)
-  pd.testing.assert_series_equal(result.loc[2015:], expected_soln_ref_install_cost_per_iunit,
-      check_exact=False, check_names=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
-def test_soln_ref_install_cost_per_iunit_SolarPV_27Aug18_not_less_conv():
+def test_soln_ref_install_cost_per_iunit_not_less_conv():
   """Test PDS install cost per unit
 
      Values taken from SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18
@@ -131,26 +122,23 @@ def test_soln_ref_install_cost_per_iunit_SolarPV_27Aug18_not_less_conv():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=False,  # result = conv
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
+  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
+      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
       columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
   conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
   # Not a typo, soln_first_cost_below_conv=False so conv_pds_install_cost_per_iunit here.
-  expected_soln_ref_install_cost_per_iunit = pd.Series(
-      conv_ref_install_cost_per_iunit_nparray[:, 1],
+  expected = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  integer_index = expected_soln_ref_install_cost_per_iunit.index.astype(int)
-  expected_soln_ref_install_cost_per_iunit.index = integer_index
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "soln_ref_install_cost_per_iunit"
   result = fc.soln_ref_install_cost_per_iunit(soln_ref_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd)
-  pd.testing.assert_series_equal(result.loc[2015:], expected_soln_ref_install_cost_per_iunit,
-      check_exact=False, check_names=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
-
-def test_soln_pds_annual_world_first_cost_SolarPV_27Aug18():
+def test_soln_pds_annual_world_first_cost():
   ac = advanced_controls.AdvancedControls(
       pds_2014_cost=1444.93954421485,
       ref_2014_cost=1444.93954421485,
@@ -158,28 +146,23 @@ def test_soln_pds_annual_world_first_cost_SolarPV_27Aug18():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
+  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
+      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_pds_new_iunits_reqd = pd.DataFrame(soln_pds_new_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
   soln_pds_install_cost_per_iunit = pd.Series(
       soln_pds_install_cost_per_iunit_nparray[:, 1],
       index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  expected_soln_pds_annual_world_first_cost = pd.Series(
-      soln_pds_annual_world_first_cost_nparray[:, 1],
+  expected = pd.Series(soln_pds_annual_world_first_cost_nparray[:, 1],
       index=soln_pds_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
-  integer_index = expected_soln_pds_annual_world_first_cost.index.astype(int)
-  expected_soln_pds_annual_world_first_cost.index = integer_index
+  expected.index = expected.index.astype(int)
+  expected.name = "soln_pds_annual_world_first_cost"
   result = fc.soln_pds_annual_world_first_cost(
       soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
       soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit)
-  pd.testing.assert_series_equal(result,
-      expected_soln_pds_annual_world_first_cost,
-      check_exact=False, check_names=False)
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
-
-def test_soln_pds_cumulative_install_SolarPV_27Aug18():
+def test_soln_pds_cumulative_install():
   ac = advanced_controls.AdvancedControls(
       pds_2014_cost=1444.93954421485,
       ref_2014_cost=1444.93954421485,
@@ -187,22 +170,21 @@ def test_soln_pds_cumulative_install_SolarPV_27Aug18():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
+  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
+      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_pds_annual_world_first_cost = pd.Series(
       soln_pds_annual_world_first_cost_nparray[:, 1],
       index=soln_pds_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
-  expected_soln_pds_cumulative_install = pd.Series(
-      pds_cumulative_install_nparray[:, 1],
+  soln_pds_annual_world_first_cost.index = soln_pds_annual_world_first_cost.index.astype(int)
+  expected = pd.Series(pds_cumulative_install_nparray[:, 1],
       index=pds_cumulative_install_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  expected.name = "soln_pds_cumulative_install"
   result = fc.soln_pds_cumulative_install(
       soln_pds_annual_world_first_cost=soln_pds_annual_world_first_cost)
-  pd.testing.assert_series_equal(result, expected_soln_pds_cumulative_install,
-      check_exact=False)
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
-
-def test_soln_ref_annual_world_first_cost_SolarPV_27Aug18():
+def test_soln_ref_annual_world_first_cost():
   ac = advanced_controls.AdvancedControls(
       pds_2014_cost=1444.93954421485,
       ref_2014_cost=1444.93954421485,
@@ -210,27 +192,23 @@ def test_soln_ref_annual_world_first_cost_SolarPV_27Aug18():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
+  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
+      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_ref_new_iunits_reqd = pd.DataFrame(soln_ref_new_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
   soln_ref_install_cost_per_iunit = pd.Series(
       soln_ref_install_cost_per_iunit_nparray[:, 1],
       index=soln_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  expected_soln_ref_annual_world_first_cost = pd.Series(
-      soln_ref_annual_world_first_cost_nparray[:, 1],
+  expected = pd.Series(soln_ref_annual_world_first_cost_nparray[:, 1],
       index=soln_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
-  integer_index = expected_soln_ref_annual_world_first_cost.index.astype(int)
-  expected_soln_ref_annual_world_first_cost.index = integer_index
+  expected.index = expected.index.astype(int)
+  expected.name = "soln_ref_annual_world_first_cost"
   result = fc.soln_ref_annual_world_first_cost(
       soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
       soln_ref_install_cost_per_iunit=soln_ref_install_cost_per_iunit)
-  pd.testing.assert_series_equal(result,
-      expected_soln_ref_annual_world_first_cost,
-      check_exact=False, check_names=False)
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
-def test_conv_ref_annual_world_first_cost_SolarPV_27Aug18():
+def test_conv_ref_annual_world_first_cost():
   ac = advanced_controls.AdvancedControls(
       pds_2014_cost=1444.93954421485,
       ref_2014_cost=1444.93954421485,
@@ -238,28 +216,26 @@ def test_conv_ref_annual_world_first_cost_SolarPV_27Aug18():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
+  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
+      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   conv_ref_new_iunits_reqd = pd.DataFrame(conv_ref_new_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year').drop(['Lifetime'])
+  conv_ref_new_iunits_reqd.index = conv_ref_new_iunits_reqd.index.astype(int)
   conv_ref_install_cost_per_iunit = pd.Series(
       conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  expected_conv_ref_annual_world_first_cost = pd.Series(
-      conv_ref_annual_world_first_cost_nparray[:, 1],
+  conv_ref_install_cost_per_iunit.index = conv_ref_install_cost_per_iunit.index.astype(int)
+  expected = pd.Series(conv_ref_annual_world_first_cost_nparray[:, 1],
       index=conv_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
-  integer_index = expected_conv_ref_annual_world_first_cost.index.astype(int)
-  expected_conv_ref_annual_world_first_cost.index = integer_index
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "conv_ref_annual_world_first_cost"
   result = fc.conv_ref_annual_world_first_cost(
       conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd,
       conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
-  pd.testing.assert_series_equal(result,
-      expected_conv_ref_annual_world_first_cost,
-      check_exact=False, check_names=False, check_index_type=False)
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
-
-def test_ref_cumulative_install_SolarPV_27Aug18():
+def test_ref_cumulative_install():
   ac = advanced_controls.AdvancedControls(
       pds_2014_cost=1444.93954421485,
       ref_2014_cost=1444.93954421485,
@@ -267,24 +243,24 @@ def test_ref_cumulative_install_SolarPV_27Aug18():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
+  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
+      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_ref_annual_world_first_cost = pd.Series(
       soln_ref_annual_world_first_cost_nparray[:, 1],
       index=soln_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
+  soln_ref_annual_world_first_cost.index = soln_ref_annual_world_first_cost.index.astype(int)
   conv_ref_annual_world_first_cost = pd.Series(
       conv_ref_annual_world_first_cost_nparray[:, 1],
       index=conv_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
-  expected_ref_cumulative_install = pd.Series(
-      ref_cumulative_install_nparray[:, 1],
+  conv_ref_annual_world_first_cost.index = conv_ref_annual_world_first_cost.index.astype(int)
+  expected = pd.Series(ref_cumulative_install_nparray[:, 1],
       index=ref_cumulative_install_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  expected.name = "ref_cumulative_install"
   result = fc.ref_cumulative_install(
       soln_ref_annual_world_first_cost=soln_ref_annual_world_first_cost,
       conv_ref_annual_world_first_cost=conv_ref_annual_world_first_cost)
-  pd.testing.assert_series_equal(result, expected_ref_cumulative_install,
-      check_exact=False, check_names=False)
-
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 
 soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",

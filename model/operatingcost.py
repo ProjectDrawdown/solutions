@@ -24,8 +24,7 @@ class OperatingCost:
        'Operating Cost'!D19:D64
     """
     result = soln_pds_annual_breakout.sum(axis=1)
-    result.name = 'Annual Operating Cost of Technology/Solution'
-    result.index.name = 'Year'
+    result.name = 'soln_pds_annual_operating_cost'
     return result
 
   def soln_pds_cumulative_operating_cost(self, soln_pds_annual_operating_cost):
@@ -33,7 +32,7 @@ class OperatingCost:
        'Operating Cost'!E19:E64
     """
     result = soln_pds_annual_operating_cost.cumsum()
-    result.name = 'Cumulative Operating Cost of Technology/Solution'
+    result.name = 'soln_pds_cumulative_operating_cost'
     return result
 
   def conv_ref_annual_operating_cost(self, conv_ref_annual_breakout):
@@ -41,8 +40,7 @@ class OperatingCost:
        'Operating Cost'!K19:K64
     """
     result = conv_ref_annual_breakout.sum(axis=1)
-    result.name = 'Annual Operating Cost of Conventional'
-    result.index.name = 'Year'
+    result.name = 'conv_ref_annual_operating_cost'
     return result
 
   def conv_ref_cumulative_operating_cost(self, conv_ref_annual_operating_cost):
@@ -50,7 +48,7 @@ class OperatingCost:
        'Operating Cost'!L19:L64
     """
     result = conv_ref_annual_operating_cost.cumsum()
-    result.name = 'Cumulative Operating Cost of Conventional'
+    result.name = 'conv_ref_cumulative_operating_cost'
     return result
 
   def marginal_annual_operating_cost(self, soln_pds_annual_operating_cost,
@@ -59,7 +57,7 @@ class OperatingCost:
        'Operating Cost'!D69:D114
     """
     result = conv_ref_annual_operating_cost - soln_pds_annual_operating_cost
-    result.name = 'Marginal  Operating Costs/Savings'
+    result.name = 'marginal_annual_operating_cost'
     return result.dropna()
 
   def soln_new_funits_per_year(self, soln_net_annual_funits_adopted):
@@ -67,8 +65,7 @@ class OperatingCost:
        'Operating Cost'!F19:F64
     """
     growth = soln_net_annual_funits_adopted.diff().dropna()
-    growth.name = 'New Functional Units each Year'
-    growth.index.name = 'Year'
+    growth.name = 'soln_new_funits_per_year'
     first_year = soln_net_annual_funits_adopted.first_valid_index()
     growth = growth.append(soln_net_annual_funits_adopted.iloc[0, :])
     return growth.sort_index()
@@ -78,8 +75,7 @@ class OperatingCost:
        'Operating Cost'!I531:I576
     """
     result = soln_pds_tot_iunits_reqd - soln_ref_tot_iunits_reqd
-    result.name = 'Net Annual Implementation Units Required (SOLUTION-PDS)'
-    result.index.name = 'Year'
+    result.name = 'soln_pds_net_annual_iunits_reqd'
     return result
 
   def soln_pds_new_annual_iunits_reqd(self, soln_pds_net_annual_iunits_reqd):
@@ -87,8 +83,7 @@ class OperatingCost:
        'Operating Cost'!K531:K576
     """
     delta = soln_pds_net_annual_iunits_reqd.diff().dropna()
-    delta.name = 'New Annual Implementation Units (SOLUTION-PDS)'
-    delta.index.name = 'Year'
+    delta.name = 'soln_pds_new_annual_iunits_reqd'
     return delta
 
   def soln_pds_annual_breakout(self, soln_new_funits_per_year, soln_pds_new_annual_iunits_reqd):
@@ -99,20 +94,21 @@ class OperatingCost:
        Fixed and Variable costs that are constant or changing over time are included.
        'Operating Cost'!B262:AV386
     """
-    return self._annual_breakout(new_funits_per_year=soln_new_funits_per_year,
+    result = self._annual_breakout(new_funits_per_year=soln_new_funits_per_year,
         new_annual_iunits_reqd=soln_pds_new_annual_iunits_reqd,
         lifetime_replacement=self.ac.soln_lifetime_replacement,
         var_oper_cost_per_funit=self.ac.soln_var_oper_cost_per_funit,
         fuel_cost_per_funit=self.ac.soln_fuel_cost_per_funit,
         fixed_oper_cost_per_iunit=self.ac.soln_fixed_oper_cost_per_iunit)
+    result.name = 'soln_pds_annual_breakout'
+    return result
 
   def conv_ref_new_annual_iunits_reqd(self, conv_ref_net_annual_iunits_reqd):
     """New implementation units required each year.
        'Operating Cost'!L531:L576
     """
     delta = conv_ref_net_annual_iunits_reqd.diff().dropna()
-    delta.name = 'New Annual Implementation Units (CONVENTIONAL-REF)'
-    delta.index.name = 'Year'
+    delta.name = 'conv_ref_new_annual_iunits_reqd'
     return delta
 
   def conv_ref_annual_breakout(self, conv_new_funits_per_year, conv_ref_new_annual_iunits_reqd):
@@ -123,12 +119,14 @@ class OperatingCost:
        Fixed and Variable costs that are constant or changing over time are included.
        'Operating Cost'!B399:AV523
     """
-    return self._annual_breakout(new_funits_per_year=conv_new_funits_per_year,
+    result = self._annual_breakout(new_funits_per_year=conv_new_funits_per_year,
         new_annual_iunits_reqd=conv_ref_new_annual_iunits_reqd,
         lifetime_replacement=self.ac.soln_lifetime_replacement,
         var_oper_cost_per_funit=self.ac.conv_var_oper_cost_per_funit,
         fuel_cost_per_funit=self.ac.conv_fuel_cost_per_funit,
         fixed_oper_cost_per_iunit=self.ac.conv_fixed_oper_cost_per_iunit)
+    result.name = 'conv_ref_annual_breakout'
+    return result
 
   def _annual_breakout(self, new_funits_per_year, new_annual_iunits_reqd,
       lifetime_replacement, var_oper_cost_per_funit, fuel_cost_per_funit,
@@ -200,6 +198,7 @@ class OperatingCost:
 
     investment = pd.concat([marginal_first_cost, marginal_operating_cost_savings,
       net_cash_flow, npv_series], axis=1)
+    investment.name = 'lifetime_cost_forecast'
     investment.index.name = 'Year'
     investment.columns = ['Investment (Marginal First Cost)', 'Marginal Operating Cost Savings',
         'Net Cash Flow', 'NPV in $2014']
@@ -225,6 +224,7 @@ class OperatingCost:
     result = pd.Series(0, index=np.arange(first_year, last_row + 1), dtype='float')
     result.index.name = 'Year'
     result.index = result.index.astype(int)
+    result.name = 'soln_vs_conv_single_iunit_cashflow'
 
     soln_lifetime = self.ac.soln_lifetime_replacement
     conv_lifetime = 0
@@ -273,19 +273,24 @@ class OperatingCost:
       l = [0] * (n + offset) + [soln_vs_conv_single_iunit_cashflow.iloc[n]]
       npv.append(np.npv(rate=self.ac.npv_discount_rate, values=l))
     result = pd.Series(npv, index=soln_vs_conv_single_iunit_cashflow.index.copy())
+    result.name = 'soln_vs_conv_single_iunit_npv'
     return result
 
   def soln_vs_conv_single_iunit_payback(self, soln_vs_conv_single_iunit_cashflow):
     """Whether the solution has paid off versus the conventional, for each year.
        'Operating Cost'!K126:K250
     """
-    return soln_vs_conv_single_iunit_cashflow.cumsum().apply(lambda x: 1 if x >= 0 else 0)
+    result = soln_vs_conv_single_iunit_cashflow.cumsum().apply(lambda x: 1 if x >= 0 else 0)
+    result.name = 'soln_vs_conv_single_iunit_payback'
+    return result
 
   def soln_vs_conv_single_iunit_payback_discounted(self, soln_vs_conv_single_iunit_npv):
     """Whether the solution NPV has paid off versus the conventional, for each year.
        'Operating Cost'!L126:L250
     """
-    return soln_vs_conv_single_iunit_npv.cumsum().apply(lambda x: 1 if x >= 0 else 0)
+    result = soln_vs_conv_single_iunit_npv.cumsum().apply(lambda x: 1 if x >= 0 else 0)
+    result.name = 'soln_vs_conv_single_iunit_payback_discounted'
+    return result
 
   def soln_only_single_iunit_cashflow(self, single_iunit_purchase_year, soln_pds_install_cost_per_iunit):
     """
@@ -297,6 +302,7 @@ class OperatingCost:
     result = pd.Series(0, index=np.arange(first_year, last_row + 1), dtype='float')
     result.index.name = 'Year'
     result.index = result.index.astype(int)
+    result.name = 'soln_only_single_iunit_cashflow'
 
     soln_lifetime = self.ac.soln_lifetime_replacement
     conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use
@@ -336,18 +342,21 @@ class OperatingCost:
       l = [0] * (n + offset) + [soln_only_single_iunit_cashflow.iloc[n]]
       npv.append(np.npv(rate=self.ac.npv_discount_rate, values=l))
     result = pd.Series(npv, index=soln_only_single_iunit_cashflow.index.copy())
+    result.name = 'soln_only_single_iunit_npv'
     return result
 
   def soln_only_single_iunit_payback(self, soln_only_single_iunit_cashflow):
     """Whether the solution has paid off, for each year.
        'Operating Cost'!O126:O250
     """
-    return soln_only_single_iunit_cashflow.cumsum().apply(lambda x: 1 if x >= 0 else 0)
+    result = soln_only_single_iunit_cashflow.cumsum().apply(lambda x: 1 if x >= 0 else 0)
+    result.name = 'soln_only_single_iunit_payback'
+    return result
 
   def soln_only_single_iunit_payback_discounted(self, soln_only_single_iunit_npv):
     """Whether the solution NPV has paid off, for each year.
        'Operating Cost'!P126:P250
     """
-    return soln_only_single_iunit_npv.cumsum().apply(lambda x: 1 if x >= 0 else 0)
-
-
+    result = soln_only_single_iunit_npv.cumsum().apply(lambda x: 1 if x >= 0 else 0)
+    result.name = 'soln_only_single_iunit_payback_discounted'
+    return result

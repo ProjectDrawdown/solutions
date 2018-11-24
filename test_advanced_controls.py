@@ -5,6 +5,7 @@ import pytest
 import advanced_controls
 from model import emissionsfactors as ef
 from model import helpertables as ht
+from model import interpolation
 import pandas as pd
 
 
@@ -92,26 +93,20 @@ def test_emissions_grid():
 def test_soln_pds_adoption_args():
   ac = advanced_controls.AdvancedControls(
       soln_pds_adoption_basis="Existing Adoption Prognostications",
-      soln_pds_adoption_prognostication_trend="3rd Poly",
       soln_pds_adoption_prognostication_growth="Medium",
       soln_pds_adoption_prognostication_source="test1")
   assert ac.soln_pds_adoption_basis == ht.ADOPTION_BASIS.PROGNOSTICATION
-  assert ac.soln_pds_adoption_prognostication_trend == ht.ADOPTION_PROGNOSTICATION_TREND.POLY_3RD
   assert ac.soln_pds_adoption_prognostication_growth == ht.ADOPTION_PROGNOSTICATION_GROWTH.MEDIUM
-  assert ac.soln_pds_adoption_prognostication_source == ["test1"]
+  assert ac.soln_pds_adoption_prognostication_source == "test1"
   ac = advanced_controls.AdvancedControls(
       soln_pds_adoption_basis=ht.ADOPTION_BASIS.S_CURVE,
-      soln_pds_adoption_prognostication_trend=ht.ADOPTION_PROGNOSTICATION_TREND.EXPONENTIAL,
       soln_pds_adoption_prognostication_growth=ht.ADOPTION_PROGNOSTICATION_GROWTH.LOW,
-      soln_pds_adoption_prognostication_source=["test1", "test2"])
+      soln_pds_adoption_prognostication_source="test2")
   assert ac.soln_pds_adoption_basis == ht.ADOPTION_BASIS.S_CURVE
-  assert ac.soln_pds_adoption_prognostication_trend == ht.ADOPTION_PROGNOSTICATION_TREND.EXPONENTIAL
   assert ac.soln_pds_adoption_prognostication_growth == ht.ADOPTION_PROGNOSTICATION_GROWTH.LOW
-  assert ac.soln_pds_adoption_prognostication_source == ["test1", "test2"]
+  assert ac.soln_pds_adoption_prognostication_source == "test2"
   with pytest.raises(ValueError):
     _ = advanced_controls.AdvancedControls(soln_pds_adoption_basis="???")
-  with pytest.raises(ValueError):
-    _ = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_trend="???")
   with pytest.raises(ValueError):
     _ = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_growth="???")
 

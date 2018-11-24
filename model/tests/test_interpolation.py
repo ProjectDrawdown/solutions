@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+import pytest
 from model import interpolation as itrp
 
 
@@ -13,6 +14,8 @@ def test_linear_trend():
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+  result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='linear')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_poly_degree2_trend():
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:],
@@ -22,24 +25,38 @@ def test_poly_degree2_trend():
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+  result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='degree2')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+  result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='2nd Poly')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_poly_degree3_trend():
-  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:], columns=adoption_low_med_high_list[0],
-      dtype=np.float64).set_index('Year')
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:],
+      columns=adoption_low_med_high_list[0], dtype=np.float64).set_index('Year')
   result = itrp.poly_degree3_trend(adoption_low_med_high.loc[:, 'Medium'])
   expected = pd.DataFrame(poly_degree3_trend_list[1:], columns=poly_degree3_trend_list[0],
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+  result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='degree3')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+  result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='3rd Poly')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_exponential_trend():
-  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:], columns=adoption_low_med_high_list[0],
-      dtype=np.float64).set_index('Year')
+  adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:],
+      columns=adoption_low_med_high_list[0], dtype=np.float64).set_index('Year')
   result = itrp.exponential_trend(adoption_low_med_high.loc[:, 'Medium'])
   expected = pd.DataFrame(exponential_trend_list[1:], columns=exponential_trend_list[0],
       dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+  result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='exponential')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_invalid_trend():
+  with pytest.raises(ValueError):
+    _ = itrp.trend_algorithm(data=None, trend='invalid')
 
 
 # 'Adoption Data'!AB46:AD94

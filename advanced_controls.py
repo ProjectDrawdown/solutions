@@ -6,6 +6,7 @@ import enum
 import pandas as pd
 from model import emissionsfactors as ef
 from model import helpertables as ht
+from model import interpolation
 
 
 SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE')
@@ -330,13 +331,7 @@ class AdvancedControls:
     if isinstance(soln_pds_adoption_basis, str):
       self.soln_pds_adoption_basis = ht.string_to_adoption_basis(soln_pds_adoption_basis)
     self.soln_pds_adoption_prognostication_source = soln_pds_adoption_prognostication_source
-    if isinstance(soln_pds_adoption_prognostication_source, str):
-      # soln_pds_adoption_prognostication_source is supposed to be a list of strings
-      self.soln_pds_adoption_prognostication_source = [soln_pds_adoption_prognostication_source]
     self.soln_pds_adoption_prognostication_trend = soln_pds_adoption_prognostication_trend
-    if isinstance(soln_pds_adoption_prognostication_trend, str):
-      self.soln_pds_adoption_prognostication_trend = ht.string_to_adoption_prognostication_trend(
-          soln_pds_adoption_prognostication_trend)
     self.soln_pds_adoption_prognostication_growth = soln_pds_adoption_prognostication_growth
     if isinstance(soln_pds_adoption_prognostication_growth, str):
       self.soln_pds_adoption_prognostication_growth = ht.string_to_adoption_prognostication_growth(

@@ -30,14 +30,14 @@ input=$(cat app_test.firstcost_req)
 url='http://127.0.0.1:5000/firstcost'
 output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
 
-require "$output" '"soln_pds_install_cost_per_iunit": [["Year", "World"],"' && \
-require "$output" '"conv_ref_install_cost_per_iunit": [["Year", "World"],' && \
-require "$output" '"soln_ref_install_cost_per_iunit": [["Year", "World"],' && \
-require "$output" '"soln_pds_annual_world_first_cost": [["Year", "World"],' && \
-require "$output" '"soln_pds_cumulative_install": [["Year", "World"],' && \
-require "$output" '"soln_ref_annual_world_first_cost": [["Year", "World"],' && \
-require "$output" '"conv_ref_annual_world_first_cost": [["Year", "World"],' && \
-require "$output" '"ref_cumulative_install": [["Year", "World"],' && \
+require "$output" '"soln_pds_install_cost_per_iunit": [["Year","' && \
+require "$output" '"conv_ref_install_cost_per_iunit": [["Year",' && \
+require "$output" '"soln_ref_install_cost_per_iunit": [["Year",' && \
+require "$output" '"soln_pds_annual_world_first_cost": [["Year",' && \
+require "$output" '"soln_pds_cumulative_install": [["Year",' && \
+require "$output" '"soln_ref_annual_world_first_cost": [["Year",' && \
+require "$output" '"conv_ref_annual_world_first_cost": [["Year",' && \
+require "$output" '"ref_cumulative_install": [["Year",' && \
 true
 
 if [ $? -ne 0 ]; then
@@ -121,17 +121,17 @@ require "$output" '"conv_ref_grid_CO2_per_KWh": [["Year",' && \
 true
 
 
-input='{"advanced_controls":{"soln_pds_adoption_prognostication_source":"Based on: Greenpeace (2015) Advanced Energy Revolution"},"adoption_data":{"sourcename":"Based on: Greenpeace (2015) Advanced Energy Revolution","low_sd":1,"high_sd":1,"growth_choice":"Medium"}}'
+input='{"advanced_controls":{"soln_pds_adoption_prognostication_source":"Based on: Greenpeace (2015) Advanced Energy Revolution"},"adoption_data":{"adconfig":[["param", "World", "dummy"], ["prognostication_source", "Based on: Greenpeace (2015) Advanced Energy Revolution", ""], ["trend", "degree3", ""], ["growth", "Medium", ""], ["low_sd_mult", 1.0, 0.0], ["high_sd_mult", 1.0, 0.0]]}}'
 url='http://127.0.0.1:5000/adoptiondata'
 output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
 
-require "$output" '"adoption": [["Year",' && \
-require "$output" '"adoption_min_max_sd": [["Year",' && \
-require "$output" '"adoption_low_med_high": [["Year",' && \
-require "$output" '"linear_growth": [["Year",' && \
-require "$output" '"poly_degree2_growth": [["Year",' && \
-require "$output" '"poly_degree3_growth": [["Year",' && \
-require "$output" '"exponential_growth": [["Year",' && \
+require "$output" '"adoption_data_global": [["Year",' && \
+require "$output" '"adoption_min_max_sd_global": [["Year",' && \
+require "$output" '"adoption_low_med_high_global": [["Year",' && \
+require "$output" '"adoption_trend_linear_global": [["Year",' && \
+require "$output" '"adoption_trend_poly_degree2_global": [["Year",' && \
+require "$output" '"adoption_trend_poly_degree3_global": [["Year",' && \
+require "$output" '"adoption_trend_exponential_global": [["Year",' && \
 true
 
 if [ $? -ne 0 ]; then
@@ -237,6 +237,18 @@ require "$output" '"forecast_trend_linear_usa": [["Year",' && \
 require "$output" '"forecast_trend_degree2_usa": [["Year",' && \
 require "$output" '"forecast_trend_degree3_usa": [["Year",' && \
 require "$output" '"forecast_trend_exponential_usa": [["Year",' && \
+true
+
+if [ $? -ne 0 ]; then
+    rc=1
+fi
+
+input=$(cat app_test.helpertables_req)
+url='http://127.0.0.1:5000/helpertables'
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
+
+require "$output" '"soln_ref_funits_adopted": [["Year",' && \
+require "$output" '"soln_pds_funits_adopted": [["Year",' && \
 true
 
 if [ $? -ne 0 ]; then

@@ -83,3 +83,15 @@ def exponential_trend(data):
     result.loc[index, 'e^x'] = math.exp(ce * offset)
     result.loc[index, 'adoption'] = result.loc[index, 'coeff'] * result.loc[index, 'e^x']
   return result
+
+def trend_algorithm(data, trend):
+  """Fit of data via one of several trend interpolation algorithms."""
+  t = trend.lower()
+  if t == "linear": return linear_trend(data=data)
+  if t == "2nd poly" or t == "2nd_poly" or t == "degree2":
+    return poly_degree2_trend(data=data)
+  if t == "3rd poly" or t == "3rd_poly" or t == "degree3":
+    return poly_degree3_trend(data=data)
+  if t == "exponential" or t == "exp":
+    return exponential_trend(data=data)
+  raise ValueError('invalid trend algorithm: ' + str(trend))
