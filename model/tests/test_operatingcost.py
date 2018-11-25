@@ -2,7 +2,7 @@
 
 import os
 
-import advanced_controls
+from model import advanced_controls
 from model import operatingcost
 import numpy as np
 import pandas as pd

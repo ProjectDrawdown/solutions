@@ -1,10 +1,10 @@
 """Tests for firstcost.py."""
 
-import advanced_controls
-
 import numpy as np
 import pandas as pd
+from model import advanced_controls
 from model import firstcost
+
 
 def test_soln_pds_install_cost_per_iunit():
   """Test PDS install cost per unit

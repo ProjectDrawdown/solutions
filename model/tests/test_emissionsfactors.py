@@ -1,6 +1,6 @@
 """Tests for emissionsfactors.py."""
 
-import advanced_controls
+from model import advanced_controls
 from model import emissionsfactors as ef
 import pytest
 

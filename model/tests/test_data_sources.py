@@ -2,7 +2,7 @@
 
 import glob
 
-import data_sources
+from model import data_sources
 import pandas as pd
 
 def test_matching_columns():

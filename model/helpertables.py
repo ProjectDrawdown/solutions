@@ -9,7 +9,7 @@ import enum
 import numpy as np
 import pandas as pd
 
-import data_sources
+from model import data_sources
 from model import interpolation
 
 ADOPTION_BASIS = enum.Enum('ADOPTION_BASIS',

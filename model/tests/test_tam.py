@@ -13,13 +13,20 @@ datadir = str(thisdir.parents[2] / 'solution' / 'solarpvutil')
 
 # arguments used in SolarPVUtil 28Aug18, used in many tests
 tamconfig_list = [
-    ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-    ['source_until_2014', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-    ['source_after_2014', 'Baseline Cases', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-    ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
-    ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-    ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-    ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
+    ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+      'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+    ['source_until_2014', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
+      'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
+    ['source_after_2014', 'Baseline Cases',
+      'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 'ALL SOURCES',
+      'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
+      'ALL SOURCES', 'ALL SOURCES'],
+    ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
+      '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
+    ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
+      'Medium', 'Medium', 'Medium'],
+    ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
 g_tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
 
 
@@ -90,6 +97,43 @@ def test_exponential_trend_global():
   expected = pd.DataFrame(exponential_trend_global_list[1:],
       columns=exponential_trend_global_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_forecast_pds_global():
+  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  forecast = tm.forecast_data_pds_global()
+  a1 = 'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario'
+  a2 = 'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario'
+  a3 = 'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario'
+  assert forecast.loc[2042, a1] == pytest.approx(45246.48136814450)
+  assert forecast.loc[2051, a2] == pytest.approx(55322.78112482230)
+  assert forecast.loc[2033, a3] == pytest.approx(35773.38262874340)
+  mms = tm.forecast_min_max_sd_pds_global()
+  assert mms.loc[2059, 'Min'] == pytest.approx(59333.209869)
+  assert mms.loc[2059, 'Max'] == pytest.approx(64314.774793)
+  assert mms.loc[2059, 'S.D'] == pytest.approx(2124.802624)
+  lmh = tm.forecast_low_med_high_pds_global()
+  assert lmh.loc[2059, 'Low'] == pytest.approx(58393.607060)
+  assert lmh.loc[2059, 'Medium'] == pytest.approx(60518.409684)
+  assert lmh.loc[2059, 'High'] == pytest.approx(62643.212309)
+  g = tm.forecast_trend_pds_global(trend='Linear')
+  assert g.loc[2059, 'x'] == pytest.approx(36950.208038)
+  assert g.loc[2059, 'constant'] == pytest.approx(21761.687416)
+  assert g.loc[2059, 'adoption'] == pytest.approx(58711.895454)
+  g = tm.forecast_trend_pds_global(trend='Degree2')
+  assert g.loc[2059, 'x^2'] == pytest.approx(11846.635815)
+  assert g.loc[2059, 'x'] == pytest.approx(25366.830796)
+  assert g.loc[2059, 'constant'] == pytest.approx(23423.141525)
+  assert g.loc[2059, 'adoption'] == pytest.approx(60636.608137)
+  g = tm.forecast_trend_pds_global(trend='Degree3')
+  assert g.loc[2059, 'x^3'] == pytest.approx(-2167.493576)
+  assert g.loc[2059, 'x^2'] == pytest.approx(15025.626393)
+  assert g.loc[2059, 'x'] == pytest.approx(24197.775743)
+  assert g.loc[2059, 'constant'] == pytest.approx(23488.134222)
+  assert g.loc[2059, 'adoption'] == pytest.approx(60544.042781)
+  g = tm.forecast_trend_pds_global(trend='Exponential')
+  assert g.loc[2059, 'coeff'] == pytest.approx(23885.595768)
+  assert g.loc[2059, 'e^x'] == pytest.approx(2.598937)
+  assert g.loc[2059, 'adoption'] == pytest.approx(62077.150109)
 
 def test_forecast_data_oecd90():
   tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
@@ -424,6 +468,22 @@ def test_forecast_data_usa():
   assert g.loc[2059, 'coeff'] == pytest.approx(4106.634669)
   assert g.loc[2059, 'e^x'] == pytest.approx(1.357549289)
   assert g.loc[2059, 'adoption'] == pytest.approx(5574.958973)
+
+def test_ref_tam_per_region():
+  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  result = tm.ref_tam_per_region()
+  filename = str(pathlib.Path(__file__).parents[0].joinpath('ref_tam_per_region.csv'))
+  expected = pd.read_csv(filename, header=0, index_col=0,
+      skipinitialspace=True, comment='#')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_pds_tam_per_region():
+  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  result = tm.pds_tam_per_region()
+  filename = str(pathlib.Path(__file__).parents[0].joinpath('pds_tam_per_region.csv'))
+  expected = pd.read_csv(filename, header=0, index_col=0,
+      skipinitialspace=True, comment='#')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 # 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES', source_after_2014='Baseline Cases',

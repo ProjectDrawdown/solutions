@@ -8,7 +8,7 @@ import math
 import numpy as np
 import pandas as pd
 
-import advanced_controls
+from model import advanced_controls
 
 
 class CO2Calcs:

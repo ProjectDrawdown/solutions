@@ -2,9 +2,9 @@
 
 import pytest
 
-import advanced_controls
+from model import advanced_controls
 from model import emissionsfactors as ef
-from model import helpertables as ht
+from model import helpertables
 from model import interpolation
 import pandas as pd
 
@@ -95,15 +95,17 @@ def test_soln_pds_adoption_args():
       soln_pds_adoption_basis="Existing Adoption Prognostications",
       soln_pds_adoption_prognostication_growth="Medium",
       soln_pds_adoption_prognostication_source="test1")
-  assert ac.soln_pds_adoption_basis == ht.ADOPTION_BASIS.PROGNOSTICATION
-  assert ac.soln_pds_adoption_prognostication_growth == ht.ADOPTION_PROGNOSTICATION_GROWTH.MEDIUM
+  assert ac.soln_pds_adoption_basis == helpertables.ADOPTION_BASIS.PROGNOSTICATION
+  M = helpertables.ADOPTION_PROGNOSTICATION_GROWTH.MEDIUM
+  assert ac.soln_pds_adoption_prognostication_growth == M
   assert ac.soln_pds_adoption_prognostication_source == "test1"
+  L = helpertables.ADOPTION_PROGNOSTICATION_GROWTH.LOW
   ac = advanced_controls.AdvancedControls(
-      soln_pds_adoption_basis=ht.ADOPTION_BASIS.S_CURVE,
-      soln_pds_adoption_prognostication_growth=ht.ADOPTION_PROGNOSTICATION_GROWTH.LOW,
+      soln_pds_adoption_basis=helpertables.ADOPTION_BASIS.S_CURVE,
+      soln_pds_adoption_prognostication_growth=L,
       soln_pds_adoption_prognostication_source="test2")
-  assert ac.soln_pds_adoption_basis == ht.ADOPTION_BASIS.S_CURVE
-  assert ac.soln_pds_adoption_prognostication_growth == ht.ADOPTION_PROGNOSTICATION_GROWTH.LOW
+  assert ac.soln_pds_adoption_basis == helpertables.ADOPTION_BASIS.S_CURVE
+  assert ac.soln_pds_adoption_prognostication_growth == L
   assert ac.soln_pds_adoption_prognostication_source == "test2"
   with pytest.raises(ValueError):
     _ = advanced_controls.AdvancedControls(soln_pds_adoption_basis="???")

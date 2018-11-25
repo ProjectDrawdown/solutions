@@ -3,7 +3,7 @@
 import math
 import os
 
-import data_sources
+from model import data_sources
 from model import interpolation
 import numpy as np
 import pandas as pd

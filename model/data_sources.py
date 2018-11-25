@@ -21,6 +21,9 @@ _cases = {
       'AMPERE MESSAGE-MACRO 450', 'AMPERE (2014) GEM E3 450',
       'AMPERE GEM E3 450', 'Greenpeace (2015) Energy Revolution',
       'Greenpeace Energy [R]evolution',
+      'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario',
+      'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario',
+      'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario',
     ]),
 
     'baseline': set([
@@ -90,8 +93,8 @@ def is_group_name(name):
   """Return True if name is a group."""
   name = name.lower()
   name = name_mapping.get(name, name)
-  if name.lower() in _cases:
+  if name in _cases:
     return True
-  if name.lower() == "all sources":
+  if name == "all sources":
     return True
   return False
