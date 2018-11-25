@@ -3,8 +3,8 @@
 import numpy as np
 import pandas as pd
 import pytest
+from model import advanced_controls
 from model import ch4calcs
-import advanced_controls
 
 
 def test_ch4_tons_reduced():

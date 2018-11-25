@@ -5,11 +5,11 @@ import json
 import os
 import os.path
 
-import advanced_controls
 from flask import Flask, request, render_template, jsonify, Response
 import numpy as np
 import pandas as pd
 from model import adoptiondata
+from model import advanced_controls
 from model import co2calcs
 from model import ch4calcs
 from model import emissionsfactors

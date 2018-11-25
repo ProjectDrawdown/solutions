@@ -84,6 +84,18 @@ def exponential_trend(data):
     result.loc[index, 'adoption'] = result.loc[index, 'coeff'] * result.loc[index, 'e^x']
   return result
 
+def single_trend(data):
+  """Single source model.
+     Returns the data from the single source, packaged into a DataFrame compatible
+     with the other trend algorithms.
+  """
+  result = pd.DataFrame(0, index=np.arange(2014, 2061),
+      columns=['constant', 'adoption'], dtype=np.float64)
+  result.index.name = 'Year'
+  result.loc[:, 'constant'] = data
+  result.loc[:, 'adoption'] = data
+  return result
+
 def trend_algorithm(data, trend):
   """Fit of data via one of several trend interpolation algorithms."""
   t = trend.lower()
@@ -94,4 +106,6 @@ def trend_algorithm(data, trend):
     return poly_degree3_trend(data=data)
   if t == "exponential" or t == "exp":
     return exponential_trend(data=data)
+  if t == "single" or t == "single source":
+    return single_trend(data)
   raise ValueError('invalid trend algorithm: ' + str(trend))

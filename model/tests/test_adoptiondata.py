@@ -5,16 +5,19 @@ import pathlib
 import numpy as np
 import pandas as pd
 import pytest
-import advanced_controls
 from model import adoptiondata
+from model import advanced_controls
 
 thisdir = pathlib.Path(__file__)
 datadir = str(thisdir.parents[2] / 'solution' / 'solarpvutil')
 # arguments used in SolarPVUtil 28Aug18, used in many tests
 adconfig_list = [
-    ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-    ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
-    ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
+    ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
+      'Latin America', 'China', 'India', 'EU', 'USA'],
+    ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
+      '3rd Poly', '3rd Poly', '3rd Poly'],
+    ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
+      'Medium', 'Medium'],
     ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
     ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
 g_adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')

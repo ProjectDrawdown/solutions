@@ -5,8 +5,8 @@ import pathlib
 
 import pandas as pd
 import pytest
+from model import advanced_controls
 from model import unitadoption
-import advanced_controls
 
 
 this_dir = pathlib.Path(__file__)

@@ -3,7 +3,7 @@
 
 import os.path
 
-import data_sources
+from model import data_sources
 from model import interpolation
 import pandas as pd
 
@@ -79,6 +79,20 @@ class TAM:
     result.loc[:, 'High'] = result.loc[:, 'Medium'] + (min_max_sd.loc[:, 'S.D'] * high_sd_mult)
     return result
 
+  def _get_trend(self, trend, tamconfig):
+    """Decision tree to select between trend choices.
+
+       If a trend was explictly specified, use it.
+       If there is only one data source, use that source without any curve fitting.
+       Otherwise, use the curve fit algorithm specified in the tamconfig.
+    """
+    if trend:
+      return trend
+    if not data_sources.is_group_name(tamconfig['source_after_2014']):
+      return 'single'
+    else:
+      return tamconfig['trend']
+
   def forecast_data_global(self):
     """ 'TAM Data'!B45:Q94 """
     filename = os.path.join(self.datadir, 'tam_forecast_global.csv')
@@ -108,11 +122,45 @@ class TAM:
        Degree3: 'TAM Data'!CM50:CQ96    Exponential: 'TAM Data'!CV50:CX96
     """
     growth = self.tamconfig.loc['growth', 'World']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'World']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['World'])
     data = self.forecast_low_med_high_global().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_global_' + trend.lower()
+    return result
+
+  def forecast_data_pds_global(self):
+    """ 'TAM Data'!B45:Q94 """
+    filename = os.path.join(self.datadir, 'tam_forecast_pds_global.csv')
+    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+        skip_blank_lines=True, comment='#')
+    result.name = "forecast_data_pds_global"
+    return result
+
+  def forecast_min_max_sd_pds_global(self):
+    """ 'TAM Data'!V45:Y94 """
+    result = self._min_max_sd(forecast=self.forecast_data_pds_global(),
+        tamconfig=self.tamconfig['PDS World'])
+    result.name = 'forecast_min_max_sd_pds_global'
+    return result
+
+  def forecast_low_med_high_pds_global(self):
+    """ 'TAM Data'!AA45:AC94 """
+    result = self._low_med_high(forecast=self.forecast_data_pds_global(),
+        min_max_sd=self.forecast_min_max_sd_pds_global(),
+        tamconfig=self.tamconfig['PDS World'])
+    result.name = 'forecast_low_med_high_pds_global'
+    return result
+
+  def forecast_trend_pds_global(self, trend=None):
+    """Forecast for the 'World' region via one of several interpolation algorithms.
+       Linear: 'TAM Data'!BX50:BZ96     Degree2: 'TAM Data'!CE50:CH96
+       Degree3: 'TAM Data'!CM50:CQ96    Exponential: 'TAM Data'!CV50:CX96
+    """
+    growth = self.tamconfig.loc['growth', 'PDS World']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['PDS World'])
+    data = self.forecast_low_med_high_pds_global().loc[:, growth]
+    result = interpolation.trend_algorithm(data=data, trend=trend)
+    result.name = 'forecast_trend_pds_global_' + trend.lower()
     return result
 
   def forecast_data_oecd90(self):
@@ -144,8 +192,7 @@ class TAM:
        Degree3: 'TAM Data'!CM168:CQ214    Exponential: 'TAM Data'!CV168:CX214
     """
     growth = self.tamconfig.loc['growth', 'OECD90']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'OECD90']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['OECD90'])
     data = self.forecast_low_med_high_oecd90().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_oecd90_' + trend.lower()
@@ -180,8 +227,7 @@ class TAM:
        Degree3: 'TAM Data'!CM232:CQ278    Exponential: 'TAM Data'!CV232:CX278
     """
     growth = self.tamconfig.loc['growth', 'Eastern Europe']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'Eastern Europe']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Eastern Europe'])
     data = self.forecast_low_med_high_eastern_europe().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_eastern_europe_' + trend.lower()
@@ -216,8 +262,7 @@ class TAM:
        Degree3: 'TAM Data'!CM295:CQ341    Exponential: 'TAM Data'!CV295:CX341
     """
     growth = self.tamconfig.loc['growth', 'Asia (Sans Japan)']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'Asia (Sans Japan)']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Asia (Sans Japan)'])
     data = self.forecast_low_med_high_asia_sans_japan().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_asia_sans_japan_' + trend.lower()
@@ -252,8 +297,7 @@ class TAM:
        Degree3: 'TAM Data'!CM358:CQ404    Exponential: 'TAM Data'!CV358:CX404
     """
     growth = self.tamconfig.loc['growth', 'Middle East and Africa']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'Middle East and Africa']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Middle East and Africa'])
     data = self.forecast_low_med_high_middle_east_and_africa().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_middle_east_and_africa_' + trend.lower()
@@ -288,8 +332,7 @@ class TAM:
        Degree3: 'TAM Data'!CM421:CQ467    Exponential: 'TAM Data'!CV421:CX467
     """
     growth = self.tamconfig.loc['growth', 'Latin America']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'Latin America']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Latin America'])
     data = self.forecast_low_med_high_latin_america().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_latin_america_' + trend.lower()
@@ -324,8 +367,7 @@ class TAM:
        Degree3: 'TAM Data'!CM484:CQ530    Exponential: 'TAM Data'!CV484:CX530
     """
     growth = self.tamconfig.loc['growth', 'China']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'China']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['China'])
     data = self.forecast_low_med_high_china().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_china_' + trend.lower()
@@ -360,8 +402,7 @@ class TAM:
        Degree3: 'TAM Data'!CM548:CQ594    Exponential: 'TAM Data'!CV548:CX594
     """
     growth = self.tamconfig.loc['growth', 'India']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'India']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['India'])
     data = self.forecast_low_med_high_india().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_india_' + trend.lower()
@@ -394,8 +435,7 @@ class TAM:
        Degree3: 'TAM Data'!CM612:CQ658    Exponential: 'TAM Data'!CV612:CX658
     """
     growth = self.tamconfig.loc['growth', 'EU']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'EU']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['EU'])
     data = self.forecast_low_med_high_eu().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_eu_' + trend.lower()
@@ -428,9 +468,106 @@ class TAM:
        Degree3: 'TAM Data'!CM677:CQ723    Exponential: 'TAM Data'!CV677:CX723
     """
     growth = self.tamconfig.loc['growth', 'USA']
-    if not trend:
-      trend = self.tamconfig.loc['trend', 'USA']
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['USA'])
     data = self.forecast_low_med_high_usa().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_usa_' + trend.lower()
+    return result
+
+  def _set_ref_tam_one_region(self, result, region, forecast_trend, forecast_low_med_high):
+    """Set a single column in ref_tam_per_region."""
+    result[region] = forecast_trend.loc[:, 'adoption']
+    growth = self.tamconfig.loc['growth', region]
+    first_year = result.first_valid_index()
+    result.loc[first_year, region] = forecast_low_med_high.loc[first_year, growth]
+
+  def ref_tam_per_region(self):
+    """Compiles the TAM for each of the major regions into a single dataframe.
+
+       This isn't on the TAM Data tab of the Excel implementation, but is commonly used
+       by reference from other tabs. For convenience, we supply it.
+       'Unit Adoption Calculations'!A16:K63
+    """
+    result = pd.DataFrame(columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+      'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'])
+    self._set_ref_tam_one_region(result=result, region='World',
+      forecast_trend=self.forecast_trend_global(),
+      forecast_low_med_high=self.forecast_low_med_high_global())
+    self._set_ref_tam_one_region(result=result, region='OECD90',
+      forecast_trend=self.forecast_trend_oecd90(),
+      forecast_low_med_high=self.forecast_low_med_high_oecd90())
+    self._set_ref_tam_one_region(result=result, region='Eastern Europe',
+      forecast_trend=self.forecast_trend_eastern_europe(),
+      forecast_low_med_high=self.forecast_low_med_high_eastern_europe())
+    self._set_ref_tam_one_region(result=result, region='Asia (Sans Japan)',
+      forecast_trend=self.forecast_trend_asia_sans_japan(),
+      forecast_low_med_high=self.forecast_low_med_high_asia_sans_japan())
+    self._set_ref_tam_one_region(result=result, region='Middle East and Africa',
+      forecast_trend=self.forecast_trend_middle_east_and_africa(),
+      forecast_low_med_high=self.forecast_low_med_high_middle_east_and_africa())
+    self._set_ref_tam_one_region(result=result, region='Latin America',
+      forecast_trend=self.forecast_trend_latin_america(),
+      forecast_low_med_high=self.forecast_low_med_high_latin_america())
+    self._set_ref_tam_one_region(result=result, region='China',
+      forecast_trend=self.forecast_trend_china(),
+      forecast_low_med_high=self.forecast_low_med_high_china())
+    self._set_ref_tam_one_region(result=result, region='India',
+      forecast_trend=self.forecast_trend_india(),
+      forecast_low_med_high=self.forecast_low_med_high_india())
+    self._set_ref_tam_one_region(result=result, region='EU',
+      forecast_trend=self.forecast_trend_eu(),
+      forecast_low_med_high=self.forecast_low_med_high_eu())
+    self._set_ref_tam_one_region(result=result, region='USA',
+      forecast_trend=self.forecast_trend_usa(),
+      forecast_low_med_high=self.forecast_low_med_high_usa())
+    result.name = "ref_tam_per_region"
+    return result
+
+  def pds_tam_per_region(self):
+    """Compiles the PDS TAM for each of the major regions into a single dataframe.
+
+       At the time of this writing (11/2018), only the World region has a PDS forecast.
+       The other, smaller regions use the REF TAM.
+
+       This isn't on the TAM Data tab of the Excel implementation, but is commonly used
+       by reference from other tabs. For convenience, we supply it.
+       'Unit Adoption Calculations'!A68:K115
+    """
+    result = pd.DataFrame(columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+      'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'])
+
+    result['World'] = self.forecast_trend_pds_global().loc[:, 'adoption']
+    growth = self.tamconfig.loc['growth', 'PDS World']
+    first_year = result.first_valid_index()
+    lmh = self.forecast_low_med_high_pds_global()
+    result.loc[first_year, 'World'] = lmh.loc[first_year, growth]
+
+    self._set_ref_tam_one_region(result=result, region='OECD90',
+      forecast_trend=self.forecast_trend_oecd90(),
+      forecast_low_med_high=self.forecast_low_med_high_oecd90())
+    self._set_ref_tam_one_region(result=result, region='Eastern Europe',
+      forecast_trend=self.forecast_trend_eastern_europe(),
+      forecast_low_med_high=self.forecast_low_med_high_eastern_europe())
+    self._set_ref_tam_one_region(result=result, region='Asia (Sans Japan)',
+      forecast_trend=self.forecast_trend_asia_sans_japan(),
+      forecast_low_med_high=self.forecast_low_med_high_asia_sans_japan())
+    self._set_ref_tam_one_region(result=result, region='Middle East and Africa',
+      forecast_trend=self.forecast_trend_middle_east_and_africa(),
+      forecast_low_med_high=self.forecast_low_med_high_middle_east_and_africa())
+    self._set_ref_tam_one_region(result=result, region='Latin America',
+      forecast_trend=self.forecast_trend_latin_america(),
+      forecast_low_med_high=self.forecast_low_med_high_latin_america())
+    self._set_ref_tam_one_region(result=result, region='China',
+      forecast_trend=self.forecast_trend_china(),
+      forecast_low_med_high=self.forecast_low_med_high_china())
+    self._set_ref_tam_one_region(result=result, region='India',
+      forecast_trend=self.forecast_trend_india(),
+      forecast_low_med_high=self.forecast_low_med_high_india())
+    self._set_ref_tam_one_region(result=result, region='EU',
+      forecast_trend=self.forecast_trend_eu(),
+      forecast_low_med_high=self.forecast_low_med_high_eu())
+    self._set_ref_tam_one_region(result=result, region='USA',
+      forecast_trend=self.forecast_trend_usa(),
+      forecast_low_med_high=self.forecast_low_med_high_usa())
+    result.name = "pds_tam_per_region"
     return result

@@ -2,7 +2,7 @@
 
 import pathlib
 
-import advanced_controls
+from model import advanced_controls
 from model import helpertables
 import numpy as np
 import pandas as pd
