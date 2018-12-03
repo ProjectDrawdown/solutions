@@ -69,3 +69,7 @@ Nov 12 - 16, 2018
 
 Nov 19 - 23, 2018
 + completed TAM Data module (which is quite large).
+
+Nov 26 - 30, 2018
++ check in first Jupyter notebook, for solarpvutil.
++ fixes im tam.py: single source, PDS support.
