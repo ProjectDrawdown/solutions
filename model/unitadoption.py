@@ -12,7 +12,7 @@ class UnitAdoption:
      Arguments:
        ac: advanced_controls.py object, settings to control model operation.
        datadir: directory where CSV files can be found
-       pds_tam_per_region: dataframe of total addressible market per major
+       ref_tam_per_region: dataframe of total addressible market per major
          region for the Referene scenario.
        pds_tam_per_region: dataframe of total addressible market per major
          region for the PDS scenario.
