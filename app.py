@@ -59,11 +59,6 @@ def firstCost():
     ac_rq = to_advanced_controls(js, app.logger)
     fc_rq = js.get('first_cost', {})
     ua_rq = js.get('unit_adoption', {})
-    fc = firstcost.FirstCost(
-        ac=ac_rq,
-        pds_learning_increase_mult=fc_rq.get('pds_learning_increase_mult', 0),
-        ref_learning_increase_mult=fc_rq.get('ref_learning_increase_mult', 0),
-        conv_learning_increase_mult=fc_rq.get('conv_learning_increase_mult', 0))
 
     funits = ua_rq.get('soln_pds_tot_iunits_reqd', [])
     soln_pds_tot_iunits_reqd = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
@@ -79,36 +74,34 @@ def firstCost():
     iunits = [x for x in iunits if x[0] != 'Lifetime']
     conv_ref_new_iunits_reqd = pd.DataFrame(iunits[1:], columns=iunits[0]).set_index('Year')
 
-    results = dict()
-    soln_pds_install_cost_per_iunit = fc.soln_pds_install_cost_per_iunit(
+    fc = firstcost.FirstCost(ac=ac_rq,
+        pds_learning_increase_mult=fc_rq.get('pds_learning_increase_mult', 0),
+        ref_learning_increase_mult=fc_rq.get('ref_learning_increase_mult', 0),
+        conv_learning_increase_mult=fc_rq.get('conv_learning_increase_mult', 0),
         soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
-        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd)
-    results['soln_pds_install_cost_per_iunit'] = format_for_response(soln_pds_install_cost_per_iunit)
-    conv_ref_install_cost_per_iunit = fc.conv_ref_install_cost_per_iunit(
-        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd)
-    results['conv_ref_install_cost_per_iunit'] = format_for_response(
-        conv_ref_install_cost_per_iunit)
-    soln_ref_install_cost_per_iunit = fc.soln_ref_install_cost_per_iunit(
-        soln_ref_tot_iunits_reqd, conv_ref_tot_iunits_reqd)
-    results['soln_ref_install_cost_per_iunit'] = format_for_response(
-        soln_ref_install_cost_per_iunit)
-    soln_pds_annual_world_first_cost = fc.soln_pds_annual_world_first_cost(
+        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
         soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
-        soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit)
+        soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
+        conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd)
+
+    results = dict()
+    results['soln_pds_install_cost_per_iunit'] = format_for_response(
+        fc.soln_pds_install_cost_per_iunit())
+    results['conv_ref_install_cost_per_iunit'] = format_for_response(
+        fc.conv_ref_install_cost_per_iunit())
+    results['soln_ref_install_cost_per_iunit'] = format_for_response(
+        fc.soln_ref_install_cost_per_iunit())
     results['soln_pds_annual_world_first_cost'] = format_for_response(
-        soln_pds_annual_world_first_cost)
+        fc.soln_pds_annual_world_first_cost())
     results['soln_pds_cumulative_install'] = format_for_response(
-        fc.soln_pds_cumulative_install(soln_pds_annual_world_first_cost))
-    soln_ref_annual_world_first_cost = fc.soln_ref_annual_world_first_cost(
-        soln_ref_new_iunits_reqd, soln_ref_install_cost_per_iunit)
+        fc.soln_pds_cumulative_install())
     results['soln_ref_annual_world_first_cost'] = format_for_response(
-        soln_ref_annual_world_first_cost)
-    conv_ref_annual_world_first_cost = fc.conv_ref_annual_world_first_cost(
-        conv_ref_new_iunits_reqd, conv_ref_install_cost_per_iunit)
+        fc.soln_ref_annual_world_first_cost())
     results['conv_ref_annual_world_first_cost'] = format_for_response(
-        conv_ref_annual_world_first_cost)
-    results['ref_cumulative_install'] = format_for_response(fc.ref_cumulative_install(
-        conv_ref_annual_world_first_cost, soln_ref_annual_world_first_cost))
+        fc.conv_ref_annual_world_first_cost())
+    results['ref_cumulative_install'] = format_for_response(fc.ref_cumulative_install())
+
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
@@ -357,14 +350,14 @@ def helperTables():
     lmh = ad_rq.get('adoption_low_med_high', [])
     adoption_low_med_high = pd.DataFrame(lmh[1:], columns=lmh[0]).set_index('Year')
 
-    ht = helpertables.HelperTables(ac=ac_rq, ref_datapoints=ref_datapoints,
-        pds_datapoints=pds_datapoints)
-    results = dict()
+    ht = helpertables.HelperTables(ac=ac_rq,
+        ref_datapoints=ref_datapoints, pds_datapoints=pds_datapoints,
+        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
+        adoption_low_med_high_global=adoption_low_med_high)
 
-    results['soln_ref_funits_adopted'] = format_for_response(ht.soln_ref_funits_adopted(
-      ref_tam_per_region=ref_tam_per_region))
-    results['soln_pds_funits_adopted'] = format_for_response(ht.soln_pds_funits_adopted(
-      adoption_low_med_high=adoption_low_med_high, pds_tam_per_region=pds_tam_per_region))
+    results = dict()
+    results['soln_ref_funits_adopted'] = format_for_response(ht.soln_ref_funits_adopted())
+    results['soln_pds_funits_adopted'] = format_for_response(ht.soln_pds_funits_adopted())
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")

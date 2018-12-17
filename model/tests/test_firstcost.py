@@ -18,17 +18,19 @@ def test_soln_pds_install_cost_per_iunit():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(
-      ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-      conv_learning_increase_mult=2)
   soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
       columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd=None,
+      conv_ref_tot_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
   expected = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
       index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
   expected.index.name = "Year"
   expected.name = "soln_pds_install_cost_per_iunit"
-  result = fc.soln_pds_install_cost_per_iunit(soln_pds_tot_iunits_reqd, [])
+  result = fc.soln_pds_install_cost_per_iunit()
   pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
 def test_conv_ref_install_cost_per_iunit():
@@ -43,16 +45,19 @@ def test_conv_ref_install_cost_per_iunit():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
-      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+      conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
   expected = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
   expected.index.name = "Year"
   expected.name = "conv_ref_install_cost_per_iunit"
-  result = fc.conv_ref_install_cost_per_iunit(conv_ref_tot_iunits_reqd)
+  result = fc.conv_ref_install_cost_per_iunit()
   pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
 def test_soln_pds_install_cost_per_iunit_not_less_conv():
@@ -67,20 +72,22 @@ def test_soln_pds_install_cost_per_iunit_not_less_conv():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=False,  # result == conv_ref_install_cost_per_iunit
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
-      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
       columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
   conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
-  # Not a typo, soln_first_cost_below_conv=False so conv_pds_install_cost_per_iunit here.
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd=None,
+      conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
+  # Not a typo, soln_first_cost_below_conv=False so expected=conv_pds_install_cost_per_iunit.
   expected = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
   expected.index.name = "Year"
   expected.name = "soln_pds_install_cost_per_iunit"
-  result = fc.soln_pds_install_cost_per_iunit(soln_pds_tot_iunits_reqd,
-      conv_ref_tot_iunits_reqd)
+  result = fc.soln_pds_install_cost_per_iunit()
   pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
 def test_soln_ref_install_cost_per_iunit():
@@ -95,19 +102,21 @@ def test_soln_ref_install_cost_per_iunit():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
-      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
       columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
   conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+      conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
   expected = pd.Series(soln_ref_install_cost_per_iunit_nparray[:, 1],
       index=soln_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
   expected.index.name = "Year"
   expected.name = "soln_ref_install_cost_per_iunit"
-  result = fc.soln_ref_install_cost_per_iunit(soln_ref_tot_iunits_reqd,
-      conv_ref_tot_iunits_reqd)
+  result = fc.soln_ref_install_cost_per_iunit()
   pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
 def test_soln_ref_install_cost_per_iunit_not_less_conv():
@@ -122,20 +131,22 @@ def test_soln_ref_install_cost_per_iunit_not_less_conv():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=False,  # result = conv
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
-      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
   soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
       columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
   conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
-  # Not a typo, soln_first_cost_below_conv=False so conv_pds_install_cost_per_iunit here.
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+      conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
+  # Not a typo, soln_first_cost_below_conv=False so expected=conv_pds_install_cost_per_iunit.
   expected = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
   expected.index.name = "Year"
   expected.name = "soln_ref_install_cost_per_iunit"
-  result = fc.soln_ref_install_cost_per_iunit(soln_ref_tot_iunits_reqd,
-      conv_ref_tot_iunits_reqd)
+  result = fc.soln_ref_install_cost_per_iunit()
   pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
 def test_soln_pds_annual_world_first_cost():
@@ -146,20 +157,22 @@ def test_soln_pds_annual_world_first_cost():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
-      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
+  soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
+      columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
   soln_pds_new_iunits_reqd = pd.DataFrame(soln_pds_new_iunits_reqd_list[1:],
-      columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
-  soln_pds_install_cost_per_iunit = pd.Series(
-      soln_pds_install_cost_per_iunit_nparray[:, 1],
-      index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+      columns=soln_pds_new_iunits_reqd_list[0]).set_index('Year')
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd=None,
+      conv_ref_tot_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd=None,
+      conv_ref_new_iunits_reqd=None)
   expected = pd.Series(soln_pds_annual_world_first_cost_nparray[:, 1],
       index=soln_pds_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
   expected.name = "soln_pds_annual_world_first_cost"
-  result = fc.soln_pds_annual_world_first_cost(
-      soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
-      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit)
+  result = fc.soln_pds_annual_world_first_cost()
   pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_pds_cumulative_install():
@@ -170,18 +183,22 @@ def test_soln_pds_cumulative_install():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
-      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
-  soln_pds_annual_world_first_cost = pd.Series(
-      soln_pds_annual_world_first_cost_nparray[:, 1],
-      index=soln_pds_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
-  soln_pds_annual_world_first_cost.index = soln_pds_annual_world_first_cost.index.astype(int)
+  soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
+      columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
+  soln_pds_new_iunits_reqd = pd.DataFrame(soln_pds_new_iunits_reqd_list[1:],
+      columns=soln_pds_new_iunits_reqd_list[0]).set_index('Year')
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd=None,
+      conv_ref_tot_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd=None,
+      conv_ref_new_iunits_reqd=None)
+  result = fc.soln_pds_cumulative_install()
   expected = pd.Series(pds_cumulative_install_nparray[:, 1],
       index=pds_cumulative_install_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
   expected.name = "soln_pds_cumulative_install"
-  result = fc.soln_pds_cumulative_install(
-      soln_pds_annual_world_first_cost=soln_pds_annual_world_first_cost)
   pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_ref_annual_world_first_cost():
@@ -192,20 +209,25 @@ def test_soln_ref_annual_world_first_cost():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
-      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
+  soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
+      columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
+  soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
+      columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
   soln_ref_new_iunits_reqd = pd.DataFrame(soln_ref_new_iunits_reqd_list[1:],
       columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
-  soln_ref_install_cost_per_iunit = pd.Series(
-      soln_ref_install_cost_per_iunit_nparray[:, 1],
-      index=soln_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+      soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+      conv_ref_tot_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
+      conv_ref_new_iunits_reqd=None)
   expected = pd.Series(soln_ref_annual_world_first_cost_nparray[:, 1],
       index=soln_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
   expected.name = "soln_ref_annual_world_first_cost"
-  result = fc.soln_ref_annual_world_first_cost(
-      soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
-      soln_ref_install_cost_per_iunit=soln_ref_install_cost_per_iunit)
+  result = fc.soln_ref_annual_world_first_cost()
   pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_conv_ref_annual_world_first_cost():
@@ -216,23 +238,22 @@ def test_conv_ref_annual_world_first_cost():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
-      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
+  conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
+      columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
   conv_ref_new_iunits_reqd = pd.DataFrame(conv_ref_new_iunits_reqd_list[1:],
-      columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year').drop(['Lifetime'])
-  conv_ref_new_iunits_reqd.index = conv_ref_new_iunits_reqd.index.astype(int)
-  conv_ref_install_cost_per_iunit = pd.Series(
-      conv_ref_install_cost_per_iunit_nparray[:, 1],
-      index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  conv_ref_install_cost_per_iunit.index = conv_ref_install_cost_per_iunit.index.astype(int)
+      columns=conv_ref_new_iunits_reqd_list[0]).set_index('Year').drop(['Lifetime'])
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+      conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None,
+      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd)
   expected = pd.Series(conv_ref_annual_world_first_cost_nparray[:, 1],
       index=conv_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
   expected.index.name = "Year"
   expected.name = "conv_ref_annual_world_first_cost"
-  result = fc.conv_ref_annual_world_first_cost(
-      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd,
-      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
+  result = fc.conv_ref_annual_world_first_cost()
   pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_ref_cumulative_install():
@@ -243,24 +264,63 @@ def test_ref_cumulative_install():
       soln_first_cost_efficiency_rate=0.196222222222222,
       soln_first_cost_below_conv=True,
       conv_first_cost_efficiency_rate=0.02)
-  fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2,
-      ref_learning_increase_mult=2, conv_learning_increase_mult=2)
-  soln_ref_annual_world_first_cost = pd.Series(
-      soln_ref_annual_world_first_cost_nparray[:, 1],
-      index=soln_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
-  soln_ref_annual_world_first_cost.index = soln_ref_annual_world_first_cost.index.astype(int)
-  conv_ref_annual_world_first_cost = pd.Series(
-      conv_ref_annual_world_first_cost_nparray[:, 1],
-      index=conv_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
-  conv_ref_annual_world_first_cost.index = conv_ref_annual_world_first_cost.index.astype(int)
+  soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
+      columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
+      columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  soln_ref_new_iunits_reqd = pd.DataFrame(soln_ref_new_iunits_reqd_list[1:],
+      columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  conv_ref_new_iunits_reqd = pd.DataFrame(conv_ref_new_iunits_reqd_list[1:],
+      columns=conv_ref_new_iunits_reqd_list[0]).set_index('Year').drop(['Lifetime'])
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+      conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
+      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd)
   expected = pd.Series(ref_cumulative_install_nparray[:, 1],
       index=ref_cumulative_install_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
   expected.name = "ref_cumulative_install"
-  result = fc.ref_cumulative_install(
-      soln_ref_annual_world_first_cost=soln_ref_annual_world_first_cost,
-      conv_ref_annual_world_first_cost=conv_ref_annual_world_first_cost)
+  result = fc.ref_cumulative_install()
   pd.testing.assert_series_equal(result, expected, check_exact=False)
+
+def test_to_dict():
+  ac = advanced_controls.AdvancedControls(
+      pds_2014_cost=1444.93954421485,
+      ref_2014_cost=1444.93954421485,
+      conv_2014_cost=2010.03170851964,
+      soln_first_cost_efficiency_rate=0.196222222222222,
+      soln_first_cost_below_conv=True,
+      conv_first_cost_efficiency_rate=0.02)
+  soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
+      columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
+  soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
+      columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
+      columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  soln_pds_new_iunits_reqd = pd.DataFrame(soln_pds_new_iunits_reqd_list[1:],
+      columns=soln_pds_new_iunits_reqd_list[0]).set_index('Year')
+  soln_ref_new_iunits_reqd = pd.DataFrame(soln_ref_new_iunits_reqd_list[1:],
+      columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  conv_ref_new_iunits_reqd = pd.DataFrame(conv_ref_new_iunits_reqd_list[1:],
+      columns=conv_ref_new_iunits_reqd_list[0]).set_index('Year').drop(['Lifetime'])
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+      soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+      conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
+      soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
+      soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
+      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd)
+  result = fc.to_dict()
+  expected = ['soln_pds_install_cost_per_iunit', 'conv_ref_install_cost_per_iunit',
+      'soln_ref_install_cost_per_iunit', 'soln_pds_annual_world_first_cost',
+      'soln_ref_annual_world_first_cost', 'conv_ref_annual_world_first_cost',
+      'soln_pds_cumulative_install', 'ref_cumulative_install']
+  for ex in expected:
+    assert ex in result
 
 
 soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",

@@ -20,23 +20,30 @@ ADOPTION_PROGNOSTICATION_GROWTH = enum.Enum('ADOPTION_PROGNOSTICATION_GROWTH', '
 class HelperTables:
   """Implementation for the Helper Tables module.
   """
-  def __init__(self, ac, ref_datapoints, pds_datapoints):
+  def __init__(self, ac, ref_datapoints, pds_datapoints,
+      ref_tam_per_region, pds_tam_per_region, adoption_low_med_high_global):
     """HelperTables.
        Arguments:
          ac = advanced_controls.py object, storing settings to control
            model operation.
          ref_datapoints: a DataFrame with columns per region and two rows for two years of data.
          pds_datapoints: a DataFrame with columns per region and two rows for two years of data.
+         ref_tam_per_region: dataframe of total addressible market per major
+           region for the Referene scenario.
+         pds_tam_per_region: dataframe of total addressible market per major
+           region for the PDS scenario.
+         adoption_low_med_high_global: dataframe with Low, Medium, and High columns
+           of adoptiondata for the World region.
     """
     self.ac = ac
     self.ref_datapoints = ref_datapoints
     self.pds_datapoints = pds_datapoints
-    super()
+    self.ref_tam_per_region = ref_tam_per_region
+    self.pds_tam_per_region = pds_tam_per_region
+    self.adoption_low_med_high_global = adoption_low_med_high_global
 
-  def soln_ref_funits_adopted(self, ref_tam_per_region):
+  def soln_ref_funits_adopted(self):
     """Cumulative Adoption in funits, interpolated between two ref_datapoints.
-
-       ref_tam_per_region: Total Addressable Market dataframe, ex: from tam.py
 
        'Helper Tables'!B26:L73
     """
@@ -51,7 +58,7 @@ class HelperTables:
       adoption.loc[:, "World"] = adoption.sum(axis=1)
 
     for col in adoption.columns:
-      adoption[col] = adoption[col].combine(ref_tam_per_region[col], min)
+      adoption[col] = adoption[col].combine(self.ref_tam_per_region[col], min)
 
     adoption.name = "soln_ref_funits_adopted"
     adoption.index.name = "Year"
@@ -82,23 +89,20 @@ class HelperTables:
         adoption.loc[year, col] = adopt1 + fract_adopt
     return adoption
 
-  def _get_source_data(self, adoption_low_med_high):
+  def _get_source_data(self):
     """Return the High, Medium, or Low data as requested."""
     if self.ac.soln_pds_adoption_prognostication_growth == ADOPTION_PROGNOSTICATION_GROWTH.HIGH:
-      return adoption_low_med_high['High']
+      return self.adoption_low_med_high_global['High']
     elif self.ac.soln_pds_adoption_prognostication_growth == ADOPTION_PROGNOSTICATION_GROWTH.MEDIUM:
-      return adoption_low_med_high['Medium']
+      return self.adoption_low_med_high_global['Medium']
     elif self.ac.soln_pds_adoption_prognostication_growth == ADOPTION_PROGNOSTICATION_GROWTH.LOW:
-      return adoption_low_med_high['Low']
+      return self.adoption_low_med_high_global['Low']
     else:
       raise NotImplementedError('Unknown soln_pds_adoption_prognostication_growth: ' +
           str(self.ac.soln_pds_adoption_prognostication_growth))
 
-  def soln_pds_funits_adopted(self, adoption_low_med_high, pds_tam_per_region):
+  def soln_pds_funits_adopted(self):
     """Cumulative Adoption in funits in the PDS.
-
-       adoption_low_med_high: DataFrame with Low/Medium/High columns of World adoption data.
-       pds_tam_per_region: Total Addressable Market dataframe, ex: from tam.py
 
        'Helper Tables'!B90:L137
     """
@@ -106,7 +110,7 @@ class HelperTables:
     last_year = 2060
     adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
         columns=self.pds_datapoints.columns.copy(), dtype='float')
-    source_data = self._get_source_data(adoption_low_med_high)
+    source_data = self._get_source_data()
 
     s = self.ac.soln_pds_adoption_prognostication_source
     if s and not data_sources.is_group_name(s):
@@ -131,7 +135,7 @@ class HelperTables:
 
     # cannot exceed the total addressable market
     for col in adoption.columns:
-      adoption[col] = adoption[col].combine(pds_tam_per_region[col], min)
+      adoption[col] = adoption[col].combine(self.pds_tam_per_region[col], min)
 
     # Where we have actual data, use the actual data not the interpolation.
     adoption.loc[first_year] = self.pds_datapoints.loc[first_year]
@@ -139,6 +143,13 @@ class HelperTables:
     adoption.name = "soln_pds_funits_adopted"
     adoption.index.name = "Year"
     return adoption
+
+  def to_dict(self):
+    """Return all fields as a dict, to be serialized to JSON."""
+    rs = dict()
+    rs['soln_ref_funits_adopted'] = self.soln_ref_funits_adopted()
+    rs['soln_pds_funits_adopted'] = self.soln_pds_funits_adopted()
+    return rs
 
 
 def string_to_adoption_basis(text):

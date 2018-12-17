@@ -118,17 +118,23 @@ class SolarPVUtil:
     pds_tam_per_region=self.tm.pds_tam_per_region()
 
     self.ad = adoptiondata.AdoptionData(ac=self.ac, datadir=datadir, adconfig=adconfig)
-    self.ht = helpertables.HelperTables(ac=self.ac, ref_datapoints=ht_ref_datapoints,
-        pds_datapoints=ht_pds_datapoints)
-    soln_ref_funits_adopted = self.ht.soln_ref_funits_adopted(
-        ref_tam_per_region=ref_tam_per_region)
+    self.ht = helpertables.HelperTables(ac=self.ac,
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
+        adoption_low_med_high_global=self.ad.adoption_low_med_high_global())
     self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-        soln_ref_funits_adopted=soln_ref_funits_adopted,
-        soln_pds_funits_adopted=None)
-
+        soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
+        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted())
     self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=2,
-        ref_learning_increase_mult=2, conv_learning_increase_mult=2)
+        ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+        soln_pds_tot_iunits_reqd=self.ua.soln_pds_tot_iunits_reqd(),
+        soln_ref_tot_iunits_reqd=self.ua.soln_ref_tot_iunits_reqd(),
+        conv_ref_tot_iunits_reqd=self.ua.conv_ref_tot_iunits_reqd(),
+        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
+        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
+        conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd())
+
     self.oc = operatingcost.OperatingCost(ac=self.ac)
     self.c2 = co2calcs.CO2Calcs(ac=self.ac)
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac)
