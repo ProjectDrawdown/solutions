@@ -98,6 +98,18 @@ def test_adoption_trend_global():
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_to_dict():
+  s = 'Based on: Greenpeace (2015) Advanced Energy Revolution'
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
+  ad = adoptiondata.AdoptionData(ac=ac, datadir=datadir, adconfig=g_adconfig)
+  result = ad.to_dict()
+  expected = ['adoption_data_global', 'adoption_min_max_sd_global',
+      'adoption_low_med_high_global', 'adoption_trend_linear_global',
+      'adoption_trend_poly_degree2_global', 'adoption_trend_poly_degree3_global',
+      'adoption_trend_exponential_global']
+  for ex in expected:
+    assert ex in result
+
 
 # 'Adoption Data'!X46:Z94
 adoption_min_max_sd_global_list = [['Year', 'Min', 'Max', 'S.D'],

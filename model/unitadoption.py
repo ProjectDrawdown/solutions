@@ -7,15 +7,28 @@ from model import emissionsfactors
 
 
 class UnitAdoption:
-    """Implementation for the First Cost model.
+    """Implementation for the Unit Adoption module.
 
        Arguments:
-         ac: advanced_cost.py object, settings to control model operation.
+         ac: advanced_controls.py object, settings to control model operation.
          datadir: directory where CSV files can be found
+         pds_tam_per_region: dataframe of total addressible market per major
+           region for the Referene scenario.
+         pds_tam_per_region: dataframe of total addressible market per major
+           region for the PDS scenario.
+         soln_ref_funits_adopted: Annual functional units adopted in the
+           Reference scenario.
+         soln_pds_funits_adopted: Annual functional units adopted in the
+           PDS scenario.
     """
-    def __init__(self, ac, datadir):
+    def __init__(self, ac, datadir, ref_tam_per_region, pds_tam_per_region,
+        soln_ref_funits_adopted, soln_pds_funits_adopted):
       self.ac = ac
       self.datadir = datadir
+      self.ref_tam_per_region = ref_tam_per_region
+      self.pds_tam_per_region = pds_tam_per_region
+      self.soln_ref_funits_adopted = soln_ref_funits_adopted
+      self.soln_pds_funits_adopted = soln_pds_funits_adopted
 
     def ref_population(self):
       """Population by region for the reference case.
@@ -47,27 +60,27 @@ class UnitAdoption:
       result.name = "ref_gdp_per_capita"
       return result
 
-    def ref_tam_per_capita(self, ref_tam_per_region):
+    def ref_tam_per_capita(self):
       """Total Addressable Market per capita for the reference case.
          'Unit Adoption Calculations'!BA16:BK63
       """
-      result = ref_tam_per_region / self.ref_population()
+      result = self.ref_tam_per_region / self.ref_population()
       result.name = "ref_tam_per_capita"
       return result
 
-    def ref_tam_per_gdp_per_capita(self, ref_tam_per_region):
+    def ref_tam_per_gdp_per_capita(self):
       """Total Addressable Market per unit of GDP per capita for the reference case.
          'Unit Adoption Calculations'!BM16:BW63
       """
-      result = ref_tam_per_region / self.ref_gdp_per_capita()
+      result = self.ref_tam_per_region / self.ref_gdp_per_capita()
       result.name = "ref_tam_per_gdp_per_capita"
       return result
 
-    def ref_tam_growth(self, ref_tam_per_region):
+    def ref_tam_growth(self):
       """Growth in Total Addressable Market for the reference case.
          'Unit Adoption Calculations'!BY16:CI63
       """
-      calc = ref_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
+      calc = self.ref_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
       calc.loc[2014] = [''] * calc.shape[1]  # empty row
       calc.name = "ref_tam_growth"
       return calc
@@ -102,51 +115,51 @@ class UnitAdoption:
       result.name = "pds_gdp_per_capita"
       return result
 
-    def pds_tam_per_capita(self, pds_tam_per_region):
+    def pds_tam_per_capita(self):
       """Total Addressable Market per capita for the Project Drawdown Solution case.
          'Unit Adoption Calculations'!BA68:BK115
       """
-      result = pds_tam_per_region / self.pds_population()
+      result = self.pds_tam_per_region / self.pds_population()
       result.name = "pds_tam_per_capita"
       return result
 
-    def pds_tam_per_gdp_per_capita(self, pds_tam_per_region):
+    def pds_tam_per_gdp_per_capita(self):
       """Total Addressable Market per unit of GDP per capita for the Project Drawdown Solution case.
          'Unit Adoption Calculations'!BM68:BW115
       """
-      result = pds_tam_per_region / self.pds_gdp_per_capita()
+      result = self.pds_tam_per_region / self.pds_gdp_per_capita()
       result.name = "pds_tam_per_gdp_per_capita"
       return result
 
-    def pds_tam_growth(self, pds_tam_per_region):
+    def pds_tam_growth(self):
       """Growth in Total Addressable Market for the Project Drawdown Solution case.
          'Unit Adoption Calculations'!BY68:CI115
       """
-      calc = pds_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
+      calc = self.pds_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
       calc.loc[2014] = [''] * calc.shape[1]  # empty row
       calc.name = "pds_tam_growth"
       return calc
 
-    def soln_pds_cumulative_funits(self, soln_pds_funits_adopted):
+    def soln_pds_cumulative_funits(self):
       """Cumulative Functional Units Utilized.
          'Unit Adoption Calculations'!Q134:AA181
       """
       omit_world = self.ac.soln_funit_adoption_2014.copy(deep=True)
       omit_world['World'][2014] = 0
-      first_year = soln_pds_funits_adopted.add(omit_world, fill_value=0)
+      first_year = self.soln_pds_funits_adopted.add(omit_world, fill_value=0)
       result = first_year.cumsum(axis=0)
       result.name = "soln_pds_cumulative_funits"
       return result
 
-    def soln_pds_tot_iunits_reqd(self, soln_pds_funits_adopted):
+    def soln_pds_tot_iunits_reqd(self):
       """Total iunits required each year.
          'Unit Adoption Calculations'!AX134:BH181
       """
-      result = soln_pds_funits_adopted / self.ac.soln_avg_annual_use
+      result = self.soln_pds_funits_adopted / self.ac.soln_avg_annual_use
       result.name = "soln_pds_tot_iunits_reqd"
       return result
 
-    def soln_pds_new_iunits_reqd(self, soln_pds_tot_iunits_reqd):
+    def soln_pds_new_iunits_reqd(self):
       """New implementation units required (includes replacement units)
 
          Should reflect the unit lifetime assumed in the First Cost tab.
@@ -158,7 +171,7 @@ class UnitAdoption:
          First Cost, Marginal First Cost and NPV.
          'Unit Adoption Calculations'!AG136:AQ182
       """
-      growth = soln_pds_tot_iunits_reqd.diff().clip_lower(0).dropna()
+      growth = self.soln_pds_tot_iunits_reqd().diff().clip_lower(0).dropna()
       replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
           dtype='float64')
       for region, column in replacements.iteritems():
@@ -172,10 +185,11 @@ class UnitAdoption:
       result.name = "soln_pds_new_iunits_reqd"
       return result
 
-    def soln_pds_big4_iunits_reqd(self, soln_pds_tot_iunits_reqd):
+    def soln_pds_big4_iunits_reqd(self):
       """Implementation units required in USA/EU/China/India vs Rest of World.
          'Unit Adoption Calculations'!AG136:AQ182
       """
+      soln_pds_tot_iunits_reqd = self.soln_pds_tot_iunits_reqd()
       result = pd.DataFrame(0, index=soln_pds_tot_iunits_reqd.index.copy(),
           columns=["Rest of World", "China", "India", "EU", "USA"],
           dtype='float64')
@@ -189,22 +203,22 @@ class UnitAdoption:
       result.name = "soln_pds_big4_iunits_reqd"
       return result
 
-    def soln_ref_cumulative_funits(self, soln_ref_funits_adopted):
+    def soln_ref_cumulative_funits(self):
       """Cumulative functional units.
          'Unit Adoption Calculations'!Q197:AA244
       """
-      result = soln_ref_funits_adopted.cumsum(axis=0)
+      result = self.soln_ref_funits_adopted.cumsum(axis=0)
       result.name = "soln_ref_cumulative_funits"
       return result
 
-    def soln_ref_tot_iunits_reqd(self, soln_ref_funits_adopted):
+    def soln_ref_tot_iunits_reqd(self):
       """Total implementation units required.
          'Unit Adoption Calculations'!AX197:BH244"""
-      result = soln_ref_funits_adopted / self.ac.soln_avg_annual_use
+      result = self.soln_ref_funits_adopted / self.ac.soln_avg_annual_use
       result.name = "soln_ref_tot_iunits_reqd"
       return result
 
-    def soln_ref_new_iunits_reqd(self, soln_ref_tot_iunits_reqd):
+    def soln_ref_new_iunits_reqd(self):
       """New implementation units required (includes replacement units)
 
          Should reflect the unit lifetime assumed in the First Cost tab. For
@@ -215,7 +229,7 @@ class UnitAdoption:
 
          'Unit Adoption Calculations'!AG197:AQ244
       """
-      growth = soln_ref_tot_iunits_reqd.diff().clip_lower(0).dropna()
+      growth = self.soln_ref_tot_iunits_reqd().diff().clip_lower(0).dropna()
       replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
           dtype='float64')
       for region, column in replacements.iteritems():
@@ -229,15 +243,11 @@ class UnitAdoption:
       result.name = "soln_ref_new_iunits_reqd"
       return result
 
-    def soln_net_annual_funits_adopted(self, soln_ref_funits_adopted, soln_pds_funits_adopted):
+    def soln_net_annual_funits_adopted(self):
       """Net annual functional units adopted.
 
-         Arguments:
-           soln_ref_funits_adopted: Reference solution: Annual functional units adopted
-           soln_pds_funits_adopted: PDS solution: Annual functional units adopted
-
-         Both inputs and return value is a DataFrame with and index of years,
-         columns for each region and floating point data values.
+         Return value is a DataFrame with an index of years, columns for each
+         region and floating point data values.
 
          This represents the total additional functional units captured either
          by the CONVENTIONAL mix of technologies/practices in the REF case
@@ -249,11 +259,11 @@ class UnitAdoption:
          (optionally) Indirect Emissions.
          'Unit Adoption Calculations'!B251:L298
       """
-      result = soln_pds_funits_adopted - soln_ref_funits_adopted
+      result = self.soln_pds_funits_adopted - self.soln_ref_funits_adopted
       result.name = "soln_net_annual_funits_adopted"
       return result
 
-    def conv_ref_tot_iunits_reqd(self, ref_tam_per_region, soln_ref_funits_adopted):
+    def conv_ref_tot_iunits_reqd(self):
       """Total cumulative units of the conventional or legacy practice installed by year.
       
          Reflects the total increase in the installed base units less the installation of
@@ -265,11 +275,12 @@ class UnitAdoption:
       
          'Unit Adoption Calculations'!Q251:AA298
       """
-      result = (ref_tam_per_region - soln_ref_funits_adopted) / self.ac.conv_avg_annual_use
+      result = (self.ref_tam_per_region - self.soln_ref_funits_adopted)
+      result /= self.ac.conv_avg_annual_use
       result.name = "conv_ref_tot_iunits_reqd"
       return result
 
-    def conv_ref_annual_tot_iunits(self, soln_net_annual_funits_adopted):
+    def conv_ref_annual_tot_iunits(self):
       """Number of Implementation Units of the Conventional practice/technology that would
          be needed in the REF Scenario to meet the Functional Unit Demand met by the PDS
          Implementation Units in the PDS Scenario. This is equivalent to the number of Annual
@@ -280,11 +291,11 @@ class UnitAdoption:
 
          'Unit Adoption Calculations'!AX251:BH298
       """
-      result = soln_net_annual_funits_adopted / self.ac.conv_avg_annual_use
+      result = self.soln_net_annual_funits_adopted() / self.ac.conv_avg_annual_use
       result.name = "conv_ref_annual_tot_iunits"
       return result
 
-    def conv_ref_new_iunits_reqd(self, conv_ref_annual_tot_iunits):
+    def conv_ref_new_iunits_reqd(self):
       """New implementation units required (includes replacement units)
 
          Number of Additional Implementation Units of the Conventional practice/technology
@@ -296,7 +307,7 @@ class UnitAdoption:
 
          'Unit Adoption Calculations'!AG251:AQ298
       """
-      growth = conv_ref_annual_tot_iunits.diff().clip_lower(0).dropna()
+      growth = self.conv_ref_annual_tot_iunits().diff().clip_lower(0).dropna()
       replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
           dtype='float64')
       for region, column in replacements.iteritems():
@@ -310,7 +321,7 @@ class UnitAdoption:
       result.name = "conv_ref_new_iunits_reqd"
       return result
 
-    def soln_pds_net_grid_electricity_units_saved(self, soln_net_annual_funits_adopted):
+    def soln_pds_net_grid_electricity_units_saved(self):
       """Energy Units (e.g. TWh, tonnes oil equivalent, million therms, etc.) are
          calculated by multiplying the net annual functional units adopted by the
          annual energy saved per unit (specified in the main controls). In some rare
@@ -320,11 +331,11 @@ class UnitAdoption:
          'Unit Adoption Calculations'!B307:L354
       """
       m = self.ac.soln_energy_efficiency_factor * self.ac.conv_annual_energy_used
-      result = soln_net_annual_funits_adopted.multiply(m)
+      result = self.soln_net_annual_funits_adopted().multiply(m)
       result.name = "soln_pds_net_grid_electricity_units_saved"
       return result
 
-    def soln_pds_net_grid_electricity_units_used(self, soln_net_annual_funits_adopted):
+    def soln_pds_net_grid_electricity_units_used(self):
       """Energy Units Used (TWh) are calculated by multiplying the net annual functional
          units adopted by the average annual electricity used by the solution per functional
          unit (specified in the main controls) minus  net annual functional units adopted by
@@ -340,11 +351,11 @@ class UnitAdoption:
           return (self.ac.soln_annual_energy_used * x) - (self.ac.conv_annual_energy_used * x)
         else:
           return 0.0
-      result = soln_net_annual_funits_adopted.applymap(calc)
+      result = self.soln_net_annual_funits_adopted().applymap(calc)
       result.name = "soln_pds_net_grid_electricity_units_used"
       return result
 
-    def soln_pds_fuel_units_avoided(self, soln_net_annual_funits_adopted):
+    def soln_pds_fuel_units_avoided(self):
       """Fuel consumption avoided annually.
          Fuel avoided = CONVENTIONAL stock avoided * Volume consumed by CONVENTIONAL
              unit per year * Fuel Efficiency of SOLUTION
@@ -352,42 +363,78 @@ class UnitAdoption:
          'Unit Adoption Calculations'!AD307:AN354
       """
       m = self.ac.conv_fuel_consumed_per_funit * self.ac.soln_fuel_efficiency_factor
-      result = soln_net_annual_funits_adopted.multiply(m)
+      result = self.soln_net_annual_funits_adopted().multiply(m)
       result.name = "soln_pds_fuel_units_avoided"
       return result
 
-    def soln_pds_direct_co2_emissions_saved(self, soln_net_annual_funits_adopted):
+    def soln_pds_direct_co2_emissions_saved(self):
       """Direct emissions of CO2 avoided, in tons.
          'Unit Adoption Calculations'!AT307:BD354
       """
       def calc(x):
         return (self.ac.conv_emissions_per_funit * x) - (self.ac.soln_emissions_per_funit * x)
-      result = soln_net_annual_funits_adopted.applymap(calc)
+      result = self.soln_net_annual_funits_adopted().applymap(calc)
       result.name = "soln_pds_direct_co2_emissions_saved"
       return result
 
-    def soln_pds_direct_ch4_co2_emissions_saved(self, soln_net_annual_funits_adopted):
+    def soln_pds_direct_ch4_co2_emissions_saved(self):
       """Direct emissions of CH4 avoided, in tons of equivalent CO2.
 
          'Unit Adoption Calculations'!BF307:BP354
       """
       ef = emissionsfactors.CO2Equiv(self.ac.co2eq_conversion_source)
       if self.ac.ch4_is_co2eq:
-        result = soln_net_annual_funits_adopted * self.ac.ch4_co2_per_twh
+        result = self.soln_net_annual_funits_adopted() * self.ac.ch4_co2_per_twh
       else:
-        result = soln_net_annual_funits_adopted * ef.CH4multiplier * self.ac.ch4_co2_per_twh
+        result = self.soln_net_annual_funits_adopted() * ef.CH4multiplier * self.ac.ch4_co2_per_twh
       result.name = "soln_pds_direct_ch4_co2_emissions_saved"
       return result
 
-    def soln_pds_direct_n2o_co2_emissions_saved(self, soln_net_annual_funits_adopted):
+    def soln_pds_direct_n2o_co2_emissions_saved(self):
       """Direct emissions of N2O avoided, in tons of CO2 equivalents.
 
          'Unit Adoption Calculations'!BR307:CB354
       """
       ef = emissionsfactors.CO2Equiv(self.ac.co2eq_conversion_source)
       if self.ac.n2o_is_co2eq:
-        result = soln_net_annual_funits_adopted * self.ac.n2o_co2_per_twh
+        result = self.soln_net_annual_funits_adopted() * self.ac.n2o_co2_per_twh
       else:
-        result = soln_net_annual_funits_adopted * ef.N2Omultiplier * self.ac.n2o_co2_per_twh
+        result = self.soln_net_annual_funits_adopted() * ef.N2Omultiplier * self.ac.n2o_co2_per_twh
       result.name = "soln_pds_direct_n2o_co2_emissions_saved"
       return result
+
+    def to_dict(self):
+      """Return all fields as a dict, to be serialized to JSON."""
+      rs = dict()
+      rs['ref_population'] = self.ref_population()
+      rs['ref_gdp'] = self.ref_gdp()
+      rs['ref_gdp_per_capita'] = self.ref_gdp_per_capita()
+      rs['ref_tam_per_capita'] = self.ref_tam_per_capita()
+      rs['ref_tam_per_gdp_per_capita'] = self.ref_tam_per_gdp_per_capita()
+      rs['ref_tam_growth'] = self.ref_tam_growth()
+      rs['pds_population'] = self.pds_population()
+      rs['pds_gdp'] = self.pds_gdp()
+      rs['pds_gdp_per_capita'] = self.pds_gdp_per_capita()
+      rs['pds_tam_per_capita'] = self.pds_tam_per_capita()
+      rs['pds_tam_per_gdp_per_capita'] = self.pds_tam_per_gdp_per_capita()
+      rs['pds_tam_growth'] = self.pds_tam_growth()
+      rs['soln_pds_cumulative_funits'] = self.soln_pds_cumulative_funits()
+      rs['soln_pds_tot_iunits_reqd'] = self.soln_pds_tot_iunits_reqd()
+      rs['soln_pds_new_iunits_reqd'] = self.soln_pds_new_iunits_reqd()
+      rs['soln_pds_big4_iunits_reqd'] = self.soln_pds_big4_iunits_reqd()
+      rs['soln_ref_cumulative_funits'] = self.soln_ref_cumulative_funits()
+      rs['soln_ref_tot_iunits_reqd'] = self.soln_ref_tot_iunits_reqd()
+      rs['soln_ref_new_iunits_reqd'] = self.soln_ref_new_iunits_reqd()
+      rs['soln_net_annual_funits_adopted'] = self.soln_net_annual_funits_adopted()
+      rs['conv_ref_tot_iunits_reqd'] = self.conv_ref_tot_iunits_reqd()
+      rs['conv_ref_annual_tot_iunits'] = self.conv_ref_annual_tot_iunits()
+      rs['conv_ref_new_iunits_reqd'] = self.conv_ref_new_iunits_reqd()
+      s = self.soln_pds_net_grid_electricity_units_saved()
+      rs['soln_pds_net_grid_electricity_units_saved'] = s
+      s = self.soln_pds_net_grid_electricity_units_used()
+      rs['soln_pds_net_grid_electricity_units_used'] = s
+      rs['soln_pds_fuel_units_avoided'] = self.soln_pds_fuel_units_avoided()
+      rs['soln_pds_direct_co2_emissions_saved'] = self.soln_pds_direct_co2_emissions_saved()
+      rs['soln_pds_direct_ch4_co2_emissions_saved'] = self.soln_pds_direct_ch4_co2_emissions_saved()
+      rs['soln_pds_direct_n2o_co2_emissions_saved'] = self.soln_pds_direct_n2o_co2_emissions_saved()
+      return rs

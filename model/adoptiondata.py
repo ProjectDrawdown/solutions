@@ -80,3 +80,15 @@ class AdoptionData:
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'adoption_trend_global_' + trend.lower()
     return result
+
+  def to_dict(self):
+    """Return all fields as a dict, to be serialized to JSON."""
+    rs = dict()
+    rs['adoption_data_global'] = self.adoption_data_global()
+    rs['adoption_min_max_sd_global'] = self.adoption_min_max_sd_global()
+    rs['adoption_low_med_high_global'] = self.adoption_low_med_high_global()
+    rs['adoption_trend_linear_global'] = self.adoption_trend_global(trend='Linear')
+    rs['adoption_trend_poly_degree2_global'] = self.adoption_trend_global(trend='Degree2')
+    rs['adoption_trend_poly_degree3_global'] = self.adoption_trend_global(trend='Degree3')
+    rs['adoption_trend_exponential_global'] = self.adoption_trend_global(trend='Exponential')
+    return rs
