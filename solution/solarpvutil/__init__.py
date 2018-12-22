@@ -126,15 +126,30 @@ class SolarPVUtil:
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted())
+
+    soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
+    soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
+    conv_ref_tot_iunits_reqd = self.ua.conv_ref_tot_iunits_reqd()
+
     self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=2,
         ref_learning_increase_mult=2, conv_learning_increase_mult=2,
-        soln_pds_tot_iunits_reqd=self.ua.soln_pds_tot_iunits_reqd(),
-        soln_ref_tot_iunits_reqd=self.ua.soln_ref_tot_iunits_reqd(),
-        conv_ref_tot_iunits_reqd=self.ua.conv_ref_tot_iunits_reqd(),
+        soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd())
 
-    self.oc = operatingcost.OperatingCost(ac=self.ac)
+    self.oc = operatingcost.OperatingCost(ac=self.ac,
+        soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted(),
+        soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+        conv_ref_annual_tot_iunits=self.ua.conv_ref_annual_tot_iunits(),
+        soln_pds_annual_world_first_cost=self.fc.soln_pds_annual_world_first_cost(),
+        soln_ref_annual_world_first_cost=self.fc.soln_ref_annual_world_first_cost(),
+        conv_ref_annual_world_first_cost=self.fc.conv_ref_annual_world_first_cost(),
+        single_iunit_purchase_year=2017,
+        soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
+        conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit())
     self.c2 = co2calcs.CO2Calcs(ac=self.ac)
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac)

@@ -87,8 +87,8 @@ input=$(cat app_test.operatingcost_req)
 url='http://127.0.0.1:5000/operatingcost'
 output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
 
-require "$output" '"soln_new_funits_per_year": [["Year",' && \
-require "$output" '"soln_new_funits_per_year_world": [["Year",' && \
+require "$output" '"soln_pds_new_funits_per_year": [["Year",' && \
+require "$output" '"soln_pds_new_funits_per_year_world": [["Year",' && \
 require "$output" '"soln_pds_net_annual_iunits_reqd": [["Year",' && \
 require "$output" '"soln_pds_new_annual_iunits_reqd": [["Year",' && \
 require "$output" '"soln_pds_annual_breakout": [["Year",' && \
