@@ -370,79 +370,45 @@ def co2Calcs():
     p = ua_rq.get('soln_pds_net_grid_electricity_units_saved', [])
     soln_pds_net_grid_electricity_units_saved = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
 
-    c2 = co2calcs.CO2Calcs(ac=ac_rq)
-    results = dict()
+    ch4_ppm_calculator = pd.DataFrame(0, columns=["PPB", "notused"], index=list(range(2015, 2061)))
 
-    co2_reduced_grid_emissions = c2.co2_reduced_grid_emissions(
+    c2 = co2calcs.CO2Calcs(ac=ac_rq,
+        ch4_ppm_calculator=ch4_ppm_calculator,
         soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-        conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh)
-    results['co2_reduced_grid_emissions'] = format_for_response(co2_reduced_grid_emissions)
-    co2_replaced_grid_emissions = c2.co2_replaced_grid_emissions(
-        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-        conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh)
-    results['co2_replaced_grid_emissions'] = format_for_response(co2_replaced_grid_emissions)
-    co2_increased_grid_usage_emissions = c2.co2_increased_grid_usage_emissions(
         soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-        conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh)
-    results['co2_increased_grid_usage_emissions'] = format_for_response(
-        co2_increased_grid_usage_emissions)
-    co2eq_reduced_grid_emissions = c2.co2eq_reduced_grid_emissions(
-        soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-        conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh)
-    results['co2eq_reduced_grid_emissions'] = format_for_response(co2eq_reduced_grid_emissions)
-    co2eq_replaced_grid_emissions = c2.co2eq_replaced_grid_emissions(
-        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-        conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh)
-    results['co2eq_replaced_grid_emissions'] = format_for_response(co2eq_replaced_grid_emissions)
-    co2eq_increased_grid_usage_emissions = c2.co2eq_increased_grid_usage_emissions(
-        soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-        conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh)
-    results['co2eq_increased_grid_usage_emissions'] = format_for_response(
-        co2eq_increased_grid_usage_emissions)
-    co2eq_direct_reduced_emissions = c2.co2eq_direct_reduced_emissions(
         soln_pds_direct_co2_emissions_saved=soln_pds_direct_co2_emissions_saved,
         soln_pds_direct_ch4_co2_emissions_saved=soln_pds_direct_ch4_co2_emissions_saved,
-        soln_pds_direct_n2o_co2_emissions_saved=soln_pds_direct_n2o_co2_emissions_saved)
-    results['co2eq_direct_reduced_emissions'] = format_for_response(co2eq_direct_reduced_emissions)
-    co2eq_reduced_fuel_emissions = c2.co2eq_reduced_fuel_emissions(
-        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-        fuel_in_liters=fuel_in_liters)
-    results['co2eq_reduced_fuel_emissions'] = format_for_response(co2eq_reduced_fuel_emissions)
-    co2eq_net_indirect_emissions = c2.co2eq_net_indirect_emissions(
+        soln_pds_direct_n2o_co2_emissions_saved=soln_pds_direct_n2o_co2_emissions_saved,
         soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
         soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
         conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd,
-        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
-    results['co2eq_net_indirect_emissions'] = format_for_response(co2eq_net_indirect_emissions)
-    co2_mmt_reduced = c2.co2_mmt_reduced(co2_reduced_grid_emissions=co2_reduced_grid_emissions,
-        co2_replaced_grid_emissions=co2_replaced_grid_emissions,
-        co2eq_direct_reduced_emissions=co2eq_direct_reduced_emissions,
-        co2eq_reduced_fuel_emissions=co2eq_reduced_fuel_emissions,
-        co2eq_net_indirect_emissions=co2eq_net_indirect_emissions,
-        co2_increased_grid_usage_emissions=co2_increased_grid_usage_emissions)
-    results['co2_mmt_reduced'] = format_for_response(co2_mmt_reduced)
-    co2eq_mmt_reduced = c2.co2eq_mmt_reduced(
-        co2eq_reduced_grid_emissions=co2eq_reduced_grid_emissions,
-        co2eq_replaced_grid_emissions=co2eq_replaced_grid_emissions,
-        co2eq_increased_grid_usage_emissions=co2eq_increased_grid_usage_emissions,
-        co2eq_direct_reduced_emissions=co2eq_direct_reduced_emissions,
-        co2eq_reduced_fuel_emissions=co2eq_reduced_fuel_emissions,
-        co2eq_net_indirect_emissions=co2eq_net_indirect_emissions)
-    results['co2eq_mmt_reduced'] = format_for_response(co2eq_mmt_reduced)
-    co2_ppm_calculator = c2.co2_ppm_calculator(co2_mmt_reduced=co2_mmt_reduced,
-        co2eq_mmt_reduced=co2eq_mmt_reduced)
-    results['co2_ppm_calculator'] = format_for_response(co2_ppm_calculator)
-    ch4_ppm_calculator = pd.DataFrame(0, columns=["PPB", "notused"], index=list(range(2015, 2061)))
-    co2eq_ppm_calculator = c2.co2eq_ppm_calculator(co2_ppm_calculator=co2_ppm_calculator,
-        ch4_ppm_calculator=ch4_ppm_calculator)
-    results['co2eq_ppm_calculator'] = format_for_response(co2eq_ppm_calculator)
+        conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
+        conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+        fuel_in_liters=fuel_in_liters)
+    results = dict()
 
-    ch4 = ch4calcs.CH4Calcs(ac=ac_rq)
-    ch4_tons_reduced = ch4.ch4_tons_reduced(
-      soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
-    results['ch4_tons_reduced'] = format_for_response(ch4_tons_reduced)
-    results['ch4_ppb_calculator'] = format_for_response(ch4.ch4_ppb_calculator(
-      ch4_tons_reduced=ch4_tons_reduced))
+    results['co2_reduced_grid_emissions'] = format_for_response(c2.co2_reduced_grid_emissions())
+    results['co2_replaced_grid_emissions'] = format_for_response(c2.co2_replaced_grid_emissions())
+    results['co2_increased_grid_usage_emissions'] = format_for_response(
+        c2.co2_increased_grid_usage_emissions())
+    results['co2eq_reduced_grid_emissions'] = format_for_response(c2.co2eq_reduced_grid_emissions())
+    results['co2eq_replaced_grid_emissions'] = format_for_response(
+        c2.co2eq_replaced_grid_emissions())
+    results['co2eq_increased_grid_usage_emissions'] = format_for_response(
+        c2.co2eq_increased_grid_usage_emissions())
+    results['co2eq_direct_reduced_emissions'] = format_for_response(
+        c2.co2eq_direct_reduced_emissions())
+    results['co2eq_reduced_fuel_emissions'] = format_for_response(c2.co2eq_reduced_fuel_emissions())
+    results['co2eq_net_indirect_emissions'] = format_for_response(c2.co2eq_net_indirect_emissions())
+    results['co2_mmt_reduced'] = format_for_response(c2.co2_mmt_reduced())
+    results['co2eq_mmt_reduced'] = format_for_response(c2.co2eq_mmt_reduced())
+    results['co2_ppm_calculator'] = format_for_response(c2.co2_ppm_calculator())
+    results['co2eq_ppm_calculator'] = format_for_response(c2.co2eq_ppm_calculator())
+
+    ch4 = ch4calcs.CH4Calcs(ac=ac_rq, soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+    results['ch4_tons_reduced'] = format_for_response(ch4.ch4_tons_reduced())
+    results['ch4_ppb_calculator'] = format_for_response(ch4.ch4_ppb_calculator())
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
