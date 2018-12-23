@@ -19,6 +19,7 @@ from model import interpolation
 from model import operatingcost
 from model import tam
 from model import unitadoption
+from solution import solarpvutil
 import werkzeug.exceptions
 
 
@@ -243,10 +244,10 @@ def co2Calcs():
     p = ua_rq.get('soln_pds_net_grid_electricity_units_saved', [])
     soln_pds_net_grid_electricity_units_saved = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
 
-    ch4_ppm_calculator = pd.DataFrame(0, columns=["PPB", "notused"], index=list(range(2015, 2061)))
+    ch4_ppb_calculator = pd.DataFrame(0, columns=["PPB", "notused"], index=list(range(2015, 2061)))
 
     c2 = co2calcs.CO2Calcs(ac=ac_rq,
-        ch4_ppm_calculator=ch4_ppm_calculator,
+        ch4_ppb_calculator=ch4_ppb_calculator,
         soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
         soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
         soln_pds_direct_co2_emissions_saved=soln_pds_direct_co2_emissions_saved,
@@ -283,24 +284,9 @@ def tamData():
 @app.route("/solarpvutil", methods=['POST'])
 def solarPVUtil():
     """SolarPVUtil solution."""
-    js = request.get_json(force=True)
-    td_rq = js.get('tam_data', {})
-    ad_rq = js.get('adoption_data', {})
+    pv = solarpvutil.SolarPVUtil()
 
-    p = td_rq.get('tamconfig', [])
-    tamconfig = pd.DataFrame(p[1:], columns=p[0]).set_index('param')
-    p = ad_rq.get('adconfig', [])
-    adconfig = pd.DataFrame(p[1:], columns=p[0]).set_index('param')
-
-    results = dict()
-
-    td = tam.TAM(datadir=datadir, tamconfig=tamconfig)
-    results['tam_data'] = td.to_dict()
-
-    ad = adoptiondata.AdoptionData(ac=ac_rq, datadir=datadir, adconfig=adconfig)
-    results['adoption_data'] = ad.to_dict()
-
-    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
+    results_str = json.dumps(pv.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 

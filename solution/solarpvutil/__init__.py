@@ -1,5 +1,5 @@
 """Utility Scale Solar Photovoltaics solution model.
-   solarpvutil_*
+   Excel filename: SolarPVUtility_RRS_ELECGEN
 """
 
 import pathlib
@@ -20,7 +20,6 @@ from model import unitadoption
 
 class SolarPVUtil:
   def __init__(self):
-    super()
     soln_funit_adoption_2014 = pd.DataFrame([[112.63303333333, 75.00424555556, 0.33238333333,
       21.07250444444, 1.57507777778, 14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444,
       13.12465000000]],
@@ -36,10 +35,12 @@ class SolarPVUtil:
         soln_first_cost_below_conv=True,
         conv_first_cost_efficiency_rate=0.02,
         soln_funit_adoption_2014=soln_funit_adoption_2014,
+
         ch4_is_co2eq=True,
         n2o_is_co2eq=True,
         co2eq_conversion_source="AR5 with feedback",
         soln_indirect_co2_per_iunit=47157.2222222222,
+        conv_indirect_co2_per_unit=0.0,
         conv_indirect_co2_is_iunits=False,
 
         soln_lifetime_capacity=48343.8,
@@ -59,6 +60,7 @@ class SolarPVUtil:
 
         npv_discount_rate=0.094,
 
+        emissions_use_co2eq=True,
         emissions_grid_source="ipcc_only",
         emissions_grid_range="mean",
 
@@ -156,7 +158,7 @@ class SolarPVUtil:
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
-        ch4_ppm_calculator=None,
+        ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
         soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
         soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),
@@ -169,3 +171,17 @@ class SolarPVUtil:
         conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
         fuel_in_liters=False)
+
+  def to_dict(self):
+    """Return all data as a dict, to be serialized to JSON."""
+    rs = dict()
+    rs['tam_data'] = self.tm.to_dict()
+    rs['adoption_data'] = self.ad.to_dict()
+    rs['helper_tables'] = self.ht.to_dict()
+    rs['emissions_factors'] = self.ef.to_dict()
+    rs['unit_adoption'] = self.ua.to_dict()
+    rs['first_cost'] = self.fc.to_dict()
+    rs['operating_cost'] = self.oc.to_dict()
+    rs['ch4_calcs'] = self.c4.to_dict()
+    rs['co2_calcs'] = self.c2.to_dict()
+    return rs
