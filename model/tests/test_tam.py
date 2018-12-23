@@ -485,6 +485,48 @@ def test_pds_tam_per_region():
       skipinitialspace=True, comment='#')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_to_dict():
+  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  result = tm.to_dict()
+  expected = [
+      'forecast_data_global', 'forecast_min_max_sd_global',
+      'forecast_low_med_high_global',
+      'forecast_trend_linear_global', 'forecast_trend_degree2_global',
+      'forecast_trend_degree3_global', 'forecast_trend_exponential_global',
+      'forecast_data_oecd90', 'forecast_min_max_sd_oecd90',
+      'forecast_low_med_high_oecd90', 'forecast_trend_linear_oecd90',
+      'forecast_trend_degree2_oecd90', 'forecast_trend_degree3_oecd90',
+      'forecast_trend_exponential_oecd90', 'forecast_data_eastern_europe',
+      'forecast_min_max_sd_eastern_europe', 'forecast_low_med_high_eastern_europe',
+      'forecast_trend_linear_eastern_europe', 'forecast_trend_degree2_eastern_europe',
+      'forecast_trend_degree3_eastern_europe', 'forecast_trend_exponential_eastern_europe',
+      'forecast_data_asia_sans_japan', 'forecast_min_max_sd_asia_sans_japan',
+      'forecast_low_med_high_asia_sans_japan', 'forecast_trend_linear_asia_sans_japan',
+      'forecast_trend_degree2_asia_sans_japan', 'forecast_trend_degree3_asia_sans_japan',
+      'forecast_trend_exponential_asia_sans_japan',
+      'forecast_trend_exponential_asia_sans_japan',
+      'forecast_data_middle_east_and_africa', 'forecast_min_max_sd_middle_east_and_africa',
+      'forecast_low_med_high_middle_east_and_africa',
+      'forecast_trend_linear_middle_east_and_africa',
+      'forecast_trend_degree2_middle_east_and_africa',
+      'forecast_trend_degree3_middle_east_and_africa',
+      'forecast_trend_exponential_middle_east_and_africa', 'forecast_data_latin_america',
+      'forecast_min_max_sd_latin_america', 'forecast_low_med_high_latin_america',
+      'forecast_trend_linear_latin_america', 'forecast_trend_degree2_latin_america',
+      'forecast_trend_degree3_latin_america', 'forecast_trend_exponential_latin_america',
+      'forecast_data_china', 'forecast_min_max_sd_china', 'forecast_low_med_high_china',
+      'forecast_trend_linear_china', 'forecast_trend_degree2_china', 'forecast_trend_degree3_china',
+      'forecast_trend_exponential_china', 'forecast_data_india', 'forecast_min_max_sd_india',
+      'forecast_low_med_high_india', 'forecast_trend_linear_india', 'forecast_trend_degree2_india',
+      'forecast_trend_degree3_india', 'forecast_trend_exponential_india', 'forecast_data_eu',
+      'forecast_min_max_sd_eu', 'forecast_low_med_high_eu', 'forecast_trend_linear_eu',
+      'forecast_trend_degree2_eu', 'forecast_trend_degree3_eu', 'forecast_trend_exponential_eu',
+      'forecast_data_usa', 'forecast_min_max_sd_usa', 'forecast_low_med_high_usa',
+      'forecast_trend_linear_usa', 'forecast_trend_degree2_usa', 'forecast_trend_degree3_usa',
+      'forecast_trend_exponential_usa']
+  for ex in expected:
+    assert ex in result
+
 
 # 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES', source_after_2014='Baseline Cases',
 # low_sd=1.0, high_sd=1.0

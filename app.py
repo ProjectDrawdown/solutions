@@ -36,6 +36,10 @@ def json_dumps_default(obj):
     return float(obj)
   elif isinstance(obj, np.ndarray):
     return obj.tolist()
+  elif isinstance(obj, pd.DataFrame):
+    return [[obj.index.name, *obj.columns.tolist()]] + obj.reset_index().values.tolist()
+  elif isinstance(obj, pd.Series):
+    return [[obj.index.name, obj.name]] + obj.reset_index().values.tolist()
   else:
     raise TypeError('Unable to JSON encode: ' + repr(obj))
 
@@ -55,11 +59,6 @@ def firstCost():
     ac_rq = to_advanced_controls(js, app.logger)
     fc_rq = js.get('first_cost', {})
     ua_rq = js.get('unit_adoption', {})
-    fc = firstcost.FirstCost(
-        ac=ac_rq,
-        pds_learning_increase_mult=fc_rq.get('pds_learning_increase_mult', 0),
-        ref_learning_increase_mult=fc_rq.get('ref_learning_increase_mult', 0),
-        conv_learning_increase_mult=fc_rq.get('conv_learning_increase_mult', 0))
 
     funits = ua_rq.get('soln_pds_tot_iunits_reqd', [])
     soln_pds_tot_iunits_reqd = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
@@ -75,36 +74,34 @@ def firstCost():
     iunits = [x for x in iunits if x[0] != 'Lifetime']
     conv_ref_new_iunits_reqd = pd.DataFrame(iunits[1:], columns=iunits[0]).set_index('Year')
 
-    results = dict()
-    soln_pds_install_cost_per_iunit = fc.soln_pds_install_cost_per_iunit(
+    fc = firstcost.FirstCost(ac=ac_rq,
+        pds_learning_increase_mult=fc_rq.get('pds_learning_increase_mult', 0),
+        ref_learning_increase_mult=fc_rq.get('ref_learning_increase_mult', 0),
+        conv_learning_increase_mult=fc_rq.get('conv_learning_increase_mult', 0),
         soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
-        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd)
-    results['soln_pds_install_cost_per_iunit'] = format_for_response(soln_pds_install_cost_per_iunit)
-    conv_ref_install_cost_per_iunit = fc.conv_ref_install_cost_per_iunit(
-        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd)
-    results['conv_ref_install_cost_per_iunit'] = format_for_response(
-        conv_ref_install_cost_per_iunit)
-    soln_ref_install_cost_per_iunit = fc.soln_ref_install_cost_per_iunit(
-        soln_ref_tot_iunits_reqd, conv_ref_tot_iunits_reqd)
-    results['soln_ref_install_cost_per_iunit'] = format_for_response(
-        soln_ref_install_cost_per_iunit)
-    soln_pds_annual_world_first_cost = fc.soln_pds_annual_world_first_cost(
+        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
         soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
-        soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit)
+        soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
+        conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd)
+
+    results = dict()
+    results['soln_pds_install_cost_per_iunit'] = format_for_response(
+        fc.soln_pds_install_cost_per_iunit())
+    results['conv_ref_install_cost_per_iunit'] = format_for_response(
+        fc.conv_ref_install_cost_per_iunit())
+    results['soln_ref_install_cost_per_iunit'] = format_for_response(
+        fc.soln_ref_install_cost_per_iunit())
     results['soln_pds_annual_world_first_cost'] = format_for_response(
-        soln_pds_annual_world_first_cost)
+        fc.soln_pds_annual_world_first_cost())
     results['soln_pds_cumulative_install'] = format_for_response(
-        fc.soln_pds_cumulative_install(soln_pds_annual_world_first_cost))
-    soln_ref_annual_world_first_cost = fc.soln_ref_annual_world_first_cost(
-        soln_ref_new_iunits_reqd, soln_ref_install_cost_per_iunit)
+        fc.soln_pds_cumulative_install())
     results['soln_ref_annual_world_first_cost'] = format_for_response(
-        soln_ref_annual_world_first_cost)
-    conv_ref_annual_world_first_cost = fc.conv_ref_annual_world_first_cost(
-        conv_ref_new_iunits_reqd, conv_ref_install_cost_per_iunit)
+        fc.soln_ref_annual_world_first_cost())
     results['conv_ref_annual_world_first_cost'] = format_for_response(
-        conv_ref_annual_world_first_cost)
-    results['ref_cumulative_install'] = format_for_response(fc.ref_cumulative_install(
-        conv_ref_annual_world_first_cost, soln_ref_annual_world_first_cost))
+        fc.conv_ref_annual_world_first_cost())
+    results['ref_cumulative_install'] = format_for_response(fc.ref_cumulative_install())
+
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
@@ -124,73 +121,51 @@ def unitAdoption3():
     funits = ua_rq.get('soln_ref_funits_adopted', [])
     soln_ref_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
 
-    ua = unitadoption.UnitAdoption(ac=ac_rq, datadir=datadir)
+    ua = unitadoption.UnitAdoption(ac=ac_rq, datadir=datadir,
+        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
+        soln_ref_funits_adopted=soln_ref_funits_adopted,
+        soln_pds_funits_adopted=soln_pds_funits_adopted)
     results = dict()
     results['ref_population'] = format_for_response(ua.ref_population())
     results['ref_gdp'] = format_for_response(ua.ref_gdp())
     results['ref_gdp_per_capita'] = format_for_response(ua.ref_gdp_per_capita())
-    results['ref_tam_per_capita'] = format_for_response(
-      ua.ref_tam_per_capita(ref_tam_per_region=ref_tam_per_region))
-    results['ref_tam_per_gdp_per_capita'] = format_for_response(
-      ua.ref_tam_per_gdp_per_capita(ref_tam_per_region=ref_tam_per_region))
-    results['ref_tam_growth'] = format_for_response(
-      ua.ref_tam_growth(ref_tam_per_region=ref_tam_per_region))
+    results['ref_tam_per_capita'] = format_for_response(ua.ref_tam_per_capita())
+    results['ref_tam_per_gdp_per_capita'] = format_for_response(ua.ref_tam_per_gdp_per_capita())
+    results['ref_tam_growth'] = format_for_response(ua.ref_tam_growth())
     results['pds_population'] = format_for_response(ua.pds_population())
     results['pds_gdp'] = format_for_response(ua.pds_gdp())
     results['pds_gdp_per_capita'] = format_for_response(ua.pds_gdp_per_capita())
-    results['pds_tam_per_capita'] = format_for_response(
-      ua.pds_tam_per_capita(pds_tam_per_region=pds_tam_per_region))
-    results['pds_tam_per_gdp_per_capita'] = format_for_response(
-      ua.pds_tam_per_gdp_per_capita(pds_tam_per_region=pds_tam_per_region))
-    results['pds_tam_growth'] = format_for_response(
-      ua.pds_tam_growth(pds_tam_per_region=pds_tam_per_region))
-    results['soln_pds_cumulative_funits'] = format_for_response(
-      ua.soln_pds_cumulative_funits(soln_pds_funits_adopted=soln_pds_funits_adopted))
-    results['soln_ref_cumulative_funits'] = format_for_response(
-      ua.soln_ref_cumulative_funits(soln_ref_funits_adopted=soln_ref_funits_adopted))
-    soln_net_annual_funits_adopted = ua.soln_net_annual_funits_adopted(
-      soln_ref_funits_adopted=soln_ref_funits_adopted,
-      soln_pds_funits_adopted=soln_pds_funits_adopted)
+    results['pds_tam_per_capita'] = format_for_response(ua.pds_tam_per_capita())
+    results['pds_tam_per_gdp_per_capita'] = format_for_response(ua.pds_tam_per_gdp_per_capita())
+    results['pds_tam_growth'] = format_for_response(ua.pds_tam_growth())
+    results['soln_pds_cumulative_funits'] = format_for_response(ua.soln_pds_cumulative_funits())
+    results['soln_ref_cumulative_funits'] = format_for_response(ua.soln_ref_cumulative_funits())
+    soln_net_annual_funits_adopted = ua.soln_net_annual_funits_adopted()
     results['soln_net_annual_funits_adopted'] = format_for_response(soln_net_annual_funits_adopted)
-    soln_pds_tot_iunits_reqd = ua.soln_pds_tot_iunits_reqd(
-      soln_pds_funits_adopted=soln_pds_funits_adopted)
+    soln_pds_tot_iunits_reqd = ua.soln_pds_tot_iunits_reqd()
     results['soln_pds_tot_iunits_reqd'] = format_for_response(soln_pds_tot_iunits_reqd)
-    results['soln_pds_new_iunits_reqd'] = format_for_response(
-      ua.soln_pds_new_iunits_reqd(soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd))
-    results['soln_pds_big4_iunits_reqd'] = format_for_response(
-        ua.soln_pds_big4_iunits_reqd(soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd))
-    soln_ref_tot_iunits_reqd = ua.soln_ref_tot_iunits_reqd(soln_ref_funits_adopted)
+    results['soln_pds_new_iunits_reqd'] = format_for_response(ua.soln_pds_new_iunits_reqd())
+    results['soln_pds_big4_iunits_reqd'] = format_for_response(ua.soln_pds_big4_iunits_reqd())
+    soln_ref_tot_iunits_reqd = ua.soln_ref_tot_iunits_reqd()
     results['soln_ref_tot_iunits_reqd'] = format_for_response(soln_ref_tot_iunits_reqd)
-    results['soln_ref_new_iunits_reqd'] = format_for_response(
-      ua.soln_ref_new_iunits_reqd(soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd))
-    results['conv_ref_tot_iunits_reqd'] = format_for_response(
-      ua.conv_ref_tot_iunits_reqd(ref_tam_per_region=ref_tam_per_region,
-        soln_ref_funits_adopted=soln_ref_funits_adopted))
-    conv_ref_annual_tot_iunits = ua.conv_ref_annual_tot_iunits(
-      soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+    results['soln_ref_new_iunits_reqd'] = format_for_response(ua.soln_ref_new_iunits_reqd())
+    results['conv_ref_tot_iunits_reqd'] = format_for_response(ua.conv_ref_tot_iunits_reqd())
+    conv_ref_annual_tot_iunits = ua.conv_ref_annual_tot_iunits()
     results['conv_ref_annual_tot_iunits'] = format_for_response(conv_ref_annual_tot_iunits)
-    results['conv_ref_new_iunits_reqd'] = format_for_response(
-      ua.conv_ref_new_iunits_reqd(conv_ref_annual_tot_iunits=conv_ref_annual_tot_iunits))
-    results['conv_lifetime_replacement'] = format_for_response(
-      round(ac_rq.conv_lifetime_replacement))
+    results['conv_ref_new_iunits_reqd'] = format_for_response(ua.conv_ref_new_iunits_reqd())
+    results['conv_lifetime_replacement'] = format_for_response(round(ac_rq.conv_lifetime_replacement))
 
     results['soln_pds_net_grid_electricity_units_saved'] = format_for_response(
-      ua.soln_pds_net_grid_electricity_units_saved(
-        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
+      ua.soln_pds_net_grid_electricity_units_saved())
     results['soln_pds_net_grid_electricity_units_used'] = format_for_response(
-      ua.soln_pds_net_grid_electricity_units_used(
-        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
-    results['soln_pds_fuel_units_avoided'] = format_for_response(
-      ua.soln_pds_fuel_units_avoided(soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
+      ua.soln_pds_net_grid_electricity_units_used())
+    results['soln_pds_fuel_units_avoided'] = format_for_response(ua.soln_pds_fuel_units_avoided())
     results['soln_pds_direct_co2_emissions_saved'] = format_for_response(
-      ua.soln_pds_direct_co2_emissions_saved(
-        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
+      ua.soln_pds_direct_co2_emissions_saved())
     results['soln_pds_direct_ch4_co2_emissions_saved'] = format_for_response(
-      ua.soln_pds_direct_ch4_co2_emissions_saved(
-        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
+      ua.soln_pds_direct_ch4_co2_emissions_saved())
     results['soln_pds_direct_n2o_co2_emissions_saved'] = format_for_response(
-      ua.soln_pds_direct_n2o_co2_emissions_saved(
-        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted))
+      ua.soln_pds_direct_n2o_co2_emissions_saved())
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
@@ -213,7 +188,6 @@ def operatingCost():
     soln_ref_tot_iunits_reqd = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
     p = ua_rq.get('conv_ref_annual_tot_iunits', [])
     conv_ref_annual_tot_iunits = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
-    conv_ref_net_annual_iunits_reqd = conv_ref_annual_tot_iunits['World']
 
     p = fc_rq.get('annual_world_first_cost', [])
     annual_world_first_cost = pd.DataFrame(p[1:], columns=p[0]).set_index('Year')
@@ -225,85 +199,60 @@ def operatingCost():
 
     single_iunit_purchase_year = oc_rq.get('single_iunit_purchase_year', 0)
 
-    oc = operatingcost.OperatingCost(ac=ac_rq)
-    results = dict()
-    soln_new_funits_per_year = oc.soln_new_funits_per_year(soln_net_annual_funits_adopted)
-    results['soln_new_funits_per_year'] = format_for_response(soln_new_funits_per_year)
-    world = soln_new_funits_per_year['World']
-    world.name = 'New Functional Units each Year'
-    results['soln_new_funits_per_year_world'] = format_for_response(world)
-    soln_pds_net_annual_iunits_reqd = oc.soln_pds_net_annual_iunits_reqd(
-        soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd)
-    results['soln_pds_net_annual_iunits_reqd'] = format_for_response(soln_pds_net_annual_iunits_reqd)
-    soln_pds_new_annual_iunits_reqd = oc.soln_pds_new_annual_iunits_reqd(
-        soln_pds_net_annual_iunits_reqd)
-    results['soln_pds_new_annual_iunits_reqd'] = format_for_response(soln_pds_new_annual_iunits_reqd)
-    soln_pds_annual_breakout = oc.soln_pds_annual_breakout(
-      soln_new_funits_per_year=soln_new_funits_per_year['World'],
-      soln_pds_new_annual_iunits_reqd=soln_pds_new_annual_iunits_reqd['World'])
-    results['soln_pds_annual_breakout'] = format_for_response(soln_pds_annual_breakout)
-    soln_pds_annual_operating_cost = oc.soln_pds_annual_operating_cost(soln_pds_annual_breakout)
-    results['soln_pds_annual_operating_cost'] = format_for_response(soln_pds_annual_operating_cost)
-    results['soln_pds_cumulative_operating_cost'] = format_for_response(
-        oc.soln_pds_cumulative_operating_cost( soln_pds_annual_operating_cost))
-    conv_ref_new_annual_iunits_reqd = oc.conv_ref_new_annual_iunits_reqd(
-        conv_ref_net_annual_iunits_reqd)
-    results['conv_ref_new_annual_iunits_reqd'] = format_for_response(conv_ref_new_annual_iunits_reqd)
-
-    # Though it looks strange to set conv_new_funits_per_year=soln_new_funits_per_year, that is
-    # what the model does. It is calculating additionality of the PDS on top of the SOLN-REF.
-    conv_ref_annual_breakout = oc.conv_ref_annual_breakout(
-      conv_new_funits_per_year=soln_new_funits_per_year['World'],
-      conv_ref_new_annual_iunits_reqd=conv_ref_new_annual_iunits_reqd)
-    results['conv_ref_annual_breakout'] = format_for_response(conv_ref_annual_breakout)
-
-    conv_ref_annual_operating_cost = oc.conv_ref_annual_operating_cost(conv_ref_annual_breakout)
-    results['conv_ref_annual_operating_cost'] = format_for_response(conv_ref_annual_operating_cost)
-    results['conv_ref_cumulative_operating_cost'] = format_for_response(
-        oc.conv_ref_cumulative_operating_cost(conv_ref_annual_operating_cost))
-    results['marginal_annual_operating_cost'] = format_for_response(
-        oc.marginal_annual_operating_cost(
-          soln_pds_annual_operating_cost=soln_pds_annual_operating_cost,
-          conv_ref_annual_operating_cost=conv_ref_annual_operating_cost))
-
-    results['lifetime_cost_forecast'] = format_for_response(oc.lifetime_cost_forecast(
-      soln_ref_annual_world_first_cost=soln_ref_annual_world_first_cost,
-      conv_ref_annual_world_first_cost=conv_ref_annual_world_first_cost,
-      soln_pds_annual_world_first_cost=soln_pds_annual_world_first_cost,
-      conv_ref_annual_breakout=conv_ref_annual_breakout,
-      soln_pds_annual_breakout=soln_pds_annual_breakout))
-
-    soln_vs_conv_single_iunit_cashflow = oc.soln_vs_conv_single_iunit_cashflow(
+    oc = operatingcost.OperatingCost(ac=ac_rq,
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+        soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+        conv_ref_annual_tot_iunits=conv_ref_annual_tot_iunits,
+        soln_pds_annual_world_first_cost=soln_pds_annual_world_first_cost,
+        soln_ref_annual_world_first_cost=soln_ref_annual_world_first_cost,
+        conv_ref_annual_world_first_cost=conv_ref_annual_world_first_cost,
         single_iunit_purchase_year=single_iunit_purchase_year,
         soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
         conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
-    results['soln_vs_conv_single_iunit_cashflow'] = format_for_response(soln_vs_conv_single_iunit_cashflow)
-    soln_vs_conv_single_iunit_npv = oc.soln_vs_conv_single_iunit_npv(
-        single_iunit_purchase_year=single_iunit_purchase_year,
-        soln_vs_conv_single_iunit_cashflow=soln_vs_conv_single_iunit_cashflow)
-    results['soln_vs_conv_single_iunit_npv'] = format_for_response(soln_vs_conv_single_iunit_npv)
-    soln_vs_conv_single_iunit_payback = oc.soln_vs_conv_single_iunit_payback(
-        soln_vs_conv_single_iunit_cashflow=soln_vs_conv_single_iunit_cashflow)
-    results['soln_vs_conv_single_iunit_payback'] = format_for_response(soln_vs_conv_single_iunit_payback)
-    soln_vs_conv_single_iunit_payback_discounted = oc.soln_vs_conv_single_iunit_payback_discounted(
-        soln_vs_conv_single_iunit_npv=soln_vs_conv_single_iunit_npv)
+
+    results = dict()
+    soln_pds_new_funits_per_year = oc.soln_pds_new_funits_per_year()
+    results['soln_pds_new_funits_per_year'] = format_for_response(soln_pds_new_funits_per_year)
+    world = soln_pds_new_funits_per_year['World']
+    world.name = 'New Functional Units each Year'
+    results['soln_pds_new_funits_per_year_world'] = format_for_response(world)
+    results['soln_pds_net_annual_iunits_reqd'] = format_for_response(
+        oc.soln_pds_net_annual_iunits_reqd())
+    results['soln_pds_new_annual_iunits_reqd'] = format_for_response(
+        oc.soln_pds_new_annual_iunits_reqd())
+    results['soln_pds_annual_breakout'] = format_for_response(oc.soln_pds_annual_breakout())
+    results['soln_pds_annual_operating_cost'] = format_for_response(
+        oc.soln_pds_annual_operating_cost())
+    results['soln_pds_cumulative_operating_cost'] = format_for_response(
+        oc.soln_pds_cumulative_operating_cost())
+    results['conv_ref_new_annual_iunits_reqd'] = format_for_response(
+        oc.conv_ref_new_annual_iunits_reqd())
+    results['conv_ref_annual_breakout'] = format_for_response(oc.conv_ref_annual_breakout())
+    results['conv_ref_annual_operating_cost'] = format_for_response(
+        oc.conv_ref_annual_operating_cost())
+    results['conv_ref_cumulative_operating_cost'] = format_for_response(
+        oc.conv_ref_cumulative_operating_cost())
+    results['marginal_annual_operating_cost'] = format_for_response(
+        oc.marginal_annual_operating_cost())
+    results['lifetime_cost_forecast'] = format_for_response(oc.lifetime_cost_forecast())
+
+    results['soln_vs_conv_single_iunit_cashflow'] = format_for_response(
+        oc.soln_vs_conv_single_iunit_cashflow())
+    results['soln_vs_conv_single_iunit_npv'] = format_for_response(
+        oc.soln_vs_conv_single_iunit_npv())
+    results['soln_vs_conv_single_iunit_payback'] = format_for_response(
+        oc.soln_vs_conv_single_iunit_payback())
     results['soln_vs_conv_single_iunit_payback_discounted'] = format_for_response(
-        soln_vs_conv_single_iunit_payback_discounted)
-    soln_only_single_iunit_cashflow = oc.soln_only_single_iunit_cashflow(
-        single_iunit_purchase_year=single_iunit_purchase_year,
-        soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit)
-    results['soln_only_single_iunit_cashflow'] = format_for_response(soln_only_single_iunit_cashflow)
-    soln_only_single_iunit_npv = oc.soln_only_single_iunit_npv(
-        single_iunit_purchase_year=single_iunit_purchase_year,
-        soln_only_single_iunit_cashflow=soln_only_single_iunit_cashflow)
-    results['soln_only_single_iunit_npv'] = format_for_response(soln_only_single_iunit_npv)
-    soln_only_single_iunit_payback = oc.soln_only_single_iunit_payback(
-        soln_only_single_iunit_cashflow=soln_only_single_iunit_cashflow)
-    results['soln_only_single_iunit_payback'] = format_for_response(soln_only_single_iunit_payback)
-    soln_only_single_iunit_payback_discounted = oc.soln_only_single_iunit_payback_discounted(
-        soln_only_single_iunit_npv=soln_only_single_iunit_npv)
+        oc.soln_vs_conv_single_iunit_payback_discounted())
+    results['soln_only_single_iunit_cashflow'] = format_for_response(
+        oc.soln_only_single_iunit_cashflow())
+    results['soln_only_single_iunit_npv'] = format_for_response(
+        oc.soln_only_single_iunit_npv())
+    results['soln_only_single_iunit_payback'] = format_for_response(
+        oc.soln_only_single_iunit_payback())
     results['soln_only_single_iunit_payback_discounted'] = format_for_response(
-        soln_only_single_iunit_payback_discounted)
+        oc.soln_only_single_iunit_payback_discounted())
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
@@ -375,14 +324,14 @@ def helperTables():
     lmh = ad_rq.get('adoption_low_med_high', [])
     adoption_low_med_high = pd.DataFrame(lmh[1:], columns=lmh[0]).set_index('Year')
 
-    ht = helpertables.HelperTables(ac=ac_rq, ref_datapoints=ref_datapoints,
-        pds_datapoints=pds_datapoints)
-    results = dict()
+    ht = helpertables.HelperTables(ac=ac_rq,
+        ref_datapoints=ref_datapoints, pds_datapoints=pds_datapoints,
+        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
+        adoption_low_med_high_global=adoption_low_med_high)
 
-    results['soln_ref_funits_adopted'] = format_for_response(ht.soln_ref_funits_adopted(
-      ref_tam_per_region=ref_tam_per_region))
-    results['soln_pds_funits_adopted'] = format_for_response(ht.soln_pds_funits_adopted(
-      adoption_low_med_high=adoption_low_med_high, pds_tam_per_region=pds_tam_per_region))
+    results = dict()
+    results['soln_ref_funits_adopted'] = format_for_response(ht.soln_ref_funits_adopted())
+    results['soln_pds_funits_adopted'] = format_for_response(ht.soln_pds_funits_adopted())
 
     results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
@@ -636,15 +585,40 @@ def tamData():
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
-def to_csv(data, key, logger):
-    '''
-    Helper function to load CSV from input data dictionary.
-    '''
-    csvstr = data[key]
-    csvio = io.StringIO(csvstr)
-    csv = pd.read_csv(csvio)
-    logger.info("%s parsed as:\n%s", key, csv)
-    return csv
+@app.route("/solarpvutil", methods=['POST'])
+def solarPVUtil():
+    """SolarPVUtil solution."""
+    js = request.get_json(force=True)
+    td_rq = js.get('tam_data', {})
+    ad_rq = js.get('adoption_data', {})
+
+    p = td_rq.get('tamconfig', [])
+    tamconfig = pd.DataFrame(p[1:], columns=p[0]).set_index('param')
+    p = ad_rq.get('adconfig', [])
+    adconfig = pd.DataFrame(p[1:], columns=p[0]).set_index('param')
+
+    results = dict()
+
+    td = tam.TAM(datadir=datadir, tamconfig=tamconfig)
+    results['tam_data'] = td.to_dict()
+
+    ad = adoptiondata.AdoptionData(ac=ac_rq, datadir=datadir, adconfig=adconfig)
+    rs = dict()
+    rs['adoption_data_global'] = format_for_response(ad.adoption_data_global())
+    rs['adoption_min_max_sd_global'] = format_for_response(ad.adoption_min_max_sd_global())
+    rs['adoption_low_med_high_global'] = format_for_response(ad.adoption_low_med_high_global())
+    rs['adoption_trend_linear_global'] = format_for_response(
+        ad.adoption_trend_global(trend='Linear'))
+    rs['adoption_trend_poly_degree2_global'] = format_for_response(
+        ad.adoption_trend_global(trend='Degree2'))
+    rs['adoption_trend_poly_degree3_global'] = format_for_response(
+        ad.adoption_trend_global(trend='Degree3'))
+    rs['adoption_trend_exponential_global'] = format_for_response(
+        ad.adoption_trend_global(trend='Exponential'))
+    results['adoption_data'] = rs
+
+    results_str = json.dumps(results, separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
 
 
 def to_advanced_controls(data, logger):

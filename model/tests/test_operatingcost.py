@@ -10,161 +10,15 @@ import pytest
 
 csv_files_dir = os.path.dirname(__file__)
 
-def test_soln_pds_annual_operating_cost():
-  filename = os.path.join(csv_files_dir, 'oc_soln_pds_annual_breakout_expected.csv')
-  breakout = pd.read_csv(filename, header=None, index_col=0, skipinitialspace=True, dtype=np.float64)
-  breakout.columns = list(range(2015, 2061))
-  breakout.index = breakout.index.astype(int)
-  expected = pd.Series(soln_pds_annual_operating_cost_nparray[:, 1],
-      index=soln_pds_annual_operating_cost_nparray[:, 0], dtype=np.float64)
-  expected.index = expected.index.astype(int)
-  oc = operatingcost.OperatingCost(ac=None)
-  result = oc.soln_pds_annual_operating_cost(breakout)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
-
-def test_soln_pds_cumulative_operating_cost():
-  soln_pds_annual_operating_cost = pd.Series(soln_pds_annual_operating_cost_nparray[:, 1],
-      index=soln_pds_annual_operating_cost_nparray[:, 0], dtype=np.float64)
-  soln_pds_annual_operating_cost.index = soln_pds_annual_operating_cost.index.astype(int)
-  oc = operatingcost.OperatingCost(ac=None)
-  result = oc.soln_pds_cumulative_operating_cost(soln_pds_annual_operating_cost)
-  expected = pd.Series(soln_pds_cumulative_operating_cost_nparray[:, 1],
-      index=soln_pds_cumulative_operating_cost_nparray[:, 0], dtype=np.float64)
-  expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
-
-def test_conv_ref_annual_operating_cost():
-  filename = os.path.join(csv_files_dir, 'oc_conv_ref_annual_breakout_expected.csv')
-  breakout = pd.read_csv(filename, header=None, index_col=0, skipinitialspace=True, dtype=np.float64)
-  breakout.columns = list(range(2015, 2061))
-  breakout.index = breakout.index.astype(int)
-  expected = pd.Series(conv_ref_annual_operating_cost_nparray[:, 1],
-      index=conv_ref_annual_operating_cost_nparray[:, 0], dtype=np.float64)
-  expected.index = expected.index.astype(int)
-  oc = operatingcost.OperatingCost(ac=None)
-  result = oc.conv_ref_annual_operating_cost(breakout).iloc[0:46]
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
-
-def test_conv_ref_cumulative_operating_cost():
-  conv_ref_annual_operating_cost = pd.Series(conv_ref_annual_operating_cost_nparray[:, 1],
-      index=conv_ref_annual_operating_cost_nparray[:, 0], dtype=np.float64)
-  conv_ref_annual_operating_cost.index = conv_ref_annual_operating_cost.index.astype(int)
-  oc = operatingcost.OperatingCost(ac=None)
-  result = oc.conv_ref_cumulative_operating_cost(conv_ref_annual_operating_cost)
-  expected = pd.Series(conv_ref_cumulative_operating_cost_nparray[:, 1],
-      index=conv_ref_cumulative_operating_cost_nparray[:, 0], dtype=np.float64)
-  expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
-
-def test_marginal_annual_operating_cost():
-  soln_pds_annual_operating_cost = pd.Series(soln_pds_annual_operating_cost_nparray[:, 1],
-      index=soln_pds_annual_operating_cost_nparray[:, 0], dtype=np.float64)
-  soln_pds_annual_operating_cost.index = soln_pds_annual_operating_cost.index.astype(int)
-  conv_ref_annual_operating_cost = pd.Series(conv_ref_annual_operating_cost_nparray[:, 1],
-      index=conv_ref_annual_operating_cost_nparray[:, 0], dtype=np.float64)
-  conv_ref_annual_operating_cost.index = conv_ref_annual_operating_cost.index.astype(int)
-  oc = operatingcost.OperatingCost(ac=None)
-  result = oc.marginal_annual_operating_cost(
-      soln_pds_annual_operating_cost=soln_pds_annual_operating_cost,
-      conv_ref_annual_operating_cost=conv_ref_annual_operating_cost)
-  expected = pd.Series(marginal_annual_operating_cost_nparray[:, 1],
-      index=marginal_annual_operating_cost_nparray[:, 0], dtype=np.float64)
-  expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
-
-def test_soln_new_funits_per_year():
-  funits = [['Year', 'World', 'Other'], [2014, 1.0, 0.0], [2015, 3.0, 0.0], [2016, 4.0, 0.0],
-      [2017, 8.0, 0.0], [2018, 12.0, 0.0], [2019, 12.0, 0.0], [2020, 20.0, 0.0]]
-  soln_net_annual_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
-  v = np.array([[2014, 1.0, 0.0], [2015, 2.0, 0.0], [2016, 1.0, 0.0], [2017, 4.0, 0.0],
-      [2018, 4.0, 0.0], [2019, 0.0, 0.0], [2020, 8.0, 0.0]])
-  expected = pd.DataFrame(v[:, 1:], columns=['World', 'Other'], index=v[:, 0])
-  expected.index = expected.index.map(int)
-  oc = operatingcost.OperatingCost(ac=None)
-  result = oc.soln_new_funits_per_year(soln_net_annual_funits_adopted)
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
-
-def test_soln_pds_net_annual_iunits_reqd():
+def _defaultOperatingCost(npv_discount_rate=0.094, single_iunit_purchase_year=2017):
+  soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
+      columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
   soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
       columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
   soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
       columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
-  df = pd.DataFrame(soln_pds_net_annual_iunits_reqd_list[1:],
-      columns=soln_pds_net_annual_iunits_reqd_list[0]).set_index('Year')
-  expected = df['World']
-  oc = operatingcost.OperatingCost(ac=None)
-  result = oc.soln_pds_net_annual_iunits_reqd(
-      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
-      soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd)
-  pd.testing.assert_series_equal(result['World'], expected, check_exact=False)
-
-def test_soln_pds_new_annual_iunits_reqd():
-  soln_pds_net_annual_iunits_reqd = pd.DataFrame(
-      soln_pds_net_annual_iunits_reqd_list[1:],
-      columns=soln_pds_net_annual_iunits_reqd_list[0]).set_index('Year')
-  expected = pd.DataFrame(soln_pds_new_annual_iunits_reqd_list[1:],
-      columns=soln_pds_new_annual_iunits_reqd_list[0]).set_index('Year')
-  expected.index = expected.index.map(int)
-  oc = operatingcost.OperatingCost(ac=None)
-  result = oc.soln_pds_new_annual_iunits_reqd(
-      soln_pds_net_annual_iunits_reqd=soln_pds_net_annual_iunits_reqd)
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
-
-def test_soln_pds_annual_breakout():
-  ac = advanced_controls.AdvancedControls(report_end_year=2050,
-      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
-      soln_fixed_oper_cost_per_iunit=23.18791293579)
-  oc = operatingcost.OperatingCost(ac=ac)
-  soln_new_funits_per_year = pd.DataFrame(soln_new_funits_per_year_list[1:],
-      columns=soln_new_funits_per_year_list[0]).set_index('Year')
-  soln_new_funits_per_year.index = soln_new_funits_per_year.index.map(int)
-  soln_pds_new_annual_iunits_reqd = pd.DataFrame(soln_pds_new_annual_iunits_reqd_list[1:],
-      columns=soln_pds_new_annual_iunits_reqd_list[0]).set_index('Year')
-  soln_pds_new_annual_iunits_reqd.index = soln_pds_new_annual_iunits_reqd.index.map(int)
-  result = oc.soln_pds_annual_breakout(
-      soln_new_funits_per_year=soln_new_funits_per_year['World'],
-      soln_pds_new_annual_iunits_reqd=soln_pds_new_annual_iunits_reqd['World'])
-  filename = os.path.join(csv_files_dir, 'oc_soln_pds_annual_breakout_expected.csv')
-  expected = pd.read_csv(filename, header=None, index_col=0, skipinitialspace=True, dtype=np.float64)
-  expected.columns = list(range(2015, 2061))
-  expected.index = expected.index.map(int)
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
-
-def test_conv_ref_new_annual_iunits_reqd():
-  conv_ref_net_annual_iunits_reqd = pd.DataFrame(
-      conv_ref_net_annual_iunits_reqd_list[1:],
-      columns=conv_ref_net_annual_iunits_reqd_list[0]).set_index('Year')
-  expected = pd.DataFrame(conv_ref_new_annual_iunits_reqd_list[1:],
-      columns=conv_ref_new_annual_iunits_reqd_list[0]).set_index('Year')
-  expected.index = expected.index.map(int)
-  oc = operatingcost.OperatingCost(ac=None)
-  result = oc.conv_ref_new_annual_iunits_reqd(
-      conv_ref_net_annual_iunits_reqd=conv_ref_net_annual_iunits_reqd)
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
-
-def test_conv_ref_annual_breakout():
-  ac = advanced_controls.AdvancedControls(report_end_year=2050,
-      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
-      conv_var_oper_cost_per_funit=0.00375269040, conv_fuel_cost_per_funit=0.0731,
-      conv_fixed_oper_cost_per_iunit=32.95140431108)
-  oc = operatingcost.OperatingCost(ac=ac)
-  soln_new_funits_per_year = pd.DataFrame(soln_new_funits_per_year_list[1:],
-      columns=soln_new_funits_per_year_list[0]).set_index('Year')
-  soln_new_funits_per_year.index = soln_new_funits_per_year.index.map(int)
-  conv_ref_new_annual_iunits_reqd = pd.DataFrame(conv_ref_new_annual_iunits_reqd_list[1:],
-      columns=conv_ref_new_annual_iunits_reqd_list[0]).set_index('Year')
-  conv_ref_new_annual_iunits_reqd.index = conv_ref_new_annual_iunits_reqd.index.map(int)
-  result = oc.conv_ref_annual_breakout(
-      conv_new_funits_per_year=soln_new_funits_per_year['World'],
-      conv_ref_new_annual_iunits_reqd=conv_ref_new_annual_iunits_reqd['World'])
-  filename = os.path.join(csv_files_dir, 'oc_conv_ref_annual_breakout_expected.csv')
-  expected = pd.read_csv(filename, header=None, index_col=0, skipinitialspace=True, dtype=np.float64)
-  expected.columns = list(range(2015, 2061))
-  expected.index = expected.index.map(int)
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
-
-def test_lifetime_cost_forecast():
+  conv_ref_annual_tot_iunits = pd.DataFrame(conv_ref_annual_tot_iunits_list[1:],
+      columns=conv_ref_annual_tot_iunits_list[0]).set_index('Year')
   soln_ref_annual_world_first_cost = pd.Series(
       soln_ref_annual_world_first_cost_nparray[:, 1],
       index=soln_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
@@ -177,169 +31,283 @@ def test_lifetime_cost_forecast():
       soln_pds_annual_world_first_cost_nparray[:, 1],
       index=soln_pds_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
   soln_pds_annual_world_first_cost.index = soln_pds_annual_world_first_cost.index.astype(int)
-  filename = os.path.join(csv_files_dir, 'oc_conv_ref_annual_breakout_expected.csv')
-  conv_ref_annual_breakout = pd.read_csv(filename, header=None, index_col=0,
-      skipinitialspace=True, dtype=np.float64)
-  conv_ref_annual_breakout.columns = list(range(2015, 2061))
-  conv_ref_annual_breakout.index = conv_ref_annual_breakout.index.map(int)
-  filename = os.path.join(csv_files_dir, 'oc_soln_pds_annual_breakout_expected.csv')
-  soln_pds_annual_breakout = pd.read_csv(filename, header=None, index_col=0,
-      skipinitialspace=True, dtype=np.float64)
-  soln_pds_annual_breakout.columns = list(range(2015, 2061))
-  soln_pds_annual_breakout.index = soln_pds_annual_breakout.index.map(int)
-  ac = advanced_controls.AdvancedControls(report_end_year=2050, npv_discount_rate=0.094)
-  oc = operatingcost.OperatingCost(ac=ac)
-  result = oc.lifetime_cost_forecast(
+  soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
+      index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  conv_ref_install_cost_per_iunit = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
+      index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+
+  ac = advanced_controls.AdvancedControls(report_end_year=2050,
+      conv_lifetime_capacity=182411.275767661, conv_avg_annual_use=4946.840187342,
+      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
+      conv_var_oper_cost_per_funit=0.00375269040, conv_fuel_cost_per_funit=0.0731,
+      conv_fixed_oper_cost_per_iunit=32.95140431108,
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+      soln_fixed_oper_cost_per_iunit=23.18791293579,
+      npv_discount_rate=npv_discount_rate)
+  oc = operatingcost.OperatingCost(ac=ac,
+      soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+      soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+      conv_ref_annual_tot_iunits=conv_ref_annual_tot_iunits,
+      soln_pds_annual_world_first_cost=soln_pds_annual_world_first_cost,
       soln_ref_annual_world_first_cost=soln_ref_annual_world_first_cost,
       conv_ref_annual_world_first_cost=conv_ref_annual_world_first_cost,
-      soln_pds_annual_world_first_cost=soln_pds_annual_world_first_cost,
-      conv_ref_annual_breakout=conv_ref_annual_breakout,
-      soln_pds_annual_breakout=soln_pds_annual_breakout)
+      single_iunit_purchase_year=single_iunit_purchase_year,
+      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
+      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
+  return oc
+
+def test_soln_pds_annual_breakout():
+  oc = _defaultOperatingCost()
+  result = oc.soln_pds_annual_breakout()
+  filename = os.path.join(csv_files_dir, 'oc_soln_pds_annual_breakout_expected.csv')
+  expected = pd.read_csv(filename, header=None, index_col=0, skipinitialspace=True, dtype=np.float64)
+  expected.columns = list(range(2015, 2061))
+  expected.name = 'soln_pds_annual_breakout'
+  expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_soln_pds_annual_breakout_core():
+  oc = _defaultOperatingCost()
+  result = oc.soln_pds_annual_breakout_core()
+  assert 2014 not in result.index
+  assert 2015 in result.index
+  assert 2030 in result.index
+  assert 2060 in result.index
+  assert 2061 not in result.index
+
+def test_conv_ref_annual_breakout():
+  oc = _defaultOperatingCost()
+  result = oc.conv_ref_annual_breakout()
+  filename = os.path.join(csv_files_dir, 'oc_conv_ref_annual_breakout_expected.csv')
+  expected = pd.read_csv(filename, header=None, index_col=0, skipinitialspace=True, dtype=np.float64)
+  expected.columns = list(range(2015, 2061))
+  expected.name = 'conv_ref_annual_breakout'
+  expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_conv_ref_annual_breakout_core():
+  oc = _defaultOperatingCost()
+  result = oc.conv_ref_annual_breakout_core()
+  assert 2014 not in result.index
+  assert 2015 in result.index
+  assert 2030 in result.index
+  assert 2060 in result.index
+  assert 2061 not in result.index
+
+def test_soln_pds_annual_operating_cost():
+  oc = _defaultOperatingCost()
+  result = oc.soln_pds_annual_operating_cost()
+  expected = pd.Series(soln_pds_annual_operating_cost_nparray[:, 1],
+      index=soln_pds_annual_operating_cost_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
+  expected.name = 'soln_pds_annual_operating_cost'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
+
+def test_soln_pds_cumulative_operating_cost():
+  oc = _defaultOperatingCost()
+  result = oc.soln_pds_cumulative_operating_cost()
+  expected = pd.Series(soln_pds_cumulative_operating_cost_nparray[:, 1],
+      index=soln_pds_cumulative_operating_cost_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
+  expected.name = 'soln_pds_cumulative_operating_cost'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
+
+def test_conv_ref_annual_operating_cost():
+  oc = _defaultOperatingCost()
+  result = oc.conv_ref_annual_operating_cost().iloc[0:46]
+  expected = pd.Series(conv_ref_annual_operating_cost_nparray[:, 1],
+      index=conv_ref_annual_operating_cost_nparray[:, 0], dtype=np.float64)
+  expected.name = 'conv_ref_annual_operating_cost'
+  expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
+
+def test_conv_ref_cumulative_operating_cost():
+  oc = _defaultOperatingCost()
+  result = oc.conv_ref_cumulative_operating_cost()
+  expected = pd.Series(conv_ref_cumulative_operating_cost_nparray[:, 1],
+      index=conv_ref_cumulative_operating_cost_nparray[:, 0], dtype=np.float64)
+  expected.name = 'conv_ref_cumulative_operating_cost'
+  expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
+
+def test_marginal_annual_operating_cost():
+  oc = _defaultOperatingCost()
+  result = oc.marginal_annual_operating_cost()
+  expected = pd.Series(marginal_annual_operating_cost_nparray[:, 1],
+      index=marginal_annual_operating_cost_nparray[:, 0], dtype=np.float64)
+  expected.name = 'marginal_annual_operating_cost'
+  expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
+
+def test_soln_pds_new_funits_per_year():
+  oc = _defaultOperatingCost()
+  expected = pd.DataFrame(soln_pds_new_funits_per_year_list[1:],
+      columns=soln_pds_new_funits_per_year_list[0]).set_index('Year')
+  expected.name = 'soln_pds_new_funits_per_year'
+  expected.index = expected.index.astype(int)
+  result = oc.soln_pds_new_funits_per_year()
+  # TODO need data to check the rest of the regional columns
+  pd.testing.assert_frame_equal(result.loc[2015:, ['World']], expected, check_exact=False)
+
+def test_soln_pds_net_annual_iunits_reqd():
+  oc = _defaultOperatingCost()
+  expected = pd.DataFrame(soln_pds_net_annual_iunits_reqd_list[1:],
+      columns=soln_pds_net_annual_iunits_reqd_list[0]).set_index('Year')
+  result = oc.soln_pds_net_annual_iunits_reqd()
+  # TODO need data to check the rest of the regional columns
+  pd.testing.assert_frame_equal(result.loc[:, ['World']], expected, check_exact=False)
+
+def test_soln_pds_new_annual_iunits_reqd():
+  oc = _defaultOperatingCost()
+  expected = pd.DataFrame(soln_pds_new_annual_iunits_reqd_list[1:],
+      columns=soln_pds_new_annual_iunits_reqd_list[0]).set_index('Year')
+  expected.name = 'soln_pds_new_annual_iunits_reqd'
+  expected.index = expected.index.astype(int)
+  result = oc.soln_pds_new_annual_iunits_reqd()
+  # TODO need data to check the rest of the regional columns
+  pd.testing.assert_frame_equal(result.loc[2015:, ['World']], expected, check_exact=False)
+
+def test_conv_ref_new_annual_iunits_reqd():
+  oc = _defaultOperatingCost()
+  expected = pd.DataFrame(conv_ref_new_annual_iunits_reqd_list[1:],
+      columns=conv_ref_new_annual_iunits_reqd_list[0]).set_index('Year')
+  expected.name = 'conv_ref_new_annual_iunits_reqd'
+  expected.index = expected.index.map(int)
+  result = oc.conv_ref_new_annual_iunits_reqd()
+  # TODO need data to check the rest of the regional columns
+  pd.testing.assert_frame_equal(result.loc[2015:, ['World']], expected, check_exact=False)
+
+def test_lifetime_cost_forecast():
+  oc = _defaultOperatingCost()
+  result = oc.lifetime_cost_forecast()
   expected = pd.DataFrame(lifetime_cost_forecast_list[1:],
       columns=lifetime_cost_forecast_list[0]).set_index('Year')
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+  expected.name = 'lifetime_cost_forecast'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_soln_vs_conv_single_iunit_cashflow():
-  ac = advanced_controls.AdvancedControls(report_end_year=2050,
-      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
-      conv_lifetime_capacity=182411.275767661, conv_avg_annual_use=4946.840187342,
-      conv_var_oper_cost_per_funit=0.00375269040, conv_fuel_cost_per_funit=0.0731,
-      conv_fixed_oper_cost_per_iunit=32.95140431108,
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
-      soln_fixed_oper_cost_per_iunit=23.18791293579)
-  oc = operatingcost.OperatingCost(ac=ac)
-  soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
-      index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  conv_ref_install_cost_per_iunit = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
-      index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  result = oc.soln_vs_conv_single_iunit_cashflow(single_iunit_purchase_year=2017,
-      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
-      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
+  oc = _defaultOperatingCost(single_iunit_purchase_year=2017)
+  result = oc.soln_vs_conv_single_iunit_cashflow()
   expected = pd.Series(soln_vs_conv_single_iunit_cashflow_nparray[:, 1],
       index=soln_vs_conv_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
+  expected.name = 'soln_vs_conv_single_iunit_cashflow'
   expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_vs_conv_single_iunit_cashflow_purchase_year_2026():
-  ac = advanced_controls.AdvancedControls(report_end_year=2050,
-      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
-      conv_lifetime_capacity=182411.275767661, conv_avg_annual_use=4946.840187342,
-      conv_var_oper_cost_per_funit=0.00375269040, conv_fuel_cost_per_funit=0.0731,
-      conv_fixed_oper_cost_per_iunit=32.95140431108,
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
-      soln_fixed_oper_cost_per_iunit=23.18791293579)
-  oc = operatingcost.OperatingCost(ac=ac)
-  soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
-      index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  conv_ref_install_cost_per_iunit = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
-      index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  result = oc.soln_vs_conv_single_iunit_cashflow(single_iunit_purchase_year=2026,
-      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
-      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
+  oc = _defaultOperatingCost(single_iunit_purchase_year=2026)
+  result = oc.soln_vs_conv_single_iunit_cashflow()
   assert result[2015] == pytest.approx(-18487649169)
   assert result[2016] == pytest.approx(130616812789)
 
 def test_soln_vs_conv_single_iunit_npv():
-  ac = advanced_controls.AdvancedControls(npv_discount_rate=0.094)
-  oc = operatingcost.OperatingCost(ac=ac)
-  soln_vs_conv_single_iunit_cashflow = pd.Series(soln_vs_conv_single_iunit_cashflow_nparray[:, 1],
-      index=soln_vs_conv_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
-  soln_vs_conv_single_iunit_cashflow.index = soln_vs_conv_single_iunit_cashflow.index.astype(int)
-  result = oc.soln_vs_conv_single_iunit_npv(single_iunit_purchase_year=2017,
-      soln_vs_conv_single_iunit_cashflow=soln_vs_conv_single_iunit_cashflow)
+  oc = _defaultOperatingCost(single_iunit_purchase_year=2017)
+  result = oc.soln_vs_conv_single_iunit_npv()
   expected = pd.Series(soln_vs_conv_single_iunit_npv_nparray[:, 1],
       index=soln_vs_conv_single_iunit_npv_nparray[:, 0], dtype=np.float64)
+  expected.name = 'soln_vs_conv_single_iunit_npv'
   expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_vs_conv_single_iunit_npv_purchase_year_discount_rate():
-  ac = advanced_controls.AdvancedControls(npv_discount_rate=0.071)
-  oc = operatingcost.OperatingCost(ac=ac)
-  soln_vs_conv_single_iunit_cashflow = pd.Series(soln_vs_conv_single_iunit_cashflow_nparray[:, 1],
-      index=soln_vs_conv_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
-  result = oc.soln_vs_conv_single_iunit_npv(single_iunit_purchase_year=2025,
-      soln_vs_conv_single_iunit_cashflow=soln_vs_conv_single_iunit_cashflow)
+  oc = _defaultOperatingCost(npv_discount_rate=0.071, single_iunit_purchase_year=2025)
+  result = oc.soln_vs_conv_single_iunit_npv()
   expected = pd.Series(soln_vs_conv_single_iunit_npv_purchase_year_discount_rate_nparray[:, 1],
       index=soln_vs_conv_single_iunit_npv_purchase_year_discount_rate_nparray[:, 0], dtype=np.float64)
+  expected.name = 'soln_vs_conv_single_iunit_npv'
   expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_vs_conv_single_iunit_payback():
-  oc = operatingcost.OperatingCost(ac=None)
-  soln_vs_conv_single_iunit_cashflow = pd.Series(soln_vs_conv_single_iunit_cashflow_nparray[:, 1],
-      index=soln_vs_conv_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
-  soln_vs_conv_single_iunit_cashflow.index = soln_vs_conv_single_iunit_cashflow.index.astype(int)
-  result = oc.soln_vs_conv_single_iunit_payback(soln_vs_conv_single_iunit_cashflow)
+  oc = _defaultOperatingCost()
+  result = oc.soln_vs_conv_single_iunit_payback()
   expected = pd.Series(soln_vs_conv_single_iunit_payback_nparray[:, 1],
       index=soln_vs_conv_single_iunit_payback_nparray[:, 0], dtype=np.int64)
+  expected.name = 'soln_vs_conv_single_iunit_payback'
   expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_vs_conv_single_iunit_payback_discounted():
-  oc = operatingcost.OperatingCost(ac=None)
-  soln_vs_conv_single_iunit_npv = pd.Series(soln_vs_conv_single_iunit_npv_nparray[:, 1],
-      index=soln_vs_conv_single_iunit_npv_nparray[:, 0], dtype=np.float64)
-  soln_vs_conv_single_iunit_npv.index = soln_vs_conv_single_iunit_npv.index.astype(int)
-  result = oc.soln_vs_conv_single_iunit_payback_discounted(soln_vs_conv_single_iunit_npv)
+  oc = _defaultOperatingCost()
+  result = oc.soln_vs_conv_single_iunit_payback_discounted()
   expected = pd.Series(soln_vs_conv_single_iunit_payback_discounted_nparray[:, 1],
       index=soln_vs_conv_single_iunit_payback_discounted_nparray[:, 0], dtype=np.int64)
+  expected.name = 'soln_vs_conv_single_iunit_payback_discounted'
   expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_only_single_iunit_cashflow():
-  ac = advanced_controls.AdvancedControls(report_end_year=2050,
-      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
-      conv_avg_annual_use=4946.840187342,
-      conv_var_oper_cost_per_funit=0.00375269040, conv_fuel_cost_per_funit=0.0731,
-      conv_fixed_oper_cost_per_iunit=32.95140431108,
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
-      soln_fixed_oper_cost_per_iunit=23.18791293579)
-  oc = operatingcost.OperatingCost(ac=ac)
-  soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
-      index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
-  result = oc.soln_only_single_iunit_cashflow(single_iunit_purchase_year=2017,
-      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit)
+  oc = _defaultOperatingCost(single_iunit_purchase_year=2017)
+  result = oc.soln_only_single_iunit_cashflow()
   expected = pd.Series(soln_only_single_iunit_cashflow_nparray[:, 1],
       index=soln_only_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
+  expected.name = 'soln_only_single_iunit_cashflow'
   expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_only_single_iunit_npv():
-  ac = advanced_controls.AdvancedControls(npv_discount_rate=0.094)
-  oc = operatingcost.OperatingCost(ac=ac)
-  soln_only_single_iunit_cashflow = pd.Series(soln_only_single_iunit_cashflow_nparray[:, 1],
-      index=soln_only_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
-  soln_only_single_iunit_cashflow.index = soln_only_single_iunit_cashflow.index.astype(int)
-  result = oc.soln_only_single_iunit_npv(single_iunit_purchase_year=2017,
-      soln_only_single_iunit_cashflow=soln_only_single_iunit_cashflow)
+  oc = _defaultOperatingCost(npv_discount_rate=0.094, single_iunit_purchase_year=2017)
+  result = oc.soln_only_single_iunit_npv()
   expected = pd.Series(soln_only_single_iunit_npv_nparray[:, 1],
       index=soln_only_single_iunit_npv_nparray[:, 0], dtype=np.float64)
+  expected.name = 'soln_only_single_iunit_npv'
   expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_only_single_iunit_payback():
-  oc = operatingcost.OperatingCost(ac=None)
-  soln_only_single_iunit_cashflow = pd.Series(soln_only_single_iunit_cashflow_nparray[:, 1],
-      index=soln_only_single_iunit_cashflow_nparray[:, 0], dtype=np.float64)
-  soln_only_single_iunit_cashflow.index = soln_only_single_iunit_cashflow.index.astype(int)
-  result = oc.soln_only_single_iunit_payback(soln_only_single_iunit_cashflow)
+  oc = _defaultOperatingCost()
+  result = oc.soln_only_single_iunit_payback()
   expected = pd.Series(soln_only_single_iunit_payback_nparray[:, 1],
       index=soln_only_single_iunit_payback_nparray[:, 0], dtype=np.int64)
+  expected.name = 'soln_only_single_iunit_payback'
   expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
 
 def test_soln_only_single_iunit_payback_discounted():
-  oc = operatingcost.OperatingCost(ac=None)
-  soln_only_single_iunit_npv = pd.Series(soln_only_single_iunit_npv_nparray[:, 1],
-      index=soln_only_single_iunit_npv_nparray[:, 0], dtype=np.float64)
-  soln_only_single_iunit_npv.index = soln_only_single_iunit_npv.index.astype(int)
-  result = oc.soln_only_single_iunit_payback_discounted(soln_only_single_iunit_npv)
+  oc = _defaultOperatingCost()
+  result = oc.soln_only_single_iunit_payback_discounted()
   expected = pd.Series(soln_only_single_iunit_payback_discounted_nparray[:, 1],
       index=soln_only_single_iunit_payback_discounted_nparray[:, 0], dtype=np.int64)
+  expected.name = 'soln_only_single_iunit_payback_discounted'
   expected.index = expected.index.astype(int)
-  pd.testing.assert_series_equal(result, expected, check_exact=False, check_names=False)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result, expected, check_exact=False)
+
+def test_to_dict():
+  oc = _defaultOperatingCost()
+  result = oc.to_dict()
+  expected = ['soln_pds_annual_operating_cost', 'soln_pds_cumulative_operating_cost',
+      'conv_ref_annual_operating_cost', 'conv_ref_cumulative_operating_cost',
+      'marginal_annual_operating_cost', 'soln_pds_new_funits_per_year',
+      'soln_pds_net_annual_iunits_reqd', 'soln_pds_new_annual_iunits_reqd',
+      'soln_pds_annual_breakout', 'soln_pds_annual_breakout_core',
+      'conv_ref_new_annual_iunits_reqd', 'conv_ref_annual_breakout',
+      'conv_ref_annual_breakout_core', 'lifetime_cost_forecast',
+      'soln_vs_conv_single_iunit_cashflow', 'soln_vs_conv_single_iunit_npv',
+      'soln_vs_conv_single_iunit_payback', 'soln_vs_conv_single_iunit_payback_discounted',
+      'soln_only_single_iunit_cashflow', 'soln_only_single_iunit_npv',
+      'soln_only_single_iunit_payback', 'soln_only_single_iunit_payback_discounted']
+  for ex in expected:
+    assert ex in result
 
 
+# 'Unit Adoption Calculations'!AX135:BH182
 soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497, 0.00795507895, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
     [2015, 0.09569632876, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -389,6 +357,7 @@ soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "
     [2059, 5.33851325027, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 5.40331941081, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
+# 'Unit Adoption Calculations'!AX197:BH244
 soln_ref_tot_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497, 0.00795507895, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
@@ -439,6 +408,57 @@ soln_ref_tot_iunits_reqd_list = [
     [2059, 0.16960671915, 0.05592824776, 0.00030993834, 0.03799500463, 0.00415420699, 0.02668462755, 0.01939189131, 0.00935558942, 0.04192706906, 0.00935993199],
     [2060, 0.17201668746, 0.05626607004, 0.00031281520, 0.03858506980, 0.00422751726, 0.02710083975, 0.01964216212, 0.00953032944, 0.04219184961, 0.00940956382]]
 
+# 'Unit Adoption Calculations'!AX251:BH298
+conv_ref_annual_tot_iunits_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2015, 0.01196107466, -0.01528781998, -0.00006826207, -0.00447946731, -0.00034569360, -0.00311656395, -0.00311979719, -0.00062062128, -0.01127177963, -0.00267161560],
+    [2016, 0.03042782609, -0.01541358848, -0.00006933311, -0.00469914380, -0.00037298642, -0.00327151638, -0.00321297098, -0.00068567558, -0.01137035529, -0.00269009313],
+    [2017, 0.05202537780, -0.01553935698, -0.00007040414, -0.00491882029, -0.00040027924, -0.00342646881, -0.00330614478, -0.00075072987, -0.01146893095, -0.00270857066],
+    [2018, 0.07661314589, -0.01566512548, -0.00007147517, -0.00513849678, -0.00042757206, -0.00358142124, -0.00339931858, -0.00081578417, -0.01156750660, -0.00272704819],
+    [2019, 0.10405054647, -0.01579089398, -0.00007254621, -0.00535817326, -0.00045486488, -0.00373637367, -0.00349249237, -0.00088083846, -0.01166608226, -0.00274552572],
+    [2020, 0.10405365238, -0.01591666249, -0.00007361724, -0.00557784975, -0.00048215770, -0.00389132610, -0.00358566617, -0.00094589276, -0.01176465792, -0.00276400325],
+    [2021, 0.16691190950, -0.01604243099, -0.00007468827, -0.00579752624, -0.00050945052, -0.00404627854, -0.00367883996, -0.00101094705, -0.01186323357, -0.00278248078],
+    [2022, 0.20205470416, -0.01616819949, -0.00007575931, -0.00601720273, -0.00053674333, -0.00420123097, -0.00377201376, -0.00107600134, -0.01196180923, -0.00280095831],
+    [2023, 0.23948479572, -0.01629396799, -0.00007683034, -0.00623687921, -0.00056403615, -0.00435618340, -0.00386518756, -0.00114105564, -0.01206038489, -0.00281943584],
+    [2024, 0.27906160028, -0.01641973649, -0.00007790137, -0.00645655570, -0.00059132897, -0.00451113583, -0.00395836135, -0.00120610993, -0.01215896054, -0.00283791337],
+    [2025, 0.28987089139, -0.01654550500, -0.00007897241, -0.00667623219, -0.00061862179, -0.00466608826, -0.00405153515, -0.00127116423, -0.01225753620, -0.00285639090],
+    [2026, 0.36409301282, -0.01667127350, -0.00008004344, -0.00689590868, -0.00064591461, -0.00482104069, -0.00414470894, -0.00133621852, -0.01235611186, -0.00287486843],
+    [2027, 0.40926645301, -0.01679704200, -0.00008111447, -0.00711558516, -0.00067320743, -0.00497599312, -0.00423788274, -0.00140127282, -0.01245468751, -0.00289334596],
+    [2028, 0.45602427062, -0.01692281050, -0.00008218550, -0.00733526165, -0.00070050025, -0.00513094555, -0.00433105654, -0.00146632711, -0.01255326317, -0.00291182349],
+    [2029, 0.50422588174, -0.01704857900, -0.00008325654, -0.00755493814, -0.00072779307, -0.00528589798, -0.00442423033, -0.00153138140, -0.01265183883, -0.00293030102],
+    [2030, 0.57745005943, -0.01717434751, -0.00008432757, -0.00777461463, -0.00075508589, -0.00544085041, -0.00451740413, -0.00159643570, -0.01275041448, -0.00294877855],
+    [2031, 0.60439814896, -0.01730011601, -0.00008539860, -0.00799429111, -0.00078237871, -0.00559580284, -0.00461057792, -0.00166148999, -0.01284899014, -0.00296725608],
+    [2032, 0.65608763726, -0.01742588451, -0.00008646964, -0.00821396760, -0.00080967153, -0.00575075527, -0.00470375172, -0.00172654429, -0.01294756580, -0.00298573361],
+    [2033, 0.70865858350, -0.01755165301, -0.00008754067, -0.00843364409, -0.00083696435, -0.00590570770, -0.00479692552, -0.00179159858, -0.01304614146, -0.00300421114],
+    [2034, 0.76197040377, -0.01767742151, -0.00008861170, -0.00865332058, -0.00086425717, -0.00606066014, -0.00489009931, -0.00185665288, -0.01314471711, -0.00302268867],
+    [2035, 0.81588251418, -0.01780319002, -0.00008968274, -0.00887299706, -0.00089154998, -0.00621561257, -0.00498327311, -0.00192170717, -0.01324329277, -0.00304116621],
+    [2036, 0.87025433083, -0.01792895852, -0.00009075377, -0.00909267355, -0.00091884280, -0.00637056500, -0.00507644691, -0.00198676147, -0.01334186843, -0.00305964374],
+    [2037, 0.92494526982, -0.01805472702, -0.00009182480, -0.00931235004, -0.00094613562, -0.00652551743, -0.00516962070, -0.00205181576, -0.01344044408, -0.00307812127],
+    [2038, 0.97981474727, -0.01818049552, -0.00009289584, -0.00953202653, -0.00097342844, -0.00668046986, -0.00526279450, -0.00211687005, -0.01353901974, -0.00309659880],
+    [2039, 1.03472217927, -0.01830626402, -0.00009396687, -0.00975170301, -0.00100072126, -0.00683542229, -0.00535596829, -0.00218192435, -0.01363759540, -0.00311507633],
+    [2040, 1.09911970575, -0.01843203253, -0.00009503790, -0.00997137950, -0.00102801408, -0.00699037472, -0.00544914209, -0.00224697864, -0.01373617105, -0.00313355386],
+    [2041, 1.14408857134, -0.01855780103, -0.00009610894, -0.01019105599, -0.00105530690, -0.00714532715, -0.00554231589, -0.00231203294, -0.01383474671, -0.00315203139],
+    [2042, 1.19826636361, -0.01868356953, -0.00009717997, -0.01041073248, -0.00108259972, -0.00730027958, -0.00563548968, -0.00237708723, -0.01393332237, -0.00317050892],
+    [2043, 1.25191977485, -0.01880933803, -0.00009825100, -0.01063040896, -0.00110989254, -0.00745523201, -0.00572866348, -0.00244214153, -0.01403189802, -0.00318898645],
+    [2044, 1.30490822116, -0.01893510653, -0.00009932204, -0.01085008545, -0.00113718536, -0.00761018444, -0.00582183727, -0.00250719582, -0.01413047368, -0.00320746398],
+    [2045, 1.35709111864, -0.01906087504, -0.00010039307, -0.01106976194, -0.00116447818, -0.00776513687, -0.00591501107, -0.00257225011, -0.01422904934, -0.00322594151],
+    [2046, 1.40832788339, -0.01918664354, -0.00010146410, -0.01128943843, -0.00119177100, -0.00792008930, -0.00600818487, -0.00263730441, -0.01432762499, -0.00324441904],
+    [2047, 1.45847793153, -0.01931241204, -0.00010253514, -0.01150911491, -0.00121906381, -0.00807504173, -0.00610135866, -0.00270235870, -0.01442620065, -0.00326289657],
+    [2048, 1.50740067914, -0.01943818054, -0.00010360617, -0.01172879140, -0.00124635663, -0.00822999417, -0.00619453246, -0.00276741300, -0.01452477631, -0.00328137410],
+    [2049, 1.55495554234, -0.01956394904, -0.00010467720, -0.01194846789, -0.00127364945, -0.00838494660, -0.00628770625, -0.00283246729, -0.01462335197, -0.00329985163],
+    [2050, 1.59604628470, -0.01968971755, -0.00010574824, -0.01216814438, -0.00130094227, -0.00853989903, -0.00638088005, -0.00289752159, -0.01472192762, -0.00331832916],
+    [2051, 1.64539927991, -0.01981548605, -0.00010681927, -0.01238782086, -0.00132823509, -0.00869485146, -0.00647405385, -0.00296257588, -0.01482050328, -0.00333680669],
+    [2052, 1.68800698648, -0.01994125455, -0.00010789030, -0.01260749735, -0.00135552791, -0.00884980389, -0.00656722764, -0.00302763017, -0.01491907894, -0.00335528422],
+    [2053, 1.72868447306, -0.02006702305, -0.00010896134, -0.01282717384, -0.00138282073, -0.00900475632, -0.00666040144, -0.00309268447, -0.01501765459, -0.00337376175],
+    [2054, 1.76729115573, -0.02019279155, -0.00011003237, -0.01304685033, -0.00141011355, -0.00915970875, -0.00675357523, -0.00315773876, -0.01511623025, -0.00339223928],
+    [2055, 1.80368645061, -0.02031856006, -0.00011110340, -0.01326652681, -0.00143740637, -0.00931466118, -0.00684674903, -0.00322279306, -0.01521480591, -0.00341071682],
+    [2056, 1.83772977379, -0.02044432856, -0.00011217444, -0.01348620330, -0.00146469919, -0.00946961361, -0.00693992283, -0.00328784735, -0.01531338156, -0.00342919435],
+    [2057, 1.86928054139, -0.02057009706, -0.00011324547, -0.01370587979, -0.00149199201, -0.00962456604, -0.00703309662, -0.00335290165, -0.01541195722, -0.00344767188],
+    [2058, 1.89819816950, -0.02069586556, -0.00011431650, -0.01392555628, -0.00151928483, -0.00977951847, -0.00712627042, -0.00341795594, -0.01551053288, -0.00346614941],
+    [2059, 1.92434207423, -0.02082163406, -0.00011538754, -0.01414523276, -0.00154657765, -0.00993447090, -0.00721944422, -0.00348301024, -0.01560910853, -0.00348462694],
+    [2060, 1.94757167168, -0.02094740257, -0.00011645857, -0.01436490925, -0.00157387046, -0.01008942333, -0.00731261801, -0.00354806453, -0.01570768419, -0.00350310447]]
+
 # 'Operating Cost'!I531:I576
 soln_pds_net_annual_iunits_reqd_list = [
     ['Year', 'World'],
@@ -473,7 +493,7 @@ soln_pds_new_annual_iunits_reqd_list = [
     [2059,  0.07022420895], [2060,  0.06239619223]]
 
 # 'Operating Cost'!F19:F64
-soln_new_funits_per_year_list = [
+soln_pds_new_funits_per_year_list = [
     ['Year', 'World'],
     [2015, 59.16952483163], [2016, 91.35206809813], [2017, 106.83963674163], [2018, 121.63175931515],
     [2019, 135.72843581868], [2020, 0.01536441848], [2021, 310.94975244954], [2022, 173.84578890937],
@@ -487,23 +507,6 @@ soln_new_funits_per_year_list = [
     [2051, 244.14138006456], [2052, 210.77351517324], [2053, 201.22502529726], [2054, 190.98108935129],
     [2055, 180.04170733533], [2056, 168.40687924939], [2057, 156.07660509346], [2058, 143.05088486755],
     [2059, 129.32971857165], [2060, 114.91310620577]]
-
-# 'Operating Cost'!J531:J576
-conv_ref_net_annual_iunits_reqd_list = [
-    ['Year', 'World'],
-    [2014, 0],
-    [2015, 0.01196107466], [2016, 0.03042782609], [2017, 0.05202537780], [2018, 0.07661314589],
-    [2019, 0.10405054647], [2020, 0.10405365238], [2021, 0.16691190950], [2022, 0.20205470416],
-    [2023, 0.23948479572], [2024, 0.27906160028], [2025, 0.28987089139], [2026, 0.36409301282],
-    [2027, 0.40926645301], [2028, 0.45602427062], [2029, 0.50422588174], [2030, 0.57745005943],
-    [2031, 0.60439814896], [2032, 0.65608763726], [2033, 0.70865858350], [2034, 0.76197040377],
-    [2035, 0.81588251418], [2036, 0.87025433083], [2037, 0.92494526982], [2038, 0.97981474727],
-    [2039, 1.03472217927], [2040, 1.09911970575], [2041, 1.14408857134], [2042, 1.19826636361],
-    [2043, 1.25191977485], [2044, 1.30490822116], [2045, 1.35709111864], [2046, 1.40832788339],
-    [2047, 1.45847793153], [2048, 1.50740067914], [2049, 1.55495554234], [2050, 1.59604628470],
-    [2051, 1.64539927991], [2052, 1.68800698648], [2053, 1.72868447306], [2054, 1.76729115573],
-    [2055, 1.80368645061], [2056, 1.83772977379], [2057, 1.86928054139], [2058, 1.89819816950],
-    [2059, 1.92434207423], [2060, 1.94757167168]]
 
 # 'Operating Cost'!L531:L576
 conv_ref_new_annual_iunits_reqd_list = [
@@ -938,7 +941,7 @@ soln_vs_conv_single_iunit_npv_nparray = np.array([
 # "Operating Cost"!J126:J250 with purchase_year=2026, discount_rate=7.1, but
 # holding I126:I250 unchanged
 soln_vs_conv_single_iunit_npv_purchase_year_discount_rate_nparray = np.array([
-    [2015, -221008490609.18], [2016, 57348944906.19], [2017, 53547100752.74],
+    [2015, -30176388296.25], [2016, 57348944906.19], [2017, 53547100752.74],
     [2018, 49997292953.08], [2019, 46682813214.82], [2020, 43588060891.52],
     [2021, 40698469553.24], [2022, 38000438425.06], [2023, 35481268370.74],
     [2024, 33129102120.21], [2025, 30932868459.58], [2026, 28882230120.99],
@@ -1103,4 +1106,53 @@ soln_only_single_iunit_payback_discounted_nparray = np.array([
     [2127, 1], [2128, 1], [2129, 1], [2130, 1], [2131, 1], [2132, 1], [2133, 1],
     [2134, 1], [2135, 1], [2136, 1], [2137, 1], [2138, 1], [2139, 1]])
 
-
+# 'Unit Adoption'!B251:L298
+soln_net_annual_funits_adopted_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2015, 59.16952483163, -75.62640223557, -0.33768156367, -22.15920892112, -1.71009099271, -15.41714380040, -15.43313810117, -3.07011430874, -55.75969246529, -13.21605539049],
+    [2016, 150.52159292976, -76.24855891557, -0.34297979401, -23.24591339780, -1.84510420765, -16.18366871191, -15.89405398012, -3.39192750636, -56.24733048614, -13.30746078097],
+    [2017, 257.36122967139, -76.87071559558, -0.34827802435, -24.33261787447, -1.98011742258, -16.95019362342, -16.35496985906, -3.71374070399, -56.73496850699, -13.39886617146],
+    [2018, 378.99298898654, -77.49287227559, -0.35357625469, -25.41932235115, -2.11513063752, -17.71671853493, -16.81588573801, -4.03555390161, -57.22260652784, -13.49027156194],
+    [2019, 514.72142480523, -78.11502895560, -0.35887448503, -26.50602682782, -2.25014385245, -18.48324344644, -17.27680161696, -4.35736709924, -57.71024454869, -13.58167695243],
+    [2020, 514.73678922371, -78.73718563561, -0.36417271537, -27.59273130450, -2.38515706739, -19.24976835795, -17.73771749591, -4.67918029686, -58.19788256953, -13.67308234291],
+    [2021, 825.68654167325, -79.35934231562, -0.36947094570, -28.67943578117, -2.52017028232, -20.01629326946, -18.19863337485, -5.00099349449, -58.68552059038, -13.76448773340],
+    [2022, 999.53233058261, -79.98149899563, -0.37476917604, -29.76614025785, -2.65518349726, -20.78281818097, -18.65954925380, -5.32280669212, -59.17315861123, -13.85589312388],
+    [2023, 1184.69301171557, -80.60365567564, -0.38006740638, -30.85284473453, -2.79019671219, -21.54934309248, -19.12046513275, -5.64461988974, -59.66079663208, -13.94729851437],
+    [2024, 1380.47313900213, -81.22581235565, -0.38536563672, -31.93954921120, -2.92520992713, -22.31586800399, -19.58138101170, -5.96643308737, -60.14843465293, -14.03870390485],
+    [2025, 1433.94497468791, -81.84796903566, -0.39066386706, -33.02625368788, -3.06022314206, -23.08239291550, -20.04229689064, -6.28824628499, -60.63607267378, -14.13010929534],
+    [2026, 1801.10994775612, -82.47012571567, -0.39596209740, -34.11295816455, -3.19523635700, -23.84891782701, -20.50321276959, -6.61005948262, -61.12371069462, -14.22151468583],
+    [2027, 2024.57573708357, -83.09228239568, -0.40126032774, -35.19966264123, -3.33024957193, -24.61544273852, -20.96412864854, -6.93187268024, -61.61134871547, -14.31292007631],
+    [2028, 2255.87918828469, -83.71443907569, -0.40655855808, -36.28636711790, -3.46526278687, -25.38196765003, -21.42504452749, -7.25368587787, -62.09898673632, -14.40432546680],
+    [2029, 2494.32485528949, -84.33659575570, -0.41185678841, -37.37307159458, -3.60027600180, -26.14849256154, -21.88596040643, -7.57549907549, -62.58662475717, -14.49573085728],
+    [2030, 2856.55316015211, -84.95875243571, -0.41715501875, -38.45977607125, -3.73528921674, -26.91501747306, -22.34687628538, -7.89731227312, -63.07426277802, -14.58713624777],
+    [2031, 2989.86105243015, -85.58090911572, -0.42245324909, -39.54648054793, -3.87030243167, -27.68154238457, -22.80779216433, -8.21912547074, -63.56190079887, -14.67854163825],
+    [2032, 3245.56069042605, -86.20306579573, -0.42775147943, -40.63318502461, -4.00531564661, -28.44806729608, -23.26870804327, -8.54093866837, -64.04953881971, -14.76994702874],
+    [2033, 3505.62075994569, -86.82522247573, -0.43304970977, -41.71988950128, -4.14032886154, -29.21459220759, -23.72962392222, -8.86275186600, -64.53717684056, -14.86135241922],
+    [2034, 3769.34581491907, -87.44737915574, -0.43834794011, -42.80659397796, -4.27534207648, -29.98111711910, -24.19053980117, -9.18456506362, -65.02481486141, -14.95275780971],
+    [2035, 4036.04040927621, -88.06953583575, -0.44364617045, -43.89329845463, -4.41035529141, -30.74764203061, -24.65145568012, -9.50637826125, -65.51245288226, -15.04416320019],
+    [2036, 4305.00909694713, -88.69169251576, -0.44894440079, -44.98000293131, -4.54536850635, -31.51416694212, -25.11237155906, -9.82819145887, -66.00009090311, -15.13556859068],
+    [2037, 4575.55643186183, -89.31384919577, -0.45424263112, -46.06670740798, -4.68038172128, -32.28069185363, -25.57328743801, -10.15000465650, -66.48772892395, -15.22697398117],
+    [2038, 4846.98696795034, -89.93600587578, -0.45954086146, -47.15341188466, -4.81539493622, -33.04721676514, -26.03420331696, -10.47181785412, -66.97536694480, -15.31837937165],
+    [2039, 5118.60525914267, -90.55816255579, -0.46483909180, -48.24011636133, -4.95040815115, -33.81374167665, -26.49511919591, -10.79363105175, -67.46300496565, -15.40978476214],
+    [2040, 5437.16953108051, -91.18031923580, -0.47013732214, -49.32682083801, -5.08542136609, -34.58026658816, -26.95603507485, -11.11544424937, -67.95064298650, -15.50119015262],
+    [2041, 5659.62332255882, -91.80247591581, -0.47543555248, -50.41352531469, -5.22043458102, -35.34679149967, -27.41695095380, -11.43725744700, -68.43828100735, -15.59259554311],
+    [2042, 5927.63220264268, -92.42463259582, -0.48073378282, -51.50022979136, -5.35544779596, -36.11331641118, -27.87786683275, -11.75907064462, -68.92591902820, -15.68400093359],
+    [2043, 6193.04705355042, -93.04678927583, -0.48603201316, -52.58693426804, -5.49046101089, -36.87984132269, -28.33878271170, -12.08088384225, -69.41355704904, -15.77540632408],
+    [2044, 6455.17242921204, -93.66894595584, -0.49133024350, -53.67363874471, -5.62547422583, -37.64636623420, -28.79969859064, -12.40269703988, -69.90119506989, -15.86681171456],
+    [2045, 6713.31288355757, -94.29110263585, -0.49662847384, -54.76034322139, -5.76048744076, -38.41289114571, -29.26061446959, -12.72451023750, -70.38883309074, -15.95821710505],
+    [2046, 6966.77297051701, -94.91325931586, -0.50192670417, -55.84704769806, -5.89550065570, -39.17941605722, -29.72153034854, -13.04632343513, -70.87647111159, -16.04962249553],
+    [2047, 7214.85724402038, -95.53541599587, -0.50722493451, -56.93375217474, -6.03051387063, -39.94594096873, -30.18244622749, -13.36813663275, -71.36410913244, -16.14102788602],
+    [2048, 7456.87025799770, -96.15757267588, -0.51252316485, -58.02045665141, -6.16552708557, -40.71246588024, -30.64336210643, -13.68994983038, -71.85174715329, -16.23243327651],
+    [2049, 7692.11656637898, -96.77972935589, -0.51782139519, -59.10716112809, -6.30054030050, -41.47899079175, -31.10427798538, -14.01176302800, -72.33938517413, -16.32383866699],
+    [2050, 7895.38590200891, -97.40188603589, -0.52311962553, -60.19386560477, -6.43555351544, -42.24551570326, -31.56519386433, -14.33357622563, -72.82702319498, -16.41524405748],
+    [2051, 8139.52728207347, -98.02404271590, -0.52841785587, -61.28057008144, -6.57056673037, -43.01204061477, -32.02610974327, -14.65538942325, -73.31466121583, -16.50664944796],
+    [2052, 8350.30079724671, -98.64619939591, -0.53371608621, -62.36727455812, -6.70557994531, -43.77856552628, -32.48702562222, -14.97720262088, -73.80229923668, -16.59805483845],
+    [2053, 8551.52582254397, -99.26835607592, -0.53901431655, -63.45397903479, -6.84059316024, -44.54509043779, -32.94794150117, -15.29901581851, -74.28993725753, -16.68946022893],
+    [2054, 8742.50691189525, -99.89051275593, -0.54431254688, -64.54068351147, -6.97560637518, -45.31161534930, -33.40885738012, -15.62082901613, -74.77757527838, -16.78086561942],
+    [2055, 8922.54861923059, -100.51266943594, -0.54961077722, -65.62738798814, -7.11061959011, -46.07814026081, -33.86977325906, -15.94264221376, -75.26521329922, -16.87227100990],
+    [2056, 9090.95549847998, -101.13482611595, -0.55490900756, -66.71409246482, -7.24563280505, -46.84466517233, -34.33068913801, -16.26445541138, -75.75285132007, -16.96367640039],
+    [2057, 9247.03210357344, -101.75698279596, -0.56020723790, -67.80079694150, -7.38064601998, -47.61119008384, -34.79160501696, -16.58626860901, -76.24048934092, -17.05508179088],
+    [2058, 9390.08298844099, -102.37913947597, -0.56550546824, -68.88750141817, -7.51565923492, -48.37771499535, -35.25252089591, -16.90808180663, -76.72812736177, -17.14648718136],
+    [2059, 9519.41270701265, -103.00129615598, -0.57080369858, -69.97420589485, -7.65067244985, -49.14423990686, -35.71343677485, -17.22989500426, -77.21576538262, -17.23789257185],
+    [2060, 9634.32581321841, -103.62345283599, -0.57610192892, -71.06091037152, -7.78568566479, -49.91076481837, -36.17435265380, -17.55170820188, -77.70340340347, -17.32929796233]]
