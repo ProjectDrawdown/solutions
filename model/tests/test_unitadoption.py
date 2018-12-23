@@ -544,9 +544,19 @@ def test_to_dict():
       'conv_ref_annual_tot_iunits', 'conv_ref_new_iunits_reqd',
       'soln_pds_net_grid_electricity_units_saved', 'soln_pds_net_grid_electricity_units_used',
       'soln_pds_fuel_units_avoided', 'soln_pds_direct_co2_emissions_saved',
-      'soln_pds_direct_ch4_co2_emissions_saved', 'soln_pds_direct_n2o_co2_emissions_saved']
+      'soln_pds_direct_ch4_co2_emissions_saved', 'soln_pds_direct_n2o_co2_emissions_saved',
+      'conv_lifetime_replacement']
   for ex in expected:
     assert ex in result
+    f = getattr(ua, ex, None)
+    if f:
+      check = f()
+      if isinstance(check, pd.DataFrame):
+        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
+      elif isinstance(check, pd.Series):
+        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
+      else:
+        assert result[ex] == pytest.approx(check)
 
 
 # 'Unit Adoption Calculations'!B134:L181

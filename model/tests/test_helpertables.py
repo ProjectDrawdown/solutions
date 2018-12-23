@@ -226,8 +226,18 @@ def test_to_dict():
       ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
       adoption_low_med_high_global=adoption_low_med_high)
   result = ht.to_dict()
-  assert 'soln_ref_funits_adopted' in result
-  assert 'soln_pds_funits_adopted' in result
+  expected = ['soln_ref_funits_adopted', 'soln_pds_funits_adopted']
+  for ex in expected:
+    assert ex in result
+    f = getattr(ht, ex, None)
+    if f:
+      check = f()
+      if isinstance(check, pd.DataFrame):
+        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
+      elif isinstance(check, pd.Series):
+        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
+      else:
+        assert result[ex] == pytest.approx(check)
 
 
 def test_string_to_adoption_basis():

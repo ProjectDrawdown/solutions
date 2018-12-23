@@ -437,4 +437,5 @@ class UnitAdoption:
     rs['soln_pds_direct_co2_emissions_saved'] = self.soln_pds_direct_co2_emissions_saved()
     rs['soln_pds_direct_ch4_co2_emissions_saved'] = self.soln_pds_direct_ch4_co2_emissions_saved()
     rs['soln_pds_direct_n2o_co2_emissions_saved'] = self.soln_pds_direct_n2o_co2_emissions_saved()
+    rs['conv_lifetime_replacement'] = round(self.ac.conv_lifetime_replacement)
     return rs

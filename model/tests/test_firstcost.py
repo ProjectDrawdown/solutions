@@ -321,6 +321,15 @@ def test_to_dict():
       'soln_pds_cumulative_install', 'ref_cumulative_install']
   for ex in expected:
     assert ex in result
+    f = getattr(fc, ex, None)
+    if f:
+      check = f()
+      if isinstance(check, pd.DataFrame):
+        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
+      elif isinstance(check, pd.Series):
+        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
+      else:
+        assert result[ex] == pytest.approx(check)
 
 
 # 'Unit Adoption Calculations'!AX135:BH182

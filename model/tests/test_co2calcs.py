@@ -480,6 +480,15 @@ def test_to_dict():
       'co2eq_net_indirect_emissions']
   for ex in expected:
     assert ex in result
+    f = getattr(c2, ex, None)
+    if f:
+      check = f()
+      if isinstance(check, pd.DataFrame):
+        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
+      elif isinstance(check, pd.Series):
+        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
+      else:
+        assert result[ex] == pytest.approx(check)
 
 
 # 'Unit Adoption'!B251:L298

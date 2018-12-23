@@ -305,6 +305,16 @@ def test_to_dict():
       'soln_only_single_iunit_payback', 'soln_only_single_iunit_payback_discounted']
   for ex in expected:
     assert ex in result
+    print(ex)
+    f = getattr(oc, ex, None)
+    if f:
+      check = f()
+      if isinstance(check, pd.DataFrame):
+        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
+      elif isinstance(check, pd.Series):
+        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
+      else:
+        assert result[ex] == pytest.approx(check)
 
 
 # 'Unit Adoption Calculations'!AX135:BH182

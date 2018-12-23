@@ -50,6 +50,15 @@ def test_to_dict():
   expected = ['ch4_tons_reduced', 'ch4_ppb_calculator']
   for ex in expected:
     assert ex in result
+    f = getattr(c4, ex, None)
+    if f:
+      check = f()
+      if isinstance(check, pd.DataFrame):
+        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
+      elif isinstance(check, pd.Series):
+        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
+      else:
+        assert result[ex] == pytest.approx(check)
 
 
 # 'Unit Adoption'!B251:L298
