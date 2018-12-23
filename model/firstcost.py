@@ -174,7 +174,7 @@ class FirstCost:
     rs = dict()
     rs['soln_pds_install_cost_per_iunit'] = self.soln_pds_install_cost_per_iunit()
     rs['conv_ref_install_cost_per_iunit'] = self.conv_ref_install_cost_per_iunit()
-    rs['soln_ref_install_cost_per_iunit'] = self.soln_pds_annual_world_first_cost()
+    rs['soln_ref_install_cost_per_iunit'] = self.soln_ref_install_cost_per_iunit()
     rs['soln_pds_annual_world_first_cost'] = self.soln_pds_annual_world_first_cost()
     rs['soln_ref_annual_world_first_cost'] = self.soln_ref_annual_world_first_cost()
     rs['conv_ref_annual_world_first_cost'] = self.conv_ref_annual_world_first_cost()

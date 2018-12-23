@@ -405,10 +405,12 @@ class OperatingCost:
     rs = dict()
     rs['soln_pds_annual_operating_cost'] = self.soln_pds_annual_operating_cost()
     rs['soln_pds_cumulative_operating_cost'] = self.soln_pds_cumulative_operating_cost()
-    rs['conv_ref_annual_operating_cost'] = self.conv_ref_cumulative_operating_cost()
+    rs['conv_ref_annual_operating_cost'] = self.conv_ref_annual_operating_cost()
     rs['conv_ref_cumulative_operating_cost'] = self.conv_ref_cumulative_operating_cost()
     rs['marginal_annual_operating_cost'] = self.marginal_annual_operating_cost()
-    rs['soln_pds_new_funits_per_year'] = self.soln_pds_new_funits_per_year()
+    soln_pds_new_funits_per_year = self.soln_pds_new_funits_per_year()
+    rs['soln_pds_new_funits_per_year'] = soln_pds_new_funits_per_year
+    rs['soln_pds_new_funits_per_year_world'] = soln_pds_new_funits_per_year['World']
     rs['soln_pds_net_annual_iunits_reqd'] = self.soln_pds_net_annual_iunits_reqd()
     rs['soln_pds_new_annual_iunits_reqd'] = self.soln_pds_new_annual_iunits_reqd()
     rs['soln_pds_annual_breakout'] = self.soln_pds_annual_breakout()

@@ -10,6 +10,7 @@ from model import adoptiondata
 from model import advanced_controls
 from model import ch4calcs
 from model import co2calcs
+from model import emissionsfactors
 from model import firstcost
 from model import helpertables
 from model import operatingcost
@@ -122,6 +123,7 @@ class SolarPVUtil:
         ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         adoption_low_med_high_global=self.ad.adoption_low_med_high_global())
+    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
     self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
@@ -130,6 +132,7 @@ class SolarPVUtil:
     soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
     soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
     conv_ref_tot_iunits_reqd = self.ua.conv_ref_tot_iunits_reqd()
+    soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()
 
     self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=2,
         ref_learning_increase_mult=2, conv_learning_increase_mult=2,
@@ -139,9 +142,8 @@ class SolarPVUtil:
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd())
-
     self.oc = operatingcost.OperatingCost(ac=self.ac,
-        soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted(),
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
         soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
         soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
         conv_ref_annual_tot_iunits=self.ua.conv_ref_annual_tot_iunits(),
@@ -151,5 +153,19 @@ class SolarPVUtil:
         single_iunit_purchase_year=2017,
         soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
         conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit())
-    self.c2 = co2calcs.CO2Calcs(ac=self.ac)
-    self.c4 = ch4calcs.CH4Calcs(ac=self.ac)
+    self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+    self.c2 = co2calcs.CO2Calcs(ac=self.ac,
+        ch4_ppm_calculator=None,
+        soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
+        soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
+        soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),
+        soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),
+        soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),
+        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
+        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
+        conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd(),
+        conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
+        conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+        fuel_in_liters=False)

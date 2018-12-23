@@ -12,8 +12,8 @@ def test_ch4_tons_reduced():
       columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
   ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
       ch4_co2_per_twh=0.01, ch4_is_co2eq=False)
-  c4 = ch4calcs.CH4Calcs(ac=ac)
-  result = c4.ch4_tons_reduced(soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+  c4 = ch4calcs.CH4Calcs(ac=ac, soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+  result = c4.ch4_tons_reduced()
   expected = pd.DataFrame(ch4_tons_reduced_list[1:],
       columns=ch4_tons_reduced_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
@@ -23,25 +23,47 @@ def test_ch4_tons_reduced_co2eq():
       columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
   ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
       ch4_co2_per_twh=0.01, ch4_is_co2eq=True)
-  c4 = ch4calcs.CH4Calcs(ac=ac)
-  result = c4.ch4_tons_reduced(soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+  c4 = ch4calcs.CH4Calcs(ac=ac, soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+  result = c4.ch4_tons_reduced()
   assert result.values.sum() == 0.0
 
 def test_ch4_ppb_calculator():
-  ch4_tons_reduced = pd.DataFrame(ch4_tons_reduced_list[1:],
-      columns=ch4_tons_reduced_list[0]).set_index('Year')
-  ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050)
-  c4 = ch4calcs.CH4Calcs(ac=ac)
-  result = c4.ch4_ppb_calculator(ch4_tons_reduced=ch4_tons_reduced)
+  soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
+      columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
+  ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
+      ch4_co2_per_twh=0.01, ch4_is_co2eq=False)
+  c4 = ch4calcs.CH4Calcs(ac=ac, soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+  result = c4.ch4_ppb_calculator()
   expected = pd.DataFrame(ch4_ppb_calculator_list[1:],
       columns=ch4_ppb_calculator_list[0]).set_index('Year').fillna(0)
-  pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
+  print(result.columns)
+  print(expected.columns)
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_to_dict():
+  soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
+      columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
+  ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
+      ch4_co2_per_twh=0.01, ch4_is_co2eq=False)
+  c4 = ch4calcs.CH4Calcs(ac=ac, soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+  result = c4.to_dict()
+  expected = ['ch4_tons_reduced', 'ch4_ppb_calculator']
+  for ex in expected:
+    assert ex in result
+    f = getattr(c4, ex, None)
+    if f:
+      check = f()
+      if isinstance(check, pd.DataFrame):
+        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
+      elif isinstance(check, pd.Series):
+        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
+      else:
+        assert result[ex] == pytest.approx(check)
 
 
 # 'Unit Adoption'!B251:L298
 soln_net_annual_funits_adopted_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
-    [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2015, 59.16952483163, -75.62640223557, -0.33768156367, -22.15920892112, -1.71009099271, -15.41714380040, -15.43313810117, -3.07011430874, -55.75969246529, -13.21605539049],
     [2016, 150.52159292976, -76.24855891557, -0.34297979401, -23.24591339780, -1.84510420765, -16.18366871191, -15.89405398012, -3.39192750636, -56.24733048614, -13.30746078097],
     [2017, 257.36122967139, -76.87071559558, -0.34827802435, -24.33261787447, -1.98011742258, -16.95019362342, -16.35496985906, -3.71374070399, -56.73496850699, -13.39886617146],

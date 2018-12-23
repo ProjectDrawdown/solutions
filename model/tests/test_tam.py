@@ -526,6 +526,15 @@ def test_to_dict():
       'forecast_trend_exponential_usa']
   for ex in expected:
     assert ex in result
+    f = getattr(tm, ex, None)
+    if f:
+      check = f()
+      if isinstance(check, pd.DataFrame):
+        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
+      elif isinstance(check, pd.Series):
+        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
+      else:
+        assert result[ex] == pytest.approx(check)
 
 
 # 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES', source_after_2014='Baseline Cases',
