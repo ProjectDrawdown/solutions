@@ -73,3 +73,11 @@ Nov 19 - 23, 2018
 Nov 26 - 30, 2018
 + check in first Jupyter notebook, for solarpvutil.
 + fixes im tam.py: single source, PDS support.
+
+Dec 17 - 21, 2018
++ Make unitadoption, helpertables, firstcost, operartingcost, co2calcs,
+  ch4calcs, & emissionsfactors be self-contained. Take all arguments
+  in the constructor, and add a to_dict() method to return all results.
+  This will remove the need for glue code in app.py, glue code which
+  would otherwise have to be duplicated for every solution using those
+  modules.
