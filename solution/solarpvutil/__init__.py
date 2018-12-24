@@ -20,9 +20,9 @@ from model import unitadoption
 
 class SolarPVUtil:
   def __init__(self):
-    soln_funit_adoption_2014 = pd.DataFrame([[112.63303333333, 75.00424555556, 0.33238333333,
-      21.07250444444, 1.57507777778, 14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444,
-      13.12465000000]],
+    soln_funit_adoption_2014 = pd.DataFrame([[112.633033333333, 75.0042455555555,
+      0.332383333333333, 21.0725044444444, 1.57507777777778, 14.6506188888889,
+      14.9722222222222, 2.74830111111111, 55.2720544444444, 13.12465000000]],
       columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
         'Latin America', 'China', 'India', 'EU', 'USA'], index=[2014])
     soln_funit_adoption_2014.index.name = 'Year'
@@ -61,7 +61,7 @@ class SolarPVUtil:
         npv_discount_rate=0.094,
 
         emissions_use_co2eq=True,
-        emissions_grid_source="ipcc_only",
+        emissions_grid_source="meta_analysis",
         emissions_grid_range="mean",
 
         soln_ref_adoption_regional_data=False,
@@ -102,16 +102,19 @@ class SolarPVUtil:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
 
     ht_ref_datapoints = pd.DataFrame([
-      [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778,
-          14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
-      [2050, 272.41409799109, 97.40188603589, 0.52311962553, 60.19386560477, 6.43555351544,
-          42.24551570326, 31.56519386433, 14.33357622563, 72.82702319498, 16.41524405748]],
+      [2014,  112.6330333333330, 75.0042455555555, 0.3323833333333, 21.0725044444444,
+        1.5750777777778, 14.6506188888889, 14.9722222222222, 2.7483011111111,
+        55.2720544444444, 13.1246500000000],
+      [2050, 272.4140979910870, 97.4018860358948, 0.5231196255289, 60.1981419861308,
+        6.4355535154359, 42.2455157032626, 31.5651938643273, 14.3335762256287,
+        72.8270231949823, 16.4152440574767]],
       columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
           "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
     ht_pds_datapoints = pd.DataFrame([
-      [2014, 112.633033, 75.0042456, 0.332383, 21.072504, 1.575078, 14.650619,
-        14.972222, 2.748301, 55.272054, 13.12465],
-      [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+      [2014, 112.6330333333330, 75.0042455555555, 0.3323833333333, 21.0725044444444,
+        1.5750777777778, 14.6506188888889, 14.9722222222222, 2.7483011111111,
+        55.2720544444444, 13.1246500000000],
+      [2050, 2603.6606403329600, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
       columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
           "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
 
