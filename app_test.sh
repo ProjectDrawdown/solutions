@@ -256,6 +256,26 @@ if [ $? -ne 0 ]; then
 fi
 
 
+input='{}'
+url='http://127.0.0.1:5000/solarpvutil'
+output=$(curl --silent -H 'Content-Type: application/json' --data "$input" "$url") 
+
+require "$output" '"tam_data":{' && \
+require "$output" '"adoption_data":{' && \
+require "$output" '"helper_tables":{' && \
+require "$output" '"emissions_factors":{' && \
+require "$output" '"unit_adoption":{' && \
+require "$output" '"first_cost":{' && \
+require "$output" '"operating_cost":{' && \
+require "$output" '"ch4_calcs":{' && \
+require "$output" '"co2_calcs":{' && \
+true
+
+if [ $? -ne 0 ]; then
+    rc=1
+fi
+
+
 trap 'kill $(jobs -pr) >/dev/null 2>&1' SIGINT SIGTERM EXIT
 
 exit $rc

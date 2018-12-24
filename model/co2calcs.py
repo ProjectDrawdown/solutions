@@ -15,7 +15,7 @@ class CO2Calcs:
   """CO2 Calcs module.
       Arguments:
         ac: advanced_cost.py object, storing settings to control model operation.
-        ch4_ppm_calculator:
+        ch4_ppb_calculator:
         soln_pds_net_grid_electricity_units_saved:
         soln_pds_net_grid_electricity_units_used:
         soln_pds_direct_co2_emissions_saved:
@@ -29,7 +29,7 @@ class CO2Calcs:
         soln_net_annual_funits_adopted:
         fuel_in_liters:
     """
-  def __init__(self, ac, ch4_ppm_calculator,
+  def __init__(self, ac, ch4_ppb_calculator,
       soln_pds_net_grid_electricity_units_saved, soln_pds_net_grid_electricity_units_used,
       soln_pds_direct_co2_emissions_saved, soln_pds_direct_ch4_co2_emissions_saved,
       soln_pds_direct_n2o_co2_emissions_saved,
@@ -37,7 +37,7 @@ class CO2Calcs:
       conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh,
       soln_net_annual_funits_adopted, fuel_in_liters):
     self.ac = ac
-    self.ch4_ppm_calculator = ch4_ppm_calculator
+    self.ch4_ppb_calculator = ch4_ppb_calculator
     self.soln_pds_net_grid_electricity_units_saved = soln_pds_net_grid_electricity_units_saved
     self.soln_pds_net_grid_electricity_units_used = soln_pds_net_grid_electricity_units_used
     self.soln_pds_direct_co2_emissions_saved = soln_pds_direct_co2_emissions_saved
@@ -164,7 +164,7 @@ class CO2Calcs:
     ppm_calculator.index = ppm_calculator.index.astype(int)
     ppm_calculator["CO2 PPM"] = co2_ppm_calculator["PPM"]
     ppm_calculator["CO2 RF"] = ppm_calculator["CO2 PPM"].apply(co2_rf)
-    ppm_calculator["CH4 PPB"] = self.ch4_ppm_calculator["PPB"]
+    ppm_calculator["CH4 PPB"] = self.ch4_ppb_calculator["PPB"]
     ppm_calculator["CH4 RF"] = ppm_calculator["CH4 PPB"].apply(ch4_rf)
     s = ppm_calculator["CO2 RF"] + ppm_calculator["CH4 RF"]
     ppm_calculator["CO2-eq PPM"] = s.apply(co2eq_ppm)

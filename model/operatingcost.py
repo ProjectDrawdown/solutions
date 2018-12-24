@@ -47,6 +47,23 @@ class OperatingCost:
     self.soln_pds_install_cost_per_iunit = soln_pds_install_cost_per_iunit
     self.conv_ref_install_cost_per_iunit = conv_ref_install_cost_per_iunit
 
+    self._conv_ref_annual_breakout = self._annual_breakout(
+        new_funits_per_year=self.soln_pds_new_funits_per_year().loc[:, 'World'],
+        new_annual_iunits_reqd=self.conv_ref_new_annual_iunits_reqd().loc[:, 'World'],
+        lifetime_replacement=self.ac.soln_lifetime_replacement,
+        var_oper_cost_per_funit=self.ac.conv_var_oper_cost_per_funit,
+        fuel_cost_per_funit=self.ac.conv_fuel_cost_per_funit,
+        fixed_oper_cost_per_iunit=self.ac.conv_fixed_oper_cost_per_iunit)
+    self._conv_ref_annual_breakout.name = 'conv_ref_annual_breakout'
+    self._soln_pds_annual_breakout = self._annual_breakout(
+        new_funits_per_year=self.soln_pds_new_funits_per_year().loc[:, 'World'],
+        new_annual_iunits_reqd=self.soln_pds_new_annual_iunits_reqd().loc[:, 'World'],
+        lifetime_replacement=self.ac.soln_lifetime_replacement,
+        var_oper_cost_per_funit=self.ac.soln_var_oper_cost_per_funit,
+        fuel_cost_per_funit=self.ac.soln_fuel_cost_per_funit,
+        fixed_oper_cost_per_iunit=self.ac.soln_fixed_oper_cost_per_iunit)
+    self._soln_pds_annual_breakout.name = 'soln_pds_annual_breakout'
+
   def soln_pds_annual_operating_cost(self):
     """Total operating cost per year.
        'Operating Cost'!D19:D64
@@ -68,7 +85,6 @@ class OperatingCost:
        'Operating Cost'!K19:K64
     """
     result = self.conv_ref_annual_breakout_core().sum(axis=1)
-    #result = self.conv_ref_annual_breakout().sum(axis=1)
     result.name = 'conv_ref_annual_operating_cost'
     return result
 
@@ -122,15 +138,7 @@ class OperatingCost:
        Fixed and Variable costs that are constant or changing over time are included.
        'Operating Cost'!B262:AV386
     """
-    result = self._annual_breakout(
-        new_funits_per_year=self.soln_pds_new_funits_per_year().loc[:, 'World'],
-        new_annual_iunits_reqd=self.soln_pds_new_annual_iunits_reqd().loc[:, 'World'],
-        lifetime_replacement=self.ac.soln_lifetime_replacement,
-        var_oper_cost_per_funit=self.ac.soln_var_oper_cost_per_funit,
-        fuel_cost_per_funit=self.ac.soln_fuel_cost_per_funit,
-        fixed_oper_cost_per_iunit=self.ac.soln_fixed_oper_cost_per_iunit)
-    result.name = 'soln_pds_annual_breakout'
-    return result
+    return self._soln_pds_annual_breakout
 
   def soln_pds_annual_breakout_core(self):
     """Returns soln_pds_annual_breakout for CORE_START_YEAR:CORE_END_YEAR"""
@@ -152,15 +160,7 @@ class OperatingCost:
        Fixed and Variable costs that are constant or changing over time are included.
        'Operating Cost'!B399:AV523
     """
-    result = self._annual_breakout(
-        new_funits_per_year=self.soln_pds_new_funits_per_year().loc[:, 'World'],
-        new_annual_iunits_reqd=self.conv_ref_new_annual_iunits_reqd().loc[:, 'World'],
-        lifetime_replacement=self.ac.soln_lifetime_replacement,
-        var_oper_cost_per_funit=self.ac.conv_var_oper_cost_per_funit,
-        fuel_cost_per_funit=self.ac.conv_fuel_cost_per_funit,
-        fixed_oper_cost_per_iunit=self.ac.conv_fixed_oper_cost_per_iunit)
-    result.name = 'conv_ref_annual_breakout'
-    return result
+    return self._conv_ref_annual_breakout
 
   def conv_ref_annual_breakout_core(self):
     """Returns conv_ref_annual_breakout for CORE_START_YEAR:CORE_END_YEAR"""
