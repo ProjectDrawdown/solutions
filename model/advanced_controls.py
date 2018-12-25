@@ -165,7 +165,7 @@ class AdvancedControls:
      E.g., $1 per Kwh or $1,000,000,000 per TWh. In terms of transportation, this
      can be considered the weighted average price of fuel per passenger kilometer.
      "Advanced Controls"!H128
-  soln_fixed_oper_cost_per_funit (float): This is the annual operating cost per
+  soln_fixed_oper_cost_per_iunit (float): This is the annual operating cost per
      implementation unit, derived from the SOLUTION.  In most cases this will be
      expressed as a cost per 'some unit of installation size'
 

@@ -19,6 +19,7 @@ from model import interpolation
 from model import operatingcost
 from model import tam
 from model import unitadoption
+from solution import solarpvroof
 from solution import solarpvutil
 import werkzeug.exceptions
 
@@ -285,6 +286,15 @@ def tamData():
 def solarPVUtil():
     """SolarPVUtil solution."""
     pv = solarpvutil.SolarPVUtil()
+
+    results_str = json.dumps(pv.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/solarpvroof", methods=['POST'])
+def solarPVRoof():
+    """SolarPVRoof solution."""
+    pv = solarpvroof.SolarPVRoof()
 
     results_str = json.dumps(pv.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
