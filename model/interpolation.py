@@ -109,3 +109,50 @@ def trend_algorithm(data, trend):
   if t == "single" or t == "single source":
     return single_trend(data)
   raise ValueError('invalid trend algorithm: ' + str(trend))
+
+def matching_data_sources(data_sources, name, groups_only):
+  """Return a list of data sources which match name.
+     If name is a group, return all data sources which are part of that group.
+     If name is an individual case and groups_only=False, return it by itself.
+     If groups_only=True and name is not a group, return all sources.
+
+     Arguments:
+       data_sources: a dict() of group names which contain dicts of data source names.
+         Used for Total Addressable Market and adoption calculations. For example:
+         {
+           'Ambitious Cases': {'Study Name A': 'filename A', 'Study Name B': 'filename B', ...}
+           'Baseline Cases': {'Study Name C': 'filename C', 'Study Name D': 'filename D', ...}
+           'Conservative Cases': {'Study Name E': 'filename E', 'Study Name F': 'filename F', ...}
+         }
+       name: a name of an individual data source, or the name of a group
+         like 'Ambitious Cases'
+       groups_only: only return a group, or all columns if no group is found.
+         This is typically useful for stddev calculations, which are never done
+         (and are nonsensical) on an individual data source only on a single
+         group or over all sources.
+  """
+  if name in data_sources:
+    return list(data_sources[name].keys())
+  all_sources = []
+  for val in data_sources.values():
+    all_sources.extend(list(val.keys()))
+  if name.lower() == 'all sources':
+    return all_sources
+  if groups_only:  # specific group not found above, so return all
+    return all_sources
+  if name in all_sources:
+    return [name]
+  raise ValueError("No such data source: " + str(name))
+
+def is_group_name(data_sources, name):
+  """Return True if name is a group in data_sources."""
+  if name in data_sources:
+    return True
+  if name.lower() == "all sources":
+    return True
+  all_sources = []
+  for val in data_sources.values():
+    all_sources.extend(list(val.keys()))
+  if name in all_sources:
+    return False
+  raise ValueError("No such data source: " + str(name))

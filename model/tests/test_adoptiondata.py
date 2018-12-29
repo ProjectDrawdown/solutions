@@ -8,8 +8,6 @@ import pytest
 from model import adoptiondata
 from model import advanced_controls
 
-thisdir = pathlib.Path(__file__)
-datadir = str(thisdir.parents[2] / 'solution' / 'solarpvutil')
 # arguments used in SolarPVUtil 28Aug18, used in many tests
 adconfig_list = [
     ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
@@ -22,17 +20,43 @@ adconfig_list = [
     ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
 g_adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
 
+thisdir = pathlib.Path(__file__).parents[0]
+g_data_sources = {
+  'Baseline Cases': {
+    '6DS': str(thisdir.joinpath('ad_IEA_ETP_2016_6DS.csv')),
+    'IRefpol': str(thisdir.joinpath('ad_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
+    'MREFPol': str(thisdir.joinpath('ad_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
+    'GREFpol': str(thisdir.joinpath('ad_AMPERE_2014_GEM_E3_Reference.csv')),
+  },
+  'Conservative Cases': {
+    '4DS': str(thisdir.joinpath('ad_IEA_ETP_2016_4DS.csv')),
+    'I550': str(thisdir.joinpath('ad_AMPERE_2014_IMAGE_TIMER_550.csv')),
+    'M550': str(thisdir.joinpath('ad_AMPERE_2014_MESSAGE_MACRO_550.csv')),
+    'G550': str(thisdir.joinpath('ad_AMPERE_2014_GEM_E3_550.csv')),
+    'Greenpeace R': str(thisdir.joinpath('ad_Greenpeace_2015_Reference.csv')),
+  },
+  'Ambitious Cases': {
+    '2DS': str(thisdir.joinpath('ad_IEA_ETP_2016_2DS.csv')),
+    'I450': str(thisdir.joinpath('ad_AMPERE_2014_IMAGE_TIMER_450.csv')),
+    'M450': str(thisdir.joinpath('ad_AMPERE_2014_MESSAGE_MACRO_450.csv')),
+    'G450': str(thisdir.joinpath('ad_AMPERE_2014_GEM_E3_450.csv')),
+    'Greenpeace ER': str(thisdir.joinpath('ad_Greenpeace_2015_Energy_Revolution.csv')),
+  },
+  '100% RES2050 Case': {
+    'Greenpeace AER': str(thisdir.joinpath('ad_Greenpeace_2015_Advanced_Revolution.csv')),
+  },
+}
 
 def test_adoption_data():
-  ad = adoptiondata.AdoptionData(ac=None, datadir=datadir, adconfig=None)
+  ad = adoptiondata.AdoptionData(ac=None, data_sources=g_data_sources, adconfig=None)
   a = ad.adoption_data_global()
-  assert a['Based on: IEA ETP 2016 4DS'][2035] == pytest.approx(898.010968835815)
-  assert a['Based on: Greenpeace (2015) Reference'][2027] == pytest.approx(327.712635691309)
+  assert a['4DS'][2035] == pytest.approx(898.010968835815)
+  assert a['Greenpeace R'][2027] == pytest.approx(327.712635691309)
 
 def test_adoption_min_max_sd_global():
-  s = 'Based on: Greenpeace (2015) Advanced Energy Revolution'
+  s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
-  ad = adoptiondata.AdoptionData(ac=ac, datadir=datadir, adconfig=g_adconfig)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
   result = ad.adoption_min_max_sd_global()
   expected = pd.DataFrame(adoption_min_max_sd_global_list[1:],
       columns=adoption_min_max_sd_global_list[0],
@@ -41,9 +65,9 @@ def test_adoption_min_max_sd_global():
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_adoption_low_med_high_global():
-  s = 'Based on: Greenpeace (2015) Advanced Energy Revolution'
+  s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
-  ad = adoptiondata.AdoptionData(ac=ac, datadir=datadir, adconfig=g_adconfig)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
   result = ad.adoption_low_med_high_global()
   expected = pd.DataFrame(adoption_low_med_high_global_list[1:],
       columns=adoption_low_med_high_global_list[0],
@@ -53,7 +77,7 @@ def test_adoption_low_med_high_global():
 
 def test_adoption_low_med_high_global_all_sources():
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='ALL SOURCES')
-  ad = adoptiondata.AdoptionData(ac=ac, datadir=datadir, adconfig=g_adconfig)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
   result = ad.adoption_low_med_high_global()
   expected = pd.DataFrame(adoption_low_med_high_global_all_sources_list[1:],
       columns=adoption_low_med_high_global_all_sources_list[0],
@@ -62,9 +86,9 @@ def test_adoption_low_med_high_global_all_sources():
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_adoption_trend_global():
-  s = 'Based on: Greenpeace (2015) Advanced Energy Revolution'
+  s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
-  ad = adoptiondata.AdoptionData(ac=ac, datadir=datadir, adconfig=g_adconfig)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
   result = ad.adoption_trend_global(trend='Linear')
   expected = pd.DataFrame(linear_trend_global_list[1:],
       columns=linear_trend_global_list[0], dtype=np.float64).set_index('Year')
@@ -91,17 +115,36 @@ def test_adoption_trend_global():
 
   adconfig_mod = g_adconfig.copy()
   adconfig_mod.loc['trend', 'World'] = 'Exponential'
-  ad = adoptiondata.AdoptionData(ac=ac, datadir=datadir, adconfig=adconfig_mod)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=adconfig_mod)
   result = ad.adoption_trend_global()
   expected = pd.DataFrame(exponential_trend_global_list[1:],
       columns=exponential_trend_global_list[0], dtype=np.float64).set_index('Year')
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_to_dict():
-  s = 'Based on: Greenpeace (2015) Advanced Energy Revolution'
+def test_adoption_is_single_source():
+  s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
-  ad = adoptiondata.AdoptionData(ac=ac, datadir=datadir, adconfig=g_adconfig)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
+  assert ad.adoption_is_single_source() == True
+  s = 'ALL SOURCES'
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
+  assert ad.adoption_is_single_source() == False
+  s = 'Ambitious Cases'
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
+  assert ad.adoption_is_single_source() == False
+  s = 'No such name'
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
+  with pytest.raises(ValueError):
+    _ = ad.adoption_is_single_source()
+
+def test_to_dict():
+  s = 'Greenpeace AER'
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
   result = ad.to_dict()
   expected = ['adoption_data_global', 'adoption_min_max_sd_global',
       'adoption_low_med_high_global', 'adoption_trend_linear_global',

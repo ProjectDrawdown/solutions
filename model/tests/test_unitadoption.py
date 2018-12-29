@@ -16,7 +16,7 @@ ref_tam_per_region = pd.read_csv(ref_tam_per_region_filename, header=0, index_co
     skipinitialspace=True, comment='#')
 pds_tam_per_region = pd.read_csv(pds_tam_per_region_filename, header=0, index_col=0,
     skipinitialspace=True, comment='#')
-datadir = str(this_dir.parents[2].joinpath('solution', 'solarpvutil'))
+datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 
 
 def test_ref_population():

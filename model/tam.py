@@ -3,36 +3,88 @@
 
 import os.path
 
-from model import data_sources
 from model import interpolation
 import pandas as pd
 
 
 class TAM:
-  """Total Addressible Market module.
-     Arguments:
-       datadir: directory where CSV files can be found.
-  """
-  def __init__(self, datadir, tamconfig):
+  """Total Addressible Market module."""
+
+  def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources):
     """TAM module.
 
        Arguments
-       datadir: directory where CSV files for this solution can be found.
        tamconfig: Pandas dataframe with columns:
           'source_until_2014', 'source_after_2014', 'trend', 'growth', 'low_sd_mult', 'high_sd_mult'
           and rows for each region:
           'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
           'Latin America', 'China', 'India', 'EU', 'USA'
+       tam_ref_data_sources: a dict() of group names which contain dicts of data source names.
+         Used for Total Addressable Market and adoption calculations in the REF scenario.
+         For example:
+         {
+           'Ambitious Cases': {'Study Name A': 'filename A', 'Study Name B': 'filename B', ...}
+           'Baseline Cases': {'Study Name C': 'filename C', 'Study Name D': 'filename D', ...}
+           'Conservative Cases': {'Study Name E': 'filename E', 'Study Name F': 'filename F', ...}
+         }
+       tam_pds_data_sources: as tam_ref_data_sources, for the PDS scenario.
     """
-    self.datadir = datadir
     self.tamconfig = tamconfig
-    super()
+    self.tam_ref_data_sources = tam_ref_data_sources
+    self.tam_pds_data_sources = tam_pds_data_sources
+    self._populate_forecast_data()
 
-  def _min_max_sd(self, forecast, tamconfig):
+  def _populate_forecast_data(self):
+    """Read data files in self.tam_*_data_sources to populate forecast data."""
+    self._forecast_data_global = pd.DataFrame()
+    self._forecast_data_global.name = 'forecast_data_global'
+    self._forecast_data_oecd90 = pd.DataFrame()
+    self._forecast_data_oecd90.name = 'forecast_data_oecd90'
+    self._forecast_data_eastern_europe = pd.DataFrame()
+    self._forecast_data_eastern_europe.name = 'forecast_data_eastern_europe'
+    self._forecast_data_asia_sans_japan = pd.DataFrame()
+    self._forecast_data_asia_sans_japan.name = 'forecast_data_asia_sans_japan'
+    self._forecast_data_middle_east_and_africa = pd.DataFrame()
+    self._forecast_data_middle_east_and_africa.name = 'forecast_data_middle_east_and_africa'
+    self._forecast_data_latin_america = pd.DataFrame()
+    self._forecast_data_latin_america.name = 'forecast_data_latin_america'
+    self._forecast_data_china = pd.DataFrame()
+    self._forecast_data_china.name = 'forecast_data_china'
+    self._forecast_data_india = pd.DataFrame()
+    self._forecast_data_india.name = 'forecast_data_india'
+    self._forecast_data_eu = pd.DataFrame()
+    self._forecast_data_eu.name = 'forecast_data_eu'
+    self._forecast_data_usa = pd.DataFrame()
+    self._forecast_data_usa.name = 'forecast_data_usa'
+    for (groupname, group) in self.tam_ref_data_sources.items():
+      for (name, filename) in group.items():
+        df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+          skip_blank_lines=True, comment='#')
+        self._forecast_data_global.loc[:, name] = df.loc[:, 'World']
+        self._forecast_data_oecd90.loc[:, name] = df.loc[:, 'OECD90']
+        self._forecast_data_eastern_europe.loc[:, name] = df.loc[:, 'Eastern Europe']
+        self._forecast_data_asia_sans_japan.loc[:, name] = df.loc[:, 'Asia (Sans Japan)']
+        self._forecast_data_middle_east_and_africa.loc[:, name] = df.loc[:, 'Middle East and Africa']
+        self._forecast_data_latin_america.loc[:, name] = df.loc[:, 'Latin America']
+        self._forecast_data_china.loc[:, name] = df.loc[:, 'China']
+        self._forecast_data_india.loc[:, name] = df.loc[:, 'India']
+        self._forecast_data_eu.loc[:, name] = df.loc[:, 'EU']
+        self._forecast_data_usa.loc[:, name] = df.loc[:, 'USA']
+    self._forecast_data_pds_global = pd.DataFrame()
+    self._forecast_data_pds_global.name = 'forecast_data_pds_global'
+    for (groupname, group) in self.tam_pds_data_sources.items():
+      for (name, filename) in group.items():
+        df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+          skip_blank_lines=True, comment='#')
+        self._forecast_data_pds_global.loc[:, name] = df.loc[:, 'World']
+
+  def _min_max_sd(self, forecast, tamconfig, data_sources):
     """Return the min, max, and standard deviation for TAM data.
        Arguments:
          forecast: the TAM forecast dataframe for all sources.
          tamconfig: the row from self.tamconfig to use
+         data_sources: dict of dicts of datasources, as described in tam_ref_data_sources in
+           the constructor
     """
     source_until_2014 = tamconfig['source_until_2014']
     source_after_2014 = tamconfig['source_after_2014']
@@ -41,24 +93,28 @@ class TAM:
     result.loc[:, 'Min'] = forecast.min(axis=1)
     result.loc[:, 'Max'] = forecast.max(axis=1)
     # Excel STDDEV.P is a whole population stddev, ddof=0
-    columns = data_sources.matching_columns(forecast.columns, source_until_2014, groups_only=True)
+    columns = interpolation.matching_data_sources(data_sources=data_sources,
+        name=source_until_2014, groups_only=True)
     m = forecast.loc[:2014, columns].std(axis=1, ddof=0)
     m.name = 'S.D'
     result.update(m)
-    columns = data_sources.matching_columns(forecast.columns, source_after_2014, groups_only=True)
+    columns = interpolation.matching_data_sources(data_sources=data_sources,
+        name=source_after_2014, groups_only=True)
     m = forecast.loc[2015:, columns].std(axis=1, ddof=0)
     m.name = 'S.D'
     result.update(m)
 
     return result
 
-  def _low_med_high(self, forecast, min_max_sd, tamconfig):
+  def _low_med_high(self, forecast, min_max_sd, tamconfig, data_sources):
     """Return the selected data sources as Medium, and N stddev away as Low and High.
 
        Arguments:
          forecast: DataFrame of all of the data sources, source name as the column name.
          min_max_sd: DataFrame with columns for the Minimum, Maxiumum, and Standard deviation.
          tamconfig: the row from self.tamconfig to use
+         data_sources: dict of dicts of datasources, as described in tam_ref_data_sources in
+           the constructor
     """
     source_until_2014 = tamconfig['source_until_2014']
     source_after_2014 = tamconfig['source_after_2014']
@@ -66,11 +122,13 @@ class TAM:
     high_sd_mult = tamconfig['high_sd_mult']
 
     result = pd.DataFrame(0, index=forecast.index.copy(), columns=['Low', 'Medium', 'High'])
-    columns = data_sources.matching_columns(forecast.columns, source_until_2014)
+    columns = interpolation.matching_data_sources(data_sources=data_sources,
+        name=source_until_2014, groups_only=False)
     m = forecast.loc[:2014, columns].mean(axis=1)
     m.name = 'Medium'
     result.update(m)
-    columns = data_sources.matching_columns(forecast.columns, source_after_2014)
+    columns = interpolation.matching_data_sources(data_sources=data_sources,
+        name=source_after_2014, groups_only=False)
     m = forecast.loc[2015:, columns].mean(axis=1)
     m.name = 'Medium'
     result.update(m)
@@ -79,8 +137,14 @@ class TAM:
     result.loc[:, 'High'] = result.loc[:, 'Medium'] + (min_max_sd.loc[:, 'S.D'] * high_sd_mult)
     return result
 
-  def _get_trend(self, trend, tamconfig):
+  def _get_trend(self, trend, tamconfig, data_sources):
     """Decision tree to select between trend choices.
+
+       Arguments:
+         trend: explicit trend to use, if any. Pass None to have tamconfig be used.
+         tamconfig: the row from self.tamconfig to use
+         data_sources: dict of dicts of datasources, as described in tam_ref_data_sources in
+           the constructor
 
        If a trend was explictly specified, use it.
        If there is only one data source, use that source without any curve fitting.
@@ -88,23 +152,20 @@ class TAM:
     """
     if trend:
       return trend
-    if not data_sources.is_group_name(tamconfig['source_after_2014']):
+    if not interpolation.is_group_name(data_sources=data_sources,
+        name=tamconfig['source_after_2014']):
       return 'single'
     else:
       return tamconfig['trend']
 
   def forecast_data_global(self):
     """ 'TAM Data'!B45:Q94 """
-    filename = os.path.join(self.datadir, 'tam_forecast_global.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_global"
-    return result
+    return self._forecast_data_global
 
   def forecast_min_max_sd_global(self):
     """ 'TAM Data'!V45:Y94 """
     result = self._min_max_sd(forecast=self.forecast_data_global(),
-        tamconfig=self.tamconfig['World'])
+        tamconfig=self.tamconfig['World'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_global'
     return result
 
@@ -112,7 +173,8 @@ class TAM:
     """ 'TAM Data'!AA45:AC94 """
     result = self._low_med_high(forecast=self.forecast_data_global(),
         min_max_sd=self.forecast_min_max_sd_global(),
-        tamconfig=self.tamconfig['World'])
+        tamconfig=self.tamconfig['World'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_global'
     return result
 
@@ -122,7 +184,8 @@ class TAM:
        Degree3: 'TAM Data'!CM50:CQ96    Exponential: 'TAM Data'!CV50:CX96
     """
     growth = self.tamconfig.loc['growth', 'World']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['World'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['World'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_global().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_global_' + trend.lower()
@@ -130,16 +193,12 @@ class TAM:
 
   def forecast_data_pds_global(self):
     """ 'TAM Data'!B45:Q94 """
-    filename = os.path.join(self.datadir, 'tam_forecast_pds_global.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_pds_global"
-    return result
+    return self._forecast_data_pds_global
 
   def forecast_min_max_sd_pds_global(self):
     """ 'TAM Data'!V45:Y94 """
     result = self._min_max_sd(forecast=self.forecast_data_pds_global(),
-        tamconfig=self.tamconfig['PDS World'])
+        tamconfig=self.tamconfig['PDS World'], data_sources=self.tam_pds_data_sources)
     result.name = 'forecast_min_max_sd_pds_global'
     return result
 
@@ -147,7 +206,8 @@ class TAM:
     """ 'TAM Data'!AA45:AC94 """
     result = self._low_med_high(forecast=self.forecast_data_pds_global(),
         min_max_sd=self.forecast_min_max_sd_pds_global(),
-        tamconfig=self.tamconfig['PDS World'])
+        tamconfig=self.tamconfig['PDS World'],
+        data_sources=self.tam_pds_data_sources)
     result.name = 'forecast_low_med_high_pds_global'
     return result
 
@@ -157,7 +217,8 @@ class TAM:
        Degree3: 'TAM Data'!CM50:CQ96    Exponential: 'TAM Data'!CV50:CX96
     """
     growth = self.tamconfig.loc['growth', 'PDS World']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['PDS World'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['PDS World'],
+        data_sources=self.tam_pds_data_sources)
     data = self.forecast_low_med_high_pds_global().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_pds_global_' + trend.lower()
@@ -165,16 +226,12 @@ class TAM:
 
   def forecast_data_oecd90(self):
     """ 'TAM Data'!B163:Q212 """
-    filename = os.path.join(self.datadir, 'tam_forecast_oecd90.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_oecd90"
-    return result
+    return self._forecast_data_oecd90
 
   def forecast_min_max_sd_oecd90(self):
     """ 'TAM Data'!V163:Y212 """
     result = self._min_max_sd(forecast=self.forecast_data_oecd90(),
-        tamconfig=self.tamconfig['OECD90'])
+        tamconfig=self.tamconfig['OECD90'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_oecd90'
     return result
 
@@ -182,7 +239,8 @@ class TAM:
     """ 'TAM Data'!AA163:AC212 """
     result = self._low_med_high(forecast=self.forecast_data_oecd90(),
         min_max_sd=self.forecast_min_max_sd_oecd90(),
-        tamconfig=self.tamconfig['OECD90'])
+        tamconfig=self.tamconfig['OECD90'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_oecd90'
     return result
 
@@ -192,7 +250,8 @@ class TAM:
        Degree3: 'TAM Data'!CM168:CQ214    Exponential: 'TAM Data'!CV168:CX214
     """
     growth = self.tamconfig.loc['growth', 'OECD90']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['OECD90'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['OECD90'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_oecd90().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_oecd90_' + trend.lower()
@@ -200,16 +259,12 @@ class TAM:
 
   def forecast_data_eastern_europe(self):
     """ 'TAM Data'!B227:Q276 """
-    filename = os.path.join(self.datadir, 'tam_forecast_eastern_europe.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_eastern_europe"
-    return result
+    return self._forecast_data_eastern_europe
 
   def forecast_min_max_sd_eastern_europe(self):
     """ 'TAM Data'!V227:Y276 """
     result = self._min_max_sd(forecast=self.forecast_data_eastern_europe(),
-        tamconfig=self.tamconfig['Eastern Europe'])
+        tamconfig=self.tamconfig['Eastern Europe'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_eastern_europe'
     return result
 
@@ -217,7 +272,8 @@ class TAM:
     """ 'TAM Data'!AA227:AC276 """
     result = self._low_med_high(forecast=self.forecast_data_eastern_europe(),
         min_max_sd=self.forecast_min_max_sd_eastern_europe(),
-        tamconfig=self.tamconfig['Eastern Europe'])
+        tamconfig=self.tamconfig['Eastern Europe'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_eastern_europe'
     return result
 
@@ -227,7 +283,8 @@ class TAM:
        Degree3: 'TAM Data'!CM232:CQ278    Exponential: 'TAM Data'!CV232:CX278
     """
     growth = self.tamconfig.loc['growth', 'Eastern Europe']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Eastern Europe'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Eastern Europe'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_eastern_europe().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_eastern_europe_' + trend.lower()
@@ -235,16 +292,12 @@ class TAM:
 
   def forecast_data_asia_sans_japan(self):
     """ 'TAM Data'!B290:Q339 """
-    filename = os.path.join(self.datadir, 'tam_forecast_asia_sans_japan.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_asia_sans_japan"
-    return result
+    return self._forecast_data_asia_sans_japan
 
   def forecast_min_max_sd_asia_sans_japan(self):
     """ 'TAM Data'!V290:Y339 """
     result = self._min_max_sd(forecast=self.forecast_data_asia_sans_japan(),
-        tamconfig=self.tamconfig['Asia (Sans Japan)'])
+        tamconfig=self.tamconfig['Asia (Sans Japan)'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_asia_sans_japan'
     return result
 
@@ -252,7 +305,8 @@ class TAM:
     """ 'TAM Data'!AA290:AC339 """
     result = self._low_med_high(forecast=self.forecast_data_asia_sans_japan(),
         min_max_sd=self.forecast_min_max_sd_asia_sans_japan(),
-        tamconfig=self.tamconfig['Asia (Sans Japan)'])
+        tamconfig=self.tamconfig['Asia (Sans Japan)'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_asia_sans_japan'
     return result
 
@@ -262,7 +316,8 @@ class TAM:
        Degree3: 'TAM Data'!CM295:CQ341    Exponential: 'TAM Data'!CV295:CX341
     """
     growth = self.tamconfig.loc['growth', 'Asia (Sans Japan)']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Asia (Sans Japan)'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Asia (Sans Japan)'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_asia_sans_japan().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_asia_sans_japan_' + trend.lower()
@@ -270,16 +325,12 @@ class TAM:
 
   def forecast_data_middle_east_and_africa(self):
     """ 'TAM Data'!B353:Q402 """
-    filename = os.path.join(self.datadir, 'tam_forecast_middle_east_and_africa.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_middle_east_and_africa"
-    return result
+    return self._forecast_data_middle_east_and_africa
 
   def forecast_min_max_sd_middle_east_and_africa(self):
     """ 'TAM Data'!V353:Y402 """
     result = self._min_max_sd(forecast=self.forecast_data_middle_east_and_africa(),
-        tamconfig=self.tamconfig['Middle East and Africa'])
+        tamconfig=self.tamconfig['Middle East and Africa'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_middle_east_and_africa'
     return result
 
@@ -287,7 +338,8 @@ class TAM:
     """ 'TAM Data'!AA353:AC402 """
     result = self._low_med_high(forecast=self.forecast_data_middle_east_and_africa(),
         min_max_sd=self.forecast_min_max_sd_middle_east_and_africa(),
-        tamconfig=self.tamconfig['Middle East and Africa'])
+        tamconfig=self.tamconfig['Middle East and Africa'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_middle_east_and_africa'
     return result
 
@@ -297,7 +349,8 @@ class TAM:
        Degree3: 'TAM Data'!CM358:CQ404    Exponential: 'TAM Data'!CV358:CX404
     """
     growth = self.tamconfig.loc['growth', 'Middle East and Africa']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Middle East and Africa'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Middle East and Africa'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_middle_east_and_africa().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_middle_east_and_africa_' + trend.lower()
@@ -305,16 +358,12 @@ class TAM:
 
   def forecast_data_latin_america(self):
     """ 'TAM Data'!B416:Q465 """
-    filename = os.path.join(self.datadir, 'tam_forecast_latin_america.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_latin_america"
-    return result
+    return self._forecast_data_latin_america
 
   def forecast_min_max_sd_latin_america(self):
     """ 'TAM Data'!V416:Y465 """
     result = self._min_max_sd(forecast=self.forecast_data_latin_america(),
-        tamconfig=self.tamconfig['Latin America'])
+        tamconfig=self.tamconfig['Latin America'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_latin_america'
     return result
 
@@ -322,7 +371,8 @@ class TAM:
     """ 'TAM Data'!AA416:AC465 """
     result = self._low_med_high(forecast=self.forecast_data_latin_america(),
         min_max_sd=self.forecast_min_max_sd_latin_america(),
-        tamconfig=self.tamconfig['Latin America'])
+        tamconfig=self.tamconfig['Latin America'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_latin_america'
     return result
 
@@ -332,7 +382,8 @@ class TAM:
        Degree3: 'TAM Data'!CM421:CQ467    Exponential: 'TAM Data'!CV421:CX467
     """
     growth = self.tamconfig.loc['growth', 'Latin America']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Latin America'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Latin America'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_latin_america().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_latin_america_' + trend.lower()
@@ -340,16 +391,12 @@ class TAM:
 
   def forecast_data_china(self):
     """ 'TAM Data'!B479:Q528 """
-    filename = os.path.join(self.datadir, 'tam_forecast_china.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_china"
-    return result
+    return self._forecast_data_china
 
   def forecast_min_max_sd_china(self):
     """ 'TAM Data'!V479:Y528 """
     result = self._min_max_sd(forecast=self.forecast_data_china(),
-        tamconfig=self.tamconfig['China'])
+        tamconfig=self.tamconfig['China'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_china'
     return result
 
@@ -357,7 +404,8 @@ class TAM:
     """ 'TAM Data'!AA479:AC528 """
     result = self._low_med_high(forecast=self.forecast_data_china(),
         min_max_sd=self.forecast_min_max_sd_china(),
-        tamconfig=self.tamconfig['China'])
+        tamconfig=self.tamconfig['China'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_china'
     return result
 
@@ -367,7 +415,8 @@ class TAM:
        Degree3: 'TAM Data'!CM484:CQ530    Exponential: 'TAM Data'!CV484:CX530
     """
     growth = self.tamconfig.loc['growth', 'China']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['China'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['China'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_china().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_china_' + trend.lower()
@@ -375,16 +424,12 @@ class TAM:
 
   def forecast_data_india(self):
     """ 'TAM Data'!B543:Q592 """
-    filename = os.path.join(self.datadir, 'tam_forecast_india.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_india"
-    return result
+    return self._forecast_data_india
 
   def forecast_min_max_sd_india(self):
     """ 'TAM Data'!V543:Y592 """
     result = self._min_max_sd(forecast=self.forecast_data_india(),
-        tamconfig=self.tamconfig['India'])
+        tamconfig=self.tamconfig['India'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_india'
     return result
 
@@ -392,7 +437,8 @@ class TAM:
     """ 'TAM Data'!AA543:AC592 """
     result = self._low_med_high(forecast=self.forecast_data_india(),
         min_max_sd=self.forecast_min_max_sd_india(),
-        tamconfig=self.tamconfig['India'])
+        tamconfig=self.tamconfig['India'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_india'
     return result
 
@@ -402,7 +448,8 @@ class TAM:
        Degree3: 'TAM Data'!CM548:CQ594    Exponential: 'TAM Data'!CV548:CX594
     """
     growth = self.tamconfig.loc['growth', 'India']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['India'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['India'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_india().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_india_' + trend.lower()
@@ -410,22 +457,20 @@ class TAM:
 
   def forecast_data_eu(self):
     """ 'TAM Data'!B607:Q656 """
-    filename = os.path.join(self.datadir, 'tam_forecast_eu.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_eu"
-    return result
+    return self._forecast_data_eu
 
   def forecast_min_max_sd_eu(self):
     """ 'TAM Data'!V607:Y656 """
-    result = self._min_max_sd(forecast=self.forecast_data_eu(), tamconfig=self.tamconfig['EU'])
+    result = self._min_max_sd(forecast=self.forecast_data_eu(),
+        tamconfig=self.tamconfig['EU'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_eu'
     return result
 
   def forecast_low_med_high_eu(self):
     """ 'TAM Data'!AA607:AC656 """
     result = self._low_med_high(forecast=self.forecast_data_eu(),
-        min_max_sd=self.forecast_min_max_sd_eu(), tamconfig=self.tamconfig['EU'])
+        min_max_sd=self.forecast_min_max_sd_eu(), tamconfig=self.tamconfig['EU'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_eu'
     return result
 
@@ -435,7 +480,8 @@ class TAM:
        Degree3: 'TAM Data'!CM612:CQ658    Exponential: 'TAM Data'!CV612:CX658
     """
     growth = self.tamconfig.loc['growth', 'EU']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['EU'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['EU'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_eu().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_eu_' + trend.lower()
@@ -443,22 +489,20 @@ class TAM:
 
   def forecast_data_usa(self):
     """ 'TAM Data'!B672:Q721 """
-    filename = os.path.join(self.datadir, 'tam_forecast_usa.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.name = "forecast_data_usa"
-    return result
+    return self._forecast_data_usa
 
   def forecast_min_max_sd_usa(self):
     """ 'TAM Data'!V672:Y721 """
-    result = self._min_max_sd(forecast=self.forecast_data_usa(), tamconfig=self.tamconfig['USA'])
+    result = self._min_max_sd(forecast=self.forecast_data_usa(),
+        tamconfig=self.tamconfig['USA'], data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_min_max_sd_usa'
     return result
 
   def forecast_low_med_high_usa(self):
     """ 'TAM Data'!AA672:AC721 """
     result = self._low_med_high(forecast=self.forecast_data_usa(),
-        min_max_sd=self.forecast_min_max_sd_usa(), tamconfig=self.tamconfig['USA'])
+        min_max_sd=self.forecast_min_max_sd_usa(), tamconfig=self.tamconfig['USA'],
+        data_sources=self.tam_ref_data_sources)
     result.name = 'forecast_low_med_high_usa'
     return result
 
@@ -468,7 +512,8 @@ class TAM:
        Degree3: 'TAM Data'!CM677:CQ723    Exponential: 'TAM Data'!CV677:CX723
     """
     growth = self.tamconfig.loc['growth', 'USA']
-    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['USA'])
+    trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['USA'],
+        data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_usa().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_usa_' + trend.lower()
