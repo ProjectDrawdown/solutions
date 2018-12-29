@@ -8,9 +8,6 @@ import pytest
 from model import tam
 
 
-thisdir = pathlib.Path(__file__)
-datadir = str(thisdir.parents[2] / 'solution' / 'solarpvutil')
-
 # arguments used in SolarPVUtil 28Aug18, used in many tests
 tamconfig_list = [
     ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
@@ -29,9 +26,61 @@ tamconfig_list = [
     ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
 g_tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
 
+datadir = pathlib.Path(__file__).parents[2]
+g_tam_ref_data_sources = {
+    'Baseline Cases': {
+      'Baseline: Based on- IEA ETP 2016 6DS': str(datadir.joinpath(
+        'data', 'energy', 'IEA_ETP_2016_6DS.csv')),
+      'Baseline: Based on- AMPERE MESSAGE-MACRO Reference': str(datadir.joinpath(
+        'data', 'energy', 'AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
+      'Baseline: Based on- AMPERE GEM E3 Reference': str(datadir.joinpath(
+        'data', 'energy', 'AMPERE_2014_GEM_E3_Reference.csv')),
+      'Baseline: Based on- AMPERE IMAGE/TIMER Reference': str(datadir.joinpath(
+        'data', 'energy', 'AMPERE_2014_IMAGE_TIMER_Reference.csv')),
+      },
+    'Conservative Cases': {
+      'Conservative: Based on- IEA ETP 2016 4DS': str(datadir.joinpath(
+        'data', 'energy', 'IEA_ETP_2016_4DS.csv')),
+      'Conservative: Based on- AMPERE MESSAGE-MACRO 550': str(datadir.joinpath(
+        'data', 'energy', 'AMPERE_2014_MESSAGE_MACRO_550.csv')),
+      'Conservative: Based on- AMPERE GEM E3 550': str(datadir.joinpath(
+        'data', 'energy', 'AMPERE_2014_GEM_E3_550.csv')),
+      'Conservative: Based on- AMPERE IMAGE/TIMER 550': str(datadir.joinpath(
+        'data', 'energy', 'AMPERE_2014_IMAGE_TIMER_550.csv')),
+      'Conservative: Based on- Greenpeace 2015 Reference': str(datadir.joinpath(
+        'data', 'energy', 'Greenpeace_2015_Reference.csv')),
+      },
+    'Ambitious Cases': {
+      'Ambitious: Based on- IEA ETP 2016 2DS': str(datadir.joinpath(
+        'data', 'energy', 'IEA_ETP_2016_2DS.csv')),
+      'Ambitious: Based on- AMPERE MESSAGE-MACRO 450': str(datadir.joinpath(
+        'data', 'energy', 'AMPERE_2014_MESSAGE_MACRO_450.csv')),
+      'Ambitious: Based on- AMPERE GEM E3 450': str(datadir.joinpath(
+        'data', 'energy', 'AMPERE_2014_GEM_E3_450.csv')),
+      'Ambitious: Based on- AMPERE IMAGE/TIMER 450': str(datadir.joinpath(
+        'data', 'energy', 'AMPERE_2014_IMAGE_TIMER_450.csv')),
+      'Ambitious: Based on- Greenpeace Energy [R]evolution': str(datadir.joinpath(
+        'data', 'energy', 'Greenpeace_2015_Energy_Revolution.csv')),
+      },
+    '100% RES2050 Case': {
+      '100% REN: Based on- Greenpeace Advanced [R]evolution': str(datadir.joinpath(
+        'data', 'energy', 'Greenpeace_2015_Advanced_Revolution.csv')),
+      },
+}
+g_tam_pds_data_sources = {
+    'Ambitious Cases': {
+      'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario': str(datadir.joinpath(
+        'data', 'energy', 'PDS_plausible_scenario.csv')),
+      'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario': str(datadir.joinpath(
+        'data', 'energy', 'PDS_drawdown_scenario.csv')),
+      'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario': str(datadir.joinpath(
+        'data', 'energy', 'PDS_optimum_scenario.csv')),
+      },
+}
 
 def test_forecast_data_global():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_global()
   b = 'Baseline: Based on- AMPERE GEM E3 Reference'
   c = 'Conservative: Based on- IEA ETP 2016 4DS'
@@ -39,7 +88,8 @@ def test_forecast_data_global():
   assert forecast.loc[2027, c] == pytest.approx(32564.99176177900)
 
 def test_forecast_min_max_sd_global():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_min_max_sd_global()
   expected = pd.DataFrame(forecast_min_max_sd_global_list[1:],
       columns=forecast_min_max_sd_global_list[0],
@@ -48,7 +98,8 @@ def test_forecast_min_max_sd_global():
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_forecast_low_med_high_global():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_low_med_high_global()
   expected = pd.DataFrame(forecast_low_med_high_global_list[1:],
       columns=forecast_low_med_high_global_list[0],
@@ -62,7 +113,8 @@ def test_forecast_low_med_high_global_larger_sd():
   tamconfig_mod.loc['source_after_2014', 'World'] = 'Ambitious: Based on- IEA ETP 2016 2DS'
   tamconfig_mod.loc['low_sd_mult', 'World'] = 2.0
   tamconfig_mod.loc['high_sd_mult', 'World'] = 3.0
-  tm = tam.TAM(datadir=datadir, tamconfig=tamconfig_mod)
+  tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_low_med_high_global()
   expected = pd.DataFrame(forecast_low_med_high_global_larger_list[1:],
       columns=forecast_low_med_high_global_larger_list[0],
@@ -71,35 +123,40 @@ def test_forecast_low_med_high_global_larger_sd():
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_linear_trend_global():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_trend_global(trend='Linear')
   expected = pd.DataFrame(linear_trend_global_list[1:],
       columns=linear_trend_global_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_poly_degree2_trend_global():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_trend_global(trend='Degree2')
   expected = pd.DataFrame(poly_degree2_trend_global_list[1:],
       columns=poly_degree2_trend_global_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_poly_degree3_trend_global():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_trend_global(trend='Degree3')
   expected = pd.DataFrame(poly_degree3_trend_global_list[1:],
       columns=poly_degree3_trend_global_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_exponential_trend_global():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_trend_global(trend='Exponential')
   expected = pd.DataFrame(exponential_trend_global_list[1:],
       columns=exponential_trend_global_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_forecast_pds_global():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_pds_global()
   a1 = 'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario'
   a2 = 'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario'
@@ -136,7 +193,8 @@ def test_forecast_pds_global():
   assert g.loc[2059, 'adoption'] == pytest.approx(62077.150109)
 
 def test_forecast_data_oecd90():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_oecd90()
   b = 'Baseline: Based on- AMPERE IMAGE/TIMER Reference'
   c = 'Conservative: Based on- AMPERE MESSAGE-MACRO 550'
@@ -144,7 +202,8 @@ def test_forecast_data_oecd90():
   assert forecast.loc[2017, c] == pytest.approx(8726.22744026733)
 
 def test_forecast_min_max_sd_oecd90():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_min_max_sd_oecd90()
   expected = pd.DataFrame(forecast_min_max_sd_oecd90_list[1:],
       columns=forecast_min_max_sd_oecd90_list[0],
@@ -153,7 +212,8 @@ def test_forecast_min_max_sd_oecd90():
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_forecast_low_med_high_oecd90():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_low_med_high_oecd90()
   expected = pd.DataFrame(forecast_low_med_high_oecd90_list[1:],
       columns=forecast_low_med_high_oecd90_list[0],
@@ -162,35 +222,40 @@ def test_forecast_low_med_high_oecd90():
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_linear_trend_oecd90():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_trend_oecd90(trend='Linear')
   expected = pd.DataFrame(linear_trend_oecd90_list[1:],
       columns=linear_trend_oecd90_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_poly_degree2_trend_oecd90():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_trend_oecd90(trend='Degree2')
   expected = pd.DataFrame(poly_degree2_trend_oecd90_list[1:],
       columns=poly_degree2_trend_oecd90_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_poly_degree3_trend_oecd90():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_trend_oecd90(trend='Degree3')
   expected = pd.DataFrame(poly_degree3_trend_oecd90_list[1:],
       columns=poly_degree3_trend_oecd90_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_exponential_trend_oecd90():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_trend_oecd90(trend='Exponential')
   expected = pd.DataFrame(exponential_trend_oecd90_list[1:],
       columns=exponential_trend_oecd90_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_forecast_eastern_europe():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_eastern_europe()
   a = 'Ambitious: Based on- IEA ETP 2016 2DS'
   r = '100% REN: Based on- Greenpeace Advanced [R]evolution'
@@ -225,7 +290,8 @@ def test_forecast_eastern_europe():
   assert g.loc[2059, 'adoption'] == pytest.approx(3532.382068)
 
 def test_forecast_asia_sans_japan():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_asia_sans_japan()
   a = 'Ambitious: Based on- AMPERE GEM E3 450'
   c = 'Conservative: Based on- AMPERE IMAGE/TIMER 550'
@@ -260,7 +326,8 @@ def test_forecast_asia_sans_japan():
   assert g.loc[2059, 'adoption'] == pytest.approx(29624.60557)
 
 def test_forecast_data_middle_east_and_africa():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_middle_east_and_africa()
   b = 'Baseline: Based on- AMPERE GEM E3 Reference'
   c = 'Conservative: Based on- IEA ETP 2016 4DS'
@@ -295,7 +362,8 @@ def test_forecast_data_middle_east_and_africa():
   assert g.loc[2059, 'adoption'] == pytest.approx(10090.96414)
 
 def test_forecast_data_latin_america():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_latin_america()
   b = 'Baseline: Based on- AMPERE MESSAGE-MACRO Reference'
   r = '100% REN: Based on- Greenpeace Advanced [R]evolution'
@@ -330,7 +398,8 @@ def test_forecast_data_latin_america():
   assert g.loc[2059, 'adoption'] == pytest.approx(6248.173559)
 
 def test_forecast_data_china():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_china()
   b = 'Baseline: Based on- AMPERE MESSAGE-MACRO Reference'
   c = 'Conservative: Based on- Greenpeace 2015 Reference'
@@ -365,7 +434,8 @@ def test_forecast_data_china():
   assert g.loc[2059, 'adoption'] == pytest.approx(13131.43658)
 
 def test_forecast_data_india():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_india()
   a = 'Ambitious: Based on- AMPERE IMAGE/TIMER 450'
   c = 'Conservative: Based on- AMPERE IMAGE/TIMER 550'
@@ -400,7 +470,8 @@ def test_forecast_data_india():
   assert g.loc[2059, 'adoption'] == pytest.approx(10191.27731)
 
 def test_forecast_data_eu():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_eu()
   c = 'Conservative: Based on- Greenpeace 2015 Reference'
   r = '100% REN: Based on- Greenpeace Advanced [R]evolution'
@@ -435,7 +506,8 @@ def test_forecast_data_eu():
   assert g.loc[2059, 'adoption'] == pytest.approx(4815.246799)
 
 def test_forecast_data_usa():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   forecast = tm.forecast_data_usa()
   a = 'Ambitious: Based on- AMPERE IMAGE/TIMER 450'
   c = 'Conservative: Based on- Greenpeace 2015 Reference'
@@ -470,7 +542,8 @@ def test_forecast_data_usa():
   assert g.loc[2059, 'adoption'] == pytest.approx(5574.958973)
 
 def test_ref_tam_per_region():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.ref_tam_per_region()
   filename = str(pathlib.Path(__file__).parents[0].joinpath('ref_tam_per_region.csv'))
   expected = pd.read_csv(filename, header=0, index_col=0,
@@ -478,7 +551,8 @@ def test_ref_tam_per_region():
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_pds_tam_per_region():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.pds_tam_per_region()
   filename = str(pathlib.Path(__file__).parents[0].joinpath('pds_tam_per_region.csv'))
   expected = pd.read_csv(filename, header=0, index_col=0,
@@ -486,7 +560,8 @@ def test_pds_tam_per_region():
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_to_dict():
-  tm = tam.TAM(datadir=datadir, tamconfig=g_tamconfig)
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.to_dict()
   expected = [
       'forecast_data_global', 'forecast_min_max_sd_global',

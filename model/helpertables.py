@@ -9,7 +9,6 @@ import enum
 import numpy as np
 import pandas as pd
 
-from model import data_sources
 from model import interpolation
 
 ADOPTION_BASIS = enum.Enum('ADOPTION_BASIS',
@@ -21,7 +20,8 @@ class HelperTables:
   """Implementation for the Helper Tables module.
   """
   def __init__(self, ac, ref_datapoints, pds_datapoints,
-      ref_tam_per_region, pds_tam_per_region, adoption_low_med_high_global):
+      ref_tam_per_region, pds_tam_per_region, adoption_low_med_high_global,
+      adoption_is_single_source):
     """HelperTables.
        Arguments:
          ac = advanced_controls.py object, storing settings to control
@@ -34,6 +34,8 @@ class HelperTables:
            region for the PDS scenario.
          adoption_low_med_high_global: dataframe with Low, Medium, and High columns
            of adoptiondata for the World region.
+         adoption_is_single_source (bool): whether the adoption data comes from a single source
+           or multiple, to determine how to handle stddev.
     """
     self.ac = ac
     self.ref_datapoints = ref_datapoints
@@ -41,6 +43,7 @@ class HelperTables:
     self.ref_tam_per_region = ref_tam_per_region
     self.pds_tam_per_region = pds_tam_per_region
     self.adoption_low_med_high_global = adoption_low_med_high_global
+    self.adoption_is_single_source = adoption_is_single_source
 
   def soln_ref_funits_adopted(self):
     """Cumulative Adoption in funits, interpolated between two ref_datapoints.
@@ -112,8 +115,7 @@ class HelperTables:
         columns=self.pds_datapoints.columns.copy(), dtype='float')
     source_data = self._get_source_data()
 
-    s = self.ac.soln_pds_adoption_prognostication_source
-    if s and not data_sources.is_group_name(s):
+    if self.adoption_is_single_source:
       # single source, so use that one source without curve fitting.
       adoption['World'] = source_data
     elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.LINEAR:

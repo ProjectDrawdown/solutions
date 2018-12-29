@@ -3,7 +3,6 @@
 import math
 import os
 
-from model import data_sources
 from model import interpolation
 import numpy as np
 import pandas as pd
@@ -11,10 +10,16 @@ from statistics import mean
 
 class AdoptionData:
   """Implements Adoption Data module."""
-  def __init__(self, ac, datadir, adconfig):
+  def __init__(self, ac, data_sources, adconfig):
     """Arguments:
          ac: advanced_controls.py
-         datadir: path name to the directory to find data files.
+         data_sources: a dict() of group names which contain dicts of data source names.
+           For example:
+           {
+             'Ambitious Cases': {'Study Name A': 'filename A', 'Study Name B': 'filename B', ...}
+             'Baseline Cases': {'Study Name C': 'filename C', 'Study Name D': 'filename D', ...}
+             'Conservative Cases': {'Study Name E': 'filename E', 'Study Name F': 'filename F', ...}
+           }
          adconfig: Pandas dataframe with columns:
            'trend', 'growth', 'low_sd_mult', 'high_sd_mult'
            and rows for each region:
@@ -22,20 +27,25 @@ class AdoptionData:
            'Latin America', 'China', 'India', 'EU', 'USA'
     """
     self.ac = ac
-    self.datadir = datadir
+    self.data_sources = data_sources
     self.adconfig = adconfig
-    super()
+    self._populate_adoption_data()
+
+  def _populate_adoption_data(self):
+    """Read data files in self.data_sources to populate adoption data."""
+    self._adoption_data_global = pd.DataFrame()
+    self._adoption_data_global.name = 'adoption_data_global'
+    for (groupname, group) in self.data_sources.items():
+      for (name, filename) in group.items():
+        df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+          skip_blank_lines=True, comment='#')
+        self._adoption_data_global.loc[:, name] = df.loc[:, 'World']
 
   def adoption_data_global(self):
     """Return adoption data for the given solution in the 'World' region.
        'Adoption Data'!B45:R94
     """
-    filename = os.path.join(self.datadir, 'adoption_data.csv')
-    result = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-        skip_blank_lines=True, comment='#')
-    result.index = result.index.astype(int)
-    result.name = 'adoption_data_global'
-    return result
+    return self._adoption_data_global
 
   def adoption_min_max_sd_global(self):
     """Return the min, max, and standard deviation for the adoption data in the 'World' region.
@@ -56,8 +66,9 @@ class AdoptionData:
     """
     adoption_data = self.adoption_data_global()
     result = pd.DataFrame(index=adoption_data.index.copy(), columns=['Low', 'Medium', 'High'])
-    columns = data_sources.matching_columns(
-        adoption_data.columns, self.ac.soln_pds_adoption_prognostication_source)
+    columns = interpolation.matching_data_sources(data_sources=self.data_sources,
+        name=self.ac.soln_pds_adoption_prognostication_source, groups_only=False)
+
     medium = adoption_data.loc[:, columns].mean(axis=1)
     result.loc[:, 'Medium'] = medium
 
@@ -80,6 +91,11 @@ class AdoptionData:
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'adoption_trend_global_' + trend.lower()
     return result
+
+  def adoption_is_single_source(self):
+    """Whether the source data selected is one source or multiple."""
+    return not interpolation.is_group_name(data_sources=self.data_sources,
+        name=self.ac.soln_pds_adoption_prognostication_source)
 
   def to_dict(self):
     """Return all fields as a dict, to be serialized to JSON."""

@@ -3,7 +3,7 @@
 import io
 import json
 import os
-import os.path
+import pathlib
 
 from flask import Flask, request, render_template, jsonify, Response
 import numpy as np
@@ -19,6 +19,7 @@ from model import interpolation
 from model import operatingcost
 from model import tam
 from model import unitadoption
+from solution import rrs
 from solution import solarpvroof
 from solution import solarpvutil
 import werkzeug.exceptions
@@ -27,7 +28,8 @@ import werkzeug.exceptions
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False  # minify JSON
 
-datadir = os.path.join(os.path.dirname(__file__), 'solution', 'solarpvutil')
+solndir = pathlib.Path(__file__).parents[0].joinpath('solution', 'solarpvutil')
+datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
 
 def json_dumps_default(obj):
@@ -177,7 +179,45 @@ def adoptionData():
     p = ad_rq.get('adconfig', [])
     adconfig = pd.DataFrame(p[1:], columns=p[0]).set_index('param')
 
-    ad = adoptiondata.AdoptionData(ac=ac_rq, datadir=datadir, adconfig=adconfig)
+    data_sources = {
+      'Baseline Cases': {
+        'Based on: IEA ETP 2016 6DS': pathlib.PurePath(solndir, 'ad_IEA_ETP_2016_6DS.csv'),
+        'Based on: AMPERE (2014) IMAGE Refpol': pathlib.PurePath(solndir,
+          'ad_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
+        'Based on: AMPERE (2014) MESSAGE REFPol': pathlib.PurePath(solndir,
+          'ad_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
+        'Based on: AMPERE (2014) GEM E3 REFpol': pathlib.PurePath(solndir,
+          'ad_AMPERE_2014_GEM_E3_Reference.csv'),
+      },
+      'Conservative Cases': {
+        'Based on: IEA ETP 2016 4DS': pathlib.PurePath(solndir, 'ad_IEA_ETP_2016_4DS.csv'),
+        'Based on: AMPERE (2014) IMAGE 550': pathlib.PurePath(solndir,
+          'ad_AMPERE_2014_IMAGE_TIMER_550.csv'),
+        'Based on: AMPERE (2014) MESSAGE 550': pathlib.PurePath(solndir,
+          'ad_AMPERE_2014_MESSAGE_MACRO_550.csv'),
+        'Based on: AMPERE (2014) GEM E3 550': pathlib.PurePath(solndir,
+          'ad_AMPERE_2014_GEM_E3_550.csv'),
+        'Based on: Greenpeace (2015) Reference': pathlib.PurePath(solndir,
+          'ad_Greenpeace_2015_Reference.csv'),
+      },
+      'Ambitious Cases': {
+        'Based on: IEA ETP 2016 2DS': pathlib.PurePath(solndir, 'ad_IEA_ETP_2016_2DS.csv'),
+        'Based on: AMPERE (2014) IMAGE 450': pathlib.PurePath(solndir,
+          'ad_AMPERE_2014_IMAGE_TIMER_450.csv'),
+        'Based on: AMPERE (2014) MESSAGE 450': pathlib.PurePath(solndir,
+          'ad_AMPERE_2014_MESSAGE_MACRO_450.csv'),
+        'Based on: AMPERE (2014) GEM E3 450': pathlib.PurePath(solndir,
+          'ad_AMPERE_2014_GEM_E3_450.csv'),
+        'Based on: Greenpeace (2015) Energy Revolution': pathlib.PurePath(solndir,
+          'ad_Greenpeace_2015_Energy_Revolution.csv'),
+      },
+      '100% RES2050 Case': {
+        'Based on: Greenpeace (2015) Advanced Energy Revolution': pathlib.PurePath(solndir,
+          'ad_Greenpeace_2015_Advanced_Revolution.csv'),
+      },
+    }
+
+    ad = adoptiondata.AdoptionData(ac=ac_rq, data_sources=data_sources, adconfig=adconfig)
     results_str = json.dumps(ad.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
@@ -207,7 +247,8 @@ def helperTables():
     ht = helpertables.HelperTables(ac=ac_rq,
         ref_datapoints=ref_datapoints, pds_datapoints=pds_datapoints,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-        adoption_low_med_high_global=adoption_low_med_high)
+        adoption_low_med_high_global=adoption_low_med_high,
+        adoption_is_single_source=False)
     results_str = json.dumps(ht.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
@@ -277,7 +318,8 @@ def tamData():
     p = td_rq.get('tamconfig', [])
     tamconfig = pd.DataFrame(p[1:], columns=p[0]).set_index('param')
 
-    td = tam.TAM(datadir=datadir, tamconfig=tamconfig)
+    td = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=rrs.tam_ref_data_sources,
+        tam_pds_data_sources=rrs.tam_pds_data_sources)
     results_str = json.dumps(td.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 

@@ -58,6 +58,56 @@ def test_invalid_trend():
   with pytest.raises(ValueError):
     _ = itrp.trend_algorithm(data=None, trend='invalid')
 
+g_data_sources = {
+    'Ambitious Cases': {
+      'Ambitious 1': 'filename1',
+      'Ambitious 2': 'filename2',
+    },
+    'Baseline Cases': {
+      'Baseline 1': 'filename1',
+    },
+    'Conservative Cases': {
+      'Conservative 1': 'filename1',
+    },
+    '100% REN': {
+    },
+  }
+g_all_data_sources = ['Ambitious 1', 'Ambitious 2', 'Baseline 1', 'Conservative 1']
+
+def test_matching_data_sources():
+  assert sorted(itrp.matching_data_sources(data_sources=g_data_sources,
+      name='Ambitious Cases', groups_only=False)) == sorted(['Ambitious 1', 'Ambitious 2'])
+  assert itrp.matching_data_sources(data_sources=g_data_sources,
+      name='Baseline Cases', groups_only=False) == ['Baseline 1']
+  assert itrp.matching_data_sources(data_sources=g_data_sources,
+      name='Conservative Cases', groups_only=False) == ['Conservative 1']
+  assert itrp.matching_data_sources(data_sources=g_data_sources,
+      name='100% REN', groups_only=False) == []
+
+def test_matching_data_sources_no_such_group():
+  with pytest.raises(ValueError):
+    _ = itrp.matching_data_sources(data_sources=g_data_sources,
+        name='no such group', groups_only=False)
+ 
+def test_groups_only():
+  assert itrp.matching_data_sources(data_sources=g_data_sources, name='Ambitious 1',
+      groups_only=False) == ['Ambitious 1']
+  assert sorted(itrp.matching_data_sources(data_sources=g_data_sources, name='Ambitious 1',
+      groups_only=True)) == sorted(g_all_data_sources)
+
+def test_all_and_empty_result():
+  assert itrp.matching_data_sources(data_sources=g_data_sources, name='100% REN',
+      groups_only=False) == []
+  assert sorted(itrp.matching_data_sources(data_sources=g_data_sources, name='ALL SOURCES',
+      groups_only=False)) == sorted(g_all_data_sources)
+
+def test_is_group_name():
+  assert itrp.is_group_name(data_sources=g_data_sources, name='Ambitious Cases') == True
+  assert itrp.is_group_name(data_sources=g_data_sources, name='ALL SOURCES') == True
+  assert itrp.is_group_name(data_sources=g_data_sources, name='Ambitious 1') == False
+  with pytest.raises(ValueError):
+    _ = itrp.is_group_name(data_sources=g_data_sources, name='not a group name')
+
 
 # 'Adoption Data'!AB46:AD94
 adoption_low_med_high_list = [['Year', 'Low', 'Medium', 'High'],

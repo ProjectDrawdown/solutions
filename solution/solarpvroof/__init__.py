@@ -16,10 +16,13 @@ from model import helpertables
 from model import operatingcost
 from model import tam
 from model import unitadoption
+from solution import rrs
 
 
 class SolarPVRoof:
   def __init__(self):
+    datadir = str(pathlib.PurePath(pathlib.Path(__file__).parents[2], 'data'))
+
     soln_funit_adoption_2014 = pd.DataFrame([[112.633033333333, 75.0042455555555,
       0.332383333333333, 21.0725044444444, 1.57507777777778, 14.6506188888889,
       14.9722222222222, 2.74830111111111, 55.2720544444444, 13.12465000000]],
@@ -94,6 +97,46 @@ class SolarPVRoof:
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
 
+    thisdir = pathlib.Path(__file__).parents[0]
+    ad_data_sources = {
+      'Baseline Cases': {
+        'Based on: AMPERE IMAGE REFpol': str(thisdir.joinpath(
+          'ad_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
+        'Based on: AMPERE 3 MESSAGE Refpol': str(thisdir.joinpath(
+          'ad_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
+        'Based on:AMPERE 3 GEM E3 Refpol': str(thisdir.joinpath(
+          'ad_AMPERE_2014_GEM_E3_Reference.csv')),
+        'Based on:IEA ETP 2016 6DS': str(thisdir.joinpath('ad_IEA_ETP_2016_6DS.csv')),
+      },
+      'Conservative Cases': {
+        'Based on:AMPERE3 IMAGE 550': str(thisdir.joinpath(
+          'ad_AMPERE_2014_IMAGE_TIMER_550.csv')),
+        'Based on:AMPERE 3 MESSAGE 550': str(thisdir.joinpath(
+          'ad_AMPERE_2014_MESSAGE_MACRO_550.csv')),
+        'Based on:AMPERE 3 GEM E3 550': str(thisdir.joinpath(
+          'ad_AMPERE_2014_GEM_E3_550.csv')),
+        'Based on:IEA ETP 2016 4DS': str(thisdir.joinpath('ad_IEA_ETP_2016_4DS.csv')),
+        'Based on: Greenpeace Reference (2015)': str(thisdir.joinpath(
+          'ad_Greenpeace_2015_Reference.csv')),
+      },
+      'Ambitious Cases': {
+        'Based on: AMPERE3 IMAGE 450': str(thisdir.joinpath(
+          'ad_AMPERE_2014_IMAGE_TIMER_450.csv')),
+        'Based on:AMPERE 3 MESSAGE 450': str(thisdir.joinpath(
+          'ad_AMPERE_2014_MESSAGE_MACRO_450.csv')),
+        'Based on: AMPERE 3 GEM E3 450': str(thisdir.joinpath(
+          'ad_AMPERE_2014_GEM_E3_450.csv')),
+        'Based on: IEA ETP 2016 2DS': str(thisdir.joinpath('ad_IEA_ETP_2016_2DS.csv')),
+        'Based on: Greenpeace Energy Revolution (2015)': str(thisdir.joinpath(
+          'ad_Greenpeace_2015_Energy_Revolution.csv')),
+        '[Source 6 - Ambitious]': str(thisdir.joinpath('ad_source_6_ambitious.csv')),
+      },
+      '100% RES2050 Case': {
+        'Based on: Greenpeace Advanced Energy Revolution (2015)': str(thisdir.joinpath(
+          'ad_Greenpeace_2015_Advanced_Revolution.csv')),
+      },
+    }
+
     ht_ref_datapoints = pd.DataFrame([
       [2014,  112.6330333333330, 75.0042455555555, 0.3323833333333, 21.0725044444444,
         1.5750777777778, 14.6506188888889, 14.9722222222222, 2.7483011111111,
@@ -111,16 +154,17 @@ class SolarPVRoof:
       columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
           "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
 
-    datadir = str(pathlib.Path(__file__).parents[0])
-    self.tm = tam.TAM(datadir=datadir, tamconfig=tamconfig)
+    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=rrs.tam_ref_data_sources,
+        tam_pds_data_sources=rrs.tam_pds_data_sources)
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, datadir=datadir, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
     self.ht = helpertables.HelperTables(ac=self.ac,
         ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-        adoption_low_med_high_global=self.ad.adoption_low_med_high_global())
+        adoption_low_med_high_global=self.ad.adoption_low_med_high_global(),
+        adoption_is_single_source=self.ad.adoption_is_single_source())
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
     self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
