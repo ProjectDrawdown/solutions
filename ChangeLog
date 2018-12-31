@@ -81,3 +81,16 @@ Dec 17 - 21, 2018
   This will remove the need for glue code in app.py, glue code which
   would otherwise have to be duplicated for every solution using those
   modules.
+
+Dec 24 - 28, 2018
++ use the per-module to_dict() methods in app.py.
+  Remove the glue code for each module to call all of the functions and
+  assemble the response.
++ add a /solarpvutil endpoint, and make Excel use it.
+  This is an impactful change: Excel is no longer providing inputs to
+  the model, Excel is now solely used as an output to provide a way for
+  automated tests to compare the old and new implementations.
++ add a /solarpvroof endpoint, a second solution.
+  We do not have a SolarPVRooftop Excel file suitable for checking in,
+  test_excel_integration.py does not yet check this model. The more
+  basic tests in solution/test_solutions.py do test it.
