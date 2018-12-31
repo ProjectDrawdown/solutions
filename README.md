@@ -34,7 +34,7 @@ FLASK_APP=app.py FLASK_ENV=development flask run
 
 Test Query
 ```sh
-curl -H 'Content-Type: application/json' --data @sample.json 'http://127.0.0.1:5000/unitadoption.v2'
+curl -H 'Content-Type: application/json' --data "{}" "http://127.0.0.1:5000/solarpvutil"
 ```
 # Understanding the Drawdown solution models: Reference and Summary
 
@@ -55,7 +55,7 @@ The input to a given model is various data such as costs per installed watt of r
 
 Each model and functional unit has a notion of a Total Available Market. There is no benefit to install more rooftop solar than the total market for electricity for the globe, for example. The prevents unrealistic optimism on a single solution, for example.
 
-Reaching the drawdown point, where humanity ceases to add greenhouses gases to the atmosphere, will require many solutions to be adopted working and to harmonize synergistically.
+Reaching the drawdown point, where humanity ceases to add greenhouses gases to the atmosphere, will require many solutions to be adopted and to harmonize synergistically.
 
 # Road Map
 
@@ -106,7 +106,9 @@ The four modules below may be thought of as the computational "kernel" of the Dr
    The Adoption Data module was completed 11/5/2018.
 
 7. **VMA Variable Meta Analysis**  
-   This is far enough in the future that we are less confident that this will really be the thing to tackle next. The plan will evolve as it goes along.
+   The Variable Meta-Analysis tab provides a variety of calculations which are not handled elsewhere. For example in the various solar solutions like Utility-Scale or Rooftop, the Variable Meta-Analysis module provides estimates of what percentage of overall solar adoption should be applied to each. More than most, the VMA module is customized according to the needs of each inndividual solution. For the Remodel we will supply code to use as building blocks, but expect that much of the Variable Meta Analysis handling will be done as code for individual solutions or classes of solutions.
+
+   Implementation of the VMA module was started 12/29/2018.
 
 8. **Other data input to be designed**  
    There are other input parameters that may require significant human-centered design. However, we don't believe these should be addressed until the other above modules have been done.
