@@ -48,6 +48,12 @@ def convert_units(row):
     return float(raw)
   if units == '%':
     return float(raw.strip('%'))/100.0
+  if units.lower() == 'btu/kwh':
+    return 0.00341214163 * 1000000 / float(raw)
+  if units.lower() == 'btu/gwh':
+    return 3412.14163 * 1000000 / float(raw)
+  if units.lower() == 'btu/twh':
+    return 3412141.63 * 1000000 / float(raw)
   if units in conversions:
     return float(raw) * conversions[units]
   raise ValueError("Unknown unit conversion=" + str(units))
