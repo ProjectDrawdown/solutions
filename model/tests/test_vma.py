@@ -20,15 +20,11 @@ def test_AvgHighLow():
   ahlvma = vma.AvgHighLow(df, low_sd=1.0, high_sd=1.0, use_weight=True)
   result = ahlvma.avg_high_low()
   expected = (0.41021474451, 0.47368454143, 0.34674494760)
-  assert result[0] == pytest.approx(expected[0])
-  assert result[1] == pytest.approx(expected[1])
-  assert result[2] == pytest.approx(expected[2])
+  assert result == pytest.approx(expected)
   ahlvma = vma.AvgHighLow(df, low_sd=1.0, high_sd=1.0, use_weight=False)
   result = ahlvma.avg_high_low()
   expected = (0.41483808973, 0.46357489314, 0.36610128632)
-  assert result[0] == pytest.approx(expected[0])
-  assert result[1] == pytest.approx(expected[1])
-  assert result[2] == pytest.approx(expected[2])
+  assert result == pytest.approx(expected)
 
 def test_AvgHighLow_conversion_inflation():
   # values from SolarPVUtil 'Variable Meta-analysis'!C85:O106
@@ -62,9 +58,7 @@ def test_AvgHighLow_conversion_inflation():
   ahlvma = vma.AvgHighLow(df, low_sd=1.0, high_sd=1.0, use_weight=True)
   result = ahlvma.avg_high_low()
   expected = (2010.032, 3373.557, 646.507)
-  assert result[0] == pytest.approx(expected[0])
-  assert result[1] == pytest.approx(expected[1])
-  assert result[2] == pytest.approx(expected[2])
+  assert result == pytest.approx(expected)
 
 def test_AvgHighLow_conversion_co2eq():
   # values from SolarPVUtil 'Variable Meta-analysis'!C744:O766
@@ -99,9 +93,22 @@ def test_AvgHighLow_conversion_co2eq():
   ahlvma = vma.AvgHighLow(df, low_sd=1.0, high_sd=1.0, use_weight=False)
   result = ahlvma.avg_high_low()
   expected = (47096.81818181820, 65382.64314055300, 28810.99322308340)
-  assert result[0] == pytest.approx(expected[0])
-  assert result[1] == pytest.approx(expected[1])
-  assert result[2] == pytest.approx(expected[2])
+  assert result == pytest.approx(expected)
+
+def test_AvgHighLow_conversion_btu():
+  # values from SolarPVUtil 'Variable Meta-analysis' line 978
+  df = pd.DataFrame([
+      ["A", "", "", "", "", "", "", 8251.6363640, 'Btu/kWh', ""],
+      ["B", "", "", "", "", "", "", 8251636364.0, 'Btu/GWh', ""],
+      ["B", "", "", "", "", "", "", 8251636364000.0, 'Btu/TWh', ""],
+    ],
+    columns=['Source ID', 'Link', 'Region', 'Specific Geographic Location',
+      'Source Validation Code', 'Year', 'License Code', 'Raw Data Input',
+      'Original Units', 'Weight'])
+  ahlvma = vma.AvgHighLow(df, low_sd=1.0, high_sd=1.0, use_weight=False)
+  result = ahlvma.avg_high_low()
+  expected = (0.41351090614, 0.41351090614, 0.41351090614)
+  assert result == pytest.approx(expected)
 
 def test_AvgHighLow_conversion_unknown():
   df = pd.DataFrame([
@@ -112,3 +119,13 @@ def test_AvgHighLow_conversion_unknown():
       'Original Units', 'Weight'])
   with pytest.raises(ValueError):
     _ = vma.AvgHighLow(df, low_sd=1.0, high_sd=1.0, use_weight=False)
+
+def test_AvgHighLow_single_study():
+  df = pd.DataFrame([["A", "", "", "", "", "", "", "39%", "%", ""],],
+    columns=['Source ID', 'Link', 'Region', 'Specific Geographic Location',
+      'Source Validation Code', 'Year', 'License Code', 'Raw Data Input',
+      'Original Units', 'Weight'])
+  ahlvma = vma.AvgHighLow(df, low_sd=1.0, high_sd=1.0, use_weight=False)
+  result = ahlvma.avg_high_low()
+  expected = (0.39, 0.39, 0.39)
+  assert result == pytest.approx(expected)
