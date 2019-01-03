@@ -36,8 +36,6 @@ def test_ch4_ppb_calculator():
   result = c4.ch4_ppb_calculator()
   expected = pd.DataFrame(ch4_ppb_calculator_list[1:],
       columns=ch4_ppb_calculator_list[0]).set_index('Year').fillna(0)
-  print(result.columns)
-  print(expected.columns)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_to_dict():

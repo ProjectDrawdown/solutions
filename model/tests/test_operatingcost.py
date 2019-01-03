@@ -305,7 +305,6 @@ def test_to_dict():
       'soln_only_single_iunit_payback', 'soln_only_single_iunit_payback_discounted']
   for ex in expected:
     assert ex in result
-    print(ex)
     f = getattr(oc, ex, None)
     if f:
       check = f()
