@@ -1,0 +1,21 @@
+# For the IEA data, a lower heating value (LHV) is used. The average EIA data
+# from 2004-2014 is reported in Btu/kWh, and this average is converted to an
+# efficiency measure by dividing the equivalent Btu content of a kWh of
+# electricity (which is 3,412 Btu) by the raw data input (see:
+# https://www.eia.gov/tools/faqs/faq.cfm?id=667&t=2). For the IPCC data,
+# minimum, median, and maximum values are included.NOTE: the IPCC uses the
+# following sources for calculating minimum, median, and maximum fixed annual
+# opeartion and maintenance costs for coal and natural gas:
+# Coal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010),
+#    IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).
+# Gas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010),
+#    IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).
+#
+# WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C926:X955, VMA #25
+Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
+"IPCC WG3 AR5, min  (Table A.III.2)", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , , 2014, , 33%, %,
+#"IPCC WG3 AR5, median" is marked as excluded from calculation, so comment it out here.
+#"IPCC WG3 AR5, median  (Table A.III.2)", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , , 2014, , 39%, %,
+"IPCC WG3 AR5, max  (Table A.III.2)", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , , 2014, , 48%, %,
+"IEA 2010, Power Generation from Coal (p. 61), lower heating value (LHV)", https://www.iea.org/ciab/papers/power_generation_from_coal.pdf, World, , , 2010, , 33%, %,
+"US EIA, Average 2004-2014", http://www.eia.gov/electricity/annual/html/epa_08_01.html, USA, , , 2015, , 10406, BTU/kWh, 
