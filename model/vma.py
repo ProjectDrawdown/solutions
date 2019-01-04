@@ -4,11 +4,6 @@ import math
 import pandas as pd
 
 
-columns = ['Source ID', 'Link', 'Region', 'Specific Geographic Location',
-    'Source Validation Code', 'Year', 'License Code', 'Raw Data Input',
-    'Original Units', 'Weight']
-
-
 def get_value(val):
   """pd.apply() fcn for floating point numbers and percentages."""
   if isinstance(val, str) and val.endswith('%'):
@@ -48,13 +43,16 @@ conversions = {
 
 def convert_units(row):
   raw = row['Raw Data Input']
-  units = row['Original Units'].lower()
+  units = row['Original Units']
+  units = '' if pd.isnull(units) else units.lower()
+  if units == '%' or (not units and isinstance(raw, str) and raw.endswith('%')):
+    return float(raw.strip('%'))/100.0
   if not units:
     return float(raw)
-  if units == '%':
-    return float(raw.strip('%'))/100.0
   if units == 'btu/kwh':
     return 0.00341214163 * 1000000 / float(raw)
+  if units == 'btu/mwh':
+    return 3.41214163 * 1000000 / float(raw)
   if units == 'btu/gwh':
     return 3412.14163 * 1000000 / float(raw)
   if units == 'btu/twh':
@@ -73,9 +71,13 @@ def convert_units(row):
 
 
 class AvgHighLow:
-  def __init__(self, df, low_sd, high_sd, use_weight=False, discard_multiplier=3):
+  def __init__(self, filename, low_sd=1.0, high_sd=1.0, use_weight=None, discard_multiplier=3):
+    df = pd.read_csv(filename, index_col=False, skipinitialspace=True,
+        skip_blank_lines=True, comment='#')
     self.low_sd = low_sd
     self.high_sd = high_sd
+    if use_weight is None:
+      use_weight = not all(pd.isnull(df['Weight']))
     self.use_weight = use_weight
     self.discard_multiplier = discard_multiplier
     weight = df['Weight'].apply(get_value)
@@ -86,8 +88,7 @@ class AvgHighLow:
     units.name = 'Units'
     value = df.apply(convert_units, axis=1)
     value.name = 'Value'
-    new_df = pd.concat([value, weight], axis=1)
-    self.df = new_df
+    self.df = pd.concat([value, units, raw, weight], axis=1)
 
   def _discard_outliers(self):
     """Discard outlier values beyond a multiple of the stddev."""
@@ -106,7 +107,7 @@ class AvgHighLow:
     """Return (mean, high, low) using low_sd/high_sd."""
     df = self._discard_outliers()
     if self.use_weight:
-      weights = df['Weight']
+      weights = df['Weight'].fillna(1.0)
       mean = (df['Value'] * weights).sum() / weights.sum()
       # A weighted standard deviation is not the same as stddev()
       numerator = (weights * ((df['Value'] - mean) ** 2)).sum()

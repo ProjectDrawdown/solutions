@@ -1,0 +1,34 @@
+# The raw data input for Average Annual Use - Conventional is a capacity factor
+# value that is converted to average annual use (TWh/TW/) by multiplying capacity
+# factor by total hours/year (8760). A weight is then applied in order to create
+# a weighted average value for all conventional sources that will be replaced by
+# this solution. The weight is the percentage share, for the given technology, of
+# total global generation. These figures on historical generation were collected
+# from The World Bank Data in The Shift Project Data Portal
+# (http://www.tsp-data-portal.org/Breakdown-of-Electricity-Generation-by-Energy-Source#tspQvChart).
+#
+# WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C246:X268, VMA #6
+Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
+"EIA 2016, Electric Power Monthly, Coal (2013)  (Table 6.7.A)", http://www.eia.gov/electricity/monthly/epm_table_grapher.cfm?t=epmt_6_07_a, USA, , 2 - Public Sector/ Multilateral Agency, 2016, , 59.7%, Capacity factor (%), 38.699149767%
+"EIA 2016, Electric Power Monthly, Coal (2014)  (Table 6.7.A) ", http://www.eia.gov/electricity/monthly/epm_table_grapher.cfm?t=epmt_6_07_a, USA, , 2 - Public Sector/ Multilateral Agency, 2016, , 61.0%, Capacity factor (%), 38.699149767%
+"EIA 2016, Electric Power Monthly, Coal (2015)  (Table 6.7.A) ", http://www.eia.gov/electricity/monthly/epm_table_grapher.cfm?t=epmt_6_07_a, USA, , 2 - Public Sector/ Multilateral Agency, 2016, , 54.6%, Capacity factor (%), 38.699149767%
+"EIA 2016, Electric Power Monthly, Natural Gas CCGT (2013)  (Table 6.7.A) ", http://www.eia.gov/electricity/monthly/epm_table_grapher.cfm?t=epmt_6_07_a, USA, , 2 - Public Sector/ Multilateral Agency, 2016, , 48.2%, Capacity factor (%), 21.877481756%
+"EIA 2016, Electric Power Monthly, Natural Gas CCGT (2013)  (Table 6.7.A) ", http://www.eia.gov/electricity/monthly/epm_table_grapher.cfm?t=epmt_6_07_a, USA, , 2 - Public Sector/ Multilateral Agency, 2016, , 48.3%, Capacity factor (%), 21.877481756%
+"EIA 2016, Electric Power Monthly, Natural Gas CCGT (2013)  (Table 6.7.A) ", http://www.eia.gov/electricity/monthly/epm_table_grapher.cfm?t=epmt_6_07_a, USA, , 2 - Public Sector/ Multilateral Agency, 2016, , 56.3%, Capacity factor (%), 21.877481756%
+"IEA ETP 2016, Natural Gas (in 2013)  (Ch. 2 Figure 2.14)", http://www.iea.org/etp/etp2016/secure/, OECD90, Australia, 2 - Public Sector/ Multilateral Agency, 2016, , 35.41%, Capacity factor (%), 21.877481756%
+"IEA ETP 2016, Natural Gas (in 2013)  (Ch. 2 Figure 2.14)", http://www.iea.org/etp/etp2016/secure/, USA, , 2 - Public Sector/ Multilateral Agency, 2016, , 31.087%, Capacity factor (%), 21.877481756%
+"IEA ETP 2016, Natural Gas (in 2013)  (Ch. 2 Figure 2.14)", http://www.iea.org/etp/etp2016/secure/, EU, Portugal, 2 - Public Sector/ Multilateral Agency, 2016, , 17.84%, Capacity factor (%), 21.877481756%
+"IEA ETP 2016, Natural Gas (in 2013)  (Ch. 2 Figure 2.14)", http://www.iea.org/etp/etp2016/secure/, OECD90, Japan, 2 - Public Sector/ Multilateral Agency, 2016, , 98.239%, Capacity factor (%), 21.877481756%
+"IEA ETP 2016, Natural Gas (in 2013)  (Ch. 2 Figure 2.14)", http://www.iea.org/etp/etp2016/secure/, EU, United Kingom, 2 - Public Sector/ Multilateral Agency, 2016, , 31.054%, Capacity factor (%), 21.877481756%
+"IEA ETP 2016, Natural Gas (in 2013)  (Ch. 2 Figure 2.14)", http://www.iea.org/etp/etp2016/secure/, EU, Italy, 2 - Public Sector/ Multilateral Agency, 2016, , 37.143%, Capacity factor (%), 21.877481756%
+"IEA ETP 2016, Coal (in 2013)", http://www.iea.org/etp/etp2016/secure/, World, , 2 - Public Sector/ Multilateral Agency, 2016, , 59.017%, Capacity factor (%), 38.699149767%
+"IEA ETP 2016, Coal (in 2013)", http://www.iea.org/etp/etp2016/secure/, OECD90, , 2 - Public Sector/ Multilateral Agency, 2016, , 61.913%, Capacity factor (%), 38.699149767%
+"IEA ETP 2016, Coal (in 2013)", http://www.iea.org/etp/etp2016/secure/, China, , 2 - Public Sector/ Multilateral Agency, 2016, , 57.13%, Capacity factor (%), 38.699149767%
+"IEA ETP 2016, Coal (in 2013)", http://www.iea.org/etp/etp2016/secure/, EU, , 2 - Public Sector/ Multilateral Agency, 2016, , 54.061%, Capacity factor (%), 38.699149767%
+"IEA ETP 2016, Coal (in 2013)", http://www.iea.org/etp/etp2016/secure/, India, , 2 - Public Sector/ Multilateral Agency, 2016, , 63.665%, Capacity factor (%), 38.699149767%
+"IEA ETP 2016, Coal (in 2013)", http://www.iea.org/etp/etp2016/secure/, USA, , 2 - Public Sector/ Multilateral Agency, 2016, , 60.683%, Capacity factor (%), 38.699149767%
+"Lazard's LCOE Analysis–Version 10.0, 2016, coal, low estimate", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 93.0%, Capacity factor (%), 38.699149767%
+"Lazard's LCOE Analysis–Version 10.0, 2016, natural gas (Combined Cycle), low estimate", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 80.0%, Capacity factor (%), 21.877481756%
+"Lazard's LCOE Analysis–Version 10.0, 2016, natural gas (Combined Cycle), high estimate", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 40.0%, Capacity factor (%), 21.877481756%
+"Lazard's LCOE Analysis–Version 10.0, 2016, diesel reciprocating engine lhigh estimate", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 10.0%, Capacity factor (%), 4.736499192%
+"Lazard's LCOE Analysis–Version 10.0, 2016, diesel reciprocating engine low estimate", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 95.0%, Capacity factor (%), 4.736499192%

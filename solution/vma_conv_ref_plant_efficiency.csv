@@ -1,0 +1,11 @@
+# This variable creates a weighted average CONVENTIONAL Plant Efficiency by
+# applying a weight to averaged plant efficiency data for coal and natural
+# gas (see two variables below). The weights are based on the percentage, for
+# the given technology, of total global generation. These values (TWh) are
+# based on the IEA 2016 Energy Technology Perspectives (ETP) scenario.
+#
+# WindOnshore_RRS_ELECGEN Variable Meta-analysis!C926:X955, VMA #25
+Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
+From coal_plant_efficiency_vma variable, , World, , , Various, , 37.1577551412647%, %, 38.699149767%
+From natural_gas_plant_efficiency_vma variable, , World, , , Various, , 48.2936717783726%, %, 21.877481756%
+From oil_plant_efficiency_vma variable, , OECD90, Japan, , 2005, , 39%, %, 4.736499192%

@@ -1,0 +1,40 @@
+# The value for CONVENTIONAL First Cost is calculated by taking the weighted
+# average of first cost values for conventional electricity generating
+# technologies that will be directly replaced by the solution. The weight is
+# the percentage share, for the given technology, of total global generatiion
+# in 2014. These figures on historical generation were collected from The World
+# Bank Data in The Shift Project Data Portal
+# (http://www.tsp-data-portal.org/Breakdown-of-Electricity-Generation-by-Energy-Source#tspQvChart).
+# NOTE: the IPCC uses the following sources for calculating minimum, median,
+# and maximum First Cost for coal and natural gas:
+# Coal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010),
+#   IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).
+# Gas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010),
+#   IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).
+# NOTE: Lazard's LCOE Analysis Version 10.0 includes carbon capture and storage
+# coal technology in its high estimate for costs, which is why these are not
+# included.
+# WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C84:X106, VMA #2
+Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
+"IPCC WG3 AR5, Coal - PC, min   (Table A.III.1)", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , 1  - Peer Reviewed, 2014, , 380, US$2010/kW, 38.699149767%
+"IPCC WG3 AR5, Coal - PC, max  (Table A.III.1)", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , 1  - Peer Reviewed, 2014, , 3900, US$2010/kW, 38.699149767%
+"IPCC WG3 AR5, Natural Gas - CCGT, min  (Table A.III.1)", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , 1  - Peer Reviewed, 2014, , 550, US$2010/kW, 21.877481756%
+"IPCC WG3 AR5, Natural Gas - CCGT, max  (Table A.III.1)", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , 1  - Peer Reviewed, 2014, , 2100, US$2010/kW, 21.877481756%
+"Lazard's LCOE Analysis–Version 10.0, 2016, coal, low estimate", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 3000, US$2016/kW, 38.699149767%
+"Lazard's LCOE Analysis–Version 10.0, 2016, natural gas (Combined Cycle), low estimate", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 1000, US$2016/kW, 21.877481756%
+"Lazard's LCOE Analysis–Version 10.0, 2016, natural gas (Combined Cycle), high estimate", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 1300, US$2016/kW, 21.877481756%
+"Lazard's LCOE Analysis–Version 10.0, 2016, Diesel Reciprocrating Engine Low Estimtae", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 500, US$2016/kW, 4.736499192%
+"Lazard's LCOE Analysis–Version 10.0, 2016, Diesel Reciprocrating Engine High estimate", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , 3 - For Profit, 2016, , 800, US$2016/kW, 4.736499192%
+"IEA (2010) Projected Costs of generating Electricity (oil plants)", http://www.worldenergyoutlook.org/media/weowebsite/energymodel/ProjectedCostsofGeneratingElectricity2010.pdf, Middle East and Africa, South Africa, 2 - Public Sector/ Multilateral Agency, 2010, , 461, US$2010/kW, 4.736499192%
+"Schmidt T. S., R. Born, and M. Schneider (2012). Assessing the costs of photovoltaic and wind power in six developing countries. Nature Climate Change 2, 548 – 553.  doi:  10.1038 / nclimate1490. - natural gas combined cycle", http://www.nature.com/nclimate/journal/v2/n7/full/nclimate1490.html?foxtrotcallback=true, World, , 1  - Peer Reviewed, 2012, , 700000, €2012/MW, 21.877481756%
+"Schmidt T. S., R. Born, and M. Schneider (2012). Assessing the costs of photovoltaic and wind power in six developing countries. Nature Climate Change 2, 548 – 553.  doi:  10.1038 / nclimate1490. - sub critical hard coal", http://www.nature.com/nclimate/journal/v2/n7/full/nclimate1490.html?foxtrotcallback=true, World, , 1  - Peer Reviewed, 2012, , 1400000, €2012/MW, 38.699149767%
+"Schmidt T. S., R. Born, and M. Schneider (2012). Assessing the costs of photovoltaic and wind power in six developing countries.Nature Climate Change 2, 548 – 553.  doi:  10.1038 / nclimate1490. - light fuel oil based generation", http://www.nature.com/nclimate/journal/v2/n7/full/nclimate1490.html?foxtrotcallback=true, World, , 1  - Peer Reviewed, 2012, , 700000, €2012/MW, 4.736499192%
+"Schmidt T. S., R. Born, and M. Schneider (2012). Assessing the costs of photovoltaic and wind power in six developing countries. Nature Climate Change 2, 548 – 553.  doi:  10.1038 / nclimate1490. - heavy fuel oil based generation", http://www.nature.com/nclimate/journal/v2/n7/full/nclimate1490.html?foxtrotcallback=true, World, , 1  - Peer Reviewed, 2012, , 750000, €2012/MW, 4.736499192%
+"OECD/NEA 2015 -  Combined Cycle natural gas (Minimum)", https://www.oecd-nea.org/ndd/pubs/2015/7057-proj-costs-electricity-2015.pdf, World, , 2 - Public Sector/ Multilateral Agency, 2015, , 627, US$2015/kW, 21.877481756%
+"OECD/NEA 2015 - Combined Cycle natural gas (Maximum)", https://www.oecd-nea.org/ndd/pubs/2015/7057-proj-costs-electricity-2015.pdf, World, , 2 - Public Sector/ Multilateral Agency, 2015, , 1289, US$2015/kW, 21.877481756%
+"OECD/NEA 2015 - Pulverised Coal fired technology (minimum)", https://www.oecd-nea.org/ndd/pubs/2015/7057-proj-costs-electricity-2015.pdf, World, , 2 - Public Sector/ Multilateral Agency, 2015, , 813, US$2015/kW, 38.699149767%
+"OECD/NEA 2015 - Pulverised Coal fired technology (Maximum)", https://www.oecd-nea.org/ndd/pubs/2015/7057-proj-costs-electricity-2015.pdf, World, , 2 - Public Sector/ Multilateral Agency, 2015, , 3067, US$2015/kW, 38.699149767%
+"US EIA (2013) Conventional Natural gas Combined Cycle", https://www.eia.gov/outlooks/capitalcost/pdf/updated_capcost.pdf, USA, , 2 - Public Sector/ Multilateral Agency, 2012, , 917, US$2012/kW, 21.877481756%
+"US EIA (2013) Coal Dual Unit IGCC", https://www.eia.gov/outlooks/capitalcost/pdf/updated_capcost.pdf, USA, , 2 - Public Sector/ Multilateral Agency, 2012, , 4440, US$2012/kW, 38.699149767%
+"EnergyNet.DK - advanced pulverized coal fired powerplant", https://energiatalgud.ee/img_auth.php/4/42/Energinet.dk._Technology_Data_for_Energy_Plants._2012.pdf, EU, Denmark, 2 - Public Sector/ Multilateral Agency, 2012, , 2040, €2011/kW, 38.699149767%
+"EnergyNet.DK - gas turbine combined cycle (back pressure)", https://energiatalgud.ee/img_auth.php/4/42/Energinet.dk._Technology_Data_for_Energy_Plants._2012.pdf, EU, Denmark, 2 - Public Sector/ Multilateral Agency, 2012, , 1350, €2011/kW, 21.877481756%
