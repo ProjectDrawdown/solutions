@@ -1,11 +1,14 @@
 """Implementation of the Variable Meta-Analysis module."""
 
 import math
+import re
 import pandas as pd
 
 
-def get_value(val):
-  """pd.apply() fcn for floating point numbers and percentages."""
+def get_value(val, substitutions):
+  """pd.apply() functions to convert percentages and substitutions."""
+  if val in substitutions:
+    val = substitutions[val]
   if isinstance(val, str) and val.endswith('%'):
     return float(val.strip('%'))/100.0
   return val
@@ -41,52 +44,84 @@ conversions = {
 }
 
 
-def convert_units(row):
+def convert_units(row, conversions, substitutions, final_units):
   raw = row['Raw Data Input']
   units = row['Original Units']
-  units = '' if pd.isnull(units) else units.lower()
+  units = '' if pd.isnull(units) else units
+  if final_units:
+    units = units + "-" + str(final_units)
+  units = units.lower()
+
   if units == '%' or (not units and isinstance(raw, str) and raw.endswith('%')):
     return float(raw.strip('%'))/100.0
   if not units:
     return float(raw)
-  if units == 'btu/kwh':
-    return 0.00341214163 * 1000000 / float(raw)
-  if units == 'btu/mwh':
-    return 3.41214163 * 1000000 / float(raw)
-  if units == 'btu/gwh':
-    return 3412.14163 * 1000000 / float(raw)
-  if units == 'btu/twh':
-    return 3412141.63 * 1000000 / float(raw)
+
+  # Allow ex: usd2011/tw to alias us$2011/tw
+  units = re.sub(r'usd(\d{4})/([kmgt])w', r'us$\1/\2w', units)
+
+  if units == 'btu/kwh': return 0.00341214163 * 1000000 / float(raw)
+  if units == 'btu/mwh': return 3.41214163 * 1000000 / float(raw)
+  if units == 'btu/gwh': return 3412.14163 * 1000000 / float(raw)
+  if units == 'btu/twh': return 3412141.63 * 1000000 / float(raw)
   if units in conversions:
     return float(raw) * conversions[units]
-  if units == 'years' or units == 'kwh/kw':
-    return float(raw)
+  if units == 'years': return float(raw)
+  if units == 'kwh/kw': return float(raw)
   if units == 'capacity factor (%)':
     if isinstance(raw, str) and raw.endswith('%'):
       v = float(raw.strip('%'))/100.0
     else:
       v = float(raw)
     return v * 365 * 24
+
+  # ex: US$2016/MWh-US$2014/kWh
+  m = re.match(r'((?:us\$|€)\d{4}/[kmgt]w)h-us\$2014/kwh', units)
+  if m:
+    return float(raw) * conversions[m.group(1)]
+
+  # ex: US$2016/MWh-US$2014/kW
+  m = re.match(r'((?:us\$|€)\d{4}/[kmgt]w)h-us\$2014/kw', units)
+  if m:
+    return float(raw) * conversions[m.group(1)] * substitutions['@soln_avg_annual_use@']
+
   raise ValueError("Unknown unit conversion=" + str(row['Original Units']))
 
 
-class AvgHighLow:
-  def __init__(self, filename, low_sd=1.0, high_sd=1.0, use_weight=None, discard_multiplier=3):
+class VMA:
+  """Meta-analysis of multiple data sources to a summary result.
+     Arguments:
+       filename: a CSV file containing data sources. This file must contain columns
+         named "Raw Data Input", "Weight", and "Original Units". It can contain additional
+         columns, which will be ignored.
+       low_sd: number of multiples of the stddev to use for the low result.
+       high_sd: number of multiples of the stddev to use for the high result.
+       discard_multiplier: discard outlier values more than this many multiples of the
+         stddev away from the mean.
+       final_units: specify the unit to convert to. Most of the time this is not necessary,
+         there is only one rational choice for conversion.
+       substitutions: substitute occurrences of the keys in this dict with the value
+         from the dict, for any entries in the 'Raw Data Input' and 'Weight' columns
+         of the CSV file.
+  """
+  def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3,
+      final_units=None, substitutions={}):
     df = pd.read_csv(filename, index_col=False, skipinitialspace=True,
         skip_blank_lines=True, comment='#')
     self.low_sd = low_sd
     self.high_sd = high_sd
-    if use_weight is None:
-      use_weight = not all(pd.isnull(df['Weight']))
-    self.use_weight = use_weight
     self.discard_multiplier = discard_multiplier
-    weight = df['Weight'].apply(get_value)
+    self.final_units = final_units
+    self.substitutions = substitutions
+    self.use_weight = not all(pd.isnull(df['Weight']))
+    weight = df['Weight'].apply(get_value, substitutions=substitutions)
     weight.name = 'Weight'
-    raw = df['Raw Data Input'].apply(get_value)
+    raw = df['Raw Data Input'].apply(get_value, substitutions=substitutions)
     raw.name = 'Raw'
     units = df['Original Units']
     units.name = 'Units'
-    value = df.apply(convert_units, axis=1)
+    value = df.apply(convert_units, axis=1, conversions=conversions,
+        substitutions=substitutions, final_units=self.final_units)
     value.name = 'Value'
     self.df = pd.concat([value, units, raw, weight], axis=1)
 

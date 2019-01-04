@@ -11,7 +11,6 @@
 # Gas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010),
 #    IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).
 #
-# WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C926:X955, VMA #25
 Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
 "IPCC WG3 AR5, min  (Table A.III.2)", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , , 2014, , 33%, %,
 #"IPCC WG3 AR5, median" is marked as excluded from calculation, so comment it out here.

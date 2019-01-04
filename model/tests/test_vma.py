@@ -8,120 +8,174 @@ import pytest
 
 parentdir = pathlib.Path(__file__).parents[2]
 
-def test_AvgHighLow():
+def test_basics():
   # values from SolarPVUtil 'Variable Meta-analysis'!C891:O893
-  s = """Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-        From "Coal Plant Efficiency" variable, , World, , , Various, , 37.1577551412647%, %, 0.386991480510726
-        From "Natural Gas Plant Efficiency variable, , World, , , Various, , 48.2936717783726%, %, 0.218774807856912
-        From "Oil Plant Efficiency variable", , OECD90, Japan, , 2005, , 39%, %, 0.047364989821849
+  s = """Source ID, Raw Data Input, Original Units, Weight
+        From "Coal Plant Efficiency" variable, 37.1577551412647%, %, 0.386991480510726
+        From "Natural Gas Plant Efficiency variable, 48.2936717783726%, %, 0.218774807856912
+        From "Oil Plant Efficiency variable", 39%, %, 0.047364989821849
         """
   f = io.StringIO(s)
-  ahlvma = vma.AvgHighLow(filename=f, low_sd=1.0, high_sd=1.0, use_weight=True)
-  result = ahlvma.avg_high_low()
+  v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
+  result = v.avg_high_low()
   expected = (0.41021474451, 0.47368454143, 0.34674494760)
   assert result == pytest.approx(expected)
   f = io.StringIO(s)
-  ahlvma = vma.AvgHighLow(filename=f, low_sd=1.0, high_sd=1.0, use_weight=False)
-  result = ahlvma.avg_high_low()
-  expected = (0.41483808973, 0.46357489314, 0.36610128632)
-  assert result == pytest.approx(expected)
-  f = io.StringIO(s)
-  ahlvma = vma.AvgHighLow(filename=f, low_sd=2.0, high_sd=3.0, use_weight=False)
-  result = ahlvma.avg_high_low()
-  expected = (0.41483808973, 0.56104849996, 0.31736448291)
+  v = vma.VMA(filename=f, low_sd=2.0, high_sd=3.0)
+  result = v.avg_high_low()
+  expected = (0.41021474451, 0.60062413527, 0.28327515067)
   assert result == pytest.approx(expected)
 
-def test_AvgHighLow_invalid_discards():
-  f = io.StringIO("""Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-        a, , , , , , , 10000, , 
-        b, , , , , , , 10000, , 
-        c, , , , , , , 10000, , 
-        d, , , , , , , 10000, , 
-        e, , , , , , , 10000, , 
-        f, , , , , , , 10000, , 
-        g, , , , , , , 10000, , 
-        h, , , , , , , 10000, , 
-        i, , , , , , , 10000, , 
-        j, , , , , , , 10000, , 
-        k, , , , , , , 10000, , 
-        l, , , , , , , 10000, , 
-        m, , , , , , , 10000, , 
-        n, , , , , , , 10000, , 
-        o, , , , , , , 10000, , 
-        p, , , , , , , 10000000000, , 
-        q, , , , , , , 1, , 
+def test_invalid_discards():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+        a, 10000, , 
+        b, 10000, , 
+        c, 10000, , 
+        d, 10000, , 
+        e, 10000, , 
+        f, 10000, , 
+        g, 10000, , 
+        h, 10000, , 
+        i, 10000, , 
+        j, 10000, , 
+        k, 10000, , 
+        l, 10000, , 
+        m, 10000, , 
+        n, 10000, , 
+        o, 10000, , 
+        p, 10000000000, , 
+        q, 1, , 
     """)
-  ahlvma = vma.AvgHighLow(filename=f, low_sd=1.0, high_sd=1.0, use_weight=False)
-  result = ahlvma.avg_high_low()
-  expected = (10000, 10000, 10000)
+  v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
+  result = v.avg_high_low()
+  expected = (10000, 10000, 10000)  # The 10,000,000,000 and 1 values should be discarded.
   assert result == pytest.approx(expected)
 
-def test_AvgHighLow_conversion_inflation():
-  ahlvma = vma.AvgHighLow(filename=str(parentdir.joinpath(
+def test_conversion_inflation():
+  v = vma.VMA(filename=str(parentdir.joinpath(
     'model', 'tests', 'vma_test_conversion_inflation.csv')))
-  result = ahlvma.avg_high_low()
+  result = v.avg_high_low()
   expected = (2010.032, 3373.557, 646.507)
   assert result == pytest.approx(expected)
 
-def test_AvgHighLow_conversion_co2eq():
-  ahlvma = vma.AvgHighLow(filename=str(parentdir.joinpath(
+def test_conversion_co2eq():
+  v = vma.VMA(filename=str(parentdir.joinpath(
     'model', 'tests', 'vma_test_conversion_co2eq.csv')))
-  result = ahlvma.avg_high_low()
+  result = v.avg_high_low()
   expected = (47096.81818181820, 65382.64314055300, 28810.99322308340)
   assert result == pytest.approx(expected)
 
-def test_AvgHighLow_conversion_btu():
+def test_conversion_btu():
   # values from SolarPVUtil 'Variable Meta-analysis' line 978
-  f = io.StringIO("""Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-      A, , , , , , , 8251.6363640, Btu/kWh, 
-      B, , , , , , , 8251636364.0, Btu/GWh, 
-      B, , , , , , , 8251636364000.0, Btu/TWh, 
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 8251.6363640, Btu/kWh, 
+      B, 8251636364.0, Btu/GWh, 
+      B, 8251636364000.0, Btu/TWh, 
       """)
-  ahlvma = vma.AvgHighLow(filename=f)
-  result = ahlvma.avg_high_low()
+  v = vma.VMA(filename=f)
+  result = v.avg_high_low()
   expected = (0.41351090614, 0.41351090614, 0.41351090614)
   assert result == pytest.approx(expected)
 
-def test_AvgHighLow_conversion_unknown():
-  f = io.StringIO("""Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-      A, , , , , , , 1, unknown_conversion, 
+def test_conversion_unknown():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 1, unknown_conversion, 
       """)
   with pytest.raises(ValueError):
-    _ = vma.AvgHighLow(filename=f)
+    _ = vma.VMA(filename=f)
 
-def test_AvgHighLow_single_study():
-  f = io.StringIO("""Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-      A, , , , , , , 39%, %, 
+def test_single_study():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 39%, %, 
       """)
-  ahlvma = vma.AvgHighLow(filename=f)
-  result = ahlvma.avg_high_low()
+  v = vma.VMA(filename=f)
+  result = v.avg_high_low()
   expected = (0.39, 0.39, 0.39)
   assert result == pytest.approx(expected)
 
-def test_AvgHighLow_conversion_years():
-  f = io.StringIO("""Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-      A, , , , , , , 100, years, 
+def test_conversion_years():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 100, years, 
       """)
-  ahlvma = vma.AvgHighLow(filename=f)
-  result = ahlvma.avg_high_low()
+  v = vma.VMA(filename=f)
+  result = v.avg_high_low()
   expected = (100, 100, 100)
   assert result == pytest.approx(expected)
 
-def test_AvgHighLow_conversion_kWhkW():
-  f = io.StringIO("""Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-      A, , , , , , , 1000, kWh/kW, 
+def test_conversion_kWhkW():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 1000, kWh/kW, 
       """)
-  ahlvma = vma.AvgHighLow(filename=f)
-  result = ahlvma.avg_high_low()
+  v = vma.VMA(filename=f)
+  result = v.avg_high_low()
   expected = (1000, 1000, 1000)
   assert result == pytest.approx(expected)
 
-def test_AvgHighLow_conversion_capacity_factor():
-  f = io.StringIO("""Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-      A, , , , , , , 50%, Capacity factor (%), 
-      B, , , , , , , 0.50, cAPACITY factor (%), 
+def test_conversion_capacity_factor():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 50%, Capacity factor (%), 
+      B, 0.50, cAPACITY factor (%), 
       """)
-  ahlvma = vma.AvgHighLow(filename=f)
-  result = ahlvma.avg_high_low()
+  v = vma.VMA(filename=f)
+  result = v.avg_high_low()
   expected = (4380, 4380, 4380)
+  assert result == pytest.approx(expected)
+
+def test_conversion_usd_to_dollar_sign():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 100, usd2014/kw, 
+      """)
+  v = vma.VMA(filename=f)
+  result = v.avg_high_low()
+  expected = (100, 100, 100)
+  assert result == pytest.approx(expected)
+
+def test_substitution():
+  substitutions = {
+      '@energy_mix_coal@': 0.38699149767,
+      '@energy_mix_natural_gas@': 0.21877481756,
+      '@energy_mix_oil@': 0.04736499192,
+      }
+  v = vma.VMA(filename=str(parentdir.joinpath('model', 'tests', 'vma_test_substitution.csv')),
+      substitutions=substitutions)
+  result = v.avg_high_low()
+  expected = (0.41021474451, 0.47368454143, 0.34674494760)
+  assert result == pytest.approx(expected)
+
+def test_final_units():
+  substitutions = {
+      '@soln_avg_annual_use@': 1841.66857142857,
+      }
+  s = """Source ID, Raw Data Input, Original Units, Weight
+      A, 0.0078, US$2004/kWh, 
+      B, 9.75, US$2014/MWh, 
+      C, 7.3625585324, €2012/MWh, 
+      """
+  f = io.StringIO(s)
+  v = vma.VMA(filename=f, substitutions=substitutions, final_units='US$2014/kW')
+  result = v.avg_high_low()
+  expected = (17.956268571425, 17.956268571425, 17.956268571425)
+  assert result == pytest.approx(expected)
+  f = io.StringIO(s)
+  v = vma.VMA(filename=f, substitutions=substitutions, final_units='US$2014/kWh')
+  result = v.avg_high_low()
+  expected = (0.00975, 0.00975, 0.00975)
+  assert result == pytest.approx(expected)
+
+def test_extra_columns():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight, Extra1, Extra2, Extra3
+      A, 1000, , , extra1, extra2, extra3
+      """)
+  v = vma.VMA(filename=f)
+  result = v.avg_high_low()
+  expected = (1000, 1000, 1000)
+  assert result == pytest.approx(expected)
+
+def test_missing_columns():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 1000
+      """)
+  v = vma.VMA(filename=f)
+  result = v.avg_high_low()
+  expected = (1000, 1000, 1000)
   assert result == pytest.approx(expected)
