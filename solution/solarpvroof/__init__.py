@@ -105,39 +105,39 @@ class SolarPVRoof:
     ad_data_sources = {
       'Baseline Cases': {
         'Based on: AMPERE IMAGE REFpol': str(thisdir.joinpath(
-          'ad_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
+          'ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
         'Based on: AMPERE 3 MESSAGE Refpol': str(thisdir.joinpath(
-          'ad_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
+          'ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
         'Based on:AMPERE 3 GEM E3 Refpol': str(thisdir.joinpath(
-          'ad_AMPERE_2014_GEM_E3_Reference.csv')),
-        'Based on:IEA ETP 2016 6DS': str(thisdir.joinpath('ad_IEA_ETP_2016_6DS.csv')),
+          'ad_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
+        'Based on:IEA ETP 2016 6DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv')),
       },
       'Conservative Cases': {
         'Based on:AMPERE3 IMAGE 550': str(thisdir.joinpath(
-          'ad_AMPERE_2014_IMAGE_TIMER_550.csv')),
+          'ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv')),
         'Based on:AMPERE 3 MESSAGE 550': str(thisdir.joinpath(
-          'ad_AMPERE_2014_MESSAGE_MACRO_550.csv')),
+          'ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv')),
         'Based on:AMPERE 3 GEM E3 550': str(thisdir.joinpath(
-          'ad_AMPERE_2014_GEM_E3_550.csv')),
-        'Based on:IEA ETP 2016 4DS': str(thisdir.joinpath('ad_IEA_ETP_2016_4DS.csv')),
+          'ad_based_on_AMPERE_2014_GEM_E3_550.csv')),
+        'Based on:IEA ETP 2016 4DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_4DS.csv')),
         'Based on: Greenpeace Reference (2015)': str(thisdir.joinpath(
-          'ad_Greenpeace_2015_Reference.csv')),
+          'ad_based_on_Greenpeace_2015_Reference.csv')),
       },
       'Ambitious Cases': {
         'Based on: AMPERE3 IMAGE 450': str(thisdir.joinpath(
-          'ad_AMPERE_2014_IMAGE_TIMER_450.csv')),
+          'ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv')),
         'Based on:AMPERE 3 MESSAGE 450': str(thisdir.joinpath(
-          'ad_AMPERE_2014_MESSAGE_MACRO_450.csv')),
+          'ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv')),
         'Based on: AMPERE 3 GEM E3 450': str(thisdir.joinpath(
-          'ad_AMPERE_2014_GEM_E3_450.csv')),
-        'Based on: IEA ETP 2016 2DS': str(thisdir.joinpath('ad_IEA_ETP_2016_2DS.csv')),
+          'ad_based_on_AMPERE_2014_GEM_E3_450.csv')),
+        'Based on: IEA ETP 2016 2DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_2DS.csv')),
         'Based on: Greenpeace Energy Revolution (2015)': str(thisdir.joinpath(
-          'ad_Greenpeace_2015_Energy_Revolution.csv')),
+          'ad_based_on_Greenpeace_2015_Energy_Revolution.csv')),
         '[Source 6 - Ambitious]': str(thisdir.joinpath('ad_source_6_ambitious.csv')),
       },
       '100% RES2050 Case': {
         'Based on: Greenpeace Advanced Energy Revolution (2015)': str(thisdir.joinpath(
-          'ad_Greenpeace_2015_Advanced_Revolution.csv')),
+          'ad_based_on_Greenpeace_2015_Advanced_Revolution.csv')),
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
