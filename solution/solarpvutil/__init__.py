@@ -23,6 +23,7 @@ from solution import rrs
 class SolarPVUtil:
   def __init__(self):
     datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+    parentdir = pathlib.Path(__file__).parents[1]
     thisdir = pathlib.Path(__file__).parents[0]
 
     soln_funit_adoption_2014 = pd.DataFrame([[112.633033333333, 75.0042455555555,
@@ -240,6 +241,10 @@ class SolarPVUtil:
 
     self.soln_indirect_co2_per_iunit_vma = vma.VMA(substitutions=self.r2s.substitutions,
         filename=str(thisdir.joinpath('vma_soln_indirect_co2_per_iunit.csv')))
+
+    # SolarPVUtility_RRS_ELECGEN 'Variable Meta-analysis'!C1067:X1069, VMA #29
+    self.soln_solar_util_vs_roof_vma = vma.VMA(substitutions=self.r2s.substitutions,
+        filename=str(parentdir.joinpath('vma_solar_util_vs_roof.csv')))
 
   def to_dict(self):
     """Return all data as a dict, to be serialized to JSON."""

@@ -179,3 +179,13 @@ def test_missing_columns():
   result = v.avg_high_low()
   expected = (1000, 1000, 1000)
   assert result == pytest.approx(expected)
+
+def test_inverse():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 43%, %, 
+      """)
+  postprocess = lambda x, y, z: (1.0 - x, 1.0 - y, 1.0 - z)
+  v = vma.VMA(filename=f, postprocess=postprocess)
+  result = v.avg_high_low()
+  expected = (0.57, 0.57, 0.57)
+  assert result == pytest.approx(expected)

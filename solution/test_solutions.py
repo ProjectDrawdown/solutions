@@ -26,6 +26,9 @@ def test_solarpvutil():
   expected = (91558.52222222220, 189681.34083303900, -6564.29638859436)
   result = obj.soln_indirect_co2_per_iunit_vma.avg_high_low()
   assert result == pytest.approx(expected)
+  expected = (0.59888888889, 0.67039819071, 0.52737958707)
+  result = obj.soln_solar_util_vs_roof_vma.avg_high_low()
+  assert result == pytest.approx(expected)
 
 def test_solarpvroof():
   obj = solarpvroof.SolarPVRoof()
@@ -41,4 +44,7 @@ def test_solarpvroof():
   assert result == pytest.approx(expected)
   expected = (47096.81818181820, 65382.64314055300, 28810.99322308340)
   result = obj.soln_indirect_co2_per_iunit_vma.avg_high_low()
+  assert result == pytest.approx(expected)
+  expected = (0.40111111111, 0.47262041293, 0.32960180929)
+  result = obj.soln_solar_util_vs_roof_vma.avg_high_low()
   assert result == pytest.approx(expected)
