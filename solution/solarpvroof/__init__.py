@@ -219,16 +219,19 @@ class SolarPVRoof:
 
     self.soln_2014_cost_vma = vma.VMA(substitutions=self.r2s.substitutions,
         filename=str(thisdir.joinpath('vma_soln_2014_cost.csv')))
-    (_, _, self.soln_2014_cost) = self.soln_2014_cost_vma.avg_high_low()
 
     self.soln_lifetime_years_vma = vma.VMA(substitutions=self.r2s.substitutions,
         filename=str(thisdir.joinpath('vma_soln_lifetime_years.csv')))
-    (self.soln_lifetime_years, _, _) = self.soln_lifetime_years_vma.avg_high_low()
 
     self.soln_avg_annual_use_vma = vma.VMA(substitutions=self.r2s.substitutions,
         filename=str(thisdir.joinpath('vma_soln_avg_annual_use.csv')))
-    (self.soln_avg_annual_use, _, _) = self.soln_avg_annual_use_vma.avg_high_low()
 
+    self.soln_fixed_oper_cost_per_iunit_vma = vma.VMA(substitutions=self.r2s.substitutions,
+        filename=str(thisdir.joinpath('vma_soln_fixed_oper_cost_per_iunit.csv')),
+        final_units='US$2014/kW')
+
+    self.soln_indirect_co2_per_iunit_vma = vma.VMA(substitutions=self.r2s.substitutions,
+        filename=str(thisdir.joinpath('vma_soln_indirect_co2_per_iunit.csv')))
 
   def to_dict(self):
     """Return all data as a dict, to be serialized to JSON."""

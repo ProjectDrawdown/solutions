@@ -1,0 +1,25 @@
+#
+Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
+#"IPCC (2014), median", http://www.ipcc.ch/report/ar5/wg3/, World, , 1  - Peer Reviewed, 2014, , 41.00, g-CO2eq/kWh
+"IPCC (2014), high", http://www.ipcc.ch/report/ar5/wg3/, World, , 1  - Peer Reviewed, 2014, , 60.00, g-CO2eq/kWh
+"IPCC (2014), low", http://www.ipcc.ch/report/ar5/wg3/, World, , 1  - Peer Reviewed, 2014, , 26.00, g-CO2eq/kWh
+IEA Roadmap 2014, https://www.iea.org/publications/freepublications/publication/TechnologyRoadmapSolarPhotovoltaicEnergy_2014edition.pdf, World, , 2 - Public Sector/ Multilateral Agency, 2014, , 0.02, kg-CO2eq/kWh
+IEA Roadmap 2014, https://www.iea.org/publications/freepublications/publication/TechnologyRoadmapSolarPhotovoltaicEnergy_2014edition.pdf, World, , 2 - Public Sector/ Multilateral Agency, 2014, , 0.081, kg-CO2eq/kWh
+"SENSE 2008, Thin-film a-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, EU, Rome, 1  - Peer Reviewed, 2008, , 31, g-CO2eq/kWh
+"Dominguez-Ramos et al. 2010, Thin-film a-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, EU, Spain, 1  - Peer Reviewed, 2010, , 27, g-CO2eq/kWh
+"Ito et al. 2008, Thin-film a-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, China, Gobi Desert, 1  - Peer Reviewed, 2008, , 57, g-CO2eq/kWh
+"Martin 1997, Thin-film a-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, USA, , 1  - Peer Reviewed, 1997, , 38, g-CO2eq/kWh
+"Fthenakis et al. 2008, Thin-film CdTe, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, USA, , 1  - Peer Reviewed, 2008, , 26, g-CO2eq/kWh
+"Fthenakis et al. 2009, Thin-film CdTe, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, EU, Germany, 1  - Peer Reviewed, 2009, , 19.5, g-CO2eq/kWh
+"Ito et al. 2009, Thin-film CdTe, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, China, Gobi Desert, 1  - Peer Reviewed, 2008, , 66.5, g-CO2eq/kWh
+"SENSE 2008, Thin-film CdTe, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, EU, , 1  - Peer Reviewed, 2008, , 66, g-CO2eq/kWh
+"SENSE 2008, Thin-film CIGS, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, EU, , 1  - Peer Reviewed, 2008, , 61, g-CO2eq/kWh
+"Ito et al. 2009, Thin-film CIGS, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, China, Gobi Desert, 1  - Peer Reviewed, 2009, , 58.8, g-CO2eq/kWh
+"Dominguez-Ramos et al. 2010, Thin-film CIGS, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, EU, Germany, 1  - Peer Reviewed, 2010, , 33, g-CO2eq/kWh
+"Frankl et al. 2005, Monocrystalline-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00439.x/abstract, EU, Central Europe, 1  - Peer Reviewed, 2005, , 69, g-CO2eq/kWh
+"Frankl et al. 2005, Monocrystalline-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00439.x/abstract, EU, Southern Europe, 1  - Peer Reviewed, 2005, , 37, g-CO2eq/kWh
+"Hou et al. 2016, Monocrystalline-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00439.x/abstract, China, , 1  - Peer Reviewed, 2016, , 65.2, g-CO2eq/kWh
+"Pacca 2003, Monocrystalline-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00439.x/abstract, USA, Arizona, 1  - Peer Reviewed, 2003, , 30, g-CO2eq/kWh
+"Alsema and de Wild-Scholten 2000, Multicrystalline-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00439.x/abstract, EU, Western Europe, 1  - Peer Reviewed, 2000, , 60, g-CO2eq/kWh
+"Frankl et al. 2005, Multicrystalline-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00439.x/abstract, EU, Southern Europe, 1  - Peer Reviewed, 2006, , 44, g-CO2eq/kWh
+"Hou et al., 2016, Multicrystalline-Si, large-scale", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00439.x/abstract, China, , 1  - Peer Reviewed, 2016, , 60.13, g-CO2eq/kWh

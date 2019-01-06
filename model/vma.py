@@ -44,18 +44,8 @@ conversions = {
 }
 
 
-def convert_units(row, conversions, substitutions, final_units):
-  raw = row['Raw Data Input']
-  units = row['Original Units']
-  units = '' if pd.isnull(units) else units
-  if final_units:
-    units = units + "-" + str(final_units)
+def _convert(raw, units, conversions, substitutions):
   units = units.lower()
-
-  if units == '%' or (not units and isinstance(raw, str) and raw.endswith('%')):
-    return float(raw.strip('%'))/100.0
-  if not units:
-    return float(raw)
 
   # Allow ex: usd2011/tw to alias us$2011/tw
   units = re.sub(r'usd(\d{4})/([kmgt])w', r'us$\1/\2w', units)
@@ -84,6 +74,26 @@ def convert_units(row, conversions, substitutions, final_units):
   m = re.match(r'((?:us\$|€)\d{4}/[kmgt]w)h-us\$2014/kw', units)
   if m:
     return float(raw) * conversions[m.group(1)] * substitutions['@soln_avg_annual_use@']
+
+  return None
+
+
+def convert_units(row, conversions, substitutions, final_units):
+  raw = row['Raw Data Input']
+  units = row['Original Units']
+  units = '' if pd.isnull(units) else units
+
+  if units == '%' or (not units and isinstance(raw, str) and raw.endswith('%')):
+    return float(raw.strip('%'))/100.0
+  if not units:
+    return float(raw)
+
+  val = _convert(raw=raw, units=units, conversions=conversions, substitutions=substitutions)
+  if val == None and final_units:
+    units = units + "-" + str(final_units)
+    val = _convert(raw=raw, units=units, conversions=conversions, substitutions=substitutions)
+  if val != None:
+    return val
 
   raise ValueError("Unknown unit conversion=" + str(row['Original Units']))
 

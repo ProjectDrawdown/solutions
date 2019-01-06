@@ -1,0 +1,25 @@
+# These values show lifecycle GHG emissions for a range of different photovoltaic
+# technologies (both thin-film and crystalline-Si) across different regions and
+# system sizes, though all data are for ground-mount, utility-scale PV systems.
+# Each row (excluding the data point from the IPCC) shows an average of different
+# lifecycle indirect emissions estimates from several sources. The
+# "Lifecycle indirect CO2 emissions per functional unit by PV type" VMA shows
+# the data points from the literature that are used to calculate the averages
+# seen here. See below for more detailed reference/source information for these
+# entries. Each entry (except for the IPCC input) is weighted based on the total
+# share of global PV production for each type of technology. These weights come
+# from Fraunhofer Institute for Solar Energy Systems and Projects in Solar Energy
+# AG (2016).
+#
+# SolarPVUtil VMA #20
+Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
+"Average of Thin-film a-Si, ground mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, World, Various, , Various, , 38.25, g-CO2eq/kWh, 4.50%
+"Average of Thin-film CdTe, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, World, Various, , Various, , 22.75, g-CO2eq/kWh, 0.50%
+"Average of Thin-film CIGS, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, World, Various, , Various, , 50.9333333333333, g-CO2eq/kWh, 2.00%
+"Average of Monocrystalline-Si, ground-mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, World, Various, , Various, , 50.30, g-CO2eq/kWh, 24.00%
+"Average of Multicrystalline-Si, ground mount", http://onlinelibrary.wiley.com/doi/10.1111/j.1530-9290.2011.00423.x/abstract, World, Various, , Various, , 54.71, g-CO2eq/kWh, 69.00%
+"Masanet, E., Chang, Y., Gopal, A.R., Larsen, P. Morrow III, W., Sathre, R., Shehabi, A., Zhai, P.  Life-Cycle Assessment of Electric Power Systems. Annual Review of Environment and Resources 2013 38:1, 107-136 High (PV)", http://www.annualreviews.org/doi/pdf/10.1146/annurev-environ-010710-100408, World, , , 2013, , 217.00, g-CO2eq/kWh, 100.00%
+"Masanet, E., Chang, Y., Gopal, A.R., Larsen, P. Morrow III, W., Sathre, R., Shehabi, A., Zhai, P.  Life-Cycle Assessment of Electric Power Systems. Annual Review of Environment and Resources 2013 38:1, 107-136 Low (PV)", http://www.annualreviews.org/doi/pdf/10.1146/annurev-environ-010710-100408, World, , , 2013, , 5.00, g-CO2eq/kWh, 100.00%
+#"IPCC (2014), median", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , , 2014, , 48.00, g-CO2eq/kWh, 100.00%
+#"IPCC (2014), high", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , , 2014, , 180.00, g-CO2eq/kWh, 100.00%
+#"IPCC (2014), low", https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf, World, , , 2014, , 18.00, g-CO2eq/kWh, 100.00%

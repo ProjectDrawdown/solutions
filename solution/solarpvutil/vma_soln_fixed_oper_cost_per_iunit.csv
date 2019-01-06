@@ -1,0 +1,24 @@
+# The value for SOLUTION Fixed Operation & Maintenance (FOM) Cost is calculated
+# per implementation unit (i.e. per kW of installed capacity). FOM costs can
+# include expenses such as day-to-day preventative and corrective maintenance,
+# labor costs, asset and site management, and maintaining health and safety,
+# among others. NOTE: Utility-scale solar PV does not incur any variable
+# operation and maintenance costs, so FOM are the only costs associated with
+# the SOLUTION other than First Cost.
+#
+Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
+IPCC WG3 AR5 (Table A.III.1) Solar PV–utility, https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_full.pdf, World, , , 2014, , 20, US$2010/kW
+"Bolinger and Seel, 2015 (LBNL) (pp. 20-21)", https://emp.lbl.gov/sites/all/files/lbnl-1000917.pdf, USA, , , 2015, , 0.0078, US$2014/kWh
+"Rhyne, I., Klein, J. (2014). Estimated Cost of New Renewable and Fossil generation in California. California Energy Commission. Draft Staff Report - Low-Cost Case", http://www.energy.ca.gov/2014publications/CEC-200-2014-003/CEC-200-2014-003-SD.pdf, USA, , , 2014, , 17.97, US$2013/kW
+"Rhyne, I., Klein, J. (2014). Estimated Cost of New Renewable and Fossil generation in California. California Energy Commission. Draft Staff Report - Mid-Cost Case", http://www.energy.ca.gov/2014publications/CEC-200-2014-003/CEC-200-2014-003-SD.pdf, USA, , , 2014, , 28.55, US$2013/kW
+"Rhyne, I., Klein, J. (2014). Estimated Cost of New Renewable and Fossil generation in California. California Energy Commission. Draft Staff Report-  High-Cost Case", http://www.energy.ca.gov/2014publications/CEC-200-2014-003/CEC-200-2014-003-SD.pdf, USA, , , 2014, , 52.86, US$2013/kW
+"U.S. EIA, 2013, 150 MW", http://www.eia.gov/forecasts/capitalcost/pdf/updated_capcost.pdf, USA, , , 2013, , 24.69, US$2012/kW
+"U.S. EIA, 2013, 20 MW", http://www.eia.gov/forecasts/capitalcost/pdf/updated_capcost.pdf, USA, , , 2013, , 27.75, US$2012/kW
+"U.S. DOE SunShot Vision Study, 2012, Ch. 4", http://energy.gov/sites/prod/files/2014/01/f7/47927_chapter4.pdf, USA, , , 2012, , 19.93, US$2010/kW
+"NREL Annual Technology Baseline, 2015, utility PV", http://www.nrel.gov/analysis/data_tech_baseline.html, USA, , , 2015, , 18, US$2014/kW
+"IEA 2012 ETP, utility-scale", http://www.iea.org/publications/freepublications/publication/ETP2012_free.pdf, World, , , 2012, , 40, US$2010/kW
+"LBNL, Tracking the Sun VII, 2014", https://emp.lbl.gov/sites/all/files/lbnl-6858e_0.pdf, USA, , , 2014, , 30, US$2011/kW
+"Lazard's LCOE Analysis–Version 10.0, 2016, Solar PV utility scale Crystalline high", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , , 2016, , 12, US$2016/kW
+"Lazard's LCOE Analysis–Version 10.0, 2016, Solar PV utility scale Crystalline low", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , , 2016, , 9, US$2016/kW
+"Lazard's LCOE Analysis–Version 10.0, 2016, Solar PV utility scale Thin Film high", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , , 2016, , 12, US$2016/kW
+"Lazard's LCOE Analysis–Version 10.0, 2016, Solar PV utility scale Thin Film low", https://www.lazard.com/perspective/levelized-cost-of-energy-analysis-100/, USA, , , 2016, , 9, US$2016/kW
