@@ -125,6 +125,8 @@ class RRS:
         final_units='US$2014/kWh',
         filename=str(parentdir.joinpath('solution', 'vma_conv_var_oper_cost_per_funit.csv')))
 
-    #  SolarPVUtility_RRS_ELECGEN 'Variable Meta-analysis'!C389:X404, VMA #10
+    # SolarPVUtility_RRS_ELECGEN 'Variable Meta-analysis'!C389:X404, VMA #10
     self.conv_fixed_oper_cost_per_iunit_vma = vma.VMA(substitutions=self.substitutions,
         filename=str(parentdir.joinpath('solution', 'vma_conv_fixed_oper_cost_per_iunit.csv')))
+
+

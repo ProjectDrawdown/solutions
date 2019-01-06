@@ -113,9 +113,10 @@ class VMA:
        substitutions: substitute occurrences of the keys in this dict with the value
          from the dict, for any entries in the 'Raw Data Input' and 'Weight' columns
          of the CSV file.
+       postprocess: function to pass (mean, high, low) to before returning.
   """
   def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3,
-      final_units=None, substitutions={}):
+      final_units=None, substitutions={}, postprocess=None):
     df = pd.read_csv(filename, index_col=False, skipinitialspace=True,
         skip_blank_lines=True, comment='#')
     self.low_sd = low_sd
@@ -123,6 +124,7 @@ class VMA:
     self.discard_multiplier = discard_multiplier
     self.final_units = final_units
     self.substitutions = substitutions
+    self.postprocess = postprocess
     self.use_weight = not all(pd.isnull(df['Weight']))
     weight = df['Weight'].apply(get_value, substitutions=substitutions)
     weight.name = 'Weight'
@@ -165,4 +167,7 @@ class VMA:
       sd = df['Value'].std(ddof=0)
     high = mean + (self.high_sd * sd)
     low = mean - (self.low_sd * sd)
-    return (mean, high, low)
+    if self.postprocess:
+      return self.postprocess(mean, high, low)
+    else:
+      return (mean, high, low)
