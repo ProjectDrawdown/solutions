@@ -95,45 +95,36 @@ class RRS:
     # WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C995:X1024, VMA #27
     self.oil_plant_efficiency_vma = vma.VMA(substitutions=self.substitutions,
         filename=str(parentdir.joinpath('solution', 'vma_oil_plant_efficiency.csv')))
-    (self.oil_efficiency, _, _) = self.oil_plant_efficiency_vma.avg_high_low()
 
     # WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C960:X989, VMA #26
     self.natural_gas_plant_efficiency_vma = vma.VMA(substitutions=self.substitutions,
         filename=str(parentdir.joinpath('solution', 'vma_natural_gas_plant_efficiency.csv')))
-    (self.natural_gas_efficiency, _, _) = self.natural_gas_plant_efficiency_vma.avg_high_low()
 
     # WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C926:X955, VMA #25
     self.coal_plant_efficiency_vma = vma.VMA(substitutions=self.substitutions,
         filename=str(parentdir.joinpath('solution', 'vma_coal_plant_efficiency.csv')))
-    (self.coal_efficiency, _, _) = self.coal_plant_efficiency_vma.avg_high_low()
 
     # WindOnshore_RRS_ELECGEN Variable Meta-analysis!C926:X955, VMA #25
     self.conv_ref_plant_efficiency_vma = vma.VMA(substitutions=self.substitutions,
         filename=str(parentdir.joinpath('solution', 'vma_conv_ref_plant_efficiency.csv')))
-    (self.conv_ref_plant_efficiency, _, _) = self.conv_ref_plant_efficiency_vma.avg_high_low()
 
     # WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C84:X106, VMA #2
     self.conv_2014_cost_vma = vma.VMA(substitutions=self.substitutions,
         filename=str(parentdir.joinpath('solution', 'vma_conv_2014_cost.csv')))
-    (self.conv_2014_cost, _, _) = self.conv_2014_cost_vma.avg_high_low()
 
     # WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C175:X185, VMA #4
     self.conv_lifetime_years_vma = vma.VMA(substitutions=self.substitutions,
         filename=str(parentdir.joinpath('solution', 'vma_conv_lifetime_years.csv')))
-    (self.conv_lifetime_years, _, _) = self.conv_lifetime_years_vma.avg_high_low()
 
     # WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C246:X268, VMA #6
     self.conv_avg_annual_use_vma = vma.VMA(substitutions=self.substitutions,
         filename=str(parentdir.joinpath('solution', 'vma_conv_avg_annual_use.csv')))
-    (self.conv_avg_annual_use, _, _) = self.conv_avg_annual_use_vma.avg_high_low()
 
     # WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C319:X339, VMA #8
-    self.conv_vom_per_funit_vma = vma.VMA(substitutions=self.substitutions,
+    self.conv_var_oper_cost_per_funit_vma = vma.VMA(substitutions=self.substitutions,
         final_units='US$2014/kWh',
-        filename=str(parentdir.joinpath('solution', 'vma_conv_vom_per_funit.csv')))
-    (self.conv_vom_per_funit, _, _) = self.conv_vom_per_funit_vma.avg_high_low()
+        filename=str(parentdir.joinpath('solution', 'vma_conv_var_oper_cost_per_funit.csv')))
 
     #  SolarPVUtility_RRS_ELECGEN 'Variable Meta-analysis'!C389:X404, VMA #10
-    self.conv_fom_per_funit_vma = vma.VMA(substitutions=self.substitutions,
-        filename=str(parentdir.joinpath('solution', 'vma_conv_fom_per_funit.csv')))
-    (self.conv_fom_per_funit, _, _) = self.conv_fom_per_funit_vma.avg_high_low()
+    self.conv_fixed_oper_cost_per_iunit_vma = vma.VMA(substitutions=self.substitutions,
+        filename=str(parentdir.joinpath('solution', 'vma_conv_fixed_oper_cost_per_iunit.csv')))
