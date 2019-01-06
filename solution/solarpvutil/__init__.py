@@ -32,41 +32,6 @@ class SolarPVUtil:
         'Latin America', 'China', 'India', 'EU', 'USA'], index=[2014])
     soln_funit_adoption_2014.index.name = 'Year'
 
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-        'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', 'Baseline Cases',
-        'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 'ALL SOURCES',
-        'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-        'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-        '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-        'Medium', 'Medium', 'Medium'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=rrs.tam_ref_data_sources,
-        tam_pds_data_sources=rrs.tam_pds_data_sources)
-    ref_tam_per_region=self.tm.ref_tam_per_region()
-    pds_tam_per_region=self.tm.pds_tam_per_region()
-
-    self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'])
-
-    self.soln_2014_cost_vma = vma.AvgHighLow(
-        filename=str(thisdir.joinpath('vma_soln_2014_cost.csv')))
-    (_, _, self.soln_2014_cost) = self.soln_2014_cost_vma.avg_high_low()
-
-    self.soln_lifetime_years_vma = vma.AvgHighLow(
-        filename=str(thisdir.joinpath('vma_soln_lifetime_years.csv')))
-    (self.soln_lifetime_years, _, _) = self.soln_lifetime_years_vma.avg_high_low()
-
-    self.soln_avg_annual_use_vma = vma.AvgHighLow(
-        filename=str(thisdir.joinpath('vma_soln_avg_annual_use.csv')))
-    (self.soln_avg_annual_use, _, _) = self.soln_avg_annual_use_vma.avg_high_low()
-
     self.ac = advanced_controls.AdvancedControls(
         pds_2014_cost=1444.93954421485,  # via self.soln_2014_cost
         ref_2014_cost=1444.93954421485,  # via self.soln_2014_cost
@@ -113,6 +78,26 @@ class SolarPVUtil:
         solution_category='REPLACEMENT',
         )
 
+    tamconfig_list = [
+      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+      ['source_until_2014', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
+        'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
+      ['source_after_2014', 'Baseline Cases',
+        'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 'ALL SOURCES',
+        'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
+        'ALL SOURCES', 'ALL SOURCES'],
+      ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
+        '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
+      ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
+        'Medium', 'Medium', 'Medium'],
+      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
+    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
+    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=rrs.tam_ref_data_sources,
+        tam_pds_data_sources=rrs.tam_pds_data_sources)
+    ref_tam_per_region=self.tm.ref_tam_per_region()
+    pds_tam_per_region=self.tm.pds_tam_per_region()
 
     adconfig_list = [
       ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
@@ -235,6 +220,22 @@ class SolarPVUtil:
         conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
         fuel_in_liters=False)
+
+    # Variable Meta-analysis objects, not used in model computation only in UI
+    self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
+        soln_avg_annual_use=self.ac.soln_avg_annual_use)
+
+    self.soln_2014_cost_vma = vma.VMA(substitutions=self.r2s.substitutions,
+        filename=str(thisdir.joinpath('vma_soln_2014_cost.csv')))
+    (_, _, self.soln_2014_cost) = self.soln_2014_cost_vma.avg_high_low()
+
+    self.soln_lifetime_years_vma = vma.VMA(substitutions=self.r2s.substitutions,
+        filename=str(thisdir.joinpath('vma_soln_lifetime_years.csv')))
+    (self.soln_lifetime_years, _, _) = self.soln_lifetime_years_vma.avg_high_low()
+
+    self.soln_avg_annual_use_vma = vma.VMA(substitutions=self.r2s.substitutions,
+        filename=str(thisdir.joinpath('vma_soln_avg_annual_use.csv')))
+    (self.soln_avg_annual_use, _, _) = self.soln_avg_annual_use_vma.avg_high_low()
 
   def to_dict(self):
     """Return all data as a dict, to be serialized to JSON."""
