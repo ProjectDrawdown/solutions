@@ -119,6 +119,7 @@ class VMA:
       final_units=None, substitutions={}, postprocess=None):
     df = pd.read_csv(filename, index_col=False, skipinitialspace=True,
         skip_blank_lines=True, comment='#')
+    self.source_data = df
     self.low_sd = low_sd
     self.high_sd = high_sd
     self.discard_multiplier = discard_multiplier
