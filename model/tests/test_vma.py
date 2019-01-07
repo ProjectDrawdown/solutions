@@ -26,6 +26,14 @@ def test_basics():
   expected = (0.41021474451, 0.60062413527, 0.28327515067)
   assert result == pytest.approx(expected)
 
+def test_source_data():
+  s = """Source ID, Raw Data Input, Original Units, Weight
+        Check that this text is present, 0%, %, 0
+        """
+  f = io.StringIO(s)
+  v = vma.VMA(filename=f)
+  assert "Check that this text is present" in v.source_data.to_html()
+
 def test_invalid_discards():
   f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
         a, 10000, , 
