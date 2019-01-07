@@ -106,9 +106,9 @@ The four modules below may be thought of as the computational "kernel" of the Dr
    The Adoption Data module was completed 11/5/2018.
 
 7. **VMA Variable Meta Analysis**  
-   The Variable Meta-Analysis tab provides a variety of calculations which are not handled elsewhere. For example in the various solar solutions like Utility-Scale or Rooftop, the Variable Meta-Analysis module provides estimates of what percentage of overall solar adoption should be applied to each. More than most, the VMA module is customized according to the needs of each inndividual solution. For the Remodel we will supply code to use as building blocks, but expect that much of the Variable Meta Analysis handling will be done as code for individual solutions or classes of solutions.
+   ~~The Variable Meta-Analysis tab provides a variety of calculations which are not handled elsewhere. For example in the various solar solutions like Utility-Scale or Rooftop, the Variable Meta-Analysis module provides estimates of what percentage of overall solar adoption should be applied to each. More than most, the VMA module is customized according to the needs of each inndividual solution. For the Remodel we will supply code to use as building blocks, but expect that much of the Variable Meta Analysis handling will be done as code for individual solutions or classes of solutions.~~
 
-   Implementation of the VMA module was started 12/29/2018.
+   Implementation of the VMA module was substantially completed 1/7/2019. There will always be more variables to add.
 
 8. **Other data input to be designed**  
    There are other input parameters that may require significant human-centered design. However, we don't believe these should be addressed until the other above modules have been done.

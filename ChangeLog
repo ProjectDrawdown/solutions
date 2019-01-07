@@ -94,3 +94,16 @@ Dec 24 - 28, 2018
   We do not have a SolarPVRooftop Excel file suitable for checking in,
   test_excel_integration.py does not yet check this model. The more
   basic tests in solution/test_solutions.py do test it.
+
+Dec 31, 2018 - Jan 4, 2019
++ refactor TAM and group handling.
+  TAM data sources are widely shared between solutions, so they are now
+  centralized in data/*. The data has also been reorganized into one
+  CSV file for each source, allowing sources to be updated in a
+  straightforward way.
+  Move Ambitious/Baseline/Conservative handling into each solution, and
+  remove the original data_sources.py implementation.
++ add Variable Meta-Analysis module.
+  Combines and summarizes multiple data sources to a (mean, high, low)
+  tuple. These values provide guidance for setting appropriate values,
+  though human researcher review sets the value used in the model.
