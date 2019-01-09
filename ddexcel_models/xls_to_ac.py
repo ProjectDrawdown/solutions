@@ -44,7 +44,7 @@ def format_val(val):
     return str(float(val))
   return('"' + str(val) + '"')
 
-wb = xlrd.open_workbook(filename='SolarPVRooftop_RRS_ELECGEN_v1.1b_3June18_VBAWEB.xlsm')
+wb = xlrd.open_workbook(filename='SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm')
 ac_tab = wb.sheet_by_name('Advanced Controls')
 
 ac_variables = [

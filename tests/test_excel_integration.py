@@ -121,15 +121,32 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   assert os.path.exists(filename)
   workbook = xlwings.Book(filename)
   excel_app = workbook.app
+  excel_app.display_alerts = False
+  excel_app.visible = False
+  sheet = workbook.sheets['ScenarioRecord']
+  #excel_write_cell(sheet, 'B9', 'PDS-15p2050- Drawdown (Book Ed.1)')
+  #excel_write_cell(sheet, 'B9', 'PDS-16p2050- Optimum (Book Ed.1)')
+  excel_write_cell(sheet, 'B9', 'PDS3-16p2050-Optimum (Updated)')
+  #excel_write_cell(sheet, 'B9', 'PDS2-15p2050-Drawdown (Updated)')
+  #excel_write_cell(sheet, 'B9', 'PDS-10p2050- Plausible (Book Ed.1)')
+  #excel_write_cell(sheet, 'B9', 'PDS1-10p2050-Plausible (Updated)')
+  macro = workbook.macro("LoadScenario_Click")
+  macro()
+  excel_app.calculate()
   sheet = workbook.sheets['First Cost']
   fc_expected_values = pd.DataFrame(excel_read_cell(sheet, 'B37:R82'))
   sheet = workbook.sheets['Unit Adoption Calculations']
+  excel_write_cell(sheet, 'A16', 'Year')
+  excel_write_cell(sheet, 'A68', 'Year')
   excel_write_cell(sheet, 'Q307', 'Year')
   excel_write_cell(sheet, 'AT307', 'Year')
   excel_write_cell(sheet, 'BF307', 'Year')
   excel_write_cell(sheet, 'BR307', 'Year')
   ua_expected_values1 = pd.DataFrame(excel_read_cell(sheet, 'P16:CI115'))
-  ua_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'B134:CB354'))
+  ua_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'B134:CB182'))
+  ua_expected_values3 = pd.DataFrame(excel_read_cell(sheet, 'B196:CB244'))
+  ua_expected_values4 = pd.DataFrame(excel_read_cell(sheet, 'B251:CB298'))
+  ua_expected_values5 = pd.DataFrame(excel_read_cell(sheet, 'B307:CB354'))
   sheet = workbook.sheets['Operating Cost']
   excel_write_cell(sheet, 'A125', 'Year')
   oc_expected_values1 = pd.DataFrame(excel_read_cell(sheet, 'A18:F64'))
@@ -185,10 +202,15 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
         'Ambitious: Based on- AMPERE GEM E3 450'])
   td_expected_values2 = pd.DataFrame(excel_read_cell(sheet, 'W44:Y721'))
   td_expected_values3 = pd.DataFrame(excel_read_cell(sheet, 'AA44:AC721'))
-  td_expected_values4 = pd.DataFrame(excel_read_cell(sheet, 'BX44:BZ721'))
-  td_expected_values5 = pd.DataFrame(excel_read_cell(sheet, 'CE44:CH721'))
-  td_expected_values6 = pd.DataFrame(excel_read_cell(sheet, 'CM44:CQ721'))
-  td_expected_values7 = pd.DataFrame(excel_read_cell(sheet, 'CV44:CX721'))
+  td_forecast_cells = ['BX50:BZ96', 'BX168:BZ214', 'BX232:BZ278', 'BX295:BZ341', 'BX358:BZ404',
+      'BX421:BZ467', 'BX484:BZ530', 'BX548:BZ594', 'BX612:BZ658', 'BX677:BZ723',
+      'CE50:CH96', 'CE168:CH214', 'CE232:CH278', 'CE295:CH341', 'CE358:CH404',
+      'CE421:CH467', 'CE484:CH530', 'CE548:CH594', 'CE612:CH658', 'CE677:CH723',
+      'CM50:CQ96', 'CM168:CQ214', 'CM232:CQ278', 'CM295:CQ341', 'CM358:CQ404',
+      'CM421:CQ467', 'CM484:CQ530', 'CM548:CQ594', 'CM612:CQ658', 'CM677:CQ723',
+      'CV50:CX96', 'CV168:CX214', 'CV232:CX278', 'CV295:CX341', 'CV358:CX404',
+      'CV421:CX467', 'CV484:CX530', 'CV548:CX594', 'CV612:CX658', 'CV677:CX723']
+  td_expected_values4 = [pd.DataFrame(excel_read_cell(sheet, c)) for c in td_forecast_cells]
   workbook.close()
   excel_app.quit()
 
@@ -197,17 +219,22 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   assert os.path.exists(filename)
   workbook = xlwings.Book(filename)
   excel_app = workbook.app
+  excel_app.display_alerts = False
+  excel_app.visible = False
   sheet = workbook.sheets['ExtModelCfg']
   excel_write_cell(sheet, 'B23', 1)  # USE_LOCAL_SERVER
   excel_write_cell(sheet, 'B21', 0)  # DEBUG_LEVEL
   macro = workbook.macro("AssignNetFunctionalUnits")
   macro()
-  time.sleep(5)
+  excel_app.calculate()
   sheet = workbook.sheets['First Cost']
   fc_actual_values = pd.DataFrame(excel_read_cell(sheet, 'B37:R82'))
   sheet = workbook.sheets['Unit Adoption Calculations']
   ua_actual_values1 = pd.DataFrame(excel_read_cell(sheet, 'P16:CI115'))
-  ua_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'B134:CB354'))
+  ua_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'B134:CB182'))
+  ua_actual_values3 = pd.DataFrame(excel_read_cell(sheet, 'B196:CB244'))
+  ua_actual_values4 = pd.DataFrame(excel_read_cell(sheet, 'B251:CB298'))
+  ua_actual_values5 = pd.DataFrame(excel_read_cell(sheet, 'B307:CB354'))
   sheet = workbook.sheets['Operating Cost']
   oc_actual_values1 = pd.DataFrame(excel_read_cell(sheet, 'A18:F64'))
   oc_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'A125:F250'))
@@ -234,16 +261,16 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   td_actual_values1 = pd.DataFrame(excel_read_cell(sheet, 'C44:Q721'))
   td_actual_values2 = pd.DataFrame(excel_read_cell(sheet, 'W44:Y721'))
   td_actual_values3 = pd.DataFrame(excel_read_cell(sheet, 'AA44:AC721'))
-  td_actual_values4 = pd.DataFrame(excel_read_cell(sheet, 'BX44:BZ721'))
-  td_actual_values5 = pd.DataFrame(excel_read_cell(sheet, 'CE44:CH721'))
-  td_actual_values6 = pd.DataFrame(excel_read_cell(sheet, 'CM44:CQ721'))
-  td_actual_values7 = pd.DataFrame(excel_read_cell(sheet, 'CV44:CX721'))
+  td_actual_values4 = [pd.DataFrame(excel_read_cell(sheet, c)) for c in td_forecast_cells]
   workbook.close()
   excel_app.quit()
 
   pd.testing.assert_frame_equal(fc_actual_values, fc_expected_values, check_exact=False)
   pd.testing.assert_frame_equal(ua_actual_values1, ua_expected_values1, check_exact=False)
   pd.testing.assert_frame_equal(ua_actual_values2, ua_expected_values2, check_exact=False)
+  pd.testing.assert_frame_equal(ua_actual_values3, ua_expected_values3, check_exact=False)
+  pd.testing.assert_frame_equal(ua_actual_values4, ua_expected_values4, check_exact=False)
+  pd.testing.assert_frame_equal(ua_actual_values5, ua_expected_values5, check_exact=False)
   pd.testing.assert_frame_equal(oc_actual_values1, oc_expected_values1, check_exact=False)
   pd.testing.assert_frame_equal(oc_actual_values2, oc_expected_values2, check_exact=False)
   pd.testing.assert_frame_equal(oc_actual_values3, oc_expected_values3, check_exact=False)
@@ -262,7 +289,5 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   pd.testing.assert_frame_equal(td_actual_values1, td_expected_values1, check_exact=False)
   pd.testing.assert_frame_equal(td_actual_values2, td_expected_values2, check_exact=False)
   pd.testing.assert_frame_equal(td_actual_values3, td_expected_values3, check_exact=False)
-  pd.testing.assert_frame_equal(td_actual_values4, td_expected_values4, check_exact=False)
-  pd.testing.assert_frame_equal(td_actual_values5, td_expected_values5, check_exact=False)
-  pd.testing.assert_frame_equal(td_actual_values6, td_expected_values6, check_exact=False)
-  pd.testing.assert_frame_equal(td_actual_values7, td_expected_values7, check_exact=False)
+  for actual, expected in zip(td_actual_values4, td_expected_values4):
+    pd.testing.assert_frame_equal(actual, expected, check_exact=False)

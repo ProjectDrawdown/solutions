@@ -33,11 +33,12 @@ class SolarPVUtil:
         'Latin America', 'China', 'India', 'EU', 'USA'], index=[2014])
     soln_funit_adoption_2014.index.name = 'Year'
 
+    # 'PDS3-16p2050-Optimum (Updated)'
     self.ac = advanced_controls.AdvancedControls(
-        pds_2014_cost=1444.93954421485,  # via self.soln_2014_cost
-        ref_2014_cost=1444.93954421485,  # via self.soln_2014_cost
+        pds_2014_cost=1444.93954,  # via self.soln_2014_cost
+        ref_2014_cost=1444.93954,  # via self.soln_2014_cost
         conv_2014_cost=2010.03170851964,  # via self.r2s.conv_2014_cost
-        soln_first_cost_efficiency_rate=0.196222222222222,
+        soln_first_cost_efficiency_rate=0.182810601365724,
         soln_first_cost_below_conv=True,
         conv_first_cost_efficiency_rate=0.02,
         soln_funit_adoption_2014=soln_funit_adoption_2014,
@@ -45,24 +46,24 @@ class SolarPVUtil:
         ch4_is_co2eq=True,
         n2o_is_co2eq=True,
         co2eq_conversion_source="AR5 with feedback",
-        soln_indirect_co2_per_iunit=47157.2222222222,
+        soln_indirect_co2_per_iunit=78779.26,
         conv_indirect_co2_per_unit=0.0,
         conv_indirect_co2_is_iunits=False,
 
-        soln_lifetime_capacity=48343.8,
-        soln_avg_annual_use=1841.66857142857,
-        conv_lifetime_capacity=182411.275767661,
-        conv_avg_annual_use=4946.840187342,  # via rrs.conv_avg_annual_use
+        soln_lifetime_capacity=50358.6825,
+        soln_avg_annual_use=1918.426,
+        conv_lifetime_capacity=178770.55602092,
+        conv_avg_annual_use=4967.65,
 
         report_start_year=2020,
         report_end_year=2050,
 
         soln_var_oper_cost_per_funit=0.0,
         soln_fuel_cost_per_funit=0.0,
-        soln_fixed_oper_cost_per_iunit=23.18791293579,
-        conv_var_oper_cost_per_funit=0.00375269040,
-        conv_fuel_cost_per_funit=0.0731,
-        conv_fixed_oper_cost_per_iunit=32.95140431108,
+        soln_fixed_oper_cost_per_iunit=23.2278,
+        conv_var_oper_cost_per_funit=0.00475243216795082,
+        conv_fuel_cost_per_funit=0.09,
+        conv_fixed_oper_cost_per_iunit=32.8906457343352,
 
         npv_discount_rate=0.094,
 
