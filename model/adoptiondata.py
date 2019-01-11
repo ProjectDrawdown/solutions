@@ -55,8 +55,15 @@ class AdoptionData:
     result = pd.DataFrame(index=adoption_data.index.copy(), columns=['Min', 'Max', 'S.D'])
     result.loc[:, 'Min'] = adoption_data.min(axis=1)
     result.loc[:, 'Max'] = adoption_data.max(axis=1)
+
+    columns = interpolation.matching_data_sources(data_sources=self.data_sources,
+        name=self.ac.soln_pds_adoption_prognostication_source, groups_only=False)
     # Excel STDDEV.P is a whole population stddev, ddof=0
-    result.loc[:, 'S.D'] = adoption_data.std(axis=1, ddof=0)
+    if len(columns) > 1:
+      result.loc[:, 'S.D'] = adoption_data.loc[:, columns].std(axis=1, ddof=0)
+    else:
+      result.loc[:, 'S.D'] = adoption_data.std(axis=1, ddof=0)
+
     result.name = 'adoption_min_max_sd_global'
     return result
 

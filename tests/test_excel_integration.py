@@ -117,8 +117,11 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   """Test for Excel model file SolarPVUtility_RRS_ELECGEN_*."""
   if not excel_present():
     pytest.skip("Microsoft Excel not present")
-  scenarios = ['PDS3-16p2050-Optimum (Updated)', 'PDS2-15p2050-Drawdown (Updated)',]
+  scenarios = ['PDS3-16p2050-Optimum (Updated)', 'PDS2-15p2050-Drawdown (Updated)',
+      'PDS1-10p2050-Plausible (Updated)', 'PDS-16p2050- Optimum (Book Ed.1)',
+      'PDS-15p2050- Drawdown (Book Ed.1)', 'PDS-10p2050- Plausible (Book Ed.1)']
   for scenario in scenarios:
+    print(scenario)
     solution_filename = 'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm'
     filename = os.path.join(excel_orig_files_dir, solution_filename)
     assert os.path.exists(filename)
