@@ -107,3 +107,15 @@ Dec 31, 2018 - Jan 4, 2019
   Combines and summarizes multiple data sources to a (mean, high, low)
   tuple. These values provide guidance for setting appropriate values,
   though human researcher review sets the value used in the model.
+
+Jan 7 - 11, 2019
++ Support multiple scenarios.
+  Each solution generally contains a number of scenarios, which are
+  collections of inputs and assumptions. Add support for scenarios
+  within a solution by extending test_excel_integration.py to test
+  multiple scenarios within a solution. Aadd all six existing
+  scenarios to the solarpvutil solution.
++ remove per-module URL endpoints.
+  We use /operatingcost, /adoptiondata, etc earlier in the dev effort
+  but have now switched over to using /solarpvutil. Remove the code
+  and the test cases.
