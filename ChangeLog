@@ -119,3 +119,6 @@ Jan 7 - 11, 2019
   We use /operatingcost, /adoptiondata, etc earlier in the dev effort
   but have now switched over to using /solarpvutil. Remove the code
   and the test cases.
++ progress on Jupyter notebook
+  Added VMA, Detailed Results, and Operating Cost tabs with basic displays
+  of data.
