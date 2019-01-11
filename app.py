@@ -56,7 +56,8 @@ def home():
 @app.route("/solarpvutil", methods=['POST'])
 def solarPVUtil():
     """SolarPVUtil solution."""
-    pv = solarpvutil.SolarPVUtil()
+    scenario = request.args.get('scenario', default=None)
+    pv = solarpvutil.SolarPVUtil(scenario=scenario)
 
     results_str = json.dumps(pv.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")

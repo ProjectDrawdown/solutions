@@ -21,10 +21,12 @@ from solution import rrs
 
 
 class SolarPVUtil:
-  def __init__(self):
+  def __init__(self, scenario=None):
     datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
     parentdir = pathlib.Path(__file__).parents[1]
     thisdir = pathlib.Path(__file__).parents[0]
+    if scenario is None:
+      scenario = 'PDS3-16p2050-Optimum (Updated)'
 
     soln_funit_adoption_2014 = pd.DataFrame([[112.633033333333, 75.0042455555555,
       0.332383333333333, 21.0725044444444, 1.57507777777778, 14.6506188888889,
@@ -33,60 +35,96 @@ class SolarPVUtil:
         'Latin America', 'China', 'India', 'EU', 'USA'], index=[2014])
     soln_funit_adoption_2014.index.name = 'Year'
 
-    # 'PDS3-16p2050-Optimum (Updated)'
-    self.ac = advanced_controls.AdvancedControls(
-        pds_2014_cost=1444.93954,  # via self.soln_2014_cost
-        ref_2014_cost=1444.93954,  # via self.soln_2014_cost
-        conv_2014_cost=2010.03170851964,  # via self.r2s.conv_2014_cost
-        soln_first_cost_efficiency_rate=0.182810601365724,
-        soln_first_cost_below_conv=True,
-        conv_first_cost_efficiency_rate=0.02,
-        soln_funit_adoption_2014=soln_funit_adoption_2014,
+    ac_scenarios = {
+       'PDS3-16p2050-Optimum (Updated)': advanced_controls.AdvancedControls(
+         pds_2014_cost=1444.93954, ref_2014_cost=1444.93954,
+         conv_2014_cost=2010.03170851964,
+         soln_first_cost_efficiency_rate=0.182810601365724,
+         soln_first_cost_below_conv=True,
+         conv_first_cost_efficiency_rate=0.02,
+         soln_funit_adoption_2014=soln_funit_adoption_2014,
 
-        ch4_is_co2eq=True,
-        n2o_is_co2eq=True,
-        co2eq_conversion_source="AR5 with feedback",
-        soln_indirect_co2_per_iunit=78779.26,
-        conv_indirect_co2_per_unit=0.0,
-        conv_indirect_co2_is_iunits=False,
+         ch4_is_co2eq=True, n2o_is_co2eq=True,
+         co2eq_conversion_source="AR5 with feedback",
+         soln_indirect_co2_per_iunit=78779.26,
+         conv_indirect_co2_per_unit=0.0, conv_indirect_co2_is_iunits=False,
 
-        soln_lifetime_capacity=50358.6825,
-        soln_avg_annual_use=1918.426,
-        conv_lifetime_capacity=178770.55602092,
-        conv_avg_annual_use=4967.65,
+         soln_lifetime_capacity=50358.6825, soln_avg_annual_use=1918.426,
+         conv_lifetime_capacity=178770.55602092, conv_avg_annual_use=4967.65,
 
-        report_start_year=2020,
-        report_end_year=2050,
+         report_start_year=2020, report_end_year=2050,
 
-        soln_var_oper_cost_per_funit=0.0,
-        soln_fuel_cost_per_funit=0.0,
-        soln_fixed_oper_cost_per_iunit=23.2278,
-        conv_var_oper_cost_per_funit=0.00475243216795082,
-        conv_fuel_cost_per_funit=0.09,
-        conv_fixed_oper_cost_per_iunit=32.8906457343352,
+         soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+         soln_fixed_oper_cost_per_iunit=23.2278,
+         conv_var_oper_cost_per_funit=0.00475243216795082, conv_fuel_cost_per_funit=0.09,
+         conv_fixed_oper_cost_per_iunit=32.8906457343352,
 
-        npv_discount_rate=0.094,
+         npv_discount_rate=0.094,
 
-        emissions_use_co2eq=True,
-        emissions_grid_source="meta_analysis",
-        emissions_grid_range="mean",
+         emissions_use_co2eq=True,
+         emissions_grid_source="meta_analysis", emissions_grid_range="mean",
 
-        soln_ref_adoption_regional_data=False,
-        soln_pds_adoption_regional_data=False,
-        soln_pds_adoption_basis='Existing Adoption Prognostications',
-        soln_pds_adoption_prognostication_source='Based on: Greenpeace (2015) Advanced Energy Revolution',
-        soln_pds_adoption_prognostication_trend='3rd Poly',
-        soln_pds_adoption_prognostication_growth='Medium',
-        solution_category='REPLACEMENT',
-        )
+         soln_ref_adoption_regional_data=False,
+         soln_pds_adoption_regional_data=False,
+         soln_pds_adoption_basis='Existing Adoption Prognostications',
+         soln_pds_adoption_prognostication_source='Based on: Greenpeace (2015) Advanced Energy Revolution',
+         soln_pds_adoption_prognostication_trend='3rd Poly',
+         soln_pds_adoption_prognostication_growth='Medium',
+         solution_category='REPLACEMENT',
+         ),
+       'PDS2-15p2050-Drawdown (Updated)': advanced_controls.AdvancedControls(
+         pds_2014_cost=1444.93954, ref_2014_cost=1444.93954,
+         conv_2014_cost=2010.03170851964,
+         soln_first_cost_efficiency_rate=0.182810601365724,
+         soln_first_cost_below_conv=True,
+         conv_first_cost_efficiency_rate=0.02,
+         soln_funit_adoption_2014=soln_funit_adoption_2014,
+
+         ch4_is_co2eq=True, n2o_is_co2eq=True,
+         co2eq_conversion_source="AR5 with feedback",
+         soln_indirect_co2_per_iunit=78779.26,
+         conv_indirect_co2_per_unit=0.0, conv_indirect_co2_is_iunits=False,
+
+         soln_lifetime_capacity=50358.6825, soln_avg_annual_use=1918.426,
+         conv_lifetime_capacity=178770.55602092, conv_avg_annual_use=4967.65,
+
+         report_start_year=2020, report_end_year=2050,
+
+         soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+         soln_fixed_oper_cost_per_iunit=23.2278,
+         conv_var_oper_cost_per_funit=0.00475243216795082, conv_fuel_cost_per_funit=0.09,
+         conv_fixed_oper_cost_per_iunit=32.8906457343352,
+
+         npv_discount_rate=0.094,
+
+         emissions_use_co2eq=True,
+         emissions_grid_source="meta_analysis", emissions_grid_range="mean",
+
+         soln_ref_adoption_regional_data=False,
+         soln_pds_adoption_regional_data=False,
+         soln_pds_adoption_basis='Existing Adoption Prognostications',
+         soln_pds_adoption_prognostication_source='Based on: Greenpeace (2015) Advanced Energy Revolution',
+         soln_pds_adoption_prognostication_trend='3rd Poly',
+         soln_pds_adoption_prognostication_growth='Medium',
+         solution_category='REPLACEMENT',
+         ),
+       }
+
+    if scenario == 'PDS3-16p2050-Optimum (Updated)':
+      self.ac = ac_scenarios[scenario]
+      pds_source_post_2014 = 'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario'
+    elif scenario == 'PDS2-15p2050-Drawdown (Updated)':
+      self.ac = ac_scenarios[scenario]
+      pds_source_post_2014 = 'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario'
+    else:
+      raise KeyError('Unknown scenario ' + str(scenario))
 
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
         'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
       ['source_until_2014', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
         'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', 'Baseline Cases',
-        'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 'ALL SOURCES',
+      ['source_after_2014', 'Baseline Cases', pds_source_post_2014, 'ALL SOURCES',
         'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
         'ALL SOURCES', 'ALL SOURCES'],
       ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
