@@ -12,7 +12,9 @@ def check_to_dict(obj):
     assert ex in result
 
 def test_solarpvutil():
-  obj = solarpvutil.SolarPVUtil()
+  scenario = solarpvutil.scenarios[0]
+  obj = solarpvutil.SolarPVUtil(scenario=scenario)
+  assert obj.scenario == scenario
   check_to_dict(obj)
   expected = (2044.15474808447, 2643.36995195410, 1444.93954421485)
   result = obj.soln_2014_cost_vma.avg_high_low()

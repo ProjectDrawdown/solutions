@@ -19,6 +19,9 @@ from model import unitadoption
 from model import vma
 from solution import rrs
 
+scenarios = ['PDS3-16p2050-Optimum (Updated)', 'PDS2-15p2050-Drawdown (Updated)',
+    'PDS1-10p2050-Plausible (Updated)', 'PDS-16p2050- Optimum (Book Ed.1)',
+    'PDS-15p2050- Drawdown (Book Ed.1)', 'PDS-10p2050- Plausible (Book Ed.1)']
 
 class SolarPVUtil:
   def __init__(self, scenario=None):
@@ -27,6 +30,7 @@ class SolarPVUtil:
     thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS3-16p2050-Optimum (Updated)'
+    self.scenario = scenario
 
     soln_funit_adoption_2014 = pd.DataFrame([[112.633033333333, 75.0042455555555,
       0.332383333333333, 21.0725044444444, 1.57507777777778, 14.6506188888889,
