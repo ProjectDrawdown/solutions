@@ -102,12 +102,22 @@ def test_single_study():
   assert result == pytest.approx(expected)
 
 def test_conversion_years():
-  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+  s = """Source ID, Raw Data Input, Original Units, Weight
       A, 100, years, 
-      """)
-  v = vma.VMA(filename=f)
+      """
+  substitutions = {
+      '@conv_avg_annual_use@': 2,
+      '@soln_avg_annual_use@': 3,
+      }
+  f = io.StringIO(s)
+  v = vma.VMA(filename=f, substitutions=substitutions, final_units='conv-TWh/TW')
   result = v.avg_high_low()
-  expected = (100, 100, 100)
+  expected = (200, 200, 200)
+  assert result == pytest.approx(expected)
+  f = io.StringIO(s)
+  v = vma.VMA(filename=f, substitutions=substitutions, final_units='soln-TWh/TW')
+  result = v.avg_high_low()
+  expected = (300, 300, 300)
   assert result == pytest.approx(expected)
 
 def test_conversion_kWhkW():

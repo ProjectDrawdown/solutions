@@ -34,9 +34,9 @@ class SolarPVRoof:
     soln_funit_adoption_2014.index.name = 'Year'
 
     self.ac = advanced_controls.AdvancedControls(
-        pds_2014_cost = 1883.5303928735746,  # TODO self.soln_2014_cost
-        ref_2014_cost = 1883.5303928735746,  # TODO self.soln_2014_cost
-        conv_2014_cost = 2010.0317085196398,  # TODO self.r2s.conv_2014_cost
+        pds_2014_cost = 1883.5303928735746,
+        ref_2014_cost = 1883.5303928735746,
+        conv_2014_cost = 2010.0317085196398,
         soln_first_cost_efficiency_rate = 0.1966,
         conv_first_cost_efficiency_rate = 0.02,
         soln_funit_adoption_2014 = soln_funit_adoption_2014,
@@ -50,7 +50,7 @@ class SolarPVRoof:
         soln_lifetime_capacity = 41401.10769230769,
         soln_avg_annual_use = 1725.0461538461536,
         conv_lifetime_capacity = 182411.2757676607,
-        conv_avg_annual_use = 4946.8401873420025,  # TODO: self.r2s.conv_avg_annual_use
+        conv_avg_annual_use = 4946.8401873420025,
         report_start_year = 2020,
         report_end_year = 2050,
         soln_var_oper_cost_per_funit = 0.0,
@@ -216,13 +216,15 @@ class SolarPVRoof:
 
     # Variable Meta-analysis objects, not used in model computation only in UI
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
-        soln_avg_annual_use=self.ac.soln_avg_annual_use)
+        soln_avg_annual_use=self.ac.soln_avg_annual_use,
+        conv_avg_annual_use=self.ac.conv_avg_annual_use)
 
     self.soln_2014_cost_vma = vma.VMA(substitutions=self.r2s.substitutions,
         filename=str(thisdir.joinpath('vma_soln_2014_cost.csv')))
 
     self.soln_lifetime_years_vma = vma.VMA(substitutions=self.r2s.substitutions,
-        filename=str(thisdir.joinpath('vma_soln_lifetime_years.csv')))
+        filename=str(thisdir.joinpath('vma_soln_lifetime_years.csv')),
+        final_units='soln-TWh/TW')
 
     self.soln_avg_annual_use_vma = vma.VMA(substitutions=self.r2s.substitutions,
         filename=str(thisdir.joinpath('vma_soln_avg_annual_use.csv')))

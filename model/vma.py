@@ -56,7 +56,6 @@ def _convert(raw, units, conversions, substitutions):
   if units == 'btu/twh': return 3412141.63 * 1000000 / float(raw)
   if units in conversions:
     return float(raw) * conversions[units]
-  if units == 'years': return float(raw)
   if units == 'kwh/kw': return float(raw)
   if units == 'capacity factor (%)':
     if isinstance(raw, str) and raw.endswith('%'):
@@ -74,6 +73,11 @@ def _convert(raw, units, conversions, substitutions):
   m = re.match(r'((?:us\$|€)\d{4}/[kmgt]w)h-us\$2014/kw', units)
   if m:
     return float(raw) * conversions[m.group(1)] * substitutions['@soln_avg_annual_use@']
+
+  if units == 'years-conv-twh/tw':
+    return float(raw) * substitutions['@conv_avg_annual_use@']
+  if units == 'years-soln-twh/tw':
+    return float(raw) * substitutions['@soln_avg_annual_use@']
 
   return None
 
