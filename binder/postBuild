@@ -1,0 +1,2 @@
+# necessary for jupyterlab integration
+jupyter labextension install @jupyter-widgets/jupyterlab-manager 
