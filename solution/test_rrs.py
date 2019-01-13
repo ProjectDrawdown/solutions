@@ -8,7 +8,8 @@ def test_rrs():
   assert 'Ambitious Cases' in rrs.tam_pds_data_sources
 
 def test_rrs_vma():
-  r = rrs.RRS(total_energy_demand=22548.30, soln_avg_annual_use=1841.66857142857)
+  r = rrs.RRS(total_energy_demand=22548.30, soln_avg_annual_use=1841.66857142857,
+      conv_avg_annual_use=4946.840187342)
   assert r.substitutions['@energy_mix_coal@'] == pytest.approx(0.38699149767)
 
   result = r.oil_plant_efficiency_vma.avg_high_low()
@@ -36,9 +37,9 @@ def test_rrs_vma():
   expected = (2010.03170851964, 3373.55686730167, 646.50654973761)
   assert result == pytest.approx(expected)
 
-  result = r.conv_lifetime_years_vma.avg_high_low()
+  result = r.conv_lifetime_vma.avg_high_low()
   # WindOnshore_RRS_ELECGEN_v1.1b_24Oct18 'Advanced Controls'!E95 / F95
-  expected = (35.986947222873592, 45.526538153649603, 26.447368421052632)
+  expected = (178021.676741866666477, 225212.508529032712886, 130830.90495470289682)
   assert result == pytest.approx(expected)
 
   result = r.conv_avg_annual_use_vma.avg_high_low()

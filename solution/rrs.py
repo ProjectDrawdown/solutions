@@ -62,14 +62,16 @@ tam_pds_data_sources = {
 
 
 class RRS:
-  def __init__(self, total_energy_demand, soln_avg_annual_use):
+  def __init__(self, total_energy_demand, soln_avg_annual_use, conv_avg_annual_use):
     """Data structures to support the Reduction and Replacement Solutions.
        Arguments:
          total_energy_demand: in Terawatt-Hours (TWh), value typically supplied by tam.py
          soln_avg_annual_use: average annual usage of the solution in hours.
+         conv_avg_annual_use: average annual usage of the conventional technology in hours.
     """
     self.substitutions = {
         '@soln_avg_annual_use@': soln_avg_annual_use,
+        '@conv_avg_annual_use@': conv_avg_annual_use,
 
         # source for energy mix coal, natural gas, nuclear, and oil:
         # The World Bank Data in The Shift Project Data Portal
@@ -113,8 +115,9 @@ class RRS:
         filename=str(parentdir.joinpath('solution', 'vma_conv_2014_cost.csv')))
 
     # WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C175:X185, VMA #4
-    self.conv_lifetime_years_vma = vma.VMA(substitutions=self.substitutions,
-        filename=str(parentdir.joinpath('solution', 'vma_conv_lifetime_years.csv')))
+    self.conv_lifetime_vma = vma.VMA(substitutions=self.substitutions,
+        filename=str(parentdir.joinpath('solution', 'vma_conv_lifetime_years.csv')),
+        final_units='conv-TWh/TW')
 
     # WindOnshore_RRS_ELECGEN 'Variable Meta-analysis'!C246:X268, VMA #6
     self.conv_avg_annual_use_vma = vma.VMA(substitutions=self.substitutions,
