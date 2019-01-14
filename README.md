@@ -36,6 +36,12 @@ Test Query
 ```sh
 curl -H 'Content-Type: application/json' --data "{}" "http://127.0.0.1:5000/solarpvutil"
 ```
+
+Jupyter Notebook
+```sh
+./venv/bin/jupyter lab ./solution/solarpvutil/SolarPVUtil.ipynb
+```
+
 # Understanding the Drawdown solution models: Reference and Summary
 
 [Documentation of the Excel models](https://gitlab.com/codeearth/drawdown/blob/master/Documentation/Project_Drawdown_Model_Framework_and_Guide.pdf) has been written, as well as a [design doc](https://docs.google.com/document/d/18nUKV-qltsaSD8kZd5gHswQu82Ot9rg19KIU8_eOisY/view) of how we expect the new implementation to be completed. We refer to this development effort as a Remodel, of course.
@@ -120,15 +126,12 @@ The four modules below may be thought of as the computational "kernel" of the Dr
 Tasks which do not fit into an ordered list of things to be completed:
 
 * **Dashboard**  
-   The ultimate goal of this project is to produce a compelling, browser-delivered GUI that will be made available to all researchers and policy makers and the general public to understand the solutions proposed by project drawdown.
+   The ultimate goal of this project is to produce a compelling, browser-delivered GUI. There are at least three mostly distinct audiences:
++ Researchers who want to work with the models, add data sources, etc.
++ Policy makers and deciders, who need tools to help guide effective use of resources.
++ Interested parties and the general public, to evangelize that there *are* solutions to global warming.
 
-   A mockup of such an interface has been produced in Java [Need to get link from Chad.]
-
-   This work can be usefully divided into two parts, the output, which is a higher priority, which could perform the same functionality as the current spreadsheet, but perhaps much better. The second priority is to allow all inputs to be entered. This is a design task which has not yet been undertaken. Once again the spreadsheets serve as starting point for this work.
-
-   An output media, for CO2 and Adoption and other results. There is a mockup of an interface which was shown on 9/6/2018, this should be linked from here.
-
-   Consider using D3 or other Javascript charting packages to implement this.
+   As of 1/2019, UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub). An early version of this UI is available on [mybinder.org](https://mybinder.org/v2/gl/codeearth%2Fdrawdown/master?urlpath=lab/tree/solution/solarpvutil/SolarPVUtil.ipynb).
 
 * **Data Pipeline Hook Strategy**  
    &quot;Specialization&quot; is mentioned above as being an issue starting with the First Cost tab, where individual models have often needed to supply their own implementations and formulae. Though it is recommended that a design for this not be started too early so as to benefit from the understanding gained as the system is constructed, it will nonetheless have to be done at some point.
