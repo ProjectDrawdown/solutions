@@ -127,9 +127,9 @@ Tasks which do not fit into an ordered list of things to be completed:
 
 * **Dashboard**  
    The ultimate goal of this project is to produce a compelling, browser-delivered GUI. There are at least three mostly distinct audiences:
-+ Researchers who want to work with the models, add data sources, etc.
-+ Policy makers and deciders, who need tools to help guide effective use of resources.
-+ Interested parties and the general public, to evangelize that there *are* solutions to global warming.
+   + Researchers who want to work with the models, add data sources, etc.
+   + Policy makers and deciders, who need tools to help guide effective use of resources.
+   + Interested parties and the general public, to evangelize that there *are* solutions to global warming.
 
    As of 1/2019, UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub). An early version of this UI is available on [mybinder.org](https://mybinder.org/v2/gl/codeearth%2Fdrawdown/master?urlpath=lab/tree/solution/solarpvutil/SolarPVUtil.ipynb).
 
