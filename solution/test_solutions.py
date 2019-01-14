@@ -15,6 +15,7 @@ def test_solarpvutil():
   scenario = solarpvutil.scenarios[0]
   obj = solarpvutil.SolarPVUtil(scenario=scenario)
   assert obj.scenario == scenario
+  assert obj.name
   check_to_dict(obj)
   expected = (2044.15474808447, 2643.36995195410, 1444.93954421485)
   result = obj.soln_2014_cost_vma.avg_high_low()
@@ -35,6 +36,7 @@ def test_solarpvutil():
 
 def test_solarpvroof():
   obj = solarpvroof.SolarPVRoof()
+  assert obj.name
   check_to_dict(obj)
   expected = (2910.31295690078, 3937.09552092798, 1883.53039287357)
   result = obj.soln_2014_cost_vma.avg_high_low()

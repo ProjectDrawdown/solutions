@@ -21,6 +21,7 @@ from solution import rrs
 
 
 class SolarPVRoof:
+  name = 'Rooftop Solar'
   def __init__(self):
     datadir = str(pathlib.PurePath(pathlib.Path(__file__).parents[2], 'data'))
     parentdir = pathlib.Path(__file__).parents[1]

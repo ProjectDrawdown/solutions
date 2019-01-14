@@ -24,6 +24,7 @@ scenarios = ['PDS3-16p2050-Optimum (Updated)', 'PDS2-15p2050-Drawdown (Updated)'
     'PDS-15p2050- Drawdown (Book Ed.1)', 'PDS-10p2050- Plausible (Book Ed.1)']
 
 class SolarPVUtil:
+  name = 'Solar Farms'
   def __init__(self, scenario=None):
     datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
     parentdir = pathlib.Path(__file__).parents[1]
