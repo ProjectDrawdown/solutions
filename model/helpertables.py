@@ -6,6 +6,7 @@ the Linear/2nd order poly/3rd order poly/etc curve fitting implementations
 from interpolation.py, or use a simple linear fit implemented here.
 """
 import enum
+from functools import lru_cache
 import numpy as np
 import pandas as pd
 
@@ -45,6 +46,7 @@ class HelperTables:
     self.adoption_low_med_high_global = adoption_low_med_high_global
     self.adoption_is_single_source = adoption_is_single_source
 
+  @lru_cache()
   def soln_ref_funits_adopted(self):
     """Cumulative Adoption in funits, interpolated between two ref_datapoints.
 
@@ -104,6 +106,7 @@ class HelperTables:
       raise NotImplementedError('Unknown soln_pds_adoption_prognostication_growth: ' +
           str(self.ac.soln_pds_adoption_prognostication_growth))
 
+  @lru_cache()
   def soln_pds_funits_adopted(self):
     """Cumulative Adoption in funits in the PDS.
 

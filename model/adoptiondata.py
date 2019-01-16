@@ -1,5 +1,6 @@
 """Adoption Data module."""
 
+from functools import lru_cache
 import math
 import os
 
@@ -41,12 +42,14 @@ class AdoptionData:
           skip_blank_lines=True, comment='#')
         self._adoption_data_global.loc[:, name] = df.loc[:, 'World']
 
+  @lru_cache()
   def adoption_data_global(self):
     """Return adoption data for the given solution in the 'World' region.
        'Adoption Data'!B45:R94
     """
     return self._adoption_data_global
 
+  @lru_cache()
   def adoption_min_max_sd_global(self):
     """Return the min, max, and standard deviation for the adoption data in the 'World' region.
        'Adoption Data'!X45:Z94
@@ -67,6 +70,7 @@ class AdoptionData:
     result.name = 'adoption_min_max_sd_global'
     return result
 
+  @lru_cache()
   def adoption_low_med_high_global(self):
     """Return the selected data sources as Medium, and N stddev away as Low and High.
        'Adoption Data'!AB45:AD94
@@ -87,6 +91,7 @@ class AdoptionData:
     result.name = 'adoption_low_med_high_global'
     return result
 
+  @lru_cache()
   def adoption_trend_global(self, trend=None):
     """Adoption prediction via one of several interpolation algorithms in the 'World' region.
        Linear: 'Adoption Data'!BY50:CA96     Degree2: 'Adoption Data'!CF50:CI96
@@ -99,6 +104,7 @@ class AdoptionData:
     result.name = 'adoption_trend_global_' + trend.lower()
     return result
 
+  @lru_cache()
   def adoption_is_single_source(self):
     """Whether the source data selected is one source or multiple."""
     return not interpolation.is_group_name(data_sources=self.data_sources,

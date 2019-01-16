@@ -3,6 +3,7 @@
 Computes reductions in CO2-equivalent emissions.
 """
 
+from functools import lru_cache
 import math
 
 import numpy as np
@@ -51,6 +52,7 @@ class CO2Calcs:
     self.soln_net_annual_funits_adopted = soln_net_annual_funits_adopted
     self.fuel_in_liters = fuel_in_liters
 
+  @lru_cache()
   def co2_mmt_reduced(self):
     """CO2 MMT Reduced
        Annual CO2 reductions by region and year are calculated by adding reduced emissions
@@ -82,6 +84,7 @@ class CO2Calcs:
     m.name = "co2_mmt_reduced"
     return m
 
+  @lru_cache()
   def co2eq_mmt_reduced(self):
     """CO2-eq MMT Reduced
        Annual CO2-eq reductions by region are calculated by multiplying the estimated energy
@@ -112,6 +115,7 @@ class CO2Calcs:
     m.name = "co2eq_mmt_reduced"
     return m
 
+  @lru_cache()
   def co2_ppm_calculator(self):
     """CO2 parts per million reduction over time calculator.
 
@@ -153,6 +157,7 @@ class CO2Calcs:
     ppm_calculator.name = "co2_ppm_calculator"
     return ppm_calculator
 
+  @lru_cache()
   def co2eq_ppm_calculator(self):
     """PPM calculations for CO2, CH4, and CO2-eq from other sources.
        'CO2 Calcs'!A171:F217
@@ -170,6 +175,7 @@ class CO2Calcs:
     ppm_calculator["CO2-eq PPM"] = s.apply(co2eq_ppm)
     return ppm_calculator
 
+  @lru_cache()
   def co2_reduced_grid_emissions(self):
     """Reduced Grid Emissions = NE(t) * EF(e,t)
 
@@ -180,6 +186,7 @@ class CO2Calcs:
     """
     return self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2_per_KWh
 
+  @lru_cache()
   def co2_replaced_grid_emissions(self):
     """CO2 Replaced Grid Emissions = NAFU(Sol,t) * EF(e,t)  (i.e. only direct emissions)
        where
@@ -192,6 +199,7 @@ class CO2Calcs:
     else:
       return self.soln_net_annual_funits_adopted * 0
 
+  @lru_cache()
   def co2_increased_grid_usage_emissions(self):
     """Increased Grid Emissions (MMT CO2e) = NEU(t) * EF(e,t)
 
@@ -202,6 +210,7 @@ class CO2Calcs:
     """
     return self.soln_pds_net_grid_electricity_units_used * self.conv_ref_grid_CO2_per_KWh
 
+  @lru_cache()
   def co2eq_reduced_grid_emissions(self):
     """Reduced Grid MMT CO2-eq Emissions = NEU(t) * EF(e,t)
 
@@ -212,6 +221,7 @@ class CO2Calcs:
     """
     return self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2eq_per_KWh
 
+  @lru_cache()
   def co2eq_replaced_grid_emissions(self):
     """CO2-equivalent replaced Grid MMT CO2-eq Emissions = NAFU(Sol,t) * EF(e,t)
 
@@ -225,6 +235,7 @@ class CO2Calcs:
     else:
       return self.soln_net_annual_funits_adopted * 0
 
+  @lru_cache()
   def co2eq_increased_grid_usage_emissions(self):
     """Increased Grid Emissions (MMT CO2e) = NEU(t) * EF(e,t)
 
@@ -235,6 +246,7 @@ class CO2Calcs:
     """
     return self.soln_pds_net_grid_electricity_units_used * self.conv_ref_grid_CO2eq_per_KWh
 
+  @lru_cache()
   def co2eq_direct_reduced_emissions(self):
     """Direct MMT CO2-eq Emissions Reduced = [DEm(Con,t) - DEm(Sol,t)]  / 1000000
 
@@ -249,6 +261,7 @@ class CO2Calcs:
         self.soln_pds_direct_ch4_co2_emissions_saved/1000000 +
         self.soln_pds_direct_n2o_co2_emissions_saved/1000000)
 
+  @lru_cache()
   def co2eq_reduced_fuel_emissions(self):
     """Reduced Fuel Emissions MMT CO2-eq =
         NAFU(Con,t) * Fuel(Con,t) * [Em(cf) -  (1 - FRF) * Em(sf) * if(Fuel Units are Same,
@@ -272,6 +285,7 @@ class CO2Calcs:
       raise NotImplementedError("fuel_in_liters=True not handled")
     return result
 
+  @lru_cache()
   def co2eq_net_indirect_emissions(self):
     """Net Indirect Emissions MMT CO2-eq by implementation unit (t) =
           [NIU (Sol,t) * IEm (Sol,t)] - [NIU (Cont.) * IEm (Con,t)]  /  1000000

@@ -4,6 +4,7 @@ Conversions and lookups useful in converting to CO2 equivalents,
 and other factors relating to emissions and pollutants.
 """
 
+from functools import lru_cache
 import enum
 import pandas as pd
 
@@ -94,6 +95,7 @@ class ElectricityGenOnGrid:
   def __init__(self, ac):
     self.ac = ac
 
+  @lru_cache()
   def conv_ref_grid_CO2eq_per_KWh(self):
     """Grid emission factors (kg CO2-eq per kwh) derived from the AMPERE 3
        MESSAGE Base model. Grid emission factors are fixed at 2015 levels
@@ -135,6 +137,7 @@ class ElectricityGenOnGrid:
     result.loc[:, "USA"] = 0.665071666
     return result
 
+  @lru_cache()
   def conv_ref_grid_CO2_per_KWh(self):
     """Generation mixes from the AMPERE/MESSAGE WG3 BAU scenario, direct emission
        factors by fuel from the IPCC WG3 Annex III Table A.III.2.
