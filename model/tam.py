@@ -1,6 +1,7 @@
 """Total Addressible Market module.
 """
 
+from functools import lru_cache
 import os.path
 
 from model import interpolation
@@ -158,10 +159,12 @@ class TAM:
     else:
       return tamconfig['trend']
 
+  @lru_cache()
   def forecast_data_global(self):
     """ 'TAM Data'!B45:Q94 """
     return self._forecast_data_global
 
+  @lru_cache()
   def forecast_min_max_sd_global(self):
     """ 'TAM Data'!V45:Y94 """
     result = self._min_max_sd(forecast=self.forecast_data_global(),
@@ -169,6 +172,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_global'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_global(self):
     """ 'TAM Data'!AA45:AC94 """
     result = self._low_med_high(forecast=self.forecast_data_global(),
@@ -178,6 +182,7 @@ class TAM:
     result.name = 'forecast_low_med_high_global'
     return result
 
+  @lru_cache()
   def forecast_trend_global(self, trend=None):
     """Forecast for the 'World' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX50:BZ96     Degree2: 'TAM Data'!CE50:CH96
@@ -191,10 +196,12 @@ class TAM:
     result.name = 'forecast_trend_global_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_pds_global(self):
     """ 'TAM Data'!B45:Q94 """
     return self._forecast_data_pds_global
 
+  @lru_cache()
   def forecast_min_max_sd_pds_global(self):
     """ 'TAM Data'!V45:Y94 """
     result = self._min_max_sd(forecast=self.forecast_data_pds_global(),
@@ -202,6 +209,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_pds_global'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_pds_global(self):
     """ 'TAM Data'!AA45:AC94 """
     result = self._low_med_high(forecast=self.forecast_data_pds_global(),
@@ -211,6 +219,7 @@ class TAM:
     result.name = 'forecast_low_med_high_pds_global'
     return result
 
+  @lru_cache()
   def forecast_trend_pds_global(self, trend=None):
     """Forecast for the 'World' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX50:BZ96     Degree2: 'TAM Data'!CE50:CH96
@@ -224,10 +233,12 @@ class TAM:
     result.name = 'forecast_trend_pds_global_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_oecd90(self):
     """ 'TAM Data'!B163:Q212 """
     return self._forecast_data_oecd90
 
+  @lru_cache()
   def forecast_min_max_sd_oecd90(self):
     """ 'TAM Data'!V163:Y212 """
     result = self._min_max_sd(forecast=self.forecast_data_oecd90(),
@@ -235,6 +246,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_oecd90'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_oecd90(self):
     """ 'TAM Data'!AA163:AC212 """
     result = self._low_med_high(forecast=self.forecast_data_oecd90(),
@@ -244,6 +256,7 @@ class TAM:
     result.name = 'forecast_low_med_high_oecd90'
     return result
 
+  @lru_cache()
   def forecast_trend_oecd90(self, trend=None):
     """Forecast for the 'OECD90' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX168:BZ214     Degree2: 'TAM Data'!CE168:CH214
@@ -257,10 +270,12 @@ class TAM:
     result.name = 'forecast_trend_oecd90_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_eastern_europe(self):
     """ 'TAM Data'!B227:Q276 """
     return self._forecast_data_eastern_europe
 
+  @lru_cache()
   def forecast_min_max_sd_eastern_europe(self):
     """ 'TAM Data'!V227:Y276 """
     result = self._min_max_sd(forecast=self.forecast_data_eastern_europe(),
@@ -268,6 +283,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_eastern_europe'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_eastern_europe(self):
     """ 'TAM Data'!AA227:AC276 """
     result = self._low_med_high(forecast=self.forecast_data_eastern_europe(),
@@ -277,6 +293,7 @@ class TAM:
     result.name = 'forecast_low_med_high_eastern_europe'
     return result
 
+  @lru_cache()
   def forecast_trend_eastern_europe(self, trend=None):
     """Forecast for the 'Eastern Europe' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX232:BZ278     Degree2: 'TAM Data'!CE232:CH278
@@ -290,10 +307,12 @@ class TAM:
     result.name = 'forecast_trend_eastern_europe_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_asia_sans_japan(self):
     """ 'TAM Data'!B290:Q339 """
     return self._forecast_data_asia_sans_japan
 
+  @lru_cache()
   def forecast_min_max_sd_asia_sans_japan(self):
     """ 'TAM Data'!V290:Y339 """
     result = self._min_max_sd(forecast=self.forecast_data_asia_sans_japan(),
@@ -301,6 +320,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_asia_sans_japan'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_asia_sans_japan(self):
     """ 'TAM Data'!AA290:AC339 """
     result = self._low_med_high(forecast=self.forecast_data_asia_sans_japan(),
@@ -310,6 +330,7 @@ class TAM:
     result.name = 'forecast_low_med_high_asia_sans_japan'
     return result
 
+  @lru_cache()
   def forecast_trend_asia_sans_japan(self, trend=None):
     """Forecast for the 'Asia (Sans Japan)' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX295:BZ341     Degree2: 'TAM Data'!CE295:CH341
@@ -323,10 +344,12 @@ class TAM:
     result.name = 'forecast_trend_asia_sans_japan_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_middle_east_and_africa(self):
     """ 'TAM Data'!B353:Q402 """
     return self._forecast_data_middle_east_and_africa
 
+  @lru_cache()
   def forecast_min_max_sd_middle_east_and_africa(self):
     """ 'TAM Data'!V353:Y402 """
     result = self._min_max_sd(forecast=self.forecast_data_middle_east_and_africa(),
@@ -334,6 +357,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_middle_east_and_africa'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_middle_east_and_africa(self):
     """ 'TAM Data'!AA353:AC402 """
     result = self._low_med_high(forecast=self.forecast_data_middle_east_and_africa(),
@@ -343,6 +367,7 @@ class TAM:
     result.name = 'forecast_low_med_high_middle_east_and_africa'
     return result
 
+  @lru_cache()
   def forecast_trend_middle_east_and_africa(self, trend=None):
     """Forecast for the 'Middle East and Africa' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX358:BZ404     Degree2: 'TAM Data'!CE358:CH404
@@ -356,10 +381,12 @@ class TAM:
     result.name = 'forecast_trend_middle_east_and_africa_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_latin_america(self):
     """ 'TAM Data'!B416:Q465 """
     return self._forecast_data_latin_america
 
+  @lru_cache()
   def forecast_min_max_sd_latin_america(self):
     """ 'TAM Data'!V416:Y465 """
     result = self._min_max_sd(forecast=self.forecast_data_latin_america(),
@@ -367,6 +394,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_latin_america'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_latin_america(self):
     """ 'TAM Data'!AA416:AC465 """
     result = self._low_med_high(forecast=self.forecast_data_latin_america(),
@@ -376,6 +404,7 @@ class TAM:
     result.name = 'forecast_low_med_high_latin_america'
     return result
 
+  @lru_cache()
   def forecast_trend_latin_america(self, trend=None):
     """Forecast for the 'Latin America' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX421:BZ467     Degree2: 'TAM Data'!CE421:CH467
@@ -389,10 +418,12 @@ class TAM:
     result.name = 'forecast_trend_latin_america_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_china(self):
     """ 'TAM Data'!B479:Q528 """
     return self._forecast_data_china
 
+  @lru_cache()
   def forecast_min_max_sd_china(self):
     """ 'TAM Data'!V479:Y528 """
     result = self._min_max_sd(forecast=self.forecast_data_china(),
@@ -400,6 +431,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_china'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_china(self):
     """ 'TAM Data'!AA479:AC528 """
     result = self._low_med_high(forecast=self.forecast_data_china(),
@@ -409,6 +441,7 @@ class TAM:
     result.name = 'forecast_low_med_high_china'
     return result
 
+  @lru_cache()
   def forecast_trend_china(self, trend=None):
     """Forecast for the 'China' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX484:BZ530     Degree2: 'TAM Data'!CE484:CH530
@@ -422,10 +455,12 @@ class TAM:
     result.name = 'forecast_trend_china_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_india(self):
     """ 'TAM Data'!B543:Q592 """
     return self._forecast_data_india
 
+  @lru_cache()
   def forecast_min_max_sd_india(self):
     """ 'TAM Data'!V543:Y592 """
     result = self._min_max_sd(forecast=self.forecast_data_india(),
@@ -433,6 +468,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_india'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_india(self):
     """ 'TAM Data'!AA543:AC592 """
     result = self._low_med_high(forecast=self.forecast_data_india(),
@@ -442,6 +478,7 @@ class TAM:
     result.name = 'forecast_low_med_high_india'
     return result
 
+  @lru_cache()
   def forecast_trend_india(self, trend=None):
     """Forecast for the 'India' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX548:BZ594     Degree2: 'TAM Data'!CE548:CH594
@@ -455,10 +492,12 @@ class TAM:
     result.name = 'forecast_trend_india_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_eu(self):
     """ 'TAM Data'!B607:Q656 """
     return self._forecast_data_eu
 
+  @lru_cache()
   def forecast_min_max_sd_eu(self):
     """ 'TAM Data'!V607:Y656 """
     result = self._min_max_sd(forecast=self.forecast_data_eu(),
@@ -466,6 +505,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_eu'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_eu(self):
     """ 'TAM Data'!AA607:AC656 """
     result = self._low_med_high(forecast=self.forecast_data_eu(),
@@ -474,6 +514,7 @@ class TAM:
     result.name = 'forecast_low_med_high_eu'
     return result
 
+  @lru_cache()
   def forecast_trend_eu(self, trend=None):
     """Forecast for the 'EU' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX612:BZ658     Degree2: 'TAM Data'!CE612:CH658
@@ -487,10 +528,12 @@ class TAM:
     result.name = 'forecast_trend_eu_' + trend.lower()
     return result
 
+  @lru_cache()
   def forecast_data_usa(self):
     """ 'TAM Data'!B672:Q721 """
     return self._forecast_data_usa
 
+  @lru_cache()
   def forecast_min_max_sd_usa(self):
     """ 'TAM Data'!V672:Y721 """
     result = self._min_max_sd(forecast=self.forecast_data_usa(),
@@ -498,6 +541,7 @@ class TAM:
     result.name = 'forecast_min_max_sd_usa'
     return result
 
+  @lru_cache()
   def forecast_low_med_high_usa(self):
     """ 'TAM Data'!AA672:AC721 """
     result = self._low_med_high(forecast=self.forecast_data_usa(),
@@ -506,6 +550,7 @@ class TAM:
     result.name = 'forecast_low_med_high_usa'
     return result
 
+  @lru_cache()
   def forecast_trend_usa(self, trend=None):
     """Forecast for the 'USA' region via one of several interpolation algorithms.
        Linear: 'TAM Data'!BX677:BZ723     Degree2: 'TAM Data'!CE677:CH723
@@ -526,6 +571,7 @@ class TAM:
     first_year = result.first_valid_index()
     result.loc[first_year, region] = forecast_low_med_high.loc[first_year, growth]
 
+  @lru_cache()
   def ref_tam_per_region(self):
     """Compiles the TAM for each of the major regions into a single dataframe.
 
@@ -568,6 +614,7 @@ class TAM:
     result.name = "ref_tam_per_region"
     return result
 
+  @lru_cache()
   def pds_tam_per_region(self):
     """Compiles the PDS TAM for each of the major regions into a single dataframe.
 

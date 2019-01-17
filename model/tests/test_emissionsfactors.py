@@ -50,19 +50,24 @@ def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
   assert table.loc[2025, "OECD90"] == pytest.approx(0.454068989)
   assert table.loc[2020, 'World'] == pytest.approx(0.483415642)
   ac.emissions_grid_range = ef.GRID_RANGE.LOW
+  eg = ef.ElectricityGenOnGrid(ac=ac)
   table = eg.conv_ref_grid_CO2eq_per_KWh()
   assert table.loc[2020, 'World'] == pytest.approx(0.416520905)
   ac.emissions_grid_range = ef.GRID_RANGE.HIGH
+  eg = ef.ElectricityGenOnGrid(ac=ac)
   table = eg.conv_ref_grid_CO2eq_per_KWh()
   assert table.loc[2020, 'World'] == pytest.approx(0.952177536)
   ac.emissions_grid_source = ef.GRID_SOURCE.META
   ac.emissions_grid_range = ef.GRID_RANGE.MEAN
+  eg = ef.ElectricityGenOnGrid(ac=ac)
   table = eg.conv_ref_grid_CO2eq_per_KWh()
   assert table.loc[2020, 'World'] == pytest.approx(0.581083120)
   ac.emissions_grid_range = ef.GRID_RANGE.LOW
+  eg = ef.ElectricityGenOnGrid(ac=ac)
   table = eg.conv_ref_grid_CO2eq_per_KWh()
   assert table.loc[2020, 'World'] == pytest.approx(0.446005409)
   ac.emissions_grid_range = ef.GRID_RANGE.HIGH
+  eg = ef.ElectricityGenOnGrid(ac=ac)
   table = eg.conv_ref_grid_CO2eq_per_KWh()
   assert table.loc[2020, 'World'] == pytest.approx(0.726403172)
 
