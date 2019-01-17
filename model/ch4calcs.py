@@ -3,6 +3,7 @@
 Computes reductions in CO2-equivalent emissions.
 """
 
+from functools import lru_cache
 import math
 import numpy as np
 import pandas as pd
@@ -18,6 +19,7 @@ class CH4Calcs:
     self.ac = ac
     self.soln_net_annual_funits_adopted = soln_net_annual_funits_adopted
 
+  @lru_cache()
   def ch4_tons_reduced(self):
     """CH4 reduced, in tons.
        replace gas_ch4_step = `gas_tons_ch4' * `e'^(-(time_from_present - `n')/12)
@@ -32,6 +34,7 @@ class CH4Calcs:
     result.name = "ch4_tons_reduced"
     return result
 
+  @lru_cache()
   def ch4_ppb_calculator(self):
     """Parts Per Billion reduction calculator for CH4.
 

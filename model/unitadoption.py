@@ -1,5 +1,6 @@
 """Unit Adoption module."""
 
+from functools import lru_cache
 import os.path
 
 import pandas as pd
@@ -30,6 +31,7 @@ class UnitAdoption:
     self.soln_ref_funits_adopted = soln_ref_funits_adopted
     self.soln_pds_funits_adopted = soln_pds_funits_adopted
 
+  @lru_cache()
   def ref_population(self):
     """Population by region for the reference case.
        'Unit Adoption Calculations'!P16:Z63
@@ -41,6 +43,7 @@ class UnitAdoption:
     result.name = "ref_population"
     return result
 
+  @lru_cache()
   def ref_gdp(self):
     """GDP by region for the reference case.
        'Unit Adoption Calculations'!AB16:AL63
@@ -52,6 +55,7 @@ class UnitAdoption:
     result.name = "ref_gdp"
     return result
 
+  @lru_cache()
   def ref_gdp_per_capita(self):
     """GDP per capita for the reference case.
        'Unit Adoption Calculations'!AN16:AX63
@@ -60,6 +64,7 @@ class UnitAdoption:
     result.name = "ref_gdp_per_capita"
     return result
 
+  @lru_cache()
   def ref_tam_per_capita(self):
     """Total Addressable Market per capita for the reference case.
        'Unit Adoption Calculations'!BA16:BK63
@@ -68,6 +73,7 @@ class UnitAdoption:
     result.name = "ref_tam_per_capita"
     return result
 
+  @lru_cache()
   def ref_tam_per_gdp_per_capita(self):
     """Total Addressable Market per unit of GDP per capita for the reference case.
        'Unit Adoption Calculations'!BM16:BW63
@@ -76,6 +82,7 @@ class UnitAdoption:
     result.name = "ref_tam_per_gdp_per_capita"
     return result
 
+  @lru_cache()
   def ref_tam_growth(self):
     """Growth in Total Addressable Market for the reference case.
        'Unit Adoption Calculations'!BY16:CI63
@@ -85,6 +92,7 @@ class UnitAdoption:
     calc.name = "ref_tam_growth"
     return calc
 
+  @lru_cache()
   def pds_population(self):
     """Population by region for the Project Drawdown Solution case.
        'Unit Adoption Calculations'!P68:Z115
@@ -96,6 +104,7 @@ class UnitAdoption:
     result.name = "pds_population"
     return result
 
+  @lru_cache()
   def pds_gdp(self):
     """GDP by region for the Project Drawdown Solution case.
        'Unit Adoption Calculations'!AB68:AL115
@@ -107,6 +116,7 @@ class UnitAdoption:
     result.name = "pds_gdp"
     return result
 
+  @lru_cache()
   def pds_gdp_per_capita(self):
     """GDP per capita for the Project Drawdown Solution case.
        'Unit Adoption Calculations'!AN68:AX115
@@ -115,6 +125,7 @@ class UnitAdoption:
     result.name = "pds_gdp_per_capita"
     return result
 
+  @lru_cache()
   def pds_tam_per_capita(self):
     """Total Addressable Market per capita for the Project Drawdown Solution case.
        'Unit Adoption Calculations'!BA68:BK115
@@ -123,6 +134,7 @@ class UnitAdoption:
     result.name = "pds_tam_per_capita"
     return result
 
+  @lru_cache()
   def pds_tam_per_gdp_per_capita(self):
     """Total Addressable Market per unit of GDP per capita for the Project Drawdown Solution case.
        'Unit Adoption Calculations'!BM68:BW115
@@ -131,6 +143,7 @@ class UnitAdoption:
     result.name = "pds_tam_per_gdp_per_capita"
     return result
 
+  @lru_cache()
   def pds_tam_growth(self):
     """Growth in Total Addressable Market for the Project Drawdown Solution case.
        'Unit Adoption Calculations'!BY68:CI115
@@ -140,6 +153,7 @@ class UnitAdoption:
     calc.name = "pds_tam_growth"
     return calc
 
+  @lru_cache()
   def soln_pds_cumulative_funits(self):
     """Cumulative Functional Units Utilized.
        'Unit Adoption Calculations'!Q134:AA181
@@ -151,6 +165,7 @@ class UnitAdoption:
     result.name = "soln_pds_cumulative_funits"
     return result
 
+  @lru_cache()
   def soln_pds_tot_iunits_reqd(self):
     """Total iunits required each year.
        'Unit Adoption Calculations'!AX134:BH181
@@ -159,6 +174,7 @@ class UnitAdoption:
     result.name = "soln_pds_tot_iunits_reqd"
     return result
 
+  @lru_cache()
   def soln_pds_new_iunits_reqd(self):
     """New implementation units required (includes replacement units)
 
@@ -185,6 +201,7 @@ class UnitAdoption:
     result.name = "soln_pds_new_iunits_reqd"
     return result
 
+  @lru_cache()
   def soln_pds_big4_iunits_reqd(self):
     """Implementation units required in USA/EU/China/India vs Rest of World.
        'Unit Adoption Calculations'!AG136:AQ182
@@ -203,6 +220,7 @@ class UnitAdoption:
     result.name = "soln_pds_big4_iunits_reqd"
     return result
 
+  @lru_cache()
   def soln_ref_cumulative_funits(self):
     """Cumulative functional units.
        'Unit Adoption Calculations'!Q197:AA244
@@ -211,6 +229,7 @@ class UnitAdoption:
     result.name = "soln_ref_cumulative_funits"
     return result
 
+  @lru_cache()
   def soln_ref_tot_iunits_reqd(self):
     """Total implementation units required.
        'Unit Adoption Calculations'!AX197:BH244"""
@@ -218,6 +237,7 @@ class UnitAdoption:
     result.name = "soln_ref_tot_iunits_reqd"
     return result
 
+  @lru_cache()
   def soln_ref_new_iunits_reqd(self):
     """New implementation units required (includes replacement units)
 
@@ -243,6 +263,7 @@ class UnitAdoption:
     result.name = "soln_ref_new_iunits_reqd"
     return result
 
+  @lru_cache()
   def soln_net_annual_funits_adopted(self):
     """Net annual functional units adopted.
 
@@ -263,6 +284,7 @@ class UnitAdoption:
     result.name = "soln_net_annual_funits_adopted"
     return result
 
+  @lru_cache()
   def conv_ref_tot_iunits_reqd(self):
     """Total cumulative units of the conventional or legacy practice installed by year.
     
@@ -280,6 +302,7 @@ class UnitAdoption:
     result.name = "conv_ref_tot_iunits_reqd"
     return result
 
+  @lru_cache()
   def conv_ref_annual_tot_iunits(self):
     """Number of Implementation Units of the Conventional practice/technology that would
        be needed in the REF Scenario to meet the Functional Unit Demand met by the PDS
@@ -295,6 +318,7 @@ class UnitAdoption:
     result.name = "conv_ref_annual_tot_iunits"
     return result
 
+  @lru_cache()
   def conv_ref_new_iunits_reqd(self):
     """New implementation units required (includes replacement units)
 
@@ -321,6 +345,7 @@ class UnitAdoption:
     result.name = "conv_ref_new_iunits_reqd"
     return result
 
+  @lru_cache()
   def soln_pds_net_grid_electricity_units_saved(self):
     """Energy Units (e.g. TWh, tonnes oil equivalent, million therms, etc.) are
        calculated by multiplying the net annual functional units adopted by the
@@ -335,6 +360,7 @@ class UnitAdoption:
     result.name = "soln_pds_net_grid_electricity_units_saved"
     return result
 
+  @lru_cache()
   def soln_pds_net_grid_electricity_units_used(self):
     """Energy Units Used (TWh) are calculated by multiplying the net annual functional
        units adopted by the average annual electricity used by the solution per functional
@@ -355,6 +381,7 @@ class UnitAdoption:
     result.name = "soln_pds_net_grid_electricity_units_used"
     return result
 
+  @lru_cache()
   def soln_pds_fuel_units_avoided(self):
     """Fuel consumption avoided annually.
        Fuel avoided = CONVENTIONAL stock avoided * Volume consumed by CONVENTIONAL
@@ -367,6 +394,7 @@ class UnitAdoption:
     result.name = "soln_pds_fuel_units_avoided"
     return result
 
+  @lru_cache()
   def soln_pds_direct_co2_emissions_saved(self):
     """Direct emissions of CO2 avoided, in tons.
        'Unit Adoption Calculations'!AT307:BD354
@@ -377,6 +405,7 @@ class UnitAdoption:
     result.name = "soln_pds_direct_co2_emissions_saved"
     return result
 
+  @lru_cache()
   def soln_pds_direct_ch4_co2_emissions_saved(self):
     """Direct emissions of CH4 avoided, in tons of equivalent CO2.
 
@@ -390,6 +419,7 @@ class UnitAdoption:
     result.name = "soln_pds_direct_ch4_co2_emissions_saved"
     return result
 
+  @lru_cache()
   def soln_pds_direct_n2o_co2_emissions_saved(self):
     """Direct emissions of N2O avoided, in tons of CO2 equivalents.
 
