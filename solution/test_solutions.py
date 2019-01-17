@@ -35,7 +35,9 @@ def test_solarpvutil():
   assert result == pytest.approx(expected)
 
 def test_solarpvroof():
-  obj = solarpvroof.SolarPVRoof()
+  scenario = solarpvroof.scenarios[0]
+  obj = solarpvroof.SolarPVRoof(scenario=scenario)
+  assert obj.scenario == scenario
   assert obj.name
   check_to_dict(obj)
   expected = (2910.31295690078, 3937.09552092798, 1883.53039287357)

@@ -210,7 +210,8 @@ class OperatingCost:
       # starting year through the year where it wears out.
       for row in range(year, last_row + 1):
         remaining_lifetime = np.clip(lifetime, 0, 1)
-        breakout.loc[row, year] = total * remaining_lifetime
+        val = total * remaining_lifetime
+        breakout.loc[row, year] = val if math.fabs(val) > 0.01 else 0.0
         lifetime -= 1
         if lifetime <= 0:
           break
@@ -309,7 +310,7 @@ class OperatingCost:
 
       # account for a partial year at the end of the lifetime.
       cost *= min(1, soln_lifetime)
-      result[year] = cost
+      result[year] = cost if math.fabs(cost) > 0.01 else 0.0
 
       soln_lifetime -= 1
       conv_lifetime -= 1
@@ -384,7 +385,7 @@ class OperatingCost:
 
       # account for a partial year at the end of the lifetime.
       cost *= min(1, soln_lifetime)
-      result[year] = cost
+      result[year] = cost if math.fabs(cost) > 0.01 else 0.0
 
       soln_lifetime -= 1
     return result
