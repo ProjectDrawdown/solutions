@@ -1,5 +1,4 @@
-"""Total Addressible Market module.
-"""
+"""Total Addressable Market module."""
 
 from functools import lru_cache
 import os.path
@@ -9,7 +8,7 @@ import pandas as pd
 
 
 class TAM:
-  """Total Addressible Market module."""
+  """Total Addressable Market module."""
 
   def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources):
     """TAM module.
