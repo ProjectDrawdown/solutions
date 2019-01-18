@@ -105,7 +105,7 @@ if __name__ == '__main__':
 
     g_tla_ref_data_sources = {
         'Based on- WRI 2016': str(
-            datadir.joinpath('data', 'land', 'tla_based_on_WRI_2016_widescale_reforestation.csv')),
+            datadir.joinpath('solution', 'tropicalforests', 'tla_based_on_WRI_2016_widescale_reforestation.csv')),
     }
     tla = TLA(g_tlaconfig, g_tla_ref_data_sources)
 
