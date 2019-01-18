@@ -442,7 +442,7 @@ class SolarPVRoof:
     self.soln_2014_cost_vma = vma.VMA(substitutions=self.r2s.substitutions,
         filename=str(thisdir.joinpath('vma_soln_2014_cost.csv')))
 
-    self.soln_lifetime_years_vma = vma.VMA(substitutions=self.r2s.substitutions,
+    self.soln_lifetime_vma = vma.VMA(substitutions=self.r2s.substitutions,
         filename=str(thisdir.joinpath('vma_soln_lifetime_years.csv')),
         final_units='soln-TWh/TW')
 
@@ -461,6 +461,34 @@ class SolarPVRoof:
         filename=str(parentdir.joinpath('vma_solar_util_vs_roof.csv')),
         postprocess=lambda mn, hi, lo: (1.0 - mn, 1.0 - lo, 1.0 - hi))
 
+    self.VMAs = [
+        #('Current Adoption', ),
+        ('CONVENTIONAL First Cost per Implementation Unit', self.r2s.conv_2014_cost_vma),
+        ('SOLUTION First Cost per Implementation Unit', self.soln_2014_cost_vma),
+        ('Lifetime Capacity - CONVENTIONAL', self.r2s.conv_lifetime_vma),
+        ('Lifetime Capacity - SOLUTION', self.soln_lifetime_vma),
+        ('Average Annual Use - CONVENTIONAL', self.r2s.conv_avg_annual_use_vma),
+        ('Average Annual Use - SOLUTION', self.soln_avg_annual_use_vma),
+        ('CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit',
+          self.r2s.conv_var_oper_cost_per_funit_vma),
+        ('CONVENTIONAL Fixed Operating Cost (FOM) per Implementation Unit', 
+          self.r2s.conv_fixed_oper_cost_per_iunit_vma),
+        ('SOLUTION Fixed Operating Cost (FOM) per Implementation Unit',
+          self.soln_fixed_oper_cost_per_iunit_vma),
+        ('Indirect CO2 Emissions per SOLUTION Implementation Unit',
+          self.soln_indirect_co2_per_iunit_vma),
+        #('2005-2014 Average CONVENTIONAL Fuel Price per functional unit', ),
+        ('Weighted Average CONVENTIONAL Plant Efficiency', self.r2s.conv_ref_plant_efficiency_vma),
+        ('Coal Plant Efficiency', self.r2s.coal_plant_efficiency_vma),
+        ('Natural Gas Plant Efficiency', self.r2s.natural_gas_plant_efficiency_vma),
+        ('Oil Plant Efficiency', self.r2s.oil_plant_efficiency_vma),
+        #('Lifecycle indirect CO2 emissions per functional unit by PV type', ),
+        ('Percentage of Solar Photovoltaic Generation from Utility Scale',
+          self.soln_solar_util_vs_roof_vma),
+        #('Solar PV Module Learning Rate', ),
+        #('Utility Scale PV BOS Learning Rate', ),
+        #('Percentage of PV System Installed Costs from Module', ),
+        ]
 
   def to_dict(self):
     """Return all data as a dict, to be serialized to JSON."""
