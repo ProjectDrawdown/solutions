@@ -39,7 +39,7 @@ curl -H 'Content-Type: application/json' --data "{}" "http://127.0.0.1:5000/sola
 
 Jupyter Notebook
 ```sh
-./venv/bin/jupyter lab ./solution/solarpvutil/SolarPVUtil.ipynb
+./venv/bin/jupyter lab ./Drawdown.ipynb
 ```
 
 # Understanding the Drawdown solution models: Reference and Summary
