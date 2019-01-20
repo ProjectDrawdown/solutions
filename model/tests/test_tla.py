@@ -41,7 +41,7 @@ g_tla_ref_data_sources = {
       datadir.joinpath('solution', 'tropicalforests', 'tla_based_on_WRI_2016_widescale_reforestation.csv')),
 }
 
-def test_forecast_data():
+def test_forecast_data_global():
   tl = tla.TLA(tlaconfig=g_tlaconfig, tla_ref_data_sources=g_tla_ref_data_sources)
   forecast = tl.forecast_data_global()
   wri = 'Based on- WRI 2016'

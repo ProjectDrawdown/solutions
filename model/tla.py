@@ -1,4 +1,10 @@
-"""Total Land Area module."""
+"""
+Total Land Area module.
+Note: in the spreadsheet most of this module is a relic of the TAM module in the RRS model.
+All the statistical analysis is unused as TLA remains constant and has already been allocated by
+DD. The only real function of the TLA tab is to provide a place to input custom TLA data, which
+can be used instead of DD's allocations.
+"""
 
 from functools import lru_cache
 import os.path
