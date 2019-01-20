@@ -39,13 +39,6 @@ class SolarPVRoof:
       scenario = 'PDS-7p2050-Plausible (Book Ed.1)'
     self.scenario = scenario
 
-    soln_funit_adoption_2014 = pd.DataFrame([[75.4369666666666, 50.2347544444444,
-        0.222616666666667, 14.1134955555556, 1.05492222222222, 9.81238111111111,
-        10.0277777777778, 1.84069888888889, 37.0189455555555, 8.79035]],
-      columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-        'Latin America', 'China', 'India', 'EU', 'USA'], index=[2014])
-    soln_funit_adoption_2014.index.name = 'Year'
-
     if scenario == 'PDS-10p2050-Optimum (Book Ed.1)':
       soln_pds_adoption_prognostication_growth='Medium'
       pds_source_post_2014 = 'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario'
@@ -74,7 +67,6 @@ class SolarPVRoof:
           soln_first_cost_efficiency_rate = 0.1966,
           soln_first_cost_below_conv = True,
           conv_first_cost_efficiency_rate = 0.02,
-          soln_funit_adoption_2014 = soln_funit_adoption_2014,
 
           ch4_is_co2eq = True, n2o_is_co2eq = True,
           co2eq_conversion_source = "AR5 with feedback",
@@ -111,7 +103,6 @@ class SolarPVRoof:
           soln_first_cost_efficiency_rate = 0.1966,
           soln_first_cost_below_conv = True,
           conv_first_cost_efficiency_rate = 0.02,
-          soln_funit_adoption_2014 = soln_funit_adoption_2014,
 
           ch4_is_co2eq = True, n2o_is_co2eq = True,
           co2eq_conversion_source = "AR5 with feedback",
@@ -148,7 +139,6 @@ class SolarPVRoof:
           soln_first_cost_efficiency_rate = 0.1966,
           soln_first_cost_below_conv = True,
           conv_first_cost_efficiency_rate = 0.02,
-          soln_funit_adoption_2014 = soln_funit_adoption_2014,
 
           ch4_is_co2eq = True, n2o_is_co2eq = True,
           co2eq_conversion_source = "AR5 with feedback",
@@ -185,7 +175,6 @@ class SolarPVRoof:
           soln_first_cost_efficiency_rate = 0.1826,
           soln_first_cost_below_conv = True,
           conv_first_cost_efficiency_rate = 0.02,
-          soln_funit_adoption_2014 = soln_funit_adoption_2014,
 
           ch4_is_co2eq = True, n2o_is_co2eq = True,
           co2eq_conversion_source = "AR5 with feedback",
@@ -222,7 +211,6 @@ class SolarPVRoof:
           soln_first_cost_efficiency_rate = 0.1826,
           soln_first_cost_below_conv = True,
           conv_first_cost_efficiency_rate = 0.02,
-          soln_funit_adoption_2014 = soln_funit_adoption_2014,
 
           ch4_is_co2eq = True, n2o_is_co2eq = True,
           co2eq_conversion_source = "AR5 with feedback",
@@ -259,7 +247,6 @@ class SolarPVRoof:
           soln_first_cost_efficiency_rate = 0.1826,
           soln_first_cost_below_conv = True,
           conv_first_cost_efficiency_rate = 0.02,
-          soln_funit_adoption_2014 = soln_funit_adoption_2014,
 
           ch4_is_co2eq = True, n2o_is_co2eq = True,
           co2eq_conversion_source = "AR5 with feedback",

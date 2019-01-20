@@ -33,13 +33,6 @@ class SolarPVUtil:
       scenario = 'PDS3-16p2050-Optimum (Updated)'
     self.scenario = scenario
 
-    soln_funit_adoption_2014 = pd.DataFrame([[112.633033333333, 75.0042455555555,
-      0.332383333333333, 21.0725044444444, 1.57507777777778, 14.6506188888889,
-      14.9722222222222, 2.74830111111111, 55.2720544444444, 13.12465000000]],
-      columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-        'Latin America', 'China', 'India', 'EU', 'USA'], index=[2014])
-    soln_funit_adoption_2014.index.name = 'Year'
-
     if scenario == 'PDS3-16p2050-Optimum (Updated)':
       soln_pds_adoption_prognostication_growth='Medium'
       pds_source_post_2014 = 'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario'
@@ -68,7 +61,6 @@ class SolarPVUtil:
           soln_first_cost_efficiency_rate=0.182810601365724,
           soln_first_cost_below_conv=True,
           conv_first_cost_efficiency_rate=0.02,
-          soln_funit_adoption_2014=soln_funit_adoption_2014,
 
           ch4_is_co2eq=True, n2o_is_co2eq=True,
           co2eq_conversion_source="AR5 with feedback",
@@ -104,7 +96,6 @@ class SolarPVUtil:
           soln_first_cost_efficiency_rate=0.182810601365724,
           soln_first_cost_below_conv=True,
           conv_first_cost_efficiency_rate=0.02,
-          soln_funit_adoption_2014=soln_funit_adoption_2014,
 
           ch4_is_co2eq=True, n2o_is_co2eq=True,
           co2eq_conversion_source="AR5 with feedback",
@@ -140,7 +131,6 @@ class SolarPVUtil:
           soln_first_cost_efficiency_rate=0.18256529904906,
           soln_first_cost_below_conv=True,
           conv_first_cost_efficiency_rate=0.02,
-          soln_funit_adoption_2014=soln_funit_adoption_2014,
 
           ch4_is_co2eq=True, n2o_is_co2eq=True,
           co2eq_conversion_source="AR5 with feedback",
@@ -176,7 +166,6 @@ class SolarPVUtil:
           soln_first_cost_efficiency_rate=0.196222222222222,
           soln_first_cost_below_conv=True,
           conv_first_cost_efficiency_rate=0.02,
-          soln_funit_adoption_2014=soln_funit_adoption_2014,
 
           ch4_is_co2eq=True, n2o_is_co2eq=True,
           co2eq_conversion_source="AR5 with feedback",
@@ -212,7 +201,6 @@ class SolarPVUtil:
           soln_first_cost_efficiency_rate=0.196222222222222,
           soln_first_cost_below_conv=True,
           conv_first_cost_efficiency_rate=0.02,
-          soln_funit_adoption_2014=soln_funit_adoption_2014,
 
           ch4_is_co2eq=True, n2o_is_co2eq=True,
           co2eq_conversion_source="AR5 with feedback",
@@ -248,7 +236,6 @@ class SolarPVUtil:
           soln_first_cost_efficiency_rate=0.196222222222222,
           soln_first_cost_below_conv=True,
           conv_first_cost_efficiency_rate=0.02,
-          soln_funit_adoption_2014=soln_funit_adoption_2014,
 
           ch4_is_co2eq=True, n2o_is_co2eq=True,
           co2eq_conversion_source="AR5 with feedback",
