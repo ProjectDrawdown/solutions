@@ -138,12 +138,7 @@ def test_soln_pds_cumulative_funits():
       [2016, 272.03, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1],
       [2017, 383.31, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1]]
   soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
-  soln_funit_adoption_2014 = pd.DataFrame([[112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12]],
-      columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-        'Latin America', 'China', 'India', 'EU', 'USA'], index=[2014])
-  soln_funit_adoption_2014.index.name = "Year"
-  ac = advanced_controls.AdvancedControls(soln_funit_adoption_2014=soln_funit_adoption_2014)
-  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+  ua = unitadoption.UnitAdoption(ac=None, datadir=None,
       ref_tam_per_region=None, pds_tam_per_region=None,
       soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None)
   result = ua.soln_pds_cumulative_funits()
@@ -518,14 +513,9 @@ def test_conv_ref_new_iunits_reqd():
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_to_dict():
-  soln_funit_adoption_2014 = pd.DataFrame([[112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12]],
-      columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-        'Latin America', 'China', 'India', 'EU', 'USA'], index=[2014])
-  soln_funit_adoption_2014.index.name = "Year"
   ac = advanced_controls.AdvancedControls(
       conv_lifetime_capacity=182411.28, conv_avg_annual_use=4946.84,
-      soln_lifetime_capacity=48343.80, soln_avg_annual_use=1841.67,
-      soln_funit_adoption_2014=soln_funit_adoption_2014)
+      soln_lifetime_capacity=48343.80, soln_avg_annual_use=1841.67)
   soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
   soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],

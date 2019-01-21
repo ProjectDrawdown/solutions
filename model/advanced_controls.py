@@ -36,9 +36,6 @@ class AdvancedControls:
      be acceptable in some cases for instance when the projections in the
      literature indicate so. In other cases, it may not be likely for the
      Solution to become cheaper than the Conventional.  "Advanced Controls"!C132
-  soln_funit_adoption_2014 (pd.dataframe): vector of the functional unit adoption
-     in 2014 for each region.
-     "Advanced Controls"!C61:C70
   soln_energy_efficiency_factor (float): Units of energy reduced per year per
      functional unit installed.
 
@@ -217,8 +214,6 @@ class AdvancedControls:
                conv_first_cost_efficiency_rate=None,
                soln_first_cost_below_conv=None,
 
-               soln_funit_adoption_2014=None,
-
                soln_energy_efficiency_factor=None,
                conv_annual_energy_used=None,
                soln_annual_energy_used=None,
@@ -276,12 +271,6 @@ class AdvancedControls:
     self.soln_first_cost_efficiency_rate = soln_first_cost_efficiency_rate
     self.conv_first_cost_efficiency_rate = conv_first_cost_efficiency_rate
     self.soln_first_cost_below_conv = soln_first_cost_below_conv
-    if type(soln_funit_adoption_2014) == list:
-      s = soln_funit_adoption_2014
-      self.soln_funit_adoption_2014 = pd.DataFrame(s[1:], columns=s[0], index=[2014])
-      self.soln_funit_adoption_2014.index.name = 'Year'
-    else:
-      self.soln_funit_adoption_2014 = soln_funit_adoption_2014
     self.soln_energy_efficiency_factor = self.value_or_zero(soln_energy_efficiency_factor)
     self.conv_annual_energy_used = self.value_or_zero(conv_annual_energy_used)
     self.soln_annual_energy_used = self.value_or_zero(soln_annual_energy_used)

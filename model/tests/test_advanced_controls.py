@@ -30,18 +30,6 @@ def test_learning_rate():
     assert ac.conv_first_cost_learning_rate == pytest.approx(0.0)
     assert ac.soln_fuel_learning_rate == pytest.approx(1.0)
 
-def test_soln_funit_adoption_2014():
-  arg = [['World', 'A', 'B', 'C'], [1, 2, 3, 4]]
-  ac = advanced_controls.AdvancedControls(soln_funit_adoption_2014=arg)
-  result = ac.soln_funit_adoption_2014
-  expected = pd.DataFrame([[1, 2, 3, 4]], columns=['World', 'A', 'B', 'C'], index=[2014])
-  expected.index.name = 'Year'
-  pd.testing.assert_frame_equal(result, expected)
-
-  ac = advanced_controls.AdvancedControls(soln_funit_adoption_2014=expected)
-  result = ac.soln_funit_adoption_2014
-  assert result is expected  # should be the same object
-
 def test_electricity_factors():
   soln_energy_efficiency_factor = ""
   conv_annual_energy_used = 2.117

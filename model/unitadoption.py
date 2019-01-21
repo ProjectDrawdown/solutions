@@ -158,8 +158,8 @@ class UnitAdoption:
     """Cumulative Functional Units Utilized.
        'Unit Adoption Calculations'!Q134:AA181
     """
-    omit_world = self.ac.soln_funit_adoption_2014.copy(deep=True)
-    omit_world['World'][2014] = 0
+    omit_world = self.soln_pds_funits_adopted.iloc[[0], :].copy(deep=True)
+    omit_world['World'] = 0
     first_year = self.soln_pds_funits_adopted.add(omit_world, fill_value=0)
     result = first_year.cumsum(axis=0)
     result.name = "soln_pds_cumulative_funits"
