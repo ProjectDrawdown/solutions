@@ -62,7 +62,7 @@ class CustomTLA:
 
             # copy the source column to use as final TLA, so we have a TLA column for unit adoption to locate
             # later this column could be a statistical combination of multiple sources
-            region_df.loc[:, 'TLA'] = region_df.ix[:, 0]
+            region_df.loc[:, 'TLA'] = region_df.iloc[:, 0]
 
     @lru_cache()
     def tla_data_global(self):
