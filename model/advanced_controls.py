@@ -200,6 +200,12 @@ class AdvancedControls:
      to use like 2nd order polynomial or exponential. "Advanced Controls"!B270
   soln_pds_adoption_prognostication_growth (helpertables.ADOPTION_GROWTH): high, medium, or low
      projected growth. "Advanced Controls"!C270
+  pds_source_post_2014 (string): The name of the data source to use for the PDS case for
+     years after 2014. "Advanced Controls"!B55
+  ref_source_post_2014 (string): The name of the data source to use for the REF case for
+     years after 2014. "Advanced Controls"!B54
+  source_until_2014 (string): The name of the data source to use for all cases for years
+     2014 and before. "Advanced Controls"!B53
 
   solution_category (SOLUTION_CATEGORY): Whether the solution is primarily REDUCTION of
      emissions from an existing technology, REPLACEMENT of a technology to one with lower
@@ -262,6 +268,9 @@ class AdvancedControls:
                soln_pds_adoption_prognostication_source=None,
                soln_pds_adoption_prognostication_trend=None,
                soln_pds_adoption_prognostication_growth=None,
+               pds_source_post_2014=None,
+               ref_source_post_2014=None,
+               source_until_2014=None,
 
                solution_category=None
                ):
@@ -325,6 +334,9 @@ class AdvancedControls:
     if isinstance(soln_pds_adoption_prognostication_growth, str):
       self.soln_pds_adoption_prognostication_growth = ht.string_to_adoption_prognostication_growth(
           soln_pds_adoption_prognostication_growth)
+    self.pds_source_post_2014 = pds_source_post_2014
+    self.ref_source_post_2014 = ref_source_post_2014
+    self.source_until_2014 = source_until_2014
 
     self.solution_category = solution_category
     if isinstance(solution_category, str):
