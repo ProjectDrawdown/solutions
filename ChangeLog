@@ -122,3 +122,16 @@ Jan 7 - 11, 2019
 + progress on Jupyter notebook
   Added VMA, Detailed Results, and Operating Cost tabs with basic displays
   of data.
+
+Jan 14 - 18, 2019
++ all scenarios in two solutions
+  Implemented all six scenarios in each of the SolarPVUtil and SolarPVRoof
+  solutions, and made the Jupyter Notebook support display from multiple
+  solutions simultaneously.
++ improve performance via caching
+  all arguments are passed to __init__, functions on the models do not
+  take arguments. Therefore they will always return the same result, so
+  cache it. Speeds completion on integration test and Jupyter by 40%.
++ Support running via mybinder.org
+  Populate a binder directory to run from mybinder.org.
+  https://mybinder.org/v2/gl/codeearth%2Fdrawdown/master?urlpath=lab/tree/Drawdown.ipynb
