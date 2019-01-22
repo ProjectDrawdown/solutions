@@ -13,8 +13,8 @@ def cell_to_offsets(cell):
   """Convert an Excel reference like C33 to (row, col) for xlrd."""
   (col, row) = filter(None, re.split(r'(\d+)', cell))
   colnum = 0
-  for c in col:
-    colnum = colnum * 26 + (ord(c.upper()) - ord('A'))
+  for i, c in enumerate(col):
+    colnum = (colnum + i) * 26 + (ord(c.upper()) - ord('A'))
   return (int(row) - 1, colnum)
 
 
