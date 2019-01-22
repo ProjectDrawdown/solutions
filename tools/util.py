@@ -5,7 +5,7 @@ def cell_to_offsets(cell):
   (col, row) = filter(None, re.split(r'(\d+)', cell))
   colnum = 0
   for i, c in enumerate(col):
-    colnum = (colnum + i) * 26 + (ord(c.upper()) - ord('A'))
+    colnum = (colnum + min(i, 1)) * 26 + (ord(c.upper()) - ord('A'))
   return (int(row) - 1, colnum)
 
 
