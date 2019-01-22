@@ -4,9 +4,12 @@ import xlrd
 import re
 import pathlib
 import pandas as pd
+import os
+import shutil
 from tools.xls_extract import cell_to_offsets, convert_float
 
-LAND_ALLOCATION_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'Land Allocation - Max TLA.xlsx')
+XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'Land Allocation - Max TLA.xlsx')
+CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocation')
 pd.set_option('display.expand_frame_repr', False)
 
 
@@ -21,7 +24,7 @@ def convert(val):
 class LandAllocationReader:
 
     def __init__(self):
-        wb = xlrd.open_workbook(filename=LAND_ALLOCATION_PATH)
+        wb = xlrd.open_workbook(filename=XLS_PATH)
         self.sheet = wb.sheet_by_name('Land Allocation - Max TLA')
 
         self.first_cells = [
@@ -30,9 +33,9 @@ class LandAllocationReader:
             cell_to_offsets('CL18'),  # irrigated croplands
             cell_to_offsets('EC18')  # rainfed croplands
         ]
-        self.thermal_moisture_regimes = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
-                                    'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
-
+        self.thermal_moisture_regimes = ['Tropical-Humid', 'Temperate_Boreal-Humid', 'Tropical-Semi-Arid',
+                                    'Temperate_Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
+        self.df_dict = None
         self._make_df_template()
 
     def read_land_allocation_xls(self):
@@ -53,7 +56,8 @@ class LandAllocationReader:
                     row_offset = i * 27
                     col_offset = j * 6
                     df = self.get_single_adoption_df(row + row_offset, col + col_offset)
-                    tmr_dict[self.sheet.cell_value(row - 2, col - 1 + col_offset)] = df
+                    df.name = aez = self.sheet.cell_value(row - 2, col - 1 + col_offset)
+                    tmr_dict[aez] = df
             self.df_dict[tmr] = tmr_dict
         return self.df_dict
 
@@ -75,6 +79,30 @@ class LandAllocationReader:
             df[self.columns[i]] = col
         return df
 
+    def make_csvs(self):
+        """ Makes csv versions of tables and stores in data/land/allocation"""
+
+        # Sanity check
+        if os.listdir(CSV_PATH):
+            ans = input('Overwrite existing csv files? y or n')
+            if ans == 'n':
+                return
+            elif ans != 'y':
+                print('Not a valid answer')
+                return
+            else:
+                shutil.rmtree(CSV_PATH)
+
+        # check the DataFrames are loaded
+        if self.df_dict is None:
+            self.read_land_allocation_xls()
+
+        # write CSVs
+        for tmr in self.thermal_moisture_regimes:
+            os.mkdir(CSV_PATH.joinpath(tmr))
+            for aez, df in self.df_dict[tmr].items():
+                df.to_csv(CSV_PATH.joinpath(tmr, aez))
+
     def _make_df_template(self):
         """ Makes template of adoption table to feed data into """
         self.columns = []
@@ -90,3 +118,5 @@ class LandAllocationReader:
 if __name__ == '__main__':
     r = LandAllocationReader()
     r.read_land_allocation_xls()
+    print(r.df_dict['Tropical-Humid']['AEZ27'])
+    # r.make_csvs()
