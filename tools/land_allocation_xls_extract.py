@@ -6,7 +6,7 @@ import pathlib
 import pandas as pd
 import os
 import shutil
-from tools.xls_extract import cell_to_offsets, convert_float
+from tools.scenarios_xls_extract import cell_to_offsets, convert_float
 
 XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'Land Allocation - Max TLA.xlsx')
 CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocation')
