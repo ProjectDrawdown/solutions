@@ -13,14 +13,6 @@ CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocatio
 pd.set_option('display.expand_frame_repr', False)
 
 
-def convert(val):
-    """ Allows passing non-empty strings through the convert_float function """
-    try:
-        return convert_float(val)
-    except ValueError:
-        return val
-
-
 class LandAllocationReader:
 
     def __init__(self):
