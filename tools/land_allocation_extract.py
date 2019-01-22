@@ -92,6 +92,7 @@ class LandAllocationReader:
                 return
             else:
                 shutil.rmtree(CSV_PATH)
+                os.mkdir(CSV_PATH)
 
         # check the DataFrames are loaded
         if self.df_dict is None:
@@ -119,4 +120,4 @@ if __name__ == '__main__':
     r = LandAllocationReader()
     r.read_land_allocation_xls()
     print(r.df_dict['Tropical-Humid']['AEZ27'])
-    # r.make_csvs()
+    r.make_csvs()
