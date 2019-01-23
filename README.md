@@ -131,10 +131,12 @@ Tasks which do not fit into an ordered list of things to be completed:
    + Policy makers and deciders, who need tools to help guide effective use of resources.
    + Interested parties and the general public, to evangelize that there *are* solutions to global warming.
 
-   As of 1/2019, UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub). An early version of this UI is available on [mybinder.org](https://mybinder.org/v2/gl/codeearth%2Fdrawdown/master?urlpath=lab/tree/solution/solarpvutil/SolarPVUtil.ipynb).
+   As of 1/2019, UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub). An early version of this UI is available on [mybinder.org](https://mybinder.org/v2/gl/codeearth%2Fdrawdown/master?urlpath=lab/tree/Drawdown.ipynb).
 
 * **Data Pipeline Hook Strategy**  
-   &quot;Specialization&quot; is mentioned above as being an issue starting with the First Cost tab, where individual models have often needed to supply their own implementations and formulae. Though it is recommended that a design for this not be started too early so as to benefit from the understanding gained as the system is constructed, it will nonetheless have to be done at some point.
+   ~~&quot;Specialization&quot; is mentioned above as being an issue starting with the First Cost tab, where individual models have often needed to supply their own implementations and formulae. Though it is recommended that a design for this not be started too early so as to benefit from the understanding gained as the system is constructed, it will nonetheless have to be done at some point.~~
+
+   At this point we expect to handle Custom models for a particular solution one one of two ways: if the customization is a small tweak to the generic implementation, we'll see about making the generic implementation be able to handle it. Otherwise, we'll expect to supply a class within the solution/<solution_name> directory and instantiate that class instead of the generic version in model/\*.
 
 * **Automated testing**  
    One other goal for the project is to build a model implementation with good coverage by automated tests. There is a [YouTube video which demonstrates the three layers of tests](https://youtu.be/ipZrQWuMU3w) and another which [focuses on the Excel-based system test specifically](https://youtu.be/HLL7HrFcmjc).
