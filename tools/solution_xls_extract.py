@@ -9,7 +9,7 @@ import re
 import sys
 import xlrd
 
-from tools.util import convert_float, convert_bool, cell_to_offsets
+from tools.util import convert_bool, cell_to_offsets
 
 
 def convert_sr_float(val):
@@ -213,7 +213,7 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_source'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_trend'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_growth'], prefix=prefix)
-  oneline(f=f, s=s, names=['source_before_2014'], prefix=prefix)
+  oneline(f=f, s=s, names=['source_until_2014'], prefix=prefix)
   oneline(f=f, s=s, names=['ref_source_post_2014'], prefix=prefix)
   oneline(f=f, s=s, names=['pds_source_post_2014'], prefix=prefix, suffix='\n')
   oneline(f=f, s=s, names=['solution_category'], prefix=prefix)
@@ -500,7 +500,7 @@ def output_solution_python_file(py_filename, xl_filename, classname):
     f.write(2*prefix + '},\n')
   f.write('}\n\n')
 
-  f.write("def " + str(classname) + ":\n")
+  f.write("class " + str(classname) + ":\n")
   f.write("  name = '" + str(solution_name) + "'\n")
   f.write("  def __init__(self, scenario=None):\n")
   f.write("    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
@@ -533,15 +533,50 @@ def output_solution_python_file(py_filename, xl_filename, classname):
   f.write("\n")
   write_to_dict(f=f, has_tam=has_tam)
 
+  for key, values in scenarios.items():
+    if values:
+      raise KeyError('Scenario ' + key + ' has unconsumed fields: ' + str(values.keys()))
+
   f.close()
+
+
+def infer_classname(filename):
+  """Pick a reasonable classname if none is specified."""
+  special_cases = [
+      ('BiomassELC', 'Biomass'),
+      ('CHP_A_', 'CoGenElectricity'),
+      ('CHP_B_', 'CoGenHeat'),
+      ('CSP_', 'ConcentratedSolar'),
+      ('Regenerative_Agriculture', 'RegenerativeAgriculture'),
+      ('solution_xls_extract_RRS_test_A', 'TestClassA'),
+      ('Utility Scale Solar PV', 'SolarPVUtil'),
+      ('SolarPVUtility', 'SolarPVUtil'),
+      ('SolarPVRooftop', 'SolarPVRoof'),
+      ('Rooftop Solar PV', 'SolarPVRoof'),
+      ('Tropical_Forest_Restoration', 'TropicalForests'),
+      ('WastetoEnergy', 'WasteToEnergy'),
+      ('Wave&Tidal', 'WaveAndTidal'),
+      ('Wave and Tidal', 'WaveAndTidal'),
+      ]
+  for (pattern, classname) in special_cases:
+    if pattern.replace(' ', '').lower() in filename.replace(' ', '').lower():
+      return classname
+  namelist = re.split('[_-]', filename)
+  if namelist[0] == 'Drawdown':
+    namelist.pop()
+  return namelist[0].replace(' ', '')
+
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(
       description='Create python Drawdown solution from Excel version.')
   parser.add_argument('--excelfile', required=True, help='Excel filename to process')
   parser.add_argument('--outputfile', default='-', help='File to write generated Python code to')
-  parser.add_argument('--classname', default='TODO_Change_This!', help='Name for Python class')
+  parser.add_argument('--classname', help='Name for Python class')
   args = parser.parse_args(sys.argv[1:])
+
+  if args.classname is None:
+    args.classname = infer_classname(filename=args.excelfile)
 
   output_solution_python_file(py_filename=args.outputfile, xl_filename=args.excelfile,
       classname=args.classname)

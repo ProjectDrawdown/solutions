@@ -12,8 +12,11 @@ require() {
   return 1
 }
 
-output=$(PYTHONPATH=.:${PYTHONPATH} ./tools/solution_xls_extract.py --excelfile=./tools/tests/solution_xls_extract_RRS_test_A.xlsm --classname=SolarPVUtil) 
+output=$(PYTHONPATH=.:${PYTHONPATH} ./tools/solution_xls_extract.py --excelfile=./tools/tests/solution_xls_extract_RRS_test_A.xlsm) 
 
+# Check infer class name
+require "$output" "class TestClassA" && \
+# Check scenario parsing
 require "$output" "PDS-16p2050- Optimum (Book Ed.1)" && \
 # Check Solution name extraction
 require "$output" "name = 'Utility Scale Solar PV'" && \
