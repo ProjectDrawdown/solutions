@@ -10,9 +10,10 @@ class AEZ:
     def __init__(self, solution):
         self.solution = solution
         self._populate_solution_la()
+        self._get_applicable_zones()
 
     def _populate_solution_la(self):
-        df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_la_template.csv'), index_col='Thermal Moisture Regime')
+        df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_la_template.csv'), index_col=0)
         df = df.fillna(0)
         for tmr in df.index:
             tmr_path = LAND_CSV_PATH.joinpath('allocation', tmr.replace('/', '_'))
@@ -25,6 +26,15 @@ class AEZ:
                 if total_perc_allocated > 0:
                     df.at[tmr, col] = total_perc_allocated
         self.perc_la_df = df
+
+    def _get_applicable_zones(self):
+        df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_aez_matrix.csv'), index_col=0)
+        self.applicable_zones = []
+        for col, val in df.loc[self.solution].iteritems():
+            if val == 'yes':
+                self.applicable_zones.append(col)
+            elif val != 'no':
+                raise ValueError('cells in matrix should be "yes" or "no"')
 
 
 if __name__ == '__main__':
