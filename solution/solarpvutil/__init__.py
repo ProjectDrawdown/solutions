@@ -26,7 +26,7 @@ scenarios = ['PDS3-16p2050-Optimum (Updated)', 'PDS2-15p2050-Drawdown (Updated)'
 class SolarPVUtil:
   name = 'Solar Farms'
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+    datadir = pathlib.Path(__file__).parents[2].joinpath('data')
     parentdir = pathlib.Path(__file__).parents[1]
     thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
@@ -362,7 +362,7 @@ class SolarPVUtil:
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=str(datadir),
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted())
@@ -434,7 +434,7 @@ class SolarPVUtil:
 
     # SolarPVUtility_RRS_ELECGEN 'Variable Meta-analysis'!C1067:X1069, VMA #29
     self.soln_solar_util_vs_roof_vma = vma.VMA(substitutions=self.r2s.substitutions,
-        filename=str(parentdir.joinpath('vma_solar_util_vs_roof.csv')))
+        filename=str(datadir.joinpath('energy', 'vma_solar_util_vs_roof.csv')))
 
     self.VMAs = [
         #('Current Adoption', ),
