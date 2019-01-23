@@ -19,15 +19,13 @@ def convert_bool(val):
   raise ValueError('Unknown boolean format: ' + str(val))
 
 
-def convert_float(val, ignore_nonempty_strings=False):
+def convert_float(val):
     """
     Convert a float; empty cell == 0.0 floating point.
     Optionally ignore strings if they are not empty (will pass through without throwing an error).
     """
     if val == '':
         return 0.0
-    elif ignore_nonempty_strings and isinstance(val, str):
-        return val
     else:
         return float(val)
 

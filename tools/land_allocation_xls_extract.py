@@ -1,12 +1,11 @@
 """ Reads 'Land Allocation - Max TLA'  sheet """
 
 import xlrd
-import re
 import pathlib
 import pandas as pd
 import os
 import shutil
-from tools.scenarios_xls_extract import cell_to_offsets, convert_float
+from tools.util import cell_to_offsets, convert_float
 
 XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'Land Allocation - Max TLA.xlsx')
 CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocation')
@@ -67,7 +66,7 @@ class LandAllocationReader:
         for i in range(5):
             col = []
             for j in range(25):
-                col.append(convert(self.sheet.cell_value(row1 + j, col1 + i)))
+                col.append(convert_float(self.sheet.cell_value(row1 + j, col1 + i)))
             df[self.columns[i]] = col
         return df
 
@@ -112,4 +111,4 @@ if __name__ == '__main__':
     r = LandAllocationReader()
     r.read_land_allocation_xls()
     print(r.df_dict['Tropical-Humid']['AEZ27'])
-    r.make_csvs()
+    # r.make_csvs()
