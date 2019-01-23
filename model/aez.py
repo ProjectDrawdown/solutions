@@ -29,4 +29,3 @@ class AEZ:
 
 if __name__ == '__main__':
     aez = AEZ('Tropical Forest Restoration')
-    print(aez.perc_la_df.iloc[0].sum())
