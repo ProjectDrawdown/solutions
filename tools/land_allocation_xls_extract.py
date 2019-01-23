@@ -47,7 +47,7 @@ class LandAllocationReader:
                     row_offset = i * 27
                     col_offset = j * 6
                     df = self.get_single_adoption_df(row + row_offset, col + col_offset)
-                    df.name = aez = self.sheet.cell_value(row - 2, col - 1 + col_offset)
+                    df.name = aez = self.sheet.cell_value(row - 3, col - 1 + col_offset).strip()
                     tmr_dict[aez] = df
             self.df_dict[tmr] = tmr_dict
         return self.df_dict
@@ -93,7 +93,7 @@ class LandAllocationReader:
         for tmr in self.thermal_moisture_regimes:
             os.mkdir(CSV_PATH.joinpath(tmr))
             for aez, df in self.df_dict[tmr].items():
-                df.to_csv(CSV_PATH.joinpath(tmr, aez))
+                df.to_csv(CSV_PATH.joinpath(tmr, aez + '.csv'))
 
     def _make_df_template(self):
         """ Makes template of adoption table to feed data into """
@@ -110,5 +110,4 @@ class LandAllocationReader:
 if __name__ == '__main__':
     r = LandAllocationReader()
     r.read_land_allocation_xls()
-    print(r.df_dict['Tropical-Humid']['AEZ27'])
     # r.make_csvs()
