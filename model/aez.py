@@ -22,16 +22,24 @@ class AEZ:
     def __init__(self, solution):
         self.solution = solution
         self.thermal_moisture_regimes = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
-                                    'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
+                                         'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
         self.regions = ['OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
                         'Global', 'China', 'India', 'EU', 'USA']
-        self._populate_solution_la()
+        self._populate_solution_land_allocation()
         self._get_applicable_zones()
-        self._populate_world_la()
-        self._populate_solution_ld()
+        self._populate_world_land_allocation()
+        self._populate_solution_land_distribution()
 
-    def _populate_solution_la(self):
-        # TODO: drawdown allocation toggle
+    def get_land_distribution(self):
+        """ Returns relevant land data for Unit Adoption module"""
+        return self.soln_land_dist_df
+
+    def _populate_solution_land_allocation(self):
+        """
+        'AEZ Data'!A63:AD70
+        Calculates solution specific Drawdown land allocation using values from 'allocation' directory.
+        """
+        # TODO: drawdown allocation yes/no toggle
         df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_la_template.csv'), index_col=0)
         df = df.fillna(0)
         for tmr in self.thermal_moisture_regimes:
@@ -44,9 +52,13 @@ class AEZ:
                 total_perc_allocated = la_df.loc[self.solution]['Total % allocated']
                 if total_perc_allocated > 0:
                     df.at[tmr, col] = total_perc_allocated
-        self.solution_la_df = df
+        self.soln_land_alloc_df = df
 
     def _get_applicable_zones(self):
+        """
+        'AEZ Data'!A2:AD29
+        Gathers list of AEZs applicable to solution from lookup matrix in 'aez' directory.
+        """
         df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_aez_matrix.csv'), index_col=0)
         self.applicable_zones = []
         for col, val in df.loc[self.solution].iteritems():
@@ -55,22 +67,26 @@ class AEZ:
             elif val != 'no':
                 raise ValueError('cells in matrix should be "yes" or "no"')
 
-    def _populate_world_la(self):
+    def _populate_world_land_allocation(self):
         """
         'AEZ Data'!D353:AG610
         Combines world land area data with Drawdown's land allocation values. Creates a dict of
         DataFrames sorted by Thermal Moisture Region.
         """
-        self.world_la_dict = {}
+        self.world_land_alloc_dict = {}
         for tmr in self.thermal_moisture_regimes:
             df = pd.read_csv(LAND_CSV_PATH.joinpath('world', tmr.replace('/', '_') + '.csv'), index_col=0).drop('Total Area (km2)', 1)
-            self.world_la_dict[tmr] = df.mul(self.solution_la_df.loc[tmr], axis=1) / 10000
+            self.world_land_alloc_dict[tmr] = df.mul(self.soln_land_alloc_df.loc[tmr], axis=1) / 10000
 
-    def _populate_solution_ld(self):
+    def _populate_solution_land_distribution(self):
+        """
+        'AEZ Data'!A47:H58
+        Calculates total land distribution for solution by region (currently fixed for all years).
+        """
         cols = self.thermal_moisture_regimes
         soln_df = pd.DataFrame(columns=cols, index=self.regions).fillna(0.)
         for reg in self.regions:
-            for tmr, df in self.world_la_dict.items():
+            for tmr, df in self.world_land_alloc_dict.items():
                 if reg == 'Global':  # we will sum these later
                     soln_df.at[reg, tmr] = sum(soln_df[tmr].values[:5])
                 else:
@@ -81,9 +97,8 @@ class AEZ:
                     soln_df.at[reg, tmr] = total_area
 
         soln_df['All'] = soln_df.sum(axis=1)
-        self.solution_ld_df = soln_df
+        self.soln_land_dist_df = soln_df
 
-        print(self.solution_ld_df)
 
 if __name__ == '__main__':
-    aez = AEZ('Tropical Forest Restoration')
+    pass
