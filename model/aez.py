@@ -19,8 +19,8 @@ pd.set_option('display.expand_frame_repr', False)
 
 class AEZ:
     """ AEZ Data module """
-    def __init__(self, solution):
-        self.solution = solution
+    def __init__(self, solution_name):
+        self.solution_name = solution_name
         self.thermal_moisture_regimes = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
                                          'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
         self.regions = ['OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
@@ -49,7 +49,7 @@ class AEZ:
                     continue
                 aez_path = tmr_path.joinpath(col +'.csv')
                 la_df = pd.read_csv(aez_path, index_col=0)
-                total_perc_allocated = la_df.loc[self.solution]['Total % allocated']
+                total_perc_allocated = la_df.loc[self.solution_name]['Total % allocated']
                 if total_perc_allocated > 0:
                     df.at[tmr, col] = total_perc_allocated
         self.soln_land_alloc_df = df
@@ -61,7 +61,7 @@ class AEZ:
         """
         df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_aez_matrix.csv'), index_col=0)
         self.applicable_zones = []
-        for col, val in df.loc[self.solution].iteritems():
+        for col, val in df.loc[self.solution_name].iteritems():
             if val == 'yes':
                 self.applicable_zones.append(col)
             elif val != 'no':
@@ -87,18 +87,14 @@ class AEZ:
         soln_df = pd.DataFrame(columns=cols, index=self.regions).fillna(0.)
         for reg in self.regions:
             for tmr, df in self.world_land_alloc_dict.items():
-                if reg == 'Global':  # we will sum these later
-                    soln_df.at[reg, tmr] = sum(soln_df[tmr].values[:5])
+                if reg == 'Global':
+                    soln_df.at[reg, tmr] = sum(soln_df[tmr].values[:5])  # sum from soln_df rather than read from df
                 else:
-                    total_area = 0
-                    for col in df.columns:
-                        if col in self.applicable_zones:
-                            total_area += df.loc[reg, col]
-                    soln_df.at[reg, tmr] = total_area
+                    soln_df.at[reg, tmr] = df.loc[reg, self.applicable_zones].sum()
 
         soln_df['All'] = soln_df.sum(axis=1)
         self.soln_land_dist_df = soln_df
 
 
 if __name__ == '__main__':
-    pass
+    a = AEZ('Tropical Forest Restoration')
