@@ -4,7 +4,6 @@ import xlrd
 import pathlib
 import pandas as pd
 import os
-import shutil
 from tools.util import cell_to_offsets, convert_float
 
 XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'WORLD Land Data.xlsx')
@@ -68,9 +67,6 @@ class WorldLandDataReader:
             elif ans != 'y':
                 print('Not a valid answer')
                 return
-            else:
-                shutil.rmtree(CSV_PATH)
-                os.mkdir(CSV_PATH)
 
         # check the DataFrames are loaded
         if self.df_dict is None:
