@@ -12,7 +12,7 @@ def check_to_dict(obj):
     assert ex in result
 
 def test_solarpvutil():
-  scenario = solarpvutil.scenarios[0]
+  scenario = list(solarpvutil.scenarios.keys())[0]
   obj = solarpvutil.SolarPVUtil(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
@@ -35,7 +35,7 @@ def test_solarpvutil():
   assert result == pytest.approx(expected)
 
 def test_solarpvroof():
-  scenario = solarpvroof.scenarios[0]
+  scenario = list(solarpvroof.scenarios.keys())[0]
   obj = solarpvroof.SolarPVRoof(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name

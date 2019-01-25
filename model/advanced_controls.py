@@ -10,7 +10,10 @@ from model import interpolation
 
 
 SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE')
-
+translate_adoption_bases = { "DEFAULT Linear": "Linear", "DEFAULT S-Curve": "S-Curve" }
+valid_adoption_bases = set(['Linear', 'S-Curve', 'Existing Adoption Prognostications',
+    'Customized S-Curve Adoption', 'Fully Customized PDS', None])
+valid_adoption_growth = set(['High', 'Medium', 'Low', None])
 
 class AdvancedControls:
   """Advanced Controls module, with settings impacting other modules.
@@ -191,15 +194,15 @@ class AdvancedControls:
      to estimate the World, or perform a separate estimate for the world. "Advanced Controls"!B284
   soln_pds_adoption_regional_data (boolean): as soln_ref_adoption_regional_data.
      "Advanced Controls"!B246
-  soln_pds_adoption_basis (helpertables.ADOPTION_BASIS): the type of interpolation to fill in
-     adoption data for each year. "Advanced Controls"!B243
+  soln_pds_adoption_basis (string): the type of interpolation to fill in adoption data for
+     each year. Must be one of valid_adoption_bases. "Advanced Controls"!B243
   soln_pds_adoption_prognostication_source (string): the name of one specific data source, or the
      name of a class of sources (like "Conservative Cases" or "Ambitious Cases"), or "ALL SOURCES"
      to take the average of all sources. "Advanced Controls"!B265
-  soln_pds_adoption_prognostication_trend (helpertables.ADOPTION_TREND): the type of curve fit
+  soln_pds_adoption_prognostication_trend (string): the type of curve fit
      to use like 2nd order polynomial or exponential. "Advanced Controls"!B270
-  soln_pds_adoption_prognostication_growth (helpertables.ADOPTION_GROWTH): high, medium, or low
-     projected growth. "Advanced Controls"!C270
+  soln_pds_adoption_prognostication_growth (string): High, Medium, or Low projected growth.
+     "Advanced Controls"!C270
   pds_source_post_2014 (string): The name of the data source to use for the PDS case for
      years after 2014. "Advanced Controls"!B55
   ref_source_post_2014 (string): The name of the data source to use for the REF case for
@@ -325,15 +328,17 @@ class AdvancedControls:
 
     self.soln_ref_adoption_regional_data = soln_ref_adoption_regional_data
     self.soln_pds_adoption_regional_data = soln_pds_adoption_regional_data
+    soln_pds_adoption_basis = translate_adoption_bases.get(soln_pds_adoption_basis,
+        soln_pds_adoption_basis)
+    if soln_pds_adoption_basis not in valid_adoption_bases:
+      raise ValueError("invalid adoption basis name=" + str(soln_pds_adoption_basis))
     self.soln_pds_adoption_basis = soln_pds_adoption_basis
-    if isinstance(soln_pds_adoption_basis, str):
-      self.soln_pds_adoption_basis = ht.string_to_adoption_basis(soln_pds_adoption_basis)
     self.soln_pds_adoption_prognostication_source = soln_pds_adoption_prognostication_source
     self.soln_pds_adoption_prognostication_trend = soln_pds_adoption_prognostication_trend
+    if soln_pds_adoption_prognostication_growth not in valid_adoption_growth:
+      g = soln_pds_adoption_prognostication_growth
+      raise ValueError("invalid adoption prognostication growth name=" + str(g))
     self.soln_pds_adoption_prognostication_growth = soln_pds_adoption_prognostication_growth
-    if isinstance(soln_pds_adoption_prognostication_growth, str):
-      self.soln_pds_adoption_prognostication_growth = ht.string_to_adoption_prognostication_growth(
-          soln_pds_adoption_prognostication_growth)
     self.pds_source_post_2014 = pds_source_post_2014
     self.ref_source_post_2014 = ref_source_post_2014
     self.source_until_2014 = source_until_2014

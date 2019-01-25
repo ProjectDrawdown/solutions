@@ -241,32 +241,6 @@ def test_to_dict():
         assert result[ex] == pytest.approx(check)
 
 
-def test_string_to_adoption_basis():
-  func = helpertables.string_to_adoption_basis
-  assert func("default linear") == helpertables.ADOPTION_BASIS.LINEAR
-  assert func("default_linear") == helpertables.ADOPTION_BASIS.LINEAR
-  assert func("linear") == helpertables.ADOPTION_BASIS.LINEAR
-  assert func("default s-curve") == helpertables.ADOPTION_BASIS.S_CURVE
-  assert func("default_s_curve") == helpertables.ADOPTION_BASIS.S_CURVE
-  assert func("s_curve") == helpertables.ADOPTION_BASIS.S_CURVE
-  assert func("s-curve") == helpertables.ADOPTION_BASIS.S_CURVE
-  assert func("existing adoption prognostications") == helpertables.ADOPTION_BASIS.PROGNOSTICATION
-  assert func("existing_adoption_prognostications") == helpertables.ADOPTION_BASIS.PROGNOSTICATION
-  assert func("customized s-curve adoption") == helpertables.ADOPTION_BASIS.CUSTOM_S_CURVE
-  assert func("customized_s_curve_adoption") == helpertables.ADOPTION_BASIS.CUSTOM_S_CURVE
-  assert func("fully customized pds") == helpertables.ADOPTION_BASIS.FULLY_CUSTOM
-  with pytest.raises(ValueError):
-    _ = func("invalid")
-
-def test_string_to_adoption_prognostication_growth():
-  func = helpertables.string_to_adoption_prognostication_growth
-  assert func("low") == helpertables.ADOPTION_PROGNOSTICATION_GROWTH.LOW
-  assert func("medium") == helpertables.ADOPTION_PROGNOSTICATION_GROWTH.MEDIUM
-  assert func("high") == helpertables.ADOPTION_PROGNOSTICATION_GROWTH.HIGH
-  with pytest.raises(ValueError):
-    _ = func("invalid")
-
-
 soln_ref_funits_adopted_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778, 14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
