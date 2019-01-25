@@ -12,7 +12,10 @@ require() {
   return 1
 }
 
-output=$(PYTHONPATH=.:${PYTHONPATH} ./tools/solution_xls_extract.py --excelfile=./tools/tests/solution_xls_extract_RRS_test_A.xlsm) 
+tmpdir=$(mktemp -d soln_xls.XXXXXX)
+PYTHONPATH=.:${PYTHONPATH} ./tools/solution_xls_extract.py --excelfile=./tools/tests/solution_xls_extract_RRS_test_A.xlsm --outputdir=${tmpdir}
+output=$(cat ${tmpdir}/__init__.py)
+ad_data=$(cat ${tmpdir}/ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv)
 
 # Check infer class name
 require "$output" "class TestClassA" && \
@@ -28,13 +31,15 @@ require "$output" "ref_learning_increase_mult=2, conv_learning_increase_mult=2,"
 require "$output" "'Based on: IEA ETP 2016 6DS'" && \
 # Check TAM Data extraction
 require "$output" "'3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'," && \
+# Adoption Data CSV files
+require "$ad_data" 3598.7298966826534 && \
 true
 
 if [ $? -ne 0 ]; then
     rc=1
 fi
 
-
+rm -rf ${tmpdir}
 trap 'kill $(jobs -pr) >/dev/null 2>&1' SIGINT SIGTERM EXIT
 
 exit $rc

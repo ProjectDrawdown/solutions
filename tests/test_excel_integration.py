@@ -252,17 +252,17 @@ def test_SolarPVUtility_RRS_ELECGEN(start_flask):
   """Test for Excel model file SolarPVUtility_RRS_ELECGEN_*."""
   if not excel_present():
     pytest.skip("Microsoft Excel not present")
-  for scenario in solarpvutil.scenarios:
+  for scenario in solarpvutil.scenarios.keys():
     _rrs_test(solution='solarpvutil', scenario=scenario,
         filename=str(solutiondir.joinpath('solarpvutil', 'testdata',
           'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm')))
 
 @pytest.mark.integration
-def disabled_test_SolarRooftop_RRS_PUBLIC(start_flask):
-  """Test for Excel model file SolarPVRooftop_RRS_ELECGEN*."""
+def disabled_test_SolarRooftop_RRS_ELECGEN(start_flask):
+  """Test for Excel model file SolarPVRooftop_RRS_ELECGEN_*."""
   if not excel_present():
     pytest.skip("Microsoft Excel not present")
-  for scenario in solarpvroof.scenarios:
+  for scenario in solarpvroof.scenarios.keys():
     _rrs_test(solution='solarpvroof', scenario=scenario,
         filename=str(solutiondir.joinpath('solarpvroof', 'testdata',
           'SolarPVRooftop_RRS_ELECGEN_v1.1b_24Oct18.xlsm')))

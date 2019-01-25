@@ -7,7 +7,9 @@ import argparse
 import os.path
 import re
 import sys
+
 import xlrd
+import pandas as pd
 
 from tools.util import convert_bool, cell_to_offsets
 
@@ -96,6 +98,7 @@ def get_rrs_scenarios(wb):
       s['soln_pds_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 165, 4))
 
       assert sr_tab.cell_value(row + 183, 1) == 'Existing PDS Prognostication Assumptions'
+      s['soln_pds_adoption_prognostication_source']= str(sr_tab.cell_value(row + 184, 4))
       s['soln_pds_adoption_prognostication_trend'] = str(sr_tab.cell_value(row + 185, 4))
       s['soln_pds_adoption_prognostication_growth'] = str(sr_tab.cell_value(row + 186, 4))
 
@@ -249,17 +252,76 @@ def write_tam(f, wb):
   f.write("       " + xls(22, 12) + ", " + xls(25, 12) + ", " + xls(28, 12) + ", " + xls(31, 12) + ", ")
   f.write(            xls(34, 12) + ", " + xls(37, 12) + ", " + xls(40, 12) + "],\n")
   f.write("      ['low_sd_mult', " + xln(24, 1) + ", " + xln(24, 1) + ", " + xln(16, 16) + ", ")
-  f.write(            xln(19, 16) + ", " + xln(22, 16) + ", " + xln(25, 16) + ", ")
-  f.write(            xln(28, 16) + ", " + xln(31, 16) + ", " + xln(34, 16) + "],\n")
+  f.write(            xln(19, 16) + ", " + xln(22, 16) + ", " + xln(25, 16) + ", " + xln(28, 16) + ", ")
+  f.write(            xln(31, 16) + ", " + xln(34, 16) + ", " + xln(37, 16) + ", " + xln(40, 16) + "],\n")
   f.write("      ['high_sd_mult', " + xln(23, 1) + ", " + xln(23, 1) + ", " + xln(15, 16) + ", ")
-  f.write(            xln(18, 16) + ", " + xln(21, 16) + ", " + xln(24, 16) + ", ")
-  f.write(            xln(27, 16) + ", " + xln(30, 16) + ", " + xln(33, 16) + "]]\n")
+  f.write(            xln(18, 16) + ", " + xln(21, 16) + ", " + xln(24, 16) + ", " + xln(27, 16) + ", ")
+  f.write(            xln(30, 16) + ", " + xln(33, 16) + ", " + xln(36, 16) + ", " + xln(39, 16) + "]]\n")
   f.write("    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')\n")
   f.write("    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=rrs.tam_ref_data_sources,\n")
   f.write("      tam_pds_data_sources=rrs.tam_pds_data_sources)\n")
   f.write("    ref_tam_per_region=self.tm.ref_tam_per_region()\n")
   f.write("    pds_tam_per_region=self.tm.pds_tam_per_region()\n")
   f.write("\n")
+
+
+def lookup_ad_source_filename(source_name):
+  """Return string to use for the filename for known sources."""
+  map_sources = {
+    "Based on: IEA ETP 2016 6DS": 'IEA_ETP_2016_6DS',
+    "Based on: IEA ETP 2016 - 6DS": 'IEA_ETP_2016_6DS',
+    "Based on: AMPERE (2014) IMAGE Refpol": 'AMPERE_2014_IMAGE_REF',
+    "Based on: AMPERE IMAGE REFpol": 'AMPERE_2014_IMAGE_REF',
+    "Based on: AMPERE (2014) MESSAGE REFPol": 'AMPERE_2014_MESSAGE_REF',
+    "Based on: AMPERE MESSAGE REFpol": 'AMPERE_2014_MESSAGE_REF',
+    "Based on: AMPERE (2014) GEM E3 REFpol": 'AMPERE_2014_GEM_E3_REF',
+    "Based on: AMPERE GEM E3 REFpol": 'AMPERE_2014_GEM_E3_REF',
+    "Based on: IEA ETP 2016 4DS": 'IEA_ETP_2016_4DS',
+    "Based on: IEA ETP 2016 - 4DS": 'IEA_ETP_2016_4DS',
+    "Based on: AMPERE (2014) IMAGE 550": 'AMPERE_2014_IMAGE_550',
+    "Based on: AMPERE IMAGE 550": 'AMPERE_2014_IMAGE_550',
+    "Based on: AMPERE (2014) MESSAGE 550": 'AMPERE_2014_MESSAGE_550',
+    "Based on: AMPERE MESSAGE 550": 'AMPERE_2014_MESSAGE_550',
+    "Based on: AMPERE (2014) GEM E3 550": 'AMPERE_2014_GEM_E3_550',
+    "Based on: AMPERE GEM E3 550": 'AMPERE_2014_GEM_E3_550',
+    "Based on: Greenpeace (2015) Reference": 'Greenpeace_2015_Reference',
+    "Based on: IEA ETP 2016 2DS": 'IEA_ETP_2016_2DS',
+    "Based on: IEA ETP 2016 - 2DS": 'IEA_ETP_2016_2DS',
+    "Based on: AMPERE (2014) IMAGE 450": 'AMPERE_2014_IMAGE_450',
+    "Based on: AMPERE IMAGE 450": 'AMPERE_2014_IMAGE_450',
+    "Based on: AMPERE (2014) MESSAGE 450": 'AMPERE_2014_MESSAGE_450',
+    "Based on: AMPERE MESSAGE 450": 'AMPERE_2014_MESSAGE_450',
+    "Based on: AMPERE (2014) GEM E3 450": 'AMPERE_2014_GEM_E3_450',
+    "Based on: AMPERE GEM E3 450": 'AMPERE_2014_GEM_E3_450',
+    "Based on: Greenpeace (2015) Energy Revolution": 'Greenpeace_2015_Energy_Revolution',
+    "Based on: Greenpeace 2015 Energy Revolution Scenario": 'Greenpeace_2015_Energy_Revolution',
+    "Based on: Greenpeace (2015) Advanced Energy Revolution": 'Greenpeace_2015_Advanced_Energy_Revolution',
+    "Based on: Greenpeace 2015 Advanced Energy Revolution Scenario": 'Greenpeace_2015_Advanced_Energy_Revolution',
+    "Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Moderate Scenario)": 'Greenpeace_2016_Solar_Thermal_Moderate',
+    "Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Advanced Scenario)": 'Greenpeace_2016_Solar_Thermal_Advanced',
+    }
+  known_sources = {
+    'IEA_ETP_2016_6DS': 'ad_based_on_IEA_ETP_2016_6DS.csv',
+    'AMPERE_2014_IMAGE_REF': 'ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv',
+    'AMPERE_2014_MESSAGE_REF': 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv',
+    'AMPERE_2014_GEM_E3_REF': 'ad_based_on_AMPERE_2014_GEM_E3_Reference.csv',
+    'IEA_ETP_2016_4DS': 'ad_based_on_IEA_ETP_2016_4DS.csv',
+    'AMPERE_2014_IMAGE_550': 'ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv',
+    'AMPERE_2014_MESSAGE_550': 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv',
+    'AMPERE_2014_GEM_E3_550': 'ad_based_on_AMPERE_2014_GEM_E3_550.csv',
+    'Greenpeace_2015_Reference': 'ad_based_on_Greenpeace_2015_Reference.csv',
+    'IEA_ETP_2016_2DS': 'ad_based_on_IEA_ETP_2016_2DS.csv',
+    'AMPERE_2014_IMAGE_450': 'ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv',
+    'AMPERE_2014_MESSAGE_450': 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv',
+    'AMPERE_2014_GEM_E3_450': 'ad_based_on_AMPERE_2014_GEM_E3_450.csv',
+    'Greenpeace_2015_Energy_Revolution': 'ad_based_on_Greenpeace_2015_Energy_Revolution.csv',
+    '[Source 6 - Ambitious]': 'ad_source_6_ambitious.csv',
+    'Greenpeace_2015_Advanced_Energy_Revolution': 'ad_based_on_Greenpeace_2015_Advanced_Revolution.csv',
+    'Greenpeace_2016_Solar_Thermal_Moderate': 'ad_based_on_Greenpeace_2016_Solar_Thermal_Moderate.csv',
+    'Greenpeace_2016_Solar_Thermal_Advanced': 'ad_based_on_Greenpeace_2016_Solar_Thermal_Advanced.csv',
+    }
+  source_id = map_sources.get(source_name, source_name)
+  return known_sources.get(source_id, '')
 
 
 def write_ad(f, wb):
@@ -270,24 +332,26 @@ def write_ad(f, wb):
   """
   ad_tab = wb.sheet_by_name('Adoption Data')
   # concise routines to return strings and numbers extracted from Excel.
-  def xls(row, col): return "'" + str(ad_tab.cell_value(row, col)) + "'"
+  def xls(row, col): return str(ad_tab.cell_value(row, col)).strip()
   def xln(row, col): return str(ad_tab.cell_value(row, col))
   f.write("    adconfig_list = [\n")
   f.write("      ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
   f.write("       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
-  f.write("      ['trend', self.ac.soln_pds_adoption_prognostication_trend, " + xls(16, 11) + ",\n")
-  f.write("       " + xls(19, 11) + ", " + xls(22, 11) + ", " + xls(25, 11) + ", ")
-  f.write(            xls(28, 11) + ", " + xls(31, 11) + ",\n")
-  f.write("       " + xls(34, 11) + ", " + xls(37, 11) + ", " + xls(40, 11) + "],\n")
-  f.write("      ['growth', self.ac.soln_pds_adoption_prognostication_growth, " + xls(16, 12) + ",\n")
-  f.write("       " + xls(19, 12) + ", " + xls(22, 12) + ", " + xls(25, 12) + ", " + xls(28, 12) + ", " + xls(31, 12) + ",\n")
-  f.write("       " + xls(34, 12) + ", " + xls(37, 12) + ", " + xls(40, 12) + "],\n")
-  f.write("      ['low_sd_mult', " + xln(24, 1) + ", " + xln(24, 1) + ", " + xln(16, 16) + ", ")
+  f.write("      ['trend', self.ac.soln_pds_adoption_prognostication_trend, '" + xls(16, 11) + "',\n")
+  f.write("       '" + xls(19, 11) + "', '" + xls(22, 11) + "', '" + xls(25, 11) + "', '")
+  f.write(            xls(28, 11) + "', '" + xls(31, 11) + "',\n")
+  f.write("       '" + xls(34, 11) + "', '" + xls(37, 11) + "', '" + xls(40, 11) + "'],\n")
+  f.write("      ['growth', self.ac.soln_pds_adoption_prognostication_growth, '" + xls(16, 12) + "',\n")
+  f.write("       '" + xls(19, 12) + "', '" + xls(22, 12) + "', '" + xls(25, 12) + "', '" + xls(28, 12) + "', '" + xls(31, 12) + "',\n")
+  f.write("       '" + xls(34, 12) + "', '" + xls(37, 12) + "', '" + xls(40, 12) + "'],\n")
+  f.write("      ['low_sd_mult', " + xln(24, 1) + ", " + xln(16, 16) + ", ")
   f.write(            xln(19, 16) + ", " + xln(22, 16) + ", " + xln(25, 16) + ", ")
-  f.write(            xln(28, 16) + ", " + xln(31, 16) + ", " + xln(34, 16) + "],\n")
-  f.write("      ['high_sd_mult', " + xln(23, 1) + ", " + xln(23, 1) + ", " + xln(15, 16) + ", ")
+  f.write(            xln(28, 16) + ", " + xln(31, 16) + ", " + xln(34, 16) + ", ")
+  f.write(            xln(37, 16) + ", " + xln(40, 16) + "],\n")
+  f.write("      ['high_sd_mult', " + xln(23, 1) + ", " + xln(15, 16) + ", ")
   f.write(            xln(18, 16) + ", " + xln(21, 16) + ", " + xln(24, 16) + ", ")
-  f.write(            xln(27, 16) + ", " + xln(30, 16) + ", " + xln(33, 16) + "]]\n")
+  f.write(            xln(27, 16) + ", " + xln(30, 16) + ", " + xln(33, 16) + ", ")
+  f.write(            xln(36, 16) + ", " + xln(39, 16) + "]]\n")
   f.write("    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')\n")
   f.write("    ad_data_sources = {\n")
   sources = {}
@@ -298,8 +362,9 @@ def write_ad(f, wb):
   for case in ['Baseline Cases', 'Conservative Cases', 'Ambitious Cases', '100% Case']:
     f.write("      '" + case + "': {\n")
     for source in sources[case]:
-      f.write("        " + source + ": str(thisdir.joinpath('')),\n")
-    f.write("      }\n")
+      source = re.sub('\s+', ' ', source).strip()  # remove extra/double spaces
+      f.write("        '" + source + "': str(thisdir.joinpath('" + lookup_ad_source_filename(source) + "')),\n")
+    f.write("      },\n")
   f.write("    }\n")
   f.write("    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)\n")
   f.write("\n")
@@ -442,15 +507,61 @@ def write_to_dict(f, has_tam):
   f.write("\n")
 
 
-def output_solution_python_file(py_filename, xl_filename, classname):
+def extract_adoption_data(wb, outputdir):
+  """Create CSV files for Adoption Data.
+     Arguments:
+       wb: Excel workbook
+       outputdir: name of directory to write CSV files to.
+  """
+  world = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=45, nrows=46)
+  world.name = 'World'
+  oecd90 = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=105, nrows=46)
+  oecd90.name = 'OECD90'
+  eastern_europe = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=169, nrows=46)
+  eastern_europe.name ='Eastern Europe'
+  asia_sans_japan = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=232, nrows=46)
+  asia_sans_japan.name = 'Asia (Sans Japan)'
+  middle_east_and_africa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=295, nrows=46)
+  middle_east_and_africa.name = 'Middle East and Africa'
+  latin_america = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=358, nrows=46)
+  latin_america.name = 'Latin America'
+  china = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=421, nrows=46)
+  china.name = 'China'
+  india = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=485, nrows=46)
+  india.name = 'India'
+  eu = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=549, nrows=46)
+  eu.name = 'EU'
+  usa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=614, nrows=46)
+  usa.name = 'USA'
+
+  ad_tab = wb.sheet_by_name('Adoption Data')
+  for col in range(0, 16):
+    source_name = str(ad_tab.cell_value(44, col + 2)).strip()
+    filename = lookup_ad_source_filename(source_name)
+    outputfile = os.path.join(outputdir, filename)
+    df = pd.concat({'World': world.iloc[:, col], 'OECD90': oecd90.iloc[:, col],
+      'Eastern Europe': eastern_europe.iloc[:, col],
+      'Asia (Sans Japan)': asia_sans_japan.iloc[:, col],
+      'Middle East and Africa': middle_east_and_africa.iloc[:, col],
+      'Latin America': latin_america.iloc[:, col],
+      'China': china.iloc[:, col], 'India': india.iloc[:, col],
+      'EU': eu.iloc[:, col], 'USA':  usa.iloc[:, col]}, axis=1)
+    df.index = df.index.astype(int)
+    df.index.name = 'Year'
+    df[['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
+      'Latin America', 'China', 'India', 'EU', 'USA']].to_csv(outputfile, header=True)
+
+
+def output_solution_python_file(outputdir, xl_filename, classname):
   """Extract relevant fields from Excel file and output a Python class.
 
      Arguments:
-       py_filename: filename to write to. '-' means stdout.
+       outputdir: filename to write to. None means stdout.
        xl_filename: an Excel file to open, can be xls/xlsm/etc.
          Note that we cannot run Macros from xlsm files, only read values.
        classname: what name to give to the generated Python class.
   """
+  py_filename = '-' if outputdir is None else os.path.join(outputdir, '__init__.py')
   wb = xlrd.open_workbook(filename=xl_filename)
   ac_tab = wb.sheet_by_name('Advanced Controls')
 
@@ -495,9 +606,9 @@ def output_solution_python_file(py_filename, xl_filename, classname):
   f.write('scenarios = {\n')
   for name, s in scenarios.items():
     prefix = '  '
-    f.write(prefix + "'" + name + "': {\n")
+    f.write(prefix + "'" + name + "': advanced_controls.AdvancedControls(\n")
     write_scenario(f=f, s=s)
-    f.write(2*prefix + '},\n')
+    f.write(2*prefix + '),\n')
   f.write('}\n\n')
 
   f.write("class " + str(classname) + ":\n")
@@ -537,6 +648,7 @@ def output_solution_python_file(py_filename, xl_filename, classname):
     if values:
       raise KeyError('Scenario ' + key + ' has unconsumed fields: ' + str(values.keys()))
 
+  extract_adoption_data(wb=wb, outputdir=outputdir)
   f.close()
 
 
@@ -571,12 +683,12 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(
       description='Create python Drawdown solution from Excel version.')
   parser.add_argument('--excelfile', required=True, help='Excel filename to process')
-  parser.add_argument('--outputfile', default='-', help='File to write generated Python code to')
+  parser.add_argument('--outputdir', default=None, help='Directory to write generated Python code to')
   parser.add_argument('--classname', help='Name for Python class')
   args = parser.parse_args(sys.argv[1:])
 
   if args.classname is None:
     args.classname = infer_classname(filename=args.excelfile)
 
-  output_solution_python_file(py_filename=args.outputfile, xl_filename=args.excelfile,
+  output_solution_python_file(outputdir=args.outputdir, xl_filename=args.excelfile,
       classname=args.classname)

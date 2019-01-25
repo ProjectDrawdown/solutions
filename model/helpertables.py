@@ -5,17 +5,11 @@ data is selectable according to the solution. Helper Tables can pull in one of
 the Linear/2nd order poly/3rd order poly/etc curve fitting implementations
 from interpolation.py, or use a simple linear fit implemented here.
 """
-import enum
 from functools import lru_cache
 import numpy as np
 import pandas as pd
 
 from model import interpolation
-
-ADOPTION_BASIS = enum.Enum('ADOPTION_BASIS',
-    'LINEAR S_CURVE PROGNOSTICATION CUSTOM_S_CURVE FULLY_CUSTOM')
-ADOPTION_PROGNOSTICATION_GROWTH = enum.Enum('ADOPTION_PROGNOSTICATION_GROWTH', 'LOW MEDIUM HIGH')
-
 
 class HelperTables:
   """Implementation for the Helper Tables module.
@@ -94,18 +88,6 @@ class HelperTables:
         adoption.loc[year, col] = adopt1 + fract_adopt
     return adoption
 
-  def _get_source_data(self):
-    """Return the High, Medium, or Low data as requested."""
-    if self.ac.soln_pds_adoption_prognostication_growth == ADOPTION_PROGNOSTICATION_GROWTH.HIGH:
-      return self.adoption_low_med_high_global['High']
-    elif self.ac.soln_pds_adoption_prognostication_growth == ADOPTION_PROGNOSTICATION_GROWTH.MEDIUM:
-      return self.adoption_low_med_high_global['Medium']
-    elif self.ac.soln_pds_adoption_prognostication_growth == ADOPTION_PROGNOSTICATION_GROWTH.LOW:
-      return self.adoption_low_med_high_global['Low']
-    else:
-      raise NotImplementedError('Unknown soln_pds_adoption_prognostication_growth: ' +
-          str(self.ac.soln_pds_adoption_prognostication_growth))
-
   @lru_cache()
   def soln_pds_funits_adopted(self):
     """Cumulative Adoption in funits in the PDS.
@@ -116,22 +98,23 @@ class HelperTables:
     last_year = 2060
     adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
         columns=self.pds_datapoints.columns.copy(), dtype='float')
-    source_data = self._get_source_data()
+    growth = self.ac.soln_pds_adoption_prognostication_growth
+    source_data = self.adoption_low_med_high_global[growth]
 
     if self.adoption_is_single_source:
       # single source, so use that one source without curve fitting.
       adoption['World'] = source_data
-    elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.LINEAR:
+    elif self.ac.soln_pds_adoption_basis == 'Linear':
       adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints, adoption)
-    elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.S_CURVE:
+    elif self.ac.soln_pds_adoption_basis == 'S-Curve':
       raise NotImplementedError('S-Curve support not implemented')
-    elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.PROGNOSTICATION:
+    elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       trend = self.ac.soln_pds_adoption_prognostication_trend
       prognost = interpolation.trend_algorithm(data=source_data, trend=trend)
       adoption.loc[:, 'World'] = prognost.loc[:, 'adoption']
-    elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.CUSTOM_S_CURVE:
+    elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
       raise NotImplementedError('Custom S-Curve support not implemented')
-    elif self.ac.soln_pds_adoption_basis == ADOPTION_BASIS.FULLY_CUSTOM:
+    elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       raise NotImplementedError('Fully Custom Adoption support not implemented')
 
     if self.ac.soln_pds_adoption_regional_data:
@@ -155,51 +138,3 @@ class HelperTables:
     rs['soln_ref_funits_adopted'] = self.soln_ref_funits_adopted()
     rs['soln_pds_funits_adopted'] = self.soln_pds_funits_adopted()
     return rs
-
-
-def string_to_adoption_basis(text):
-  """Convert the text strings passed from the Excel implementation of the models
-     to the enumerated type defined in this module.
-     "Advanced Controls"!B243
-  """
-  ltext = str(text).lower()
-  if ltext == "default linear":
-    return ADOPTION_BASIS.LINEAR
-  if ltext == "default_linear":
-    return ADOPTION_BASIS.LINEAR
-  if ltext == "linear":
-    return ADOPTION_BASIS.LINEAR
-  if ltext == "default s-curve":
-    return ADOPTION_BASIS.S_CURVE
-  if ltext == "default_s_curve":
-    return ADOPTION_BASIS.S_CURVE
-  if ltext == "s_curve":
-    return ADOPTION_BASIS.S_CURVE
-  if ltext == "s-curve":
-    return ADOPTION_BASIS.S_CURVE
-  if ltext == "existing adoption prognostications":
-    return ADOPTION_BASIS.PROGNOSTICATION
-  if ltext == "existing_adoption_prognostications":
-    return ADOPTION_BASIS.PROGNOSTICATION
-  if ltext == "customized s-curve adoption":
-    return ADOPTION_BASIS.CUSTOM_S_CURVE
-  if ltext == "customized_s_curve_adoption":
-    return ADOPTION_BASIS.CUSTOM_S_CURVE
-  if ltext == "fully customized pds":
-    return ADOPTION_BASIS.FULLY_CUSTOM
-  raise ValueError("invalid adoption basis name=" + str(text))
-
-
-def string_to_adoption_prognostication_growth(text):
-  """Convert the text strings passed from the Excel implementation of the models
-     to the enumerated type defined in this module.
-     "Advanced Controls"!C270
-  """
-  ltext = str(text).lower()
-  if ltext == "low":
-    return ADOPTION_PROGNOSTICATION_GROWTH.LOW
-  if ltext == "medium":
-    return ADOPTION_PROGNOSTICATION_GROWTH.MEDIUM
-  if ltext == "high":
-    return ADOPTION_PROGNOSTICATION_GROWTH.HIGH
-  raise ValueError("invalid adoption prognostication growth name=" + str(text))
