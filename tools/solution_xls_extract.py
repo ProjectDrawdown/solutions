@@ -243,12 +243,13 @@ def write_tam(f, wb):
   f.write("       " + xls(15, 21) + ", " + xls(18, 21) + ", " + xls(21, 21) + ", " + xls(24, 21) + ", ")
   f.write(            xls(27, 21) + ", " + xls(30, 21) + ",\n")
   f.write("       " + xls(33, 21) + ", " + xls(36, 21) + ", " + xls(39, 21) + "],\n")
-  f.write("      ['trend', " + xls(18, 1) + ", self.ac.soln_pds_adoption_prognostication_trend,\n")
+  # One might assume PDS_World for trend and growth would use self.ac.soln_pds_adoption_prognostication_*,
+  # but that is not what the TAM Data in Excel does. EA104 references B19 and C19, the World trend and growth.
+  f.write("      ['trend', " + xls(18, 1) + ", " + xls(18, 1) + ",\n")
   f.write("       " + xls(16, 11) + ", " + xls(19, 11) + ", " + xls(22, 11) + ", " + xls(25, 11) + ", ")
   f.write(            xls(28, 11) + ", " + xls(31, 11) + ",\n")
   f.write("       " + xls(34, 11) + ", " + xls(37, 11) + ", " + xls(40, 11) + "],\n")
-  f.write("      ['growth', " + xls(18, 2) + ", self.ac.soln_pds_adoption_prognostication_growth, ")
-  f.write(            xls(16, 12) + ", " + xls(19, 12) + ",\n")
+  f.write("      ['growth', " + xls(18, 2) + ", " + xls(18, 2) + ", " + xls(16, 12) + ", " + xls(19, 12) + ",\n")
   f.write("       " + xls(22, 12) + ", " + xls(25, 12) + ", " + xls(28, 12) + ", " + xls(31, 12) + ", ")
   f.write(            xls(34, 12) + ", " + xls(37, 12) + ", " + xls(40, 12) + "],\n")
   f.write("      ['low_sd_mult', " + xln(24, 1) + ", " + xln(24, 1) + ", " + xln(16, 16) + ", ")
@@ -414,7 +415,7 @@ def write_ht(f, wb):
   f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
   f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
-  f.write("        adoption_low_med_high_global=self.ad.adoption_low_med_high_global(),\n")
+  f.write("        adoption_data_per_region=self.ad.adoption_data_per_region(),\n")
   f.write("        adoption_is_single_source=self.ad.adoption_is_single_source())\n")
   f.write("\n")
 
@@ -513,25 +514,25 @@ def extract_adoption_data(wb, outputdir):
        wb: Excel workbook
        outputdir: name of directory to write CSV files to.
   """
-  world = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=45, nrows=46)
+  world = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=45, nrows=49)
   world.name = 'World'
-  oecd90 = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=105, nrows=46)
+  oecd90 = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=105, nrows=49)
   oecd90.name = 'OECD90'
-  eastern_europe = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=169, nrows=46)
+  eastern_europe = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=169, nrows=49)
   eastern_europe.name ='Eastern Europe'
-  asia_sans_japan = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=232, nrows=46)
+  asia_sans_japan = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=232, nrows=49)
   asia_sans_japan.name = 'Asia (Sans Japan)'
-  middle_east_and_africa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=295, nrows=46)
+  middle_east_and_africa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=295, nrows=49)
   middle_east_and_africa.name = 'Middle East and Africa'
-  latin_america = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=358, nrows=46)
+  latin_america = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=358, nrows=49)
   latin_america.name = 'Latin America'
-  china = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=421, nrows=46)
+  china = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=421, nrows=49)
   china.name = 'China'
-  india = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=485, nrows=46)
+  india = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=485, nrows=49)
   india.name = 'India'
-  eu = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=549, nrows=46)
+  eu = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=549, nrows=49)
   eu.name = 'EU'
-  usa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=614, nrows=46)
+  usa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=None, index_col=0, usecols="B:R", skiprows=614, nrows=49)
   usa.name = 'USA'
 
   ad_tab = wb.sheet_by_name('Adoption Data')
