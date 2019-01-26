@@ -15,7 +15,7 @@ class HelperTables:
   """Implementation for the Helper Tables module.
   """
   def __init__(self, ac, ref_datapoints, pds_datapoints,
-      ref_tam_per_region, pds_tam_per_region, adoption_low_med_high_global,
+      ref_tam_per_region, pds_tam_per_region, adoption_data_per_region,
       adoption_is_single_source):
     """HelperTables.
        Arguments:
@@ -27,8 +27,8 @@ class HelperTables:
            region for the Referene scenario.
          pds_tam_per_region: dataframe of total addressible market per major
            region for the PDS scenario.
-         adoption_low_med_high_global: dataframe with Low, Medium, and High columns
-           of adoptiondata for the World region.
+         adoption_data_per_region: dataframe with one column per region (World, OECD90, Eastern
+           Europe, Latin America, etc).
          adoption_is_single_source (bool): whether the adoption data comes from a single source
            or multiple, to determine how to handle stddev.
     """
@@ -37,7 +37,7 @@ class HelperTables:
     self.pds_datapoints = pds_datapoints
     self.ref_tam_per_region = ref_tam_per_region
     self.pds_tam_per_region = pds_tam_per_region
-    self.adoption_low_med_high_global = adoption_low_med_high_global
+    self.adoption_data_per_region = adoption_data_per_region
     self.adoption_is_single_source = adoption_is_single_source
 
   @lru_cache()
@@ -99,19 +99,20 @@ class HelperTables:
     adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
         columns=self.pds_datapoints.columns.copy(), dtype='float')
     growth = self.ac.soln_pds_adoption_prognostication_growth
-    source_data = self.adoption_low_med_high_global[growth]
+    source_data = self.adoption_data_per_region
 
     if self.adoption_is_single_source:
       # single source, so use that one source without curve fitting.
-      adoption['World'] = source_data
+      adoption = source_data.loc[first_year:]
     elif self.ac.soln_pds_adoption_basis == 'Linear':
       adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints, adoption)
     elif self.ac.soln_pds_adoption_basis == 'S-Curve':
       raise NotImplementedError('S-Curve support not implemented')
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       trend = self.ac.soln_pds_adoption_prognostication_trend
-      prognost = interpolation.trend_algorithm(data=source_data, trend=trend)
-      adoption.loc[:, 'World'] = prognost.loc[:, 'adoption']
+      for col in source_data.columns:
+        prognost = interpolation.trend_algorithm(data=source_data.loc[:, col], trend=trend)
+        adoption.loc[:, col] = prognost.fillna(0.0).loc[:, 'adoption']
     elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
       raise NotImplementedError('Custom S-Curve support not implemented')
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':

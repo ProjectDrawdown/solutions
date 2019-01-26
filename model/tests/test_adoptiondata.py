@@ -23,27 +23,27 @@ g_adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index
 thisdir = pathlib.Path(__file__).parents[0]
 g_data_sources = {
   'Baseline Cases': {
-    '6DS': str(thisdir.joinpath('ad_IEA_ETP_2016_6DS.csv')),
-    'IRefpol': str(thisdir.joinpath('ad_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
-    'MREFPol': str(thisdir.joinpath('ad_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
-    'GREFpol': str(thisdir.joinpath('ad_AMPERE_2014_GEM_E3_Reference.csv')),
+    '6DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv')),
+    'IRefpol': str(thisdir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
+    'MREFPol': str(thisdir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
+    'GREFpol': str(thisdir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
   },
   'Conservative Cases': {
-    '4DS': str(thisdir.joinpath('ad_IEA_ETP_2016_4DS.csv')),
-    'I550': str(thisdir.joinpath('ad_AMPERE_2014_IMAGE_TIMER_550.csv')),
-    'M550': str(thisdir.joinpath('ad_AMPERE_2014_MESSAGE_MACRO_550.csv')),
-    'G550': str(thisdir.joinpath('ad_AMPERE_2014_GEM_E3_550.csv')),
-    'Greenpeace R': str(thisdir.joinpath('ad_Greenpeace_2015_Reference.csv')),
+    '4DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_4DS.csv')),
+    'I550': str(thisdir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv')),
+    'M550': str(thisdir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv')),
+    'G550': str(thisdir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_550.csv')),
+    'Greenpeace R': str(thisdir.joinpath('ad_based_on_Greenpeace_2015_Reference.csv')),
   },
   'Ambitious Cases': {
-    '2DS': str(thisdir.joinpath('ad_IEA_ETP_2016_2DS.csv')),
-    'I450': str(thisdir.joinpath('ad_AMPERE_2014_IMAGE_TIMER_450.csv')),
-    'M450': str(thisdir.joinpath('ad_AMPERE_2014_MESSAGE_MACRO_450.csv')),
-    'G450': str(thisdir.joinpath('ad_AMPERE_2014_GEM_E3_450.csv')),
-    'Greenpeace ER': str(thisdir.joinpath('ad_Greenpeace_2015_Energy_Revolution.csv')),
+    '2DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_2DS.csv')),
+    'I450': str(thisdir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv')),
+    'M450': str(thisdir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv')),
+    'G450': str(thisdir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_450.csv')),
+    'Greenpeace ER': str(thisdir.joinpath('ad_based_on_Greenpeace_2015_Energy_Revolution.csv')),
   },
   '100% RES2050 Case': {
-    'Greenpeace AER': str(thisdir.joinpath('ad_Greenpeace_2015_Advanced_Revolution.csv')),
+    'Greenpeace AER': str(thisdir.joinpath('ad_based_on_Greenpeace_2015_Advanced_Revolution.csv')),
   },
 }
 
@@ -52,6 +52,24 @@ def test_adoption_data():
   a = ad.adoption_data_global()
   assert a['4DS'][2035] == pytest.approx(898.010968835815)
   assert a['Greenpeace R'][2027] == pytest.approx(327.712635691309)
+  a = ad.adoption_data_oecd90()
+  assert a['Greenpeace AER'][2040] == pytest.approx(58)
+  a = ad.adoption_data_eastern_europe()
+  assert a['Greenpeace AER'][2050] == pytest.approx(117)
+  a = ad.adoption_data_asia_sans_japan()
+  assert a['Greenpeace AER'][2014] == pytest.approx(15)
+  a = ad.adoption_data_middle_east_and_africa()
+  assert a['Greenpeace AER'][2017] == pytest.approx(42)
+  a = ad.adoption_data_latin_america()
+  assert a['Greenpeace AER'][2057] == pytest.approx(506)
+  a = ad.adoption_data_china()
+  assert a['Greenpeace AER'][2036] == pytest.approx(325)
+  a = ad.adoption_data_india()
+  assert a['Greenpeace AER'][2022] == pytest.approx(187)
+  a = ad.adoption_data_eu()
+  assert a['Greenpeace AER'][2031] == pytest.approx(380)
+  a = ad.adoption_data_usa()
+  assert a['Greenpeace AER'][2053] == pytest.approx(966)
 
 def test_adoption_min_max_sd_global():
   s = 'Greenpeace AER'
@@ -152,6 +170,22 @@ def test_adoption_is_single_source():
   with pytest.raises(ValueError):
     _ = ad.adoption_is_single_source()
 
+def test_adoption_data_per_region():
+  data_sources = {
+    'Baseline Cases': {
+      'george': str(thisdir.joinpath('ad_all_regions.csv')),
+      },
+    'Conservative Cases': {},
+    'Ambitious Cases': {},
+    '100% RES2050 Case': { },
+  }
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='george',
+      soln_pds_adoption_prognostication_growth='Medium')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+  result = ad.adoption_data_per_region()
+  assert result.loc[2030, 'EU'] == pytest.approx(437.0)
+  assert result.loc[2046, 'Eastern Europe'] == pytest.approx(175.0)
+
 def test_to_dict():
   s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
@@ -160,7 +194,41 @@ def test_to_dict():
   expected = ['adoption_data_global', 'adoption_min_max_sd_global',
       'adoption_low_med_high_global', 'adoption_trend_linear_global',
       'adoption_trend_poly_degree2_global', 'adoption_trend_poly_degree3_global',
-      'adoption_trend_exponential_global']
+      'adoption_trend_exponential_global',
+      'adoption_data_oecd90', 'adoption_min_max_sd_oecd90',
+      'adoption_low_med_high_oecd90', 'adoption_trend_linear_oecd90',
+      'adoption_trend_poly_degree2_oecd90', 'adoption_trend_poly_degree3_oecd90',
+      'adoption_trend_exponential_oecd90',
+      'adoption_data_eastern_europe', 'adoption_min_max_sd_eastern_europe',
+      'adoption_low_med_high_eastern_europe', 'adoption_trend_linear_eastern_europe',
+      'adoption_trend_poly_degree2_eastern_europe', 'adoption_trend_poly_degree3_eastern_europe',
+      'adoption_trend_exponential_eastern_europe',
+      'adoption_data_asia_sans_japan', 'adoption_min_max_sd_asia_sans_japan',
+      'adoption_low_med_high_asia_sans_japan', 'adoption_trend_linear_asia_sans_japan',
+      'adoption_trend_poly_degree2_asia_sans_japan', 'adoption_trend_poly_degree3_asia_sans_japan',
+      'adoption_trend_exponential_asia_sans_japan',
+      'adoption_data_middle_east_and_africa', 'adoption_min_max_sd_middle_east_and_africa',
+      'adoption_low_med_high_middle_east_and_africa', 'adoption_trend_linear_middle_east_and_africa',
+      'adoption_trend_poly_degree2_middle_east_and_africa',
+      'adoption_trend_poly_degree3_middle_east_and_africa',
+      'adoption_trend_exponential_middle_east_and_africa',
+      'adoption_data_latin_america', 'adoption_min_max_sd_latin_america',
+      'adoption_low_med_high_latin_america', 'adoption_trend_linear_latin_america',
+      'adoption_trend_poly_degree2_latin_america', 'adoption_trend_poly_degree3_latin_america',
+      'adoption_trend_exponential_latin_america',
+      'adoption_data_china', 'adoption_min_max_sd_china', 'adoption_low_med_high_china',
+      'adoption_trend_linear_china', 'adoption_trend_poly_degree2_china',
+      'adoption_trend_poly_degree3_china', 'adoption_trend_exponential_china',
+      'adoption_data_india', 'adoption_min_max_sd_india', 'adoption_low_med_high_india',
+      'adoption_trend_linear_india', 'adoption_trend_poly_degree2_india',
+      'adoption_trend_poly_degree3_india', 'adoption_trend_exponential_india',
+      'adoption_data_eu', 'adoption_min_max_sd_eu', 'adoption_low_med_high_eu',
+      'adoption_trend_linear_eu', 'adoption_trend_poly_degree2_eu',
+      'adoption_trend_poly_degree3_eu', 'adoption_trend_exponential_eu',
+      'adoption_data_usa', 'adoption_min_max_sd_usa', 'adoption_low_med_high_usa',
+      'adoption_trend_linear_usa', 'adoption_trend_poly_degree2_usa',
+      'adoption_trend_poly_degree3_usa', 'adoption_trend_exponential_usa',
+      ]
   for ex in expected:
     assert ex in result
     f = getattr(ad, ex, None)
