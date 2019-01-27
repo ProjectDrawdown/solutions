@@ -26,14 +26,10 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Start the application:
+Start the web server and run a test query in two different shells:
 
 ```sh
 FLASK_APP=app.py FLASK_ENV=development flask run
-```
-
-Test Query
-```sh
 curl -H 'Content-Type: application/json' --data "{}" "http://127.0.0.1:5000/solarpvutil"
 ```
 
@@ -109,12 +105,12 @@ The four modules below may be thought of as the computational "kernel" of the Dr
 6. **Adoption Data module with interpolation**  
    ~~This is expected to be similar to the TAM Data tab, and also makes extensive use of interpolation.~~
 
-   The Adoption Data module was completed 11/5/2018.
+   The Adoption Data module was completed Nov 5, 2018.
 
 7. **VMA Variable Meta Analysis**  
    ~~The Variable Meta-Analysis tab provides a variety of calculations which are not handled elsewhere. For example in the various solar solutions like Utility-Scale or Rooftop, the Variable Meta-Analysis module provides estimates of what percentage of overall solar adoption should be applied to each. More than most, the VMA module is customized according to the needs of each inndividual solution. For the Remodel we will supply code to use as building blocks, but expect that much of the Variable Meta Analysis handling will be done as code for individual solutions or classes of solutions.~~
 
-   Implementation of the VMA module was substantially completed 1/7/2019. There will always be more variables to add.
+   Implementation of the VMA module was substantially completed Jan 7, 2019. There will always be more variables to add.
 
 8. **Other data input to be designed**  
    There are other input parameters that may require significant human-centered design. However, we don't believe these should be addressed until the other above modules have been done.
@@ -136,7 +132,7 @@ Tasks which do not fit into an ordered list of things to be completed:
 * **Data Pipeline Hook Strategy**  
    ~~&quot;Specialization&quot; is mentioned above as being an issue starting with the First Cost tab, where individual models have often needed to supply their own implementations and formulae. Though it is recommended that a design for this not be started too early so as to benefit from the understanding gained as the system is constructed, it will nonetheless have to be done at some point.~~
 
-   At this point we expect to handle Custom models for a particular solution one one of two ways: if the customization is a small tweak to the generic implementation, we'll see about making the generic implementation be able to handle it. Otherwise, we'll expect to supply a class within the solution/<solution_name> directory and instantiate that class instead of the generic version in model/\*.
+   At this point we expect to handle Custom models for a particular solution in one of two ways: if the customization is a small tweak to the generic implementation, we'll see about making the generic implementation be able to handle it. Otherwise, we'll expect to supply a class within the solution/<solution_name> directory and instantiate that class instead of the generic version in model/\*.
 
 * **Automated testing**  
    One other goal for the project is to build a model implementation with good coverage by automated tests. There is a [YouTube video which demonstrates the three layers of tests](https://youtu.be/ipZrQWuMU3w) and another which [focuses on the Excel-based system test specifically](https://youtu.be/HLL7HrFcmjc).
