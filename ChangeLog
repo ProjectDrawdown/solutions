@@ -135,3 +135,12 @@ Jan 14 - 18, 2019
 + Support running via mybinder.org
   Populate a binder directory to run from mybinder.org.
   https://mybinder.org/v2/gl/codeearth%2Fdrawdown/master?urlpath=lab/tree/Drawdown.ipynb
+
+Jan 21 - 25, 2019
++ implement two Land modules: aez.py and tla.py
+  AEZ = Agro-Ecological Zoning, classifying land area into zones for analysis.
+  TLA = Total Land Area, the total addressible market for land solutions.
+  This is a big step in supporting the Land solutions.
++ add scenario extraction in solution_xls_extract
+  Code generation from Excel files to create solutions. We intend to handle
+  most of the ~90 solutions via code generation not manual effort.
