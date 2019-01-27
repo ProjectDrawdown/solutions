@@ -18,16 +18,17 @@ def linear_trend(data):
      Provides implementation for 'Adoption Data'!BY50:CA96 & 'TAM Data' columns BX:BZ
      Arguments: data is a pd.Series used to provide the x+y for curve fitting.
   """
-  y = data.values
-  x = data.index.copy() - 2014
-  (slope, intercept) = np.polyfit(x, y, 1)
-  result = pd.DataFrame(0, index=np.arange(2014, 2061), columns=['x', 'constant', 'adoption'],
+  result = pd.DataFrame(np.nan, index=np.arange(2014, 2061), columns=['x', 'constant', 'adoption'],
       dtype=np.float64)
   result.index.name = 'Year'
+  y = data.dropna().values
+  x = data.dropna().index.copy() - 2014
+  if x.size == 0 or y.size == 0: return result
+  (slope, intercept) = np.polyfit(x, y, 1)
   for (offset, index) in enumerate(result.index):
     result.loc[index, 'x'] = offset * slope
     result.loc[index, 'constant'] = intercept
-    result.loc[index, 'adoption'] = sum(result.loc[index])
+    result.loc[index, 'adoption'] = sum(result.loc[index, result.columns != 'adoption'])
   return result
 
 def poly_degree2_trend(data):
@@ -35,17 +36,18 @@ def poly_degree2_trend(data):
      Provides implementation for 'Adoption Data'!CF50:CI96 & 'TAM Data' columns CE:CH
      Arguments: data is a pd.Series used to provide the x+y for curve fitting.
   """
-  y = data.values
-  x = data.index.copy() - 2014
-  (c2, c1, intercept) = np.polyfit(x, y, 2)
-  result = pd.DataFrame(0, index=np.arange(2014, 2061),
+  result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
       columns=['x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
   result.index.name = 'Year'
+  y = data.dropna().values
+  x = data.dropna().index.copy() - 2014
+  if x.size == 0 or y.size == 0: return result
+  (c2, c1, intercept) = np.polyfit(x, y, 2)
   for (offset, index) in enumerate(result.index):
     result.loc[index, 'x^2'] = (offset**2) * c2
     result.loc[index, 'x'] = offset * c1
     result.loc[index, 'constant'] = intercept
-    result.loc[index, 'adoption'] = sum(result.loc[index])
+    result.loc[index, 'adoption'] = sum(result.loc[index, result.columns != 'adoption'])
   return result
 
 def poly_degree3_trend(data):
@@ -53,18 +55,19 @@ def poly_degree3_trend(data):
      Provides implementation for 'Adoption Data'!CN50:CR96 & 'TAM Data' columns CM:CQ
      Arguments: data is a pd.Series used to provide the x+y for curve fitting.
   """
-  y = data.values
-  x = data.index.copy() - 2014
-  (c3, c2, c1, intercept) = np.polyfit(x, y, 3)
-  result = pd.DataFrame(0, index=np.arange(2014, 2061),
+  result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
       columns=['x^3', 'x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
   result.index.name = 'Year'
+  y = data.dropna().values
+  x = data.dropna().index.copy() - 2014
+  if x.size == 0 or y.size == 0: return result
+  (c3, c2, c1, intercept) = np.polyfit(x, y, 3)
   for (offset, index) in enumerate(result.index):
     result.loc[index, 'x^3'] = (offset**3) * c3
     result.loc[index, 'x^2'] = (offset**2) * c2
     result.loc[index, 'x'] = offset * c1
     result.loc[index, 'constant'] = intercept
-    result.loc[index, 'adoption'] = sum(result.loc[index])
+    result.loc[index, 'adoption'] = sum(result.loc[index, result.columns != 'adoption'])
   return result
 
 def exponential_trend(data):
@@ -72,12 +75,13 @@ def exponential_trend(data):
      Provides implementation for 'Adoption Data'!CW50:CY96 & 'TAM Data' columns CV:CX
      Arguments: data is a pd.Series used to provide the x+y for curve fitting.
   """
-  y = np.log(data.values)
-  x = data.index.copy() - 2014
-  (ce, coeff) = np.polyfit(x, y, 1)
-  result = pd.DataFrame(0, index=np.arange(2014, 2061),
+  result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
       columns=['coeff', 'e^x', 'adoption'], dtype=np.float64)
   result.index.name = 'Year'
+  y = np.log(data.dropna().values)
+  x = data.dropna().index.copy() - 2014
+  if x.size == 0 or y.size == 0: return result
+  (ce, coeff) = np.polyfit(x, y, 1)
   for (offset, index) in enumerate(result.index):
     result.loc[index, 'coeff'] = math.exp(coeff)
     result.loc[index, 'e^x'] = math.exp(ce * offset)
@@ -92,8 +96,8 @@ def single_trend(data):
   result = pd.DataFrame(0, index=np.arange(2014, 2061),
       columns=['constant', 'adoption'], dtype=np.float64)
   result.index.name = 'Year'
-  result.loc[:, 'constant'] = data
-  result.loc[:, 'adoption'] = data
+  result.loc[:, 'constant'] = data.dropna()
+  result.loc[:, 'adoption'] = data.dropna()
   return result
 
 def trend_algorithm(data, trend):
