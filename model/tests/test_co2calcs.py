@@ -5,7 +5,9 @@ import pandas as pd
 import pytest
 from model import advanced_controls
 from model import co2calcs
+import pathlib
 
+datadir = pathlib.Path(__file__).parents[0]
 
 def test_co2_mmt_reduced_allfields():
   # the real data from the SolarPVUtil solution has many fields as zero. Test them all.
@@ -432,6 +434,18 @@ def test_co2eq_net_indirect_emissions_iunits():
       columns=['Year', 'A', 'B', 'C']).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+
+def test_co2_sequestered_global():
+    """ Test vals from Tropical Forests"""
+    ac = advanced_controls.AdvancedControls(seq_rate_global=4.150868085)
+    funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
+    land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
+    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist)
+    df = c2.co2_sequestered_global()
+    assert df.loc[2060, 'All'] == pytest.approx(2671.37555477147)
+    assert df.loc[2015, 'Tropical-Semi-Arid'] == pytest.approx(37.6066107467328)
+
+
 def test_to_dict():
   ch4_ppb_calculator = pd.DataFrame([[2020, 1.0], [2021, 1.0], [2022, 1.0]],
       columns=["Year", "PPB"]).set_index('Year')
@@ -489,6 +503,7 @@ def test_to_dict():
         pd.testing.assert_series_equal(result[ex], check, check_exact=False)
       else:
         assert result[ex] == pytest.approx(check)
+
 
 
 # 'Unit Adoption'!B251:L298

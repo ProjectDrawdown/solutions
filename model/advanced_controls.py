@@ -183,6 +183,10 @@ class AdvancedControls:
   npv_discount_rate (float): discount rate for Net Present Value calculations.
      "Advanced Controls"!B141
 
+  seq_rate_global (float): carbon sequestration rate for All Land or All of Special Land.
+    "Advanced Controls"!B173 (Land models)
+  disturbance_rate (float): disturbance rate "Advanced Controls"!I173 (Land models)
+
   emissions_use_co2eq (boolean): whether to use CO2-equivalent for ppm calculations.
      "Advanced Controls"!B189
   emissions_grid_source (string): "IPCC Only" or "Meta Analysis" of multiple studies.
@@ -275,8 +279,13 @@ class AdvancedControls:
                ref_source_post_2014=None,
                source_until_2014=None,
 
-               solution_category=None
+               solution_category=None,
+
+               # land only
+               seq_rate_global=None,
+               disturbance_rate=None
                ):
+
     self.pds_2014_cost = pds_2014_cost
     self.ref_2014_cost = ref_2014_cost
     self.conv_2014_cost = conv_2014_cost
@@ -346,6 +355,10 @@ class AdvancedControls:
     self.solution_category = solution_category
     if isinstance(solution_category, str):
       self.solution_category = self.string_to_solution_category(solution_category)
+
+    # Land only
+    self.seq_rate_global = seq_rate_global
+    self.disturbance_rate = disturbance_rate
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.

@@ -11,6 +11,8 @@ import pandas as pd
 
 from model import advanced_controls
 
+THERMAL_MOISTURE_REGIONS = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
+                            'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
 
 class CO2Calcs:
   """CO2 Calcs module.
@@ -29,14 +31,17 @@ class CO2Calcs:
         conv_ref_grid_CO2eq_per_KWh:
         soln_net_annual_funits_adopted:
         fuel_in_liters:
+        annual_land_area_harvested: (from unit adoption calcs)
+        land_distribution: (from aez data)
     """
-  def __init__(self, ac, ch4_ppb_calculator,
-      soln_pds_net_grid_electricity_units_saved, soln_pds_net_grid_electricity_units_used,
-      soln_pds_direct_co2_emissions_saved, soln_pds_direct_ch4_co2_emissions_saved,
-      soln_pds_direct_n2o_co2_emissions_saved,
-      soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, conv_ref_new_iunits_reqd,
-      conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh,
-      soln_net_annual_funits_adopted, fuel_in_liters):
+
+  def __init__(self, ac, soln_net_annual_funits_adopted, ch4_ppb_calculator=None,
+               soln_pds_net_grid_electricity_units_saved=None, soln_pds_net_grid_electricity_units_used=None,
+               soln_pds_direct_co2_emissions_saved=None, soln_pds_direct_ch4_co2_emissions_saved=None,
+               soln_pds_direct_n2o_co2_emissions_saved=None, soln_pds_new_iunits_reqd=None,
+               soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None, conv_ref_grid_CO2_per_KWh=None,
+               conv_ref_grid_CO2eq_per_KWh=None, fuel_in_liters=None, annual_land_area_harvested=None,
+               land_distribution=None):
     self.ac = ac
     self.ch4_ppb_calculator = ch4_ppb_calculator
     self.soln_pds_net_grid_electricity_units_saved = soln_pds_net_grid_electricity_units_saved
@@ -51,6 +56,10 @@ class CO2Calcs:
     self.conv_ref_grid_CO2eq_per_KWh = conv_ref_grid_CO2eq_per_KWh
     self.soln_net_annual_funits_adopted = soln_net_annual_funits_adopted
     self.fuel_in_liters = fuel_in_liters
+
+    # Land info (for sequestration calcs)
+    self.annual_land_area_harvested = annual_land_area_harvested
+    self.land_distribution = land_distribution
 
   @lru_cache()
   def co2_mmt_reduced(self):
@@ -114,6 +123,31 @@ class CO2Calcs:
     m = m.sub(self.co2eq_net_indirect_emissions().loc[s:e], fill_value=0)
     m.name = "co2eq_mmt_reduced"
     return m
+
+  @lru_cache()
+  def co2_sequestered_global(self):
+    """
+    Total Carbon Sequestration (World section only)
+    Returns DataFrame of net annual sequestration by thermal moisture region.
+    'CO2 Calcs'!B119:G166 (Land models)
+    """
+    assert self.ac.seq_rate_global is not None, 'No sequestration rate set in Advanced Controls'
+    cols = ['All'] + THERMAL_MOISTURE_REGIONS
+    index = list(range(2015, 2061))
+    df = pd.DataFrame(columns=cols, index=index)
+
+    # calculation
+    mystery_coefficient = 3.666  # I don't know where this number comes from
+    disturbance = 1 if self.ac.disturbance_rate is None else 1 - self.ac.disturbance_rate
+    net_land = self.soln_net_annual_funits_adopted.loc[index, 'World']
+    if self.annual_land_area_harvested is not None:
+      net_land -= self.annual_land_area_harvested.loc[index, 'World']
+
+    df['All'] = mystery_coefficient * net_land * self.ac.seq_rate_global * disturbance
+    for tmr in THERMAL_MOISTURE_REGIONS:
+      df[tmr] = df['All'] * self.land_distribution.loc['Global', tmr] / self.land_distribution.loc['Global', 'All']
+    return df
+
 
   @lru_cache()
   def co2_ppm_calculator(self):
