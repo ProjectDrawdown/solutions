@@ -416,6 +416,7 @@ def write_ht(f, wb):
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
   f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
   f.write("        adoption_data_per_region=self.ad.adoption_data_per_region(),\n")
+  f.write("        adoption_trend_per_region=self.ad.adoption_trend_per_region(),\n")
   f.write("        adoption_is_single_source=self.ad.adoption_is_single_source())\n")
   f.write("\n")
 

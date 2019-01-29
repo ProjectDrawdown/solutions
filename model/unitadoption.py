@@ -34,7 +34,7 @@ class UnitAdoption:
   @lru_cache()
   def ref_population(self):
     """Population by region for the reference case.
-       'Unit Adoption Calculations'!P16:Z63
+       SolarPVUtil 'Unit Adoption Calculations'!P16:Z63
     """
     filename = os.path.join(self.datadir, 'unitadoption_ref_population.csv')
     result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
@@ -46,7 +46,7 @@ class UnitAdoption:
   @lru_cache()
   def ref_gdp(self):
     """GDP by region for the reference case.
-       'Unit Adoption Calculations'!AB16:AL63
+       SolarPVUtil 'Unit Adoption Calculations'!AB16:AL63
     """
     filename = os.path.join(self.datadir, 'unitadoption_ref_gdp.csv')
     result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
@@ -58,7 +58,7 @@ class UnitAdoption:
   @lru_cache()
   def ref_gdp_per_capita(self):
     """GDP per capita for the reference case.
-       'Unit Adoption Calculations'!AN16:AX63
+       SolarPVUtil 'Unit Adoption Calculations'!AN16:AX63
     """
     result = self.ref_gdp() / self.ref_population()
     result.name = "ref_gdp_per_capita"
@@ -67,7 +67,7 @@ class UnitAdoption:
   @lru_cache()
   def ref_tam_per_capita(self):
     """Total Addressable Market per capita for the reference case.
-       'Unit Adoption Calculations'!BA16:BK63
+       SolarPVUtil 'Unit Adoption Calculations'!BA16:BK63
     """
     result = self.ref_tam_per_region / self.ref_population()
     result.name = "ref_tam_per_capita"
@@ -76,7 +76,7 @@ class UnitAdoption:
   @lru_cache()
   def ref_tam_per_gdp_per_capita(self):
     """Total Addressable Market per unit of GDP per capita for the reference case.
-       'Unit Adoption Calculations'!BM16:BW63
+       SolarPVUtil 'Unit Adoption Calculations'!BM16:BW63
     """
     result = self.ref_tam_per_region / self.ref_gdp_per_capita()
     result.name = "ref_tam_per_gdp_per_capita"
@@ -85,7 +85,7 @@ class UnitAdoption:
   @lru_cache()
   def ref_tam_growth(self):
     """Growth in Total Addressable Market for the reference case.
-       'Unit Adoption Calculations'!BY16:CI63
+       SolarPVUtil 'Unit Adoption Calculations'!BY16:CI63
     """
     calc = self.ref_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
     calc.loc[2014] = [''] * calc.shape[1]  # empty row
@@ -95,7 +95,7 @@ class UnitAdoption:
   @lru_cache()
   def pds_population(self):
     """Population by region for the Project Drawdown Solution case.
-       'Unit Adoption Calculations'!P68:Z115
+       SolarPVUtil 'Unit Adoption Calculations'!P68:Z115
     """
     filename = os.path.join(self.datadir, 'unitadoption_pds_population.csv')
     result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
@@ -107,7 +107,7 @@ class UnitAdoption:
   @lru_cache()
   def pds_gdp(self):
     """GDP by region for the Project Drawdown Solution case.
-       'Unit Adoption Calculations'!AB68:AL115
+       SolarPVUtil 'Unit Adoption Calculations'!AB68:AL115
     """
     filename = os.path.join(self.datadir, 'unitadoption_pds_gdp.csv')
     result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
@@ -119,7 +119,7 @@ class UnitAdoption:
   @lru_cache()
   def pds_gdp_per_capita(self):
     """GDP per capita for the Project Drawdown Solution case.
-       'Unit Adoption Calculations'!AN68:AX115
+       SolarPVUtil 'Unit Adoption Calculations'!AN68:AX115
     """
     result = self.pds_gdp() / self.pds_population()
     result.name = "pds_gdp_per_capita"
@@ -128,7 +128,7 @@ class UnitAdoption:
   @lru_cache()
   def pds_tam_per_capita(self):
     """Total Addressable Market per capita for the Project Drawdown Solution case.
-       'Unit Adoption Calculations'!BA68:BK115
+       SolarPVUtil 'Unit Adoption Calculations'!BA68:BK115
     """
     result = self.pds_tam_per_region / self.pds_population()
     result.name = "pds_tam_per_capita"
@@ -137,7 +137,7 @@ class UnitAdoption:
   @lru_cache()
   def pds_tam_per_gdp_per_capita(self):
     """Total Addressable Market per unit of GDP per capita for the Project Drawdown Solution case.
-       'Unit Adoption Calculations'!BM68:BW115
+       SolarPVUtil 'Unit Adoption Calculations'!BM68:BW115
     """
     result = self.pds_tam_per_region / self.pds_gdp_per_capita()
     result.name = "pds_tam_per_gdp_per_capita"
@@ -146,7 +146,7 @@ class UnitAdoption:
   @lru_cache()
   def pds_tam_growth(self):
     """Growth in Total Addressable Market for the Project Drawdown Solution case.
-       'Unit Adoption Calculations'!BY68:CI115
+       SolarPVUtil 'Unit Adoption Calculations'!BY68:CI115
     """
     calc = self.pds_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
     calc.loc[2014] = [''] * calc.shape[1]  # empty row
@@ -156,11 +156,11 @@ class UnitAdoption:
   @lru_cache()
   def soln_pds_cumulative_funits(self):
     """Cumulative Functional Units Utilized.
-       'Unit Adoption Calculations'!Q134:AA181
+       SolarPVUtil 'Unit Adoption Calculations'!Q134:AA181
     """
     omit_world = self.soln_pds_funits_adopted.iloc[[0], :].copy(deep=True)
     omit_world['World'] = 0
-    first_year = self.soln_pds_funits_adopted.add(omit_world, fill_value=0)
+    first_year = self.soln_pds_funits_adopted.fillna(0.0).add(omit_world, fill_value=0)
     result = first_year.cumsum(axis=0)
     result.name = "soln_pds_cumulative_funits"
     return result
@@ -168,7 +168,7 @@ class UnitAdoption:
   @lru_cache()
   def soln_pds_tot_iunits_reqd(self):
     """Total iunits required each year.
-       'Unit Adoption Calculations'!AX134:BH181
+       SolarPVUtil 'Unit Adoption Calculations'!AX134:BH181
     """
     result = self.soln_pds_funits_adopted / self.ac.soln_avg_annual_use
     result.name = "soln_pds_tot_iunits_reqd"
@@ -185,9 +185,9 @@ class UnitAdoption:
        This is used to calculate Advanced Controls Output of Solution
        Implementation Units Adopted.  This is also used to Calculate
        First Cost, Marginal First Cost and NPV.
-       'Unit Adoption Calculations'!AG136:AQ182
+       SolarPVUtil 'Unit Adoption Calculations'!AG136:AQ182
     """
-    growth = self.soln_pds_tot_iunits_reqd().diff().clip_lower(0).dropna()
+    growth = self.soln_pds_tot_iunits_reqd().diff().clip_lower(0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
     for region, column in replacements.iteritems():
@@ -204,7 +204,7 @@ class UnitAdoption:
   @lru_cache()
   def soln_pds_big4_iunits_reqd(self):
     """Implementation units required in USA/EU/China/India vs Rest of World.
-       'Unit Adoption Calculations'!AG136:AQ182
+       SolarPVUtil 'Unit Adoption Calculations'!AG136:AQ182
     """
     soln_pds_tot_iunits_reqd = self.soln_pds_tot_iunits_reqd()
     result = pd.DataFrame(0, index=soln_pds_tot_iunits_reqd.index.copy(),
@@ -215,24 +215,26 @@ class UnitAdoption:
     result["EU"] = soln_pds_tot_iunits_reqd["EU"]
     result["USA"] = soln_pds_tot_iunits_reqd["USA"]
     result["Rest of World"] = (soln_pds_tot_iunits_reqd["World"] -
-        soln_pds_tot_iunits_reqd["China"] - soln_pds_tot_iunits_reqd["India"] -
-        soln_pds_tot_iunits_reqd["EU"] - soln_pds_tot_iunits_reqd["USA"])
+        soln_pds_tot_iunits_reqd["China"].fillna(0.0) -
+        soln_pds_tot_iunits_reqd["India"].fillna(0.0) -
+        soln_pds_tot_iunits_reqd["EU"].fillna(0.0) -
+        soln_pds_tot_iunits_reqd["USA"].fillna(0.0))
     result.name = "soln_pds_big4_iunits_reqd"
     return result
 
   @lru_cache()
   def soln_ref_cumulative_funits(self):
     """Cumulative functional units.
-       'Unit Adoption Calculations'!Q197:AA244
+       SolarPVUtil 'Unit Adoption Calculations'!Q197:AA244
     """
-    result = self.soln_ref_funits_adopted.cumsum(axis=0)
+    result = self.soln_ref_funits_adopted.fillna(0.0).cumsum(axis=0)
     result.name = "soln_ref_cumulative_funits"
     return result
 
   @lru_cache()
   def soln_ref_tot_iunits_reqd(self):
     """Total implementation units required.
-       'Unit Adoption Calculations'!AX197:BH244"""
+       SolarPVUtil 'Unit Adoption Calculations'!AX197:BH244"""
     result = self.soln_ref_funits_adopted / self.ac.soln_avg_annual_use
     result.name = "soln_ref_tot_iunits_reqd"
     return result
@@ -247,9 +249,9 @@ class UnitAdoption:
 
        This table is also used to Calculate  Marginal First Cost and NPV.
 
-       'Unit Adoption Calculations'!AG197:AQ244
+       SolarPVUtil 'Unit Adoption Calculations'!AG197:AQ244
     """
-    growth = self.soln_ref_tot_iunits_reqd().diff().clip_lower(0).dropna()
+    growth = self.soln_ref_tot_iunits_reqd().diff().clip_lower(0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
     for region, column in replacements.iteritems():
@@ -278,9 +280,9 @@ class UnitAdoption:
 
        This is used to calculate the Operating Cost, Grid, Fuel, Direct and
        (optionally) Indirect Emissions.
-       'Unit Adoption Calculations'!B251:L298
+       SolarPVUtil 'Unit Adoption Calculations'!B251:L298
     """
-    result = self.soln_pds_funits_adopted - self.soln_ref_funits_adopted
+    result = self.soln_pds_funits_adopted.fillna(0.0) - self.soln_ref_funits_adopted.fillna(0.0)
     result.name = "soln_net_annual_funits_adopted"
     return result
 
@@ -295,7 +297,7 @@ class UnitAdoption:
        account for current technology mix; for PDS case proposed technology mix needs to
        be reflected here.
     
-       'Unit Adoption Calculations'!Q251:AA298
+       SolarPVUtil 'Unit Adoption Calculations'!Q251:AA298
     """
     result = (self.ref_tam_per_region - self.soln_ref_funits_adopted)
     result /= self.ac.conv_avg_annual_use
@@ -312,7 +314,7 @@ class UnitAdoption:
        Implementation Conventional Units =  ((Total Annual Functional Units(PDS) -
            Total Annual Functional units (REF) ) / Average Annual Use Per Conventional Unit)
 
-       'Unit Adoption Calculations'!AX251:BH298
+       SolarPVUtil 'Unit Adoption Calculations'!AX251:BH298
     """
     result = self.soln_net_annual_funits_adopted() / self.ac.conv_avg_annual_use
     result.name = "conv_ref_annual_tot_iunits"
@@ -329,9 +331,9 @@ class UnitAdoption:
        sold/produced in PDS scenario, since SOLUTION units are used as a direct
        replacement for CONVENTIONAL units.
 
-       'Unit Adoption Calculations'!AG251:AQ298
+       SolarPVUtil 'Unit Adoption Calculations'!AG251:AQ298
     """
-    growth = self.conv_ref_annual_tot_iunits().diff().clip_lower(0).dropna()
+    growth = self.conv_ref_annual_tot_iunits().diff().clip_lower(0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
     for region, column in replacements.iteritems():
@@ -353,7 +355,7 @@ class UnitAdoption:
        cases the energy saved per unit installed may vary by region and/or time,
        in which case a separate tab for that variable may prove necessary.
 
-       'Unit Adoption Calculations'!B307:L354
+       SolarPVUtil 'Unit Adoption Calculations'!B307:L354
     """
     m = self.ac.soln_energy_efficiency_factor * self.ac.conv_annual_energy_used
     result = self.soln_net_annual_funits_adopted().multiply(m)
@@ -370,7 +372,7 @@ class UnitAdoption:
        installed may vary by region and/or time, in which case a separate tab for that
        variable may prove necessary.
 
-       'Unit Adoption Calculations'!Q307:AA354
+       SolarPVUtil 'Unit Adoption Calculations'!Q307:AA354
     """
     def calc(x):
       if self.ac.soln_annual_energy_used:
@@ -387,7 +389,7 @@ class UnitAdoption:
        Fuel avoided = CONVENTIONAL stock avoided * Volume consumed by CONVENTIONAL
            unit per year * Fuel Efficiency of SOLUTION
 
-       'Unit Adoption Calculations'!AD307:AN354
+       SolarPVUtil 'Unit Adoption Calculations'!AD307:AN354
     """
     m = self.ac.conv_fuel_consumed_per_funit * self.ac.soln_fuel_efficiency_factor
     result = self.soln_net_annual_funits_adopted().multiply(m)
@@ -397,7 +399,7 @@ class UnitAdoption:
   @lru_cache()
   def soln_pds_direct_co2_emissions_saved(self):
     """Direct emissions of CO2 avoided, in tons.
-       'Unit Adoption Calculations'!AT307:BD354
+       SolarPVUtil 'Unit Adoption Calculations'!AT307:BD354
     """
     def calc(x):
       return (self.ac.conv_emissions_per_funit * x) - (self.ac.soln_emissions_per_funit * x)
@@ -409,7 +411,7 @@ class UnitAdoption:
   def soln_pds_direct_ch4_co2_emissions_saved(self):
     """Direct emissions of CH4 avoided, in tons of equivalent CO2.
 
-       'Unit Adoption Calculations'!BF307:BP354
+       SolarPVUtil 'Unit Adoption Calculations'!BF307:BP354
     """
     ef = emissionsfactors.CO2Equiv(self.ac.co2eq_conversion_source)
     if self.ac.ch4_is_co2eq:
@@ -423,7 +425,7 @@ class UnitAdoption:
   def soln_pds_direct_n2o_co2_emissions_saved(self):
     """Direct emissions of N2O avoided, in tons of CO2 equivalents.
 
-       'Unit Adoption Calculations'!BR307:CB354
+       SolarPVUtil 'Unit Adoption Calculations'!BR307:CB354
     """
     ef = emissionsfactors.CO2Equiv(self.ac.co2eq_conversion_source)
     if self.ac.n2o_is_co2eq:

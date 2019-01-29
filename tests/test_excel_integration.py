@@ -153,8 +153,8 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
   adjustments['Unit Adoption Calculations'] = [
       ('A16', 'Year'), ('A68', 'Year'), ('Q307', 'Year'),
       ('AT307', 'Year'), ('BF307', 'Year'), ('BR307', 'Year'),]
-  verify['Unit Adoption Calculations'] = ['P16:CI115', 'B134:CB182', 'B196:CB244',
-      'B251:CB298', 'B307:CB354',]
+  verify['Unit Adoption Calculations'] = ['P16:CI115', 'Q134:AA181', 'AG135:BS182',
+      'Q197:BH244', 'B251:BH298', 'B307:CB354',]
   adjustments['Helper Tables'] = []
   verify['Helper Tables'] = ['B26:L73', 'B90:L137',]
   adjustments['First Cost'] = []
@@ -169,7 +169,7 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
       ('AI288', 'Year'), ('A344', 'Year'), ('U344', 'Year'), ('AP344', 'Year')]
   verify['CO2 Calcs'] = ['A9:AW390',]
   if ch4_calcs:
-    # Many sheets have the CH4 Calcs tab hidden and containing only #VALUE errors.
+    # Some solutions have the CH4 Calcs tab hidden and containing only #VALUE errors.
     sheet = workbook.sheets['CH4 Calcs']
     adjustments['CH4 Calcs'] = []
     verify['CH4 Calcs'] = ['A10:AW110']
@@ -192,6 +192,7 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
   expected['Operating Cost']['I126:P250'].replace(to_replace="", value=0, inplace=True)
   # Original Excel uses "" for empty cells, we want to use 0.0.
   expected['CO2 Calcs']['A9:AW390'].replace(to_replace="", value=0, inplace=True)
+  expected['Unit Adoption Calculations']['AG135:BS182'].replace(to_replace="", value=0, inplace=True)
   if ch4_calcs:
     expected['CH4 Calcs']['A10:AW110'].replace(to_replace="", value=0, inplace=True)
 
@@ -232,6 +233,8 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
       actual[sheetname][c] = pd.DataFrame(excel_read_cell(sheet, c))
   # Original Excel uses "" for empty cells, we want to use 0.0 and have to match in *all* cells.
   actual['CO2 Calcs']['A9:AW390'].replace(to_replace="", value=0, inplace=True)
+  actual['Unit Adoption Calculations']['AG135:BS182'].replace(to_replace="", value=0, inplace=True)
+  actual['Helper Tables']['B90:L137'].replace(to_replace="", value=0, inplace=True)
 
   workbook.close()
   excel_app.quit()
