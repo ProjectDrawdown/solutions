@@ -152,11 +152,11 @@ def test_soln_pds_cumulative_funits():
   expected.name = "soln_pds_cumulative_funits"
   pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
 
-def test_soln_pds_cumulative_funits_no_regional_data():
+def test_soln_pds_cumulative_funits_missing_data():
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
       [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
-      [2015, 176.24, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-      [2016, 272.03, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+      [2015, 176.24, 1.0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+      [2016, 272.03, np.nan, 1.0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
       [2017, 383.31, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
   soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   ua = unitadoption.UnitAdoption(ac=None, datadir=None,
@@ -165,9 +165,9 @@ def test_soln_pds_cumulative_funits_no_regional_data():
   result = ua.soln_pds_cumulative_funits()
   v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
       [2014, 112.63, 150.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2015, 288.87, 150.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2016, 560.91, 150.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2017, 944.21, 150.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25]]
+      [2015, 288.87, 151.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
+      [2016, 560.91, 151.01, 1.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
+      [2017, 944.21, 151.01, 1.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25]]
   expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
   expected.name = "soln_pds_cumulative_funits"
   pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
