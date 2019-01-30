@@ -71,6 +71,27 @@ def test_adoption_data():
   a = ad.adoption_data_usa()
   assert a['Greenpeace AER'][2053] == pytest.approx(966)
 
+def test_CSP_LA():
+  # ConcentratedSolar Latin America exposed a corner case, test it specifically.
+  data_sources = {
+    'Baseline Cases': {
+      'source1': str(thisdir.joinpath('ad_CSP_LA_source1.csv')),
+      'source2': str(thisdir.joinpath('ad_CSP_LA_source2.csv')),
+      'source3': str(thisdir.joinpath('ad_CSP_LA_source3.csv')),
+      'source4': str(thisdir.joinpath('ad_CSP_LA_source4.csv')),
+      },
+    'Conservative Cases': {},
+    'Ambitious Cases': {},
+    '100% RES2050 Case': {},
+  }
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='Baseline Cases',
+      soln_pds_adoption_prognostication_growth='Medium')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+  result = ad.adoption_trend_latin_america()
+  assert result.loc[2014, 'adoption'] == pytest.approx(-3.39541250661)
+  assert result.loc[2037, 'adoption'] == pytest.approx(13.14383564892)
+  assert result.loc[2060, 'adoption'] == pytest.approx(295.34923165295)
+
 def test_adoption_min_max_sd_global():
   s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)

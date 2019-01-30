@@ -33,6 +33,8 @@ require "$output" "'Based on: IEA ETP 2016 6DS'" && \
 require "$output" "'3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'," && \
 # Adoption Data CSV files
 require "$ad_data" 3598.7298966826534 && \
+# Check that 0.0 is converted to NaN (i.e. empty)
+require "$ad_data" "2012,58.199999999999996,,,,,,,,," && \
 true
 
 if [ $? -ne 0 ]; then
