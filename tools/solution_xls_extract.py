@@ -222,6 +222,32 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['pds_source_post_2014'], prefix=prefix, suffix='\n')
   oneline(f=f, s=s, names=['solution_category'], prefix=prefix)
 
+def xls(tab, row, col):
+  """Return a quoted string read from tab(row, col)."""
+  cell = tab.cell(row, col)
+  if cell.ctype == xlrd.XL_CELL_ERROR:
+    return ''
+  if cell.ctype == xlrd.XL_CELL_TEXT or cell.ctype == xlrd.XL_CELL_NUMBER:
+    return "'" + str(cell.value).strip() + "'"
+  raise ValueError("Unhandled cell ctype: " + str(cell.ctype))
+
+def xln(tab, row, col):
+  """Return the string of a floating point number read from tab(row, col)."""
+  cell = tab.cell(row, col)
+  if cell.ctype == xlrd.XL_CELL_ERROR:
+    return 'np.nan'
+  if cell.ctype == xlrd.XL_CELL_NUMBER:
+    return str(cell.value)
+  raise ValueError("Unhandled cell ctype: " + str(cell.ctype))
+
+def xli(tab, row, col):
+  """Return the string of an integer value read from tab(row, col)."""
+  cell = tab.cell(row, col)
+  if cell.ctype == xlrd.XL_CELL_ERROR:
+    return 'np.nan'
+  if cell.ctype == xlrd.XL_CELL_NUMBER:
+    return str(int(cell.value))
+  raise ValueError("Unhandled cell ctype: " + str(cell.ctype))
 
 def write_tam(f, wb):
   """Generate the TAM section of a solution.
@@ -230,9 +256,6 @@ def write_tam(f, wb):
        wb - an Excel workbook as returned by xlrd
   """
   tm_tab = wb.sheet_by_name('TAM Data')
-  # concise routines to return strings and numbers extracted from Excel.
-  def xls(row, col): return "'" + str(tm_tab.cell_value(row, col)) + "'"
-  def xln(row, col): return str(tm_tab.cell_value(row, col))
   f.write("    tamconfig_list = [\n")
   f.write("      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
   f.write("       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
@@ -241,24 +264,28 @@ def write_tam(f, wb):
   f.write("       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014,\n")
   f.write("       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014],\n")
   f.write("      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,\n")
-  f.write("       " + xls(15, 21) + ", " + xls(18, 21) + ", " + xls(21, 21) + ", " + xls(24, 21) + ", ")
-  f.write(            xls(27, 21) + ", " + xls(30, 21) + ",\n")
-  f.write("       " + xls(33, 21) + ", " + xls(36, 21) + ", " + xls(39, 21) + "],\n")
+  f.write("       " + xls(tm_tab, 15, 21) + ", " + xls(tm_tab, 18, 21) + ", " + xls(tm_tab, 21, 21) + ", ")
+  f.write(            xls(tm_tab, 24, 21) + ", " + xls(tm_tab, 27, 21) + ", " + xls(tm_tab, 30, 21) + ",\n")
+  f.write("       " + xls(tm_tab, 33, 21) + ", " + xls(tm_tab, 36, 21) + ", " + xls(tm_tab, 39, 21) + "],\n")
   # One might assume PDS_World for trend and growth would use self.ac.soln_pds_adoption_prognostication_*,
   # but that is not what the TAM Data in Excel does. EA104 references B19 and C19, the World trend and growth.
-  f.write("      ['trend', " + xls(18, 1) + ", " + xls(18, 1) + ",\n")
-  f.write("       " + xls(16, 11) + ", " + xls(19, 11) + ", " + xls(22, 11) + ", " + xls(25, 11) + ", ")
-  f.write(            xls(28, 11) + ", " + xls(31, 11) + ",\n")
-  f.write("       " + xls(34, 11) + ", " + xls(37, 11) + ", " + xls(40, 11) + "],\n")
-  f.write("      ['growth', " + xls(18, 2) + ", " + xls(18, 2) + ", " + xls(16, 12) + ", " + xls(19, 12) + ",\n")
-  f.write("       " + xls(22, 12) + ", " + xls(25, 12) + ", " + xls(28, 12) + ", " + xls(31, 12) + ", ")
-  f.write(            xls(34, 12) + ", " + xls(37, 12) + ", " + xls(40, 12) + "],\n")
-  f.write("      ['low_sd_mult', " + xln(24, 1) + ", " + xln(24, 1) + ", " + xln(16, 16) + ", ")
-  f.write(            xln(19, 16) + ", " + xln(22, 16) + ", " + xln(25, 16) + ", " + xln(28, 16) + ", ")
-  f.write(            xln(31, 16) + ", " + xln(34, 16) + ", " + xln(37, 16) + ", " + xln(40, 16) + "],\n")
-  f.write("      ['high_sd_mult', " + xln(23, 1) + ", " + xln(23, 1) + ", " + xln(15, 16) + ", ")
-  f.write(            xln(18, 16) + ", " + xln(21, 16) + ", " + xln(24, 16) + ", " + xln(27, 16) + ", ")
-  f.write(            xln(30, 16) + ", " + xln(33, 16) + ", " + xln(36, 16) + ", " + xln(39, 16) + "]]\n")
+  f.write("      ['trend', " + xls(tm_tab, 18, 1) + ", " + xls(tm_tab, 18, 1) + ",\n")
+  f.write("       " + xls(tm_tab, 16, 11) + ", " + xls(tm_tab, 19, 11) + ", " + xls(tm_tab, 22, 11) + ", ")
+  f.write(            xls(tm_tab, 25, 11) + ", " + xls(tm_tab, 28, 11) + ", " + xls(tm_tab, 31, 11) + ",\n")
+  f.write("       " + xls(tm_tab, 34, 11) + ", " + xls(tm_tab, 37, 11) + ", " + xls(tm_tab, 40, 11) + "],\n")
+  f.write("      ['growth', " + xls(tm_tab, 18, 2) + ", " + xls(tm_tab, 18, 2) + ", " + xls(tm_tab, 16, 12) + ", ")
+  f.write(            xls(tm_tab, 19, 12) + ",\n")
+  f.write("       " + xls(tm_tab, 22, 12) + ", " + xls(tm_tab, 25, 12) + ", " + xls(tm_tab, 28, 12) + ", ")
+  f.write(            xls(tm_tab, 31, 12) + ", " + xls(tm_tab, 34, 12) + ", " + xls(tm_tab, 37, 12) + ", ")
+  f.write(            xls(tm_tab, 40, 12) + "],\n")
+  f.write("      ['low_sd_mult', " + xln(tm_tab, 24, 1) + ", " + xln(tm_tab, 24, 1) + ", ")
+  f.write(            xln(tm_tab, 16, 16) + ", " + xln(tm_tab, 19, 16) + ", " + xln(tm_tab, 22, 16) + ", ")
+  f.write(            xln(tm_tab, 25, 16) + ", " + xln(tm_tab, 28, 16) + ", " + xln(tm_tab, 31, 16) + ", ")
+  f.write(            xln(tm_tab, 34, 16) + ", " + xln(tm_tab, 37, 16) + ", " + xln(tm_tab, 40, 16) + "],\n")
+  f.write("      ['high_sd_mult', " + xln(tm_tab, 23, 1) + ", " + xln(tm_tab, 23, 1) + ", ")
+  f.write(            xln(tm_tab, 15, 16) + ", " + xln(tm_tab, 18, 16) + ", " + xln(tm_tab, 21, 16) + ", ")
+  f.write(            xln(tm_tab, 24, 16) + ", " + xln(tm_tab, 27, 16) + ", " + xln(tm_tab, 30, 16) + ", ")
+  f.write(            xln(tm_tab, 33, 16) + ", " + xln(tm_tab, 36, 16) + ", " + xln(tm_tab, 39, 16) + "]]\n")
   f.write("    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')\n")
   f.write("    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=rrs.tam_ref_data_sources,\n")
   f.write("      tam_pds_data_sources=rrs.tam_pds_data_sources)\n")
@@ -267,63 +294,48 @@ def write_tam(f, wb):
   f.write("\n")
 
 
-def lookup_ad_source_filename(source_name):
+def lookup_ad_source_filename(sourcename):
   """Return string to use for the filename for known sources."""
-  map_sources = {
-    "Based on: IEA ETP 2016 6DS": 'IEA_ETP_2016_6DS',
-    "Based on: IEA ETP 2016 - 6DS": 'IEA_ETP_2016_6DS',
-    "Based on: AMPERE (2014) IMAGE Refpol": 'AMPERE_2014_IMAGE_REF',
-    "Based on: AMPERE IMAGE REFpol": 'AMPERE_2014_IMAGE_REF',
-    "Based on: AMPERE (2014) MESSAGE REFPol": 'AMPERE_2014_MESSAGE_REF',
-    "Based on: AMPERE MESSAGE REFpol": 'AMPERE_2014_MESSAGE_REF',
-    "Based on: AMPERE (2014) GEM E3 REFpol": 'AMPERE_2014_GEM_E3_REF',
-    "Based on: AMPERE GEM E3 REFpol": 'AMPERE_2014_GEM_E3_REF',
-    "Based on: IEA ETP 2016 4DS": 'IEA_ETP_2016_4DS',
-    "Based on: IEA ETP 2016 - 4DS": 'IEA_ETP_2016_4DS',
-    "Based on: AMPERE (2014) IMAGE 550": 'AMPERE_2014_IMAGE_550',
-    "Based on: AMPERE IMAGE 550": 'AMPERE_2014_IMAGE_550',
-    "Based on: AMPERE (2014) MESSAGE 550": 'AMPERE_2014_MESSAGE_550',
-    "Based on: AMPERE MESSAGE 550": 'AMPERE_2014_MESSAGE_550',
-    "Based on: AMPERE (2014) GEM E3 550": 'AMPERE_2014_GEM_E3_550',
-    "Based on: AMPERE GEM E3 550": 'AMPERE_2014_GEM_E3_550',
-    "Based on: Greenpeace (2015) Reference": 'Greenpeace_2015_Reference',
-    "Based on: IEA ETP 2016 2DS": 'IEA_ETP_2016_2DS',
-    "Based on: IEA ETP 2016 - 2DS": 'IEA_ETP_2016_2DS',
-    "Based on: AMPERE (2014) IMAGE 450": 'AMPERE_2014_IMAGE_450',
-    "Based on: AMPERE IMAGE 450": 'AMPERE_2014_IMAGE_450',
-    "Based on: AMPERE (2014) MESSAGE 450": 'AMPERE_2014_MESSAGE_450',
-    "Based on: AMPERE MESSAGE 450": 'AMPERE_2014_MESSAGE_450',
-    "Based on: AMPERE (2014) GEM E3 450": 'AMPERE_2014_GEM_E3_450',
-    "Based on: AMPERE GEM E3 450": 'AMPERE_2014_GEM_E3_450',
-    "Based on: Greenpeace (2015) Energy Revolution": 'Greenpeace_2015_Energy_Revolution',
-    "Based on: Greenpeace 2015 Energy Revolution Scenario": 'Greenpeace_2015_Energy_Revolution',
-    "Based on: Greenpeace (2015) Advanced Energy Revolution": 'Greenpeace_2015_Advanced_Energy_Revolution',
-    "Based on: Greenpeace 2015 Advanced Energy Revolution Scenario": 'Greenpeace_2015_Advanced_Energy_Revolution',
-    "Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Moderate Scenario)": 'Greenpeace_2016_Solar_Thermal_Moderate',
-    "Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Advanced Scenario)": 'Greenpeace_2016_Solar_Thermal_Advanced',
-    }
-  known_sources = {
-    'IEA_ETP_2016_6DS': 'ad_based_on_IEA_ETP_2016_6DS.csv',
-    'AMPERE_2014_IMAGE_REF': 'ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv',
-    'AMPERE_2014_MESSAGE_REF': 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv',
-    'AMPERE_2014_GEM_E3_REF': 'ad_based_on_AMPERE_2014_GEM_E3_Reference.csv',
-    'IEA_ETP_2016_4DS': 'ad_based_on_IEA_ETP_2016_4DS.csv',
-    'AMPERE_2014_IMAGE_550': 'ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv',
-    'AMPERE_2014_MESSAGE_550': 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv',
-    'AMPERE_2014_GEM_E3_550': 'ad_based_on_AMPERE_2014_GEM_E3_550.csv',
-    'Greenpeace_2015_Reference': 'ad_based_on_Greenpeace_2015_Reference.csv',
-    'IEA_ETP_2016_2DS': 'ad_based_on_IEA_ETP_2016_2DS.csv',
-    'AMPERE_2014_IMAGE_450': 'ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv',
-    'AMPERE_2014_MESSAGE_450': 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv',
-    'AMPERE_2014_GEM_E3_450': 'ad_based_on_AMPERE_2014_GEM_E3_450.csv',
-    'Greenpeace_2015_Energy_Revolution': 'ad_based_on_Greenpeace_2015_Energy_Revolution.csv',
+  special_cases = {
+    'Based on: Greenpeace (2015) Reference': 'ad_based_on_Greenpeace_2015_Reference.csv',
+    'Greenpeace 2015 Reference Scenario': 'ad_based_on_Greenpeace_2015_Reference.csv',
     '[Source 6 - Ambitious]': 'ad_source_6_ambitious.csv',
-    'Greenpeace_2015_Advanced_Energy_Revolution': 'ad_based_on_Greenpeace_2015_Advanced_Revolution.csv',
-    'Greenpeace_2016_Solar_Thermal_Moderate': 'ad_based_on_Greenpeace_2016_Solar_Thermal_Moderate.csv',
-    'Greenpeace_2016_Solar_Thermal_Advanced': 'ad_based_on_Greenpeace_2016_Solar_Thermal_Advanced.csv',
     }
-  source_id = map_sources.get(source_name, source_name)
-  return known_sources.get(source_id, '')
+  normalized = sourcename.replace("'", "").strip()
+  if normalized in special_cases:
+    return special_cases[normalized]
+
+  name = sourcename.upper()
+  if 'IEA' in name and 'ETP' in name:
+    if '6DS' in name: return 'ad_based_on_IEA_ETP_2016_6DS.csv'
+    if '4DS' in name: return 'ad_based_on_IEA_ETP_2016_4DS.csv'
+    if '2DS' in name: return 'ad_based_on_IEA_ETP_2016_2DS.csv'
+    raise ValueError('Unknown IEA ETP source: ' + sourcename)
+  if 'AMPERE' in name and 'MESSAGE' in name:
+    if '450' in name: return 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'
+    if '550' in name: return 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'
+    if 'REF' in name: return 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'
+    raise ValueError('Unknown AMPERE MESSAGE-MACRO source: ' + sourcename)
+  if 'AMPERE' in name and 'IMAGE' in name:
+    if '450' in name: return 'ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'
+    if '550' in name: return 'ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'
+    if 'REF' in name: return 'ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'
+    raise ValueError('Unknown AMPERE IMAGE-TIMER source: ' + sourcename)
+  if 'AMPERE' in name and 'GEM' in name and 'E3' in name:
+    if '450' in name: return 'ad_based_on_AMPERE_2014_GEM_E3_450.csv'
+    if '550' in name: return 'ad_based_on_AMPERE_2014_GEM_E3_550.csv'
+    if 'REF' in name: return 'ad_based_on_AMPERE_2014_GEM_E3_Reference.csv'
+    raise ValueError('Unknown AMPERE GEM E3 source: ' + sourcename)
+  if 'GREENPEACE' in name and 'ENERGY' in name:
+    if 'ADVANCED' in name: return 'ad_based_on_Greenpeace_2015_Advanced_Revolution.csv'
+    if 'REVOLUTION' in name: return 'ad_based_on_Greenpeace_2015_Energy_Revolution.csv'
+    if 'REFERENCE' in name: return 'ad_based_on_Greenpeace_2015_Reference.csv'
+    raise ValueError('Unknown Greenpeace Energy source: ' + sourcename)
+  if 'GREENPEACE' in name and 'THERMAL' in name:
+    if 'MODERATE' in name: return 'ad_based_on_Greenpeace_2016_Solar_Thermal_Moderate.csv'
+    if 'ADVANCED' in name: return 'ad_based_on_Greenpeace_2016_Solar_Thermal_Advanced.csv'
+    raise ValueError('Unknown Greenpeace Solar Thermal source: ' + sourcename)
+  raise ValueError('Unknown source: ' + sourcename)
 
 
 def write_ad(f, wb):
@@ -332,40 +344,45 @@ def write_ad(f, wb):
        f - file-like object for output
        wb - an Excel workbook as returned by xlrd
   """
-  ad_tab = wb.sheet_by_name('Adoption Data')
+  a = wb.sheet_by_name('Adoption Data')
   # concise routines to return strings and numbers extracted from Excel.
-  def xls(row, col): return str(ad_tab.cell_value(row, col)).strip()
-  def xln(row, col): return str(ad_tab.cell_value(row, col))
   f.write("    adconfig_list = [\n")
   f.write("      ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
   f.write("       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
-  f.write("      ['trend', self.ac.soln_pds_adoption_prognostication_trend, '" + xls(16, 11) + "',\n")
-  f.write("       '" + xls(19, 11) + "', '" + xls(22, 11) + "', '" + xls(25, 11) + "', '")
-  f.write(            xls(28, 11) + "', '" + xls(31, 11) + "',\n")
-  f.write("       '" + xls(34, 11) + "', '" + xls(37, 11) + "', '" + xls(40, 11) + "'],\n")
-  f.write("      ['growth', self.ac.soln_pds_adoption_prognostication_growth, '" + xls(16, 12) + "',\n")
-  f.write("       '" + xls(19, 12) + "', '" + xls(22, 12) + "', '" + xls(25, 12) + "', '" + xls(28, 12) + "', '" + xls(31, 12) + "',\n")
-  f.write("       '" + xls(34, 12) + "', '" + xls(37, 12) + "', '" + xls(40, 12) + "'],\n")
-  f.write("      ['low_sd_mult', " + xln(24, 1) + ", " + xln(16, 16) + ", ")
-  f.write(            xln(19, 16) + ", " + xln(22, 16) + ", " + xln(25, 16) + ", ")
-  f.write(            xln(28, 16) + ", " + xln(31, 16) + ", " + xln(34, 16) + ", ")
-  f.write(            xln(37, 16) + ", " + xln(40, 16) + "],\n")
-  f.write("      ['high_sd_mult', " + xln(23, 1) + ", " + xln(15, 16) + ", ")
-  f.write(            xln(18, 16) + ", " + xln(21, 16) + ", " + xln(24, 16) + ", ")
-  f.write(            xln(27, 16) + ", " + xln(30, 16) + ", " + xln(33, 16) + ", ")
-  f.write(            xln(36, 16) + ", " + xln(39, 16) + "]]\n")
+  f.write("      ['trend', self.ac.soln_pds_adoption_prognostication_trend, ")
+  f.write(            xls(a, 16, 11) + ",\n")
+  f.write("       " + xls(a, 19, 11) + ", " + xls(a, 22, 11) + ", ")
+  f.write(            xls(a, 25, 11) + ", " + xls(a, 28, 11) + ", ")
+  f.write(            xls(a, 31, 11) + ",\n")
+  f.write("       " + xls(a, 34, 11) + ", " + xls(a, 37, 11) + ", ")
+  f.write(            xls(a, 40, 11) + "],\n")
+  f.write("      ['growth', self.ac.soln_pds_adoption_prognostication_growth, ")
+  f.write(            xls(a, 16, 12) + ",\n")
+  f.write("       " + xls(a, 19, 12) + ", " + xls(a, 22, 12) + ", " + xls(a, 25, 12) + ", ")
+  f.write(            xls(a, 28, 12) + ", " + xls(a, 31, 12) + ",\n")
+  f.write("       " + xls(a, 34, 12) + ", " + xls(a, 37, 12) + ", " + xls(a, 40, 12) + "],\n")
+  f.write("      ['low_sd_mult', " + xln(a, 24, 1) + ", " + xln(a, 16, 16) + ", ")
+  f.write(            xln(a, 19, 16) + ", " + xln(a, 22, 16) + ", " + xln(a, 25, 16) + ", ")
+  f.write(            xln(a, 28, 16) + ", " + xln(a, 31, 16) + ", " + xln(a, 34, 16) + ", ")
+  f.write(            xln(a, 37, 16) + ", " + xln(a, 40, 16) + "],\n")
+  f.write("      ['high_sd_mult', " + xln(a, 23, 1) + ", " + xln(a, 15, 16) + ", ")
+  f.write(            xln(a, 18, 16) + ", " + xln(a, 21, 16) + ", " + xln(a, 24, 16) + ", ")
+  f.write(            xln(a, 27, 16) + ", " + xln(a, 30, 16) + ", " + xln(a, 33, 16) + ", ")
+  f.write(            xln(a, 36, 16) + ", " + xln(a, 39, 16) + "]]\n")
   f.write("    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')\n")
   f.write("    ad_data_sources = {\n")
   sources = {}
-  sources['Baseline Cases'] = [xls(44, 2), xls(44, 3), xls(44, 4), xls(44, 5)]
-  sources['Conservative Cases'] = [xls(44, 6), xls(44, 7), xls(44, 8), xls(44, 9), xls(44, 10)]
-  sources['Ambitious Cases'] = [xls(44, 11), xls(44, 12), xls(44, 13), xls(44, 14), xls(44, 15), xls(44, 16)]
-  sources['100% Case'] = [xls(44, 17)]
+  sources['Baseline Cases'] = [xls(a, 44, 2), xls(a, 44, 3), xls(a, 44, 4), xls(a, 44, 5)]
+  sources['Conservative Cases'] = [xls(a, 44, 6), xls(a, 44, 7), xls(a, 44, 8), xls(a, 44, 9),
+      xls(a, 44, 10)]
+  sources['Ambitious Cases'] = [xls(a, 44, 11), xls(a, 44, 12), xls(a, 44, 13), xls(a, 44, 14),
+      xls(a, 44, 15), xls(a, 44, 16)]
+  sources['100% Case'] = [xls(a, 44, 17)]
   for case in ['Baseline Cases', 'Conservative Cases', 'Ambitious Cases', '100% Case']:
     f.write("      '" + case + "': {\n")
     for source in sources[case]:
       source = re.sub('\s+', ' ', source).strip()  # remove extra/double spaces
-      f.write("        '" + source + "': str(thisdir.joinpath('" + lookup_ad_source_filename(source) + "')),\n")
+      f.write("        " + source + ": str(thisdir.joinpath('" + lookup_ad_source_filename(source) + "')),\n")
     f.write("      },\n")
   f.write("    }\n")
   f.write("    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)\n")
@@ -378,38 +395,34 @@ def write_ht(f, wb):
        f - file-like object for output
        wb - an Excel workbook as returned by xlrd
   """
-  ht_tab = wb.sheet_by_name('Helper Tables')
-  # concise routines to return strings, floats, and integers extracted from Excel.
-  def xls(row, col): return "'" + str(ht_tab.cell_value(row, col)) + "'"
-  def xln(row, col): return str(ht_tab.cell_value(row, col))
-  def xli(row, col): return str(int(ht_tab.cell_value(row, col)))
+  h = wb.sheet_by_name('Helper Tables')
   f.write("    ht_ref_datapoints = pd.DataFrame([\n")
-  r = [xln(20, n) for n in range(2, 6)]
-  f.write("      [" + xli(20, 1) + ", " + ", ".join(r) + ",\n")
-  r = [xln(20, n) for n in range(6, 10)]
+  r = [xln(h, 20, n) for n in range(2, 6)]
+  f.write("      [" + xli(h, 20, 1) + ", " + ", ".join(r) + ",\n")
+  r = [xln(h, 20, n) for n in range(6, 10)]
   f.write("       " + ", ".join(r) + ",\n")
-  r = [xln(20, n) for n in range(10, 12)]
+  r = [xln(h, 20, n) for n in range(10, 12)]
   f.write("       " + ", ".join(r) + "],\n")
-  r = [xln(21, n) for n in range(2, 6)]
-  f.write("      [" + xli(21, 1) + ", " + ", ".join(r) + ",\n")
-  r = [xln(21, n) for n in range(6, 10)]
+  r = [xln(h, 21, n) for n in range(2, 6)]
+  f.write("      [" + xli(h, 21, 1) + ", " + ", ".join(r) + ",\n")
+  r = [xln(h, 21, n) for n in range(6, 10)]
   f.write("       " + ", ".join(r) + ",\n")
-  r = [xln(21, n) for n in range(10, 12)]
+  r = [xln(h, 21, n) for n in range(10, 12)]
   f.write("       " + ", ".join(r) + "]],\n")
   f.write("      columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
   f.write("          'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']).set_index('Year')\n")
   f.write("    ht_pds_datapoints = pd.DataFrame([\n")
-  r = [xln(84, n) for n in range(2, 6)]
-  f.write("      [" + xli(84, 1) + ", " + ", ".join(r) + ",\n")
-  r = [xln(84, n) for n in range(6, 10)]
+  r = [xln(h, 84, n) for n in range(2, 6)]
+  f.write("      [" + xli(h, 84, 1) + ", " + ", ".join(r) + ",\n")
+  r = [xln(h, 84, n) for n in range(6, 10)]
   f.write("       " + ", ".join(r) + ",\n")
-  r = [xln(84, n) for n in range(10, 12)]
+  r = [xln(h, 84, n) for n in range(10, 12)]
   f.write("       " + ", ".join(r) + "],\n")
-  r = [xln(85, n) for n in range(2, 6)]
-  f.write("      [" + xli(85, 1) + ", " + ", ".join(r) + ",\n")
-  r = [xln(85, n) for n in range(6, 10)]
+  r = [xln(h, 85, n) for n in range(2, 6)]
+  f.write("      [" + xli(h, 85, 1) + ", " + ", ".join(r) + ",\n")
+  r = [xln(h, 85, n) for n in range(6, 10)]
   f.write("       " + ", ".join(r) + ",\n")
-  r = [xln(85, n) for n in range(10, 12)]
+  r = [xln(h, 85, n) for n in range(10, 12)]
   f.write("       " + ", ".join(r) + "]],\n")
   f.write("      columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
   f.write("          'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']).set_index('Year')\n")
@@ -438,10 +451,9 @@ def write_ua(f):
 def write_fc(f, wb):
   """Code generate the First Code module for this solution class."""
   fc_tab = wb.sheet_by_name('First Cost')
-  # concise routine to return integers extracted from Excel.
-  def xli(row, col): return str(int(fc_tab.cell_value(row, col)))
-  f.write("    self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=" + xli(24, 2) + ",\n")
-  f.write("        ref_learning_increase_mult=" + xli(24, 3) + ", conv_learning_increase_mult=" + xli(24, 4) + ",\n")
+  f.write("    self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=" + xli(fc_tab, 24, 2) + ",\n")
+  f.write("        ref_learning_increase_mult=" + xli(fc_tab, 24, 3)
+      + ", conv_learning_increase_mult=" + xli(fc_tab, 24, 4) + ",\n")
   f.write("        soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,\n")
   f.write("        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,\n")
   f.write("        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,\n")
@@ -454,8 +466,6 @@ def write_fc(f, wb):
 def write_oc(f, wb):
   """Code generate the Operating Code module for this solution class."""
   oc_tab = wb.sheet_by_name('Operating Cost')
-  # concise routine to return integers extracted from Excel.
-  def xli(row, col): return str(int(oc_tab.cell_value(row, col)))
   f.write("    self.oc = operatingcost.OperatingCost(ac=self.ac,\n")
   f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,\n")
   f.write("        soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,\n")
@@ -464,7 +474,7 @@ def write_oc(f, wb):
   f.write("        soln_pds_annual_world_first_cost=self.fc.soln_pds_annual_world_first_cost(),\n")
   f.write("        soln_ref_annual_world_first_cost=self.fc.soln_ref_annual_world_first_cost(),\n")
   f.write("        conv_ref_annual_world_first_cost=self.fc.conv_ref_annual_world_first_cost(),\n")
-  f.write("        single_iunit_purchase_year=" + xli(120, 8) + ",\n")
+  f.write("        single_iunit_purchase_year=" + xli(oc_tab, 120, 8) + ",\n")
   f.write("        soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),\n")
   f.write("        conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit())\n")
   f.write('\n')
@@ -539,7 +549,7 @@ def extract_adoption_data(wb, outputdir):
 
   ad_tab = wb.sheet_by_name('Adoption Data')
   for col in range(0, 16):
-    source_name = str(ad_tab.cell_value(44, col + 2)).strip()
+    source_name = xls(ad_tab, 44, col + 2)
     filename = lookup_ad_source_filename(source_name)
     outputfile = os.path.join(outputdir, filename)
     df = pd.concat({'World': world.iloc[:, col], 'OECD90': oecd90.iloc[:, col],
@@ -590,6 +600,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write('\n')
   f.write('import pathlib\n')
   f.write('\n')
+  f.write('import numpy as np\n')
   f.write('import pandas as pd\n')
   f.write('\n')
   f.write('from model import adoptiondata\n')
@@ -685,7 +696,7 @@ def infer_classname(filename):
   for (pattern, classname) in special_cases:
     if pattern.replace(' ', '').lower() in filename.replace(' ', '').lower():
       return classname
-  namelist = re.split('[_-]', filename)
+  namelist = re.split('[_-]', os.path.basename(filename))
   if namelist[0] == 'Drawdown':
     namelist.pop()
   return namelist[0].replace(' ', '')
