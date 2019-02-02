@@ -1,6 +1,7 @@
 """Test solution classes."""
 
 import pytest
+import concentratedsolar
 import solarpvroof
 import solarpvutil
 
@@ -56,3 +57,10 @@ def test_solarpvroof():
   expected = (0.40111111111, 0.47262041293, 0.32960180929)
   result = obj.soln_solar_util_vs_roof_vma.avg_high_low()
   assert result == pytest.approx(expected)
+
+def test_concentratedsolar():
+  scenario = list(concentratedsolar.scenarios.keys())[0]
+  obj = concentratedsolar.ConcentratedSolar(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+  check_to_dict(obj)

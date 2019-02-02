@@ -3,6 +3,7 @@
 import io
 import pathlib
 
+import numpy as np
 import pandas as pd
 import pytest
 from model import advanced_controls
@@ -134,9 +135,9 @@ def test_pds_tam_growth():
 def test_soln_pds_cumulative_funits():
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
       [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
-      [2015, 176.24, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1],
-      [2016, 272.03, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1],
-      [2017, 383.31, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1]]
+      [2015, 176.24, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [2016, 272.03, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [2017, 383.31, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
   soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   ua = unitadoption.UnitAdoption(ac=None, datadir=None,
       ref_tam_per_region=None, pds_tam_per_region=None,
@@ -147,6 +148,26 @@ def test_soln_pds_cumulative_funits():
       [2015, 288.87, 151.01, 1.66, 43.15, 4.15, 30.30, 30.94, 6.50, 111.54, 27.25],
       [2016, 560.91, 152.01, 2.66, 44.15, 5.15, 31.30, 31.94, 7.50, 112.54, 28.25],
       [2017, 944.21, 153.01, 3.66, 45.15, 6.15, 32.30, 32.94, 8.50, 113.54, 29.25]]
+  expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
+  expected.name = "soln_pds_cumulative_funits"
+  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
+
+def test_soln_pds_cumulative_funits_missing_data():
+  funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+      [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
+      [2015, 176.24, 1.0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+      [2016, 272.03, np.nan, 1.0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+      [2017, 383.31, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+  soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+  ua = unitadoption.UnitAdoption(ac=None, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None)
+  result = ua.soln_pds_cumulative_funits()
+  v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+      [2014, 112.63, 150.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
+      [2015, 288.87, 151.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
+      [2016, 560.91, 151.01, 1.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
+      [2017, 944.21, 151.01, 1.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25]]
   expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
   expected.name = "soln_pds_cumulative_funits"
   pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
@@ -230,12 +251,50 @@ def test_soln_ref_cumulative_funits():
   expected.name = "soln_ref_cumulative_funits"
   pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
 
+def test_soln_ref_cumulative_funits_with_NaN():
+  funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+      [2014, 112.63, 75.00, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+      [2015, 117.07, 75.63, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+      [2016, 121.51, 76.25, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+      [2017, 125.95, 76.87, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+  soln_ref_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+  ua = unitadoption.UnitAdoption(ac=None, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=soln_ref_funits_adopted)
+  result = ua.soln_ref_cumulative_funits()
+  v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+      [2014, 112.63, 75.00, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      [2015, 229.70, 150.63, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      [2016, 351.21, 226.88, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      [2017, 477.16, 303.75, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+  expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
+  expected.name = "soln_ref_cumulative_funits"
+  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
+
 def test_soln_net_annual_funits_adopted():
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 112.63, 75.00, 0.33],
       [2015, 117.07, 75.63, 0.34], [2016, 121.51, 76.25, 0.34]]
   soln_ref_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 112.63, 75.00, 0.33],
       [2015, 176.24, 0.0, 0.0], [2016, 272.03, 0.0, 0.0]]
+  soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+  ua = unitadoption.UnitAdoption(ac=None, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
+  result = ua.soln_net_annual_funits_adopted()
+  funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 0.0, 0.0, 0.0],
+      [2015, 59.17, -75.63, -0.34], [2016, 150.52, -76.25, -0.34]]
+  expected = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+  expected.name = "soln_net_annual_funits_adopted"
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_soln_net_annual_funits_adopted_with_NaN():
+  funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 112.63, 75.00, 0.33],
+      [2015, 117.07, 75.63, 0.34], [2016, 121.51, 76.25, 0.34]]
+  soln_ref_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+  funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 112.63, 75.00, 0.33],
+      [2015, 176.24, np.nan, np.nan], [2016, 272.03, np.nan, np.nan]]
   soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   ua = unitadoption.UnitAdoption(ac=None, datadir=None,
       ref_tam_per_region=None, pds_tam_per_region=None,
@@ -465,6 +524,22 @@ def test_soln_pds_big4_iunits_reqd():
   expected.name = "soln_pds_big4_iunits_reqd"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_soln_pds_big4_iunits_reqd_with_NaN():
+  soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
+      columns=soln_ref_funits_adopted_list[0]).set_index('Year')
+  soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_no_regional_data_list[1:],
+      columns=soln_pds_funits_adopted_no_regional_data_list[0]).set_index('Year')
+  ac = advanced_controls.AdvancedControls(soln_avg_annual_use=1841.67)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
+  result = ua.soln_pds_big4_iunits_reqd()
+  expected = pd.DataFrame(soln_pds_big4_iunits_reqd_no_regional_data_list[1:],
+      columns=soln_pds_big4_iunits_reqd_no_regional_data_list[0]).set_index('Year')
+  expected.name = "soln_pds_big4_iunits_reqd"
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
 def test_soln_ref_tot_iunits_reqd():
   soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
@@ -600,6 +675,58 @@ soln_pds_funits_adopted_list = [
     [2059, 9831.77207116817, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 9951.12354028110, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
+# 'Unit Adoption Calculations'!B134:L181 with regional columns set to nan.
+soln_pds_funits_adopted_no_regional_data_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778, 14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
+    [2015, 176.24092107213, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2016, 272.03135207741, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2017, 383.30935172620, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2018, 509.37947394851, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2019, 649.54627267436, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2020, 654.00000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2021, 969.38811535670, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2022, 1147.67226717322, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2023, 1337.27131121334, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2024, 1537.48980140706, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2025, 1595.40000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2026, 1967.00333597537, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2027, 2194.90748820999, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2028, 2430.64930231826, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2029, 2673.53333223022, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2030, 3040.20000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2031, 3177.94625518520, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2032, 3438.08425608826, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2033, 3702.58268851506, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2034, 3970.74610639560, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2035, 4241.87906365990, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2036, 4515.28611423798, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2037, 4790.27181205984, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2038, 5066.14071105551, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2039, 5342.19736515499, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2040, 5665.20000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2041, 5892.09215438547, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2042, 6164.53939737649, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2043, 6434.39261119138, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2044, 6700.95634976017, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2045, 6963.53516701285, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2046, 7221.43361687946, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2047, 7473.95625328999, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2048, 7720.40763017447, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2049, 7960.09230146291, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2050, 8167.80000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2051, 8416.37974297171, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2052, 8631.59162105212, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2053, 8837.25500925653, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2054, 9032.67446151498, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2055, 9217.15453175747, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2056, 9389.99977391402, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2057, 9550.51474191465, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2058, 9698.00398968936, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2059, 9831.77207116817, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2060, 9951.12354028110, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+
+
 # 'Unit Adoption Calculations'!AX134:BH181
 soln_pds_tot_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
@@ -701,6 +828,57 @@ soln_pds_big4_iunits_reqd_list = [
     [2058, 5.26587907300, 0.00, 0.00, 0.00, 0.00],
     [2059, 5.33851325027, 0.00, 0.00, 0.00, 0.00],
     [2060, 5.40331941081, 0.00, 0.00, 0.00, 0.00]]
+
+# 'Unit Adoption Calculations'!BN134:BS181
+soln_pds_big4_iunits_reqd_no_regional_data_list = [
+    ["Year", "Rest of World", "China", "India", "EU", "USA"],
+    [2014, 0.01439770758, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
+    [2015, 0.09569632876,np.nan,np.nan,np.nan,np.nan],
+    [2016, 0.14770917868,np.nan,np.nan,np.nan,np.nan],
+    [2017, 0.20813155943,np.nan,np.nan,np.nan,np.nan],
+    [2018, 0.27658585364,np.nan,np.nan,np.nan,np.nan],
+    [2019, 0.35269444391,np.nan,np.nan,np.nan,np.nan],
+    [2020, 0.35511275489,np.nan,np.nan,np.nan,np.nan],
+    [2021, 0.52636404313,np.nan,np.nan,np.nan,np.nan],
+    [2022, 0.62316981729,np.nan,np.nan,np.nan,np.nan],
+    [2023, 0.72611941799,np.nan,np.nan,np.nan,np.nan],
+    [2024, 0.83483522783,np.nan,np.nan,np.nan,np.nan],
+    [2025, 0.86627964703,np.nan,np.nan,np.nan,np.nan],
+    [2026, 1.06805500539,np.nan,np.nan,np.nan,np.nan],
+    [2027, 1.19180373834,np.nan,np.nan,np.nan,np.nan],
+    [2028, 1.31980821089,np.nan,np.nan,np.nan,np.nan],
+    [2029, 1.45169080567,np.nan,np.nan,np.nan,np.nan],
+    [2030, 1.65078562298,np.nan,np.nan,np.nan,np.nan],
+    [2031, 1.72557989233,np.nan,np.nan,np.nan,np.nan],
+    [2032, 1.86683114944,np.nan,np.nan,np.nan,np.nan],
+    [2033, 2.01045005923,np.nan,np.nan,np.nan,np.nan],
+    [2034, 2.15605900432,np.nan,np.nan,np.nan,np.nan],
+    [2035, 2.30328036731,np.nan,np.nan,np.nan,np.nan],
+    [2036, 2.45173653082,np.nan,np.nan,np.nan,np.nan],
+    [2037, 2.60104987747,np.nan,np.nan,np.nan,np.nan],
+    [2038, 2.75084278988,np.nan,np.nan,np.nan,np.nan],
+    [2039, 2.90073765065,np.nan,np.nan,np.nan,np.nan],
+    [2040, 3.07612351532,np.nan,np.nan,np.nan,np.nan],
+    [2041, 3.19932274775,np.nan,np.nan,np.nan,np.nan],
+    [2042, 3.34725774931,np.nan,np.nan,np.nan,np.nan],
+    [2043, 3.49378422970,np.nan,np.nan,np.nan,np.nan],
+    [2044, 3.63852457153,np.nan,np.nan,np.nan,np.nan],
+    [2045, 3.78110115742,np.nan,np.nan,np.nan,np.nan],
+    [2046, 3.92113636998,np.nan,np.nan,np.nan,np.nan],
+    [2047, 4.05825259183,np.nan,np.nan,np.nan,np.nan],
+    [2048, 4.19207220558,np.nan,np.nan,np.nan,np.nan],
+    [2049, 4.32221759385,np.nan,np.nan,np.nan,np.nan],
+    [2050, 4.43499993794,np.nan,np.nan,np.nan,np.nan],
+    [2051, 4.56997522439,np.nan,np.nan,np.nan,np.nan],
+    [2052, 4.68683223190,np.nan,np.nan,np.nan,np.nan],
+    [2053, 4.79850454439,np.nan,np.nan,np.nan,np.nan],
+    [2054, 4.90461454447,np.nan,np.nan,np.nan,np.nan],
+    [2055, 5.00478461475,np.nan,np.nan,np.nan,np.nan],
+    [2056, 5.09863713786,np.nan,np.nan,np.nan,np.nan],
+    [2057, 5.18579449640,np.nan,np.nan,np.nan,np.nan],
+    [2058, 5.26587907300,np.nan,np.nan,np.nan,np.nan],
+    [2059, 5.33851325027,np.nan,np.nan,np.nan,np.nan],
+    [2060, 5.40331941081,np.nan,np.nan,np.nan,np.nan]]
 
 
 # 'Unit Adoption Calculations'!AG134:AQ181

@@ -19,7 +19,7 @@ from model import interpolation
 from model import operatingcost
 from model import tam
 from model import unitadoption
-from solution import rrs
+from solution import concentratedsolar
 from solution import solarpvroof
 from solution import solarpvutil
 import werkzeug.exceptions
@@ -53,13 +53,13 @@ def home():
     return render_template('home.html', repo=repo)
 
 
-@app.route("/solarpvutil", methods=['POST'])
-def solarPVUtil():
-    """SolarPVUtil solution."""
+@app.route("/concentratedsolar", methods=['POST'])
+def concentratedSolar():
+    """ConcentratedSolar solution."""
     scenario = request.args.get('scenario', default=None)
-    pv = solarpvutil.SolarPVUtil(scenario=scenario)
+    cs = concentratedsolar.ConcentratedSolar(scenario=scenario)
 
-    results_str = json.dumps(pv.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    results_str = json.dumps(cs.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
@@ -68,6 +68,16 @@ def solarPVRoof():
     """SolarPVRoof solution."""
     scenario = request.args.get('scenario', default=None)
     pv = solarpvroof.SolarPVRoof(scenario=scenario)
+
+    results_str = json.dumps(pv.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/solarpvutil", methods=['POST'])
+def solarPVUtil():
+    """SolarPVUtil solution."""
+    scenario = request.args.get('scenario', default=None)
+    pv = solarpvutil.SolarPVUtil(scenario=scenario)
 
     results_str = json.dumps(pv.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")

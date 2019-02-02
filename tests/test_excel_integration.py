@@ -20,6 +20,7 @@ import pytest
 import app
 xlwings = pytest.importorskip("xlwings")
 
+from solution import concentratedsolar
 from solution import solarpvutil
 from solution import solarpvroof
 
@@ -117,6 +118,7 @@ def diff_dataframes(d1, d2):
 
 def _rrs_test(solution, scenario, filename, ch4_calcs=False):
   assert os.path.exists(filename)
+  print("Opening " + filename + " with scenario: " + scenario)
   workbook = xlwings.Book(filename)
   excel_app = workbook.app
   #excel_app.display_alerts = False
@@ -125,6 +127,8 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
   excel_write_cell(sheet, 'B9', scenario)
   macro = workbook.macro("LoadScenario_Click")
   macro()
+  time.sleep(1)
+  _ = excel_read_cell(sheet, 'B9')
   excel_app.calculate()
   verify = {}
   adjustments = {}
@@ -150,26 +154,25 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
   adjustments['Adoption Data'] = [('B45', 'Year'),]
   verify['Adoption Data'] = ['B45:R94', 'X45:Z94', 'AB45:AD94', 'BY50:CA96',
       'CF50:CI96', 'CN50:CR96', 'CW50:CY96',]
+  adjustments['Helper Tables'] = []
+  verify['Helper Tables'] = ['B26:L73', 'B90:L137',]
+  adjustments['Emissions Factors'] = [('A11', 'Year'), ('A66', 'Year'),]
+  verify['Emissions Factors'] = ['A11:K112',]
   adjustments['Unit Adoption Calculations'] = [
       ('A16', 'Year'), ('A68', 'Year'), ('Q307', 'Year'),
       ('AT307', 'Year'), ('BF307', 'Year'), ('BR307', 'Year'),]
-  verify['Unit Adoption Calculations'] = ['P16:CI115', 'B134:CB182', 'B196:CB244',
-      'B251:CB298', 'B307:CB354',]
-  adjustments['Helper Tables'] = []
-  verify['Helper Tables'] = ['B26:L73', 'B90:L137',]
+  verify['Unit Adoption Calculations'] = ['P16:CI115', 'Q134:AA181', 'AG135:BS182',
+      'Q197:BH244', 'B251:BH298', 'B307:CB354',]
   adjustments['First Cost'] = []
   verify['First Cost'] = ['B37:R82',]
   adjustments['Operating Cost'] = [('A125', 'Year'),]
-  verify['Operating Cost'] = ['A18:F64', 'A125:F250', 'B262:AV386', 'I126:P250',]
-  verify['Operating Cost'] = ['B262:AV386', 'I126:P250', 'A125:F250', 'A18:F64',]
-  adjustments['Emissions Factors'] = [('A11', 'Year'), ('A66', 'Year'),]
-  verify['Emissions Factors'] = ['A11:K112',]
+  verify['Operating Cost'] = ['B262:AV386', 'I126:P250', 'A125:F250', 'D19:F64', 'K19:L64',]
   adjustments['CO2 Calcs'] = [('A9', 'Year'), ('A64', 'Year'), ('A234', 'Year'),
       ('R234', 'Year'), ('AI234', 'Year'), ('A288', 'Year'), ('R288', 'Year'),
       ('AI288', 'Year'), ('A344', 'Year'), ('U344', 'Year'), ('AP344', 'Year')]
   verify['CO2 Calcs'] = ['A9:AW390',]
   if ch4_calcs:
-    # Many sheets have the CH4 Calcs tab hidden and containing only #VALUE errors.
+    # Some solutions have the CH4 Calcs tab hidden and containing only #VALUE errors.
     sheet = workbook.sheets['CH4 Calcs']
     adjustments['CH4 Calcs'] = []
     verify['CH4 Calcs'] = ['A10:AW110']
@@ -192,6 +195,7 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
   expected['Operating Cost']['I126:P250'].replace(to_replace="", value=0, inplace=True)
   # Original Excel uses "" for empty cells, we want to use 0.0.
   expected['CO2 Calcs']['A9:AW390'].replace(to_replace="", value=0, inplace=True)
+  expected['Unit Adoption Calculations']['AG135:BS182'].replace(to_replace="", value=0, inplace=True)
   if ch4_calcs:
     expected['CH4 Calcs']['A10:AW110'].replace(to_replace="", value=0, inplace=True)
 
@@ -202,15 +206,20 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
             to_replace=['Baseline: Based on-  AMPERE MESSAGE-MACRO Reference',
                         'Conservative: Based on-  IEA ETP 2016 4DS',
                         ' Ambitious: Based on- AMPERE GEM E3 450',
+                        'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Moderate Scenario) ',
+                        'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Advanced Scenario) ',
                         'Asia (sans Japan)', 'Middle East & Africa',],
             value=['Baseline: Based on- AMPERE MESSAGE-MACRO Reference',
                         'Conservative: Based on- IEA ETP 2016 4DS',
                         'Ambitious: Based on- AMPERE GEM E3 450',
+                        'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Moderate Scenario)',
+                        'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Advanced Scenario)',
                         'Asia (Sans Japan)', 'Middle East and Africa',])
       except TypeError:
         pass
 
   filename = 'RRS_VBAWEB.xlsm'
+  print("Opening " + filename + " for " + solution + " with scenario: " + scenario)
   assert os.path.exists(filename)
   workbook = xlwings.Book(filename)
   excel_app = workbook.app
@@ -232,6 +241,8 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
       actual[sheetname][c] = pd.DataFrame(excel_read_cell(sheet, c))
   # Original Excel uses "" for empty cells, we want to use 0.0 and have to match in *all* cells.
   actual['CO2 Calcs']['A9:AW390'].replace(to_replace="", value=0, inplace=True)
+  actual['Unit Adoption Calculations']['AG135:BS182'].replace(to_replace="", value=0, inplace=True)
+  actual['Helper Tables']['B90:L137'].replace(to_replace="", value=0, inplace=True)
 
   workbook.close()
   excel_app.quit()
@@ -240,7 +251,8 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
     for (cells, expected_df) in values.items():
       actual_df = actual[sheetname][cells]
       try:
-        pd.testing.assert_frame_equal(actual_df, expected_df, check_exact=False)
+        pd.testing.assert_frame_equal(actual_df, expected_df,
+            check_exact=False, check_dtype=False)
       except AssertionError as e:
         msg = "Solution: " + solution + " Scenario: " + scenario + "\n"
         msg += "DataFrames differ: " + sheetname + " " + cells + ":\n"
@@ -266,3 +278,15 @@ def disabled_test_SolarRooftop_RRS_ELECGEN(start_flask):
     _rrs_test(solution='solarpvroof', scenario=scenario,
         filename=str(solutiondir.joinpath('solarpvroof', 'testdata',
           'SolarPVRooftop_RRS_ELECGEN_v1.1b_24Oct18.xlsm')))
+
+@pytest.mark.integration
+def test_ConcentratedSolar_RRS_ELECGEN(start_flask):
+  """Test for Excel model file CSP_RRS_ELECGEN_*."""
+  if not excel_present():
+    pytest.skip("Microsoft Excel not present")
+  # Many of the scenarios in ConcentratedSolar cause Excel to crash with bizarre
+  # errors, not diagnosed yet. We only run the first scenario.
+  for scenario in ['PDS-4p2050-Drawdown Plausible (Revison Case)']:
+    _rrs_test(solution='concentratedsolar', scenario=scenario,
+        filename=str(solutiondir.joinpath('concentratedsolar', 'testdata',
+          'CSP_RRS_ELECGEN_v1.1b_24Oct18.xlsm')))

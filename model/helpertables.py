@@ -16,7 +16,7 @@ class HelperTables:
   """
   def __init__(self, ac, ref_datapoints, pds_datapoints,
       ref_tam_per_region, pds_tam_per_region, adoption_data_per_region,
-      adoption_is_single_source):
+      adoption_trend_per_region, adoption_is_single_source):
     """HelperTables.
        Arguments:
          ac = advanced_controls.py object, storing settings to control
@@ -29,6 +29,8 @@ class HelperTables:
            region for the PDS scenario.
          adoption_data_per_region: dataframe with one column per region (World, OECD90, Eastern
            Europe, Latin America, etc).
+         adoption_trend_per_region: adoption trend (predictions using 2nd Poly, 3rd Poly, etc
+           as configured in the solution) with one column per region
          adoption_is_single_source (bool): whether the adoption data comes from a single source
            or multiple, to determine how to handle stddev.
     """
@@ -38,6 +40,7 @@ class HelperTables:
     self.ref_tam_per_region = ref_tam_per_region
     self.pds_tam_per_region = pds_tam_per_region
     self.adoption_data_per_region = adoption_data_per_region
+    self.adoption_trend_per_region = adoption_trend_per_region
     self.adoption_is_single_source = adoption_is_single_source
 
   @lru_cache()
@@ -109,10 +112,7 @@ class HelperTables:
     elif self.ac.soln_pds_adoption_basis == 'S-Curve':
       raise NotImplementedError('S-Curve support not implemented')
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
-      trend = self.ac.soln_pds_adoption_prognostication_trend
-      for col in source_data.columns:
-        prognost = interpolation.trend_algorithm(data=source_data.loc[:, col], trend=trend)
-        adoption.loc[:, col] = prognost.fillna(0.0).loc[:, 'adoption']
+      adoption = self.adoption_trend_per_region.fillna(0.0)
     elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
       raise NotImplementedError('Custom S-Curve support not implemented')
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':

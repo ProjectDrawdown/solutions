@@ -9,6 +9,7 @@ import re
 import sys
 
 import xlrd
+import numpy as np
 import pandas as pd
 
 from tools.util import convert_bool, cell_to_offsets
@@ -416,6 +417,7 @@ def write_ht(f, wb):
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
   f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
   f.write("        adoption_data_per_region=self.ad.adoption_data_per_region(),\n")
+  f.write("        adoption_trend_per_region=self.ad.adoption_trend_per_region(),\n")
   f.write("        adoption_is_single_source=self.ad.adoption_is_single_source())\n")
   f.write("\n")
 
@@ -549,6 +551,15 @@ def extract_adoption_data(wb, outputdir):
       'EU': eu.iloc[:, col], 'USA':  usa.iloc[:, col]}, axis=1)
     df.index = df.index.astype(int)
     df.index.name = 'Year'
+    # In the Excel implementation, adoption data of 0.0 is treated the same as N/A,
+    # no data available. We don't want to implement adoptiondata.py the same way, we
+    # want to be able to express the difference between a solution which did not
+    # exist prior to year N, and therefore had 0.0 adoption, from a solution which
+    # did exist but for which we have no data prior to year N.
+    # We're handling this in the code generator: when extracting adoption data from
+    # an Excel file, treat values of 0.0 as N/A and write out a CSV file with no
+    # data at that location.
+    df.replace(to_replace=0.0, value=np.nan, inplace=True)
     df[['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
       'Latin America', 'China', 'India', 'EU', 'USA']].to_csv(outputfile, header=True)
 

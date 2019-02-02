@@ -71,6 +71,27 @@ def test_adoption_data():
   a = ad.adoption_data_usa()
   assert a['Greenpeace AER'][2053] == pytest.approx(966)
 
+def test_CSP_LA():
+  # ConcentratedSolar Latin America exposed a corner case, test it specifically.
+  data_sources = {
+    'Baseline Cases': {
+      'source1': str(thisdir.joinpath('ad_CSP_LA_source1.csv')),
+      'source2': str(thisdir.joinpath('ad_CSP_LA_source2.csv')),
+      'source3': str(thisdir.joinpath('ad_CSP_LA_source3.csv')),
+      'source4': str(thisdir.joinpath('ad_CSP_LA_source4.csv')),
+      },
+    'Conservative Cases': {},
+    'Ambitious Cases': {},
+    '100% RES2050 Case': {},
+  }
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='Baseline Cases',
+      soln_pds_adoption_prognostication_growth='Medium')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+  result = ad.adoption_trend_latin_america()
+  assert result.loc[2014, 'adoption'] == pytest.approx(-3.39541250661)
+  assert result.loc[2037, 'adoption'] == pytest.approx(13.14383564892)
+  assert result.loc[2060, 'adoption'] == pytest.approx(295.34923165295)
+
 def test_adoption_min_max_sd_global():
   s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
@@ -177,7 +198,7 @@ def test_adoption_data_per_region():
       },
     'Conservative Cases': {},
     'Ambitious Cases': {},
-    '100% RES2050 Case': { },
+    '100% RES2050 Case': {},
   }
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='george',
       soln_pds_adoption_prognostication_growth='Medium')
@@ -185,6 +206,48 @@ def test_adoption_data_per_region():
   result = ad.adoption_data_per_region()
   assert result.loc[2030, 'EU'] == pytest.approx(437.0)
   assert result.loc[2046, 'Eastern Europe'] == pytest.approx(175.0)
+
+def test_adoption_data_per_region_data_missing():
+  # Verify that if there is no data, the returned DF contains N/A not filled with 0.0.
+  data_sources = {
+    'Baseline Cases': {
+      'george': str(thisdir.joinpath('ad_all_regions_no_data.csv')),
+      },
+    'Conservative Cases': {},
+    'Ambitious Cases': {},
+    '100% RES2050 Case': {},
+  }
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='george',
+      soln_pds_adoption_prognostication_growth='Medium')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+  result = ad.adoption_data_per_region()
+  for region in result.columns:
+    assert result.loc[:, region].count() == 0
+
+def test_adoption_trend_per_region():
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='ALL SOURCES')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
+  result = ad.adoption_trend_per_region()
+  pd.testing.assert_series_equal(result['World'],
+      ad.adoption_trend_global()['adoption'], check_names=False)
+  pd.testing.assert_series_equal(result['OECD90'],
+      ad.adoption_trend_oecd90()['adoption'], check_names=False)
+  pd.testing.assert_series_equal(result['Eastern Europe'],
+      ad.adoption_trend_eastern_europe()['adoption'], check_names=False)
+  pd.testing.assert_series_equal(result['Asia (Sans Japan)'],
+      ad.adoption_trend_asia_sans_japan()['adoption'], check_names=False)
+  pd.testing.assert_series_equal(result['Middle East and Africa'],
+      ad.adoption_trend_middle_east_and_africa()['adoption'], check_names=False)
+  pd.testing.assert_series_equal(result['Latin America'],
+      ad.adoption_trend_latin_america()['adoption'], check_names=False)
+  pd.testing.assert_series_equal(result['China'],
+      ad.adoption_trend_china()['adoption'], check_names=False)
+  pd.testing.assert_series_equal(result['India'],
+      ad.adoption_trend_india()['adoption'], check_names=False)
+  pd.testing.assert_series_equal(result['EU'],
+      ad.adoption_trend_eu()['adoption'], check_names=False)
+  pd.testing.assert_series_equal(result['USA'],
+      ad.adoption_trend_usa()['adoption'], check_names=False)
 
 def test_to_dict():
   s = 'Greenpeace AER'
