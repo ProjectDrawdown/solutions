@@ -40,7 +40,7 @@ Jupyter Notebook
 
 # Understanding the Drawdown solution models: Reference and Summary
 
-[Documentation of the Excel models](https://gitlab.com/codeearth/drawdown/blob/master/Documentation/Project_Drawdown_Model_Framework_and_Guide.pdf) has been written, as well as a [design doc](https://docs.google.com/document/d/18nUKV-qltsaSD8kZd5gHswQu82Ot9rg19KIU8_eOisY/view) of how we expect the new implementation to be completed. We refer to this development effort as a Remodel, of course.
+[Documentation of the Excel models](https://gitlab.com/codeearth/drawdown/blob/master/Documentation/RRS_Model_Framework_and_Guidelines_v1.1.pdf) has been written, as well as a [design doc](https://docs.google.com/document/d/18nUKV-qltsaSD8kZd5gHswQu82Ot9rg19KIU8_eOisY/view) of how we expect the new implementation to be completed. We refer to this development effort as a Remodel, of course.
 
 A model is the computation of three outputs from a large number of inputs. Each of the three outputs is a table with years as rows and regions as columns. The value of a cell in this table is scalar.
 
