@@ -149,6 +149,59 @@ def test_soln_pds_funits_adopted_passthru():
   expected = adoption_trend_per_region
   pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
 
+def test_soln_pds_funits_adopted_datapoints_nan():
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      soln_pds_adoption_prognostication_growth='Medium',
+      soln_pds_adoption_prognostication_trend='3rd poly',
+      soln_pds_adoption_basis='Existing Adoption Prognostications')
+  pds_datapoints = pd.DataFrame([
+    [2014, 112.633033, 1.0, 2.0, np.nan, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0],
+    [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  adoption_data_per_region = pd.DataFrame(adoption_data_med_all_sources_list[1:],
+      columns=adoption_data_med_all_sources_list[0], dtype=np.float64).set_index('Year')
+  adoption_data_per_region.index = adoption_data_per_region.index.astype(int)
+  adoption_trend_per_region = pd.DataFrame(adoption_trend_per_region_list[1:],
+      columns=adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
+  adoption_trend_per_region.index = adoption_trend_per_region.index.astype(int)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
+      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
+      adoption_data_per_region=adoption_data_per_region,
+      adoption_trend_per_region=adoption_trend_per_region, adoption_is_single_source=False)
+  result = ht.soln_pds_funits_adopted()
+  assert result.loc[2014, 'World'] == pytest.approx(112.633033)
+  assert result.loc[2014, 'OECD90'] == pytest.approx(1.0)
+  assert result.loc[2014, 'Eastern Europe'] == pytest.approx(2.0)
+  assert result.loc[2014, 'Asia (Sans Japan)'] == pytest.approx(21.072504)
+  assert result.loc[2014, 'Middle East and Africa'] == pytest.approx(4.0)
+
+def test_soln_pds_funits_adopted_zero_regional():
+  # Case which came up in LandfillMethane, where datapoints for 2014 and 2050 were 0.0
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      soln_pds_adoption_prognostication_growth='Medium',
+      soln_pds_adoption_prognostication_trend='3rd poly',
+      soln_pds_adoption_basis='Existing Adoption Prognostications')
+  pds_datapoints = pd.DataFrame([
+    [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  adoption_data_per_region = pd.DataFrame(adoption_data_med_all_sources_list[1:],
+      columns=adoption_data_med_all_sources_list[0], dtype=np.float64).set_index('Year')
+  adoption_data_per_region.index = adoption_data_per_region.index.astype(int)
+  adoption_trend_per_region = pd.DataFrame(adoption_trend_per_region_list[1:],
+      columns=adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
+  adoption_trend_per_region.index = adoption_trend_per_region.index.astype(int)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
+      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
+      adoption_data_per_region=adoption_data_per_region,
+      adoption_trend_per_region=adoption_trend_per_region, adoption_is_single_source=False)
+  result = ht.soln_pds_funits_adopted()
+  assert result.loc[2015, 'USA'] == 0
+  assert result.loc[2030, 'OECD90'] == 0
+  assert result.loc[2043, 'EU'] == 0
+
 def test_to_dict():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
       soln_pds_adoption_prognostication_growth='Medium',

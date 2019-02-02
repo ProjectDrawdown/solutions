@@ -127,7 +127,7 @@ class HelperTables:
       adoption[col] = adoption[col].combine(self.pds_tam_per_region[col], min)
 
     # Where we have actual data, use the actual data not the interpolation.
-    adoption.loc[first_year] = self.pds_datapoints.loc[first_year]
+    adoption.update(self.pds_datapoints.iloc[[0]])
 
     adoption.name = "soln_pds_funits_adopted"
     adoption.index.name = "Year"
