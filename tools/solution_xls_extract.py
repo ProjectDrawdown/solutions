@@ -75,6 +75,10 @@ def get_rrs_scenarios(wb):
       assert sr_tab.cell_value(row + 76, 1) == 'General'
       s['npv_discount_rate'] = convert_sr_float(sr_tab.cell_value(row + 77, 4))
 
+      assert sr_tab.cell_value(row + 103, 1) == 'Direct Emissions'
+      s['conv_emissions_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 105, 4))
+      s['soln_emissions_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 106, 4))
+
       assert sr_tab.cell_value(row + 111, 1) == 'Indirect Emissions'
       s['conv_indirect_co2_per_unit'] = convert_sr_float(sr_tab.cell_value(row + 112, 4))
       s['soln_indirect_co2_per_iunit'] = convert_sr_float(sr_tab.cell_value(row + 113, 4))
@@ -82,6 +86,10 @@ def get_rrs_scenarios(wb):
       s['conv_indirect_co2_is_iunits'] = False if i_vs_f == 'functional' else True
 
       assert sr_tab.cell_value(row + 118, 1) == 'Optional Inputs'
+      s['ch4_co2_per_twh'] = convert_sr_float(sr_tab.cell_value(row + 119, 4))
+      s['ch4_is_co2eq'] = (sr_tab.cell_value(row + 119, 5) == 't CH4-CO2eq per TWh')
+      s['n2o_co2_per_twh'] = convert_sr_float(sr_tab.cell_value(row + 120, 4))
+      s['n2o_is_co2eq'] = (sr_tab.cell_value(row + 120, 5) == 't N2O-CO2eq per TWh')
       s['co2eq_conversion_source'] = str(sr_tab.cell_value(row + 121, 4))
 
       assert sr_tab.cell_value(row + 124, 1) == 'General Climate Inputs'
@@ -197,7 +205,8 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['co2eq_conversion_source'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_indirect_co2_per_iunit'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_indirect_co2_per_unit', 'conv_indirect_co2_is_iunits'],
-      prefix=prefix, suffix='\n')
+      prefix=prefix)
+  oneline(f=f, s=s, names=['ch4_co2_per_twh', 'n2o_co2_per_twh'], prefix=prefix, suffix='\n')
 
   oneline(f=f, s=s, names=['soln_lifetime_capacity', 'soln_avg_annual_use'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_lifetime_capacity', 'conv_avg_annual_use'],
@@ -209,7 +218,9 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['conv_fixed_oper_cost_per_iunit'], prefix=prefix, suffix='\n')
 
   oneline(f=f, s=s, names=['emissions_grid_source', 'emissions_grid_range'], prefix=prefix)
-  oneline(f=f, s=s, names=['emissions_use_co2eq'], prefix=prefix, suffix='\n')
+  oneline(f=f, s=s, names=['emissions_use_co2eq'], prefix=prefix)
+  oneline(f=f, s=s, names=['conv_emissions_per_funit', 'soln_emissions_per_funit'],
+      prefix=prefix, suffix='\n')
 
   oneline(f=f, s=s, names=['soln_ref_adoption_regional_data',
     'soln_pds_adoption_regional_data'], prefix=prefix)
