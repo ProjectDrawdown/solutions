@@ -144,3 +144,10 @@ Jan 21 - 25, 2019
 + add scenario extraction in solution_xls_extract
   Code generation from Excel files to create solutions. We intend to handle
   most of the ~90 solutions via code generation not manual effort.
+
+Jan 28 - Feb 1, 2019
++ add Custom Adoption, and global sequestration table in CO2Calcs
+  More module support for LAND solutions.
++ add ConcentratedSolar solution
+  Generated from Excel using tools/solution_xls_extract
++ fixes in regional data and NaN handling

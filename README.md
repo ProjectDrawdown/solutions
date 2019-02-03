@@ -164,16 +164,16 @@ The current goal of Project Drawdown and this repository is to liberate the data
 ## Comparing
 
 However, in order to do this gracefully and iteratively, programmers must be able to check their work.
-Until the whole model is computable without Excel, a simple means of testing new Python code implementing ever-greater parts of the model is to compare intermediate with results with those computed by Excel.  Furthermore, at the time of this writing, the easiest way to obtain all data need to compute a model is from within Excel.
+Until the whole model is computable without Excel, a simple means of testing new Python code implementing ever-greater parts of the model is to compare intermediate with results with those computed by Excel.
 
 In order to make this comparison easier, we have added the [VBA-Web](http://vba-tools.github.io/VBA-Web/) software to our spreadsheet.
 (We found the installation of VBA-Web easier to do on a Windows machine than on a Mac.)
-This allows us to post data to a web service implemented in Python.  We wrote some specific VBA code to take data from specific tables, send it to the service, retrieve the results in CSV, and place the results in a rectangular range of cells on a special tab.
+This allows us to post data to a web service implemented in Python.
 
 This allows a programmer to test that the numbers produced by the Python model match the Excel model.
 
 
-The code is invoked by a button with red lettering: TEST FUNCTIONAL UNIT to be found near cell H247 on the tab "Unit Adoption Calculations" of the spreadsheet.
+The VBA code is typically invoked by tests/test_excel_integration.py using xlwings. There is also a button with red lettering: TEST FUNCTIONAL UNIT on the Unit Adoption Calculations and First Cost tabs of the spreadsheet. These will fetch the SolarPVUtil solution, the first one implemented. The xlwings invocation of the VBA code can provide an argument of the solution to fetch.
 
 ---
 
