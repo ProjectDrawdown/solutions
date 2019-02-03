@@ -1,6 +1,8 @@
 """Tests for unitadoption.py."""
 
+import io
 import pathlib
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -8,65 +10,65 @@ from model import advanced_controls
 from model import unitadoption
 
 
-datadir = pathlib.Path(__file__).parents[0].joinpath('data')
-ref_tam_per_region_filename = datadir.joinpath('ref_tam_per_region.csv')
-pds_tam_per_region_filename = datadir.joinpath('pds_tam_per_region.csv')
+this_dir = pathlib.Path(__file__)
+ref_tam_per_region_filename = this_dir.parents[0].joinpath('data', 'ref_tam_per_region.csv')
+pds_tam_per_region_filename = this_dir.parents[0].joinpath('data', 'pds_tam_per_region.csv')
 ref_tam_per_region = pd.read_csv(ref_tam_per_region_filename, header=0, index_col=0,
     skipinitialspace=True, comment='#')
 pds_tam_per_region = pd.read_csv(pds_tam_per_region_filename, header=0, index_col=0,
     skipinitialspace=True, comment='#')
-realdatadir = pathlib.Path(__file__).parents[2].joinpath('data')
+datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 
 
 def test_ref_population():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=None, pds_tam_per_region=None,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   population = ua.ref_population()
   assert population['World'][2014] == pytest.approx(7249.180596)
   assert population['Middle East and Africa'][2031] == pytest.approx(2093.543821)
   assert population['USA'][2060] == pytest.approx(465.280628)
 
 def test_ref_gdp():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=None, pds_tam_per_region=None,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   gdp = ua.ref_gdp()
   assert gdp['World'][2014] == pytest.approx(58307.866135)
   assert gdp['Latin America'][2030] == pytest.approx(8390.982338)
   assert gdp['USA'][2060] == pytest.approx(36982.727199)
 
 def test_ref_gdp_per_capita():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=None, pds_tam_per_region=None,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   gpc = ua.ref_gdp_per_capita()
   assert gpc['World'][2060] == pytest.approx(21.67246)
   assert gpc['Asia (Sans Japan)'][2029] == pytest.approx(6.51399)
   assert gpc['USA'][2014] == pytest.approx(43.77208)
 
 def test_ref_tam_per_capita():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   tpc = ua.ref_tam_per_capita()
   assert tpc['World'][2016] == pytest.approx(3.38350004047)
   assert tpc['Latin America'][2029] == pytest.approx(3.62748818668)
   assert tpc['USA'][2059] == pytest.approx(12.21081396314)
 
 def test_ref_tam_per_gdp_per_capita():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   tpgpc = ua.ref_tam_per_gdp_per_capita()
   assert tpgpc['OECD90'][2014] == pytest.approx(256.68795471511)
   assert tpgpc['China'][2033] == pytest.approx(743.15450999975)
   assert tpgpc['EU'][2060] == pytest.approx(85.95558928452)
 
 def test_ref_tam_growth():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   tg = ua.ref_tam_growth()
   assert tg['Eastern Europe'][2015] == pytest.approx(24.26693428425)
   assert tg['India'][2037] == pytest.approx(171.36849827619)
@@ -74,36 +76,36 @@ def test_ref_tam_growth():
   assert tg['World'][2014] == ''
 
 def test_pds_population():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=None, pds_tam_per_region=None,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   population = ua.pds_population()
   assert population['World'][2016] == pytest.approx(7415.5738320)
   assert population['India'][2031] == pytest.approx(1539.9070540)
   assert population['USA'][2060] == pytest.approx(403.5036840)
 
 def test_pds_gdp():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=None, pds_tam_per_region=None,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   gdp = ua.pds_gdp()
   assert gdp['Eastern Europe'][2014] == pytest.approx(2621.864076293940)
   assert gdp['Latin America'][2030] == pytest.approx(8058.323682075440)
   assert gdp['USA'][2060] == pytest.approx(32072.400550257600)
 
 def test_pds_gdp_per_capita():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=None, pds_tam_per_region=None,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   gpc = ua.pds_gdp_per_capita()
   assert gpc['World'][2060] == pytest.approx(21.703844951868)
   assert gpc['Asia (Sans Japan)'][2029] == pytest.approx(6.52868)
   assert gpc['USA'][2014] == pytest.approx(44.49768)
 
 def test_pds_tam_per_capita():
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   tpc = ua.pds_tam_per_capita()
   assert tpc['World'][2015] == pytest.approx(3.357451)
   assert tpc['India'][2039] == pytest.approx(2.945601)
@@ -112,9 +114,9 @@ def test_pds_tam_per_capita():
 def test_pds_tam_per_gdp_per_capita():
   # we pass pds_tam_per_region=ref_tam_per_region for convenience,
   # the test is just checking the results of the calculation.
-  ua = unitadoption.UnitAdoption(ac=None, datadir=realdatadir,
-                                 ref_tam_per_region=None, pds_tam_per_region=ref_tam_per_region,
-                                 soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+  ua = unitadoption.UnitAdoption(ac=None, datadir=datadir,
+      ref_tam_per_region=None, pds_tam_per_region=ref_tam_per_region,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
   tpgpc = ua.pds_tam_per_gdp_per_capita()
   assert tpgpc['OECD90'][2015] == pytest.approx(247.759624)
   assert tpgpc['China'][2032] == pytest.approx(759.164408)
@@ -644,10 +646,10 @@ def test_to_dict():
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
   soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
       columns=soln_pds_funits_adopted_list[0]).set_index('Year')
-  ua = unitadoption.UnitAdoption(ac=ac, datadir=realdatadir,
-                                 ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-                                 soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                 soln_ref_funits_adopted=soln_ref_funits_adopted)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=datadir,
+      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
   result = ua.to_dict()
   expected = ['ref_population', 'ref_gdp', 'ref_gdp_per_capita', 'ref_tam_per_capita',
       'ref_tam_per_gdp_per_capita', 'ref_tam_growth', 'pds_population', 'pds_gdp',
