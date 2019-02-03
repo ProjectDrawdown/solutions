@@ -5,6 +5,7 @@ from model import emissionsfactors as ef
 import pandas as pd
 import pytest
 
+
 def test_CO2Equiv():
   c = ef.CO2Equiv(ef.CO2EQ_SOURCE.AR5_WITH_FEEDBACK)
   assert c.CH4multiplier == 34
@@ -16,6 +17,7 @@ def test_CO2Equiv():
   assert c.CH4multiplier == 21
   assert c.N2Omultiplier == 310
 
+
 def test_string_to_conversion_source():
   assert ef.string_to_conversion_source("AR5 with feedback") == ef.CO2EQ_SOURCE.AR5_WITH_FEEDBACK
   assert ef.string_to_conversion_source("AR4") == ef.CO2EQ_SOURCE.AR4
@@ -24,6 +26,7 @@ def test_string_to_conversion_source():
   assert ef.string_to_conversion_source("sar") == ef.CO2EQ_SOURCE.SAR
   with pytest.raises(ValueError):
     ef.string_to_conversion_source("invalid")
+
 
 def test_string_to_emissions_grid_source():
   assert ef.string_to_emissions_grid_source("meta-analysis") == ef.GRID_SOURCE.META
@@ -34,6 +37,7 @@ def test_string_to_emissions_grid_source():
   with pytest.raises(ValueError):
     ef.string_to_conversion_source("invalid")
 
+
 def test_string_to_emissions_grid_range():
   assert ef.string_to_emissions_grid_range("MEAN") == ef.GRID_RANGE.MEAN
   assert ef.string_to_emissions_grid_range("MEan") == ef.GRID_RANGE.MEAN
@@ -42,6 +46,7 @@ def test_string_to_emissions_grid_range():
   assert ef.string_to_emissions_grid_range("LOW") == ef.GRID_RANGE.LOW
   with pytest.raises(ValueError):
     ef.string_to_conversion_source("invalid")
+
 
 def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
   ac = advanced_controls.AdvancedControls(emissions_grid_source="ipcc_only", emissions_grid_range="mean")
@@ -71,6 +76,7 @@ def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
   table = eg.conv_ref_grid_CO2eq_per_KWh()
   assert table.loc[2020, 'World'] == pytest.approx(0.726403172)
 
+
 def test_conv_ref_grid_CO2_per_KWh():
   eg = ef.ElectricityGenOnGrid(ac=None)
   table = eg.conv_ref_grid_CO2_per_KWh()
@@ -84,6 +90,7 @@ def test_conv_ref_grid_CO2_per_KWh():
   assert table.loc[2041, "India"] == pytest.approx(0.725081980)
   assert table.loc[2020, "EU"] == pytest.approx(0.297016531)
   assert table.loc[2039, "USA"] == pytest.approx(0.594563067)
+
 
 def test_to_dict():
   ac = advanced_controls.AdvancedControls(emissions_grid_source="ipcc_only",

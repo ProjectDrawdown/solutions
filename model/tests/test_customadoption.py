@@ -3,8 +3,7 @@ from model import customadoption
 import pathlib
 import pandas as pd
 
-datadir = pathlib.Path(__file__).parents[0]
-
+datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 scen_1 = pd.read_csv(datadir.joinpath('ca_scenario_1_trr.csv'), index_col=0)
 scen_2 = pd.read_csv(datadir.joinpath('ca_scenario_2_trr.csv'), index_col=0)
 
@@ -12,6 +11,7 @@ scen_2 = pd.read_csv(datadir.joinpath('ca_scenario_2_trr.csv'), index_col=0)
 def test_init():
     with pytest.raises(ValueError):  # test validation
         ca = customadoption.CustomAdoption('Not PDS or REF')
+
 
 def test_add_scenario():
     ca = customadoption.CustomAdoption('PDS')

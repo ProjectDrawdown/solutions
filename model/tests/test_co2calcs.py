@@ -7,7 +7,7 @@ from model import advanced_controls
 from model import co2calcs
 import pathlib
 
-datadir = pathlib.Path(__file__).parents[0]
+datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
 def test_co2_mmt_reduced_allfields():
   # the real data from the SolarPVUtil solution has many fields as zero. Test them all.

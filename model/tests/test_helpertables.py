@@ -1,7 +1,6 @@
 """Tests for helpertables.py."""
 
 import pathlib
-
 from model import advanced_controls
 from model import helpertables
 import numpy as np
@@ -9,11 +8,11 @@ import pandas as pd
 import pytest
 
 
-this_dir = pathlib.Path(__file__)
-ref_tam_per_region_filename = this_dir.parents[0].joinpath('ref_tam_per_region.csv')
+datadir = pathlib.Path(__file__).parents[0].joinpath('data')
+ref_tam_per_region_filename = datadir.joinpath('ref_tam_per_region.csv')
 ref_tam_per_region = pd.read_csv(ref_tam_per_region_filename, header=0, index_col=0,
     skipinitialspace=True, comment='#')
-pds_tam_per_region_filename = this_dir.parents[0].joinpath('pds_tam_per_region.csv')
+pds_tam_per_region_filename = datadir.joinpath('pds_tam_per_region.csv')
 pds_tam_per_region = pd.read_csv(pds_tam_per_region_filename, header=0, index_col=0,
     skipinitialspace=True, comment='#')
 

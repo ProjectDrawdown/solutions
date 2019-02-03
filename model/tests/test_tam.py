@@ -1,12 +1,13 @@
 """Tests for tam.py."""
 
 import pathlib
-
 import numpy as np
 import pandas as pd
 import pytest
 from model import tam
 
+basedir = pathlib.Path(__file__).parents[2]
+datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
 # arguments used in SolarPVUtil 28Aug18, used in many tests
 tamconfig_list = [
@@ -26,54 +27,53 @@ tamconfig_list = [
     ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
 g_tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
 
-datadir = pathlib.Path(__file__).parents[2]
 g_tam_ref_data_sources = {
     'Baseline Cases': {
-      'Baseline: Based on- IEA ETP 2016 6DS': str(datadir.joinpath(
+      'Baseline: Based on- IEA ETP 2016 6DS': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_IEA_ETP_2016_6DS.csv')),
-      'Baseline: Based on- AMPERE MESSAGE-MACRO Reference': str(datadir.joinpath(
+      'Baseline: Based on- AMPERE MESSAGE-MACRO Reference': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
-      'Baseline: Based on- AMPERE GEM E3 Reference': str(datadir.joinpath(
+      'Baseline: Based on- AMPERE GEM E3 Reference': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
-      'Baseline: Based on- AMPERE IMAGE/TIMER Reference': str(datadir.joinpath(
+      'Baseline: Based on- AMPERE IMAGE/TIMER Reference': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
       },
     'Conservative Cases': {
-      'Conservative: Based on- IEA ETP 2016 4DS': str(datadir.joinpath(
+      'Conservative: Based on- IEA ETP 2016 4DS': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_IEA_ETP_2016_4DS.csv')),
-      'Conservative: Based on- AMPERE MESSAGE-MACRO 550': str(datadir.joinpath(
+      'Conservative: Based on- AMPERE MESSAGE-MACRO 550': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv')),
-      'Conservative: Based on- AMPERE GEM E3 550': str(datadir.joinpath(
+      'Conservative: Based on- AMPERE GEM E3 550': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_550.csv')),
-      'Conservative: Based on- AMPERE IMAGE/TIMER 550': str(datadir.joinpath(
+      'Conservative: Based on- AMPERE IMAGE/TIMER 550': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv')),
-      'Conservative: Based on- Greenpeace 2015 Reference': str(datadir.joinpath(
+      'Conservative: Based on- Greenpeace 2015 Reference': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_Greenpeace_2015_Reference.csv')),
       },
     'Ambitious Cases': {
-      'Ambitious: Based on- IEA ETP 2016 2DS': str(datadir.joinpath(
+      'Ambitious: Based on- IEA ETP 2016 2DS': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_IEA_ETP_2016_2DS.csv')),
-      'Ambitious: Based on- AMPERE MESSAGE-MACRO 450': str(datadir.joinpath(
+      'Ambitious: Based on- AMPERE MESSAGE-MACRO 450': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv')),
-      'Ambitious: Based on- AMPERE GEM E3 450': str(datadir.joinpath(
+      'Ambitious: Based on- AMPERE GEM E3 450': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_450.csv')),
-      'Ambitious: Based on- AMPERE IMAGE/TIMER 450': str(datadir.joinpath(
+      'Ambitious: Based on- AMPERE IMAGE/TIMER 450': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv')),
-      'Ambitious: Based on- Greenpeace Energy [R]evolution': str(datadir.joinpath(
+      'Ambitious: Based on- Greenpeace Energy [R]evolution': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_Greenpeace_2015_Energy_Revolution.csv')),
       },
     '100% RES2050 Case': {
-      '100% REN: Based on- Greenpeace Advanced [R]evolution': str(datadir.joinpath(
+      '100% REN: Based on- Greenpeace Advanced [R]evolution': str(basedir.joinpath(
         'data', 'energy', 'tam_based_on_Greenpeace_2015_Advanced_Revolution.csv')),
       },
 }
 g_tam_pds_data_sources = {
     'Ambitious Cases': {
-      'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario': str(datadir.joinpath(
+      'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario': str(basedir.joinpath(
         'data', 'energy', 'PDS_plausible_scenario.csv')),
-      'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario': str(datadir.joinpath(
+      'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario': str(basedir.joinpath(
         'data', 'energy', 'PDS_drawdown_scenario.csv')),
-      'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario': str(datadir.joinpath(
+      'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario': str(basedir.joinpath(
         'data', 'energy', 'PDS_optimum_scenario.csv')),
       },
 }
@@ -545,7 +545,7 @@ def test_ref_tam_per_region():
   tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
       tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.ref_tam_per_region()
-  filename = str(pathlib.Path(__file__).parents[0].joinpath('ref_tam_per_region.csv'))
+  filename = datadir.joinpath('ref_tam_per_region.csv')
   expected = pd.read_csv(filename, header=0, index_col=0,
       skipinitialspace=True, comment='#')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
@@ -554,7 +554,7 @@ def test_pds_tam_per_region():
   tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
       tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.pds_tam_per_region()
-  filename = str(pathlib.Path(__file__).parents[0].joinpath('pds_tam_per_region.csv'))
+  filename = datadir.joinpath('pds_tam_per_region.csv')
   expected = pd.read_csv(filename, header=0, index_col=0,
       skipinitialspace=True, comment='#')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)

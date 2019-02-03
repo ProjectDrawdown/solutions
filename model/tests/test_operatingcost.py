@@ -1,14 +1,14 @@
 """Tests for operatingcost.py."""
 
-import os
-
 from model import advanced_controls
 from model import operatingcost
 import numpy as np
 import pandas as pd
 import pytest
+import pathlib
 
-csv_files_dir = os.path.dirname(__file__)
+datadir = pathlib.Path(__file__).parents[0].joinpath('data')
+
 
 def _defaultOperatingCost(npv_discount_rate=0.094, single_iunit_purchase_year=2017):
   soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
@@ -60,7 +60,7 @@ def _defaultOperatingCost(npv_discount_rate=0.094, single_iunit_purchase_year=20
 def test_soln_pds_annual_breakout():
   oc = _defaultOperatingCost()
   result = oc.soln_pds_annual_breakout()
-  filename = os.path.join(csv_files_dir, 'oc_soln_pds_annual_breakout_expected.csv')
+  filename = datadir.joinpath('oc_soln_pds_annual_breakout_expected.csv')
   expected = pd.read_csv(filename, header=None, index_col=0, skipinitialspace=True, dtype=np.float64)
   expected.columns = list(range(2015, 2061))
   expected.name = 'soln_pds_annual_breakout'
@@ -80,7 +80,7 @@ def test_soln_pds_annual_breakout_core():
 def test_conv_ref_annual_breakout():
   oc = _defaultOperatingCost()
   result = oc.conv_ref_annual_breakout()
-  filename = os.path.join(csv_files_dir, 'oc_conv_ref_annual_breakout_expected.csv')
+  filename = datadir.joinpath('oc_conv_ref_annual_breakout_expected.csv')
   expected = pd.read_csv(filename, header=None, index_col=0, skipinitialspace=True, dtype=np.float64)
   expected.columns = list(range(2015, 2061))
   expected.name = 'conv_ref_annual_breakout'

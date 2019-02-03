@@ -1,12 +1,8 @@
 """Test advanced_controls.py."""
 
 import pytest
-
 from model import advanced_controls
 from model import emissionsfactors as ef
-from model import helpertables
-from model import interpolation
-import pandas as pd
 
 
 def test_learning_rate():

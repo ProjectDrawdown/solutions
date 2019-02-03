@@ -3,10 +3,10 @@
 import io
 import pathlib
 from model import vma
-import pandas as pd
 import pytest
 
-parentdir = pathlib.Path(__file__).parents[2]
+basedir = pathlib.Path(__file__).parents[2]
+datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
 def test_basics():
   # values from SolarPVUtil 'Variable Meta-analysis'!C891:O893
@@ -60,15 +60,13 @@ def test_invalid_discards():
   assert result == pytest.approx(expected)
 
 def test_conversion_inflation():
-  v = vma.VMA(filename=str(parentdir.joinpath(
-    'model', 'tests', 'vma_test_conversion_inflation.csv')))
+  v = vma.VMA(filename=datadir.joinpath('vma_test_conversion_inflation.csv'))
   result = v.avg_high_low()
   expected = (2010.032, 3373.557, 646.507)
   assert result == pytest.approx(expected)
 
 def test_conversion_co2eq():
-  v = vma.VMA(filename=str(parentdir.joinpath(
-    'model', 'tests', 'vma_test_conversion_co2eq.csv')))
+  v = vma.VMA(filename=datadir.joinpath('vma_test_conversion_co2eq.csv'))
   result = v.avg_high_low()
   expected = (47096.81818181820, 65382.64314055300, 28810.99322308340)
   assert result == pytest.approx(expected)
@@ -154,8 +152,7 @@ def test_substitution():
       '@energy_mix_natural_gas@': 0.21877481756,
       '@energy_mix_oil@': 0.04736499192,
       }
-  v = vma.VMA(filename=str(parentdir.joinpath('model', 'tests', 'vma_test_substitution.csv')),
-      substitutions=substitutions)
+  v = vma.VMA(filename=datadir.joinpath('vma_test_substitution.csv'), substitutions=substitutions)
   result = v.avg_high_low()
   expected = (0.41021474451, 0.47368454143, 0.34674494760)
   assert result == pytest.approx(expected)

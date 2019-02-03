@@ -1,12 +1,13 @@
 """Tests for adoptiondata.py."""
 
 import pathlib
-
 import numpy as np
 import pandas as pd
 import pytest
 from model import adoptiondata
 from model import advanced_controls
+
+datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
 # arguments used in SolarPVUtil 28Aug18, used in many tests
 adconfig_list = [
@@ -20,30 +21,29 @@ adconfig_list = [
     ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
 g_adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
 
-thisdir = pathlib.Path(__file__).parents[0]
 g_data_sources = {
   'Baseline Cases': {
-    '6DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv')),
-    'IRefpol': str(thisdir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
-    'MREFPol': str(thisdir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
-    'GREFpol': str(thisdir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
+    '6DS': str(datadir.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv')),
+    'IRefpol': str(datadir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
+    'MREFPol': str(datadir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
+    'GREFpol': str(datadir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
   },
   'Conservative Cases': {
-    '4DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_4DS.csv')),
-    'I550': str(thisdir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv')),
-    'M550': str(thisdir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv')),
-    'G550': str(thisdir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_550.csv')),
-    'Greenpeace R': str(thisdir.joinpath('ad_based_on_Greenpeace_2015_Reference.csv')),
+    '4DS': str(datadir.joinpath('ad_based_on_IEA_ETP_2016_4DS.csv')),
+    'I550': str(datadir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv')),
+    'M550': str(datadir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv')),
+    'G550': str(datadir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_550.csv')),
+    'Greenpeace R': str(datadir.joinpath('ad_based_on_Greenpeace_2015_Reference.csv')),
   },
   'Ambitious Cases': {
-    '2DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_2DS.csv')),
-    'I450': str(thisdir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv')),
-    'M450': str(thisdir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv')),
-    'G450': str(thisdir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_450.csv')),
-    'Greenpeace ER': str(thisdir.joinpath('ad_based_on_Greenpeace_2015_Energy_Revolution.csv')),
+    '2DS': str(datadir.joinpath('ad_based_on_IEA_ETP_2016_2DS.csv')),
+    'I450': str(datadir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv')),
+    'M450': str(datadir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv')),
+    'G450': str(datadir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_450.csv')),
+    'Greenpeace ER': str(datadir.joinpath('ad_based_on_Greenpeace_2015_Energy_Revolution.csv')),
   },
   '100% RES2050 Case': {
-    'Greenpeace AER': str(thisdir.joinpath('ad_based_on_Greenpeace_2015_Advanced_Revolution.csv')),
+    'Greenpeace AER': str(datadir.joinpath('ad_based_on_Greenpeace_2015_Advanced_Revolution.csv')),
   },
 }
 
@@ -75,10 +75,10 @@ def test_CSP_LA():
   # ConcentratedSolar Latin America exposed a corner case, test it specifically.
   data_sources = {
     'Baseline Cases': {
-      'source1': str(thisdir.joinpath('ad_CSP_LA_source1.csv')),
-      'source2': str(thisdir.joinpath('ad_CSP_LA_source2.csv')),
-      'source3': str(thisdir.joinpath('ad_CSP_LA_source3.csv')),
-      'source4': str(thisdir.joinpath('ad_CSP_LA_source4.csv')),
+      'source1': str(datadir.joinpath('ad_CSP_LA_source1.csv')),
+      'source2': str(datadir.joinpath('ad_CSP_LA_source2.csv')),
+      'source3': str(datadir.joinpath('ad_CSP_LA_source3.csv')),
+      'source4': str(datadir.joinpath('ad_CSP_LA_source4.csv')),
       },
     'Conservative Cases': {},
     'Ambitious Cases': {},
@@ -194,7 +194,7 @@ def test_adoption_is_single_source():
 def test_adoption_data_per_region():
   data_sources = {
     'Baseline Cases': {
-      'george': str(thisdir.joinpath('ad_all_regions.csv')),
+      'george': str(datadir.joinpath('ad_all_regions.csv')),
       },
     'Conservative Cases': {},
     'Ambitious Cases': {},
@@ -211,7 +211,7 @@ def test_adoption_data_per_region_no_data():
   # Verify that if there is no data, the returned DF contains N/A not filled with 0.0.
   data_sources = {
     'Baseline Cases': {
-      's1': str(thisdir.joinpath('ad_all_regions_no_data.csv')),
+      's1': str(datadir.joinpath('ad_all_regions_no_data.csv')),
       },
     'Conservative Cases': {},
     'Ambitious Cases': {},
@@ -228,9 +228,9 @@ def test_adoption_data_per_region_missing_data():
   # regional data with NaN for 2012-2013
   data_sources = {
     'Baseline Cases': {
-      's1': str(thisdir.joinpath('ad_missing_region_data_s1.csv')),
-      's2': str(thisdir.joinpath('ad_missing_region_data_s2.csv')),
-      's3': str(thisdir.joinpath('ad_missing_region_data_s3.csv')),
+      's1': str(datadir.joinpath('ad_missing_region_data_s1.csv')),
+      's2': str(datadir.joinpath('ad_missing_region_data_s2.csv')),
+      's3': str(datadir.joinpath('ad_missing_region_data_s3.csv')),
       },
     'Conservative Cases': {},
     'Ambitious Cases': {},
