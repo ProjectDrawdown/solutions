@@ -21,6 +21,7 @@ import app
 xlwings = pytest.importorskip("xlwings")
 
 from solution import concentratedsolar
+from solution import landfillmethane
 from solution import solarpvutil
 from solution import solarpvroof
 
@@ -52,7 +53,7 @@ def excel_read_cell(sheet, cell_name):
   """Retry reading from Excel a few times, work around flakiness."""
   for _ in range(0, 5):
     try:
-      return sheet.range(cell_name).raw_value
+      return sheet.range(cell_name).value
     except ExcelTimeoutException:
       time.sleep(1)
   raise ExcelAccessFailed
@@ -105,6 +106,8 @@ def diff_dataframes(d1, d2):
       matches = True
       if isinstance(d1.iloc[r,c], str) or isinstance(d2.iloc[r,c], str):
         matches = (d1.iloc[r,c] == d2.iloc[r,c])
+      elif d1.iloc[r,c] == None or d2.iloc[r,c] == None:
+        matches = (d1.iloc[r,c] == d2.iloc[r,c])
       else:
         matches = (d1.iloc[r,c] == pytest.approx(d2.iloc[r,c]))
       if not matches:
@@ -116,7 +119,7 @@ def diff_dataframes(d1, d2):
   return msg
 
 
-def _rrs_test(solution, scenario, filename, ch4_calcs=False):
+def _rrs_test(solution, scenario, filename, ch4_calcs=False, rewrites=None):
   assert os.path.exists(filename)
   print("Opening " + filename + " with scenario: " + scenario)
   workbook = xlwings.Book(filename)
@@ -130,6 +133,7 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
   time.sleep(1)
   _ = excel_read_cell(sheet, 'B9')
   excel_app.calculate()
+  clearErrorsMacro = workbook.macro('clearErrorCells')
   verify = {}
   adjustments = {}
   expected = {}
@@ -185,6 +189,7 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
     sheet = workbook.sheets[sheetname]
     expected[sheetname] = {}
     for c in cells:
+      clearErrorsMacro(sheetname, c)
       expected[sheetname][c] = pd.DataFrame(excel_read_cell(sheet, c))
   workbook.close()
   excel_app.quit()
@@ -193,11 +198,22 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
   #
   # Original uses 1=True and ""=False, but we want to use 0=False
   expected['Operating Cost']['I126:P250'].replace(to_replace="", value=0, inplace=True)
+  expected['Operating Cost']['I126:P250'] = expected['Operating Cost']['I126:P250'].fillna(0.0)
   # Original Excel uses "" for empty cells, we want to use 0.0.
   expected['CO2 Calcs']['A9:AW390'].replace(to_replace="", value=0, inplace=True)
-  expected['Unit Adoption Calculations']['AG135:BS182'].replace(to_replace="", value=0, inplace=True)
+  expected['CO2 Calcs']['A9:AW390'] = expected['CO2 Calcs']['A9:AW390'].fillna(0.0)
+  uac = 'Unit Adoption Calculations'
+  expected[uac]['AG135:BS182'].replace(to_replace="", value=0, inplace=True)
+  expected[uac]['Q197:BH244'] = expected[uac]['Q197:BH244'].fillna(0.0)
+  expected[uac]['B251:BH298'] = expected[uac]['B251:BH298'].fillna(0.0)
+  expected['Helper Tables']['B90:L137'].replace(to_replace="", value=0, inplace=True)
+  expected['Helper Tables']['B90:L137'] = expected['Helper Tables']['B90:L137'].fillna(0.0)
   if ch4_calcs:
     expected['CH4 Calcs']['A10:AW110'].replace(to_replace="", value=0, inplace=True)
+    expected['CH4 Calcs']['A10:AW110'] = expected['CH4 Calcs']['A10:AW110'].fillna(0.0)
+  if rewrites:
+    for sheetname, cells, row, column, value in rewrites:
+      expected[sheetname][cells].iloc[row, column] = value
 
   for _, modulevalues in expected.items():
     for _, df in modulevalues.items():
@@ -208,12 +224,16 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
                         ' Ambitious: Based on- AMPERE GEM E3 450',
                         'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Moderate Scenario) ',
                         'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Advanced Scenario) ',
+                        'Greenpeace 2015 Reference Scenario ',
+                        'Greenpeace 2015 Energy Revolution Scenario ',
                         'Asia (sans Japan)', 'Middle East & Africa',],
             value=['Baseline: Based on- AMPERE MESSAGE-MACRO Reference',
                         'Conservative: Based on- IEA ETP 2016 4DS',
                         'Ambitious: Based on- AMPERE GEM E3 450',
                         'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Moderate Scenario)',
                         'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Advanced Scenario)',
+                        'Greenpeace 2015 Reference Scenario',
+                        'Greenpeace 2015 Energy Revolution Scenario',
                         'Asia (Sans Japan)', 'Middle East and Africa',])
       except TypeError:
         pass
@@ -241,8 +261,14 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False):
       actual[sheetname][c] = pd.DataFrame(excel_read_cell(sheet, c))
   # Original Excel uses "" for empty cells, we want to use 0.0 and have to match in *all* cells.
   actual['CO2 Calcs']['A9:AW390'].replace(to_replace="", value=0, inplace=True)
-  actual['Unit Adoption Calculations']['AG135:BS182'].replace(to_replace="", value=0, inplace=True)
+  actual['CO2 Calcs']['A9:AW390'] = actual['CO2 Calcs']['A9:AW390'].fillna(0.0)
+  uac = 'Unit Adoption Calculations'
+  actual[uac]['AG135:BS182'].replace(to_replace="", value=0, inplace=True)
+  actual[uac]['Q197:BH244'] = actual[uac]['Q197:BH244'].fillna(0.0)
+  actual[uac]['B251:BH298'] = actual[uac]['B251:BH298'].fillna(0.0)
   actual['Helper Tables']['B90:L137'].replace(to_replace="", value=0, inplace=True)
+  actual['Helper Tables']['B90:L137'] = actual['Helper Tables']['B90:L137'].fillna(0.0)
+  actual['Operating Cost']['I126:P250'] = actual['Operating Cost']['I126:P250'].fillna(0.0)
 
   workbook.close()
   excel_app.quit()
@@ -290,3 +316,18 @@ def test_ConcentratedSolar_RRS_ELECGEN(start_flask):
     _rrs_test(solution='concentratedsolar', scenario=scenario,
         filename=str(solutiondir.joinpath('concentratedsolar', 'testdata',
           'CSP_RRS_ELECGEN_v1.1b_24Oct18.xlsm')))
+
+@pytest.mark.integration
+def test_LandfillMethane_RRS_ELECGEN(start_flask):
+  """Test for Excel model file LandfillMethane_RRS_ELECGEN_*."""
+  if not excel_present():
+    pytest.skip("Microsoft Excel not present")
+  # Regional data where all but the first row are #VALUE, and the regional
+  # data is not used. Just zero out the first row, don't try to match it
+  # in Python.
+  rewrites = [('Unit Adoption Calculations', 'B251:BH298', 1, 21, 0.0),
+      ('Unit Adoption Calculations', 'B251:BH298', 1, 22, 0.0),]
+  for scenario in landfillmethane.scenarios.keys():
+    _rrs_test(solution='landfillmethane', scenario=scenario,
+        filename=str(solutiondir.joinpath('landfillmethane', 'testdata',
+          'LandfillMethane_RRS_ELECGEN_v1.1c_24Oct18.xlsm')), rewrites=rewrites)
