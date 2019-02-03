@@ -196,7 +196,7 @@ class UnitAdoption:
         # added N * soln_lifetime_replacement ago, that now need replacement.
         replacement_year = int(year - round(self.ac.soln_lifetime_replacement) - 1)
         while replacement_year in growth.index:
-          replacements.at[year, region] += growth.loc[replacement_year].at[region]
+          replacements.at[year, region] += growth.at[replacement_year, region]
           replacement_year -= (round(self.ac.soln_lifetime_replacement) + 1)
     result = growth + replacements
     result.name = "soln_pds_new_iunits_reqd"
@@ -261,7 +261,7 @@ class UnitAdoption:
         # added N * soln_lifetime_replacement ago, that now need replacement.
         replacement_year = int(year - round(self.ac.soln_lifetime_replacement) - 1)
         while replacement_year in growth.index:
-          replacements.at[year, region] += growth.loc[replacement_year].at[region]
+          replacements.at[year, region] += growth.at[replacement_year, region]
           replacement_year -= (round(self.ac.soln_lifetime_replacement) + 1)
     result = growth + replacements
     result.name = "soln_ref_new_iunits_reqd"
@@ -344,7 +344,7 @@ class UnitAdoption:
         # added N * conv_lifetime_replacement ago, that now need replacement.
         replacement_year = int(year - self.ac.conv_lifetime_replacement - 1)
         while replacement_year in growth.index:
-          replacements.at[year, region] += growth.loc[replacement_year].at[region]
+          replacements.at[year, region] += growth.at[replacement_year, region]
           replacement_year -= (round(self.ac.conv_lifetime_replacement) + 1)
     result = growth + replacements
     result.name = "conv_ref_new_iunits_reqd"
