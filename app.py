@@ -20,6 +20,7 @@ from model import operatingcost
 from model import tam
 from model import unitadoption
 from solution import concentratedsolar
+from solution import landfillmethane
 from solution import solarpvroof
 from solution import solarpvutil
 import werkzeug.exceptions
@@ -60,6 +61,16 @@ def concentratedSolar():
     cs = concentratedsolar.ConcentratedSolar(scenario=scenario)
 
     results_str = json.dumps(cs.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/landfillmethane", methods=['POST'])
+def landfillMethane():
+    """LandfillMethane solution."""
+    scenario = request.args.get('scenario', default=None)
+    lm = landfillmethane.LandfillMethane(scenario=scenario)
+
+    results_str = json.dumps(lm.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 

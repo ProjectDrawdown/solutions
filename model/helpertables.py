@@ -102,12 +102,8 @@ class HelperTables:
     adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
         columns=self.pds_datapoints.columns.copy(), dtype='float')
     growth = self.ac.soln_pds_adoption_prognostication_growth
-    source_data = self.adoption_data_per_region
 
-    if self.adoption_is_single_source:
-      # single source, so use that one source without curve fitting.
-      adoption = source_data.loc[first_year:]
-    elif self.ac.soln_pds_adoption_basis == 'Linear':
+    if self.ac.soln_pds_adoption_basis == 'Linear':
       adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints, adoption)
     elif self.ac.soln_pds_adoption_basis == 'S-Curve':
       raise NotImplementedError('S-Curve support not implemented')
@@ -118,6 +114,11 @@ class HelperTables:
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       raise NotImplementedError('Fully Custom Adoption support not implemented')
 
+    if self.adoption_is_single_source:
+      # The World region can specify a single source (all the sub-regions use
+      # ALL SOURCES). If it does, use that one source without curve fitting.
+      adoption['World'] = self.adoption_data_per_region.loc[first_year:, 'World']
+
     if self.ac.soln_pds_adoption_regional_data:
       adoption.loc[:, 'World'] = 0
       adoption.loc[:, 'World'] = adoption.sum(axis=1)
@@ -127,7 +128,7 @@ class HelperTables:
       adoption[col] = adoption[col].combine(self.pds_tam_per_region[col], min)
 
     # Where we have actual data, use the actual data not the interpolation.
-    adoption.loc[first_year] = self.pds_datapoints.loc[first_year]
+    adoption.update(self.pds_datapoints.iloc[[0]])
 
     adoption.name = "soln_pds_funits_adopted"
     adoption.index.name = "Year"

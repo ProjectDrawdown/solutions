@@ -207,22 +207,51 @@ def test_adoption_data_per_region():
   assert result.loc[2030, 'EU'] == pytest.approx(437.0)
   assert result.loc[2046, 'Eastern Europe'] == pytest.approx(175.0)
 
-def test_adoption_data_per_region_data_missing():
+def test_adoption_data_per_region_no_data():
   # Verify that if there is no data, the returned DF contains N/A not filled with 0.0.
   data_sources = {
     'Baseline Cases': {
-      'george': str(thisdir.joinpath('ad_all_regions_no_data.csv')),
+      's1': str(thisdir.joinpath('ad_all_regions_no_data.csv')),
       },
     'Conservative Cases': {},
     'Ambitious Cases': {},
     '100% RES2050 Case': {},
   }
-  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='george',
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='s1',
       soln_pds_adoption_prognostication_growth='Medium')
   ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
   result = ad.adoption_data_per_region()
   for region in result.columns:
     assert result.loc[:, region].count() == 0
+
+def test_adoption_data_per_region_missing_data():
+  # regional data with NaN for 2012-2013
+  data_sources = {
+    'Baseline Cases': {
+      's1': str(thisdir.joinpath('ad_missing_region_data_s1.csv')),
+      's2': str(thisdir.joinpath('ad_missing_region_data_s2.csv')),
+      's3': str(thisdir.joinpath('ad_missing_region_data_s3.csv')),
+      },
+    'Conservative Cases': {},
+    'Ambitious Cases': {},
+    '100% RES2050 Case': {},
+  }
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='ALL SOURCES',
+      soln_pds_adoption_prognostication_growth='Medium')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+  result = ad.adoption_trend_per_region()
+  print(str(ad.adoption_low_med_high_oecd90()))
+  # Expected values from LandfillMethane Middle East (renamed OECD90 here)
+  expected = pd.DataFrame(
+    [0.04274361694, 0.10439941173, 0.16201388582, 0.21580091091, 0.26597435870, 0.31274810090, 0.35633600920,
+     0.39695195531, 0.43480981094, 0.47012344779, 0.50310673755, 0.53397355194, 0.56293776265, 0.59021324139,
+     0.61601385986, 0.64055348976, 0.66404600281, 0.68670527069, 0.70874516512, 0.73037955779, 0.75182232041,
+     0.77328732468, 0.79498844231, 0.81713954500, 0.83995450444, 0.86364719235, 0.88843148043, 0.91452124038,
+     0.94213034390, 0.97147266269, 1.00276206847, 1.03621243292, 1.07203762776, 1.11045152469, 1.15166799540,
+     1.19590091161, 1.24336414502, 1.29427156733, 1.34883705023, 1.40727446545, 1.46979768467, 1.53662057960,
+     1.60795702194, 1.68402088340, 1.76502603569, 1.85118635049, 1.94271569952],
+    index=list(range(2014,2061)), columns=['OECD90'])
+  pd.testing.assert_frame_equal(result[['OECD90']], expected, check_exact=False, check_names=False)
 
 def test_adoption_trend_per_region():
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='ALL SOURCES')

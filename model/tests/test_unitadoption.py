@@ -508,6 +508,21 @@ def test_soln_pds_new_iunits_reqd():
   expected.name = "soln_pds_new_iunits_reqd"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_soln_pds_new_iunits_reqd_multiple_replacements():
+  soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
+      columns=soln_pds_funits_adopted_list[0]).set_index('Year')
+  ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=20000.0,
+      soln_avg_annual_use=5000.0)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None)
+  result = ua.soln_pds_new_iunits_reqd()
+  # values from SolarPVUtil setting 'Unit Adoption Calculations'
+  # AH127 = 20000 and AH128 = 5000 to match advanced_controls above
+  assert result.loc[2015, 'World'] == pytest.approx(0.01272157755)
+  assert result.loc[2035, 'World'] == pytest.approx(0.15275428774)
+  assert result.loc[2060, 'World'] == pytest.approx(0.37217842574)
+
 def test_soln_pds_big4_iunits_reqd():
   soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
@@ -570,6 +585,24 @@ def test_soln_ref_new_iunits_reqd():
   expected.name = "soln_ref_new_iunits_reqd"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_soln_ref_new_iunits_reqd_multiple_replacements():
+  ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=20000.0,
+      soln_avg_annual_use=5000.0)
+  soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
+      columns=soln_ref_funits_adopted_list[0]).set_index('Year')
+  soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
+      columns=soln_pds_funits_adopted_list[0]).set_index('Year')
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
+  result = ua.soln_ref_new_iunits_reqd()
+  # values from SolarPVUtil setting 'Unit Adoption Calculations'
+  # AH189 = 20000 and AH190 = 5000 to match advanced_controls above
+  assert result.loc[2015, 'World'] == pytest.approx(0.00088767258)
+  assert result.loc[2035, 'World'] == pytest.approx(0.00443836291)
+  assert result.loc[2060, 'World'] == pytest.approx(0.00887672581)
+
 def test_conv_ref_new_iunits_reqd():
   ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=182411.28,
       conv_avg_annual_use=4946.84)
@@ -586,6 +619,24 @@ def test_conv_ref_new_iunits_reqd():
       columns=conv_ref_new_iunits_reqd_list[0]).set_index('Year')
   expected.name = "conv_ref_new_iunits_reqd"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_conv_ref_new_iunits_reqd_multiple_replacements():
+  ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=20000.0,
+      conv_avg_annual_use=5000.0)
+  soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
+      columns=soln_ref_funits_adopted_list[0]).set_index('Year')
+  soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
+      columns=soln_pds_funits_adopted_list[0]).set_index('Year')
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
+  result = ua.conv_ref_new_iunits_reqd()
+  # values from SolarPVUtil setting 'Unit Adoption Calculations'
+  # AH252 = 4.0 and 'Advanced Controls'!F95 = 5000.0
+  assert result.loc[2015, 'World'] == pytest.approx(0.01183390497)
+  assert result.loc[2035, 'World'] == pytest.approx(0.14831592483)
+  assert result.loc[2060, 'World'] == pytest.approx(0.36330169992)
 
 def test_to_dict():
   ac = advanced_controls.AdvancedControls(
