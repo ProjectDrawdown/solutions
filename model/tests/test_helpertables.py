@@ -204,6 +204,16 @@ def test_soln_pds_funits_adopted_zero_regional():
   assert result.loc[2030, 'OECD90'] == 0
   assert result.loc[2043, 'EU'] == 0
 
+
+def test_soln_pds_funits_custom_pds():
+    """ Many land models use Fully Customised PDS. In this case, the full DataFrame is
+    simply passed through HelperTables """
+    datadir = pathlib.Path(__file__).parents[0].joinpath('data')
+    custom_scen = pd.read_csv(datadir.joinpath('ca_scenario_1_trr.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(soln_pds_adoption_basis='Fully Customized PDS')
+    ht = helpertables.HelperTables(ac, adoption_data_per_region=custom_scen)
+    pd.testing.assert_frame_equal(ht.soln_pds_funits_adopted(), custom_scen)
+
 def test_to_dict():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
       soln_pds_adoption_prognostication_growth='Medium',

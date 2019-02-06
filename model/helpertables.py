@@ -9,26 +9,25 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
-from model import interpolation
 
 class HelperTables:
-  """Implementation for the Helper Tables module.
-  """
-  def __init__(self, ac, ref_datapoints, pds_datapoints,
-      ref_tam_per_region, pds_tam_per_region, adoption_data_per_region,
-      adoption_trend_per_region, adoption_is_single_source):
-    """HelperTables.
+  """ Implementation for the Helper Tables module. """
+
+  def __init__(self, ac, adoption_data_per_region, ref_datapoints=None, pds_datapoints=None, ref_tam_per_region=None,
+               pds_tam_per_region=None, adoption_trend_per_region=None, adoption_is_single_source=False):
+    """
+    HelperTables.
        Arguments:
          ac = advanced_controls.py object, storing settings to control
            model operation.
-         ref_datapoints: a DataFrame with columns per region and two rows for two years of data.
-         pds_datapoints: a DataFrame with columns per region and two rows for two years of data.
-         ref_tam_per_region: dataframe of total addressible market per major
-           region for the Referene scenario.
-         pds_tam_per_region: dataframe of total addressible market per major
-           region for the PDS scenario.
          adoption_data_per_region: dataframe with one column per region (World, OECD90, Eastern
            Europe, Latin America, etc).
+         ref_datapoints: a DataFrame with columns per region and two rows for two years of data.
+         pds_datapoints: a DataFrame with columns per region and two rows for two years of data.
+         ref_tam_per_region: dataframe of total addressable market per major
+           region for the Reference scenario.
+         pds_tam_per_region: dataframe of total addressable market per major
+           region for the PDS scenario.
          adoption_trend_per_region: adoption trend (predictions using 2nd Poly, 3rd Poly, etc
            as configured in the solution) with one column per region
          adoption_is_single_source (bool): whether the adoption data comes from a single source
@@ -46,9 +45,11 @@ class HelperTables:
   @lru_cache()
   def soln_ref_funits_adopted(self):
     """Cumulative Adoption in funits, interpolated between two ref_datapoints.
-
        'Helper Tables'!B26:L73
     """
+    if self.ref_datapoints is None:
+      return None  # no REF data for many land solutions
+
     first_year = self.ref_datapoints.first_valid_index()
     last_year = 2060
     adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
@@ -97,11 +98,13 @@ class HelperTables:
 
        'Helper Tables'!B90:L137
     """
+    if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
+      return self.adoption_data_per_region
+
     first_year = self.pds_datapoints.first_valid_index()
     last_year = 2060
     adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
         columns=self.pds_datapoints.columns.copy(), dtype='float')
-    growth = self.ac.soln_pds_adoption_prognostication_growth
 
     if self.ac.soln_pds_adoption_basis == 'Linear':
       adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints, adoption)
@@ -111,8 +114,6 @@ class HelperTables:
       adoption = self.adoption_trend_per_region.fillna(0.0)
     elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
       raise NotImplementedError('Custom S-Curve support not implemented')
-    elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-      raise NotImplementedError('Fully Custom Adoption support not implemented')
 
     if self.adoption_is_single_source:
       # The World region can specify a single source (all the sub-regions use
