@@ -83,7 +83,9 @@ def test_co2eq_mmt_reduced_allfields():
       columns=["A", "B"], index=[2020, 2021, 2022])
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+
 def test_co2_ppm_calculator():
+  # test replace
   soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
       columns=["World", "B"], index=[2020, 2021, 2022])
   soln_pds_net_grid_electricity_units_used = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
@@ -113,6 +115,17 @@ def test_co2_ppm_calculator():
   expected = pd.DataFrame(co2_ppm_calculator_list[1:],
       columns=co2_ppm_calculator_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+  # test land model (data from Tropical Forests 3Aug18)
+  ac = advanced_controls.AdvancedControls(seq_rate_global=4.150868085, solution_category='LAND',
+                                          emissions_use_co2eq=True)
+  funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
+  land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
+  c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist)
+  result = c2.co2_ppm_calculator()
+  assert result.at[2059, 'PPM'] == pytest.approx(6.79894469686587)
+  assert result.at[2060, 'PPM'] == pytest.approx(6.98450283426954)
+  assert result.at[2015, 'Total'] == pytest.approx(105.702086549681)
 
 def test_co2eq_ppm_calculator():
   soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
@@ -436,14 +449,14 @@ def test_co2eq_net_indirect_emissions_iunits():
 
 
 def test_co2_sequestered_global():
-    """ Test vals from Tropical Forests"""
+    """ Test vals from Tropical Forests """
     ac = advanced_controls.AdvancedControls(seq_rate_global=4.150868085)
     funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
     land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
     c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist)
     df = c2.co2_sequestered_global()
-    assert df.loc[2060, 'All'] == pytest.approx(2671.37555477147)
-    assert df.loc[2015, 'Tropical-Semi-Arid'] == pytest.approx(37.6066107467328)
+    assert df.loc[2060, 'All'] == pytest.approx(2884.57122692783)
+    assert df.loc[2015, 'Tropical-Semi-Arid'] == pytest.approx(42.2676049356999)
 
 
 def test_to_dict():
@@ -962,11 +975,11 @@ co2_ppm_calculator_list = [
     ["Year", "PPM", "Total", 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044, 2045, 2046, 2047, 2048, 2049, 2050, 2051, 2052, 2053, 2054, 2055, 2056, 2057, 2058, 2059, 2060],
     [2020, 0.0002208524404346944, 1.749548862635562, 0.0, 0.0, 0.0, 0.0, 0.0, 1.749548862635562, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2021, 0.00042556622035450157, 3.3712504844042908, 0.0, 0.0, 0.0, 0.0, 0.0, 1.6217016217687286, 1.749548862635562, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2022, 0.00042556622035450157, 3.3712504844042908, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.6217016217687286, 1.749548862635562, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+    [2022, 0.0006209249414467069, 4.918843201152522, 0.0, 0.0, 0.0, 0.0, 0.0, 1.5475927167482313, 1.6217016217687286, 1.749548862635562, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
 # Not from spreadsheet, crafted up data for test case
 co2eq_ppm_calculator_list = [
     ["Year", "CO2-eq PPM", "CO2 PPM", "CH4 PPB", "CO2 RF", "CH4 RF"],
-    [2020, 0.04371480078, 0.00022085244, 1.0, 0.0000029539005752, 0.00058169961],
-    [2021, 0.04391953682, 0.00042556622, 1.0, 0.0000056919451699, 0.00058169961],
-    [2022, 0.04391953682, 0.00042556622, 1.0, 0.0000056919451699, 0.00058169961]]
+    [2020, 0.04371480078913237, 0.0002208524404346944, 1.0, 0.0000029539005752, 0.00058169961],
+    [2021, 0.043919536828582295, 0.00042556622035450157, 1.0, 0.0000056919451699, 0.00058169961],
+    [2022, 0.04411491679201163, 0.0006209249414467069, 1.0, 0.0000056919451699, 0.00058169961]]

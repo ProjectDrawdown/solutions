@@ -9,11 +9,11 @@ from model import helpertables as ht
 from model import interpolation
 
 
-SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE')
+SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND')
 translate_adoption_bases = { "DEFAULT Linear": "Linear", "DEFAULT S-Curve": "S-Curve" }
-valid_adoption_bases = set(['Linear', 'S-Curve', 'Existing Adoption Prognostications',
-    'Customized S-Curve Adoption', 'Fully Customized PDS', None])
-valid_adoption_growth = set(['High', 'Medium', 'Low', None])
+valid_adoption_bases = {'Linear', 'S-Curve', 'Existing Adoption Prognostications',
+    'Customized S-Curve Adoption', 'Fully Customized PDS', None}
+valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
 class AdvancedControls:
   """Advanced Controls module, with settings impacting other modules.
@@ -253,8 +253,8 @@ class AdvancedControls:
                conv_lifetime_capacity=None,
                conv_avg_annual_use=None,
 
-               report_start_year=None,
-               report_end_year=None,
+               report_start_year=2020,
+               report_end_year=2050,
 
                soln_var_oper_cost_per_funit=None,
                soln_fixed_oper_cost_per_iunit=None,
@@ -392,8 +392,10 @@ class AdvancedControls:
     ltext = str(text).lower()
     if ltext == "replacement":
       return SOLUTION_CATEGORY.REPLACEMENT
-    if ltext == "reduction":
+    elif ltext == "reduction":
       return SOLUTION_CATEGORY.REDUCTION
-    if ltext == "not_applicable" or ltext == "not applicable" or ltext == "na":
+    elif ltext == 'land':
+      return SOLUTION_CATEGORY.LAND
+    elif ltext == "not_applicable" or ltext == "not applicable" or ltext == "na":
       return SOLUTION_CATEGORY.NOT_APPLICABLE
     raise ValueError("invalid solution category: " + str(text))
