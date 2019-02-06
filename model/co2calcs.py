@@ -5,11 +5,9 @@ Computes reductions in CO2-equivalent emissions.
 
 from functools import lru_cache
 import math
-
 import numpy as np
 import pandas as pd
-
-from model import advanced_controls
+from model.advanced_controls import SOLUTION_CATEGORY
 
 THERMAL_MOISTURE_REGIONS = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
                             'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
@@ -164,20 +162,25 @@ class CO2Calcs:
 
        'CO2 Calcs'!A119:AW165
     """
-    co2_mmt_reduced = self.co2_mmt_reduced()
-    co2eq_mmt_reduced = self.co2eq_mmt_reduced()
-    columns = ["PPM", "Total"] + list(range(2015, 2061))
-    ppm_calculator = pd.DataFrame(0, columns=columns,
-        index=co2_mmt_reduced.index.copy(), dtype=np.float64)
+    if self.ac.solution_category == SOLUTION_CATEGORY.LAND:
+      co2_vals = self.co2_sequestered_global()['All']  # (actually CO2eq seq + reduced, will change if soln requires it)
+      assert self.ac.emissions_use_co2eq, 'Land models must use CO2 eq'
+    else:
+      if self.ac.emissions_use_co2eq:
+        co2_vals = self.co2eq_mmt_reduced()['World']
+      else:
+        co2_vals = self.co2_mmt_reduced()['World']
+    columns = ['PPM', 'Total'] + list(range(2015, 2061))
+    ppm_calculator = pd.DataFrame(0, columns=columns, index=co2_vals.index.copy(), dtype=np.float64)
     ppm_calculator.index = ppm_calculator.index.astype(int)
     ppm_calculator.index.name = 'Year'
     first_year = ppm_calculator.first_valid_index()
     last_year = ppm_calculator.last_valid_index()
     for year in ppm_calculator.index:
-      if year < self.ac.report_start_year:
-        continue
-      b = co2eq_mmt_reduced.loc[year, "World"] if self.ac.emissions_use_co2eq else co2_mmt_reduced.loc[year, "World"]
-      for delta in range(1, last_year - first_year + 1):
+      if year < self.ac.report_start_year and self.ac.solution_category != SOLUTION_CATEGORY.LAND:
+        continue  # on RRS this skips the calc but on LAND the calc is done anyway
+      b = co2_vals[year]
+      for delta in range(1, last_year - first_year + 2):
         if (year + delta - 1) > last_year:
           break
         val = 0.217
@@ -185,10 +188,10 @@ class CO2Calcs:
         val += 0.338 * math.exp(-delta / 18.51)
         val += 0.186 * math.exp(-delta / 1.186)
         ppm_calculator.loc[year + delta - 1, year] = b * val
-    ppm_calculator.loc[:, "Total"] = ppm_calculator.sum(axis=1)
+    ppm_calculator.loc[:, 'Total'] = ppm_calculator.sum(axis=1)
     for year in ppm_calculator.index:
-      ppm_calculator.loc[year, "PPM"] = ppm_calculator.loc[year, "Total"] / (44.01 * 1.8 * 100)
-    ppm_calculator.name = "co2_ppm_calculator"
+      ppm_calculator.at[year, 'PPM'] = ppm_calculator.at[year, 'Total'] / (44.01 * 1.8 * 100)
+    ppm_calculator.name = 'co2_ppm_calculator'
     return ppm_calculator
 
   @lru_cache()
@@ -228,7 +231,7 @@ class CO2Calcs:
           EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
        'CO2 Calcs'!R234:AB280
     """
-    if self.ac.solution_category == advanced_controls.SOLUTION_CATEGORY.REPLACEMENT:
+    if self.ac.solution_category == SOLUTION_CATEGORY.REPLACEMENT:
       return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2_per_KWh
     else:
       return self.soln_net_annual_funits_adopted * 0
@@ -264,7 +267,7 @@ class CO2Calcs:
           EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
        'CO2 Calcs'!R288:AB334
     """
-    if self.ac.solution_category == advanced_controls.SOLUTION_CATEGORY.REPLACEMENT:
+    if self.ac.solution_category == SOLUTION_CATEGORY.REPLACEMENT:
       return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2eq_per_KWh
     else:
       return self.soln_net_annual_funits_adopted * 0
@@ -381,3 +384,8 @@ def ch4_rf(x):
 def co2eq_ppm(x):
   original_co2 = 400
   return (original_co2 * math.exp(x / 5.35)) - original_co2
+
+
+if __name__ == '__main__':
+  # debug use only
+  pass

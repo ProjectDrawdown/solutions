@@ -99,6 +99,8 @@ def test_solution_category():
   assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.REPLACEMENT
   ac = advanced_controls.AdvancedControls(solution_category="reduction")
   assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.REDUCTION
+  ac = advanced_controls.AdvancedControls(solution_category="LAND")
+  assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.LAND
   ac = advanced_controls.AdvancedControls(solution_category="not applicable")
   assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.NOT_APPLICABLE
   ac = advanced_controls.AdvancedControls(solution_category="Not_ApPLICaBLe")
