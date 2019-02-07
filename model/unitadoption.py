@@ -187,7 +187,7 @@ class UnitAdoption:
        First Cost, Marginal First Cost and NPV.
        SolarPVUtil 'Unit Adoption Calculations'!AG136:AQ182
     """
-    growth = self.soln_pds_tot_iunits_reqd().diff().clip_lower(0).iloc[1:]  # iloc[0] NA after diff
+    growth = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
     for region, column in replacements.iteritems():
@@ -252,7 +252,7 @@ class UnitAdoption:
 
        SolarPVUtil 'Unit Adoption Calculations'!AG197:AQ244
     """
-    growth = self.soln_ref_tot_iunits_reqd().diff().clip_lower(0).iloc[1:]  # iloc[0] NA after diff
+    growth = self.soln_ref_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
     for region, column in replacements.iteritems():
@@ -335,7 +335,7 @@ class UnitAdoption:
 
        SolarPVUtil 'Unit Adoption Calculations'!AG251:AQ298
     """
-    growth = self.conv_ref_annual_tot_iunits().diff().clip_lower(0).iloc[1:]  # iloc[0] NA after diff
+    growth = self.conv_ref_annual_tot_iunits().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
     for region, column in replacements.iteritems():
