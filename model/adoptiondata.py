@@ -137,7 +137,7 @@ class AdoptionData:
     """
     if not trend:
       trend = self.adconfig.loc['trend', 'World']
-    growth = self.adconfig.loc['growth', 'World']
+    growth = self.ac.soln_pds_adoption_prognostication_growth
     result = self._adoption_trend(self.adoption_low_med_high_global(), growth, trend)
     result.name = 'adoption_trend_global_' + trend.lower()
     return result
