@@ -151,3 +151,12 @@ Jan 28 - Feb 1, 2019
 + add ConcentratedSolar solution
   Generated from Excel using tools/solution_xls_extract
 + fixes in regional data and NaN handling
+
+Feb 4 - Feb 9, 2019
++ extend CO2Cals for Land solutions
++ add LandfillMethane solution
+  Generated from Excel using tools/solution_xls_extract
++ UI: add Overview tab
+  Includes a solution list and a nested donut chart of solutions and
+  sectors, both sorted by CO2 reduction. Experiment with making the donut
+  chart interactive with a slider to control peak population estimate.
