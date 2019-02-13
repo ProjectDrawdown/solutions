@@ -204,7 +204,6 @@ def test_soln_pds_funits_adopted_zero_regional():
   assert result.loc[2030, 'OECD90'] == 0
   assert result.loc[2043, 'EU'] == 0
 
-
 def test_soln_pds_funits_custom_pds():
     """ Many land models use Fully Customised PDS. In this case, the full DataFrame is
     simply passed through HelperTables """
@@ -213,6 +212,48 @@ def test_soln_pds_funits_custom_pds():
     ac = advanced_controls.AdvancedControls(soln_pds_adoption_basis='Fully Customized PDS')
     ht = helpertables.HelperTables(ac, adoption_data_per_region=custom_scen)
     pd.testing.assert_frame_equal(ht.soln_pds_funits_adopted(), custom_scen)
+
+def test_ref_adoption_use_pds_years_and_vice_versa():
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      ref_adoption_use_pds_years=range(2030,2040), pds_adoption_use_ref_years=range(2020,2030))
+  ref_datapoints = pd.DataFrame([
+    [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778,
+        14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
+    [2050, 272.41409799109, 97.40188603589, 0.52311962553, 60.19386560477, 6.43555351544,
+        42.24551570326, 31.56519386433, 14.33357622563, 72.82702319498, 16.41524405748]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  pds_datapoints = pd.DataFrame([
+    [2014, 112.633033, 75.0042456, 0.332383, 21.072504, 1.575078, 14.650619,
+      14.972222, 2.748301, 55.272054, 13.12465],
+    [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  adoption_data_per_region = pd.DataFrame(adoption_data_med_single_source_list[1:],
+      columns=adoption_data_med_single_source_list[0], dtype=np.float64).set_index('Year')
+  adoption_data_per_region.index = adoption_data_per_region.index.astype(int)
+  adoption_trend_per_region = pd.DataFrame(adoption_trend_per_region_list[1:],
+      columns=adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
+  adoption_trend_per_region.index = adoption_trend_per_region.index.astype(int)
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=pds_datapoints,
+      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
+      adoption_data_per_region=adoption_data_per_region,
+      adoption_trend_per_region=adoption_trend_per_region,
+      adoption_is_single_source=True)
+  ref_expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
+      columns=soln_ref_funits_adopted_list[0]).set_index('Year')
+  ref_expected.name = 'soln_ref_funits_adopted'
+  pds_expected = pd.DataFrame(soln_pds_funits_adopted_single_source_list[1:],
+      columns=soln_pds_funits_adopted_single_source_list[0]).set_index('Year')
+  pds_expected.name = 'soln_pds_funits_adopted'
+  ref_result = ht.soln_ref_funits_adopted()
+  pds_result = ht.soln_pds_funits_adopted()
+  pd.testing.assert_series_equal(ref_result.loc[2030:2039, 'World'],
+      pds_expected.loc[2030:2039, 'World'], check_exact=False)
+  pd.testing.assert_frame_equal(ref_result.loc[2040:], ref_expected.loc[2040:], check_exact=False)
+  pd.testing.assert_series_equal(pds_result.loc[2020:2029, 'World'],
+      ref_expected.loc[2020:2029, 'World'], check_exact=False)
+  pd.testing.assert_frame_equal(pds_result.loc[2040:], pds_expected.loc[2040:], check_exact=False)
 
 def test_to_dict():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,

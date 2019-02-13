@@ -109,3 +109,10 @@ def test_solution_category():
   assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.NOT_APPLICABLE
   with pytest.raises(ValueError):
     _ = advanced_controls.AdvancedControls(solution_category="invalid")
+
+def test_pds_ref_use_years():
+  ac = advanced_controls.AdvancedControls(ref_adoption_use_pds_years=[2014],
+      pds_adoption_use_ref_years=[2015])
+  with pytest.raises(ValueError):
+    _ = advanced_controls.AdvancedControls(ref_adoption_use_pds_years=[2014],
+      pds_adoption_use_ref_years=[2014])

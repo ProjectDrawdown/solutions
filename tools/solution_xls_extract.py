@@ -114,6 +114,14 @@ def get_rrs_scenarios(wb):
       assert sr_tab.cell_value(row + 198, 1) == 'REF ADOPTION SCENARIO INPUTS'
       s['soln_ref_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 201, 4))
 
+      assert sr_tab.cell_value(row + 217, 1) == 'Adoption Adjustment'
+      adjust = sr_tab.cell_value(row + 218, 4)
+      if adjust and adjust != "(none)":
+        s['pds_adoption_use_ref_years'] = [int(x) for x in adjust.split(',') if x is not '']
+      adjust = sr_tab.cell_value(row + 219, 4)
+      if adjust and adjust != "(none)":
+        s['ref_adoption_use_pds_years'] = [int(x) for x in adjust.split(',') if x is not '']
+
       # From Advanced Controls
       (r, c) = cell_to_offsets('A159')
       s['solution_category'] = ac_tab.cell_value(r, c)
@@ -228,6 +236,10 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_source'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_trend'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_growth'], prefix=prefix)
+  if 'ref_adoption_use_pds_years' in s:
+    oneline(f=f, s=s, names=['ref_adoption_use_pds_years'], prefix=prefix)
+  if 'pds_adoption_use_ref_years' in s:
+    oneline(f=f, s=s, names=['pds_adoption_use_ref_years'], prefix=prefix)
   oneline(f=f, s=s, names=['source_until_2014'], prefix=prefix)
   oneline(f=f, s=s, names=['ref_source_post_2014'], prefix=prefix)
   oneline(f=f, s=s, names=['pds_source_post_2014'], prefix=prefix, suffix='\n')
