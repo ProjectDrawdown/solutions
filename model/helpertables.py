@@ -107,7 +107,7 @@ class HelperTables:
     """Cumulative Adoption in funits in the PDS.
 
        Arguments:
-         suppress_adjustment: disable pds_adoption_use_ref_years processing. This is
+         suppress_override: disable pds_adoption_use_ref_years processing. This is
            used to avoid an infinite loop if both pds_adoption_use_ref_years and
            ref_adoption_use_pds_years are set.
 
