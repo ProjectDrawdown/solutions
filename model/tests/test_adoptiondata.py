@@ -92,6 +92,30 @@ def test_CSP_LA():
   assert result.loc[2037, 'adoption'] == pytest.approx(13.14383564892)
   assert result.loc[2060, 'adoption'] == pytest.approx(295.34923165295)
 
+def test_CSP_World():
+  # ConcentratedSolar World exposed a corner case, test it specifically.
+  data_sources = {
+    'Ambitious Cases': {
+      'source1': str(datadir.joinpath('ad_CSP_World_source1.csv')),
+      'source2': str(datadir.joinpath('ad_CSP_World_source2.csv')),
+      'source3': str(datadir.joinpath('ad_CSP_World_source3.csv')),
+      'source4': str(datadir.joinpath('ad_CSP_World_source4.csv')),
+      'source5': str(datadir.joinpath('ad_CSP_World_source5.csv')),
+      'source6': str(datadir.joinpath('ad_CSP_World_source6.csv')),
+      },
+    'Conservative Cases': {},
+    'Baseline Cases': {},
+    '100% RES2050 Case': {},
+  }
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='Ambitious Cases',
+      soln_pds_adoption_prognostication_growth='Low')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+  result = ad.adoption_trend_global()
+  assert result.loc[2014, 'adoption'] == pytest.approx(34.94818207)
+  assert result.loc[2015, 'adoption'] == pytest.approx(24.85041545)
+  assert result.loc[2016, 'adoption'] == pytest.approx(17.78567283)
+  assert result.loc[2060, 'adoption'] == pytest.approx(4079.461034)
+
 def test_adoption_min_max_sd_global():
   s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
@@ -137,7 +161,8 @@ def test_adoption_low_med_high_global_all_sources():
 
 def test_adoption_trend_global():
   s = 'Greenpeace AER'
-  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s,
+      soln_pds_adoption_prognostication_growth='Medium')
   ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
   result = ad.adoption_trend_global(trend='Linear')
   expected = pd.DataFrame(linear_trend_global_list[1:],
@@ -240,7 +265,6 @@ def test_adoption_data_per_region_missing_data():
       soln_pds_adoption_prognostication_growth='Medium')
   ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
   result = ad.adoption_trend_per_region()
-  print(str(ad.adoption_low_med_high_oecd90()))
   # Expected values from LandfillMethane Middle East (renamed OECD90 here)
   expected = pd.DataFrame(
     [0.04274361694, 0.10439941173, 0.16201388582, 0.21580091091, 0.26597435870, 0.31274810090, 0.35633600920,
@@ -254,7 +278,8 @@ def test_adoption_data_per_region_missing_data():
   pd.testing.assert_frame_equal(result[['OECD90']], expected, check_exact=False, check_names=False)
 
 def test_adoption_trend_per_region():
-  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='ALL SOURCES')
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='ALL SOURCES',
+      soln_pds_adoption_prognostication_growth='Medium')
   ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
   result = ad.adoption_trend_per_region()
   pd.testing.assert_series_equal(result['World'],
@@ -280,7 +305,8 @@ def test_adoption_trend_per_region():
 
 def test_to_dict():
   s = 'Greenpeace AER'
-  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s,
+      soln_pds_adoption_prognostication_growth='Medium')
   ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
   result = ad.to_dict()
   expected = ['adoption_data_global', 'adoption_min_max_sd_global',
