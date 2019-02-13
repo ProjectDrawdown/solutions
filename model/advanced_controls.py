@@ -19,26 +19,29 @@ class AdvancedControls:
   """Advanced Controls module, with settings impacting other modules.
   pds_2014_cost: US$2014 cost to acquire + install, per implementation
      unit (ex: kW for energy scenarios), for the Project Drawdown
-     Solution (PDS).  "Advanced Controls"!B128
+     Solution (PDS).  SolarPVUtil "Advanced Controls"!B128
   ref_2014_cost: US$2014 cost to acquire + install, per implementation
-     unit, for the reference technology.  "Advanced Controls"!B128 (same as PDS)
+     unit, for the reference technology.
+     SolarPVUtil "Advanced Controls"!B128 (same as PDS)
   conv_2014_cost: US$2014 cost to acquire + install, per implementation
-     unit, for the conventional technology.  "Advanced Controls"!B95
+     unit, for the conventional technology.
+     SolarPVUtil "Advanced Controls"!B95
   soln_first_cost_efficiency_rate: rate that the modelled solution improves /
      lowers in cost per year. In calculations this is usually converted
      to the learning rate, which is 1/efficiency_rate.
-     "Advanced Controls"!C128
+     SolarPVUtil "Advanced Controls"!C128
   conv_first_cost_efficiency_rate: rate that the conventional technology
      improves / lowers in cost each year. Efficiency rates for the
      conventional technology are typically close to zero, these technologies
      have already had many years of development and maturation.
      In calculations this is usually converted to the learning rate,
-     which is 1/efficiency_rate.  "Advanced Controls"!C95
+     which is 1/efficiency_rate.  SolarPVUtil "Advanced Controls"!C95
   soln_first_cost_below_conv (boolean): The solution first cost may decline
      below that of the Conventional due to the learning rate chosen. This may
      be acceptable in some cases for instance when the projections in the
      literature indicate so. In other cases, it may not be likely for the
-     Solution to become cheaper than the Conventional.  "Advanced Controls"!C132
+     Solution to become cheaper than the Conventional.
+     SolarPVUtil "Advanced Controls"!C132
   soln_energy_efficiency_factor (float): Units of energy reduced per year per
      functional unit installed.
 
@@ -54,11 +57,11 @@ class AdvancedControls:
      FOR SOLUTIONS THAT CONSUME MORE ENERGY THAN THE CONVENTIONAL TECHNOLOGY/PRACTICE:
      Use the next input, Total Annual Energy Used SOLUTION (e.g. electric vehicles
      use energy from the electric grid, whereas conventional vehicles use only fuel)
-     "Advanced Controls"!C159
+     SolarPVUtil "Advanced Controls"!C159
   conv_annual_energy_used (float): for solutions that reduce electricity
      consumption per functional unit, enter the average electricity used per
      functional unit of the conventional technologies/practices.
-     "Advanced Controls"!B159
+     SolarPVUtil "Advanced Controls"!B159
   soln_annual_energy_used (float): This refers to the units of average energy
      used per year per functional unit installed.
 
@@ -69,12 +72,12 @@ class AdvancedControls:
 
      E.g. electric vehicles use energy from the electric grid, whereas
      conventional vehicles use only fuel)
-     "Advanced Controls"!D159
+     SolarPVUtil "Advanced Controls"!D159
 
   conv_fuel_consumed_per_funit (float): This refers to the unit (default is Liters)
      of FUEL used per year per cumulative unit installed. The equation may need to
      be edited if your energy savings depend on the marginal unit installed rather
-     than the cumulative units.   "Advanced Controls"!F159
+     than the cumulative units. SolarPVUtil "Advanced Controls"!F159
   soln_fuel_efficiency_factor (float): This refers to the % fuel reduced by the
      SOLUTION relative to the CONVENTIONAL mix of technologies/practices. The
      Percent reduction is assumed to apply to the Conventional Fuel Unit, if
@@ -93,42 +96,42 @@ class AdvancedControls:
      enter negative number representing total additional fuel used, X < 0 (e.g. we
      hope solutions do not actually consume more fuel than the conventional practice,
      check with the senior research team if you run into this)
-     "Advanced Controls"!G159
+     SolarPVUtil "Advanced Controls"!G159
 
   fuel_emissions_factor (float):
-     "Advanced Controls"!I159
+     SolarPVUtil "Advanced Controls"!I159
   fuel_emissions_factor_2 (float):
-     "Advanced Controls"!I163
+     SolarPVUtil "Advanced Controls"!I163
 
   conv_emissions_per_funit (float): This represents the direct CO2-eq emissions
      that result per functional unit that are not accounted for by use of the
      electric grid or fuel consumption.
-     "Advanced Controls"!C174
+     SolarPVUtil "Advanced Controls"!C174
   soln_emissions_per_funit (float): This represents the direct CO2-eq emissions
      that result per functional unit that are not accounted for by use of the
      electric grid or fuel consumption.
-     "Advanced Controls"!D174
+     SolarPVUtil "Advanced Controls"!D174
 
   ch4_is_co2eq (boolean): True if CH4 emissions measurement is in terms of CO2
      equivalent, False if measurement is in units of CH4 mass.
-     derived from "Advanced Controls"!I184
+     derived from SolarPVUtil "Advanced Controls"!I184
   n2o_is_co2eq (boolean): True if N2O emissions measurement is in terms of CO2
      equivalent, False if measurement is in units of N2O mass.
-     derived from "Advanced Controls"!J184
+     derived from SolarPVUtil "Advanced Controls"!J184
   co2eq_conversion_source (string): One of the conversion_source names
      defined in model/emissions_factors.py like "AR5 with feedback" or "AR4"
-     "Advanced Controls"!I185
+     SolarPVUtil "Advanced Controls"!I185
   ch4_co2_per_twh (float): CO2-equivalent CH4 emitted per TWh, in tons.
-     "Advanced Controls"!I174
+     SolarPVUtil "Advanced Controls"!I174
   n2o_co2_per_twh (float): CO2-equivalent N2O emitted per TWh, in tons.
-     "Advanced Controls"!J174
+     SolarPVUtil "Advanced Controls"!J174
   soln_indirect_co2_per_iunit (float): CO2-equivalent indirect emissions per
-     iunit, in tons.  "Advanced Controls"!G174
+     iunit, in tons.  SolarPVUtil "Advanced Controls"!G174
   conv_indirect_co2_per_unit (float): CO2-equivalent indirect emissions per
      unit (func or impl depending on conv_indirect_co2_in_iunits).
-     "Advanced Controls"!F174
+     SolarPVUtil "Advanced Controls"!F174
   conv_indirect_co2_is_iunits (boolean): whether conv_indirect_co2_per_unit is
-     iunits (True) or funits (False).  "Advanced Controls"!F184
+     iunits (True) or funits (False).  SolarPVUtil "Advanced Controls"!F184
 
   soln_lifetime_capacity (float): This is the average expected number of
      functional units generated by the SOLUTION throughout their lifetime
@@ -139,7 +142,7 @@ class AdvancedControls:
      it can travel until it can no longer be used and a new vehicle is required.
      Another example would be an efficient HVAC system, which can only service a
      certain amount of floor space over a period of time before it will require
-     replacement.  "Advanced Controls"!E128
+     replacement.  SolarPVUtil "Advanced Controls"!E128
   soln_avg_annual_use (float): Average Annual Use is the average annual use of
      the technology/practice, in functional units per implementation unit. This
      will likely differ significantly based on location, be sure to note which
@@ -147,16 +150,16 @@ class AdvancedControls:
      weighted average may need to be used.
 
      E.g. the average annual number of passenger kilometers (pkm) traveled per
-     electric vehicle.  "Advanced Controls"!F128
+     electric vehicle.  SolarPVUtil "Advanced Controls"!F128
   conv_lifetime_capacity (float): as soln_lifetime_capacity but for the conventional
-     technology.  "Advanced Controls"!E95
+     technology.  SolarPVUtil "Advanced Controls"!E95
   conv_avg_annual_use (float): as soln_avg_annual_use but for the conventional
-     technology.  "Advanced Controls"!F95
+     technology.  SolarPVUtil "Advanced Controls"!F95
 
   report_start_year (int): first year of results to report (typically 2020).
-     "Advanced Controls"!H4
+     SolarPVUtil "Advanced Controls"!H4
   report_end_year (int): last year of results to report (typically 2050).
-     "Advanced Controls"!I4
+     SolarPVUtil "Advanced Controls"!I4
 
   soln_var_oper_cost_per_funit (float): This is the annual operating cost per functional
      unit, derived from the SOLUTION.  In most cases this will be expressed as a
@@ -164,7 +167,7 @@ class AdvancedControls:
 
      E.g., $1 per Kwh or $1,000,000,000 per TWh. In terms of transportation, this
      can be considered the weighted average price of fuel per passenger kilometer.
-     "Advanced Controls"!H128
+     SolarPVUtil "Advanced Controls"!H128
   soln_fixed_oper_cost_per_iunit (float): This is the annual operating cost per
      implementation unit, derived from the SOLUTION.  In most cases this will be
      expressed as a cost per 'some unit of installation size'
@@ -173,50 +176,58 @@ class AdvancedControls:
      total insurance, and maintenance cost per car.
 
      Purchase costs can be amortized here or included as a first cost, but not both.
-     "Advanced Controls"!I128
+     SolarPVUtil "Advanced Controls"!I128
   soln_fuel_cost_per_funit (float): Fuel/consumable cost per functional unit.
-     "Advanced Controls"!K128
-  conv_var_oper_cost_per_funit (float): as soln_var_oper_cost_per_funit. "Advanced Controls"!H95
-  conv_fixed_oper_cost_per_iunit (float): as soln_fixed_oper_cost_per_funit. "Advanced Controls"!I95
-  conv_fuel_cost_per_funit (float): as soln_fuel_cost_per_funit "Advanced Controls"!K95
+     SolarPVUtil "Advanced Controls"!K128
+  conv_var_oper_cost_per_funit (float): as soln_var_oper_cost_per_funit.
+     SolarPVUtil "Advanced Controls"!H95
+  conv_fixed_oper_cost_per_iunit (float): as soln_fixed_oper_cost_per_funit.
+     SolarPVUtil "Advanced Controls"!I95
+  conv_fuel_cost_per_funit (float): as soln_fuel_cost_per_funit.
+     SolarPVUtil "Advanced Controls"!K95
 
   npv_discount_rate (float): discount rate for Net Present Value calculations.
-     "Advanced Controls"!B141
-
-  seq_rate_global (float): carbon sequestration rate for All Land or All of Special Land.
-    "Advanced Controls"!B173 (Land models)
-  disturbance_rate (float): disturbance rate "Advanced Controls"!I173 (Land models)
+     SolarPVUtil "Advanced Controls"!B141
 
   emissions_use_co2eq (boolean): whether to use CO2-equivalent for ppm calculations.
-     "Advanced Controls"!B189
+     SolarPVUtil "Advanced Controls"!B189
   emissions_grid_source (string): "IPCC Only" or "Meta Analysis" of multiple studies.
-     "Advanced Controls"!C189
+     SolarPVUtil "Advanced Controls"!C189
   emissions_grid_range (string): "mean", "low" or "high" for which estimate to use.
-     "Advanced Controls"!D189
+     SolarPVUtil "Advanced Controls"!D189
 
   soln_ref_adoption_regional_data (boolean): whether funit adoption should add the regional data
-     to estimate the World, or perform a separate estimate for the world. "Advanced Controls"!B284
+     to estimate the World, or perform a separate estimate for the world.
+     SolarPVUtil "Advanced Controls"!B284
   soln_pds_adoption_regional_data (boolean): as soln_ref_adoption_regional_data.
-     "Advanced Controls"!B246
+     SolarPVUtil "Advanced Controls"!B246
   soln_pds_adoption_basis (string): the type of interpolation to fill in adoption data for
-     each year. Must be one of valid_adoption_bases. "Advanced Controls"!B243
+     each year. Must be one of valid_adoption_bases. SolarPVUtil "Advanced Controls"!B243
   soln_pds_adoption_prognostication_source (string): the name of one specific data source, or the
      name of a class of sources (like "Conservative Cases" or "Ambitious Cases"), or "ALL SOURCES"
-     to take the average of all sources. "Advanced Controls"!B265
+     to take the average of all sources. SolarPVUtil "Advanced Controls"!B265
   soln_pds_adoption_prognostication_trend (string): the type of curve fit
-     to use like 2nd order polynomial or exponential. "Advanced Controls"!B270
+     to use like 2nd order polynomial or exponential. SolarPVUtil "Advanced Controls"!B270
   soln_pds_adoption_prognostication_growth (string): High, Medium, or Low projected growth.
-     "Advanced Controls"!C270
+     SolarPVUtil "Advanced Controls"!C270
   pds_source_post_2014 (string): The name of the data source to use for the PDS case for
-     years after 2014. "Advanced Controls"!B55
+     years after 2014. SolarPVUtil "Advanced Controls"!B55
   ref_source_post_2014 (string): The name of the data source to use for the REF case for
-     years after 2014. "Advanced Controls"!B54
+     years after 2014. SolarPVUtil "Advanced Controls"!B54
   source_until_2014 (string): The name of the data source to use for all cases for years
-     2014 and before. "Advanced Controls"!B53
+     2014 and before. SolarPVUtil "Advanced Controls"!B53
+  ref_adoption_use_pds_years (list of int): years for which the Helpertables REF adoption
+     for 'World' should use the PDS adoption values. SolarPVUtil "ScenarioRecord"! offset 218
+  pds_adoption_use_ref_years (list of int): years for which the Helpertables PDS adoption
+     for 'World' should use the REF adoption values. SolarPVUtil "ScenarioRecord"! offset 219
 
   solution_category (SOLUTION_CATEGORY): Whether the solution is primarily REDUCTION of
      emissions from an existing technology, REPLACEMENT of a technology to one with lower
      emissions, or NOT_APPLICABLE for something else entirely.  'Advanced Controls'!A159
+
+  seq_rate_global (float): carbon sequestration rate for All Land or All of Special Land.
+    TropicalForests "Advanced Controls"!B173 (Land models)
+  disturbance_rate (float): disturbance rate TropicalForests "Advanced Controls"!I173 (Land models)
   """
   def __init__(self,
                pds_2014_cost=None,
@@ -278,6 +289,8 @@ class AdvancedControls:
                pds_source_post_2014=None,
                ref_source_post_2014=None,
                source_until_2014=None,
+               ref_adoption_use_pds_years=set(),
+               pds_adoption_use_ref_years=set(),
 
                solution_category=None,
 
@@ -351,6 +364,13 @@ class AdvancedControls:
     self.pds_source_post_2014 = pds_source_post_2014
     self.ref_source_post_2014 = ref_source_post_2014
     self.source_until_2014 = source_until_2014
+
+    self.ref_adoption_use_pds_years = ref_adoption_use_pds_years
+    self.pds_adoption_use_ref_years = pds_adoption_use_ref_years
+    intersect = set(ref_adoption_use_pds_years) & set(pds_adoption_use_ref_years)
+    if intersect:
+      err = "cannot be in both ref_adoption_use_pds_years and pds_adoption_use_ref_years:" + str(intersect)
+      raise ValueError(err)
 
     self.solution_category = solution_category
     if isinstance(solution_category, str):

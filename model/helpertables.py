@@ -43,9 +43,15 @@ class HelperTables:
     self.adoption_is_single_source = adoption_is_single_source
 
   @lru_cache()
-  def soln_ref_funits_adopted(self):
+  def soln_ref_funits_adopted(self, suppress_override=False):
     """Cumulative Adoption in funits, interpolated between two ref_datapoints.
-       'Helper Tables'!B26:L73
+
+       Arguments:
+         suppress_override: disable ref_adoption_use_pds_years processing. This is
+           used to avoid an infinite loop if both pds_adoption_use_ref_years and
+           ref_adoption_use_pds_years are set.
+
+       SolarPVUtil 'Helper Tables'!B26:L73
     """
     if self.ref_datapoints is None:
       return None  # no REF data for many land solutions
@@ -62,6 +68,10 @@ class HelperTables:
 
     for col in adoption.columns:
       adoption[col] = adoption[col].combine(self.ref_tam_per_region[col], min)
+
+    if not suppress_override and self.ac.ref_adoption_use_pds_years:
+      y = self.ac.ref_adoption_use_pds_years
+      adoption.update(self.soln_pds_funits_adopted(suppress_override=True).loc[y, 'World'])
 
     adoption.name = "soln_ref_funits_adopted"
     adoption.index.name = "Year"
@@ -93,10 +103,15 @@ class HelperTables:
     return adoption
 
   @lru_cache()
-  def soln_pds_funits_adopted(self):
+  def soln_pds_funits_adopted(self, suppress_override=False):
     """Cumulative Adoption in funits in the PDS.
 
-       'Helper Tables'!B90:L137
+       Arguments:
+         suppress_adjustment: disable pds_adoption_use_ref_years processing. This is
+           used to avoid an infinite loop if both pds_adoption_use_ref_years and
+           ref_adoption_use_pds_years are set.
+
+       SolarPVUtil 'Helper Tables'!B90:L137
     """
     if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       return self.adoption_data_per_region
@@ -127,6 +142,10 @@ class HelperTables:
     # cannot exceed the total addressable market
     for col in adoption.columns:
       adoption[col] = adoption[col].combine(self.pds_tam_per_region[col], min)
+
+    if not suppress_override and self.ac.pds_adoption_use_ref_years:
+      y = self.ac.pds_adoption_use_ref_years
+      adoption.update(self.soln_ref_funits_adopted(suppress_override=True).loc[y, 'World'])
 
     # Where we have actual data, use the actual data not the interpolation.
     adoption.update(self.pds_datapoints.iloc[[0]])
