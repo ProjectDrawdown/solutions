@@ -57,6 +57,7 @@ def _convert(raw, units, conversions, substitutions):
   if units in conversions:
     return float(raw) * conversions[units]
   if units == 'kwh/kw': return float(raw)
+  if units == 'million hectares': return float(raw)
   if units == 'capacity factor (%)':
     if isinstance(raw, str) and raw.endswith('%'):
       v = float(raw.strip('%'))/100.0
@@ -93,10 +94,10 @@ def convert_units(row, conversions, substitutions, final_units):
     return float(raw)
 
   val = _convert(raw=raw, units=units, conversions=conversions, substitutions=substitutions)
-  if val == None and final_units:
+  if val is None and final_units:
     units = units + "-" + str(final_units)
     val = _convert(raw=raw, units=units, conversions=conversions, substitutions=substitutions)
-  if val != None:
+  if val is not None:
     return val
 
   raise ValueError("Unknown unit conversion=" + str(row['Original Units']))
@@ -133,6 +134,7 @@ class VMA:
     self.use_weight = not all(pd.isnull(df['Weight']))
     weight = df['Weight'].apply(get_value, substitutions=substitutions)
     weight.name = 'Weight'
+    # note: string is 'Raw Data Input ' for at least 1 soln when pasted manually from xls, had to edit the csv
     raw = df['Raw Data Input'].apply(get_value, substitutions=substitutions)
     raw.name = 'Raw'
     units = df['Original Units']

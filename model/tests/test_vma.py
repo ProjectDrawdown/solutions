@@ -127,6 +127,15 @@ def test_conversion_kWhkW():
   expected = (1000, 1000, 1000)
   assert result == pytest.approx(expected)
 
+def test_conversion_million_hectares():
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
+      A, 1000, million hectares, 
+      """)
+  v = vma.VMA(filename=f)
+  result = v.avg_high_low()
+  expected = (1000, 1000, 1000)
+  assert result == pytest.approx(expected)
+
 def test_conversion_capacity_factor():
   f = io.StringIO("""Source ID, Raw Data Input, Original Units, Weight
       A, 50%, Capacity factor (%), 
