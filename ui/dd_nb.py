@@ -10,3 +10,19 @@ def scenario_sort_key(name):
   if 'Drawdown' in scenario:
     return solution + ':2:' + scenario
   return solution + ':4:' + scenario
+
+# CSS styling to be applied when rendering a DataFrame.
+dataframe_css_styles = [
+  dict(selector="th", props=[
+    ('font-size', '16px'),
+    ('text-align', 'right'),
+    ('font-weight', 'bold'),
+    ('color', '#6d6d6d'),
+    ('background-color', '#f7f7f9')
+    ]),
+  dict(selector="td", props=[
+    ('font-size', '13px'),
+    ('font-weight', 'bold'),
+    ('font-family', 'Monaco, monospace')
+    ]),
+  ]
