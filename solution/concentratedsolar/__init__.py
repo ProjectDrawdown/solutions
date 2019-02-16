@@ -15,7 +15,6 @@ from model import firstcost
 from model import helpertables
 from model import operatingcost
 from model import unitadoption
-from model import vma
 
 from solution import rrs
 
@@ -380,10 +379,6 @@ class ConcentratedSolar:
         conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
         fuel_in_liters=False)
-
-    self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
-        soln_avg_annual_use=self.ac.soln_avg_annual_use,
-        conv_avg_annual_use=self.ac.conv_avg_annual_use)
 
     self.VMAs = []
 

@@ -1,4 +1,6 @@
 import re
+from numpy import nan
+
 
 def cell_to_offsets(cell):
   """Convert an Excel reference like C33 to (row, col) for xlrd."""
@@ -22,10 +24,18 @@ def convert_bool(val):
 def convert_float(val):
     """
     Convert a float; empty cell == 0.0 floating point.
-    Optionally ignore strings if they are not empty (will pass through without throwing an error).
+    Ignores strings if they are not empty (will pass through without throwing an error).
     """
     if val == '':
         return 0.0
     else:
         return float(val)
+
+
+def empty_to_nan(val):
+    """ Converts empty cell or cell containing only spaces to NaN """
+    if isinstance(val, str) and val.replace(' ', '') == '':
+        return nan
+    else:
+        return val
 
