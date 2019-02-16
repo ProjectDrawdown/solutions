@@ -29,12 +29,6 @@ class Silvopasture:
 
         self.ae = aez.AEZ(solution_name=self.name)
 
-        self.current_adoption_vma = vma.VMA(filename=str(thisdir.joinpath('vma_current_adoption.csv')))
-        print(self.current_adoption_vma.avg_high_low())
-        self.VMAs = [
-            ('Current Adoption', self.current_adoption_vma)
-        ]
-
 
 if __name__ == '__main__':
     sp = Silvopasture()
