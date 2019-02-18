@@ -5,11 +5,12 @@ import math
 import os
 
 from model import interpolation
+from model import metaclass_cache
 import numpy as np
 import pandas as pd
 from statistics import mean
 
-class AdoptionData:
+class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
   """Implements Adoption Data module."""
   def __init__(self, ac, data_sources, adconfig):
     """Arguments:
