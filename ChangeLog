@@ -152,11 +152,16 @@ Jan 28 - Feb 1, 2019
   Generated from Excel using tools/solution_xls_extract
 + fixes in regional data and NaN handling
 
-Feb 4 - Feb 9, 2019
-+ extend CO2Cals for Land solutions
+Feb 4 - Feb 8, 2019
++ extend CO2Calcs for Land solutions
 + add LandfillMethane solution
   Generated from Excel using tools/solution_xls_extract
 + UI: add Overview tab
   Includes a solution list and a nested donut chart of solutions and
   sectors, both sorted by CO2 reduction. Experiment with making the donut
   chart interactive with a slider to control peak population estimate.
+
+Feb 11 - Feb 15, 2019
++ Jupyter: reformat tables, add graphs
+  Polishing to support demos of the system.
++ Fix Excel VBAWEB after Mac Excel 16.16.7 update
