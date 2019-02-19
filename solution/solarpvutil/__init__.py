@@ -300,11 +300,11 @@ class SolarPVUtil:
     ad_data_sources = {
       'Baseline Cases': {
         'Based on: IEA ETP 2016 6DS': str(thisdir.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv')),
-        'Based on: AMPERE (2014) IMAGE Refpol': str(thisdir.joinpath(thisdir,
+        'Based on: AMPERE (2014) IMAGE Refpol': str(thisdir.joinpath(
           'ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
-        'Based on: AMPERE (2014) MESSAGE REFPol': str(thisdir.joinpath(thisdir,
+        'Based on: AMPERE (2014) MESSAGE REFPol': str(thisdir.joinpath(
           'ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
-        'Based on: AMPERE (2014) GEM E3 REFpol': str(thisdir.joinpath(thisdir,
+        'Based on: AMPERE (2014) GEM E3 REFpol': str(thisdir.joinpath(
           'ad_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
       },
       'Conservative Cases': {
