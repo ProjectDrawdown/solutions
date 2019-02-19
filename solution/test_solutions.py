@@ -3,6 +3,7 @@
 import pytest
 import concentratedsolar
 import landfillmethane
+import microwind
 import solarpvroof
 import solarpvutil
 
@@ -23,6 +24,13 @@ def test_concentratedsolar():
 def test_landfillmethane():
   scenario = list(landfillmethane.scenarios.keys())[0]
   obj = landfillmethane.LandfillMethane(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+  check_to_dict(obj)
+
+def test_microwind():
+  scenario = list(microwind.scenarios.keys())[0]
+  obj = microwind.MicroWind(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
   check_to_dict(obj)

@@ -35,9 +35,8 @@ def test_infer_classname():
   assert ic('Drawdown-Utility Scale Solar PV_RRS.ES_v1.1_13Jan2019_PUBLIC') == 'SolarPVUtil'
 
 def test_infer_filename():
-  infer = sx.lookup_ad_source_filename
+  infer = sx.lookup_source_filename
   expected = {
-    "[Source 6 - Ambitious]": 'ad_source_6_ambitious.csv',
     "Based on: IEA ETP 2016 6DS": 'ad_based_on_IEA_ETP_2016_6DS.csv',
     "Based on: IEA ETP 2016 - 6DS": 'ad_based_on_IEA_ETP_2016_6DS.csv',
     "Based on: IEA ETP 2016 4DS": 'ad_based_on_IEA_ETP_2016_4DS.csv',
@@ -75,5 +74,5 @@ def test_infer_filename():
       'ad_based_on_Greenpeace_2016_Solar_Thermal_Advanced.csv',
   }
   for key, value in expected.items():
-    inferred = sx.lookup_ad_source_filename(key)
+    inferred = sx.lookup_source_filename(key, prefix="ad_")
     assert inferred == value
