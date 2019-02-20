@@ -20,6 +20,7 @@ import pytest
 import app
 xlwings = pytest.importorskip("xlwings")
 
+from solution import biomass
 from solution import concentratedsolar
 from solution import landfillmethane
 from solution import microwind
@@ -352,3 +353,13 @@ def test_MicroWind_RRS_ELECGEN(start_flask):
     _rrs_test(solution='microwind', scenario=scenario,
         filename=str(solutiondir.joinpath('microwind', 'testdata',
           'Drawdown-MicroWind Turbines_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm')))
+
+@pytest.mark.integration
+def test_Biomass_RRS_ELECGEN(start_flask):
+  """Test for Excel model file Biomass*."""
+  if not excel_present():
+    pytest.skip("Microsoft Excel not present")
+  for scenario in biomass.scenarios.keys():
+    _rrs_test(solution='biomass', scenario=scenario,
+        filename=str(solutiondir.joinpath('biomass', 'testdata',
+          'Drawdown-Biomass from Perennial Crops for Electricity Generation_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm')))

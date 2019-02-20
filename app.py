@@ -19,6 +19,7 @@ from model import interpolation
 from model import operatingcost
 from model import tam
 from model import unitadoption
+from solution import biomass
 from solution import concentratedsolar
 from solution import landfillmethane
 from solution import microwind
@@ -53,6 +54,16 @@ def home():
     # Allow overriding of repo URL in environment for people hosting a fork etc.
     repo = os.getenv('DRAWDOWN_REPO', "https://gitlab.com/codeearth/drawdown")
     return render_template('home.html', repo=repo)
+
+
+@app.route("/biomass", methods=['POST'])
+def biomassHandler():
+    """Biomass solution."""
+    scenario = request.args.get('scenario', default=None)
+    sn = biomass.Biomass(scenario=scenario)
+
+    results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
 
 
 @app.route("/concentratedsolar", methods=['POST'])

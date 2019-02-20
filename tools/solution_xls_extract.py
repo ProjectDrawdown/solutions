@@ -366,6 +366,8 @@ def lookup_source_filename(sourcename, prefix=''):
   if 'IEA' in name and 'ETP' in name:
     if '2016' in name and '6DS' in name: return prefix + 'based_on_IEA_ETP_2016_6DS.csv'
     if '2016' in name and '4DS' in name: return prefix + 'based_on_IEA_ETP_2016_4DS.csv'
+    if '2016' in name and '2DS' in name and 'OPT2-PERENNIALS' in name:
+      return prefix + 'based_on_IEA_ETP_2016_2DS_with_OPT2_perennials.csv'
     if '2016' in name and '2DS' in name: return prefix + 'based_on_IEA_ETP_2016_2DS.csv'
     if '2017' in name and 'REF' in name: return prefix + 'based_on_IEA_ETP_2017_Ref_Tech.csv'
     if '2017' in name and 'B2DS' in name: return prefix + 'based_on_IEA_ETP_2017_B2DS.csv'
@@ -389,7 +391,11 @@ def lookup_source_filename(sourcename, prefix=''):
     if 'REF' in name: return prefix + 'based_on_AMPERE_2014_GEM_E3_Reference.csv'
     raise ValueError('Unknown AMPERE GEM E3 source: ' + sourcename)
   if 'GREENPEACE' in name and 'ENERGY' in name:
+    if 'ADVANCED' in name and 'DRAWDOWN-PERENNIALS' in name:
+      return prefix + 'based_on_Greenpeace_2015_Advanced_Revolution_with_Drawdown_perennials.csv'
     if 'ADVANCED' in name: return prefix + 'based_on_Greenpeace_2015_Advanced_Revolution.csv'
+    if 'REVOLUTION' in name and 'DRAWDOWN-PERENNIALS' in name:
+      return prefix + 'based_on_Greenpeace_2015_Energy_Revolution_with_Drawdown_perennials.csv'
     if 'REVOLUTION' in name: return prefix + 'based_on_Greenpeace_2015_Energy_Revolution.csv'
     if 'REFERENCE' in name: return prefix + 'based_on_Greenpeace_2015_Reference.csv'
     raise ValueError('Unknown Greenpeace Energy source: ' + sourcename)
@@ -631,6 +637,7 @@ source_name_corrections = {
   'AMPERE MESSAGE 550': 'Based on: AMPERE MESSAGE 550',
   'AMPERE IMAGE 550': 'Based on: AMPERE IMAGE 550',
   'IEA ETP 2016 - 2DS': 'Based on: IEA ETP 2016 - 2DS',
+  'Baed on: IEA Data, ETP 2016 - 2DS Scenario': 'Based on: IEA Data, ETP 2016 - 2DS Scenario',
   'AMPERE GEM E3 450': 'Based on: AMPERE GEM E3 450',
   'AMPERE MESSAGE 450': 'Based on: AMPERE MESSAGE 450',
   'AMPERE IMAGE 450': 'Based on: AMPERE IMAGE 450',
