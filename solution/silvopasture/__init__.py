@@ -27,7 +27,16 @@ class Silvopasture:
         self.scenario = scenario
         self.ac = scenarios[scenario]
 
+        # TLA
         self.ae = aez.AEZ(solution_name=self.name)
+
+        # Current adoption data comes from VMA
+        self.current_adoption_vma = vma.VMA(thisdir.joinpath('vma_data', 'Current Adoption.csv'))
+        adoption = [self.current_adoption_vma.avg_high_low()[0]] + [0] * 9
+        ht_ref_datapoints = pd.DataFrame([[2014] + adoption, [2050] + adoption], columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)','Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']).set_index('Year')
+
+        print(ht_ref_datapoints)
+        # self.ht = helpertables.HelperTables()
 
 
 if __name__ == '__main__':
