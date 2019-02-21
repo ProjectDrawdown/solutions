@@ -19,8 +19,11 @@ from model import interpolation
 from model import operatingcost
 from model import tam
 from model import unitadoption
+from solution import biomass
 from solution import concentratedsolar
 from solution import landfillmethane
+from solution import microwind
+from solution import onshorewind
 from solution import solarpvroof
 from solution import solarpvutil
 import werkzeug.exceptions
@@ -54,43 +57,73 @@ def home():
     return render_template('home.html', repo=repo)
 
 
+@app.route("/biomass", methods=['POST'])
+def biomassHandler():
+    """Biomass solution."""
+    scenario = request.args.get('scenario', default=None)
+    sn = biomass.Biomass(scenario=scenario)
+
+    results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
 @app.route("/concentratedsolar", methods=['POST'])
-def concentratedSolar():
+def concentratedSolarHandler():
     """ConcentratedSolar solution."""
     scenario = request.args.get('scenario', default=None)
-    cs = concentratedsolar.ConcentratedSolar(scenario=scenario)
+    sn = concentratedsolar.ConcentratedSolar(scenario=scenario)
 
-    results_str = json.dumps(cs.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
 @app.route("/landfillmethane", methods=['POST'])
-def landfillMethane():
+def landfillMethaneHandler():
     """LandfillMethane solution."""
     scenario = request.args.get('scenario', default=None)
-    lm = landfillmethane.LandfillMethane(scenario=scenario)
+    sn = landfillmethane.LandfillMethane(scenario=scenario)
 
-    results_str = json.dumps(lm.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/microwind", methods=['POST'])
+def microWindHandler():
+    """MicroWind solution."""
+    scenario = request.args.get('scenario', default=None)
+    sn = microwind.MicroWind(scenario=scenario)
+
+    results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/onshorewind", methods=['POST'])
+def onshoreWindHandler():
+    """OnshoreWind solution."""
+    scenario = request.args.get('scenario', default=None)
+    sn = onshorewind.OnshoreWind(scenario=scenario)
+
+    results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
 @app.route("/solarpvroof", methods=['POST'])
-def solarPVRoof():
+def solarPVRoofHandler():
     """SolarPVRoof solution."""
     scenario = request.args.get('scenario', default=None)
-    pv = solarpvroof.SolarPVRoof(scenario=scenario)
+    sn = solarpvroof.SolarPVRoof(scenario=scenario)
 
-    results_str = json.dumps(pv.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 
 @app.route("/solarpvutil", methods=['POST'])
-def solarPVUtil():
+def solarPVUtilHandler():
     """SolarPVUtil solution."""
     scenario = request.args.get('scenario', default=None)
-    pv = solarpvutil.SolarPVUtil(scenario=scenario)
+    sn = solarpvutil.SolarPVUtil(scenario=scenario)
 
-    results_str = json.dumps(pv.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")
 
 

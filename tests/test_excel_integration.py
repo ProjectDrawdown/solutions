@@ -20,8 +20,11 @@ import pytest
 import app
 xlwings = pytest.importorskip("xlwings")
 
+from solution import biomass
 from solution import concentratedsolar
 from solution import landfillmethane
+from solution import microwind
+from solution import onshorewind
 from solution import solarpvutil
 from solution import solarpvroof
 
@@ -156,17 +159,16 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False, rewrites=None):
       'CV50:CX96', 'CV168:CX214', 'CV232:CX278', 'CV295:CX341', 'CV358:CX404',
       'CV421:CX467', 'CV484:CX530', 'CV548:CX594', 'CV612:CX658', 'CV677:CX723']
   adjustments['Adoption Data'] = [('B45', 'Year'),]
-  verify['Adoption Data'] = ['B45:R94', 'X45:Z94', 'AB45:AD94', 'BY50:CA96',
+  verify['Adoption Data'] = ['X45:Z94', 'AB45:AD94', 'BY50:CA96',
       'CF50:CI96', 'CN50:CR96', 'CW50:CY96',]
+  adjustments['Unit Adoption Calculations'] = [('A16', 'Year'), ('A68', 'Year'),
+      ('Q307', 'Year'), ('AT307', 'Year'), ('BF307', 'Year'), ('BR307', 'Year'),]
+  verify['Unit Adoption Calculations'] = ['P16:CI115', 'Q134:AA181', 'AG135:BS182',
+      'Q197:BH244', 'B251:BH298', 'B307:CB354',]
   adjustments['Helper Tables'] = []
   verify['Helper Tables'] = ['B26:L73', 'B90:L137',]
   adjustments['Emissions Factors'] = [('A11', 'Year'), ('A66', 'Year'),]
   verify['Emissions Factors'] = ['A11:K112',]
-  adjustments['Unit Adoption Calculations'] = [
-      ('A16', 'Year'), ('A68', 'Year'), ('Q307', 'Year'),
-      ('AT307', 'Year'), ('BF307', 'Year'), ('BR307', 'Year'),]
-  verify['Unit Adoption Calculations'] = ['P16:CI115', 'Q134:AA181', 'AG135:BS182',
-      'Q197:BH244', 'B251:BH298', 'B307:CB354',]
   adjustments['First Cost'] = []
   verify['First Cost'] = ['B37:R82',]
   adjustments['Operating Cost'] = [('A125', 'Year'),]
@@ -208,12 +210,13 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False, rewrites=None):
   expected[uac]['B251:BH298'] = expected[uac]['B251:BH298'].fillna(0.0)
   expected['Helper Tables']['B90:L137'].replace(to_replace="", value=0, inplace=True)
   expected['Helper Tables']['B90:L137'] = expected['Helper Tables']['B90:L137'].fillna(0.0)
-  if ch4_calcs:
+  if 'CH4 Calcs' in expected and ch4_calcs:
     expected['CH4 Calcs']['A10:AW110'].replace(to_replace="", value=0, inplace=True)
     expected['CH4 Calcs']['A10:AW110'] = expected['CH4 Calcs']['A10:AW110'].fillna(0.0)
   if rewrites:
     for sheetname, cells, row, column, value in rewrites:
-      expected[sheetname][cells].iloc[row, column] = value
+      if sheetname in expected:
+        expected[sheetname][cells].iloc[row, column] = value
 
   for _, modulevalues in expected.items():
     for _, df in modulevalues.items():
@@ -226,7 +229,12 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False, rewrites=None):
                         'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Advanced Scenario) ',
                         'Greenpeace 2015 Reference Scenario ',
                         'Greenpeace 2015 Energy Revolution Scenario ',
-                        'Asia (sans Japan)', 'Middle East & Africa',],
+                        'Asia (sans Japan)', 'Middle East & Africa',
+                        'Based on IEA ETP (2016) 6DS ',
+                        'Based on IEA ETP (2016) 4DS ',
+                        'Based on IEA ETP (2016) 2DS ',
+                        'Based on: IEA ETP (2016) 2DS ',
+                        ],
             value=['Baseline: Based on- AMPERE MESSAGE-MACRO Reference',
                         'Conservative: Based on- IEA ETP 2016 4DS',
                         'Ambitious: Based on- AMPERE GEM E3 450',
@@ -234,7 +242,12 @@ def _rrs_test(solution, scenario, filename, ch4_calcs=False, rewrites=None):
                         'Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Advanced Scenario)',
                         'Greenpeace 2015 Reference Scenario',
                         'Greenpeace 2015 Energy Revolution Scenario',
-                        'Asia (Sans Japan)', 'Middle East and Africa',])
+                        'Asia (Sans Japan)', 'Middle East and Africa',
+                        'Based on IEA ETP (2016) 6DS',
+                        'Based on IEA ETP (2016) 4DS',
+                        'Based on IEA ETP (2016) 2DS',
+                        'Based on: IEA ETP (2016) 2DS',
+                        ])
       except TypeError:
         pass
 
@@ -331,3 +344,33 @@ def test_LandfillMethane_RRS_ELECGEN(start_flask):
     _rrs_test(solution='landfillmethane', scenario=scenario,
         filename=str(solutiondir.joinpath('landfillmethane', 'testdata',
           'LandfillMethane_RRS_ELECGEN_v1.1c_24Oct18.xlsm')), rewrites=rewrites)
+
+@pytest.mark.integration
+def test_MicroWind_RRS_ELECGEN(start_flask):
+  """Test for Excel model file MicroWind_RRS_*."""
+  if not excel_present():
+    pytest.skip("Microsoft Excel not present")
+  for scenario in microwind.scenarios.keys():
+    _rrs_test(solution='microwind', scenario=scenario,
+        filename=str(solutiondir.joinpath('microwind', 'testdata',
+          'Drawdown-MicroWind Turbines_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm')))
+
+@pytest.mark.integration
+def test_Biomass_RRS_ELECGEN(start_flask):
+  """Test for Excel model file Biomass*."""
+  if not excel_present():
+    pytest.skip("Microsoft Excel not present")
+  for scenario in biomass.scenarios.keys():
+    _rrs_test(solution='biomass', scenario=scenario,
+        filename=str(solutiondir.joinpath('biomass', 'testdata',
+          'Drawdown-Biomass from Perennial Crops for Electricity Generation_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm')))
+
+@pytest.mark.integration
+def test_OnshoreWind_RRS_ELECGEN(start_flask):
+  """Test for Excel model file OnshoreWind_*."""
+  if not excel_present():
+    pytest.skip("Microsoft Excel not present")
+  for scenario in onshorewind.scenarios.keys():
+    _rrs_test(solution='onshorewind', scenario=scenario,
+        filename=str(solutiondir.joinpath('onshorewind', 'testdata',
+          'Drawdown-Onshore Wind_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm')))

@@ -194,10 +194,10 @@ class UnitAdoption:
       for year, value in column.iteritems():
         # Add replacement units, if needed by adding the number of units
         # added N * soln_lifetime_replacement ago, that now need replacement.
-        replacement_year = int(year - round(self.ac.soln_lifetime_replacement) - 1)
+        replacement_year = int(year - (self.ac.soln_lifetime_replacement_rounded + 1))
         while replacement_year in growth.index:
           replacements.at[year, region] += growth.at[replacement_year, region]
-          replacement_year -= (round(self.ac.soln_lifetime_replacement) + 1)
+          replacement_year -= (self.ac.soln_lifetime_replacement_rounded + 1)
     result = growth + replacements
     result.name = "soln_pds_new_iunits_reqd"
     return result
@@ -259,10 +259,10 @@ class UnitAdoption:
       for year, value in column.iteritems():
         # Add replacement units, if needed by adding the number of units
         # added N * soln_lifetime_replacement ago, that now need replacement.
-        replacement_year = int(year - round(self.ac.soln_lifetime_replacement) - 1)
+        replacement_year = int(year - (self.ac.soln_lifetime_replacement_rounded + 1))
         while replacement_year in growth.index:
           replacements.at[year, region] += growth.at[replacement_year, region]
-          replacement_year -= (round(self.ac.soln_lifetime_replacement) + 1)
+          replacement_year -= (self.ac.soln_lifetime_replacement_rounded + 1)
     result = growth + replacements
     result.name = "soln_ref_new_iunits_reqd"
     return result
@@ -342,10 +342,10 @@ class UnitAdoption:
       for year, value in column.iteritems():
         # Add replacement units, if needed by adding the number of units
         # added N * conv_lifetime_replacement ago, that now need replacement.
-        replacement_year = int(year - self.ac.conv_lifetime_replacement - 1)
+        replacement_year = int(year - (self.ac.conv_lifetime_replacement_rounded + 1))
         while replacement_year in growth.index:
           replacements.at[year, region] += growth.at[replacement_year, region]
-          replacement_year -= (round(self.ac.conv_lifetime_replacement) + 1)
+          replacement_year -= (self.ac.conv_lifetime_replacement_rounded + 1)
     result = growth + replacements
     result.name = "conv_ref_new_iunits_reqd"
     return result
@@ -472,5 +472,5 @@ class UnitAdoption:
     rs['soln_pds_direct_co2_emissions_saved'] = self.soln_pds_direct_co2_emissions_saved()
     rs['soln_pds_direct_ch4_co2_emissions_saved'] = self.soln_pds_direct_ch4_co2_emissions_saved()
     rs['soln_pds_direct_n2o_co2_emissions_saved'] = self.soln_pds_direct_n2o_co2_emissions_saved()
-    rs['conv_lifetime_replacement'] = round(self.ac.conv_lifetime_replacement)
+    rs['conv_lifetime_replacement'] = self.ac.conv_lifetime_replacement_rounded
     return rs

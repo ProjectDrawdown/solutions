@@ -2,6 +2,7 @@
    but can be overridden to fit particular needs.
 """
 
+import decimal
 import enum
 import pandas as pd
 from model import emissionsfactors as ef
@@ -405,8 +406,24 @@ class AdvancedControls:
     return self.soln_lifetime_capacity / self.soln_avg_annual_use
 
   @property
+  def soln_lifetime_replacement_rounded(self):
+    # round(22.5) == 22 due to floating point precision.
+    # Use decimal module to fix.
+    capacity = decimal.Decimal(str(self.soln_lifetime_capacity))
+    use = decimal.Decimal(str(self.soln_avg_annual_use))
+    years = capacity / use
+    return int(years.quantize(decimal.Decimal('1'), rounding='ROUND_HALF_UP'))
+
+  @property
   def conv_lifetime_replacement(self):
     return self.conv_lifetime_capacity / self.conv_avg_annual_use
+
+  @property
+  def conv_lifetime_replacement_rounded(self):
+    capacity = decimal.Decimal(str(self.conv_lifetime_capacity))
+    use = decimal.Decimal(str(self.conv_avg_annual_use))
+    years = capacity / use
+    return int(years.quantize(decimal.Decimal('1'), rounding='ROUND_HALF_UP'))
 
   def string_to_solution_category(self, text):
     ltext = str(text).lower()
