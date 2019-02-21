@@ -11,7 +11,10 @@ YEARS = list(range(2012, 2061))
 
 def generate_df_template():
     """ Returns DataFrame to be populated by adoption data """
-    return pd.DataFrame(index=YEARS, columns=REGIONS)
+    df = pd.DataFrame(index=YEARS, columns=REGIONS, dtype=np.float64)
+    df.index = df.index.astype(int)
+    df.index.name = 'Year'
+    return df
 
 
 class CustomAdoption:
@@ -21,10 +24,7 @@ class CustomAdoption:
 
     Generates average/high/low of chosen scenarios to be used as adoption data for the solution.
     """
-    def __init__(self, scenario_type):
-        if scenario_type is not 'PDS' and scenario_type is not 'REF':
-            raise ValueError('Scenario type must be PDS or REF')
-        self.scenario_type = scenario_type
+    def __init__(self):
         self.scenarios = []
 
     def add_scenario(self, name, adoption_df, include=True):
@@ -63,8 +63,4 @@ class CustomAdoption:
             high_df[reg] = avg_vals + offset
             low_df[reg] = avg_vals - offset
         return avg_df, high_df, low_df
-
-
-if __name__ == '__main__':
-    print(generate_df_template())
 

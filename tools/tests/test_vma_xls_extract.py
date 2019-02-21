@@ -19,7 +19,7 @@ def test_make_vma_df_template():
 def test_single_table():
     vma_r = VMAReader(thisdir.joinpath('silvopasture_vma.xlsx'))
     result = vma_r.read_single_table('C48')
-    expected = pd.read_csv(thisdir.joinpath('silvopasture_ca_vma.csv'))
+    expected = pd.read_csv(thisdir.joinpath('silvopasture_vma1.csv'))
     pd.testing.assert_frame_equal(expected, result)
 
 

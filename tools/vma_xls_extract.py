@@ -55,6 +55,8 @@ SEQUESTRATION_AND_LAND_UNITS = [
 FIRST_CELLS = {'adoption': 'C46', 'emissions': 'C371', 'land': 'C761', 'additional': 'C889'}
 
 
+# NOTE: could move this to vma module? Currently inconsistent with custom adoption, which has
+# its template generator in the customadoption.py module rather than its xls extract.
 def make_vma_df_template():
     """
     Helper function that generates a DataFrame with the same columns as the tables in
