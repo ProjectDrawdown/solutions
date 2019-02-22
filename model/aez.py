@@ -12,6 +12,7 @@ can be updated by running the relevant script in the 'tools' directory.
 
 import pandas as pd
 import pathlib
+from tools.util import to_filename
 
 LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land')
 pd.set_option('display.expand_frame_repr', False)
@@ -43,11 +44,11 @@ class AEZ:
         df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_la_template.csv'), index_col=0)
         df = df.fillna(0)
         for tmr in self.thermal_moisture_regimes:
-            tmr_path = LAND_CSV_PATH.joinpath('allocation', tmr.replace('/', '_'))
+            tmr_path = LAND_CSV_PATH.joinpath('allocation', to_filename(tmr))
             for col in df:
                 if col.startswith('AEZ29'):  # this zone is not included in land allocation
                     continue
-                aez_path = tmr_path.joinpath(col +'.csv')
+                aez_path = tmr_path.joinpath(to_filename(col) +'.csv')
                 la_df = pd.read_csv(aez_path, index_col=0)
                 total_perc_allocated = la_df.loc[self.solution_name]['Total % allocated']
                 if total_perc_allocated > 0:
@@ -75,7 +76,7 @@ class AEZ:
         """
         self.world_land_alloc_dict = {}
         for tmr in self.thermal_moisture_regimes:
-            df = pd.read_csv(LAND_CSV_PATH.joinpath('world', tmr.replace('/', '_') + '.csv'), index_col=0).drop('Total Area (km2)', 1)
+            df = pd.read_csv(LAND_CSV_PATH.joinpath('world', to_filename(tmr) + '.csv'), index_col=0).drop('Total Area (km2)', 1)
             self.world_land_alloc_dict[tmr] = df.mul(self.soln_land_alloc_df.loc[tmr], axis=1) / 10000
 
     def _populate_solution_land_distribution(self):

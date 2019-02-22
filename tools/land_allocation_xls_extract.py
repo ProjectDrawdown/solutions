@@ -4,7 +4,7 @@ import xlrd
 import pathlib
 import pandas as pd
 import os
-from tools.util import cell_to_offsets, convert_float
+from tools.util import cell_to_offsets, convert_float, to_filename
 
 XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'Land Allocation - Max TLA.xlsx')
 CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocation')
@@ -56,7 +56,6 @@ class LandAllocationReader:
         Reads an adoption table from the spreadsheet when given the first cell.
         e.g. get_single_adoption_df(*cell_to_offsets('D18')) would give the
         table associated with cell D18 (Tropical-Humid, AEZ1).
-        :return: DataFrame of table
         """
 
         assert 'Forest Protection' in self.sheet.cell_value(row1, col1 - 1)
@@ -70,8 +69,7 @@ class LandAllocationReader:
         return df
 
     def make_csvs(self):
-        """ Makes csv versions of tables and stores in data/land/allocation"""
-
+        """ Makes csv versions of tables and stores in data/land/allocation """
         # Sanity check
         if os.listdir(CSV_PATH):
             ans = input('Overwrite existing csv files? y or n')
@@ -87,9 +85,10 @@ class LandAllocationReader:
 
         # write CSVs
         for tmr in self.thermal_moisture_regimes:
-            os.mkdir(CSV_PATH.joinpath(tmr))
+            tmr_filename = to_filename(tmr)
+            os.mkdir(CSV_PATH.joinpath(tmr_filename))
             for aez, df in self.df_dict[tmr].items():
-                df.to_csv(CSV_PATH.joinpath(tmr, aez + '.csv'))
+                df.to_csv(CSV_PATH.joinpath(tmr_filename, to_filename(aez) + '.csv'))
 
     def _make_df_template(self):
         """ Makes template of adoption table to feed data into """
@@ -106,4 +105,4 @@ class LandAllocationReader:
 if __name__ == '__main__':
     r = LandAllocationReader()
     r.read_land_allocation_xls()
-    # r.make_csvs()
+    r.make_csvs()

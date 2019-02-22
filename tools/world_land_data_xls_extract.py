@@ -4,7 +4,7 @@ import xlrd
 import pathlib
 import pandas as pd
 import os
-from tools.util import cell_to_offsets, convert_float
+from tools.util import cell_to_offsets, convert_float, to_filename
 
 XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'WORLD Land Data.xlsx')
 CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'world')
@@ -75,7 +75,7 @@ class WorldLandDataReader:
         # write CSVs
         for tmr in self.thermal_moisture_regimes:
             df = self.df_dict[tmr]
-            df.to_csv(CSV_PATH.joinpath(tmr + '.csv'))
+            df.to_csv(CSV_PATH.joinpath(to_filename(tmr) + '.csv'))
 
     def _make_df_template(self):
         """ Makes template of adoption table to feed data into """
