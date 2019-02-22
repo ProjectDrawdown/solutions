@@ -489,36 +489,33 @@ def write_ht(f, wb):
        wb - an Excel workbook as returned by xlrd
   """
   h = wb.sheet_by_name('Helper Tables')
-  f.write("    ht_ref_datapoints = pd.DataFrame([\n")
-  r = [xln(h, 20, n) for n in range(2, 6)]
-  f.write("      [" + xli(h, 20, 1) + ", " + ", ".join(r) + ",\n")
-  r = [xln(h, 20, n) for n in range(6, 10)]
-  f.write("       " + ", ".join(r) + ",\n")
-  r = [xln(h, 20, n) for n in range(10, 12)]
+  initial_datapoint_year = int(h.cell_value(*cell_to_offsets('B21')))
+  final_datapoint_year = int(h.cell_value(*cell_to_offsets('B22')))
+
+  f.write("    ht_ref_adoption_initial = pd.Series(\n")
+  r = [xln(h, 20, n) for n in range(2, 7)]
+  f.write("      [" + ", ".join(r) + ",\n")
+  r = [xln(h, 20, n) for n in range(7, 12)]
   f.write("       " + ", ".join(r) + "],\n")
-  r = [xln(h, 21, n) for n in range(2, 6)]
-  f.write("      [" + xli(h, 21, 1) + ", " + ", ".join(r) + ",\n")
-  r = [xln(h, 21, n) for n in range(6, 10)]
-  f.write("       " + ", ".join(r) + ",\n")
-  r = [xln(h, 21, n) for n in range(10, 12)]
-  f.write("       " + ", ".join(r) + "]],\n")
-  f.write("      columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
-  f.write("          'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']).set_index('Year')\n")
-  f.write("    ht_pds_datapoints = pd.DataFrame([\n")
-  r = [xln(h, 84, n) for n in range(2, 6)]
-  f.write("      [" + xli(h, 84, 1) + ", " + ", ".join(r) + ",\n")
-  r = [xln(h, 84, n) for n in range(6, 10)]
-  f.write("       " + ", ".join(r) + ",\n")
-  r = [xln(h, 84, n) for n in range(10, 12)]
+  f.write("       index=REGIONS)\n")
+  f.write("    ht_ref_adoption_final = ref_tam_per_region.loc[" + str(final_datapoint_year) + "] * ")
+  f.write("(ht_ref_adoption_initial / ref_tam_per_region.loc[" + str(initial_datapoint_year) + "])\n")
+  f.write("    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)\n")
+  f.write("    ht_ref_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_ref_adoption_initial\n")
+  f.write("    ht_ref_datapoints.loc[" + str(final_datapoint_year) + "] = ht_ref_adoption_final\n")
+
+  f.write("    ht_pds_adoption_initial = ht_ref_adoption_initial\n")
+  f.write("    ht_pds_adoption_final_percentage = pd.Series(\n")
+  r = [xln(h, 83, n) for n in range(2, 7)]
+  f.write("      [" + ", ".join(r) + ",\n")
+  r = [xln(h, 83, n) for n in range(7, 12)]
   f.write("       " + ", ".join(r) + "],\n")
-  r = [xln(h, 85, n) for n in range(2, 6)]
-  f.write("      [" + xli(h, 85, 1) + ", " + ", ".join(r) + ",\n")
-  r = [xln(h, 85, n) for n in range(6, 10)]
-  f.write("       " + ", ".join(r) + ",\n")
-  r = [xln(h, 85, n) for n in range(10, 12)]
-  f.write("       " + ", ".join(r) + "]],\n")
-  f.write("      columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
-  f.write("          'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']).set_index('Year')\n")
+  f.write("       index=REGIONS)\n")
+  f.write("    ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[" + str(final_datapoint_year) + "]\n")
+  f.write("    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)\n")
+  f.write("    ht_pds_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
+  f.write("    ht_pds_datapoints.loc[" + str(final_datapoint_year) + "] = ht_pds_adoption_final\n")
+
   f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
   f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
@@ -887,6 +884,10 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   else:
     scenarios = {}
 
+  f.write("REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',\n")
+  f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
+  f.write("\n")
+
   is_custom_adoption = False
   is_default_adoption = False
   for s in scenarios.values():
@@ -962,6 +963,7 @@ def infer_classname(filename):
       ('CHP_B_', 'CoGenHeat'),
       ('CSP_', 'ConcentratedSolar'),
       ('MicroWind Turbines', 'MicroWind'),
+      ('Wind Offshore', 'OffshoreWind'),
       ('Regenerative_Agriculture', 'RegenerativeAgriculture'),
       ('Rooftop Solar PV', 'SolarPVRoof'),
       ('SolarPVUtility', 'SolarPVUtil'),

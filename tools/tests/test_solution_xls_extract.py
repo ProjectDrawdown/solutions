@@ -30,7 +30,7 @@ def test_infer_classname():
   assert ic('Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm') == 'TropicalForests'
   assert ic('WastetoEnergy_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'WasteToEnergy'
   assert ic('Wave&Tidal_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'WaveAndTidal'
-  assert ic('WindOffshore_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'WindOffshore'
+  assert ic('WindOffshore_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'OffshoreWind'
   assert ic('WindOnshore_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'WindOnshore'
   assert ic('Drawdown-Utility Scale Solar PV_RRS.ES_v1.1_13Jan2019_PUBLIC') == 'SolarPVUtil'
 
