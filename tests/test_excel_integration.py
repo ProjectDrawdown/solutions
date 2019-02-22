@@ -24,6 +24,7 @@ from solution import biomass
 from solution import concentratedsolar
 from solution import landfillmethane
 from solution import microwind
+from solution import offshorewind
 from solution import onshorewind
 from solution import solarpvutil
 from solution import solarpvroof
@@ -374,3 +375,13 @@ def test_OnshoreWind_RRS_ELECGEN(start_flask):
     _rrs_test(solution='onshorewind', scenario=scenario,
         filename=str(solutiondir.joinpath('onshorewind', 'testdata',
           'Drawdown-Onshore Wind_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm')))
+
+@pytest.mark.integration
+def test_OffshoreWind_RRS_ELECGEN(start_flask):
+  """Test for Excel model file OffshoreWind_*."""
+  if not excel_present():
+    pytest.skip("Microsoft Excel not present")
+  for scenario in offshorewind.scenarios.keys():
+    _rrs_test(solution='offshorewind', scenario=scenario,
+        filename=str(solutiondir.joinpath('offshorewind', 'testdata',
+          'Drawdown-Wind Offshore_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm')))
