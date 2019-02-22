@@ -86,7 +86,7 @@ class FirstCost:
     first_unit_cost = self.ac.conv_2014_cost * p
 
     def calc(x):
-      if x == 0 and parameter_b == 0:
+      if x == 0 or parameter_b == 0:
         new_val = first_unit_cost
       else:
         new_val = first_unit_cost * x ** parameter_b
@@ -117,7 +117,7 @@ class FirstCost:
       first_unit_cost = self.ac.ref_2014_cost * p
 
     def calc(x):
-      if x == 0 and parameter_b == 0:
+      if x == 0 or parameter_b == 0:
         new_val = first_unit_cost
       else:
         new_val = first_unit_cost * x ** parameter_b

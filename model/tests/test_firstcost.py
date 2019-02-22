@@ -119,6 +119,40 @@ def test_soln_ref_install_cost_per_iunit():
   result = fc.soln_ref_install_cost_per_iunit()
   pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
+def test_install_cost_per_iunit_param_b_is_zero():
+  """Test install cost per unit with contrived values to make parameter_b be zero."""
+  ac = advanced_controls.AdvancedControls(
+      pds_2014_cost=1000.0, ref_2014_cost=2000.0, conv_2014_cost=3000.0,
+      soln_first_cost_below_conv=True,
+      soln_first_cost_efficiency_rate=0.0,
+      conv_first_cost_efficiency_rate=0.0)
+  soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
+      columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
+  soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
+      columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_list[1:],
+      columns=conv_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+      soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+      conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
+  expected = pd.Series(ac.ref_2014_cost * 1000000000.0,
+      index=soln_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "soln_ref_install_cost_per_iunit"
+  result = fc.soln_ref_install_cost_per_iunit()
+  pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
+  expected = pd.Series(ac.conv_2014_cost * 1000000000.0,
+      index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "conv_ref_install_cost_per_iunit"
+  result = fc.conv_ref_install_cost_per_iunit()
+  pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
+
 def test_soln_ref_install_cost_per_iunit_not_less_conv():
   """Test PDS install cost per unit
 

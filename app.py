@@ -23,6 +23,7 @@ from solution import biomass
 from solution import concentratedsolar
 from solution import landfillmethane
 from solution import microwind
+from solution import offshorewind
 from solution import onshorewind
 from solution import solarpvroof
 from solution import solarpvutil
@@ -92,6 +93,16 @@ def microWindHandler():
     """MicroWind solution."""
     scenario = request.args.get('scenario', default=None)
     sn = microwind.MicroWind(scenario=scenario)
+
+    results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
+    return Response(response=results_str, status=200, mimetype="application/json")
+
+
+@app.route("/offshorewind", methods=['POST'])
+def offshoreWindHandler():
+    """OffshoreWind solution."""
+    scenario = request.args.get('scenario', default=None)
+    sn = offshorewind.OffshoreWind(scenario=scenario)
 
     results_str = json.dumps(sn.to_dict(), separators=(',', ':'), default=json_dumps_default)
     return Response(response=results_str, status=200, mimetype="application/json")

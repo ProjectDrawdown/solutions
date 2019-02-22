@@ -24,7 +24,7 @@ require "$output" "PDS-16p2050- Optimum (Book Ed.1)" && \
 # Check Solution name extraction
 require "$output" "name = 'Utility Scale Solar PV'" && \
 # Check Helper Tables extraction
-require "$output" "[2050, 272.41409799108703, 97.40188603589483, 0.5231196255288569, 60.19814198613077," && \
+require "$output" "helpertables.HelperTables" && \
 # Check First Cost extraction
 require "$output" "ref_learning_increase_mult=2, conv_learning_increase_mult=2," && \
 # Check Adoption Data extraction

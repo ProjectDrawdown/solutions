@@ -4,6 +4,7 @@ import pytest
 import concentratedsolar
 import landfillmethane
 import microwind
+import offshorewind
 import solarpvroof
 import solarpvutil
 
@@ -31,6 +32,13 @@ def test_landfillmethane():
 def test_microwind():
   scenario = list(microwind.scenarios.keys())[0]
   obj = microwind.MicroWind(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+  check_to_dict(obj)
+
+def test_offshorewind():
+  scenario = list(offshorewind.scenarios.keys())[0]
+  obj = offshorewind.OffshoreWind(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
   check_to_dict(obj)
