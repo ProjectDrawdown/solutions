@@ -20,6 +20,7 @@ import pytest
 import app
 xlwings = pytest.importorskip("xlwings")
 
+from solution import biogas
 from solution import biomass
 from solution import concentratedsolar
 from solution import landfillmethane
@@ -385,3 +386,13 @@ def test_OffshoreWind_RRS_ELECGEN(start_flask):
     _rrs_test(solution='offshorewind', scenario=scenario,
         filename=str(solutiondir.joinpath('offshorewind', 'testdata',
           'Drawdown-Wind Offshore_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm')))
+
+@pytest.mark.integration
+def test_Biogas_RRS_ELECGEN(start_flask):
+  """Test for Excel model file Biogas*."""
+  if not excel_present():
+    pytest.skip("Microsoft Excel not present")
+  for scenario in biogas.scenarios.keys():
+    _rrs_test(solution='biogas', scenario=scenario,
+        filename=str(solutiondir.joinpath('biogas', 'testdata',
+          'Drawdown-Large Biodigesters (Biogas)_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm')))
