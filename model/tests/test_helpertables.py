@@ -205,13 +205,18 @@ def test_soln_pds_funits_adopted_zero_regional():
   assert result.loc[2043, 'EU'] == 0
 
 def test_soln_pds_funits_custom_pds():
-    """ Many land models use Fully Customised PDS. In this case, the full DataFrame is
-    simply passed through HelperTables """
     datadir = pathlib.Path(__file__).parents[0].joinpath('data')
     custom_scen = pd.read_csv(datadir.joinpath('ca_scenario_1_trr.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(soln_pds_adoption_basis='Fully Customized PDS')
-    ht = helpertables.HelperTables(ac, adoption_data_per_region=custom_scen)
-    pd.testing.assert_frame_equal(ht.soln_pds_funits_adopted(), custom_scen)
+    ht_ref_datapoints = pd.DataFrame([[2014] + [0] * 10, [2050] + [0] * 10],
+                                     columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                                              'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
+                                              'USA']).set_index('Year')
+    ht_pds_datapoints = ht_ref_datapoints
+    ht = helpertables.HelperTables(ac, adoption_data_per_region=custom_scen, ref_datapoints=ht_ref_datapoints,
+                                   pds_datapoints=ht_pds_datapoints)
+    pd.testing.assert_frame_equal(ht.soln_pds_funits_adopted().iloc[1:, :], custom_scen.iloc[3:, :])
+    assert sum(ht.soln_pds_funits_adopted().loc[2014]) == 0
 
 def test_ref_adoption_use_pds_years_and_vice_versa():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
