@@ -105,9 +105,9 @@ def get_rrs_scenarios(wb):
       s['emissions_grid_range'] = str(sr_tab.cell_value(row + 127, 4))
 
       assert sr_tab.cell_value(row + 135, 1) == 'TAM'
-      s['source_until_2014'] = str(sr_tab.cell_value(row + 136, 4))
-      s['ref_source_post_2014'] = str(sr_tab.cell_value(row + 136, 7))
-      s['pds_source_post_2014'] = str(sr_tab.cell_value(row + 136, 10))
+      s['source_until_2014'] = normalize_source_name(str(sr_tab.cell_value(row + 136, 4)))
+      s['ref_source_post_2014'] = normalize_source_name(str(sr_tab.cell_value(row + 136, 7)))
+      s['pds_source_post_2014'] = normalize_source_name(str(sr_tab.cell_value(row + 136, 10)))
 
       assert sr_tab.cell_value(row + 163, 1) == 'PDS ADOPTION SCENARIO INPUTS'
       s['soln_pds_adoption_basis'] = str(sr_tab.cell_value(row + 164, 4))
@@ -344,11 +344,31 @@ def write_tam(f, wb):
   f.write("\n")
 
 
-def lookup_source_filename(sourcename, prefix=''):
-  """Return string to use for the filename for known sources."""
+def normalize_source_name(sourcename):
+  """Return a common name for widely used studies.
+     Correct mis-spelings and inconsistencies in the column names.
+     A few solution files, notably OnshoreWind, are inconsistent about the ordering
+     of columns between different regions, and additionally use inconsistent names
+     and some spelling errors. We need the column names to be consistent to properly
+     combine them.
+
+     World
+     +-------------------+-------------------+-----------------------------+---------+
+     |   Baseline Cases  |  Ambitious Cases  |     Conservative Cases      |100% REN |
+     +-------------------+-------------------+-----------------------------+---------+
+     | source1 | source2 | source3 | source4 | source5 | source6 | source7 | source8 |
+
+     OECD90 
+     +-------------------+-------------------+-----------------------------+---------+
+     |   Baseline Cases  |  Ambitious Cases  |     Conservative Cases      |100% REN |
+     +-------------------+-------------------+-----------------------------+---------+
+     | source2 | source1 | source3 | Source 4| surce5  | source6 | source7 | source8 |
+  """
   special_cases = {
-    'Based on: Greenpeace (2015) Reference': 'ad_based_on_Greenpeace_2015_Reference.csv',
-    'Greenpeace 2015 Reference Scenario': 'ad_based_on_Greenpeace_2015_Reference.csv',
+    'Based on: Greenpeace (2015) Reference': 'Based on: Greenpeace 2015 Reference',
+    'Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
+    'Based on Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
+    'Based on Greenpeace 2015 Reference': 'Based on: Greenpeace 2015 Reference',
     }
   normalized = sourcename.replace("'", "").strip()
   if normalized in special_cases:
@@ -360,53 +380,64 @@ def lookup_source_filename(sourcename, prefix=''):
 
   name = re.sub(r"[\[\]]", "", sourcename.upper())  # [R]evolution to REVOLUTION
   if 'UN CES' in name and 'ITU' in name and 'AMPERE' in name:
-    if 'BASELINE' in name: return prefix + 'based_on_CES_ITU_AMPERE_baseline.csv'
-    if '550' in name: return prefix + 'based_on_CES_ITU_AMPERE_550.csv'
-    if '450' in name: return prefix + 'based_on_CES_ITU_AMPERE_450.csv'
+    if 'BASELINE' in name: return 'Based on: CES ITU AMPERE Baseline'
+    if '550' in name: return 'Based on: CES ITU AMPERE 550'
+    if '450' in name: return 'Based on: CES ITU AMPERE 450'
+    raise ValueError('Unknown UN CES ITU AMPERE source: ' + sourcename)
   if 'IEA' in name and 'ETP' in name:
-    if '2016' in name and '6DS' in name: return prefix + 'based_on_IEA_ETP_2016_6DS.csv'
-    if '2016' in name and '4DS' in name: return prefix + 'based_on_IEA_ETP_2016_4DS.csv'
+    if '2016' in name and '6DS' in name: return 'Based on: IEA ETP 2016 6DS'
+    if '2016' in name and '4DS' in name: return 'Based on: IEA ETP 2016 4DS'
     if '2016' in name and '2DS' in name and 'OPT2-PERENNIALS' in name:
-      return prefix + 'based_on_IEA_ETP_2016_2DS_with_OPT2_perennials.csv'
-    if '2016' in name and '2DS' in name: return prefix + 'based_on_IEA_ETP_2016_2DS.csv'
-    if '2017' in name and 'REF' in name: return prefix + 'based_on_IEA_ETP_2017_Ref_Tech.csv'
-    if '2017' in name and 'B2DS' in name: return prefix + 'based_on_IEA_ETP_2017_B2DS.csv'
-    if '2017' in name and '2DS' in name: return prefix + 'based_on_IEA_ETP_2017_2DS.csv'
-    if '2017' in name and '4DS' in name: return prefix + 'based_on_IEA_ETP_2017_4DS.csv'
-    if '2017' in name and '6DS' in name: return prefix + 'based_on_IEA_ETP_2017_6DS.csv'
+      return 'Based on: IEA ETP 2016 2DS with OPT2 perennials'
+    if '2016' in name and '2DS' in name: return 'Based on: IEA ETP 2016 2DS'
+    if '2017' in name and 'REF' in name: return 'Based on: IEA ETP 2017 Ref Tech'
+    if '2017' in name and 'B2DS' in name: return 'Based on: IEA ETP 2017 B2DS'
+    if '2017' in name and '2DS' in name: return 'Based on: IEA ETP 2017 2DS'
+    if '2017' in name and '4DS' in name: return 'Based on: IEA ETP 2017 4DS'
+    if '2017' in name and '6DS' in name: return 'Based on: IEA ETP 2017 6DS'
     raise ValueError('Unknown IEA ETP source: ' + sourcename)
   if 'AMPERE' in name and 'MESSAGE' in name:
-    if '450' in name: return prefix + 'based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'
-    if '550' in name: return prefix + 'based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'
-    if 'REF' in name: return prefix + 'based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'
+    if '450' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO 450'
+    if '550' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO 550'
+    if 'REF' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO Reference'
     raise ValueError('Unknown AMPERE MESSAGE-MACRO source: ' + sourcename)
   if 'AMPERE' in name and 'IMAGE' in name:
-    if '450' in name: return prefix + 'based_on_AMPERE_2014_IMAGE_TIMER_450.csv'
-    if '550' in name: return prefix + 'based_on_AMPERE_2014_IMAGE_TIMER_550.csv'
-    if 'REF' in name: return prefix + 'based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'
+    if '450' in name: return 'Based on: AMPERE 2014 IMAGE TIMER 450'
+    if '550' in name: return 'Based on: AMPERE 2014 IMAGE TIMER 550'
+    if 'REF' in name: return 'Based on: AMPERE 2014 IMAGE TIMER Reference'
     raise ValueError('Unknown AMPERE IMAGE-TIMER source: ' + sourcename)
   if 'AMPERE' in name and 'GEM' in name and 'E3' in name:
-    if '450' in name: return prefix + 'based_on_AMPERE_2014_GEM_E3_450.csv'
-    if '550' in name: return prefix + 'based_on_AMPERE_2014_GEM_E3_550.csv'
-    if 'REF' in name: return prefix + 'based_on_AMPERE_2014_GEM_E3_Reference.csv'
+    if '450' in name: return 'Based on: AMPERE 2014 GEM E3 450'
+    if '550' in name: return 'Based on: AMPERE 2014 GEM E3 550'
+    if 'REF' in name: return 'Based on: AMPERE 2014 GEM E3 Reference'
     raise ValueError('Unknown AMPERE GEM E3 source: ' + sourcename)
   if 'GREENPEACE' in name and 'ENERGY' in name:
     if 'ADVANCED' in name and 'DRAWDOWN-PERENNIALS' in name:
-      return prefix + 'based_on_Greenpeace_2015_Advanced_Revolution_with_Drawdown_perennials.csv'
-    if 'ADVANCED' in name: return prefix + 'based_on_Greenpeace_2015_Advanced_Revolution.csv'
+      return 'Based on: Greenpeace 2015 Advanced Revolution with Drawdown perennials'
+    if 'ADVANCED' in name: return 'Based on: Greenpeace 2015 Advanced Revolution'
     if 'REVOLUTION' in name and 'DRAWDOWN-PERENNIALS' in name:
-      return prefix + 'based_on_Greenpeace_2015_Energy_Revolution_with_Drawdown_perennials.csv'
-    if 'REVOLUTION' in name: return prefix + 'based_on_Greenpeace_2015_Energy_Revolution.csv'
-    if 'REFERENCE' in name: return prefix + 'based_on_Greenpeace_2015_Reference.csv'
+      return 'Based on: Greenpeace 2015 Energy Revolution with Drawdown perennials'
+    if 'REVOLUTION' in name: return 'Based on: Greenpeace 2015 Energy Revolution'
+    if 'REFERENCE' in name: return 'Based on: Greenpeace 2015 Reference'
     raise ValueError('Unknown Greenpeace Energy source: ' + sourcename)
   if 'GREENPEACE' in name and 'THERMAL' in name:
-    if 'MODERATE' in name: return prefix + 'based_on_Greenpeace_2016_Solar_Thermal_Moderate.csv'
-    if 'ADVANCED' in name: return prefix + 'based_on_Greenpeace_2016_Solar_Thermal_Advanced.csv'
+    if 'MODERATE' in name: return 'Based on: Greenpeace 2016 Solar Thermal Moderate'
+    if 'ADVANCED' in name: return 'Based on: Greenpeace 2016 Solar Thermal Advanced'
     raise ValueError('Unknown Greenpeace Solar Thermal source: ' + sourcename)
+  return normalized
 
-  filename = re.sub(r"[^\w\s\.]", '', sourcename.lower())
+
+def lookup_source_filename(sourcename, prefix=''):
+  """Return string to use for the filename for known sources."""
+  if re.search(r'\[Source \d+', sourcename):
+    return None
+  if re.search(r'Drawdown TAM: \[Source \d+', sourcename):
+    return None
+
+  filename = re.sub(r"[^\w\s\.]", '', sourcename)
   filename = re.sub(r"\s+", '_', filename)
   filename = re.sub(r"\.+", '_', filename)
+  filename = filename.replace('Based_on_', 'based_on_')
   return prefix + filename + '.csv'
 
 
@@ -447,6 +478,8 @@ def write_ad(f, wb):
   for case in sources.keys():
     f.write("      '" + case + "': {\n")
     for source in sources[case]:
+      if not source:
+        continue
       source = re.sub('\s+', ' ', source).strip()  # remove extra/double spaces
       filename = lookup_source_filename(source, prefix="ad_")
       if filename:
@@ -610,39 +643,6 @@ def write_to_dict(f, has_tam):
   f.write("\n")
 
 
-# Correct mis-spelings and inconsistencies in the column names.
-# A few solution files, notably OnshoreWind, are inconsistent about the ordering
-# of columns between different regions, and additionally use inconsistent names
-# and some spelling errors. We need the column names to be consistent to properly
-# combine them.
-
-# World
-# +-------------------+-------------------+-----------------------------+---------+
-# |   Baseline Cases  |  Ambitious Cases  |     Conservative Cases      |100% REN |
-# +-------------------+-------------------+-----------------------------+---------+
-# | source1 | source2 | source3 | source4 | source5 | source6 | source7 | source8 |
-
-# OECD90 
-# +-------------------+-------------------+-----------------------------+---------+
-# |   Baseline Cases  |  Ambitious Cases  |     Conservative Cases      |100% REN |
-# +-------------------+-------------------+-----------------------------+---------+
-# | source2 | source1 | source3 | Source 4| surce5  | source6 | source7 | source8 |
-source_name_corrections = {
-  'Basded on: IEA ETP 2016 - 4DS': 'Based on: IEA ETP 2016 - 4DS',
-  'IEA ETP 2016 - 4DS': 'Based on: IEA ETP 2016 - 4DS',
-  'AMPERE GEM E3 550': 'Based on: AMPERE GEM E3 550',
-  'AMPERE MESSAGE 550': 'Based on: AMPERE MESSAGE 550',
-  'AMPERE IMAGE 550': 'Based on: AMPERE IMAGE 550',
-  'IEA ETP 2016 - 2DS': 'Based on: IEA ETP 2016 - 2DS',
-  'Baed on: IEA Data, ETP 2016 - 2DS Scenario': 'Based on: IEA Data, ETP 2016 - 2DS Scenario',
-  'AMPERE GEM E3 450': 'Based on: AMPERE GEM E3 450',
-  'AMPERE MESSAGE 450': 'Based on: AMPERE MESSAGE 450',
-  'AMPERE IMAGE 450': 'Based on: AMPERE IMAGE 450',
-  'Greenpeace 2015 Energy Revolution Scenario': 'Based on: Greenpeace 2015 Energy Revolution Scenario',
-  'Greenpeace 2015 Advanced Energy Revolution Scenario': 'Based on: Greenpeace 2015 Advanced Energy Revolution Scenario',
-}
-
-
 def extract_sources(wb_tab, lines):
   """Pull the names of sources, by case, from the Excel file.
      Arguments:
@@ -674,8 +674,7 @@ def extract_sources(wb_tab, lines):
       if wb_tab.cell(line, col).ctype != xlrd.XL_CELL_EMPTY:
         case = wb_tab.cell(line, col).value
         l = sources.get(case, list())
-      new_source = wb_tab.cell(line+1, col).value
-      new_source = source_name_corrections.get(new_source, new_source)
+      new_source = normalize_source_name(wb_tab.cell(line+1, col).value)
       if new_source not in l:
         l.append(new_source)
         sources[case] = l
@@ -691,34 +690,34 @@ def extract_adoption_data(wb, outputdir):
   """
   world = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=44, nrows=49)
   world.name = 'World'
-  world.rename(index=str, columns=source_name_corrections, inplace=True)
+  world.rename(columns=normalize_source_name, inplace=True)
   oecd90 = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=104, nrows=49)
   oecd90.name = 'OECD90'
-  oecd90.rename(index=str, columns=source_name_corrections, inplace=True)
+  oecd90.rename(columns=normalize_source_name, inplace=True)
   eastern_europe = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=168, nrows=49)
   eastern_europe.name ='Eastern Europe'
-  eastern_europe.rename(index=str, columns=source_name_corrections, inplace=True)
+  eastern_europe.rename(columns=normalize_source_name, inplace=True)
   asia_sans_japan = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=231, nrows=49)
   asia_sans_japan.name = 'Asia (Sans Japan)'
-  asia_sans_japan.rename(index=str, columns=source_name_corrections, inplace=True)
+  asia_sans_japan.rename(columns=normalize_source_name, inplace=True)
   middle_east_and_africa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=294, nrows=49)
   middle_east_and_africa.name = 'Middle East and Africa'
-  middle_east_and_africa.rename(index=str, columns=source_name_corrections, inplace=True)
+  middle_east_and_africa.rename(columns=normalize_source_name, inplace=True)
   latin_america = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=357, nrows=49)
   latin_america.name = 'Latin America'
-  latin_america.rename(index=str, columns=source_name_corrections, inplace=True)
+  latin_america.rename(columns=normalize_source_name, inplace=True)
   china = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=420, nrows=49)
   china.name = 'China'
-  china.rename(index=str, columns=source_name_corrections, inplace=True)
+  china.rename(columns=normalize_source_name, inplace=True)
   india = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=484, nrows=49)
   india.name = 'India'
-  india.rename(index=str, columns=source_name_corrections, inplace=True)
+  india.rename(columns=normalize_source_name, inplace=True)
   eu = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=548, nrows=49)
   eu.name = 'EU'
-  eu.rename(index=str, columns=source_name_corrections, inplace=True)
+  eu.rename(columns=normalize_source_name, inplace=True)
   usa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=613, nrows=49)
   usa.name = 'USA'
-  usa.rename(index=str, columns=source_name_corrections, inplace=True)
+  usa.rename(columns=normalize_source_name, inplace=True)
 
   sources = {}
   for region in [world, oecd90, eastern_europe, asia_sans_japan, middle_east_and_africa,
@@ -727,6 +726,8 @@ def extract_adoption_data(wb, outputdir):
       sources[source_name] = ''
 
   for source_name in sources:
+    if not source_name:
+      continue
     filename = lookup_source_filename(source_name, prefix='ad_')
     df_nan = pd.Series(np.nan, index=world.index)
     df = pd.concat({
@@ -962,8 +963,9 @@ def infer_classname(filename):
       ('CHP_A_', 'CoGenElectricity'),
       ('CHP_B_', 'CoGenHeat'),
       ('CSP_', 'ConcentratedSolar'),
+      ('Instream Hydro', 'InstreamHydro'),
+      ('Large Biodigesters', 'Biogas'),
       ('MicroWind Turbines', 'MicroWind'),
-      ('Wind Offshore', 'OffshoreWind'),
       ('Regenerative_Agriculture', 'RegenerativeAgriculture'),
       ('Rooftop Solar PV', 'SolarPVRoof'),
       ('SolarPVUtility', 'SolarPVUtil'),
@@ -974,6 +976,7 @@ def infer_classname(filename):
       ('WastetoEnergy', 'WasteToEnergy'),
       ('Wave&Tidal', 'WaveAndTidal'),
       ('Wave and Tidal', 'WaveAndTidal'),
+      ('Wind Offshore', 'OffshoreWind'),
       ]
   for (pattern, classname) in special_cases:
     if pattern.replace(' ', '').lower() in filename.replace(' ', '').lower():

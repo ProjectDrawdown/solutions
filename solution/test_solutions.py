@@ -1,10 +1,13 @@
 """Test solution classes."""
 
 import pytest
+import biogas
+import biomass
 import concentratedsolar
 import landfillmethane
 import microwind
 import offshorewind
+import onshorewind
 import solarpvroof
 import solarpvutil
 
@@ -14,6 +17,20 @@ def check_to_dict(obj):
   result = obj.to_dict()
   for ex in expected:
     assert ex in result
+
+def test_biogas():
+  scenario = list(biogas.scenarios.keys())[0]
+  obj = biogas.Biogas(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+  check_to_dict(obj)
+
+def test_biomass():
+  scenario = list(biomass.scenarios.keys())[0]
+  obj = biomass.Biomass(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+  check_to_dict(obj)
 
 def test_concentratedsolar():
   scenario = list(concentratedsolar.scenarios.keys())[0]
@@ -39,6 +56,13 @@ def test_microwind():
 def test_offshorewind():
   scenario = list(offshorewind.scenarios.keys())[0]
   obj = offshorewind.OffshoreWind(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+  check_to_dict(obj)
+
+def test_onshorewind():
+  scenario = list(onshorewind.scenarios.keys())[0]
+  obj = onshorewind.OnshoreWind(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
   check_to_dict(obj)
