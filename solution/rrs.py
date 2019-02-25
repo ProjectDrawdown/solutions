@@ -7,6 +7,8 @@ import pandas as pd
 from model import vma
 
 
+TERAWATT_TO_KILOWATT = 10**9
+
 thisdir = pathlib.Path(__file__).parents[0]
 parentdir = pathlib.Path(__file__).parents[1]
 tam_ref_data_sources = {

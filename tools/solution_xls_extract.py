@@ -582,7 +582,11 @@ def write_fc(f, wb):
   f.write("        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,\n")
   f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
   f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
-  f.write("        conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd())\n")
+  f.write("        conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd(),\n")
+  if fc_tab.cell(14, 5).value == 1000000000 and fc_tab.cell(14, 6).value == '$/kW TO $/TW':
+    f.write("        fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)\n")
+  else:
+    f.write("        fc_convert_iunit_factor=" + xln(fc_tab, 14, 5) + ")\n")
   f.write('\n')
 
 

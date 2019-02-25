@@ -24,7 +24,8 @@ def test_soln_pds_install_cost_per_iunit():
       pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
       soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd=None,
       conv_ref_tot_iunits_reqd=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      fc_convert_iunit_factor=1000000000.0)
   expected = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
       index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
@@ -51,9 +52,35 @@ def test_conv_ref_install_cost_per_iunit():
       pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
       soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
       conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      fc_convert_iunit_factor=1000000000.0)
   expected = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "conv_ref_install_cost_per_iunit"
+  result = fc.conv_ref_install_cost_per_iunit()
+  pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
+
+def test_conv_ref_install_cost_per_iunit_no_conversion_factor():
+  """Test conventional install cost per unit
+
+     Values taken from Drawdown-Improved Cook Stoves (ICS)_RRS_v1.1_28Nov2018_PUBLIC.xlsm
+  """
+  ac = advanced_controls.AdvancedControls(
+      pds_2014_cost=39.0, ref_2014_cost=39.0, conv_2014_cost=2.0487610390567785,
+      soln_first_cost_efficiency_rate=0.0, soln_first_cost_below_conv=True,
+      conv_first_cost_efficiency_rate=0.0)
+  conv_ref_tot_iunits_reqd = pd.DataFrame(conv_ref_tot_iunits_reqd_cookstoves_list[1:],
+      columns=conv_ref_tot_iunits_reqd_cookstoves_list[0]).set_index('Year')
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+      conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      fc_convert_iunit_factor=1.0)
+  expected = pd.Series(conv_ref_install_cost_per_iunit_cookstoves_nparray[:, 1],
+      index=conv_ref_install_cost_per_iunit_cookstoves_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
   expected.index.name = "Year"
   expected.name = "conv_ref_install_cost_per_iunit"
@@ -80,7 +107,8 @@ def test_soln_pds_install_cost_per_iunit_not_less_conv():
       pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
       soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd=None,
       conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      fc_convert_iunit_factor=1000000000.0)
   # Not a typo, soln_first_cost_below_conv=False so expected=conv_pds_install_cost_per_iunit.
   expected = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
@@ -110,7 +138,8 @@ def test_soln_ref_install_cost_per_iunit():
       pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
       soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      fc_convert_iunit_factor=1000000000.0)
   expected = pd.Series(soln_ref_install_cost_per_iunit_nparray[:, 1],
       index=soln_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
@@ -137,7 +166,8 @@ def test_install_cost_per_iunit_param_b_is_zero():
       soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
       soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      fc_convert_iunit_factor=1000000000.0)
   expected = pd.Series(ac.ref_2014_cost * 1000000000.0,
       index=soln_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
@@ -173,7 +203,8 @@ def test_soln_ref_install_cost_per_iunit_not_less_conv():
       pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
       soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None)
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      fc_convert_iunit_factor=1000000000.0)
   # Not a typo, soln_first_cost_below_conv=False so expected=conv_pds_install_cost_per_iunit.
   expected = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
       index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
@@ -200,7 +231,7 @@ def test_soln_pds_annual_world_first_cost():
       soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd=None,
       conv_ref_tot_iunits_reqd=None,
       soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd=None,
-      conv_ref_new_iunits_reqd=None)
+      conv_ref_new_iunits_reqd=None, fc_convert_iunit_factor=1000000000.0)
   expected = pd.Series(soln_pds_annual_world_first_cost_nparray[:, 1],
       index=soln_pds_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
@@ -226,7 +257,7 @@ def test_soln_pds_cumulative_install():
       soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd=None,
       conv_ref_tot_iunits_reqd=None,
       soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd=None,
-      conv_ref_new_iunits_reqd=None)
+      conv_ref_new_iunits_reqd=None, fc_convert_iunit_factor=1000000000.0)
   result = fc.soln_pds_cumulative_install()
   expected = pd.Series(pds_cumulative_install_nparray[:, 1],
       index=pds_cumulative_install_nparray[:, 0], dtype=np.float64)
@@ -255,7 +286,7 @@ def test_soln_ref_annual_world_first_cost():
       soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd=None,
       soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
-      conv_ref_new_iunits_reqd=None)
+      conv_ref_new_iunits_reqd=None, fc_convert_iunit_factor=1000000000.0)
   expected = pd.Series(soln_ref_annual_world_first_cost_nparray[:, 1],
       index=soln_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
@@ -281,7 +312,8 @@ def test_conv_ref_annual_world_first_cost():
       soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
       conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
       soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None,
-      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd)
+      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd,
+      fc_convert_iunit_factor=1000000000.0)
   expected = pd.Series(conv_ref_annual_world_first_cost_nparray[:, 1],
       index=conv_ref_annual_world_first_cost_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
@@ -311,7 +343,8 @@ def test_ref_cumulative_install():
       soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
       conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
       soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
-      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd)
+      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd,
+      fc_convert_iunit_factor=1000000000.0)
   expected = pd.Series(ref_cumulative_install_nparray[:, 1],
       index=ref_cumulative_install_nparray[:, 0], dtype=np.float64)
   expected.index = expected.index.astype(int)
@@ -347,7 +380,8 @@ def test_to_dict():
       conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
       soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
       soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
-      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd)
+      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd,
+      fc_convert_iunit_factor=1000000000.0)
   result = fc.to_dict()
   expected = ['soln_pds_install_cost_per_iunit', 'conv_ref_install_cost_per_iunit',
       'soln_ref_install_cost_per_iunit', 'soln_pds_annual_world_first_cost',
@@ -366,7 +400,7 @@ def test_to_dict():
         assert result[ex] == pytest.approx(check)
 
 
-# 'Unit Adoption Calculations'!AX135:BH182
+# SolarPVUtil 'Unit Adoption Calculations'!AX135:BH182
 soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
       "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497,
@@ -418,7 +452,7 @@ soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "
     [2059, 5.33851325027, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 5.40331941081, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
-# 'Unit Adoption Calculations'!AX197:BH244
+# SolarPVUtil 'Unit Adoption Calculations'!AX197:BH244
 soln_ref_tot_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497, 0.00795507895, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
@@ -469,7 +503,7 @@ soln_ref_tot_iunits_reqd_list = [
     [2059, 0.16960671915, 0.05592824776, 0.00030993834, 0.03799500463, 0.00415420699, 0.02668462755, 0.01939189131, 0.00935558942, 0.04192706906, 0.00935993199],
     [2060, 0.17201668746, 0.05626607004, 0.00031281520, 0.03858506980, 0.00422751726, 0.02710083975, 0.01964216212, 0.00953032944, 0.04219184961, 0.00940956382]]
 
-# 'Unit Adoption Calculations'!Q251:AA298
+# SolarPVUtil 'Unit Adoption Calculations'!Q251:AA298
 conv_ref_tot_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 4.53535289538, 1.93172544646, 0.40864109200, 1.62670021570, 0.35349784059, 0.33696728156, 1.06083899586, 0.26726785668, 0.67200041390, 0.85164625801],
@@ -674,7 +708,7 @@ conv_ref_new_iunits_reqd_list = [
     [2059, 0.08900216185, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 0.05837239211, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
-# "First Cost"!C37:C82
+# SolarPVUtil "First Cost"!C37:C82
 soln_pds_install_cost_per_iunit_nparray = np.array([
     [2015, 1444939544214.85], [2016, 1260211854559.48], [2017, 1131125771261.71],
     [2018, 1034176540754.27], [2019, 957914360042.17], [2020, 955853826404.52],
@@ -693,7 +727,7 @@ soln_pds_install_cost_per_iunit_nparray = np.array([
     [2057, 410617094526.91], [2058, 408638840847.23], [2059, 406878542591.41],
     [2060, 405334340227.07]])
 
-# "First Cost"!L37:L82
+# SolarPVUtil "First Cost"!L37:L82
 soln_ref_install_cost_per_iunit_nparray = np.array([
     [2015, 1444939544214.85], [2016, 1428094804476.75], [2017, 1412040401146.06],
     [2018, 1396713300701.40], [2019, 1382057429062.82], [2020, 1368022703608.46],
@@ -712,7 +746,7 @@ soln_ref_install_cost_per_iunit_nparray = np.array([
     [2057, 1070249800763.29], [2058, 1065364220992.90], [2059, 1060570386486.19],
     [2060, 1055865307009.24]])
 
-# "First Cost"!O37:O82
+# SolarPVUtil "First Cost"!O37:O82
 conv_ref_install_cost_per_iunit_nparray = np.array([
     [2015, 2005749716919.21], [2016, 2003709559856.43], [2017, 2001740610594.36],
     [2018, 1999838071911.36], [2019, 1997997609222.97], [2020, 1996215293069.34],
@@ -731,7 +765,7 @@ conv_ref_install_cost_per_iunit_nparray = np.array([
     [2057, 1952863152180.40], [2058, 1952041750168.08], [2059, 1951231306567.92],
     [2060, 1950431496209.24]])
 
-# "First Cost"!E37:E82
+# SolarPVUtil "First Cost"!E37:E82
 soln_pds_annual_world_first_cost_nparray = np.array([
     [2015, 49905587652.22], [2016, 65547210056.69], [2017, 68345312033.84],
     [2018, 70793825183.87], [2019, 72905511547.32], [2020, 2311551802.55],
@@ -750,7 +784,7 @@ soln_pds_annual_world_first_cost_nparray = np.array([
     [2057, 117540036750.52], [2058, 63289512079.58], [2059, 87025393821.60],
     [2060, 84481838372.33]])
 
-# "First Cost"!N37:N82
+# SolarPVUtil "First Cost"!N37:N82
 soln_ref_annual_world_first_cost_nparray = np.array([
     [2015, 3482258521.23], [2016, 3441663232.15], [2017, 3402972628.78],
     [2018, 3366034802.32], [2019, 3330714616.02], [2020, 3296891372.34],
@@ -769,7 +803,7 @@ soln_ref_annual_world_first_cost_nparray = np.array([
     [2057, 5158536221.77], [2058, 5134988036.86], [2059, 5111882058.30],
     [2060, 5089203873.37]])
 
-# "First Cost"!Q37:Q82
+# SolarPVUtil "First Cost"!Q37:Q82
 conv_ref_annual_world_first_cost_nparray = np.array([
     [2015, 23990922121.35], [2016, 37002006377.58], [2017, 43232696345.06],
     [2018, 49171554733.95], [2019, 54819860759.44], [2020, 6200056.19],
@@ -788,7 +822,7 @@ conv_ref_annual_world_first_cost_nparray = np.array([
     [2057, 115195820046.09], [2058, 56454480248.00], [2059, 173663804562.34],
     [2060, 113851352078.09]])
 
-# "First Cost"!F37:F82
+# SolarPVUtil "First Cost"!F37:F82
 pds_cumulative_install_nparray = np.array([
     [2015, 49905587652.22], [2016, 115452797708.90], [2017, 183798109742.74],
     [2018, 254591934926.61], [2019, 327497446473.93], [2020, 329808998276.48],
@@ -807,7 +841,7 @@ pds_cumulative_install_nparray = np.array([
     [2057, 3587965123984.63], [2058, 3651254636064.21], [2059, 3738280029885.81],
     [2060, 3822761868258.14]])
 
-# "First Cost"!R37:R82
+# SolarPVUtil "First Cost"!R37:R82
 ref_cumulative_install_nparray = np.array([
     [2015, 27473180642.58], [2016, 67916850252.30], [2017, 114552519226.14],
     [2018, 167090108762.41], [2019, 225240684137.87], [2020, 228543775566.41],
@@ -825,3 +859,69 @@ ref_cumulative_install_nparray = np.array([
     [2054, 3702477500805.16], [2055, 3821033871453.43], [2056, 3940763733015.72],
     [2057, 4061118089283.58], [2058, 4122707557568.43], [2059, 4301483244189.08],
     [2060, 4420423800140.54]])
+
+# ImprovedCookStoves 'Unit Adoption Calculations'!Q251:AA298
+conv_ref_tot_iunits_reqd_cookstoves_list = [
+    ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+    [2014, 3459768305.219460, 0.0, 0.0, 2400036400.868050, 1059583372.984360, 81224840.734370, 647332299.811139, 966608684.629265, 0.0, 0.0 ],
+    [2015, 3082774868.067660, 0.0, 0.0, 2406093206.523950, 1077370808.498250, 81190653.766277, 645351616.515017, 970761686.381095, 0.0, 0.0 ],
+    [2016, 3061616339.888600, 0.0, 0.0, 2411615646.508290, 1096785024.058630, 81255779.730429, 643042231.440560, 977569891.850606, 0.0, 0.0 ],
+    [2017, 3045544944.672860, 0.0, 0.0, 2416771630.000820, 1116277796.490000, 81304461.351923, 640280552.988342, 984210184.803298, 0.0, 0.0 ],
+    [2018, 3034328506.270050, 0.0, 0.0, 2421561065.366360, 1135846727.299340, 81336802.227080, 637089856.576712, 990682052.067734, 0.0, 0.0 ],
+    [2019, 3027734848.529750, 0.0, 0.0, 2425983860.969720, 1155489417.993660, 81352905.952223, 633493417.624019, 996984980.472479, 0.0, 0.0 ],
+    [2020, 3025531795.301560, 0.0, 0.0, 2430039925.175720, 1175203470.079970, 81352876.123673, 629514511.548611, 1003118456.846100, 0.0, 0.0 ],
+    [2021, 3027487170.435070, 0.0, 0.0, 2433729166.349180, 1194986485.065250, 81336816.337753, 625176413.768837, 1009081968.017150, 0.0, 0.0 ],
+    [2022, 3033368797.779890, 0.0, 0.0, 2437051492.854910, 1214836064.456510, 81304830.190783, 620502399.703045, 1014875000.814200, 0.0, 0.0 ],
+    [2023, 3042944501.185600, 0.0, 0.0, 2440006813.057720, 1234749809.760760, 81257021.279086, 615515744.769584, 1020497042.065820, 0.0, 0.0 ],
+    [2024, 3055982104.501810, 0.0, 0.0, 2442595035.322440, 1254725322.484980, 81193493.198983, 610239724.386803, 1025947578.600570, 0.0, 0.0 ],
+    [2025, 3072249431.578100, 0.0, 0.0, 2444816068.013890, 1274760204.136190, 81114349.546797, 604697613.973050, 1031226097.247010, 0.0, 0.0 ],
+    [2026, 3091514306.264080, 0.0, 0.0, 2446669819.496870, 1294852056.221390, 81019693.918850, 598912688.946673, 1036332084.833710, 0.0, 0.0 ],
+    [2027, 3113544552.409330, 0.0, 0.0, 2448156198.136200, 1314998480.247560, 80909629.911462, 592908224.726022, 1041265028.189230, 0.0, 0.0 ],
+    [2028, 3138107993.863460, 0.0, 0.0, 2449275112.296710, 1335197077.721730, 80784261.120956, 586707496.729445, 1046024414.142130, 0.0, 0.0 ],
+    [2029, 3164972454.476060, 0.0, 0.0, 2450026470.343200, 1355445450.150870, 80643691.143654, 580333780.375291, 1050609729.520980, 0.0, 0.0 ],
+    [2030, 3193905758.096730, 0.0, 0.0, 2450410180.640490, 1375741199.042000, 80488023.575878, 573810351.081908, 1055020461.154340, 0.0, 0.0 ],
+    [2031, 3224675728.575050, 0.0, 0.0, 2450426151.553410, 1396081925.902120, 80317362.013948, 567160484.267645, 1059256095.870780, 0.0, 0.0 ],
+    [2032, 3257050189.760640, 0.0, 0.0, 2450074291.446760, 1416465232.238230, 80131810.054188, 560407455.350850, 1063316120.498870, 0.0, 0.0 ],
+    [2033, 3290796965.503070, 0.0, 0.0, 2449354508.685370, 1436888719.557320, 79931471.292919, 553574539.749872, 1067200021.867150, 0.0, 0.0 ],
+    [2034, 3325683879.651950, 0.0, 0.0, 2448266711.634040, 1457349989.366400, 79716449.326463, 546685012.883060, 1070907286.804210, 0.0, 0.0 ],
+    [2035, 3361478756.056880, 0.0, 0.0, 2446810808.657600, 1477846643.172470, 79486847.751141, 539762150.168762, 1074437402.138590, 0.0, 0.0 ],
+    [2036, 3397949418.567440, 0.0, 0.0, 2444986708.120860, 1498376282.482530, 79242770.163276, 532829227.025327, 1077789854.698880, 0.0, 0.0 ],
+    [2037, 3434863691.033240, 0.0, 0.0, 2442794318.388640, 1518936508.803580, 78984320.159189, 525909518.871104, 1080964131.313620, 0.0, 0.0 ],
+    [2038, 3471989397.303860, 0.0, 0.0, 2440233547.825760, 1539524923.642620, 78711601.335203, 519026301.124440, 1083959718.811390, 0.0, 0.0 ],
+    [2039, 3509094361.228910, 0.0, 0.0, 2437304304.797030, 1560139128.506650, 78424717.287638, 512202849.203685, 1086776104.020750, 0.0, 0.0 ],
+    [2040, 3545946406.657990, 0.0, 0.0, 2434006497.667270, 1580776724.902670, 78123771.612817, 505462438.527188, 1089412773.770260, 0.0, 0.0 ],
+    [2041, 3582313357.440670, 0.0, 0.0, 2430340034.801290, 1601435314.337680, 77808867.907061, 498828344.513296, 1091869214.888490, 0.0, 0.0 ],
+    [2042, 3617963037.426570, 0.0, 0.0, 2426304824.563910, 1622112498.318690, 77480109.766693, 492323842.580359, 1094144914.204000, 0.0, 0.0 ],
+    [2043, 3652663270.465280, 0.0, 0.0, 2421900775.319950, 1642805878.352690, 77137600.788034, 485972208.146725, 1096239358.545360, 0.0, 0.0 ],
+    [2044, 3686181880.406390, 0.0, 0.0, 2417127795.434220, 1663513055.946680, 76781444.567406, 479796716.630743, 1098152034.741120, 0.0, 0.0 ],
+    [2045, 3718286691.099490, 0.0, 0.0, 2411985793.271550, 1684231632.607670, 76411744.701131, 473820643.450761, 1099882429.619860, 0.0, 0.0 ],
+    [2046, 3748745526.394190, 0.0, 0.0, 2406474677.196740, 1704959209.842660, 76028604.785531, 468067264.025129, 1101430030.010130, 0.0, 0.0 ],
+    [2047, 3777326210.140080, 0.0, 0.0, 2400594355.574610, 1725693389.158640, 75632128.416927, 462559853.772193, 1102794322.740500, 0.0, 0.0 ],
+    [2048, 3803796566.186750, 0.0, 0.0, 2394344736.769990, 1746431772.062610, 75222419.191642, 457321688.110304, 1103974794.639540, 0.0, 0.0 ],
+    [2049, 3827924418.383810, 0.0, 0.0, 2387725729.147680, 1767171960.061580, 74799580.705996, 452376042.457809, 1104970932.535810, 0.0, 0.0 ],
+    [2050, 3849477590.580840, 0.0, 0.0, 2380737241.072500, 1787911554.662550, 74363716.556313, 447746192.233058, 1105782223.257870, 0.0, 0.0 ],
+    [2051, 3868223906.627430, 0.0, 0.0, 2373379180.909270, 1808648157.372520, 73914930.338913, 443455412.854399, 1106408153.634290, 0.0, 0.0 ],
+    [2052, 3883931190.373200, 0.0, 0.0, 2365651457.022810, 1829379369.698490, 73453325.650120, 439526979.740181, 1106848210.493630, 0.0, 0.0 ],
+    [2053, 3896367265.667730, 0.0, 0.0, 2357553977.777930, 1850102793.147460, 72979006.086253, 435984168.308751, 1107101880.664450, 0.0, 0.0 ],
+    [2054, 3905299956.360610, 0.0, 0.0, 2349086651.539450, 1870816029.226420, 72492075.243636, 432850253.978460, 1107168650.975320, 0.0, 0.0 ],
+    [2055, 3910497086.301450, 0.0, 0.0, 2340249386.672180, 1891516679.442390, 71992636.718590, 430148512.167655, 1107048008.254810, 0.0, 0.0 ],
+    [2056, 3911726479.339840, 0.0, 0.0, 2331042091.540950, 1912202345.302360, 71480794.107436, 427902218.294684, 1106739439.331470, 0.0, 0.0 ],
+    [2057, 3908755959.325370, 0.0, 0.0, 2321464674.510560, 1932870628.313330, 70956651.006498, 426134647.777898, 1106242431.033870, 0.0, 0.0 ],
+    [2058, 3901353350.107640, 0.0, 0.0, 2311517043.945840, 1953519129.982300, 70420311.012096, 424869076.035644, 1105556470.190580, 0.0, 0.0 ],
+    [2059, 3889286475.536250, 0.0, 0.0, 2301199108.211590, 1974145451.816270, 69871877.720552, 424128778.486270, 1104681043.630160, 0.0, 0.0 ],
+    [2060, 3872323159.460780, 0.0, 0.0, 2290510775.672650, 1994747195.322250, 69311454.728189, 423937030.548126, 1103615638.181170, 0.0, 0.0 ]]
+
+# SolarPVUtil "First Cost"!O37:O82
+conv_ref_install_cost_per_iunit_cookstoves_nparray = np.array([
+    [2015, 2.048761039057], [2016, 2.048761039057], [2017, 2.048761039057], [2018, 2.048761039057],
+    [2019, 2.048761039057], [2020, 2.048761039057], [2021, 2.048761039057], [2022, 2.048761039057],
+    [2023, 2.048761039057], [2024, 2.048761039057], [2025, 2.048761039057], [2026, 2.048761039057],
+    [2027, 2.048761039057], [2028, 2.048761039057], [2029, 2.048761039057], [2030, 2.048761039057],
+    [2031, 2.048761039057], [2032, 2.048761039057], [2033, 2.048761039057], [2034, 2.048761039057],
+    [2035, 2.048761039057], [2036, 2.048761039057], [2037, 2.048761039057], [2038, 2.048761039057],
+    [2039, 2.048761039057], [2040, 2.048761039057], [2041, 2.048761039057], [2042, 2.048761039057],
+    [2043, 2.048761039057], [2044, 2.048761039057], [2045, 2.048761039057], [2046, 2.048761039057],
+    [2047, 2.048761039057], [2048, 2.048761039057], [2049, 2.048761039057], [2050, 2.048761039057],
+    [2051, 2.048761039057], [2052, 2.048761039057], [2053, 2.048761039057], [2054, 2.048761039057],
+    [2055, 2.048761039057], [2056, 2.048761039057], [2057, 2.048761039057], [2058, 2.048761039057],
+    [2059, 2.048761039057], [2060, 2.048761039057]])

@@ -6,8 +6,6 @@ import math
 import numpy as np
 import pandas as pd
 
-TERAWATT_TO_KILOWATT = 10**9
-
 
 class FirstCost:
   """Implementation for the First Cost module.
@@ -32,11 +30,14 @@ class FirstCost:
       the Reference scenario, as a DataFrame with columns per region.
     conv_ref_new_iunits_reqd: new implementation units required each year in
       the Conventional Reference scenario, as a DataFrame with columns per region.
+    fc_convert_iunit_factor: conversion factor from iunits to a more natural monetary
+      unit.
   """
   def __init__(self, ac, pds_learning_increase_mult,
       ref_learning_increase_mult, conv_learning_increase_mult,
       soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd, conv_ref_tot_iunits_reqd,
-      soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, conv_ref_new_iunits_reqd):
+      soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, conv_ref_new_iunits_reqd,
+      fc_convert_iunit_factor=1.0):
     self.ac = ac
     self.pds_learning_increase_mult = pds_learning_increase_mult
     self.ref_learning_increase_mult = ref_learning_increase_mult
@@ -47,6 +48,7 @@ class FirstCost:
     self.soln_pds_new_iunits_reqd = soln_pds_new_iunits_reqd
     self.soln_ref_new_iunits_reqd = soln_ref_new_iunits_reqd
     self.conv_ref_new_iunits_reqd = conv_ref_new_iunits_reqd
+    self.fc_convert_iunit_factor = fc_convert_iunit_factor
 
   @lru_cache()
   def soln_pds_install_cost_per_iunit(self):
@@ -60,14 +62,14 @@ class FirstCost:
     p = (1 / self.soln_pds_tot_iunits_reqd['World'][2015]) ** parameter_b
     first_unit_cost = self.ac.pds_2014_cost * p
 
-    result_per_tW = (first_unit_cost * self.soln_pds_tot_iunits_reqd.loc[:, 'World'] ** parameter_b)
-    result_per_kW = result_per_tW * TERAWATT_TO_KILOWATT
+    result_per_iunit = (first_unit_cost * self.soln_pds_tot_iunits_reqd.loc[:, 'World'] ** parameter_b)
+    result_display = result_per_iunit * self.fc_convert_iunit_factor
 
     if self.ac.soln_first_cost_below_conv:
-      result = result_per_kW
+      result = result_display
     else:
       conv = self.conv_ref_install_cost_per_iunit()
-      result = result_per_kW.combine(conv, lambda x1, x2: max(x1, x2))
+      result = result_display.combine(conv, lambda x1, x2: max(x1, x2))
     result.name = "soln_pds_install_cost_per_iunit"
     return result
 
@@ -90,7 +92,7 @@ class FirstCost:
         new_val = first_unit_cost
       else:
         new_val = first_unit_cost * x ** parameter_b
-      return new_val * TERAWATT_TO_KILOWATT
+      return new_val * self.fc_convert_iunit_factor
     step1 = self.conv_ref_tot_iunits_reqd['World'].apply(calc)
     # The model postulates that conventional technologies decrease
     # in cost only slowly, and never increase in cost. We walk back
@@ -121,7 +123,7 @@ class FirstCost:
         new_val = first_unit_cost
       else:
         new_val = first_unit_cost * x ** parameter_b
-      return new_val * TERAWATT_TO_KILOWATT
+      return new_val * self.fc_convert_iunit_factor
     step1 = self.soln_ref_tot_iunits_reqd.loc[:, 'World'].apply(calc)
     if self.ac.soln_first_cost_below_conv:
       result = step1

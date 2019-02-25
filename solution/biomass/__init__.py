@@ -267,7 +267,8 @@ class Biomass:
         conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
-        conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd())
+        conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd(),
+        fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)
 
     self.oc = operatingcost.OperatingCost(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
