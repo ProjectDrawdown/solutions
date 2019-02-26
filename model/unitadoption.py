@@ -175,7 +175,7 @@ class UnitAdoption:
     """Total iunits required each year.
        SolarPVUtil 'Unit Adoption Calculations'!AX134:BH181
     """
-    result = self.soln_pds_funits_adopted
+    result = self.soln_pds_funits_adopted.copy(deep=True)
     if self.ac.soln_avg_annual_use is not None:  # RRS models
       result /= self.ac.soln_avg_annual_use
     result.name = "soln_pds_tot_iunits_reqd"
@@ -244,7 +244,9 @@ class UnitAdoption:
   def soln_ref_tot_iunits_reqd(self):
     """Total implementation units required.
        SolarPVUtil 'Unit Adoption Calculations'!AX197:BH244"""
-    result = self.soln_ref_funits_adopted / self.ac.soln_avg_annual_use
+    result = self.soln_ref_funits_adopted.copy(deep=True)
+    if self.ac.soln_avg_annual_use is not None:  # RRS models
+      result /= self.ac.soln_avg_annual_use
     result.name = "soln_ref_tot_iunits_reqd"
     return result
 
