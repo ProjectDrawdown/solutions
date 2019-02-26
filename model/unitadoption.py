@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 import os.path
-
+import pathlib
 import pandas as pd
 from model import emissionsfactors
 
@@ -22,10 +22,15 @@ class UnitAdoption:
        soln_pds_funits_adopted: Annual functional units adopted in the
          PDS scenario.
   """
-  def __init__(self, ac, datadir, ref_tam_per_region, pds_tam_per_region,
-      soln_ref_funits_adopted, soln_pds_funits_adopted):
+  def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted, datadir=None, ref_tam_per_region=None, pds_tam_per_region=None):
     self.ac = ac
-    self.datadir = datadir
+
+    # NOTE: as datadir is static for all solutions this shouldn't be an arg
+    # For now it is kept in for backwards compatibility with solutions
+    if datadir is None:
+      self.datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+    else:
+      self.datadir = datadir
     self.ref_tam_per_region = ref_tam_per_region
     self.pds_tam_per_region = pds_tam_per_region
     self.soln_ref_funits_adopted = soln_ref_funits_adopted
@@ -170,7 +175,9 @@ class UnitAdoption:
     """Total iunits required each year.
        SolarPVUtil 'Unit Adoption Calculations'!AX134:BH181
     """
-    result = self.soln_pds_funits_adopted / self.ac.soln_avg_annual_use
+    result = self.soln_pds_funits_adopted
+    if self.ac.soln_avg_annual_use is not None:  # RRS models
+      result /= self.ac.soln_avg_annual_use
     result.name = "soln_pds_tot_iunits_reqd"
     return result
 
@@ -187,6 +194,7 @@ class UnitAdoption:
        First Cost, Marginal First Cost and NPV.
        SolarPVUtil 'Unit Adoption Calculations'!AG136:AQ182
     """
+
     growth = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')

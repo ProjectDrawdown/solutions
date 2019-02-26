@@ -15,7 +15,8 @@ scenarios = {  # just 1 for now
     'PDS-45p2050-Plausible-PDScustom-low-BookVersion1': advanced_controls.AdvancedControls(
         report_start_year=2020, report_end_year=2050,
         soln_pds_adoption_basis='Fully Customized PDS',
-        pds_adoption_use_ref_years=[2015, 2016]
+        pds_adoption_use_ref_years=[2015, 2016],
+        expected_lifetime=30
     )}
 
 
@@ -64,6 +65,25 @@ class Silvopasture:
             ref_datapoints=ht_ref_datapoints,
             pds_datapoints=ht_pds_datapoints
         )
+
+        self.ua = unitadoption.UnitAdoption(
+            ac=self.ac,
+            datadir=datadir,
+            soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
+            soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted())
+
+        # print(self.ua.soln_pds_new_iunits_reqd())
+        sp = [0, 0, 1.49643489480934, 3.42983761673287, 3.40777131208006, 3.3853509490275, 3.36260182010352, 3.3395514466838,
+         3.31622945888586, 3.29266744308518, 3.26889875807274, 2.61251683499262, 3.24583933270031, 3.22374782069915,
+         3.20156976815986, 3.17933454067742, 3.15707188573589, 3.13481173478948, 3.1125840024759, 3.09041838609068,
+         3.06834416845413, 2.95854426200356, 3.02978268035292, 3.00834944629167, 2.98710624970022, 2.96607716645508,
+         2.94528498898256, 2.92475112400388, 2.90449550819716, 2.88453654207888, 2.86489104204179, 2.57664981813053,
+         2.85665924514041, 4.33489812403127, 6.25041698217706, 6.2107886876006, 6.28096212022842, 6.10645576424633,
+         6.06670797541483, 6.02707271316069, 5.98758372231941, 5.94827534797025, 5.27674091268659, 5.89529695122053,
+         5.8588229736597, 5.8226435345909]
+
+        sp = np.array(sp)
+        np.testing.assert_array_almost_equal(sp, self.ua.soln_pds_new_iunits_reqd()['World'].values)
 
 if __name__ == '__main__':
     sp = Silvopasture()
