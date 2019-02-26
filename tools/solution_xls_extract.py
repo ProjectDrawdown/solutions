@@ -566,7 +566,7 @@ def write_ua(f):
   f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted())\n")
   f.write("    soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()\n")
   f.write("    soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()\n")
-  f.write("    conv_ref_tot_iunits_reqd = self.ua.conv_ref_tot_iunits_reqd()\n")
+  f.write("    conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()\n")
   f.write("    soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()\n")
   f.write("\n")
 
@@ -579,7 +579,7 @@ def write_fc(f, wb):
       + ", conv_learning_increase_mult=" + xli(fc_tab, 24, 4) + ",\n")
   f.write("        soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,\n")
   f.write("        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,\n")
-  f.write("        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,\n")
+  f.write("        conv_ref_tot_iunits=conv_ref_tot_iunits,\n")
   f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
   f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
   f.write("        conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd(),\n")

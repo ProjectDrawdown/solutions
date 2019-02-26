@@ -282,9 +282,11 @@ def test_soln_net_annual_funits_adopted_with_NaN():
   expected.name = "soln_net_annual_funits_adopted"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_conv_ref_tot_iunits_reqd():
+def test_conv_ref_tot_iunits():
   ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
-  funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+  funits = [
+      ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
+       'China', 'India', 'EU', 'USA'],
       [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
       [2015, 117.07, 75.63, 0.34, 22.16, 1.71, 15.42, 15.43, 3.07, 55.76, 13.22],
       [2016, 121.51, 76.25, 0.34, 23.25, 1.85, 16.18, 15.89, 3.39, 56.25, 13.31]]
@@ -292,14 +294,27 @@ def test_conv_ref_tot_iunits_reqd():
   ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
       ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
       soln_pds_funits_adopted=None, soln_ref_funits_adopted=soln_ref_funits_adopted)
-  result = ua.conv_ref_tot_iunits_reqd()
+  result = ua.conv_ref_tot_iunits()
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe'],
       [2014, 4.53535289538, 1.93172544646, 0.40864109200],
       [2015, 4.87963781659, 1.94274331751, 0.41354556337],
       [2016, 5.05302431141, 1.95081104871, 0.41846626996]]
   expected = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
-  expected.name = "conv_ref_tot_iunits_reqd"
+  expected.name = "conv_ref_tot_iunits"
   pd.testing.assert_frame_equal(result.iloc[0:3,0:3], expected, check_exact=False)
+
+def test_conv_ref_tot_iunits_land():
+    f = this_dir.parents[0].joinpath('data', 'sp_tla.csv')
+    sp_tla = pd.read_csv(f, index_col=0)
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
+    ref_ad = pd.read_csv(f, index_col=0)
+    ua = unitadoption.UnitAdoption(ac=None, tla_per_region=sp_tla, soln_ref_funits_adopted=ref_ad,
+                                   soln_pds_funits_adopted=None)
+    # test only world values as regional data has bugs in xls
+    result = ua.conv_ref_tot_iunits()['World'].values
+    world_expected = np.array([619.83739797667] * 47)
+    np.testing.assert_array_almost_equal(result, world_expected)
+
 
 def test_conv_ref_annual_tot_iunits():
   ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
@@ -529,7 +544,7 @@ def test_new_iunits_reqd_rounding_bug():
   result = ua.conv_ref_new_iunits_reqd()
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_new_iunits_land_reqd_land():
+def test_new_iunits_reqd_land():
     """ Using data from Silvopasture """
     sp_world = [0, 0, 1.49643489480934, 3.42983761673287, 3.40777131208006, 3.3853509490275, 3.36260182010352,
                 3.3395514466838, 3.31622945888586, 3.29266744308518, 3.26889875807274, 2.61251683499262,
@@ -540,7 +555,7 @@ def test_new_iunits_land_reqd_land():
                 2.85665924514041, 4.33489812403127, 6.25041698217706, 6.2107886876006, 6.28096212022842,
                 6.10645576424633, 6.06670797541483, 6.02707271316069, 5.98758372231941, 5.94827534797025,
                 5.27674091268659, 5.89529695122053, 5.8588229736597, 5.8226435345909]
-    f = this_dir.parents[0].joinpath('data', 'ad_silvopasture.csv')
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
     sp_ad = pd.read_csv(f, index_col=0)
     ac = advanced_controls.AdvancedControls(expected_lifetime=30)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=sp_ad)
@@ -681,7 +696,7 @@ def test_to_dict():
       'pds_gdp_per_capita', 'pds_tam_per_capita', 'pds_tam_per_gdp_per_capita', 'pds_tam_growth',
       'soln_pds_cumulative_funits', 'soln_pds_tot_iunits_reqd', 'soln_pds_new_iunits_reqd',
       'soln_pds_big4_iunits_reqd', 'soln_ref_cumulative_funits', 'soln_ref_tot_iunits_reqd',
-      'soln_ref_new_iunits_reqd', 'soln_net_annual_funits_adopted', 'conv_ref_tot_iunits_reqd',
+      'soln_ref_new_iunits_reqd', 'soln_net_annual_funits_adopted', 'conv_ref_tot_iunits',
       'conv_ref_annual_tot_iunits', 'conv_ref_new_iunits_reqd',
       'soln_pds_net_grid_electricity_units_saved', 'soln_pds_net_grid_electricity_units_used',
       'soln_pds_fuel_units_avoided', 'soln_pds_direct_co2_emissions_saved',

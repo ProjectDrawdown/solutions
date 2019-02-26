@@ -13,6 +13,32 @@ import pathlib
 from model import interpolation
 import pandas as pd
 
+def tla_per_region(land_dist):
+    """
+    A utility function to convert the land distribution output from AEZ Data into a dataframe broken
+    out by region and years. Having the data in this format is not useful for the researcher but does
+    allow compatibility with functions in other modules that take TAM dataframes as input for RRS
+    solutions. TLA will later be totally reworked as we move away from Excel.
+    Also note that while regional TLA has been included, it will not be tested as the Excel
+    implementation is wrong.
+    Args:
+        land_dist: output of get_land_distribution() from aez.AEZ
+    Returns:
+        df: DataFrame for use with UnitAdoption
+    """
+    regions = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']
+    index = pd.Index(data=list(range(2014, 2061)), name='Year')
+    df = pd.DataFrame(index=index)
+    for region in regions:
+        col = region
+        if region == 'World':
+            col = 'Global'
+        # if region == 'Middle East and Africa':
+        #     col = 'Middle East & Africa'
+        df[region] = land_dist.at[col, 'All']
+    return df
+
+
 
 class CustomTLA:
 
@@ -71,12 +97,5 @@ class CustomTLA:
 
 
 if __name__ == '__main__':
-    datadir = pathlib.Path(__file__).parents[1]
-
-    g_tla_ref_data_source = {
-        'Based on- WRI 2016': str(
-            datadir.joinpath('solution', 'tropicalforests', 'tla_based_on_WRI_2016_widescale_reforestation.csv')),
-    }
-    tl = CustomTLA(g_tla_ref_data_source)
-    print(tl.tla_data_global())
+    tla_per_region(None)
 

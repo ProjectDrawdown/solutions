@@ -252,7 +252,7 @@ class MicroWind:
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted())
     soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
     soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
-    conv_ref_tot_iunits_reqd = self.ua.conv_ref_tot_iunits_reqd()
+    conv_ref_tot_iunits_reqd = self.ua.conv_ref_tot_iunits()
     soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()
 
     self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=2,
