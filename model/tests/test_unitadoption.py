@@ -282,6 +282,24 @@ def test_soln_net_annual_funits_adopted_with_NaN():
   expected.name = "soln_net_annual_funits_adopted"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_soln_net_annual_funits_adopted_land():
+    """ Using data from Silvopasture """
+    sp_world = [0, 0, 0, 1.496434895, 4.926272512, 8.334043824, 11.71939477, 15.08199659, 18.42154804, 21.7377775,
+                25.03044494, 28.2993437, 30.91186053, 34.15769987, 37.38144769, 40.58301746, 43.762352, 46.91942388,
+                50.05423562, 53.16681962, 56.25723801, 59.32558217, 62.28412644, 65.31390912, 68.32225856, 71.30936481,
+                74.27544198, 77.22072697, 80.14547809, 83.0499736, 85.93451014, 88.79940118, 91.376051, 94.23271025,
+                97.07117348, 99.89175284, 102.6947702, 105.5903814, 108.3342353, 111.0613919, 113.7722351, 116.4671514,
+                119.146528, 121.8107521, 124.4602097, 127.0952848, 129.7163586]
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
+    pds_ad = pd.read_csv(f, index_col=0)
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
+    ref_ad = pd.read_csv(f, index_col=0)
+    ac = advanced_controls.AdvancedControls(expected_lifetime=30)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad, soln_pds_funits_adopted=pds_ad)
+    result = ua.soln_net_annual_funits_adopted()['World'].values
+    # We only check world values because regional calcs have bugs and are unused in the xls
+    np.testing.assert_array_almost_equal(result, sp_world)
+
 def test_conv_ref_tot_iunits():
   ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
   funits = [

@@ -72,10 +72,11 @@ class Silvopasture:
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
             tla_per_region=tla_per_region
-            )
+        )
 
-        self.ht.soln_ref_funits_adopted().to_csv('ad_sp_ref.csv')
-        print(self.ht.soln_ref_funits_adopted())
+        print(self.ua.soln_net_annual_funits_adopted())
+        # TODO: net annual land units adopted (soln_net_annual_funits_adopted)
+        # TODO: total new land conv units (conv_ref_new_iunits_reqd ??)
 
 
 if __name__ == '__main__':
