@@ -74,10 +74,6 @@ class Silvopasture:
             tla_per_region=tla_per_region
         )
 
-        print(self.ua.conv_ref_new_iunits_reqd())
-
-        # TODO: total new land conv units (conv_ref_new_iunits_reqd ??)
-
 
 if __name__ == '__main__':
     sp = Silvopasture()

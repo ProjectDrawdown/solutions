@@ -333,7 +333,6 @@ def test_conv_ref_tot_iunits_land():
     world_expected = np.array([619.83739797667] * 47)
     np.testing.assert_array_almost_equal(result, world_expected)
 
-
 def test_conv_ref_annual_tot_iunits():
   ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
   soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
