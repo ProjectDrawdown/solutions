@@ -296,10 +296,11 @@ class AdvancedControls:
 
                solution_category=None,
 
-               # land only
+               # LAND only
                seq_rate_global=None,
                disturbance_rate=None,
-               expected_lifetime=None
+               expected_lifetime_soln=None,
+               expected_lifetime_conv=30  # default for LAND models
                ):
 
     self.pds_2014_cost = pds_2014_cost
@@ -379,10 +380,11 @@ class AdvancedControls:
     if isinstance(solution_category, str):
       self.solution_category = self.string_to_solution_category(solution_category)
 
-    # Land only
+    # LAND only
     self.seq_rate_global = seq_rate_global
     self.disturbance_rate = disturbance_rate
-    self.expected_lifetime = expected_lifetime
+    self.expected_lifetime_soln = expected_lifetime_soln
+    self.expected_lifetime_conv = expected_lifetime_conv
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.
@@ -408,8 +410,8 @@ class AdvancedControls:
   def soln_lifetime_replacement(self):
     if self.soln_lifetime_capacity is not None:  # RRS
       return self.soln_lifetime_capacity / self.soln_avg_annual_use
-    elif self.expected_lifetime is not None:  # LAND
-      return self.expected_lifetime
+    elif self.expected_lifetime_soln is not None:  # LAND
+      return self.expected_lifetime_soln
     else:
       raise Exception('Must input either soln_lifetime_capacity (RRS) or expected_lifetime (LAND)')
 
@@ -422,25 +424,37 @@ class AdvancedControls:
       use = decimal.Decimal(str(self.soln_avg_annual_use))
       years = capacity / use
       return int(years.quantize(decimal.Decimal('1'), rounding='ROUND_HALF_UP'))
-
-    elif self.expected_lifetime is not None:  # LAND
+    elif self.expected_lifetime_soln is not None:  # LAND
       # LAND models input lifetime directly so I doubt we will come across rounding errors
       # i.e. expected_lifetime will probably be a whole number of years
-      return self.expected_lifetime
-
+      return self.expected_lifetime_soln
     else:
       raise Exception('Must input either soln_lifetime_capacity (RRS) or expected_lifetime (LAND)')
 
   @property
   def conv_lifetime_replacement(self):
-    return self.conv_lifetime_capacity / self.conv_avg_annual_use
+    if self.conv_lifetime_capacity is not None:  # RRS
+      return self.conv_lifetime_capacity / self.conv_avg_annual_use
+    elif self.expected_lifetime_soln is not None:  # LAND
+      return self.expected_lifetime_conv
+    else:
+      raise Exception('Must input either soln_lifetime_capacity (RRS) or expected_lifetime (LAND)')
 
   @property
   def conv_lifetime_replacement_rounded(self):
-    capacity = decimal.Decimal(str(self.conv_lifetime_capacity))
-    use = decimal.Decimal(str(self.conv_avg_annual_use))
-    years = capacity / use
-    return int(years.quantize(decimal.Decimal('1'), rounding='ROUND_HALF_UP'))
+    if self.conv_lifetime_capacity is not None:  # RRS
+      # round(22.5) == 22 due to floating point precision.
+      # Use decimal module to fix.
+      capacity = decimal.Decimal(str(self.conv_lifetime_capacity))
+      use = decimal.Decimal(str(self.conv_avg_annual_use))
+      years = capacity / use
+      return int(years.quantize(decimal.Decimal('1'), rounding='ROUND_HALF_UP'))
+    elif self.expected_lifetime_soln is not None:  # LAND
+      # LAND models input lifetime directly so I doubt we will come across rounding errors
+      # i.e. expected_lifetime will probably be a whole number of years
+      return self.expected_lifetime_conv
+    else:
+      raise Exception('Must input either soln_lifetime_capacity (RRS) or expected_lifetime (LAND)')
 
   def string_to_solution_category(self, text):
     ltext = str(text).lower()

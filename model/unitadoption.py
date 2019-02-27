@@ -339,7 +339,9 @@ class UnitAdoption:
 
        SolarPVUtil 'Unit Adoption Calculations'!AX251:BH298
     """
-    result = self.soln_net_annual_funits_adopted() / self.ac.conv_avg_annual_use
+    result = self.soln_net_annual_funits_adopted()
+    if self.ac.soln_avg_annual_use is not None:  # RRS models
+      result /= self.ac.soln_avg_annual_use
     result.name = "conv_ref_annual_tot_iunits"
     return result
 

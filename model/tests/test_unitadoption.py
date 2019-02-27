@@ -294,7 +294,7 @@ def test_soln_net_annual_funits_adopted_land():
     pds_ad = pd.read_csv(f, index_col=0)
     f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
     ref_ad = pd.read_csv(f, index_col=0)
-    ac = advanced_controls.AdvancedControls(expected_lifetime=30)
+    ac = advanced_controls.AdvancedControls(expected_lifetime_soln=30)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad, soln_pds_funits_adopted=pds_ad)
     result = ua.soln_net_annual_funits_adopted()['World'].values
     # We only check world values because regional calcs have bugs and are unused in the xls
@@ -575,7 +575,7 @@ def test_new_iunits_reqd_land():
                 5.27674091268659, 5.89529695122053, 5.8588229736597, 5.8226435345909]
     f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
     sp_ad = pd.read_csv(f, index_col=0)
-    ac = advanced_controls.AdvancedControls(expected_lifetime=30)
+    ac = advanced_controls.AdvancedControls(expected_lifetime_soln=30)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=sp_ad)
     result = ua.soln_pds_new_iunits_reqd()['World'].values
     # We only check world values because regional calcs have bugs and are unused in the xls
@@ -695,6 +695,23 @@ def test_conv_ref_new_iunits_reqd_multiple_replacements():
   assert result.loc[2015, 'World'] == pytest.approx(0.01183390497)
   assert result.loc[2035, 'World'] == pytest.approx(0.14831592483)
   assert result.loc[2060, 'World'] == pytest.approx(0.36330169992)
+
+def test_conv_ref_new_iunits_reqd_land():
+    sp_world = [0, 0, 1.496434895, 3.429837617, 3.407771312, 3.385350949, 3.36260182, 3.339551447, 3.316229459,
+                3.292667443, 3.268898758, 2.612516835, 3.245839333, 3.223747821, 3.201569768, 3.179334541, 3.157071886,
+                3.134811735, 3.112584002, 3.090418386, 3.068344168, 2.958544262, 3.02978268, 3.008349446, 2.98710625,
+                2.966077166, 2.945284989, 2.924751124, 2.904495508, 2.884536542, 2.864891042, 2.576649818, 2.856659245,
+                4.334898124, 6.250416982, 6.210788688, 6.28096212, 6.106455764, 6.066707975, 6.027072713, 5.987583722,
+                5.948275348, 5.276740913, 5.895296951, 5.858822974, 5.822643535]
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
+    pds_ad = pd.read_csv(f, index_col=0)
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
+    ref_ad = pd.read_csv(f, index_col=0)
+    ac = advanced_controls.AdvancedControls(expected_lifetime_soln=30)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad, soln_pds_funits_adopted=pds_ad)
+    # test only world values as regional data has bugs in xls
+    result = ua.conv_ref_new_iunits_reqd()['World'].values
+    np.testing.assert_array_almost_equal(result, sp_world)
 
 def test_to_dict():
   ac = advanced_controls.AdvancedControls(

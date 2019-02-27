@@ -16,7 +16,7 @@ scenarios = {  # just 1 for now
         report_start_year=2020, report_end_year=2050,
         soln_pds_adoption_basis='Fully Customized PDS',
         pds_adoption_use_ref_years=[2015, 2016],
-        expected_lifetime=30
+        expected_lifetime_soln=30
     )}
 
 
@@ -74,8 +74,8 @@ class Silvopasture:
             tla_per_region=tla_per_region
         )
 
-        print(self.ua.soln_net_annual_funits_adopted())
-        # TODO: net annual land units adopted (soln_net_annual_funits_adopted)
+        print(self.ua.conv_ref_new_iunits_reqd())
+
         # TODO: total new land conv units (conv_ref_new_iunits_reqd ??)
 
 
