@@ -16,7 +16,8 @@ scenarios = {  # just 1 for now
         report_start_year=2020, report_end_year=2050,
         soln_pds_adoption_basis='Fully Customized PDS',
         pds_adoption_use_ref_years=[2015, 2016],
-        expected_lifetime_soln=30
+        soln_expected_lifetime=30,
+        conv_expected_lifetime=30  # default for LAND models
     )}
 
 

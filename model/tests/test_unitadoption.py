@@ -294,7 +294,7 @@ def test_soln_net_annual_funits_adopted_land():
     pds_ad = pd.read_csv(f, index_col=0)
     f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
     ref_ad = pd.read_csv(f, index_col=0)
-    ac = advanced_controls.AdvancedControls(expected_lifetime_soln=30)
+    ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad, soln_pds_funits_adopted=pds_ad)
     result = ua.soln_net_annual_funits_adopted()['World'].values
     # We only check world values because regional calcs have bugs and are unused in the xls
@@ -574,7 +574,7 @@ def test_new_iunits_reqd_land():
                 5.27674091268659, 5.89529695122053, 5.8588229736597, 5.8226435345909]
     f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
     sp_ad = pd.read_csv(f, index_col=0)
-    ac = advanced_controls.AdvancedControls(expected_lifetime_soln=30)
+    ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=sp_ad)
     result = ua.soln_pds_new_iunits_reqd()['World'].values
     # We only check world values because regional calcs have bugs and are unused in the xls
@@ -706,7 +706,7 @@ def test_conv_ref_new_iunits_reqd_land():
     pds_ad = pd.read_csv(f, index_col=0)
     f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
     ref_ad = pd.read_csv(f, index_col=0)
-    ac = advanced_controls.AdvancedControls(expected_lifetime_soln=30)
+    ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30, conv_expected_lifetime=30)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad, soln_pds_funits_adopted=pds_ad)
     # test only world values as regional data has bugs in xls
     result = ua.conv_ref_new_iunits_reqd()['World'].values

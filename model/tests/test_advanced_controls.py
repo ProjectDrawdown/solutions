@@ -58,6 +58,21 @@ def test_lifetime_replacement_rounded():
   assert ac.conv_lifetime_replacement_rounded == 23
   assert ac.soln_lifetime_replacement_rounded == 2
 
+def test_replacement_raises_error():
+    """ Lifetime replacement values require different inputs for LAND and RRS """
+    ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=None, soln_expected_lifetime=None)
+    with pytest.raises(ValueError):
+        ac.soln_lifetime_replacement
+    ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=None, soln_expected_lifetime=None)
+    with pytest.raises(ValueError):
+        ac.soln_lifetime_replacement_rounded
+    ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=None, conv_expected_lifetime=None)
+    with pytest.raises(ValueError):
+        ac.conv_lifetime_replacement
+    ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=None, conv_expected_lifetime=None)
+    with pytest.raises(ValueError):
+        ac.conv_lifetime_replacement_rounded
+
 def test_co2eq_conversion_source():
   ac = advanced_controls.AdvancedControls(co2eq_conversion_source="ar5 with feedback")
   assert ac.co2eq_conversion_source == ef.CO2EQ_SOURCE.AR5_WITH_FEEDBACK
