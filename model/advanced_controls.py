@@ -426,8 +426,9 @@ class AdvancedControls:
       return int(years.quantize(decimal.Decimal('1'), rounding='ROUND_HALF_UP'))
     elif self.soln_expected_lifetime is not None:  # LAND
       # LAND models input lifetime directly so I doubt we will come across rounding errors
-      # i.e. expected_lifetime will probably be a whole number of years
-      return self.soln_expected_lifetime
+      # i.e. expected_lifetime will probably be a whole number of years.
+      # Integration test will catch the case where this assumption is wrong
+      return int(self.soln_expected_lifetime)
     else:
       raise ValueError('Must input either lifetime capacity (RRS) or expected lifetime (LAND) for solution')
 
@@ -452,7 +453,8 @@ class AdvancedControls:
     elif self.conv_expected_lifetime is not None:  # LAND
       # LAND models input lifetime directly so I doubt we will come across rounding errors
       # i.e. expected_lifetime will probably be a whole number of years
-      return self.conv_expected_lifetime
+      # Integration test will catch the case where this assumption is wrong
+      return int(self.conv_expected_lifetime)
     else:
       raise ValueError('Must input either lifetime capacity (RRS) or expected lifetime (LAND) for conventional')
 
