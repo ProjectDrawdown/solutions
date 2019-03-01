@@ -18,9 +18,10 @@ def tla_per_region(land_dist):
     A utility function to convert the land distribution output from AEZ Data into a dataframe broken
     out by region and years. Having the data in this format is not useful for the researcher but does
     allow compatibility with functions in other modules that take TAM dataframes as input for RRS
-    solutions. TLA will later be totally reworked as we move away from Excel.
+    solutions.
     Also note that while regional TLA has been included, it will not be tested as the Excel
-    implementation is wrong.
+    implementation has some issues with regional data. Information on issues can be found here:
+    https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit?usp=sharing
     Args:
         land_dist: output of get_land_distribution() from aez.AEZ
     Returns:
