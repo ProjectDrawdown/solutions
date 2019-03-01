@@ -22,21 +22,21 @@ class FirstCost:
       the Project Drawdown scenario, as a DataFrame with columns per region.
     soln_ref_tot_iunits_reqd: total implementation units required each year in
       the Reference scenario, as a DataFrame with columns per region.
-    conv_ref_tot_iunits_reqd: total implementation units required each year in
+    conv_ref_tot_iunits: total implementation units required each year in
       the Conventional Reference scenario, as a DataFrame with columns per region.
     soln_pds_new_iunits_reqd: new implementation units required each year in
       the Project Drawdown scenario, as a DataFrame with columns per region.
     soln_ref_new_iunits_reqd: new implementation units required each year in
       the Reference scenario, as a DataFrame with columns per region.
-    conv_ref_new_iunits_reqd: new implementation units required each year in
+    conv_ref_new_iunits: new implementation units required each year in
       the Conventional Reference scenario, as a DataFrame with columns per region.
     fc_convert_iunit_factor: conversion factor from iunits to a more natural monetary
       unit.
   """
   def __init__(self, ac, pds_learning_increase_mult,
       ref_learning_increase_mult, conv_learning_increase_mult,
-      soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd, conv_ref_tot_iunits_reqd,
-      soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, conv_ref_new_iunits_reqd,
+      soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd, conv_ref_tot_iunits,
+      soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, conv_ref_new_iunits,
       fc_convert_iunit_factor=1.0):
     self.ac = ac
     self.pds_learning_increase_mult = pds_learning_increase_mult
@@ -44,10 +44,10 @@ class FirstCost:
     self.conv_learning_increase_mult = conv_learning_increase_mult
     self.soln_pds_tot_iunits_reqd = soln_pds_tot_iunits_reqd
     self.soln_ref_tot_iunits_reqd = soln_ref_tot_iunits_reqd
-    self.conv_ref_tot_iunits_reqd = conv_ref_tot_iunits_reqd
+    self.conv_ref_tot_iunits = conv_ref_tot_iunits
     self.soln_pds_new_iunits_reqd = soln_pds_new_iunits_reqd
     self.soln_ref_new_iunits_reqd = soln_ref_new_iunits_reqd
-    self.conv_ref_new_iunits_reqd = conv_ref_new_iunits_reqd
+    self.conv_ref_new_iunits = conv_ref_new_iunits
     self.fc_convert_iunit_factor = fc_convert_iunit_factor
 
   @lru_cache()
@@ -84,7 +84,7 @@ class FirstCost:
 
     # Excel implementation referenced the cell for 2014, not 2015, so we
     # do the same here. Normally, we base calculations from 2015.
-    p = (1 / self.conv_ref_tot_iunits_reqd['World'][2014]) ** parameter_b
+    p = (1 / self.conv_ref_tot_iunits['World'][2014]) ** parameter_b
     first_unit_cost = self.ac.conv_2014_cost * p
 
     def calc(x):
@@ -93,7 +93,7 @@ class FirstCost:
       else:
         new_val = first_unit_cost * x ** parameter_b
       return new_val * self.fc_convert_iunit_factor
-    step1 = self.conv_ref_tot_iunits_reqd['World'].apply(calc)
+    step1 = self.conv_ref_tot_iunits['World'].apply(calc)
     # The model postulates that conventional technologies decrease
     # in cost only slowly, and never increase in cost. We walk back
     # through the array comparing each year to the previous year.
@@ -156,7 +156,7 @@ class FirstCost:
     """Annual World First Cost (SOLUTION-REF)
        'First Cost'!Q37:Q82
     """
-    result = self.conv_ref_new_iunits_reqd["World"] * self.conv_ref_install_cost_per_iunit()
+    result = self.conv_ref_new_iunits["World"] * self.conv_ref_install_cost_per_iunit()
     result.name = "conv_ref_annual_world_first_cost"
     return result.dropna()
 

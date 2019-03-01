@@ -558,7 +558,7 @@ def test_new_iunits_reqd_rounding_bug():
       ref_tam_per_region=None, pds_tam_per_region=None,
       soln_pds_funits_adopted=soln_pds_funits_adopted,
       soln_ref_funits_adopted=zero_funits_adopted)
-  result = ua.conv_ref_new_iunits_reqd()
+  result = ua.conv_ref_new_iunits()
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_new_iunits_reqd_land():
@@ -660,7 +660,7 @@ def test_soln_ref_new_iunits_reqd_multiple_replacements():
   assert result.loc[2035, 'World'] == pytest.approx(0.00443836291)
   assert result.loc[2060, 'World'] == pytest.approx(0.00887672581)
 
-def test_conv_ref_new_iunits_reqd():
+def test_conv_ref_new_iunits():
   ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=182411.28,
       conv_avg_annual_use=4946.84)
   soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
@@ -671,13 +671,13 @@ def test_conv_ref_new_iunits_reqd():
       ref_tam_per_region=None, pds_tam_per_region=None,
       soln_pds_funits_adopted=soln_pds_funits_adopted,
       soln_ref_funits_adopted=soln_ref_funits_adopted)
-  result = ua.conv_ref_new_iunits_reqd()
-  expected = pd.DataFrame(conv_ref_new_iunits_reqd_list[1:],
-      columns=conv_ref_new_iunits_reqd_list[0]).set_index('Year')
-  expected.name = "conv_ref_new_iunits_reqd"
+  result = ua.conv_ref_new_iunits()
+  expected = pd.DataFrame(conv_ref_new_iunits_list[1:],
+      columns=conv_ref_new_iunits_list[0]).set_index('Year')
+  expected.name = "conv_ref_new_iunits"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_conv_ref_new_iunits_reqd_multiple_replacements():
+def test_conv_ref_new_iunits_multiple_replacements():
   ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=20000.0,
       conv_avg_annual_use=5000.0)
   soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
@@ -688,14 +688,14 @@ def test_conv_ref_new_iunits_reqd_multiple_replacements():
       ref_tam_per_region=None, pds_tam_per_region=None,
       soln_pds_funits_adopted=soln_pds_funits_adopted,
       soln_ref_funits_adopted=soln_ref_funits_adopted)
-  result = ua.conv_ref_new_iunits_reqd()
+  result = ua.conv_ref_new_iunits()
   # values from SolarPVUtil setting 'Unit Adoption Calculations'
   # AH252 = 4.0 and 'Advanced Controls'!F95 = 5000.0
   assert result.loc[2015, 'World'] == pytest.approx(0.01183390497)
   assert result.loc[2035, 'World'] == pytest.approx(0.14831592483)
   assert result.loc[2060, 'World'] == pytest.approx(0.36330169992)
 
-def test_conv_ref_new_iunits_reqd_land():
+def test_conv_ref_new_iunits_land():
     sp_world = [0, 0, 1.496434895, 3.429837617, 3.407771312, 3.385350949, 3.36260182, 3.339551447, 3.316229459,
                 3.292667443, 3.268898758, 2.612516835, 3.245839333, 3.223747821, 3.201569768, 3.179334541, 3.157071886,
                 3.134811735, 3.112584002, 3.090418386, 3.068344168, 2.958544262, 3.02978268, 3.008349446, 2.98710625,
@@ -709,7 +709,7 @@ def test_conv_ref_new_iunits_reqd_land():
     ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30, conv_expected_lifetime=30)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad, soln_pds_funits_adopted=pds_ad)
     # test only world values as regional data has bugs in xls
-    result = ua.conv_ref_new_iunits_reqd()['World'].values
+    result = ua.conv_ref_new_iunits()['World'].values
     np.testing.assert_array_almost_equal(result, sp_world)
 
 def test_to_dict():
@@ -731,7 +731,7 @@ def test_to_dict():
       'soln_pds_cumulative_funits', 'soln_pds_tot_iunits_reqd', 'soln_pds_new_iunits_reqd',
       'soln_pds_big4_iunits_reqd', 'soln_ref_cumulative_funits', 'soln_ref_tot_iunits_reqd',
       'soln_ref_new_iunits_reqd', 'soln_net_annual_funits_adopted', 'conv_ref_tot_iunits',
-      'conv_ref_annual_tot_iunits', 'conv_ref_new_iunits_reqd',
+      'conv_ref_annual_tot_iunits', 'conv_ref_new_iunits',
       'soln_pds_net_grid_electricity_units_saved', 'soln_pds_net_grid_electricity_units_used',
       'soln_pds_fuel_units_avoided', 'soln_pds_direct_co2_emissions_saved',
       'soln_pds_direct_ch4_co2_emissions_saved', 'soln_pds_direct_n2o_co2_emissions_saved',
@@ -1209,7 +1209,7 @@ soln_ref_new_iunits_reqd_list = [
 
 
 # 'Unit Adoption Calculations'!AG251:AQ298
-conv_ref_new_iunits_reqd_list = [
+conv_ref_new_iunits_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2015, 0.01196107466, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 ],
     [2016, 0.01846675143, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 ],

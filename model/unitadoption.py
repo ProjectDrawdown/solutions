@@ -346,7 +346,7 @@ class UnitAdoption:
     return result
 
   @lru_cache()
-  def conv_ref_new_iunits_reqd(self):
+  def conv_ref_new_iunits(self):
     """New implementation units required (includes replacement units)
 
        Number of Additional Implementation Units of the Conventional practice/technology
@@ -370,7 +370,7 @@ class UnitAdoption:
           replacements.at[year, region] += growth.at[replacement_year, region]
           replacement_year -= (self.ac.conv_lifetime_replacement_rounded + 1)
     result = growth + replacements
-    result.name = "conv_ref_new_iunits_reqd"
+    result.name = "conv_ref_new_iunits"
     return result
 
   @lru_cache()
@@ -486,7 +486,7 @@ class UnitAdoption:
     rs['soln_net_annual_funits_adopted'] = self.soln_net_annual_funits_adopted()
     rs['conv_ref_tot_iunits'] = self.conv_ref_tot_iunits()
     rs['conv_ref_annual_tot_iunits'] = self.conv_ref_annual_tot_iunits()
-    rs['conv_ref_new_iunits_reqd'] = self.conv_ref_new_iunits_reqd()
+    rs['conv_ref_new_iunits'] = self.conv_ref_new_iunits()
     s = self.soln_pds_net_grid_electricity_units_saved()
     rs['soln_pds_net_grid_electricity_units_saved'] = s
     s = self.soln_pds_net_grid_electricity_units_used()

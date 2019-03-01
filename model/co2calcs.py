@@ -24,7 +24,7 @@ class CO2Calcs:
         soln_pds_direct_n2o_co2_emissions_saved:
         soln_pds_new_iunits_reqd:
         soln_ref_new_iunits_reqd:
-        conv_ref_new_iunits_reqd:
+        conv_ref_new_iunits:
         conv_ref_grid_CO2_per_KWh:
         conv_ref_grid_CO2eq_per_KWh:
         soln_net_annual_funits_adopted:
@@ -37,7 +37,7 @@ class CO2Calcs:
                soln_pds_net_grid_electricity_units_saved=None, soln_pds_net_grid_electricity_units_used=None,
                soln_pds_direct_co2_emissions_saved=None, soln_pds_direct_ch4_co2_emissions_saved=None,
                soln_pds_direct_n2o_co2_emissions_saved=None, soln_pds_new_iunits_reqd=None,
-               soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None, conv_ref_grid_CO2_per_KWh=None,
+               soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None, conv_ref_grid_CO2_per_KWh=None,
                conv_ref_grid_CO2eq_per_KWh=None, fuel_in_liters=None, annual_land_area_harvested=None,
                land_distribution=None):
     self.ac = ac
@@ -49,7 +49,7 @@ class CO2Calcs:
     self.soln_pds_direct_n2o_co2_emissions_saved = soln_pds_direct_n2o_co2_emissions_saved
     self.soln_pds_new_iunits_reqd = soln_pds_new_iunits_reqd
     self.soln_ref_new_iunits_reqd = soln_ref_new_iunits_reqd
-    self.conv_ref_new_iunits_reqd = conv_ref_new_iunits_reqd
+    self.conv_ref_new_iunits = conv_ref_new_iunits
     self.conv_ref_grid_CO2_per_KWh = conv_ref_grid_CO2_per_KWh
     self.conv_ref_grid_CO2eq_per_KWh = conv_ref_grid_CO2eq_per_KWh
     self.soln_net_annual_funits_adopted = soln_net_annual_funits_adopted
@@ -336,7 +336,7 @@ class CO2Calcs:
     if self.ac.conv_indirect_co2_is_iunits:
       delta = self.soln_pds_new_iunits_reqd - self.soln_ref_new_iunits_reqd
       result = (delta * self.ac.soln_indirect_co2_per_iunit)
-      result += self.conv_ref_new_iunits_reqd * self.ac.conv_indirect_co2_per_unit
+      result += self.conv_ref_new_iunits * self.ac.conv_indirect_co2_per_unit
     else:
       result = self.soln_net_annual_funits_adopted * self.ac.soln_indirect_co2_per_iunit
       result -= self.soln_net_annual_funits_adopted * self.ac.conv_indirect_co2_per_unit
