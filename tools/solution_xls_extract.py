@@ -566,7 +566,7 @@ def write_ua(f):
   f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted())\n")
   f.write("    soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()\n")
   f.write("    soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()\n")
-  f.write("    conv_ref_tot_iunits_reqd = self.ua.conv_ref_tot_iunits_reqd()\n")
+  f.write("    conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()\n")
   f.write("    soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()\n")
   f.write("\n")
 
@@ -579,10 +579,10 @@ def write_fc(f, wb):
       + ", conv_learning_increase_mult=" + xli(fc_tab, 24, 4) + ",\n")
   f.write("        soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,\n")
   f.write("        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,\n")
-  f.write("        conv_ref_tot_iunits_reqd=conv_ref_tot_iunits_reqd,\n")
+  f.write("        conv_ref_tot_iunits=conv_ref_tot_iunits,\n")
   f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
   f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
-  f.write("        conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd(),\n")
+  f.write("        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
   if fc_tab.cell(14, 5).value == 1000000000 and fc_tab.cell(14, 6).value == '$/kW TO $/TW':
     f.write("        fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)\n")
   else:
@@ -620,7 +620,7 @@ def write_c2_c4(f):
   f.write("        soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),\n")
   f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
   f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
-  f.write("        conv_ref_new_iunits_reqd=self.ua.conv_ref_new_iunits_reqd(),\n")
+  f.write("        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
   f.write("        conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),\n")
   f.write("        conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),\n")
   f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,\n")

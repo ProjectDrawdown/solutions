@@ -15,7 +15,9 @@ scenarios = {  # just 1 for now
     'PDS-45p2050-Plausible-PDScustom-low-BookVersion1': advanced_controls.AdvancedControls(
         report_start_year=2020, report_end_year=2050,
         soln_pds_adoption_basis='Fully Customized PDS',
-        pds_adoption_use_ref_years=[2015, 2016]
+        pds_adoption_use_ref_years=[2015, 2016],
+        soln_expected_lifetime=30,
+        conv_expected_lifetime=30  # default for LAND models
     )}
 
 
@@ -32,7 +34,8 @@ class Silvopasture:
 
         # TLA
         self.ae = aez.AEZ(solution_name=self.name)
-
+        tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
+        tla_per_region.to_csv('sp_tla.csv')
         # This solution has Custom PDS data
         ca_dir = thisdir.joinpath('ca_pds_data')
         source_filenames = [f for f in listdir(ca_dir) if f.endswith('.csv')]
@@ -64,6 +67,14 @@ class Silvopasture:
             ref_datapoints=ht_ref_datapoints,
             pds_datapoints=ht_pds_datapoints
         )
+
+        self.ua = unitadoption.UnitAdoption(
+            ac=self.ac,
+            soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
+            soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
+            tla_per_region=tla_per_region
+        )
+
 
 if __name__ == '__main__':
     sp = Silvopasture()

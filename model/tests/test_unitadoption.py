@@ -282,9 +282,29 @@ def test_soln_net_annual_funits_adopted_with_NaN():
   expected.name = "soln_net_annual_funits_adopted"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_conv_ref_tot_iunits_reqd():
+def test_soln_net_annual_funits_adopted_land():
+    """ Using data from Silvopasture """
+    sp_world = [0, 0, 0, 1.496434895, 4.926272512, 8.334043824, 11.71939477, 15.08199659, 18.42154804, 21.7377775,
+                25.03044494, 28.2993437, 30.91186053, 34.15769987, 37.38144769, 40.58301746, 43.762352, 46.91942388,
+                50.05423562, 53.16681962, 56.25723801, 59.32558217, 62.28412644, 65.31390912, 68.32225856, 71.30936481,
+                74.27544198, 77.22072697, 80.14547809, 83.0499736, 85.93451014, 88.79940118, 91.376051, 94.23271025,
+                97.07117348, 99.89175284, 102.6947702, 105.5903814, 108.3342353, 111.0613919, 113.7722351, 116.4671514,
+                119.146528, 121.8107521, 124.4602097, 127.0952848, 129.7163586]
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
+    pds_ad = pd.read_csv(f, index_col=0)
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
+    ref_ad = pd.read_csv(f, index_col=0)
+    ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad, soln_pds_funits_adopted=pds_ad)
+    result = ua.soln_net_annual_funits_adopted()['World'].values
+    # We only check world values because regional calcs have bugs and are unused in the xls
+    np.testing.assert_array_almost_equal(result, sp_world)
+
+def test_conv_ref_tot_iunits():
   ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
-  funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+  funits = [
+      ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
+       'China', 'India', 'EU', 'USA'],
       [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
       [2015, 117.07, 75.63, 0.34, 22.16, 1.71, 15.42, 15.43, 3.07, 55.76, 13.22],
       [2016, 121.51, 76.25, 0.34, 23.25, 1.85, 16.18, 15.89, 3.39, 56.25, 13.31]]
@@ -292,14 +312,26 @@ def test_conv_ref_tot_iunits_reqd():
   ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
       ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
       soln_pds_funits_adopted=None, soln_ref_funits_adopted=soln_ref_funits_adopted)
-  result = ua.conv_ref_tot_iunits_reqd()
+  result = ua.conv_ref_tot_iunits()
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe'],
       [2014, 4.53535289538, 1.93172544646, 0.40864109200],
       [2015, 4.87963781659, 1.94274331751, 0.41354556337],
       [2016, 5.05302431141, 1.95081104871, 0.41846626996]]
   expected = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
-  expected.name = "conv_ref_tot_iunits_reqd"
+  expected.name = "conv_ref_tot_iunits"
   pd.testing.assert_frame_equal(result.iloc[0:3,0:3], expected, check_exact=False)
+
+def test_conv_ref_tot_iunits_land():
+    f = this_dir.parents[0].joinpath('data', 'sp_tla.csv')
+    sp_tla = pd.read_csv(f, index_col=0)
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
+    ref_ad = pd.read_csv(f, index_col=0)
+    ua = unitadoption.UnitAdoption(ac=None, tla_per_region=sp_tla, soln_ref_funits_adopted=ref_ad,
+                                   soln_pds_funits_adopted=None)
+    # test only world values as regional data has bugs in xls
+    result = ua.conv_ref_tot_iunits()['World'].values
+    world_expected = np.array([619.83739797667] * 47)
+    np.testing.assert_array_almost_equal(result, world_expected)
 
 def test_conv_ref_annual_tot_iunits():
   ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
@@ -526,8 +558,27 @@ def test_new_iunits_reqd_rounding_bug():
       ref_tam_per_region=None, pds_tam_per_region=None,
       soln_pds_funits_adopted=soln_pds_funits_adopted,
       soln_ref_funits_adopted=zero_funits_adopted)
-  result = ua.conv_ref_new_iunits_reqd()
+  result = ua.conv_ref_new_iunits()
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_new_iunits_reqd_land():
+    """ Using data from Silvopasture """
+    sp_world = [0, 0, 1.49643489480934, 3.42983761673287, 3.40777131208006, 3.3853509490275, 3.36260182010352,
+                3.3395514466838, 3.31622945888586, 3.29266744308518, 3.26889875807274, 2.61251683499262,
+                3.24583933270031, 3.22374782069915, 3.20156976815986, 3.17933454067742, 3.15707188573589,
+                3.13481173478948, 3.1125840024759, 3.09041838609068, 3.06834416845413, 2.95854426200356,
+                3.02978268035292, 3.00834944629167, 2.98710624970022, 2.96607716645508, 2.94528498898256,
+                2.92475112400388, 2.90449550819716, 2.88453654207888, 2.86489104204179, 2.57664981813053,
+                2.85665924514041, 4.33489812403127, 6.25041698217706, 6.2107886876006, 6.28096212022842,
+                6.10645576424633, 6.06670797541483, 6.02707271316069, 5.98758372231941, 5.94827534797025,
+                5.27674091268659, 5.89529695122053, 5.8588229736597, 5.8226435345909]
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
+    sp_ad = pd.read_csv(f, index_col=0)
+    ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=sp_ad)
+    result = ua.soln_pds_new_iunits_reqd()['World'].values
+    # We only check world values because regional calcs have bugs and are unused in the xls
+    np.testing.assert_array_almost_equal(result, sp_world)
 
 def test_soln_pds_big4_iunits_reqd():
   soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
@@ -609,7 +660,7 @@ def test_soln_ref_new_iunits_reqd_multiple_replacements():
   assert result.loc[2035, 'World'] == pytest.approx(0.00443836291)
   assert result.loc[2060, 'World'] == pytest.approx(0.00887672581)
 
-def test_conv_ref_new_iunits_reqd():
+def test_conv_ref_new_iunits():
   ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=182411.28,
       conv_avg_annual_use=4946.84)
   soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
@@ -620,13 +671,13 @@ def test_conv_ref_new_iunits_reqd():
       ref_tam_per_region=None, pds_tam_per_region=None,
       soln_pds_funits_adopted=soln_pds_funits_adopted,
       soln_ref_funits_adopted=soln_ref_funits_adopted)
-  result = ua.conv_ref_new_iunits_reqd()
-  expected = pd.DataFrame(conv_ref_new_iunits_reqd_list[1:],
-      columns=conv_ref_new_iunits_reqd_list[0]).set_index('Year')
-  expected.name = "conv_ref_new_iunits_reqd"
+  result = ua.conv_ref_new_iunits()
+  expected = pd.DataFrame(conv_ref_new_iunits_list[1:],
+      columns=conv_ref_new_iunits_list[0]).set_index('Year')
+  expected.name = "conv_ref_new_iunits"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_conv_ref_new_iunits_reqd_multiple_replacements():
+def test_conv_ref_new_iunits_multiple_replacements():
   ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=20000.0,
       conv_avg_annual_use=5000.0)
   soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
@@ -637,12 +688,29 @@ def test_conv_ref_new_iunits_reqd_multiple_replacements():
       ref_tam_per_region=None, pds_tam_per_region=None,
       soln_pds_funits_adopted=soln_pds_funits_adopted,
       soln_ref_funits_adopted=soln_ref_funits_adopted)
-  result = ua.conv_ref_new_iunits_reqd()
+  result = ua.conv_ref_new_iunits()
   # values from SolarPVUtil setting 'Unit Adoption Calculations'
   # AH252 = 4.0 and 'Advanced Controls'!F95 = 5000.0
   assert result.loc[2015, 'World'] == pytest.approx(0.01183390497)
   assert result.loc[2035, 'World'] == pytest.approx(0.14831592483)
   assert result.loc[2060, 'World'] == pytest.approx(0.36330169992)
+
+def test_conv_ref_new_iunits_land():
+    sp_world = [0, 0, 1.496434895, 3.429837617, 3.407771312, 3.385350949, 3.36260182, 3.339551447, 3.316229459,
+                3.292667443, 3.268898758, 2.612516835, 3.245839333, 3.223747821, 3.201569768, 3.179334541, 3.157071886,
+                3.134811735, 3.112584002, 3.090418386, 3.068344168, 2.958544262, 3.02978268, 3.008349446, 2.98710625,
+                2.966077166, 2.945284989, 2.924751124, 2.904495508, 2.884536542, 2.864891042, 2.576649818, 2.856659245,
+                4.334898124, 6.250416982, 6.210788688, 6.28096212, 6.106455764, 6.066707975, 6.027072713, 5.987583722,
+                5.948275348, 5.276740913, 5.895296951, 5.858822974, 5.822643535]
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
+    pds_ad = pd.read_csv(f, index_col=0)
+    f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
+    ref_ad = pd.read_csv(f, index_col=0)
+    ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30, conv_expected_lifetime=30)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad, soln_pds_funits_adopted=pds_ad)
+    # test only world values as regional data has bugs in xls
+    result = ua.conv_ref_new_iunits()['World'].values
+    np.testing.assert_array_almost_equal(result, sp_world)
 
 def test_to_dict():
   ac = advanced_controls.AdvancedControls(
@@ -662,8 +730,8 @@ def test_to_dict():
       'pds_gdp_per_capita', 'pds_tam_per_capita', 'pds_tam_per_gdp_per_capita', 'pds_tam_growth',
       'soln_pds_cumulative_funits', 'soln_pds_tot_iunits_reqd', 'soln_pds_new_iunits_reqd',
       'soln_pds_big4_iunits_reqd', 'soln_ref_cumulative_funits', 'soln_ref_tot_iunits_reqd',
-      'soln_ref_new_iunits_reqd', 'soln_net_annual_funits_adopted', 'conv_ref_tot_iunits_reqd',
-      'conv_ref_annual_tot_iunits', 'conv_ref_new_iunits_reqd',
+      'soln_ref_new_iunits_reqd', 'soln_net_annual_funits_adopted', 'conv_ref_tot_iunits',
+      'conv_ref_annual_tot_iunits', 'conv_ref_new_iunits',
       'soln_pds_net_grid_electricity_units_saved', 'soln_pds_net_grid_electricity_units_used',
       'soln_pds_fuel_units_avoided', 'soln_pds_direct_co2_emissions_saved',
       'soln_pds_direct_ch4_co2_emissions_saved', 'soln_pds_direct_n2o_co2_emissions_saved',
@@ -1141,7 +1209,7 @@ soln_ref_new_iunits_reqd_list = [
 
 
 # 'Unit Adoption Calculations'!AG251:AQ298
-conv_ref_new_iunits_reqd_list = [
+conv_ref_new_iunits_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2015, 0.01196107466, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 ],
     [2016, 0.01846675143, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 ],

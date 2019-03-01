@@ -36,7 +36,7 @@ def test_co2_mmt_reduced_allfields():
       soln_pds_direct_co2_emissions_saved=emissions_saved,
       soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
       soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
       conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -73,7 +73,7 @@ def test_co2eq_mmt_reduced_allfields():
       soln_pds_direct_co2_emissions_saved=emissions_saved,
       soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
       soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=None,
       conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -106,7 +106,7 @@ def test_co2_ppm_calculator():
       soln_pds_direct_co2_emissions_saved=emissions_saved,
       soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
       soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
       conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -151,7 +151,7 @@ def test_co2eq_ppm_calculator():
       soln_pds_direct_co2_emissions_saved=emissions_saved,
       soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
       soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
       conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -178,7 +178,7 @@ def test_co2_reduced_grid_emissions():
       soln_pds_direct_n2o_co2_emissions_saved=None,
       soln_pds_new_iunits_reqd=None,
       soln_ref_new_iunits_reqd=None,
-      conv_ref_new_iunits_reqd=None,
+      conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
       conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=None,
@@ -201,7 +201,7 @@ def test_co2_replaced_grid_emissions():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted, fuel_in_liters=False)
   result = c2.co2_replaced_grid_emissions()
@@ -221,7 +221,7 @@ def test_co2_replaced_grid_emissions_not_replacement():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted, fuel_in_liters=False)
   result = c2.co2_replaced_grid_emissions()
@@ -242,7 +242,7 @@ def test_co2_increased_grid_usage_emissions():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=None, fuel_in_liters=False)
   result = c2.co2_increased_grid_usage_emissions()
@@ -262,7 +262,7 @@ def test_co2eq_replaced_grid_emissions():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted, fuel_in_liters=False)
   result = c2.co2eq_replaced_grid_emissions()
@@ -282,7 +282,7 @@ def test_co2eq_replaced_grid_emissions_not_replacement():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted, fuel_in_liters=False)
   result = c2.co2eq_replaced_grid_emissions()
@@ -303,7 +303,7 @@ def test_co2eq_reduced_grid_emissions():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
       soln_net_annual_funits_adopted=None, fuel_in_liters=False)
   result = c2.co2eq_reduced_grid_emissions()
@@ -326,7 +326,7 @@ def test_co2eq_reduced_fuel_emissions():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted, fuel_in_liters=False)
   result = c2.co2eq_reduced_fuel_emissions()
@@ -348,7 +348,7 @@ def test_co2eq_reduced_fuel_emissions_liters():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted, fuel_in_liters=True)
   with pytest.raises(NotImplementedError):
@@ -367,7 +367,7 @@ def test_co2eq_increased_grid_usage_emissions():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
       soln_net_annual_funits_adopted=None, fuel_in_liters=True)
   result = c2.co2eq_increased_grid_usage_emissions()
@@ -391,7 +391,7 @@ def test_co2eq_direct_reduced_emissions():
       soln_pds_direct_co2_emissions_saved=soln_pds_direct_co2_emissions_saved,
       soln_pds_direct_ch4_co2_emissions_saved=soln_pds_direct_ch4_co2_emissions_saved,
       soln_pds_direct_n2o_co2_emissions_saved=soln_pds_direct_n2o_co2_emissions_saved,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=None, fuel_in_liters=False)
   result = c2.co2eq_direct_reduced_emissions()
@@ -410,7 +410,7 @@ def test_co2eq_net_indirect_emissions():
       soln_pds_direct_co2_emissions_saved=None,
       soln_pds_direct_ch4_co2_emissions_saved=None,
       soln_pds_direct_n2o_co2_emissions_saved=None,
-      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits_reqd=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
       conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted, fuel_in_liters=True)
   expected = pd.DataFrame(co2eq_net_indirect_emissions_list[1:],
@@ -425,7 +425,7 @@ def test_co2eq_net_indirect_emissions_iunits():
   soln_ref_new_iunits_reqd = pd.DataFrame([[2014, 8.0, 7.0, 6.0], [2015, 10.0, 8.0, 6.0],
       [2016, 11.0, 7.0, 3.0], [2017, 14.0, 9.0, 4.0]],
       columns=['Year', 'A', 'B', 'C']).set_index('Year')
-  conv_ref_new_iunits_reqd = pd.DataFrame([[2014, 1.0, 1.0, 1.0], [2015, 1.0, 1.0, 1.0],
+  conv_ref_new_iunits = pd.DataFrame([[2014, 1.0, 1.0, 1.0], [2015, 1.0, 1.0, 1.0],
       [2016, 1.0, 1.0, 1.0], [2017, 1.0, 1.0, 1.0]],
       columns=['Year', 'A', 'B', 'C']).set_index('Year')
   ac = advanced_controls.AdvancedControls(conv_indirect_co2_is_iunits=True,
@@ -438,7 +438,7 @@ def test_co2eq_net_indirect_emissions_iunits():
       soln_pds_direct_n2o_co2_emissions_saved=None,
       soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
       soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
-      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd,
+      conv_ref_new_iunits=conv_ref_new_iunits,
       conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
       soln_net_annual_funits_adopted=[], fuel_in_liters=True)
   result = c2.co2eq_net_indirect_emissions()
@@ -475,7 +475,7 @@ def test_to_dict():
   soln_ref_new_iunits_reqd = pd.DataFrame([[2014, 8.0, 7.0, 6.0], [2015, 10.0, 8.0, 6.0],
       [2016, 11.0, 7.0, 3.0], [2017, 14.0, 9.0, 4.0]],
       columns=['Year', 'A', 'B', 'C']).set_index('Year')
-  conv_ref_new_iunits_reqd = pd.DataFrame([[2014, 1.0, 1.0, 1.0], [2015, 1.0, 1.0, 1.0],
+  conv_ref_new_iunits = pd.DataFrame([[2014, 1.0, 1.0, 1.0], [2015, 1.0, 1.0, 1.0],
       [2016, 1.0, 1.0, 1.0], [2017, 1.0, 1.0, 1.0]],
       columns=['Year', 'A', 'B', 'C']).set_index('Year')
   soln_net_annual_funits_adopted = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
@@ -493,7 +493,7 @@ def test_to_dict():
       soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
       soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
       soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
-      conv_ref_new_iunits_reqd=conv_ref_new_iunits_reqd,
+      conv_ref_new_iunits=conv_ref_new_iunits,
       conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
       conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,

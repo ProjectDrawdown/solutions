@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 import os.path
-
+import pathlib
 import pandas as pd
 from model import emissionsfactors
 
@@ -12,22 +12,32 @@ class UnitAdoption:
 
      Arguments:
        ac: advanced_controls.py object, settings to control model operation.
-       datadir: directory where CSV files can be found
-       ref_tam_per_region: dataframe of total addressible market per major
-         region for the Referene scenario.
-       pds_tam_per_region: dataframe of total addressible market per major
-         region for the PDS scenario.
        soln_ref_funits_adopted: Annual functional units adopted in the
          Reference scenario.
        soln_pds_funits_adopted: Annual functional units adopted in the
          PDS scenario.
+       datadir: directory where CSV files can be found
+       ref_tam_per_region: (RRS only) dataframe of total addressible market per major
+         region for the Referene scenario.
+       pds_tam_per_region: (RRS only) dataframe of total addressible market per major
+         region for the PDS scenario.
+       tla_per_region: (LAND only): dataframe of total land area per region.
   """
-  def __init__(self, ac, datadir, ref_tam_per_region, pds_tam_per_region,
-      soln_ref_funits_adopted, soln_pds_funits_adopted):
+
+  def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted, datadir=None, ref_tam_per_region=None,
+               pds_tam_per_region=None, tla_per_region=None):
     self.ac = ac
-    self.datadir = datadir
+
+    # NOTE: as datadir is static for all solutions this shouldn't be an arg
+    # For now it is kept in for backwards compatibility with solutions
+    if datadir is None:
+      self.datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+    else:
+      self.datadir = datadir
+
     self.ref_tam_per_region = ref_tam_per_region
     self.pds_tam_per_region = pds_tam_per_region
+    self.tla_per_region = tla_per_region
     self.soln_ref_funits_adopted = soln_ref_funits_adopted
     self.soln_pds_funits_adopted = soln_pds_funits_adopted
 
@@ -170,7 +180,9 @@ class UnitAdoption:
     """Total iunits required each year.
        SolarPVUtil 'Unit Adoption Calculations'!AX134:BH181
     """
-    result = self.soln_pds_funits_adopted / self.ac.soln_avg_annual_use
+    result = self.soln_pds_funits_adopted
+    if self.ac.soln_avg_annual_use is not None:  # RRS models
+      result = result / self.ac.soln_avg_annual_use
     result.name = "soln_pds_tot_iunits_reqd"
     return result
 
@@ -187,6 +199,7 @@ class UnitAdoption:
        First Cost, Marginal First Cost and NPV.
        SolarPVUtil 'Unit Adoption Calculations'!AG136:AQ182
     """
+
     growth = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
@@ -236,7 +249,9 @@ class UnitAdoption:
   def soln_ref_tot_iunits_reqd(self):
     """Total implementation units required.
        SolarPVUtil 'Unit Adoption Calculations'!AX197:BH244"""
-    result = self.soln_ref_funits_adopted / self.ac.soln_avg_annual_use
+    result = self.soln_ref_funits_adopted
+    if self.ac.soln_avg_annual_use is not None:  # RRS models
+      result = result / self.ac.soln_avg_annual_use
     result.name = "soln_ref_tot_iunits_reqd"
     return result
 
@@ -289,21 +304,27 @@ class UnitAdoption:
     return result
 
   @lru_cache()
-  def conv_ref_tot_iunits_reqd(self):
-    """Total cumulative units of the conventional or legacy practice installed by year.
-    
-       Reflects the total increase in the installed base units less the installation of
-       Solution/technology units. Assumes a binary market with demand for either the
-       defined Conventional Unit (or a weighted average of a mix of technologies/practices)
-       or a Solution Unit. NOTE for integration: In REF case a weighted factor needs to
-       account for current technology mix; for PDS case proposed technology mix needs to
-       be reflected here.
-    
-       SolarPVUtil 'Unit Adoption Calculations'!Q251:AA298
+  def conv_ref_tot_iunits(self):
     """
-    result = (self.ref_tam_per_region - self.soln_ref_funits_adopted)
-    result /= self.ac.conv_avg_annual_use
-    result.name = "conv_ref_tot_iunits_reqd"
+    Note that iunits = land units for LAND models.
+    From Excel:
+    'Total cumulative units of the conventional or legacy practice installed by year.
+
+    Reflects the total increase in the installed base units less the installation of
+    Solution/technology units. Assumes a binary market with demand for either the
+    defined Conventional Unit (or a weighted average of a mix of technologies/practices)
+    or a Solution Unit. NOTE for integration: In REF case a weighted factor needs to
+    account for current technology mix; for PDS case proposed technology mix needs to
+    be reflected here.'
+
+    SolarPVUtil 'Unit Adoption Calculations'!Q251:AA298
+    """
+
+    if self.tla_per_region is not None:  # LAND
+        result = self.tla_per_region - self.soln_ref_funits_adopted
+    else:  # RRS
+        result = (self.ref_tam_per_region - self.soln_ref_funits_adopted) / self.ac.conv_avg_annual_use
+    result.name = "conv_ref_tot_iunits"
     return result
 
   @lru_cache()
@@ -318,12 +339,14 @@ class UnitAdoption:
 
        SolarPVUtil 'Unit Adoption Calculations'!AX251:BH298
     """
-    result = self.soln_net_annual_funits_adopted() / self.ac.conv_avg_annual_use
+    result = self.soln_net_annual_funits_adopted()
+    if self.ac.conv_avg_annual_use is not None:  # RRS models
+      result /= self.ac.conv_avg_annual_use
     result.name = "conv_ref_annual_tot_iunits"
     return result
 
   @lru_cache()
-  def conv_ref_new_iunits_reqd(self):
+  def conv_ref_new_iunits(self):
     """New implementation units required (includes replacement units)
 
        Number of Additional Implementation Units of the Conventional practice/technology
@@ -347,7 +370,7 @@ class UnitAdoption:
           replacements.at[year, region] += growth.at[replacement_year, region]
           replacement_year -= (self.ac.conv_lifetime_replacement_rounded + 1)
     result = growth + replacements
-    result.name = "conv_ref_new_iunits_reqd"
+    result.name = "conv_ref_new_iunits"
     return result
 
   @lru_cache()
@@ -461,9 +484,9 @@ class UnitAdoption:
     rs['soln_ref_tot_iunits_reqd'] = self.soln_ref_tot_iunits_reqd()
     rs['soln_ref_new_iunits_reqd'] = self.soln_ref_new_iunits_reqd()
     rs['soln_net_annual_funits_adopted'] = self.soln_net_annual_funits_adopted()
-    rs['conv_ref_tot_iunits_reqd'] = self.conv_ref_tot_iunits_reqd()
+    rs['conv_ref_tot_iunits'] = self.conv_ref_tot_iunits()
     rs['conv_ref_annual_tot_iunits'] = self.conv_ref_annual_tot_iunits()
-    rs['conv_ref_new_iunits_reqd'] = self.conv_ref_new_iunits_reqd()
+    rs['conv_ref_new_iunits'] = self.conv_ref_new_iunits()
     s = self.soln_pds_net_grid_electricity_units_saved()
     rs['soln_pds_net_grid_electricity_units_saved'] = s
     s = self.soln_pds_net_grid_electricity_units_used()
