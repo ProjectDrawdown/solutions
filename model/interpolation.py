@@ -135,6 +135,8 @@ def matching_data_sources(data_sources, name, groups_only):
          (and are nonsensical) on an individual data source only on a single
          group or over all sources.
   """
+  if name is None or pd.isna(name):
+    return None
   if name in data_sources:
     return list(data_sources[name].keys())
   all_sources = []
@@ -152,6 +154,8 @@ def is_group_name(data_sources, name):
   """Return True if name is a group in data_sources."""
   if name in data_sources:
     return True
+  if name is None or pd.isna(name):
+    return False
   if name.lower() == "all sources":
     return True
   all_sources = []

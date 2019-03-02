@@ -197,6 +197,23 @@ def test_adoption_trend_global():
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_adoption_min_max_source_None():
+  adconfig_mod = g_adconfig.copy()
+  adconfig_mod.loc['trend', :] = None
+  adconfig_mod.loc['growth', :] = None
+  ac = advanced_controls.AdvancedControls(
+      soln_pds_adoption_prognostication_source=None)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
+  assert all(ad.adoption_min_max_sd_global().loc[:, 'S.D'].isna())
+  # Regional min_max_sd always uses ALL SOURCES, so it won't be NaN even if
+  # soln_pds_adoption_prognostication_source=None
+  assert not all(ad.adoption_min_max_sd_china().loc[:, 'S.D'].isna())
+  assert all(ad.adoption_low_med_high_global().isna())
+  assert all(ad.adoption_low_med_high_latin_america().isna())
+  # check that adoption_trend_* doesn't die if adconfig[trend, :] = None
+  _ = ad.adoption_trend_global()
+  _ = ad.adoption_trend_india()
+
 def test_adoption_is_single_source():
   s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
@@ -276,6 +293,11 @@ def test_adoption_data_per_region_missing_data():
      1.60795702194, 1.68402088340, 1.76502603569, 1.85118635049, 1.94271569952],
     index=list(range(2014,2061)), columns=['OECD90'])
   pd.testing.assert_frame_equal(result[['OECD90']], expected, check_exact=False, check_names=False)
+
+def test_adoption_data_per_region_source_None():
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=None)
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
+  assert all(ad.adoption_data_per_region().isna())
 
 def test_adoption_trend_per_region():
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='ALL SOURCES',
