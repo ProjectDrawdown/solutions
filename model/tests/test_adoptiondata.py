@@ -303,62 +303,6 @@ def test_adoption_trend_per_region():
   pd.testing.assert_series_equal(result['USA'],
       ad.adoption_trend_usa()['adoption'], check_names=False)
 
-def test_to_dict():
-  s = 'Greenpeace AER'
-  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s,
-      soln_pds_adoption_prognostication_growth='Medium')
-  ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
-  result = ad.to_dict()
-  expected = ['adoption_data_global', 'adoption_min_max_sd_global',
-      'adoption_low_med_high_global', 'adoption_trend_linear_global',
-      'adoption_trend_poly_degree2_global', 'adoption_trend_poly_degree3_global',
-      'adoption_trend_exponential_global',
-      'adoption_data_oecd90', 'adoption_min_max_sd_oecd90',
-      'adoption_low_med_high_oecd90', 'adoption_trend_linear_oecd90',
-      'adoption_trend_poly_degree2_oecd90', 'adoption_trend_poly_degree3_oecd90',
-      'adoption_trend_exponential_oecd90',
-      'adoption_data_eastern_europe', 'adoption_min_max_sd_eastern_europe',
-      'adoption_low_med_high_eastern_europe', 'adoption_trend_linear_eastern_europe',
-      'adoption_trend_poly_degree2_eastern_europe', 'adoption_trend_poly_degree3_eastern_europe',
-      'adoption_trend_exponential_eastern_europe',
-      'adoption_data_asia_sans_japan', 'adoption_min_max_sd_asia_sans_japan',
-      'adoption_low_med_high_asia_sans_japan', 'adoption_trend_linear_asia_sans_japan',
-      'adoption_trend_poly_degree2_asia_sans_japan', 'adoption_trend_poly_degree3_asia_sans_japan',
-      'adoption_trend_exponential_asia_sans_japan',
-      'adoption_data_middle_east_and_africa', 'adoption_min_max_sd_middle_east_and_africa',
-      'adoption_low_med_high_middle_east_and_africa', 'adoption_trend_linear_middle_east_and_africa',
-      'adoption_trend_poly_degree2_middle_east_and_africa',
-      'adoption_trend_poly_degree3_middle_east_and_africa',
-      'adoption_trend_exponential_middle_east_and_africa',
-      'adoption_data_latin_america', 'adoption_min_max_sd_latin_america',
-      'adoption_low_med_high_latin_america', 'adoption_trend_linear_latin_america',
-      'adoption_trend_poly_degree2_latin_america', 'adoption_trend_poly_degree3_latin_america',
-      'adoption_trend_exponential_latin_america',
-      'adoption_data_china', 'adoption_min_max_sd_china', 'adoption_low_med_high_china',
-      'adoption_trend_linear_china', 'adoption_trend_poly_degree2_china',
-      'adoption_trend_poly_degree3_china', 'adoption_trend_exponential_china',
-      'adoption_data_india', 'adoption_min_max_sd_india', 'adoption_low_med_high_india',
-      'adoption_trend_linear_india', 'adoption_trend_poly_degree2_india',
-      'adoption_trend_poly_degree3_india', 'adoption_trend_exponential_india',
-      'adoption_data_eu', 'adoption_min_max_sd_eu', 'adoption_low_med_high_eu',
-      'adoption_trend_linear_eu', 'adoption_trend_poly_degree2_eu',
-      'adoption_trend_poly_degree3_eu', 'adoption_trend_exponential_eu',
-      'adoption_data_usa', 'adoption_min_max_sd_usa', 'adoption_low_med_high_usa',
-      'adoption_trend_linear_usa', 'adoption_trend_poly_degree2_usa',
-      'adoption_trend_poly_degree3_usa', 'adoption_trend_exponential_usa',
-      ]
-  for ex in expected:
-    assert ex in result
-    f = getattr(ad, ex, None)
-    if f:
-      check = f()
-      if isinstance(check, pd.DataFrame):
-        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
-      elif isinstance(check, pd.Series):
-        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
-      else:
-        assert result[ex] == pytest.approx(check)
-
 
 # 'Adoption Data'!X46:Z94
 adoption_min_max_sd_global_list = [['Year', 'Min', 'Max', 'S.D'],

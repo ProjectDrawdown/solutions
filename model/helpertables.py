@@ -155,10 +155,3 @@ class HelperTables:
         adoption.name = "soln_pds_funits_adopted"
         adoption.index.name = "Year"
         return adoption
-
-    def to_dict(self):
-        """Return all fields as a dict, to be serialized to JSON."""
-        rs = dict()
-        rs['soln_ref_funits_adopted'] = self.soln_ref_funits_adopted()
-        rs['soln_pds_funits_adopted'] = self.soln_pds_funits_adopted()
-        return rs

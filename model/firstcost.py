@@ -179,16 +179,3 @@ class FirstCost:
     result = csum1.add(csum2)
     result.name = "ref_cumulative_install"
     return result
-
-  def to_dict(self):
-    """Return all fields as a dict, to be serialized to JSON."""
-    rs = dict()
-    rs['soln_pds_install_cost_per_iunit'] = self.soln_pds_install_cost_per_iunit()
-    rs['conv_ref_install_cost_per_iunit'] = self.conv_ref_install_cost_per_iunit()
-    rs['soln_ref_install_cost_per_iunit'] = self.soln_ref_install_cost_per_iunit()
-    rs['soln_pds_annual_world_first_cost'] = self.soln_pds_annual_world_first_cost()
-    rs['soln_ref_annual_world_first_cost'] = self.soln_ref_annual_world_first_cost()
-    rs['conv_ref_annual_world_first_cost'] = self.conv_ref_annual_world_first_cost()
-    rs['soln_pds_cumulative_install'] = self.soln_pds_cumulative_install()
-    rs['ref_cumulative_install'] = self.ref_cumulative_install()
-    return rs

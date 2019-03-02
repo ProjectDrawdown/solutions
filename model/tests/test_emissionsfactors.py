@@ -90,22 +90,3 @@ def test_conv_ref_grid_CO2_per_KWh():
   assert table.loc[2041, "India"] == pytest.approx(0.725081980)
   assert table.loc[2020, "EU"] == pytest.approx(0.297016531)
   assert table.loc[2039, "USA"] == pytest.approx(0.594563067)
-
-
-def test_to_dict():
-  ac = advanced_controls.AdvancedControls(emissions_grid_source="ipcc_only",
-      emissions_grid_range="mean")
-  eg = ef.ElectricityGenOnGrid(ac=ac)
-  result = eg.to_dict()
-  expected = ['conv_ref_grid_CO2eq_per_KWh', 'conv_ref_grid_CO2_per_KWh']
-  for ex in expected:
-    assert ex in result
-    f = getattr(eg, ex, None)
-    if f:
-      check = f()
-      if isinstance(check, pd.DataFrame):
-        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
-      elif isinstance(check, pd.Series):
-        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
-      else:
-        assert result[ex] == pytest.approx(check)

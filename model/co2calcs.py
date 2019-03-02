@@ -343,24 +343,6 @@ class CO2Calcs:
     result /= 1000000
     return result
 
-  def to_dict(self):
-    """Return all fields as a dict, to be serialized to JSON."""
-    rs = dict()
-    rs['co2_mmt_reduced'] = self.co2_mmt_reduced()
-    rs['co2eq_mmt_reduced'] = self.co2eq_mmt_reduced()
-    rs['co2_ppm_calculator'] = self.co2_ppm_calculator()
-    rs['co2eq_ppm_calculator'] = self.co2eq_ppm_calculator()
-    rs['co2_reduced_grid_emissions'] = self.co2_reduced_grid_emissions()
-    rs['co2_replaced_grid_emissions'] = self.co2_replaced_grid_emissions()
-    rs['co2_increased_grid_usage_emissions'] = self.co2_increased_grid_usage_emissions()
-    rs['co2eq_reduced_grid_emissions'] = self.co2eq_reduced_grid_emissions()
-    rs['co2eq_replaced_grid_emissions'] = self.co2eq_replaced_grid_emissions()
-    rs['co2eq_increased_grid_usage_emissions'] = self.co2eq_increased_grid_usage_emissions()
-    rs['co2eq_direct_reduced_emissions'] = self.co2eq_direct_reduced_emissions()
-    rs['co2eq_reduced_fuel_emissions'] = self.co2eq_reduced_fuel_emissions()
-    rs['co2eq_net_indirect_emissions'] = self.co2eq_net_indirect_emissions()
-    return rs
-
 
 # The following formulae come from the SolarPVUtil Excel implementation of 27Aug18.
 # There was no explanation of where they came from or what they really mean.

@@ -353,52 +353,6 @@ def test_ref_cumulative_install():
   result = fc.ref_cumulative_install()
   pd.testing.assert_series_equal(result, expected, check_exact=False)
 
-def test_to_dict():
-  ac = advanced_controls.AdvancedControls(
-      pds_2014_cost=1444.93954421485,
-      ref_2014_cost=1444.93954421485,
-      conv_2014_cost=2010.03170851964,
-      soln_first_cost_efficiency_rate=0.196222222222222,
-      soln_first_cost_below_conv=True,
-      conv_first_cost_efficiency_rate=0.02)
-  soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
-      columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
-  soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
-      columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
-  conv_ref_tot_iunits = pd.DataFrame(conv_ref_tot_iunits_list[1:],
-      columns=conv_ref_tot_iunits_list[0]).set_index('Year')
-  soln_pds_new_iunits_reqd = pd.DataFrame(soln_pds_new_iunits_reqd_list[1:],
-      columns=soln_pds_new_iunits_reqd_list[0]).set_index('Year')
-  soln_ref_new_iunits_reqd = pd.DataFrame(soln_ref_new_iunits_reqd_list[1:],
-      columns=conv_ref_tot_iunits_list[0]).set_index('Year')
-  conv_ref_new_iunits = pd.DataFrame(conv_ref_new_iunits_list[1:],
-      columns=conv_ref_new_iunits_list[0]).set_index('Year').drop(['Lifetime'])
-  fc = firstcost.FirstCost(ac=ac,
-      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
-      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
-      soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
-      conv_ref_tot_iunits=conv_ref_tot_iunits,
-      soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
-      soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
-      conv_ref_new_iunits=conv_ref_new_iunits,
-      fc_convert_iunit_factor=1000000000.0)
-  result = fc.to_dict()
-  expected = ['soln_pds_install_cost_per_iunit', 'conv_ref_install_cost_per_iunit',
-      'soln_ref_install_cost_per_iunit', 'soln_pds_annual_world_first_cost',
-      'soln_ref_annual_world_first_cost', 'conv_ref_annual_world_first_cost',
-      'soln_pds_cumulative_install', 'ref_cumulative_install']
-  for ex in expected:
-    assert ex in result
-    f = getattr(fc, ex, None)
-    if f:
-      check = f()
-      if isinstance(check, pd.DataFrame):
-        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
-      elif isinstance(check, pd.Series):
-        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
-      else:
-        assert result[ex] == pytest.approx(check)
-
 
 # SolarPVUtil 'Unit Adoption Calculations'!AX135:BH182
 soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",

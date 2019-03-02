@@ -340,32 +340,6 @@ def test_cashflow_no_fractional_years():
   result = oc.soln_only_single_iunit_cashflow()
   assert result[2039] == 0.0
 
-def test_to_dict():
-  oc = _defaultOperatingCost()
-  result = oc.to_dict()
-  expected = ['soln_pds_annual_operating_cost', 'soln_pds_cumulative_operating_cost',
-      'conv_ref_annual_operating_cost', 'conv_ref_cumulative_operating_cost',
-      'marginal_annual_operating_cost', 'soln_pds_new_funits_per_year',
-      'soln_pds_net_annual_iunits_reqd', 'soln_pds_new_annual_iunits_reqd',
-      'soln_pds_annual_breakout', 'soln_pds_annual_breakout_core',
-      'conv_ref_new_annual_iunits_reqd', 'conv_ref_annual_breakout',
-      'conv_ref_annual_breakout_core', 'lifetime_cost_forecast',
-      'soln_vs_conv_single_iunit_cashflow', 'soln_vs_conv_single_iunit_npv',
-      'soln_vs_conv_single_iunit_payback', 'soln_vs_conv_single_iunit_payback_discounted',
-      'soln_only_single_iunit_cashflow', 'soln_only_single_iunit_npv',
-      'soln_only_single_iunit_payback', 'soln_only_single_iunit_payback_discounted']
-  for ex in expected:
-    assert ex in result
-    f = getattr(oc, ex, None)
-    if f:
-      check = f()
-      if isinstance(check, pd.DataFrame):
-        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
-      elif isinstance(check, pd.Series):
-        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
-      else:
-        assert result[ex] == pytest.approx(check)
-
 
 # 'Unit Adoption Calculations'!AX135:BH182
 soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],

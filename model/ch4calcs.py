@@ -63,10 +63,3 @@ class CH4Calcs:
       ppb_calculator.loc[year, "PPB"] = ppb_calculator.loc[year, "Total"] / (16.04 * 1.8 * 10**5)
     ppb_calculator.name = "ch4_ppb_calculator"
     return ppb_calculator
-
-  def to_dict(self):
-    """Return all fields as a dict, to be serialized to JSON."""
-    rs = dict()
-    rs['ch4_tons_reduced'] = self.ch4_tons_reduced()
-    rs['ch4_ppb_calculator'] = self.ch4_ppb_calculator()
-    return rs

@@ -712,42 +712,6 @@ def test_conv_ref_new_iunits_land():
     result = ua.conv_ref_new_iunits()['World'].values
     np.testing.assert_array_almost_equal(result, sp_world)
 
-def test_to_dict():
-  ac = advanced_controls.AdvancedControls(
-      conv_lifetime_capacity=182411.28, conv_avg_annual_use=4946.84,
-      soln_lifetime_capacity=48343.80, soln_avg_annual_use=1841.67)
-  soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-      columns=soln_ref_funits_adopted_list[0]).set_index('Year')
-  soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-      columns=soln_pds_funits_adopted_list[0]).set_index('Year')
-  ua = unitadoption.UnitAdoption(ac=ac, datadir=datadir,
-      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-      soln_pds_funits_adopted=soln_pds_funits_adopted,
-      soln_ref_funits_adopted=soln_ref_funits_adopted)
-  result = ua.to_dict()
-  expected = ['ref_population', 'ref_gdp', 'ref_gdp_per_capita', 'ref_tam_per_capita',
-      'ref_tam_per_gdp_per_capita', 'ref_tam_growth', 'pds_population', 'pds_gdp',
-      'pds_gdp_per_capita', 'pds_tam_per_capita', 'pds_tam_per_gdp_per_capita', 'pds_tam_growth',
-      'soln_pds_cumulative_funits', 'soln_pds_tot_iunits_reqd', 'soln_pds_new_iunits_reqd',
-      'soln_pds_big4_iunits_reqd', 'soln_ref_cumulative_funits', 'soln_ref_tot_iunits_reqd',
-      'soln_ref_new_iunits_reqd', 'soln_net_annual_funits_adopted', 'conv_ref_tot_iunits',
-      'conv_ref_annual_tot_iunits', 'conv_ref_new_iunits',
-      'soln_pds_net_grid_electricity_units_saved', 'soln_pds_net_grid_electricity_units_used',
-      'soln_pds_fuel_units_avoided', 'soln_pds_direct_co2_emissions_saved',
-      'soln_pds_direct_ch4_co2_emissions_saved', 'soln_pds_direct_n2o_co2_emissions_saved',
-      'conv_lifetime_replacement']
-  for ex in expected:
-    assert ex in result
-    f = getattr(ua, ex, None)
-    if f:
-      check = f()
-      if isinstance(check, pd.DataFrame):
-        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
-      elif isinstance(check, pd.Series):
-        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
-      else:
-        assert result[ex] == pytest.approx(check)
-
 
 # SolarPVUtil 'Unit Adoption Calculations'!B134:L181
 soln_pds_funits_adopted_list = [

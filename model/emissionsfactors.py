@@ -159,13 +159,6 @@ class ElectricityGenOnGrid:
     result.loc[:, "USA"] = 0.594563066959381
     return result
 
-  def to_dict(self):
-    """Return all fields as a dict, to be serialized to JSON."""
-    rs = dict()
-    rs['conv_ref_grid_CO2eq_per_KWh'] = self.conv_ref_grid_CO2eq_per_KWh()
-    rs['conv_ref_grid_CO2_per_KWh'] = self.conv_ref_grid_CO2_per_KWh()
-    return rs
-
 
 # "Emissions Factors"!A290:D336
 _world_meta = pd.DataFrame([
