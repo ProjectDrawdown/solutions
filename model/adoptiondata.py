@@ -11,6 +11,9 @@ import pandas as pd
 from statistics import mean
 
 class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
+  REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+          'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']
+
   """Implements Adoption Data module."""
   def __init__(self, ac, data_sources, adconfig):
     """Arguments:
@@ -78,8 +81,10 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
 
     columns = interpolation.matching_data_sources(data_sources=self.data_sources,
         name=source, groups_only=False)
-    # Excel STDDEV.P is a whole population stddev, ddof=0
-    if len(columns) > 1:
+    if columns is None:
+      result.loc[:, 'S.D'] = np.nan
+    elif len(columns) > 1:
+      # Excel STDDEV.P is a whole population stddev, ddof=0
       result.loc[:, 'S.D'] = adoption_data.loc[:, columns].std(axis=1, ddof=0)
     else:
       result.loc[:, 'S.D'] = adoption_data.std(axis=1, ddof=0)
@@ -90,16 +95,24 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     result = pd.DataFrame(index=adoption_data.index.copy(), columns=['Low', 'Medium', 'High'])
     columns = interpolation.matching_data_sources(data_sources=self.data_sources,
         name=source, groups_only=False)
-    medium = adoption_data.loc[:, columns].mean(axis=1)
-    result.loc[:, 'Medium'] = medium
-    result.loc[:, 'Low'] = medium - (min_max_sd.loc[:, 'S.D'] * adconfig.loc['low_sd_mult'])
-    result.loc[:, 'High'] = medium + (min_max_sd.loc[:, 'S.D'] * adconfig.loc['high_sd_mult'])
+    if columns is None:
+      result.loc[:, 'Medium'] = np.nan
+      result.loc[:, 'Low'] = np.nan
+      result.loc[:, 'High'] = np.nan
+    else:
+      medium = adoption_data.loc[:, columns].mean(axis=1)
+      result.loc[:, 'Medium'] = medium
+      result.loc[:, 'Low'] = medium - (min_max_sd.loc[:, 'S.D'] * adconfig.loc['low_sd_mult'])
+      result.loc[:, 'High'] = medium + (min_max_sd.loc[:, 'S.D'] * adconfig.loc['high_sd_mult'])
     return result
 
   def _adoption_trend(self, low_med_high, growth, trend):
     """Adoption prediction via one of several interpolation algorithms."""
-    data = low_med_high[growth]
-    result = interpolation.trend_algorithm(data=data, trend=trend)
+    if growth is None or trend is None:
+      result = pd.DataFrame(np.nan, index=low_med_high.index.copy(), columns=['adoption'])
+    else:
+      data = low_med_high[growth]
+      result = interpolation.trend_algorithm(data=data, trend=trend)
     return result
 
   @lru_cache()
@@ -140,7 +153,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'World']
     growth = self.ac.soln_pds_adoption_prognostication_growth
     result = self._adoption_trend(self.adoption_low_med_high_global(), growth, trend)
-    result.name = 'adoption_trend_global_' + trend.lower()
+    result.name = 'adoption_trend_global_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -180,7 +193,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'OECD90']
     growth = self.adconfig.loc['growth', 'OECD90']
     result = self._adoption_trend(self.adoption_low_med_high_oecd90(), growth, trend)
-    result.name = 'adoption_trend_oecd90_' + trend.lower()
+    result.name = 'adoption_trend_oecd90_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -220,7 +233,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'Eastern Europe']
     growth = self.adconfig.loc['growth', 'Eastern Europe']
     result = self._adoption_trend(self.adoption_low_med_high_eastern_europe(), growth, trend)
-    result.name = 'adoption_trend_eastern_europe_' + trend.lower()
+    result.name = 'adoption_trend_eastern_europe_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -260,7 +273,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'Asia (Sans Japan)']
     growth = self.adconfig.loc['growth', 'Asia (Sans Japan)']
     result = self._adoption_trend(self.adoption_low_med_high_asia_sans_japan(), growth, trend)
-    result.name = 'adoption_trend_asia_sans_japan_' + trend.lower()
+    result.name = 'adoption_trend_asia_sans_japan_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -300,7 +313,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'Middle East and Africa']
     growth = self.adconfig.loc['growth', 'Middle East and Africa']
     result = self._adoption_trend(self.adoption_low_med_high_middle_east_and_africa(), growth, trend)
-    result.name = 'adoption_trend_middle_east_and_africa_' + trend.lower()
+    result.name = 'adoption_trend_middle_east_and_africa_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -340,7 +353,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'Latin America']
     growth = self.adconfig.loc['growth', 'Latin America']
     result = self._adoption_trend(self.adoption_low_med_high_latin_america(), growth, trend)
-    result.name = 'adoption_trend_latin_america_' + trend.lower()
+    result.name = 'adoption_trend_latin_america_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -380,7 +393,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'China']
     growth = self.adconfig.loc['growth', 'China']
     result = self._adoption_trend(self.adoption_low_med_high_china(), growth, trend)
-    result.name = 'adoption_trend_china_' + trend.lower()
+    result.name = 'adoption_trend_china_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -420,7 +433,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'India']
     growth = self.adconfig.loc['growth', 'India']
     result = self._adoption_trend(self.adoption_low_med_high_india(), growth, trend)
-    result.name = 'adoption_trend_india_' + trend.lower()
+    result.name = 'adoption_trend_india_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -460,7 +473,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'EU']
     growth = self.adconfig.loc['growth', 'EU']
     result = self._adoption_trend(self.adoption_low_med_high_eu(), growth, trend)
-    result.name = 'adoption_trend_eu_' + trend.lower()
+    result.name = 'adoption_trend_eu_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -500,7 +513,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       trend = self.adconfig.loc['trend', 'USA']
     growth = self.adconfig.loc['growth', 'USA']
     result = self._adoption_trend(self.adoption_low_med_high_usa(), growth, trend)
-    result.name = 'adoption_trend_usa_' + trend.lower()
+    result.name = 'adoption_trend_usa_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -512,26 +525,29 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
   @lru_cache()
   def adoption_data_per_region(self):
     """Return a dataframe of adoption data, one column per region."""
-    df = pd.DataFrame(columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-          'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'])
     growth = self.ac.soln_pds_adoption_prognostication_growth
-    df.loc[:, 'World'] = self.adoption_low_med_high_global()[growth]
-    df.loc[:, 'OECD90'] = self.adoption_low_med_high_oecd90()[growth]
-    df.loc[:, 'Eastern Europe'] = self.adoption_low_med_high_eastern_europe()[growth]
-    df.loc[:, 'Asia (Sans Japan)'] = self.adoption_low_med_high_asia_sans_japan()[growth]
-    df.loc[:, 'Middle East and Africa'] = self.adoption_low_med_high_middle_east_and_africa()[growth]
-    df.loc[:, 'Latin America'] = self.adoption_low_med_high_latin_america()[growth]
-    df.loc[:, 'China'] = self.adoption_low_med_high_china()[growth]
-    df.loc[:, 'India'] = self.adoption_low_med_high_india()[growth]
-    df.loc[:, 'EU'] = self.adoption_low_med_high_eu()[growth]
-    df.loc[:, 'USA'] = self.adoption_low_med_high_usa()[growth]
+    if growth is None:
+      tmp = self.adoption_low_med_high_global()
+      df = pd.DataFrame(np.nan, columns=self.REGIONS, index=tmp.index)
+    else:
+      df = pd.DataFrame(columns=self.REGIONS)
+      df.loc[:, 'World'] = self.adoption_low_med_high_global()[growth]
+      df.loc[:, 'OECD90'] = self.adoption_low_med_high_oecd90()[growth]
+      df.loc[:, 'Eastern Europe'] = self.adoption_low_med_high_eastern_europe()[growth]
+      df.loc[:, 'Asia (Sans Japan)'] = self.adoption_low_med_high_asia_sans_japan()[growth]
+      df.loc[:, 'Middle East and Africa'] = self.adoption_low_med_high_middle_east_and_africa()[growth]
+      df.loc[:, 'Latin America'] = self.adoption_low_med_high_latin_america()[growth]
+      df.loc[:, 'China'] = self.adoption_low_med_high_china()[growth]
+      df.loc[:, 'India'] = self.adoption_low_med_high_india()[growth]
+      df.loc[:, 'EU'] = self.adoption_low_med_high_eu()[growth]
+      df.loc[:, 'USA'] = self.adoption_low_med_high_usa()[growth]
+    df.name = 'adoption_data_per_region'
     return df
 
   @lru_cache()
   def adoption_trend_per_region(self):
     """Return a dataframe of adoption trends, one column per region."""
-    df = pd.DataFrame(columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-          'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'])
+    df = pd.DataFrame(columns=self.REGIONS)
     df['World'] = self.adoption_trend_global()['adoption']
     df['OECD90'] = self.adoption_trend_oecd90()['adoption']
     df['Eastern Europe'] = self.adoption_trend_eastern_europe()['adoption']

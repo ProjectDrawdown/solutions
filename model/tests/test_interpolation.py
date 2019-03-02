@@ -137,8 +137,14 @@ def test_matching_data_sources():
       name='Baseline Cases', groups_only=False) == ['Baseline 1']
   assert itrp.matching_data_sources(data_sources=g_data_sources,
       name='Conservative Cases', groups_only=False) == ['Conservative 1']
+  sorted_all_sources = sorted(['Ambitious 1', 'Ambitious 2', 'Baseline 1', 'Conservative 1'])
+  result = itrp.matching_data_sources(data_sources=g_data_sources,
+      name='ALL SOURCES', groups_only=False)
+  assert sorted(result) == sorted_all_sources
   assert itrp.matching_data_sources(data_sources=g_data_sources,
       name='100% REN', groups_only=False) == []
+  assert itrp.matching_data_sources(data_sources=g_data_sources,
+      name=None, groups_only=False) == None
 
 def test_matching_data_sources_no_such_group():
   with pytest.raises(ValueError):
@@ -161,8 +167,27 @@ def test_is_group_name():
   assert itrp.is_group_name(data_sources=g_data_sources, name='Ambitious Cases') == True
   assert itrp.is_group_name(data_sources=g_data_sources, name='ALL SOURCES') == True
   assert itrp.is_group_name(data_sources=g_data_sources, name='Ambitious 1') == False
+  assert itrp.is_group_name(data_sources=g_data_sources, name=None) == False
   with pytest.raises(ValueError):
     _ = itrp.is_group_name(data_sources=g_data_sources, name='not a group name')
+
+def test_is_group_name_improvedstoves():
+  # test a specific case from ImprovedCookStoves
+  data_sources = {
+    'Baseline Cases': {
+      'Global alliance For Clean cookstoves - Interpolated': 'filename1',
+      'International Energy Agency - Interpolated': 'filename2',
+      'The World Bank': 'filename3',
+    },
+    'Conservative Cases': {
+    },
+    'Ambitious Cases': {
+    },
+    'Maximum Cases': {
+    },
+  }
+  assert itrp.is_group_name(data_sources=data_sources, name='Baseline Cases') == True
+  assert itrp.is_group_name(data_sources=data_sources, name='The World Bank') == False
 
 
 # 'Adoption Data'!AB46:AD94
