@@ -423,32 +423,3 @@ class OperatingCost:
     result = self.soln_only_single_iunit_npv().cumsum().apply(lambda x: 1 if x >= 0 else 0)
     result.name = 'soln_only_single_iunit_payback_discounted'
     return result
-
-  def to_dict(self):
-    """Return all fields as a dict, to be serialized to JSON."""
-    rs = dict()
-    rs['soln_pds_annual_operating_cost'] = self.soln_pds_annual_operating_cost()
-    rs['soln_pds_cumulative_operating_cost'] = self.soln_pds_cumulative_operating_cost()
-    rs['conv_ref_annual_operating_cost'] = self.conv_ref_annual_operating_cost()
-    rs['conv_ref_cumulative_operating_cost'] = self.conv_ref_cumulative_operating_cost()
-    rs['marginal_annual_operating_cost'] = self.marginal_annual_operating_cost()
-    soln_pds_new_funits_per_year = self.soln_pds_new_funits_per_year()
-    rs['soln_pds_new_funits_per_year'] = soln_pds_new_funits_per_year
-    rs['soln_pds_new_funits_per_year_world'] = soln_pds_new_funits_per_year['World']
-    rs['soln_pds_net_annual_iunits_reqd'] = self.soln_pds_net_annual_iunits_reqd()
-    rs['soln_pds_new_annual_iunits_reqd'] = self.soln_pds_new_annual_iunits_reqd()
-    rs['soln_pds_annual_breakout'] = self.soln_pds_annual_breakout()
-    rs['soln_pds_annual_breakout_core'] = self.soln_pds_annual_breakout_core()
-    rs['conv_ref_new_annual_iunits_reqd'] = self.conv_ref_new_annual_iunits_reqd()
-    rs['conv_ref_annual_breakout'] = self.conv_ref_annual_breakout()
-    rs['conv_ref_annual_breakout_core'] = self.conv_ref_annual_breakout_core()
-    rs['lifetime_cost_forecast'] = self.lifetime_cost_forecast()
-    rs['soln_vs_conv_single_iunit_cashflow'] = self.soln_vs_conv_single_iunit_cashflow()
-    rs['soln_vs_conv_single_iunit_npv'] = self.soln_vs_conv_single_iunit_npv()
-    rs['soln_vs_conv_single_iunit_payback'] = self.soln_vs_conv_single_iunit_payback()
-    rs['soln_vs_conv_single_iunit_payback_discounted'] = self.soln_vs_conv_single_iunit_payback_discounted()
-    rs['soln_only_single_iunit_cashflow'] = self.soln_only_single_iunit_cashflow()
-    rs['soln_only_single_iunit_npv'] = self.soln_only_single_iunit_npv()
-    rs['soln_only_single_iunit_payback'] = self.soln_only_single_iunit_payback()
-    rs['soln_only_single_iunit_payback_discounted'] = self.soln_only_single_iunit_payback_discounted()
-    return rs

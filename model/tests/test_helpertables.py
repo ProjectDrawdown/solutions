@@ -260,43 +260,6 @@ def test_ref_adoption_use_pds_years_and_vice_versa():
       ref_expected.loc[2020:2029, 'World'], check_exact=False)
   pd.testing.assert_frame_equal(pds_result.loc[2040:], pds_expected.loc[2040:], check_exact=False)
 
-def test_to_dict():
-  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
-      soln_pds_adoption_prognostication_growth='Medium',
-      soln_pds_adoption_prognostication_trend='Linear',
-      soln_pds_adoption_basis='Existing Adoption Prognostications')
-  pds_datapoints = pd.DataFrame([
-    [2014, 112.633033, 75.0042456, 0.332383], [2050, 2603.660640, 0.0, 0.0]],
-    columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index("Year")
-  ref_datapoints = pd.DataFrame([
-    [2014, 112.633033, 75.0042456, 0.332383], [2050, 272.414097, 97.401886, 0.523120]],
-    columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index("Year")
-  adoption_data_per_region = pd.DataFrame(adoption_data_med_all_sources_list[1:],
-      columns=adoption_data_med_all_sources_list[0], dtype=np.float64).set_index('Year')
-  adoption_data_per_region.index = adoption_data_per_region.index.astype(int)
-  adoption_trend_per_region = pd.DataFrame(adoption_trend_per_region_list[1:],
-      columns=adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
-  adoption_trend_per_region.index = adoption_trend_per_region.index.astype(int)
-  ht = helpertables.HelperTables(ac=ac,
-      ref_datapoints=ref_datapoints, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-      adoption_data_per_region=adoption_data_per_region,
-      adoption_trend_per_region=adoption_trend_per_region,
-      adoption_is_single_source=False)
-  result = ht.to_dict()
-  expected = ['soln_ref_funits_adopted', 'soln_pds_funits_adopted']
-  for ex in expected:
-    assert ex in result
-    f = getattr(ht, ex, None)
-    if f:
-      check = f()
-      if isinstance(check, pd.DataFrame):
-        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
-      elif isinstance(check, pd.Series):
-        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
-      else:
-        assert result[ex] == pytest.approx(check)
-
 
 soln_ref_funits_adopted_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],

@@ -37,26 +37,6 @@ def test_ch4_ppb_calculator():
       columns=ch4_ppb_calculator_list[0]).set_index('Year').fillna(0)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_to_dict():
-  soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-      columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
-  ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-      ch4_co2_per_twh=0.01, ch4_is_co2eq=False)
-  c4 = ch4calcs.CH4Calcs(ac=ac, soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
-  result = c4.to_dict()
-  expected = ['ch4_tons_reduced', 'ch4_ppb_calculator']
-  for ex in expected:
-    assert ex in result
-    f = getattr(c4, ex, None)
-    if f:
-      check = f()
-      if isinstance(check, pd.DataFrame):
-        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
-      elif isinstance(check, pd.Series):
-        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
-      else:
-        assert result[ex] == pytest.approx(check)
-
 
 # 'Unit Adoption'!B251:L298
 soln_net_annual_funits_adopted_list = [

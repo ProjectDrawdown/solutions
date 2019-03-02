@@ -459,66 +459,6 @@ def test_co2_sequestered_global():
     assert df.loc[2015, 'Tropical-Semi-Arid'] == pytest.approx(42.2676049356999)
 
 
-def test_to_dict():
-  ch4_ppb_calculator = pd.DataFrame([[2020, 1.0], [2021, 1.0], [2022, 1.0]],
-      columns=["Year", "PPB"]).set_index('Year')
-  soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-      columns=["World", "B"], index=[2020, 2021, 2022])
-  soln_pds_net_grid_electricity_units_used = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-      columns=["World", "B"], index=[2020, 2021, 2022])
-  emissions_saved = pd.DataFrame([
-      [1000000.0, 1000000.0], [1000000.0, 1000000.0], [1000000.0, 1000000.0]],
-      columns=["World", "B"], index=[2020, 2021, 2022])
-  soln_pds_new_iunits_reqd = pd.DataFrame([[2014, 10.0, 11.0, 12.0], [2015, 12.0, 13.0, 14.0],
-      [2016, 14.0, 15.0, 16.0], [2017, 16.0, 17.0, 18.0]],
-      columns=['Year', 'A', 'B', 'C']).set_index('Year')
-  soln_ref_new_iunits_reqd = pd.DataFrame([[2014, 8.0, 7.0, 6.0], [2015, 10.0, 8.0, 6.0],
-      [2016, 11.0, 7.0, 3.0], [2017, 14.0, 9.0, 4.0]],
-      columns=['Year', 'A', 'B', 'C']).set_index('Year')
-  conv_ref_new_iunits = pd.DataFrame([[2014, 1.0, 1.0, 1.0], [2015, 1.0, 1.0, 1.0],
-      [2016, 1.0, 1.0, 1.0], [2017, 1.0, 1.0, 1.0]],
-      columns=['Year', 'A', 'B', 'C']).set_index('Year')
-  soln_net_annual_funits_adopted = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-      columns=["World", "B"], index=[2020, 2021, 2022])
-  conv_ref_grid_CO2_per_KWh = pd.DataFrame([[2020, 1.0, 1.0], [2021, 1.0, 1.0], [2022, 1.0, 1.0]],
-      columns=["Year", "World", "B"]).set_index('Year')
-  ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-      soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
-      conv_indirect_co2_is_iunits=False)
-  c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=ch4_ppb_calculator,
-      soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-      soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-      soln_pds_direct_co2_emissions_saved=emissions_saved,
-      soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
-      soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
-      soln_pds_new_iunits_reqd=soln_pds_new_iunits_reqd,
-      soln_ref_new_iunits_reqd=soln_ref_new_iunits_reqd,
-      conv_ref_new_iunits=conv_ref_new_iunits,
-      conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
-      conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
-      soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-      fuel_in_liters=False)
-  result = c2.to_dict()
-  expected = ['co2_mmt_reduced', 'co2eq_mmt_reduced', 'co2_ppm_calculator',
-      'co2eq_ppm_calculator', 'co2_reduced_grid_emissions', 'co2_replaced_grid_emissions',
-      'co2_increased_grid_usage_emissions', 'co2eq_reduced_grid_emissions',
-      'co2eq_replaced_grid_emissions', 'co2eq_increased_grid_usage_emissions',
-      'co2eq_direct_reduced_emissions', 'co2eq_reduced_fuel_emissions',
-      'co2eq_net_indirect_emissions']
-  for ex in expected:
-    assert ex in result
-    f = getattr(c2, ex, None)
-    if f:
-      check = f()
-      if isinstance(check, pd.DataFrame):
-        pd.testing.assert_frame_equal(result[ex], check, check_exact=False)
-      elif isinstance(check, pd.Series):
-        pd.testing.assert_series_equal(result[ex], check, check_exact=False)
-      else:
-        assert result[ex] == pytest.approx(check)
-
-
-
 # 'Unit Adoption'!B251:L298
 soln_net_annual_funits_adopted_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],

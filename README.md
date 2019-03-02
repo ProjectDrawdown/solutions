@@ -26,13 +26,6 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Start the web server and run a test query in two different shells:
-
-```sh
-FLASK_APP=app.py FLASK_ENV=development flask run
-curl -H 'Content-Type: application/json' --data "{}" "http://127.0.0.1:5000/solarpvutil"
-```
-
 To run the Jupyter Notebook first run the commands in binder/postBuild to ensure all needed JupyterLab extensions are installed, then:
 ```sh
 ./venv/bin/jupyter lab ./Drawdown.ipynb
