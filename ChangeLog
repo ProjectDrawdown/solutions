@@ -165,3 +165,10 @@ Feb 11 - Feb 15, 2019
 + Jupyter: reformat tables, add graphs
   Polishing to support demos of the system.
 + Fix Excel VBAWEB after Mac Excel 16.16.7 update
+
+Feb 18 - Feb 22, 2019
++ add solutions: MicroWind, Biomass, OnshoreWind, OffshoreWind.
++ fix small mismatches between Python & Excel
+  a) subtle difference in rounding
+  b) PDS and ref adoption in 2050 calculation
++ write code generation to extract Custom PDS Adoption data.
