@@ -341,7 +341,7 @@ class UnitAdoption:
     """
     result = self.soln_net_annual_funits_adopted()
     if self.ac.conv_avg_annual_use is not None:  # RRS models
-      result /= self.ac.conv_avg_annual_use
+      result = result / self.ac.conv_avg_annual_use
     result.name = "conv_ref_annual_tot_iunits"
     return result
 

@@ -300,6 +300,33 @@ def test_soln_net_annual_funits_adopted_land():
     # We only check world values because regional calcs have bugs and are unused in the xls
     np.testing.assert_array_almost_equal(result, sp_world)
 
+def test_soln_net_annual_funits_adopted_cache():
+  # soln_net_annual_funits_adopted is used in a number of places, check that it is not
+  # being inadvertantly modified.
+  funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 112.63, 75.00, 0.33],
+      [2015, 117.07, 75.63, 0.34], [2016, 121.51, 76.25, 0.34]]
+  soln_ref_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+  funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 112.63, 75.00, 0.33],
+      [2015, 176.24, 0.0, 0.0], [2016, 272.03, 0.0, 0.0]]
+  soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+  ac = advanced_controls.AdvancedControls(
+      conv_lifetime_capacity=182411.28, conv_avg_annual_use=4946.84,
+      soln_lifetime_capacity=48343.80, soln_avg_annual_use=1841.67)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
+  original = ua.soln_net_annual_funits_adopted().copy(deep=True)
+  _ = ua.conv_ref_annual_tot_iunits()
+  _ = ua.soln_pds_net_grid_electricity_units_saved()
+  _ = ua.soln_pds_net_grid_electricity_units_used()
+  _ = ua.soln_pds_fuel_units_avoided()
+  _ = ua.soln_pds_direct_co2_emissions_saved()
+  _ = ua.soln_pds_direct_ch4_co2_emissions_saved()
+  _ = ua.soln_pds_direct_n2o_co2_emissions_saved()
+  final = ua.soln_net_annual_funits_adopted()
+  pd.testing.assert_frame_equal(original, final, check_exact=True)
+
 def test_conv_ref_tot_iunits():
   ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
   funits = [
