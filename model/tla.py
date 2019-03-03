@@ -7,10 +7,6 @@ can be used instead of Drawdown's allocations. Thus, this class is named CustomT
 """
 
 from functools import lru_cache
-import os.path
-import pathlib
-
-from model import interpolation
 import pandas as pd
 
 def tla_per_region(land_dist):
@@ -40,7 +36,6 @@ def tla_per_region(land_dist):
     return df
 
 
-
 class CustomTLA:
 
     def __init__(self, tla_data_source):
@@ -67,7 +62,6 @@ class CustomTLA:
             'eu': pd.DataFrame(),
             'usa': pd.DataFrame()
         }
-
 
         for (name, filename) in self.tla_data_source.items():   # leave this in in case we want multiple sources later
             df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
@@ -98,5 +92,5 @@ class CustomTLA:
 
 
 if __name__ == '__main__':
-    tla_per_region(None)
+    pass
 

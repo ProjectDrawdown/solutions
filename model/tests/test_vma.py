@@ -76,3 +76,13 @@ def test_inverse():
   result = v.avg_high_low()
   expected = (0.57, 0.57, 0.57)
   assert result == pytest.approx(expected)
+
+def test_avg_high_low_key():
+  f = datadir.joinpath('vma1_silvopasture.csv')
+  v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
+  avg = v.avg_high_low(key='mean')
+  assert avg == pytest.approx(314.15)
+  low = v.avg_high_low(key='low')
+  assert low == pytest.approx(178.3)
+  with pytest.raises(ValueError):
+    v.avg_high_low(key='not a key')

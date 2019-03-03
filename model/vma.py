@@ -56,8 +56,15 @@ class VMA:
     df = df[valid]
     return df
 
-  def avg_high_low(self):
-    """Return (mean, high, low) using low_sd/high_sd."""
+  def avg_high_low(self, key=None):
+    """
+    Args:
+      key: (optional) specify 'mean', 'high' or 'low' to get single value
+
+    Returns:
+      By default returns (mean, high, low) using low_sd/high_sd.
+      If key is specified will return associated value only
+    """
     df = self._discard_outliers()
     if self.use_weight:
       weights = df['Weight'].fillna(1.0)
@@ -76,4 +83,9 @@ class VMA:
     if self.postprocess:
       return self.postprocess(mean, high, low)
     else:
-      return mean, high, low
+      if key is None: return mean, high, low
+      elif key == 'high': return high
+      elif key == 'mean' or key == 'average' or key =='avg': return mean
+      elif key == 'low': return low
+      else:
+        raise ValueError("invalid key: {}. key must be 'mean', 'high', 'low' or None")
