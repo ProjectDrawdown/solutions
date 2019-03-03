@@ -11,7 +11,7 @@ class FirstCost:
   """Implementation for the First Cost module.
 
   Arguments:
-    ac = advanced_cost.py object, storing settings to control module operation.
+    ac = advanced_controls.py object, storing settings to control module operation.
     pds_learning_increase_mult = multiplicative factor for the PDS learning
       rate. This is typically 2 or 4.
     ref_learning_increase_mult = multiplicative factor for the reference

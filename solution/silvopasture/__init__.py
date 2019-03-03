@@ -9,6 +9,7 @@ import pandas as pd
 from os import listdir
 from model import adoptiondata, advanced_controls, ch4calcs, co2calcs, emissionsfactors, firstcost, helpertables, \
     operatingcost, unitadoption, vma, tla, aez, customadoption
+from solution import land
 
 
 scenarios = {  # just 1 for now
@@ -17,7 +18,11 @@ scenarios = {  # just 1 for now
         soln_pds_adoption_basis='Fully Customized PDS',
         pds_adoption_use_ref_years=[2015, 2016],
         soln_expected_lifetime=30,
-        conv_expected_lifetime=30  # default for LAND models
+        conv_expected_lifetime=30,  # default for LAND models
+        soln_first_cost_efficiency_rate=0,  # default for LAND models
+        conv_first_cost_efficiency_rate=0,  # default for LAND models
+        conv_2014_cost=0,
+        pds_2014_cost='mean',
     )}
 
 
@@ -35,7 +40,7 @@ class Silvopasture:
         # TLA
         self.ae = aez.AEZ(solution_name=self.name)
         tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
-        tla_per_region.to_csv('sp_tla.csv')
+
         # This solution has Custom PDS data
         ca_dir = thisdir.joinpath('ca_pds_data')
         source_filenames = [f for f in listdir(ca_dir) if f.endswith('.csv')]
@@ -52,7 +57,7 @@ class Silvopasture:
 
         # Current adoption data comes from VMA
         self.current_adoption_vma = vma.VMA(thisdir.joinpath('vma_data', 'Current Adoption.csv'))
-        adoption = [self.current_adoption_vma.avg_high_low()[0]] + [0] * 9
+        adoption = [self.current_adoption_vma.avg_high_low(key='mean')] + [0] * 9
         ht_ref_datapoints = pd.DataFrame([[2014] + adoption, [2050] + adoption],
                                          columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
                                                   'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
@@ -73,6 +78,29 @@ class Silvopasture:
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
             tla_per_region=tla_per_region
+        )
+
+        soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
+        soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
+        conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
+        soln_net_annual_funits_adopted = self.ua.soln_net_annual_funits_adopted()
+
+        # Soln first cost comes from VMA
+        self.soln_first_cost_vma = vma.VMA(
+            thisdir.joinpath('vma_data', 'SOLUTION First Cost per Implementation Unit of the solution.csv'))
+        # Set the pds_2014_cost field to the correct value from the VMA
+        self.ac.pds_2014_cost = self.soln_first_cost_vma.avg_high_low(key=self.ac.pds_2014_cost)
+
+        self.fc = firstcost.FirstCost(
+            ac=self.ac, pds_learning_increase_mult=2,
+            ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+            soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+            soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+            conv_ref_tot_iunits=conv_ref_tot_iunits,
+            soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
+            soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
+            conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
+            fc_convert_iunit_factor=land.MHA_TO_HA
         )
 
 
