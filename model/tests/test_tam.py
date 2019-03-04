@@ -541,6 +541,16 @@ def test_forecast_data_usa():
   assert g.loc[2059, 'e^x'] == pytest.approx(1.357549289)
   assert g.loc[2059, 'adoption'] == pytest.approx(5574.958973)
 
+def test_forecast_empty_data():
+  no_data_sources = { 'Ambitious Cases': {}, 'Baseline Cases': {},
+      'Conservative Cases': {}}
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=no_data_sources,
+      tam_pds_data_sources=no_data_sources)
+  result = tm.forecast_min_max_sd_global()
+  assert all(result.isna())
+  result = tm.forecast_low_med_high_global()
+  assert all(result.isna())
+
 def test_ref_tam_per_region():
   tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
       tam_pds_data_sources=g_tam_pds_data_sources)
@@ -555,6 +565,20 @@ def test_pds_tam_per_region():
       tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.pds_tam_per_region()
   filename = datadir.joinpath('pds_tam_per_region.csv')
+  expected = pd.read_csv(filename, header=0, index_col=0,
+      skipinitialspace=True, comment='#')
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_pds_tam_per_region_no_pds_sources():
+  no_data_sources = { 'Ambitious Cases': {}, 'Baseline Cases': {},
+      'Conservative Cases': {}}
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['source_until_2014', 'PDS World'] = 'ALL SOURCES'
+  tamconfig_mod.loc['source_after_2014', 'PDS World'] = 'ALL SOURCES'
+  tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=no_data_sources)
+  result = tm.pds_tam_per_region()
+  filename = datadir.joinpath('ref_tam_per_region.csv')
   expected = pd.read_csv(filename, header=0, index_col=0,
       skipinitialspace=True, comment='#')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)

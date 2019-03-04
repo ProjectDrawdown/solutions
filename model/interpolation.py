@@ -21,6 +21,7 @@ def linear_trend(data):
   result = pd.DataFrame(np.nan, index=np.arange(2014, 2061), columns=['x', 'constant', 'adoption'],
       dtype=np.float64)
   result.index.name = 'Year'
+  if data.dropna().empty: return result
   y = data.dropna().values
   x = data.dropna().index.copy() - 2014
   if x.size == 0 or y.size == 0: return result
@@ -39,6 +40,7 @@ def poly_degree2_trend(data):
   result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
       columns=['x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
   result.index.name = 'Year'
+  if data.dropna().empty: return result
   y = data.dropna().values
   x = data.dropna().index.copy() - 2014
   if x.size == 0 or y.size == 0: return result
@@ -58,6 +60,7 @@ def poly_degree3_trend(data):
   result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
       columns=['x^3', 'x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
   result.index.name = 'Year'
+  if data.dropna().empty: return result
   y = data.dropna().values
   x = data.dropna().index.copy() - 2014
   if x.size == 0 or y.size == 0: return result
@@ -78,6 +81,7 @@ def exponential_trend(data):
   result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
       columns=['coeff', 'e^x', 'adoption'], dtype=np.float64)
   result.index.name = 'Year'
+  if data.dropna().empty: return result
   y = np.log(data.dropna().values)
   x = data.dropna().index.copy() - 2014
   if x.size == 0 or y.size == 0: return result

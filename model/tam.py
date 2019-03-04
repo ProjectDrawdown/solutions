@@ -5,6 +5,7 @@ import os.path
 
 from model import interpolation
 from model import metaclass_cache
+import numpy as np
 import pandas as pd
 
 
@@ -93,18 +94,21 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     result = pd.DataFrame(0, index=forecast.index.copy(), columns=['Min', 'Max', 'S.D'])
     result.loc[:, 'Min'] = forecast.min(axis=1)
     result.loc[:, 'Max'] = forecast.max(axis=1)
-    # Excel STDDEV.P is a whole population stddev, ddof=0
-    columns = interpolation.matching_data_sources(data_sources=data_sources,
-        name=source_until_2014, groups_only=True)
-    m = forecast.loc[:2014, columns].std(axis=1, ddof=0)
-    m.name = 'S.D'
-    result.update(m)
-    columns = interpolation.matching_data_sources(data_sources=data_sources,
-        name=source_after_2014, groups_only=True)
-    m = forecast.loc[2015:, columns].std(axis=1, ddof=0)
-    m.name = 'S.D'
-    result.update(m)
-
+    if forecast.empty:
+      # Some solutions provide no data sources for PDS
+      result.loc[:, 'S.D'] = np.nan
+    else:
+      columns = interpolation.matching_data_sources(data_sources=data_sources,
+          name=source_until_2014, groups_only=True)
+      # Excel STDDEV.P is a whole population stddev, ddof=0
+      m = forecast.loc[:2014, columns].std(axis=1, ddof=0)
+      m.name = 'S.D'
+      result.update(m)
+      columns = interpolation.matching_data_sources(data_sources=data_sources,
+          name=source_after_2014, groups_only=True)
+      m = forecast.loc[2015:, columns].std(axis=1, ddof=0)
+      m.name = 'S.D'
+      result.update(m)
     return result
 
   def _low_med_high(self, forecast, min_max_sd, tamconfig, data_sources):
@@ -125,17 +129,22 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     result = pd.DataFrame(0, index=forecast.index.copy(), columns=['Low', 'Medium', 'High'])
     columns = interpolation.matching_data_sources(data_sources=data_sources,
         name=source_until_2014, groups_only=False)
-    m = forecast.loc[:2014, columns].mean(axis=1)
-    m.name = 'Medium'
-    result.update(m)
-    columns = interpolation.matching_data_sources(data_sources=data_sources,
-        name=source_after_2014, groups_only=False)
-    m = forecast.loc[2015:, columns].mean(axis=1)
-    m.name = 'Medium'
-    result.update(m)
+    if forecast.empty:
+      result.loc[:, 'Medium'] = np.nan
+      result.loc[:, 'Low'] = np.nan
+      result.loc[:, 'High'] = np.nan
+    else:
+      m = forecast.loc[:2014, columns].mean(axis=1)
+      m.name = 'Medium'
+      result.update(m)
+      columns = interpolation.matching_data_sources(data_sources=data_sources,
+          name=source_after_2014, groups_only=False)
+      m = forecast.loc[2015:, columns].mean(axis=1)
+      m.name = 'Medium'
+      result.update(m)
 
-    result.loc[:, 'Low'] = result.loc[:, 'Medium'] - (min_max_sd.loc[:, 'S.D'] * low_sd_mult)
-    result.loc[:, 'High'] = result.loc[:, 'Medium'] + (min_max_sd.loc[:, 'S.D'] * high_sd_mult)
+      result.loc[:, 'Low'] = result.loc[:, 'Medium'] - (min_max_sd.loc[:, 'S.D'] * low_sd_mult)
+      result.loc[:, 'High'] = result.loc[:, 'Medium'] + (min_max_sd.loc[:, 'S.D'] * high_sd_mult)
     return result
 
   def _get_trend(self, trend, tamconfig, data_sources):
@@ -193,7 +202,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_global().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_global_' + trend.lower()
+    result.name = 'forecast_trend_global_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -206,6 +215,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     """ 'TAM Data'!V45:Y94 """
     result = self._min_max_sd(forecast=self.forecast_data_pds_global(),
         tamconfig=self.tamconfig['PDS World'], data_sources=self.tam_pds_data_sources)
+    result[result.isnull()] = self.forecast_min_max_sd_global()
     result.name = 'forecast_min_max_sd_pds_global'
     return result
 
@@ -216,6 +226,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         min_max_sd=self.forecast_min_max_sd_pds_global(),
         tamconfig=self.tamconfig['PDS World'],
         data_sources=self.tam_pds_data_sources)
+    result[result.isnull()] = self.forecast_low_med_high_global()
     result.name = 'forecast_low_med_high_pds_global'
     return result
 
@@ -230,7 +241,8 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_pds_data_sources)
     data = self.forecast_low_med_high_pds_global().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_pds_global_' + trend.lower()
+    result[result.isnull()] = self.forecast_trend_global(trend=trend)
+    result.name = 'forecast_trend_pds_global_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -267,7 +279,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_oecd90().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_oecd90_' + trend.lower()
+    result.name = 'forecast_trend_oecd90_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -304,7 +316,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_eastern_europe().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_eastern_europe_' + trend.lower()
+    result.name = 'forecast_trend_eastern_europe_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -341,7 +353,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_asia_sans_japan().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_asia_sans_japan_' + trend.lower()
+    result.name = 'forecast_trend_asia_sans_japan_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -378,7 +390,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_middle_east_and_africa().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_middle_east_and_africa_' + trend.lower()
+    result.name = 'forecast_trend_middle_east_and_africa_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -415,7 +427,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_latin_america().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_latin_america_' + trend.lower()
+    result.name = 'forecast_trend_latin_america_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -452,7 +464,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_china().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_china_' + trend.lower()
+    result.name = 'forecast_trend_china_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -489,7 +501,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_india().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_india_' + trend.lower()
+    result.name = 'forecast_trend_india_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -525,7 +537,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_eu().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_eu_' + trend.lower()
+    result.name = 'forecast_trend_eu_' + str(trend).lower()
     return result
 
   @lru_cache()
@@ -561,10 +573,10 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         data_sources=self.tam_ref_data_sources)
     data = self.forecast_low_med_high_usa().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
-    result.name = 'forecast_trend_usa_' + trend.lower()
+    result.name = 'forecast_trend_usa_' + str(trend).lower()
     return result
 
-  def _set_ref_tam_one_region(self, result, region, forecast_trend, forecast_low_med_high):
+  def _set_tam_one_region(self, result, region, forecast_trend, forecast_low_med_high):
     """Set a single column in ref_tam_per_region."""
     result[region] = forecast_trend.loc[:, 'adoption']
     growth = self.tamconfig.loc['growth', region]
@@ -581,34 +593,34 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = pd.DataFrame(columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'])
-    self._set_ref_tam_one_region(result=result, region='World',
+    self._set_tam_one_region(result=result, region='World',
       forecast_trend=self.forecast_trend_global(),
       forecast_low_med_high=self.forecast_low_med_high_global())
-    self._set_ref_tam_one_region(result=result, region='OECD90',
+    self._set_tam_one_region(result=result, region='OECD90',
       forecast_trend=self.forecast_trend_oecd90(),
       forecast_low_med_high=self.forecast_low_med_high_oecd90())
-    self._set_ref_tam_one_region(result=result, region='Eastern Europe',
+    self._set_tam_one_region(result=result, region='Eastern Europe',
       forecast_trend=self.forecast_trend_eastern_europe(),
       forecast_low_med_high=self.forecast_low_med_high_eastern_europe())
-    self._set_ref_tam_one_region(result=result, region='Asia (Sans Japan)',
+    self._set_tam_one_region(result=result, region='Asia (Sans Japan)',
       forecast_trend=self.forecast_trend_asia_sans_japan(),
       forecast_low_med_high=self.forecast_low_med_high_asia_sans_japan())
-    self._set_ref_tam_one_region(result=result, region='Middle East and Africa',
+    self._set_tam_one_region(result=result, region='Middle East and Africa',
       forecast_trend=self.forecast_trend_middle_east_and_africa(),
       forecast_low_med_high=self.forecast_low_med_high_middle_east_and_africa())
-    self._set_ref_tam_one_region(result=result, region='Latin America',
+    self._set_tam_one_region(result=result, region='Latin America',
       forecast_trend=self.forecast_trend_latin_america(),
       forecast_low_med_high=self.forecast_low_med_high_latin_america())
-    self._set_ref_tam_one_region(result=result, region='China',
+    self._set_tam_one_region(result=result, region='China',
       forecast_trend=self.forecast_trend_china(),
       forecast_low_med_high=self.forecast_low_med_high_china())
-    self._set_ref_tam_one_region(result=result, region='India',
+    self._set_tam_one_region(result=result, region='India',
       forecast_trend=self.forecast_trend_india(),
       forecast_low_med_high=self.forecast_low_med_high_india())
-    self._set_ref_tam_one_region(result=result, region='EU',
+    self._set_tam_one_region(result=result, region='EU',
       forecast_trend=self.forecast_trend_eu(),
       forecast_low_med_high=self.forecast_low_med_high_eu())
-    self._set_ref_tam_one_region(result=result, region='USA',
+    self._set_tam_one_region(result=result, region='USA',
       forecast_trend=self.forecast_trend_usa(),
       forecast_low_med_high=self.forecast_low_med_high_usa())
     result.name = "ref_tam_per_region"
@@ -629,36 +641,39 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'])
 
     result['World'] = self.forecast_trend_pds_global().loc[:, 'adoption']
+    lmh = self.forecast_low_med_high_pds_global()
+    if result.dropna(axis=1).empty or lmh.dropna(axis=1).empty:
+      result['World'] = self.forecast_trend_global().loc[:, 'adoption']
+      lmh = self.forecast_low_med_high_global()
     growth = self.tamconfig.loc['growth', 'PDS World']
     first_year = result.first_valid_index()
-    lmh = self.forecast_low_med_high_pds_global()
     result.loc[first_year, 'World'] = lmh.loc[first_year, growth]
 
-    self._set_ref_tam_one_region(result=result, region='OECD90',
+    self._set_tam_one_region(result=result, region='OECD90',
       forecast_trend=self.forecast_trend_oecd90(),
       forecast_low_med_high=self.forecast_low_med_high_oecd90())
-    self._set_ref_tam_one_region(result=result, region='Eastern Europe',
+    self._set_tam_one_region(result=result, region='Eastern Europe',
       forecast_trend=self.forecast_trend_eastern_europe(),
       forecast_low_med_high=self.forecast_low_med_high_eastern_europe())
-    self._set_ref_tam_one_region(result=result, region='Asia (Sans Japan)',
+    self._set_tam_one_region(result=result, region='Asia (Sans Japan)',
       forecast_trend=self.forecast_trend_asia_sans_japan(),
       forecast_low_med_high=self.forecast_low_med_high_asia_sans_japan())
-    self._set_ref_tam_one_region(result=result, region='Middle East and Africa',
+    self._set_tam_one_region(result=result, region='Middle East and Africa',
       forecast_trend=self.forecast_trend_middle_east_and_africa(),
       forecast_low_med_high=self.forecast_low_med_high_middle_east_and_africa())
-    self._set_ref_tam_one_region(result=result, region='Latin America',
+    self._set_tam_one_region(result=result, region='Latin America',
       forecast_trend=self.forecast_trend_latin_america(),
       forecast_low_med_high=self.forecast_low_med_high_latin_america())
-    self._set_ref_tam_one_region(result=result, region='China',
+    self._set_tam_one_region(result=result, region='China',
       forecast_trend=self.forecast_trend_china(),
       forecast_low_med_high=self.forecast_low_med_high_china())
-    self._set_ref_tam_one_region(result=result, region='India',
+    self._set_tam_one_region(result=result, region='India',
       forecast_trend=self.forecast_trend_india(),
       forecast_low_med_high=self.forecast_low_med_high_india())
-    self._set_ref_tam_one_region(result=result, region='EU',
+    self._set_tam_one_region(result=result, region='EU',
       forecast_trend=self.forecast_trend_eu(),
       forecast_low_med_high=self.forecast_low_med_high_eu())
-    self._set_ref_tam_one_region(result=result, region='USA',
+    self._set_tam_one_region(result=result, region='USA',
       forecast_trend=self.forecast_trend_usa(),
       forecast_low_med_high=self.forecast_low_med_high_usa())
     result.name = "pds_tam_per_region"
