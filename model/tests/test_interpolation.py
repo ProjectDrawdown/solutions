@@ -100,10 +100,21 @@ def test_missing_data():
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_empty_data():
+def test_nan_data():
   adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:],
       columns=adoption_low_med_high_list[0], dtype=np.float64).set_index('Year')
   adoption_low_med_high.loc[:, :] = np.nan
+  result = itrp.linear_trend(adoption_low_med_high.loc[:, 'Medium'])
+  assert result.isna().all(axis=None, skipna=False)
+  result = itrp.poly_degree2_trend(adoption_low_med_high.loc[:, 'Medium'])
+  assert result.isna().all(axis=None, skipna=False)
+  result = itrp.poly_degree3_trend(adoption_low_med_high.loc[:, 'Medium'])
+  assert result.isna().all(axis=None, skipna=False)
+  result = itrp.exponential_trend(adoption_low_med_high.loc[:, 'Medium'])
+  assert result.isna().all(axis=None, skipna=False)
+
+def test_empty_data():
+  adoption_low_med_high = pd.DataFrame(columns=['Low', 'Medium', 'High'])
   result = itrp.linear_trend(adoption_low_med_high.loc[:, 'Medium'])
   assert result.isna().all(axis=None, skipna=False)
   result = itrp.poly_degree2_trend(adoption_low_med_high.loc[:, 'Medium'])
