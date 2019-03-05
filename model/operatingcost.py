@@ -35,7 +35,9 @@ class OperatingCost:
       conv_ref_annual_world_first_cost,
       single_iunit_purchase_year,
       soln_pds_install_cost_per_iunit,
-      conv_ref_install_cost_per_iunit):
+      conv_ref_install_cost_per_iunit,
+      conversion_factor=TERAWATT_TO_KILOWATT):  # default for RRS
+
     self.ac = ac
     self.soln_net_annual_funits_adopted = soln_net_annual_funits_adopted
     self.soln_pds_tot_iunits_reqd = soln_pds_tot_iunits_reqd
@@ -47,6 +49,7 @@ class OperatingCost:
     self.single_iunit_purchase_year = single_iunit_purchase_year
     self.soln_pds_install_cost_per_iunit = soln_pds_install_cost_per_iunit
     self.conv_ref_install_cost_per_iunit = conv_ref_install_cost_per_iunit
+    self.conversion_factor = conversion_factor
 
   @lru_cache()
   def soln_pds_annual_operating_cost(self):
@@ -203,9 +206,9 @@ class OperatingCost:
         lifetime += lifetime_replacement
 
       cost = var_oper_cost_per_funit + fuel_cost_per_funit
-      total = new_funits_per_year.loc[year] * cost * TERAWATT_TO_KILOWATT
+      total = new_funits_per_year.loc[year] * cost * self.conversion_factor
       cost = fixed_oper_cost_per_iunit
-      total += new_annual_iunits_reqd.loc[year] * cost * TERAWATT_TO_KILOWATT
+      total += new_annual_iunits_reqd.loc[year] * cost * self.conversion_factor
 
       # for each year, add in operating costs for equipment purchased in that
       # starting year through the year where it wears out.
@@ -281,9 +284,13 @@ class OperatingCost:
 
     soln_lifetime = self.ac.soln_lifetime_replacement
     conv_lifetime = 0
-    conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use
+    if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None:
+      conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use  # RRS
+    else:
+      conv_usage_mult = 1  # LAND
+
     for year in range(first_year, last_year + 1):
-      cost = 0;
+      cost = 0
       if soln_lifetime <= 0:
         break
       if conv_lifetime <= 1:
@@ -301,13 +308,14 @@ class OperatingCost:
 
       # Difference in fixed operating cost of conventional versus that of solution
       cost += (self.ac.conv_fixed_oper_cost_per_iunit * conv_usage_mult -
-          self.ac.soln_fixed_oper_cost_per_iunit) * TERAWATT_TO_KILOWATT
+          self.ac.soln_fixed_oper_cost_per_iunit) * self.conversion_factor
 
       # Difference in variable operating cost of conventional versus that of solution
-      conv_var_cost = self.ac.conv_var_oper_cost_per_funit + self.ac.conv_fuel_cost_per_funit
-      soln_var_cost = self.ac.soln_var_oper_cost_per_funit + self.ac.soln_fuel_cost_per_funit
-      cost += (self.ac.soln_avg_annual_use * conv_var_cost -
-          self.ac.soln_avg_annual_use * soln_var_cost) * TERAWATT_TO_KILOWATT
+      if self.ac.has_var_costs:
+        conv_var_cost = self.ac.conv_var_oper_cost_per_funit + self.ac.conv_fuel_cost_per_funit
+        soln_var_cost = self.ac.soln_var_oper_cost_per_funit + self.ac.soln_fuel_cost_per_funit
+        cost += (self.ac.soln_avg_annual_use * conv_var_cost - self.ac.soln_avg_annual_use * soln_var_cost)\
+              * self.conversion_factor
 
       # account for a partial year at the end of the lifetime.
       cost *= min(1, soln_lifetime)
@@ -364,9 +372,13 @@ class OperatingCost:
     result.name = 'soln_only_single_iunit_cashflow'
 
     soln_lifetime = self.ac.soln_lifetime_replacement
-    conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use
+    if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None:
+      conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use  # RRS
+    else:
+      conv_usage_mult = 1  # LAND
+
     for year in range(first_year, last_year + 1):
-      cost = 0;
+      cost = 0
       if soln_lifetime <= 0:
         break
 
@@ -376,13 +388,14 @@ class OperatingCost:
 
       # Difference in fixed operating cost of conventional versus that of solution
       cost += (self.ac.conv_fixed_oper_cost_per_iunit * conv_usage_mult -
-          self.ac.soln_fixed_oper_cost_per_iunit) * TERAWATT_TO_KILOWATT
+          self.ac.soln_fixed_oper_cost_per_iunit) * self.conversion_factor
 
       # Difference in variable operating cost of conventional versus that of solution
-      conv_var_cost = self.ac.conv_var_oper_cost_per_funit + self.ac.conv_fuel_cost_per_funit
-      soln_var_cost = self.ac.soln_var_oper_cost_per_funit + self.ac.soln_fuel_cost_per_funit
-      cost += (self.ac.soln_avg_annual_use * conv_var_cost -
-          self.ac.soln_avg_annual_use * soln_var_cost) * TERAWATT_TO_KILOWATT
+      if self.ac.has_var_costs:
+        conv_var_cost = self.ac.conv_var_oper_cost_per_funit + self.ac.conv_fuel_cost_per_funit
+        soln_var_cost = self.ac.soln_var_oper_cost_per_funit + self.ac.soln_fuel_cost_per_funit
+        cost += (self.ac.soln_avg_annual_use * conv_var_cost -
+            self.ac.soln_avg_annual_use * soln_var_cost) * self.conversion_factor
 
       # account for a partial year at the end of the lifetime.
       cost *= min(1, soln_lifetime)
@@ -423,3 +436,4 @@ class OperatingCost:
     result = self.soln_only_single_iunit_npv().cumsum().apply(lambda x: 1 if x >= 0 else 0)
     result.name = 'soln_only_single_iunit_payback_discounted'
     return result
+

@@ -340,6 +340,17 @@ def test_cashflow_no_fractional_years():
   result = oc.soln_only_single_iunit_cashflow()
   assert result[2039] == 0.0
 
+def test_conversion_factor():
+    oc = operatingcost.OperatingCost(ac=None, soln_net_annual_funits_adopted=None,
+                                     soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+                                     conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+                                     soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+                                     single_iunit_purchase_year=2017,
+                                     soln_pds_install_cost_per_iunit=None,
+                                     conv_ref_install_cost_per_iunit=None,
+                                     conversion_factor=1)
+    assert oc.conversion_factor == 1
+
 
 # 'Unit Adoption Calculations'!AX135:BH182
 soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
