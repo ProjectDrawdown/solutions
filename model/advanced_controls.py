@@ -291,8 +291,8 @@ class AdvancedControls:
                pds_source_post_2014=None,
                ref_source_post_2014=None,
                source_until_2014=None,
-               ref_adoption_use_pds_years=set(),
-               pds_adoption_use_ref_years=set(),
+               ref_adoption_use_pds_years=None,
+               pds_adoption_use_ref_years=None,
 
                solution_category=None,
 
@@ -369,9 +369,9 @@ class AdvancedControls:
     self.ref_source_post_2014 = ref_source_post_2014
     self.source_until_2014 = source_until_2014
 
-    self.ref_adoption_use_pds_years = ref_adoption_use_pds_years
-    self.pds_adoption_use_ref_years = pds_adoption_use_ref_years
-    intersect = set(ref_adoption_use_pds_years) & set(pds_adoption_use_ref_years)
+    self.ref_adoption_use_pds_years = set() if ref_adoption_use_pds_years is None else ref_adoption_use_pds_years
+    self.pds_adoption_use_ref_years = set() if pds_adoption_use_ref_years is None else pds_adoption_use_ref_years
+    intersect = set(self.ref_adoption_use_pds_years) & set(self.pds_adoption_use_ref_years)
     if intersect:
       err = "cannot be in both ref_adoption_use_pds_years and pds_adoption_use_ref_years:" + str(intersect)
       raise ValueError(err)
@@ -393,7 +393,18 @@ class AdvancedControls:
       return float(val)
     except (ValueError, TypeError):
       return 0.0
-
+  
+  @property
+  def has_var_costs(self):
+      """
+      Returns Boolean to check if variable costs exist (LAND models don't have any).
+      All variable costs must be not None for this to return True.
+      """
+      return None not in (self.conv_var_oper_cost_per_funit,
+                          self.conv_fuel_cost_per_funit,
+                          self.soln_var_oper_cost_per_funit,
+                          self.soln_fuel_cost_per_funit)
+    
   @property
   def soln_first_cost_learning_rate(self):
     return 1.0 - self.soln_first_cost_efficiency_rate

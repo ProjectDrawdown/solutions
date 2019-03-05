@@ -15,14 +15,29 @@ from solution import land
 scenarios = {  # just 1 for now
     'PDS-45p2050-Plausible-PDScustom-low-BookVersion1': advanced_controls.AdvancedControls(
         report_start_year=2020, report_end_year=2050,
+
+        # adoption
         soln_pds_adoption_basis='Fully Customized PDS',
         pds_adoption_use_ref_years=[2015, 2016],
         soln_expected_lifetime=30,
         conv_expected_lifetime=30,  # default for LAND models
-        soln_first_cost_efficiency_rate=0,  # default for LAND models
-        conv_first_cost_efficiency_rate=0,  # default for LAND models
-        conv_2014_cost=0,
+
+        # financial
+        soln_first_cost_efficiency_rate=0.0,  # default for LAND models
+        conv_first_cost_efficiency_rate=0.0,  # default for LAND models
+        conv_2014_cost=0.0,
         pds_2014_cost='mean',
+        soln_fixed_oper_cost_per_iunit='mean',
+        conv_fixed_oper_cost_per_iunit='mean',
+        npv_discount_rate=0.1,
+
+        # emissions
+        emissions_grid_source='Meta-Analysis',
+        emissions_grid_range='Mean',
+        emissions_use_co2eq=True,
+
+        # sequestration
+        seq_rate_global='mean'
     )}
 
 
@@ -90,6 +105,7 @@ class Silvopasture:
             thisdir.joinpath('vma_data', 'SOLUTION First Cost per Implementation Unit of the solution.csv'))
         # Set the pds_2014_cost field to the correct value from the VMA
         self.ac.pds_2014_cost = self.soln_first_cost_vma.avg_high_low(key=self.ac.pds_2014_cost)
+        self.ac.ref_2014_cost = self.ac.pds_2014_cost
 
         self.fc = firstcost.FirstCost(
             ac=self.ac, pds_learning_increase_mult=2,
@@ -101,6 +117,50 @@ class Silvopasture:
             soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
             conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
             fc_convert_iunit_factor=land.MHA_TO_HA
+        )
+
+        # Soln operating cost comes from VMAs
+        self.soln_oper_cost_vma = vma.VMA(
+            thisdir.joinpath('vma_data', 'SOLUTION Operating Cost per Functional Unit per Annum.csv'))
+        # Set the soln_fixed_oper_cost_per_iunit field to the correct value from the VMA
+        self.ac.soln_fixed_oper_cost_per_iunit = self.soln_oper_cost_vma.avg_high_low(
+            key=self.ac.soln_fixed_oper_cost_per_iunit)
+        self.conv_oper_cost_vma = vma.VMA(
+            thisdir.joinpath('vma_data', 'CONVENTIONAL Operating Cost per Functional Unit per Annum.csv'))
+        # Set the conv_fixed_oper_cost_per_iunit field to the correct value from the VMA
+        self.ac.conv_fixed_oper_cost_per_iunit = self.conv_oper_cost_vma.avg_high_low(
+            key=self.ac.conv_fixed_oper_cost_per_iunit)
+
+        self.oc = operatingcost.OperatingCost(
+            ac=self.ac,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+            soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+            conv_ref_annual_tot_iunits=self.ua.conv_ref_annual_tot_iunits(),
+            soln_pds_annual_world_first_cost=self.fc.soln_pds_annual_world_first_cost(),
+            soln_ref_annual_world_first_cost=self.fc.soln_ref_annual_world_first_cost(),
+            conv_ref_annual_world_first_cost=self.fc.conv_ref_annual_world_first_cost(),
+            single_iunit_purchase_year=2017,
+            soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
+            conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
+            conversion_factor=land.MHA_TO_HA
+        )
+
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+
+        # (This whole sheet is 0)
+        self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
+                                    soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
+        # Sequestration rate comes from VMA
+        self.seq_rates_vma = vma.VMA(thisdir.joinpath('vma_data', 'Sequestration Rates.csv'))
+        # Set the seq_rate_global field to the correct value from the VMA
+        self.ac.seq_rate_global = self.seq_rates_vma.avg_high_low(key=self.ac.seq_rate_global)
+
+        self.c2 = co2calcs.CO2Calcs(
+            ac=self.ac,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            land_distribution=self.ae.get_land_distribution()
         )
 
 

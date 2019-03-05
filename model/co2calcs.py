@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from model.advanced_controls import SOLUTION_CATEGORY
 
-THERMAL_MOISTURE_REGIONS = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
+THERMAL_MOISTURE_REGIMES = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
                             'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
 
 class CO2Calcs:
@@ -130,7 +130,7 @@ class CO2Calcs:
     'CO2 Calcs'!B119:G166 (Land models)
     """
     assert self.ac.seq_rate_global is not None, 'No sequestration rate set in Advanced Controls'
-    cols = ['All'] + THERMAL_MOISTURE_REGIONS
+    cols = ['All'] + THERMAL_MOISTURE_REGIMES
     index = list(range(2015, 2061))
     df = pd.DataFrame(columns=cols, index=index)
 
@@ -142,7 +142,7 @@ class CO2Calcs:
       net_land -= self.annual_land_area_harvested.loc[index, 'World']
 
     df['All'] = mystery_coefficient * net_land * self.ac.seq_rate_global * disturbance
-    for tmr in THERMAL_MOISTURE_REGIONS:
+    for tmr in THERMAL_MOISTURE_REGIMES:
       df[tmr] = df['All'] * self.land_distribution.loc['Global', tmr] / self.land_distribution.loc['Global', 'All']
     return df
 

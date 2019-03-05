@@ -137,3 +137,11 @@ def test_pds_ref_use_years():
   with pytest.raises(ValueError):
     _ = advanced_controls.AdvancedControls(ref_adoption_use_pds_years=[2014],
       pds_adoption_use_ref_years=[2014])
+
+def test_has_var_costs():
+    ac = advanced_controls.AdvancedControls(soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+                                            conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0)
+    assert ac.has_var_costs
+    ac = advanced_controls.AdvancedControls(soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+                                            conv_var_oper_cost_per_funit=0.0)
+    assert not ac.has_var_costs
