@@ -54,7 +54,8 @@ def _defaultOperatingCost(npv_discount_rate=0.094, single_iunit_purchase_year=20
       conv_ref_annual_world_first_cost=conv_ref_annual_world_first_cost,
       single_iunit_purchase_year=single_iunit_purchase_year,
       soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
-      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
+      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit,
+      conversion_factor=10**9)
   return oc
 
 def test_soln_pds_annual_breakout():
@@ -308,13 +309,36 @@ def test_annual_breakout_no_fractional_years():
       conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
       soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
       single_iunit_purchase_year=None, soln_pds_install_cost_per_iunit=None,
-      conv_ref_install_cost_per_iunit=None)
+      conv_ref_install_cost_per_iunit=None, conversion_factor=10**9)
   result = oc.soln_pds_annual_breakout()
   assert result.loc[2063, 2015] == 0.0
   assert result.loc[2064, 2016] == 0.0
   assert result.loc[2065, 2017] == 0.0
   assert result.loc[2066, 2018] == 0.0
   assert result.loc[2067, 2019] == 0.0
+
+def test_annual_breakout_convert_iunit_factor():
+  soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
+      columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
+  soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
+      columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
+  soln_ref_tot_iunits_reqd = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
+      columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
+  ac = advanced_controls.AdvancedControls(report_end_year=2050,
+      soln_lifetime_capacity=41401.1076923077, soln_avg_annual_use=1725.04615384615,
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+      soln_fixed_oper_cost_per_iunit=23.18791293579)
+  oc = operatingcost.OperatingCost(ac=ac,
+      soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+      soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+      conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+      soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+      single_iunit_purchase_year=None, soln_pds_install_cost_per_iunit=None,
+      conv_ref_install_cost_per_iunit=None, conversion_factor=1.0)
+  result = oc.soln_pds_annual_breakout()
+  assert result.loc[2015, 2015] == pytest.approx(0.744986264)
+  assert result.loc[2042, 2018] == pytest.approx(1.531430078)
 
 def test_cashflow_no_fractional_years():
   soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
@@ -334,7 +358,8 @@ def test_cashflow_no_fractional_years():
       soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
       single_iunit_purchase_year=2017,
       soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
-      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit)
+      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit,
+      conversion_factor=10**9)
   result = oc.soln_vs_conv_single_iunit_cashflow()
   assert result[2039] == 0.0
   result = oc.soln_only_single_iunit_cashflow()
@@ -350,6 +375,32 @@ def test_conversion_factor():
                                      conv_ref_install_cost_per_iunit=None,
                                      conversion_factor=1)
     assert oc.conversion_factor == 1
+
+def test_cashflow_conversion_factor():
+  soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
+      index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  conv_ref_install_cost_per_iunit = pd.Series(conv_ref_install_cost_per_iunit_nparray[:, 1],
+      index=conv_ref_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+  ac = advanced_controls.AdvancedControls(report_end_year=2050,
+      conv_lifetime_capacity=182411.275767661, conv_avg_annual_use=4946.840187342,
+      soln_lifetime_capacity=48343.8, soln_avg_annual_use=1841.66857142857,
+      conv_var_oper_cost_per_funit=0.00375269040, conv_fuel_cost_per_funit=0.0731,
+      conv_fixed_oper_cost_per_iunit=32.95140431108,
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+      soln_fixed_oper_cost_per_iunit=23.18791293579)
+  oc = operatingcost.OperatingCost(ac=ac, soln_net_annual_funits_adopted=None,
+      soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+      conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+      soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+      single_iunit_purchase_year=2017,
+      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
+      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit,
+      conversion_factor=1.0)
+  result = oc.soln_vs_conv_single_iunit_cashflow()
+  assert result[2016] == pytest.approx(130.616812789)
+  result = oc.soln_only_single_iunit_cashflow()
+  assert result[2041] == pytest.approx(32.654203197)
+
 
 
 # 'Unit Adoption Calculations'!AX135:BH182

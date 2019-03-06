@@ -6,7 +6,6 @@ import math
 import numpy as np
 import pandas as pd
 
-TERAWATT_TO_KILOWATT = 10**9
 CORE_START_YEAR = 2015
 CORE_END_YEAR = 2060
 
@@ -25,6 +24,8 @@ class OperatingCost:
     single_iunit_purchase_year: year to calculate single iunit first cost
     soln_pds_install_cost_per_iunit: cost per implementation unit
     conv_ref_install_cost_per_iunit: cost per implementation unit
+    conversion_factor: conversion factor from iunits to a more natural
+      monetary unit.
   """
   def __init__(self, ac, soln_net_annual_funits_adopted,
       soln_pds_tot_iunits_reqd,
@@ -36,8 +37,7 @@ class OperatingCost:
       single_iunit_purchase_year,
       soln_pds_install_cost_per_iunit,
       conv_ref_install_cost_per_iunit,
-      conversion_factor=TERAWATT_TO_KILOWATT):  # default for RRS
-
+      conversion_factor):
     self.ac = ac
     self.soln_net_annual_funits_adopted = soln_net_annual_funits_adopted
     self.soln_pds_tot_iunits_reqd = soln_pds_tot_iunits_reqd
