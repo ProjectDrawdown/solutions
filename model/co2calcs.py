@@ -314,7 +314,8 @@ class CO2Calcs:
             Conventional and Solution Fuel units.
        'CO2 Calcs'!U344:AE390
     """
-    factor = self.ac.fuel_emissions_factor - self.ac.fuel_emissions_factor_2 * self.ac.soln_fuel_learning_rate
+    factor = self.ac.conv_fuel_emissions_factor
+    factor -= self.ac.soln_fuel_emissions_factor * self.ac.soln_fuel_learning_rate
     factor *= self.ac.conv_fuel_consumed_per_funit
     result = self.soln_net_annual_funits_adopted * factor / 1000000
     result.name = "co2eq_reduced_fuel_emissions"

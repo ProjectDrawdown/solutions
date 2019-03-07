@@ -99,9 +99,9 @@ class AdvancedControls:
      check with the senior research team if you run into this)
      SolarPVUtil "Advanced Controls"!G159
 
-  fuel_emissions_factor (float):
+  conv_fuel_emissions_factor (float): direct fuel emissions per funit, conventional
      SolarPVUtil "Advanced Controls"!I159
-  fuel_emissions_factor_2 (float):
+  soln_fuel_emissions_factor (float): direct fuel emissions per funit, solution
      SolarPVUtil "Advanced Controls"!I163
 
   conv_emissions_per_funit (float): This represents the direct CO2-eq emissions
@@ -246,8 +246,8 @@ class AdvancedControls:
 
                conv_fuel_consumed_per_funit=None,
                soln_fuel_efficiency_factor=None,
-               fuel_emissions_factor=None,
-               fuel_emissions_factor_2=None,
+               conv_fuel_emissions_factor=None,
+               soln_fuel_emissions_factor=None,
 
                conv_emissions_per_funit=None,
                soln_emissions_per_funit=None,
@@ -314,8 +314,8 @@ class AdvancedControls:
     self.soln_annual_energy_used = self.value_or_zero(soln_annual_energy_used)
     self.conv_fuel_consumed_per_funit = self.value_or_zero(conv_fuel_consumed_per_funit)
     self.soln_fuel_efficiency_factor = self.value_or_zero(soln_fuel_efficiency_factor)
-    self.fuel_emissions_factor = self.value_or_zero(fuel_emissions_factor)
-    self.fuel_emissions_factor_2 = self.value_or_zero(fuel_emissions_factor_2)
+    self.conv_fuel_emissions_factor = self.value_or_zero(conv_fuel_emissions_factor)
+    self.soln_fuel_emissions_factor = self.value_or_zero(soln_fuel_emissions_factor)
     self.conv_emissions_per_funit = self.value_or_zero(conv_emissions_per_funit)
     self.soln_emissions_per_funit = self.value_or_zero(soln_emissions_per_funit)
 

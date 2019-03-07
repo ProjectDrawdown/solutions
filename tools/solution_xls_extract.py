@@ -603,7 +603,13 @@ def write_oc(f, wb):
   f.write("        conv_ref_annual_world_first_cost=self.fc.conv_ref_annual_world_first_cost(),\n")
   f.write("        single_iunit_purchase_year=" + xli(oc_tab, 120, 8) + ",\n")
   f.write("        soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),\n")
-  f.write("        conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit())\n")
+  f.write("        conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),\n")
+  units = oc_tab.cell(12, 5).value
+  is_energy_units = (units == '$/kW TO $/TW' or units == 'From US$2014 per kW to US$2014 per TW')
+  if oc_tab.cell(12, 4).value == 1000000000 and is_energy_units:
+    f.write("        conversion_factor=rrs.TERAWATT_TO_KILOWATT)\n")
+  else:
+    f.write("        conversion_factor=" + xln(oc_tab, 12, 4) + ")\n")
   f.write('\n')
 
 

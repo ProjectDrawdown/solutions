@@ -280,7 +280,8 @@ class Biomass:
         conv_ref_annual_world_first_cost=self.fc.conv_ref_annual_world_first_cost(),
         single_iunit_purchase_year=2017,
         soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
-        conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit())
+        conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
+        conversion_factor=rrs.TERAWATT_TO_KILOWATT)
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)

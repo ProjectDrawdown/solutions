@@ -26,7 +26,7 @@ def test_co2_mmt_reduced_allfields():
       columns=["Year", "A", "B"]).set_index('Year')
   ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
       solution_category="REPLACEMENT", conv_fuel_consumed_per_funit=1.0,
-      fuel_emissions_factor=4000000.0, fuel_emissions_factor_2=0.0,
+      conv_fuel_emissions_factor=4000000.0, soln_fuel_emissions_factor=0.0,
       soln_fuel_efficiency_factor=0.00,
       soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
       conv_indirect_co2_is_iunits=False)
@@ -63,7 +63,7 @@ def test_co2eq_mmt_reduced_allfields():
       columns=["Year", "A", "B"]).set_index('Year')
   ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
       solution_category="REPLACEMENT", conv_fuel_consumed_per_funit=1.0,
-      fuel_emissions_factor=4000000.0, fuel_emissions_factor_2=0.0,
+      conv_fuel_emissions_factor=4000000.0, soln_fuel_emissions_factor=0.0,
       soln_fuel_efficiency_factor=0.00,
       soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
       conv_indirect_co2_is_iunits=False)
@@ -317,8 +317,8 @@ def test_co2eq_reduced_fuel_emissions():
       columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
   ac = advanced_controls.AdvancedControls(
       conv_fuel_consumed_per_funit=100.0,
-      fuel_emissions_factor=140.0,
-      fuel_emissions_factor_2=10.0,
+      conv_fuel_emissions_factor=140.0,
+      soln_fuel_emissions_factor=10.0,
       soln_fuel_efficiency_factor=0.03)
   c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
       soln_pds_net_grid_electricity_units_saved=None,
@@ -339,8 +339,8 @@ def test_co2eq_reduced_fuel_emissions_liters():
       columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
   ac = advanced_controls.AdvancedControls(
       conv_fuel_consumed_per_funit=100.0,
-      fuel_emissions_factor=140.0,
-      fuel_emissions_factor_2=10.0,
+      conv_fuel_emissions_factor=140.0,
+      soln_fuel_emissions_factor=10.0,
       soln_fuel_efficiency_factor=0.03)
   c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
       soln_pds_net_grid_electricity_units_saved=None,
