@@ -209,6 +209,41 @@ def test_soln_vs_conv_single_iunit_cashflow_purchase_year_2026():
   assert result[2015] == pytest.approx(-18487649169)
   assert result[2016] == pytest.approx(130616812789)
 
+def test_soln_vs_conv_single_iunit_cashflow_improvedcookstoves():
+  soln_pds_install_cost_per_iunit = pd.Series(
+      soln_pds_install_cost_per_iunit_cookstoves_nparray[:, 1],
+      index=soln_pds_install_cost_per_iunit_cookstoves_nparray[:, 0],
+      dtype=np.float64)
+  conv_ref_install_cost_per_iunit = pd.Series(
+      conv_ref_install_cost_per_iunit_cookstoves_nparray[:, 1],
+      index=conv_ref_install_cost_per_iunit_cookstoves_nparray[:, 0],
+      dtype=np.float64)
+  ac = advanced_controls.AdvancedControls(report_end_year=2050,
+      conv_lifetime_capacity=2.8590323160579116e-06,
+      conv_avg_annual_use=1.6784148689795305e-06,
+      soln_lifetime_capacity=7.589875421812185e-06,
+      soln_avg_annual_use=1.6784148689795305e-06,
+      conv_var_oper_cost_per_funit=45000000.0, conv_fuel_cost_per_funit=0.0,
+      conv_fixed_oper_cost_per_iunit=0.0,
+      soln_var_oper_cost_per_funit=36000000.0, soln_fuel_cost_per_funit=0.0,
+      soln_fixed_oper_cost_per_iunit=0.0,
+      npv_discount_rate=0.04)
+  oc = operatingcost.OperatingCost(ac=ac, soln_net_annual_funits_adopted=None,
+      soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+      conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+      soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+      single_iunit_purchase_year=2017,
+      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
+      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit,
+      conversion_factor=1.0)
+  result = oc.soln_vs_conv_single_iunit_cashflow()
+  expected = pd.Series(soln_vs_conv_single_iunit_cashflow_cookstoves_nparray[:, 1],
+      index=soln_vs_conv_single_iunit_cashflow_cookstoves_nparray[:, 0], dtype=np.float64)
+  expected.name = 'soln_vs_conv_single_iunit_cashflow'
+  expected.index = expected.index.astype(int)
+  expected.index.name = 'Year'
+  pd.testing.assert_series_equal(result.loc[2015:2023], expected, check_exact=False)
+
 def test_soln_vs_conv_single_iunit_npv():
   oc = _defaultOperatingCost(single_iunit_purchase_year=2017)
   result = oc.soln_vs_conv_single_iunit_npv()
@@ -403,7 +438,7 @@ def test_cashflow_conversion_factor():
 
 
 
-# 'Unit Adoption Calculations'!AX135:BH182
+# SolarPVUtil 'Unit Adoption Calculations'!AX135:BH182
 soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497, 0.00795507895, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
     [2015, 0.09569632876, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -453,7 +488,7 @@ soln_pds_tot_iunits_reqd_list = [["Year", "World", "OECD90", "Eastern Europe", "
     [2059, 5.33851325027, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 5.40331941081, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
-# 'Unit Adoption Calculations'!AX197:BH244
+# SolarPVUtil 'Unit Adoption Calculations'!AX197:BH244
 soln_ref_tot_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497, 0.00795507895, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
@@ -504,7 +539,7 @@ soln_ref_tot_iunits_reqd_list = [
     [2059, 0.16960671915, 0.05592824776, 0.00030993834, 0.03799500463, 0.00415420699, 0.02668462755, 0.01939189131, 0.00935558942, 0.04192706906, 0.00935993199],
     [2060, 0.17201668746, 0.05626607004, 0.00031281520, 0.03858506980, 0.00422751726, 0.02710083975, 0.01964216212, 0.00953032944, 0.04219184961, 0.00940956382]]
 
-# 'Unit Adoption Calculations'!AX251:BH298
+# SolarPVUtil 'Unit Adoption Calculations'!AX251:BH298
 conv_ref_annual_tot_iunits_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -555,7 +590,7 @@ conv_ref_annual_tot_iunits_list = [
     [2059, 1.92434207423376, -0.02082163406442, -0.00011538753567, -0.01414631334778, -0.00154657764555, -0.00993447090379, -0.00721944421537, -0.00348301023517, -0.01560910853360, -0.00348462693740],
     [2060, 1.94757167168464, -0.02094740256642, -0.00011645856892, -0.01436601384828, -0.00157387046477, -0.01008942333453, -0.00731261801147, -0.00354806452951, -0.01570768419046, -0.00350310446791]]
 
-# 'Operating Cost'!I531:I576
+# SolarPVUtil 'Operating Cost'!I531:I576
 soln_pds_net_annual_iunits_reqd_list = [
     ['Year', 'World'],
     [2014, 0],
@@ -572,7 +607,7 @@ soln_pds_net_annual_iunits_reqd_list = [
     [2055, 4.84481776887], [2056, 4.93626032366], [2057, 5.02100771389], [2058, 5.09868232217],
     [2059, 5.16890653112], [2060, 5.23130272335]]
 
-# 'Operating Cost'!K531:K576
+# SolarPVUtil 'Operating Cost'!K531:K576
 soln_pds_new_annual_iunits_reqd_list = [
     ['Year', 'World'],
     [2015,  0.03212821555], [2016,  0.04960288160], [2017,  0.05801241244], [2018,  0.06604432589],
@@ -588,7 +623,7 @@ soln_pds_new_annual_iunits_reqd_list = [
     [2055,  0.09776010197], [2056,  0.09144255479], [2057,  0.08474739023], [2058,  0.07767460828],
     [2059,  0.07022420895], [2060,  0.06239619223]]
 
-# 'Operating Cost'!F19:F64
+# SolarPVUtil 'Operating Cost'!F19:F64
 soln_pds_new_funits_per_year_list = [
     ['Year', 'World'],
     [2015, 59.16952483163], [2016, 91.35206809813], [2017, 106.83963674163], [2018, 121.63175931515],
@@ -606,7 +641,7 @@ soln_pds_new_funits_per_year_list = [
 
 # Computed by taking the difference A2-A1 over the range
 # SolarPVUtil 'Unit Adoption Calculations'!AX252:BH298
-# World column matches 'Operating Cost'!L531:L576. 
+# World column matches SolarPVUtil 'Operating Cost'!L531:L576. 
 conv_ref_new_annual_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2015, 0.011961074664, -0.015287819976, -0.000068262073, -0.004479491326, -0.000345693600, -0.003116563951, -0.003119797187, -0.000620621284, -0.011271779632, -0.002671615595],
@@ -656,7 +691,7 @@ conv_ref_new_annual_iunits_reqd_list = [
     [2059, 0.026143904730, -0.000125768502, -0.000001071033, -0.000219700500, -0.000027292819, -0.000154952431, -0.000093173796, -0.000065054294, -0.000098575657, -0.000018477531],
     [2060, 0.023229597451, -0.000125768502, -0.000001071033, -0.000219700500, -0.000027292819, -0.000154952431, -0.000093173796, -0.000065054294, -0.000098575657, -0.000018477531]]
 
-# "First Cost"!N37:N82
+# SolarPVUtil "First Cost"!N37:N82
 soln_ref_annual_world_first_cost_nparray = np.array([
     [2015, 3482258521.23], [2016, 3441663232.15], [2017, 3402972628.78],
     [2018, 3366034802.32], [2019, 3330714616.02], [2020, 3296891372.34],
@@ -675,7 +710,7 @@ soln_ref_annual_world_first_cost_nparray = np.array([
     [2057, 5158536221.77], [2058, 5134988036.86], [2059, 5111882058.30],
     [2060, 5089203873.37]])
 
-# "First Cost"!Q37:Q82
+# SolarPVUtil "First Cost"!Q37:Q82
 conv_ref_annual_world_first_cost_nparray = np.array([
     [2015, 23990922121.35], [2016, 37002006377.58], [2017, 43232696345.06],
     [2018, 49171554733.95], [2019, 54819860759.44], [2020, 6200056.19],
@@ -710,7 +745,7 @@ conv_ref_annual_world_first_cost_nparray = np.array([
     [2131, 0.0], [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0],
     [2137, 0.0], [2138, 0.0], [2139, 0.0]])
 
-# "First Cost"!E37:E82
+# SolarPVUtil "First Cost"!E37:E82
 soln_pds_annual_world_first_cost_nparray = np.array([
     [2015, 49905587652.22], [2016, 65547210056.69], [2017, 68345312033.84],
     [2018, 70793825183.87], [2019, 72905511547.32], [2020, 2311551802.55],
@@ -729,7 +764,7 @@ soln_pds_annual_world_first_cost_nparray = np.array([
     [2057, 117540036750.52], [2058, 63289512079.58], [2059, 87025393821.60],
     [2060, 84481838372.33]])
 
-# "Operating Cost"!D19:D64
+# SolarPVUtil "Operating Cost"!D19:D64
 soln_pds_annual_operating_cost_nparray = np.array([
     [2015, 744986264.92], [2016, 1895173564.86], [2017, 3240360333.69],
     [2018, 4771790412.36], [2019, 6480707641.83], [2020, 6480901090.75],
@@ -764,7 +799,7 @@ soln_pds_annual_operating_cost_nparray = np.array([
     [2131, 0.0], [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0],
     [2137, 0.0], [2138, 0.0], [2139, 0.0]])
 
-# "Operating Cost"!E19:E64
+# SolarPVUtil "Operating Cost"!E19:E64
 soln_pds_cumulative_operating_cost_nparray = np.array([
     [2015, 744986264.92], [2016, 2640159829.78], [2017, 5880520163.48],
     [2018, 10652310575.84], [2019, 17133018217.67], [2020, 23613919308.42],
@@ -821,7 +856,7 @@ soln_pds_cumulative_operating_cost_nparray = np.array([
     [2139, 3001021555892.30]
     ])
 
-# "Operating Cost"!K19:K64
+# SolarPVUtil "Operating Cost"!K19:K64
 conv_ref_annual_operating_cost_nparray = np.array([
     [2015, 4941471380.46], [2016, 12570628980.37], [2017, 21493212164.19],
     [2018, 31651141593.59], [2019, 42986337930.23], [2020, 42987621071.08],
@@ -840,7 +875,7 @@ conv_ref_annual_operating_cost_nparray = np.array([
     [2057, 511400448661.17], [2058, 492601352012.20], [2059, 470973788541.35],
     [2060, 449025628403.62]])
 
-# "Operating Cost"!E19:E64
+# SolarPVUtil "Operating Cost"!E19:E64
 conv_ref_cumulative_operating_cost_nparray = np.array([
     [2015, 4941471380.46], [2016, 17512100360.83], [2017, 39005312525.03],
     [2018, 70656454118.62], [2019, 113642792048.85], [2020, 156630413119.94],
@@ -859,7 +894,7 @@ conv_ref_cumulative_operating_cost_nparray = np.array([
     [2057, 14790011816668.90], [2058, 15282613168681.10], [2059, 15753586957222.40],
     [2060, 16202612585626.00]])
 
-# "Operating Cost"!D69:D114
+# SolarPVUtil "Operating Cost"!D69:D114
 marginal_annual_operating_cost_nparray = np.array([
     [2015, 4196485115.54], [2016, 10675455415.51], [2017, 18252851830.50],
     [2018, 26879351181.23], [2019, 36505630288.41], [2020, 36506719980.33],
@@ -878,7 +913,7 @@ marginal_annual_operating_cost_nparray = np.array([
     [2057, 434300678007.26], [2058, 418335771363.27], [2059, 399968823302.07],
     [2060, 381329612378.83]])
 
-# "Operating Cost"!A19:E64
+# SolarPVUtil "Operating Cost"!A19:E64
 lifetime_cost_forecast_list = [
     ['Year', 'Investment (Marginal First Cost)', 'Marginal Operating Cost Savings',
       'Net Cash Flow', 'NPV in $2014'],
@@ -977,7 +1012,7 @@ lifetime_cost_forecast_list = [
     [2137, 0.00, 0.00, 0.00, 0.00], [2138, 0.00, 0.00, 0.00, 0.00],
     [2139, 0.00, 0.00, 0.00, 0.00]]
 
-# "First Cost"!C37:C82
+# SolarPVUtil "First Cost"!C37:C82
 soln_pds_install_cost_per_iunit_nparray = np.array([
     [2015, 1444939544214.85], [2016, 1260211854559.48], [2017, 1131125771261.71],
     [2018, 1034176540754.27], [2019, 957914360042.17], [2020, 955853826404.52],
@@ -996,7 +1031,7 @@ soln_pds_install_cost_per_iunit_nparray = np.array([
     [2057, 410617094526.91], [2058, 408638840847.23], [2059, 406878542591.41],
     [2060, 405334340227.07]])
 
-# "First Cost"!O37:O82
+# SolarPVUtil "First Cost"!O37:O82
 conv_ref_install_cost_per_iunit_nparray = np.array([
     [2015, 2005749716919.21], [2016, 2003709559856.43], [2017, 2001740610594.36],
     [2018, 1999838071911.36], [2019, 1997997609222.97], [2020, 1996215293069.34],
@@ -1015,7 +1050,7 @@ conv_ref_install_cost_per_iunit_nparray = np.array([
     [2057, 1952863152180.40], [2058, 1952041750168.08], [2059, 1951231306567.92],
     [2060, 1950431496209.24]])
 
-# "Operating Cost"!I126:I250
+# SolarPVUtil "Operating Cost"!I126:I250
 soln_vs_conv_single_iunit_cashflow_nparray = np.array([
     [2015, -469994891712], [2016, 130616812789], [2017, 130616812789],
     [2018, 130616812789], [2019, 130616812789], [2020, 130616812789],
@@ -1041,7 +1076,7 @@ soln_vs_conv_single_iunit_cashflow_nparray = np.array([
     [2126, 0], [2127, 0], [2128, 0], [2129, 0], [2130, 0], [2131, 0], [2132, 0],
     [2133, 0], [2134, 0], [2135, 0], [2136, 0], [2137, 0], [2138, 0], [2139, 0]])
 
-# "Operating Cost"!J126:J250
+# SolarPVUtil "Operating Cost"!J126:J250
 soln_vs_conv_single_iunit_npv_nparray = np.array([
     [2015, -358955962541.30], [2016, 91186342041.03], [2017, 83351318136.23],
     [2018, 76189504694.91], [2019, 69643057307.96], [2020, 63659101744.02],
@@ -1070,7 +1105,7 @@ soln_vs_conv_single_iunit_npv_nparray = np.array([
     [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0], [2137, 0.0],
     [2138, 0.0], [2139, 0.0]])
 
-# "Operating Cost"!J126:J250 with purchase_year=2026, discount_rate=7.1, but
+# SolarPVUtil "Operating Cost"!J126:J250 with purchase_year=2026, discount_rate=7.1, but
 # holding I126:I250 unchanged
 soln_vs_conv_single_iunit_npv_purchase_year_discount_rate_nparray = np.array([
     [2015, -30176388296.25], [2016, 57348944906.19], [2017, 53547100752.74],
@@ -1100,7 +1135,7 @@ soln_vs_conv_single_iunit_npv_purchase_year_discount_rate_nparray = np.array([
     [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0], [2137, 0.0],
     [2138, 0.0], [2139, 0.0]])
 
-# "Operating Cost"!K126:K250
+# SolarPVUtil "Operating Cost"!K126:K250
 soln_vs_conv_single_iunit_payback_nparray = np.array([
     [2015, 0], [2016, 0], [2017, 0], [2018, 0], [2019, 1], [2020, 1], [2021, 1],
     [2022, 1], [2023, 1], [2024, 1], [2025, 1], [2026, 1], [2027, 1], [2028, 1],
@@ -1121,7 +1156,7 @@ soln_vs_conv_single_iunit_payback_nparray = np.array([
     [2127, 1], [2128, 1], [2129, 1], [2130, 1], [2131, 1], [2132, 1], [2133, 1],
     [2134, 1], [2135, 1], [2136, 1], [2137, 1], [2138, 1], [2139, 1]])
 
-# "Operating Cost"!L126:L250
+# SolarPVUtil "Operating Cost"!L126:L250
 soln_vs_conv_single_iunit_payback_discounted_nparray = np.array([
     [2015, 0], [2016, 0], [2017, 0], [2018, 0], [2019, 0], [2020, 1], [2021, 1],
     [2022, 1], [2023, 1], [2024, 1], [2025, 1], [2026, 1], [2027, 1], [2028, 1],
@@ -1142,7 +1177,7 @@ soln_vs_conv_single_iunit_payback_discounted_nparray = np.array([
     [2127, 1], [2128, 1], [2129, 1], [2130, 1], [2131, 1], [2132, 1], [2133, 1],
     [2134, 1], [2135, 1], [2136, 1], [2137, 1], [2138, 1], [2139, 1]])
 
-# "Operating Cost"!M126:M250
+# SolarPVUtil "Operating Cost"!M126:M250
 soln_only_single_iunit_cashflow_nparray = np.array([
     [2015, -1000508958473], [2016, 130616812789], [2017, 130616812789], [2018, 130616812789],
     [2019, 130616812789], [2020, 130616812789], [2021, 130616812789], [2022, 130616812789],
@@ -1169,7 +1204,7 @@ soln_only_single_iunit_cashflow_nparray = np.array([
     [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0], [2137, 0.0],
     [2138, 0.0], [2139, 0.0]])
 
-# "Operating Cost"!N126:N250
+# SolarPVUtil "Operating Cost"!N126:N250
 soln_only_single_iunit_npv_nparray = np.array([
     [2015, -764133105599], [2016, 91186342041], [2017, 83351318136], [2018, 76189504695],
     [2019, 69643057308], [2020, 63659101744], [2021, 58189306896], [2022, 53189494420],
@@ -1196,7 +1231,7 @@ soln_only_single_iunit_npv_nparray = np.array([
     [2132, 0.0], [2133, 0.0], [2134, 0.0], [2135, 0.0], [2136, 0.0], [2137, 0.0],
     [2138, 0.0], [2139, 0.0]])
 
-# "Operating Cost"!O126:O250
+# SolarPVUtil "Operating Cost"!O126:O250
 soln_only_single_iunit_payback_nparray = np.array([
     [2015, 0], [2016, 0], [2017, 0], [2018, 0], [2019, 0], [2020, 0], [2021, 0],
     [2022, 0], [2023, 1], [2024, 1], [2025, 1], [2026, 1], [2027, 1], [2028, 1],
@@ -1217,7 +1252,7 @@ soln_only_single_iunit_payback_nparray = np.array([
     [2127, 1], [2128, 1], [2129, 1], [2130, 1], [2131, 1], [2132, 1], [2133, 1],
     [2134, 1], [2135, 1], [2136, 1], [2137, 1], [2138, 1], [2139, 1]])
 
-# "Operating Cost"!P126:P250
+# SolarPVUtil "Operating Cost"!P126:P250
 soln_only_single_iunit_payback_discounted_nparray = np.array([
     [2015, 0], [2016, 0], [2017, 0], [2018, 0], [2019, 0], [2020, 0], [2021, 0],
     [2022, 0], [2023, 0], [2024, 0], [2025, 0], [2026, 0], [2027, 0], [2028, 0],
@@ -1238,7 +1273,7 @@ soln_only_single_iunit_payback_discounted_nparray = np.array([
     [2127, 1], [2128, 1], [2129, 1], [2130, 1], [2131, 1], [2132, 1], [2133, 1],
     [2134, 1], [2135, 1], [2136, 1], [2137, 1], [2138, 1], [2139, 1]])
 
-# 'Unit Adoption'!B251:L298
+# SolarPVUtil 'Unit Adoption'!B251:L298
 soln_net_annual_funits_adopted_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -1288,3 +1323,46 @@ soln_net_annual_funits_adopted_list = [
     [2058, 9390.08298844099, -102.37913947597, -0.56550546824, -68.88750141817, -7.51565923492, -48.37771499535, -35.25252089591, -16.90808180663, -76.72812736177, -17.14648718136],
     [2059, 9519.41270701265, -103.00129615598, -0.57080369858, -69.97420589485, -7.65067244985, -49.14423990686, -35.71343677485, -17.22989500426, -77.21576538262, -17.23789257185],
     [2060, 9634.32581321841, -103.62345283599, -0.57610192892, -71.06091037152, -7.78568566479, -49.91076481837, -36.17435265380, -17.55170820188, -77.70340340347, -17.32929796233]]
+
+# ImprovedCookStoves "First Cost"!C37:C82
+soln_pds_install_cost_per_iunit_cookstoves_nparray = np.array([
+    [2015, 39.0], [2016, 39.0], [2017, 39.0], [2018, 39.0], [2019, 39.0], [2020, 39.0],
+    [2021, 39.0], [2022, 39.0], [2023, 39.0], [2024, 39.0], [2025, 39.0], [2026, 39.0],
+    [2027, 39.0], [2028, 39.0], [2029, 39.0], [2030, 39.0], [2031, 39.0], [2032, 39.0],
+    [2033, 39.0], [2034, 39.0], [2035, 39.0], [2036, 39.0], [2037, 39.0], [2038, 39.0],
+    [2039, 39.0], [2040, 39.0], [2041, 39.0], [2042, 39.0], [2043, 39.0], [2044, 39.0],
+    [2045, 39.0], [2046, 39.0], [2047, 39.0], [2048, 39.0], [2049, 39.0], [2050, 39.0],
+    [2051, 39.0], [2052, 39.0], [2053, 39.0], [2054, 39.0], [2055, 39.0], [2056, 39.0],
+    [2057, 39.0], [2058, 39.0], [2059, 39.0], [2060, 39.0]])
+
+# ImprovedCookStoves "First Cost"!O37:O82
+conv_ref_install_cost_per_iunit_cookstoves_nparray = np.array([
+    [2015, 2.048761039056780], [2016, 2.048761039056780],
+    [2017, 2.048761039056780], [2018, 2.048761039056780],
+    [2019, 2.048761039056780], [2020, 2.048761039056780],
+    [2021, 2.048761039056780], [2022, 2.048761039056780],
+    [2023, 2.048761039056780], [2024, 2.048761039056780],
+    [2025, 2.048761039056780], [2026, 2.048761039056780],
+    [2027, 2.048761039056780], [2028, 2.048761039056780],
+    [2029, 2.048761039056780], [2030, 2.048761039056780],
+    [2031, 2.048761039056780], [2032, 2.048761039056780],
+    [2033, 2.048761039056780], [2034, 2.048761039056780],
+    [2035, 2.048761039056780], [2036, 2.048761039056780],
+    [2037, 2.048761039056780], [2038, 2.048761039056780],
+    [2039, 2.048761039056780], [2040, 2.048761039056780],
+    [2041, 2.048761039056780], [2042, 2.048761039056780],
+    [2043, 2.048761039056780], [2044, 2.048761039056780],
+    [2045, 2.048761039056780], [2046, 2.048761039056780],
+    [2047, 2.048761039056780], [2048, 2.048761039056780],
+    [2049, 2.048761039056780], [2050, 2.048761039056780],
+    [2051, 2.048761039056780], [2052, 2.048761039056780],
+    [2053, 2.048761039056780], [2054, 2.048761039056780],
+    [2055, 2.048761039056780], [2056, 2.048761039056780],
+    [2057, 2.048761039056780], [2058, 2.048761039056780],
+    [2059, 2.048761039056780], [2060, 2.048761039056780]])
+
+# ImprovedCookStoves "Operating Cost"!I126:I250
+soln_vs_conv_single_iunit_cashflow_cookstoves_nparray = np.array([
+    [2015, -21.84550514012750], [2016, 17.15449485987250],
+    [2017, 15.10573382081580], [2018, 16.93636303521490], [2019, 7.88594351304656],
+    [2020, 0.0], [2021, 0.0], [2022, 0.0], [2023, 0.0]])

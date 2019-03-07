@@ -283,7 +283,6 @@ class OperatingCost:
     result.name = 'soln_vs_conv_single_iunit_cashflow'
 
     soln_lifetime = self.ac.soln_lifetime_replacement
-    conv_lifetime = 0
     if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None:
       conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use  # RRS
     else:
@@ -293,11 +292,12 @@ class OperatingCost:
       cost = 0
       if soln_lifetime <= 0:
         break
-      if conv_lifetime <= 1:
+      remainder = (year - (first_year - 1)) % self.ac.conv_lifetime_replacement
+      if remainder <= 1 and remainder > 0:
         # A new conventional iunit is costed as many times as needed to cover the
         # lifetime and output of a solution iunit.
-        conv_lifetime = self.ac.conv_lifetime_replacement
-        soln_first_cost = (soln_lifetime - (year - first_year) + 0) / conv_lifetime
+        soln_first_cost = (self.ac.soln_lifetime_replacement - (year - first_year) + 0)
+        soln_first_cost /= self.ac.conv_lifetime_replacement
         cost_year = min(CORE_END_YEAR, year + (self.single_iunit_purchase_year - CORE_START_YEAR))
         cost += (self.conv_ref_install_cost_per_iunit[cost_year] * conv_usage_mult *
             min(1, soln_first_cost))
@@ -322,7 +322,6 @@ class OperatingCost:
       result[year] = cost if math.fabs(cost) > 0.01 else 0.0
 
       soln_lifetime -= 1
-      conv_lifetime -= 1
     return result
 
   @lru_cache()
