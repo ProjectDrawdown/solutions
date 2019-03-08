@@ -17,7 +17,7 @@ def test_vals_from_real_soln():
   assert result == pytest.approx(expected)
 
 def test_source_data():
-  s = """Source ID, Raw Data Input , Original Units, Conversion calculation**, Weight
+  s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?
         Check that this text is present, 0%, %, 0, 0
         """
   f = io.StringIO(s)
@@ -25,7 +25,7 @@ def test_source_data():
   assert 'Check that this text is present' in v.source_data.to_html()
 
 def test_invalid_discards():
-  f = io.StringIO("""Source ID, Raw Data Input , Original Units, Conversion calculation**, Weight
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?
         a, 10000, , 
         b, 10000, , 
         c, 10000, , 
@@ -50,7 +50,7 @@ def test_invalid_discards():
   assert result == pytest.approx(expected)
 
 def test_single_study():
-  f = io.StringIO("""Source ID, Raw Data Input , Original Units, Conversion calculation**, Weight
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?
       A, 39%, %, 
       """)
   v = vma.VMA(filename=f)
@@ -59,7 +59,7 @@ def test_single_study():
   assert result == pytest.approx(expected)
 
 def test_missing_columns():
-  f = io.StringIO("""Source ID, Raw Data Input , Original Units, Conversion calculation**, Weight
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?
       A, 1000
       """)
   v = vma.VMA(filename=f)
@@ -68,7 +68,7 @@ def test_missing_columns():
   assert result == pytest.approx(expected)
 
 def test_inverse():
-  f = io.StringIO("""Source ID, Raw Data Input , Original Units, Conversion calculation**, Weight
+  f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?
       A, 43%, %, 
       """)
   postprocess = lambda x, y, z: (1.0 - x, 1.0 - y, 1.0 - z)
@@ -86,3 +86,13 @@ def test_avg_high_low_key():
   assert low == pytest.approx(178.3)
   with pytest.raises(ValueError):
     v.avg_high_low(key='not a key')
+
+def test_avg_high_low_exclude():
+  f = datadir.joinpath('vma21_silvopasture.csv')
+  v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
+  assert v.avg_high_low()[0] == pytest.approx(4.64561688311688)
+
+def test_generate_vma_dict():
+    vma_dict = vma.generate_vma_dict(datadir)
+    assert len(vma_dict) == 1
+    assert 'Current Adoption' in vma_dict

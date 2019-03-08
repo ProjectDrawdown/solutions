@@ -1,7 +1,8 @@
 """Test advanced_controls.py."""
 
 import pytest
-from model import advanced_controls
+from unittest import mock
+from model import advanced_controls, vma
 from model import emissionsfactors as ef
 
 
@@ -145,3 +146,16 @@ def test_has_var_costs():
     ac = advanced_controls.AdvancedControls(soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
                                             conv_var_oper_cost_per_funit=0.0)
     assert not ac.has_var_costs
+
+def test_substitute_vma():
+    with mock.patch('model.vma.VMA') as MockVMA:
+        MockVMA.return_value.avg_high_low.return_value = 'expected return'
+        seq_vma = vma.VMA()
+        ac = advanced_controls.AdvancedControls(vmas={'Sequestration Rates': seq_vma}, seq_rate_global='mean')
+        assert ac.seq_rate_global == 'expected return'
+
+def test_substitute_vma_raises():
+    ac = advanced_controls.AdvancedControls(vmas={}, seq_rate_global=1)
+    assert ac.seq_rate_global == 1
+    with pytest.raises(KeyError):
+        advanced_controls.AdvancedControls(vmas={}, seq_rate_global='mean')
