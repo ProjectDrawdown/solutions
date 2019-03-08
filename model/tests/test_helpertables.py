@@ -34,7 +34,8 @@ def test_soln_ref_funits_adopted():
   result = ht.soln_ref_funits_adopted()
   expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+  expected.name = 'soln_ref_funits_adopted'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_soln_ref_funits_adopted_tam_limit():
   """Test when adoption is limited by the Total Addressable Market."""
@@ -66,7 +67,8 @@ def test_soln_ref_funits_adopted_tam_limit():
       adoption_is_single_source=False)
   result = ht.soln_ref_funits_adopted()
   expected = ref_tam_per_region
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+  expected.name = 'soln_ref_funits_adopted'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_soln_ref_funits_adopted_regional_sums():
   """Test with soln_ref_adoption_regional_data=True."""
@@ -97,7 +99,8 @@ def test_soln_ref_funits_adopted_regional_sums():
     [2056, 6.0, 3.0, 2.0, 1.0], [2057, 6.0, 3.0, 2.0, 1.0], [2058, 6.0, 3.0, 2.0, 1.0],
     [2059, 6.0, 3.0, 2.0, 1.0], [2060, 6.0, 3.0, 2.0, 1.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+  expected.name = 'soln_ref_funits_adopted'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_soln_pds_funits_adopted_single_source():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
@@ -124,7 +127,8 @@ def test_soln_pds_funits_adopted_single_source():
   result = ht.soln_pds_funits_adopted()
   expected = pd.DataFrame(soln_pds_funits_adopted_single_source_list[1:],
       columns=soln_pds_funits_adopted_single_source_list[0]).set_index('Year')
-  pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False, check_names=False)
+  expected.name = 'soln_ref_funits_adopted'
+  pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False)
 
 def test_soln_pds_funits_adopted_passthru():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
@@ -149,7 +153,8 @@ def test_soln_pds_funits_adopted_passthru():
       adoption_trend_per_region=adoption_trend_per_region, adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   expected = adoption_trend_per_region
-  pd.testing.assert_frame_equal(result, expected, check_exact=False, check_names=False)
+  expected.name = 'soln_ref_funits_adopted'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_soln_pds_funits_adopted_datapoints_nan():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
@@ -218,8 +223,40 @@ def test_soln_pds_funits_custom_pds():
     pd.testing.assert_frame_equal(ht.soln_pds_funits_adopted().iloc[1:, :], custom_scen.iloc[3:, :])
     assert sum(ht.soln_pds_funits_adopted().loc[2014]) == 0
 
+def test_soln_pds_funits_adopted_linear_interpolation():
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      soln_pds_adoption_basis='DEFAULT Linear')
+  # from ImprovedCookStoves
+  pds_datapoints = pd.DataFrame([
+    [2014, 20.30881991465230, 0.0, 0.0, 25.04194984517460, 5.33726613132968, 36.92512711754970,
+      0.0, 0.0, 0.0, 0.0],
+    [2050, 1620.90420924928000, 0.0, 0.0, 1005.17634180055000, 752.46582309962500,
+      39.65480026979520, 187.87596664323300, 463.99033134231300, 0.0, 0.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  pds_tam_per_region_cookstoves = pd.DataFrame(pds_tam_per_region_cookstoves_list[1:],
+      columns=pds_tam_per_region_cookstoves_list[0], dtype=np.float64).set_index('Year')
+  pds_tam_per_region_cookstoves.index = pds_tam_per_region_cookstoves.index.astype(int)
+  expected = pd.DataFrame(soln_pds_funits_adopted_cookstoves_list[1:],
+      columns=soln_pds_funits_adopted_cookstoves_list[0]).set_index('Year')
+  expected.name = 'soln_ref_funits_adopted'
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
+      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region_cookstoves,
+      adoption_data_per_region=None, adoption_trend_per_region=None,
+      adoption_is_single_source=False)
+  result = ht.soln_pds_funits_adopted()
+  pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False)
+  # ensure that adoption_is_single_source has no effect on Linear interpolation.
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
+      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region_cookstoves,
+      adoption_data_per_region=None, adoption_trend_per_region=None,
+      adoption_is_single_source=True)
+  result = ht.soln_pds_funits_adopted()
+  pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False)
+
 def test_ref_adoption_use_pds_years_and_vice_versa():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+      soln_pds_adoption_basis='Existing Adoption Prognostications',
       ref_adoption_use_pds_years=range(2030,2040), pds_adoption_use_ref_years=range(2020,2030))
   ref_datapoints = pd.DataFrame([
     [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778,
@@ -311,7 +348,7 @@ soln_ref_funits_adopted_list = [
     [2059, 312.35936415553, 103.00129615598, 0.57080369858, 69.97420589485, 7.65067244985, 49.14423990686, 35.71343677485, 17.22989500426, 77.21576538262, 17.23789257185],
     [2060, 316.79772706269, 103.62345283599, 0.57610192892, 71.06091037152, 7.78568566479, 49.91076481837, 36.17435265380, 17.55170820188, 77.70340340347, 17.32929796233]]
 
-# "Helper Tables"!B90:L137
+# SolarPVUtil "Helper Tables"!B90:L137
 soln_pds_funits_adopted_single_source_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778, 14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
@@ -362,7 +399,7 @@ soln_pds_funits_adopted_single_source_list = [
     [2059, 9831.77207116817, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 9951.12354028110, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
-# 'Adoption Data'!AB46:AD94
+# SolarPVUtil 'Adoption Data'!AB46:AD94
 adoption_data_med_single_source_list = [
     ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
       'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -416,7 +453,7 @@ adoption_data_med_single_source_list = [
     [2059, 9831.772071, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0],
     [2060, 9951.123540, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0]]
 
-# 'Adoption Data'!AB46:AD94 with 'Advanced Controls'!$B$265 set to ALL SOURCES, Low growth
+# SolarPVUtil 'Adoption Data'!AB46:AD94 with 'Advanced Controls'!$B$265 set to ALL SOURCES, Low growth
 adoption_data_low_all_sources_list = [
     ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
       'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -470,7 +507,7 @@ adoption_data_low_all_sources_list = [
     [2059, 2198.847801, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 2274.465696, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
-# 'Adoption Data'!AB46:AD94 with 'Advanced Controls'!$B$265 set to ALL SOURCES, Medium growth
+# SolarPVUtil 'Adoption Data'!AB46:AD94 with 'Advanced Controls'!$B$265 set to ALL SOURCES, Medium growth
 adoption_data_med_all_sources_list = [
     ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
       'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -524,7 +561,7 @@ adoption_data_med_all_sources_list = [
     [2059, 4784.848984, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 4956.419760, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
-# 'Adoption Data'!AB46:AD94 with 'Advanced Controls'!$B$265 set to ALL SOURCES, High growth
+# SolarPVUtil 'Adoption Data'!AB46:AD94 with 'Advanced Controls'!$B$265 set to ALL SOURCES, High growth
 adoption_data_high_all_sources_list = [
     ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
       'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -629,3 +666,106 @@ adoption_trend_per_region_list = [
     [2058, 7281.96116702190, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2059, 7537.88909129353, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 7797.36753257098, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+# ImprovedCookStoves 'Unit Adoption Calculations'!A68:K115
+pds_tam_per_region_cookstoves_list = [
+    ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
+      'Latin America', 'China', 'India', 'EU', 'USA'],
+    [2014, 5827.235387, 0.0, 0.0, 4053.298731, 1783.757754, 173.254108, 1086.492157, 1622.370389, 0.0, 0.0],
+    [2015, 5194.547540, 0.0, 0.0, 4063.458970, 1813.714359, 173.110086, 1083.167749, 1629.340849, 0.0, 0.0],
+    [2016, 5159.098296, 0.0, 0.0, 4072.722322, 1846.401375, 173.132753, 1079.291643, 1640.767842, 0.0, 0.0],
+    [2017, 5132.187372, 0.0, 0.0, 4081.370608, 1879.220242, 173.127819, 1074.656400, 1651.913008, 0.0, 0.0],
+    [2018, 5113.425079, 0.0, 0.0, 4089.403674, 1912.166934, 173.095459, 1069.301088, 1662.775487, 0.0, 0.0],
+    [2019, 5102.421730, 0.0, 0.0, 4096.821366, 1945.237426, 173.035847, 1063.264772, 1673.354415, 0.0, 0.0],
+    [2020, 5098.787637, 0.0, 0.0, 4103.623531, 1978.427692, 172.949155, 1056.586516, 1683.648933, 0.0, 0.0],
+    [2021, 5102.133112, 0.0, 0.0, 4109.810015, 2011.733707, 172.835559, 1049.305389, 1693.658179, 0.0, 0.0],
+    [2022, 5112.068467, 0.0, 0.0, 4115.380664, 2045.151444, 172.695231, 1041.460454, 1703.381292, 0.0, 0.0],
+    [2023, 5128.204014, 0.0, 0.0, 4120.335323, 2078.676878, 172.528346, 1033.090778, 1712.817409, 0.0, 0.0],
+    [2024, 5150.150065, 0.0, 0.0, 4124.673841, 2112.305984, 172.335078, 1024.235427, 1721.965671, 0.0, 0.0],
+    [2025, 5177.516933, 0.0, 0.0, 4128.396061, 2146.034735, 172.115601, 1014.933467, 1730.825215, 0.0, 0.0],
+    [2026, 5209.914930, 0.0, 0.0, 4131.501832, 2179.859107, 171.870088, 1005.223962, 1739.395180, 0.0, 0.0],
+    [2027, 5246.954367, 0.0, 0.0, 4133.990998, 2213.775072, 171.598714, 995.145980, 1747.674706, 0.0, 0.0],
+    [2028, 5288.245556, 0.0, 0.0, 4135.863407, 2247.778607, 171.301651, 984.738586, 1755.662930, 0.0, 0.0],
+    [2029, 5333.398810, 0.0, 0.0, 4137.118904, 2281.865684, 170.979075, 974.040846, 1763.358992, 0.0, 0.0],
+    [2030, 5382.024442, 0.0, 0.0, 4137.757336, 2316.032279, 170.631159, 963.091825, 1770.762029, 0.0, 0.0],
+    [2031, 5433.732762, 0.0, 0.0, 4137.778548, 2350.274365, 170.258076, 951.930590, 1777.871181, 0.0, 0.0],
+    [2032, 5488.134083, 0.0, 0.0, 4137.182387, 2384.587918, 169.860002, 940.596206, 1784.685587, 0.0, 0.0],
+    [2033, 5544.838717, 0.0, 0.0, 4135.968699, 2418.968910, 169.437109, 929.127739, 1791.204385, 0.0, 0.0],
+    [2034, 5603.456977, 0.0, 0.0, 4134.137331, 2453.413318, 168.989571, 917.564254, 1797.426713, 0.0, 0.0],
+    [2035, 5663.599174, 0.0, 0.0, 4131.688128, 2487.917114, 168.517563, 905.944819, 1803.351712, 0.0, 0.0],
+    [2036, 5724.875621, 0.0, 0.0, 4128.620937, 2522.476274, 168.021258, 894.308497, 1808.978518, 0.0, 0.0],
+    [2037, 5786.896628, 0.0, 0.0, 4124.935604, 2557.086772, 167.500830, 882.694356, 1814.306271, 0.0, 0.0],
+    [2038, 5849.272510, 0.0, 0.0, 4120.631976, 2591.744581, 166.956453, 871.141461, 1819.334109, 0.0, 0.0],
+    [2039, 5911.613577, 0.0, 0.0, 4115.709897, 2626.445677, 166.388301, 859.688878, 1824.061172, 0.0, 0.0],
+    [2040, 5973.530143, 0.0, 0.0, 4110.169215, 2661.186034, 165.796548, 848.375673, 1828.486598, 0.0, 0.0],
+    [2041, 6034.632518, 0.0, 0.0, 4104.009776, 2695.961626, 165.181368, 837.240910, 1832.609525, 0.0, 0.0],
+    [2042, 6094.531015, 0.0, 0.0, 4097.231425, 2730.768427, 164.542934, 826.323658, 1836.429093, 0.0, 0.0],
+    [2043, 6152.835946, 0.0, 0.0, 4089.834010, 2765.602412, 163.881420, 815.662980, 1839.944439, 0.0, 0.0],
+    [2044, 6209.157624, 0.0, 0.0, 4081.817376, 2800.459554, 163.197001, 805.297943, 1843.154704, 0.0, 0.0],
+    [2045, 6263.106360, 0.0, 0.0, 4073.181370, 2835.335830, 162.489849, 795.267613, 1846.059024, 0.0, 0.0],
+    [2046, 6314.292466, 0.0, 0.0, 4063.925837, 2870.227211, 161.760140, 785.611056, 1848.656540, 0.0, 0.0],
+    [2047, 6362.326255, 0.0, 0.0, 4054.050624, 2905.129674, 161.008047, 776.367336, 1850.946389, 0.0, 0.0],
+    [2048, 6406.818038, 0.0, 0.0, 4043.555577, 2940.039192, 160.233743, 767.575521, 1852.927710, 0.0, 0.0],
+    [2049, 6447.378128, 0.0, 0.0, 4032.440543, 2974.951740, 159.437403, 759.274676, 1854.599643, 0.0, 0.0],
+    [2050, 6483.616837, 0.0, 0.0, 4020.705367, 3009.863292, 158.619201, 751.503867, 1855.961325, 0.0, 0.0],
+    [2051, 6515.144477, 0.0, 0.0, 4008.349896, 3044.769823, 157.779310, 744.302159, 1857.011896, 0.0, 0.0],
+    [2052, 6541.571360, 0.0, 0.0, 3995.373976, 3079.667306, 156.917904, 737.708618, 1857.750494, 0.0, 0.0],
+    [2053, 6562.507797, 0.0, 0.0, 3981.777453, 3114.551716, 156.035158, 731.762311, 1858.176258, 0.0, 0.0],
+    [2054, 6577.564103, 0.0, 0.0, 3967.560173, 3149.419027, 155.131245, 726.502302, 1858.288326, 0.0, 0.0],
+    [2055, 6586.350587, 0.0, 0.0, 3952.721983, 3184.265214, 154.206338, 721.967659, 1858.085838, 0.0, 0.0],
+    [2056, 6588.477563, 0.0, 0.0, 3937.262728, 3219.086252, 153.260612, 718.197446, 1857.567931, 0.0, 0.0],
+    [2057, 6583.555342, 0.0, 0.0, 3921.182255, 3253.878113, 152.294241, 715.230729, 1856.733745, 0.0, 0.0],
+    [2058, 6571.194237, 0.0, 0.0, 3904.480411, 3288.636773, 151.307399, 713.106575, 1855.582418, 0.0, 0.0],
+    [2059, 6551.004559, 0.0, 0.0, 3887.157041, 3323.358207, 150.300259, 711.864048, 1854.113089, 0.0, 0.0],
+    [2060, 6522.596622, 0.0, 0.0, 3869.211991, 3358.038387, 149.272995, 711.542216, 1852.324897, 0.0, 0.0]]
+
+# ImprovedCookStoves "Helper Tables"!B90:L137
+soln_pds_funits_adopted_cookstoves_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2014, 20.308820, 0.0, 0.0, 25.041950, 5.337266, 36.925127, 0.0, 0.0, 0.0, 0.0],
+    [2015, 64.769803, 0.0, 0.0, 52.267905, 26.090837, 37.000951, 5.218777, 12.888620, 0.0, 0.0],
+    [2016, 109.230786, 0.0, 0.0, 79.493861, 46.844408, 37.076776, 10.437554, 25.777241, 0.0, 0.0],
+    [2017, 153.691769, 0.0, 0.0, 106.719816, 67.597979, 37.152600, 15.656331, 38.665861, 0.0, 0.0],
+    [2018, 198.152752, 0.0, 0.0, 133.945771, 88.351550, 37.228424, 20.875107, 51.554481, 0.0, 0.0],
+    [2019, 242.613735, 0.0, 0.0, 161.171727, 109.105121, 37.304248, 26.093884, 64.443102, 0.0, 0.0],
+    [2020, 287.074718, 0.0, 0.0, 188.397682, 129.858692, 37.380073, 31.312661, 77.331722, 0.0, 0.0],
+    [2021, 331.535701, 0.0, 0.0, 215.623637, 150.612263, 37.455897, 36.531438, 90.220342, 0.0, 0.0],
+    [2022, 375.996684, 0.0, 0.0, 242.849593, 171.365834, 37.531721, 41.750215, 103.108963, 0.0, 0.0],
+    [2023, 420.457667, 0.0, 0.0, 270.075548, 192.119405, 37.607545, 46.968992, 115.997583, 0.0, 0.0],
+    [2024, 464.918650, 0.0, 0.0, 297.301503, 212.872976, 37.683370, 52.187769, 128.886203, 0.0, 0.0],
+    [2025, 509.379633, 0.0, 0.0, 324.527458, 233.626547, 37.759194, 57.406545, 141.774823, 0.0, 0.0],
+    [2026, 553.840616, 0.0, 0.0, 351.753414, 254.380118, 37.835018, 62.625322, 154.663444, 0.0, 0.0],
+    [2027, 598.301599, 0.0, 0.0, 378.979369, 275.133689, 37.910842, 67.844099, 167.552064, 0.0, 0.0],
+    [2028, 642.762582, 0.0, 0.0, 406.205324, 295.887261, 37.986667, 73.062876, 180.440684, 0.0, 0.0],
+    [2029, 687.223565, 0.0, 0.0, 433.431280, 316.640832, 38.062491, 78.281653, 193.329305, 0.0, 0.0],
+    [2030, 731.684549, 0.0, 0.0, 460.657235, 337.394403, 38.138315, 83.500430, 206.217925, 0.0, 0.0],
+    [2031, 776.145532, 0.0, 0.0, 487.883190, 358.147974, 38.214139, 88.719206, 219.106545, 0.0, 0.0],
+    [2032, 820.606515, 0.0, 0.0, 515.109146, 378.901545, 38.289964, 93.937983, 231.995166, 0.0, 0.0],
+    [2033, 865.067498, 0.0, 0.0, 542.335101, 399.655116, 38.365788, 99.156760, 244.883786, 0.0, 0.0],
+    [2034, 909.528481, 0.0, 0.0, 569.561056, 420.408687, 38.441612, 104.375537, 257.772406, 0.0, 0.0],
+    [2035, 953.989464, 0.0, 0.0, 596.787012, 441.162258, 38.517436, 109.594314, 270.661027, 0.0, 0.0],
+    [2036, 998.450447, 0.0, 0.0, 624.012967, 461.915829, 38.593261, 114.813091, 283.549647, 0.0, 0.0],
+    [2037, 1042.911430, 0.0, 0.0, 651.238922, 482.669400, 38.669085, 120.031868, 296.438267, 0.0, 0.0],
+    [2038, 1087.372413, 0.0, 0.0, 678.464878, 503.422971, 38.744909, 125.250644, 309.326888, 0.0, 0.0],
+    [2039, 1131.833396, 0.0, 0.0, 705.690833, 524.176542, 38.820733, 130.469421, 322.215508, 0.0, 0.0],
+    [2040, 1176.294379, 0.0, 0.0, 732.916788, 544.930113, 38.896558, 135.688198, 335.104128, 0.0, 0.0],
+    [2041, 1220.755362, 0.0, 0.0, 760.142744, 565.683684, 38.972382, 140.906975, 347.992749, 0.0, 0.0],
+    [2042, 1265.216345, 0.0, 0.0, 787.368699, 586.437255, 39.048206, 146.125752, 360.881369, 0.0, 0.0],
+    [2043, 1309.677328, 0.0, 0.0, 814.594654, 607.190826, 39.124030, 151.344529, 373.769989, 0.0, 0.0],
+    [2044, 1354.138311, 0.0, 0.0, 841.820610, 627.944397, 39.199855, 156.563306, 386.658609, 0.0, 0.0],
+    [2045, 1398.599294, 0.0, 0.0, 869.046565, 648.697968, 39.275679, 161.782082, 399.547230, 0.0, 0.0],
+    [2046, 1443.060277, 0.0, 0.0, 896.272520, 669.451539, 39.351503, 167.000859, 412.435850, 0.0, 0.0],
+    [2047, 1487.521260, 0.0, 0.0, 923.498476, 690.205110, 39.427328, 172.219636, 425.324470, 0.0, 0.0],
+    [2048, 1531.982243, 0.0, 0.0, 950.724431, 710.958681, 39.503152, 177.438413, 438.213091, 0.0, 0.0],
+    [2049, 1576.443226, 0.0, 0.0, 977.950386, 731.712252, 39.578976, 182.657190, 451.101711, 0.0, 0.0],
+    [2050, 1620.904209, 0.0, 0.0, 1005.176342, 752.465823, 39.654800, 187.875967, 463.990331, 0.0, 0.0],
+    [2051, 1665.365192, 0.0, 0.0, 1032.402297, 773.219394, 39.730625, 193.094743, 476.878952, 0.0, 0.0],
+    [2052, 1709.826175, 0.0, 0.0, 1059.628252, 793.972965, 39.806449, 198.313520, 489.767572, 0.0, 0.0],
+    [2053, 1754.287158, 0.0, 0.0, 1086.854208, 814.726536, 39.882273, 203.532297, 502.656192, 0.0, 0.0],
+    [2054, 1798.748141, 0.0, 0.0, 1114.080163, 835.480107, 39.958097, 208.751074, 515.544813, 0.0, 0.0],
+    [2055, 1843.209124, 0.0, 0.0, 1141.306118, 856.233678, 40.033922, 213.969851, 528.433433, 0.0, 0.0],
+    [2056, 1887.670107, 0.0, 0.0, 1168.532074, 876.987249, 40.109746, 219.188628, 541.322053, 0.0, 0.0],
+    [2057, 1932.131091, 0.0, 0.0, 1195.758029, 897.740820, 40.185570, 224.407405, 554.210674, 0.0, 0.0],
+    [2058, 1976.592074, 0.0, 0.0, 1222.983984, 918.494391, 40.261394, 229.626181, 567.099294, 0.0, 0.0],
+    [2059, 2021.053057, 0.0, 0.0, 1250.209940, 939.247962, 40.337219, 234.844958, 579.987914, 0.0, 0.0],
+    [2060, 2065.514040, 0.0, 0.0, 1277.435895, 960.001533, 40.413043, 240.063735, 592.876534, 0.0, 0.0]]

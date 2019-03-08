@@ -128,13 +128,12 @@ class HelperTables:
                 raise NotImplementedError('S-Curve support not implemented')
             elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
                 adoption = self.adoption_trend_per_region.fillna(0.0)
+                if self.adoption_is_single_source:
+                    # The World region can specify a single source (all the sub-regions use
+                    # ALL SOURCES). If it does, use that one source without curve fitting.
+                    adoption['World'] = self.adoption_data_per_region.loc[first_year:, 'World']
             elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
                 raise NotImplementedError('Custom S-Curve support not implemented')
-
-            if self.adoption_is_single_source:
-                # The World region can specify a single source (all the sub-regions use
-                # ALL SOURCES). If it does, use that one source without curve fitting.
-                adoption['World'] = self.adoption_data_per_region.loc[first_year:, 'World']
 
             if self.ac.soln_pds_adoption_regional_data:
                 adoption.loc[:, 'World'] = 0
