@@ -18,14 +18,23 @@ valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
 class AdvancedControls:
   """Advanced Controls module, with settings impacting other modules.
+
+  vmas: dict of VMA objects required for calculation of certain values.
+      dict keys should be the VMA title (found in VMA_info.csv in solution dir).
+      Example:
+      {'Sequestration Rates': vma.VMA('path_to_soln_vmas' + 'Sequestration_Rates.csv')}
+
   pds_2014_cost: US$2014 cost to acquire + install, per implementation
      unit (ex: kW for energy scenarios), for the Project Drawdown
+     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
      Solution (PDS).  SolarPVUtil "Advanced Controls"!B128
   ref_2014_cost: US$2014 cost to acquire + install, per implementation
      unit, for the reference technology.
+     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
      SolarPVUtil "Advanced Controls"!B128 (same as PDS)
   conv_2014_cost: US$2014 cost to acquire + install, per implementation
      unit, for the conventional technology.
+     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
      SolarPVUtil "Advanced Controls"!B95
   soln_first_cost_efficiency_rate: rate that the modelled solution improves /
      lowers in cost per year. In calculations this is usually converted
@@ -177,13 +186,21 @@ class AdvancedControls:
      total insurance, and maintenance cost per car.
 
      Purchase costs can be amortized here or included as a first cost, but not both.
+
+     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
+
      SolarPVUtil "Advanced Controls"!I128
+
+     For LAND solutions this is simply the operating cost per funit
+     (funits == iunits == land units). The LAND model has no variable operating costs.
+     Silvopasture "Advanced Controls"!C92
+
   soln_fuel_cost_per_funit (float): Fuel/consumable cost per functional unit.
      SolarPVUtil "Advanced Controls"!K128
   conv_var_oper_cost_per_funit (float): as soln_var_oper_cost_per_funit.
      SolarPVUtil "Advanced Controls"!H95
   conv_fixed_oper_cost_per_iunit (float): as soln_fixed_oper_cost_per_funit.
-     SolarPVUtil "Advanced Controls"!I95
+     SolarPVUtil "Advanced Controls"!I95 / Silvopasture "Advanced Controls"!C77
   conv_fuel_cost_per_funit (float): as soln_fuel_cost_per_funit.
      SolarPVUtil "Advanced Controls"!K95
 
@@ -227,11 +244,14 @@ class AdvancedControls:
      emissions, or NOT_APPLICABLE for something else entirely.  'Advanced Controls'!A159
 
   seq_rate_global (float): carbon sequestration rate for All Land or All of Special Land.
+    Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
     TropicalForests "Advanced Controls"!B173 (Land models)
   disturbance_rate (float): disturbance rate TropicalForests "Advanced Controls"!I173 (Land models)
   expected_lifetime: expected lifetime in years Silvopasture "Advanced Controls"!F92 (Land models)
   """
   def __init__(self,
+               vmas=None,
+
                pds_2014_cost=None,
                ref_2014_cost=None,
                conv_2014_cost=None,
@@ -303,9 +323,14 @@ class AdvancedControls:
                conv_expected_lifetime=None,
                ):
 
-    self.pds_2014_cost = pds_2014_cost
-    self.ref_2014_cost = ref_2014_cost
-    self.conv_2014_cost = conv_2014_cost
+    self.vmas = vmas
+
+    self.pds_2014_cost = self._substitute_vma(
+      pds_2014_cost, vma_title='SOLUTION First Cost per Implementation Unit of the solution')
+    self.ref_2014_cost = self._substitute_vma(
+      ref_2014_cost, vma_title='SOLUTION First Cost per Implementation Unit of the solution')
+    self.conv_2014_cost = self._substitute_vma(
+      conv_2014_cost, vma_title='CONVENTIONAL First Cost per Implementation Unit for replaced practices technologies')
     self.soln_first_cost_efficiency_rate = soln_first_cost_efficiency_rate
     self.conv_first_cost_efficiency_rate = conv_first_cost_efficiency_rate
     self.soln_first_cost_below_conv = soln_first_cost_below_conv
@@ -337,10 +362,12 @@ class AdvancedControls:
     self.report_start_year = report_start_year
     self.report_end_year = report_end_year
     self.soln_var_oper_cost_per_funit = soln_var_oper_cost_per_funit
-    self.soln_fixed_oper_cost_per_iunit = soln_fixed_oper_cost_per_iunit
+    self.soln_fixed_oper_cost_per_iunit = self._substitute_vma(
+      soln_fixed_oper_cost_per_iunit, vma_title='SOLUTION Operating Cost per Functional Unit per Annum')
     self.soln_fuel_cost_per_funit = soln_fuel_cost_per_funit
     self.conv_var_oper_cost_per_funit = conv_var_oper_cost_per_funit
-    self.conv_fixed_oper_cost_per_iunit = conv_fixed_oper_cost_per_iunit
+    self.conv_fixed_oper_cost_per_iunit = self._substitute_vma(
+      conv_fixed_oper_cost_per_iunit, vma_title='CONVENTIONAL Operating Cost per Functional Unit per Annum')
     self.conv_fuel_cost_per_funit = conv_fuel_cost_per_funit
     self.npv_discount_rate = npv_discount_rate
 
@@ -381,7 +408,7 @@ class AdvancedControls:
       self.solution_category = self.string_to_solution_category(solution_category)
 
     # LAND only
-    self.seq_rate_global = seq_rate_global
+    self.seq_rate_global = self._substitute_vma(seq_rate_global, vma_title='Sequestration Rates')
     self.disturbance_rate = disturbance_rate
     self.soln_expected_lifetime = soln_expected_lifetime
     self.conv_expected_lifetime = conv_expected_lifetime
@@ -480,3 +507,21 @@ class AdvancedControls:
     elif ltext == "not_applicable" or ltext == "not applicable" or ltext == "na":
       return SOLUTION_CATEGORY.NOT_APPLICABLE
     raise ValueError("invalid solution category: " + str(text))
+
+  def _substitute_vma(self, val, vma_title):
+    """
+    If val is 'mean', 'high' or 'low', returns the corresponding statistic from the VMA object in
+    self.vmas with the corresponding title.
+    Args:
+      val: input val
+      vma_title: title of VMA table (can be found in vma_info.csv in the soln dir)
+
+    Returns:
+        mean, high or low value from VMA table or passes through value if it's a number
+    """
+    if not isinstance(val, str):
+      return val
+    else:
+      if vma_title not in self.vmas:
+        raise KeyError('{} must be included in vmas to calculate mean/high/low'.format(vma_title))
+      return self.vmas[vma_title].avg_high_low(key=val.lower())

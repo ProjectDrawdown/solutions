@@ -6,27 +6,28 @@ import pandas as pd
 from numpy import nan
 from collections import OrderedDict
 import warnings
-from tools.util import cell_to_offsets, empty_to_nan
+from tools.util import cell_to_offsets, empty_to_nan, to_filename, convert_bool
 
 CSV_TEMPLATE_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'VMA', 'vma_template.csv')
 pd.set_option('display.expand_frame_repr', False)
 
 # dtype conversion map
-COLUMN_DTYPES = {
+COLUMN_DTYPE_MAP = {
     'SOURCE ID: Author/Org, Date, Info': lambda x: x,
     'Link': lambda x: x,
     'World / Drawdown Region': lambda x: x,
     'Specific Geographic Location': lambda x: x,
     'Thermal-Moisture Regime': lambda x: x,
     'Source Validation Code': lambda x: x,
-    'Year / Date': lambda x: int(x) if not nan else x,
+    'Year / Date': lambda x: int(x) if x is not nan else x,
     'License Code': lambda x: x,
-    'Raw Data Input ': lambda x: float(x) if not nan else x,
+    'Raw Data Input': lambda x: float(x) if x is not nan else x,
     'Original Units': lambda x: x,
-    'Conversion calculation**': lambda x: float(x) if not nan else x,
+    'Conversion calculation': lambda x: float(x) if x is not nan else x,
     'Common Units': lambda x: x,
     'Weight': lambda x: x,
-    'Assumptions': lambda x: x
+    'Assumptions': lambda x: x,
+    'Exclude Data?': lambda x: convert_bool(x) if x is not nan else x,
 }
 
 ADOPTION_VARIABLES = [
@@ -84,16 +85,27 @@ class VMAReader:
         csv_path: (pathlib path object) If specified, will write CSVs to path for each table
         """
         self._find_tables()
-        df_dict = {}
+        df_dict = OrderedDict()
         for title, location in self.table_locations.items():
             df = self.read_single_table(location)
             if df.empty:  # in line with our policy of setting empty tables to None
                 df_dict[title] = None
             else:
                 df_dict[title] = df
-                if csv_path is not None:
-                    path_friendly_title = title.replace('/', '_')
+
+        if csv_path is not None:
+            idx = pd.Index(data=list(range(1, len(df_dict) + 1)), name='VMA number')
+            info_df = pd.DataFrame(columns=['Filename', 'Title on xls', 'Has data?'], index=idx)
+            i = 1
+            for title, df in df_dict.items():
+                path_friendly_title = to_filename(title)
+                row = {'Filename': path_friendly_title, 'Title on xls': title,
+                       'Has data?': False if df is None else True}
+                info_df.loc[i, :] = row
+                i += 1
+                if df is not None:
                     df.to_csv(csv_path.joinpath(path_friendly_title + '.csv'), index=False)
+            info_df.to_csv(csv_path.joinpath('VMA_info.csv'))
         return df_dict
 
     def read_single_table(self, source_id_cell):
@@ -109,13 +121,16 @@ class VMAReader:
             row1, col1 = source_id_cell
         for r in range(30):
             new_row = {}
-            for c in range(14):
-                col_name = df.columns[c]
+            for c in range(15):
+                if c == 14:
+                    c += 1  # There is a blank column before the "Exclude Data?" column
+                col_name = df.columns[c] if c != 15 else df.columns[-1]
                 if r == 0:  # check col name before proceeding
                     first_cell = self.sheet.cell_value(row1, col1 + c)
-                    assert first_cell == col_name, 'cell value: {} is not {}'.format(first_cell, col_name)
+                    name_to_check = first_cell.strip().replace('*', '')
+                    assert name_to_check == col_name, 'cell value: {} is not {}'.format(first_cell, col_name)
                 cell_val = self.sheet.cell_value(row1 + 1 + r, col1 + c)  # get raw val
-                cell_val = COLUMN_DTYPES[col_name](empty_to_nan(cell_val))  # conversions
+                cell_val = COLUMN_DTYPE_MAP[col_name](empty_to_nan(cell_val))  # conversions
                 new_row[col_name] = cell_val
             if all(pd.isna(v) for k, v in new_row.items() if k != 'Common Units'):
                 break  # assume an empty row (except for Common Units) indicates no more sources to copy

@@ -4,6 +4,27 @@ import math
 import pandas as pd
 
 
+def generate_vma_dict(path_to_vma_data):
+  """
+  Convenience function for use by solution classes.
+  Reads 'VMA_info.csv' file in solution's 'vma_data' dir. Generates dict of VMAs where data
+  exists for input into AdvancedControls object.
+  NOTE: this will set input args of each VMA object to default values. If any VMA objects
+  need non-default args, they must be generated manually and inserted into the dict.
+  Args:
+    path_to_vma_data: path to 'vma_data' dir (pathlib object)
+
+  Returns:
+    dict for input to AdvancedControls() 'vnas' attribute
+  """
+  vma_info_df = pd.read_csv(path_to_vma_data.joinpath('VMA_info.csv'), index_col=0)
+  vma_dict = {}
+  for _, row in vma_info_df.iterrows():
+    if row['Has data?']:
+      vma_dict[row['Title on xls']] = VMA(path_to_vma_data.joinpath(row['Filename'] + '.csv'))
+  return vma_dict
+
+
 def convert_percentages(val):
   """pd.apply() functions to convert percentages"""
   if isinstance(val, str) and val.endswith('%'):
@@ -24,7 +45,7 @@ class VMA:
        postprocess: function to pass (mean, high, low) to before returning.
   """
   def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3, postprocess=None):
-    df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True, comment='#')
+    df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
     self.source_data = df
     self.low_sd = low_sd
     self.high_sd = high_sd
@@ -33,14 +54,15 @@ class VMA:
     self.use_weight = not all(pd.isnull(df['Weight']))
     weight = df['Weight'].apply(convert_percentages)
     weight.name = 'Weight'
-    # note: string has trailing space when pasted manually from xls
-    raw = df['Raw Data Input '].apply(convert_percentages)
+    raw = df['Raw Data Input'].apply(convert_percentages)
     raw.name = 'Raw'
     units = df['Original Units']
     units.name = 'Units'
-    value = df['Conversion calculation**']
+    value = df['Conversion calculation']
     value.name = 'Value'
-    self.df = pd.concat([value, units, raw, weight], axis=1)
+    exclude = df['Exclude Data?'].fillna(False)
+    exclude.name = 'Exclude?'
+    self.df = pd.concat([value, units, raw, weight, exclude], axis=1)
     self.df['Value'].fillna(self.df['Raw'], inplace=True)
 
   def _discard_outliers(self):
@@ -66,6 +88,7 @@ class VMA:
       If key is specified will return associated value only
     """
     df = self._discard_outliers()
+    df = df.loc[df['Exclude?'] == False]
     if self.use_weight:
       weights = df['Weight'].fillna(1.0)
       mean = (df['Value'] * weights).sum() / weights.sum()
@@ -85,7 +108,7 @@ class VMA:
     else:
       if key is None: return mean, high, low
       elif key == 'high': return high
-      elif key == 'mean' or key == 'average' or key =='avg': return mean
+      elif key == 'mean' or key == 'average' or key == 'avg': return mean
       elif key == 'low': return low
       else:
         raise ValueError("invalid key: {}. key must be 'mean', 'high', 'low' or None")

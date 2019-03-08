@@ -11,9 +11,14 @@ from model import adoptiondata, advanced_controls, ch4calcs, co2calcs, emissions
     operatingcost, unitadoption, vma, tla, aez, customadoption
 from solution import land
 
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 scenarios = {  # just 1 for now
     'PDS-45p2050-Plausible-PDScustom-low-BookVersion1': advanced_controls.AdvancedControls(
+        vmas=VMAs,
         report_start_year=2020, report_end_year=2050,
 
         # adoption
@@ -27,6 +32,7 @@ scenarios = {  # just 1 for now
         conv_first_cost_efficiency_rate=0.0,  # default for LAND models
         conv_2014_cost=0.0,
         pds_2014_cost='mean',
+        ref_2014_cost='mean',  # note that on xls this is linked to pds_2014_cost cell
         soln_fixed_oper_cost_per_iunit='mean',
         conv_fixed_oper_cost_per_iunit='mean',
         npv_discount_rate=0.1,
@@ -45,8 +51,6 @@ class Silvopasture:
     name = 'Silvopasture'
 
     def __init__(self, scenario=None):
-        datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-        thisdir = pathlib.Path(__file__).parents[0]
         if scenario is None:
             scenario = 'PDS-45p2050-Plausible-PDScustom-low-BookVersion1'
         self.scenario = scenario
@@ -57,7 +61,7 @@ class Silvopasture:
         tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
         # This solution has Custom PDS data
-        ca_dir = thisdir.joinpath('ca_pds_data')
+        ca_dir = THISDIR.joinpath('ca_pds_data')
         source_filenames = [f for f in listdir(ca_dir) if f.endswith('.csv')]
         ca_data_sources = []
         for f in source_filenames:
@@ -71,7 +75,7 @@ class Silvopasture:
             filepath=ca_dir)
 
         # Current adoption data comes from VMA
-        self.current_adoption_vma = vma.VMA(thisdir.joinpath('vma_data', 'Current Adoption.csv'))
+        self.current_adoption_vma = vma.VMA(THISDIR.joinpath('vma_data', 'Current_Adoption.csv'))
         adoption = [self.current_adoption_vma.avg_high_low(key='mean')] + [0] * 9
         ht_ref_datapoints = pd.DataFrame([[2014] + adoption, [2050] + adoption],
                                          columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
@@ -100,13 +104,6 @@ class Silvopasture:
         conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
         soln_net_annual_funits_adopted = self.ua.soln_net_annual_funits_adopted()
 
-        # Soln first cost comes from VMA
-        self.soln_first_cost_vma = vma.VMA(
-            thisdir.joinpath('vma_data', 'SOLUTION First Cost per Implementation Unit of the solution.csv'))
-        # Set the pds_2014_cost field to the correct value from the VMA
-        self.ac.pds_2014_cost = self.soln_first_cost_vma.avg_high_low(key=self.ac.pds_2014_cost)
-        self.ac.ref_2014_cost = self.ac.pds_2014_cost
-
         self.fc = firstcost.FirstCost(
             ac=self.ac, pds_learning_increase_mult=2,
             ref_learning_increase_mult=2, conv_learning_increase_mult=2,
@@ -118,18 +115,6 @@ class Silvopasture:
             conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
             fc_convert_iunit_factor=land.MHA_TO_HA
         )
-
-        # Soln operating cost comes from VMAs
-        self.soln_oper_cost_vma = vma.VMA(
-            thisdir.joinpath('vma_data', 'SOLUTION Operating Cost per Functional Unit per Annum.csv'))
-        # Set the soln_fixed_oper_cost_per_iunit field to the correct value from the VMA
-        self.ac.soln_fixed_oper_cost_per_iunit = self.soln_oper_cost_vma.avg_high_low(
-            key=self.ac.soln_fixed_oper_cost_per_iunit)
-        self.conv_oper_cost_vma = vma.VMA(
-            thisdir.joinpath('vma_data', 'CONVENTIONAL Operating Cost per Functional Unit per Annum.csv'))
-        # Set the conv_fixed_oper_cost_per_iunit field to the correct value from the VMA
-        self.ac.conv_fixed_oper_cost_per_iunit = self.conv_oper_cost_vma.avg_high_low(
-            key=self.ac.conv_fixed_oper_cost_per_iunit)
 
         self.oc = operatingcost.OperatingCost(
             ac=self.ac,
@@ -151,11 +136,6 @@ class Silvopasture:
         # (This whole sheet is 0)
         self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
                                     soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
-
-        # Sequestration rate comes from VMA
-        self.seq_rates_vma = vma.VMA(thisdir.joinpath('vma_data', 'Sequestration Rates.csv'))
-        # Set the seq_rate_global field to the correct value from the VMA
-        self.ac.seq_rate_global = self.seq_rates_vma.avg_high_low(key=self.ac.seq_rate_global)
 
         self.c2 = co2calcs.CO2Calcs(
             ac=self.ac,
