@@ -59,26 +59,36 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     self._forecast_data_usa = pd.DataFrame()
     self._forecast_data_usa.name = 'forecast_data_usa'
     for (groupname, group) in self.tam_ref_data_sources.items():
-      for (name, filename) in group.items():
-        df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-          skip_blank_lines=True, comment='#')
-        self._forecast_data_global.loc[:, name] = df.loc[:, 'World']
-        self._forecast_data_oecd90.loc[:, name] = df.loc[:, 'OECD90']
-        self._forecast_data_eastern_europe.loc[:, name] = df.loc[:, 'Eastern Europe']
-        self._forecast_data_asia_sans_japan.loc[:, name] = df.loc[:, 'Asia (Sans Japan)']
-        self._forecast_data_middle_east_and_africa.loc[:, name] = df.loc[:, 'Middle East and Africa']
-        self._forecast_data_latin_america.loc[:, name] = df.loc[:, 'Latin America']
-        self._forecast_data_china.loc[:, name] = df.loc[:, 'China']
-        self._forecast_data_india.loc[:, name] = df.loc[:, 'India']
-        self._forecast_data_eu.loc[:, name] = df.loc[:, 'EU']
-        self._forecast_data_usa.loc[:, name] = df.loc[:, 'USA']
+      for (name, value) in group.items():
+        if isinstance(value, str):
+          sources = {name: value}
+        else:
+          sources = value
+        for name, filename in sources.items():
+          df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+            skip_blank_lines=True, comment='#')
+          self._forecast_data_global.loc[:, name] = df.loc[:, 'World']
+          self._forecast_data_oecd90.loc[:, name] = df.loc[:, 'OECD90']
+          self._forecast_data_eastern_europe.loc[:, name] = df.loc[:, 'Eastern Europe']
+          self._forecast_data_asia_sans_japan.loc[:, name] = df.loc[:, 'Asia (Sans Japan)']
+          self._forecast_data_middle_east_and_africa.loc[:, name] = df.loc[:, 'Middle East and Africa']
+          self._forecast_data_latin_america.loc[:, name] = df.loc[:, 'Latin America']
+          self._forecast_data_china.loc[:, name] = df.loc[:, 'China']
+          self._forecast_data_india.loc[:, name] = df.loc[:, 'India']
+          self._forecast_data_eu.loc[:, name] = df.loc[:, 'EU']
+          self._forecast_data_usa.loc[:, name] = df.loc[:, 'USA']
     self._forecast_data_pds_global = pd.DataFrame()
     self._forecast_data_pds_global.name = 'forecast_data_pds_global'
     for (groupname, group) in self.tam_pds_data_sources.items():
-      for (name, filename) in group.items():
-        df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-          skip_blank_lines=True, comment='#')
-        self._forecast_data_pds_global.loc[:, name] = df.loc[:, 'World']
+      for (name, value) in group.items():
+        if isinstance(value, str):
+          sources = {name: value}
+        else:
+          sources = value
+        for name, filename in sources.items():
+          df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+            skip_blank_lines=True, comment='#')
+          self._forecast_data_pds_global.loc[:, name] = df.loc[:, 'World']
 
   def _min_max_sd(self, forecast, tamconfig, data_sources):
     """Return the min, max, and standard deviation for TAM data.
@@ -92,7 +102,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     source_after_2014 = tamconfig['source_after_2014']
 
     result = pd.DataFrame(0, index=forecast.index.copy(), columns=['Min', 'Max', 'S.D'])
-    result.loc[:, 'Min'] = forecast.min(axis=1)
+    result.loc[:, 'Min'] = forecast.dropna(axis='columns', how='all').fillna(0.0).min(axis=1)
     result.loc[:, 'Max'] = forecast.max(axis=1)
     if forecast.empty:
       # Some solutions provide no data sources for PDS
@@ -101,12 +111,12 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
       columns = interpolation.matching_data_sources(data_sources=data_sources,
           name=source_until_2014, groups_only=True)
       # Excel STDDEV.P is a whole population stddev, ddof=0
-      m = forecast.loc[:2014, columns].std(axis=1, ddof=0)
+      m = forecast.loc[:2014, columns].dropna(axis='columns', how='all').fillna(0.0).std(axis=1, ddof=0)
       m.name = 'S.D'
       result.update(m)
       columns = interpolation.matching_data_sources(data_sources=data_sources,
           name=source_after_2014, groups_only=True)
-      m = forecast.loc[2015:, columns].std(axis=1, ddof=0)
+      m = forecast.loc[2015:, columns].dropna(axis='columns', how='all').fillna(0.0).std(axis=1, ddof=0)
       m.name = 'S.D'
       result.update(m)
     return result
@@ -168,38 +178,48 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     else:
       return tamconfig['trend']
 
+  def _get_data_sources(self, data_sources, region):
+    key = "Region: " + region
+    return data_sources.get(key, data_sources)
+
   @lru_cache()
   def forecast_data_global(self):
-    """ 'TAM Data'!B45:Q94 """
+    """ SolarPVUtil 'TAM Data'!B45:Q94 """
     return self._forecast_data_global
 
   @lru_cache()
   def forecast_min_max_sd_global(self):
-    """ 'TAM Data'!V45:Y94 """
+    """ SolarPVUtil 'TAM Data'!V45:Y94 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='World')
     result = self._min_max_sd(forecast=self.forecast_data_global(),
-        tamconfig=self.tamconfig['World'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['World'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_global'
     return result
 
   @lru_cache()
   def forecast_low_med_high_global(self):
-    """ 'TAM Data'!AA45:AC94 """
+    """ SolarPVUtil 'TAM Data'!AA45:AC94 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='World')
     result = self._low_med_high(forecast=self.forecast_data_global(),
         min_max_sd=self.forecast_min_max_sd_global(),
         tamconfig=self.tamconfig['World'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     result.name = 'forecast_low_med_high_global'
     return result
 
   @lru_cache()
   def forecast_trend_global(self, trend=None):
     """Forecast for the 'World' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX50:BZ96     Degree2: 'TAM Data'!CE50:CH96
-       Degree3: 'TAM Data'!CM50:CQ96    Exponential: 'TAM Data'!CV50:CX96
+       Linear: SolarPVUtil 'TAM Data'!BX50:BZ96     Degree2: SolarPVUtil 'TAM Data'!CE50:CH96
+       Degree3: SolarPVUtil 'TAM Data'!CM50:CQ96    Exponential: SolarPVUtil 'TAM Data'!CV50:CX96
     """
     growth = self.tamconfig.loc['growth', 'World']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='World')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['World'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_global().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_global_' + str(trend).lower()
@@ -207,25 +227,29 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_pds_global(self):
-    """ 'TAM Data'!B45:Q94 """
+    """ SolarPVUtil 'TAM Data'!B45:Q94 """
     return self._forecast_data_pds_global
 
   @lru_cache()
   def forecast_min_max_sd_pds_global(self):
-    """ 'TAM Data'!V45:Y94 """
+    """ SolarPVUtil 'TAM Data'!V45:Y94 """
+    data_sources = self._get_data_sources(data_sources=self.tam_pds_data_sources,
+        region='World')
     result = self._min_max_sd(forecast=self.forecast_data_pds_global(),
-        tamconfig=self.tamconfig['PDS World'], data_sources=self.tam_pds_data_sources)
+        tamconfig=self.tamconfig['PDS World'], data_sources=data_sources)
     result[result.isnull()] = self.forecast_min_max_sd_global()
     result.name = 'forecast_min_max_sd_pds_global'
     return result
 
   @lru_cache()
   def forecast_low_med_high_pds_global(self):
-    """ 'TAM Data'!AA45:AC94 """
+    """ SolarPVUtil 'TAM Data'!AA45:AC94 """
+    data_sources = self._get_data_sources(data_sources=self.tam_pds_data_sources,
+        region='World')
     result = self._low_med_high(forecast=self.forecast_data_pds_global(),
         min_max_sd=self.forecast_min_max_sd_pds_global(),
         tamconfig=self.tamconfig['PDS World'],
-        data_sources=self.tam_pds_data_sources)
+        data_sources=data_sources)
     result[result.isnull()] = self.forecast_low_med_high_global()
     result.name = 'forecast_low_med_high_pds_global'
     return result
@@ -233,12 +257,14 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
   @lru_cache()
   def forecast_trend_pds_global(self, trend=None):
     """Forecast for the 'World' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX50:BZ96     Degree2: 'TAM Data'!CE50:CH96
-       Degree3: 'TAM Data'!CM50:CQ96    Exponential: 'TAM Data'!CV50:CX96
+       Linear: SolarPVUtil 'TAM Data'!BX50:BZ96     Degree2: SolarPVUtil 'TAM Data'!CE50:CH96
+       Degree3: SolarPVUtil 'TAM Data'!CM50:CQ96    Exponential: SolarPVUtil 'TAM Data'!CV50:CX96
     """
     growth = self.tamconfig.loc['growth', 'PDS World']
+    data_sources = self._get_data_sources(data_sources=self.tam_pds_data_sources,
+        region='World')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['PDS World'],
-        data_sources=self.tam_pds_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_pds_global().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result[result.isnull()] = self.forecast_trend_global(trend=trend)
@@ -247,36 +273,41 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_oecd90(self):
-    """ 'TAM Data'!B163:Q212 """
+    """ SolarPVUtil 'TAM Data'!B163:Q212 """
     return self._forecast_data_oecd90
 
   @lru_cache()
   def forecast_min_max_sd_oecd90(self):
-    """ 'TAM Data'!V163:Y212 """
+    """ SolarPVUtil 'TAM Data'!V163:Y212 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='OECD90')
     result = self._min_max_sd(forecast=self.forecast_data_oecd90(),
-        tamconfig=self.tamconfig['OECD90'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['OECD90'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_oecd90'
     return result
 
   @lru_cache()
   def forecast_low_med_high_oecd90(self):
-    """ 'TAM Data'!AA163:AC212 """
+    """ SolarPVUtil 'TAM Data'!AA163:AC212 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='OECD90')
     result = self._low_med_high(forecast=self.forecast_data_oecd90(),
         min_max_sd=self.forecast_min_max_sd_oecd90(),
-        tamconfig=self.tamconfig['OECD90'],
-        data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['OECD90'], data_sources=data_sources)
     result.name = 'forecast_low_med_high_oecd90'
     return result
 
   @lru_cache()
   def forecast_trend_oecd90(self, trend=None):
     """Forecast for the 'OECD90' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX168:BZ214     Degree2: 'TAM Data'!CE168:CH214
-       Degree3: 'TAM Data'!CM168:CQ214    Exponential: 'TAM Data'!CV168:CX214
+       Linear: SolarPVUtil 'TAM Data'!BX168:BZ214     Degree2: SolarPVUtil 'TAM Data'!CE168:CH214
+       Degree3: SolarPVUtil 'TAM Data'!CM168:CQ214    Exponential: SolarPVUtil 'TAM Data'!CV168:CX214
     """
     growth = self.tamconfig.loc['growth', 'OECD90']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='OECD90')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['OECD90'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_oecd90().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_oecd90_' + str(trend).lower()
@@ -284,36 +315,41 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_eastern_europe(self):
-    """ 'TAM Data'!B227:Q276 """
+    """ SolarPVUtil 'TAM Data'!B227:Q276 """
     return self._forecast_data_eastern_europe
 
   @lru_cache()
   def forecast_min_max_sd_eastern_europe(self):
-    """ 'TAM Data'!V227:Y276 """
+    """ SolarPVUtil 'TAM Data'!V227:Y276 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Eastern Europe')
     result = self._min_max_sd(forecast=self.forecast_data_eastern_europe(),
-        tamconfig=self.tamconfig['Eastern Europe'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['Eastern Europe'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_eastern_europe'
     return result
 
   @lru_cache()
   def forecast_low_med_high_eastern_europe(self):
-    """ 'TAM Data'!AA227:AC276 """
+    """ SolarPVUtil 'TAM Data'!AA227:AC276 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Eastern Europe')
     result = self._low_med_high(forecast=self.forecast_data_eastern_europe(),
         min_max_sd=self.forecast_min_max_sd_eastern_europe(),
-        tamconfig=self.tamconfig['Eastern Europe'],
-        data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['Eastern Europe'], data_sources=data_sources)
     result.name = 'forecast_low_med_high_eastern_europe'
     return result
 
   @lru_cache()
   def forecast_trend_eastern_europe(self, trend=None):
     """Forecast for the 'Eastern Europe' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX232:BZ278     Degree2: 'TAM Data'!CE232:CH278
-       Degree3: 'TAM Data'!CM232:CQ278    Exponential: 'TAM Data'!CV232:CX278
+       Linear: SolarPVUtil 'TAM Data'!BX232:BZ278     Degree2: SolarPVUtil 'TAM Data'!CE232:CH278
+       Degree3: SolarPVUtil 'TAM Data'!CM232:CQ278    Exponential: SolarPVUtil 'TAM Data'!CV232:CX278
     """
     growth = self.tamconfig.loc['growth', 'Eastern Europe']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Eastern Europe')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Eastern Europe'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_eastern_europe().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_eastern_europe_' + str(trend).lower()
@@ -321,36 +357,41 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_asia_sans_japan(self):
-    """ 'TAM Data'!B290:Q339 """
+    """ SolarPVUtil 'TAM Data'!B290:Q339 """
     return self._forecast_data_asia_sans_japan
 
   @lru_cache()
   def forecast_min_max_sd_asia_sans_japan(self):
-    """ 'TAM Data'!V290:Y339 """
+    """ SolarPVUtil 'TAM Data'!V290:Y339 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Asia (Sans Japan)')
     result = self._min_max_sd(forecast=self.forecast_data_asia_sans_japan(),
-        tamconfig=self.tamconfig['Asia (Sans Japan)'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['Asia (Sans Japan)'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_asia_sans_japan'
     return result
 
   @lru_cache()
   def forecast_low_med_high_asia_sans_japan(self):
-    """ 'TAM Data'!AA290:AC339 """
+    """ SolarPVUtil 'TAM Data'!AA290:AC339 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Asia (Sans Japan)')
     result = self._low_med_high(forecast=self.forecast_data_asia_sans_japan(),
         min_max_sd=self.forecast_min_max_sd_asia_sans_japan(),
-        tamconfig=self.tamconfig['Asia (Sans Japan)'],
-        data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['Asia (Sans Japan)'], data_sources=data_sources)
     result.name = 'forecast_low_med_high_asia_sans_japan'
     return result
 
   @lru_cache()
   def forecast_trend_asia_sans_japan(self, trend=None):
     """Forecast for the 'Asia (Sans Japan)' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX295:BZ341     Degree2: 'TAM Data'!CE295:CH341
-       Degree3: 'TAM Data'!CM295:CQ341    Exponential: 'TAM Data'!CV295:CX341
+       Linear: SolarPVUtil 'TAM Data'!BX295:BZ341     Degree2: SolarPVUtil 'TAM Data'!CE295:CH341
+       Degree3: SolarPVUtil 'TAM Data'!CM295:CQ341    Exponential: SolarPVUtil 'TAM Data'!CV295:CX341
     """
     growth = self.tamconfig.loc['growth', 'Asia (Sans Japan)']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Asia (Sans Japan)')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Asia (Sans Japan)'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_asia_sans_japan().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_asia_sans_japan_' + str(trend).lower()
@@ -358,36 +399,41 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_middle_east_and_africa(self):
-    """ 'TAM Data'!B353:Q402 """
+    """ SolarPVUtil 'TAM Data'!B353:Q402 """
     return self._forecast_data_middle_east_and_africa
 
   @lru_cache()
   def forecast_min_max_sd_middle_east_and_africa(self):
-    """ 'TAM Data'!V353:Y402 """
+    """ SolarPVUtil 'TAM Data'!V353:Y402 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Middle East and Africa')
     result = self._min_max_sd(forecast=self.forecast_data_middle_east_and_africa(),
-        tamconfig=self.tamconfig['Middle East and Africa'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['Middle East and Africa'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_middle_east_and_africa'
     return result
 
   @lru_cache()
   def forecast_low_med_high_middle_east_and_africa(self):
-    """ 'TAM Data'!AA353:AC402 """
+    """ SolarPVUtil 'TAM Data'!AA353:AC402 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Middle East and Africa')
     result = self._low_med_high(forecast=self.forecast_data_middle_east_and_africa(),
         min_max_sd=self.forecast_min_max_sd_middle_east_and_africa(),
-        tamconfig=self.tamconfig['Middle East and Africa'],
-        data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['Middle East and Africa'], data_sources=data_sources)
     result.name = 'forecast_low_med_high_middle_east_and_africa'
     return result
 
   @lru_cache()
   def forecast_trend_middle_east_and_africa(self, trend=None):
     """Forecast for the 'Middle East and Africa' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX358:BZ404     Degree2: 'TAM Data'!CE358:CH404
-       Degree3: 'TAM Data'!CM358:CQ404    Exponential: 'TAM Data'!CV358:CX404
+       Linear: SolarPVUtil 'TAM Data'!BX358:BZ404     Degree2: SolarPVUtil 'TAM Data'!CE358:CH404
+       Degree3: SolarPVUtil 'TAM Data'!CM358:CQ404    Exponential: SolarPVUtil 'TAM Data'!CV358:CX404
     """
     growth = self.tamconfig.loc['growth', 'Middle East and Africa']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Middle East and Africa')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Middle East and Africa'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_middle_east_and_africa().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_middle_east_and_africa_' + str(trend).lower()
@@ -395,36 +441,41 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_latin_america(self):
-    """ 'TAM Data'!B416:Q465 """
+    """ SolarPVUtil 'TAM Data'!B416:Q465 """
     return self._forecast_data_latin_america
 
   @lru_cache()
   def forecast_min_max_sd_latin_america(self):
-    """ 'TAM Data'!V416:Y465 """
+    """ SolarPVUtil 'TAM Data'!V416:Y465 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Latin America')
     result = self._min_max_sd(forecast=self.forecast_data_latin_america(),
-        tamconfig=self.tamconfig['Latin America'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['Latin America'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_latin_america'
     return result
 
   @lru_cache()
   def forecast_low_med_high_latin_america(self):
-    """ 'TAM Data'!AA416:AC465 """
+    """ SolarPVUtil 'TAM Data'!AA416:AC465 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Latin America')
     result = self._low_med_high(forecast=self.forecast_data_latin_america(),
         min_max_sd=self.forecast_min_max_sd_latin_america(),
-        tamconfig=self.tamconfig['Latin America'],
-        data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['Latin America'], data_sources=data_sources)
     result.name = 'forecast_low_med_high_latin_america'
     return result
 
   @lru_cache()
   def forecast_trend_latin_america(self, trend=None):
     """Forecast for the 'Latin America' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX421:BZ467     Degree2: 'TAM Data'!CE421:CH467
-       Degree3: 'TAM Data'!CM421:CQ467    Exponential: 'TAM Data'!CV421:CX467
+       Linear: SolarPVUtil 'TAM Data'!BX421:BZ467     Degree2: SolarPVUtil 'TAM Data'!CE421:CH467
+       Degree3: SolarPVUtil 'TAM Data'!CM421:CQ467    Exponential: SolarPVUtil 'TAM Data'!CV421:CX467
     """
     growth = self.tamconfig.loc['growth', 'Latin America']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='Latin America')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['Latin America'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_latin_america().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_latin_america_' + str(trend).lower()
@@ -432,36 +483,41 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_china(self):
-    """ 'TAM Data'!B479:Q528 """
+    """ SolarPVUtil 'TAM Data'!B479:Q528 """
     return self._forecast_data_china
 
   @lru_cache()
   def forecast_min_max_sd_china(self):
-    """ 'TAM Data'!V479:Y528 """
+    """ SolarPVUtil 'TAM Data'!V479:Y528 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='China')
     result = self._min_max_sd(forecast=self.forecast_data_china(),
-        tamconfig=self.tamconfig['China'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['China'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_china'
     return result
 
   @lru_cache()
   def forecast_low_med_high_china(self):
-    """ 'TAM Data'!AA479:AC528 """
+    """ SolarPVUtil 'TAM Data'!AA479:AC528 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='China')
     result = self._low_med_high(forecast=self.forecast_data_china(),
         min_max_sd=self.forecast_min_max_sd_china(),
-        tamconfig=self.tamconfig['China'],
-        data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['China'], data_sources=data_sources)
     result.name = 'forecast_low_med_high_china'
     return result
 
   @lru_cache()
   def forecast_trend_china(self, trend=None):
     """Forecast for the 'China' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX484:BZ530     Degree2: 'TAM Data'!CE484:CH530
-       Degree3: 'TAM Data'!CM484:CQ530    Exponential: 'TAM Data'!CV484:CX530
+       Linear: SolarPVUtil 'TAM Data'!BX484:BZ530     Degree2: SolarPVUtil 'TAM Data'!CE484:CH530
+       Degree3: SolarPVUtil 'TAM Data'!CM484:CQ530    Exponential: SolarPVUtil 'TAM Data'!CV484:CX530
     """
     growth = self.tamconfig.loc['growth', 'China']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='China')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['China'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_china().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_china_' + str(trend).lower()
@@ -469,36 +525,41 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_india(self):
-    """ 'TAM Data'!B543:Q592 """
+    """ SolarPVUtil 'TAM Data'!B543:Q592 """
     return self._forecast_data_india
 
   @lru_cache()
   def forecast_min_max_sd_india(self):
-    """ 'TAM Data'!V543:Y592 """
+    """ SolarPVUtil 'TAM Data'!V543:Y592 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='India')
     result = self._min_max_sd(forecast=self.forecast_data_india(),
-        tamconfig=self.tamconfig['India'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['India'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_india'
     return result
 
   @lru_cache()
   def forecast_low_med_high_india(self):
-    """ 'TAM Data'!AA543:AC592 """
+    """ SolarPVUtil 'TAM Data'!AA543:AC592 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='India')
     result = self._low_med_high(forecast=self.forecast_data_india(),
         min_max_sd=self.forecast_min_max_sd_india(),
-        tamconfig=self.tamconfig['India'],
-        data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['India'], data_sources=data_sources)
     result.name = 'forecast_low_med_high_india'
     return result
 
   @lru_cache()
   def forecast_trend_india(self, trend=None):
     """Forecast for the 'India' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX548:BZ594     Degree2: 'TAM Data'!CE548:CH594
-       Degree3: 'TAM Data'!CM548:CQ594    Exponential: 'TAM Data'!CV548:CX594
+       Linear: SolarPVUtil 'TAM Data'!BX548:BZ594     Degree2: SolarPVUtil 'TAM Data'!CE548:CH594
+       Degree3: SolarPVUtil 'TAM Data'!CM548:CQ594    Exponential: SolarPVUtil 'TAM Data'!CV548:CX594
     """
     growth = self.tamconfig.loc['growth', 'India']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='India')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['India'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_india().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_india_' + str(trend).lower()
@@ -506,35 +567,41 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_eu(self):
-    """ 'TAM Data'!B607:Q656 """
+    """ SolarPVUtil 'TAM Data'!B607:Q656 """
     return self._forecast_data_eu
 
   @lru_cache()
   def forecast_min_max_sd_eu(self):
-    """ 'TAM Data'!V607:Y656 """
+    """ SolarPVUtil 'TAM Data'!V607:Y656 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='EU')
     result = self._min_max_sd(forecast=self.forecast_data_eu(),
-        tamconfig=self.tamconfig['EU'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['EU'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_eu'
     return result
 
   @lru_cache()
   def forecast_low_med_high_eu(self):
-    """ 'TAM Data'!AA607:AC656 """
+    """ SolarPVUtil 'TAM Data'!AA607:AC656 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='EU')
     result = self._low_med_high(forecast=self.forecast_data_eu(),
         min_max_sd=self.forecast_min_max_sd_eu(), tamconfig=self.tamconfig['EU'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     result.name = 'forecast_low_med_high_eu'
     return result
 
   @lru_cache()
   def forecast_trend_eu(self, trend=None):
     """Forecast for the 'EU' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX612:BZ658     Degree2: 'TAM Data'!CE612:CH658
-       Degree3: 'TAM Data'!CM612:CQ658    Exponential: 'TAM Data'!CV612:CX658
+       Linear: SolarPVUtil 'TAM Data'!BX612:BZ658     Degree2: SolarPVUtil 'TAM Data'!CE612:CH658
+       Degree3: SolarPVUtil 'TAM Data'!CM612:CQ658    Exponential: SolarPVUtil 'TAM Data'!CV612:CX658
     """
     growth = self.tamconfig.loc['growth', 'EU']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='EU')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['EU'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_eu().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_eu_' + str(trend).lower()
@@ -542,35 +609,41 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
   @lru_cache()
   def forecast_data_usa(self):
-    """ 'TAM Data'!B672:Q721 """
+    """ SolarPVUtil 'TAM Data'!B672:Q721 """
     return self._forecast_data_usa
 
   @lru_cache()
   def forecast_min_max_sd_usa(self):
-    """ 'TAM Data'!V672:Y721 """
+    """ SolarPVUtil 'TAM Data'!V672:Y721 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='USA')
     result = self._min_max_sd(forecast=self.forecast_data_usa(),
-        tamconfig=self.tamconfig['USA'], data_sources=self.tam_ref_data_sources)
+        tamconfig=self.tamconfig['USA'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_usa'
     return result
 
   @lru_cache()
   def forecast_low_med_high_usa(self):
-    """ 'TAM Data'!AA672:AC721 """
+    """ SolarPVUtil 'TAM Data'!AA672:AC721 """
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='USA')
     result = self._low_med_high(forecast=self.forecast_data_usa(),
         min_max_sd=self.forecast_min_max_sd_usa(), tamconfig=self.tamconfig['USA'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     result.name = 'forecast_low_med_high_usa'
     return result
 
   @lru_cache()
   def forecast_trend_usa(self, trend=None):
     """Forecast for the 'USA' region via one of several interpolation algorithms.
-       Linear: 'TAM Data'!BX677:BZ723     Degree2: 'TAM Data'!CE677:CH723
-       Degree3: 'TAM Data'!CM677:CQ723    Exponential: 'TAM Data'!CV677:CX723
+       Linear: SolarPVUtil 'TAM Data'!BX677:BZ723     Degree2: SolarPVUtil 'TAM Data'!CE677:CH723
+       Degree3: SolarPVUtil 'TAM Data'!CM677:CQ723    Exponential: SolarPVUtil 'TAM Data'!CV677:CX723
     """
     growth = self.tamconfig.loc['growth', 'USA']
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
+        region='USA')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['USA'],
-        data_sources=self.tam_ref_data_sources)
+        data_sources=data_sources)
     data = self.forecast_low_med_high_usa().loc[:, growth]
     result = interpolation.trend_algorithm(data=data, trend=trend)
     result.name = 'forecast_trend_usa_' + str(trend).lower()
@@ -589,7 +662,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
        This isn't on the TAM Data tab of the Excel implementation, but is commonly used
        by reference from other tabs. For convenience, we supply it.
-       'Unit Adoption Calculations'!A16:K63
+       SolarPVUtil 'Unit Adoption Calculations'!A16:K63
     """
     result = pd.DataFrame(columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'])
@@ -635,7 +708,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
        This isn't on the TAM Data tab of the Excel implementation, but is commonly used
        by reference from other tabs. For convenience, we supply it.
-       'Unit Adoption Calculations'!A68:K115
+       SolarPVUtil 'Unit Adoption Calculations'!A68:K115
     """
     result = pd.DataFrame(columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'])
