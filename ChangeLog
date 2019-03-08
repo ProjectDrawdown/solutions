@@ -172,3 +172,8 @@ Feb 18 - Feb 22, 2019
   a) subtle difference in rounding
   b) PDS and ref adoption in 2050 calculation
 + write code generation to extract Custom PDS Adoption data.
+
+Feb 25 - Mar 1, 2019
++ Add solution/biogas
++ redo test_excel_integration to read Excel file directly.
+
