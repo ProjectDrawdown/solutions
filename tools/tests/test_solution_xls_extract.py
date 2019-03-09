@@ -1,6 +1,9 @@
 """Tests for solution_xls_extract.py"""
 
+import os.path
+
 import pytest
+import xlrd
 from tools import solution_xls_extract as sx
 
 def test_convert_sr_float():
@@ -9,6 +12,9 @@ def test_convert_sr_float():
   assert sx.convert_sr_float('0.1987') == pytest.approx(0.1987)
   assert sx.convert_sr_float('') == pytest.approx(0.0)
   assert sx.convert_sr_float('12') == pytest.approx(12.0)
+  assert sx.convert_sr_float('20%') == pytest.approx(0.2)
+  s = 'Val:(4.16280354784867E-02) Formula:=0.1263*D144'
+  assert sx.convert_sr_float(s) == pytest.approx(0.0416280354784867)
 
 def test_infer_classname():
   ic = sx.infer_classname
@@ -34,7 +40,7 @@ def test_infer_classname():
   assert ic('WindOnshore_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'WindOnshore'
   assert ic('Drawdown-Utility Scale Solar PV_RRS.ES_v1.1_13Jan2019_PUBLIC') == 'SolarPVUtil'
 
-def test_infer_filename():
+def test_get_filename_for_source():
   expected = {
     "Based on: IEA ETP 2016 6DS": 'ad_based_on_IEA_ETP_2016_6DS.csv',
     "Based on: IEA ETP 2016 - 6DS": 'ad_based_on_IEA_ETP_2016_6DS.csv',
@@ -73,5 +79,10 @@ def test_infer_filename():
       'ad_based_on_Greenpeace_2016_Solar_Thermal_Advanced.csv',
   }
   for key, value in expected.items():
-    inferred = sx.lookup_source_filename(sx.normalize_source_name(key), prefix="ad_")
+    inferred = sx.get_filename_for_source(sx.normalize_source_name(key), prefix="ad_")
     assert inferred == value
+
+
+def test_find_source_data_columns():
+  wb = xlrd.open_workbook(filename=os.path.join('tools', 'tests', 'solution_xls_extract_RRS_test_A.xlsm'))
+  assert sx.find_source_data_columns(wb=wb, sheet_name='Adoption Data', row=44) == 'B:R'

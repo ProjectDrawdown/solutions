@@ -24,13 +24,17 @@ pd.set_option('display.width', 1000)
 def convert_sr_float(val):
   """Return floating point value from Excel ScenarioRecord tab.
 
-     There are two main formats:
+     There are three main formats:
      + simple: 0.182810601365724
+     + percentage: 20%
      + annotated: Val:(0.182810601365724) Formula:='Variable Meta-analysis'!G1411
   """
-  m = re.match(r'Val:\((\d+\.\d+)\) Formula:=', str(val))
+  m = re.match(r'Val:\(([-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?)\) Formula:=', str(val))
   if m:
     return float(m.group(1))
+  if str(val).endswith('%'):
+    (num, _) = str(val).split('%', maxsplit=1)
+    return float(num) / 100.0
   if val == '':
     return 0.0
   return float(val)
@@ -82,6 +86,12 @@ def get_rrs_scenarios(wb):
       assert sr_tab.cell_value(row + 76, 1) == 'General'
       s['npv_discount_rate'] = convert_sr_float(sr_tab.cell_value(row + 77, 4))
 
+      assert sr_tab.cell_value(row + 94, 1) == 'Fuel Emissions'
+      s['conv_fuel_consumed_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 95, 4))
+      s['soln_fuel_efficiency_factor'] = convert_sr_float(sr_tab.cell_value(row + 96, 4))
+      s['conv_fuel_emissions_factor'] = convert_sr_float(sr_tab.cell_value(row + 97, 4))
+      s['soln_fuel_emissions_factor'] = convert_sr_float(sr_tab.cell_value(row + 98, 4))
+
       assert sr_tab.cell_value(row + 103, 1) == 'Direct Emissions'
       s['conv_emissions_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 105, 4))
       s['soln_emissions_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 106, 4))
@@ -89,7 +99,7 @@ def get_rrs_scenarios(wb):
       assert sr_tab.cell_value(row + 111, 1) == 'Indirect Emissions'
       s['conv_indirect_co2_per_unit'] = convert_sr_float(sr_tab.cell_value(row + 112, 4))
       s['soln_indirect_co2_per_iunit'] = convert_sr_float(sr_tab.cell_value(row + 113, 4))
-      i_vs_f = str(sr_tab.cell_value(row + 114, 4)).lower()
+      i_vs_f = str(sr_tab.cell_value(row + 114, 4)).lower().strip()
       s['conv_indirect_co2_is_iunits'] = False if i_vs_f == 'functional' else True
 
       assert sr_tab.cell_value(row + 118, 1) == 'Optional Inputs'
@@ -97,12 +107,12 @@ def get_rrs_scenarios(wb):
       s['ch4_is_co2eq'] = (sr_tab.cell_value(row + 119, 5) == 't CH4-CO2eq per TWh')
       s['n2o_co2_per_twh'] = convert_sr_float(sr_tab.cell_value(row + 120, 4))
       s['n2o_is_co2eq'] = (sr_tab.cell_value(row + 120, 5) == 't N2O-CO2eq per TWh')
-      s['co2eq_conversion_source'] = str(sr_tab.cell_value(row + 121, 4))
+      s['co2eq_conversion_source'] = str(sr_tab.cell_value(row + 121, 4)).strip()
 
       assert sr_tab.cell_value(row + 124, 1) == 'General Climate Inputs'
       s['emissions_use_co2eq'] = convert_bool(sr_tab.cell_value(row + 125, 4))
-      s['emissions_grid_source'] = str(sr_tab.cell_value(row + 126, 4))
-      s['emissions_grid_range'] = str(sr_tab.cell_value(row + 127, 4))
+      s['emissions_grid_source'] = str(sr_tab.cell_value(row + 126, 4)).strip()
+      s['emissions_grid_range'] = str(sr_tab.cell_value(row + 127, 4)).strip()
 
       assert sr_tab.cell_value(row + 135, 1) == 'TAM'
       s['source_until_2014'] = normalize_source_name(str(sr_tab.cell_value(row + 136, 4)))
@@ -110,19 +120,19 @@ def get_rrs_scenarios(wb):
       s['pds_source_post_2014'] = normalize_source_name(str(sr_tab.cell_value(row + 136, 10)))
 
       assert sr_tab.cell_value(row + 163, 1) == 'PDS ADOPTION SCENARIO INPUTS'
-      s['soln_pds_adoption_basis'] = str(sr_tab.cell_value(row + 164, 4))
+      s['soln_pds_adoption_basis'] = str(sr_tab.cell_value(row + 164, 4)).strip()
       s['soln_pds_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 165, 4))
 
       assert sr_tab.cell_value(row + 183, 1) == 'Existing PDS Prognostication Assumptions'
-      adopt = str(sr_tab.cell_value(row + 184, 4))
+      adopt = str(sr_tab.cell_value(row + 184, 4)).strip()
       if adopt: s['soln_pds_adoption_prognostication_source'] = adopt
-      adopt = str(sr_tab.cell_value(row + 185, 4))
+      adopt = str(sr_tab.cell_value(row + 185, 4)).strip()
       if adopt: s['soln_pds_adoption_prognostication_trend'] = adopt
-      adopt = str(sr_tab.cell_value(row + 186, 4))
+      adopt = str(sr_tab.cell_value(row + 186, 4)).strip()
       if adopt: s['soln_pds_adoption_prognostication_growth'] = adopt
 
       assert sr_tab.cell_value(row + 194, 1) == 'Fully Customized PDS'
-      custom = str(sr_tab.cell_value(row + 195, 4))
+      custom = str(sr_tab.cell_value(row + 195, 4)).strip()
       if custom:
         s['soln_pds_adoption_custom_name'] = custom
         if 'soln_pds_adoption_basis' not in s:  # sometimes row 164 is blank
@@ -247,7 +257,10 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['soln_var_oper_cost_per_funit', 'soln_fuel_cost_per_funit'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_fixed_oper_cost_per_iunit'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_var_oper_cost_per_funit', 'conv_fuel_cost_per_funit'], prefix=prefix)
-  oneline(f=f, s=s, names=['conv_fixed_oper_cost_per_iunit'], prefix=prefix, suffix='\n')
+  oneline(f=f, s=s, names=['conv_fixed_oper_cost_per_iunit'], prefix=prefix)
+  oneline(f=f, s=s, names=['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor'], prefix=prefix)
+  oneline(f=f, s=s, names=['conv_fuel_emissions_factor', 'soln_fuel_emissions_factor'],
+      prefix=prefix, suffix='\n')
 
   oneline(f=f, s=s, names=['emissions_grid_source', 'emissions_grid_range'], prefix=prefix)
   oneline(f=f, s=s, names=['emissions_use_co2eq'], prefix=prefix)
@@ -299,11 +312,12 @@ def xli(tab, row, col):
     return '0'
   raise ValueError("Unhandled cell ctype: " + str(cell.ctype) + " at r=" + str(row) + " c=" + str(col))
 
-def write_tam(f, wb):
+def write_tam(f, wb, outputdir):
   """Generate the TAM section of a solution.
      Arguments:
        f - file-like object for output
        wb - an Excel workbook as returned by xlrd
+       outputdir: name of directory to write CSV files to.
   """
   tm_tab = wb.sheet_by_name('TAM Data')
   f.write("    tamconfig_list = [\n")
@@ -336,9 +350,53 @@ def write_tam(f, wb):
   f.write(            xln(tm_tab, 15, 16) + ", " + xln(tm_tab, 18, 16) + ", " + xln(tm_tab, 21, 16) + ", ")
   f.write(            xln(tm_tab, 24, 16) + ", " + xln(tm_tab, 27, 16) + ", " + xln(tm_tab, 30, 16) + ", ")
   f.write(            xln(tm_tab, 33, 16) + ", " + xln(tm_tab, 36, 16) + ", " + xln(tm_tab, 39, 16) + "]]\n")
-  f.write("    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')\n")
-  f.write("    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=rrs.tam_ref_data_sources,\n")
-  f.write("      tam_pds_data_sources=rrs.tam_pds_data_sources)\n")
+  f.write("    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')\n")
+
+  tam_regions = {'World': 44, 'OECD90': 162, 'Eastern Europe': 226,
+      'Asia (Sans Japan)': 289, 'Middle East and Africa': 352, 'Latin America': 415,
+      'China': 478, 'India': 542, 'EU': 606, 'USA': 671}
+  ref_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
+      outputdir=outputdir, prefix='tam_')
+  if ref_sources == rrs.tam_ref_data_sources:
+    arg_ref = 'rrs.tam_ref_data_sources'
+  else:
+    f.write("    tam_ref_data_sources = {\n")
+    for region, cases in ref_sources.items():
+      f.write("      '" + region + "': {\n")
+      for (case, sources) in cases.items():
+        if isinstance(sources, str):
+          f.write("          '" + case + "': str(thisdir.joinpath('" + sources + "')),\n")
+        else:
+          f.write("        '" + case + "': {\n")
+          for (source, filename) in sources.items():
+            f.write("          '" + source + "': str(thisdir.joinpath('" + filename + "')),\n")
+          f.write("        },\n")
+      f.write("      },\n")
+    f.write("    }\n")
+    arg_ref = 'tam_ref_data_sources'
+
+  tam_regions = {'PDS World': 102}
+  pds_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
+      outputdir=outputdir, prefix='tam_pds_')
+  if pds_sources == rrs.tam_pds_data_sources:
+    arg_pds = 'rrs.tam_pds_data_sources'
+  elif pds_sources == rrs.tam_ref_data_sources:
+    arg_pds = 'rrs.tam_ref_data_sources'
+  elif not pds_sources:
+    arg_pds = 'tam_ref_data_sources'
+  else:
+    f.write("    tam_pds_data_sources = {\n")
+    for case in pds_sources.keys():
+      f.write("      '" + case + "': {\n")
+      for source in pds_sources[case]:
+        source = re.sub('\s+', ' ', source).strip()  # remove extra/double spaces
+        f.write("        '" + source + "': str(thisdir.joinpath('" + get_filename_for_source(source, prefix='custom_tam_') + "')),\n")
+      f.write("      },\n")
+    f.write("    }\n")
+    arg_pds = 'tam_pds_data_sources'
+
+  f.write("    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=" + arg_ref + ",\n")
+  f.write("      tam_pds_data_sources=" + arg_pds + ")\n")
   f.write("    ref_tam_per_region=self.tm.ref_tam_per_region()\n")
   f.write("    pds_tam_per_region=self.tm.pds_tam_per_region()\n")
   f.write("\n")
@@ -358,7 +416,7 @@ def normalize_source_name(sourcename):
      +-------------------+-------------------+-----------------------------+---------+
      | source1 | source2 | source3 | source4 | source5 | source6 | source7 | source8 |
 
-     OECD90 
+     OECD90
      +-------------------+-------------------+-----------------------------+---------+
      |   Baseline Cases  |  Ambitious Cases  |     Conservative Cases      |100% REN |
      +-------------------+-------------------+-----------------------------+---------+
@@ -369,13 +427,15 @@ def normalize_source_name(sourcename):
     'Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
     'Based on Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
     'Based on Greenpeace 2015 Reference': 'Based on: Greenpeace 2015 Reference',
+    'Drawdown TAM: Baseline Cases': 'Baseline Cases',
+    'Drawdown TAM: Conservative Cases': 'Conservative Cases',
+    'Drawdown TAM: Ambitious Cases': 'Ambitious Cases',
+    'Drawdown TAM: Maximum Cases': 'Maximum Cases',
     }
   normalized = sourcename.replace("'", "").strip()
   if normalized in special_cases:
     return special_cases[normalized]
-  if re.search(normalized, '\[Source \d+'):
-    return None
-  if re.search(normalized, 'Drawdown TAM: \[Source \d+'):
+  if re.search('\[Source \d+', sourcename):
     return None
 
   name = re.sub(r"[\[\]]", "", sourcename.upper())  # [R]evolution to REVOLUTION
@@ -427,7 +487,17 @@ def normalize_source_name(sourcename):
   return normalized
 
 
-def lookup_source_filename(sourcename, prefix=''):
+def normalize_case_name(name):
+  rewrites = {
+    'Drawdown TAM: Baseline Cases': 'Baseline Cases',
+    'Drawdown TAM: Conservative Cases': 'Conservative Cases',
+    'Drawdown TAM: Ambitious Cases': 'Ambitious Cases',
+    'Drawdown TAM: Maximum Cases': 'Maximum Cases',
+    }
+  return rewrites.get(name, name)
+
+
+def get_filename_for_source(sourcename, prefix=''):
   """Return string to use for the filename for known sources."""
   if re.search(r'\[Source \d+', sourcename):
     return None
@@ -438,7 +508,7 @@ def lookup_source_filename(sourcename, prefix=''):
   filename = re.sub(r"\s+", '_', filename)
   filename = re.sub(r"\.+", '_', filename)
   filename = filename.replace('Based_on_', 'based_on_')
-  return prefix + filename + '.csv'
+  return prefix + filename[0:64] + '.csv'
 
 
 def write_ad(f, wb):
@@ -471,7 +541,7 @@ def write_ad(f, wb):
   f.write(            xln(a, 18, 16) + ", " + xln(a, 21, 16) + ", " + xln(a, 24, 16) + ", ")
   f.write(            xln(a, 27, 16) + ", " + xln(a, 30, 16) + ", " + xln(a, 33, 16) + ", ")
   f.write(            xln(a, 36, 16) + ", " + xln(a, 39, 16) + "]]\n")
-  f.write("    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')\n")
+  f.write("    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')\n")
   sources = extract_sources(wb_tab=wb.sheet_by_name('Adoption Data'),
       lines=[43, 103, 167, 230, 293, 356, 419, 483, 547, 612])
   f.write("    ad_data_sources = {\n")
@@ -481,7 +551,7 @@ def write_ad(f, wb):
       if not source:
         continue
       source = re.sub('\s+', ' ', source).strip()  # remove extra/double spaces
-      filename = lookup_source_filename(source, prefix="ad_")
+      filename = get_filename_for_source(source, prefix="ad_")
       if filename:
         f.write("        '" + source + "': str(thisdir.joinpath('" + filename + "')),\n")
     f.write("      },\n")
@@ -685,70 +755,79 @@ def extract_sources(wb_tab, lines):
         case = wb_tab.cell(line, col).value
         l = sources.get(case, list())
       new_source = normalize_source_name(wb_tab.cell(line+1, col).value)
-      if new_source not in l:
+      if new_source is not None and new_source not in l:
         l.append(new_source)
         sources[case] = l
   return sources
 
 
-def extract_adoption_data(wb, outputdir):
-  """Create CSV files for Adoption Data.
+def find_source_data_columns(wb, sheet_name, row):
+  """Figure out which columns in Adoption Data (and similar tabs) should be extracted.
      Arguments:
        wb: Excel workbook
-       outputdir: name of directory to write CSV files to.
-     Returns: dict of {'source name': 'filename'} mappings
+       sheet_name: name of the spreadsheet tab like "Adoption Data" or "Fresh Adoption Data"
+       row: row number to check
+     Returns:
+       The string of Excel columns to use, like 'B:R'
   """
-  world = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=44, nrows=49)
-  world.name = 'World'
-  world.rename(columns=normalize_source_name, inplace=True)
-  oecd90 = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=104, nrows=49)
-  oecd90.name = 'OECD90'
-  oecd90.rename(columns=normalize_source_name, inplace=True)
-  eastern_europe = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=168, nrows=49)
-  eastern_europe.name ='Eastern Europe'
-  eastern_europe.rename(columns=normalize_source_name, inplace=True)
-  asia_sans_japan = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=231, nrows=49)
-  asia_sans_japan.name = 'Asia (Sans Japan)'
-  asia_sans_japan.rename(columns=normalize_source_name, inplace=True)
-  middle_east_and_africa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=294, nrows=49)
-  middle_east_and_africa.name = 'Middle East and Africa'
-  middle_east_and_africa.rename(columns=normalize_source_name, inplace=True)
-  latin_america = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=357, nrows=49)
-  latin_america.name = 'Latin America'
-  latin_america.rename(columns=normalize_source_name, inplace=True)
-  china = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=420, nrows=49)
-  china.name = 'China'
-  china.rename(columns=normalize_source_name, inplace=True)
-  india = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=484, nrows=49)
-  india.name = 'India'
-  india.rename(columns=normalize_source_name, inplace=True)
-  eu = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=548, nrows=49)
-  eu.name = 'EU'
-  eu.rename(columns=normalize_source_name, inplace=True)
-  usa = pd.read_excel(wb, engine='xlrd', sheet_name='Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=613, nrows=49)
-  usa.name = 'USA'
-  usa.rename(columns=normalize_source_name, inplace=True)
+  ad_tab = wb.sheet_by_name(sheet_name)
+  for col in range(2, ad_tab.ncols):
+    if ad_tab.cell(row, col).value == 'Functional Unit':
+      break
+  return 'B:' + chr(ord('A') + col - 1)
+
+
+def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
+  """Pull the names of sources, by case, from the Excel file and write data to CSV.
+     Arguments:
+       wb: Excel workbook
+       sheet_name: name of the Excel tab to go to, like 'Adoption Data' or 'TAM Data'
+       regions: a dict of regions to extract and the line numbers they start at:
+         { 'World': 44, 'OECD90': 104, 'Eastern Europe': 168 ...}
+       outputdir: name of directory to write CSV files to.
+       prefix: prefix for filenames like 'ad_' or 'tam_'
+
+     Returns: a dict of category keys, containing lists of source names.
+
+     Parsing the data sources can be messy: the number of sources within each category
+     varies between solutions, and even the names of the cases can vary. Most solutions have
+     Baseline/Ambitious/Conservative, but we're not sure that all do, and the final most
+     aggressive case varies in names like "100% REN" (renewables) or "Maximum Cases".
+     +-------------------+-------------------+-----------------------------+---------+
+     |   Baseline Cases  |  Ambitious Cases  |     Conservative Cases      |100% REN |
+     +-------------------+-------------------+-----------------------------+---------+
+     | source1 | source2 | source3 | source4 | source5 | source6 | source7 | source8 | Functional Unit
+
+     The category label like "Baseline Cases" is a merged cell one, two, three, or more cells
+     across. In xlrd, the first cell contains the string and the subsequent cells are ctype
+     XL_CELL_EMPTY. They have a border, but at the time of this writing xlrd does not extract
+     styling information like borders from xlsx/xlsm files (only the classic Excel file format).
+  """
+  region_data = {}
+  for (region, skiprows) in regions.items():
+    usecols = find_source_data_columns(wb=wb, sheet_name=sheet_name, row=skiprows)
+    df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name, header=0,
+        index_col=0, usecols=usecols, skiprows=skiprows, nrows=49)
+    df.name = region
+    df.rename(columns=normalize_source_name, inplace=True)
+    region_data[region] = df
 
   sources = {}
-  for region in [world, oecd90, eastern_europe, asia_sans_japan, middle_east_and_africa,
-      latin_america, china, india, eu, usa]:
-    for source_name in region.columns:
-      sources[source_name] = ''
+  for df in region_data.values():
+    for source_name in df.columns:
+      if source_name is not None:
+        sources[source_name] = ''
 
   for source_name in sources:
     if not source_name:
       continue
-    filename = lookup_source_filename(source_name, prefix='ad_')
-    df_nan = pd.Series(np.nan, index=world.index)
-    df = pd.concat({
-      'World': world.get(source_name, df_nan), 'OECD90': oecd90.get(source_name, df_nan),
-      'Eastern Europe': eastern_europe.get(source_name, df_nan),
-      'Asia (Sans Japan)': asia_sans_japan.get(source_name, df_nan),
-      'Middle East and Africa': middle_east_and_africa.get(source_name, df_nan),
-      'Latin America': latin_america.get(source_name, df_nan),
-      'China': china.get(source_name, df_nan), 'India': india.get(source_name, df_nan),
-      'EU': eu.get(source_name, df_nan), 'USA': usa.get(source_name, df_nan)},
-      axis=1)
+    df = pd.DataFrame()
+    for region in region_data.keys():
+      if source_name in region_data[region].columns:
+        df[region] = region_data[region].loc[:, source_name]
+      else:
+        df[region] = np.nan
+    filename = get_filename_for_source(source_name, prefix=prefix)
     if df.empty or not filename:
       continue
     df.index = df.index.astype(int)
@@ -763,10 +842,48 @@ def extract_adoption_data(wb, outputdir):
     # data at that location.
     df.replace(to_replace=0.0, value=np.nan, inplace=True)
     outputfile = os.path.join(outputdir, filename)
-    df[['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-      'Latin America', 'China', 'India', 'EU', 'USA']].to_csv(outputfile, header=True)
+    df.to_csv(outputfile, header=True)
     sources[source_name] = filename
-  return sources
+
+  tmp_cases = {}
+  tab = wb.sheet_by_name(sheet_name)
+  for (region, line) in regions.items():
+    case = ''
+    for col in range(2, tab.ncols):
+      if tab.cell(line, col).value == 'Functional Unit':
+        break
+      if tab.cell(line-1, col).ctype != xlrd.XL_CELL_EMPTY:
+        case = normalize_case_name(tab.cell(line-1, col).value)
+      source_name = normalize_source_name(tab.cell(line, col).value)
+      filename = sources.get(source_name, None)
+      if source_name is not None and filename is not None:
+        key = 'Region: ' + region
+        region_cases = tmp_cases.get(key, dict())
+        tmp_cases[key] = region_cases
+        s = region_cases.get(case, dict())
+        if source_name not in s:
+          s[source_name] = filename
+          region_cases[case] = s
+
+  # suppress regions which are identical to World.
+  if 'Region: World' in tmp_cases:
+    world = tmp_cases['Region: World']
+    del tmp_cases['Region: World']
+    cases = world.copy()
+    for (region, values) in tmp_cases.items():
+      if values != world:
+        cases[region] = values
+  else:
+    cases = tmp_cases
+  return cases
+
+
+def extract_adoption_data(wb, outputdir):
+  adoption_regions = {'World': 44, 'OECD90': 104, 'Eastern Europe': 168, 'Asia (Sans Japan)': 231,
+      'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484, 'EU': 548,
+      'USA': 613}
+  return extract_source_data(wb=wb, sheet_name='Adoption Data', regions=adoption_regions,
+      outputdir=outputdir, prefix='ad_')
 
 
 def extract_fresh_adoption_data(wb, outputdir):
@@ -779,7 +896,9 @@ def extract_fresh_adoption_data(wb, outputdir):
   if 'Fresh Adoption Data' not in wb.sheets():
     return
 
-  world = pd.read_excel(wb, engine='xlrd', sheet_name='Fresh Adoption Data', header=0, index_col=0, usecols="B:R", skiprows=5, nrows=49)
+  usecols = find_source_data_columns(wb=wb, sheet_name='Fresh Adoption Data')
+  world = pd.read_excel(wb, engine='xlrd', sheet_name='Fresh Adoption Data', header=0,
+      index_col=0, usecols=usecols, skiprows=5, nrows=49)
   world.name = 'World'
 
   sources = {}
@@ -788,7 +907,7 @@ def extract_fresh_adoption_data(wb, outputdir):
     if ad_tab.cell(5, col).value == 'Functional Unit':
       break
     source_name = ad_tab.cell(5, col).value
-    filename = lookup_source_filename(source_name, prefix='ad_')
+    filename = get_filename_for_source(source_name, prefix='ad_')
     df_nan = pd.Series(np.nan, index=world.index)
     df = pd.concat({'World': world[source_name], 'OECD90': df_nan,
       'Eastern Europe': df_nan, 'Asia (Sans Japan)': df_nan,
@@ -829,10 +948,10 @@ def extract_custom_adoption(wb, outputdir):
     name = str(custom_ad_tab.cell(row, 14).value)
     includestr = str(custom_ad_tab.cell_value(row, 18))
     include = convert_bool(includestr) if includestr else False
-    filename = lookup_source_filename(name, prefix='custom_ad_')
+    filename = get_filename_for_source(name, prefix='custom_ad_')
     if not filename:
       continue
-    skip = True 
+    skip = True
     for row in range(0, custom_ad_tab.nrows):
       if str(custom_ad_tab.cell(row, 1).value) == name:
         df = pd.read_excel(wb, engine='xlrd', sheet_name='Custom PDS Adoption',
@@ -899,20 +1018,9 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
   f.write("\n")
 
-  is_custom_adoption = False
-  is_default_adoption = False
-  for s in scenarios.values():
-    basis = s.get('soln_pds_adoption_basis', '')
-    if basis == 'Fully Customized PDS':
-      is_custom_adoption = True
-    if basis == 'Existing Adoption Prognostications':
-      is_default_adoption = True
-  assert is_custom_adoption or is_default_adoption
-  assert not (is_custom_adoption and is_default_adoption)
-
   if has_tam:
     f.write('from model import tam\n')
-  
+
   f.write('scenarios = {\n')
   for name, s in scenarios.items():
     prefix = '  '
@@ -933,13 +1041,11 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write("    self.ac = scenarios[scenario]\n")
   f.write("\n")
   if has_tam:
-    write_tam(f=f, wb=wb)
-  if is_default_adoption:
-    extract_adoption_data(wb=wb, outputdir=outputdir)
-    extract_fresh_adoption_data(wb=wb, outputdir=outputdir)
-    write_ad(f=f, wb=wb)
-  if is_custom_adoption:
-    write_custom_ad(f=f, wb=wb, outputdir=outputdir)
+    write_tam(f=f, wb=wb, outputdir=outputdir)
+  extract_adoption_data(wb=wb, outputdir=outputdir)
+  extract_fresh_adoption_data(wb=wb, outputdir=outputdir)
+  write_ad(f=f, wb=wb)
+  #write_custom_ad(f=f, wb=wb, outputdir=outputdir)
   write_ht(f=f, wb=wb)
   f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
   f.write("\n")
@@ -973,6 +1079,7 @@ def infer_classname(filename):
       ('CHP_A_', 'CoGenElectricity'),
       ('CHP_B_', 'CoGenHeat'),
       ('CSP_', 'ConcentratedSolar'),
+      ('High Efficient Heat Pumps', 'HeatPumps'),
       ('Instream Hydro', 'InstreamHydro'),
       ('Large Biodigesters', 'Biogas'),
       ('MicroWind Turbines', 'MicroWind'),
@@ -991,7 +1098,7 @@ def infer_classname(filename):
   for (pattern, classname) in special_cases:
     if pattern.replace(' ', '').lower() in filename.replace(' ', '').lower():
       return classname
-  namelist = re.split('[_-]', os.path.basename(filename))
+  namelist = re.split('[(_-]', os.path.basename(filename))
   if namelist[0] == 'Drawdown':
     namelist.pop(0)
   return namelist[0].replace(' ', '')

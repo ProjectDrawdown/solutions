@@ -27,6 +27,7 @@ xlwings = pytest.importorskip("xlwings")
 from solution import biogas
 from solution import biomass
 from solution import concentratedsolar
+from solution import improvedcookstoves
 from solution import landfillmethane
 from solution import microwind
 from solution import offshorewind
@@ -194,6 +195,90 @@ def verify_tam_data(obj, verify=None):
       ]
   return verify
 
+def verify_tam_data_eleven_sources(obj, verify=None):
+  """Verified tables in TAM Data, with smaller source data area.
+
+     Some solutions, first noticed with ImprovedCookStoves, have a smaller set of
+     columns to hold data sources and this shifts all of the rest of the columns to
+     the left. This test specifies the columns for this narrower layout.
+  """
+  if verify is None:
+    verify = {}
+  verify['TAM Data'] = [
+      ('S46:U94', obj.tm.forecast_min_max_sd_global().reset_index(drop=True)),
+      ('W46:Y94', obj.tm.forecast_low_med_high_global().reset_index(drop=True)),
+      ('BT50:BV96', obj.tm.forecast_trend_global(trend='Linear').reset_index(drop=True)),
+      ('CA50:CD96', obj.tm.forecast_trend_global(trend='Degree2').reset_index(drop=True)),
+      ('CI50:CM96', obj.tm.forecast_trend_global(trend='Degree3').reset_index(drop=True)),
+      ('CR50:CT96', obj.tm.forecast_trend_global(trend='Exponential').reset_index(drop=True)),
+      #('DV45:DW91', obj.tm.forecast_trend_global().reset_index().loc[:, ['Year', 'adoption']]), first year differs
+      # TODO Figure out PDS TAM handling
+      ('S164:U212', obj.tm.forecast_min_max_sd_oecd90().reset_index(drop=True)),
+      ('W164:Y212', obj.tm.forecast_low_med_high_oecd90().reset_index(drop=True)),
+      ('BT168:BV214', obj.tm.forecast_trend_oecd90(trend='Linear').reset_index(drop=True)),
+      ('CA168:CD214', obj.tm.forecast_trend_oecd90(trend='Degree2').reset_index(drop=True)),
+      ('CI168:CM214', obj.tm.forecast_trend_oecd90(trend='Degree3').reset_index(drop=True)),
+      ('CR168:CT214', obj.tm.forecast_trend_oecd90(trend='Exponential').reset_index(drop=True)),
+      #('DV163:DW209', obj.tm.forecast_trend_oecd90().reset_index().loc[:, ['Uear', 'adoption']]), first year differs
+      ('S228:U276', obj.tm.forecast_min_max_sd_eastern_europe().reset_index(drop=True)),
+      ('W228:Y276', obj.tm.forecast_low_med_high_eastern_europe().reset_index(drop=True)),
+      ('BT232:BV278', obj.tm.forecast_trend_eastern_europe(trend='Linear').reset_index(drop=True)),
+      ('CA232:CD278', obj.tm.forecast_trend_eastern_europe(trend='Degree2').reset_index(drop=True)),
+      ('CI232:CM278', obj.tm.forecast_trend_eastern_europe(trend='Degree3').reset_index(drop=True)),
+      ('CR232:CT278', obj.tm.forecast_trend_eastern_europe(trend='Exponential').reset_index(drop=True)),
+      #('DV227:DW273', obj.tm.forecast_trend_eastern_europe().reset_index().loc[:, ['Uear', 'adoption']]), first year differs
+      ('S291:U339', obj.tm.forecast_min_max_sd_asia_sans_japan().reset_index(drop=True)),
+      ('W291:Y339', obj.tm.forecast_low_med_high_asia_sans_japan().reset_index(drop=True)),
+      ('BT295:BV341', obj.tm.forecast_trend_asia_sans_japan(trend='Linear').reset_index(drop=True)),
+      ('CA295:CD341', obj.tm.forecast_trend_asia_sans_japan(trend='Degree2').reset_index(drop=True)),
+      ('CI295:CM341', obj.tm.forecast_trend_asia_sans_japan(trend='Degree3').reset_index(drop=True)),
+      ('CR295:CT341', obj.tm.forecast_trend_asia_sans_japan(trend='Exponential').reset_index(drop=True)),
+      #('DV290:DW336', obj.tm.forecast_trend_asia_sans_japan().reset_index().loc[:, ['Uear', 'adoption']]), first year differs
+      ('S354:U402', obj.tm.forecast_min_max_sd_middle_east_and_africa().reset_index(drop=True)),
+      ('W354:Y402', obj.tm.forecast_low_med_high_middle_east_and_africa().reset_index(drop=True)),
+      ('BT358:BV404', obj.tm.forecast_trend_middle_east_and_africa(trend='Linear').reset_index(drop=True)),
+      ('CA358:CD404', obj.tm.forecast_trend_middle_east_and_africa(trend='Degree2').reset_index(drop=True)),
+      ('CI358:CM404', obj.tm.forecast_trend_middle_east_and_africa(trend='Degree3').reset_index(drop=True)),
+      ('CR358:CT404', obj.tm.forecast_trend_middle_east_and_africa(trend='Exponential').reset_index(drop=True)),
+      #('DV353:DW399', obj.tm.forecast_trend_middle_east_and_africa().reset_index().loc[:, ['Uear', 'adoption']]), first year differs
+      ('S417:U465', obj.tm.forecast_min_max_sd_latin_america().reset_index(drop=True)),
+      ('W417:Y465', obj.tm.forecast_low_med_high_latin_america().reset_index(drop=True)),
+      ('BT421:BV467', obj.tm.forecast_trend_latin_america(trend='Linear').reset_index(drop=True)),
+      ('CA421:CD467', obj.tm.forecast_trend_latin_america(trend='Degree2').reset_index(drop=True)),
+      ('CI421:CM467', obj.tm.forecast_trend_latin_america(trend='Degree3').reset_index(drop=True)),
+      ('CR421:CT467', obj.tm.forecast_trend_latin_america(trend='Exponential').reset_index(drop=True)),
+      #('DV416:DW465', obj.tm.forecast_trend_latin_america().reset_index().loc[:, ['Uear', 'adoption']]), first year differs
+      ('S480:U528', obj.tm.forecast_min_max_sd_china().reset_index(drop=True)),
+      ('W480:Y528', obj.tm.forecast_low_med_high_china().reset_index(drop=True)),
+      ('BT484:BV530', obj.tm.forecast_trend_china(trend='Linear').reset_index(drop=True)),
+      ('CA484:CD530', obj.tm.forecast_trend_china(trend='Degree2').reset_index(drop=True)),
+      ('CI484:CM530', obj.tm.forecast_trend_china(trend='Degree3').reset_index(drop=True)),
+      ('CR484:CT530', obj.tm.forecast_trend_china(trend='Exponential').reset_index(drop=True)),
+      #('DV479:DW525', obj.tm.forecast_trend_china().reset_index().loc[:, ['Uear', 'adoption']]), first year differs
+      ('S544:U592', obj.tm.forecast_min_max_sd_india().reset_index(drop=True)),
+      ('W544:Y592', obj.tm.forecast_low_med_high_india().reset_index(drop=True)),
+      ('BT548:BV594', obj.tm.forecast_trend_india(trend='Linear').reset_index(drop=True)),
+      ('CA548:CD594', obj.tm.forecast_trend_india(trend='Degree2').reset_index(drop=True)),
+      ('CI548:CM594', obj.tm.forecast_trend_india(trend='Degree3').reset_index(drop=True)),
+      ('CR548:CT594', obj.tm.forecast_trend_india(trend='Exponential').reset_index(drop=True)),
+      #('DV543:DW591', obj.tm.forecast_trend_india().reset_index().loc[:, ['Uear', 'adoption']]), first year differs
+      ('S608:U656', obj.tm.forecast_min_max_sd_eu().reset_index(drop=True)),
+      ('W608:Y656', obj.tm.forecast_low_med_high_eu().reset_index(drop=True)),
+      ('BT612:BV658', obj.tm.forecast_trend_eu(trend='Linear').reset_index(drop=True)),
+      ('CA612:CD658', obj.tm.forecast_trend_eu(trend='Degree2').reset_index(drop=True)),
+      ('CI612:CM658', obj.tm.forecast_trend_eu(trend='Degree3').reset_index(drop=True)),
+      ('CR612:CT658', obj.tm.forecast_trend_eu(trend='Exponential').reset_index(drop=True)),
+      #('DV607:DW653', obj.tm.forecast_trend_eu().reset_index().loc[:, ['Uear', 'adoption']]), first year differs
+      ('S673:U721', obj.tm.forecast_min_max_sd_usa().reset_index(drop=True)),
+      ('W673:Y721', obj.tm.forecast_low_med_high_usa().reset_index(drop=True)),
+      ('BT677:BV723', obj.tm.forecast_trend_usa(trend='Linear').reset_index(drop=True)),
+      ('CA677:CD723', obj.tm.forecast_trend_usa(trend='Degree2').reset_index(drop=True)),
+      ('CI677:CM723', obj.tm.forecast_trend_usa(trend='Degree3').reset_index(drop=True)),
+      ('CR677:CT723', obj.tm.forecast_trend_usa(trend='Exponential').reset_index(drop=True)),
+      #('DV672:DW718', obj.tm.forecast_trend_usa().reset_index().loc[:, ['Uear', 'adoption']]), first year differs
+      ]
+  return verify
+
 
 def verify_adoption_data(obj, verify=None):
   """Verified tables in Adoption Data."""
@@ -270,6 +355,27 @@ def verify_adoption_data(obj, verify=None):
       ('CN619:CR665', obj.ad.adoption_trend_usa(trend='Degree3').reset_index(drop=True)),
       ('CW619:CY665', obj.ad.adoption_trend_usa(trend='Exponential').reset_index(drop=True)),
       #('EA614:EB660', obj.ad.adoption_trend_usa().reset_index().loc[:, ['Year', 'adoption']]),
+      ]
+  return verify
+
+
+def verify_adoption_data_eleven_sources(obj, verify=None):
+  """Verified tables in Adoption Data.
+
+     Some solutions, first noticed with ImprovedCookStoves, have a smaller set of
+     columns to hold data sources and this shifts all of the rest of the columns to
+     the left. This test specifies the columns for this narrower layout.
+  """
+  if verify is None:
+    verify = {}
+  verify['Adoption Data'] = [
+      ('S46:U94', obj.ad.adoption_min_max_sd_global().reset_index(drop=True)),
+      ('W46:Y94', obj.ad.adoption_low_med_high_global().reset_index(drop=True)),
+      ('BT50:BV96', obj.ad.adoption_trend_global(trend='Linear').reset_index(drop=True)),
+      ('CA50:CD96', obj.ad.adoption_trend_global(trend='Degree2').reset_index(drop=True)),
+      ('CI50:CM96', obj.ad.adoption_trend_global(trend='Degree3').reset_index(drop=True)),
+      ('CR50:CT96', obj.ad.adoption_trend_global(trend='Exponential').reset_index(drop=True)),
+      #('DV45:DW91', obj.ad.adoption_trend_global().reset_index().loc[:, ['Year', 'adoption']]),
       ]
   return verify
 
@@ -427,9 +533,9 @@ def energy_solution_verify_list(obj):
   verify = {}
   verify_tam_data(obj, verify)
   verify_adoption_data(obj, verify)
-  verify_unit_adoption_calculations(obj, verify)
   verify_helper_tables(obj, verify)
   verify_emissions_factors(obj, verify)
+  verify_unit_adoption_calculations(obj, verify)
   verify_first_cost(obj, verify)
   verify_operating_cost(obj, verify)
   verify_co2_calcs(obj, verify)
@@ -530,6 +636,43 @@ def test_ConcentratedSolar_RRS_ELECGEN(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('improvedcookstoves', 'testdata', 'Drawdown-Improved Cook Stoves (ICS)_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
+  """Test for Excel model file ImprovedCookStoves."""
+  workbook = start_excel
+  for scenario in improvedcookstoves.scenarios.keys():
+    obj = improvedcookstoves.ImprovedCookStoves(scenario=scenario)
+    verify = {}
+    verify_tam_data_eleven_sources(obj, verify)
+    if obj.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+      verify_adoption_data_eleven_sources(obj, verify)
+    verify_unit_adoption_calculations(obj, verify)
+    verify_helper_tables(obj, verify)
+    verify_emissions_factors(obj, verify)
+    verify_first_cost(obj, verify)
+    verify_operating_cost(obj, verify)
+    verify['CO2 Calcs'] = [
+        ('A10:K55', obj.c2.co2_mmt_reduced().loc[2015:].reset_index()),
+        ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index()),
+        ('A120:AW165', obj.c2.co2_ppm_calculator().loc[2015:].reset_index()),
+        ('A172:F217', obj.c2.co2eq_ppm_calculator().loc[2015:].reset_index()),
+        ('A235:K280', obj.c2.co2_reduced_grid_emissions().loc[2015:].reset_index()),
+        ('R235:AB280', obj.c2.co2_replaced_grid_emissions().loc[2015:].reset_index()),
+        ('AI235:AS280', obj.c2.co2_increased_grid_usage_emissions().loc[2015:].reset_index()),
+        ('A289:K334', obj.c2.co2eq_reduced_grid_emissions().loc[2015:].reset_index()),
+        ('R289:AB334', obj.c2.co2eq_replaced_grid_emissions().loc[2015:].reset_index()),
+        ('AI289:AS334', obj.c2.co2eq_increased_grid_usage_emissions().loc[2015:].reset_index()),
+        ('A345:K390', obj.c2.co2eq_direct_reduced_emissions().loc[2015:].reset_index()),
+        # last two blocks are shifted compared with other solutions.
+        ('R345:AB390', obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index()),
+        ('AM345:AW390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index()),
+        ]
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('landfillmethane', 'testdata', 'LandfillMethane_RRS_ELECGEN_v1.1c_24Oct18.xlsm'))],
     indirect=True)
 @pytest.mark.skip(reason="need to resolve Unit Adoption Calculations W252 and X252")
@@ -590,7 +733,7 @@ def test_OnshoreWind_RRS_ELECGEN(start_excel, tmpdir):
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('silvopasture', 'testdata', 'Silvopasture_L-Use_v1.1a_3Aug18.xlsm'))],
     indirect=True)
-def test_Silvopasture(start_excel, tmpdir):
+def test_Silvopasture_LAND_USE(start_excel, tmpdir):
   """Test for Excel model file Silvopasture_L-Use*."""
   workbook = start_excel
   for scenario in silvopasture.scenarios.keys():

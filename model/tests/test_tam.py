@@ -583,9 +583,69 @@ def test_pds_tam_per_region_no_pds_sources():
       skipinitialspace=True, comment='#')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_regional_data_source_lists():
+  data_sources = {
+    'Region: China': {
+      # These are the Ambitious Cases from the World region in SolarPVUtil,
+      # repurposed here to be the Baseline Cases for the China region.
+      'Baseline Cases': {
+        'Ambitious: Based on- IEA ETP 2016 2DS': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_IEA_ETP_2016_2DS.csv')),
+        'Ambitious: Based on- AMPERE MESSAGE-MACRO 450': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv')),
+        'Ambitious: Based on- AMPERE GEM E3 450': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_450.csv')),
+        'Ambitious: Based on- AMPERE IMAGE/TIMER 450': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv')),
+        'Ambitious: Based on- Greenpeace Energy [R]evolution': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_Greenpeace_2015_Energy_Revolution.csv')),
+        },
+      },
+    'Region: India': {
+      # These are the Conservative Cases from the World region in SolarPVUtil,
+      # repurposed here to be the Baseline Cases for the India region.
+      'Baseline Cases': {
+        'Conservative: Based on- IEA ETP 2016 4DS': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_IEA_ETP_2016_4DS.csv')),
+        'Conservative: Based on- AMPERE MESSAGE-MACRO 550': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv')),
+        'Conservative: Based on- AMPERE GEM E3 550': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_550.csv')),
+        'Conservative: Based on- AMPERE IMAGE/TIMER 550': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv')),
+        'Conservative: Based on- Greenpeace 2015 Reference': str(basedir.joinpath(
+          'data', 'energy', 'tam_based_on_Greenpeace_2015_Reference.csv')),
+        },
+      },
+    'Baseline Cases': {
+      'Baseline: Based on- IEA ETP 2016 6DS': str(basedir.joinpath(
+        'data', 'energy', 'tam_based_on_IEA_ETP_2016_6DS.csv')),
+      'Baseline: Based on- AMPERE MESSAGE-MACRO Reference': str(basedir.joinpath(
+        'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
+      'Baseline: Based on- AMPERE GEM E3 Reference': str(basedir.joinpath(
+        'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
+      'Baseline: Based on- AMPERE IMAGE/TIMER Reference': str(basedir.joinpath(
+        'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
+      },
+  }
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
+  result = tm.ref_tam_per_region()
+  assert result.loc[2059, 'World'] == pytest.approx(62446.806691)
+  # value comes from SolarPVUtil OECD90 with all non-Baseline sources deleted.
+  assert result.loc[2059, 'OECD90'] == pytest.approx(13230.328039)
+  # value comes from SolarPVUtil Eastern Europe with all non-Baseline sources deleted.
+  assert result.loc[2059, 'Eastern Europe'] == pytest.approx(3225.134047)
+  # value comes from SolarPVUtil China with all non-Ambitious sources deleted.
+  # value for the original Baseline Souces would be 11342.46.
+  assert result.loc[2059, 'China'] == pytest.approx(11030.901249)
+  # value comes from SolarPVUtil India with all non-Conservative sources deleted.
+  # value for the original Baseline Souces would be 8529.66.
+  assert result.loc[2059, 'India'] == pytest.approx(8039.649164)
 
-# 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES', source_after_2014='Baseline Cases',
-# low_sd=1.0, high_sd=1.0
+
+# SolarPVUtil 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES',
+# source_after_2014='Baseline Cases', low_sd=1.0, high_sd=1.0
 forecast_min_max_sd_global_list = [['Min', 'Max', 'S.D'],
     [21534.00000000000, 21534.00000000000, 0.00000000000],
     [22203.00000000000, 22203.00000000000, 0.00000000000],
@@ -637,7 +697,7 @@ forecast_min_max_sd_global_list = [['Min', 'Max', 'S.D'],
     [47664.45901828620, 83875.89923369700, 10141.20924865940],
     [48296.23338953970, 85474.02526601050, 10511.83117785760]]
 
-# 'TAM Data'!AA46:AC94
+# SolarPVUtil 'TAM Data'!AA46:AC94
 forecast_low_med_high_global_list = [['Low', 'Medium', 'High'],
     [21534.00000000000, 21534.00000000000, 21534.00000000000],
     [22203.00000000000, 22203.00000000000, 22203.00000000000],
@@ -689,7 +749,7 @@ forecast_low_med_high_global_list = [['Low', 'Medium', 'High'],
     [52201.24793411850, 62342.45718277790, 72483.66643143730],
     [52660.65083506330, 63172.48201292090, 73684.31319077850]]
 
-# 'TAM Data'!AA46:AC94 with B35='Ambitious: Based on- IEA ETP 2016 2DS', B25=2.0, B24=3.0
+# SolarPVUtil 'TAM Data'!AA46:AC94 with B35='Ambitious: Based on- IEA ETP 2016 2DS', B25=2.0, B24=3.0
 forecast_low_med_high_global_larger_list = [['Low', 'Medium', 'High'],
     [21534.00000000000, 21534.00000000000, 21534.00000000000],
     [22203.00000000000, 22203.00000000000, 22203.00000000000],
@@ -741,7 +801,7 @@ forecast_low_med_high_global_larger_list = [['Low', 'Medium', 'High'],
     [27868.79263012730, 47664.45901828620, 77357.95860052450],
     [27581.20168953220, 48296.23338953970, 79368.78093955100]]
 
-# 'TAM Data'!BV50:BZ96
+# SolarPVUtil 'TAM Data'!BV50:BZ96
 linear_trend_global_list = [['Year', 'x', 'constant', 'adoption'],
     [2014, 0.00000000000, 23342.35885961820, 23342.35885961820],
     [2015, 866.83539006894, 23342.35885961820, 24209.19424968710],
@@ -791,7 +851,7 @@ linear_trend_global_list = [['Year', 'x', 'constant', 'adoption'],
     [2059, 39007.59255310240, 23342.35885961820, 62349.95141272060],
     [2060, 39874.42794317140, 23342.35885961820, 63216.78680278960]]
 
-# 'TAM Data'!CE50:CH96
+# SolarPVUtil 'TAM Data'!CE50:CH96
 poly_degree2_trend_global_list = [['Year', 'x^2', 'x', 'constant', 'adoption'],
     [2014, 0.00000000000, 0.00000000000, 23408.06113995680, 23408.06113995680],
     [2015, 0.23134605753, 856.65616353760, 23408.06113995680, 24264.94864955200],
@@ -841,7 +901,7 @@ poly_degree2_trend_global_list = [['Year', 'x^2', 'x', 'constant', 'adoption'],
     [2059, 468.47576649913, 38549.52735919220, 23408.06113995680, 62426.06426564820],
     [2060, 489.52825773440, 39406.18352272980, 23408.06113995680, 63303.77292042100]]
 
-# 'TAM Data'!CM50:CQ96
+# SolarPVUtil 'TAM Data'!CM50:CQ96
 poly_degree3_trend_global_list = [['Year', 'x^3', 'x^2', 'x', 'constant', 'adoption'],
     [2014, 0.00000000000, 0.00000000000, 0.00000000000, 23393.49730928790, 23393.49730928790],
     [2015, 0.00533005075, -0.12043729196, 862.47764496660, 23393.49730928790, 24255.85984701330],
@@ -891,7 +951,7 @@ poly_degree3_trend_global_list = [['Year', 'x^3', 'x^2', 'x', 'constant', 'adopt
     [2059, 485.70087458044, -243.88551621887, 38811.49402349680, 23393.49730928790, 62446.80669114630],
     [2060, 518.80581978779, -254.84530978722, 39673.97166846340, 23393.49730928790, 63331.42948775190]]
 
-# 'TAM Data'!CM50:CQ96
+# SolarPVUtil 'TAM Data'!CM50:CQ96
 exponential_trend_global_list = [['Year', 'coeff', 'e^x', 'adoption'],
     [2014, 25215.39478371480, 1.00000000000, 25215.39478371480],
     [2015, 25215.39478371480, 1.02181094263, 25765.36631271950],
@@ -942,7 +1002,7 @@ exponential_trend_global_list = [['Year', 'coeff', 'e^x', 'adoption'],
     [2060, 25215.39478371480, 2.69802062748, 68031.65525658460]]
 
 
-# 'TAM Data'!W164:Y212
+# SolarPVUtil 'TAM Data'!W164:Y212
 forecast_min_max_sd_oecd90_list = [['Min', 'Max', 'S.D'],
     [9127.62395762832, 10305.81652442160, 389.38280736543],
     [9016.04583411878, 10347.79666328460, 441.53314924355],
@@ -994,7 +1054,7 @@ forecast_min_max_sd_oecd90_list = [['Min', 'Max', 'S.D'],
     [9755.68786960494, 16094.63482700170, 1943.40172618808],
     [9792.52066297022, 16171.32463596520, 2005.10293863081]]
 
-# 'TAM Data'!AA187:AC212
+# SolarPVUtil 'TAM Data'!AA187:AC212
 forecast_low_med_high_oecd90_list = [['Low', 'Medium', 'High'],
     [9218.52769374160, 9607.91050110703, 9997.29330847246],
     [9203.31092504407, 9644.84407428763, 10086.37722353120],
@@ -1046,7 +1106,7 @@ forecast_low_med_high_oecd90_list = [['Low', 'Medium', 'High'],
     [11398.24590915540, 13341.64763534350, 15285.04936153150],
     [11427.56040162820, 13432.66334025910, 15437.76627888990]]
 
-# 'TAM Data'BV168:BZ214
+# SolarPVUtil 'TAM Data'BV168:BZ214
 linear_trend_oecd90_list = [['Year', 'x', 'constant', 'adoption'],
     [2014, 0.00000000000, 9419.20248635240, 9419.20248635240],
     [2015, 84.48939237106, 9419.20248635240, 9503.69187872345],
@@ -1096,7 +1156,7 @@ linear_trend_oecd90_list = [['Year', 'x', 'constant', 'adoption'],
     [2059, 3802.02265669752, 9419.20248635240, 13221.22514304990],
     [2060, 3886.51204906857, 9419.20248635240, 13305.71453542100]]
 
-# 'TAM Data'!CE168:CH214
+# SolarPVUtil 'TAM Data'!CE168:CH214
 poly_degree2_trend_oecd90_list = [['Year', 'x^2', 'x', 'constant', 'adoption'],
     [2014, 0.00000000000, 0.00000000000, 9591.59776743747, 9591.59776743747],
     [2015, 0.60702563762, 57.78026431562, 9591.59776743747, 9649.98505739072],
@@ -1146,7 +1206,7 @@ poly_degree2_trend_oecd90_list = [['Year', 'x^2', 'x', 'constant', 'adoption'],
     [2059, 1229.22691618759, 2600.11189420299, 9591.59776743747, 13420.93657782800],
     [2060, 1284.46624921132, 2657.89215851861, 9591.59776743747, 13533.95617516740]]
 
-# 'TAM Data'!CM168:CQ214
+# SolarPVUtil 'TAM Data'!CM168:CQ214
 poly_degree3_trend_oecd90_list = [['Year', 'x^3', 'x^2', 'x', 'constant', 'adoption'],
     [2014, 0.00000000000, 0.00000000000, 0.00000000000, 9649.41539887043, 9649.41539887043],
     [2015, -0.02116001736, 2.00358678335, 34.66929335563, 9649.41539887043, 9686.06711899205],
@@ -1196,7 +1256,7 @@ poly_degree3_trend_oecd90_list = [['Year', 'x^3', 'x^2', 'x', 'constant', 'adopt
     [2059, -1928.20658187986, 4057.26323627805, 1560.11820100339, 9649.41539887043, 13338.59025427200],
     [2060, -2059.63144969940, 4239.58963356264, 1594.78749435902, 9649.41539887043, 13424.16107709270]]
 
-# 'TAM Data'!CV168:CX214
+# SolarPVUtil 'TAM Data'!CV168:CX214
 exponential_trend_oecd90_list = [['Year', 'coeff', 'e^x', 'adoption'],
     [2014, 9513.45039364756, 1.00000000000, 9513.45039364756],
     [2015, 9513.45039364756, 1.00750584135, 9584.85684295519],
@@ -1245,5 +1305,3 @@ exponential_trend_oecd90_list = [['Year', 'coeff', 'e^x', 'adoption'],
     [2058, 9513.45039364756, 1.38961086970, 13219.99407535180],
     [2059, 9513.45039364756, 1.40004106842, 13319.22125347630],
     [2060, 9513.45039364756, 1.41054955456, 13419.19321505700]]
-
-
