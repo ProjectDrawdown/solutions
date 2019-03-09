@@ -29,7 +29,7 @@ def convert_sr_float(val):
      + percentage: 20%
      + annotated: Val:(0.182810601365724) Formula:='Variable Meta-analysis'!G1411
   """
-  m = re.match(r'Val:\((\d+\.\d+)\) Formula:=', str(val))
+  m = re.match(r'Val:\(([-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?)\) Formula:=', str(val))
   if m:
     return float(m.group(1))
   if str(val).endswith('%'):
@@ -1079,6 +1079,7 @@ def infer_classname(filename):
       ('CHP_A_', 'CoGenElectricity'),
       ('CHP_B_', 'CoGenHeat'),
       ('CSP_', 'ConcentratedSolar'),
+      ('High Efficient Heat Pumps', 'HeatPumps'),
       ('Instream Hydro', 'InstreamHydro'),
       ('Large Biodigesters', 'Biogas'),
       ('MicroWind Turbines', 'MicroWind'),
