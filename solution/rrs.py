@@ -13,41 +13,41 @@ thisdir = pathlib.Path(__file__).parents[0]
 parentdir = pathlib.Path(__file__).parents[1]
 tam_ref_data_sources = {
     'Baseline Cases': {
-      'Baseline: Based on- IEA ETP 2016 6DS': str(parentdir.joinpath(
+      'Based on: IEA ETP 2016 6DS': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_IEA_ETP_2016_6DS.csv')),
-      'Baseline: Based on- AMPERE MESSAGE-MACRO Reference': str(parentdir.joinpath(
+      'Based on: AMPERE 2014 MESSAGE MACRO Reference': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
-      'Baseline: Based on- AMPERE GEM E3 Reference': str(parentdir.joinpath(
+      'Based on: AMPERE 2014 GEM E3 Reference': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
-      'Baseline: Based on- AMPERE IMAGE/TIMER Reference': str(parentdir.joinpath(
+      'Based on: AMPERE 2014 IMAGE TIMER Reference': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
       },
     'Conservative Cases': {
-      'Conservative: Based on- IEA ETP 2016 4DS': str(parentdir.joinpath(
+      'Based on: IEA ETP 2016 4DS': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_IEA_ETP_2016_4DS.csv')),
-      'Conservative: Based on- AMPERE MESSAGE-MACRO 550': str(parentdir.joinpath(
+      'Based on: AMPERE 2014 MESSAGE MACRO 550': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv')),
-      'Conservative: Based on- AMPERE GEM E3 550': str(parentdir.joinpath(
+      'Based on: AMPERE 2014 GEM E3 550': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_550.csv')),
-      'Conservative: Based on- AMPERE IMAGE/TIMER 550': str(parentdir.joinpath(
+      'Based on: AMPERE 2014 IMAGE TIMER 550': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv')),
-      'Conservative: Based on- Greenpeace 2015 Reference': str(parentdir.joinpath(
+      'Based on: Greenpeace 2015 Reference': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_Greenpeace_2015_Reference.csv')),
       },
     'Ambitious Cases': {
-      'Ambitious: Based on- IEA ETP 2016 2DS': str(parentdir.joinpath(
+      'Based on: IEA ETP 2016 2DS': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_IEA_ETP_2016_2DS.csv')),
-      'Ambitious: Based on- AMPERE MESSAGE-MACRO 450': str(parentdir.joinpath(
+      'Based on: AMPERE 2014 MESSAGE MACRO 450': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv')),
-      'Ambitious: Based on- AMPERE GEM E3 450': str(parentdir.joinpath(
+      'Based on: AMPERE 2014 GEM E3 450': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_450.csv')),
-      'Ambitious: Based on- AMPERE IMAGE/TIMER 450': str(parentdir.joinpath(
+      'Based on: AMPERE 2014 IMAGE TIMER 450': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv')),
-      'Ambitious: Based on- Greenpeace Energy [R]evolution': str(parentdir.joinpath(
+      'Based on: Greenpeace 2015 Energy Revolution': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_Greenpeace_2015_Energy_Revolution.csv')),
       },
     '100% RES2050 Case': {
-      '100% REN: Based on- Greenpeace Advanced [R]evolution': str(parentdir.joinpath(
+      'Based on: Greenpeace 2015 Advanced Revolution': str(parentdir.joinpath(
         'data', 'energy', 'tam_based_on_Greenpeace_2015_Advanced_Revolution.csv')),
       },
 }

@@ -27,6 +27,7 @@ xlwings = pytest.importorskip("xlwings")
 from solution import biogas
 from solution import biomass
 from solution import concentratedsolar
+from solution import instreamhydro
 from solution import improvedcookstoves
 from solution import landfillmethane
 from solution import microwind
@@ -532,7 +533,8 @@ def energy_solution_verify_list(obj):
   """Assemble verification for the modules used in the energy solutions."""
   verify = {}
   verify_tam_data(obj, verify)
-  verify_adoption_data(obj, verify)
+  if obj.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+    verify_adoption_data(obj, verify)
   verify_helper_tables(obj, verify)
   verify_emissions_factors(obj, verify)
   verify_unit_adoption_calculations(obj, verify)
@@ -630,6 +632,19 @@ def test_ConcentratedSolar_RRS_ELECGEN(start_excel, tmpdir):
   workbook = start_excel
   for scenario in concentratedsolar.scenarios.keys():
     obj = concentratedsolar.ConcentratedSolar(scenario=scenario)
+    verify = energy_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('instreamhydro', 'testdata', 'Drawdown-Instream Hydro (Small Hydro sub10MW)_RRS.ES_v1.1_14Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_InstreamHydro_RRS(start_excel, tmpdir):
+  """Test for Excel model file Instream Hydro_RRS*."""
+  workbook = start_excel
+  for scenario in instreamhydro.scenarios.keys():
+    obj = instreamhydro.InstreamHydro(scenario=scenario)
     verify = energy_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 

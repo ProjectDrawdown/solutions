@@ -228,6 +228,9 @@ class AdvancedControls:
      to use like 2nd order polynomial or exponential. SolarPVUtil "Advanced Controls"!B270
   soln_pds_adoption_prognostication_growth (string): High, Medium, or Low projected growth.
      SolarPVUtil "Advanced Controls"!C270
+  soln_pds_adoption_custom_name (string): Name of the Custom PDS Adoption source to use, if
+     soln_pds_adoption_basis is "Fully Customized PDS".
+     SmartThermostats "Advanced Controls"!H250
   pds_source_post_2014 (string): The name of the data source to use for the PDS case for
      years after 2014. SolarPVUtil "Advanced Controls"!B55
   ref_source_post_2014 (string): The name of the data source to use for the REF case for
@@ -308,6 +311,7 @@ class AdvancedControls:
                soln_pds_adoption_prognostication_source=None,
                soln_pds_adoption_prognostication_trend=None,
                soln_pds_adoption_prognostication_growth=None,
+               soln_pds_adoption_custom_name=None,
                pds_source_post_2014=None,
                ref_source_post_2014=None,
                source_until_2014=None,
@@ -392,6 +396,7 @@ class AdvancedControls:
       g = soln_pds_adoption_prognostication_growth
       raise ValueError("invalid adoption prognostication growth name=" + str(g))
     self.soln_pds_adoption_prognostication_growth = soln_pds_adoption_prognostication_growth
+    self.soln_pds_adoption_custom_name = soln_pds_adoption_custom_name
     self.pds_source_post_2014 = pds_source_post_2014
     self.ref_source_post_2014 = ref_source_post_2014
     self.source_until_2014 = source_until_2014
