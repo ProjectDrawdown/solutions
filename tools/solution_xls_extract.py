@@ -29,9 +29,10 @@ def convert_sr_float(val):
      + percentage: 20%
      + annotated: Val:(0.182810601365724) Formula:='Variable Meta-analysis'!G1411
   """
-  m = re.match(r'Val:\(([-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?)\) Formula:=', str(val))
+  m = re.match(r'Val:\(([-+]?(\d+(\.\d*)?|\d+(\,\d*)?|\.\d+)([eE][-+]?\d+)?)\) Formula:=', str(val))
   if m:
-    return float(m.group(1))
+    s = str(m.group(1)).replace(',', '.')
+    return float(s)
   if str(val).endswith('%'):
     (num, _) = str(val).split('%', maxsplit=1)
     return float(num) / 100.0
