@@ -15,6 +15,8 @@ def test_convert_sr_float():
   assert sx.convert_sr_float('20%') == pytest.approx(0.2)
   s = 'Val:(4.16280354784867E-02) Formula:=0.1263*D144'
   assert sx.convert_sr_float(s) == pytest.approx(0.0416280354784867)
+  s = 'Val:(0,04) Formula:=F207'
+  assert sx.convert_sr_float(s) == pytest.approx(0.04)
 
 def test_infer_classname():
   ic = sx.infer_classname

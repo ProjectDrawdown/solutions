@@ -29,9 +29,10 @@ def convert_sr_float(val):
      + percentage: 20%
      + annotated: Val:(0.182810601365724) Formula:='Variable Meta-analysis'!G1411
   """
-  m = re.match(r'Val:\(([-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?)\) Formula:=', str(val))
+  m = re.match(r'Val:\(([-+]?(\d+(\.\d*)?|\d+(\,\d*)?|\.\d+)([eE][-+]?\d+)?)\) Formula:=', str(val))
   if m:
-    return float(m.group(1))
+    s = str(m.group(1)).replace(',', '.')
+    return float(s)
   if str(val).endswith('%'):
     (num, _) = str(val).split('%', maxsplit=1)
     return float(num) / 100.0
@@ -312,6 +313,29 @@ def xli(tab, row, col):
     return '0'
   raise ValueError("Unhandled cell ctype: " + str(cell.ctype) + " at r=" + str(row) + " c=" + str(col))
 
+def recursive_keys(sources):
+  result = {}
+  for k in sources.keys():
+    try:
+      value = recursive_keys(sources[k])
+    except AttributeError:
+      value = None
+    result[k] = value
+  return result
+
+def abandon_files(sources, outputdir):
+  """We're not going to use the extracted files after all, remove them."""
+  for (key, filename) in sources.items():
+    try:
+      abandon_files(sources=sources[key], outputdir=outputdir)
+    except AttributeError:
+      try:
+        fullpath = os.path.join(outputdir, filename)
+        os.unlink(fullpath)
+      except FileNotFoundError:
+        pass
+
+
 def write_tam(f, wb, outputdir):
   """Generate the TAM section of a solution.
      Arguments:
@@ -357,8 +381,9 @@ def write_tam(f, wb, outputdir):
       'China': 478, 'India': 542, 'EU': 606, 'USA': 671}
   ref_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
       outputdir=outputdir, prefix='tam_')
-  if ref_sources == rrs.tam_ref_data_sources:
+  if recursive_keys(ref_sources) == recursive_keys(rrs.tam_ref_data_sources):
     arg_ref = 'rrs.tam_ref_data_sources'
+    abandon_files(ref_sources, outputdir=outputdir)
   else:
     f.write("    tam_ref_data_sources = {\n")
     for region, cases in ref_sources.items():
@@ -375,22 +400,29 @@ def write_tam(f, wb, outputdir):
     f.write("    }\n")
     arg_ref = 'tam_ref_data_sources'
 
-  tam_regions = {'PDS World': 102}
+  tam_regions = {'World': 102}
   pds_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
       outputdir=outputdir, prefix='tam_pds_')
-  if pds_sources == rrs.tam_pds_data_sources:
+  if recursive_keys(pds_sources) == recursive_keys(rrs.tam_pds_data_sources):
     arg_pds = 'rrs.tam_pds_data_sources'
-  elif pds_sources == rrs.tam_ref_data_sources:
+    abandon_files(pds_sources, outputdir=outputdir)
+  elif recursive_keys(pds_sources) == recursive_keys(rrs.tam_ref_data_sources):
     arg_pds = 'rrs.tam_ref_data_sources'
+    abandon_files(pds_sources, outputdir=outputdir)
   elif not pds_sources:
     arg_pds = 'tam_ref_data_sources'
   else:
     f.write("    tam_pds_data_sources = {\n")
-    for case in pds_sources.keys():
-      f.write("      '" + case + "': {\n")
-      for source in pds_sources[case]:
-        source = re.sub('\s+', ' ', source).strip()  # remove extra/double spaces
-        f.write("        '" + source + "': str(thisdir.joinpath('" + get_filename_for_source(source, prefix='custom_tam_') + "')),\n")
+    for region, cases in pds_sources.items():
+      f.write("      '" + region + "': {\n")
+      for (case, sources) in cases.items():
+        if isinstance(sources, str):
+          f.write("          '" + case + "': str(thisdir.joinpath('" + sources + "')),\n")
+        else:
+          f.write("        '" + case + "': {\n")
+          for (source, filename) in sources.items():
+            f.write("          '" + source + "': str(thisdir.joinpath('" + filename + "')),\n")
+          f.write("        },\n")
       f.write("      },\n")
     f.write("    }\n")
     arg_pds = 'tam_pds_data_sources'
@@ -427,6 +459,8 @@ def normalize_source_name(sourcename):
     'Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
     'Based on Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
     'Based on Greenpeace 2015 Reference': 'Based on: Greenpeace 2015 Reference',
+    'Conservative: Based on- Greenpeace 2015 Reference': 'Based on: Greenpeace 2015 Reference',
+    '100% REN: Based on- Greenpeace Advanced [R]evolution': 'Based on: Greenpeace 2015 Advanced Revolution',
     'Drawdown TAM: Baseline Cases': 'Baseline Cases',
     'Drawdown TAM: Conservative Cases': 'Conservative Cases',
     'Drawdown TAM: Ambitious Cases': 'Ambitious Cases',
@@ -511,11 +545,12 @@ def get_filename_for_source(sourcename, prefix=''):
   return prefix + filename[0:64] + '.csv'
 
 
-def write_ad(f, wb):
+def write_ad(f, wb, outputdir):
   """Generate the Adoption Data section of a solution.
      Arguments:
        f - file-like object for output
        wb - an Excel workbook as returned by xlrd
+       outputdir: name of directory to write CSV files to.
   """
   a = wb.sheet_by_name('Adoption Data')
   f.write("    adconfig_list = [\n")
@@ -542,18 +577,22 @@ def write_ad(f, wb):
   f.write(            xln(a, 27, 16) + ", " + xln(a, 30, 16) + ", " + xln(a, 33, 16) + ", ")
   f.write(            xln(a, 36, 16) + ", " + xln(a, 39, 16) + "]]\n")
   f.write("    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')\n")
-  sources = extract_sources(wb_tab=wb.sheet_by_name('Adoption Data'),
-      lines=[43, 103, 167, 230, 293, 356, 419, 483, 547, 612])
+  ad_regions = {'World': 44, 'OECD90': 104, 'Eastern Europe': 168, 'Asia (Sans Japan)': 231,
+      'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484, 'EU': 548,
+      'USA': 613}
+  sources = extract_source_data(wb=wb, sheet_name='Adoption Data', regions=ad_regions,
+      outputdir=outputdir, prefix='ad_')
   f.write("    ad_data_sources = {\n")
-  for case in sources.keys():
-    f.write("      '" + case + "': {\n")
-    for source in sources[case]:
-      if not source:
-        continue
-      source = re.sub('\s+', ' ', source).strip()  # remove extra/double spaces
-      filename = get_filename_for_source(source, prefix="ad_")
-      if filename:
-        f.write("        '" + source + "': str(thisdir.joinpath('" + filename + "')),\n")
+  for region, cases in sources.items():
+    f.write("      '" + region + "': {\n")
+    for (case, sources) in cases.items():
+      if isinstance(sources, str):
+        f.write("          '" + case + "': str(thisdir.joinpath('" + sources + "')),\n")
+      else:
+        f.write("        '" + case + "': {\n")
+        for (source, filename) in sources.items():
+          f.write("          '" + source + "': str(thisdir.joinpath('" + filename + "')),\n")
+        f.write("        },\n")
     f.write("      },\n")
   f.write("    }\n")
   f.write("    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)\n")
@@ -571,16 +610,15 @@ def write_custom_ad(f, wb, outputdir):
        outputdir: name of directory to write CSV files to.
   """
   scenarios = extract_custom_adoption(wb=wb, outputdir=outputdir)
-  f.write("    custom_ad_data_sources = {\n")
+  f.write("    ca_data_sources = [\n")
   for s in scenarios:
-    f.write("      '" + s['name'] + "': {'include': " + str(s['include']) + ",\n")
+    f.write("      {'name': '" + s['name'] + "', 'include': " + str(s['include']) + ",\n")
     f.write("          'filename': str(thisdir.joinpath('" + s['filename'] + "'))},\n")
-  f.write("    }\n")
-  f.write("    self.custom_ad = customadoption.CustomAdoption(scenario_type='PDS',\n")
-  f.write("        data_sources=custom_ad_data_sources,\n")
-  f.write("        soln_pds_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)\n")
-  f.write("    adoption_data_per_region = self.custom_ad.adoption_data_per_region()\n")
-  f.write("    adoption_trend_per_region = self.custom_ad.adoption_trend_per_region()\n")
+  f.write("    ]\n")
+  f.write("    self.ca = customadoption.CustomAdoption(data_sources=ca_data_sources,\n")
+  f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)\n")
+  f.write("    adoption_data_per_region = self.ca.adoption_data_per_region()\n")
+  f.write("    adoption_trend_per_region = self.ca.adoption_trend_per_region()\n")
   f.write("    adoption_is_single_source = True\n")
   f.write("\n")
 
@@ -828,7 +866,7 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
       else:
         df[region] = np.nan
     filename = get_filename_for_source(source_name, prefix=prefix)
-    if df.empty or not filename:
+    if df.empty or df.isna().all(axis=None, skipna=False) or not filename:
       continue
     df.index = df.index.astype(int)
     df.index.name = 'Year'
@@ -876,62 +914,6 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
   else:
     cases = tmp_cases
   return cases
-
-
-def extract_adoption_data(wb, outputdir):
-  adoption_regions = {'World': 44, 'OECD90': 104, 'Eastern Europe': 168, 'Asia (Sans Japan)': 231,
-      'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484, 'EU': 548,
-      'USA': 613}
-  return extract_source_data(wb=wb, sheet_name='Adoption Data', regions=adoption_regions,
-      outputdir=outputdir, prefix='ad_')
-
-
-def extract_fresh_adoption_data(wb, outputdir):
-  """Create CSV files for Fresh Adoption Data, if present.
-     Arguments:
-       wb: Excel workbook
-       outputdir: name of directory to write CSV files to.
-     Returns: dict of {'source name': 'filename'} mappings
-  """
-  if 'Fresh Adoption Data' not in wb.sheets():
-    return
-
-  usecols = find_source_data_columns(wb=wb, sheet_name='Fresh Adoption Data')
-  world = pd.read_excel(wb, engine='xlrd', sheet_name='Fresh Adoption Data', header=0,
-      index_col=0, usecols=usecols, skiprows=5, nrows=49)
-  world.name = 'World'
-
-  sources = {}
-  ad_tab = wb.sheet_by_name('Fresh Adoption Data')
-  for col in range(2, ad_tab.ncols):
-    if ad_tab.cell(5, col).value == 'Functional Unit':
-      break
-    source_name = ad_tab.cell(5, col).value
-    filename = get_filename_for_source(source_name, prefix='ad_')
-    df_nan = pd.Series(np.nan, index=world.index)
-    df = pd.concat({'World': world[source_name], 'OECD90': df_nan,
-      'Eastern Europe': df_nan, 'Asia (Sans Japan)': df_nan,
-      'Middle East and Africa': df_nan, 'Latin America': df_nan,
-      'China': df_nan, 'India': df_nan, 'EU': df_nan, 'USA': df_nan,
-      }, axis=1)
-    if df.empty or not filename:
-      continue
-    df.index = df.index.astype(int)
-    df.index.name = 'Year'
-    # In the Excel implementation, adoption data of 0.0 is treated the same as N/A,
-    # no data available. We don't want to implement adoptiondata.py the same way, we
-    # want to be able to express the difference between a solution which did not
-    # exist prior to year N, and therefore had 0.0 adoption, from a solution which
-    # did exist but for which we have no data prior to year N.
-    # We're handling this in the code generator: when extracting adoption data from
-    # an Excel file, treat values of 0.0 as N/A and write out a CSV file with no
-    # data at that location.
-    df.replace(to_replace=0.0, value=np.nan, inplace=True)
-    outputfile = os.path.join(outputdir, filename)
-    df[['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-      'Latin America', 'China', 'India', 'EU', 'USA']].to_csv(outputfile, header=True)
-    sources[source_name] = filename
-  return sources
 
 
 def extract_custom_adoption(wb, outputdir):
@@ -998,6 +980,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write('from model import advanced_controls\n')
   f.write('from model import ch4calcs\n')
   f.write('from model import co2calcs\n')
+  f.write('from model import customadoption\n')
   f.write('from model import emissionsfactors\n')
   f.write('from model import firstcost\n')
   f.write('from model import helpertables\n')
@@ -1021,6 +1004,13 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   if has_tam:
     f.write('from model import tam\n')
 
+  is_default_ad = is_custom_ad = False
+  for s in scenarios.values():
+    if s.get('soln_pds_adoption_basis', '') == 'Existing Adoption Prognostications':
+      is_default_ad = True
+    if s.get('soln_pds_adoption_basis', '') == 'Fully Customized PDS':
+      is_custom_ad = True
+
   f.write('scenarios = {\n')
   for name, s in scenarios.items():
     prefix = '  '
@@ -1042,10 +1032,12 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write("\n")
   if has_tam:
     write_tam(f=f, wb=wb, outputdir=outputdir)
-  extract_adoption_data(wb=wb, outputdir=outputdir)
-  extract_fresh_adoption_data(wb=wb, outputdir=outputdir)
-  write_ad(f=f, wb=wb)
-  #write_custom_ad(f=f, wb=wb, outputdir=outputdir)
+
+  if is_default_ad:
+    write_ad(f=f, wb=wb, outputdir=outputdir)
+  if is_custom_ad:
+    write_custom_ad(f=f, wb=wb, outputdir=outputdir)
+
   write_ht(f=f, wb=wb)
   f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
   f.write("\n")

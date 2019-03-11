@@ -275,7 +275,7 @@ class OperatingCost:
        SolarPVUtil 'Operating Cost'!I126:I250
     """
     first_year = CORE_START_YEAR
-    last_year = self.ac.report_end_year
+    last_year = CORE_END_YEAR
     last_row = 2139
     result = pd.Series(0, index=np.arange(first_year, last_row + 1), dtype='float')
     result.index.name = 'Year'
@@ -363,7 +363,7 @@ class OperatingCost:
        SolarPVUtil 'Operating Cost'!M126:M250
     """
     first_year = CORE_START_YEAR
-    last_year = self.ac.report_end_year
+    last_year = CORE_END_YEAR
     last_row = 2139
     result = pd.Series(0, index=np.arange(first_year, last_row + 1), dtype='float')
     result.index.name = 'Year'
