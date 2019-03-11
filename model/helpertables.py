@@ -13,14 +13,15 @@ import pandas as pd
 class HelperTables:
     """ Implementation for the Helper Tables module. """
 
-    def __init__(self, ac, adoption_data_per_region, ref_datapoints, pds_datapoints, ref_tam_per_region=None,
-                 pds_tam_per_region=None, adoption_trend_per_region=None, adoption_is_single_source=False):
+    def __init__(self, ac, pds_adoption_data_per_region, ref_datapoints, pds_datapoints, ref_tam_per_region=None,
+                 pds_tam_per_region=None, pds_adoption_trend_per_region=None, pds_adoption_is_single_source=False,
+                 ref_adoption_data_per_region=None):
         """
         HelperTables.
            Arguments:
              ac = advanced_controls.py object, storing settings to control
                model operation.
-             adoption_data_per_region: dataframe with one column per region (World, OECD90, Eastern
+             pds_adoption_data_per_region: dataframe with one column per region (World, OECD90, Eastern
                Europe, Latin America, etc).
              ref_datapoints: a DataFrame with columns per region and two rows for two years of data.
              pds_datapoints: a DataFrame with columns per region and two rows for two years of data.
@@ -28,19 +29,24 @@ class HelperTables:
                region for the Reference scenario.
              pds_tam_per_region: dataframe of total addressable market per major
                region for the PDS scenario.
-             adoption_trend_per_region: adoption trend (predictions using 2nd Poly, 3rd Poly, etc
+             pds_adoption_trend_per_region: adoption trend (predictions using 2nd Poly, 3rd Poly, etc
                as configured in the solution) with one column per region
-             adoption_is_single_source (bool): whether the adoption data comes from a single source
+             pds_adoption_is_single_source (bool): whether the adoption data comes from a single source
                or multiple, to determine how to handle stddev.
+             ref_adoption_data_per_region: dataframe with one column per region (World, OECD90, Eastern
+               Europe, Latin America, etc). This input is optional, only used for solutions containing
+               Custom REF Adoption data. If ref_adoption_data_per_region is None, helpertables will
+               interpolate between the values in ref_datapoints.
         """
         self.ac = ac
         self.ref_datapoints = ref_datapoints
         self.pds_datapoints = pds_datapoints
         self.ref_tam_per_region = ref_tam_per_region
         self.pds_tam_per_region = pds_tam_per_region
-        self.adoption_data_per_region = adoption_data_per_region
-        self.adoption_trend_per_region = adoption_trend_per_region
-        self.adoption_is_single_source = adoption_is_single_source
+        self.pds_adoption_data_per_region = pds_adoption_data_per_region
+        self.pds_adoption_trend_per_region = pds_adoption_trend_per_region
+        self.pds_adoption_is_single_source = pds_adoption_is_single_source
+        self.ref_adoption_data_per_region = ref_adoption_data_per_region
 
     @lru_cache()
     def soln_ref_funits_adopted(self, suppress_override=False):
@@ -53,12 +59,15 @@ class HelperTables:
 
            SolarPVUtil 'Helper Tables'!B26:L73
         """
-
-        first_year = self.ref_datapoints.first_valid_index()
-        last_year = 2060
-        adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
-                                columns=self.ref_datapoints.columns.copy(), dtype='float')
-        adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints, adoption)
+        if self.ac.soln_ref_adoption_basis == 'Custom':
+          assert self.ref_adoption_data_per_region is not None
+          adoption = self.ref_adoption_data_per_region.loc[2014:, :].copy(deep=True)
+        else:
+          first_year = self.ref_datapoints.first_valid_index()
+          last_year = 2060
+          adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
+                                  columns=self.ref_datapoints.columns.copy(), dtype='float')
+          adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints, adoption)
 
         if self.ac.soln_ref_adoption_regional_data:
             adoption.loc[:, "World"] = 0
@@ -114,8 +123,7 @@ class HelperTables:
            SolarPVUtil 'Helper Tables'!B90:L137
         """
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-            year_2014_loc = self.adoption_data_per_region.index.get_loc(2014)
-            adoption = self.adoption_data_per_region.iloc[year_2014_loc:, :].copy(deep=True)
+            adoption = self.pds_adoption_data_per_region.loc[2014:, :].copy(deep=True)
         else:
             first_year = self.pds_datapoints.first_valid_index()
             last_year = 2060
@@ -127,11 +135,11 @@ class HelperTables:
             elif self.ac.soln_pds_adoption_basis == 'S-Curve':
                 raise NotImplementedError('S-Curve support not implemented')
             elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
-                adoption = self.adoption_trend_per_region.fillna(0.0)
-                if self.adoption_is_single_source:
+                adoption = self.pds_adoption_trend_per_region.fillna(0.0)
+                if self.pds_adoption_is_single_source:
                     # The World region can specify a single source (all the sub-regions use
                     # ALL SOURCES). If it does, use that one source without curve fitting.
-                    adoption['World'] = self.adoption_data_per_region.loc[first_year:, 'World']
+                    adoption['World'] = self.pds_adoption_data_per_region.loc[first_year:, 'World']
             elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
                 raise NotImplementedError('Custom S-Curve support not implemented')
 

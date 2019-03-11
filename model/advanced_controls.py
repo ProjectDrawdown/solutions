@@ -12,8 +12,9 @@ from model import interpolation
 
 SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND')
 translate_adoption_bases = { "DEFAULT Linear": "Linear", "DEFAULT S-Curve": "S-Curve" }
-valid_adoption_bases = {'Linear', 'S-Curve', 'Existing Adoption Prognostications',
+valid_pds_adoption_bases = {'Linear', 'S-Curve', 'Existing Adoption Prognostications',
     'Customized S-Curve Adoption', 'Fully Customized PDS', None}
+valid_ref_adoption_bases = {'Default', 'Custom', None}
 valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
 class AdvancedControls:
@@ -219,8 +220,12 @@ class AdvancedControls:
      SolarPVUtil "Advanced Controls"!B284
   soln_pds_adoption_regional_data (boolean): as soln_ref_adoption_regional_data.
      SolarPVUtil "Advanced Controls"!B246
+  soln_ref_adoption_basis (string): whether to use adoption_data.py or custom_adoption.py.
+     Must be one of valid_ref_adoption_bases.  SolarPVUtil "Advanced Controls"!B279
+  soln_ref_adoption_custom_name (string): Name of the Custom REF Adoption source to use, if
+     soln_ref_adoption_basis is "Custom".  Insulation "Advanced Controls"!B267
   soln_pds_adoption_basis (string): the type of interpolation to fill in adoption data for
-     each year. Must be one of valid_adoption_bases. SolarPVUtil "Advanced Controls"!B243
+     each year. Must be one of valid_pds_adoption_bases. SolarPVUtil "Advanced Controls"!B243
   soln_pds_adoption_prognostication_source (string): the name of one specific data source, or the
      name of a class of sources (like "Conservative Cases" or "Ambitious Cases"), or "ALL SOURCES"
      to take the average of all sources. SolarPVUtil "Advanced Controls"!B265
@@ -307,6 +312,8 @@ class AdvancedControls:
 
                soln_ref_adoption_regional_data=None,
                soln_pds_adoption_regional_data=None,
+               soln_ref_adoption_basis=None,
+               soln_ref_adoption_custom_name=None,
                soln_pds_adoption_basis=None,
                soln_pds_adoption_prognostication_source=None,
                soln_pds_adoption_prognostication_trend=None,
@@ -385,9 +392,15 @@ class AdvancedControls:
 
     self.soln_ref_adoption_regional_data = soln_ref_adoption_regional_data
     self.soln_pds_adoption_regional_data = soln_pds_adoption_regional_data
+    soln_ref_adoption_basis = translate_adoption_bases.get(soln_ref_adoption_basis,
+        soln_ref_adoption_basis)
+    if soln_ref_adoption_basis not in valid_ref_adoption_bases:
+      raise ValueError("invalid adoption basis name=" + str(soln_ref_adoption_basis))
+    self.soln_ref_adoption_basis = soln_ref_adoption_basis
+    self.soln_ref_adoption_custom_name = soln_ref_adoption_custom_name
     soln_pds_adoption_basis = translate_adoption_bases.get(soln_pds_adoption_basis,
         soln_pds_adoption_basis)
-    if soln_pds_adoption_basis not in valid_adoption_bases:
+    if soln_pds_adoption_basis not in valid_pds_adoption_bases:
       raise ValueError("invalid adoption basis name=" + str(soln_pds_adoption_basis))
     self.soln_pds_adoption_basis = soln_pds_adoption_basis
     self.soln_pds_adoption_prognostication_source = soln_pds_adoption_prognostication_source

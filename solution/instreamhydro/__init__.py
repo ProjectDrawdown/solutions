@@ -201,9 +201,9 @@ class InstreamHydro:
     ]
     self.ca = customadoption.CustomAdoption(data_sources=ca_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
-    adoption_data_per_region = self.ca.adoption_data_per_region()
-    adoption_trend_per_region = self.ca.adoption_trend_per_region()
-    adoption_is_single_source = True
+    pds_adoption_data_per_region = self.ca.adoption_data_per_region()
+    pds_adoption_trend_per_region = self.ca.adoption_trend_per_region()
+    pds_adoption_is_single_source = True
 
     ht_ref_adoption_initial = pd.Series(
       [547.672, 69.035, 38.758, 403.057, 17.967,
@@ -225,9 +225,9 @@ class InstreamHydro:
     self.ht = helpertables.HelperTables(ac=self.ac,
         ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-        adoption_data_per_region=adoption_data_per_region,
-        adoption_trend_per_region=adoption_trend_per_region,
-        adoption_is_single_source=adoption_is_single_source)
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
