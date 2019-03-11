@@ -143,14 +143,14 @@ class HelperTables:
             elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
                 raise NotImplementedError('Custom S-Curve support not implemented')
 
-            if self.ac.soln_pds_adoption_regional_data:
-                adoption.loc[:, 'World'] = 0
-                adoption.loc[:, 'World'] = adoption.sum(axis=1)
+        if self.ac.soln_pds_adoption_regional_data:
+            adoption.loc[:, 'World'] = 0
+            adoption.loc[:, 'World'] = adoption.sum(axis=1)
 
-            # cannot exceed the total addressable market
-            if self.pds_tam_per_region is not None:
-                for col in adoption.columns:
-                    adoption[col] = adoption[col].combine(self.pds_tam_per_region[col], min)
+        # cannot exceed the total addressable market
+        if self.pds_tam_per_region is not None:
+            for col in adoption.columns:
+                adoption[col] = adoption[col].combine(self.pds_tam_per_region[col], min)
 
         if not suppress_override and self.ac.pds_adoption_use_ref_years:
             y = self.ac.pds_adoption_use_ref_years
