@@ -27,8 +27,9 @@ xlwings = pytest.importorskip("xlwings")
 from solution import biogas
 from solution import biomass
 from solution import concentratedsolar
-from solution import instreamhydro
 from solution import improvedcookstoves
+from solution import instreamhydro
+from solution import insulation
 from solution import landfillmethane
 from solution import microwind
 from solution import offshorewind
@@ -638,6 +639,43 @@ def test_ConcentratedSolar_RRS_ELECGEN(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('improvedcookstoves', 'testdata', 'Drawdown-Improved Cook Stoves (ICS)_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
+  """Test for Excel model file ImprovedCookStoves."""
+  workbook = start_excel
+  for scenario in improvedcookstoves.scenarios.keys():
+    obj = improvedcookstoves.ImprovedCookStoves(scenario=scenario)
+    verify = {}
+    verify_tam_data_eleven_sources(obj, verify)
+    if obj.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+      verify_adoption_data_eleven_sources(obj, verify)
+    verify_helper_tables(obj, verify)
+    verify_unit_adoption_calculations(obj, verify)
+    verify_emissions_factors(obj, verify)
+    verify_first_cost(obj, verify)
+    verify_operating_cost(obj, verify)
+    verify['CO2 Calcs'] = [
+        ('A10:K55', obj.c2.co2_mmt_reduced().loc[2015:].reset_index()),
+        ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index()),
+        ('A120:AW165', obj.c2.co2_ppm_calculator().loc[2015:].reset_index()),
+        ('A172:F217', obj.c2.co2eq_ppm_calculator().loc[2015:].reset_index()),
+        ('A235:K280', obj.c2.co2_reduced_grid_emissions().loc[2015:].reset_index()),
+        ('R235:AB280', obj.c2.co2_replaced_grid_emissions().loc[2015:].reset_index()),
+        ('AI235:AS280', obj.c2.co2_increased_grid_usage_emissions().loc[2015:].reset_index()),
+        ('A289:K334', obj.c2.co2eq_reduced_grid_emissions().loc[2015:].reset_index()),
+        ('R289:AB334', obj.c2.co2eq_replaced_grid_emissions().loc[2015:].reset_index()),
+        ('AI289:AS334', obj.c2.co2eq_increased_grid_usage_emissions().loc[2015:].reset_index()),
+        ('A345:K390', obj.c2.co2eq_direct_reduced_emissions().loc[2015:].reset_index()),
+        # last two blocks are shifted compared with other solutions.
+        ('R345:AB390', obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index()),
+        ('AM345:AW390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index()),
+        ]
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('instreamhydro', 'testdata', 'Drawdown-Instream Hydro (Small Hydro sub10MW)_RRS.ES_v1.1_14Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_InstreamHydro_RRS(start_excel, tmpdir):
@@ -651,19 +689,20 @@ def test_InstreamHydro_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('improvedcookstoves', 'testdata', 'Drawdown-Improved Cook Stoves (ICS)_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('insulation', 'testdata',
+      'Drawdown-Insulation_RRS_v1,1_18Dec2018_PUBLIC.xlsm'))],
     indirect=True)
-def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
-  """Test for Excel model file ImprovedCookStoves."""
+def test_Insulation_RRS(start_excel, tmpdir):
+  """Test for Excel model file Insulation_RRS*."""
   workbook = start_excel
-  for scenario in improvedcookstoves.scenarios.keys():
-    obj = improvedcookstoves.ImprovedCookStoves(scenario=scenario)
+  for scenario in insulation.scenarios.keys():
+    obj = insulation.Insulation(scenario=scenario)
     verify = {}
     verify_tam_data_eleven_sources(obj, verify)
     if obj.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       verify_adoption_data_eleven_sources(obj, verify)
-    verify_unit_adoption_calculations(obj, verify)
     verify_helper_tables(obj, verify)
+    verify_unit_adoption_calculations(obj, verify)
     verify_emissions_factors(obj, verify)
     verify_first_cost(obj, verify)
     verify_operating_cost(obj, verify)
