@@ -101,8 +101,8 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     source_until_2014 = tamconfig['source_until_2014']
     source_after_2014 = tamconfig['source_after_2014']
 
-    result = pd.DataFrame(0, index=forecast.index.copy(), columns=['Min', 'Max', 'S.D'])
-    result.loc[:, 'Min'] = forecast.dropna(axis='columns', how='all').fillna(0.0).min(axis=1)
+    result = pd.DataFrame(np.nan, index=forecast.index.copy(), columns=['Min', 'Max', 'S.D'])
+    result.loc[:, 'Min'] = forecast.dropna(axis='columns', how='all').min(axis=1)
     result.loc[:, 'Max'] = forecast.max(axis=1)
     if forecast.empty:
       # Some solutions provide no data sources for PDS
@@ -111,12 +111,12 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
       columns = interpolation.matching_data_sources(data_sources=data_sources,
           name=source_until_2014, groups_only=True)
       # Excel STDDEV.P is a whole population stddev, ddof=0
-      m = forecast.loc[:2014, columns].dropna(axis='columns', how='all').fillna(0.0).std(axis=1, ddof=0)
+      m = forecast.loc[:2014, columns].dropna(axis='columns', how='all').std(axis=1, ddof=0)
       m.name = 'S.D'
       result.update(m)
       columns = interpolation.matching_data_sources(data_sources=data_sources,
           name=source_after_2014, groups_only=True)
-      m = forecast.loc[2015:, columns].dropna(axis='columns', how='all').fillna(0.0).std(axis=1, ddof=0)
+      m = forecast.loc[2015:, columns].dropna(axis='columns', how='all').std(axis=1, ddof=0)
       m.name = 'S.D'
       result.update(m)
     return result
@@ -136,7 +136,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     low_sd_mult = tamconfig['low_sd_mult']
     high_sd_mult = tamconfig['high_sd_mult']
 
-    result = pd.DataFrame(0, index=forecast.index.copy(), columns=['Low', 'Medium', 'High'])
+    result = pd.DataFrame(np.nan, index=forecast.index.copy(), columns=['Low', 'Medium', 'High'])
     columns = interpolation.matching_data_sources(data_sources=data_sources,
         name=source_until_2014, groups_only=False)
     if forecast.empty:
