@@ -76,3 +76,16 @@ def test_adoption_data_per_region():
     expected.index = expected.index.astype(int)
     result = ca.adoption_data_per_region()
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+
+def test_adoption_data_with_NaN():
+    path_to_nan = str(datadir.joinpath('ca_scenario_with_NaN.csv'))
+    data_sources = [
+        {'name': 'scenario with nan', 'filename': path_to_nan, 'include': True},
+    ]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+        soln_adoption_custom_name='scenario with nan')
+    avgs, _, _ = ca._avg_high_low()
+    assert not pd.isna(avgs.loc[2030, 'World'])
+    assert pd.isna(avgs.loc[2012, 'World'])
+    assert pd.isna(avgs.loc[2030, 'OECD90'])
