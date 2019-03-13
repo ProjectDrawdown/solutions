@@ -59,27 +59,32 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     self._adoption_data_usa = pd.DataFrame()
     self._adoption_data_usa.name = 'adoption_data_usa'
     for (groupname, group) in self.data_sources.items():
-      for (name, filename) in group.items():
-        df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-          skip_blank_lines=True, comment='#')
-        self._adoption_data_global.loc[:, name] = df.loc[:, 'World']
-        self._adoption_data_oecd90.loc[:, name] = df.loc[:, 'OECD90']
-        self._adoption_data_eastern_europe.loc[:, name] = df.loc[:, 'Eastern Europe']
-        self._adoption_data_asia_sans_japan.loc[:, name] = df.loc[:, 'Asia (Sans Japan)']
-        self._adoption_data_middle_east_and_africa.loc[:, name] = df.loc[:, 'Middle East and Africa']
-        self._adoption_data_latin_america.loc[:, name] = df.loc[:, 'Latin America']
-        self._adoption_data_china.loc[:, name] = df.loc[:, 'China']
-        self._adoption_data_india.loc[:, name] = df.loc[:, 'India']
-        self._adoption_data_eu.loc[:, name] = df.loc[:, 'EU']
-        self._adoption_data_usa.loc[:, name] = df.loc[:, 'USA']
+      for (name, value) in group.items():
+        if isinstance(value, str):
+          sources = {name: value}
+        else:
+          sources = value
+        for name, filename in sources.items():
+          df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+            skip_blank_lines=True, comment='#')
+          self._adoption_data_global.loc[:, name] = df.loc[:, 'World']
+          self._adoption_data_oecd90.loc[:, name] = df.loc[:, 'OECD90']
+          self._adoption_data_eastern_europe.loc[:, name] = df.loc[:, 'Eastern Europe']
+          self._adoption_data_asia_sans_japan.loc[:, name] = df.loc[:, 'Asia (Sans Japan)']
+          self._adoption_data_middle_east_and_africa.loc[:, name] = df.loc[:, 'Middle East and Africa']
+          self._adoption_data_latin_america.loc[:, name] = df.loc[:, 'Latin America']
+          self._adoption_data_china.loc[:, name] = df.loc[:, 'China']
+          self._adoption_data_india.loc[:, name] = df.loc[:, 'India']
+          self._adoption_data_eu.loc[:, name] = df.loc[:, 'EU']
+          self._adoption_data_usa.loc[:, name] = df.loc[:, 'USA']
 
-  def _min_max_sd(self, adoption_data, source):
+  def _min_max_sd(self, adoption_data, source, data_sources):
     """Return the min, max, and standard deviation for adoption data."""
     result = pd.DataFrame(index=adoption_data.index.copy(), columns=['Min', 'Max', 'S.D'])
     result.loc[:, 'Min'] = adoption_data.min(axis=1)
     result.loc[:, 'Max'] = adoption_data.max(axis=1)
 
-    columns = interpolation.matching_data_sources(data_sources=self.data_sources,
+    columns = interpolation.matching_data_sources(data_sources=data_sources,
         name=source, groups_only=False)
     if columns is None:
       result.loc[:, 'S.D'] = np.nan
@@ -90,10 +95,10 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       result.loc[:, 'S.D'] = adoption_data.std(axis=1, ddof=0)
     return result
 
-  def _low_med_high(self, adoption_data, min_max_sd, adconfig, source):
+  def _low_med_high(self, adoption_data, min_max_sd, adconfig, source, data_sources):
     """Return the selected data sources as Medium, and N stddev away as Low and High."""
     result = pd.DataFrame(index=adoption_data.index.copy(), columns=['Low', 'Medium', 'High'])
-    columns = interpolation.matching_data_sources(data_sources=self.data_sources,
+    columns = interpolation.matching_data_sources(data_sources=data_sources,
         name=source, groups_only=False)
     if columns is None:
       result.loc[:, 'Medium'] = np.nan
@@ -115,6 +120,10 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
       result = interpolation.trend_algorithm(data=data, trend=trend)
     return result
 
+  def _get_data_sources(self, region):
+    key = "Region: " + region
+    return self.data_sources.get(key, self.data_sources)
+
   @lru_cache()
   def adoption_data_global(self):
     """Return adoption data for the given solution in the 'World' region.
@@ -128,7 +137,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
        SolarPVUtil 'Adoption Data'!X45:Z94
     """
     result = self._min_max_sd(self.adoption_data_global(),
-        source=self.ac.soln_pds_adoption_prognostication_source)
+        source=self.ac.soln_pds_adoption_prognostication_source,
+        data_sources=self._get_data_sources(region='World'))
     result.name = 'adoption_min_max_sd_global'
     return result
 
@@ -139,7 +149,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_global(),
         self.adoption_min_max_sd_global(), self.adconfig['World'],
-        source=self.ac.soln_pds_adoption_prognostication_source)
+        source=self.ac.soln_pds_adoption_prognostication_source,
+        data_sources=self._get_data_sources(region='World'))
     result.name = 'adoption_low_med_high_global'
     return result
 
@@ -168,7 +179,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the min, max, and standard deviation for the adoption data in the 'OECD90' region.
        SolarPVUtil 'Adoption Data'!X105:Z154
     """
-    result = self._min_max_sd(self.adoption_data_oecd90(), source="ALL SOURCES")
+    result = self._min_max_sd(self.adoption_data_oecd90(), source="ALL SOURCES",
+        data_sources=self._get_data_sources(region='OECD90'))
     result.name = 'adoption_min_max_sd_oecd90'
     return result
 
@@ -179,7 +191,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_oecd90(),
         self.adoption_min_max_sd_oecd90(), self.adconfig['OECD90'],
-        source="ALL SOURCES")
+        source="ALL SOURCES", data_sources=self._get_data_sources(region='OECD90'))
     result.name = 'adoption_low_med_high_oecd90'
     return result
 
@@ -208,7 +220,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the min, max, and standard deviation for the adoption data in the 'Eastern Europe' region.
        SolarPVUtil 'Adoption Data'!X169:Z218
     """
-    result = self._min_max_sd(self.adoption_data_eastern_europe(), source="ALL SOURCES")
+    result = self._min_max_sd(self.adoption_data_eastern_europe(), source="ALL SOURCES",
+        data_sources=self._get_data_sources(region='Eastern Europe'))
     result.name = 'adoption_min_max_sd_eastern_europe'
     return result
 
@@ -219,7 +232,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_eastern_europe(),
         self.adoption_min_max_sd_eastern_europe(), self.adconfig['Eastern Europe'],
-        source="ALL SOURCES")
+        source="ALL SOURCES", data_sources=self._get_data_sources(region='Eastern Europe'))
     result.name = 'adoption_low_med_high_eastern_europe'
     return result
 
@@ -248,7 +261,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the min, max, and standard deviation for the adoption data in the 'Asia (Sans Japan)' region.
        SolarPVUtil 'Adoption Data'!X232:Z281
     """
-    result = self._min_max_sd(self.adoption_data_asia_sans_japan(), source="ALL SOURCES")
+    result = self._min_max_sd(self.adoption_data_asia_sans_japan(), source="ALL SOURCES",
+        data_sources=self._get_data_sources(region='Asia (Sans Japan)'))
     result.name = 'adoption_min_max_sd_asia_sans_japan'
     return result
 
@@ -259,7 +273,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_asia_sans_japan(),
         self.adoption_min_max_sd_asia_sans_japan(), self.adconfig['Asia (Sans Japan)'],
-        source="ALL SOURCES")
+        source="ALL SOURCES", data_sources=self._get_data_sources(region='Asia (Sans Japan)'))
     result.name = 'adoption_low_med_high_asia_sans_japan'
     return result
 
@@ -288,7 +302,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the min, max, and standard deviation for the adoption data in the 'Middle East and Africa' region.
        SolarPVUtil 'Adoption Data'!X295:Z344
     """
-    result = self._min_max_sd(self.adoption_data_middle_east_and_africa(), source="ALL SOURCES")
+    result = self._min_max_sd(self.adoption_data_middle_east_and_africa(), source="ALL SOURCES",
+        data_sources=self._get_data_sources(region='Middle East and Africa'))
     result.name = 'adoption_min_max_sd_middle_east_and_africa'
     return result
 
@@ -299,7 +314,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_middle_east_and_africa(),
         self.adoption_min_max_sd_middle_east_and_africa(), self.adconfig['Middle East and Africa'],
-        source="ALL SOURCES")
+        source="ALL SOURCES", data_sources=self._get_data_sources(region='Middle East and Africa'))
     result.name = 'adoption_low_med_high_middle_east_and_africa'
     return result
 
@@ -328,7 +343,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the min, max, and standard deviation for the adoption data in the 'Latin America' region.
        SolarPVUtil 'Adoption Data'!X358:Z407
     """
-    result = self._min_max_sd(self.adoption_data_latin_america(), source="ALL SOURCES")
+    result = self._min_max_sd(self.adoption_data_latin_america(), source="ALL SOURCES",
+        data_sources=self._get_data_sources(region='Latin America'))
     result.name = 'adoption_min_max_sd_latin_america'
     return result
 
@@ -339,7 +355,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_latin_america(),
         self.adoption_min_max_sd_latin_america(), self.adconfig['Latin America'],
-        source="ALL SOURCES")
+        source="ALL SOURCES", data_sources=self._get_data_sources(region='Latin America'))
     result.name = 'adoption_low_med_high_latin_america'
     return result
 
@@ -368,7 +384,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the min, max, and standard deviation for the adoption data in the 'China' region.
        SolarPVUtil 'Adoption Data'!X421:Z470
     """
-    result = self._min_max_sd(self.adoption_data_china(), source="ALL SOURCES")
+    result = self._min_max_sd(self.adoption_data_china(), source="ALL SOURCES",
+        data_sources=self._get_data_sources(region='China'))
     result.name = 'adoption_min_max_sd_china'
     return result
 
@@ -379,7 +396,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_china(),
         self.adoption_min_max_sd_china(), self.adconfig['China'],
-        source="ALL SOURCES")
+        source="ALL SOURCES", data_sources=self._get_data_sources(region='China'))
     result.name = 'adoption_low_med_high_china'
     return result
 
@@ -408,7 +425,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the min, max, and standard deviation for the adoption data in the 'India' region.
        SolarPVUtil 'Adoption Data'!X485:Z534
     """
-    result = self._min_max_sd(self.adoption_data_india(), source="ALL SOURCES")
+    result = self._min_max_sd(self.adoption_data_india(), source="ALL SOURCES",
+        data_sources=self._get_data_sources(region='India'))
     result.name = 'adoption_min_max_sd_india'
     return result
 
@@ -419,7 +437,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_india(),
         self.adoption_min_max_sd_india(), self.adconfig['India'],
-        source="ALL SOURCES")
+        source="ALL SOURCES", data_sources=self._get_data_sources(region='India'))
     result.name = 'adoption_low_med_high_india'
     return result
 
@@ -448,7 +466,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the min, max, and standard deviation for the adoption data in the 'EU' region.
        SolarPVUtil 'Adoption Data'!X549:Z598
     """
-    result = self._min_max_sd(self.adoption_data_eu(), source="ALL SOURCES")
+    result = self._min_max_sd(self.adoption_data_eu(), source="ALL SOURCES",
+        data_sources=self._get_data_sources(region='EU'))
     result.name = 'adoption_min_max_sd_eu'
     return result
 
@@ -459,7 +478,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_eu(),
         self.adoption_min_max_sd_eu(), self.adconfig['EU'],
-        source="ALL SOURCES")
+        source="ALL SOURCES", data_sources=self._get_data_sources(region='EU'))
     result.name = 'adoption_low_med_high_eu'
     return result
 
@@ -488,7 +507,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the min, max, and standard deviation for the adoption data in the 'USA' region.
        SolarPVUtil 'Adoption Data'!X614:Z663
     """
-    result = self._min_max_sd(self.adoption_data_usa(), source="ALL SOURCES")
+    result = self._min_max_sd(self.adoption_data_usa(), source="ALL SOURCES",
+        data_sources=self._get_data_sources(region='USA'))
     result.name = 'adoption_min_max_sd_usa'
     return result
 
@@ -499,7 +519,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """
     result = self._low_med_high(self.adoption_data_usa(),
         self.adoption_min_max_sd_usa(), self.adconfig['USA'],
-        source="ALL SOURCES")
+        source="ALL SOURCES", data_sources=self._get_data_sources(region='USA'))
     result.name = 'adoption_low_med_high_usa'
     return result
 
