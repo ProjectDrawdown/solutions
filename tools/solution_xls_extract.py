@@ -673,7 +673,7 @@ def write_ht(f, wb, is_custom_ref_ad):
   f.write("(ht_ref_adoption_initial / ref_tam_per_region.loc[" + str(initial_datapoint_year) + "])\n")
   f.write("    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)\n")
   f.write("    ht_ref_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_ref_adoption_initial\n")
-  f.write("    ht_ref_datapoints.loc[" + str(final_datapoint_year) + "] = ht_ref_adoption_final\n")
+  f.write("    ht_ref_datapoints.loc[" + str(final_datapoint_year) + "] = ht_ref_adoption_final.fillna(0.0)\n")
 
   f.write("    ht_pds_adoption_initial = ht_ref_adoption_initial\n")
   f.write("    ht_pds_adoption_final_percentage = pd.Series(\n")
@@ -685,7 +685,7 @@ def write_ht(f, wb, is_custom_ref_ad):
   f.write("    ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[" + str(final_datapoint_year) + "]\n")
   f.write("    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)\n")
   f.write("    ht_pds_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
-  f.write("    ht_pds_datapoints.loc[" + str(final_datapoint_year) + "] = ht_pds_adoption_final\n")
+  f.write("    ht_pds_datapoints.loc[" + str(final_datapoint_year) + "] = ht_pds_adoption_final.fillna(0.0)\n")
 
   f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")

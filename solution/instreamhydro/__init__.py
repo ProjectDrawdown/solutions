@@ -199,10 +199,10 @@ class InstreamHydro:
       {'name': 'Low Ambitious Growth, 10% higher compared to REF case', 'include': True,
           'filename': str(thisdir.joinpath('custom_ad_Low_Ambitious_Growth_10_higher_compared_to_REF_case.csv'))},
     ]
-    self.ca = customadoption.CustomAdoption(data_sources=ca_data_sources,
+    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
-    pds_adoption_data_per_region = self.ca.adoption_data_per_region()
-    pds_adoption_trend_per_region = self.ca.adoption_trend_per_region()
+    pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
+    pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
     pds_adoption_is_single_source = True
 
     ht_ref_adoption_initial = pd.Series(
