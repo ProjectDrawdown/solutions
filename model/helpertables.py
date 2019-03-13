@@ -65,9 +65,7 @@ class HelperTables:
         else:
           first_year = self.ref_datapoints.first_valid_index()
           last_year = 2060
-          adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
-                                  columns=self.ref_datapoints.columns.copy(), dtype='float')
-          adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints, adoption)
+          adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints)
 
         if self.ac.soln_ref_adoption_regional_data:
             adoption.loc[:, "World"] = 0
@@ -76,7 +74,11 @@ class HelperTables:
         # cannot exceed tam
         if self.ref_tam_per_region is not None:
             for col in adoption.columns:
-                adoption[col] = adoption[col].combine(self.ref_tam_per_region[col], min)
+                adoption[col] = adoption[col].combine(self.ref_tam_per_region[col].fillna(0.0), min)
+
+        # Where we have data, use the actual data not the interpolation. Excel model does this
+        # even in Custom REF Adoption case.
+        adoption.update(self.ref_datapoints.iloc[[0]])
 
         if not suppress_override and self.ac.ref_adoption_use_pds_years:
             y = self.ac.ref_adoption_use_pds_years
@@ -86,7 +88,7 @@ class HelperTables:
         adoption.index.name = "Year"
         return adoption
 
-    def _linear_forecast(self, first_year, last_year, datapoints, adoption):
+    def _linear_forecast(self, first_year, last_year, datapoints):
         """Interpolates a line between datapoints, and fills in adoption.
            first_year: an integer, the first year to interpolate data for.
            last_year: an integer, the last year to interpolate data for.
@@ -95,13 +97,11 @@ class HelperTables:
              There can be as many columns as desired, but the columns in datapoints
              must match the columns in adoption.
              The year+adoption data provide the X,Y coordinates for a line to interpolate.
-           adoption: a Pandas DataFrame with columns which match the columns in datapoints.
-             One row per year between first_year and last_year will be filled in, using
-             adoption data interpolated from the line formed by the datapoints argument.
         """
         year1 = datapoints.index.values[0]
         year2 = datapoints.index.values[1]
 
+        adoption = pd.DataFrame(columns=datapoints.columns, dtype='float')
         for col in adoption.columns:
             adopt1 = datapoints.loc[year1, col]
             adopt2 = datapoints.loc[year2, col]
@@ -122,26 +122,22 @@ class HelperTables:
 
            SolarPVUtil 'Helper Tables'!B90:L137
         """
+        first_year = self.pds_datapoints.first_valid_index()
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
             adoption = self.pds_adoption_data_per_region.loc[2014:, :].copy(deep=True)
-        else:
-            first_year = self.pds_datapoints.first_valid_index()
+        elif self.ac.soln_pds_adoption_basis == 'Linear':
             last_year = 2060
-            adoption = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
-                                    columns=self.pds_datapoints.columns.copy(), dtype='float')
-
-            if self.ac.soln_pds_adoption_basis == 'Linear':
-                adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints, adoption)
-            elif self.ac.soln_pds_adoption_basis == 'S-Curve':
-                raise NotImplementedError('S-Curve support not implemented')
-            elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
-                adoption = self.pds_adoption_trend_per_region.fillna(0.0)
-                if self.pds_adoption_is_single_source:
-                    # The World region can specify a single source (all the sub-regions use
-                    # ALL SOURCES). If it does, use that one source without curve fitting.
-                    adoption['World'] = self.pds_adoption_data_per_region.loc[first_year:, 'World']
-            elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
-                raise NotImplementedError('Custom S-Curve support not implemented')
+            adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints)
+        elif self.ac.soln_pds_adoption_basis == 'S-Curve':
+            raise NotImplementedError('S-Curve support not implemented')
+        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+            adoption = self.pds_adoption_trend_per_region.fillna(0.0)
+            if self.pds_adoption_is_single_source:
+                # The World region can specify a single source (all the sub-regions use
+                # ALL SOURCES). If it does, use that one source without curve fitting.
+                adoption['World'] = self.pds_adoption_data_per_region.loc[first_year:, 'World']
+        elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
+            raise NotImplementedError('Custom S-Curve support not implemented')
 
         if self.ac.soln_pds_adoption_regional_data:
             adoption.loc[:, 'World'] = 0
@@ -150,13 +146,14 @@ class HelperTables:
         # cannot exceed the total addressable market
         if self.pds_tam_per_region is not None:
             for col in adoption.columns:
-                adoption[col] = adoption[col].combine(self.pds_tam_per_region[col], min)
+                adoption[col] = adoption[col].combine(self.pds_tam_per_region[col].fillna(0.0), min)
 
         if not suppress_override and self.ac.pds_adoption_use_ref_years:
             y = self.ac.pds_adoption_use_ref_years
             adoption.update(self.soln_ref_funits_adopted(suppress_override=True).loc[y, 'World'])
 
-        # Where we have actual data, use the actual data not the interpolation.
+        # Where we have actual data, use the actual data not the interpolation. Excel model does this
+        # in all cases, even Custom PDS Adoption.
         adoption.update(self.pds_datapoints.iloc[[0]])
 
         adoption.name = "soln_pds_funits_adopted"
