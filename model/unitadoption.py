@@ -218,7 +218,7 @@ class UnitAdoption:
   @lru_cache()
   def soln_pds_big4_iunits_reqd(self):
     """Implementation units required in USA/EU/China/India vs Rest of World.
-       SolarPVUtil 'Unit Adoption Calculations'!AG136:AQ182
+       SolarPVUtil 'Unit Adoption Calculations'!BN136:BS182
     """
     soln_pds_tot_iunits_reqd = self.soln_pds_tot_iunits_reqd()
     result = pd.DataFrame(0, index=soln_pds_tot_iunits_reqd.index.copy(),
