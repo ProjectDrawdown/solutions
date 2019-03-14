@@ -685,6 +685,21 @@ def test_NaN_TAM_2012_data():
   result = tm.forecast_min_max_sd_global()
   assert all(pd.isna(result.loc[2012, :]))
 
+def test_mean_ignores_zeros():
+  # Replication of mean() handling from Excel TAM, 0.0 is not included
+  # in the calculation so the mean of [0.0, 1.0] should be 1.0.
+  # See https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.yvwwsbvutw2j
+  data_sources = {
+    'Baseline Cases': {
+      'zero': str(datadir.joinpath('tam_all_zero.csv')),
+      'one': str(datadir.joinpath('tam_all_one.csv')),
+    },
+  }
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
+  result = tm.forecast_low_med_high_global()
+  assert all(result.loc[:, 'Medium'] == 1.0)
+
 
 # SolarPVUtil 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES',
 # source_after_2014='Baseline Cases', low_sd=1.0, high_sd=1.0

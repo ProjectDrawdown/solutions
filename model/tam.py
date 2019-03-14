@@ -144,12 +144,25 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
       result.loc[:, 'Low'] = np.nan
       result.loc[:, 'High'] = np.nan
     else:
-      m = forecast.loc[:2014, columns].mean(axis=1)
+      # In Excel, the Mean computation is:
+      # SUM($C521:$Q521)/COUNTIF($C521:$Q521,">0")
+      #
+      # The intent is to skip sources which are empty, but also means that
+      # a source where the real data is 0.0 will not impact the Medium result.
+      #
+      # See this document for more information:
+      # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.yvwwsbvutw2j
+      #
+      # We're matching the Excel behavior in the initial product. This decision can
+      # be revisited later, when matching results from Excel is no longer required.
+      # To revert, use:    m = forecast.loc[:2014, columns].mean(axis=1)
+      # and:               m = forecast.loc[2015:, columns].mean(axis=1)
+      m = forecast.loc[:2014, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
       m.name = 'Medium'
       result.update(m)
       columns = interpolation.matching_data_sources(data_sources=data_sources,
           name=source_after_2014, groups_only=False)
-      m = forecast.loc[2015:, columns].mean(axis=1)
+      m = forecast.loc[2015:, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
       m.name = 'Medium'
       result.update(m)
 
