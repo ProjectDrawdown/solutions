@@ -11,6 +11,8 @@ import landfillmethane
 import microwind
 import offshorewind
 import onshorewind
+import smartthermostats
+import solarhotwater
 import solarpvroof
 import solarpvutil
 
@@ -71,6 +73,18 @@ def test_offshorewind():
 def test_onshorewind():
   scenario = list(onshorewind.scenarios.keys())[0]
   obj = onshorewind.OnshoreWind(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_smartthermostats():
+  scenario = list(smartthermostats.scenarios.keys())[0]
+  obj = smartthermostats.SmartThermostats(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_solarhotwater():
+  scenario = list(solarhotwater.scenarios.keys())[0]
+  obj = solarhotwater.SolarHotWater(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 

@@ -35,6 +35,7 @@ from solution import microwind
 from solution import offshorewind
 from solution import onshorewind
 from solution import silvopasture
+from solution import smartthermostats
 from solution import solarhotwater
 from solution import solarpvutil
 from solution import solarpvroof
@@ -851,6 +852,19 @@ def test_Silvopasture_LAND_USE(start_excel, tmpdir):
     verify['Helper Tables'] = [
         ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None),
         ]
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('smartthermostats', 'testdata', 'Drawdown-Smart Thermostats_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_SmartThermostats_RRS(start_excel, tmpdir):
+  """Test for Excel model file Smart Thermostats_RRS*."""
+  workbook = start_excel
+  for scenario in smartthermostats.scenarios.keys():
+    obj = smartthermostats.SmartThermostats(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
