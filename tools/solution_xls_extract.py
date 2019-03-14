@@ -774,25 +774,6 @@ def write_c2_c4(f):
   f.write("\n")
 
 
-def write_to_dict(f, has_tam):
-  """Write out the to_dict() routine for this solution class."""
-  f.write("  def to_dict(self):\n")
-  f.write('    """Return all data as a dict, to be serialized to JSON."""\n')
-  f.write("    rs = dict()\n")
-  if has_tam:
-    f.write("    rs['tam_data'] = self.tm.to_dict()\n")
-  f.write("    rs['adoption_data'] = self.ad.to_dict()\n")
-  f.write("    rs['helper_tables'] = self.ht.to_dict()\n")
-  f.write("    rs['emissions_factors'] = self.ef.to_dict()\n")
-  f.write("    rs['unit_adoption'] = self.ua.to_dict()\n")
-  f.write("    rs['first_cost'] = self.fc.to_dict()\n")
-  f.write("    rs['operating_cost'] = self.oc.to_dict()\n")
-  f.write("    rs['ch4_calcs'] = self.c4.to_dict()\n")
-  f.write("    rs['co2_calcs'] = self.c2.to_dict()\n")
-  f.write("    return rs\n")
-  f.write("\n")
-
-
 def extract_sources(wb_tab, lines):
   """Pull the names of sources, by case, from the Excel file.
      Arguments:
@@ -1098,7 +1079,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 
   f.write("    self.VMAs = []\n")
   f.write("\n")
-  write_to_dict(f=f, has_tam=has_tam)
 
   for key, values in scenarios.items():
     if values:
