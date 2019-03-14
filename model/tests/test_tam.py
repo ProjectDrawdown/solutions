@@ -192,6 +192,24 @@ def test_forecast_pds_global():
   assert g.loc[2059, 'e^x'] == pytest.approx(2.598937)
   assert g.loc[2059, 'adoption'] == pytest.approx(62077.150109)
 
+def test_forecast_pds_global_sources_for_pds():
+  pds_data_sources = {
+    'Baseline Cases': {
+      'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario': str(
+        datadir.joinpath('tam_hotwater_1.csv')),
+      'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario': str(
+        datadir.joinpath('tam_hotwater_2.csv')),
+      'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario': str(
+        datadir.joinpath('tam_hotwater_3.csv')),
+    },
+  }
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=pds_data_sources)
+  lmh_reg = tm.forecast_low_med_high_global()
+  lmh_pds = tm.forecast_low_med_high_pds_global()
+  assert lmh_reg.loc[:2014].equals(lmh_pds.loc[:2014])
+  assert not lmh_reg.loc[2015:].equals(lmh_pds.loc[2015:])
+
 def test_forecast_data_oecd90():
   tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
       tam_pds_data_sources=g_tam_pds_data_sources)
