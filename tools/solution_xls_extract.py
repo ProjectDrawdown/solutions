@@ -87,6 +87,12 @@ def get_rrs_scenarios(wb):
       assert sr_tab.cell_value(row + 76, 1) == 'General'
       s['npv_discount_rate'] = convert_sr_float(sr_tab.cell_value(row + 77, 4))
 
+      assert sr_tab.cell_value(row + 86, 1) == 'EMISSIONS INPUTS'
+
+      assert sr_tab.cell_value(row + 88, 1) == 'Grid Emissions'
+      s['conv_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 89, 4))
+      s['soln_energy_efficiency_factor'] = convert_sr_float(sr_tab.cell_value(row + 90, 4))
+
       assert sr_tab.cell_value(row + 94, 1) == 'Fuel Emissions'
       s['conv_fuel_consumed_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 95, 4))
       s['soln_fuel_efficiency_factor'] = convert_sr_float(sr_tab.cell_value(row + 96, 4))
@@ -140,6 +146,10 @@ def get_rrs_scenarios(wb):
           s['soln_pds_adoption_basis'] = 'Fully Customized PDS'
 
       assert sr_tab.cell_value(row + 198, 1) == 'REF ADOPTION SCENARIO INPUTS'
+      adopt = str(sr_tab.cell_value(row + 199, 4)).strip()
+      if adopt: s['soln_ref_adoption_basis'] = adopt
+      custom = str(sr_tab.cell_value(row + 200, 4)).strip()
+      if custom: s['soln_ref_adoption_custom_name'] = custom
       s['soln_ref_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 201, 4))
 
       assert sr_tab.cell_value(row + 217, 1) == 'Adoption Adjustment'
@@ -259,6 +269,7 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['soln_fixed_oper_cost_per_iunit'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_var_oper_cost_per_funit', 'conv_fuel_cost_per_funit'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fixed_oper_cost_per_iunit'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_energy_efficiency_factor', 'conv_annual_energy_used'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fuel_emissions_factor', 'soln_fuel_emissions_factor'],
       prefix=prefix, suffix='\n')
@@ -268,6 +279,8 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['conv_emissions_per_funit', 'soln_emissions_per_funit'],
       prefix=prefix, suffix='\n')
 
+  oneline(f=f, s=s, names=['soln_ref_adoption_basis'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_ref_adoption_custom_name'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_ref_adoption_regional_data',
     'soln_pds_adoption_regional_data'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_pds_adoption_basis'], prefix=prefix)
@@ -596,38 +609,55 @@ def write_ad(f, wb, outputdir):
     f.write("      },\n")
   f.write("    }\n")
   f.write("    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)\n")
-  f.write("    adoption_data_per_region = self.ad.adoption_data_per_region()\n")
-  f.write("    adoption_trend_per_region = self.ad.adoption_trend_per_region()\n")
-  f.write("    adoption_is_single_source = self.ad.adoption_is_single_source()\n")
+  f.write("    pds_adoption_data_per_region = self.ad.adoption_data_per_region()\n")
+  f.write("    pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()\n")
+  f.write("    pds_adoption_is_single_source = self.ad.adoption_is_single_source()\n")
   f.write("\n")
 
 
-def write_custom_ad(f, wb, outputdir):
+def write_custom_ad(case, f, wb, outputdir):
   """Generate the Custom Adoption Data section of a solution.
      Arguments:
-       f - file-like object for output
-       wb - an Excel workbook as returned by xlrd
+       case: 'PDS' or 'REF'
+       f: file-like object for output
+       wb: an Excel workbook as returned by xlrd
        outputdir: name of directory to write CSV files to.
   """
-  scenarios = extract_custom_adoption(wb=wb, outputdir=outputdir)
-  f.write("    ca_data_sources = [\n")
+  if case == 'REF':
+    scenarios = extract_custom_adoption(wb=wb, outputdir=outputdir, sheet_name='Custom REF Adoption',
+        prefix='custom_ref_ad_')
+    f.write("    ca_ref_data_sources = [\n")
+  elif case == 'PDS':
+    scenarios = extract_custom_adoption(wb=wb, outputdir=outputdir, sheet_name='Custom PDS Adoption',
+        prefix='custom_pds_ad_')
+    f.write("    ca_pds_data_sources = [\n")
+  else:
+    raise ValueError('write_custom_ad case must be PDS or REF: ' + str(case))
+
   for s in scenarios:
     f.write("      {'name': '" + s['name'] + "', 'include': " + str(s['include']) + ",\n")
     f.write("          'filename': str(thisdir.joinpath('" + s['filename'] + "'))},\n")
   f.write("    ]\n")
-  f.write("    self.ca = customadoption.CustomAdoption(data_sources=ca_data_sources,\n")
-  f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)\n")
-  f.write("    adoption_data_per_region = self.ca.adoption_data_per_region()\n")
-  f.write("    adoption_trend_per_region = self.ca.adoption_trend_per_region()\n")
-  f.write("    adoption_is_single_source = True\n")
+
+  if case == 'REF':
+    f.write("    self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,\n")
+    f.write("        soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name)\n")
+    f.write("    ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
+  if case == 'PDS':
+    f.write("    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
+    f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)\n")
+    f.write("    pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
+    f.write("    pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
+    f.write("    pds_adoption_is_single_source = True\n")
   f.write("\n")
 
 
-def write_ht(f, wb):
+def write_ht(f, wb, is_custom_ref_ad):
   """Generate the Helper Tables section of a solution.
      Arguments:
-       f - file-like object for output
-       wb - an Excel workbook as returned by xlrd
+       f: file-like object for output
+       wb: an Excel workbook as returned by xlrd
+       is_custom_ref_ad: whether a REF customadoption is in use.
   """
   h = wb.sheet_by_name('Helper Tables')
   initial_datapoint_year = int(h.cell_value(*cell_to_offsets('B21')))
@@ -660,9 +690,11 @@ def write_ht(f, wb):
   f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
   f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
-  f.write("        adoption_data_per_region=adoption_data_per_region,\n")
-  f.write("        adoption_trend_per_region=adoption_trend_per_region,\n")
-  f.write("        adoption_is_single_source=adoption_is_single_source)\n")
+  f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
+  if is_custom_ref_ad:
+    f.write("        ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
+  f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
+  f.write("        pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
   f.write("\n")
 
 
@@ -916,13 +948,15 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
   return cases
 
 
-def extract_custom_adoption(wb, outputdir):
+def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
   """Extract custom adoption scenarios from an Excel file.
      Arguments:
        wb: Excel workbook as returned by xlrd.
        outputdir: directory where output files are written
+       sheet_name: Excel sheet name to extract from
+       prefix: string to prepend to filenames
   """
-  custom_ad_tab = wb.sheet_by_name('Custom PDS Adoption')
+  custom_ad_tab = wb.sheet_by_name(sheet_name)
   scenarios = []
   for row in range(20, 36):
     if not re.search(r"Scenario \d+", str(custom_ad_tab.cell(row, 13).value)):
@@ -930,13 +964,13 @@ def extract_custom_adoption(wb, outputdir):
     name = str(custom_ad_tab.cell(row, 14).value)
     includestr = str(custom_ad_tab.cell_value(row, 18))
     include = convert_bool(includestr) if includestr else False
-    filename = get_filename_for_source(name, prefix='custom_ad_')
+    filename = get_filename_for_source(name, prefix=prefix)
     if not filename:
       continue
     skip = True
     for row in range(0, custom_ad_tab.nrows):
       if str(custom_ad_tab.cell(row, 1).value) == name:
-        df = pd.read_excel(wb, engine='xlrd', sheet_name='Custom PDS Adoption',
+        df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name,
             header=0, index_col=0, usecols="A:K", skiprows=row+1, nrows=49)
         if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
           df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
@@ -989,6 +1023,9 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write('from model import vma\n')
   f.write('\n')
 
+  if has_tam:
+    f.write('from model import tam\n')
+
   if is_rrs:
     f.write('from solution import rrs\n\n')
     scenarios = get_rrs_scenarios(wb=wb)
@@ -1001,15 +1038,16 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
   f.write("\n")
 
-  if has_tam:
-    f.write('from model import tam\n')
-
-  is_default_ad = is_custom_ad = False
+  is_default_pds_ad = is_custom_pds_ad = is_default_ref_ad = is_custom_ref_ad = False
   for s in scenarios.values():
     if s.get('soln_pds_adoption_basis', '') == 'Existing Adoption Prognostications':
-      is_default_ad = True
+      is_default_pds_ad = True
     if s.get('soln_pds_adoption_basis', '') == 'Fully Customized PDS':
-      is_custom_ad = True
+      is_custom_pds_ad = True
+    if s.get('soln_ref_adoption_basis', '') == 'Default':
+      is_default_ref_ad = True
+    if s.get('soln_ref_adoption_basis', '') == 'Custom':
+      is_custom_ref_ad = True
 
   f.write('scenarios = {\n')
   for name, s in scenarios.items():
@@ -1033,12 +1071,18 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   if has_tam:
     write_tam(f=f, wb=wb, outputdir=outputdir)
 
-  if is_default_ad:
+  if is_custom_pds_ad and is_default_pds_ad:
+    raise NotimplementedError('Support for both Default and Custom PDS adoption is not implemented')
+  if is_custom_ref_ad and is_default_ref_ad:
+    raise NotimplementedError('Support for both Default and Custom REF adoption is not implemented')
+  if is_default_pds_ad or is_default_ref_ad:
     write_ad(f=f, wb=wb, outputdir=outputdir)
-  if is_custom_ad:
-    write_custom_ad(f=f, wb=wb, outputdir=outputdir)
+  if is_custom_pds_ad:
+    write_custom_ad(case='PDS', f=f, wb=wb, outputdir=outputdir)
+  if is_custom_ref_ad:
+    write_custom_ad(case='REF', f=f, wb=wb, outputdir=outputdir)
 
-  write_ht(f=f, wb=wb)
+  write_ht(f=f, wb=wb, is_custom_ref_ad=is_custom_ref_ad)
   f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
   f.write("\n")
   write_ua(f=f)

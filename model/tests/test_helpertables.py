@@ -29,8 +29,8 @@ def test_soln_ref_funits_adopted():
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
       ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
-      adoption_data_per_region=None, adoption_trend_per_region=None,
-      adoption_is_single_source=False)
+      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+      pds_adoption_is_single_source=False)
   result = ht.soln_ref_funits_adopted()
   expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
@@ -63,8 +63,8 @@ def test_soln_ref_funits_adopted_tam_limit():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
       ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
-      adoption_data_per_region=None, adoption_trend_per_region=None,
-      adoption_is_single_source=False)
+      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+      pds_adoption_is_single_source=False)
   result = ht.soln_ref_funits_adopted()
   expected = ref_tam_per_region
   expected.name = 'soln_ref_funits_adopted'
@@ -78,8 +78,8 @@ def test_soln_ref_funits_adopted_regional_sums():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
       ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
-      adoption_data_per_region=None, adoption_trend_per_region=None,
-      adoption_is_single_source=False)
+      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+      pds_adoption_is_single_source=False)
   result = ht.soln_ref_funits_adopted()
   expected = pd.DataFrame([
     [2014, 6.0, 3.0, 2.0, 1.0], [2015, 6.0, 3.0, 2.0, 1.0], [2016, 6.0, 3.0, 2.0, 1.0],
@@ -102,6 +102,52 @@ def test_soln_ref_funits_adopted_regional_sums():
   expected.name = 'soln_ref_funits_adopted'
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_soln_ref_funits_adopted_custom_ref_adoption():
+  """Test simple case, compute adoption from linear regression of datapoints."""
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+    soln_ref_adoption_basis='Custom')
+  ref_datapoints = pd.DataFrame([
+    [2014, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    [2050, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  ref_adoption_data_per_region = pd.DataFrame(ref_adoption_data_per_region_insulation_list[1:],
+      columns=ref_adoption_data_per_region_insulation_list[0]).set_index('Year')
+  ref_adoption_data_per_region.name = 'ref_adoption_data_per_region'
+  ref_tam_per_region_insulation = pd.DataFrame(ref_tam_per_region_insulation_list[1:],
+      columns=ref_tam_per_region_insulation_list[0]).set_index('Year')
+  ref_tam_per_region_insulation.name = 'ref_tam_per_region'
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
+      ref_tam_per_region=ref_tam_per_region_insulation, pds_adoption_data_per_region=None,
+      ref_adoption_data_per_region=ref_adoption_data_per_region)
+  result = ht.soln_ref_funits_adopted()
+  expected = ref_adoption_data_per_region
+  expected.name = 'soln_ref_funits_adopted'
+  pd.testing.assert_frame_equal(result, expected.loc[2014:], check_exact=False)
+
+def test_soln_ref_funits_adopted_custom_ref_adoption_tam_limit():
+  """Test simple case, compute adoption from linear regression of datapoints."""
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+    soln_ref_adoption_basis='Custom')
+  ref_datapoints = pd.DataFrame([
+    [2014, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    [2050, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]],
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+        "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+  ref_adoption_data_per_region = pd.DataFrame(ref_adoption_data_per_region_insulation_list[1:],
+      columns=ref_adoption_data_per_region_insulation_list[0]).set_index('Year')
+  ref_adoption_data_per_region.name = 'ref_adoption_data_per_region'
+  ref_tam_per_region_limit_seven = pd.DataFrame(ref_tam_per_region_limit_seven_list[1:],
+      columns=ref_tam_per_region_limit_seven_list[0]).set_index('Year')
+  ref_tam_per_region_limit_seven.name = 'ref_tam_per_region'
+  ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
+      ref_tam_per_region=ref_tam_per_region_limit_seven, pds_adoption_data_per_region=None,
+      ref_adoption_data_per_region=ref_adoption_data_per_region)
+  result = ht.soln_ref_funits_adopted()
+  expected = ref_tam_per_region_limit_seven
+  expected.name = 'soln_ref_funits_adopted'
+  pd.testing.assert_frame_equal(result.loc[:, ['World']], expected.loc[2014:, ['World']], check_exact=False)
+
 def test_soln_pds_funits_adopted_single_source():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
       soln_pds_adoption_prognostication_growth='Medium',
@@ -114,16 +160,16 @@ def test_soln_pds_funits_adopted_single_source():
     [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  adoption_data_per_region = pd.DataFrame(adoption_data_med_single_source_list[1:],
+  pds_adoption_data_per_region = pd.DataFrame(adoption_data_med_single_source_list[1:],
       columns=adoption_data_med_single_source_list[0], dtype=np.float64).set_index('Year')
-  adoption_data_per_region.index = adoption_data_per_region.index.astype(int)
-  adoption_trend_per_region = pd.DataFrame(adoption_trend_per_region_list[1:],
-      columns=adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
-  adoption_trend_per_region.index = adoption_trend_per_region.index.astype(int)
+  pds_adoption_data_per_region.index = pds_adoption_data_per_region.index.astype(int)
+  pds_adoption_trend_per_region = pd.DataFrame(pds_adoption_trend_per_region_list[1:],
+      columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
+  pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
       ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      adoption_data_per_region=adoption_data_per_region,
-      adoption_trend_per_region=adoption_trend_per_region, adoption_is_single_source=True)
+      pds_adoption_data_per_region=pds_adoption_data_per_region,
+      pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=True)
   result = ht.soln_pds_funits_adopted()
   expected = pd.DataFrame(soln_pds_funits_adopted_single_source_list[1:],
       columns=soln_pds_funits_adopted_single_source_list[0]).set_index('Year')
@@ -141,19 +187,18 @@ def test_soln_pds_funits_adopted_passthru():
     [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  adoption_data_per_region = pd.DataFrame(adoption_data_med_all_sources_list[1:],
+  pds_adoption_data_per_region = pd.DataFrame(adoption_data_med_all_sources_list[1:],
       columns=adoption_data_med_all_sources_list[0], dtype=np.float64).set_index('Year')
-  adoption_data_per_region.index = adoption_data_per_region.index.astype(int)
-  adoption_trend_per_region = pd.DataFrame(adoption_trend_per_region_list[1:],
-      columns=adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
-  adoption_trend_per_region.index = adoption_trend_per_region.index.astype(int)
+  pds_adoption_data_per_region.index = pds_adoption_data_per_region.index.astype(int)
+  pds_adoption_trend_per_region = pd.DataFrame(pds_adoption_trend_per_region_list[1:],
+      columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
+  pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
       ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      adoption_data_per_region=adoption_data_per_region,
-      adoption_trend_per_region=adoption_trend_per_region, adoption_is_single_source=False)
+      pds_adoption_data_per_region=pds_adoption_data_per_region,
+      pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
-  expected = adoption_trend_per_region
-  expected.name = 'soln_ref_funits_adopted'
+  expected = pds_adoption_trend_per_region
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_soln_pds_funits_adopted_datapoints_nan():
@@ -166,16 +211,16 @@ def test_soln_pds_funits_adopted_datapoints_nan():
     [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  adoption_data_per_region = pd.DataFrame(adoption_data_med_all_sources_list[1:],
+  pds_adoption_data_per_region = pd.DataFrame(adoption_data_med_all_sources_list[1:],
       columns=adoption_data_med_all_sources_list[0], dtype=np.float64).set_index('Year')
-  adoption_data_per_region.index = adoption_data_per_region.index.astype(int)
-  adoption_trend_per_region = pd.DataFrame(adoption_trend_per_region_list[1:],
-      columns=adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
-  adoption_trend_per_region.index = adoption_trend_per_region.index.astype(int)
+  pds_adoption_data_per_region.index = pds_adoption_data_per_region.index.astype(int)
+  pds_adoption_trend_per_region = pd.DataFrame(pds_adoption_trend_per_region_list[1:],
+      columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
+  pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
       ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      adoption_data_per_region=adoption_data_per_region,
-      adoption_trend_per_region=adoption_trend_per_region, adoption_is_single_source=False)
+      pds_adoption_data_per_region=pds_adoption_data_per_region,
+      pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   assert result.loc[2014, 'World'] == pytest.approx(112.633033)
   assert result.loc[2014, 'OECD90'] == pytest.approx(1.0)
@@ -194,16 +239,16 @@ def test_soln_pds_funits_adopted_zero_regional():
     [2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  adoption_data_per_region = pd.DataFrame(adoption_data_med_all_sources_list[1:],
+  pds_adoption_data_per_region = pd.DataFrame(adoption_data_med_all_sources_list[1:],
       columns=adoption_data_med_all_sources_list[0], dtype=np.float64).set_index('Year')
-  adoption_data_per_region.index = adoption_data_per_region.index.astype(int)
-  adoption_trend_per_region = pd.DataFrame(adoption_trend_per_region_list[1:],
-      columns=adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
-  adoption_trend_per_region.index = adoption_trend_per_region.index.astype(int)
+  pds_adoption_data_per_region.index = pds_adoption_data_per_region.index.astype(int)
+  pds_adoption_trend_per_region = pd.DataFrame(pds_adoption_trend_per_region_list[1:],
+      columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
+  pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
       ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      adoption_data_per_region=adoption_data_per_region,
-      adoption_trend_per_region=adoption_trend_per_region, adoption_is_single_source=False)
+      pds_adoption_data_per_region=pds_adoption_data_per_region,
+      pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   assert result.loc[2015, 'USA'] == 0
   assert result.loc[2030, 'OECD90'] == 0
@@ -218,10 +263,31 @@ def test_soln_pds_funits_custom_pds():
                                               'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
                                               'USA']).set_index('Year')
     ht_pds_datapoints = ht_ref_datapoints
-    ht = helpertables.HelperTables(ac, adoption_data_per_region=custom_scen, ref_datapoints=ht_ref_datapoints,
+    ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen, ref_datapoints=ht_ref_datapoints,
                                    pds_datapoints=ht_pds_datapoints)
     pd.testing.assert_frame_equal(ht.soln_pds_funits_adopted().iloc[1:, :], custom_scen.iloc[3:, :])
     assert sum(ht.soln_pds_funits_adopted().loc[2014]) == 0
+
+def test_soln_pds_funits_custom_pds_tam_limit():
+    datadir = pathlib.Path(__file__).parents[0].joinpath('data')
+    custom_scen = pd.read_csv(datadir.joinpath('ca_scenario_1_trr.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(soln_pds_adoption_basis='Fully Customized PDS')
+    ht_ref_datapoints = pd.DataFrame([[2014] + [0] * 10, [2050] + [0] * 10],
+                                     columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                                              'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
+                                              'USA']).set_index('Year')
+    ht_pds_datapoints = ht_ref_datapoints
+    pds_tam_per_region_limit_seven = pd.DataFrame(ref_tam_per_region_limit_seven_list[1:],
+        columns=ref_tam_per_region_limit_seven_list[0]).set_index('Year')
+    pds_tam_per_region_limit_seven.name = 'pds_tam_per_region'
+    ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen, ref_datapoints=ht_ref_datapoints,
+                                   pds_datapoints=ht_pds_datapoints,
+                                   pds_tam_per_region=pds_tam_per_region_limit_seven)
+    expected = pds_tam_per_region_limit_seven
+    expected.name = 'soln_pds_funits_adopted'
+    result = ht.soln_pds_funits_adopted()
+    print(str(result))
+    pd.testing.assert_series_equal(result.loc[2015:, 'World'], expected.loc[2015:, 'World'], check_exact=False)
 
 def test_soln_pds_funits_adopted_linear_interpolation():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
@@ -242,15 +308,15 @@ def test_soln_pds_funits_adopted_linear_interpolation():
   expected.name = 'soln_ref_funits_adopted'
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
       ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region_cookstoves,
-      adoption_data_per_region=None, adoption_trend_per_region=None,
-      adoption_is_single_source=False)
+      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+      pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False)
-  # ensure that adoption_is_single_source has no effect on Linear interpolation.
+  # ensure that pds_adoption_is_single_source has no effect on Linear interpolation.
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
       ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region_cookstoves,
-      adoption_data_per_region=None, adoption_trend_per_region=None,
-      adoption_is_single_source=True)
+      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+      pds_adoption_is_single_source=True)
   result = ht.soln_pds_funits_adopted()
   pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False)
 
@@ -271,17 +337,17 @@ def test_ref_adoption_use_pds_years_and_vice_versa():
     [2050, 2603.660640, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-  adoption_data_per_region = pd.DataFrame(adoption_data_med_single_source_list[1:],
+  pds_adoption_data_per_region = pd.DataFrame(adoption_data_med_single_source_list[1:],
       columns=adoption_data_med_single_source_list[0], dtype=np.float64).set_index('Year')
-  adoption_data_per_region.index = adoption_data_per_region.index.astype(int)
-  adoption_trend_per_region = pd.DataFrame(adoption_trend_per_region_list[1:],
-      columns=adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
-  adoption_trend_per_region.index = adoption_trend_per_region.index.astype(int)
+  pds_adoption_data_per_region.index = pds_adoption_data_per_region.index.astype(int)
+  pds_adoption_trend_per_region = pd.DataFrame(pds_adoption_trend_per_region_list[1:],
+      columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
+  pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=pds_datapoints,
       ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-      adoption_data_per_region=adoption_data_per_region,
-      adoption_trend_per_region=adoption_trend_per_region,
-      adoption_is_single_source=True)
+      pds_adoption_data_per_region=pds_adoption_data_per_region,
+      pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+      pds_adoption_is_single_source=True)
   ref_expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
   ref_expected.name = 'soln_ref_funits_adopted'
@@ -615,7 +681,7 @@ adoption_data_high_all_sources_list = [
     [2059, 7370.850167, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 7638.373825, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
-adoption_trend_per_region_list = [
+pds_adoption_trend_per_region_list = [
     ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
       'Latin America', 'China', 'India', 'EU', 'USA'],
     [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778,
@@ -769,3 +835,159 @@ soln_pds_funits_adopted_cookstoves_list = [
     [2058, 1976.592074, 0.0, 0.0, 1222.983984, 918.494391, 40.261394, 229.626181, 567.099294, 0.0, 0.0],
     [2059, 2021.053057, 0.0, 0.0, 1250.209940, 939.247962, 40.337219, 234.844958, 579.987914, 0.0, 0.0],
     [2060, 2065.514040, 0.0, 0.0, 1277.435895, 960.001533, 40.413043, 240.063735, 592.876534, 0.0, 0.0]]
+
+# Insulation "Custom REF Adoption"!A22:K71
+ref_adoption_data_per_region_insulation_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+      "Latin America", "China", "India", "EU", "USA"],
+    [2012, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2013, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2014, 35739.109727, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2015, 35739.109727, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2016, 36597.985934, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2017, 37501.594659, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2018, 38450.768277, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2019, 39446.355311, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2020, 40489.220588, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2021, 41591.191290, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2022, 42746.000619, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2023, 43954.624805, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2024, 45218.059327, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2025, 46537.319091, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2026, 47913.438612, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2027, 49347.472223, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2028, 50840.494297, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2029, 52349.849469, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2030, 53913.469638, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2031, 55536.473071, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2032, 57216.315636, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2033, 58954.034840, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2034, 60750.687208, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2035, 62607.348541, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2036, 64525.114196, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2037, 66505.099362, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2038, 68548.439354, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2039, 70656.289906, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2040, 72829.827479, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2041, 75073.755671, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2042, 77385.997766, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2043, 79767.789526, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2044, 82220.388881, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2045, 84745.076266, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2046, 87343.154959, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2047, 90015.951424, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2048, 92764.815671, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2049, 95591.121617, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2050, 98496.267456, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2051, 101477.504986, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2052, 104535.374284, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2053, 107670.258148, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2054, 110882.345935, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2055, 114171.590091, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2056, 117537.653910, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2057, 120980.682987, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2058, 124500.744020, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2059, 128097.840486, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2060, 131771.938688, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+ref_tam_per_region_insulation_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+      "Latin America", "China", "India", "EU", "USA"],
+    [2014, 119130, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2015, 122032, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2016, 124929, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2017, 127826, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2018, 130721, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2019, 133616, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2020, 136511, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2021, 139406, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2022, 142300, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2023, 145195, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2024, 148089, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2025, 150985, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2026, 153880, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2027, 156777, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2028, 159674, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2029, 162572, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2030, 165471, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2031, 168372, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2032, 171274, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2033, 174177, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2034, 177082, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2035, 179989, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2036, 182898, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2037, 185809, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2038, 188723, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2039, 191639, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2040, 194557, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2041, 197479, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2042, 200403, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2043, 203330, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2044, 206260, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2045, 209194, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2046, 212131, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2047, 215072, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2048, 218016, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2049, 220964, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2050, 223917, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2051, 226874, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2052, 229835, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2053, 232800, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2054, 235770, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2055, 238745, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2056, 241725, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2057, 244710, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2058, 247700, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2059, 250696, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2060, 253697, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+ref_tam_per_region_limit_seven_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+      "Latin America", "China", "India", "EU", "USA"],
+    [2014, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2015, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2016, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2017, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2018, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2019, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2020, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2021, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2022, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2023, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2024, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2025, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2026, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2027, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2028, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2029, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2030, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2031, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2032, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2033, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2034, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2035, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2036, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2037, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2038, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2039, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2040, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2041, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2042, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2043, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2044, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2045, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2046, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2047, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2048, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2049, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2050, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2051, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2052, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2053, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2054, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2055, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2056, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2057, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2058, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2059, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0],
+    [2060, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 7.0]]

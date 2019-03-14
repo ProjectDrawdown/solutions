@@ -4,7 +4,9 @@ import pytest
 import biogas
 import biomass
 import concentratedsolar
+import improvedcookstoves
 import instreamhydro
+import insulation
 import landfillmethane
 import microwind
 import offshorewind
@@ -30,9 +32,21 @@ def test_concentratedsolar():
   assert obj.scenario == scenario
   assert obj.name
 
+def test_improvedcookstoves():
+  scenario = list(improvedcookstoves.scenarios.keys())[0]
+  obj = improvedcookstoves.ImprovedCookStoves(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
 def test_instreamhydro():
   scenario = list(instreamhydro.scenarios.keys())[0]
   obj = instreamhydro.InstreamHydro(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_insulation():
+  scenario = list(insulation.scenarios.keys())[0]
+  obj = insulation.Insulation(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 

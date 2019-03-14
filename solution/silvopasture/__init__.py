@@ -87,7 +87,7 @@ class Silvopasture:
                                                   'USA']).set_index('Year')
         self.ht = helpertables.HelperTables(
             ac=self.ac,
-            adoption_data_per_region=self.ca.adoption_data_per_region(),
+            pds_adoption_data_per_region=self.ca.adoption_data_per_region(),
             ref_datapoints=ht_ref_datapoints,
             pds_datapoints=ht_pds_datapoints
         )

@@ -116,6 +116,14 @@ def test_soln_pds_adoption_args():
   with pytest.raises(ValueError):
     _ = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_growth="???")
 
+def test_soln_ref_adoption_args():
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_basis="Default")
+  assert ac.soln_ref_adoption_basis == "Default"
+  ac = advanced_controls.AdvancedControls(soln_ref_adoption_basis="Custom")
+  assert ac.soln_ref_adoption_basis == "Custom"
+  with pytest.raises(ValueError):
+    _ = advanced_controls.AdvancedControls(soln_ref_adoption_basis="???")
+
 def test_solution_category():
   ac = advanced_controls.AdvancedControls(solution_category="REPLACEMENT")
   assert ac.solution_category == advanced_controls.SOLUTION_CATEGORY.REPLACEMENT

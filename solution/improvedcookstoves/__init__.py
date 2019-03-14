@@ -270,9 +270,9 @@ class ImprovedCookStoves:
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
-    adoption_data_per_region = self.ad.adoption_data_per_region()
-    adoption_trend_per_region = self.ad.adoption_trend_per_region()
-    adoption_is_single_source = self.ad.adoption_is_single_source()
+    pds_adoption_data_per_region = self.ad.adoption_data_per_region()
+    pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
+    pds_adoption_is_single_source = self.ad.adoption_is_single_source()
 
     ht_ref_adoption_initial = pd.Series(
       [20.308819914652318, 0.0, 0.0, 25.04194984517459, 5.337266131329677,
@@ -294,9 +294,9 @@ class ImprovedCookStoves:
     self.ht = helpertables.HelperTables(ac=self.ac,
         ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-        adoption_data_per_region=adoption_data_per_region,
-        adoption_trend_per_region=adoption_trend_per_region,
-        adoption_is_single_source=adoption_is_single_source)
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
