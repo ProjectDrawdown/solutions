@@ -140,33 +140,7 @@ Tasks which do not fit into an ordered list of things to be completed:
 # License
 This program (excluding the Excel code) is part of the &lt;code&gt;/earth project. The &lt;code&gt;/earth DD Model Engine is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at https://gitlab.com/codeearth/drawdown. No part of this Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
 
-The Excel VBA code found in ddexel_models contains [VBA-Web](http://vba-tools.github.io/VBA-Web/) which is released under the MIT License.
-
-The Project Drawdown Excel model file itself will be release under a license which has not yet been decided, but is not released at the time of this writing.
-
-The small bits of code in that model file copyright Robert L. Read are released under the AGPL; since they are tightly integrated with the spreadsheet, they are likely valuable only as examples.
-
----
-
-# The VBA-Web empowered Excel Spreadsheet
-
-## Goals
-
-The current goal of Project Drawdown and this repository is to liberate the data and model methodology from Microsoft Excel and make it freely transparent and hackable in Python.
-
-## Comparing
-
-However, in order to do this gracefully and iteratively, programmers must be able to check their work.
-Until the whole model is computable without Excel, a simple means of testing new Python code implementing ever-greater parts of the model is to compare intermediate with results with those computed by Excel.
-
-In order to make this comparison easier, we have added the [VBA-Web](http://vba-tools.github.io/VBA-Web/) software to our spreadsheet.
-(We found the installation of VBA-Web easier to do on a Windows machine than on a Mac.)
-This allows us to post data to a web service implemented in Python.
-
-This allows a programmer to test that the numbers produced by the Python model match the Excel model.
-
-
-The VBA code is typically invoked by tests/test_excel_integration.py using xlwings. There is also a button with red lettering: TEST FUNCTIONAL UNIT on the Unit Adoption Calculations and First Cost tabs of the spreadsheet. These will fetch the SolarPVUtil solution, the first one implemented. The xlwings invocation of the VBA code can provide an argument of the solution to fetch.
+The Project Drawdown Excel model file itself will be release under a license which has not yet been decided, but is not released at the time of this writing. The small bits of code in that model file copyright Robert L. Read are released under the AGPL; since they are tightly integrated with the spreadsheet, they are likely valuable only as examples.
 
 ---
 
