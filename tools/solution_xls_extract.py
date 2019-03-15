@@ -673,7 +673,7 @@ def write_ht(f, wb, is_custom_ref_ad):
   f.write("(ht_ref_adoption_initial / ref_tam_per_region.loc[" + str(initial_datapoint_year) + "])\n")
   f.write("    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)\n")
   f.write("    ht_ref_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_ref_adoption_initial\n")
-  f.write("    ht_ref_datapoints.loc[" + str(final_datapoint_year) + "] = ht_ref_adoption_final\n")
+  f.write("    ht_ref_datapoints.loc[" + str(final_datapoint_year) + "] = ht_ref_adoption_final.fillna(0.0)\n")
 
   f.write("    ht_pds_adoption_initial = ht_ref_adoption_initial\n")
   f.write("    ht_pds_adoption_final_percentage = pd.Series(\n")
@@ -685,7 +685,7 @@ def write_ht(f, wb, is_custom_ref_ad):
   f.write("    ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[" + str(final_datapoint_year) + "]\n")
   f.write("    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)\n")
   f.write("    ht_pds_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
-  f.write("    ht_pds_datapoints.loc[" + str(final_datapoint_year) + "] = ht_pds_adoption_final\n")
+  f.write("    ht_pds_datapoints.loc[" + str(final_datapoint_year) + "] = ht_pds_adoption_final.fillna(0.0)\n")
 
   f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
@@ -771,25 +771,6 @@ def write_c2_c4(f):
   f.write("        conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),\n")
   f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,\n")
   f.write("        fuel_in_liters=False)\n")
-  f.write("\n")
-
-
-def write_to_dict(f, has_tam):
-  """Write out the to_dict() routine for this solution class."""
-  f.write("  def to_dict(self):\n")
-  f.write('    """Return all data as a dict, to be serialized to JSON."""\n')
-  f.write("    rs = dict()\n")
-  if has_tam:
-    f.write("    rs['tam_data'] = self.tm.to_dict()\n")
-  f.write("    rs['adoption_data'] = self.ad.to_dict()\n")
-  f.write("    rs['helper_tables'] = self.ht.to_dict()\n")
-  f.write("    rs['emissions_factors'] = self.ef.to_dict()\n")
-  f.write("    rs['unit_adoption'] = self.ua.to_dict()\n")
-  f.write("    rs['first_cost'] = self.fc.to_dict()\n")
-  f.write("    rs['operating_cost'] = self.oc.to_dict()\n")
-  f.write("    rs['ch4_calcs'] = self.c4.to_dict()\n")
-  f.write("    rs['co2_calcs'] = self.c2.to_dict()\n")
-  f.write("    return rs\n")
   f.write("\n")
 
 
@@ -1098,7 +1079,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 
   f.write("    self.VMAs = []\n")
   f.write("\n")
-  write_to_dict(f=f, has_tam=has_tam)
 
   for key, values in scenarios.items():
     if values:

@@ -325,6 +325,27 @@ def test_adoption_trend_per_region():
   pd.testing.assert_series_equal(result['USA'],
       ad.adoption_trend_usa()['adoption'], check_names=False)
 
+def test_regional_data_sources():
+  data_sources = {
+    'Baseline Cases': {
+      '10': str(datadir.joinpath('ad_region_constant10.csv')),
+      '20': str(datadir.joinpath('ad_region_constant20.csv')),
+    },
+    'Region: OECD90': {
+      'Baseline Cases': {
+        '10': str(datadir.joinpath('ad_region_constant10.csv')),
+      },
+    },
+  }
+  ac = advanced_controls.AdvancedControls(
+      soln_pds_adoption_prognostication_source='ALL SOURCES',
+      soln_pds_adoption_prognostication_growth='Medium')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+  result = ad.adoption_trend_per_region()
+  assert result.loc[2019, 'World'] == pytest.approx(15.0)
+  assert result.loc[2019, 'OECD90'] == pytest.approx(10.0)
+  assert result.loc[2019, 'Latin America'] == pytest.approx(15.0)
+
 
 # 'Adoption Data'!X46:Z94
 adoption_min_max_sd_global_list = [['Year', 'Min', 'Max', 'S.D'],

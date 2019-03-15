@@ -23,7 +23,7 @@ def linear_trend(data):
   result.index.name = 'Year'
   if data.dropna().empty: return result
   y = data.dropna().values
-  x = data.dropna().index.copy() - 2014
+  x = data.dropna().index - 2014
   if x.size == 0 or y.size == 0: return result
   (slope, intercept) = np.polyfit(x, y, 1)
   for (offset, index) in enumerate(result.index):
@@ -42,7 +42,7 @@ def poly_degree2_trend(data):
   result.index.name = 'Year'
   if data.dropna().empty: return result
   y = data.dropna().values
-  x = data.dropna().index.copy() - 2014
+  x = data.dropna().index - 2014
   if x.size == 0 or y.size == 0: return result
   (c2, c1, intercept) = np.polyfit(x, y, 2)
   for (offset, index) in enumerate(result.index):
@@ -62,7 +62,7 @@ def poly_degree3_trend(data):
   result.index.name = 'Year'
   if data.dropna().empty: return result
   y = data.dropna().values
-  x = data.dropna().index.copy() - 2014
+  x = data.dropna().index - 2014
   if x.size == 0 or y.size == 0: return result
   (c3, c2, c1, intercept) = np.polyfit(x, y, 3)
   for (offset, index) in enumerate(result.index):
@@ -83,7 +83,7 @@ def exponential_trend(data):
   result.index.name = 'Year'
   if data.dropna().empty: return result
   y = np.log(data.dropna().values)
-  x = data.dropna().index.copy() - 2014
+  x = data.dropna().index - 2014
   if x.size == 0 or y.size == 0: return result
   (ce, coeff) = np.polyfit(x, y, 1)
   for (offset, index) in enumerate(result.index):

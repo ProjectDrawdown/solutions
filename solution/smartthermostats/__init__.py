@@ -1,5 +1,5 @@
-"""Instream Hydro (Small Hydro <10MW) solution model.
-   Excel filename: Drawdown-Instream Hydro (Small Hydro sub10MW)_RRS.ES_v1.1_14Jan2019_PUBLIC.xlsm
+"""Smart Thermostats solution model.
+   Excel filename: Drawdown-Smart Thermostats_RRS_v1.1_28Nov2018_PUBLIC.xlsm
 """
 
 import pathlib
@@ -19,152 +19,164 @@ from model import operatingcost
 from model import unitadoption
 from model import vma
 
+from model import tam
 from solution import rrs
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
-from model import tam
 scenarios = {
-  'PDS-4p2050-Plausible (Book Ed. 1)': advanced_controls.AdvancedControls(
-      # Plausible Scenario, Due to the uncertainty associated with the development of
-      # these technologies, the Plausible Scenario follows a customized high-growth
-      # adoption. Using the 2030 projection from IRENA (2016), it is assumed that
-      # electricity generation from small hydro will double by 2050
+  'PDS1-28p2050-cs Low-E12.84, F8.89 (Book Ed.1)': advanced_controls.AdvancedControls(
+      # After Integrating the results of other solutions in the Buildings Sector, the
+      # impact of Smart Thermostats is reduced to account for effects of previous
+      # solutions such as envelope solutions. The adoption (Low of all Custom Scenarios
+      # = 1 standard deviation below the mean each year), electricity savings (E=12.84%)
+      # and fuel savings (F=8.89%) are selected to match this scenario with other
+      # building solutions. This scenario uses inputs that match those of the Drawdown
+      # book edition 1, some of which have been updated.
       report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 2721.6052631578946, ref_2014_cost = 2721.6052631578946, 
-      conv_2014_cost = 2010.0317085196398, 
-      soln_first_cost_efficiency_rate = 0.02, 
-      conv_first_cost_efficiency_rate = 0.02, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.063, 
+      pds_2014_cost = 225.9430153073019, ref_2014_cost = 225.9430153073019, 
+      conv_2014_cost = 39.3510612050925, 
+      soln_first_cost_efficiency_rate = 0.13, 
+      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
+      npv_discount_rate = 0.04, 
 
-      ch4_is_co2eq = True, n2o_is_co2eq = True, 
+      ch4_is_co2eq = False, n2o_is_co2eq = False, 
       co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 22932.352941176472, 
+      soln_indirect_co2_per_iunit = 0.0, 
       conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
       ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
 
-      soln_lifetime_capacity = 161608.13345783597, soln_avg_annual_use = 3834.769268491023, 
-      conv_lifetime_capacity = 182411.2757676607, conv_avg_annual_use = 4946.8401873420025, 
+      soln_lifetime_capacity = 10.0, soln_avg_annual_use = 1.0, 
+      conv_lifetime_capacity = 23.75, conv_avg_annual_use = 1.0, 
 
-      soln_var_oper_cost_per_funit = 0.0, soln_fuel_cost_per_funit = 0.0, 
+      soln_var_oper_cost_per_funit = 660411322.8072591, soln_fuel_cost_per_funit = 0.0, 
       soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.003752690403548987, conv_fuel_cost_per_funit = 0.07, 
-      conv_fixed_oper_cost_per_iunit = 32.951404311078015, 
-      conv_fuel_consumed_per_funit = 0.0, soln_fuel_efficiency_factor = 0.0, 
-      conv_fuel_emissions_factor = 0.0, soln_fuel_emissions_factor = 0.0, 
+      conv_var_oper_cost_per_funit = 738936667.283452, conv_fuel_cost_per_funit = 0.0, 
+      conv_fixed_oper_cost_per_iunit = 0.0, 
+      soln_energy_efficiency_factor = 0.1284, conv_annual_energy_used = 2.3240931447627027, 
+      conv_fuel_consumed_per_funit = 23658.76830368019, soln_fuel_efficiency_factor = 0.0889, 
+      conv_fuel_emissions_factor = 61.051339971807074, soln_fuel_emissions_factor = 61.051339971807074, 
 
       emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
       emissions_use_co2eq = True, 
       conv_emissions_per_funit = 0.0, soln_emissions_per_funit = 0.0, 
 
+      soln_ref_adoption_basis = 'Default', 
       soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
       soln_pds_adoption_basis = 'Fully Customized PDS', 
-      pds_adoption_use_ref_years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023], 
-      soln_pds_adoption_custom_name = 'High Ambitious, double growth by 2030 & 2050', 
+      pds_adoption_use_ref_years = [2014], 
+      soln_pds_adoption_custom_name = 'Drawdown Book Ed.1 Scenario 1', 
       source_until_2014 = 'ALL SOURCES', 
       ref_source_post_2014 = 'Baseline Cases', 
-      pds_source_post_2014 = 'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario', 
+      pds_source_post_2014 = 'Baseline Cases', 
 
-      solution_category = 'REPLACEMENT', 
     ),
-  'PDS-3p2050-Drawdown (Book Ed.1)': advanced_controls.AdvancedControls(
-      # Drawdown Scenario, This scenario is derived from the evaluation of the ambitious
-      # scenarios of three energy systems models, following a low-growth trajectory.
-      # None of the models explicitly identify the evolution of small hydro systems for
-      # electricity generation; therefore, a conservative assumption was adopted that,
-      # in the future, the current share of 14 percent of all hydroelectricity would
-      # continue to come from small systems.
+  'PDS2-39p2050-cs-Avg E11.65, F8.06 (Book Ed.1)': advanced_controls.AdvancedControls(
+      # After Integrating the results of other solutions in the Buildings Sector, the
+      # impact of Smart Thermostats is reduced to account for effects of previous
+      # solutions such as envelope solutions. The adoption (Average of all Custom
+      # Scenarios each year), electricity savings (E=11.65%) and fuel savings (F=8.06%)
+      # are selected to match this scenario with other building solutions. This scenario
+      # uses inputs used to develop the Drawdown book Edition 1 results, some of which
+      # have been updated.
       report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 2721.6052631578946, ref_2014_cost = 2721.6052631578946, 
-      conv_2014_cost = 2010.0317085196398, 
-      soln_first_cost_efficiency_rate = 0.02, 
-      conv_first_cost_efficiency_rate = 0.02, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.063, 
+      pds_2014_cost = 225.9430153073019, ref_2014_cost = 225.9430153073019, 
+      conv_2014_cost = 39.3510612050925, 
+      soln_first_cost_efficiency_rate = 0.13, 
+      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
+      npv_discount_rate = 0.04, 
 
-      ch4_is_co2eq = True, n2o_is_co2eq = True, 
+      ch4_is_co2eq = False, n2o_is_co2eq = False, 
       co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 22932.352941176472, 
+      soln_indirect_co2_per_iunit = 0.0, 
       conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
       ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
 
-      soln_lifetime_capacity = 161608.13345783597, soln_avg_annual_use = 3834.769268491023, 
-      conv_lifetime_capacity = 182411.2757676607, conv_avg_annual_use = 4946.8401873420025, 
+      soln_lifetime_capacity = 10.0, soln_avg_annual_use = 1.0, 
+      conv_lifetime_capacity = 23.75, conv_avg_annual_use = 1.0, 
 
-      soln_var_oper_cost_per_funit = 0.0, soln_fuel_cost_per_funit = 0.0, 
+      soln_var_oper_cost_per_funit = 660411322.8072591, soln_fuel_cost_per_funit = 0.0, 
       soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.003752690403548987, conv_fuel_cost_per_funit = 0.07, 
-      conv_fixed_oper_cost_per_iunit = 32.951404311078015, 
-      conv_fuel_consumed_per_funit = 0.0, soln_fuel_efficiency_factor = 0.0, 
-      conv_fuel_emissions_factor = 0.0, soln_fuel_emissions_factor = 0.0, 
+      conv_var_oper_cost_per_funit = 738936667.283452, conv_fuel_cost_per_funit = 0.0, 
+      conv_fixed_oper_cost_per_iunit = 0.0, 
+      soln_energy_efficiency_factor = 0.1165, conv_annual_energy_used = 2.3240931447627027, 
+      conv_fuel_consumed_per_funit = 23658.76830368019, soln_fuel_efficiency_factor = 0.0806, 
+      conv_fuel_emissions_factor = 61.051339971807074, soln_fuel_emissions_factor = 61.051339971807074, 
 
       emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
       emissions_use_co2eq = True, 
       conv_emissions_per_funit = 0.0, soln_emissions_per_funit = 0.0, 
 
+      soln_ref_adoption_basis = 'Default', 
       soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
       soln_pds_adoption_basis = 'Fully Customized PDS', 
-      soln_pds_adoption_custom_name = 'Low Ambitious Growth, 10% higher compared to REF case', 
+      pds_adoption_use_ref_years = [2014], 
+      soln_pds_adoption_custom_name = 'Drawdown Book Ed.1 Scenario 2', 
       source_until_2014 = 'ALL SOURCES', 
       ref_source_post_2014 = 'Baseline Cases', 
-      pds_source_post_2014 = 'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario', 
+      pds_source_post_2014 = 'Baseline Cases', 
 
-      solution_category = 'REPLACEMENT', 
     ),
-  'PDS-4p2050-Optimum (Book Ed. 1)': advanced_controls.AdvancedControls(
-      # Optimum Scenario, follows a customized high-growth adoption. As the Plausible
-      # Scenario, uses the 2030 projection from IRENA (2016), it is assumed that
-      # electricity generation from small hydro will double by 2050.
+  'PDS3-50p2050-cs-High E10.96, F7.59 (Book Ed.1)': advanced_controls.AdvancedControls(
+      # After Integrating the results of other solutions in the Buildings Sector, the
+      # impact of Smart Thermostats is reduced to account for effects of previous
+      # solutions such as envelope solutions. The adoption (High of all Custom Scenarios
+      # each year), electricity savings (E=10.96%) and fuel savings (F=7.59%) are
+      # selected to match this scenario with other building solutions. This scenario
+      # uses inputs developed for the Drawdown book edition 1, some of which have been
+      # updated.
       report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 2721.6052631578946, ref_2014_cost = 2721.6052631578946, 
-      conv_2014_cost = 2010.0317085196398, 
-      soln_first_cost_efficiency_rate = 0.02, 
-      conv_first_cost_efficiency_rate = 0.02, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.063, 
+      pds_2014_cost = 225.9430153073019, ref_2014_cost = 225.9430153073019, 
+      conv_2014_cost = 39.3510612050925, 
+      soln_first_cost_efficiency_rate = 0.13, 
+      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
+      npv_discount_rate = 0.04, 
 
-      ch4_is_co2eq = True, n2o_is_co2eq = True, 
+      ch4_is_co2eq = False, n2o_is_co2eq = False, 
       co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 22932.352941176472, 
+      soln_indirect_co2_per_iunit = 0.0, 
       conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
       ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
 
-      soln_lifetime_capacity = 161608.13345783597, soln_avg_annual_use = 3834.769268491023, 
-      conv_lifetime_capacity = 182411.2757676607, conv_avg_annual_use = 4946.8401873420025, 
+      soln_lifetime_capacity = 10.0, soln_avg_annual_use = 1.0, 
+      conv_lifetime_capacity = 23.75, conv_avg_annual_use = 1.0, 
 
-      soln_var_oper_cost_per_funit = 0.0, soln_fuel_cost_per_funit = 0.0, 
+      soln_var_oper_cost_per_funit = 660411322.8072591, soln_fuel_cost_per_funit = 0.0, 
       soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.003752690403548987, conv_fuel_cost_per_funit = 0.07, 
-      conv_fixed_oper_cost_per_iunit = 32.951404311078015, 
-      conv_fuel_consumed_per_funit = 0.0, soln_fuel_efficiency_factor = 0.0, 
-      conv_fuel_emissions_factor = 0.0, soln_fuel_emissions_factor = 0.0, 
+      conv_var_oper_cost_per_funit = 738936667.283452, conv_fuel_cost_per_funit = 0.0, 
+      conv_fixed_oper_cost_per_iunit = 0.0, 
+      soln_energy_efficiency_factor = 0.1096, conv_annual_energy_used = 2.3240931447627027, 
+      conv_fuel_consumed_per_funit = 23658.76830368019, soln_fuel_efficiency_factor = 0.0759, 
+      conv_fuel_emissions_factor = 61.051339971807074, soln_fuel_emissions_factor = 61.051339971807074, 
 
       emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
       emissions_use_co2eq = True, 
       conv_emissions_per_funit = 0.0, soln_emissions_per_funit = 0.0, 
 
+      soln_ref_adoption_basis = 'Default', 
       soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
       soln_pds_adoption_basis = 'Fully Customized PDS', 
-      pds_adoption_use_ref_years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023], 
-      soln_pds_adoption_custom_name = 'High Ambitious, double growth by 2030 & 2050', 
+      pds_adoption_use_ref_years = [2014], 
+      soln_pds_adoption_custom_name = 'Drawdown Book Ed.1 Scenario 3', 
       source_until_2014 = 'ALL SOURCES', 
       ref_source_post_2014 = 'Baseline Cases', 
-      pds_source_post_2014 = 'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 
+      pds_source_post_2014 = 'Baseline Cases', 
 
-      solution_category = 'REPLACEMENT', 
     ),
 }
 
-class InstreamHydro:
-  name = 'Instream Hydro (Small Hydro <10MW)'
+class SmartThermostats:
+  name = 'Smart Thermostats'
   def __init__(self, scenario=None):
     datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
     parentdir = pathlib.Path(__file__).parents[1]
     thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
-      scenario = 'PDS-4p2050-Plausible (Book Ed. 1)'
+      scenario = 'PDS1-28p2050-cs Low-E12.84, F8.89 (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -186,33 +198,67 @@ class InstreamHydro:
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=rrs.tam_ref_data_sources,
-      tam_pds_data_sources=rrs.tam_pds_data_sources)
+    tam_ref_data_sources = {
+      'Baseline Cases': {
+          'Based on: CES ITU AMPERE Baseline': str(thisdir.joinpath('tam_based_on_CES_ITU_AMPERE_Baseline.csv')),
+          'Based on: CES ITU AMPERE 550': str(thisdir.joinpath('tam_based_on_CES_ITU_AMPERE_550.csv')),
+          'Based on: CES ITU AMPERE 450': str(thisdir.joinpath('tam_based_on_CES_ITU_AMPERE_450.csv')),
+      },
+    }
+    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
+      tam_pds_data_sources=tam_ref_data_sources)
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 
-    ca_data_sources = [
-      {'name': 'High Ambitious, double growth by 2030 & 2050', 'include': True,
-          'filename': str(thisdir.joinpath('custom_ad_High_Ambitious_double_growth_by_2030_2050.csv'))},
-      {'name': 'Conservative Growth of 2.5% annum', 'include': True,
-          'filename': str(thisdir.joinpath('custom_ad_Conservative_Growth_of_2_5_annum.csv'))},
-      {'name': 'Low Ambitious Growth, 10% higher compared to REF case', 'include': True,
-          'filename': str(thisdir.joinpath('custom_ad_Low_Ambitious_Growth_10_higher_compared_to_REF_case.csv'))},
+    adconfig_list = [
+      ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+      ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
+       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
+       '3rd Poly', '3rd Poly', '3rd Poly'],
+      ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
+       'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
+       'Medium', 'Medium', 'Medium'],
+      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
+    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
+    ad_data_sources = {
+    }
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    pds_adoption_data_per_region = self.ad.adoption_data_per_region()
+    pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
+    pds_adoption_is_single_source = self.ad.adoption_is_single_source()
+
+    ca_pds_data_sources = [
+      {'name': 'Aggressive, Low', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_Aggressive_Low.csv'))},
+      {'name': 'Conservative, Low', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_Conservative_Low.csv'))},
+      {'name': 'Aggressive, high', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_Aggressive_high.csv'))},
+      {'name': 'Aggressive, high, early', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_Aggressive_high_early.csv'))},
+      {'name': 'Drawdown Book Ed.1 Scenario 1', 'include': False,
+          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Ed_1_Scenario_1.csv'))},
+      {'name': 'Drawdown Book Ed.1 Scenario 2', 'include': False,
+          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Ed_1_Scenario_2.csv'))},
+      {'name': 'Drawdown Book Ed.1 Scenario 3', 'include': False,
+          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Ed_1_Scenario_3.csv'))},
     ]
-    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_data_sources,
+    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
     pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
     pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
     pds_adoption_is_single_source = True
 
     ht_ref_adoption_initial = pd.Series(
-      [547.672, 69.035, 38.758, 403.057, 17.967,
-       18.856, 383.689, 4.014, 23.027, 3.148],
+      [3.2, 0.0, 0.0, 0.0, 0.0,
+       0.0, 0.0, 0.0, 0.7, 2.5],
        index=REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
     ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
-    ht_ref_datapoints.loc[2050] = ht_ref_adoption_final
+    ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_pds_adoption_final_percentage = pd.Series(
       [0.0, 0.0, 0.0, 0.0, 0.0,
@@ -221,7 +267,7 @@ class InstreamHydro:
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
     ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
-    ht_pds_datapoints.loc[2050] = ht_pds_adoption_final
+    ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
         ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
@@ -248,7 +294,7 @@ class InstreamHydro:
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-        fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)
+        fc_convert_iunit_factor=1000000.0)
 
     self.oc = operatingcost.OperatingCost(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -261,7 +307,7 @@ class InstreamHydro:
         single_iunit_purchase_year=2017,
         soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
         conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-        conversion_factor=rrs.TERAWATT_TO_KILOWATT)
+        conversion_factor=1.0)
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
@@ -285,18 +331,4 @@ class InstreamHydro:
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
 
     self.VMAs = []
-
-  def to_dict(self):
-    """Return all data as a dict, to be serialized to JSON."""
-    rs = dict()
-    rs['tam_data'] = self.tm.to_dict()
-    rs['adoption_data'] = self.ad.to_dict()
-    rs['helper_tables'] = self.ht.to_dict()
-    rs['emissions_factors'] = self.ef.to_dict()
-    rs['unit_adoption'] = self.ua.to_dict()
-    rs['first_cost'] = self.fc.to_dict()
-    rs['operating_cost'] = self.oc.to_dict()
-    rs['ch4_calcs'] = self.c4.to_dict()
-    rs['co2_calcs'] = self.c2.to_dict()
-    return rs
 

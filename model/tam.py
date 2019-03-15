@@ -101,8 +101,8 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     source_until_2014 = tamconfig['source_until_2014']
     source_after_2014 = tamconfig['source_after_2014']
 
-    result = pd.DataFrame(0, index=forecast.index.copy(), columns=['Min', 'Max', 'S.D'])
-    result.loc[:, 'Min'] = forecast.dropna(axis='columns', how='all').fillna(0.0).min(axis=1)
+    result = pd.DataFrame(np.nan, index=forecast.index.copy(), columns=['Min', 'Max', 'S.D'])
+    result.loc[:, 'Min'] = forecast.dropna(axis='columns', how='all').min(axis=1)
     result.loc[:, 'Max'] = forecast.max(axis=1)
     if forecast.empty:
       # Some solutions provide no data sources for PDS
@@ -111,12 +111,12 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
       columns = interpolation.matching_data_sources(data_sources=data_sources,
           name=source_until_2014, groups_only=True)
       # Excel STDDEV.P is a whole population stddev, ddof=0
-      m = forecast.loc[:2014, columns].dropna(axis='columns', how='all').fillna(0.0).std(axis=1, ddof=0)
+      m = forecast.loc[:2014, columns].dropna(axis='columns', how='all').std(axis=1, ddof=0)
       m.name = 'S.D'
       result.update(m)
       columns = interpolation.matching_data_sources(data_sources=data_sources,
           name=source_after_2014, groups_only=True)
-      m = forecast.loc[2015:, columns].dropna(axis='columns', how='all').fillna(0.0).std(axis=1, ddof=0)
+      m = forecast.loc[2015:, columns].dropna(axis='columns', how='all').std(axis=1, ddof=0)
       m.name = 'S.D'
       result.update(m)
     return result
@@ -136,7 +136,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     low_sd_mult = tamconfig['low_sd_mult']
     high_sd_mult = tamconfig['high_sd_mult']
 
-    result = pd.DataFrame(0, index=forecast.index.copy(), columns=['Low', 'Medium', 'High'])
+    result = pd.DataFrame(np.nan, index=forecast.index.copy(), columns=['Low', 'Medium', 'High'])
     columns = interpolation.matching_data_sources(data_sources=data_sources,
         name=source_until_2014, groups_only=False)
     if forecast.empty:
@@ -144,12 +144,25 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
       result.loc[:, 'Low'] = np.nan
       result.loc[:, 'High'] = np.nan
     else:
-      m = forecast.loc[:2014, columns].mean(axis=1)
+      # In Excel, the Mean computation is:
+      # SUM($C521:$Q521)/COUNTIF($C521:$Q521,">0")
+      #
+      # The intent is to skip sources which are empty, but also means that
+      # a source where the real data is 0.0 will not impact the Medium result.
+      #
+      # See this document for more information:
+      # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.yvwwsbvutw2j
+      #
+      # We're matching the Excel behavior in the initial product. This decision can
+      # be revisited later, when matching results from Excel is no longer required.
+      # To revert, use:    m = forecast.loc[:2014, columns].mean(axis=1)
+      # and:               m = forecast.loc[2015:, columns].mean(axis=1)
+      m = forecast.loc[:2014, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
       m.name = 'Medium'
       result.update(m)
       columns = interpolation.matching_data_sources(data_sources=data_sources,
           name=source_after_2014, groups_only=False)
-      m = forecast.loc[2015:, columns].mean(axis=1)
+      m = forecast.loc[2015:, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
       m.name = 'Medium'
       result.update(m)
 
@@ -244,13 +257,32 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
   @lru_cache()
   def forecast_low_med_high_pds_global(self):
     """ SolarPVUtil 'TAM Data'!AA45:AC94 """
+    # In Excel, the PDS TAM calculation:
+    # + uses World data for 2012-2014, unconditionally. However, many solutions
+    #   make a practice of using curated data for the years 2012-2014 and paste
+    #   it across all sources, so PDS and World are often the same for 2012-2014.
+    # + uses PDS data for 2015+ where it exists, and uses World data where no
+    #   PDS data exists.
+    #
+    # We implement this by calculating the World lmh, then update it with PDS
+    # results where they exist, then concatenate PDS data for 2015+ with
+    # World data for 2012-2014.
+    #
+    # Note that PDS min/max/sd uses PDS data for 2012-2014, not World, and this
+    # makes a difference in solutions which do not paste the same curated data
+    # for 2012-2014 across all sources. So this handling only exists here, not
+    # forecast_min_max_sd_pds_global.
     data_sources = self._get_data_sources(data_sources=self.tam_pds_data_sources,
         region='World')
-    result = self._low_med_high(forecast=self.forecast_data_pds_global(),
+    result_world = self.forecast_low_med_high_global().copy(deep=True)
+    result_pds = self._low_med_high(forecast=self.forecast_data_pds_global(),
         min_max_sd=self.forecast_min_max_sd_pds_global(),
         tamconfig=self.tamconfig['PDS World'],
         data_sources=data_sources)
-    result[result.isnull()] = self.forecast_low_med_high_global()
+    result_2014 = result_world.loc[:2014]
+    result_2015 = result_world.loc[2015:]
+    result_2015.update(other=result_pds, overwrite=True)
+    result = pd.concat([result_2014, result_2015], sort=False)
     result.name = 'forecast_low_med_high_pds_global'
     return result
 
@@ -262,7 +294,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     """
     growth = self.tamconfig.loc['growth', 'PDS World']
     data_sources = self._get_data_sources(data_sources=self.tam_pds_data_sources,
-        region='World')
+        region='PDS World')
     trend = self._get_trend(trend=trend, tamconfig=self.tamconfig['PDS World'],
         data_sources=data_sources)
     data = self.forecast_low_med_high_pds_global().loc[:, growth]
@@ -715,7 +747,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
 
     result['World'] = self.forecast_trend_pds_global().loc[:, 'adoption']
     lmh = self.forecast_low_med_high_pds_global()
-    if result.dropna(axis=1).empty or lmh.dropna(axis=1).empty:
+    if result.dropna(axis=1, how='all').empty or lmh.dropna(axis=1, how='all').empty:
       result['World'] = self.forecast_trend_global().loc[:, 'adoption']
       lmh = self.forecast_low_med_high_global()
     growth = self.tamconfig.loc['growth', 'PDS World']
