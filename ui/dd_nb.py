@@ -211,3 +211,132 @@ def solution_treemap(solutions, width, height):
         }
       ]
     }
+
+
+def solution_donut_chart(solutions, width, height):
+  """Return a Vega description of a nested donut chart of sectors & solutions.
+     Vega grammar: https://vega.github.io/vega/docs/
+
+     Arguments:
+       solutions: Pandas DataFrame with columns 'Solution', 'Sector', and 'CO2eq'
+       width, height: in pixels
+  """
+  sectors = solutions.pivot_table(index='Sector', aggfunc=sum)
+  solution_elements = {}
+  sector_elements = {}
+  idx = 1
+  for row in solutions.itertuples(index=False):
+    name = getattr(row, 'Solution')
+    sector = getattr(row, 'Sector')
+    co2eq = getattr(row, 'CO2eq')
+    solution_elements[name] = {'id': idx, 'name': name, 'sector': sector, 'size': co2eq}
+    idx += 1
+  for row in sectors.sort_values(by=['CO2eq'], ascending=False).itertuples(index=True):
+    name = getattr(row, 'Index')
+    sector = getattr(row, 'Index')
+    co2eq = getattr(row, 'CO2eq')
+    sector_elements[name] = {'id': idx, 'name': name, 'sector': sector, 'size': co2eq}
+    idx += 1
+
+  return {
+      "$schema": "https://vega.github.io/schema/vega/v4.json",
+      "width": width,
+      "height": height,
+      "autosize": "none",
+
+      "signals": [
+    {
+      "name": "startAngle", "value": 0,
+    },
+    {
+      "name": "endAngle", "value": 6.29,
+    },
+    {
+      "name": "padAngle", "value": 0,
+    },
+    {
+      "name": "sort", "value": False,
+    }
+  ],
+
+  "data": [
+    {
+      "name": "solutions",
+      "values": list(solution_elements.values()),
+      "transform": [
+        {
+          "type": "pie",
+          "field": "size",
+          "startAngle": {"signal": "startAngle"},
+          "endAngle": {"signal": "endAngle"},
+          "sort": {"signal": "sort"}
+        }
+      ]
+    },
+    {
+      "name": "sectors",
+      "values": list(sector_elements.values()),
+      "transform": [
+        {
+          "type": "pie",
+          "field": "size",
+          "startAngle": {"signal": "startAngle"},
+          "endAngle": {"signal": "endAngle"},
+          "sort": {"signal": "sort"}
+        }
+      ]
+    }
+  ],
+
+  "scales": [
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": list(sector_colormap.keys()),
+      "range": list(sector_colormap.values())
+    },
+  ],
+
+  "marks": [
+    {
+      "type": "arc",
+      "from": {"data": "solutions"},
+      "encode": {
+        "enter": {
+          "fill": {"scale": "color", "field": "sector"},
+          "x": {"signal": "width / 2"},
+          "y": {"signal": "height / 2"},
+          "tooltip": {"signal": "{title: datum.name, 'CO2eq': datum.size + ' Gigatons'}"}
+        },
+        "update": {
+          "startAngle": {"field": "startAngle"},
+          "endAngle": {"field": "endAngle"},
+          "padAngle": {"signal": "padAngle"},
+          "innerRadius": {"value": 130},
+          "outerRadius": {"value": 150},
+          "cornerRadius": {"value": 0}
+        }
+      }
+    },
+    {
+      "type": "arc",
+      "from": {"data": "sectors"},
+      "encode": {
+        "enter": {
+          "fill": {"scale": "color", "field": "sector"},
+          "x": {"signal": "width / 2"},
+          "y": {"signal": "height / 2"},
+          "tooltip": {"signal": "{title: datum.name, 'CO2eq': datum.size + ' Gigatons'}"}
+        },
+        "update": {
+          "startAngle": {"field": "startAngle"},
+          "endAngle": {"field": "endAngle"},
+          "padAngle": {"signal": "padAngle"},
+          "innerRadius": {"value": 98},
+          "outerRadius": {"value": 118},
+          "cornerRadius": {"value": 0}
+        }
+      }
+    },
+  ]
+}
