@@ -32,7 +32,7 @@ def test_scenario_sort_key():
   result = sorted(unsorted, key=dd.scenario_sort_key)
   assert result == expected
 
-def test_vega_treemap_json_schema():
+def test_vega_json_schema():
   schema = json.load(open(str(thisdir.joinpath('vega_v4.schema.json'))))
   solutions = pd.read_csv(str(datadir.joinpath('overview', 'solutions.csv')),
       index_col=False, skipinitialspace=True, header=0, skip_blank_lines=True, comment='#')
@@ -41,4 +41,6 @@ def test_vega_treemap_json_schema():
   solutions = solutions.merge(soln_results, on='Solution', how='left')
   instance = dd.solution_treemap(solutions=solutions, width=400, height=800)
   # jsonschema.validate will raise an exception on failure
+  jsonschema.validate(instance=instance, schema=schema)
+  instance = dd.solution_donut_chart(solutions=solutions, width=400, height=400)
   jsonschema.validate(instance=instance, schema=schema)
