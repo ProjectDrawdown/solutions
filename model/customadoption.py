@@ -60,8 +60,9 @@ class CustomAdoption:
         num_sds is the number of standard deviations for the high/low values.
         """
         # NOTE: This may produce results different from the xls model due to bugs in the latter.
-        # These bugs have been documented and will be dealt with at a later date.
-        # The bugs only impact regional data in certain cases - World data should be identical.
+        # These bugs have been documented here:
+        # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.kjrqk1o5e46m
+        # The bugs only impact regional data in certain cases - World data should be identical in all cases.
         regions_to_avg = {}
         for name, scen in self.scenarios.items():
             if scen['include']:

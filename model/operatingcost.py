@@ -205,7 +205,7 @@ class OperatingCost:
       while math.ceil(lifetime) < (last_year + 1 - year):
         lifetime += lifetime_replacement
 
-      cost = var_oper_cost_per_funit + fuel_cost_per_funit
+      cost = var_oper_cost_per_funit + fuel_cost_per_funit if self.ac.has_var_costs else 0
       total = new_funits_per_year.loc[year] * cost * self.conversion_factor
       cost = fixed_oper_cost_per_iunit
       total += new_annual_iunits_reqd.loc[year] * cost * self.conversion_factor
