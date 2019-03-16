@@ -4,12 +4,11 @@ from functools import lru_cache
 import os.path
 
 from model import interpolation
-from model import metaclass_cache
 import numpy as np
 import pandas as pd
 
 
-class TAM(object, metaclass=metaclass_cache.MetaclassCache):
+class TAM:
   """Total Addressable Market module."""
 
   def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources):
