@@ -61,18 +61,18 @@ class Silvopasture:
         tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
         # This solution has Custom PDS data
-        ca_dir = THISDIR.joinpath('ca_pds_data')
-        source_filenames = [f for f in listdir(ca_dir) if f.endswith('.csv')]
-        ca_data_sources = []
+        ca_pds_dir = THISDIR.joinpath('ca_pds_data')
+        source_filenames = [f for f in listdir(ca_pds_dir) if f.endswith('.csv')]
+        ca_pds_data_sources = []
         for f in source_filenames:
             include = True
             if f == 'High growth, linear trend.csv':
                 include = False
-            ca_data_sources.append({'name': f, 'filename': f, 'include': include})
-        self.ca = customadoption.CustomAdoption(
-            data_sources=ca_data_sources,
+            ca_pds_data_sources.append({'name': f, 'filename': f, 'include': include})
+        self.ca_pds = customadoption.CustomAdoption(
+            data_sources=ca_pds_data_sources,
             soln_adoption_custom_name='Low of All Custom Scenarios',
-            filepath=ca_dir)
+            filepath=ca_pds_dir)
 
         # Current adoption data comes from VMA
         self.current_adoption_vma = vma.VMA(THISDIR.joinpath('vma_data', 'Current_Adoption.csv'))
@@ -87,7 +87,7 @@ class Silvopasture:
                                                   'USA']).set_index('Year')
         self.ht = helpertables.HelperTables(
             ac=self.ac,
-            pds_adoption_data_per_region=self.ca.adoption_data_per_region(),
+            pds_adoption_data_per_region=self.ca_pds.adoption_data_per_region(),
             ref_datapoints=ht_ref_datapoints,
             pds_datapoints=ht_pds_datapoints
         )

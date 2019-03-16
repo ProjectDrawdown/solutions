@@ -11,13 +11,8 @@ import pathlib
 import re
 import shutil
 import sys
-import threading
 import time
 import tempfile
-import urllib.parse
-import urllib.request
-
-import numpy as np
 import pandas as pd
 import pytest
 import xlrd
@@ -118,6 +113,17 @@ def start_excel(request, tmpdir):
   workbook.close()
   workbook.app.quit()
   os.unlink(tmpfile)
+
+
+def verify_aez_data(obj, verify=None):
+  """Verified tables in AEZ Data."""
+  if verify is None:
+    verify = {}
+  verify['AEZ Data'] = [
+      ('A48:H53', obj.ae.get_land_distribution().reset_index().iloc[:6, :], None),
+      ('A55:H58', obj.ae.get_land_distribution().reset_index().iloc[6:, :], None)
+  ]
+  return verify
 
 
 def verify_tam_data(obj, verify=None):
@@ -363,6 +369,21 @@ def verify_adoption_data(obj, verify=None):
   return verify
 
 
+def verify_custom_adoption(obj, verify=None):
+    """Verified tables in Custom * Adoption.
+       Note: regional data is ignored as there are issues in the xls sheet that have
+       not been replicated. See documentation of issues here:
+       https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.kjrqk1o5e46m
+       """
+    if verify is None:
+      verify = {}
+    verify['Custom PDS Adoption'] = [
+        ('A23:B71', obj.ca_pds.adoption_data_per_region()['World'].reset_index(), None)
+    ]
+    # verify['Custom REF Adoption'] = []  # not yet implemented
+    return verify
+
+
 def verify_adoption_data_eleven_sources(obj, verify=None):
   """Verified tables in Adoption Data.
 
@@ -384,7 +405,7 @@ def verify_adoption_data_eleven_sources(obj, verify=None):
   return verify
 
 
-def verify_unit_adoption_calculations(obj, verify=None, pds_regional=True):
+def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=True, is_rrs=True):
   """Verified tables in Unit Adoption Calculations."""
   if verify is None:
     verify = {}
@@ -398,7 +419,7 @@ def verify_unit_adoption_calculations(obj, verify=None, pds_regional=True):
     ref_tam_mask = None
     verify['Unit Adoption Calculations'] = []
 
-  if pds_regional == False:
+  if not include_regional_data:
     regional_mask = obj.ua.soln_pds_cumulative_funits().reset_index()
     regional_mask.loc[:, :] = True
     regional_mask.loc[:, ['Year', 'World']] = False
@@ -412,40 +433,44 @@ def verify_unit_adoption_calculations(obj, verify=None, pds_regional=True):
       ('P17:Z63', obj.ua.ref_population().reset_index(), None),
       ('AB17:AL63', obj.ua.ref_gdp().reset_index(), None),
       ('AN17:AX63', obj.ua.ref_gdp_per_capita().reset_index(), None),
-      ('BA17:BK63', obj.ua.ref_tam_per_capita().reset_index(), None),
-      ('BM17:BW63', obj.ua.ref_tam_per_gdp_per_capita().reset_index(), None),
-      ('BY17:CI63', obj.ua.ref_tam_growth().reset_index(), None),
       ('P69:Z115', obj.ua.pds_population().reset_index(), None),
       ('AB69:AL115', obj.ua.pds_gdp().reset_index(), None),
       ('AN69:AX115', obj.ua.pds_gdp_per_capita().reset_index(), None),
-      ('BA69:BK115', obj.ua.pds_tam_per_capita().reset_index(), None),
-      ('BM69:BW115', obj.ua.pds_tam_per_gdp_per_capita().reset_index(), None),
-      ('BY69:CI115', obj.ua.pds_tam_growth().reset_index(), None),
-      #('B135:L181' tested in 'Helper Tables'!C91)
-      ('Q135:AA181', obj.ua.soln_pds_cumulative_funits().reset_index(), regional_mask),
-      ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd().reset_index(), regional_mask),
-      ('AX136:BH182', obj.ua.soln_pds_tot_iunits_reqd().reset_index(), regional_mask),
-      ('BN136:BS182', obj.ua.soln_pds_big4_iunits_reqd().reset_index(), regional_mask),
-      #('BN136:BS182', not yet implemented)
-      #('B198:L244' tested in 'Helper Tables'!C27)
-      ('Q198:AA244', obj.ua.soln_ref_cumulative_funits().reset_index(), None),
       ('AG199:AQ244', obj.ua.soln_ref_new_iunits_reqd().reset_index(), None),
-      ('AX198:BH244', obj.ua.soln_ref_tot_iunits_reqd().reset_index(), None),
       ('B252:L298', obj.ua.soln_net_annual_funits_adopted().reset_index(), regional_mask),
       ('Q252:AA298', obj.ua.conv_ref_tot_iunits().reset_index(), ref_tam_mask),
-      ('AX252:BH298', obj.ua.conv_ref_annual_tot_iunits().reset_index(), regional_mask),
-      ('AG253:AQ298', obj.ua.conv_ref_new_iunits().reset_index(), regional_mask),
-      ('B308:L354', obj.ua.soln_pds_net_grid_electricity_units_saved().reset_index(), regional_mask),
-      ('Q308:AA354', obj.ua.soln_pds_net_grid_electricity_units_used().reset_index(), regional_mask),
-      ('AD308:AN354', obj.ua.soln_pds_fuel_units_avoided().reset_index(), regional_mask),
-      ('AT308:BD354', obj.ua.soln_pds_direct_co2_emissions_saved().reset_index(), regional_mask),
-      ('BF308:BP354', obj.ua.soln_pds_direct_ch4_co2_emissions_saved().reset_index(), regional_mask),
-      ('BR308:CB354', obj.ua.soln_pds_direct_n2o_co2_emissions_saved().reset_index(), regional_mask),
-      ])
+  ])
+
+  if is_rrs:
+      verify['Unit Adoption Calculations'].extend([
+          ('BA17:BK63', obj.ua.ref_tam_per_capita().reset_index(), None),
+          ('BM17:BW63', obj.ua.ref_tam_per_gdp_per_capita().reset_index(), None),
+          ('BY17:CI63', obj.ua.ref_tam_growth().reset_index(), None),
+          ('BA69:BK115', obj.ua.pds_tam_per_capita().reset_index(), None),
+          ('BM69:BW115', obj.ua.pds_tam_per_gdp_per_capita().reset_index(), None),
+          ('BY69:CI115', obj.ua.pds_tam_growth().reset_index(), None),
+          #('B135:L181' tested in 'Helper Tables'!C91)
+          ('Q135:AA181', obj.ua.soln_pds_cumulative_funits().reset_index(), regional_mask),
+          ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd().reset_index(), regional_mask),
+          ('AX136:BH182', obj.ua.soln_pds_tot_iunits_reqd().reset_index(), regional_mask),
+          ('BN136:BS182', obj.ua.soln_pds_big4_iunits_reqd().reset_index(), regional_mask),
+          #('BN136:BS182', not yet implemented)
+          #('B198:L244' tested in 'Helper Tables'!C27)
+          ('Q198:AA244', obj.ua.soln_ref_cumulative_funits().reset_index(), None),
+          ('AX198:BH244', obj.ua.soln_ref_tot_iunits_reqd().reset_index(), None),
+          ('AG253:AQ298', obj.ua.conv_ref_new_iunits().reset_index(), regional_mask),
+          ('AX252:BH298', obj.ua.conv_ref_annual_tot_iunits().reset_index(), regional_mask),
+          ('B308:L354', obj.ua.soln_pds_net_grid_electricity_units_saved().reset_index(), regional_mask),
+          ('Q308:AA354', obj.ua.soln_pds_net_grid_electricity_units_used().reset_index(), regional_mask),
+          ('AD308:AN354', obj.ua.soln_pds_fuel_units_avoided().reset_index(), regional_mask),
+          ('AT308:BD354', obj.ua.soln_pds_direct_co2_emissions_saved().reset_index(), regional_mask),
+          ('BF308:BP354', obj.ua.soln_pds_direct_ch4_co2_emissions_saved().reset_index(), regional_mask),
+          ('BR308:CB354', obj.ua.soln_pds_direct_n2o_co2_emissions_saved().reset_index(), regional_mask),
+          ])
   return verify
 
 
-def verify_helper_tables(obj, verify=None, pds_regional=True):
+def verify_helper_tables(obj, verify=None, include_regional_data=True):
   """Verified tables in Helper Tables."""
   if verify is None:
     verify = {}
@@ -453,7 +478,7 @@ def verify_helper_tables(obj, verify=None, pds_regional=True):
       ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None),
       ]
 
-  if pds_regional:
+  if include_regional_data:
       verify['Helper Tables'].append(
           ('B91:L137', obj.ht.soln_pds_funits_adopted().reset_index(), None))
   else:
@@ -488,7 +513,7 @@ def verify_first_cost(obj, verify=None):
       ('O37:O82', obj.fc.conv_ref_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), None),
       #('P37:P82', checked by 'Unit Adoption Calculations'!AH253
       ('Q37:Q82', obj.fc.conv_ref_annual_world_first_cost().loc[2015:].to_frame().reset_index(drop=True), None),
-      ('R37:R82', obj.fc.ref_cumulative_install().loc[2015:].to_frame().reset_index(drop=True), None),
+      ('R37:R82', obj.fc.ref_cumulative_install().loc[2015:].to_frame().reset_index(drop=True), None)
       ]
   return verify
 
@@ -538,12 +563,12 @@ def verify_operating_cost(obj, verify=None):
   return verify
 
 
-def verify_co2_calcs(obj, verify=None, shifted=False, pds_regional=True):
+def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True):
   """Verified tables in CO2 Calcs."""
   if verify is None:
     verify = {}
 
-  if pds_regional == False:
+  if include_regional_data == False:
     regional_mask = obj.c2.co2_mmt_reduced().loc[2015:].reset_index()
     regional_mask.loc[:, :] = True
     regional_mask.loc[:, ['Year', 'World']] = False
@@ -614,7 +639,7 @@ def RRS_solution_verify_list(obj, workbook):
        workbook: xlwings workbook of the Excel file to verify against.
   """
   verify = {}
-  pds_regional = not is_custom_pds_with_no_regional_data(obj)
+  include_regional_data = not is_custom_pds_with_no_regional_data(obj)
 
   sheet = workbook.sheets['TAM Data']
   if excel_read_cell_xlwings(sheet, 'N45') == 'Functional Unit':
@@ -629,18 +654,41 @@ def RRS_solution_verify_list(obj, workbook):
     else:
       verify_adoption_data(obj, verify)
 
-  verify_helper_tables(obj, verify, pds_regional=pds_regional)
+  verify_helper_tables(obj, verify, include_regional_data=include_regional_data)
   verify_emissions_factors(obj, verify)
-  verify_unit_adoption_calculations(obj, verify, pds_regional=pds_regional)
+  verify_unit_adoption_calculations(obj, verify, include_regional_data=include_regional_data)
   verify_first_cost(obj, verify)
   verify_operating_cost(obj, verify)
 
   sheet = workbook.sheets['CO2 Calcs']
   if excel_read_cell_xlwings(sheet, 'S343') == 'Reduced Fuel Emissions':
-    verify_co2_calcs(obj, verify, shifted=True, pds_regional=pds_regional)
+    verify_co2_calcs(obj, verify, shifted=True, include_regional_data=include_regional_data)
   else:
-    verify_co2_calcs(obj, verify, pds_regional=pds_regional)
+    verify_co2_calcs(obj, verify, include_regional_data=include_regional_data)
 
+  return verify
+
+
+def LAND_solution_verify_list(obj):
+  """
+  Assemble verification for the modules used in LAND solutions.
+  Note: Due to known bugs in regional data in the xls not being recreated
+  in python, it is necessary to exclude regional data for a number of tables
+  in order for LAND solutions to pass this integration test.
+  """
+  verify = {}
+  verify_aez_data(obj, verify)
+  # verify_tla_data(obj, verify)  # not currently implemented (needs custom TLA)
+  if obj.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+    verify_adoption_data(obj, verify)
+  elif obj.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
+    verify_custom_adoption(obj, verify)
+  verify_helper_tables(obj, verify, include_regional_data=False)
+  verify_emissions_factors(obj, verify)
+  verify_unit_adoption_calculations(obj, verify, include_regional_data=False, is_rrs=False)
+  verify_first_cost(obj, verify)
+  verify_operating_cost(obj, verify)
+  # verify_co2_calcs(obj, verify)
   return verify
 
 
@@ -690,7 +738,6 @@ def check_excel_against_object(obj, workbook, scenario, verify):
   descr_base = "Solution: " + obj.name + " Scenario: " + scenario + " "
   wb = xlrd.open_workbook(filename=workbook.filepath, on_demand=True)
   for sheetname in verify.keys():
-    sheet = workbook.sheets[sheetname]
     for (cellrange, actual_df, mask) in verify[sheetname]:
       (usecols, skiprows, nrows) = get_pd_read_excel_args(cellrange)
       expected_df = pd.read_excel(wb, engine='xlrd', sheet_name=sheetname, header=None,
@@ -848,10 +895,7 @@ def test_Silvopasture_LAND_USE(start_excel, tmpdir):
   workbook = start_excel
   for scenario in silvopasture.scenarios.keys():
     obj = silvopasture.Silvopasture(scenario=scenario)
-    verify = {}
-    verify['Helper Tables'] = [
-        ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None),
-        ]
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

@@ -31,7 +31,7 @@ class UnitAdoption:
     # NOTE: as datadir is static for all solutions this shouldn't be an arg
     # For now it is kept in for backwards compatibility with solutions
     if datadir is None:
-      self.datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+      self.datadir = str(pathlib.Path(__file__).parents[1].joinpath('data'))
     else:
       self.datadir = datadir
 
