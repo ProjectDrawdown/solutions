@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# ==============================================
+# world_topo_sans_antartica_with_dd_regions.json
+# ==============================================
+
 # source file from
 # https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries-sans-antarctica.json
 #
@@ -23,3 +27,18 @@ toposimplify -p 1 -f world-countries-sans-antarctica.json |\
 # However doing this results in a bad artifact across Asia and Africa
 # when rendered in Altair charts, presumably points are being combined
 # erroneously.
+
+
+
+# ==============================================
+# world_topo_with_aez.json
+# ==============================================
+
+# source file from
+# https://github.com/JRLamontagne/Factorial_SSP-SPA_Exploration/blob/8f9277398e7419cc97a28cd69e45b2c5c6250c68/data/aez-w-greenland.geojson
+#
+# Converted to TopoJSON using https://mapshaper.org, in aez-w-greenland.json
+
+toposimplify -p 1 -f aez-w-greenland.json |\
+	topomerge aez=aez-w-greenland -k "d.properties.AEZ" |\
+	python3 -m json.tool > world_topo_with_aez.json
