@@ -177,3 +177,16 @@ Feb 25 - Mar 1, 2019
 + Add solution/biogas
 + redo test_excel_integration to read Excel file directly.
 
+Mar 4 - Mar 8, 2019
++ add Improved Cook Stoves, In-stream Hydro.
++ reimplement Excel integration test for robust operation.
++ fix small mismatches between Python & Excel
+  a) single_source only applies for trend
+  b) allow different source cases per region
+
+Mar 11 - Mar 15, 2019
++ add Insulation, Solar Hot Water, Smart Thermostats.
++ re-implement Jupyter donut chart using Vega.
++ fix small mismatches between Python & Excel
+  a) tam: PDS uses 'World' forecast for 2012-2014
+  b) tam: don't include 0.0 in the mean
