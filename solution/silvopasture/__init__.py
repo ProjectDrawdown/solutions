@@ -4,11 +4,11 @@ Excel filename: Silvopasture_L-Use_v1.1a_3Aug18.xlsm
 """
 
 import pathlib
-import numpy as np
 import pandas as pd
 from os import listdir
-from model import adoptiondata, advanced_controls, ch4calcs, co2calcs, emissionsfactors, firstcost, helpertables, \
-    operatingcost, unitadoption, vma, tla, aez, customadoption
+from model import advanced_controls, aez, ch4calcs, co2calcs, customadoption, emissionsfactors, firstcost, \
+    helpertables, operatingcost, tla, unitadoption, vma
+from model.advanced_controls import SOLUTION_CATEGORY
 from solution import land
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
@@ -18,6 +18,7 @@ VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 scenarios = {  # just 1 for now
     'PDS-45p2050-Plausible-PDScustom-low-BookVersion1': advanced_controls.AdvancedControls(
+        solution_category=SOLUTION_CATEGORY.LAND,
         vmas=VMAs,
         report_start_year=2020, report_end_year=2050,
 
@@ -41,6 +42,8 @@ scenarios = {  # just 1 for now
         emissions_grid_source='Meta-Analysis',
         emissions_grid_range='Mean',
         emissions_use_co2eq=True,
+        soln_indirect_co2_per_iunit=0.,
+        conv_indirect_co2_per_unit=0.,
 
         # sequestration
         seq_rate_global='mean'
@@ -139,6 +142,17 @@ class Silvopasture:
 
         self.c2 = co2calcs.CO2Calcs(
             ac=self.ac,
+            ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+            soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
+            soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
+            soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),
+            soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),
+            soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),
+            soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
+            soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
+            conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
+            conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
+            conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
             land_distribution=self.ae.get_land_distribution()
         )

@@ -563,7 +563,7 @@ def verify_operating_cost(obj, verify=None):
   return verify
 
 
-def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True):
+def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True, is_rrs=True):
   """Verified tables in CO2 Calcs."""
   if verify is None:
     verify = {}
@@ -575,29 +575,38 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
   else:
     regional_mask = None
 
-  verify['CO2 Calcs'] = [
-      ('A10:K55', obj.c2.co2_mmt_reduced().loc[2015:].reset_index(), regional_mask),
-      ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), regional_mask),
-      ('A120:AW165', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), None),
-      ('A172:F217', obj.c2.co2eq_ppm_calculator().loc[2015:].reset_index(), None),
-      ('A235:K280', obj.c2.co2_reduced_grid_emissions().loc[2015:].reset_index(), regional_mask),
-      ('R235:AB280', obj.c2.co2_replaced_grid_emissions().loc[2015:].reset_index(), regional_mask),
-      ('AI235:AS280', obj.c2.co2_increased_grid_usage_emissions().loc[2015:].reset_index(), regional_mask),
-      ('A289:K334', obj.c2.co2eq_reduced_grid_emissions().loc[2015:].reset_index(), regional_mask),
-      ('R289:AB334', obj.c2.co2eq_replaced_grid_emissions().loc[2015:].reset_index(), regional_mask),
-      ('AI289:AS334', obj.c2.co2eq_increased_grid_usage_emissions().loc[2015:].reset_index(), regional_mask),
-      ('A345:K390', obj.c2.co2eq_direct_reduced_emissions().loc[2015:].reset_index(), regional_mask),
-      ]
-  if shifted:
-    # Some spreadsheets have the last two blocks shifted by several cells
-    verify['CO2 Calcs'].extend([
-        ('R345:AB390', obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index(), regional_mask),
-        ('AM345:AW390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)])
+  if is_rrs:
+    verify['CO2 Calcs'] = [
+        ('A10:K55', obj.c2.co2_mmt_reduced().loc[2015:].reset_index(), regional_mask),
+        ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), regional_mask),
+        ('A120:AW165', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), None),
+        ('A172:F217', obj.c2.co2eq_ppm_calculator().loc[2015:].reset_index(), None),
+        ('A235:K280', obj.c2.co2_reduced_grid_emissions().loc[2015:].reset_index(), regional_mask),
+        ('R235:AB280', obj.c2.co2_replaced_grid_emissions().loc[2015:].reset_index(), regional_mask),
+        ('AI235:AS280', obj.c2.co2_increased_grid_usage_emissions().loc[2015:].reset_index(), regional_mask),
+        ('A289:K334', obj.c2.co2eq_reduced_grid_emissions().loc[2015:].reset_index(), regional_mask),
+        ('R289:AB334', obj.c2.co2eq_replaced_grid_emissions().loc[2015:].reset_index(), regional_mask),
+        ('AI289:AS334', obj.c2.co2eq_increased_grid_usage_emissions().loc[2015:].reset_index(), regional_mask),
+        ('A345:K390', obj.c2.co2eq_direct_reduced_emissions().loc[2015:].reset_index(), regional_mask),
+        ]
+    if shifted:
+      # Some spreadsheets have the last two blocks shifted by several cells
+      verify['CO2 Calcs'].extend([
+          ('R345:AB390', obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index(), regional_mask),
+          ('AM345:AW390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)])
+    else:
+      verify['CO2 Calcs'].extend([
+          ('U345:AE390', obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index(), regional_mask),
+          ('AP345:AZ390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)])
   else:
-    verify['CO2 Calcs'].extend([
-        ('U345:AE390', obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index(), regional_mask),
-        ('AP345:AZ390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)])
-
+    verify['CO2 Calcs'] = [
+        ('A121:G166', obj.c2.co2_sequestered_global().reset_index().drop(columns=['Global Arctic']), None),
+        ('A173:AW218', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), None),
+        # CO2 eq table has an N20 column for LAND xls sheets that doesn't appear to be used, so we ignore it
+        ('A225:C270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CO2-eq PPM', 'CO2 PPM']].reset_index(), None),
+        ('E225:G270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CH4 PPB', 'CO2 RF', 'CH4 RF']].reset_index(drop=True), None)
+        # All other tables are not implemented as they appear to be all 0
+    ]
 
 def verify_ch4_calcs(obj, verify=None):
   """Verified tables in CH4 Calcs."""
@@ -688,7 +697,7 @@ def LAND_solution_verify_list(obj):
   verify_unit_adoption_calculations(obj, verify, include_regional_data=False, is_rrs=False)
   verify_first_cost(obj, verify)
   verify_operating_cost(obj, verify)
-  # verify_co2_calcs(obj, verify)
+  verify_co2_calcs(obj, verify, is_rrs=False)
   return verify
 
 
