@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# To be able to process the source GeoJSON files, you must:
+# npm install --global topojson-client topojson-simplify
+
+
 # ==============================================
 # world_topo_sans_antartica_with_dd_regions.json
 # ==============================================
@@ -39,6 +43,6 @@ toposimplify -p 1 -f world-countries-sans-antarctica.json |\
 #
 # Converted to TopoJSON using https://mapshaper.org, in aez-w-greenland.json
 
-toposimplify -p 1 -f aez-w-greenland.json |\
+toposimplify -p 0.75 -f aez-w-greenland.json |\
 	topomerge aez=aez-w-greenland -k "d.properties.AEZ" |\
 	python3 -m json.tool > world_topo_with_aez.json
