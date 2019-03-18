@@ -162,14 +162,18 @@ class CO2Calcs:
 
        'CO2 Calcs'!A119:AW165
     """
-    if self.ac.solution_category == SOLUTION_CATEGORY.LAND:
-      co2_vals = self.co2_sequestered_global()['All']  # (actually CO2eq seq + reduced, will change if soln requires it)
-      assert self.ac.emissions_use_co2eq, 'Land models must use CO2 eq'
+
+    if self.ac.emissions_use_co2eq:
+      co2_vals = self.co2eq_mmt_reduced()['World']
     else:
-      if self.ac.emissions_use_co2eq:
-        co2_vals = self.co2eq_mmt_reduced()['World']
-      else:
-        co2_vals = self.co2_mmt_reduced()['World']
+      co2_vals = self.co2_mmt_reduced()['World']
+
+    if self.ac.solution_category == SOLUTION_CATEGORY.LAND:
+      # In the xls sequestered co2 is added to co2eq_mmt_reduced. However, we assume
+      # co2eq_mmt_reduced is all 0's for all LAND models, so we only use sequestration
+      co2_vals = self.co2_sequestered_global()['All']
+      assert self.ac.emissions_use_co2eq, 'Land models must use CO2 eq'
+
     columns = ['PPM', 'Total'] + list(range(2015, 2061))
     ppm_calculator = pd.DataFrame(0, columns=columns, index=co2_vals.index.copy(), dtype=np.float64)
     ppm_calculator.index = ppm_calculator.index.astype(int)
@@ -178,7 +182,11 @@ class CO2Calcs:
     last_year = ppm_calculator.last_valid_index()
     for year in ppm_calculator.index:
       if year < self.ac.report_start_year and self.ac.solution_category != SOLUTION_CATEGORY.LAND:
-        continue  # on RRS this skips the calc but on LAND the calc is done anyway
+        # On RRS xls models this skips the calc but on LAND the calc is done anyway
+        # Note that this affects the values for all years and should probably NOT be skipped
+        # (i.e. LAND is the correct implementation)
+        # see: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
+        continue
       b = co2_vals[year]
       for delta in range(1, last_year - first_year + 2):
         if (year + delta - 1) > last_year:

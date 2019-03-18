@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from model import advanced_controls
+from model.advanced_controls import SOLUTION_CATEGORY
 from model import co2calcs
 import pathlib
 
@@ -85,7 +86,6 @@ def test_co2eq_mmt_reduced_allfields():
 
 
 def test_co2_ppm_calculator():
-  # test replace
   soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
       columns=["World", "B"], index=[2020, 2021, 2022])
   soln_pds_net_grid_electricity_units_used = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
@@ -116,13 +116,23 @@ def test_co2_ppm_calculator():
       columns=co2_ppm_calculator_list[0]).set_index('Year')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_co2_ppm_calculator_land():
   # test land model (data from Tropical Forests 3Aug18)
-  ac = advanced_controls.AdvancedControls(seq_rate_global=4.150868085, solution_category='LAND',
-                                          emissions_use_co2eq=True)
   funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
   land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
-  c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist)
+  ac = advanced_controls.AdvancedControls(
+      seq_rate_global=4.150868085, solution_category=SOLUTION_CATEGORY.LAND, emissions_use_co2eq=True,
+      soln_indirect_co2_per_iunit=0.0, conv_indirect_co2_per_unit=0.0)
+  c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist,
+                         soln_pds_net_grid_electricity_units_used=funits.replace(funits, 0),
+                         soln_pds_net_grid_electricity_units_saved=funits.replace(funits, 0),
+                         conv_ref_grid_CO2eq_per_KWh=funits.replace(funits, 0),
+                         soln_pds_direct_co2_emissions_saved=funits.replace(funits, 0),
+                         soln_pds_direct_ch4_co2_emissions_saved=funits.replace(funits, 0),
+                         soln_pds_direct_n2o_co2_emissions_saved=funits.replace(funits, 0)
+                         )
   result = c2.co2_ppm_calculator()
+  print(c2.co2_ppm_calculator())
   assert result.at[2059, 'PPM'] == pytest.approx(6.79894469686587)
   assert result.at[2060, 'PPM'] == pytest.approx(6.98450283426954)
   assert result.at[2015, 'Total'] == pytest.approx(105.702086549681)
