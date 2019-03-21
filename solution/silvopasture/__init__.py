@@ -61,7 +61,7 @@ class Silvopasture:
 
         # TLA
         self.ae = aez.AEZ(solution_name=self.name)
-        tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
+        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
         # This solution has Custom PDS data
         ca_pds_dir = THISDIR.joinpath('ca_pds_data')
@@ -99,7 +99,7 @@ class Silvopasture:
             ac=self.ac,
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-            tla_per_region=tla_per_region
+            tla_per_region=self.tla_per_region
         )
 
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
