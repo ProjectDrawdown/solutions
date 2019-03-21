@@ -131,7 +131,7 @@ class CO2Calcs:
     """
     assert self.ac.seq_rate_global is not None, 'No sequestration rate set in Advanced Controls'
     cols = ['All'] + THERMAL_MOISTURE_REGIMES
-    index = list(range(2015, 2061))
+    index = pd.Index(list(range(2015, 2061)), name='Year')
     df = pd.DataFrame(columns=cols, index=index)
 
     # calculation
