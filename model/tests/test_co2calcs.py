@@ -132,7 +132,6 @@ def test_co2_ppm_calculator_land():
                          soln_pds_direct_n2o_co2_emissions_saved=funits.replace(funits, 0)
                          )
   result = c2.co2_ppm_calculator()
-  print(c2.co2_ppm_calculator())
   assert result.at[2059, 'PPM'] == pytest.approx(6.79894469686587)
   assert result.at[2060, 'PPM'] == pytest.approx(6.98450283426954)
   assert result.at[2015, 'Total'] == pytest.approx(105.702086549681)
