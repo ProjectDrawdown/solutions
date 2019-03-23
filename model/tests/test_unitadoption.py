@@ -132,7 +132,7 @@ def test_pds_tam_growth():
   assert tg['USA'][2060] == pytest.approx(33.502722)
   assert tg['OECD90'][2014] == ''
 
-def test_soln_pds_cumulative_funits():
+def test_soln_pds_cumulative_funits_bug_behavior():
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
       [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
       [2015, 176.24, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -141,16 +141,31 @@ def test_soln_pds_cumulative_funits():
   soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   ua = unitadoption.UnitAdoption(ac=None, datadir=None,
       ref_tam_per_region=None, pds_tam_per_region=None,
-      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None)
+      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+      bug_cfunits_double_count=True)
   result = ua.soln_pds_cumulative_funits()
   v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      [2014, 112.63, 150.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2015, 288.87, 151.01, 1.66, 43.15, 4.15, 30.30, 30.94, 6.50, 111.54, 27.25],
-      [2016, 560.91, 152.01, 2.66, 44.15, 5.15, 31.30, 31.94, 7.50, 112.54, 28.25],
-      [2017, 944.21, 153.01, 3.66, 45.15, 6.15, 32.30, 32.94, 8.50, 113.54, 29.25]]
+      [2014, 112.63, 150.0, 0.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
+      [2015, 288.87, 151.0, 1.66, 43.14, 4.16, 30.30, 30.94, 6.50, 111.54, 27.24],
+      [2016, 560.90, 152.0, 2.66, 44.14, 5.16, 31.30, 31.94, 7.50, 112.54, 28.24],
+      [2017, 944.21, 153.0, 3.66, 45.14, 6.16, 32.30, 32.94, 8.50, 113.54, 29.24]]
   expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
   expected.name = "soln_pds_cumulative_funits"
-  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
+  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
+
+  ua = unitadoption.UnitAdoption(ac=None, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+      bug_cfunits_double_count=False)
+  result = ua.soln_pds_cumulative_funits()
+  v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+      [2014, 112.63, 75.0, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
+      [2015, 288.87, 76.0, 1.33, 22.07, 2.58, 15.65, 15.97, 3.75, 56.27, 14.12],
+      [2016, 560.90, 77.0, 2.33, 23.07, 3.58, 16.65, 16.97, 4.75, 57.27, 15.12],
+      [2017, 944.21, 78.0, 3.33, 24.07, 4.58, 17.65, 17.97, 5.75, 58.27, 16.12]]
+  expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
+  expected.name = "soln_pds_cumulative_funits"
+  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
 
 def test_soln_pds_cumulative_funits_missing_data():
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -161,16 +176,17 @@ def test_soln_pds_cumulative_funits_missing_data():
   soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   ua = unitadoption.UnitAdoption(ac=None, datadir=None,
       ref_tam_per_region=None, pds_tam_per_region=None,
-      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None)
+      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+      bug_cfunits_double_count=True)
   result = ua.soln_pds_cumulative_funits()
   v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      [2014, 112.63, 150.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2015, 288.87, 151.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2016, 560.91, 151.01, 1.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2017, 944.21, 151.01, 1.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25]]
+      [2014, 112.63, 150.00, 0.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
+      [2015, 288.87, 151.00, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+      [2016, 560.90, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+      [2017, 944.21, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
   expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
   expected.name = "soln_pds_cumulative_funits"
-  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
+  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
 
 def test_soln_pds_new_iunits_reqd():
   ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=48343.80, soln_avg_annual_use=1841.67)
@@ -277,7 +293,7 @@ def test_soln_net_annual_funits_adopted_with_NaN():
       soln_ref_funits_adopted=soln_ref_funits_adopted)
   result = ua.soln_net_annual_funits_adopted()
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 0.0, 0.0, 0.0],
-      [2015, 59.17, -75.63, -0.34], [2016, 150.52, -76.25, -0.34]]
+      [2015, 59.17, np.nan, np.nan], [2016, 150.52, np.nan, np.nan]]
   expected = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   expected.name = "soln_net_annual_funits_adopted"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)

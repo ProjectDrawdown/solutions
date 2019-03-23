@@ -22,10 +22,11 @@ class UnitAdoption:
        pds_tam_per_region: (RRS only) dataframe of total addressible market per major
          region for the PDS scenario.
        tla_per_region: (LAND only): dataframe of total land area per region.
+       bug_pds_cfunits_double_count (bool): enable bug-for-bug compatibility
   """
 
   def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted, datadir=None, ref_tam_per_region=None,
-               pds_tam_per_region=None, tla_per_region=None):
+               pds_tam_per_region=None, tla_per_region=None, bug_cfunits_double_count=False):
     self.ac = ac
 
     # NOTE: as datadir is static for all solutions this shouldn't be an arg
@@ -40,6 +41,7 @@ class UnitAdoption:
     self.tla_per_region = tla_per_region
     self.soln_ref_funits_adopted = soln_ref_funits_adopted
     self.soln_pds_funits_adopted = soln_pds_funits_adopted
+    self.bug_cfunits_double_count = bug_cfunits_double_count
 
   @lru_cache()
   def ref_population(self):
@@ -168,10 +170,16 @@ class UnitAdoption:
     """Cumulative Functional Units Utilized.
        SolarPVUtil 'Unit Adoption Calculations'!Q134:AA181
     """
-    omit_world = self.soln_pds_funits_adopted.iloc[[0], :].fillna(0.0).copy(deep=True)
-    omit_world['World'] = 0.0
-    first_year = self.soln_pds_funits_adopted.fillna(0.0).add(omit_world, fill_value=0)
-    result = first_year.cumsum(axis=0)
+    first_year = self.soln_pds_funits_adopted
+    if self.bug_cfunits_double_count:
+      # in a number of older solutions, 'Advanced Controls'!$C$61:C70 is added to
+      # the 2014 soln_pds_cumulative_funits, which ends up double counting 2014.
+      # We optionally enable this bug-for-bug compatibility.
+      # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.z9hqutnbnigx
+      omit_world = self.soln_pds_funits_adopted.iloc[[0], :].fillna(0.0).copy(deep=True)
+      omit_world['World'] = 0.0
+      first_year = first_year.add(omit_world, fill_value=0)
+    result = first_year.cumsum(axis=0, skipna=False)
     result.name = "soln_pds_cumulative_funits"
     return result
 
@@ -209,7 +217,10 @@ class UnitAdoption:
         # added N * soln_lifetime_replacement ago, that now need replacement.
         replacement_year = int(year - (self.ac.soln_lifetime_replacement_rounded + 1))
         while replacement_year in growth.index:
-          replacements.at[year, region] += growth.at[replacement_year, region]
+          fa = self.soln_pds_funits_adopted
+          prior_year = year - self.ac.soln_lifetime_replacement_rounded - 1
+          if fa.loc[prior_year, region] <= fa.loc[year, region]:
+            replacements.at[year, region] += growth.at[replacement_year, region]
           replacement_year -= (self.ac.soln_lifetime_replacement_rounded + 1)
     result = growth + replacements
     result.name = "soln_pds_new_iunits_reqd"
@@ -299,7 +310,7 @@ class UnitAdoption:
        (optionally) Indirect Emissions.
        SolarPVUtil 'Unit Adoption Calculations'!B251:L298
     """
-    result = self.soln_pds_funits_adopted.fillna(0.0) - self.soln_ref_funits_adopted.fillna(0.0)
+    result = self.soln_pds_funits_adopted - self.soln_ref_funits_adopted
     result.name = "soln_net_annual_funits_adopted"
     return result
 

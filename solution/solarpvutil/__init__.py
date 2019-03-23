@@ -365,7 +365,8 @@ class SolarPVUtil:
     self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=str(datadir),
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
-        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted())
+        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
+        bug_cfunits_double_count=True)
 
     soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
     soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
