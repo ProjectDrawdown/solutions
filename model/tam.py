@@ -683,9 +683,8 @@ class TAM:
   def _set_tam_one_region(self, result, region, forecast_trend, forecast_low_med_high):
     """Set a single column in ref_tam_per_region."""
     result[region] = forecast_trend.loc[:, 'adoption']
-    growth = self.tamconfig.loc['growth', region]
     first_year = result.first_valid_index()
-    result.loc[first_year, region] = forecast_low_med_high.loc[first_year, growth]
+    result.loc[first_year, region] = forecast_low_med_high.loc[first_year, 'Medium']
 
   @lru_cache()
   def ref_tam_per_region(self):
