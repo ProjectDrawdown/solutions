@@ -58,45 +58,49 @@ class SCurve:
             #   'Unit Adoption Calculations'!B$105 = pds_tam_2050
 
             #
-            # Without intending to, the Excel implementation relies on catastrophic
-            # substraction to handle the case where last_percent == 100%,
-            # LN(1/AH$21-1) = LN(1/1-1) = LN(0) (which doesn't exist).
-            # It ends up being approximately LN(0.0000000000000009) instead of LN(0).
+            # In Excel models last_percent is set to 0.999999999999999 to mean 100% adoption
+            # (which Excel helpfully displays as 100%).
+            # LN(1/AH$21-1) = LN(1/1-1) = LN(0) (which doesn't exist), so being asymptotically
+            # close to 100% ends up being approximately LN(0.0000000000000009) instead of LN(0).
             # We pull in the value which Excel comes up with, -34.65735902799730.
             magic = -34.65735902799730
-            # lcot == log change over time
-            # =((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))
-            last_percent_log_term = magic if last_percent == 1.0 else math.log(1.0/last_percent - 1.0)
-            lcot = ((math.log(1.0/base_percent - 1.0) - last_percent_log_term) /
-                    (last_year - base_year))
+            try:
+                # lcot == log change over time
+                # =((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))
+                last_percent_log_term = magic if last_percent >= 0.999999 else math.log(1.0/last_percent - 1.0)
+                lcot = ((math.log(1.0/base_percent - 1.0) - last_percent_log_term) /
+                        (last_year - base_year))
 
-            # term1a = ((1-AH$18)/(1+EXP(-((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))*
-            #         ($AG24-(LN(1/AH$18-1)/((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))+AH$17))
-            #         ))*'Unit Adoption Calculations'!B$105)
-            term1a = ((1.0 - base_percent) / (1.0 + math.exp(-lcot *
-                (year - (math.log(1.0/base_percent - 1.0) / lcot + base_year)))) * pds_tam_2050)
+                # term1a = ((1-AH$18)/(1+EXP(-((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))*
+                #         ($AG24-(LN(1/AH$18-1)/((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))+AH$17))
+                #         ))*'Unit Adoption Calculations'!B$105)
+                term1a = ((1.0 - base_percent) / (1.0 + math.exp(-lcot *
+                    (year - (math.log(1.0/base_percent - 1.0) / lcot + base_year)))) * pds_tam_2050)
 
-            # term1b = AH$21*AH$18*'Unit Adoption Calculations'!B$105
-            term1b = last_percent * base_percent * pds_tam_2050
+                # term1b = AH$21*AH$18*'Unit Adoption Calculations'!B$105
+                term1b = last_percent * base_percent * pds_tam_2050
 
-            # term2 = ((($AG$60-$AG$24)-($AG$60-$AG24))/($AG$60-$AG$24))
-            term2 = ((last_year - base_year) - (last_year - year)) / (last_year - base_year)
+                # term2 = ((($AG$60-$AG$24)-($AG$60-$AG24))/($AG$60-$AG$24))
+                term2 = ((last_year - base_year) - (last_year - year)) / (last_year - base_year)
 
-            # term3 = ((($AG$60-$AG24)/($AG$60-base_year))*AH$19)
-            term3 = ((last_year - year) / (last_year - base_year)) * base_adoption
+                # term3 = ((($AG$60-$AG24)/($AG$60-base_year))*AH$19)
+                term3 = ((last_year - year) / (last_year - base_year)) * base_adoption
 
-            val = (term1a + term1b) * term2 + term3
-            result.loc[year, 'first_half'] = val
+                firstHalf = (term1a + term1b) * term2 + term3
 
-            # The Second Half function from Building Automation Systems "S Curve"!AI24:
-            # =((1-AH$18)/(1+EXP(-((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))
-            #    *($AG24-(LN(1/AH$18-1)/((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))+AH$17))))
-            #    *'Unit Adoption Calculations'!B$105+AH$19/AH$21)
-            #
-            # using the same definitions for the cells as in the First Half function above.
-            # This is the same as term1a plus (AH$19/AH$21)
-            val = term1a + (base_adoption / last_percent)
-            result.loc[year, 'second_half'] = val
+                # The Second Half function from Building Automation Systems "S Curve"!AI24:
+                # =((1-AH$18)/(1+EXP(-((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))
+                #    *($AG24-(LN(1/AH$18-1)/((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))+AH$17))))
+                #    *'Unit Adoption Calculations'!B$105+AH$19/AH$21)
+                #
+                # using the same definitions for the cells as in the First Half function above.
+                # This is the same as term1a plus (AH$19/AH$21)
+                secondHalf = term1a + (base_adoption / last_percent)
+            except ZeroDivisionError:
+                firstHalf = np.nan
+                secondHalf = np.nan
+            result.loc[year, 'first_half'] = firstHalf
+            result.loc[year, 'second_half'] = secondHalf
 
         result.index.name = 'Year'
         return result
