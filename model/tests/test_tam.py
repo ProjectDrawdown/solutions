@@ -718,6 +718,15 @@ def test_tam_y2014_with_growth_high():
       columns=global_trend_buildingautomation_list[0]).set_index('Year')
   pd.testing.assert_series_equal(result['China'], expected['China'], check_exact=False)
 
+def test_nonexistent_source_is_NaN():
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['source_until_2014', :] = 'NoSuchSource'
+  tamconfig_mod.loc['source_after_2014', :] = 'NoSuchSource'
+  tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
+  result = tm.forecast_min_max_sd_global()
+  assert all(pd.isna(result.loc[:, :]))
+
 
 # SolarPVUtil 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES',
 # source_after_2014='Baseline Cases', low_sd=1.0, high_sd=1.0
