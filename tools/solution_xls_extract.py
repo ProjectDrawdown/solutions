@@ -91,6 +91,7 @@ def get_rrs_scenarios(wb):
       assert sr_tab.cell_value(row + 88, 1) == 'Grid Emissions'
       s['conv_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 89, 4))
       s['soln_energy_efficiency_factor'] = convert_sr_float(sr_tab.cell_value(row + 90, 4))
+      s['soln_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 91, 4))
 
       assert sr_tab.cell_value(row + 94, 1) == 'Fuel Emissions'
       s['conv_fuel_consumed_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 95, 4))
@@ -346,7 +347,8 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['conv_indirect_co2_per_unit'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_indirect_co2_is_iunits'], prefix=prefix)
   oneline(f=f, s=s, names=['ch4_co2_per_twh', 'n2o_co2_per_twh'], prefix=prefix, suffix='\n')
-  oneline(f=f, s=s, names=['soln_energy_efficiency_factor', 'conv_annual_energy_used'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_energy_efficiency_factor'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_annual_energy_used', 'conv_annual_energy_used'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fuel_emissions_factor', 'soln_fuel_emissions_factor'],
       prefix=prefix, suffix='\n')
@@ -426,9 +428,9 @@ def write_tam(f, wb, outputdir):
   f.write("      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
   f.write("       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
   f.write("      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,\n")
-  f.write("       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014,\n")
-  f.write("       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014,\n")
-  f.write("       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014],\n")
+  f.write("       " + xls(tm_tab, 15, 21) + ", " + xls(tm_tab, 18, 21) + ", " + xls(tm_tab, 21, 21) + ", ")
+  f.write(            xls(tm_tab, 24, 21) + ", " + xls(tm_tab, 27, 21) + ", " + xls(tm_tab, 30, 21) + ",\n")
+  f.write("       " + xls(tm_tab, 33, 21) + ", " + xls(tm_tab, 36, 21) + ", " + xls(tm_tab, 39, 21) + "],\n")
   f.write("      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,\n")
   f.write("       " + xls(tm_tab, 15, 21) + ", " + xls(tm_tab, 18, 21) + ", " + xls(tm_tab, 21, 21) + ", ")
   f.write(            xls(tm_tab, 24, 21) + ", " + xls(tm_tab, 27, 21) + ", " + xls(tm_tab, 30, 21) + ",\n")

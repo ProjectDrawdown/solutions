@@ -31,6 +31,7 @@ from solution import microwind
 from solution import offshorewind
 from solution import onshorewind
 from solution import silvopasture
+from solution import smartglass
 from solution import smartthermostats
 from solution import solarhotwater
 from solution import solarpvutil
@@ -933,6 +934,20 @@ def test_Silvopasture_LAND_USE(start_excel, tmpdir):
   for scenario in silvopasture.scenarios.keys():
     obj = silvopasture.Silvopasture(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('smartglass', 'testdata',
+      'Drawdown-Smart Glass_RRS_v1.1_21Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_SmartGlass_RRS(start_excel, tmpdir):
+  """Test for Excel model file Smart Glass*."""
+  workbook = start_excel
+  for scenario in smartglass.scenarios.keys():
+    obj = smartglass.SmartGlass(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

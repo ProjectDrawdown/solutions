@@ -13,6 +13,7 @@ import microwind
 import offshorewind
 import onshorewind
 import silvopasture
+import smartglass
 import smartthermostats
 import solarhotwater
 import solarpvroof
@@ -88,6 +89,12 @@ def test_onshorewind():
 def test_silvopasture():
   scenario = list(silvopasture.scenarios.keys())[0]
   obj = silvopasture.Silvopasture(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_smartglass():
+  scenario = list(smartglass.scenarios.keys())[0]
+  obj = smartglass.SmartGlass(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
