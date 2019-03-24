@@ -7,7 +7,7 @@ VMA number,Filename,Title on xls,Has data?
 6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,True
 7,SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum,SOLUTION Net Profit Margin per Functional Unit per Annum,True
 8,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,True
-9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION_,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),True
+9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),True
 10,Electricty_Consumed_per_CONVENTIONAL_Functional_Unit,Electricty Consumed per CONVENTIONAL Functional Unit,False
 11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False
 12,Total_Energy_Used_per_SOLUTION_functional_unit,Total Energy Used per SOLUTION functional unit,False
@@ -22,4 +22,4 @@ VMA number,Filename,Title on xls,Has data?
 21,Sequestration_Rates,Sequestration Rates,True
 22,Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing,Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing,False
 23,Disturbance_Rate,Disturbance Rate,False
-24,Percent_silvopasture_area_to_the_total_grassland_area_including_potential_,Percent silvopasture area to the total grassland area (including potential),True
+24,Percent_silvopasture_area_to_the_total_grassland_area_including_potential,Percent silvopasture area to the total grassland area (including potential),True

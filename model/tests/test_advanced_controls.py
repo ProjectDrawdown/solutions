@@ -167,3 +167,8 @@ def test_substitute_vma_raises():
     assert ac.seq_rate_global == 1
     with pytest.raises(KeyError):
         advanced_controls.AdvancedControls(vmas={}, seq_rate_global='mean')
+
+def test_yield_coeff():
+    ac = advanced_controls.AdvancedControls(yield_from_conv_practice=2, yield_gain_from_conv_to_soln=4,
+                                            disturbance_rate=0.25)
+    assert ac.yield_coeff == 6

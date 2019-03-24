@@ -42,4 +42,4 @@ def empty_to_nan(val):
 
 def to_filename(name):
     """ Removes special characters and separates words with single underscores"""
-    return re.sub(' +', '_', re.sub('[^a-zA-Z0-9' '\n]', ' ', name))
+    return re.sub(' +', '_', re.sub('[^a-zA-Z0-9' '\n]', ' ', name)).strip('_')

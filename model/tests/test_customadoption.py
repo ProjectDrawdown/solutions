@@ -4,6 +4,10 @@ from model import customadoption
 import pandas as pd
 
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
+
+# For testing we will use the first 2 Scenarios of Tropical Rainforest Restoration
+# To generate test values, other scenarios are set to "No" in the "Include Scenario?"
+# column of the Excel model.
 path1 = str(datadir.joinpath('ca_scenario_1_trr.csv'))
 path2 = str(datadir.joinpath('ca_scenario_2_trr.csv'))
 
@@ -47,6 +51,20 @@ def test_avg_high_low_multiple_scenarios():
     low_scen = pd.read_csv(datadir.joinpath('ca_low_trr.csv'), index_col=0)
     avgs, _, lows = ca._avg_high_low()
     pd.testing.assert_frame_equal(avgs, avg_scen, check_exact=False, check_dtype=False)
+    pd.testing.assert_frame_equal(lows, low_scen, check_exact=False, check_dtype=False)
+
+
+def test_avg_high_low_different_multipliers():
+    data_sources = [
+        {'name': 'scenario 1', 'filename': path1, 'include': True},
+        {'name': 'scenario 2', 'filename': path2, 'include': True},
+    ]
+    ca = customadoption.CustomAdoption(data_sources=data_sources, soln_adoption_custom_name='', low_sd_mult=0.5,
+                                       high_sd_mult=1.5)
+    high_scen = pd.read_csv(datadir.joinpath('ca_highx1p5_trr.csv'), index_col=0)
+    low_scen = pd.read_csv(datadir.joinpath('ca_lowx0p5_trr.csv'), index_col=0)
+    _, highs, lows = ca._avg_high_low()
+    pd.testing.assert_frame_equal(highs, high_scen, check_exact=False, check_dtype=False)
     pd.testing.assert_frame_equal(lows, low_scen, check_exact=False, check_dtype=False)
 
 

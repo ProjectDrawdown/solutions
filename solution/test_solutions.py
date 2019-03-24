@@ -15,6 +15,7 @@ import smartthermostats
 import solarhotwater
 import solarpvroof
 import solarpvutil
+import silvopasture
 
 def test_biogas():
   scenario = list(biogas.scenarios.keys())[0]
@@ -73,6 +74,12 @@ def test_offshorewind():
 def test_onshorewind():
   scenario = list(onshorewind.scenarios.keys())[0]
   obj = onshorewind.OnshoreWind(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_silvopasture():
+  scenario = list(silvopasture.scenarios.keys())[0]
+  obj = silvopasture.Silvopasture(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 

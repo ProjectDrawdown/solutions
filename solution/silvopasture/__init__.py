@@ -16,38 +16,140 @@ THISDIR = pathlib.Path(__file__).parents[0]
 
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-scenarios = {  # just 1 for now
+scenarios = {
     'PDS-45p2050-Plausible-PDScustom-low-BookVersion1': advanced_controls.AdvancedControls(
+        # This scenario represents the results based on the revisions made to the current
+        # adoption, future adoption scenarios, first cost, net profit margin, and carbon
+        # sequestration. In addition, the revised model also estimates the operational
+        # cost which was missing in the Book Version 1. This scenario derives result from
+        # "low of all" PDS custom scenario. The results are marginally lower than Book
+        # Version1, so no new scenario was created for the latter.
+
+        # general
         solution_category=SOLUTION_CATEGORY.LAND,
         vmas=VMAs,
         report_start_year=2020, report_end_year=2050,
 
         # adoption
+        soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False,
         soln_pds_adoption_basis='Fully Customized PDS',
+        soln_pds_adoption_custom_name='Low of All Custom Scenarios',
         pds_adoption_use_ref_years=[2015, 2016],
-        soln_expected_lifetime=30,
-        conv_expected_lifetime=30,  # default for LAND models
 
         # financial
-        soln_first_cost_efficiency_rate=0.0,  # default for LAND models
-        conv_first_cost_efficiency_rate=0.0,  # default for LAND models
+        pds_2014_cost='mean', ref_2014_cost='mean',
         conv_2014_cost=0.0,
-        pds_2014_cost='mean',
-        ref_2014_cost='mean',  # note that on xls this is linked to pds_2014_cost cell
+        soln_first_cost_efficiency_rate=0.0,
+        conv_first_cost_efficiency_rate=0.0,
+        npv_discount_rate=0.1,
+        soln_expected_lifetime=30.0,
+        conv_expected_lifetime=30.0,
+        yield_from_conv_practice='mean',
+        yield_gain_from_conv_to_soln='mean',
+
         soln_fixed_oper_cost_per_iunit='mean',
         conv_fixed_oper_cost_per_iunit='mean',
-        npv_discount_rate=0.1,
 
         # emissions
-        emissions_grid_source='Meta-Analysis',
-        emissions_grid_range='Mean',
+        soln_indirect_co2_per_iunit=0.0,
+        conv_indirect_co2_per_unit=0.0,
+        emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean',
         emissions_use_co2eq=True,
-        soln_indirect_co2_per_iunit=0.,
-        conv_indirect_co2_per_unit=0.,
 
         # sequestration
-        seq_rate_global='mean'
-    )}
+        seq_rate_global='mean',
+        disturbance_rate=0.0,
+    ),
+    'PDS-54p2050-Drawdown-PDScustom-high-basedonpasture-BookVersion1': advanced_controls.AdvancedControls(
+        # This scenario represents the results based on the revisions made to the current
+        # adoption, future adoption scenarios, first cost, net profit margin, and carbon
+        # sequestration. In addition, the revised model also estimates the operational
+        # cost which was missing in the Book Version 1. This scenario present the result
+        # of the from "high growth, linear trend (based on improved pasture area) " PDS
+        # custom scenario. The results are higher than the Book Version1, largely due to
+        # the correction of the current adoption, which was almost half in the Book
+        # Version1.
+
+        # general
+        solution_category=SOLUTION_CATEGORY.LAND,
+        vmas=VMAs,
+        report_start_year=2020, report_end_year=2050,
+
+        # adoption
+        soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False,
+        soln_pds_adoption_basis='Fully Customized PDS',
+        soln_pds_adoption_custom_name='High growth, linear trend (based on improved pasture area)',
+        pds_adoption_use_ref_years=[2015, 2016],
+
+        # financial
+        pds_2014_cost='mean', ref_2014_cost='mean',
+        conv_2014_cost=0.0,
+        soln_first_cost_efficiency_rate=0.0,
+        conv_first_cost_efficiency_rate=0.0,
+        npv_discount_rate=0.1,
+        soln_expected_lifetime=30.0,
+        conv_expected_lifetime=30.0,
+        yield_from_conv_practice='mean',
+        yield_gain_from_conv_to_soln='mean',
+
+        soln_fixed_oper_cost_per_iunit='mean',
+        conv_fixed_oper_cost_per_iunit='mean',
+
+        # emissions
+        soln_indirect_co2_per_iunit=0.0,
+        conv_indirect_co2_per_unit=0.0,
+        emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean',
+        emissions_use_co2eq=True,
+
+        # sequestration
+        seq_rate_global='mean',
+        disturbance_rate=0.0,
+    ),
+    'PDS-54p2050-Optimum-PDScustom-high0.5SD-BookVersion1': advanced_controls.AdvancedControls(
+        # This scenario represents the results based on the revisions made to the current
+        # adoption, future adoption scenarios, first cost, net profit margin, and carbon
+        # sequestration. In addition, the revised model also estimates the operational
+        # cost which was missing in the Book Version 1. This scenario derives result from
+        # "high (with 0.5 standard deviation) of all" PDS custom scenarios. The results
+        # are higher than the Book Version1, largely due to the correction of the current
+        # adoption, which was almost half in the Book Version1.
+
+        # general
+        solution_category=SOLUTION_CATEGORY.LAND,
+        vmas=VMAs,
+        report_start_year=2020, report_end_year=2050,
+
+        # adoption
+        soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False,
+        soln_pds_adoption_basis='Fully Customized PDS',
+        soln_pds_adoption_custom_name='High of All Custom Scenarios',
+        pds_adoption_use_ref_years=[2015, 2016],
+
+        # financial
+        pds_2014_cost='mean', ref_2014_cost='mean',
+        conv_2014_cost=0.0,
+        soln_first_cost_efficiency_rate=0.0,
+        conv_first_cost_efficiency_rate=0.0,
+        npv_discount_rate=0.1,
+        soln_expected_lifetime=30.0,
+        conv_expected_lifetime=30.0,
+        yield_from_conv_practice='mean',
+        yield_gain_from_conv_to_soln='mean',
+
+        soln_fixed_oper_cost_per_iunit='mean',
+        conv_fixed_oper_cost_per_iunit='mean',
+
+        # emissions
+        soln_indirect_co2_per_iunit=0.0,
+        conv_indirect_co2_per_unit=0.0,
+        emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean',
+        emissions_use_co2eq=True,
+
+        # sequestration
+        seq_rate_global='mean',
+        disturbance_rate=0.0,
+    )
+}
 
 
 class Silvopasture:
@@ -65,16 +167,18 @@ class Silvopasture:
 
         # This solution has Custom PDS data
         ca_pds_dir = THISDIR.joinpath('ca_pds_data')
-        source_filenames = [f for f in listdir(ca_pds_dir) if f.endswith('.csv')]
+        source_filenames = [f for f in listdir(str(ca_pds_dir)) if f.endswith('.csv')]
         ca_pds_data_sources = []
         for f in source_filenames:
             include = True
             if f == 'High growth, linear trend.csv':
                 include = False
-            ca_pds_data_sources.append({'name': f, 'filename': f, 'include': include})
+            ca_pds_data_sources.append({'name': f[:-4].strip(), 'filename': f, 'include': include})
         self.ca_pds = customadoption.CustomAdoption(
             data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name='Low of All Custom Scenarios',
+            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+            low_sd_mult=1,
+            high_sd_mult=0.5,
             filepath=ca_pds_dir)
 
         # Current adoption data comes from VMA

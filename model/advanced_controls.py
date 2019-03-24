@@ -253,9 +253,15 @@ class AdvancedControls:
 
   seq_rate_global (float): carbon sequestration rate for All Land or All of Special Land.
     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
-    TropicalForests "Advanced Controls"!B173 (Land models)
-  disturbance_rate (float): disturbance rate TropicalForests "Advanced Controls"!I173 (Land models)
-  expected_lifetime: expected lifetime in years Silvopasture "Advanced Controls"!F92 (Land models)
+    "Advanced Controls"!B173 (Land models)
+  disturbance_rate (float): disturbance rate TropicalForests. "Advanced Controls"!I173 (Land models)
+  soln_expected_lifetime: solution expected lifetime in year.s "Advanced Controls"!F92 (Land models)
+  conv_expected_lifetime: conventional expected lifetime in years. Default value is 30.
+   "Advanced Controls"!F77 (Land models)
+  yield_from_conv_practice: conventional yield in DM tons fodder/ha/year.
+    Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
+  yield_gain_from_conv_to_soln: yield % increase from conventional to solution.
+    Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
   """
   def __init__(self,
                vmas=None,
@@ -332,6 +338,8 @@ class AdvancedControls:
                disturbance_rate=None,
                soln_expected_lifetime=None,
                conv_expected_lifetime=None,
+               yield_from_conv_practice=None,
+               yield_gain_from_conv_to_soln=None,
                ):
 
     self.vmas = vmas
@@ -430,6 +438,10 @@ class AdvancedControls:
     self.disturbance_rate = disturbance_rate
     self.soln_expected_lifetime = soln_expected_lifetime
     self.conv_expected_lifetime = conv_expected_lifetime
+    self.yield_from_conv_practice = self._substitute_vma(yield_from_conv_practice,
+                                            vma_title='Yield  from CONVENTIONAL Practice')
+    self.yield_gain_from_conv_to_soln = self._substitute_vma(yield_gain_from_conv_to_soln,
+                                            vma_title='Yield Gain (% Increase from CONVENTIONAL to SOLUTION)')
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.
@@ -438,6 +450,11 @@ class AdvancedControls:
       return float(val)
     except (ValueError, TypeError):
       return 0.0
+  
+  @property
+  def yield_coeff(self):
+    """ Returns coeffecient that converts funits to yield for LAND solutions """
+    return self.yield_from_conv_practice * self.yield_gain_from_conv_to_soln * (1 - self.disturbance_rate)
   
   @property
   def has_var_costs(self):
