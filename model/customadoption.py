@@ -32,12 +32,16 @@ class CustomAdoption:
                   {'name': 'Study Name B',{'filename': 'filename B', 'include': boolean},
                   ...
                 ]
-         soln_adoption_custom_name: from advanced_controls
+         soln_adoption_custom_name: from advanced_controls. Can be avg, high, low or a specific source.
             For example: 'Average of All Custom PDS Scenarios'
+         low_sd_mult: std deviation multiplier for 'low' values
+         high_sd_mult: std deviation multiplier for 'high' values
          filepath: optional Pathlib object to custom adoption data directory
     Generates average/high/low of chosen scenarios to be used as adoption data for the solution.
     """
-    def __init__(self, data_sources, soln_adoption_custom_name, filepath=None):
+    def __init__(self, data_sources, soln_adoption_custom_name, low_sd_mult=1, high_sd_mult=1, filepath=None):
+        self.low_sd_mult = low_sd_mult
+        self.high_sd_mult = high_sd_mult
         self.scenarios = {}
         for d in data_sources:
             name = d.get('name', 'noname')
@@ -54,11 +58,8 @@ class CustomAdoption:
             self.scenarios[name] = {'df': df, 'include': include}
         self.soln_adoption_custom_name = soln_adoption_custom_name
 
-    def _avg_high_low(self, num_sds=1):
-        """
-        Returns DataFrames of average, high and low scenarios.
-        num_sds is the number of standard deviations for the high/low values.
-        """
+    def _avg_high_low(self):
+        """ Returns DataFrames of average, high and low scenarios. """
         # NOTE: This may produce results different from the xls model due to bugs in the latter.
         # These bugs have been documented here:
         # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.kjrqk1o5e46m
@@ -76,9 +77,8 @@ class CustomAdoption:
         avg_df, high_df, low_df = generate_df_template(), generate_df_template(), generate_df_template()
         for reg, reg_df in regions_to_avg.items():
             avg_df[reg] = avg_vals = reg_df.mean(axis=1)
-            offset = reg_df.std(axis=1, ddof=0) * num_sds
-            high_df[reg] = avg_vals + offset
-            low_df[reg] = avg_vals - offset
+            high_df[reg] = avg_vals + reg_df.std(axis=1, ddof=0) * self.high_sd_mult
+            low_df[reg] = avg_vals - reg_df.std(axis=1, ddof=0) * self.low_sd_mult
         return avg_df, high_df, low_df
 
     @lru_cache()

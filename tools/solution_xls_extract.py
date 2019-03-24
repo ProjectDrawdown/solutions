@@ -20,7 +20,6 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
-
 def convert_sr_float(val):
   """Return floating point value from Excel ScenarioRecord tab.
 
@@ -184,10 +183,54 @@ def get_land_scenarios(wb):
       scenario_name = col_e
       s = {}
 
+      # Note: these cases are handled in oneline()
+      s['solution_category'] = 'SOLUTION_CATEGORY.LAND'
+      s['vmas'] = 'VMAs'
+
+      s['description'] = sr_tab.cell_value(row + 1, 4)
       report_years = sr_tab.cell_value(row + 2, 4)  # E:2 from top of scenario
       (start, end) = report_years.split('-')
       s['report_start_year'] = int(start)
       s['report_end_year'] = int(end)
+
+      assert sr_tab.cell_value(row + 230, 1) == 'PDS ADOPTION SCENARIO INPUTS'
+      adopt = str(sr_tab.cell_value(row + 231, 4)).strip()
+      if adopt: s['soln_pds_adoption_basis'] = adopt
+      s['soln_pds_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 232, 4))
+
+      assert sr_tab.cell_value(row + 258, 1) == 'Fully Customized PDS'
+      custom = str(sr_tab.cell_value(row + 259, 4)).strip()
+      if custom:
+        s['soln_pds_adoption_custom_name'] = custom
+        if 'soln_pds_adoption_basis' not in s:  # sometimes row 164 is blank
+          s['soln_pds_adoption_basis'] = 'Fully Customized PDS'
+
+      assert sr_tab.cell_value(row + 262, 1) == 'REF ADOPTION SCENARIO INPUTS'
+      s['soln_ref_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 265, 4))
+      assert sr_tab.cell_value(row + 286, 1) == 'Adoption Adjustment'
+      adjust = sr_tab.cell_value(row + 287, 4)
+      if adjust and adjust != "(none)":
+        s['pds_adoption_use_ref_years'] = [int(x) for x in adjust.split(',') if x is not '']
+      adjust = sr_tab.cell_value(row + 288, 4)
+      if adjust and adjust != "(none)":
+        s['ref_adoption_use_pds_years'] = [int(x) for x in adjust.split(',') if x is not '']
+      # TODO: handle soln_pds_adoption_prognostication_source
+
+      assert sr_tab.cell_value(row + 54, 1) == 'Conventional'
+      assert sr_tab.cell_value(row + 55, 3) == 'First Cost:'
+      s['conv_2014_cost'] = link_vma(sr_tab.cell_value(row + 55, 4))
+      s['conv_first_cost_efficiency_rate'] = 0.0  # always 0 for LAND models
+      s['conv_fixed_oper_cost_per_iunit'] = link_vma(sr_tab.cell_value(row + 56, 4))
+      s['conv_expected_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 59, 4))
+      s['yield_from_conv_practice'] = link_vma(sr_tab.cell_value(row + 60, 4))
+
+      assert sr_tab.cell_value(row + 72, 1) == 'Solution'
+      assert sr_tab.cell_value(row + 73, 3) == 'First Cost:'
+      s['pds_2014_cost'] = s['ref_2014_cost'] = link_vma(sr_tab.cell_value(row + 73, 4))
+      s['soln_first_cost_efficiency_rate'] = 0.0  # always 0 for LAND models
+      s['soln_fixed_oper_cost_per_iunit'] = link_vma(sr_tab.cell_value(row + 74, 4))
+      s['soln_expected_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 77, 4))
+      s['yield_gain_from_conv_to_soln'] = link_vma(sr_tab.cell_value(row + 78, 4))
 
       assert sr_tab.cell_value(row + 90, 1) == 'General'
       s['npv_discount_rate'] = convert_sr_float(sr_tab.cell_value(row + 91, 4))
@@ -197,13 +240,13 @@ def get_land_scenarios(wb):
       s['emissions_grid_source'] = str(sr_tab.cell_value(row + 159, 4))
       s['emissions_grid_range'] = str(sr_tab.cell_value(row + 160, 4))
 
-      assert sr_tab.cell_value(row + 230, 1) == 'PDS ADOPTION SCENARIO INPUTS'
-      s['soln_pds_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 232, 4))
+      assert sr_tab.cell_value(row + 144, 1) == 'Indirect Emissions'
+      s['conv_indirect_co2_per_unit'] = convert_sr_float(sr_tab.cell_value(row + 145, 4))
+      s['soln_indirect_co2_per_iunit'] = convert_sr_float(sr_tab.cell_value(row + 146, 4))
 
-      assert sr_tab.cell_value(row + 262, 1) == 'REF ADOPTION SCENARIO INPUTS'
-      s['soln_ref_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 265, 4))
-
-      # TODO: handle soln_pds_adoption_prognostication_source
+      assert sr_tab.cell_value(row + 168, 1) == 'Carbon Sequestration and Land Inputs'
+      s['seq_rate_global'] = link_vma(sr_tab.cell_value(row + 169, 4))
+      s['disturbance_rate'] = link_vma(sr_tab.cell_value(row + 176, 4))
 
       scenarios[scenario_name] = s
   return scenarios
@@ -225,10 +268,12 @@ def oneline(f, s, names, prefix='', suffix=None):
     return
   f.write(prefix)
   for n in names:
-    if isinstance(s[n], str):
-      f.write(str(n) + " = '" + str(s[n]) + "', ")
+    if n == 'solution_category' or n == 'vmas':
+      f.write(n + "=" + s[n] + ", ")
+    elif isinstance(s[n], str):
+      f.write(str(n) + "='" + str(s[n]) + "', ")
     else:
-      f.write(str(n) + " = " + str(s[n]) + ", ")
+      f.write(str(n) + "=" + str(s[n]) + ", ")
     del s[n]
   f.write('\n')
   if suffix:
@@ -244,31 +289,55 @@ def write_scenario(f, s):
     for line in textwrap.wrap(description, width=80):
       f.write(prefix + '# ' + line + '\n')
     del s['description']
+    f.write('\n')
 
-  oneline(f=f, s=s, names=['report_start_year', 'report_end_year'], prefix=prefix, suffix='\n')
+  f.write(prefix + '# general' + '\n')
+  oneline(f=f, s=s, names=['solution_category'], prefix=prefix)
+  oneline(f=f, s=s, names=['vmas'], prefix=prefix)
+  oneline(f=f, s=s, names=['report_start_year', 'report_end_year'], prefix=prefix)
 
+  f.write('\n' + prefix + '# adoption' + '\n')
+  oneline(f=f, s=s, names=['soln_ref_adoption_basis'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_ref_adoption_custom_name'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_ref_adoption_regional_data', 'soln_pds_adoption_regional_data'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_pds_adoption_basis'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_pds_adoption_custom_name'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_source'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_trend'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_growth'], prefix=prefix)
+  oneline(f=f, s=s, names=['ref_adoption_use_pds_years'], prefix=prefix)
+  oneline(f=f, s=s, names=['pds_adoption_use_ref_years'], prefix=prefix)
+  oneline(f=f, s=s, names=['source_until_2014'], prefix=prefix)
+  oneline(f=f, s=s, names=['ref_source_post_2014'], prefix=prefix)
+  oneline(f=f, s=s, names=['pds_source_post_2014'], prefix=prefix)
+
+  f.write('\n' + prefix + '# financial' + '\n')
   oneline(f=f, s=s, names=['pds_2014_cost', 'ref_2014_cost'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_2014_cost'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_first_cost_efficiency_rate'], prefix=prefix)
-  oneline(f=f, s=s, names=['conv_first_cost_efficiency_rate',
-    'soln_first_cost_below_conv'], prefix=prefix)
-  oneline(f=f, s=s, names=['npv_discount_rate'], prefix=prefix, suffix='\n')
-
-  oneline(f=f, s=s, names=['ch4_is_co2eq', 'n2o_is_co2eq'], prefix=prefix)
-  oneline(f=f, s=s, names=['co2eq_conversion_source'], prefix=prefix)
-  oneline(f=f, s=s, names=['soln_indirect_co2_per_iunit'], prefix=prefix)
-  oneline(f=f, s=s, names=['conv_indirect_co2_per_unit', 'conv_indirect_co2_is_iunits'],
-      prefix=prefix)
-  oneline(f=f, s=s, names=['ch4_co2_per_twh', 'n2o_co2_per_twh'], prefix=prefix, suffix='\n')
+  oneline(f=f, s=s, names=['conv_first_cost_efficiency_rate'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_first_cost_below_conv'], prefix=prefix)
+  oneline(f=f, s=s, names=['npv_discount_rate'], prefix=prefix)
 
   oneline(f=f, s=s, names=['soln_lifetime_capacity', 'soln_avg_annual_use'], prefix=prefix)
-  oneline(f=f, s=s, names=['conv_lifetime_capacity', 'conv_avg_annual_use'],
-      prefix=prefix, suffix='\n')
+  oneline(f=f, s=s, names=['conv_lifetime_capacity', 'conv_avg_annual_use'], prefix=prefix, suffix='\n')
+  oneline(f=f, s=s, names=['soln_expected_lifetime'], prefix=prefix)
+  oneline(f=f, s=s, names=['conv_expected_lifetime'], prefix=prefix)
+  oneline(f=f, s=s, names=['yield_from_conv_practice'], prefix=prefix)
+  oneline(f=f, s=s, names=['yield_gain_from_conv_to_soln'], prefix=prefix, suffix='\n')
 
   oneline(f=f, s=s, names=['soln_var_oper_cost_per_funit', 'soln_fuel_cost_per_funit'], prefix=prefix)
   oneline(f=f, s=s, names=['soln_fixed_oper_cost_per_iunit'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_var_oper_cost_per_funit', 'conv_fuel_cost_per_funit'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fixed_oper_cost_per_iunit'], prefix=prefix)
+
+  f.write('\n' + prefix + '# emissions' + '\n')
+  oneline(f=f, s=s, names=['ch4_is_co2eq', 'n2o_is_co2eq'], prefix=prefix)
+  oneline(f=f, s=s, names=['co2eq_conversion_source'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_indirect_co2_per_iunit'], prefix=prefix)
+  oneline(f=f, s=s, names=['conv_indirect_co2_per_unit'], prefix=prefix)
+  oneline(f=f, s=s, names=['conv_indirect_co2_is_iunits'], prefix=prefix)
+  oneline(f=f, s=s, names=['ch4_co2_per_twh', 'n2o_co2_per_twh'], prefix=prefix, suffix='\n')
   oneline(f=f, s=s, names=['soln_energy_efficiency_factor', 'conv_annual_energy_used'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fuel_emissions_factor', 'soln_fuel_emissions_factor'],
@@ -279,21 +348,9 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['conv_emissions_per_funit', 'soln_emissions_per_funit'],
       prefix=prefix, suffix='\n')
 
-  oneline(f=f, s=s, names=['soln_ref_adoption_basis'], prefix=prefix)
-  oneline(f=f, s=s, names=['soln_ref_adoption_custom_name'], prefix=prefix)
-  oneline(f=f, s=s, names=['soln_ref_adoption_regional_data',
-    'soln_pds_adoption_regional_data'], prefix=prefix)
-  oneline(f=f, s=s, names=['soln_pds_adoption_basis'], prefix=prefix)
-  oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_source'], prefix=prefix)
-  oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_trend'], prefix=prefix)
-  oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_growth'], prefix=prefix)
-  oneline(f=f, s=s, names=['ref_adoption_use_pds_years'], prefix=prefix)
-  oneline(f=f, s=s, names=['pds_adoption_use_ref_years'], prefix=prefix)
-  oneline(f=f, s=s, names=['soln_pds_adoption_custom_name'], prefix=prefix)
-  oneline(f=f, s=s, names=['source_until_2014'], prefix=prefix)
-  oneline(f=f, s=s, names=['ref_source_post_2014'], prefix=prefix)
-  oneline(f=f, s=s, names=['pds_source_post_2014'], prefix=prefix, suffix='\n')
-  oneline(f=f, s=s, names=['solution_category'], prefix=prefix)
+  f.write('\n' + prefix + '# sequestration' + '\n')
+  oneline(f=f, s=s, names=['seq_rate_global'], prefix=prefix,)
+  oneline(f=f, s=s, names=['disturbance_rate'], prefix=prefix, suffix='\n')
 
 def xls(tab, row, col):
   """Return a quoted string read from tab(row, col)."""
@@ -1053,9 +1110,9 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     write_tam(f=f, wb=wb, outputdir=outputdir)
 
   if is_custom_pds_ad and is_default_pds_ad:
-    raise NotimplementedError('Support for both Default and Custom PDS adoption is not implemented')
+    raise NotImplementedError('Support for both Default and Custom PDS adoption is not implemented')
   if is_custom_ref_ad and is_default_ref_ad:
-    raise NotimplementedError('Support for both Default and Custom REF adoption is not implemented')
+    raise NotImplementedError('Support for both Default and Custom REF adoption is not implemented')
   if is_default_pds_ad or is_default_ref_ad:
     write_ad(f=f, wb=wb, outputdir=outputdir)
   if is_custom_pds_ad:
@@ -1119,6 +1176,29 @@ def infer_classname(filename):
     namelist.pop(0)
   return namelist[0].replace(' ', '')
 
+def link_vma(cell_value):
+  """
+  Certain AdvancedControls inputs are linked to the mean, high or low value of their
+  corresponding VMA tables. In the Excel ScenarioRecord, the cell value will look like:
+  'Val:(328.415857769938) Formula:=C80'
+  We can infer the chosen statistic from the cell reference. If there is no forumla we
+  return the cell value as a float.
+  Args:
+    cell_value: raw string from the Excel cell
+
+  Returns:
+    'mean', 'high' or 'low' or raw value if no formula in cell
+  """
+  if 'Formula:=' not in cell_value:
+    return convert_sr_float(cell_value)
+  if cell_value.endswith('80') or cell_value.endswith('95') or cell_value.endswith('175'):
+    return 'mean'
+  elif cell_value.endswith('81') or cell_value.endswith('96') or cell_value.endswith('176'):
+    return 'high'
+  elif cell_value.endswith('82') or cell_value.endswith('97') or cell_value.endswith('177'):
+    return 'low'
+  else:
+    raise ValueError('cell formula: {} not recognised'.format(cell_value.split(':=')[1]))
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(

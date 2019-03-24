@@ -140,6 +140,9 @@ class VMAReader:
             warnings.warn(
                 'No blank row detected in table. Either there are 30+ VMAs in table, the table has been misused'
                 'or there is some error in the code.')
+        if (df['Weight'] == 0).all():
+            # Sometimes all weights are set to 0 instead of blank. In this case we want them to be NaN.
+            df['Weight'] = df['Weight'].replace(0, nan)
         return df
 
     def _find_tables(self):
