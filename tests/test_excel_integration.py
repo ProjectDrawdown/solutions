@@ -21,6 +21,7 @@ xlwings = pytest.importorskip("xlwings")
 
 from solution import biogas
 from solution import biomass
+from solution import buildingautomation
 from solution import concentratedsolar
 from solution import improvedcookstoves
 from solution import instreamhydro
@@ -405,6 +406,16 @@ def verify_adoption_data_eleven_sources(obj, verify=None):
   return verify
 
 
+def verify_s_curve(obj, verify=None):
+  """Verified tables in S-Curve Adoption."""
+  if verify is None:
+    verify = {}
+  verify['S-Curve Adoption'] = [
+      ('A24:K70', obj.sc.logistic_adoption().reset_index(), None),
+      ]
+  return verify
+
+
 def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=True, is_rrs=True):
   """Verified tables in Unit Adoption Calculations."""
   if verify is None:
@@ -451,10 +462,9 @@ def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=Tr
           ('BY69:CI115', obj.ua.pds_tam_growth().reset_index(), None),
           #('B135:L181' tested in 'Helper Tables'!C91)
           ('Q135:AA181', obj.ua.soln_pds_cumulative_funits().reset_index(), regional_mask),
-          ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd().reset_index(), regional_mask),
           ('AX136:BH182', obj.ua.soln_pds_tot_iunits_reqd().reset_index(), regional_mask),
-          ('BN136:BS182', obj.ua.soln_pds_big4_iunits_reqd().reset_index(), regional_mask),
-          #('BN136:BS182', not yet implemented)
+          ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd().reset_index(), regional_mask),
+          #('BN136:BS182', obj.ua.soln_pds_big4_iunits_reqd().reset_index(), None),
           #('B198:L244' tested in 'Helper Tables'!C27)
           ('Q198:AA244', obj.ua.soln_ref_cumulative_funits().reset_index(), None),
           ('AX198:BH244', obj.ua.soln_ref_tot_iunits_reqd().reset_index(), None),
@@ -662,6 +672,8 @@ def RRS_solution_verify_list(obj, workbook):
       verify_adoption_data_eleven_sources(obj, verify)
     else:
       verify_adoption_data(obj, verify)
+  elif 'S-Curve' in obj.ac.soln_pds_adoption_basis:
+    verify_s_curve(obj, verify)
 
   verify_helper_tables(obj, verify, include_regional_data=include_regional_data)
   verify_emissions_factors(obj, verify)
@@ -785,7 +797,22 @@ def test_Biomass_RRS_ELECGEN(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('concentratedsolar', 'testdata', 'CSP_RRS_ELECGEN_v1.1b_24Oct18.xlsm'))],
+    [str(solutiondir.joinpath('buildingautomation', 'testdata',
+      'Drawdown-Building Automation Systems_RRS_v1.1_18Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_BuildingAutomation_RRS(start_excel, tmpdir):
+  """Test for Excel model file BuildingAutomation*."""
+  workbook = start_excel
+  for scenario in buildingautomation.scenarios.keys():
+    obj = buildingautomation.BuildingAutomationSystems(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('concentratedsolar', 'testdata',
+        'CSP_RRS_ELECGEN_v1.1b_24Oct18.xlsm'))],
     indirect=True)
 @pytest.mark.skip(reason="need to resolve Adoption Data X367 and Z367")
 def test_ConcentratedSolar_RRS_ELECGEN(start_excel, tmpdir):
@@ -799,7 +826,8 @@ def test_ConcentratedSolar_RRS_ELECGEN(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('improvedcookstoves', 'testdata', 'Drawdown-Improved Cook Stoves (ICS)_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('improvedcookstoves', 'testdata',
+        'Drawdown-Improved Cook Stoves (ICS)_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
   """Test for Excel model file ImprovedCookStoves."""

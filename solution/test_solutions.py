@@ -3,6 +3,7 @@
 import pytest
 import biogas
 import biomass
+import buildingautomation
 import concentratedsolar
 import improvedcookstoves
 import instreamhydro
@@ -11,6 +12,7 @@ import landfillmethane
 import microwind
 import offshorewind
 import onshorewind
+import silvopasture
 import smartthermostats
 import solarhotwater
 import solarpvroof
@@ -26,6 +28,12 @@ def test_biogas():
 def test_biomass():
   scenario = list(biomass.scenarios.keys())[0]
   obj = biomass.Biomass(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_buildingautomation():
+  scenario = list(buildingautomation.scenarios.keys())[0]
+  obj = buildingautomation.BuildingAutomationSystems(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 

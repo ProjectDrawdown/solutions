@@ -43,7 +43,7 @@ Solar Water, solarhotwater, Electricity Generation
 Heat Pumps,, Buildings and Cities
 Airplanes,, Transport
 LED Lighting (Commercial),, Buildings and Cities
-Building Automation,, Buildings and Cities
+Building Automation, buildingautomation, Buildings and Cities
 Water Saving - Home,, Materials
 Bioplastic,, Materials
 In-Stream Hydro, instreamhydro, Electricity Generation
@@ -59,7 +59,7 @@ Smart Thermostats, smartthermostats, Buildings and Cities
 Landfill Methane, landfillmethane, Buildings and Cities
 Bike Infrastructure,, Buildings and Cities
 Composting,, Food
-Smart Glass,, Buildings and Cities
+Smart Glass, smartglass, Buildings and Cities
 Women Smallholders,, Women and Girls
 Telepresence,, Transport
 Methane Digesters (Small),, Electricity Generation

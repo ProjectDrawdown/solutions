@@ -246,6 +246,9 @@ class AdvancedControls:
      for 'World' should use the PDS adoption values. SolarPVUtil "ScenarioRecord"! offset 218
   pds_adoption_use_ref_years (list of int): years for which the Helpertables PDS adoption
      for 'World' should use the REF adoption values. SolarPVUtil "ScenarioRecord"! offset 219
+  pds_adoption_final_percentage (dict): a list of (region, %) tuples of the final adoption
+     percentage for the PDS calculations. For example: [('World', 0.54), ('OECD90', 0.60), ...]
+     SolarPVUtil "Advanced Controls"!B61:B70
 
   solution_category (SOLUTION_CATEGORY): Whether the solution is primarily REDUCTION of
      emissions from an existing technology, REPLACEMENT of a technology to one with lower
@@ -330,6 +333,7 @@ class AdvancedControls:
                source_until_2014=None,
                ref_adoption_use_pds_years=None,
                pds_adoption_use_ref_years=None,
+               pds_adoption_final_percentage=None,
 
                solution_category=None,
 
@@ -428,6 +432,7 @@ class AdvancedControls:
     if intersect:
       err = "cannot be in both ref_adoption_use_pds_years and pds_adoption_use_ref_years:" + str(intersect)
       raise ValueError(err)
+    self.pds_adoption_final_percentage = pds_adoption_final_percentage
 
     self.solution_category = solution_category
     if isinstance(solution_category, str):
