@@ -34,6 +34,35 @@ def test_soln_pds_install_cost_per_iunit():
   result = fc.soln_pds_install_cost_per_iunit()
   pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
+def test_soln_pds_install_cost_per_iunit_with_nan():
+  """Test PDS install cost per unit
+
+     Values taken from
+     Drawdown-Alternative (High Vol. Fly Ash) Cement_RRS_v1.1_16Nov2018_PUBLIC.xlsm
+  """
+  ac = advanced_controls.AdvancedControls(
+      pds_2014_cost=32130000.0,
+      ref_2014_cost=32130000.0,
+      conv_2014_cost=45900000.0,
+      soln_first_cost_efficiency_rate=0.0,
+      soln_first_cost_below_conv=True,
+      conv_first_cost_efficiency_rate=0.0)
+  soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_altcement_list[1:],
+      columns=soln_pds_tot_iunits_reqd_altcement_list[0]).set_index('Year')
+  fc = firstcost.FirstCost(ac=ac,
+      pds_learning_increase_mult=2, ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+      soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd=None,
+      conv_ref_tot_iunits=None,
+      soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+      fc_convert_iunit_factor=1.0)
+  expected = pd.Series(soln_pds_install_cost_per_iunit_altcement_nparray[:, 1],
+      index=soln_pds_install_cost_per_iunit_altcement_nparray[:, 0], dtype=np.float64)
+  expected.index = expected.index.astype(int)
+  expected.index.name = "Year"
+  expected.name = "soln_pds_install_cost_per_iunit"
+  result = fc.soln_pds_install_cost_per_iunit()
+  pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
+
 def test_conv_ref_install_cost_per_iunit():
   """Test conventional install cost per unit
 
@@ -238,7 +267,7 @@ def test_soln_pds_annual_world_first_cost():
   expected.index.name = 'Year'
   expected.name = "soln_pds_annual_world_first_cost"
   result = fc.soln_pds_annual_world_first_cost()
-  pd.testing.assert_series_equal(result, expected, check_exact=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
 
 def test_soln_pds_cumulative_install():
   ac = advanced_controls.AdvancedControls(
@@ -264,7 +293,7 @@ def test_soln_pds_cumulative_install():
   expected.index = expected.index.astype(int)
   expected.index.name = 'Year'
   expected.name = "soln_pds_cumulative_install"
-  pd.testing.assert_series_equal(result, expected, check_exact=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
 
 def test_soln_ref_annual_world_first_cost():
   ac = advanced_controls.AdvancedControls(
@@ -293,7 +322,7 @@ def test_soln_ref_annual_world_first_cost():
   expected.index.name = 'Year'
   expected.name = "soln_ref_annual_world_first_cost"
   result = fc.soln_ref_annual_world_first_cost()
-  pd.testing.assert_series_equal(result, expected, check_exact=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
 
 def test_conv_ref_annual_world_first_cost():
   ac = advanced_controls.AdvancedControls(
@@ -320,7 +349,7 @@ def test_conv_ref_annual_world_first_cost():
   expected.index.name = "Year"
   expected.name = "conv_ref_annual_world_first_cost"
   result = fc.conv_ref_annual_world_first_cost()
-  pd.testing.assert_series_equal(result, expected, check_exact=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
 
 def test_ref_cumulative_install():
   ac = advanced_controls.AdvancedControls(
@@ -351,7 +380,7 @@ def test_ref_cumulative_install():
   expected.index.name = 'Year'
   expected.name = "ref_cumulative_install"
   result = fc.ref_cumulative_install()
-  pd.testing.assert_series_equal(result, expected, check_exact=False)
+  pd.testing.assert_series_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
 
 
 # SolarPVUtil 'Unit Adoption Calculations'!AX135:BH182
@@ -879,3 +908,69 @@ conv_ref_install_cost_per_iunit_cookstoves_nparray = np.array([
     [2051, 2.048761039057], [2052, 2.048761039057], [2053, 2.048761039057], [2054, 2.048761039057],
     [2055, 2.048761039057], [2056, 2.048761039057], [2057, 2.048761039057], [2058, 2.048761039057],
     [2059, 2.048761039057], [2060, 2.048761039057]])
+
+# Alternative Cement 'Unit Adoption Calculations'!AX135:BH182
+soln_pds_tot_iunits_reqd_altcement_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+      "Latin America", "China", "India", "EU", "USA"],
+    [2014, 222.222222, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2015, 222.703192, 42.116996, 12.424431, 163.800714, 3.206397, 1.154654, 170.811140, 41.665041, 13.602438, 16.646779],
+    [2016, 609.148337, 117.977901, 27.112990, 412.849266, 33.775844, 17.432336, 325.612968, 65.175302, 13.669529, 31.277073],
+    [2017, 934.565664, 194.599717, 42.254483, 633.389025, 46.440035, 17.882404, 330.589587, 92.201734, 13.878352, 46.823306],
+    [2018, 975.119605, 242.609222, 57.753094, 609.424282, 46.986309, 18.346698, 340.504586, 93.047453, 14.209510, 63.164601],
+    [2019, 973.006043, 237.419406, 73.534464, 595.533069, 47.693902, 18.825203, 354.236377, 91.604222, 14.646482, 63.119003],
+    [2020, 981.751223, 234.366686, 89.540626, 589.967696, 48.558311, 19.317904, 370.886844, 91.658279, 15.175174, 63.964271],
+    [2021, 999.595665, 233.157862, 105.726194, 591.311421, 49.575399, 19.824789, 389.733827, 93.041111, 15.783532, 65.667799],
+    [2022, 1014.465706, 233.544814, 111.422252, 598.411428, 50.741368, 20.345845, 410.194305, 95.613202, 16.461227, 68.098278],
+    [2023, 1030.233806, 235.317091, 111.656705, 610.326224, 52.052729, 20.881058, 431.795728, 99.258692, 17.199388, 71.149521],
+    [2024, 1052.387957, 238.295807, 112.871265, 626.284184, 53.506284, 21.430418, 454.153629, 103.881081, 17.990386, 74.735321],
+    [2025, 1079.978053, 242.328605, 114.905658, 645.650774, 55.099103, 21.993913, 476.954050, 109.399770, 18.827644, 78.785427],
+    [2026, 1050.177794, 235.240633, 110.903042, 627.052313, 54.876971, 22.104835, 463.082817, 108.710778, 18.496449, 77.519524],
+    [2027, 1024.285761, 228.969865, 107.470799, 610.925810, 54.705410, 22.213877, 450.302625, 108.368217, 18.199765, 76.501339],
+    [2028, 1001.775069, 223.424048, 104.523646, 596.924133, 54.582215, 22.321027, 438.456091, 108.327800, 17.934090, 75.694575],
+    [2029, 982.205642, 218.524180, 101.991340, 584.758465, 54.505379, 22.426278, 427.412820, 108.552179, 17.696392, 75.069237],
+    [2030, 965.209294, 214.202593, 99.815894, 574.188102, 54.473085, 22.529619, 417.064573, 109.009827, 17.484047, 74.600485],
+    [2031, 949.210997, 210.388857, 97.549362, 563.837209, 54.754525, 22.681044, 402.321376, 109.589118, 17.311451, 74.067716],
+    [2032, 935.219104, 207.045937, 95.552062, 554.713167, 55.077392, 22.830545, 388.108403, 110.352578, 17.159980, 73.653835],
+    [2033, 923.017422, 204.131586, 93.791163, 546.676188, 55.440368, 22.978116, 374.363452, 111.281265, 17.027947, 73.344656],
+    [2034, 912.425429, 201.609910, 92.239540, 539.609942, 55.842287, 23.123750, 361.034921, 112.359261, 16.913910, 73.128433],
+    [2035, 903.293046, 199.450591, 90.874864, 533.418024, 56.282125, 23.267442, 348.080162, 113.573258, 16.816640, 72.995475],
+    [2036, 895.496395, 197.628251, 89.678868, 528.021095, 56.758994, 23.409187, 335.464166, 114.912214, 16.735104, 72.937838],
+    [2037, 888.934378, 196.121914, 88.636765, 523.354579, 57.272138, 23.548981, 323.158501, 116.367078, 16.668440, 72.949079],
+    [2038, 883.525934, 194.914581, 87.736781, 519.366823, 57.820929, 23.686820, 311.140469, 117.930564, 16.615949, 73.024061],
+    [2039, 879.207875, 193.992878, 86.969792, 516.017643, 58.404859, 23.822702, 299.392442, 119.596974, 16.577076, 73.158798],
+    [2040, 875.933203, 193.346783, 86.329048, 513.277204, 59.023543, 23.956625, 287.901349, 121.362061, 16.551405, 73.350337],
+    [2041, 873.969055, 193.234283, 85.809960, 511.125182, 59.711043, 24.088587, 285.901349, 123.317061, 16.538651, 73.650337],
+    [2042, 872.699055, 193.121783, 85.409960, 509.550182, 60.398543, 24.218587, 283.901349, 125.272061, 16.538651, 73.950337],
+    [2043, 872.119747, 193.009283, 85.128413, 508.549383, 61.086043, 24.346625, 281.901349, 127.227061, 16.551365, 74.250337],
+    [2044, 872.238009, 192.896783, 84.966583, 508.128399, 61.773543, 24.472701, 279.901349, 129.182061, 16.576874, 74.550337],
+    [2045, 873.071140, 192.784283, 84.927648, 508.301349, 62.461043, 24.596817, 277.901349, 131.137061, 16.615377, 74.850337],
+    [2046, 871.801140, 192.671783, 84.527648, 506.726349, 63.148543, 24.726817, 275.901349, 133.092061, 16.615377, 75.150337],
+    [2047, 870.531140, 192.559283, 84.127648, 505.151349, 63.836043, 24.856817, 273.901349, 135.047061, 16.615377, 75.450337],
+    [2048, 869.261140, 192.446783, 83.727648, 503.576349, 64.523543, 24.986817, 271.901349, 137.002061, 16.615377, 75.750337],
+    [2049, 867.991140, 192.334283, 83.327648, 502.001349, 65.211043, 25.116817, 269.901349, 138.957061, 16.615377, 76.050337],
+    [2050, 866.721140, 192.221783, 82.927648, 500.426349, 65.898543, 25.246817, 267.901349, 140.912061, 16.615377, 76.350337],
+    [2051, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2052, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2053, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2054, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2055, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2056, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2057, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2058, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2059, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+    [2060, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+
+# Alternative Cement "First Cost"!C37:C82
+soln_pds_install_cost_per_iunit_altcement_nparray = np.array([
+    [2015, 32130000.0], [2016, 32130000.0], [2017, 32130000.0], [2018, 32130000.0],
+    [2019, 32130000.0], [2020, 32130000.0], [2021, 32130000.0], [2022, 32130000.0],
+    [2023, 32130000.0], [2024, 32130000.0], [2025, 32130000.0], [2026, 32130000.0],
+    [2027, 32130000.0], [2028, 32130000.0], [2029, 32130000.0], [2030, 32130000.0],
+    [2031, 32130000.0], [2032, 32130000.0], [2033, 32130000.0], [2034, 32130000.0],
+    [2035, 32130000.0], [2036, 32130000.0], [2037, 32130000.0], [2038, 32130000.0],
+    [2039, 32130000.0], [2040, 32130000.0], [2041, 32130000.0], [2042, 32130000.0],
+    [2043, 32130000.0], [2044, 32130000.0], [2045, 32130000.0], [2046, 32130000.0],
+    [2047, 32130000.0], [2048, 32130000.0], [2049, 32130000.0], [2050, 32130000.0],
+    [2051, np.nan], [2052, np.nan], [2053, np.nan], [2054, np.nan], [2055, np.nan],
+    [2056, np.nan], [2057, np.nan], [2058, np.nan], [2059, np.nan], [2060, np.nan]])

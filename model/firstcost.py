@@ -62,7 +62,11 @@ class FirstCost:
     p = (1 / self.soln_pds_tot_iunits_reqd['World'][2015]) ** parameter_b
     first_unit_cost = self.ac.pds_2014_cost * p
 
-    result_per_iunit = (first_unit_cost * self.soln_pds_tot_iunits_reqd.loc[:, 'World'] ** parameter_b)
+    world = self.soln_pds_tot_iunits_reqd.loc[:, 'World']
+    result_per_iunit = (first_unit_cost * world ** parameter_b)
+    # In Excel, NaN^0 == NaN. In Python, NaN^0 == 1.
+    # We want to match the Excel behavior.
+    result_per_iunit.mask(world.isna(), other=np.nan, inplace=True)
     result_display = result_per_iunit * self.fc_convert_iunit_factor
 
     if self.ac.soln_first_cost_below_conv:
@@ -90,6 +94,8 @@ class FirstCost:
     def calc(x):
       if x == 0 or parameter_b == 0:
         new_val = first_unit_cost
+      elif pd.isna(x):
+        new_val = np.nan
       else:
         new_val = first_unit_cost * x ** parameter_b
       return new_val * self.fc_convert_iunit_factor
@@ -121,6 +127,8 @@ class FirstCost:
     def calc(x):
       if x == 0 or parameter_b == 0:
         new_val = first_unit_cost
+      elif pd.isna(x):
+        new_val = np.nan
       else:
         new_val = first_unit_cost * x ** parameter_b
       return new_val * self.fc_convert_iunit_factor
@@ -140,7 +148,7 @@ class FirstCost:
     """
     result = self.soln_pds_new_iunits_reqd["World"] * self.soln_pds_install_cost_per_iunit()
     result.name = "soln_pds_annual_world_first_cost"
-    return result.dropna()
+    return result
 
   @lru_cache()
   def soln_ref_annual_world_first_cost(self):
@@ -149,7 +157,7 @@ class FirstCost:
     """
     result = self.soln_ref_new_iunits_reqd["World"] * self.soln_ref_install_cost_per_iunit()
     result.name = "soln_ref_annual_world_first_cost"
-    return result.dropna()
+    return result
 
   @lru_cache()
   def conv_ref_annual_world_first_cost(self):
@@ -158,7 +166,7 @@ class FirstCost:
     """
     result = self.conv_ref_new_iunits["World"] * self.conv_ref_install_cost_per_iunit()
     result.name = "conv_ref_annual_world_first_cost"
-    return result.dropna()
+    return result
 
   @lru_cache()
   def soln_pds_cumulative_install(self):
@@ -174,8 +182,8 @@ class FirstCost:
     """Cumulative Install / Implementation (CONVENTIONAL-REF + SOLUTION-REF)
        'First Cost'!R37:R82
     """
-    csum1 = self.conv_ref_annual_world_first_cost().cumsum()
-    csum2 = self.soln_ref_annual_world_first_cost().cumsum()
+    csum1 = self.conv_ref_annual_world_first_cost().fillna(0.0).clip(lower=0.0).cumsum()
+    csum2 = self.soln_ref_annual_world_first_cost().fillna(0.0).clip(lower=0.0).cumsum()
     result = csum1.add(csum2)
     result.name = "ref_cumulative_install"
     return result

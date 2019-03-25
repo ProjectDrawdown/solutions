@@ -101,7 +101,7 @@ class OperatingCost:
     """New functional units required each year.
        SolarPVUtil 'Operating Cost'!F19:F64
     """
-    growth = self.soln_net_annual_funits_adopted.diff()
+    growth = self.soln_net_annual_funits_adopted.fillna(0.0).diff()
     growth.iloc[0] = self.soln_net_annual_funits_adopted.iloc[0]  # iloc[0] is NA after diff()
     growth.name = 'soln_pds_new_funits_per_year'
     return growth.sort_index()
