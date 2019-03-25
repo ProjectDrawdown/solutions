@@ -1,6 +1,7 @@
 """Test solution classes."""
 
 import pytest
+import altcement
 import biogas
 import biomass
 import buildingautomation
@@ -19,6 +20,12 @@ import solarhotwater
 import solarpvroof
 import solarpvutil
 import silvopasture
+
+def test_altcement():
+  scenario = list(altcement.scenarios.keys())[0]
+  obj = altcement.AlternativeCement(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
 
 def test_biogas():
   scenario = list(biogas.scenarios.keys())[0]

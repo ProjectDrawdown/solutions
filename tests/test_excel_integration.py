@@ -19,6 +19,7 @@ import xlrd
 
 xlwings = pytest.importorskip("xlwings")
 
+from solution import altcement
 from solution import biogas
 from solution import biomass
 from solution import buildingautomation
@@ -454,6 +455,7 @@ def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=Tr
   ])
 
   if is_rrs:
+      pds_cumulative_funit_mask = regional_mask if regional_mask is not None else "Excel_NaN"
       verify['Unit Adoption Calculations'].extend([
           ('BA17:BK63', obj.ua.ref_tam_per_capita().reset_index(), None),
           ('BM17:BW63', obj.ua.ref_tam_per_gdp_per_capita().reset_index(), None),
@@ -462,7 +464,7 @@ def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=Tr
           ('BM69:BW115', obj.ua.pds_tam_per_gdp_per_capita().reset_index(), None),
           ('BY69:CI115', obj.ua.pds_tam_growth().reset_index(), None),
           #('B135:L181' tested in 'Helper Tables'!C91)
-          ('Q135:AA181', obj.ua.soln_pds_cumulative_funits().reset_index(), regional_mask),
+          ('Q135:AA181', obj.ua.soln_pds_cumulative_funits().reset_index(), pds_cumulative_funit_mask),
           ('AX136:BH182', obj.ua.soln_pds_tot_iunits_reqd().reset_index(), regional_mask),
           ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd().reset_index(), regional_mask),
           #('BN136:BS182', obj.ua.soln_pds_big4_iunits_reqd().reset_index(), None),
@@ -764,9 +766,25 @@ def check_excel_against_object(obj, workbook, scenario, verify):
       (usecols, skiprows, nrows) = get_pd_read_excel_args(cellrange)
       expected_df = pd.read_excel(wb, engine='xlrd', sheet_name=sheetname, header=None,
         index_col=None, usecols=usecols, skiprows=skiprows, nrows=nrows)
+      if isinstance(mask, str) and mask == "Excel_NaN":
+        mask = expected_df.isna()
       description = descr_base + sheetname + " " + cellrange
       compare_dataframes(actual_df=actual_df, expected_df=expected_df,
           description=description, mask=mask)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('altcement', 'testdata',
+        'Drawdown-Alternative (High Vol. Fly Ash) Cement_RRS_v1.1_16Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_AltCement_RRS(start_excel, tmpdir):
+  """Test for Excel model file Alternative Cement."""
+  workbook = start_excel
+  for scenario in altcement.scenarios.keys():
+    obj = altcement.AlternativeCement(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
 @pytest.mark.integration
