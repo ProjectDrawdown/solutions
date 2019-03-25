@@ -23,10 +23,10 @@ g_adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index
 
 g_data_sources = {
   'Baseline Cases': {
-    '6DS': str(datadir.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv')),
-    'IRefpol': str(datadir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
-    'MREFPol': str(datadir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
-    'GREFpol': str(datadir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
+    '6DS': datadir.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv'),
+    'IRefpol': datadir.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
+    'MREFPol': datadir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
+    'GREFpol': datadir.joinpath('ad_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
   },
   'Conservative Cases': {
     '4DS': str(datadir.joinpath('ad_based_on_IEA_ETP_2016_4DS.csv')),

@@ -1,8 +1,10 @@
 """Test solution classes."""
 
 import pytest
+import altcement
 import biogas
 import biomass
+import buildingautomation
 import concentratedsolar
 import improvedcookstoves
 import instreamhydro
@@ -11,11 +13,19 @@ import landfillmethane
 import microwind
 import offshorewind
 import onshorewind
+import silvopasture
+import smartglass
 import smartthermostats
 import solarhotwater
 import solarpvroof
 import solarpvutil
 import silvopasture
+
+def test_altcement():
+  scenario = list(altcement.scenarios.keys())[0]
+  obj = altcement.AlternativeCement(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
 
 def test_biogas():
   scenario = list(biogas.scenarios.keys())[0]
@@ -26,6 +36,12 @@ def test_biogas():
 def test_biomass():
   scenario = list(biomass.scenarios.keys())[0]
   obj = biomass.Biomass(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_buildingautomation():
+  scenario = list(buildingautomation.scenarios.keys())[0]
+  obj = buildingautomation.BuildingAutomationSystems(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
@@ -80,6 +96,12 @@ def test_onshorewind():
 def test_silvopasture():
   scenario = list(silvopasture.scenarios.keys())[0]
   obj = silvopasture.Silvopasture(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_smartglass():
+  scenario = list(smartglass.scenarios.keys())[0]
+  obj = smartglass.SmartGlass(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 

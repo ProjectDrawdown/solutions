@@ -91,6 +91,7 @@ def get_rrs_scenarios(wb):
       assert sr_tab.cell_value(row + 88, 1) == 'Grid Emissions'
       s['conv_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 89, 4))
       s['soln_energy_efficiency_factor'] = convert_sr_float(sr_tab.cell_value(row + 90, 4))
+      s['soln_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 91, 4))
 
       assert sr_tab.cell_value(row + 94, 1) == 'Fuel Emissions'
       s['conv_fuel_consumed_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 95, 4))
@@ -128,6 +129,13 @@ def get_rrs_scenarios(wb):
       assert sr_tab.cell_value(row + 163, 1) == 'PDS ADOPTION SCENARIO INPUTS'
       s['soln_pds_adoption_basis'] = str(sr_tab.cell_value(row + 164, 4)).strip()
       s['soln_pds_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 165, 4))
+      def percnt(r): return 0.0 if sr_tab.cell_value(r, 4) == '' else sr_tab.cell_value(r, 4)
+      percentages = [('World', percnt(row + 170)), ('OECD90', percnt(row + 171)),
+          ('Eastern Europe', percnt(row + 172)), ('Asia (Sans Japan)', percnt(row + 173)),
+          ('Middle East and Africa', percnt(row + 174)), ('Latin America', percnt(row + 175)),
+          ('China', percnt(row + 176)), ('India', percnt(row + 177)),
+          ('EU', percnt(row + 178)), ('USA', percnt(row + 179))]
+      s['pds_adoption_final_percentage'] = percentages
 
       assert sr_tab.cell_value(row + 183, 1) == 'Existing PDS Prognostication Assumptions'
       adopt = str(sr_tab.cell_value(row + 184, 4)).strip()
@@ -310,6 +318,7 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['source_until_2014'], prefix=prefix)
   oneline(f=f, s=s, names=['ref_source_post_2014'], prefix=prefix)
   oneline(f=f, s=s, names=['pds_source_post_2014'], prefix=prefix)
+  oneline(f=f, s=s, names=['pds_adoption_final_percentage'], prefix=prefix)
 
   f.write('\n' + prefix + '# financial' + '\n')
   oneline(f=f, s=s, names=['pds_2014_cost', 'ref_2014_cost'], prefix=prefix)
@@ -338,7 +347,8 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['conv_indirect_co2_per_unit'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_indirect_co2_is_iunits'], prefix=prefix)
   oneline(f=f, s=s, names=['ch4_co2_per_twh', 'n2o_co2_per_twh'], prefix=prefix, suffix='\n')
-  oneline(f=f, s=s, names=['soln_energy_efficiency_factor', 'conv_annual_energy_used'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_energy_efficiency_factor'], prefix=prefix)
+  oneline(f=f, s=s, names=['soln_annual_energy_used', 'conv_annual_energy_used'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_fuel_emissions_factor', 'soln_fuel_emissions_factor'],
       prefix=prefix, suffix='\n')
@@ -377,7 +387,7 @@ def xli(tab, row, col):
   cell = tab.cell(row, col)
   if cell.ctype == xlrd.XL_CELL_ERROR:
     return 'np.nan'
-  if cell.ctype == xlrd.XL_CELL_NUMBER:
+  if cell.ctype == xlrd.XL_CELL_TEXT or cell.ctype == xlrd.XL_CELL_NUMBER:
     return str(int(cell.value))
   if cell.ctype == xlrd.XL_CELL_EMPTY:
     return '0'
@@ -418,9 +428,9 @@ def write_tam(f, wb, outputdir):
   f.write("      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
   f.write("       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
   f.write("      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,\n")
-  f.write("       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014,\n")
-  f.write("       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014,\n")
-  f.write("       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014],\n")
+  f.write("       " + xls(tm_tab, 15, 21) + ", " + xls(tm_tab, 18, 21) + ", " + xls(tm_tab, 21, 21) + ", ")
+  f.write(            xls(tm_tab, 24, 21) + ", " + xls(tm_tab, 27, 21) + ", " + xls(tm_tab, 30, 21) + ",\n")
+  f.write("       " + xls(tm_tab, 33, 21) + ", " + xls(tm_tab, 36, 21) + ", " + xls(tm_tab, 39, 21) + "],\n")
   f.write("      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,\n")
   f.write("       " + xls(tm_tab, 15, 21) + ", " + xls(tm_tab, 18, 21) + ", " + xls(tm_tab, 21, 21) + ", ")
   f.write(            xls(tm_tab, 24, 21) + ", " + xls(tm_tab, 27, 21) + ", " + xls(tm_tab, 30, 21) + ",\n")
@@ -666,9 +676,6 @@ def write_ad(f, wb, outputdir):
     f.write("      },\n")
   f.write("    }\n")
   f.write("    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)\n")
-  f.write("    pds_adoption_data_per_region = self.ad.adoption_data_per_region()\n")
-  f.write("    pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()\n")
-  f.write("    pds_adoption_is_single_source = self.ad.adoption_is_single_source()\n")
   f.write("\n")
 
 
@@ -703,18 +710,58 @@ def write_custom_ad(case, f, wb, outputdir):
   if case == 'PDS':
     f.write("    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
     f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)\n")
-    f.write("    pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
-    f.write("    pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
-    f.write("    pds_adoption_is_single_source = True\n")
   f.write("\n")
 
 
-def write_ht(f, wb, is_custom_ref_ad):
+def write_s_curve_ad(f, wb):
+  """Generate the S-Curve section of a solution.
+     Arguments:
+       f: file-like object for output
+       wb: an Excel workbook as returned by xlrd
+  """
+  s = wb.sheet_by_name('S-Curve Adoption')
+  u = wb.sheet_by_name('Unit Adoption Calculations')
+  f.write("    sconfig_list = [\n")
+  f.write("      ['region', 'base_year', 'last_year', 'base_percent', 'last_percent', 'base_adoption', 'pds_tam_2050'],\n")
+  f.write("      ['World', " + xli(s, 16, 1) + ", " + xli(s, 19, 1) + ", " + xln(s, 17, 1) +
+          ", " + xln(s, 20, 1) + ", " + xln(s, 18, 1) + ", " + xln(u, 104, 1) + "],\n")
+  f.write("      ['OECD90', " + xli(s, 16, 2) + ", " + xli(s, 19, 2) + ", " + xln(s, 17, 2) +
+          ", " + xln(s, 20, 2) + ", " + xln(s, 18, 2) + ", " + xln(u, 104, 2) + "],\n")
+  f.write("      ['Eastern Europe', " + xli(s, 16, 3) + ", " + xli(s, 19, 3) + ", " +
+          xln(s, 17, 3) + ", " + xln(s, 20, 3) + ", " + xln(s, 18, 3) + ", " +
+          xln(u, 104, 3) + "],\n")
+  f.write("      ['Asia (Sans Japan)', " + xli(s, 16, 4) + ", " + xli(s, 19, 4) + ", " +
+          xln(s, 17, 4) + ", " + xln(s, 20, 4) + ", " + xln(s, 18, 4) + ", " +
+          xln(u, 104, 4) + "],\n")
+  f.write("      ['Middle East and Africa', " + xli(s, 16, 5) + ", " + xli(s, 19, 5) + ", " +
+          xln(s, 17, 5) + ", " + xln(s, 20, 5) + ", " + xln(s, 18, 5) + ", " +
+          xln(u, 104, 5) + "],\n")
+  f.write("      ['Latin America', " + xli(s, 16, 6) + ", " + xli(s, 19, 6) + ", " +
+          xln(s, 17, 6) + ", " + xln(s, 20, 6) + ", " + xln(s, 18, 6) + ", " +
+          xln(u, 104, 6) + "],\n")
+  f.write("      ['China', " + xli(s, 16, 7) + ", " + xli(s, 19, 7) + ", " +
+          xln(s, 17, 7) + ", " + xln(s, 20, 7) + ", " + xln(s, 18, 7) + ", " +
+          xln(u, 104, 7) + "],\n")
+  f.write("      ['India', " + xli(s, 16, 8) + ", " + xli(s, 19, 8) + ", " +
+          xln(s, 17, 8) + ", " + xln(s, 20, 8) + ", " + xln(s, 18, 8) + ", " +
+          xln(u, 104, 8) + "],\n")
+  f.write("      ['EU', " + xli(s, 16, 9) + ", " + xli(s, 19, 9) + ", " +
+          xln(s, 17, 9) + ", " + xln(s, 20, 9) + ", " + xln(s, 18, 9) + ", " +
+          xln(u, 104, 9) + "],\n")
+  f.write("      ['USA', " + xli(s, 16, 10) + ", " + xli(s, 19, 10) + ", " +
+          xln(s, 17, 10) + ", " + xln(s, 20, 10) + ", " + xln(s, 18, 10) + ", " +
+          xln(u, 104, 10) + "]]\n")
+  f.write("    sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0], dtype=np.object).set_index('region')\n")
+  f.write("    self.sc = s_curve.SCurve(transition_period=" + xli(s, 14, 0) + ", sconfig=sconfig)\n")
+  f.write("\n")
+
+
+def write_ht(f, wb, has_custom_ref_ad):
   """Generate the Helper Tables section of a solution.
      Arguments:
        f: file-like object for output
        wb: an Excel workbook as returned by xlrd
-       is_custom_ref_ad: whether a REF customadoption is in use.
+       has_custom_ref_ad: whether a REF customadoption is in use.
   """
   h = wb.sheet_by_name('Helper Tables')
   initial_datapoint_year = int(h.cell_value(*cell_to_offsets('B21')))
@@ -733,12 +780,8 @@ def write_ht(f, wb, is_custom_ref_ad):
   f.write("    ht_ref_datapoints.loc[" + str(final_datapoint_year) + "] = ht_ref_adoption_final.fillna(0.0)\n")
 
   f.write("    ht_pds_adoption_initial = ht_ref_adoption_initial\n")
-  f.write("    ht_pds_adoption_final_percentage = pd.Series(\n")
-  r = [xln(h, 83, n) for n in range(2, 7)]
-  f.write("      [" + ", ".join(r) + ",\n")
-  r = [xln(h, 83, n) for n in range(7, 12)]
-  f.write("       " + ", ".join(r) + "],\n")
-  f.write("       index=REGIONS)\n")
+  f.write("    ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
+  f.write("    ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))\n")
   f.write("    ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[" + str(final_datapoint_year) + "]\n")
   f.write("    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)\n")
   f.write("    ht_pds_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
@@ -748,19 +791,25 @@ def write_ht(f, wb, is_custom_ref_ad):
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
   f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
   f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
-  if is_custom_ref_ad:
+  if has_custom_ref_ad:
     f.write("        ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
   f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
   f.write("        pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
   f.write("\n")
 
 
-def write_ua(f):
+def write_ua(f, wb):
   """Write out the Unit Adoption module for this solution class."""
+  ua_tab = wb.sheet_by_name('Unit Adoption Calculations')
   f.write("    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,\n")
   f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
   f.write("        soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
-  f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted())\n")
+  f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
+  # If S135 == D135, then it must not be adding in 'Advanced Controls'!C62
+  if ua_tab.cell(134, 18).value == ua_tab.cell(134, 3).value:
+    f.write("        bug_cfunits_double_count=False)\n")
+  else:
+    f.write("        bug_cfunits_double_count=True)\n")
   f.write("    soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()\n")
   f.write("    soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()\n")
   f.write("    conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()\n")
@@ -1057,6 +1106,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write('from model import firstcost\n')
   f.write('from model import helpertables\n')
   f.write('from model import operatingcost\n')
+  f.write('from model import s_curve\n')
   f.write('from model import unitadoption\n')
   f.write('from model import vma\n')
   f.write('\n')
@@ -1076,16 +1126,21 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
   f.write("\n")
 
-  is_default_pds_ad = is_custom_pds_ad = is_default_ref_ad = is_custom_ref_ad = False
+  has_default_pds_ad = has_custom_pds_ad = has_default_ref_ad = has_custom_ref_ad = False
+  has_s_curve_pds_ad = has_linear_pds_ad = False
   for s in scenarios.values():
     if s.get('soln_pds_adoption_basis', '') == 'Existing Adoption Prognostications':
-      is_default_pds_ad = True
+      has_default_pds_ad = True
     if s.get('soln_pds_adoption_basis', '') == 'Fully Customized PDS':
-      is_custom_pds_ad = True
+      has_custom_pds_ad = True
+    if 'S-Curve' in s.get('soln_pds_adoption_basis', ''):
+      has_s_curve_pds_ad = True
+    if 'Linear' in s.get('soln_pds_adoption_basis', ''):
+      has_linear_pds_ad = True
     if s.get('soln_ref_adoption_basis', '') == 'Default':
-      is_default_ref_ad = True
+      has_default_ref_ad = True
     if s.get('soln_ref_adoption_basis', '') == 'Custom':
-      is_custom_ref_ad = True
+      has_custom_ref_ad = True
 
   f.write('scenarios = {\n')
   for name, s in scenarios.items():
@@ -1109,21 +1164,49 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   if has_tam:
     write_tam(f=f, wb=wb, outputdir=outputdir)
 
-  if is_custom_pds_ad and is_default_pds_ad:
+  if has_custom_pds_ad and has_default_pds_ad:
     raise NotImplementedError('Support for both Default and Custom PDS adoption is not implemented')
-  if is_custom_ref_ad and is_default_ref_ad:
+  if has_custom_ref_ad and has_default_ref_ad:
     raise NotImplementedError('Support for both Default and Custom REF adoption is not implemented')
-  if is_default_pds_ad or is_default_ref_ad:
+  if has_default_pds_ad or has_default_ref_ad:
     write_ad(f=f, wb=wb, outputdir=outputdir)
-  if is_custom_pds_ad:
+  if has_custom_pds_ad:
     write_custom_ad(case='PDS', f=f, wb=wb, outputdir=outputdir)
-  if is_custom_ref_ad:
+  if has_custom_ref_ad:
     write_custom_ad(case='REF', f=f, wb=wb, outputdir=outputdir)
+  if has_s_curve_pds_ad:
+    write_s_curve_ad(f=f, wb=wb)
 
-  write_ht(f=f, wb=wb, is_custom_ref_ad=is_custom_ref_ad)
+  f.write("    if False:\n")
+  f.write("      # One may wonder why this is here. This file was code generated.\n")
+  f.write("      # This 'if False' allows subsequent conditions to all be elif.\n")
+  f.write("      pass\n")
+  if has_custom_pds_ad:
+    f.write("    elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':\n")
+    f.write("      pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
+    f.write("      pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
+    f.write("      pds_adoption_is_single_source = True\n")
+  if has_s_curve_pds_ad:
+    f.write("    elif self.ac.soln_pds_adoption_basis == 'S-Curve':\n")
+    f.write("      pds_adoption_data_per_region = None\n")
+    f.write("      pds_adoption_trend_per_region = self.sc.logistic_adoption()\n")
+    f.write("      pds_adoption_is_single_source = False\n")
+  if has_default_pds_ad or has_default_ref_ad:
+    f.write("    elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':\n")
+    f.write("      pds_adoption_data_per_region = self.ad.adoption_data_per_region()\n")
+    f.write("      pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()\n")
+    f.write("      pds_adoption_is_single_source = self.ad.adoption_is_single_source()\n")
+  if has_linear_pds_ad:
+    f.write("    elif self.ac.soln_pds_adoption_basis == 'Linear':\n")
+    f.write("      pds_adoption_data_per_region = None\n")
+    f.write("      pds_adoption_trend_per_region = None\n")
+    f.write("      pds_adoption_is_single_source = False\n")
+  f.write("\n")
+
+  write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad)
   f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
   f.write("\n")
-  write_ua(f=f)
+  write_ua(f=f, wb=wb)
   write_fc(f=f, wb=wb)
   write_oc(f=f, wb=wb)
   write_c2_c4(f=f)
@@ -1149,6 +1232,7 @@ def infer_classname(filename):
   special_cases = [
       ('BiomassELC', 'Biomass'),
       ('Biomass from Perennial Crops for Electricity Generation', 'Biomass'),
+      ('Cement', 'AlternativeCement'),
       ('CHP_A_', 'CoGenElectricity'),
       ('CHP_B_', 'CoGenHeat'),
       ('CSP_', 'ConcentratedSolar'),

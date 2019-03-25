@@ -29,14 +29,14 @@ g_tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_in
 
 g_tam_ref_data_sources = {
     'Baseline Cases': {
-      'Baseline: Based on- IEA ETP 2016 6DS': str(basedir.joinpath(
-        'data', 'energy', 'tam_based_on_IEA_ETP_2016_6DS.csv')),
-      'Baseline: Based on- AMPERE MESSAGE-MACRO Reference': str(basedir.joinpath(
-        'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
-      'Baseline: Based on- AMPERE GEM E3 Reference': str(basedir.joinpath(
-        'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
-      'Baseline: Based on- AMPERE IMAGE/TIMER Reference': str(basedir.joinpath(
-        'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
+      'Baseline: Based on- IEA ETP 2016 6DS': basedir.joinpath(
+        'data', 'energy', 'tam_based_on_IEA_ETP_2016_6DS.csv'),
+      'Baseline: Based on- AMPERE MESSAGE-MACRO Reference': basedir.joinpath(
+        'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
+      'Baseline: Based on- AMPERE GEM E3 Reference': basedir.joinpath(
+        'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
+      'Baseline: Based on- AMPERE IMAGE/TIMER Reference': basedir.joinpath(
+        'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
       },
     'Conservative Cases': {
       'Conservative: Based on- IEA ETP 2016 4DS': str(basedir.joinpath(
@@ -699,6 +699,33 @@ def test_mean_ignores_zeros():
       tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_low_med_high_global()
   assert all(result.loc[:, 'Medium'] == 1.0)
+
+def test_tam_y2014_with_growth_high():
+  # test data taken from Building Automation
+  data_sources = g_tam_ref_data_sources.copy()
+  data_sources['Region: China'] = {
+    'Baseline Cases': {
+      'B1': str(datadir.joinpath('tam_buildingautomation1.csv')),
+      'B2': str(datadir.joinpath('tam_buildingautomation2.csv')),
+    },
+  }
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['growth', 'China'] = 'High'
+  tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
+  result = tm.ref_tam_per_region()
+  expected = pd.DataFrame(global_trend_buildingautomation_list[1:],
+      columns=global_trend_buildingautomation_list[0]).set_index('Year')
+  pd.testing.assert_series_equal(result['China'], expected['China'], check_exact=False)
+
+def test_nonexistent_source_is_NaN():
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['source_until_2014', :] = 'NoSuchSource'
+  tamconfig_mod.loc['source_after_2014', :] = 'NoSuchSource'
+  tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
+  result = tm.forecast_min_max_sd_global()
+  assert all(pd.isna(result.loc[:, :]))
 
 
 # SolarPVUtil 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES',
@@ -1412,3 +1439,30 @@ linear_trend_solarhotwater_list = [['Year', 'x', 'constant', 'adoption'],
     [2058, 2435.175715, 6057.054434, 8492.230148],
     [2059, 2490.520617, 6057.054434, 8547.575051],
     [2060, 2545.86552, 6057.054434, 8602.919954]]
+
+# BuildingAutomation 'TAM Data'!DV479:DW525
+global_trend_buildingautomation_list = [['Year', 'China'],
+    [2014, 12830.4000000000], [2015, 14733.5554883180],
+    [2016, 15199.3049071829], [2017, 15633.3576109881],
+    [2018, 16036.7510169021], [2019, 16410.5225420934],
+    [2020, 16755.7096037305], [2021, 17073.3496189820],
+    [2022, 17364.4800050164], [2023, 17630.1381790023],
+    [2024, 17871.3615581081], [2025, 18089.1875595025],
+    [2026, 18284.6536003538], [2027, 18458.7970978308],
+    [2028, 18612.6554691019], [2029, 18747.2661313356],
+    [2030, 18863.6665017005], [2031, 18962.8939973650],
+    [2032, 19045.9860354978], [2033, 19113.9800332674],
+    [2034, 19167.9134078423], [2035, 19208.8235763910],
+    [2036, 19237.7479560821], [2037, 19255.7239640841],
+    [2038, 19263.7890175655], [2039, 19262.9805336949],
+    [2040, 19254.3359296408], [2041, 19238.8926225717],
+    [2042, 19217.6880296562], [2043, 19191.7595680627],
+    [2044, 19162.1446549599], [2045, 19129.8807075163],
+    [2046, 19096.0051429003], [2047, 19061.5553782806],
+    [2048, 19027.5688308256], [2049, 18995.0829177039],
+    [2050, 18965.1350560840], [2051, 18938.7626631345],
+    [2052, 18917.0031560239], [2053, 18900.8939519207],
+    [2054, 18891.4724679934], [2055, 18889.7761214106],
+    [2056, 18896.8423293409], [2057, 18913.7085089527],
+    [2058, 18941.4120774146], [2059, 18980.9904518950],
+    [2060, 19033.4810495627]]

@@ -286,6 +286,35 @@ def test_single_iunit_cashflow_instreamhydro():
   expected.index.name = 'Year'
   pd.testing.assert_series_equal(result.loc[2015:2060], expected.loc[2015:2060], check_exact=False)
 
+def test_single_iunit_cashflow_long_soln_lifetime():
+  soln_pds_install_cost_per_iunit = pd.Series(
+      soln_pds_install_cost_per_iunit_instreamhydro_nparray[:, 1],
+      index=soln_pds_install_cost_per_iunit_instreamhydro_nparray[:, 0],
+      dtype=np.float64)
+  conv_ref_install_cost_per_iunit = pd.Series(
+      conv_ref_install_cost_per_iunit_instreamhydro_nparray[:, 1],
+      index=conv_ref_install_cost_per_iunit_instreamhydro_nparray[:, 0],
+      dtype=np.float64)
+  ac = advanced_controls.AdvancedControls(report_end_year=2050,
+      conv_lifetime_capacity=20.0, conv_avg_annual_use=1.0,
+      soln_lifetime_capacity=88.0, soln_avg_annual_use=1.0,
+      conv_var_oper_cost_per_funit=0.003, conv_fuel_cost_per_funit=0.07,
+      conv_fixed_oper_cost_per_iunit=32.95,
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
+      soln_fixed_oper_cost_per_iunit=0.0, npv_discount_rate=0.063)
+  oc = operatingcost.OperatingCost(ac=ac, soln_net_annual_funits_adopted=None,
+      soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+      conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+      soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+      single_iunit_purchase_year=2017,
+      soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
+      conv_ref_install_cost_per_iunit=conv_ref_install_cost_per_iunit,
+      conversion_factor=1000000000.0)
+  result = oc.soln_vs_conv_single_iunit_cashflow()
+  assert result.loc[2070] != 0.0
+  result = oc.soln_only_single_iunit_cashflow()
+  assert result.loc[2070] != 0.0
+
 def test_soln_vs_conv_single_iunit_npv():
   oc = _defaultOperatingCost(single_iunit_purchase_year=2017)
   result = oc.soln_vs_conv_single_iunit_npv()

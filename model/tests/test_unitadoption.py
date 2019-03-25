@@ -132,7 +132,7 @@ def test_pds_tam_growth():
   assert tg['USA'][2060] == pytest.approx(33.502722)
   assert tg['OECD90'][2014] == ''
 
-def test_soln_pds_cumulative_funits():
+def test_soln_pds_cumulative_funits_bug_behavior():
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
       [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
       [2015, 176.24, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -141,16 +141,31 @@ def test_soln_pds_cumulative_funits():
   soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   ua = unitadoption.UnitAdoption(ac=None, datadir=None,
       ref_tam_per_region=None, pds_tam_per_region=None,
-      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None)
+      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+      bug_cfunits_double_count=True)
   result = ua.soln_pds_cumulative_funits()
   v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      [2014, 112.63, 150.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2015, 288.87, 151.01, 1.66, 43.15, 4.15, 30.30, 30.94, 6.50, 111.54, 27.25],
-      [2016, 560.91, 152.01, 2.66, 44.15, 5.15, 31.30, 31.94, 7.50, 112.54, 28.25],
-      [2017, 944.21, 153.01, 3.66, 45.15, 6.15, 32.30, 32.94, 8.50, 113.54, 29.25]]
+      [2014, 112.63, 150.0, 0.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
+      [2015, 288.87, 151.0, 1.66, 43.14, 4.16, 30.30, 30.94, 6.50, 111.54, 27.24],
+      [2016, 560.90, 152.0, 2.66, 44.14, 5.16, 31.30, 31.94, 7.50, 112.54, 28.24],
+      [2017, 944.21, 153.0, 3.66, 45.14, 6.16, 32.30, 32.94, 8.50, 113.54, 29.24]]
   expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
   expected.name = "soln_pds_cumulative_funits"
-  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
+  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
+
+  ua = unitadoption.UnitAdoption(ac=None, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+      bug_cfunits_double_count=False)
+  result = ua.soln_pds_cumulative_funits()
+  v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+      [2014, 112.63, 75.0, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
+      [2015, 288.87, 76.0, 1.33, 22.07, 2.58, 15.65, 15.97, 3.75, 56.27, 14.12],
+      [2016, 560.90, 77.0, 2.33, 23.07, 3.58, 16.65, 16.97, 4.75, 57.27, 15.12],
+      [2017, 944.21, 78.0, 3.33, 24.07, 4.58, 17.65, 17.97, 5.75, 58.27, 16.12]]
+  expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
+  expected.name = "soln_pds_cumulative_funits"
+  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
 
 def test_soln_pds_cumulative_funits_missing_data():
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -161,50 +176,17 @@ def test_soln_pds_cumulative_funits_missing_data():
   soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   ua = unitadoption.UnitAdoption(ac=None, datadir=None,
       ref_tam_per_region=None, pds_tam_per_region=None,
-      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None)
+      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+      bug_cfunits_double_count=True)
   result = ua.soln_pds_cumulative_funits()
   v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      [2014, 112.63, 150.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2015, 288.87, 151.01, 0.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2016, 560.91, 151.01, 1.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25],
-      [2017, 944.21, 151.01, 1.66, 42.15, 3.15, 29.30, 29.94, 5.50, 110.54, 26.25]]
+      [2014, 112.63, 150.00, 0.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
+      [2015, 288.87, 151.00, 0.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
+      [2016, 560.90, 151.00, 1.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
+      [2017, 944.21, 151.00, 1.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24]]
   expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
   expected.name = "soln_pds_cumulative_funits"
-  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, check_less_precise=2)
-
-def test_soln_pds_new_iunits_reqd():
-  ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=48343.80, soln_avg_annual_use=1841.67)
-  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
-      ref_tam_per_region=None, pds_tam_per_region=None,
-      soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
-  result = ua.soln_pds_new_iunits_reqd()
-  v = [["Year", "World", "OECD90"], [2014, '', ''],
-      [2015, 0.03453818387, 0.0], [2016, 0.05201284992, 0.0],
-      [2017, 0.06042238076, 0.0], [2018, 0.06845429421, 0.0],
-      [2019, 0.07610859028, 0.0], [2020, 0.00241831098, 0.0],
-      [2021, 0.17125128823, 0.0], [2022, 0.09680577417, 0.0],
-      [2023, 0.10294960069, 0.0], [2024, 0.10871580984, 0.0],
-      [2025, 0.03144441920, 0.0], [2026, 0.20177535836, 0.0],
-      [2027, 0.12374873295, 0.0], [2028, 0.12800447256, 0.0],
-      [2029, 0.13188259477, 0.0], [2030, 0.19909481731, 0.0],
-      [2031, 0.07479426935, 0.0], [2032, 0.14125125711, 0.0],
-      [2033, 0.14361890979, 0.0], [2034, 0.14560894508, 0.0],
-      [2035, 0.14722136299, 0.0], [2036, 0.14845616351, 0.0],
-      [2037, 0.14931334665, 0.0], [2038, 0.14979291240, 0.0],
-      [2039, 0.14989486077, 0.0], [2040, 0.17538586468, 0.0],
-      [2041, 0.12319923243, 0.0], [2042, 0.18247318543, 0.0],
-      [2043, 0.19853933031, 0.0], [2044, 0.20516272259, 0.0],
-      [2045, 0.21103088010, 0.0], [2046, 0.21614380284, 0.0],
-      [2047, 0.13953453283, 0.0], [2048, 0.30507090198, 0.0],
-      [2049, 0.22695116243, 0.0], [2050, 0.21573194479, 0.0],
-      [2051, 0.24369109629, 0.0], [2052, 0.14830142671, 0.0],
-      [2053, 0.31344767084, 0.0], [2054, 0.22985873303, 0.0],
-      [2055, 0.22817454284, 0.0], [2056, 0.22573511788, 0.0],
-      [2057, 0.28625217585, 0.0], [2058, 0.15487884595, 0.0],
-      [2059, 0.21388543438, 0.0], [2060, 0.20842507034, 0.0]]
-  expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
-  expected.name = "soln_pds_new_iunits_reqd"
-  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+  pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
 
 def test_soln_ref_cumulative_funits():
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -277,7 +259,7 @@ def test_soln_net_annual_funits_adopted_with_NaN():
       soln_ref_funits_adopted=soln_ref_funits_adopted)
   result = ua.soln_net_annual_funits_adopted()
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 0.0, 0.0, 0.0],
-      [2015, 59.17, -75.63, -0.34], [2016, 150.52, -76.25, -0.34]]
+      [2015, 59.17, np.nan, np.nan], [2016, 150.52, np.nan, np.nan]]
   expected = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
   expected.name = "soln_net_annual_funits_adopted"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
@@ -557,6 +539,20 @@ def test_soln_pds_new_iunits_reqd_multiple_replacements():
   assert result.loc[2035, 'World'] == pytest.approx(0.15275428774)
   assert result.loc[2060, 'World'] == pytest.approx(0.37217842574)
 
+def test_soln_pds_new_iunits_reqd_repeated_cost_for_iunits():
+  soln_pds_funits_adopted = pd.DataFrame(soln_funits_adopted_altcement_list[1:],
+      columns=soln_funits_adopted_altcement_list[0]).set_index('Year')
+  ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=30.0, soln_avg_annual_use=1.0)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+      repeated_cost_for_iunits=True)
+  result = ua.soln_pds_new_iunits_reqd()
+  expected = pd.DataFrame(soln_new_iunits_reqd_altcement_list[1:],
+      columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
+  expected.name = "soln_pds_new_iunits_reqd"
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
 def test_new_iunits_reqd_rounding_bug():
   soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_onshorewind_list[1:],
       columns=soln_pds_funits_adopted_onshorewind_list[0]).set_index('Year')
@@ -687,6 +683,20 @@ def test_soln_ref_new_iunits_reqd_multiple_replacements():
   assert result.loc[2035, 'World'] == pytest.approx(0.00443836291)
   assert result.loc[2060, 'World'] == pytest.approx(0.00887672581)
 
+def test_soln_ref_new_iunits_reqd_repeated_cost_for_iunits():
+  soln_ref_funits_adopted = pd.DataFrame(soln_funits_adopted_altcement_list[1:],
+      columns=soln_funits_adopted_altcement_list[0]).set_index('Year')
+  ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=30.0, soln_avg_annual_use=1.0)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=soln_ref_funits_adopted,
+      repeated_cost_for_iunits=True)
+  result = ua.soln_ref_new_iunits_reqd()
+  expected = pd.DataFrame(soln_new_iunits_reqd_altcement_list[1:],
+      columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
+  expected.name = "soln_ref_new_iunits_reqd"
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
 def test_conv_ref_new_iunits():
   ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=182411.28,
       conv_avg_annual_use=4946.84)
@@ -738,6 +748,23 @@ def test_conv_ref_new_iunits_land():
     # test only world values as regional data has bugs in xls
     result = ua.conv_ref_new_iunits()['World'].values
     np.testing.assert_array_almost_equal(result, sp_world)
+
+def test_conv_ref_new_iunits_repeated_cost_for_iunits():
+  soln_pds_funits_adopted = pd.DataFrame(soln_funits_adopted_altcement_list[1:],
+      columns=soln_funits_adopted_altcement_list[0]).set_index('Year')
+  soln_ref_funits_adopted = pd.DataFrame(0, index=soln_pds_funits_adopted.index,
+      columns=soln_pds_funits_adopted.columns)
+  ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=30.0, conv_avg_annual_use=1.0)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted,
+      repeated_cost_for_iunits=True)
+  result = ua.conv_ref_new_iunits()
+  expected = pd.DataFrame(soln_new_iunits_reqd_altcement_list[1:],
+      columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
+  expected.name = "conv_ref_new_iunits"
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 # SolarPVUtil 'Unit Adoption Calculations'!B134:L181
@@ -791,7 +818,7 @@ soln_pds_funits_adopted_list = [
     [2059, 9831.77207116817, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 9951.12354028110, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
-# 'Unit Adoption Calculations'!B134:L181 with regional columns set to nan.
+# SolarPVUtil 'Unit Adoption Calculations'!B134:L181 with regional columns set to nan.
 soln_pds_funits_adopted_no_regional_data_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778, 14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
@@ -842,7 +869,7 @@ soln_pds_funits_adopted_no_regional_data_list = [
     [2059, 9831.77207116817, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
     [2060, 9951.12354028110, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
 
-# 'Unit Adoption Calculations'!AX134:BH181
+# SolarPVUtil 'Unit Adoption Calculations'!AX134:BH181
 soln_pds_tot_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497, 0.00795507895, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942 ],
@@ -893,7 +920,7 @@ soln_pds_tot_iunits_reqd_list = [
     [2059, 5.33851325027, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
     [2060, 5.40331941081, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ]]
 
-# 'Unit Adoption Calculations'!BN134:BS181
+# SolarPVUtil 'Unit Adoption Calculations'!BN134:BS181
 soln_pds_big4_iunits_reqd_list = [
     ["Year", "Rest of World", "China", "India", "EU", "USA"],
     [2014, 0.01439770758, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
@@ -944,7 +971,7 @@ soln_pds_big4_iunits_reqd_list = [
     [2059, 5.33851325027, 0.00, 0.00, 0.00, 0.00],
     [2060, 5.40331941081, 0.00, 0.00, 0.00, 0.00]]
 
-# 'Unit Adoption Calculations'!BN134:BS181
+# SolarPVUtil 'Unit Adoption Calculations'!BN134:BS181
 soln_pds_big4_iunits_reqd_no_regional_data_list = [
     ["Year", "Rest of World", "China", "India", "EU", "USA"],
     [2014, 0.01439770758, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
@@ -996,7 +1023,7 @@ soln_pds_big4_iunits_reqd_no_regional_data_list = [
     [2060, 5.40331941081,np.nan,np.nan,np.nan,np.nan]]
 
 
-# 'Unit Adoption Calculations'!AG134:AQ181
+# SolarPVUtil 'Unit Adoption Calculations'!AG134:AQ181
 soln_pds_new_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2015, 0.03453818387, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -1046,7 +1073,7 @@ soln_pds_new_iunits_reqd_list = [
     [2059, 0.21388543438, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2060, 0.20842507034, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
-# 'Unit Adoption Calculations'!B197:L244
+# SolarPVUtil 'Unit Adoption Calculations'!B197:L244
 soln_ref_funits_adopted_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778, 14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
@@ -1097,7 +1124,7 @@ soln_ref_funits_adopted_list = [
     [2059, 312.35936415553, 103.00129615598, 0.57080369858, 69.97420589485, 7.65067244985, 49.14423990686, 35.71343677485, 17.22989500426, 77.21576538262, 17.23789257185],
     [2060, 316.79772706269, 103.62345283599, 0.57610192892, 71.06091037152, 7.78568566479, 49.91076481837, 36.17435265380, 17.55170820188, 77.70340340347, 17.32929796233]]
 
-# 'Unit Adoption Calculations'!AX197:BH244
+# SolarPVUtil 'Unit Adoption Calculations'!AX197:BH244
 soln_ref_tot_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497, 0.00795507895, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
@@ -1148,7 +1175,7 @@ soln_ref_tot_iunits_reqd_list = [
     [2059, 0.16960671915, 0.05592824776, 0.00030993834, 0.03799500463, 0.00415420699, 0.02668462755, 0.01939189131, 0.00935558942, 0.04192706906, 0.00935993199],
     [2060, 0.17201668746, 0.05626607004, 0.00031281520, 0.03858506980, 0.00422751726, 0.02710083975, 0.01964216212, 0.00953032944, 0.04219184961, 0.00940956382]]
 
-# 'Unit Adoption Calculations'!AG197:AQ244
+# SolarPVUtil 'Unit Adoption Calculations'!AG197:AQ244
 soln_ref_new_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2015, 0.00240996832, 0.00033782228, 0.00000287686, 0.00059006517, 0.00007331027, 0.00041621219, 0.00025027081, 0.00017474002, 0.00026478055, 0.00004963183],
@@ -1199,7 +1226,7 @@ soln_ref_new_iunits_reqd_list = [
     [2060, 0.00481993663, 0.00067564456, 0.00000575373, 0.00118013034, 0.00014662053, 0.00083242438, 0.00050054161, 0.00034948003, 0.00052956110, 0.00009926367]]
 
 
-# 'Unit Adoption Calculations'!AG251:AQ298
+# SolarPVUtil 'Unit Adoption Calculations'!AG251:AQ298
 conv_ref_new_iunits_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2015, 0.01196107466, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 ],
@@ -1249,7 +1276,7 @@ conv_ref_new_iunits_list = [
     [2059, 0.08900216185, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 ],
     [2060, 0.05837239211, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 ]]
 
-# 'Unit Adoption Calculations'!B251:L298
+# SolarPVUtil 'Unit Adoption Calculations'!B251:L298
 conv_ref_funits_adopted_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -1300,7 +1327,7 @@ conv_ref_funits_adopted_list = [
     [2059, 9519.41270701265, -103.00129615598, -0.57080369858, -69.97420589485, -7.65067244985, -49.14423990686, -35.71343677485, -17.22989500426, -77.21576538262, -17.23789257185],
     [2060, 9634.32581321841, -103.62345283599, -0.57610192892, -71.06091037152, -7.78568566479, -49.91076481837, -36.17435265380, -17.55170820188, -77.70340340347, -17.32929796233]]
 
-# 'Unit Adoption Calculations'!AX251:BH298
+# SolarPVUtil 'Unit Adoption Calculations'!AX251:BH298
 conv_ref_annual_tot_iunits_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -1451,3 +1478,104 @@ soln_pds_new_iunits_reqd_onshorewind_list = [
     [2058, 0.224899333255, 0.009125825246, 0.009122756863, 0.063072453200, 0.024620672474, 0.025767249614, 0.026333024716, 0.024431633394, 0.011322182038, 0.016444175725],
     [2059, 0.225244626188, 0.009115405501, 0.009112211634, 0.064280026844, 0.024959708351, 0.026068574170, 0.026042726528, 0.024564784270, 0.011419511372, 0.016007337951],
     [2060, 0.225419867201, 0.009099416209, 0.009096083486, 0.065509843355, 0.025272417620, 0.026340634649, 0.025726374403, 0.024662644412, 0.011540019170, 0.015533627776]]
+
+# Alternate Cement 'Unit Adoption Calculations'!B134:L181
+soln_funits_adopted_altcement_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2014, 222.222222, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2015, 222.703192, 42.116996, 12.424431, 163.800714, 3.206397, 1.154654, 170.811140, 41.665041, 13.602438, 16.646779],
+    [2016, 609.148337, 117.977901, 27.112990, 412.849266, 33.775844, 17.432336, 325.612968, 65.175302, 13.669529, 31.277073],
+    [2017, 934.565664, 194.599717, 42.254483, 633.389025, 46.440035, 17.882404, 330.589587, 92.201734, 13.878352, 46.823306],
+    [2018, 975.119605, 242.609222, 57.753094, 609.424282, 46.986309, 18.346698, 340.504586, 93.047453, 14.209510, 63.164601],
+    [2019, 973.006043, 237.419406, 73.534464, 595.533069, 47.693902, 18.825203, 354.236377, 91.604222, 14.646482, 63.119003],
+    [2020, 981.751223, 234.366686, 89.540626, 589.967696, 48.558311, 19.317904, 370.886844, 91.658279, 15.175174, 63.964271],
+    [2021, 999.595665, 233.157862, 105.726194, 591.311421, 49.575399, 19.824789, 389.733827, 93.041111, 15.783532, 65.667799],
+    [2022, 1014.465706, 233.544814, 111.422252, 598.411428, 50.741368, 20.345845, 410.194305, 95.613202, 16.461227, 68.098278],
+    [2023, 1030.233806, 235.317091, 111.656705, 610.326224, 52.052729, 20.881058, 431.795728, 99.258692, 17.199388, 71.149521],
+    [2024, 1052.387957, 238.295807, 112.871265, 626.284184, 53.506284, 21.430418, 454.153629, 103.881081, 17.990386, 74.735321],
+    [2025, 1079.978053, 242.328605, 114.905658, 645.650774, 55.099103, 21.993913, 476.954050, 109.399770, 18.827644, 78.785427],
+    [2026, 1050.177794, 235.240633, 110.903042, 627.052313, 54.876971, 22.104835, 463.082817, 108.710778, 18.496449, 77.519524],
+    [2027, 1024.285761, 228.969865, 107.470799, 610.925810, 54.705410, 22.213877, 450.302625, 108.368217, 18.199765, 76.501339],
+    [2028, 1001.775069, 223.424048, 104.523646, 596.924133, 54.582215, 22.321027, 438.456091, 108.327800, 17.934090, 75.694575],
+    [2029, 982.205642, 218.524180, 101.991340, 584.758465, 54.505379, 22.426278, 427.412820, 108.552179, 17.696392, 75.069237],
+    [2030, 965.209294, 214.202593, 99.815894, 574.188102, 54.473085, 22.529619, 417.064573, 109.009827, 17.484047, 74.600485],
+    [2031, 949.210997, 210.388857, 97.549362, 563.837209, 54.754525, 22.681044, 402.321376, 109.589118, 17.311451, 74.067716],
+    [2032, 935.219104, 207.045937, 95.552062, 554.713167, 55.077392, 22.830545, 388.108403, 110.352578, 17.159980, 73.653835],
+    [2033, 923.017422, 204.131586, 93.791163, 546.676188, 55.440368, 22.978116, 374.363452, 111.281265, 17.027947, 73.344656],
+    [2034, 912.425429, 201.609910, 92.239540, 539.609942, 55.842287, 23.123750, 361.034921, 112.359261, 16.913910, 73.128433],
+    [2035, 903.293046, 199.450591, 90.874864, 533.418024, 56.282125, 23.267442, 348.080162, 113.573258, 16.816640, 72.995475],
+    [2036, 895.496395, 197.628251, 89.678868, 528.021095, 56.758994, 23.409187, 335.464166, 114.912214, 16.735104, 72.937838],
+    [2037, 888.934378, 196.121914, 88.636765, 523.354579, 57.272138, 23.548981, 323.158501, 116.367078, 16.668440, 72.949079],
+    [2038, 883.525934, 194.914581, 87.736781, 519.366823, 57.820929, 23.686820, 311.140469, 117.930564, 16.615949, 73.024061],
+    [2039, 879.207875, 193.992878, 86.969792, 516.017643, 58.404859, 23.822702, 299.392442, 119.596974, 16.577076, 73.158798],
+    [2040, 875.933203, 193.346783, 86.329048, 513.277204, 59.023543, 23.956625, 287.901349, 121.362061, 16.551405, 73.350337],
+    [2041, 873.969055, 193.234283, 85.809960, 511.125182, 59.711043, 24.088587, 285.901349, 123.317061, 16.538651, 73.650337],
+    [2042, 872.699055, 193.121783, 85.409960, 509.550182, 60.398543, 24.218587, 283.901349, 125.272061, 16.538651, 73.950337],
+    [2043, 872.119747, 193.009283, 85.128413, 508.549383, 61.086043, 24.346625, 281.901349, 127.227061, 16.551365, 74.250337],
+    [2044, 872.238009, 192.896783, 84.966583, 508.128399, 61.773543, 24.472701, 279.901349, 129.182061, 16.576874, 74.550337],
+    [2045, 873.071140, 192.784283, 84.927648, 508.301349, 62.461043, 24.596817, 277.901349, 131.137061, 16.615377, 74.850337],
+    [2046, 871.801140, 192.671783, 84.527648, 506.726349, 63.148543, 24.726817, 275.901349, 133.092061, 16.615377, 75.150337],
+    [2047, 870.531140, 192.559283, 84.127648, 505.151349, 63.836043, 24.856817, 273.901349, 135.047061, 16.615377, 75.450337],
+    [2048, 869.261140, 192.446783, 83.727648, 503.576349, 64.523543, 24.986817, 271.901349, 137.002061, 16.615377, 75.750337],
+    [2049, 867.991140, 192.334283, 83.327648, 502.001349, 65.211043, 25.116817, 269.901349, 138.957061, 16.615377, 76.050337],
+    [2050, 866.721140, 192.221783, 82.927648, 500.426349, 65.898543, 25.246817, 267.901349, 140.912061, 16.615377, 76.350337],
+    [2051, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2052, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2053, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2054, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2055, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2056, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2057, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2058, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2059, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2060, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+# Alternative Cement 'Unit Adoption Calculations'!AG134:AQ181
+soln_new_iunits_reqd_altcement_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"],
+    [2015, 222.703192, 42.116996, 12.424431, 163.800714, 3.206397, 1.154654, 170.811140, 41.665041, 13.602438, 16.646779],
+    [2016, 609.148337, 117.977901, 27.112990, 412.849266, 33.775844, 17.432336, 325.612968, 65.175302, 13.669529, 31.277073],
+    [2017, 934.565664, 194.599717, 42.254483, 633.389025, 46.440035, 17.882404, 330.589587, 92.201734, 13.878352, 46.823306],
+    [2018, 975.119605, 242.609222, 57.753094, 609.424282, 46.986309, 18.346698, 340.504586, 93.047453, 14.209510, 63.164601],
+    [2019, 973.006043, 237.419406, 73.534464, 595.533069, 47.693902, 18.825203, 354.236377, 91.604222, 14.646482, 63.119003],
+    [2020, 981.751223, 234.366686, 89.540626, 589.967696, 48.558311, 19.317904, 370.886844, 91.658279, 15.175174, 63.964271],
+    [2021, 999.595665, 233.157862, 105.726194, 591.311421, 49.575399, 19.824789, 389.733827, 93.041111, 15.783532, 65.667799],
+    [2022, 1014.465706, 233.544814, 111.422252, 598.411428, 50.741368, 20.345845, 410.194305, 95.613202, 16.461227, 68.098278],
+    [2023, 1030.233806, 235.317091, 111.656705, 610.326224, 52.052729, 20.881058, 431.795728, 99.258692, 17.199388, 71.149521],
+    [2024, 1052.387957, 238.295807, 112.871265, 626.284184, 53.506284, 21.430418, 454.153629, 103.881081, 17.990386, 74.735321],
+    [2025, 1079.978053, 242.328605, 114.905658, 645.650774, 55.099103, 21.993913, 476.954050, 109.399770, 18.827644, 78.785427],
+    [2026, 1050.177794, 235.240633, 110.903042, 627.052313, 54.876971, 22.104835, 463.082817, 108.710778, 18.496449, 77.519524],
+    [2027, 1024.285761, 228.969865, 107.470799, 610.925810, 54.705410, 22.213877, 450.302625, 108.368217, 18.199765, 76.501339],
+    [2028, 1001.775069, 223.424048, 104.523646, 596.924133, 54.582215, 22.321027, 438.456091, 108.327800, 17.934090, 75.694575],
+    [2029, 982.205642, 218.524180, 101.991340, 584.758465, 54.505379, 22.426278, 427.412820, 108.552179, 17.696392, 75.069237],
+    [2030, 965.209294, 214.202593, 99.815894, 574.188102, 54.473085, 22.529619, 417.064573, 109.009827, 17.484047, 74.600485],
+    [2031, 949.210997, 210.388857, 97.549362, 563.837209, 54.754525, 22.681044, 402.321376, 109.589118, 17.311451, 74.067716],
+    [2032, 935.219104, 207.045937, 95.552062, 554.713167, 55.077392, 22.830545, 388.108403, 110.352578, 17.159980, 73.653835],
+    [2033, 923.017422, 204.131586, 93.791163, 546.676188, 55.440368, 22.978116, 374.363452, 111.281265, 17.027947, 73.344656],
+    [2034, 912.425429, 201.609910, 92.239540, 539.609942, 55.842287, 23.123750, 361.034921, 112.359261, 16.913910, 73.128433],
+    [2035, 903.293046, 199.450591, 90.874864, 533.418024, 56.282125, 23.267442, 348.080162, 113.573258, 16.816640, 72.995475],
+    [2036, 895.496395, 197.628251, 89.678868, 528.021095, 56.758994, 23.409187, 335.464166, 114.912214, 16.735104, 72.937838],
+    [2037, 888.934378, 196.121914, 88.636765, 523.354579, 57.272138, 23.548981, 323.158501, 116.367078, 16.668440, 72.949079],
+    [2038, 883.525934, 194.914581, 87.736781, 519.366823, 57.820929, 23.686820, 311.140469, 117.930564, 16.615949, 73.024061],
+    [2039, 879.207875, 193.992878, 86.969792, 516.017643, 58.404859, 23.822702, 299.392442, 119.596974, 16.577076, 73.158798],
+    [2040, 875.933203, 193.346783, 86.329048, 513.277204, 59.023543, 23.956625, 287.901349, 121.362061, 16.551405, 73.350337],
+    [2041, 873.969055, 193.234283, 85.809960, 511.125182, 59.711043, 24.088587, 285.901349, 123.317061, 16.538651, 73.650337],
+    [2042, 872.699055, 193.121783, 85.409960, 509.550182, 60.398543, 24.218587, 283.901349, 125.272061, 16.538651, 73.950337],
+    [2043, 872.119747, 193.009283, 85.128413, 508.549383, 61.086043, 24.346625, 281.901349, 127.227061, 16.551365, 74.250337],
+    [2044, 872.238009, 192.896783, 84.966583, 508.128399, 61.773543, 24.472701, 279.901349, 129.182061, 16.576874, 74.550337],
+    [2045, 873.071140, 192.784283, 84.927648, 508.301349, 62.461043, 24.596817, 277.901349, 131.137061, 16.615377, 74.850337],
+    [2046, 871.801140, 192.671783, 84.527648, 506.726349, 63.148543, 24.726817, 275.901349, 133.092061, 16.615377, 75.150337],
+    [2047, 870.531140, 192.559283, 84.127648, 505.151349, 63.836043, 24.856817, 273.901349, 135.047061, 16.615377, 75.450337],
+    [2048, 869.261140, 192.446783, 83.727648, 503.576349, 64.523543, 24.986817, 271.901349, 137.002061, 16.615377, 75.750337],
+    [2049, 867.991140, 192.334283, 83.327648, 502.001349, 65.211043, 25.116817, 269.901349, 138.957061, 16.615377, 76.050337],
+    [2050, 866.721140, 192.221783, 82.927648, 500.426349, 65.898543, 25.246817, 267.901349, 140.912061, 16.615377, 76.350337],
+    [2051, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2052, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2053, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2054, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2055, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2056, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2057, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2058, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2059, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2060, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]

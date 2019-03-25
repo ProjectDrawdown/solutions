@@ -152,7 +152,7 @@ def matching_data_sources(data_sources, name, groups_only):
     return all_sources
   if name in all_sources:
     return [name]
-  raise ValueError("No such data source: " + str(name))
+  return None
 
 def is_group_name(data_sources, name):
   """Return True if name is a group in data_sources."""

@@ -67,14 +67,17 @@ class HelperTables:
           last_year = 2060
           adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints)
 
-        if self.ac.soln_ref_adoption_regional_data:
-            adoption.loc[:, "World"] = 0
-            adoption.loc[:, "World"] = adoption.sum(axis=1)
-
         # cannot exceed tam
         if self.ref_tam_per_region is not None:
             for col in adoption.columns:
                 adoption[col] = adoption[col].combine(self.ref_tam_per_region[col].fillna(0.0), min)
+
+        if self.ac.soln_ref_adoption_regional_data:
+            adoption.loc[:, 'World'] = adoption[['OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                'Middle East and Africa', 'Latin America']].sum(axis=1)
+            if self.ref_tam_per_region is not None:
+                adoption['World'] = adoption['World'].combine(
+                        self.ref_tam_per_region['World'].fillna(0.0), min)
 
         # Where we have data, use the actual data not the interpolation. Excel model does this
         # even in Custom REF Adoption case.
@@ -124,12 +127,12 @@ class HelperTables:
         """
         first_year = self.pds_datapoints.first_valid_index()
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-            adoption = self.pds_adoption_data_per_region.loc[2014:, :].copy(deep=True)
+            adoption = self.pds_adoption_data_per_region.loc[first_year:, :].copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Linear':
             last_year = 2060
             adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints)
         elif self.ac.soln_pds_adoption_basis == 'S-Curve':
-            raise NotImplementedError('S-Curve support not implemented')
+            adoption = self.pds_adoption_trend_per_region.copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
             adoption = self.pds_adoption_trend_per_region.fillna(0.0)
             if self.pds_adoption_is_single_source:
@@ -139,21 +142,25 @@ class HelperTables:
         elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
             raise NotImplementedError('Custom S-Curve support not implemented')
 
-        if self.ac.soln_pds_adoption_regional_data:
-            adoption.loc[:, 'World'] = 0
-            adoption.loc[:, 'World'] = adoption.sum(axis=1)
-
         # cannot exceed the total addressable market
         if self.pds_tam_per_region is not None:
             for col in adoption.columns:
                 adoption[col] = adoption[col].combine(self.pds_tam_per_region[col].fillna(0.0), min)
 
+        if self.ac.soln_pds_adoption_regional_data:
+            adoption.loc[:, 'World'] = adoption.loc[:, ['OECD90', 'Eastern Europe',
+                'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America']].sum(axis=1)
+            if self.pds_tam_per_region is not None:
+                for col in adoption.columns:
+                    adoption['World'] = adoption['World'].combine(
+                            self.pds_tam_per_region['World'].fillna(0.0), min)
+
         if not suppress_override and self.ac.pds_adoption_use_ref_years:
             y = self.ac.pds_adoption_use_ref_years
             adoption.update(self.soln_ref_funits_adopted(suppress_override=True).loc[y, 'World'])
 
-        # Where we have actual data, use the actual data not the interpolation. Excel model does this
-        # in all cases, even Custom PDS Adoption.
+        # Where we have actual data, use the actual data not the interpolation. Excel model does
+        # this in all cases, even Custom PDS Adoption.
         adoption.update(self.pds_datapoints.iloc[[0]])
 
         adoption.name = "soln_pds_funits_adopted"

@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 import math
+import pathlib
 import os
 
 from model import interpolation
@@ -60,7 +61,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     self._adoption_data_usa.name = 'adoption_data_usa'
     for (groupname, group) in self.data_sources.items():
       for (name, value) in group.items():
-        if isinstance(value, str):
+        if isinstance(value, str) or isinstance(value, pathlib.Path) or isinstance(value, pathlib.PurePath):
           sources = {name: value}
         else:
           sources = value

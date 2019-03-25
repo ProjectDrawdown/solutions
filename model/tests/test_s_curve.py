@@ -27,6 +27,20 @@ def test_sigmoid_logistic_100_percent_final_adoption():
     expected = pd.DataFrame(OECD90_sigmoid_logistic_list[1:],
             columns=OECD90_sigmoid_logistic_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
+    result = sc._sigmoid_logistic(base_year=2014, last_year=2050,
+            base_percent=0.677494504097, last_percent=0.999999999999,
+            base_adoption=14915.990000000000, pds_tam_2050=30578.7612542884)
+    pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_sigmoid_logistic_divide_by_zero():
+    """Test logistic sigmoid, with 100% last_percent adoption."""
+    sc = s_curve.SCurve(transition_period=None, sconfig=None)
+    result = sc._sigmoid_logistic(base_year=2014, last_year=2050,
+            base_percent=0.1, last_percent=0.0,
+            base_adoption=1000.0, pds_tam_2050=1000.0)
+    expected = pd.DataFrame(nan_sigmoid_logistic_list[1:],
+            columns=nan_sigmoid_logistic_list[0]).set_index('Year')
+    pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_logistic_adoption():
     # From Building Automation System "S Curve Adoption"!AJ17:AJ22
@@ -106,6 +120,34 @@ OECD90_sigmoid_logistic_list = [
         [2056, 33189.223130, 24777.808562], [2057, 33624.300109, 24777.808562],
         [2058, 34059.377089, 24777.808562], [2059, 34494.454068, 24777.808562],
         [2060, 34929.531047, 24777.808562]]
+
+nan_sigmoid_logistic_list = [
+        ["Year", "first_half", "second_half"],
+        [2014, np.nan, np.nan], [2015, np.nan, np.nan],
+        [2016, np.nan, np.nan], [2017, np.nan, np.nan],
+        [2018, np.nan, np.nan], [2019, np.nan, np.nan],
+        [2020, np.nan, np.nan], [2021, np.nan, np.nan],
+        [2022, np.nan, np.nan], [2023, np.nan, np.nan],
+        [2024, np.nan, np.nan], [2025, np.nan, np.nan],
+        [2026, np.nan, np.nan], [2027, np.nan, np.nan],
+        [2028, np.nan, np.nan], [2029, np.nan, np.nan],
+        [2030, np.nan, np.nan], [2031, np.nan, np.nan],
+        [2032, np.nan, np.nan], [2033, np.nan, np.nan],
+        [2034, np.nan, np.nan], [2035, np.nan, np.nan],
+        [2036, np.nan, np.nan], [2037, np.nan, np.nan],
+        [2038, np.nan, np.nan], [2039, np.nan, np.nan],
+        [2040, np.nan, np.nan], [2041, np.nan, np.nan],
+        [2042, np.nan, np.nan], [2043, np.nan, np.nan],
+        [2044, np.nan, np.nan], [2045, np.nan, np.nan],
+        [2046, np.nan, np.nan], [2047, np.nan, np.nan],
+        [2048, np.nan, np.nan], [2049, np.nan, np.nan],
+        [2050, np.nan, np.nan], [2051, np.nan, np.nan],
+        [2052, np.nan, np.nan], [2053, np.nan, np.nan],
+        [2054, np.nan, np.nan], [2055, np.nan, np.nan],
+        [2056, np.nan, np.nan], [2057, np.nan, np.nan],
+        [2058, np.nan, np.nan], [2059, np.nan, np.nan],
+        [2060, np.nan, np.nan]]
+
 
 # BuildingAutomation "S Curve Adoption"!A23:K70
 logistic_s_curve_adoption_list = [

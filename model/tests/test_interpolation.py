@@ -158,9 +158,8 @@ def test_matching_data_sources():
       name=None, groups_only=False) == None
 
 def test_matching_data_sources_no_such_group():
-  with pytest.raises(ValueError):
-    _ = itrp.matching_data_sources(data_sources=g_data_sources,
-        name='no such group', groups_only=False)
+  assert itrp.matching_data_sources(data_sources=g_data_sources,
+        name='no such group', groups_only=False) == None
  
 def test_groups_only():
   assert itrp.matching_data_sources(data_sources=g_data_sources, name='Ambitious 1',

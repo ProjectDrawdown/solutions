@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 import os.path
+import pathlib
 
 from model import interpolation
 import numpy as np
@@ -59,7 +60,7 @@ class TAM:
     self._forecast_data_usa.name = 'forecast_data_usa'
     for (groupname, group) in self.tam_ref_data_sources.items():
       for (name, value) in group.items():
-        if isinstance(value, str):
+        if isinstance(value, str) or isinstance(value, pathlib.Path):
           sources = {name: value}
         else:
           sources = value
@@ -80,7 +81,7 @@ class TAM:
     self._forecast_data_pds_global.name = 'forecast_data_pds_global'
     for (groupname, group) in self.tam_pds_data_sources.items():
       for (name, value) in group.items():
-        if isinstance(value, str):
+        if isinstance(value, str) or isinstance(value, pathlib.Path):
           sources = {name: value}
         else:
           sources = value
@@ -130,19 +131,16 @@ class TAM:
          data_sources: dict of dicts of datasources, as described in tam_ref_data_sources in
            the constructor
     """
-    source_until_2014 = tamconfig['source_until_2014']
-    source_after_2014 = tamconfig['source_after_2014']
-    low_sd_mult = tamconfig['low_sd_mult']
-    high_sd_mult = tamconfig['high_sd_mult']
-
     result = pd.DataFrame(np.nan, index=forecast.index.copy(), columns=['Low', 'Medium', 'High'])
-    columns = interpolation.matching_data_sources(data_sources=data_sources,
-        name=source_until_2014, groups_only=False)
     if forecast.empty:
       result.loc[:, 'Medium'] = np.nan
       result.loc[:, 'Low'] = np.nan
       result.loc[:, 'High'] = np.nan
-    else:
+      return result
+
+    columns = interpolation.matching_data_sources(data_sources=data_sources,
+        name=tamconfig['source_until_2014'], groups_only=False)
+    if columns:
       # In Excel, the Mean computation is:
       # SUM($C521:$Q521)/COUNTIF($C521:$Q521,">0")
       #
@@ -159,14 +157,19 @@ class TAM:
       m = forecast.loc[:2014, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
       m.name = 'Medium'
       result.update(m)
-      columns = interpolation.matching_data_sources(data_sources=data_sources,
-          name=source_after_2014, groups_only=False)
+
+    columns = interpolation.matching_data_sources(data_sources=data_sources,
+        name=tamconfig['source_after_2014'], groups_only=False)
+    if columns:
+      # see comment above about Mean and this lambda function
       m = forecast.loc[2015:, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
       m.name = 'Medium'
       result.update(m)
 
-      result.loc[:, 'Low'] = result.loc[:, 'Medium'] - (min_max_sd.loc[:, 'S.D'] * low_sd_mult)
-      result.loc[:, 'High'] = result.loc[:, 'Medium'] + (min_max_sd.loc[:, 'S.D'] * high_sd_mult)
+    low_sd_mult = tamconfig['low_sd_mult']
+    high_sd_mult = tamconfig['high_sd_mult']
+    result.loc[:, 'Low'] = result.loc[:, 'Medium'] - (min_max_sd.loc[:, 'S.D'] * low_sd_mult)
+    result.loc[:, 'High'] = result.loc[:, 'Medium'] + (min_max_sd.loc[:, 'S.D'] * high_sd_mult)
     return result
 
   def _get_trend(self, trend, tamconfig, data_sources):
@@ -683,9 +686,8 @@ class TAM:
   def _set_tam_one_region(self, result, region, forecast_trend, forecast_low_med_high):
     """Set a single column in ref_tam_per_region."""
     result[region] = forecast_trend.loc[:, 'adoption']
-    growth = self.tamconfig.loc['growth', region]
     first_year = result.first_valid_index()
-    result.loc[first_year, region] = forecast_low_med_high.loc[first_year, growth]
+    result.loc[first_year, region] = forecast_low_med_high.loc[first_year, 'Medium']
 
   @lru_cache()
   def ref_tam_per_region(self):

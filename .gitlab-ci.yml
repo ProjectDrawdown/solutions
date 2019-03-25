@@ -1,3 +1,5 @@
+image: python:3.7
+
 test:
   script:
   - apt-get update -qy

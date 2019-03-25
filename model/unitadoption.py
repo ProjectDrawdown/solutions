@@ -22,10 +22,15 @@ class UnitAdoption:
        pds_tam_per_region: (RRS only) dataframe of total addressible market per major
          region for the PDS scenario.
        tla_per_region: (LAND only): dataframe of total land area per region.
+       bug_pds_cfunits_double_count (bool): enable bug-for-bug compatibility
+       repeated_cost_for_iunits (bool): whether there is a repeated first cost to
+         maintaining implementation units at a specified level in
+         soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, & conv_ref_new_iunits.
   """
 
   def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted, datadir=None, ref_tam_per_region=None,
-               pds_tam_per_region=None, tla_per_region=None):
+               pds_tam_per_region=None, tla_per_region=None, bug_cfunits_double_count=False,
+               repeated_cost_for_iunits=False):
     self.ac = ac
 
     # NOTE: as datadir is static for all solutions this shouldn't be an arg
@@ -40,6 +45,8 @@ class UnitAdoption:
     self.tla_per_region = tla_per_region
     self.soln_ref_funits_adopted = soln_ref_funits_adopted
     self.soln_pds_funits_adopted = soln_pds_funits_adopted
+    self.bug_cfunits_double_count = bug_cfunits_double_count
+    self.repeated_cost_for_iunits = repeated_cost_for_iunits
 
   @lru_cache()
   def ref_population(self):
@@ -168,10 +175,16 @@ class UnitAdoption:
     """Cumulative Functional Units Utilized.
        SolarPVUtil 'Unit Adoption Calculations'!Q134:AA181
     """
-    omit_world = self.soln_pds_funits_adopted.iloc[[0], :].fillna(0.0).copy(deep=True)
-    omit_world['World'] = 0.0
-    first_year = self.soln_pds_funits_adopted.fillna(0.0).add(omit_world, fill_value=0)
-    result = first_year.cumsum(axis=0)
+    first_year = self.soln_pds_funits_adopted.fillna(0.0)
+    if self.bug_cfunits_double_count:
+      # in a number of older solutions, 'Advanced Controls'!$C$61:C70 is added to
+      # the 2014 soln_pds_cumulative_funits, which ends up double counting 2014.
+      # We optionally enable this bug-for-bug compatibility.
+      # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.z9hqutnbnigx
+      omit_world = self.soln_pds_funits_adopted.iloc[[0], :].fillna(0.0).copy(deep=True)
+      omit_world['World'] = 0.0
+      first_year = first_year.add(omit_world, fill_value=0)
+    result = first_year.cumsum(axis=0, skipna=False)
     result.name = "soln_pds_cumulative_funits"
     return result
 
@@ -192,14 +205,15 @@ class UnitAdoption:
 
        Should reflect the unit lifetime assumed in the First Cost tab.
        For simplicity assumed a fix lifetime rather than a gaussian
-       distribution, but this can be changed if needed. 
+       distribution, but this can be changed if needed.
 
        This is used to calculate Advanced Controls Output of Solution
        Implementation Units Adopted.  This is also used to Calculate
        First Cost, Marginal First Cost and NPV.
        SolarPVUtil 'Unit Adoption Calculations'!AG136:AQ182
     """
-
+    if self.repeated_cost_for_iunits:
+      return self.soln_pds_tot_iunits_reqd().iloc[1:].copy(deep=True).clip(lower=0.0)
     growth = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
@@ -209,7 +223,10 @@ class UnitAdoption:
         # added N * soln_lifetime_replacement ago, that now need replacement.
         replacement_year = int(year - (self.ac.soln_lifetime_replacement_rounded + 1))
         while replacement_year in growth.index:
-          replacements.at[year, region] += growth.at[replacement_year, region]
+          fa = self.soln_pds_funits_adopted
+          prior_year = year - self.ac.soln_lifetime_replacement_rounded - 1
+          if fa.loc[prior_year, region] <= fa.loc[year, region]:
+            replacements.at[year, region] += growth.at[replacement_year, region]
           replacement_year -= (self.ac.soln_lifetime_replacement_rounded + 1)
     result = growth + replacements
     result.name = "soln_pds_new_iunits_reqd"
@@ -267,6 +284,8 @@ class UnitAdoption:
 
        SolarPVUtil 'Unit Adoption Calculations'!AG197:AQ244
     """
+    if self.repeated_cost_for_iunits:
+      return self.soln_ref_tot_iunits_reqd().iloc[1:].copy(deep=True).clip(lower=0.0)
     growth = self.soln_ref_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
@@ -299,7 +318,7 @@ class UnitAdoption:
        (optionally) Indirect Emissions.
        SolarPVUtil 'Unit Adoption Calculations'!B251:L298
     """
-    result = self.soln_pds_funits_adopted.fillna(0.0) - self.soln_ref_funits_adopted.fillna(0.0)
+    result = self.soln_pds_funits_adopted - self.soln_ref_funits_adopted
     result.name = "soln_net_annual_funits_adopted"
     return result
 
@@ -323,7 +342,8 @@ class UnitAdoption:
     if self.tla_per_region is not None:  # LAND
         result = self.tla_per_region - self.soln_ref_funits_adopted
     else:  # RRS
-        result = (self.ref_tam_per_region - self.soln_ref_funits_adopted) / self.ac.conv_avg_annual_use
+        result = ((self.ref_tam_per_region - self.soln_ref_funits_adopted.fillna(0.0)) /
+                self.ac.conv_avg_annual_use)
     result.name = "conv_ref_tot_iunits"
     return result
 
@@ -358,6 +378,8 @@ class UnitAdoption:
 
        SolarPVUtil 'Unit Adoption Calculations'!AG251:AQ298
     """
+    if self.repeated_cost_for_iunits:
+      return self.conv_ref_annual_tot_iunits().iloc[1:].copy(deep=True).clip(lower=0.0)
     growth = self.conv_ref_annual_tot_iunits().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
     replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
         dtype='float64')
