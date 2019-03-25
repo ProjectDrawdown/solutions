@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 import os.path
+import pathlib
 
 from model import interpolation
 import numpy as np
@@ -59,7 +60,7 @@ class TAM:
     self._forecast_data_usa.name = 'forecast_data_usa'
     for (groupname, group) in self.tam_ref_data_sources.items():
       for (name, value) in group.items():
-        if isinstance(value, str):
+        if isinstance(value, str) or isinstance(value, pathlib.Path):
           sources = {name: value}
         else:
           sources = value
@@ -80,7 +81,7 @@ class TAM:
     self._forecast_data_pds_global.name = 'forecast_data_pds_global'
     for (groupname, group) in self.tam_pds_data_sources.items():
       for (name, value) in group.items():
-        if isinstance(value, str):
+        if isinstance(value, str) or isinstance(value, pathlib.Path):
           sources = {name: value}
         else:
           sources = value

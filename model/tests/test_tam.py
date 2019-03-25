@@ -29,14 +29,14 @@ g_tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_in
 
 g_tam_ref_data_sources = {
     'Baseline Cases': {
-      'Baseline: Based on- IEA ETP 2016 6DS': str(basedir.joinpath(
-        'data', 'energy', 'tam_based_on_IEA_ETP_2016_6DS.csv')),
-      'Baseline: Based on- AMPERE MESSAGE-MACRO Reference': str(basedir.joinpath(
-        'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv')),
-      'Baseline: Based on- AMPERE GEM E3 Reference': str(basedir.joinpath(
-        'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_Reference.csv')),
-      'Baseline: Based on- AMPERE IMAGE/TIMER Reference': str(basedir.joinpath(
-        'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv')),
+      'Baseline: Based on- IEA ETP 2016 6DS': basedir.joinpath(
+        'data', 'energy', 'tam_based_on_IEA_ETP_2016_6DS.csv'),
+      'Baseline: Based on- AMPERE MESSAGE-MACRO Reference': basedir.joinpath(
+        'data', 'energy', 'tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
+      'Baseline: Based on- AMPERE GEM E3 Reference': basedir.joinpath(
+        'data', 'energy', 'tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
+      'Baseline: Based on- AMPERE IMAGE/TIMER Reference': basedir.joinpath(
+        'data', 'energy', 'tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
       },
     'Conservative Cases': {
       'Conservative: Based on- IEA ETP 2016 4DS': str(basedir.joinpath(
