@@ -146,6 +146,13 @@ scenarios = {
 
 class Biogas:
   name = 'Large Biodigesters (Biogas)'
+  units = {
+    "implementation unit": "TW",
+    "functional unit": "TWh",
+    "first cost": "US$B",
+    "operating cost": "US$B",
+  }
+
   def __init__(self, scenario=None):
     datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
     parentdir = pathlib.Path(__file__).parents[1]
@@ -301,18 +308,3 @@ class Biogas:
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
 
     self.VMAs = []
-
-  def to_dict(self):
-    """Return all data as a dict, to be serialized to JSON."""
-    rs = dict()
-    rs['tam_data'] = self.tm.to_dict()
-    rs['adoption_data'] = self.ad.to_dict()
-    rs['helper_tables'] = self.ht.to_dict()
-    rs['emissions_factors'] = self.ef.to_dict()
-    rs['unit_adoption'] = self.ua.to_dict()
-    rs['first_cost'] = self.fc.to_dict()
-    rs['operating_cost'] = self.oc.to_dict()
-    rs['ch4_calcs'] = self.c4.to_dict()
-    rs['co2_calcs'] = self.c2.to_dict()
-    return rs
-

@@ -35,51 +35,68 @@ scenarios = {
       # Adoption sheets. All PDS scenarios are the same. This scenario uses inputs
       # calculated for the Drawdown book edition 1, some of which have been updated
       # since publication.
-      report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 32130000.0, ref_2014_cost = 32130000.0, 
-      conv_2014_cost = 45900000.0, 
-      soln_first_cost_efficiency_rate = 0.0, 
-      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.0922, 
+      # general
+      report_start_year=2020, report_end_year=2050, 
 
-      ch4_is_co2eq = False, n2o_is_co2eq = False, 
-      co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 36189.00000000001, 
-      conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
-      ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
+      # adoption
+      soln_ref_adoption_basis='Custom', 
+      soln_ref_adoption_custom_name='Drawdown Book Edition 1 Scenario REF Adoption', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='Drawdown Book Edition 1 PDS 1, 2 and 3', 
+      source_until_2014='ALL SOURCES', 
+      ref_source_post_2014='ALL SOURCES', 
+      pds_source_post_2014='ALL SOURCES', 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
-      soln_lifetime_capacity = 30.0, soln_avg_annual_use = 1.0, 
-      conv_lifetime_capacity = 30.0, conv_avg_annual_use = 1.0, 
+      # financial
+      pds_2014_cost=32130000.0, ref_2014_cost=32130000.0, 
+      conv_2014_cost=45900000.0, 
+      soln_first_cost_efficiency_rate=0.0, 
+      conv_first_cost_efficiency_rate=0.0, 
+      soln_first_cost_below_conv=True, 
+      npv_discount_rate=0.0922, 
+      soln_lifetime_capacity=30.0, soln_avg_annual_use=1.0, 
+      conv_lifetime_capacity=30.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit = 0.0, soln_fuel_cost_per_funit = 0.0, 
-      soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.0, conv_fuel_cost_per_funit = 0.0, 
-      conv_fixed_oper_cost_per_iunit = 0.0, 
-      soln_energy_efficiency_factor = 0.45, 
-      soln_annual_energy_used = 0.0, conv_annual_energy_used = 0.0585, 
-      conv_fuel_consumed_per_funit = 3113.0, soln_fuel_efficiency_factor = 0.45, 
-      conv_fuel_emissions_factor = 95.3, soln_fuel_emissions_factor = 95.3, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
+      soln_fixed_oper_cost_per_iunit=0.0, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0, 
+      conv_fixed_oper_cost_per_iunit=0.0, 
 
-      emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
-      emissions_use_co2eq = True, 
-      conv_emissions_per_funit = 505606.67, soln_emissions_per_funit = 278083.6685, 
+      # emissions
+      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      co2eq_conversion_source='AR5 with feedback', 
+      soln_indirect_co2_per_iunit=36189.00000000001, 
+      conv_indirect_co2_per_unit=0.0, 
+      conv_indirect_co2_is_iunits=False, 
+      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_ref_adoption_basis = 'Custom', 
-      soln_ref_adoption_custom_name = 'Drawdown Book Edition 1 Scenario REF Adoption', 
-      soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
-      soln_pds_adoption_basis = 'Fully Customized PDS', 
-      pds_adoption_final_percentage = [('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      soln_pds_adoption_custom_name = 'Drawdown Book Edition 1 PDS 1, 2 and 3', 
-      source_until_2014 = 'ALL SOURCES', 
-      ref_source_post_2014 = 'ALL SOURCES', 
-      pds_source_post_2014 = 'ALL SOURCES', 
+      soln_energy_efficiency_factor=0.45, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0585, 
+      conv_fuel_consumed_per_funit=3113.0, soln_fuel_efficiency_factor=0.45, 
+      conv_fuel_emissions_factor=95.3, soln_fuel_emissions_factor=95.3, 
 
+      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
+      emissions_use_co2eq=True, 
+      conv_emissions_per_funit=505606.67, soln_emissions_per_funit=278083.6685, 
+
+
+      # sequestration
     ),
 }
 
 class AlternativeCement:
   name = 'Alternative (High Vol. Fly Ash) Cement'
+  units = {
+    "implementation unit": "MMt",
+    "functional unit": "MMt",
+    "first cost": "US$B",
+    "operating cost": "US$B",
+  }
+
+
   def __init__(self, scenario=None):
     datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
     parentdir = pathlib.Path(__file__).parents[1]
@@ -108,7 +125,7 @@ class AlternativeCement:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Project Drawdown - Based on Data from Several Sources. (See HVFAC Links Sheet and HVFAC Material Availability Models)': str(thisdir.joinpath('tam_Project_Drawdown_based_on_Data_from_Several_Sources__See_HVFAC_L.csv')),
+          'Project Drawdown - Based on Data from Several Sources. (See HVFAC Links Sheet and HVFAC Material Availability Models)': thisdir.joinpath('tam_Project_Drawdown_based_on_Data_from_Several_Sources__See_HVFAC_L.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -177,7 +194,8 @@ class AlternativeCement:
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-        bug_cfunits_double_count=False, repeated_cost_for_iunits=True)
+        repeated_cost_for_iunits=True,
+        bug_cfunits_double_count=False)
     soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
     soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
     conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()

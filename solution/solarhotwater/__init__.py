@@ -16,6 +16,7 @@ from model import emissionsfactors
 from model import firstcost
 from model import helpertables
 from model import operatingcost
+from model import s_curve
 from model import unitadoption
 from model import vma
 
@@ -34,43 +35,54 @@ scenarios = {
       # oil, coal and electricity heaters (that is, no biomass or commercial heat). This
       # scenario uses inputs calculated for the Drawdown book edition 1, some of which
       # have been updated.
-      report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 1199.8861226016184, ref_2014_cost = 1199.8861226016184, 
-      conv_2014_cost = 0.0, 
-      soln_first_cost_efficiency_rate = 0.036, 
-      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.04, 
+      # general
+      report_start_year=2020, report_end_year=2050, 
 
-      ch4_is_co2eq = False, n2o_is_co2eq = False, 
-      co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 0.0, 
-      conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
-      ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
+      # adoption
+      soln_ref_adoption_basis='Default', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='Low of All Custom PDS Scenarios', 
+      source_until_2014='ALL SOURCES', 
+      ref_source_post_2014='IEA 4DS (2016), Residential & Commercial Water Heating', 
+      pds_source_post_2014='Drawdown TAM: PDS1 - post-Low-Flow', 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
-      soln_lifetime_capacity = 17129.2410031799, soln_avg_annual_use = 856.462050158993, 
-      conv_lifetime_capacity = 1.0, conv_avg_annual_use = 1.0, 
+      # financial
+      pds_2014_cost=1199.8861226016184, ref_2014_cost=1199.8861226016184, 
+      conv_2014_cost=0.0, 
+      soln_first_cost_efficiency_rate=0.036, 
+      conv_first_cost_efficiency_rate=0.0, 
+      soln_first_cost_below_conv=True, 
+      npv_discount_rate=0.04, 
+      soln_lifetime_capacity=17129.2410031799, soln_avg_annual_use=856.462050158993, 
+      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit = 0.047, soln_fuel_cost_per_funit = 0.0, 
-      soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.0, conv_fuel_cost_per_funit = 0.0795, 
-      conv_fixed_oper_cost_per_iunit = 0.0, 
-      soln_energy_efficiency_factor = 1.0, conv_annual_energy_used = 0.11587780896849142, 
-      conv_fuel_consumed_per_funit = 2483.195162856096, soln_fuel_efficiency_factor = 1.0, 
-      conv_fuel_emissions_factor = 69.71707858620789, soln_fuel_emissions_factor = 0.0, 
+      soln_var_oper_cost_per_funit=0.047, soln_fuel_cost_per_funit=0.0, 
+      soln_fixed_oper_cost_per_iunit=0.0, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0795, 
+      conv_fixed_oper_cost_per_iunit=0.0, 
 
-      emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
-      emissions_use_co2eq = True, 
-      conv_emissions_per_funit = 0.0, soln_emissions_per_funit = 0.0, 
+      # emissions
+      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      co2eq_conversion_source='AR5 with feedback', 
+      soln_indirect_co2_per_iunit=0.0, 
+      conv_indirect_co2_per_unit=0.0, 
+      conv_indirect_co2_is_iunits=False, 
+      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_ref_adoption_basis = 'Default', 
-      soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
-      soln_pds_adoption_basis = 'Fully Customized PDS', 
-      soln_pds_adoption_custom_name = 'Low of All Custom PDS Scenarios', 
-      source_until_2014 = 'ALL SOURCES', 
-      ref_source_post_2014 = 'IEA 4DS (2016), Residential & Commercial Water Heating', 
-      pds_source_post_2014 = 'Drawdown TAM: PDS1 - post-Low-Flow', 
+      soln_energy_efficiency_factor=1.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.11587780896849142, 
+      conv_fuel_consumed_per_funit=2483.195162856096, soln_fuel_efficiency_factor=1.0, 
+      conv_fuel_emissions_factor=69.71707858620789, soln_fuel_emissions_factor=0.0, 
 
+      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
+      emissions_use_co2eq=True, 
+      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+
+
+      # sequestration
     ),
   'PDS2-44p2050-Mean of Custom Scen. (Book Ed.1)': advanced_controls.AdvancedControls(
       # Several custom scenarios (and some developed by other sources) were recorded and
@@ -80,43 +92,54 @@ scenarios = {
       # oil, coal and electricity heaters (that is, no biomass or commercial heat). This
       # scenario uses inputs calculated for the Drawdown book edition 1, some of which
       # have been updated.
-      report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 1199.8861226016184, ref_2014_cost = 1199.8861226016184, 
-      conv_2014_cost = 0.0, 
-      soln_first_cost_efficiency_rate = 0.036, 
-      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.04, 
+      # general
+      report_start_year=2020, report_end_year=2050, 
 
-      ch4_is_co2eq = False, n2o_is_co2eq = False, 
-      co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 0.0, 
-      conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
-      ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
+      # adoption
+      soln_ref_adoption_basis='Default', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='Average of All Custom PDS Scenarios', 
+      source_until_2014='ALL SOURCES', 
+      ref_source_post_2014='IEA 4DS (2016), Residential & Commercial Water Heating', 
+      pds_source_post_2014='Drawdown TAM: PDS2 - post-Low-Flow', 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
-      soln_lifetime_capacity = 17129.2410031799, soln_avg_annual_use = 856.462050158993, 
-      conv_lifetime_capacity = 1.0, conv_avg_annual_use = 1.0, 
+      # financial
+      pds_2014_cost=1199.8861226016184, ref_2014_cost=1199.8861226016184, 
+      conv_2014_cost=0.0, 
+      soln_first_cost_efficiency_rate=0.036, 
+      conv_first_cost_efficiency_rate=0.0, 
+      soln_first_cost_below_conv=True, 
+      npv_discount_rate=0.04, 
+      soln_lifetime_capacity=17129.2410031799, soln_avg_annual_use=856.462050158993, 
+      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit = 0.047, soln_fuel_cost_per_funit = 0.0, 
-      soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.0, conv_fuel_cost_per_funit = 0.0795, 
-      conv_fixed_oper_cost_per_iunit = 0.0, 
-      soln_energy_efficiency_factor = 1.0, conv_annual_energy_used = 0.11587780896849142, 
-      conv_fuel_consumed_per_funit = 2483.195162856096, soln_fuel_efficiency_factor = 1.0, 
-      conv_fuel_emissions_factor = 69.71707858620789, soln_fuel_emissions_factor = 0.0, 
+      soln_var_oper_cost_per_funit=0.047, soln_fuel_cost_per_funit=0.0, 
+      soln_fixed_oper_cost_per_iunit=0.0, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0795, 
+      conv_fixed_oper_cost_per_iunit=0.0, 
 
-      emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
-      emissions_use_co2eq = True, 
-      conv_emissions_per_funit = 0.0, soln_emissions_per_funit = 0.0, 
+      # emissions
+      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      co2eq_conversion_source='AR5 with feedback', 
+      soln_indirect_co2_per_iunit=0.0, 
+      conv_indirect_co2_per_unit=0.0, 
+      conv_indirect_co2_is_iunits=False, 
+      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_ref_adoption_basis = 'Default', 
-      soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
-      soln_pds_adoption_basis = 'Fully Customized PDS', 
-      soln_pds_adoption_custom_name = 'Average of All Custom PDS Scenarios', 
-      source_until_2014 = 'ALL SOURCES', 
-      ref_source_post_2014 = 'IEA 4DS (2016), Residential & Commercial Water Heating', 
-      pds_source_post_2014 = 'Drawdown TAM: PDS2 - post-Low-Flow', 
+      soln_energy_efficiency_factor=1.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.11587780896849142, 
+      conv_fuel_consumed_per_funit=2483.195162856096, soln_fuel_efficiency_factor=1.0, 
+      conv_fuel_emissions_factor=69.71707858620789, soln_fuel_emissions_factor=0.0, 
 
+      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
+      emissions_use_co2eq=True, 
+      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+
+
+      # sequestration
     ),
   'PDS3-62p2050-High of Custom Scen. (Book Ed.1)': advanced_controls.AdvancedControls(
       # Several custom scenarios (and some developed by other sources) were recorded and
@@ -126,48 +149,67 @@ scenarios = {
       # oil, coal and electricity heaters (that is, no biomass or commercial heat). This
       # scenario uses inputs calculated for the Drawdown book edition 1, some of which
       # have been updated.
-      report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 1199.8861226016184, ref_2014_cost = 1199.8861226016184, 
-      conv_2014_cost = 0.0, 
-      soln_first_cost_efficiency_rate = 0.036, 
-      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.04, 
+      # general
+      report_start_year=2020, report_end_year=2050, 
 
-      ch4_is_co2eq = False, n2o_is_co2eq = False, 
-      co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 0.0, 
-      conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
-      ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
+      # adoption
+      soln_ref_adoption_basis='Default', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='High of All Custom PDS Scenarios', 
+      source_until_2014='ALL SOURCES', 
+      ref_source_post_2014='IEA 4DS (2016), Residential & Commercial Water Heating', 
+      pds_source_post_2014='Drawdown TAM: PDS3 - post-Low-Flow', 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
-      soln_lifetime_capacity = 17129.2410031799, soln_avg_annual_use = 856.462050158993, 
-      conv_lifetime_capacity = 1.0, conv_avg_annual_use = 1.0, 
+      # financial
+      pds_2014_cost=1199.8861226016184, ref_2014_cost=1199.8861226016184, 
+      conv_2014_cost=0.0, 
+      soln_first_cost_efficiency_rate=0.036, 
+      conv_first_cost_efficiency_rate=0.0, 
+      soln_first_cost_below_conv=True, 
+      npv_discount_rate=0.04, 
+      soln_lifetime_capacity=17129.2410031799, soln_avg_annual_use=856.462050158993, 
+      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit = 0.047, soln_fuel_cost_per_funit = 0.0, 
-      soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.0, conv_fuel_cost_per_funit = 0.0795, 
-      conv_fixed_oper_cost_per_iunit = 0.0, 
-      soln_energy_efficiency_factor = 1.0, conv_annual_energy_used = 0.11587780896849142, 
-      conv_fuel_consumed_per_funit = 2483.195162856096, soln_fuel_efficiency_factor = 1.0, 
-      conv_fuel_emissions_factor = 69.71707858620789, soln_fuel_emissions_factor = 0.0, 
+      soln_var_oper_cost_per_funit=0.047, soln_fuel_cost_per_funit=0.0, 
+      soln_fixed_oper_cost_per_iunit=0.0, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0795, 
+      conv_fixed_oper_cost_per_iunit=0.0, 
 
-      emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
-      emissions_use_co2eq = True, 
-      conv_emissions_per_funit = 0.0, soln_emissions_per_funit = 0.0, 
+      # emissions
+      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      co2eq_conversion_source='AR5 with feedback', 
+      soln_indirect_co2_per_iunit=0.0, 
+      conv_indirect_co2_per_unit=0.0, 
+      conv_indirect_co2_is_iunits=False, 
+      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_ref_adoption_basis = 'Default', 
-      soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
-      soln_pds_adoption_basis = 'Fully Customized PDS', 
-      soln_pds_adoption_custom_name = 'High of All Custom PDS Scenarios', 
-      source_until_2014 = 'ALL SOURCES', 
-      ref_source_post_2014 = 'IEA 4DS (2016), Residential & Commercial Water Heating', 
-      pds_source_post_2014 = 'Drawdown TAM: PDS3 - post-Low-Flow', 
+      soln_energy_efficiency_factor=1.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.11587780896849142, 
+      conv_fuel_consumed_per_funit=2483.195162856096, soln_fuel_efficiency_factor=1.0, 
+      conv_fuel_emissions_factor=69.71707858620789, soln_fuel_emissions_factor=0.0, 
 
+      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
+      emissions_use_co2eq=True, 
+      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+
+
+      # sequestration
     ),
 }
 
+
 class SolarHotWater:
   name = 'Solar Hot Water'
+  units = {
+    "implementation unit": "TW",
+    "functional unit": "TWh",
+    "first cost": "US$B",
+    "operating cost": "US$B",
+  }
+
   def __init__(self, scenario=None):
     datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
     parentdir = pathlib.Path(__file__).parents[1]
@@ -181,9 +223,8 @@ class SolarHotWater:
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
       ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014,
-       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014,
-       self.ac.source_until_2014, self.ac.source_until_2014, self.ac.source_until_2014],
+       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
+       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
       ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
        'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
        'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
@@ -197,45 +238,45 @@ class SolarHotWater:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': str(thisdir.joinpath('tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building.csv')),
-          'IEA 6DS (2016), Residential & Commercial Water Heating': str(thisdir.joinpath('tam_IEA_6DS_2016_Residential_Commercial_Water_Heating.csv')),
-          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': str(thisdir.joinpath('tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vint.csv')),
+          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': thisdir.joinpath('tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building.csv'),
+          'IEA 6DS (2016), Residential & Commercial Water Heating': thisdir.joinpath('tam_IEA_6DS_2016_Residential_Commercial_Water_Heating.csv'),
+          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': thisdir.joinpath('tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vint.csv'),
       },
       'Conservative Cases': {
-          'Custom calculated from (GBPN and Urge-Vorsatz)': str(thisdir.joinpath('tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv')),
-          'IEA 4DS (2016), Residential & Commercial Water Heating': str(thisdir.joinpath('tam_IEA_4DS_2016_Residential_Commercial_Water_Heating.csv')),
+          'Custom calculated from (GBPN and Urge-Vorsatz)': thisdir.joinpath('tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
+          'IEA 4DS (2016), Residential & Commercial Water Heating': thisdir.joinpath('tam_IEA_4DS_2016_Residential_Commercial_Water_Heating.csv'),
       },
       'Region: OECD90': {
         'Baseline Cases': {
-          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': str(thisdir.joinpath('tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building.csv')),
-          'Custom calculated from (GBPN and Urge-Vorsatz)': str(thisdir.joinpath('tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv')),
-          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': str(thisdir.joinpath('tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vint.csv')),
+          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': thisdir.joinpath('tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building.csv'),
+          'Custom calculated from (GBPN and Urge-Vorsatz)': thisdir.joinpath('tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
+          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': thisdir.joinpath('tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vint.csv'),
         },
       },
       'Region: Eastern Europe': {
         'Baseline Cases': {
-          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': str(thisdir.joinpath('tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building.csv')),
-          'Custom calculated from (GBPN and Urge-Vorsatz)': str(thisdir.joinpath('tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv')),
-          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': str(thisdir.joinpath('tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vint.csv')),
+          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': thisdir.joinpath('tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building.csv'),
+          'Custom calculated from (GBPN and Urge-Vorsatz)': thisdir.joinpath('tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
+          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': thisdir.joinpath('tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vint.csv'),
         },
       },
       'Region: Asia (Sans Japan)': {
         'Baseline Cases': {
-          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': str(thisdir.joinpath('tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building.csv')),
-          'Custom calculated from (GBPN and Urge-Vorsatz)': str(thisdir.joinpath('tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv')),
-          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': str(thisdir.joinpath('tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vint.csv')),
+          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': thisdir.joinpath('tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building.csv'),
+          'Custom calculated from (GBPN and Urge-Vorsatz)': thisdir.joinpath('tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
+          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': thisdir.joinpath('tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vint.csv'),
         },
       },
     }
     tam_pds_data_sources = {
       'Baseline Cases': {
-          'Drawdown TAM: PDS1 - post-Low-Flow': str(thisdir.joinpath('tam_pds_Drawdown_TAM_PDS1_postLowFlow.csv')),
+          'Drawdown TAM: PDS1 - post-Low-Flow': thisdir.joinpath('tam_pds_Drawdown_TAM_PDS1_postLowFlow.csv'),
       },
       'Conservative Cases': {
-          'Drawdown TAM: PDS2 - post-Low-Flow': str(thisdir.joinpath('tam_pds_Drawdown_TAM_PDS2_postLowFlow.csv')),
+          'Drawdown TAM: PDS2 - post-Low-Flow': thisdir.joinpath('tam_pds_Drawdown_TAM_PDS2_postLowFlow.csv'),
       },
       'Ambitious Cases': {
-          'Drawdown TAM: PDS3 - post-Low-Flow': str(thisdir.joinpath('tam_pds_Drawdown_TAM_PDS3_postLowFlow.csv')),
+          'Drawdown TAM: PDS3 - post-Low-Flow': thisdir.joinpath('tam_pds_Drawdown_TAM_PDS3_postLowFlow.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -257,56 +298,53 @@ class SolarHotWater:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Conservative Cases': {
-          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': str(thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv')),
+          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv'),
       },
       'Ambitious Cases': {
-          'Solar Heat Worldwide http://www.iea-shc.org/solar-heat-worldwide': str(thisdir.joinpath('ad_Solar_Heat_Worldwide_httpwww_ieashc_orgsolarheatworldwide.csv')),
+          'Solar Heat Worldwide http://www.iea-shc.org/solar-heat-worldwide': thisdir.joinpath('ad_Solar_Heat_Worldwide_httpwww_ieashc_orgsolarheatworldwide.csv'),
       },
       'Region: OECD90': {
         'Conservative Cases': {
-          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': str(thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv')),
+          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv'),
         },
       },
       'Region: Asia (Sans Japan)': {
         'Conservative Cases': {
-          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': str(thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv')),
+          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv'),
         },
       },
       'Region: Middle East and Africa': {
         'Conservative Cases': {
-          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': str(thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv')),
+          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv'),
         },
       },
       'Region: Latin America': {
         'Conservative Cases': {
-          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': str(thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv')),
+          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv'),
         },
       },
       'Region: China': {
         'Conservative Cases': {
-          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': str(thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv')),
+          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv'),
         },
       },
       'Region: India': {
         'Conservative Cases': {
-          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': str(thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv')),
+          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv'),
         },
       },
       'Region: EU': {
         'Conservative Cases': {
-          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': str(thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv')),
+          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv'),
         },
       },
       'Region: USA': {
         'Conservative Cases': {
-          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': str(thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv')),
+          'IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons': thisdir.joinpath('ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv'),
         },
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
-    pds_adoption_data_per_region = self.ad.adoption_data_per_region()
-    pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
-    pds_adoption_is_single_source = self.ad.adoption_is_single_source()
 
     ca_pds_data_sources = [
       {'name': 'Conservative, based on IEA 2012', 'include': True,
@@ -330,9 +368,19 @@ class SolarHotWater:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
-    pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
-    pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-    pds_adoption_is_single_source = True
+
+    if False:
+      # One may wonder why this is here. This file was code generated.
+      # This 'if False' allows subsequent conditions to all be elif.
+      pass
+    elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
+      pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
+      pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
+      pds_adoption_is_single_source = True
+    elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+      pds_adoption_data_per_region = self.ad.adoption_data_per_region()
+      pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
+      pds_adoption_is_single_source = self.ad.adoption_is_single_source()
 
     ht_ref_adoption_initial = pd.Series(
       [335.463, 56.493, 2.374, 240.305, 9.948,
@@ -343,10 +391,8 @@ class SolarHotWater:
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
-    ht_pds_adoption_final_percentage = pd.Series(
-      [0.0, 0.0, 0.0, 0.0, 0.0,
-       0.0, 0.0, 0.0, 0.0, 0.0],
-       index=REGIONS)
+    ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
+    ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
     ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
@@ -364,7 +410,8 @@ class SolarHotWater:
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-        bug_cfunits_double_count=True)
+        repeated_cost_for_iunits=False,
+        bug_cfunits_double_count=False)
     soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
     soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
     conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
@@ -415,18 +462,4 @@ class SolarHotWater:
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
 
     self.VMAs = []
-
-  def to_dict(self):
-    """Return all data as a dict, to be serialized to JSON."""
-    rs = dict()
-    rs['tam_data'] = self.tm.to_dict()
-    rs['adoption_data'] = self.ad.to_dict()
-    rs['helper_tables'] = self.ht.to_dict()
-    rs['emissions_factors'] = self.ef.to_dict()
-    rs['unit_adoption'] = self.ua.to_dict()
-    rs['first_cost'] = self.fc.to_dict()
-    rs['operating_cost'] = self.oc.to_dict()
-    rs['ch4_calcs'] = self.c4.to_dict()
-    rs['co2_calcs'] = self.c2.to_dict()
-    return rs
 

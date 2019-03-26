@@ -40,45 +40,54 @@ scenarios = {
       # are then converted to m2 of commercial floor area using the Window-to-floor area
       # ratio on this sheet. This scenario uses inputs calculated for the Drawdown book
       # edition 1, some of which have been updated since publication.
-      report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 830796327.2727273, ref_2014_cost = 830796327.2727273, 
-      conv_2014_cost = 293361977.2875817, 
-      soln_first_cost_efficiency_rate = 0.08, 
-      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.0922, 
+      # general
+      report_start_year=2020, report_end_year=2050, 
 
-      ch4_is_co2eq = False, n2o_is_co2eq = False, 
-      co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 0.0, 
-      conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
-      ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
+      # adoption
+      soln_ref_adoption_basis='Default', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='PDS1 - Adoption based on Navigant Sales and World Green Buildings Council Targets', 
+      source_until_2014='IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring', 
+      ref_source_post_2014='ALL SOURCES', 
+      pds_source_post_2014='Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area', 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
-      soln_lifetime_capacity = 88.0, soln_avg_annual_use = 1.0, 
-      conv_lifetime_capacity = 88.0, conv_avg_annual_use = 1.0, 
+      # financial
+      pds_2014_cost=830796327.2727273, ref_2014_cost=830796327.2727273, 
+      conv_2014_cost=293361977.2875817, 
+      soln_first_cost_efficiency_rate=0.08, 
+      conv_first_cost_efficiency_rate=0.0, 
+      soln_first_cost_below_conv=True, 
+      npv_discount_rate=0.0922, 
+      soln_lifetime_capacity=88.0, soln_avg_annual_use=1.0, 
+      conv_lifetime_capacity=88.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit = 0.0, soln_fuel_cost_per_funit = 4947443.08559757, 
-      soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.0, conv_fuel_cost_per_funit = 7136457.23592277, 
-      conv_fixed_oper_cost_per_iunit = 0.0, 
-      soln_energy_efficiency_factor = 0.0, 
-      soln_annual_energy_used = 0.052298552701877, conv_annual_energy_used = 0.0754382371662026, 
-      conv_fuel_consumed_per_funit = 0.0, soln_fuel_efficiency_factor = 0.0, 
-      conv_fuel_emissions_factor = 0.0, soln_fuel_emissions_factor = 0.0, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=4947443.08559757, 
+      soln_fixed_oper_cost_per_iunit=0.0, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=7136457.23592277, 
+      conv_fixed_oper_cost_per_iunit=0.0, 
 
-      emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
-      emissions_use_co2eq = True, 
-      conv_emissions_per_funit = 0.0, soln_emissions_per_funit = 0.0, 
+      # emissions
+      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      co2eq_conversion_source='AR5 with feedback', 
+      soln_indirect_co2_per_iunit=0.0, 
+      conv_indirect_co2_per_unit=0.0, 
+      conv_indirect_co2_is_iunits=False, 
+      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_ref_adoption_basis = 'Default', 
-      soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
-      soln_pds_adoption_basis = 'Fully Customized PDS', 
-      pds_adoption_final_percentage = [('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      soln_pds_adoption_custom_name = 'PDS1 - Adoption based on Navigant Sales and World Green Buildings Council Targets', 
-      source_until_2014 = 'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring', 
-      ref_source_post_2014 = 'ALL SOURCES', 
-      pds_source_post_2014 = 'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area', 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=0.052298552701877, conv_annual_energy_used=0.0754382371662026, 
+      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
+      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
 
+      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
+      emissions_use_co2eq=True, 
+      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+
+
+      # sequestration
     ),
   'PDS2-48p2050-EE21.3% based on Navigant (Book Ed.1)': advanced_controls.AdvancedControls(
       # The integrated energy efficiency of the glass is assumed to be 21.3% after other
@@ -93,45 +102,54 @@ scenarios = {
       # m2 of commercial floor area using the Window-to-floor area ratio on this sheet.
       # This scenario uses inputs calculated for the Drawdown book edition 1, some of
       # which have been updated since publication.
-      report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 830796327.2727273, ref_2014_cost = 830796327.2727273, 
-      conv_2014_cost = 293361977.2875817, 
-      soln_first_cost_efficiency_rate = 0.08, 
-      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.0922, 
+      # general
+      report_start_year=2020, report_end_year=2050, 
 
-      ch4_is_co2eq = False, n2o_is_co2eq = False, 
-      co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 0.0, 
-      conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
-      ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
+      # adoption
+      soln_ref_adoption_basis='Default', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='PDS2 - Adoption based on Navigant Sales and World Green Buildings Council Targets', 
+      source_until_2014='IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring', 
+      ref_source_post_2014='ALL SOURCES', 
+      pds_source_post_2014='Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area', 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
-      soln_lifetime_capacity = 88.0, soln_avg_annual_use = 1.0, 
-      conv_lifetime_capacity = 88.0, conv_avg_annual_use = 1.0, 
+      # financial
+      pds_2014_cost=830796327.2727273, ref_2014_cost=830796327.2727273, 
+      conv_2014_cost=293361977.2875817, 
+      soln_first_cost_efficiency_rate=0.08, 
+      conv_first_cost_efficiency_rate=0.0, 
+      soln_first_cost_below_conv=True, 
+      npv_discount_rate=0.0922, 
+      soln_lifetime_capacity=88.0, soln_avg_annual_use=1.0, 
+      conv_lifetime_capacity=88.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit = 0.0, soln_fuel_cost_per_funit = 4947443.08559757, 
-      soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.0, conv_fuel_cost_per_funit = 7136457.23592277, 
-      conv_fixed_oper_cost_per_iunit = 0.0, 
-      soln_energy_efficiency_factor = 0.0, 
-      soln_annual_energy_used = 0.052298552701877, conv_annual_energy_used = 0.0754382371662026, 
-      conv_fuel_consumed_per_funit = 0.0, soln_fuel_efficiency_factor = 0.0, 
-      conv_fuel_emissions_factor = 0.0, soln_fuel_emissions_factor = 0.0, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=4947443.08559757, 
+      soln_fixed_oper_cost_per_iunit=0.0, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=7136457.23592277, 
+      conv_fixed_oper_cost_per_iunit=0.0, 
 
-      emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
-      emissions_use_co2eq = True, 
-      conv_emissions_per_funit = 0.0, soln_emissions_per_funit = 0.0, 
+      # emissions
+      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      co2eq_conversion_source='AR5 with feedback', 
+      soln_indirect_co2_per_iunit=0.0, 
+      conv_indirect_co2_per_unit=0.0, 
+      conv_indirect_co2_is_iunits=False, 
+      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_ref_adoption_basis = 'Default', 
-      soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
-      soln_pds_adoption_basis = 'Fully Customized PDS', 
-      pds_adoption_final_percentage = [('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      soln_pds_adoption_custom_name = 'PDS2 - Adoption based on Navigant Sales and World Green Buildings Council Targets', 
-      source_until_2014 = 'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring', 
-      ref_source_post_2014 = 'ALL SOURCES', 
-      pds_source_post_2014 = 'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area', 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=0.052298552701877, conv_annual_energy_used=0.0754382371662026, 
+      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
+      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
 
+      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
+      emissions_use_co2eq=True, 
+      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+
+
+      # sequestration
     ),
   'PDS3-75p2050-EE21.3% based on Navigant (Book Ed.1)': advanced_controls.AdvancedControls(
       # After integrating building solutions, smart glass Energy Efficiency adjusted to
@@ -146,50 +164,67 @@ scenarios = {
       # commercial floor area using the Window-to-floor area ratio on this sheet. This
       # scenario uses inputs calculated for the Drawdown book edition 1, some of which
       # have been updated since publication.
-      report_start_year = 2020, report_end_year = 2050, 
 
-      pds_2014_cost = 830796327.2727273, ref_2014_cost = 830796327.2727273, 
-      conv_2014_cost = 293361977.2875817, 
-      soln_first_cost_efficiency_rate = 0.08, 
-      conv_first_cost_efficiency_rate = 0.0, soln_first_cost_below_conv = True, 
-      npv_discount_rate = 0.0922, 
+      # general
+      report_start_year=2020, report_end_year=2050, 
 
-      ch4_is_co2eq = False, n2o_is_co2eq = False, 
-      co2eq_conversion_source = 'AR5 with feedback', 
-      soln_indirect_co2_per_iunit = 0.0, 
-      conv_indirect_co2_per_unit = 0.0, conv_indirect_co2_is_iunits = False, 
-      ch4_co2_per_twh = 0.0, n2o_co2_per_twh = 0.0, 
+      # adoption
+      soln_ref_adoption_basis='Default', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='Drawdown Book (Edition 1) Scenario 3', 
+      source_until_2014='IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring', 
+      ref_source_post_2014='ALL SOURCES', 
+      pds_source_post_2014='Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area', 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
-      soln_lifetime_capacity = 88.0, soln_avg_annual_use = 1.0, 
-      conv_lifetime_capacity = 88.0, conv_avg_annual_use = 1.0, 
+      # financial
+      pds_2014_cost=830796327.2727273, ref_2014_cost=830796327.2727273, 
+      conv_2014_cost=293361977.2875817, 
+      soln_first_cost_efficiency_rate=0.08, 
+      conv_first_cost_efficiency_rate=0.0, 
+      soln_first_cost_below_conv=True, 
+      npv_discount_rate=0.0922, 
+      soln_lifetime_capacity=88.0, soln_avg_annual_use=1.0, 
+      conv_lifetime_capacity=88.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit = 0.0, soln_fuel_cost_per_funit = 4947443.08559757, 
-      soln_fixed_oper_cost_per_iunit = 0.0, 
-      conv_var_oper_cost_per_funit = 0.0, conv_fuel_cost_per_funit = 7136457.23592277, 
-      conv_fixed_oper_cost_per_iunit = 0.0, 
-      soln_energy_efficiency_factor = 0.0, 
-      soln_annual_energy_used = 0.052298552701877, conv_annual_energy_used = 0.0754382371662026, 
-      conv_fuel_consumed_per_funit = 0.0, soln_fuel_efficiency_factor = 0.0, 
-      conv_fuel_emissions_factor = 0.0, soln_fuel_emissions_factor = 0.0, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=4947443.08559757, 
+      soln_fixed_oper_cost_per_iunit=0.0, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=7136457.23592277, 
+      conv_fixed_oper_cost_per_iunit=0.0, 
 
-      emissions_grid_source = 'Meta-Analysis', emissions_grid_range = 'Mean', 
-      emissions_use_co2eq = True, 
-      conv_emissions_per_funit = 0.0, soln_emissions_per_funit = 0.0, 
+      # emissions
+      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      co2eq_conversion_source='AR5 with feedback', 
+      soln_indirect_co2_per_iunit=0.0, 
+      conv_indirect_co2_per_unit=0.0, 
+      conv_indirect_co2_is_iunits=False, 
+      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_ref_adoption_basis = 'Default', 
-      soln_ref_adoption_regional_data = False, soln_pds_adoption_regional_data = False, 
-      soln_pds_adoption_basis = 'Fully Customized PDS', 
-      pds_adoption_final_percentage = [('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      soln_pds_adoption_custom_name = 'Drawdown Book (Edition 1) Scenario 3', 
-      source_until_2014 = 'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring', 
-      ref_source_post_2014 = 'ALL SOURCES', 
-      pds_source_post_2014 = 'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area', 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=0.052298552701877, conv_annual_energy_used=0.0754382371662026, 
+      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
+      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
 
+      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
+      emissions_use_co2eq=True, 
+      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+
+
+      # sequestration
     ),
 }
 
+
 class SmartGlass:
   name = 'Smart Glass'
+  units = {
+    "implementation unit": "Mm²",
+    "functional unit": "Mm²",
+    "first cost": "US$B",
+    "operating cost": "US$B",
+  }
+
   def __init__(self, scenario=None):
     datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
     parentdir = pathlib.Path(__file__).parents[1]
@@ -218,18 +253,18 @@ class SmartGlass:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': str(thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv')),
+          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
           'Ürge-Vorsatz et al. (2015) – see TAM Factoring': thisdir.joinpath('tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
       },
       'Region: USA': {
         'Baseline Cases': {
-          'Annual Energy Outlook 2016, U.S. Energy Information Administration, 2016.': str(thisdir.joinpath('tam_Annual_Energy_Outlook_2016_U_S__Energy_Information_Administratio.csv')),
+          'Annual Energy Outlook 2016, U.S. Energy Information Administration, 2016.': thisdir.joinpath('tam_Annual_Energy_Outlook_2016_U_S__Energy_Information_Administratio.csv'),
         },
       },
     }
     tam_pds_data_sources = {
       'Baseline Cases': {
-          'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area': str(thisdir.joinpath('tam_pds_Drawdown_TAM_Adjusted_GBPN_Data_Commercial_Floor_Area.csv')),
+          'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area': thisdir.joinpath('tam_pds_Drawdown_TAM_Adjusted_GBPN_Data_Commercial_Floor_Area.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -307,6 +342,7 @@ class SmartGlass:
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
+        repeated_cost_for_iunits=False,
         bug_cfunits_double_count=False)
     soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
     soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
