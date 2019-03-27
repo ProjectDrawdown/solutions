@@ -190,3 +190,7 @@ Mar 11 - Mar 15, 2019
 + fix small mismatches between Python & Excel
   a) tam: PDS uses 'World' forecast for 2012-2014
   b) tam: don't include 0.0 in the mean
+
+Mar 18 - Mar 22, 2019
++ add geo charts in Jupyter Adoption and TAM tabs.
++ implement logistic s-curve model support.
