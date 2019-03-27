@@ -4,6 +4,7 @@ import pytest
 import altcement
 import biogas
 import biomass
+import bioplastic
 import buildingautomation
 import concentratedsolar
 import improvedcookstoves
@@ -36,6 +37,12 @@ def test_biogas():
 def test_biomass():
   scenario = list(biomass.scenarios.keys())[0]
   obj = biomass.Biomass(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_bioplastic():
+  scenario = list(bioplastic.scenarios.keys())[0]
+  obj = bioplastic.Bioplastic(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 

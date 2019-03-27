@@ -1290,6 +1290,7 @@ def infer_classname(filename):
   special_cases = [
       ('BiomassELC', 'Biomass'),
       ('Biomass from Perennial Crops for Electricity Generation', 'Biomass'),
+      ('Bioplastics', 'Bioplastic'),
       ('Cement', 'AlternativeCement'),
       ('CHP_A_', 'CoGenElectricity'),
       ('CHP_B_', 'CoGenHeat'),
