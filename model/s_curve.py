@@ -11,7 +11,8 @@ class SCurve:
            transition_period (int): number of years of transition period, must be an even number.
            sconfig: Pandas dataframe with columns:
              'base_year', 'last_year', 'base_percent', 'last_percent',
-             'base_adoption', 'pds_tam_2050'
+             'base_adoption', 'pds_tam_2050',
+             (needed for Bass Diffusion model): 'M', 'P', 'Q'
             and rows for each region:
              'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
              'Latin America', 'China', 'India', 'EU', 'USA'
@@ -132,5 +133,23 @@ class SCurve:
                 else:
                     result.loc[year, region] = row['second_half']
         result.name = 'logistic_adoption'
+        result.index.name = 'Year'
+        return result
+
+    def bass_diffusion_adoption(self):
+        """Calculate Bass Diffusion S-Curve for a solution."""
+        result = pd.DataFrame()
+        for region in self.sconfig.index:
+            M = self.sconfig.loc[region, 'M']
+            P = self.sconfig.loc[region, 'P']
+            Q = self.sconfig.loc[region, 'Q']
+            base_year = self.sconfig.loc[region, 'base_year']
+            result.loc[base_year, region] = prev = self.sconfig.loc[region, 'base_adoption']
+            for year in range(base_year + 1, CORE_END_YEAR + 1):
+                t = year - base_year
+                b = prev + (P + (Q * prev / M)) * (M - prev)
+                result.loc[year, region] = b
+                prev = b
+        result.name = 'bass_diffusion_adoption'
         result.index.name = 'Year'
         return result
