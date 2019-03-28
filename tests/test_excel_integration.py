@@ -19,12 +19,15 @@ import xlrd
 
 xlwings = pytest.importorskip("xlwings")
 
+from solution import airplanes
 from solution import altcement
 from solution import biogas
 from solution import biomass
 from solution import bioplastic
 from solution import buildingautomation
 from solution import concentratedsolar
+from solution import electricvehicles
+from solution import highspeedrail
 from solution import improvedcookstoves
 from solution import instreamhydro
 from solution import insulation
@@ -32,6 +35,7 @@ from solution import landfillmethane
 from solution import microwind
 from solution import offshorewind
 from solution import onshorewind
+from solution import ships
 from solution import silvopasture
 from solution import smartglass
 from solution import smartthermostats
@@ -458,6 +462,12 @@ def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=Tr
 
   if is_rrs:
       pds_cumulative_funit_mask = regional_mask if regional_mask is not None else "Excel_NaN"
+      # Some solutions, notably HighSpeedRail, have regional results which drop to near zero
+      # for a year and then bounce back. The ~0 results are the result of catastrophic
+      # subtraction with only a few bits of precision, not close enough for pytest.approx.
+      # Just mask those cells off.
+      s = obj.ua.soln_ref_cumulative_funits().reset_index()
+      soln_ref_cumulative_funits_mask = s.mask(s < 1e-11, other=True).where(s < 1e-11, other=False)
       verify['Unit Adoption Calculations'].extend([
           ('BA17:BK63', obj.ua.ref_tam_per_capita().reset_index(), None),
           ('BM17:BW63', obj.ua.ref_tam_per_gdp_per_capita().reset_index(), None),
@@ -471,7 +481,7 @@ def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=Tr
           ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd().reset_index(), regional_mask),
           #('BN136:BS182', obj.ua.soln_pds_big4_iunits_reqd().reset_index(), None),
           #('B198:L244' tested in 'Helper Tables'!C27)
-          ('Q198:AA244', obj.ua.soln_ref_cumulative_funits().reset_index(), None),
+          ('Q198:AA244', obj.ua.soln_ref_cumulative_funits().reset_index(), soln_ref_cumulative_funits_mask),
           ('AX198:BH244', obj.ua.soln_ref_tot_iunits_reqd().reset_index(), None),
           ('AG253:AQ298', obj.ua.conv_ref_new_iunits().reset_index(), regional_mask),
           ('AX252:BH298', obj.ua.conv_ref_annual_tot_iunits().reset_index(), regional_mask),
@@ -791,6 +801,20 @@ def test_AltCement_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('airplanes', 'testdata',
+        'Drawdown-Aircraft Fuel Efficiency_RRS_v1.1_5Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Airplanes_RRS(start_excel, tmpdir):
+  """Test for Excel model file Aircraft Fuel Efficiency."""
+  workbook = start_excel
+  for scenario in airplanes.scenarios.keys():
+    obj = airplanes.Airplanes(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('biogas', 'testdata', 'Drawdown-Large Biodigesters (Biogas)_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_Biogas_RRS_ELECGEN(start_excel, tmpdir):
@@ -855,6 +879,34 @@ def test_ConcentratedSolar_RRS_ELECGEN(start_excel, tmpdir):
   workbook = start_excel
   for scenario in concentratedsolar.scenarios.keys():
     obj = concentratedsolar.ConcentratedSolar(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('electricvehicles', 'testdata',
+        'Drawdown-Electric Vehicles_RRS_v1,1_31Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_ElectricVehicles_RRS(start_excel, tmpdir):
+  """Test for Excel model file Electric Vehicles."""
+  workbook = start_excel
+  for scenario in electricvehicles.scenarios.keys():
+    obj = electricvehicles.ElectricVehicles(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('highspeedrail', 'testdata',
+        'Drawdown-High Speed Rail_RRS_v1.1_5Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_HighSpeedRail_RRS(start_excel, tmpdir):
+  """Test for Excel model file High Speed Rail."""
+  workbook = start_excel
+  for scenario in highspeedrail.scenarios.keys():
+    obj = highspeedrail.HighSpeedRail(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -954,6 +1006,20 @@ def test_OnshoreWind_RRS_ELECGEN(start_excel, tmpdir):
   workbook = start_excel
   for scenario in onshorewind.scenarios.keys():
     obj = onshorewind.OnshoreWind(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('ships', 'testdata',
+        'Drawdown-Oceanic Freight Improvements_RRS_v1.1_5Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Ships_RRS(start_excel, tmpdir):
+  """Test for Excel model file Oceanic Freight Improvements*."""
+  workbook = start_excel
+  for scenario in ships.scenarios.keys():
+    obj = ships.Ships(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 

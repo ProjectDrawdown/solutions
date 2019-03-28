@@ -1,12 +1,15 @@
 """Test solution classes."""
 
 import pytest
+import airplanes
 import altcement
 import biogas
 import biomass
 import bioplastic
 import buildingautomation
 import concentratedsolar
+import electricvehicles
+import highspeedrail
 import improvedcookstoves
 import instreamhydro
 import insulation
@@ -14,6 +17,7 @@ import landfillmethane
 import microwind
 import offshorewind
 import onshorewind
+import ships
 import silvopasture
 import smartglass
 import smartthermostats
@@ -21,6 +25,12 @@ import solarhotwater
 import solarpvroof
 import solarpvutil
 import telepresence
+
+def test_airplanes():
+  scenario = list(airplanes.scenarios.keys())[0]
+  obj = airplanes.Airplanes(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
 
 def test_altcement():
   scenario = list(altcement.scenarios.keys())[0]
@@ -55,6 +65,18 @@ def test_buildingautomation():
 def test_concentratedsolar():
   scenario = list(concentratedsolar.scenarios.keys())[0]
   obj = concentratedsolar.ConcentratedSolar(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_electricvehicles():
+  scenario = list(electricvehicles.scenarios.keys())[0]
+  obj = electricvehicles.ElectricVehicles(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_highspeedrail():
+  scenario = list(highspeedrail.scenarios.keys())[0]
+  obj = highspeedrail.HighSpeedRail(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
@@ -97,6 +119,12 @@ def test_offshorewind():
 def test_onshorewind():
   scenario = list(onshorewind.scenarios.keys())[0]
   obj = onshorewind.OnshoreWind(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_ships():
+  scenario = list(ships.scenarios.keys())[0]
+  obj = ships.Ships(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
