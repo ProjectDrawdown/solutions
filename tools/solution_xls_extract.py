@@ -15,6 +15,7 @@ import pandas as pd
 from solution import rrs
 
 from tools.util import convert_bool, cell_to_offsets
+from model.advanced_controls import SOLUTION_CATEGORY
 
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
@@ -192,7 +193,7 @@ def get_land_scenarios(wb):
       s = {}
 
       # Note: these cases are handled in oneline()
-      s['solution_category'] = 'SOLUTION_CATEGORY.LAND'
+      s['solution_category'] = SOLUTION_CATEGORY.LAND
       s['vmas'] = 'VMAs'
 
       s['description'] = sr_tab.cell_value(row + 1, 4)
@@ -276,8 +277,10 @@ def oneline(f, s, names, prefix='', suffix=None):
     return
   f.write(prefix)
   for n in names:
-    if n == 'solution_category' or n == 'vmas':
+    if n == 'vmas':
       f.write(n + "=" + s[n] + ", ")
+    elif isinstance(s[n], SOLUTION_CATEGORY):
+      f.write(n + "=" + str(s[n]) + ", ")
     elif isinstance(s[n], str):
       f.write(str(n) + "='" + str(s[n]) + "', ")
     else:
@@ -470,11 +473,11 @@ def write_tam(f, wb, outputdir):
       f.write("      '" + region + "': {\n")
       for (case, sources) in cases.items():
         if isinstance(sources, str):
-          f.write("          '" + case + "': str(thisdir.joinpath('" + sources + "')),\n")
+          f.write("          '" + case + "': thisdir.joinpath('" + sources + "'),\n")
         else:
           f.write("        '" + case + "': {\n")
           for (source, filename) in sources.items():
-            f.write("          '" + source + "': str(thisdir.joinpath('" + filename + "')),\n")
+            f.write("          '" + source + "': thisdir.joinpath('" + filename + "'),\n")
           f.write("        },\n")
       f.write("      },\n")
     f.write("    }\n")
@@ -497,11 +500,11 @@ def write_tam(f, wb, outputdir):
       f.write("      '" + region + "': {\n")
       for (case, sources) in cases.items():
         if isinstance(sources, str):
-          f.write("          '" + case + "': str(thisdir.joinpath('" + sources + "')),\n")
+          f.write("          '" + case + "': thisdir.joinpath('" + sources + "'),\n")
         else:
           f.write("        '" + case + "': {\n")
           for (source, filename) in sources.items():
-            f.write("          '" + source + "': str(thisdir.joinpath('" + filename + "')),\n")
+            f.write("          '" + source + "': thisdir.joinpath('" + filename + "'),\n")
           f.write("        },\n")
       f.write("      },\n")
     f.write("    }\n")
@@ -667,11 +670,11 @@ def write_ad(f, wb, outputdir):
     f.write("      '" + region + "': {\n")
     for (case, sources) in cases.items():
       if isinstance(sources, str):
-        f.write("          '" + case + "': str(thisdir.joinpath('" + sources + "')),\n")
+        f.write("          '" + case + "': thisdir.joinpath('" + sources + "'),\n")
       else:
         f.write("        '" + case + "': {\n")
         for (source, filename) in sources.items():
-          f.write("          '" + source + "': str(thisdir.joinpath('" + filename + "')),\n")
+          f.write("          '" + source + "': thisdir.joinpath('" + filename + "'),\n")
         f.write("        },\n")
     f.write("      },\n")
   f.write("    }\n")
@@ -801,15 +804,20 @@ def write_ht(f, wb, has_custom_ref_ad):
 def write_ua(f, wb):
   """Write out the Unit Adoption module for this solution class."""
   ua_tab = wb.sheet_by_name('Unit Adoption Calculations')
+  ac_tab = wb.sheet_by_name('Advanced Controls')
   f.write("    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,\n")
   f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
   f.write("        soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
   f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
-  # If S135 == D135, then it must not be adding in 'Advanced Controls'!C62
-  if ua_tab.cell(134, 18).value == ua_tab.cell(134, 3).value:
-    f.write("        bug_cfunits_double_count=False)\n")
-  else:
-    f.write("        bug_cfunits_double_count=True)\n")
+  if 'Repeated First Cost to Maintaining Implementation Units' in ac_tab.cell(42, 0).value:
+    repeated_cost_for_iunits = convert_bool(ac_tab.cell(42, 2).value)
+    f.write("        repeated_cost_for_iunits=" + str(repeated_cost_for_iunits) + ",\n")
+  # If S135 == D135 (for all regions), then it must not be adding in 'Advanced Controls'!C62
+  bug_cfunits_double_count = False
+  for i in range(0, 9):
+    if ua_tab.cell(134, 18 + i).value != ua_tab.cell(134, 3 + i).value:
+      bug_cfunits_double_count = True
+  f.write("        bug_cfunits_double_count=" + str(bug_cfunits_double_count) + ")\n")
   f.write("    soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()\n")
   f.write("    soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()\n")
   f.write("    conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()\n")
@@ -1068,6 +1076,52 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
   return scenarios
 
 
+def lookup_unit(tab, row, col):
+  unit_mapping = {
+    'Million hectare': u'Mha',
+    'MMt FlyAsh Cement (Sol) or MMt OPC (Conv) (Transient)': u'MMt',
+    'Billion USD': u'US$B',
+    'million m2 commercial floor space': u'Mm\u00B2',
+    'Million Households': u'MHholds',
+    'Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates': u'Mm\u00B2',
+    'Giga-Liter Water': u'GL H\u2082O',
+  }
+  name = str(tab.cell_value(row, col))
+  return unit_mapping.get(name, name)
+
+
+def write_units_rrs(f, wb):
+  """Write out units for this solution."""
+  sr_tab = wb.sheet_by_name('ScenarioRecord')
+  f.write('  units = {\n')
+  for row in range(1, sr_tab.nrows):
+    col_d = sr_tab.cell_value(row, 3)
+    col_e = sr_tab.cell_value(row, 4)
+    if col_d == 'Name of Scenario:' and 'TEMPLATE' not in col_e:
+      f.write('    "implementation unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
+      f.write('    "functional unit": "' + lookup_unit(sr_tab, row + 7, 5) + '",\n')
+      f.write('    "first cost": "' + lookup_unit(sr_tab, row + 16, 5) + '",\n')
+      f.write('    "operating cost": "' + lookup_unit(sr_tab, row + 17, 5) + '",\n')
+      break
+  f.write('  }\n\n')
+
+
+def write_units_land(f, wb):
+  """Write out units for this solution."""
+  sr_tab = wb.sheet_by_name('ScenarioRecord')
+  f.write('  units = {\n')
+  for row in range(1, sr_tab.nrows):
+    col_d = sr_tab.cell_value(row, 3)
+    col_e = sr_tab.cell_value(row, 4)
+    if col_d == 'Name of Scenario:' and 'TEMPLATE' not in col_e:
+      f.write('    "implementation unit": None,\n')
+      f.write('    "functional unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
+      f.write('    "first cost": "' + lookup_unit(sr_tab, row + 12, 5) + '",\n')
+      f.write('    "operating cost": "' + lookup_unit(sr_tab, row + 13, 5) + '",\n')
+      break
+  f.write('  }\n\n')
+
+
 def output_solution_python_file(outputdir, xl_filename, classname):
   """Extract relevant fields from Excel file and output a Python class.
 
@@ -1152,6 +1206,11 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 
   f.write("class " + str(classname) + ":\n")
   f.write("  name = '" + str(solution_name) + "'\n")
+  if is_rrs:
+    write_units_rrs(f=f, wb=wb)
+  if is_land:
+    write_units_land(f=f, wb=wb)
+  f.write("\n")
   f.write("  def __init__(self, scenario=None):\n")
   f.write("    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
   f.write("    parentdir = pathlib.Path(__file__).parents[1]\n")
@@ -1232,6 +1291,7 @@ def infer_classname(filename):
   special_cases = [
       ('BiomassELC', 'Biomass'),
       ('Biomass from Perennial Crops for Electricity Generation', 'Biomass'),
+      ('Bioplastics', 'Bioplastic'),
       ('Cement', 'AlternativeCement'),
       ('CHP_A_', 'CoGenElectricity'),
       ('CHP_B_', 'CoGenHeat'),
@@ -1247,6 +1307,7 @@ def infer_classname(filename):
       ('solution_xls_extract_RRS_test_A', 'TestClassA'),
       ('Tropical_Forest_Restoration', 'TropicalForests'),
       ('Utility Scale Solar PV', 'SolarPVUtil'),
+      ('Videoconferencing and Telepresence', 'Telepresence'),
       ('WastetoEnergy', 'WasteToEnergy'),
       ('Wave&Tidal', 'WaveAndTidal'),
       ('Wave and Tidal', 'WaveAndTidal'),

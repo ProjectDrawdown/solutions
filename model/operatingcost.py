@@ -189,6 +189,7 @@ class OperatingCost:
     """Breakout of operating cost per year, including replacements.
        Supplies calculations for:
        SolarPVUtil 'Operating Cost'!B262:AV386 for soln_pds
+       SolarPVUtil 'Operating Cost'!B399:AV523 for conv_ref
     """
     first_year = CORE_START_YEAR
     last_year = self.ac.report_end_year

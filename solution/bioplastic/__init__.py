@@ -1,5 +1,5 @@
-"""Building Automation Systems solution model.
-   Excel filename: Drawdown-Building Automation Systems_RRS_v1.1_18Nov2018_PUBLIC.xlsm
+"""Bioplastics solution model.
+   Excel filename: Drawdown-Bioplastics_RRS_v1.1_16Nov2018_PUBLIC.xlsm
 """
 
 import pathlib
@@ -27,37 +27,40 @@ REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle Eas
            'Latin America', 'China', 'India', 'EU', 'USA']
 
 scenarios = {
-  'PDS1-51p2050-SCurve (Book Ed.1)': advanced_controls.AdvancedControls(
-      # This scenario sums the adoption of individual regions (each of which has its own
-      # logistic S-Curve for adoption), which rise from current adoption to some
-      # realistic adoption in 2050 that differs by region. The scenario uses inputs
-      # calculated for the Drawdown book edition 1, some of which have been updated.
+  'PDS1-33p2050-Feedstock Limit-385MMT (Book Ed.1)': advanced_controls.AdvancedControls(
+      # Taking several possible custom projections developed by Project Drawdown, the
+      # average projection is used but with a constraint on total adoption due to
+      # limited input feedstock calculated from Project Drawdown models. This limit
+      # prevents the maximum adoption of some custom projections. This scenario uses
+      # inputs calculated for the Drawdown book edition 1, some of which have been
+      # updated.
 
       # general
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
       soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=True, soln_pds_adoption_regional_data=True, 
-      soln_pds_adoption_basis='DEFAULT S-Curve', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='Average of All Custom PDS Scenarios', 
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
-      pds_adoption_final_percentage=[('World', 0.95), ('OECD90', 0.999999999999999), ('Eastern Europe', 0.21270960344383177), ('Asia (Sans Japan)', 0.44770734907359283), ('Middle East and Africa', 0.08508384137753272), ('Latin America', 0.22385367453679642), ('China', 0.0), ('India', 0.0), ('EU', 0.999999999999999), ('USA', 0.999999999999999)], 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
-      pds_2014_cost=6.93288626734667, ref_2014_cost=6.93288626734667, 
-      conv_2014_cost=4.442162256132418, 
-      soln_first_cost_efficiency_rate=0.1, 
+      pds_2014_cost=2510659428.571429, ref_2014_cost=2510659428.571429, 
+      conv_2014_cost=1890060000.0, 
+      soln_first_cost_efficiency_rate=0.047, 
       conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.0922, 
-      soln_lifetime_capacity=15.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=25.0, conv_avg_annual_use=1.0, 
+      soln_first_cost_below_conv=False, 
+      npv_discount_rate=0.096, 
+      soln_lifetime_capacity=1.0, soln_avg_annual_use=1.0, 
+      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=21813111.35030163, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
       soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=24993401.868879557, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0, 
       conv_fixed_oper_cost_per_iunit=0.0, 
 
       # emissions
@@ -68,49 +71,52 @@ scenarios = {
       conv_indirect_co2_is_iunits=False, 
       ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_energy_efficiency_factor=0.1148, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.20269079954094618, 
-      conv_fuel_consumed_per_funit=275.87, soln_fuel_efficiency_factor=0.2009, 
-      conv_fuel_emissions_factor=61.0, soln_fuel_emissions_factor=61.0, 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
+      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
+      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+      conv_emissions_per_funit=2449285.714285714, soln_emissions_per_funit=1404893.6314006243, 
 
 
       # sequestration
     ),
-  'PDS2-70p2050-Linear (Book Ed.1)': advanced_controls.AdvancedControls(
-      # This scenario sums the adoption of individual regions (each of which has its own
-      # linear adoption), which rise from current adoption to some ambitious adoption in
-      # 2050. The scenario uses inputs calculated for the Drawdown book edition 1, some
-      # of which have been updated.
+  'PDS2-36p2050-Feedstock Limit - 453MMT (Book Ed.1)': advanced_controls.AdvancedControls(
+      # Taking several possible custom projections developed by Project Drawdown, the
+      # average projection is used but with a constraint on total adoption due to
+      # limited input feedstock calculated from Project Drawdown models. This limit
+      # prevents the maximum adoption of some custom projections. This scenario uses
+      # inputs calculated for the Drawdown book edition 1, some of which have been
+      # updated.
 
       # general
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
       soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=True, soln_pds_adoption_regional_data=True, 
-      soln_pds_adoption_basis='DEFAULT Linear', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='Average of All Custom PDS Scenarios', 
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
-      pds_adoption_final_percentage=[('World', 0.95), ('OECD90', 0.999999999999999), ('Eastern Europe', 0.5), ('Asia (Sans Japan)', 0.8), ('Middle East and Africa', 0.5), ('Latin America', 0.5), ('China', 0.0), ('India', 0.0), ('EU', 0.999999999999999), ('USA', 0.999999999999999)], 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
-      pds_2014_cost=6.93288626734667, ref_2014_cost=6.93288626734667, 
-      conv_2014_cost=4.442162256132418, 
-      soln_first_cost_efficiency_rate=0.1, 
+      pds_2014_cost=2510659428.571429, ref_2014_cost=2510659428.571429, 
+      conv_2014_cost=1890060000.0, 
+      soln_first_cost_efficiency_rate=0.047, 
       conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.0922, 
-      soln_lifetime_capacity=15.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=25.0, conv_avg_annual_use=1.0, 
+      soln_first_cost_below_conv=False, 
+      npv_discount_rate=0.096, 
+      soln_lifetime_capacity=1.0, soln_avg_annual_use=1.0, 
+      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=21813111.35030163, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
       soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=24993401.868879557, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0, 
       conv_fixed_oper_cost_per_iunit=0.0, 
 
       # emissions
@@ -121,49 +127,52 @@ scenarios = {
       conv_indirect_co2_is_iunits=False, 
       ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_energy_efficiency_factor=0.1116, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.20269079954094618, 
-      conv_fuel_consumed_per_funit=275.87, soln_fuel_efficiency_factor=0.1788, 
-      conv_fuel_emissions_factor=61.0, soln_fuel_emissions_factor=61.0, 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
+      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
+      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+      conv_emissions_per_funit=2449285.714285714, soln_emissions_per_funit=1404893.6314006243, 
 
 
       # sequestration
     ),
-  'PDS3-72p2050-Linear (Book Ed.1)': advanced_controls.AdvancedControls(
-      # This scenario sums the adoption of individual regions (each of which has its own
-      # linear adoption), which rise from current adoption to some very ambitious
-      # adoption in 2050. The scenario uses inputs calculated for the Drawdown book
-      # edition 1, some of which have been updated.
+  'PDS3-42p2050-Feedstock Limit -636MMT (Book Ed.1)': advanced_controls.AdvancedControls(
+      # Taking several possible custom projections developed by Project Drawdown, the
+      # average projection is used but with a constraint on total adoption due to
+      # limited input feedstock calculated from Project Drawdown models. This limit
+      # prevents the maximum adoption of some custom projections. This scenario uses
+      # inputs calculated for the Drawdown book edition 1, some of which have been
+      # updated.
 
       # general
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
       soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=True, soln_pds_adoption_regional_data=True, 
-      soln_pds_adoption_basis='DEFAULT Linear', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='Average of All Custom PDS Scenarios', 
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
-      pds_adoption_final_percentage=[('World', 0.95), ('OECD90', 0.999999999999999), ('Eastern Europe', 0.8), ('Asia (Sans Japan)', 0.8), ('Middle East and Africa', 0.8), ('Latin America', 0.8), ('China', 0.0), ('India', 0.0), ('EU', 0.999999999999999), ('USA', 0.999999999999999)], 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
-      pds_2014_cost=6.93288626734667, ref_2014_cost=6.93288626734667, 
-      conv_2014_cost=4.442162256132418, 
-      soln_first_cost_efficiency_rate=0.1, 
+      pds_2014_cost=2510659428.571429, ref_2014_cost=2510659428.571429, 
+      conv_2014_cost=1890060000.0, 
+      soln_first_cost_efficiency_rate=0.047, 
       conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.0922, 
-      soln_lifetime_capacity=15.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=25.0, conv_avg_annual_use=1.0, 
+      soln_first_cost_below_conv=False, 
+      npv_discount_rate=0.096, 
+      soln_lifetime_capacity=1.0, soln_avg_annual_use=1.0, 
+      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
 
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=21942511.65564535, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
       soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=24993401.868879557, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0, 
       conv_fixed_oper_cost_per_iunit=0.0, 
 
       # emissions
@@ -174,35 +183,36 @@ scenarios = {
       conv_indirect_co2_is_iunits=False, 
       ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_energy_efficiency_factor=0.1091, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.20269079954094618, 
-      conv_fuel_consumed_per_funit=275.87, soln_fuel_efficiency_factor=0.1648, 
-      conv_fuel_emissions_factor=61.0, soln_fuel_emissions_factor=61.0, 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
+      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
+      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+      conv_emissions_per_funit=2449285.714285714, soln_emissions_per_funit=1404893.6314006243, 
 
 
       # sequestration
     ),
 }
 
-class BuildingAutomationSystems:
-  name = 'Building Automation Systems'
+class Bioplastic:
+  name = 'Bioplastics'
   units = {
-    "implementation unit": "Mm²",
-    "functional unit": "Mm²",
+    "implementation unit": "MMt of Plastic Produced Annually (Transient)",
+    "functional unit": "MMt of Plastic Produced Annually",
     "first cost": "US$B",
     "operating cost": "US$B",
   }
+
 
   def __init__(self, scenario=None):
     datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
     parentdir = pathlib.Path(__file__).parents[1]
     thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
-      scenario = 'PDS1-51p2050-SCurve (Book Ed.1)'
+      scenario = 'PDS1-33p2050-Feedstock Limit-385MMT (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -219,63 +229,18 @@ class BuildingAutomationSystems:
        '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
        '3rd Poly', '3rd Poly', '3rd Poly'],
       ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'High', 'High', 'High', 'High'],
+       'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
+      'Baseline Cases': {
+          'Custom TAM based on PlasticsEurope (2015) & World Economic Forum (2016)': thisdir.joinpath('tam_Custom_TAM_based_on_PlasticsEurope_2015_World_Economic_Forum_201.csv'),
+          'Custom TAM based on PlasticsEurope (2015) & 3.6% growth rate': thisdir.joinpath('tam_Custom_TAM_based_on_PlasticsEurope_2015_3_6_growth_rate.csv'),
+      },
       'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Ürge-Vorsatz et al. (2015) – see TAM Factoring': thisdir.joinpath('tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
-      },
-      'Region: OECD90': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: Eastern Europe': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: Asia (Sans Japan)': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: Middle East and Africa': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: Latin America': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: China': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Hong et al. (2014) – see TAM Factoring': thisdir.joinpath('tam_Hong_et_al__2014_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: India': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Chaturvedi et al (2014) – see TAM Factoring': thisdir.joinpath('tam_Chaturvedi_et_al_2014_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: EU': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Boermans et al. (2012); BPIE (2014) – see TAM Factoring': thisdir.joinpath('tam_Boermans_et_al__2012_BPIE_2014_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: USA': {
-        'Baseline Cases': {
-          'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case': thisdir.joinpath('tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case.csv'),
-          'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case w/o CPP': thisdir.joinpath('tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case_wo_CPP.csv'),
-        },
+          'Custom TAM based on Mosko (2012) assuming 5.3% growth from 2013-2020': thisdir.joinpath('tam_Custom_TAM_based_on_Mosko_2012_assuming_5_3_growth_from_20132020.csv'),
+          'PlasticsEurope (PEMRG) (2015), for historic values / Mosko (2012) est. 385MMt in 2050': thisdir.joinpath('tam_PlasticsEurope_PEMRG_2015_for_historic_values_Mosko_2012_est__38.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -296,44 +261,49 @@ class BuildingAutomationSystems:
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
+      'Ambitious Cases': {
+          'European Bioplastics (2013), 2nd Poly extrapolation': thisdir.joinpath('ad_European_Bioplastics_2013_2nd_Poly_extrapolation.csv'),
+      },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
 
-    sconfig_list = [
-      ['region', 'base_year', 'last_year', 'base_percent', 'last_percent', 'base_adoption', 'pds_tam_2050'],
-      ['World', 2014, 2050, 0.3469591450521351, 0.95, 16577.82591670033, 77969.42578838725],
-      ['OECD90', 2014, 2050, 0.6774945040969459, 0.999999999999999, 14915.99, 30578.761254288427],
-      ['Eastern Europe', 2014, 2050, 0.0, 0.21270960344383177, 0.0, 1532.2953039347105],
-      ['Asia (Sans Japan)', 2014, 2050, 0.07415399905935922, 0.44770734907359283, 1087.7709445216651, 25358.333975041056],
-      ['Middle East and Africa', 2014, 2050, 0.0, 0.08508384137753272, 0.0, 4140.661070930817],
-      ['Latin America', 2014, 2050, 0.0, 0.22385367453679642, 0.0, 1021.9329224434589],
-      ['China', 2014, 2050, 0.08478075075770555, 0.0, 1087.7709445216651, 18965.135056084015],
-      ['India', 2014, 2050, 0.0, 0.0, 0.0, 8804.235498036302],
-      ['EU', 2014, 2050, 0.48260313794749193, 0.999999999999999, 3622.85, 11003.357475720299],
-      ['USA', 2014, 2050, 0.4456343028887654, 0.999999999999999, 11293.14, 36879.95839663896]]
-    sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0], dtype=np.object).set_index('region')
-    self.sc = s_curve.SCurve(transition_period=16, sconfig=sconfig)
+    ca_pds_data_sources = [
+      {'name': 'ConservativeLow Based on CAGR 29.3% with continued trend to 2060', 'include': False,
+          'filename': str(thisdir.joinpath('custom_pds_ad_ConservativeLow_based_on_CAGR_29_3_with_continued_trend_to_2060.csv'))},
+      {'name': 'ConservativeHigh, continued 3rd poly trend to 2060', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_ConservativeHigh_continued_3rd_poly_trend_to_2060.csv'))},
+      {'name': 'AggressiveMed, 40% by 2050, 3rd Poly', 'include': False,
+          'filename': str(thisdir.joinpath('custom_pds_ad_AggressiveMed_40_by_2050_3rd_Poly.csv'))},
+      {'name': 'ConservativeHigh, 75% by 2045, 3rd Poly', 'include': False,
+          'filename': str(thisdir.joinpath('custom_pds_ad_ConservativeHigh_75_by_2045_3rd_Poly.csv'))},
+      {'name': 'ConservativeLow, 25% by 2050, 3rd Poly', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_ConservativeLow_25_by_2050_3rd_Poly.csv'))},
+      {'name': 'AggressiveLow, 50% by 2050, 3rd Poly', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_AggressiveLow_50_by_2050_3rd_Poly.csv'))},
+      {'name': 'AggressiveMax, 30% by 2030, 3rd Poly', 'include': False,
+          'filename': str(thisdir.joinpath('custom_pds_ad_AggressiveMax_30_by_2030_3rd_Poly.csv'))},
+      {'name': 'AggressiveMax, 90 % by 2030, 90% by 2050', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_AggressiveMax_90_by_2030_90_by_2050.csv'))},
+    ]
+    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
+        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
 
     if False:
       # One may wonder why this is here. This file was code generated.
       # This 'if False' allows subsequent conditions to all be elif.
       pass
-    elif self.ac.soln_pds_adoption_basis == 'S-Curve':
-      pds_adoption_data_per_region = None
-      pds_adoption_trend_per_region = self.sc.logistic_adoption()
-      pds_adoption_is_single_source = False
+    elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
+      pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
+      pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
+      pds_adoption_is_single_source = True
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
       pds_adoption_is_single_source = self.ad.adoption_is_single_source()
-    elif self.ac.soln_pds_adoption_basis == 'Linear':
-      pds_adoption_data_per_region = None
-      pds_adoption_trend_per_region = None
-      pds_adoption_is_single_source = False
 
     ht_ref_adoption_initial = pd.Series(
-      [16577.82591670033, 14915.99, 0.0, 1087.7709445216651, 0.0,
-       0.0, 1087.7709445216651, 0.0, 3622.85, 11293.14],
+      [1.67, 0.0, 0.0, 0.0, 0.0,
+       0.0, 0.0, 0.0, 0.0, 0.0],
        index=REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
     ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
@@ -359,7 +329,7 @@ class BuildingAutomationSystems:
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-        repeated_cost_for_iunits=False,
+        repeated_cost_for_iunits=True,
         bug_cfunits_double_count=False)
     soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
     soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
@@ -374,7 +344,7 @@ class BuildingAutomationSystems:
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-        fc_convert_iunit_factor=1000000.0)
+        fc_convert_iunit_factor=1.0)
 
     self.oc = operatingcost.OperatingCost(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,

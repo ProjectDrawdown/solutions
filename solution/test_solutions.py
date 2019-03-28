@@ -4,6 +4,7 @@ import pytest
 import altcement
 import biogas
 import biomass
+import bioplastic
 import buildingautomation
 import concentratedsolar
 import improvedcookstoves
@@ -19,7 +20,7 @@ import smartthermostats
 import solarhotwater
 import solarpvroof
 import solarpvutil
-import silvopasture
+import telepresence
 
 def test_altcement():
   scenario = list(altcement.scenarios.keys())[0]
@@ -36,6 +37,12 @@ def test_biogas():
 def test_biomass():
   scenario = list(biomass.scenarios.keys())[0]
   obj = biomass.Biomass(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_bioplastic():
+  scenario = list(bioplastic.scenarios.keys())[0]
+  obj = bioplastic.Bioplastic(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
@@ -126,5 +133,11 @@ def test_solarpvroof():
 def test_solarpvutil():
   scenario = list(solarpvutil.scenarios.keys())[0]
   obj = solarpvutil.SolarPVUtil(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_telepresence():
+  scenario = list(telepresence.scenarios.keys())[0]
+  obj = telepresence.Telepresence(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name

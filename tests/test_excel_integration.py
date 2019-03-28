@@ -22,6 +22,7 @@ xlwings = pytest.importorskip("xlwings")
 from solution import altcement
 from solution import biogas
 from solution import biomass
+from solution import bioplastic
 from solution import buildingautomation
 from solution import concentratedsolar
 from solution import improvedcookstoves
@@ -37,6 +38,7 @@ from solution import smartthermostats
 from solution import solarhotwater
 from solution import solarpvutil
 from solution import solarpvroof
+from solution import telepresence
 
 solutiondir = pathlib.Path(__file__).parents[1].joinpath('solution')
 
@@ -816,6 +818,20 @@ def test_Biomass_RRS_ELECGEN(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('bioplastic', 'testdata',
+      'Drawdown-Bioplastics_RRS_v1.1_16Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Bioplastic_RRS(start_excel, tmpdir):
+  """Test for Excel model file Bioplastics*."""
+  workbook = start_excel
+  for scenario in ['PDS1-33p2050-Feedstock Limit-385MMT (Book Ed.1)']:
+    obj = bioplastic.Bioplastic(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('buildingautomation', 'testdata',
       'Drawdown-Building Automation Systems_RRS_v1.1_18Nov2018_PUBLIC.xlsm'))],
     indirect=True)
@@ -1021,5 +1037,19 @@ def test_SolarPVUtility_RRS_ELECGEN(start_excel):
   workbook = start_excel
   for scenario in solarpvutil.scenarios.keys():
     obj = solarpvutil.SolarPVUtil(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('telepresence', 'testdata',
+        'Drawdown-Videoconferencing and Telepresence_RRS_v1.1_17Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Telepresence_RRS(start_excel):
+  """Test for Excel model file Videoconferencing and Telepresence*."""
+  workbook = start_excel
+  for scenario in telepresence.scenarios.keys():
+    obj = telepresence.Telepresence(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)

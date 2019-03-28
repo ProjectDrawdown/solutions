@@ -1,5 +1,5 @@
-"""Alternative (High Vol. Fly Ash) Cement solution model.
-   Excel filename: Drawdown-Alternative (High Vol. Fly Ash) Cement_RRS_v1.1_16Nov2018_PUBLIC.xlsm
+"""Videoconferencing and Telepresence solution model.
+   Excel filename: Drawdown-Videoconferencing and Telepresence_RRS_v1.1_17Dec2018_PUBLIC.xlsm
 """
 
 import pathlib
@@ -27,71 +27,180 @@ REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle Eas
            'Latin America', 'China', 'India', 'EU', 'USA']
 
 scenarios = {
-  'PDS1,2,3-19p2050-Availability Analysis (Book Ed.1)': advanced_controls.AdvancedControls(
-      # This scenario is based on a Fly Ash availability analysis since Fly Ash
-      # incorporation in cement is the definition of this solution and that is based on
-      # coal burning which has an uncertain future. Fly Ash cement is therefore a
-      # transition solution. The availability assumptions are shown in the Custom
-      # Adoption sheets. All PDS scenarios are the same. This scenario uses inputs
-      # calculated for the Drawdown book edition 1, some of which have been updated
-      # since publication.
+  'PDS1-16p2050-Average Predicted Adoption (Book Ed.1)': advanced_controls.AdvancedControls(
+      # This scenario uses the average estimated 2050 adoption of telepresence or
+      # replacement of airtravel estimated by several sources as the 2050 adoption. It
+      # fits a Bass Diffusion model from the current adoption to the 2050 adoption using
+      # Excel Goal Seek by maximizing the emissions reduction while adjusting each
+      # parameter in sequence until no improvement can be made. This book Ed.1 scenario
+      # uses the reference adoption of the models developed for that version of the
+      # book.
 
       # general
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
       soln_ref_adoption_basis='Custom', 
-      soln_ref_adoption_custom_name='Drawdown Book Edition 1 Scenario REF Adoption', 
+      soln_ref_adoption_custom_name='Book Ed.1 Reference Scenario', 
       soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
       soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Drawdown Book Edition 1 PDS 1, 2 and 3', 
+      soln_pds_adoption_custom_name='PDS1 - Bass diffusion Adoption Curve - 16% Adoption in 2050', 
       source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='ALL SOURCES', 
-      pds_source_post_2014='ALL SOURCES', 
+      ref_source_post_2014='Baseline Cases', 
+      pds_source_post_2014='Baseline Cases', 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
-      pds_2014_cost=32130000.0, ref_2014_cost=32130000.0, 
-      conv_2014_cost=45900000.0, 
-      soln_first_cost_efficiency_rate=0.0, 
+      pds_2014_cost=2503.289213076928, ref_2014_cost=2503.289213076928, 
+      conv_2014_cost=0.0, 
+      soln_first_cost_efficiency_rate=0.15, 
       conv_first_cost_efficiency_rate=0.0, 
       soln_first_cost_below_conv=True, 
       npv_discount_rate=0.0922, 
-      soln_lifetime_capacity=30.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=30.0, conv_avg_annual_use=1.0, 
+      soln_lifetime_capacity=69215.62156535, soln_avg_annual_use=17303.905391337506, 
+      conv_lifetime_capacity=3922.8, conv_avg_annual_use=3922.8, 
 
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
+      soln_var_oper_cost_per_funit=0.018158327933267257, soln_fuel_cost_per_funit=0.00133544502054752, 
       soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0, 
+      conv_var_oper_cost_per_funit=0.25512761284796576, conv_fuel_cost_per_funit=0.0, 
       conv_fixed_oper_cost_per_iunit=0.0, 
 
       # emissions
       ch4_is_co2eq=False, n2o_is_co2eq=False, 
       co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=36189.00000000001, 
-      conv_indirect_co2_per_unit=0.0, 
+      soln_indirect_co2_per_iunit=5.6863545770659375e-06, 
+      conv_indirect_co2_per_unit=0.00022600000000000005, 
       conv_indirect_co2_is_iunits=False, 
       ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_energy_efficiency_factor=0.45, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0585, 
-      conv_fuel_consumed_per_funit=3113.0, soln_fuel_efficiency_factor=0.45, 
-      conv_fuel_emissions_factor=95.3, soln_fuel_emissions_factor=95.3, 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=1.4116754974075279e-11, conv_annual_energy_used=0.0, 
+      conv_fuel_consumed_per_funit=0.06339793116175421, soln_fuel_efficiency_factor=1.0, 
+      conv_fuel_emissions_factor=0.0017733703679999999, soln_fuel_emissions_factor=0.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
-      conv_emissions_per_funit=505606.67, soln_emissions_per_funit=278083.6685, 
+      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+
+
+      # sequestration
+    ),
+  'PDS2-29p2050-Maximum Prediction (Book Ed.1)': advanced_controls.AdvancedControls(
+      # Using Excel's Goal Seek, we fitted a Bass Diffusion Curve's parameters to fit
+      # the maximum adoption predicted from several sources for 2050 - 30%. The
+      # reference adoption uses the reference adoption developed for the first edition
+      # of the book.
+
+      # general
+      report_start_year=2020, report_end_year=2050, 
+
+      # adoption
+      soln_ref_adoption_basis='Custom', 
+      soln_ref_adoption_custom_name='Book Ed.1 Reference Scenario', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='PDS2 - Bass diffusion Adoption Curve - 30% Adoption in 2050', 
+      source_until_2014='ALL SOURCES', 
+      ref_source_post_2014='Baseline Cases', 
+      pds_source_post_2014='Baseline Cases', 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
+
+      # financial
+      pds_2014_cost=2503.289213076928, ref_2014_cost=2503.289213076928, 
+      conv_2014_cost=0.0, 
+      soln_first_cost_efficiency_rate=0.15, 
+      conv_first_cost_efficiency_rate=0.0, 
+      soln_first_cost_below_conv=True, 
+      npv_discount_rate=0.0922, 
+      soln_lifetime_capacity=69215.62156535, soln_avg_annual_use=17303.905391337506, 
+      conv_lifetime_capacity=3922.8, conv_avg_annual_use=3922.8, 
+
+      soln_var_oper_cost_per_funit=0.018158327933267257, soln_fuel_cost_per_funit=0.00133544502054752, 
+      soln_fixed_oper_cost_per_iunit=0.0, 
+      conv_var_oper_cost_per_funit=0.25512761284796576, conv_fuel_cost_per_funit=0.0, 
+      conv_fixed_oper_cost_per_iunit=0.0, 
+
+      # emissions
+      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      co2eq_conversion_source='AR5 with feedback', 
+      soln_indirect_co2_per_iunit=5.6863545770659375e-06, 
+      conv_indirect_co2_per_unit=0.00022600000000000005, 
+      conv_indirect_co2_is_iunits=False, 
+      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
+
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=1.4116754974075279e-11, conv_annual_energy_used=0.0, 
+      conv_fuel_consumed_per_funit=0.06339793116175421, soln_fuel_efficiency_factor=1.0, 
+      conv_fuel_emissions_factor=0.0017733703679999999, soln_fuel_emissions_factor=0.0, 
+
+      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
+      emissions_use_co2eq=True, 
+      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
+
+
+      # sequestration
+    ),
+  'PDS3-49p2050-50% Adoption (Book Ed.1)': advanced_controls.AdvancedControls(
+      # A Bass Diffusion Curve is fitted using Excel Goal Seek to get to 50% Adoption in
+      # 2050. The reference adoption uses the reference adoption case developed for the
+      # book.
+
+      # general
+      report_start_year=2020, report_end_year=2050, 
+
+      # adoption
+      soln_ref_adoption_basis='Custom', 
+      soln_ref_adoption_custom_name='Book Ed.1 Reference Scenario', 
+      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
+      soln_pds_adoption_basis='Fully Customized PDS', 
+      soln_pds_adoption_custom_name='PDS3 - Bass diffusion Adoption Curve - 50% Adoption in 2050', 
+      source_until_2014='ALL SOURCES', 
+      ref_source_post_2014='Baseline Cases', 
+      pds_source_post_2014='Baseline Cases', 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
+
+      # financial
+      pds_2014_cost=2503.289213076928, ref_2014_cost=2503.289213076928, 
+      conv_2014_cost=0.0, 
+      soln_first_cost_efficiency_rate=0.15, 
+      conv_first_cost_efficiency_rate=0.0, 
+      soln_first_cost_below_conv=True, 
+      npv_discount_rate=0.0922, 
+      soln_lifetime_capacity=69215.62156535, soln_avg_annual_use=17303.905391337506, 
+      conv_lifetime_capacity=3922.8, conv_avg_annual_use=3922.8, 
+
+      soln_var_oper_cost_per_funit=0.018158327933267257, soln_fuel_cost_per_funit=0.00133544502054752, 
+      soln_fixed_oper_cost_per_iunit=0.0, 
+      conv_var_oper_cost_per_funit=0.25512761284796576, conv_fuel_cost_per_funit=0.0, 
+      conv_fixed_oper_cost_per_iunit=0.0, 
+
+      # emissions
+      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      co2eq_conversion_source='AR5 with feedback', 
+      soln_indirect_co2_per_iunit=5.6863545770659375e-06, 
+      conv_indirect_co2_per_unit=0.00022600000000000005, 
+      conv_indirect_co2_is_iunits=False, 
+      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
+
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=1.4116754974075279e-11, conv_annual_energy_used=0.0, 
+      conv_fuel_consumed_per_funit=0.06339793116175421, soln_fuel_efficiency_factor=1.0, 
+      conv_fuel_emissions_factor=0.0017733703679999999, soln_fuel_emissions_factor=0.0, 
+
+      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
+      emissions_use_co2eq=True, 
+      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
 
       # sequestration
     ),
 }
 
-class AlternativeCement:
-  name = 'Alternative (High Vol. Fly Ash) Cement'
+class Telepresence:
+  name = 'Videoconferencing and Telepresence'
   units = {
-    "implementation unit": "MMt",
-    "functional unit": "MMt",
+    "implementation unit": "Active VC user",
+    "functional unit": "passenger-km/ pkm equivalent",
     "first cost": "US$B",
     "operating cost": "US$B",
   }
@@ -102,7 +211,7 @@ class AlternativeCement:
     parentdir = pathlib.Path(__file__).parents[1]
     thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
-      scenario = 'PDS1,2,3-19p2050-Availability Analysis (Book Ed.1)'
+      scenario = 'PDS1-16p2050-Average Predicted Adoption (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -125,7 +234,14 @@ class AlternativeCement:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Project Drawdown - Based on Data from Several Sources. (See HVFAC Links Sheet and HVFAC Material Availability Models)': thisdir.joinpath('tam_Project_Drawdown_based_on_Data_from_Several_Sources__See_HVFAC_L.csv'),
+          'Based on: IEA ETP 2016 6DS': thisdir.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
+          'Based on Airbus (2015) Global Market Forecast 2016-2035 with projections extended': thisdir.joinpath('tam_based_on_Airbus_2015_Global_Market_Forecast_20162035_with_projec.csv'),
+      },
+      'Conservative Cases': {
+          'Based on Boeing (2017) Current Market Outlook 2017-2036': thisdir.joinpath('tam_based_on_Boeing_2017_Current_Market_Outlook_20172036.csv'),
+      },
+      'Ambitious Cases': {
+          'Based on: IEA ETP 2016 2DS': thisdir.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -134,23 +250,19 @@ class AlternativeCement:
     pds_tam_per_region=self.tm.pds_tam_per_region()
 
     ca_pds_data_sources = [
-      {'name': 'Adoption Based on Fly Ash Availability Analysis/ PDS 1', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Adoption_based_on_Fly_Ash_Availability_Analysis_PDS_1.csv'))},
-      {'name': 'Adoption Based on Fly Ash Availability Analysis/ PDS 2', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Adoption_based_on_Fly_Ash_Availability_Analysis_PDS_2.csv'))},
-      {'name': 'Adoption Based on Fly Ash Availability Analysis/ PDS 3', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Adoption_based_on_Fly_Ash_Availability_Analysis_PDS_3.csv'))},
-      {'name': 'Drawdown Book Edition 1 PDS 1, 2 and 3', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_PDS_1_2_and_3.csv'))},
+      {'name': 'PDS1 - Bass diffusion Adoption Curve - 16% Adoption in 2050', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_PDS1_Bass_diffusion_Adoption_Curve_16_Adoption_in_2050.csv'))},
+      {'name': 'PDS2 - Bass diffusion Adoption Curve - 30% Adoption in 2050', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_PDS2_Bass_diffusion_Adoption_Curve_30_Adoption_in_2050.csv'))},
+      {'name': 'PDS3 - Bass diffusion Adoption Curve - 50% Adoption in 2050', 'include': True,
+          'filename': str(thisdir.joinpath('custom_pds_ad_PDS3_Bass_diffusion_Adoption_Curve_50_Adoption_in_2050.csv'))},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
 
     ca_ref_data_sources = [
-      {'name': 'REF Custom Adoption Based on Fly Ash Availability Analysis', 'include': False,
-          'filename': str(thisdir.joinpath('custom_ref_ad_REF_Custom_Adoption_based_on_Fly_Ash_Availability_Analysis.csv'))},
-      {'name': 'Drawdown Book Edition 1 Scenario REF Adoption', 'include': False,
-          'filename': str(thisdir.joinpath('custom_ref_ad_Drawdown_Book_Edition_1_Scenario_REF_Adoption.csv'))},
+      {'name': 'Book Ed.1 Reference Scenario', 'include': False,
+          'filename': str(thisdir.joinpath('custom_ref_ad_Book_Ed_1_Reference_Scenario.csv'))},
     ]
     self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
         soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name)
@@ -166,7 +278,7 @@ class AlternativeCement:
       pds_adoption_is_single_source = True
 
     ht_ref_adoption_initial = pd.Series(
-      [222.22222222222223, 0.0, 0.0, 0.0, 0.0,
+      [198505316569.03406, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0],
        index=REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
@@ -194,7 +306,6 @@ class AlternativeCement:
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-        repeated_cost_for_iunits=True,
         bug_cfunits_double_count=False)
     soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
     soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()

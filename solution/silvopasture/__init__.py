@@ -151,9 +151,14 @@ scenarios = {
     )
 }
 
-
 class Silvopasture:
     name = 'Silvopasture'
+    units = {
+      "implementation unit": None,
+      "functional unit": "Mha",
+      "first cost": "US$B",
+      "operating cost": "US$B",
+    }
 
     def __init__(self, scenario=None):
         if scenario is None:
