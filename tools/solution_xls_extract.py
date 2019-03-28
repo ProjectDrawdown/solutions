@@ -1084,6 +1084,7 @@ def lookup_unit(tab, row, col):
     'million m2 commercial floor space': u'Mm\u00B2',
     'Million Households': u'MHholds',
     'Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates': u'Mm\u00B2',
+    'Giga-Liter Water': u'GL H\u2082O',
   }
   name = str(tab.cell_value(row, col))
   return unit_mapping.get(name, name)
@@ -1306,6 +1307,7 @@ def infer_classname(filename):
       ('solution_xls_extract_RRS_test_A', 'TestClassA'),
       ('Tropical_Forest_Restoration', 'TropicalForests'),
       ('Utility Scale Solar PV', 'SolarPVUtil'),
+      ('Videoconferencing and Telepresence', 'Telepresence'),
       ('WastetoEnergy', 'WasteToEnergy'),
       ('Wave&Tidal', 'WaveAndTidal'),
       ('Wave and Tidal', 'WaveAndTidal'),

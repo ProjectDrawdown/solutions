@@ -20,7 +20,7 @@ import smartthermostats
 import solarhotwater
 import solarpvroof
 import solarpvutil
-import silvopasture
+import telepresence
 
 def test_altcement():
   scenario = list(altcement.scenarios.keys())[0]
@@ -133,5 +133,11 @@ def test_solarpvroof():
 def test_solarpvutil():
   scenario = list(solarpvutil.scenarios.keys())[0]
   obj = solarpvutil.SolarPVUtil(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_telepresence():
+  scenario = list(telepresence.scenarios.keys())[0]
+  obj = telepresence.Telepresence(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
