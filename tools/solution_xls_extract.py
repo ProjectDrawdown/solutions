@@ -139,6 +139,10 @@ def get_rrs_scenarios(wb):
           ('EU', percnt(row + 178)), ('USA', percnt(row + 179))]
       s['pds_adoption_final_percentage'] = percentages
 
+      if s['soln_pds_adoption_basis'] == 'DEFAULT S-Curve':
+        sconfig = [
+                ]
+
       assert sr_tab.cell_value(row + 183, 1) == 'Existing PDS Prognostication Assumptions'
       adopt = str(sr_tab.cell_value(row + 184, 4)).strip()
       if adopt: s['soln_pds_adoption_prognostication_source'] = adopt
@@ -566,8 +570,18 @@ def normalize_source_name(sourcename):
     'Drawdown TAM: Maximum Cases': 'Maximum Cases',
     'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)': \
             'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)',
+    'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario':
+            'ITDP/UC Davis 2014 Global High Shift Baseline',
+    'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario':
+            'ITDP/UC Davis 2014 Global High Shift HighShift',
+    'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Static % of Organic Waste':
+            'What a Waste Solid Waste Management Static %',
+    'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic % of Organic Waste':
+            'What a Waste Solid Waste Management Dynamic %',
+    'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic Organic Fraction by Un Mediam Variant':
+            'What a Waste Solid Waste Management Dynamic Organic Fraction',
     }
-  normalized = sourcename.replace("'", "").strip()
+  normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
   if normalized in special_cases:
     return special_cases[normalized]
   if re.search('\[Source \d+', sourcename):
@@ -643,7 +657,11 @@ def get_filename_for_source(sourcename, prefix=''):
   filename = re.sub(r"\s+", '_', filename)
   filename = re.sub(r"\.+", '_', filename)
   filename = filename.replace('Based_on_', 'based_on_')
-  return prefix + filename[0:64] + '.csv'
+  if len(filename) > 63:
+    s = filename[63:]
+    h = hex(abs(hash(s)))[-8:]
+    filename = filename[:63] + h
+  return prefix + filename + '.csv'
 
 
 def write_ad(f, wb, outputdir):
@@ -1114,6 +1132,8 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
       if str(custom_ad_tab.cell(row, 1).value) == name:
         df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name,
             header=0, index_col=0, usecols="A:K", skiprows=row+1, nrows=49)
+        df.rename(mapper={'Middle East & Africa': 'Middle East and Africa'},
+            axis='columns', inplace=True)
         if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
           df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
           skip = False
@@ -1313,8 +1333,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     else:
       f.write("    self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())\n\n")
 
-  if has_custom_pds_ad and has_default_pds_ad:
-    raise NotImplementedError('Support for both Default and Custom PDS adoption is not implemented')
   if has_custom_ref_ad and has_default_ref_ad:
     raise NotImplementedError('Support for both Default and Custom REF adoption is not implemented')
   if has_default_pds_ad or has_default_ref_ad:
@@ -1385,6 +1403,7 @@ def infer_classname(filename):
       ('CHP_B_', 'CoGenHeat'),
       ('CSP_', 'ConcentratedSolar'),
       ('High Efficient Heat Pumps', 'HeatPumps'),
+      ('Household & Commercial Recycling', 'Recycling'),
       ('Instream Hydro', 'InstreamHydro'),
       ('Large Biodigesters', 'Biogas'),
       ('MicroWind Turbines', 'MicroWind'),

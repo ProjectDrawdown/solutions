@@ -3,6 +3,7 @@
 import pytest
 import airplanes
 import altcement
+import bikeinfrastructure
 import biogas
 import biomass
 import bioplastic
@@ -14,9 +15,12 @@ import improvedcookstoves
 import instreamhydro
 import insulation
 import landfillmethane
+import leds_commercial
+import leds_residential
 import microwind
 import offshorewind
 import onshorewind
+import refrigerants
 import ships
 import silvopasture
 import smartglass
@@ -36,6 +40,12 @@ def test_airplanes():
 def test_altcement():
   scenario = list(altcement.scenarios.keys())[0]
   obj = altcement.AlternativeCement(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_bikeinfrastructure():
+  scenario = list(bikeinfrastructure.scenarios.keys())[0]
+  obj = bikeinfrastructure.BikeInfrastructure(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
@@ -105,6 +115,18 @@ def test_landfillmethane():
   assert obj.scenario == scenario
   assert obj.name
 
+def test_leds_commercial():
+  scenario = list(leds_commercial.scenarios.keys())[0]
+  obj = leds_commercial.LEDCommercialLighting(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_leds_residential():
+  scenario = list(leds_residential.scenarios.keys())[0]
+  obj = leds_residential.ResidentialLEDLighting(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
 def test_microwind():
   scenario = list(microwind.scenarios.keys())[0]
   obj = microwind.MicroWind(scenario=scenario)
@@ -120,6 +142,12 @@ def test_offshorewind():
 def test_onshorewind():
   scenario = list(onshorewind.scenarios.keys())[0]
   obj = onshorewind.OnshoreWind(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_refrigerants():
+  scenario = list(refrigerants.scenarios.keys())[0]
+  obj = refrigerants.RefrigerantManagement(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 

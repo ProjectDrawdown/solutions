@@ -21,6 +21,7 @@ xlwings = pytest.importorskip("xlwings")
 
 from solution import airplanes
 from solution import altcement
+from solution import bikeinfrastructure
 from solution import biogas
 from solution import biomass
 from solution import bioplastic
@@ -32,9 +33,12 @@ from solution import improvedcookstoves
 from solution import instreamhydro
 from solution import insulation
 from solution import landfillmethane
+from solution import leds_commercial
+from solution import leds_residential
 from solution import microwind
 from solution import offshorewind
 from solution import onshorewind
+from solution import refrigerants
 from solution import ships
 from solution import silvopasture
 from solution import smartglass
@@ -815,6 +819,20 @@ def test_Airplanes_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('bikeinfrastructure', 'testdata',
+        'Drawdown-Bike Infrastructure_RRS_v1.1_4Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_BikeInfrastructure_RRS(start_excel, tmpdir):
+  """Test for Excel model file BikeInfrastructure*."""
+  workbook = start_excel
+  for scenario in bikeinfrastructure.scenarios.keys():
+    obj = bikeinfrastructure.BikeInfrastructure(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('biogas', 'testdata', 'Drawdown-Large Biodigesters (Biogas)_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_Biogas_RRS_ELECGEN(start_excel, tmpdir):
@@ -973,6 +991,34 @@ def test_LandfillMethane_RRS_ELECGEN(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('leds_commercial', 'testdata',
+        'Drawdown-LED Commercial Lighting_RRS_v1.1_19Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_LEDCommercialLighting_RRS(start_excel, tmpdir):
+  """Test for Excel model file LED Commercial Lighting*."""
+  workbook = start_excel
+  for scenario in leds_commercial.scenarios.keys():
+    obj = leds_commercial.LEDCommercialLighting(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('leds_residential', 'testdata',
+        'Drawdown-Residential LED Lighting_RRS_v1.1_19Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_LEDResidentialLighting_RRS(start_excel, tmpdir):
+  """Test for Excel model file Residential LED Lighting*."""
+  workbook = start_excel
+  for scenario in leds_residential.scenarios.keys():
+    obj = leds_residential.ResidentialLEDLighting(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('microwind', 'testdata', 'Drawdown-MicroWind Turbines_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_MicroWind_RRS_ELECGEN(start_excel, tmpdir):
@@ -1006,6 +1052,20 @@ def test_OnshoreWind_RRS_ELECGEN(start_excel, tmpdir):
   workbook = start_excel
   for scenario in onshorewind.scenarios.keys():
     obj = onshorewind.OnshoreWind(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('refrigerants', 'testdata',
+        'Drawdown-Refrigerant Management_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Refrigerants_RRS(start_excel, tmpdir):
+  """Test for Excel model file Refrigerants*."""
+  workbook = start_excel
+  for scenario in refrigerants.scenarios.keys():
+    obj = refrigerants.RefrigerantManagement(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
