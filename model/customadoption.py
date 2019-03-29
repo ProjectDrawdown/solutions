@@ -36,10 +36,9 @@ class CustomAdoption:
             For example: 'Average of All Custom PDS Scenarios'
          low_sd_mult: std deviation multiplier for 'low' values
          high_sd_mult: std deviation multiplier for 'high' values
-         filepath: optional Pathlib object to custom adoption data directory
     Generates average/high/low of chosen scenarios to be used as adoption data for the solution.
     """
-    def __init__(self, data_sources, soln_adoption_custom_name, low_sd_mult=1, high_sd_mult=1, filepath=None):
+    def __init__(self, data_sources, soln_adoption_custom_name, low_sd_mult=1, high_sd_mult=1):
         self.low_sd_mult = low_sd_mult
         self.high_sd_mult = high_sd_mult
         self.scenarios = {}
@@ -47,8 +46,6 @@ class CustomAdoption:
             name = d.get('name', 'noname')
             filename = d.get('filename', 'no_such_file')
             include = d.get('include', True)
-            if filepath is not None:
-                filename = filepath.joinpath(filename)
             df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
                 skip_blank_lines=True, comment='#', dtype=np.float64)
             df.index = df.index.astype(int)

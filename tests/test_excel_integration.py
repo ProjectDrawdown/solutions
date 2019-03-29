@@ -43,6 +43,7 @@ from solution import solarhotwater
 from solution import solarpvutil
 from solution import solarpvroof
 from solution import telepresence
+from solution import tropicalforests
 
 solutiondir = pathlib.Path(__file__).parents[1].joinpath('solution')
 
@@ -387,7 +388,7 @@ def verify_custom_adoption(obj, verify=None):
     if verify is None:
       verify = {}
     verify['Custom PDS Adoption'] = [
-        ('A23:B71', obj.ca_pds.adoption_data_per_region()['World'].reset_index(), None)
+        ('A23:B71', obj.pds_ca.adoption_data_per_region()['World'].reset_index(), None)
     ]
     # verify['Custom REF Adoption'] = []  # not yet implemented
     return verify
@@ -714,7 +715,6 @@ def LAND_solution_verify_list(obj):
   """
   verify = {}
   verify_aez_data(obj, verify)
-  # verify_tla_data(obj, verify)  # not currently implemented (needs custom TLA)
   if obj.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
     verify_adoption_data(obj, verify)
   elif obj.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
@@ -1028,7 +1028,7 @@ def test_Ships_RRS(start_excel, tmpdir):
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('silvopasture', 'testdata', 'Silvopasture_L-Use_v1.1a_3Aug18.xlsm'))],
     indirect=True)
-def test_Silvopasture_LAND_USE(start_excel, tmpdir):
+def test_Silvopasture_LAND(start_excel, tmpdir):
   """Test for Excel model file Silvopasture_L-Use*."""
   workbook = start_excel
   for scenario in silvopasture.scenarios.keys():
@@ -1118,4 +1118,17 @@ def test_Telepresence_RRS(start_excel):
   for scenario in telepresence.scenarios.keys():
     obj = telepresence.Telepresence(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('tropicalforests', 'testdata', 'Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm'))],
+    indirect=True)
+def test_TropicalForests_LAND(start_excel, tmpdir):
+  """Test for Excel model file Tropical_Forest_Restoration_L-Use*."""
+  workbook = start_excel
+  for scenario in tropicalforests.scenarios.keys():
+    obj = tropicalforests.TropicalForests(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)

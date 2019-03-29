@@ -8,6 +8,7 @@ import os.path
 import re
 import sys
 import textwrap
+import warnings
 
 import xlrd
 import numpy as np
@@ -202,10 +203,21 @@ def get_land_scenarios(wb):
       s['report_start_year'] = int(start)
       s['report_end_year'] = int(end)
 
+      assert sr_tab.cell_value(row + 201, 3) == 'Custom TLA Used?:'
+      s['use_custom_tla'] = convert_bool(sr_tab.cell_value(row + 201, 4))
+
       assert sr_tab.cell_value(row + 230, 1) == 'PDS ADOPTION SCENARIO INPUTS'
       adopt = str(sr_tab.cell_value(row + 231, 4)).strip()
       if adopt: s['soln_pds_adoption_basis'] = adopt
       s['soln_pds_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 232, 4))
+
+      def percnt(r): return 0.0 if sr_tab.cell_value(r, 4) == '' else sr_tab.cell_value(r, 4)
+      percentages = [('World', percnt(row + 236)), ('OECD90', percnt(row + 237)),
+          ('Eastern Europe', percnt(row + 238)), ('Asia (Sans Japan)', percnt(row + 239)),
+          ('Middle East and Africa', percnt(row + 240)), ('Latin America', percnt(row + 241)),
+          ('China', percnt(row + 242)), ('India', percnt(row + 243)),
+          ('EU', percnt(row + 244)), ('USA', percnt(row + 245))]
+      s['pds_adoption_final_percentage'] = percentages
 
       assert sr_tab.cell_value(row + 258, 1) == 'Fully Customized PDS'
       custom = str(sr_tab.cell_value(row + 259, 4)).strip()
@@ -306,6 +318,10 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['solution_category'], prefix=prefix)
   oneline(f=f, s=s, names=['vmas'], prefix=prefix)
   oneline(f=f, s=s, names=['report_start_year', 'report_end_year'], prefix=prefix)
+
+  if 'use_custom_tla' in s:
+    f.write('\n' + prefix + '# TLA' + '\n')
+    oneline(f=f, s=s, names=['use_custom_tla'], prefix=prefix)
 
   f.write('\n' + prefix + '# adoption' + '\n')
   oneline(f=f, s=s, names=['soln_ref_adoption_basis'], prefix=prefix)
@@ -473,11 +489,11 @@ def write_tam(f, wb, outputdir):
       f.write("      '" + region + "': {\n")
       for (case, sources) in cases.items():
         if isinstance(sources, str):
-          f.write("          '" + case + "': thisdir.joinpath('" + sources + "'),\n")
+          f.write("          '" + case + "': THISDIR.joinpath('" + sources + "'),\n")
         else:
           f.write("        '" + case + "': {\n")
           for (source, filename) in sources.items():
-            f.write("          '" + source + "': thisdir.joinpath('" + filename + "'),\n")
+            f.write("          '" + source + "': THISDIR.joinpath('" + filename + "'),\n")
           f.write("        },\n")
       f.write("      },\n")
     f.write("    }\n")
@@ -500,11 +516,11 @@ def write_tam(f, wb, outputdir):
       f.write("      '" + region + "': {\n")
       for (case, sources) in cases.items():
         if isinstance(sources, str):
-          f.write("          '" + case + "': thisdir.joinpath('" + sources + "'),\n")
+          f.write("          '" + case + "': THISDIR.joinpath('" + sources + "'),\n")
         else:
           f.write("        '" + case + "': {\n")
           for (source, filename) in sources.items():
-            f.write("          '" + source + "': thisdir.joinpath('" + filename + "'),\n")
+            f.write("          '" + source + "': THISDIR.joinpath('" + filename + "'),\n")
           f.write("        },\n")
       f.write("      },\n")
     f.write("    }\n")
@@ -672,11 +688,11 @@ def write_ad(f, wb, outputdir):
     f.write("      '" + region + "': {\n")
     for (case, sources) in cases.items():
       if isinstance(sources, str):
-        f.write("          '" + case + "': thisdir.joinpath('" + sources + "'),\n")
+        f.write("          '" + case + "': THISDIR.joinpath('" + sources + "'),\n")
       else:
         f.write("        '" + case + "': {\n")
         for (source, filename) in sources.items():
-          f.write("          '" + source + "': thisdir.joinpath('" + filename + "'),\n")
+          f.write("          '" + source + "': THISDIR.joinpath('" + filename + "'),\n")
         f.write("        },\n")
     f.write("      },\n")
   f.write("    }\n")
@@ -692,29 +708,36 @@ def write_custom_ad(case, f, wb, outputdir):
        wb: an Excel workbook as returned by xlrd
        outputdir: name of directory to write CSV files to.
   """
-  if case == 'REF':
-    scenarios = extract_custom_adoption(wb=wb, outputdir=outputdir, sheet_name='Custom REF Adoption',
-        prefix='custom_ref_ad_')
-    f.write("    ca_ref_data_sources = [\n")
-  elif case == 'PDS':
-    scenarios = extract_custom_adoption(wb=wb, outputdir=outputdir, sheet_name='Custom PDS Adoption',
-        prefix='custom_pds_ad_')
-    f.write("    ca_pds_data_sources = [\n")
-  else:
-    raise ValueError('write_custom_ad case must be PDS or REF: ' + str(case))
+  f.write("    # Custom {} Data\n".format(case))
+  if outputdir is None:
+    f.write("    # no output dir specified for custom {} adoption\n\n".format(case))
+    return
+  assert case == 'REF' or case == 'PDS', 'write_custom_ad case must be PDS or REF: ' + str(case)
+
+  ca_dir_path = outputdir.joinpath('ca_{}_data'.format(case.lower()))
+  if not os.path.exists(ca_dir_path):
+      os.mkdir(ca_dir_path)
+  scenarios, multipliers = extract_custom_adoption(wb=wb, outputdir=ca_dir_path, sheet_name='Custom {} Adoption'.format(case),
+        prefix='custom_{}_ad_'.format(case.lower()))
+  f.write("    ca_{}_data_sources = [\n".format(case.lower()))
 
   for s in scenarios:
     f.write("      {'name': '" + s['name'] + "', 'include': " + str(s['include']) + ",\n")
-    f.write("          'filename': str(thisdir.joinpath('" + s['filename'] + "'))},\n")
+    f.write("          'filename': THISDIR.joinpath({})}},\n".format(
+        "'ca_{}_data', '{}'".format(case.lower(), s['filename'])))
   f.write("    ]\n")
 
   if case == 'REF':
     f.write("    self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,\n")
-    f.write("        soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name)\n")
+    f.write("        soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,\n")
+    f.write("        high_sd_mult={}, low_sd_mult={})\n".format(multipliers['high'], multipliers['low']))
     f.write("    ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
   if case == 'PDS':
     f.write("    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
-    f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)\n")
+    f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
+    f.write("        high_sd_mult={}, low_sd_mult={})\n".format(multipliers['high'], multipliers['low']))
+    f.write("    pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
+    f.write("    pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
   f.write("\n")
 
 
@@ -761,54 +784,66 @@ def write_s_curve_ad(f, wb):
   f.write("\n")
 
 
-def write_ht(f, wb, has_custom_ref_ad):
+def write_ht(f, wb, has_custom_ref_ad, has_custom_pds_ad, is_land):
   """Generate the Helper Tables section of a solution.
      Arguments:
        f: file-like object for output
        wb: an Excel workbook as returned by xlrd
        has_custom_ref_ad: whether a REF customadoption is in use.
+       has_custom_pds_ad: whether a PDS customadoption is in use.
+       is_land: True if LAND model
   """
   h = wb.sheet_by_name('Helper Tables')
   initial_datapoint_year = int(h.cell_value(*cell_to_offsets('B21')))
   final_datapoint_year = int(h.cell_value(*cell_to_offsets('B22')))
 
+  tam_or_tla = 'ref_tam_per_region' if not is_land else 'self.tla_per_region'
   f.write("    ht_ref_adoption_initial = pd.Series(\n")
   r = [xln(h, 20, n) for n in range(2, 7)]
   f.write("      [" + ", ".join(r) + ",\n")
   r = [xln(h, 20, n) for n in range(7, 12)]
   f.write("       " + ", ".join(r) + "],\n")
   f.write("       index=REGIONS)\n")
-  f.write("    ht_ref_adoption_final = ref_tam_per_region.loc[" + str(final_datapoint_year) + "] * ")
-  f.write("(ht_ref_adoption_initial / ref_tam_per_region.loc[" + str(initial_datapoint_year) + "])\n")
+  f.write("    ht_ref_adoption_final = {0}.loc[{1}] * (ht_ref_adoption_initial / {0}.loc[{2}])\n".format(
+          tam_or_tla, final_datapoint_year, initial_datapoint_year))
   f.write("    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)\n")
   f.write("    ht_ref_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_ref_adoption_initial\n")
   f.write("    ht_ref_datapoints.loc[" + str(final_datapoint_year) + "] = ht_ref_adoption_final.fillna(0.0)\n")
 
+  tam_or_tla = 'pds_tam_per_region' if not is_land else 'self.tla_per_region'
   f.write("    ht_pds_adoption_initial = ht_ref_adoption_initial\n")
   f.write("    ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
   f.write("    ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))\n")
-  f.write("    ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[" + str(final_datapoint_year) + "]\n")
+  f.write("    ht_pds_adoption_final = ht_pds_adoption_final_percentage * {}.loc[{}]\n".format(
+      tam_or_tla, final_datapoint_year))
   f.write("    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)\n")
   f.write("    ht_pds_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
   f.write("    ht_pds_datapoints.loc[" + str(final_datapoint_year) + "] = ht_pds_adoption_final.fillna(0.0)\n")
 
   f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
-  f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
+  if not is_land:
+    f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
   f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
   if has_custom_ref_ad:
     f.write("        ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
-  f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
-  f.write("        pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
+  f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region")
+  if has_custom_pds_ad:
+    f.write(")\n")
+  else:
+    f.write(",\n        pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
   f.write("\n")
 
 
-def write_ua(f, wb):
+def write_ua(f, wb, is_rrs=True):
   """Write out the Unit Adoption module for this solution class."""
   ua_tab = wb.sheet_by_name('Unit Adoption Calculations')
   ac_tab = wb.sheet_by_name('Advanced Controls')
-  f.write("    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,\n")
-  f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
+  f.write("    self.ua = unitadoption.UnitAdoption(ac=self.ac,\n")
+  if is_rrs:
+      f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
+  else:
+      f.write("        tla_per_region=self.tla_per_region,\n")
   f.write("        soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
   f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
   if 'Repeated First Cost to Maintaining Implementation Units' in ac_tab.cell(42, 0).value:
@@ -846,7 +881,7 @@ def write_fc(f, wb):
   f.write('\n')
 
 
-def write_oc(f, wb):
+def write_oc(f, wb, is_land=False):
   """Code generate the Operating Code module for this solution class."""
   oc_tab = wb.sheet_by_name('Operating Cost')
   f.write("    self.oc = operatingcost.OperatingCost(ac=self.ac,\n")
@@ -864,15 +899,17 @@ def write_oc(f, wb):
   is_energy_units = (units == '$/kW TO $/TW' or units == 'From US$2014 per kW to US$2014 per TW')
   if oc_tab.cell(12, 4).value == 1000000000 and is_energy_units:
     f.write("        conversion_factor=rrs.TERAWATT_TO_KILOWATT)\n")
+  elif is_land:
+    f.write("        conversion_factor=land.MHA_TO_HA)\n")
   else:
     f.write("        conversion_factor=" + xln(oc_tab, 12, 4) + ")\n")
   f.write('\n')
 
 
-def write_c2_c4(f):
+def write_c2_c4(f, is_rrs=True):
   """Write out the CO2 Calcs and CH4 Calcs modules for this solution class."""
   f.write("    self.c4 = ch4calcs.CH4Calcs(ac=self.ac,\n")
-  f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)\n")
+  f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)\n\n")
   f.write("    self.c2 = co2calcs.CO2Calcs(ac=self.ac,\n")
   f.write("        ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),\n")
   f.write("        soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),\n")
@@ -886,7 +923,10 @@ def write_c2_c4(f):
   f.write("        conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),\n")
   f.write("        conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),\n")
   f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,\n")
-  f.write("        fuel_in_liters=False)\n")
+  if is_rrs:
+    f.write("        fuel_in_liters=False)\n")
+  else:
+    f.write("        land_distribution=self.ae.get_land_distribution())\n")
   f.write("\n")
 
 
@@ -1055,6 +1095,10 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
        prefix: string to prepend to filenames
   """
   custom_ad_tab = wb.sheet_by_name(sheet_name)
+
+  assert custom_ad_tab.cell_value(*cell_to_offsets('AN25')) == 'High'
+  multipliers = {'high': custom_ad_tab.cell_value(*cell_to_offsets('AO25')),
+                 'low': custom_ad_tab.cell_value(*cell_to_offsets('AO26'))}
   scenarios = []
   for row in range(20, 36):
     if not re.search(r"Scenario \d+", str(custom_ad_tab.cell(row, 13).value)):
@@ -1076,7 +1120,29 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
         break
     if not skip:
       scenarios.append({'name': name, 'filename': filename, 'include': include})
-  return scenarios
+  return scenarios, multipliers
+
+
+def extract_custom_tla(wb, outputdir):
+  """Extract custom TLA from an Excel file.
+     Arguments:
+       wb: Excel workbook as returned by xlrd.
+       outputdir: directory where output files are written
+  """
+  tla_tab = wb.sheet_by_name('TLA Data')
+  title_cell = tla_tab.cell_value(*cell_to_offsets('A642')).strip()
+  assert title_cell == 'Customized TLA Data', 'Title Cell: ' + title_cell
+  assert tla_tab.cell_value(*cell_to_offsets('B645')) == 2012
+
+  df = pd.read_excel(wb, engine='xlrd', sheet_name='TLA Data',
+      header=0, index_col=0, usecols="B:L", skiprows=643, nrows=49)
+  df.index.name = 'Year'
+  df.index.astype(int)
+  df = df.dropna(how='all', axis=1).dropna(how='all', axis=0)
+  if df.empty:
+    raise ValueError('Custom TLA is selected but there is no Custom TLA Data')
+  else:
+    df.to_csv(os.path.join(outputdir, 'custom_tla_data.csv'), index=True, header=True)
 
 
 def lookup_unit(tab, row, col):
@@ -1139,7 +1205,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   ac_tab = wb.sheet_by_name('Advanced Controls')
 
   is_rrs = 'RRS' in xl_filename
-  is_land = 'PDLAND' in xl_filename or 'L-UseAgr' in xl_filename
+  is_land = 'PDLAND' in xl_filename or 'L-Use' in xl_filename
   has_tam = is_rrs
 
   f = open(py_filename, 'w') if py_filename != '-' else sys.stdout
@@ -1156,6 +1222,8 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write('\n')
   f.write('from model import adoptiondata\n')
   f.write('from model import advanced_controls\n')
+  if is_land:
+    f.write('from model import aez\n')
   f.write('from model import ch4calcs\n')
   f.write('from model import co2calcs\n')
   f.write('from model import customadoption\n')
@@ -1166,25 +1234,31 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write('from model import s_curve\n')
   f.write('from model import unitadoption\n')
   f.write('from model import vma\n')
-  f.write('\n')
+  f.write('from model.advanced_controls import SOLUTION_CATEGORY\n\n')
 
   if has_tam:
     f.write('from model import tam\n')
+  elif is_land:
+    f.write('from model import tla\n')
 
   if is_rrs:
     f.write('from solution import rrs\n\n')
     scenarios = get_rrs_scenarios(wb=wb)
   elif is_land:
+    f.write('from solution import land\n\n')
     scenarios = get_land_scenarios(wb=wb)
   else:
     scenarios = {}
 
+  f.write("DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
+  f.write("THISDIR = pathlib.Path(__file__).parents[0]\n")
+  f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
   f.write("REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',\n")
   f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
   f.write("\n")
 
   has_default_pds_ad = has_custom_pds_ad = has_default_ref_ad = has_custom_ref_ad = False
-  has_s_curve_pds_ad = has_linear_pds_ad = False
+  has_s_curve_pds_ad = has_linear_pds_ad = use_custom_tla = False
   for s in scenarios.values():
     if s.get('soln_pds_adoption_basis', '') == 'Existing Adoption Prognostications':
       has_default_pds_ad = True
@@ -1198,6 +1272,9 @@ def output_solution_python_file(outputdir, xl_filename, classname):
       has_default_ref_ad = True
     if s.get('soln_ref_adoption_basis', '') == 'Custom':
       has_custom_ref_ad = True
+    if s.get('use_custom_tla', ''):
+      extract_custom_tla(wb, outputdir=outputdir)
+      use_custom_tla = True
 
   f.write('scenarios = {\n')
   for name, s in scenarios.items():
@@ -1213,18 +1290,28 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     write_units_rrs(f=f, wb=wb)
   if is_land:
     write_units_land(f=f, wb=wb)
-  f.write("\n")
   f.write("  def __init__(self, scenario=None):\n")
-  f.write("    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
-  f.write("    parentdir = pathlib.Path(__file__).parents[1]\n")
-  f.write("    thisdir = pathlib.Path(__file__).parents[0]\n")
   f.write("    if scenario is None:\n")
   f.write("      scenario = '" + list(scenarios.keys())[0] + "'\n")
   f.write("    self.scenario = scenario\n")
   f.write("    self.ac = scenarios[scenario]\n")
   f.write("\n")
   if has_tam:
+    f.write("    # TAM\n")
     write_tam(f=f, wb=wb, outputdir=outputdir)
+  elif is_land:
+    f.write("    # TLA\n")
+    f.write("    self.ae = aez.AEZ(solution_name=self.name)\n")
+    if use_custom_tla:
+      f.write("    if self.ac.use_custom_tla:\n")
+      f.write("      self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))\n")
+      f.write("      custom_world_vals = self.c_tla.get_world_values()\n")
+      f.write("    else:\n")
+      f.write("      custom_world_vals = None\n")
+      f.write("    self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(), ")
+      f.write("custom_world_values=custom_world_vals)\n\n")
+    else:
+      f.write("    self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())\n\n")
 
   if has_custom_pds_ad and has_default_pds_ad:
     raise NotImplementedError('Support for both Default and Custom PDS adoption is not implemented')
@@ -1247,7 +1334,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write("    elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':\n")
     f.write("      pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
     f.write("      pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
-    f.write("      pds_adoption_is_single_source = True\n")
   if has_s_curve_pds_ad:
     f.write("    elif self.ac.soln_pds_adoption_basis == 'S-Curve':\n")
     f.write("      pds_adoption_data_per_region = None\n")
@@ -1265,22 +1351,20 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write("      pds_adoption_is_single_source = False\n")
   f.write("\n")
 
-  write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad)
+  write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad, has_custom_pds_ad=has_custom_pds_ad, is_land=is_land)
+
   f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
   f.write("\n")
-  write_ua(f=f, wb=wb)
+  write_ua(f=f, wb=wb, is_rrs=is_rrs)
   write_fc(f=f, wb=wb)
-  write_oc(f=f, wb=wb)
-  write_c2_c4(f=f)
+  write_oc(f=f, wb=wb, is_land=is_land)
+  write_c2_c4(f=f, is_rrs=is_rrs)
 
   if is_rrs:
     f.write("    self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],\n")
     f.write("        soln_avg_annual_use=self.ac.soln_avg_annual_use,\n")
     f.write("        conv_avg_annual_use=self.ac.conv_avg_annual_use)\n")
     f.write("\n")
-
-  f.write("    self.VMAs = []\n")
-  f.write("\n")
 
   for key, values in scenarios.items():
     if values:
@@ -1339,7 +1423,7 @@ def link_vma(cell_value):
   Returns:
     'mean', 'high' or 'low' or raw value if no formula in cell
   """
-  if 'Formula:=' not in cell_value:
+  if not isinstance(cell_value, str) or 'Formula:=' not in cell_value:
     return convert_sr_float(cell_value)
   if cell_value.endswith('80') or cell_value.endswith('95') or cell_value.endswith('175'):
     return 'mean'
@@ -1348,7 +1432,10 @@ def link_vma(cell_value):
   elif cell_value.endswith('82') or cell_value.endswith('97') or cell_value.endswith('177'):
     return 'low'
   else:
-    raise ValueError('cell formula: {} not recognised'.format(cell_value.split(':=')[1]))
+    formula = cell_value.split(':=')[1]
+    warnings.warn('cell formula: {} not recognised - using value instead'.format(formula))
+    return {'value': convert_sr_float(cell_value), 'xls cell formula': formula}
+
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(

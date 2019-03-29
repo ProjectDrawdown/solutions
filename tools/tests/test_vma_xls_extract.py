@@ -2,7 +2,7 @@ import pytest
 import pathlib
 import pandas as pd
 from tools.vma_xls_extract import make_vma_df_template, VMAReader, ADOPTION_VARIABLES, EMISSIONS_REDUCTION_VARIABLES,\
-    SEQUESTRATION_AND_LAND_UNITS
+    SEQUESTRATION_AND_LAND_INPUTS
 
 thisdir = pathlib.Path(__file__).parents[0]
 
@@ -28,7 +28,7 @@ def test_find_tables():
     vma_r = VMAReader(thisdir.joinpath('silvopasture_vma.xlsx'))
     vma_r._find_tables()
     # check all titles are there
-    for title in ADOPTION_VARIABLES + EMISSIONS_REDUCTION_VARIABLES + SEQUESTRATION_AND_LAND_UNITS:
+    for title in ADOPTION_VARIABLES + EMISSIONS_REDUCTION_VARIABLES + SEQUESTRATION_AND_LAND_INPUTS:
         assert title in vma_r.table_locations.keys()
 
     # check locations of title cells are correct

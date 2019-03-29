@@ -178,13 +178,12 @@ class Silvopasture:
             include = True
             if f == 'High growth, linear trend.csv':
                 include = False
-            ca_pds_data_sources.append({'name': f[:-4].strip(), 'filename': f, 'include': include})
-        self.ca_pds = customadoption.CustomAdoption(
+            ca_pds_data_sources.append({'name': f[:-4].strip(), 'filename': ca_pds_dir.joinpath(f), 'include': include})
+        self.pds_ca = customadoption.CustomAdoption(
             data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             low_sd_mult=1,
-            high_sd_mult=0.5,
-            filepath=ca_pds_dir)
+            high_sd_mult=0.5)
 
         # Current adoption data comes from VMA
         self.current_adoption_vma = vma.VMA(THISDIR.joinpath('vma_data', 'Current_Adoption.csv'))
@@ -199,7 +198,7 @@ class Silvopasture:
                                                   'USA']).set_index('Year')
         self.ht = helpertables.HelperTables(
             ac=self.ac,
-            pds_adoption_data_per_region=self.ca_pds.adoption_data_per_region(),
+            pds_adoption_data_per_region=self.pds_ca.adoption_data_per_region(),
             ref_datapoints=ht_ref_datapoints,
             pds_datapoints=ht_pds_datapoints
         )

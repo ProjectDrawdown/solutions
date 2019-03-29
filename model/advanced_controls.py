@@ -263,8 +263,12 @@ class AdvancedControls:
    "Advanced Controls"!F77 (Land models)
   yield_from_conv_practice: conventional yield in DM tons fodder/ha/year.
     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
+    "Advanced Controls"!G77 (Land models)
   yield_gain_from_conv_to_soln: yield % increase from conventional to solution.
     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
+    "Advanced Controls"!G92 (Land models)
+  use_custom_tla: bool indicating whether to use custom TLA data instead of Drawdown land allocation
+    "Advanced Controls"!E54 (Land models)
   """
   def __init__(self,
                vmas=None,
@@ -344,6 +348,7 @@ class AdvancedControls:
                conv_expected_lifetime=None,
                yield_from_conv_practice=None,
                yield_gain_from_conv_to_soln=None,
+               use_custom_tla=None,
                ):
 
     self.vmas = vmas
@@ -447,6 +452,7 @@ class AdvancedControls:
                                             vma_title='Yield  from CONVENTIONAL Practice')
     self.yield_gain_from_conv_to_soln = self._substitute_vma(yield_gain_from_conv_to_soln,
                                             vma_title='Yield Gain (% Increase from CONVENTIONAL to SOLUTION)')
+    self.use_custom_tla = use_custom_tla
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.
@@ -553,15 +559,17 @@ class AdvancedControls:
     If val is 'mean', 'high' or 'low', returns the corresponding statistic from the VMA object in
     self.vmas with the corresponding title.
     Args:
-      val: input val
+      val: input can be a number, a string ('mean', 'high' or 'low') or a dict containing a 'value' key
       vma_title: title of VMA table (can be found in vma_info.csv in the soln dir)
-
     Returns:
-        mean, high or low value from VMA table or passes through value if it's a number
+        mean, high or low value from VMA table or passes through value if it's a number or dict
     """
-    if not isinstance(val, str):
-      return val
-    else:
+    if isinstance(val, dict):
+      return val['value']
+    elif isinstance(val, str):
       if vma_title not in self.vmas:
         raise KeyError('{} must be included in vmas to calculate mean/high/low'.format(vma_title))
       return self.vmas[vma_title].avg_high_low(key=val.lower())
+    else:
+      return val
+
