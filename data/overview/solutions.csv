@@ -24,13 +24,13 @@ Wind Turbines (Offshore), offshorewind, Electricity Generation
 Farmland Restoration,, Food
 Improved Rice Cultivation,, Food
 Concentrated Solar, concentratedsolar, Electricity Generation
-Electric Vehicles,, Transport
+Electric Vehicles, electricvehicles, Transport
 District Heating,, Buildings and Cities
 Multistrata Agroforestry,, Food
 Wave and Tidal,, Electricity Generation
 Methane Digesters (Large), biogas, Electricity Generation
 Insulation, insulation, Buildings and Cities
-Ships,, Transport
+Ships, ships, Transport
 LED Lighting (Household),, Buildings and Cities
 Biomass, biomass, Electricity Generation
 Bamboo,, Land Use
@@ -41,7 +41,7 @@ Indigenous Peoples’ Land Management,, Land Use
 Trucks,, Transport
 Solar Water, solarhotwater, Electricity Generation
 Heat Pumps,, Buildings and Cities
-Airplanes,, Transport
+Airplanes, airplanes, Transport
 LED Lighting (Commercial),, Buildings and Cities
 Building Automation, buildingautomation, Buildings and Cities
 Water Saving - Home,, Materials
@@ -64,7 +64,7 @@ Women Smallholders,, Women and Girls
 Telepresence, telepresence, Transport
 Methane Digesters (Small),, Electricity Generation
 Nutrient Management,, Food
-High-speed Rail,, Transport
+High-speed Rail, highspeedrail, Transport
 Farmland Irrigation,, Food
 Waste-to-Energy,, Electricity Generation
 Electric Bikes,, Transport

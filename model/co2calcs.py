@@ -345,7 +345,7 @@ class CO2Calcs:
     if self.ac.conv_indirect_co2_is_iunits:
       delta = self.soln_pds_new_iunits_reqd - self.soln_ref_new_iunits_reqd
       result = (delta * self.ac.soln_indirect_co2_per_iunit)
-      result += self.conv_ref_new_iunits * self.ac.conv_indirect_co2_per_unit
+      result -= self.conv_ref_new_iunits * self.ac.conv_indirect_co2_per_unit
     else:
       result = self.soln_net_annual_funits_adopted * self.ac.soln_indirect_co2_per_iunit
       result -= self.soln_net_annual_funits_adopted * self.ac.conv_indirect_co2_per_unit

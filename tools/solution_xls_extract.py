@@ -548,6 +548,8 @@ def normalize_source_name(sourcename):
     'Drawdown TAM: Conservative Cases': 'Conservative Cases',
     'Drawdown TAM: Ambitious Cases': 'Ambitious Cases',
     'Drawdown TAM: Maximum Cases': 'Maximum Cases',
+    'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)': \
+            'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)',
     }
   normalized = sourcename.replace("'", "").strip()
   if normalized in special_cases:
@@ -983,7 +985,7 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
       if source_name is not None:
         sources[source_name] = ''
 
-  for source_name in sources:
+  for source_name in list(sources.keys()):
     if not source_name:
       continue
     df = pd.DataFrame()
@@ -994,6 +996,7 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
         df[region] = np.nan
     filename = get_filename_for_source(source_name, prefix=prefix)
     if df.empty or df.isna().all(axis=None, skipna=False) or not filename:
+      del sources[source_name]
       continue
     df.index = df.index.astype(int)
     df.index.name = 'Year'
@@ -1289,6 +1292,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 def infer_classname(filename):
   """Pick a reasonable classname if none is specified."""
   special_cases = [
+      ('Aircraft Fuel Efficiency', 'Airplanes'),
       ('BiomassELC', 'Biomass'),
       ('Biomass from Perennial Crops for Electricity Generation', 'Biomass'),
       ('Bioplastics', 'Bioplastic'),
@@ -1300,6 +1304,7 @@ def infer_classname(filename):
       ('Instream Hydro', 'InstreamHydro'),
       ('Large Biodigesters', 'Biogas'),
       ('MicroWind Turbines', 'MicroWind'),
+      ('Oceanic Freight Improvements', 'Ships'),
       ('Regenerative_Agriculture', 'RegenerativeAgriculture'),
       ('Rooftop Solar PV', 'SolarPVRoof'),
       ('SolarPVUtility', 'SolarPVUtil'),
