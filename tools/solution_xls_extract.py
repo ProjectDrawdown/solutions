@@ -732,7 +732,7 @@ def write_custom_ad(case, f, wb, outputdir):
     return
   assert case == 'REF' or case == 'PDS', 'write_custom_ad case must be PDS or REF: ' + str(case)
 
-  ca_dir_path = outputdir.joinpath('ca_{}_data'.format(case.lower()))
+  ca_dir_path = os.path.join(outputdir, 'ca_{}_data'.format(case.lower()))
   if not os.path.exists(ca_dir_path):
       os.mkdir(ca_dir_path)
   scenarios, multipliers = extract_custom_adoption(wb=wb, outputdir=ca_dir_path, sheet_name='Custom {} Adoption'.format(case),
