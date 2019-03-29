@@ -25,6 +25,7 @@ import solarhotwater
 import solarpvroof
 import solarpvutil
 import telepresence
+import tropicalforests
 
 def test_airplanes():
   scenario = list(airplanes.scenarios.keys())[0]
@@ -167,5 +168,11 @@ def test_solarpvutil():
 def test_telepresence():
   scenario = list(telepresence.scenarios.keys())[0]
   obj = telepresence.Telepresence(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_tropicalforests():
+  scenario = list(tropicalforests.scenarios.keys())[0]
+  obj = tropicalforests.TropicalForests(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name

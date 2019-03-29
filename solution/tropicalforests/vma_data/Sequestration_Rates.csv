@@ -1,0 +1,12 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Silver et al., 2000",http://onlinelibrary.wiley.com/doi/10.1046/j.1526-100x.2000.80054.x/abstract,World,Global,Tropical-Humid,1  - Peer Reviewed,2000,,6.17,Mg dry mass ha-1 yr-1,2.9060699999999997,t C/ha/yr,,,
+"Feldpausch et al., 2004",https://ore.exeter.ac.uk/repository/handle/10871/9525,Latin America,Amazon,Tropical-Semi-Arid,1  - Peer Reviewed,2004,,5.6,Mg C ha-1 yr-1,,t C/ha/yr,,,
+"Silver et al., 2004",http://reforestation.elti.org/resource/95/,Latin America,Puerto Rico,Tropical-Humid,1  - Peer Reviewed,2004,,1.4,Mg C ha-1 yr-1,,t C/ha/yr,,,
+Poorter et al. 2015,http://www.nature.com/nature/journal/v530/n7589/abs/nature16512.html,Latin America,Neotropics,Tropical-Humid,1  - Peer Reviewed,2016,,3.05,Mg C ha-1 yr-1,,t C/ha/yr,,,
+Bonner et al. 2013,http://www.sciencedirect.com/science/article/pii/S0378112712007001,World,Tropics (+/- 30o),Tropical-Humid,1  - Peer Reviewed,2013,,7.8,Mg dry mass ha-1 yr-1,3.6737999999999995,t C/ha/yr,,,
+Bonner et al. 2014,http://www.sciencedirect.com/science/article/pii/S0378112712007001,World,Tropics (+/- 30o),Tropical-Humid,1  - Peer Reviewed,2014,,5.8,Mg dry mass ha-1 yr-1,2.7318,t C/ha/yr,,,
+Gilroy et al. (2014),http://www.nature.com/nclimate/journal/v4/n6/full/nclimate2200.html,Latin America,Colombia,Tropical-Humid,1  - Peer Reviewed,2014,,4.29,Mg C ha-1 yr-1,,t C/ha/yr,,,
+Wheeler et al 2016,https://ac.els-cdn.com/S0378112716301906/1-s2.0-S0378112716301906-main.pdf?_tid=80af1df2-e843-11e7-84a3-00000aab0f01&acdnat=1514076416_f634b70047d4993a0428fd65f5914ef0,Middle East and Africa,Uganda,Tropical-Humid,1  - Peer Reviewed,2016,,3.9,Mg C ha-1 yr-1,,t C/ha/yr,,,
+Silver et al 2000,http://onlinelibrary.wiley.com/doi/10.1046/j.1526-100x.2000.80054.x/full,World,Global,Tropical-Humid,1  - Peer Reviewed,2000,,6.2,Mg C ha-1 yr-1,,t C/ha/yr,,During the first 20 years of succession,
+Silver et al 2000,http://onlinelibrary.wiley.com/doi/10.1046/j.1526-100x.2000.80054.x/full,World,Global,Tropical-Humid,1  - Peer Reviewed,2000,,2.9,Mg C ha-1 yr-1,,t C/ha/yr,,Over the first 80 years of regrowth,
+Aide et al 2000,http://beta.biotapr.org/bibtex/files/12/Aide%20et%20al.%20-%202000.pdf,Latin America,Puerto Rico,Tropical-Humid,1  - Peer Reviewed,2000,,2.5,Mg C ha-1 yr-1,,t C/ha/yr,,,

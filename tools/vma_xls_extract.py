@@ -49,15 +49,10 @@ EMISSIONS_REDUCTION_VARIABLES = [
     'Indirect CO2 Emissions per SOLUTION Implementation Unit'
 ]
 
-SEQUESTRATION_AND_LAND_UNITS = [
+SEQUESTRATION_AND_LAND_INPUTS = [
     'Sequestration Rates', 'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing', 'Disturbance Rate']
 
-# Location of title of first table for each section
-FIRST_CELLS = {'adoption': 'C46', 'emissions': 'C371', 'land': 'C761', 'additional': 'C889'}
 
-
-# NOTE: could move this to vma module? Currently inconsistent with custom adoption, which has
-# its template generator in the customadoption.py module rather than its xls extract.
 def make_vma_df_template():
     """
     Helper function that generates a DataFrame with the same columns as the tables in
@@ -145,6 +140,20 @@ class VMAReader:
             df['Weight'] = df['Weight'].replace(0, nan)
         return df
 
+    def _find_first_cells(self):
+        section_titles = ['ADOPTION VARIABLES', 'FINANCIAL VARIABLES', 'EMISSIONS REDUCTION VARIABLES',
+                          'SEQUESTRATION AND LAND INPUTS', 'ADDITIONAL VARIABLES']
+        first_cells = {}
+        for r in range(30, 1000):
+            if self.sheet.cell_value(r, 0) == section_titles[0]:
+                # first cell may be the row below but _find_tables will deal with that
+                first_cells[section_titles.pop(0)] = (r + 1, 2)
+            if not section_titles:
+                break
+        else:
+            print('Could not find section titles: {}'.format(section_titles))
+        self.first_cells = first_cells
+
     def _find_tables(self):
         """
         Finds locations of all tables from the Variable Meta-analysis tab. They are not
@@ -152,16 +161,17 @@ class VMAReader:
         100 rows from each table title. We also comb 10 rows ahead of each title to find
         the SOURCE ID cell, as this is also a varying spacing.
         """
+        self._find_first_cells()
         all_vars = OrderedDict([
-            ('adoption', ADOPTION_VARIABLES),
-            ('emissions', EMISSIONS_REDUCTION_VARIABLES),
-            ('land', SEQUESTRATION_AND_LAND_UNITS),
+            ('ADOPTION VARIABLES', ADOPTION_VARIABLES),
+            ('EMISSIONS REDUCTION VARIABLES', EMISSIONS_REDUCTION_VARIABLES),
+            ('SEQUESTRATION AND LAND INPUTS', SEQUESTRATION_AND_LAND_INPUTS),
             # additional variables go up to Variable 37 in accordance with the xls
-            ('additional', ['var' + str(i) for i in range(24, 38)])
+            ('ADDITIONAL VARIABLES', ['var' + str(i) for i in range(24, 38)])
         ])
         table_locations = OrderedDict()
         for key, table_titles in all_vars.items():
-            row, col = cell_to_offsets(FIRST_CELLS[key])
+            row, col = self.first_cells[key]
             for table_i, title in enumerate(table_titles):
                 found = False
                 for rows_to_next_table in range(100):
@@ -199,6 +209,7 @@ class VMAReader:
                     if found:
                         break
                 else:
+                    print(table_locations)
                     raise Exception('Cannot find: ' + title)
         self.table_locations = table_locations
 

@@ -162,6 +162,12 @@ def test_substitute_vma():
         ac = advanced_controls.AdvancedControls(vmas={'Sequestration Rates': seq_vma}, seq_rate_global='mean')
         assert ac.seq_rate_global == 'expected return'
 
+def test_substitute_vma_passthru_value():
+    ac = advanced_controls.AdvancedControls(seq_rate_global=4.3)
+    assert ac.seq_rate_global == 4.3
+    ac = advanced_controls.AdvancedControls(seq_rate_global={'value': 4.3})
+    assert ac.seq_rate_global == 4.3
+
 def test_substitute_vma_raises():
     ac = advanced_controls.AdvancedControls(vmas={}, seq_rate_global=1)
     assert ac.seq_rate_global == 1
