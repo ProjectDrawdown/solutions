@@ -214,21 +214,18 @@ class UnitAdoption:
     """
     if self.repeated_cost_for_iunits:
       return self.soln_pds_tot_iunits_reqd().iloc[1:].copy(deep=True).clip(lower=0.0)
-    growth = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
-    replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
-        dtype='float64')
-    for region, column in replacements.iteritems():
+    result = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
+    for region, column in result.iteritems():
       for year, value in column.iteritems():
         # Add replacement units, if needed by adding the number of units
         # added N * soln_lifetime_replacement ago, that now need replacement.
         replacement_year = int(year - (self.ac.soln_lifetime_replacement_rounded + 1))
-        while replacement_year in growth.index:
+        if replacement_year in result.index:
           fa = self.soln_pds_funits_adopted
           prior_year = year - self.ac.soln_lifetime_replacement_rounded - 1
           if fa.loc[prior_year, region] <= fa.loc[year, region]:
-            replacements.at[year, region] += growth.at[replacement_year, region]
+            result.at[year, region] += result.at[replacement_year, region]
           replacement_year -= (self.ac.soln_lifetime_replacement_rounded + 1)
-    result = growth + replacements
     result.name = "soln_pds_new_iunits_reqd"
     return result
 
