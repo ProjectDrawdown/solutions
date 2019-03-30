@@ -530,7 +530,10 @@ def write_tam(f, wb, outputdir):
     f.write("    }\n")
     arg_pds = 'tam_pds_data_sources'
 
+  regional = convert_bool(tm_tab.cell(28, 1).value) and convert_bool(tm_tab.cell(29, 1).value)
   f.write("    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=" + arg_ref + ",\n")
+  if regional:
+    f.write("      world_includes_regional=True,\n")
   f.write("      tam_pds_data_sources=" + arg_pds + ")\n")
   f.write("    ref_tam_per_region=self.tm.ref_tam_per_region()\n")
   f.write("    pds_tam_per_region=self.tm.pds_tam_per_region()\n")
@@ -1170,6 +1173,7 @@ def lookup_unit(tab, row, col):
     'Million Households': u'MHholds',
     'Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates': u'Mm\u00B2',
     'Giga-Liter Water': u'GL H\u2082O',
+    'Million Metric tonnes per year': 'MMt',
   }
   name = str(tab.cell_value(row, col))
   return unit_mapping.get(name, name)

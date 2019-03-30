@@ -12,7 +12,8 @@ import pandas as pd
 class TAM:
   """Total Addressable Market module."""
 
-  def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources):
+  def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources,
+          world_includes_regional=None):
     """TAM module.
 
        Arguments
@@ -30,10 +31,13 @@ class TAM:
            'Conservative Cases': {'Study Name E': 'filename E', 'Study Name F': 'filename F', ...}
          }
        tam_pds_data_sources: as tam_ref_data_sources, for the PDS scenario.
+       world_includes_regional: boolean of whether the global min/max/sd should include
+         data from the primary regions.
     """
     self.tamconfig = tamconfig
     self.tam_ref_data_sources = tam_ref_data_sources
     self.tam_pds_data_sources = tam_pds_data_sources
+    self.world_includes_regional = world_includes_regional
     self._populate_forecast_data()
 
   def _populate_forecast_data(self):
@@ -203,11 +207,42 @@ class TAM:
     return self._forecast_data_global
 
   @lru_cache()
+  def _forecast_data_regional_sum(self):
+    """ SolarPVUtil 'TAM Data'!Q45:Q94 when B29:B30 are both 'Y' """
+    regional = pd.DataFrame(columns=['OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+      'Middle East and Africa', 'Latin America'])
+    self._set_tam_one_region(result=regional, region='OECD90',
+      forecast_trend=self.forecast_trend_oecd90(),
+      forecast_low_med_high=self.forecast_low_med_high_oecd90())
+    self._set_tam_one_region(result=regional, region='Eastern Europe',
+      forecast_trend=self.forecast_trend_eastern_europe(),
+      forecast_low_med_high=self.forecast_low_med_high_eastern_europe())
+    self._set_tam_one_region(result=regional, region='Asia (Sans Japan)',
+      forecast_trend=self.forecast_trend_asia_sans_japan(),
+      forecast_low_med_high=self.forecast_low_med_high_asia_sans_japan())
+    self._set_tam_one_region(result=regional, region='Middle East and Africa',
+      forecast_trend=self.forecast_trend_middle_east_and_africa(),
+      forecast_low_med_high=self.forecast_low_med_high_middle_east_and_africa())
+    self._set_tam_one_region(result=regional, region='Latin America',
+      forecast_trend=self.forecast_trend_latin_america(),
+      forecast_low_med_high=self.forecast_low_med_high_latin_america())
+    regional_sum = regional.sum(axis=1)
+    regional_sum.name = 'RegionalSum'
+    return regional_sum
+
+  @lru_cache()
   def forecast_min_max_sd_global(self):
     """ SolarPVUtil 'TAM Data'!V45:Y94 """
-    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
-        region='World')
-    result = self._min_max_sd(forecast=self.forecast_data_global(),
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources, region='World')
+    if self.world_includes_regional:
+      forecast = self.forecast_data_global().copy()
+      regional_sum = self._forecast_data_regional_sum()
+      forecast.loc[:, 'RegionalSum'] = regional_sum
+      data_sources = data_sources.copy()
+      data_sources.update({'RegionalSum': {'RegionalSum': ''}})
+    else:
+      forecast = self.forecast_data_global()
+    result = self._min_max_sd(forecast=forecast,
         tamconfig=self.tamconfig['World'], data_sources=data_sources)
     result.name = 'forecast_min_max_sd_global'
     return result
@@ -215,12 +250,22 @@ class TAM:
   @lru_cache()
   def forecast_low_med_high_global(self):
     """ SolarPVUtil 'TAM Data'!AA45:AC94 """
-    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources,
-        region='World')
-    result = self._low_med_high(forecast=self.forecast_data_global(),
-        min_max_sd=self.forecast_min_max_sd_global(),
-        tamconfig=self.tamconfig['World'],
-        data_sources=data_sources)
+    data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources, region='World')
+    if self.world_includes_regional:
+      forecast = self.forecast_data_global().copy()
+      forecast.loc[:, 'RegionalSum'] = np.nan
+      regional_sum = self._forecast_data_regional_sum()
+      tamconfig=self.tamconfig['World']
+      if tamconfig['source_after_2014'] == 'ALL SOURCES':
+        forecast.update(regional_sum.loc[2015:])
+      if tamconfig['source_until_2014'] == 'ALL SOURCES':
+        forecast.update(regional_sum.loc[:2014])
+      data_sources = data_sources.copy()
+      data_sources.update({'RegionalSum': {'RegionalSum': ''}})
+    else:
+      forecast = self.forecast_data_global()
+    result = self._low_med_high(forecast=forecast, min_max_sd=self.forecast_min_max_sd_global(),
+        tamconfig=self.tamconfig['World'], data_sources=data_sources)
     result.name = 'forecast_low_med_high_global'
     return result
 
