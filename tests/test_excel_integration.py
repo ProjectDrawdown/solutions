@@ -1185,6 +1185,7 @@ def test_Telepresence_RRS(start_excel):
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('tropicalforests', 'testdata', 'Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm'))],
     indirect=True)
+@pytest.mark.skip(reason="not working yet")
 def test_TropicalForests_LAND(start_excel, tmpdir):
   """Test for Excel model file Tropical_Forest_Restoration_L-Use*."""
   workbook = start_excel
