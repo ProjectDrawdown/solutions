@@ -754,8 +754,6 @@ def write_custom_ad(case, f, wb, outputdir):
     f.write("    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
     f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
     f.write("        high_sd_mult={}, low_sd_mult={})\n".format(multipliers['high'], multipliers['low']))
-    f.write("    pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
-    f.write("    pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
   f.write("\n")
 
 
@@ -802,13 +800,13 @@ def write_s_curve_ad(f, wb):
   f.write("\n")
 
 
-def write_ht(f, wb, has_custom_ref_ad, has_custom_pds_ad, is_land):
+def write_ht(f, wb, has_custom_ref_ad, has_single_source, is_land):
   """Generate the Helper Tables section of a solution.
      Arguments:
        f: file-like object for output
        wb: an Excel workbook as returned by xlrd
        has_custom_ref_ad: whether a REF customadoption is in use.
-       has_custom_pds_ad: whether a PDS customadoption is in use.
+       has_single_source: whether to emit a pds_adoption_is_single_source arg
        is_land: True if LAND model
   """
   h = wb.sheet_by_name('Helper Tables')
@@ -840,16 +838,14 @@ def write_ht(f, wb, has_custom_ref_ad, has_custom_pds_ad, is_land):
 
   f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
+  f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
   if not is_land:
     f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
-  f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
   if has_custom_ref_ad:
     f.write("        ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
-  f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region")
-  if has_custom_pds_ad:
-    f.write(")\n")
-  else:
-    f.write(",\n        pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
+  if has_single_source:
+    f.write("        pds_adoption_is_single_source=pds_adoption_is_single_source,\n")
+  f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region)\n")
   f.write("\n")
 
 
@@ -1272,7 +1268,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 
   f.write("DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
   f.write("THISDIR = pathlib.Path(__file__).parents[0]\n")
-  f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
   f.write("REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',\n")
   f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
   f.write("\n")
@@ -1344,6 +1339,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   if has_s_curve_pds_ad:
     write_s_curve_ad(f=f, wb=wb)
 
+  has_single_source = False
   f.write("    if False:\n")
   f.write("      # One may wonder why this is here. This file was code generated.\n")
   f.write("      # This 'if False' allows subsequent conditions to all be elif.\n")
@@ -1356,20 +1352,19 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write("    elif self.ac.soln_pds_adoption_basis == 'S-Curve':\n")
     f.write("      pds_adoption_data_per_region = None\n")
     f.write("      pds_adoption_trend_per_region = self.sc.logistic_adoption()\n")
-    f.write("      pds_adoption_is_single_source = False\n")
   if has_default_pds_ad or has_default_ref_ad:
     f.write("    elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':\n")
     f.write("      pds_adoption_data_per_region = self.ad.adoption_data_per_region()\n")
     f.write("      pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()\n")
     f.write("      pds_adoption_is_single_source = self.ad.adoption_is_single_source()\n")
+    has_single_source = True
   if has_linear_pds_ad:
     f.write("    elif self.ac.soln_pds_adoption_basis == 'Linear':\n")
     f.write("      pds_adoption_data_per_region = None\n")
     f.write("      pds_adoption_trend_per_region = None\n")
-    f.write("      pds_adoption_is_single_source = False\n")
   f.write("\n")
 
-  write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad, has_custom_pds_ad=has_custom_pds_ad, is_land=is_land)
+  write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad, has_single_source=has_single_source, is_land=is_land)
 
   f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
   f.write("\n")
