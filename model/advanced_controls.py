@@ -2,10 +2,10 @@
    but can be overridden to fit particular needs.
 """
 
-import decimal
 import enum
 import pandas as pd
 from model import emissionsfactors as ef
+from model import excel_math
 from model import helpertables as ht
 from model import interpolation
 
@@ -502,12 +502,8 @@ class AdvancedControls:
   @property
   def soln_lifetime_replacement_rounded(self):
     if self.soln_lifetime_capacity is not None:  # RRS
-      # round(22.5) == 22 due to floating point precision.
-      # Use decimal module to fix.
-      capacity = decimal.Decimal(str(self.soln_lifetime_capacity))
-      use = decimal.Decimal(str(self.soln_avg_annual_use))
-      years = capacity / use
-      return int(years.quantize(decimal.Decimal('1'), rounding='ROUND_HALF_UP'))
+      # ROUND and decimal.quantize do not match Excel ROUND(), so we implemented one.
+      return excel_math.round(self.soln_lifetime_capacity / self.soln_avg_annual_use)
     elif self.soln_expected_lifetime is not None:  # LAND
       # LAND models input lifetime directly so I doubt we will come across rounding errors
       # i.e. expected_lifetime will probably be a whole number of years.
@@ -528,12 +524,8 @@ class AdvancedControls:
   @property
   def conv_lifetime_replacement_rounded(self):
     if self.conv_lifetime_capacity is not None:  # RRS
-      # round(22.5) == 22 due to floating point precision.
-      # Use decimal module to fix.
-      capacity = decimal.Decimal(str(self.conv_lifetime_capacity))
-      use = decimal.Decimal(str(self.conv_avg_annual_use))
-      years = capacity / use
-      return int(years.quantize(decimal.Decimal('1'), rounding='ROUND_HALF_UP'))
+      # ROUND and decimal.quantize do not match Excel ROUND(), so we implemented one.
+      return excel_math.round(self.conv_lifetime_capacity / self.conv_avg_annual_use)
     elif self.conv_expected_lifetime is not None:  # LAND
       # LAND models input lifetime directly so I doubt we will come across rounding errors
       # i.e. expected_lifetime will probably be a whole number of years

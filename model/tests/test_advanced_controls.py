@@ -58,6 +58,12 @@ def test_lifetime_replacement_rounded():
       soln_lifetime_capacity=1.5, soln_avg_annual_use=1)
   assert ac.conv_lifetime_replacement_rounded == 23
   assert ac.soln_lifetime_replacement_rounded == 2
+  # From Water Efficiency
+  ac = advanced_controls.AdvancedControls(
+      soln_lifetime_capacity=1086.6259087991305, soln_avg_annual_use=72.44172725327537,
+      conv_lifetime_capacity=1629.9388631986958, conv_avg_annual_use=72.44172725327537)
+  assert ac.conv_lifetime_replacement_rounded == 23
+  assert ac.soln_lifetime_replacement_rounded == 15
 
 def test_replacement_raises_error():
     """ Lifetime replacement values require different inputs for LAND and RRS """
