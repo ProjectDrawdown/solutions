@@ -618,7 +618,6 @@ def test_pds_tam_per_region_growth_low_2014():
   # If the 'Low' growth is applied, the result will be 0.5.
   assert result.loc[2014, 'World'] == pytest.approx(1.0)
 
-
 def test_regional_data_source_lists():
   data_sources = {
     'Region: China': {
@@ -717,6 +716,21 @@ def test_mean_ignores_zeros():
       tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_low_med_high_global()
   assert all(result.loc[:, 'Medium'] == 1.0)
+  # The Excel code to SUM()/COUNTIF(">0") is only used when processing multiple sources
+  # like 'ALL SOURCES' or 'Ambitious Cases', not when an individual source is chosen.
+  # Verify that if there is just one source and it is zero, that Medium is 0.0 not np.nan.
+  data_sources = {
+    'Baseline Cases': {
+      'zero': str(datadir.joinpath('tam_all_zero.csv')),
+    },
+  }
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['source_until_2014', 'World'] = 'zero'
+  tamconfig_mod.loc['source_after_2014', 'World'] = 'zero'
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
+  result = tm.forecast_low_med_high_global()
+  assert all(result.loc[:, 'Medium'] == 0.0)
 
 def test_tam_y2014_with_growth_high():
   # test data taken from Building Automation

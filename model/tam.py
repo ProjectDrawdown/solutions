@@ -144,7 +144,7 @@ class TAM:
 
     columns = interpolation.matching_data_sources(data_sources=data_sources,
         name=tamconfig['source_until_2014'], groups_only=False)
-    if columns:
+    if columns and len(columns) > 1:
       # In Excel, the Mean computation is:
       # SUM($C521:$Q521)/COUNTIF($C521:$Q521,">0")
       #
@@ -161,12 +161,20 @@ class TAM:
       m = forecast.loc[:2014, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
       m.name = 'Medium'
       result.update(m)
+    elif columns and len(columns) == 1:
+      m = forecast.loc[:2014, columns].mean(axis=1)
+      m.name = 'Medium'
+      result.update(m)
 
     columns = interpolation.matching_data_sources(data_sources=data_sources,
         name=tamconfig['source_after_2014'], groups_only=False)
-    if columns:
+    if columns and len(columns) > 1:
       # see comment above about Mean and this lambda function
       m = forecast.loc[2015:, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
+      m.name = 'Medium'
+      result.update(m)
+    elif columns and len(columns) == 1:
+      m = forecast.loc[2015:, columns].mean(axis=1)
       m.name = 'Medium'
       result.update(m)
 
