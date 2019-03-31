@@ -159,6 +159,26 @@ def test_adoption_low_med_high_global_all_sources():
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_adoption_with_regional_data():
+  data_sources = {
+    'Baseline Cases': {
+      'B1': str(datadir.joinpath('ad_all_regions.csv')),
+      },
+    'Conservative Cases': {},
+    'Ambitious Cases': {},
+    '100% RES2050 Case': {},
+  }
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='ALL SOURCES',
+      soln_pds_adoption_prognostication_growth='Medium')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig,
+          world_includes_regional=True)
+  result = ad.adoption_min_max_sd_global()
+  # There is only one source, without regional data SD will be 0.0.
+  assert result.loc[2030, 'S.D'] == pytest.approx(351.49999999)
+  result = ad.adoption_low_med_high_global()
+  # Without regional data, the result is 29.0.
+  assert result.loc[2040, 'Medium'] == pytest.approx(594.5)
+
 def test_adoption_trend_global():
   s = 'Greenpeace AER'
   ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s,
@@ -347,7 +367,7 @@ def test_regional_data_sources():
   assert result.loc[2019, 'Latin America'] == pytest.approx(15.0)
 
 
-# 'Adoption Data'!X46:Z94
+# SolarPVUtil 'Adoption Data'!X46:Z94
 adoption_min_max_sd_global_list = [['Year', 'Min', 'Max', 'S.D'],
     [2012, 58.200000, 58.200000, 0.000000], [2013, 81.060000, 81.060000, 0.000000],
     [2014, 112.633033, 112.633033, 0.000000], [2015, 94.240258, 218.061459, 37.837223],
@@ -375,7 +395,7 @@ adoption_min_max_sd_global_list = [['Year', 'Min', 'Max', 'S.D'],
     [2058, 722.489603, 9698.003990, 2495.073624], [2059, 729.919043, 9831.772071, 2586.001183],
     [2060, 736.909192, 9951.123540, 2681.954064]]
 
-# 'Adoption Data'!X46:Z94 with scenario set to 'PDS-10p2050- Plausible (Book Ed.1)'
+# SolarPVUtil 'Adoption Data'!X46:Z94 with scenario set to 'PDS-10p2050- Plausible (Book Ed.1)'
 adoption_min_max_sd_global_ambitious_list = [['Year', 'Min', 'Max', 'S.D'],
     [2012, 58.200000, 58.200000, 0.000000], [2013, 81.060000, 81.060000, 0.000000],
     [2014, 112.633033, 112.633033, 0.000000], [2015, 94.240258, 218.061459, 35.174253],
@@ -403,7 +423,7 @@ adoption_min_max_sd_global_ambitious_list = [['Year', 'Min', 'Max', 'S.D'],
     [2058, 722.489603, 9698.003990, 2153.196740], [2059, 729.919043, 9831.772071, 2263.889242],
     [2060, 736.909192, 9951.123540, 2383.280980]]
 
-# 'Adoption Data'!AB46:AD94
+# SolarPVUtil 'Adoption Data'!AB46:AD94
 adoption_low_med_high_global_list = [['Year', 'Low', 'Medium', 'High'],
     [2012, 58.200000, 58.200000, 58.200000], [2013, 81.060000, 81.060000, 81.060000],
     [2014, 112.633033, 112.633033, 112.633033], [2015, 138.403698, 176.240921, 214.078144],
@@ -431,7 +451,7 @@ adoption_low_med_high_global_list = [['Year', 'Low', 'Medium', 'High'],
     [2058, 7202.930366, 9698.003990, 12193.077613], [2059, 7245.770888, 9831.772071, 12417.773254],
     [2060, 7269.169476, 9951.123540, 12633.077604]]
 
-# 'Adoption Data'!AB46:AD94 with Advanced Controls B265 set to ALL SOURCES
+# SolarPVUtil 'Adoption Data'!AB46:AD94 with Advanced Controls B265 set to ALL SOURCES
 adoption_low_med_high_global_all_sources_list = [['Year', 'Low', 'Medium', 'High'],
     [2012, 58.200000, 58.200000, 58.200000], [2013, 81.060000, 81.060000, 81.060000],
     [2014, 112.633033, 112.633033, 112.633033], [2015, 105.603550, 143.440773, 181.277995],
@@ -459,7 +479,7 @@ adoption_low_med_high_global_all_sources_list = [['Year', 'Low', 'Medium', 'High
     [2058, 2120.769468, 4615.843091, 7110.916715], [2059, 2198.847801, 4784.848984, 7370.850167],
     [2060, 2274.465696, 4956.419760, 7638.373825]]
 
-# 'Adoption Data'!BW50:CA96
+# SolarPVUtil 'Adoption Data'!BW50:CA96
 linear_trend_global_list = [['Year', 'x', 'constant', 'adoption'],
     [2014, 0.000000, -445.045081, -445.045081], [2015, 232.618862, -445.045081, -212.426218],
     [2016, 465.237725, -445.045081, 20.192644], [2017, 697.856587, -445.045081, 252.811506],
@@ -486,7 +506,7 @@ linear_trend_global_list = [['Year', 'x', 'constant', 'adoption'],
     [2058, 10235.229945, -445.045081, 9790.184864], [2059, 10467.848807, -445.045081, 10022.803727],
     [2060, 10700.467670, -445.045081, 10255.422589]]
 
-# 'Adoption Data'!CF50:CI96
+# SolarPVUtil 'Adoption Data'!CF50:CI96
 poly_degree2_trend_global_list = [['Year', 'x^2', 'x', 'constant', 'adoption'],
     [2014, 0.000000, 0.000000, -216.892778, -216.892778],
     [2015, 0.803353, 197.271322, -216.892778, -18.818102],
@@ -536,7 +556,7 @@ poly_degree2_trend_global_list = [['Year', 'x^2', 'x', 'constant', 'adoption'],
     [2059, 1626.790189, 8877.209511, -216.892778, 10287.106923],
     [2060, 1699.895328, 9074.480834, -216.892778, 10557.483384]]
 
-# 'Adoption Data'!CN50:CR96
+# SolarPVUtil 'Adoption Data'!CN50:CR96
 poly_degree3_trend_global_list = [['Year', 'x^3', 'x^2', 'x', 'constant', 'adoption'],
     [2014, 0.000000, 0.000000, 0.000000, 111.343842, 111.343842],
     [2015, -0.120128, 8.731774, 66.067972, 111.343842, 186.023460],
@@ -586,7 +606,7 @@ poly_degree3_trend_global_list = [['Year', 'x^3', 'x^2', 'x', 'constant', 'adopt
     [2059, -10946.626397, 17681.842238, 2973.058721, 111.343842, 9819.618404],
     [2060, -11692.738842, 18476.433667, 3039.126692, 111.343842, 9934.165359]]
 
-# 'Adoption Data'!CW50:CY96
+# SolarPVUtil 'Adoption Data'!CW50:CY96
 exponential_trend_global_list = [['Year', 'coeff', 'e^x', 'adoption'],
     [2014, 401.463348, 1.000000, 401.463348], [2015, 401.463348, 1.090876, 437.946633],
     [2016, 401.463348, 1.190010, 477.745364], [2017, 401.463348, 1.298153, 521.160835],

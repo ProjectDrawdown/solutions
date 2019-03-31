@@ -16,7 +16,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
           'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']
 
   """Implements Adoption Data module."""
-  def __init__(self, ac, data_sources, adconfig):
+  def __init__(self, ac, data_sources, adconfig, world_includes_regional=None):
     """Arguments:
          ac: advanced_controls.py
          data_sources: a dict() of group names which contain dicts of data source names.
@@ -31,10 +31,13 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
            and rows for each region:
            'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA'
+         world_includes_regional: boolean of whether the global min/max/sd should include
+           data from the primary regions.
     """
     self.ac = ac
     self.data_sources = data_sources
     self.adconfig = adconfig
+    self.world_includes_regional = world_includes_regional
     self._populate_adoption_data()
 
   def _populate_adoption_data(self):
@@ -133,13 +136,40 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     return self._adoption_data_global
 
   @lru_cache()
+  def adoption_data_global_with_regional(self):
+    """Return adoption data for the 'World' region with regional data added in.
+       SolarPVUtil 'Adoption Data'!B45:R94 when B30:B31 are both 'Y' """
+    regional = pd.DataFrame(columns=['OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+      'Middle East and Africa', 'Latin America'])
+    regional['OECD90'] = self.adoption_trend_oecd90().loc[:, 'adoption']
+    regional['Eastern Europe'] = self.adoption_trend_eastern_europe().loc[:, 'adoption']
+    regional['Asia (Sans Japan)'] = self.adoption_trend_asia_sans_japan().loc[:, 'adoption']
+    regional['Middle East and Africa'] = self.adoption_trend_middle_east_and_africa().loc[:, 'adoption']
+    regional['Latin America'] = self.adoption_trend_latin_america().loc[:, 'adoption']
+    regional_sum = regional.sum(axis=1)
+    regional_sum.name = 'RegionalSum'
+    adoption = self.adoption_data_global().copy()
+    adoption.loc[:, 'RegionalSum'] = np.nan
+    adconfig=self.adconfig['World']
+    if self.ac.soln_pds_adoption_prognostication_source == 'ALL SOURCES':
+      adoption.update(regional_sum)
+    adoption.name = 'adoption_data_global'
+    return adoption
+
+  @lru_cache()
   def adoption_min_max_sd_global(self):
     """Return the min, max, and standard deviation for the adoption data in the 'World' region.
        SolarPVUtil 'Adoption Data'!X45:Z94
     """
-    result = self._min_max_sd(self.adoption_data_global(),
-        source=self.ac.soln_pds_adoption_prognostication_source,
-        data_sources=self._get_data_sources(region='World'))
+    data_sources=self._get_data_sources(region='World')
+    if self.world_includes_regional:
+      adoption = self.adoption_data_global_with_regional()
+      data_sources = data_sources.copy()
+      data_sources.update({'RegionalSum': {'RegionalSum': ''}})
+    else:
+      adoption = self.adoption_data_global()
+    result = self._min_max_sd(adoption_data=adoption,
+        source=self.ac.soln_pds_adoption_prognostication_source, data_sources=data_sources)
     result.name = 'adoption_min_max_sd_global'
     return result
 
@@ -148,10 +178,16 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Return the selected data sources as Medium, and N stddev away as Low and High.
        SolarPVUtil 'Adoption Data'!AB45:AD94
     """
-    result = self._low_med_high(self.adoption_data_global(),
-        self.adoption_min_max_sd_global(), self.adconfig['World'],
-        source=self.ac.soln_pds_adoption_prognostication_source,
-        data_sources=self._get_data_sources(region='World'))
+    data_sources=self._get_data_sources(region='World')
+    if self.world_includes_regional:
+      adoption = self.adoption_data_global_with_regional()
+      data_sources = data_sources.copy()
+      data_sources.update({'RegionalSum': {'RegionalSum': ''}})
+    else:
+      adoption = self.adoption_data_global()
+    result = self._low_med_high(adoption_data=adoption,
+        min_max_sd=self.adoption_min_max_sd_global(), adconfig=self.adconfig['World'],
+        source=self.ac.soln_pds_adoption_prognostication_source, data_sources=data_sources)
     result.name = 'adoption_low_med_high_global'
     return result
 
@@ -542,6 +578,11 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
     """Whether the source data selected is one source or multiple."""
     return not interpolation.is_group_name(data_sources=self.data_sources,
         name=self.ac.soln_pds_adoption_prognostication_source)
+
+  def _set_adoption_one_region(self, result, region, adoption_trend, adoption_low_med_high):
+    result[region] = adoption_trend.loc[:, 'adoption']
+    first_year = result.first_valid_index()
+    result.loc[first_year, region] = adoption_low_med_high.loc[first_year, 'Medium']
 
   @lru_cache()
   def adoption_data_per_region(self):
