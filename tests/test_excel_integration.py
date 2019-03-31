@@ -26,6 +26,7 @@ from solution import biogas
 from solution import biomass
 from solution import bioplastic
 from solution import buildingautomation
+from solution import composting
 from solution import concentratedsolar
 from solution import electricvehicles
 from solution import highspeedrail
@@ -38,6 +39,7 @@ from solution import leds_residential
 from solution import microwind
 from solution import offshorewind
 from solution import onshorewind
+from solution import recycledpaper
 from solution import refrigerants
 from solution import ships
 from solution import silvopasture
@@ -47,7 +49,9 @@ from solution import solarhotwater
 from solution import solarpvutil
 from solution import solarpvroof
 from solution import telepresence
+from solution import trains
 from solution import tropicalforests
+from solution import waterefficiency
 
 solutiondir = pathlib.Path(__file__).parents[1].joinpath('solution')
 
@@ -891,6 +895,20 @@ def test_BuildingAutomation_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('composting', 'testdata',
+        'Drawdown-Composting_RRS_v1.1_18Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Composting_RRS(start_excel, tmpdir):
+  """Test for Excel model file Composting*."""
+  workbook = start_excel
+  for scenario in composting.scenarios.keys():
+    obj = composting.Composting(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('concentratedsolar', 'testdata',
         'CSP_RRS_ELECGEN_v1.1b_24Oct18.xlsm'))],
     indirect=True)
@@ -1061,6 +1079,20 @@ def test_OnshoreWind_RRS_ELECGEN(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('recycledpaper', 'testdata',
+        'Drawdown-Recycled Paper_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_RecycledPaper_RRS(start_excel, tmpdir):
+  """Test for Excel model file Recycled Paper*."""
+  workbook = start_excel
+  for scenario in recycledpaper.scenarios.keys():
+    obj = recycledpaper.RecycledPaper(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('refrigerants', 'testdata',
         'Drawdown-Refrigerant Management_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
     indirect=True)
@@ -1186,6 +1218,20 @@ def test_Telepresence_RRS(start_excel):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('trains', 'testdata',
+        'Drawdown-Train Fuel Efficiency_RRS_v1,1_4Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Trains_RRS(start_excel):
+  """Test for Excel model file Trains*."""
+  workbook = start_excel
+  for scenario in trains.scenarios.keys():
+    obj = trains.TrainFuelEfficiency(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('tropicalforests', 'testdata', 'Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm'))],
     indirect=True)
 @pytest.mark.skip(reason="not working yet")
@@ -1195,4 +1241,18 @@ def test_TropicalForests_LAND(start_excel, tmpdir):
   for scenario in tropicalforests.scenarios.keys():
     obj = tropicalforests.TropicalForests(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('waterefficiency', 'testdata',
+        'Drawdown-Water Efficiency Measures_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_WaterEfficiency_RRS(start_excel):
+  """Test for Excel model file WaterEfficiency*."""
+  workbook = start_excel
+  for scenario in waterefficiency.scenarios.keys():
+    obj = waterefficiency.WaterEfficiencyMeasures(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)

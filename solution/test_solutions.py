@@ -8,6 +8,7 @@ import biogas
 import biomass
 import bioplastic
 import buildingautomation
+import composting
 import concentratedsolar
 import electricvehicles
 import highspeedrail
@@ -20,6 +21,7 @@ import leds_residential
 import microwind
 import offshorewind
 import onshorewind
+import recycledpaper
 import refrigerants
 import ships
 import silvopasture
@@ -29,7 +31,9 @@ import solarhotwater
 import solarpvroof
 import solarpvutil
 import telepresence
+import trains
 import tropicalforests
+import waterefficiency
 
 def test_airplanes():
   scenario = list(airplanes.scenarios.keys())[0]
@@ -70,6 +74,12 @@ def test_bioplastic():
 def test_buildingautomation():
   scenario = list(buildingautomation.scenarios.keys())[0]
   obj = buildingautomation.BuildingAutomationSystems(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_composting():
+  scenario = list(composting.scenarios.keys())[0]
+  obj = composting.Composting(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
@@ -145,6 +155,12 @@ def test_onshorewind():
   assert obj.scenario == scenario
   assert obj.name
 
+def test_recycledpaper():
+  scenario = list(recycledpaper.scenarios.keys())[0]
+  obj = recycledpaper.RecycledPaper(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
 def test_refrigerants():
   scenario = list(refrigerants.scenarios.keys())[0]
   obj = refrigerants.RefrigerantManagement(scenario=scenario)
@@ -199,8 +215,20 @@ def test_telepresence():
   assert obj.scenario == scenario
   assert obj.name
 
+def test_trains():
+  scenario = list(trains.scenarios.keys())[0]
+  obj = trains.TrainFuelEfficiency(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
 def test_tropicalforests():
   scenario = list(tropicalforests.scenarios.keys())[0]
   obj = tropicalforests.TropicalForests(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_waterefficiency():
+  scenario = list(waterefficiency.scenarios.keys())[0]
+  obj = waterefficiency.WaterEfficiencyMeasures(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name

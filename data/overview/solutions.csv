@@ -44,7 +44,7 @@ Heat Pumps,, Buildings and Cities
 Airplanes, airplanes, Transport
 LED Lighting (Commercial), leds_commercial, Buildings and Cities
 Building Automation, buildingautomation, Buildings and Cities
-Water Saving - Home,, Materials
+Water Saving - Home, waterefficiency, Materials
 Bioplastic, bioplastic, Materials
 In-Stream Hydro, instreamhydro, Electricity Generation
 Cars,, Transport
@@ -58,7 +58,7 @@ Industrial Recycling,, Materials
 Smart Thermostats, smartthermostats, Buildings and Cities
 Landfill Methane, landfillmethane, Buildings and Cities
 Bike Infrastructure, bikeinfrastructure, Buildings and Cities
-Composting,, Food
+Composting, composting, Food
 Smart Glass, smartglass, Buildings and Cities
 Women Smallholders,, Women and Girls
 Telepresence, telepresence, Transport
@@ -68,10 +68,10 @@ High-speed Rail, highspeedrail, Transport
 Farmland Irrigation,, Food
 Waste-to-Energy,, Electricity Generation
 Electric Bikes,, Transport
-Recycled Paper,, Materials
+Recycled Paper, recycledpaper, Materials
 Water Distribution,, Buildings and Cities
 Biochar,, Food
 Green Roofs,, Buildings and Cities
-Trains,, Transport
+Trains, trains, Transport
 Ridesharing,, Transport
 Micro Wind, microwind, Electricity Generation
