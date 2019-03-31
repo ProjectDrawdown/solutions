@@ -798,7 +798,7 @@ class TAM:
       lmh = self.forecast_low_med_high_global()
     growth = self.tamconfig.loc['growth', 'PDS World']
     first_year = result.first_valid_index()
-    result.loc[first_year, 'World'] = lmh.loc[first_year, growth]
+    result.loc[first_year, 'World'] = lmh.loc[first_year, 'Medium']
 
     self._set_tam_one_region(result=result, region='OECD90',
       forecast_trend=self.forecast_trend_oecd90(),

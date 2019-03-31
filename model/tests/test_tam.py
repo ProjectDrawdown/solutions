@@ -601,6 +601,24 @@ def test_pds_tam_per_region_no_pds_sources():
       skipinitialspace=True, comment='#')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_pds_tam_per_region_growth_low_2014():
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['growth', 'PDS World'] = 'Low'
+  tamconfig_mod.loc['source_until_2014', 'PDS World'] = 'ALL SOURCES'
+  tamconfig_mod.loc['source_after_2014', 'PDS World'] = 'ALL SOURCES'
+  data_sources = {
+    'Baseline Cases': {
+      'B1': str(datadir.joinpath('tam_all_one.csv')),
+      'B2': str(datadir.joinpath('tam_all_zero.csv')),
+    },
+  }
+  tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=data_sources,
+      tam_pds_data_sources=data_sources)
+  result = tm.pds_tam_per_region()
+  # If the 'Low' growth is applied, the result will be 0.5.
+  assert result.loc[2014, 'World'] == pytest.approx(1.0)
+
+
 def test_regional_data_source_lists():
   data_sources = {
     'Region: China': {
