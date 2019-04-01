@@ -194,3 +194,14 @@ Mar 11 - Mar 15, 2019
 Mar 18 - Mar 22, 2019
 + add geo charts in Jupyter Adoption and TAM tabs.
 + implement logistic s-curve model support.
+
+Mar 25 - Mar 29, 2019
++ add ten solutions.
+  Building Automation, Smart Glass, Alternative Cement,
+  Bioplastic, Telepresence, Airplanes, Electric Vehicles,
+  High Speed Rail, Ships, and Silvopasture (first LAND
+  solution).
++ implement Bass Diffusion S-Curve support.
++ fix small mismatches between Python & Excel
+  a) new_iunits_reqd threshold checking
+  b) repeated cost for iunits (RRS v1.1c and later)
