@@ -223,46 +223,56 @@ class OperatingCost:
     return breakout
 
   @lru_cache()
-  def lifetime_cost_forecast(self):
-    """Monetary fields:
-       Marginal First Cost
-       Marginal Operating Cost Savings
-       Net Cash Flow
-       Net Present Value
-       SolarPVUtil 'Operating Cost'!A126:E250
+  def soln_marginal_first_cost(self):
+    """Marginal First Cost.
+       SolarPVUtil 'Operating Cost'!B126:B250
     """
-    c = self.soln_ref_annual_world_first_cost + self.conv_ref_annual_world_first_cost
-    c -= self.soln_pds_annual_world_first_cost
-    marginal_first_cost = c
-    first_row = self.soln_ref_annual_world_first_cost.first_valid_index()
-    last_row = self.ac.report_end_year
-    marginal_first_cost = marginal_first_cost.reindex(range(first_row, last_row + 1)).dropna()
+    result = self.soln_ref_annual_world_first_cost + self.conv_ref_annual_world_first_cost
+    result = result - self.soln_pds_annual_world_first_cost
+    index = pd.RangeIndex(result.first_valid_index(), 2140)
+    result = result.reindex(index=index)
+    # Excel returns 0.0 for years after self.ac.report_end_year
+    result.loc[self.ac.report_end_year + 1:] = 0.0
+    result.name = 'soln_marginal_first_cost'
+    return result
 
+  @lru_cache()
+  def soln_marginal_operating_cost_savings(self):
+    """Marginal First Cost.
+       SolarPVUtil 'Operating Cost'!C126:C250
+    """
     conv_ref_lifetime_cost = self.conv_ref_annual_breakout().sum(axis=1)
     soln_pds_lifetime_cost = self.soln_pds_annual_breakout().sum(axis=1)
-    marginal_operating_cost_savings = conv_ref_lifetime_cost - soln_pds_lifetime_cost
+    result = conv_ref_lifetime_cost - soln_pds_lifetime_cost
+    index = pd.RangeIndex(result.first_valid_index(), 2140)
+    result = result.reindex(index)
+    result.name = 'soln_marginal_operating_cost_savings'
+    return result
 
-    idx = marginal_operating_cost_savings.index
-    # align index + zero-fill for net_cash_flow calculation
-    marginal_first_cost = marginal_first_cost.reindex(idx).fillna(0)
-    net_cash_flow = marginal_first_cost + marginal_operating_cost_savings
+  @lru_cache()
+  def soln_net_cash_flow(self):
+    """Marginal First Cost.
+       SolarPVUtil 'Operating Cost'!D126:D250
+    """
+    result = self.soln_marginal_first_cost() + self.soln_marginal_operating_cost_savings()
+    index = pd.RangeIndex(result.first_valid_index(), 2140)
+    result = result.reindex(index)
+    result.name = 'soln_net_cash_flow'
+    return result
 
+  @lru_cache()
+  def soln_net_present_value(self):
+    """Marginal First Cost.
+       SolarPVUtil 'Operating Cost'!E126:E250
+    """
     npv = []
+    net_cash_flow = self.soln_net_cash_flow()
     for n in range(len(net_cash_flow.index)):
       l = [0] * (n+1) + [net_cash_flow.iloc[n]]
       npv.append(np.npv(rate=self.ac.npv_discount_rate, values=l))
-    npv_series = pd.Series(npv, index=net_cash_flow.index)
-
-    investment = pd.concat([marginal_first_cost, marginal_operating_cost_savings,
-      net_cash_flow, npv_series], axis=1)
-    investment.name = 'lifetime_cost_forecast'
-    investment.index.name = 'Year'
-    investment.columns = ['Investment (Marginal First Cost)', 'Marginal Operating Cost Savings',
-        'Net Cash Flow', 'NPV in $2014']
-
-    first_row = investment.first_valid_index()
-    last_row = 2139
-    return investment.reindex(range(first_row, last_row + 1)).fillna(value=0)
+    result = pd.Series(npv, index=net_cash_flow.index)
+    result.name = 'soln_net_present_value'
+    return result
 
   @lru_cache()
   def soln_vs_conv_single_iunit_cashflow(self):

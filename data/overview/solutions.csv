@@ -1,5 +1,5 @@
 Solution, DirName, Sector
-Refrigerant Management,, Materials
+Refrigerant Management, refrigerants, Materials
 Wind Turbines (Onshore), onshorewind, Electricity Generation
 Reduced Food Waste,, Food
 Plant-Rich Diet,, Food
@@ -31,7 +31,7 @@ Wave and Tidal,, Electricity Generation
 Methane Digesters (Large), biogas, Electricity Generation
 Insulation, insulation, Buildings and Cities
 Ships, ships, Transport
-LED Lighting (Household),, Buildings and Cities
+LED Lighting (Household), leds_residential, Buildings and Cities
 Biomass, biomass, Electricity Generation
 Bamboo,, Land Use
 Alternative Cement, altcement, Materials
@@ -42,7 +42,7 @@ Trucks,, Transport
 Solar Water, solarhotwater, Electricity Generation
 Heat Pumps,, Buildings and Cities
 Airplanes, airplanes, Transport
-LED Lighting (Commercial),, Buildings and Cities
+LED Lighting (Commercial), leds_commercial, Buildings and Cities
 Building Automation, buildingautomation, Buildings and Cities
 Water Saving - Home,, Materials
 Bioplastic, bioplastic, Materials
@@ -57,7 +57,7 @@ Household Recycling,, Materials
 Industrial Recycling,, Materials
 Smart Thermostats, smartthermostats, Buildings and Cities
 Landfill Methane, landfillmethane, Buildings and Cities
-Bike Infrastructure,, Buildings and Cities
+Bike Infrastructure, bikeinfrastructure, Buildings and Cities
 Composting,, Food
 Smart Glass, smartglass, Buildings and Cities
 Women Smallholders,, Women and Girls

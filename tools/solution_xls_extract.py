@@ -139,6 +139,10 @@ def get_rrs_scenarios(wb):
           ('EU', percnt(row + 178)), ('USA', percnt(row + 179))]
       s['pds_adoption_final_percentage'] = percentages
 
+      if s['soln_pds_adoption_basis'] == 'DEFAULT S-Curve':
+        sconfig = [
+                ]
+
       assert sr_tab.cell_value(row + 183, 1) == 'Existing PDS Prognostication Assumptions'
       adopt = str(sr_tab.cell_value(row + 184, 4)).strip()
       if adopt: s['soln_pds_adoption_prognostication_source'] = adopt
@@ -566,8 +570,18 @@ def normalize_source_name(sourcename):
     'Drawdown TAM: Maximum Cases': 'Maximum Cases',
     'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)': \
             'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)',
+    'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario':
+            'ITDP/UC Davis 2014 Global High Shift Baseline',
+    'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario':
+            'ITDP/UC Davis 2014 Global High Shift HighShift',
+    'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Static % of Organic Waste':
+            'What a Waste Solid Waste Management Static %',
+    'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic % of Organic Waste':
+            'What a Waste Solid Waste Management Dynamic %',
+    'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic Organic Fraction by Un Mediam Variant':
+            'What a Waste Solid Waste Management Dynamic Organic Fraction',
     }
-  normalized = sourcename.replace("'", "").strip()
+  normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
   if normalized in special_cases:
     return special_cases[normalized]
   if re.search('\[Source \d+', sourcename):
@@ -643,7 +657,11 @@ def get_filename_for_source(sourcename, prefix=''):
   filename = re.sub(r"\s+", '_', filename)
   filename = re.sub(r"\.+", '_', filename)
   filename = filename.replace('Based_on_', 'based_on_')
-  return prefix + filename[0:64] + '.csv'
+  if len(filename) > 63:
+    s = filename[63:]
+    h = hex(abs(hash(s)))[-8:]
+    filename = filename[:63] + h
+  return prefix + filename + '.csv'
 
 
 def write_ad(f, wb, outputdir):
@@ -714,7 +732,7 @@ def write_custom_ad(case, f, wb, outputdir):
     return
   assert case == 'REF' or case == 'PDS', 'write_custom_ad case must be PDS or REF: ' + str(case)
 
-  ca_dir_path = outputdir.joinpath('ca_{}_data'.format(case.lower()))
+  ca_dir_path = os.path.join(outputdir, 'ca_{}_data'.format(case.lower()))
   if not os.path.exists(ca_dir_path):
       os.mkdir(ca_dir_path)
   scenarios, multipliers = extract_custom_adoption(wb=wb, outputdir=ca_dir_path, sheet_name='Custom {} Adoption'.format(case),
@@ -736,8 +754,6 @@ def write_custom_ad(case, f, wb, outputdir):
     f.write("    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
     f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
     f.write("        high_sd_mult={}, low_sd_mult={})\n".format(multipliers['high'], multipliers['low']))
-    f.write("    pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
-    f.write("    pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
   f.write("\n")
 
 
@@ -784,13 +800,13 @@ def write_s_curve_ad(f, wb):
   f.write("\n")
 
 
-def write_ht(f, wb, has_custom_ref_ad, has_custom_pds_ad, is_land):
+def write_ht(f, wb, has_custom_ref_ad, has_single_source, is_land):
   """Generate the Helper Tables section of a solution.
      Arguments:
        f: file-like object for output
        wb: an Excel workbook as returned by xlrd
        has_custom_ref_ad: whether a REF customadoption is in use.
-       has_custom_pds_ad: whether a PDS customadoption is in use.
+       has_single_source: whether to emit a pds_adoption_is_single_source arg
        is_land: True if LAND model
   """
   h = wb.sheet_by_name('Helper Tables')
@@ -822,16 +838,14 @@ def write_ht(f, wb, has_custom_ref_ad, has_custom_pds_ad, is_land):
 
   f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
+  f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
   if not is_land:
     f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
-  f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
   if has_custom_ref_ad:
     f.write("        ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
-  f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region")
-  if has_custom_pds_ad:
-    f.write(")\n")
-  else:
-    f.write(",\n        pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
+  if has_single_source:
+    f.write("        pds_adoption_is_single_source=pds_adoption_is_single_source,\n")
+  f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region)\n")
   f.write("\n")
 
 
@@ -1114,6 +1128,8 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
       if str(custom_ad_tab.cell(row, 1).value) == name:
         df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name,
             header=0, index_col=0, usecols="A:K", skiprows=row+1, nrows=49)
+        df.rename(mapper={'Middle East & Africa': 'Middle East and Africa'},
+            axis='columns', inplace=True)
         if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
           df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
           skip = False
@@ -1252,7 +1268,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 
   f.write("DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
   f.write("THISDIR = pathlib.Path(__file__).parents[0]\n")
-  f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
   f.write("REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',\n")
   f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
   f.write("\n")
@@ -1313,8 +1328,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     else:
       f.write("    self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())\n\n")
 
-  if has_custom_pds_ad and has_default_pds_ad:
-    raise NotImplementedError('Support for both Default and Custom PDS adoption is not implemented')
   if has_custom_ref_ad and has_default_ref_ad:
     raise NotImplementedError('Support for both Default and Custom REF adoption is not implemented')
   if has_default_pds_ad or has_default_ref_ad:
@@ -1326,6 +1339,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   if has_s_curve_pds_ad:
     write_s_curve_ad(f=f, wb=wb)
 
+  has_single_source = False
   f.write("    if False:\n")
   f.write("      # One may wonder why this is here. This file was code generated.\n")
   f.write("      # This 'if False' allows subsequent conditions to all be elif.\n")
@@ -1338,20 +1352,19 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write("    elif self.ac.soln_pds_adoption_basis == 'S-Curve':\n")
     f.write("      pds_adoption_data_per_region = None\n")
     f.write("      pds_adoption_trend_per_region = self.sc.logistic_adoption()\n")
-    f.write("      pds_adoption_is_single_source = False\n")
   if has_default_pds_ad or has_default_ref_ad:
     f.write("    elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':\n")
     f.write("      pds_adoption_data_per_region = self.ad.adoption_data_per_region()\n")
     f.write("      pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()\n")
     f.write("      pds_adoption_is_single_source = self.ad.adoption_is_single_source()\n")
+    has_single_source = True
   if has_linear_pds_ad:
     f.write("    elif self.ac.soln_pds_adoption_basis == 'Linear':\n")
     f.write("      pds_adoption_data_per_region = None\n")
     f.write("      pds_adoption_trend_per_region = None\n")
-    f.write("      pds_adoption_is_single_source = False\n")
   f.write("\n")
 
-  write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad, has_custom_pds_ad=has_custom_pds_ad, is_land=is_land)
+  write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad, has_single_source=has_single_source, is_land=is_land)
 
   f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
   f.write("\n")
@@ -1385,6 +1398,7 @@ def infer_classname(filename):
       ('CHP_B_', 'CoGenHeat'),
       ('CSP_', 'ConcentratedSolar'),
       ('High Efficient Heat Pumps', 'HeatPumps'),
+      ('Household & Commercial Recycling', 'Recycling'),
       ('Instream Hydro', 'InstreamHydro'),
       ('Large Biodigesters', 'Biogas'),
       ('MicroWind Turbines', 'MicroWind'),
