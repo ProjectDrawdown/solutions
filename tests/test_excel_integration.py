@@ -27,6 +27,8 @@ from solution import biogas
 from solution import biomass
 from solution import bioplastic
 from solution import buildingautomation
+from solution import carpooling
+from solution import cars
 from solution import composting
 from solution import concentratedsolar
 from solution import electricvehicles
@@ -51,6 +53,7 @@ from solution import solarpvutil
 from solution import solarpvroof
 from solution import telepresence
 from solution import trains
+from solution import trucks
 from solution import tropicalforests
 from solution import waterefficiency
 
@@ -896,6 +899,35 @@ def test_BuildingAutomation_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('carpooling', 'testdata',
+        'Drawdown-Carpooling_RRS_v1.1_29Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Carpooling_RRS(start_excel, tmpdir):
+  """Test for Excel model file Carpooling*."""
+  workbook = start_excel
+  for scenario in carpooling.scenarios.keys():
+    obj = carpooling.Carpooling(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('cars', 'testdata',
+        'Drawdown-Car Fuel Efficiency_RRS_v1,1_31Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Cars_RRS(start_excel, tmpdir):
+  """Test for Excel model file Cars*."""
+  workbook = start_excel
+  for scenario in cars.scenarios.keys():
+    obj = cars.Cars(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('composting', 'testdata',
         'Drawdown-Composting_RRS_v1.1_18Nov2018_PUBLIC.xlsm'))],
     indirect=True)
@@ -1250,6 +1282,20 @@ def test_TropicalForests_LAND(start_excel, tmpdir):
         continue
     obj = tropicalforests.TropicalForests(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('trucks', 'testdata',
+        'Drawdown-Truck Fuel Efficiency_RRS_v1,1_4Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Trucks_RRS(start_excel):
+  """Test for Excel model file Trucks*."""
+  workbook = start_excel
+  for scenario in trucks.scenarios.keys():
+    obj = trucks.Trucks(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

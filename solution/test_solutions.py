@@ -8,6 +8,7 @@ import biogas
 import biomass
 import bioplastic
 import buildingautomation
+import carpooling
 import composting
 import concentratedsolar
 import electricvehicles
@@ -32,6 +33,7 @@ import solarpvroof
 import solarpvutil
 import telepresence
 import trains
+import trucks
 import tropicalforests
 import waterefficiency
 
@@ -74,6 +76,12 @@ def test_bioplastic():
 def test_buildingautomation():
   scenario = list(buildingautomation.scenarios.keys())[0]
   obj = buildingautomation.BuildingAutomationSystems(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_carpooling():
+  scenario = list(carpooling.scenarios.keys())[0]
+  obj = carpooling.Carpooling(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
@@ -218,6 +226,12 @@ def test_telepresence():
 def test_trains():
   scenario = list(trains.scenarios.keys())[0]
   obj = trains.TrainFuelEfficiency(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_trucks():
+  scenario = list(trucks.scenarios.keys())[0]
+  obj = trucks.Trucks(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
