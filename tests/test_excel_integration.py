@@ -1189,11 +1189,19 @@ def test_Telepresence_RRS(start_excel):
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('tropicalforests', 'testdata', 'Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm'))],
     indirect=True)
-@pytest.mark.skip(reason="not working yet")
 def test_TropicalForests_LAND(start_excel, tmpdir):
   """Test for Excel model file Tropical_Forest_Restoration_L-Use*."""
   workbook = start_excel
-  for scenario in tropicalforests.scenarios.keys():
+  for scenario, ac in tropicalforests.scenarios.items():
+    if not ac.use_custom_tla:
+        # Tropical Forests has a custom TLA very similar to the allocated TLA. Some of the custom adoption data
+        # arbitrarily links to the value for World TLA in Advanced Controls, causing them to vary very slightly
+        # if 'Use Customized TLA' is switched on. The saved CSV files for Custom PDS Adoption are a snapshot of
+        # the avg book version scenario, which uses custom TLA. Thus, we only test scenarios which also use custom
+        # TLA. We will figure out how to deal with linked custom adoption values later, although in the case of
+        # this solution the values do not change a significant amount anyway (it is questionable whether there
+        # is a good reason for having a custom TLA in the first place).
+        continue
     obj = tropicalforests.TropicalForests(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)

@@ -390,29 +390,27 @@ class TropicalForests:
     # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, NYDF/2030 (Charlotte Wheeler, 2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_NYDF2030_C.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_NYDF2030_d2f2fcdd.csv')},
       {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, WRI/2030 (Charlotte Wheeler, 2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_WRI2030_Ch.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_WRI2030_Ce2e6cb43.csv')},
       {'name': 'Conservative-Achieve Commitment in 15 years w/ 32.8% intact, WRI/2030 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_WRI2030.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_WRI203a4c0a675.csv')},
       {'name': 'Conservative-Achieve Commitment in 15 years w/ 32.8% intact with continued growth post-2030, WRI/2030 and beyond (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_with_co.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_with_cf54544ae.csv')},
       {'name': 'Conservative-Achieve Commitment in 30 years w/ 100% intact, WRI/2045 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_100_intact_WRI2045_.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_100_intact_WRI2045abb3d962.csv')},
       {'name': 'Conservative-Achieve Commitment in 30 years w/ 32.8% intact, WRI/2045 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_WRI2045.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_WRI204e8f8c064.csv')},
       {'name': 'Conservative-Achieve Commitment in 30 years w/ 32.8% intact with continued growth, WRI/2045 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_with_co.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_with_c70f74546.csv')},
       {'name': 'Conservative-Achieve Commitment in 45 years w/ 100% intact, WRI/2060 (Charlotte Wheeler,2016)', 'include': False,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_100_intact_WRI2060_.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_100_intact_WRI2060abb3d962.csv')},
       {'name': 'Conservative-Achieve Commitment in 45 years w/ 32.8% intact, WRI/2060 (Charlotte Wheeler,2016)', 'include': False,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_32_8_intact_WRI2060.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_32_8_intact_WRI206a4c0a675.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
         high_sd_mult=1.0, low_sd_mult=1.0)
-    pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
-    pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
 
     if False:
       # One may wonder why this is here. This file was code generated.

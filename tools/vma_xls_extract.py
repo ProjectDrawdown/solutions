@@ -1,6 +1,6 @@
 """ Reads Variable Meta Analysis tab """
 
-import xlrd
+import os
 import pathlib
 import pandas as pd
 from numpy import nan
@@ -65,11 +65,10 @@ def make_vma_df_template():
 
 
 class VMAReader:
-    def __init__(self, xls_path):
+    def __init__(self, wb):
         """
         xls_path: path to solution xls file
         """
-        wb = xlrd.open_workbook(filename=str(xls_path))
         self.sheet = wb.sheet_by_name('Variable Meta-analysis')
         self.df_template = make_vma_df_template()
 
@@ -77,7 +76,7 @@ class VMAReader:
         """
         Reads the whole Variable Meta-analysis xls sheet.
         Note this currently only works for LAND solutions.
-        csv_path: (pathlib path object) If specified, will write CSVs to path for each table
+        csv_path: (pathlib path object or str) If specified, will write CSVs to path for each table
         """
         self._find_tables()
         df_dict = OrderedDict()
@@ -99,8 +98,8 @@ class VMAReader:
                 info_df.loc[i, :] = row
                 i += 1
                 if df is not None:
-                    df.to_csv(csv_path.joinpath(path_friendly_title + '.csv'), index=False)
-            info_df.to_csv(csv_path.joinpath('VMA_info.csv'))
+                    df.to_csv(os.path.join(csv_path, path_friendly_title + '.csv'), index=False)
+            info_df.to_csv(os.path.join(csv_path, 'VMA_info.csv'))
         return df_dict
 
     def read_single_table(self, source_id_cell):

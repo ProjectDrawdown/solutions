@@ -1,10 +1,11 @@
-import pytest
 import pathlib
 import pandas as pd
+import xlrd
 from tools.vma_xls_extract import make_vma_df_template, VMAReader, ADOPTION_VARIABLES, EMISSIONS_REDUCTION_VARIABLES,\
     SEQUESTRATION_AND_LAND_INPUTS
 
 thisdir = pathlib.Path(__file__).parents[0]
+wb = xlrd.open_workbook(thisdir.joinpath('silvopasture_vma.xlsx'))
 
 
 def test_make_vma_df_template():
@@ -17,7 +18,7 @@ def test_make_vma_df_template():
 
 
 def test_single_table():
-    vma_r = VMAReader(thisdir.joinpath('silvopasture_vma.xlsx'))
+    vma_r = VMAReader(wb)
     result = vma_r.read_single_table('C48')
     expected = pd.read_csv(thisdir.joinpath('silvopasture_vma1.csv'))
     # integer values for years are causing an unimportant dtype issue in the test
@@ -25,7 +26,7 @@ def test_single_table():
 
 
 def test_find_tables():
-    vma_r = VMAReader(thisdir.joinpath('silvopasture_vma.xlsx'))
+    vma_r = VMAReader(wb)
     vma_r._find_tables()
     # check all titles are there
     for title in ADOPTION_VARIABLES + EMISSIONS_REDUCTION_VARIABLES + SEQUESTRATION_AND_LAND_INPUTS:
@@ -38,7 +39,7 @@ def test_find_tables():
 
 def test_read_xls_num_dfs():
     """ Check we produce the right amount of tables + discard empty ones """
-    vma_r = VMAReader(thisdir.joinpath('silvopasture_vma.xlsx'))
+    vma_r = VMAReader(wb)
     df_dict = vma_r.read_xls()
     assert len(df_dict) == 24
     num_empty_tables = len([x for _, x in df_dict.items() if x is None])
@@ -47,7 +48,7 @@ def test_read_xls_num_dfs():
 
 def test_read_xls():
     """ Check some specifc values from Silvopasture """
-    vma_r = VMAReader(thisdir.joinpath('silvopasture_vma.xlsx'))
+    vma_r = VMAReader(wb)
     df_dict = vma_r.read_xls()
     table = df_dict['SOLUTION Net Profit Margin per Functional Unit per Annum']
     assert table.at[5, 'Raw Data Input'] == 416
@@ -59,6 +60,6 @@ def test_read_xls():
 
 def test_read_xls_additional_var():
     """ Check the additional var from Silvopasture """
-    vma_r = VMAReader(thisdir.joinpath('silvopasture_vma.xlsx'))
+    vma_r = VMAReader(wb)
     df_dict = vma_r.read_xls()
     assert 'Percent silvopasture area to the total grassland area (including potential)' in df_dict
