@@ -16,6 +16,7 @@ import pandas as pd
 from solution import rrs
 
 from tools.util import convert_bool, cell_to_offsets
+from tools.vma_xls_extract import VMAReader
 from model.advanced_controls import SOLUTION_CATEGORY
 
 pd.set_option('display.max_rows', 500)
@@ -1161,6 +1162,19 @@ def extract_custom_tla(wb, outputdir):
     df.to_csv(os.path.join(outputdir, 'custom_tla_data.csv'), index=True, header=True)
 
 
+def extract_vmas(wb, outputdir):
+    """Extract VMAs from an Excel file.
+       Arguments:
+         wb: Excel workbook as returned by xlrd.
+         outputdir: directory where output files are written
+    """
+    vma_dir_path = os.path.join(outputdir, 'vma_data')
+    if not os.path.exists(vma_dir_path):
+        os.mkdir(vma_dir_path)
+    vma_r = VMAReader(wb)
+    vma_r.read_xls(csv_path=vma_dir_path)
+
+
 def lookup_unit(tab, row, col):
   unit_mapping = {
     'Million hectare': u'Mha',
@@ -1266,8 +1280,11 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   else:
     scenarios = {}
 
+  extract_vmas(wb=wb, outputdir=outputdir)
+
   f.write("DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
   f.write("THISDIR = pathlib.Path(__file__).parents[0]\n")
+  f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
   f.write("REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',\n")
   f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
   f.write("\n")
