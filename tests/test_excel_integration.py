@@ -1,9 +1,10 @@
 """
-excel_integration_test is an end-to-end test which starts a Python flask
-HTTP server, starts up a copy of Microsoft Excel, sets the spreadsheet
-to reference the local HTTP server for its calculations, fetches key
-results from the spreadsheet, and compares them to expected golden
-values.
+An end-to-end test which uses xlwings and xlrd to pull data
+from the original Excel models, not just the final answers
+but each intermediate step. It then compares the Python result
+at each step of the calculation, to ensure that the new
+implementation not only gets the same answers but does so
+for the same reasons.
 """
 
 import os.path
