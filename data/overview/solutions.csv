@@ -38,7 +38,7 @@ Alternative Cement, altcement, Materials
 Mass Transit,, Transport
 Forest Protection,, Land Use
 Indigenous Peoples’ Land Management,, Land Use
-Trucks,, Transport
+Trucks, trucks, Transport
 Solar Water, solarhotwater, Electricity Generation
 Heat Pumps,, Buildings and Cities
 Airplanes, airplanes, Transport
@@ -75,3 +75,4 @@ Green Roofs,, Buildings and Cities
 Trains, trains, Transport
 Ridesharing,, Transport
 Micro Wind, microwind, Electricity Generation
+Carpooling, carpooling, Transport
