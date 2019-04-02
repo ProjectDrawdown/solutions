@@ -1280,7 +1280,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   else:
     scenarios = {}
 
-  extract_vmas(wb=wb, outputdir=outputdir)
+  #extract_vmas(wb=wb, outputdir=outputdir)
 
   f.write("DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
   f.write("THISDIR = pathlib.Path(__file__).parents[0]\n")
