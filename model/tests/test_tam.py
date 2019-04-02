@@ -601,6 +601,23 @@ def test_pds_tam_per_region_no_pds_sources():
       skipinitialspace=True, comment='#')
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_pds_tam_per_region_growth_low_2014():
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['growth', 'PDS World'] = 'Low'
+  tamconfig_mod.loc['source_until_2014', 'PDS World'] = 'ALL SOURCES'
+  tamconfig_mod.loc['source_after_2014', 'PDS World'] = 'ALL SOURCES'
+  data_sources = {
+    'Baseline Cases': {
+      'B1': str(datadir.joinpath('tam_all_one.csv')),
+      'B2': str(datadir.joinpath('tam_all_zero.csv')),
+    },
+  }
+  tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=data_sources,
+      tam_pds_data_sources=data_sources)
+  result = tm.pds_tam_per_region()
+  # If the 'Low' growth is applied, the result will be 0.5.
+  assert result.loc[2014, 'World'] == pytest.approx(1.0)
+
 def test_regional_data_source_lists():
   data_sources = {
     'Region: China': {
@@ -699,6 +716,21 @@ def test_mean_ignores_zeros():
       tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_low_med_high_global()
   assert all(result.loc[:, 'Medium'] == 1.0)
+  # The Excel code to SUM()/COUNTIF(">0") is only used when processing multiple sources
+  # like 'ALL SOURCES' or 'Ambitious Cases', not when an individual source is chosen.
+  # Verify that if there is just one source and it is zero, that Medium is 0.0 not np.nan.
+  data_sources = {
+    'Baseline Cases': {
+      'zero': str(datadir.joinpath('tam_all_zero.csv')),
+    },
+  }
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['source_until_2014', 'World'] = 'zero'
+  tamconfig_mod.loc['source_after_2014', 'World'] = 'zero'
+  tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources)
+  result = tm.forecast_low_med_high_global()
+  assert all(result.loc[:, 'Medium'] == 0.0)
 
 def test_tam_y2014_with_growth_high():
   # test data taken from Building Automation
@@ -726,6 +758,44 @@ def test_nonexistent_source_is_NaN():
       tam_pds_data_sources=g_tam_pds_data_sources)
   result = tm.forecast_min_max_sd_global()
   assert all(pd.isna(result.loc[:, :]))
+
+def test_global_with_regional_included():
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['source_until_2014', :] = 'ALL SOURCES'
+  tamconfig_mod.loc['source_after_2014', :] = 'ALL SOURCES'
+  tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources, world_includes_regional=True)
+  result = tm.forecast_min_max_sd_global()
+  expected = pd.DataFrame(forecast_min_max_sd_global_with_regional_list[1:],
+      columns=forecast_min_max_sd_global_with_regional_list[0]).set_index('Year')
+  expected.index.name = 'Year'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+  result = tm.forecast_low_med_high_global()
+  expected = pd.DataFrame(forecast_low_med_high_global_with_regional_list[1:],
+      columns=forecast_low_med_high_global_with_regional_list[0]).set_index('Year')
+  expected.index.name = 'Year'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+  # if sources != 'ALL SOURCES', min/max/sd includes regional but low/med/high does not.
+  tamconfig_mod = g_tamconfig.copy()
+  tamconfig_mod.loc['source_until_2014', 'World'] = 'Baseline Cases'
+  tamconfig_mod.loc['source_after_2014', 'World'] = 'Baseline Cases'
+  tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
+      tam_pds_data_sources=g_tam_pds_data_sources, world_includes_regional=True)
+  result = tm.forecast_min_max_sd_global()
+  expected = pd.DataFrame(forecast_min_max_sd_global_with_regional_list[1:],
+      columns=forecast_min_max_sd_global_with_regional_list[0]).set_index('Year')
+  expected.index.name = 'Year'
+  # SD changes because World doesn't include all sources any more, checking that Min
+  # and Max still match is sufficient.
+  pd.testing.assert_frame_equal(result.loc[:, ['Min', 'Max']], expected.loc[:, ['Min', 'Max']],
+          check_exact=False)
+  result = tm.forecast_low_med_high_global()
+  expected = pd.DataFrame(forecast_low_med_high_global_list[1:],
+      columns=forecast_low_med_high_global_list[0],
+      index=list(range(2012, 2061)), dtype=np.float64)
+  expected.index.name = 'Year'
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 # SolarPVUtil 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES',
@@ -1466,3 +1536,111 @@ global_trend_buildingautomation_list = [['Year', 'China'],
     [2056, 18896.8423293409], [2057, 18913.7085089527],
     [2058, 18941.4120774146], [2059, 18980.9904518950],
     [2060, 19033.4810495627]]
+
+# SolarPVUtil 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES',
+# source_after_2014='ALL SOURCES', low_sd=1.0, high_sd=1.0, and
+# B29:B30 set to 'Y' to include regional data in the Min/Max/SD
+forecast_min_max_sd_global_with_regional_list = [['Year', 'Min', 'Max', 'S.D'],
+    [2012, 21534.0000000000, 21534.0000000000, 0.0000000000000],
+    [2013, 22203.0000000000, 22203.0000000000, 0.0000000000000],
+    [2014, 22548.2990000000, 23152.7006896004, 146.30235489010],
+    [2015, 22429.7218661374, 27024.4702803023, 1229.4812097517],
+    [2016, 22906.9120870725, 27898.5551476510, 1313.7083543558],
+    [2017, 23402.1189826181, 28756.9038926822, 1399.4229808300],
+    [2018, 23915.4346943209, 29600.0618626642, 1485.0583556343],
+    [2019, 24446.9131013217, 30428.5210440123, 1570.0579563478],
+    [2020, 24872.2227465960, 31079.0751096977, 1698.7705301479],
+    [2021, 25564.9101095336, 32043.7221836502, 1738.9957278645],
+    [2022, 26151.9471241863, 32831.9652426197, 1824.2405634648],
+    [2023, 26758.2104510594, 33608.5496112893, 1911.1821032367],
+    [2024, 27384.2156903934, 34374.5606148262, 2000.7871502799],
+    [2025, 28030.4505798149, 35387.6999838500, 2097.8568983995],
+    [2026, 28697.2751067092, 36509.4429539791, 2191.6495226549],
+    [2027, 29385.0165896816, 37640.8370975740, 2294.4946417982],
+    [2028, 30094.1109044164, 38781.9229190917, 2403.1502675761],
+    [2029, 30825.0168500741, 39932.7714195675, 2518.1046393711],
+    [2030, 31766.3945441049, 40974.3184829420, 2581.4439191401],
+    [2031, 32299.5068596379, 42263.9410630002, 2768.1935416770],
+    [2032, 32931.8013981080, 43444.2607421208, 2903.6674612074],
+    [2033, 33426.4411921675, 44634.3965746784, 3046.1592407450],
+    [2034, 33922.5178230747, 45834.3363612893, 3195.6273544302],
+    [2035, 34466.7932946091, 47044.0626050110, 3352.5609800156],
+    [2036, 34920.3984310243, 48263.5461195901, 3515.1083306803],
+    [2037, 35422.8480172506, 49492.7579940144, 3684.8795026053],
+    [2038, 35928.0981905913, 50731.6730222579, 3861.1862263112],
+    [2039, 36436.5078668097, 51980.2620438816, 4043.9471377832],
+    [2040, 36891.0448422666, 53318.6971171473, 4324.7818354847],
+    [2041, 37464.1331710322, 54506.2433903478, 4428.7240742755],
+    [2042, 37983.9405169630, 55783.4594497884, 4630.8307303323],
+    [2043, 38508.0727719431, 57094.9669759492, 4839.5910660176],
+    [2044, 39036.7373902378, 58748.1022577474, 5055.2372494559],
+    [2045, 39594.4131995284, 60413.9802624210, 5277.8473717880],
+    [2046, 40108.5551602081, 62090.5251778409, 5508.6030344729],
+    [2047, 40652.2151900036, 63775.6700592455, 5747.2975640531],
+    [2048, 41201.3634882315, 65467.2986092187, 5994.8296543826],
+    [2049, 41756.2294713394, 67163.2756420720, 6251.9614236051],
+    [2050, 42313.5981963481, 68762.6925241243, 6490.7704906617],
+    [2051, 42884.0535147214, 70559.7151101345, 6798.6511380875],
+    [2052, 43457.5033566593, 72255.9098041119, 7090.3117712789],
+    [2053, 44037.5093840040, 73947.6764771113, 7395.7459288353],
+    [2054, 44624.1517999176, 75632.5738268464, 7716.2430712700],
+    [2055, 45217.5639224199, 77308.2350196979, 8053.1968389723],
+    [2056, 45817.9763708168, 78972.4496857084, 8408.1032496873],
+    [2057, 46425.7036591602, 80623.1487278456, 8782.5527912472],
+    [2058, 47041.0741835201, 82258.2878710141, 9178.2098386838],
+    [2059, 47664.4590182862, 83875.8992336970, 9596.8053376054],
+    [2060, 48296.2333895397, 85474.0252660105, 10040.1128681535]]
+
+# SolarPVUtil 'TAM Data'!V45:Y94 with source_until_2014='ALL SOURCES',
+# source_after_2014='ALL SOURCES', low_sd=1.0, high_sd=1.0, and
+# B29:B30 set to 'Y' to include regional data in the Low/Med/High
+forecast_low_med_high_global_with_regional_list = [['Year', 'Low', 'Medium', 'High'],
+    [2012, 21534.0000000000, 21534.0000000000, 21534.0000000000],
+    [2013, 22203.0000000000, 22203.0000000000, 22203.0000000000],
+    [2014, 22439.7717507099, 22586.0741056000, 22732.3764604902],
+    [2015, 23057.1944942536, 24286.6757040053, 25516.1569137570],
+    [2016, 23629.6080795531, 24943.3164339089, 26257.0247882648],
+    [2017, 24212.2538431068, 25611.6768239368, 27011.0998047667],
+    [2018, 24806.2938051016, 26291.3521607359, 27776.4105163702],
+    [2019, 25411.7989931779, 26981.8569495257, 28551.9149058735],
+    [2020, 26086.8067455227, 27785.5772756706, 29484.3478058185],
+    [2021, 26654.8364223656, 28393.8321502301, 30132.8278780946],
+    [2022, 27290.6361417744, 29114.8767052392, 30939.1172687040],
+    [2023, 27934.6551700813, 29845.8372733180, 31757.0193765547],
+    [2024, 28585.9363121400, 30586.7234624199, 32587.5106126998],
+    [2025, 29193.0498073336, 31290.9067057331, 33388.7636041325],
+    [2026, 29906.4422282025, 32098.0917508574, 34289.7412735123],
+    [2027, 30573.7787582810, 32868.2734000791, 35162.7680418773],
+    [2028, 31244.8412263447, 33647.9914939209, 36051.1417614970],
+    [2029, 31919.0861662805, 34437.1908056516, 36955.2954450227],
+    [2030, 32550.7998663918, 35132.2437855319, 37713.6877046720],
+    [2031, 33275.5547802802, 36043.7483219571, 38811.9418636341],
+    [2032, 33957.2406926830, 36860.9081538904, 39764.5756150978],
+    [2033, 34641.0418437770, 37687.2010845220, 40733.3603252671],
+    [2034, 35326.9141697666, 38522.5415241967, 41718.1688786269],
+    [2035, 36053.5124316464, 39406.0734116619, 42758.6343916775],
+    [2036, 36704.8670296052, 40219.9753602855, 43735.0836909658],
+    [2037, 37396.9611700628, 41081.8406726681, 44766.7201752734],
+    [2038, 38091.1496015438, 41952.3358278550, 45813.5220541662],
+    [2039, 38787.4173749387, 42831.3645127219, 46875.3116505051],
+    [2040, 39450.6760316881, 43775.4578671728, 48100.2397026576],
+    [2041, 40185.8228035845, 44614.5468778600, 49043.2709521356],
+    [2042, 40887.5709718454, 45518.4017021777, 50149.2324325100],
+    [2043, 41590.5754668706, 46430.1665328881, 51269.7575989057],
+    [2044, 42294.3636873738, 47349.6009368297, 52404.8381862856],
+    [2045, 42983.7523527564, 48261.5997245444, 53539.4470963325],
+    [2046, 43701.9529543811, 49210.5559888540, 54719.1590233269],
+    [2047, 44404.3673931139, 50151.6649571670, 55898.9625212200],
+    [2048, 45104.7347479793, 51099.5644023619, 57094.3940567444],
+    [2049, 45802.0542243993, 52054.0156480043, 58305.9770716094],
+    [2050, 46514.2108153444, 53004.9813060061, 59495.7517966678],
+    [2051, 47182.9788812009, 53981.6300192884, 60780.2811573758],
+    [2052, 47864.0294708249, 54954.3412421038, 62044.6530133827],
+    [2053, 48536.7881755584, 55932.5341043937, 63328.2800332290],
+    [2054, 49199.5412244601, 56915.7842957301, 64632.0273670001],
+    [2055, 49850.5262645896, 57903.7231035619, 65956.9199425342],
+    [2056, 50487.9798908098, 58896.0831404971, 67304.1863901844],
+    [2057, 51110.1445175266, 59892.6973087738, 68675.2501000211],
+    [2058, 51715.2164082663, 60893.4262469501, 70071.6360856338],
+    [2059, 52301.3795422541, 61898.1848798595, 71494.9902174649],
+    [2060, 52866.7706572830, 62906.8835254366, 72946.9963935901]]

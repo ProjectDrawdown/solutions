@@ -531,7 +531,10 @@ def write_tam(f, wb, outputdir):
     f.write("    }\n")
     arg_pds = 'tam_pds_data_sources'
 
+  regional = convert_bool(tm_tab.cell(28, 1).value) and convert_bool(tm_tab.cell(29, 1).value)
   f.write("    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=" + arg_ref + ",\n")
+  if regional:
+    f.write("      world_includes_regional=True,\n")
   f.write("      tam_pds_data_sources=" + arg_pds + ")\n")
   f.write("    ref_tam_per_region=self.tm.ref_tam_per_region()\n")
   f.write("    pds_tam_per_region=self.tm.pds_tam_per_region()\n")
@@ -576,11 +579,15 @@ def normalize_source_name(sourcename):
     'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario':
             'ITDP/UC Davis 2014 Global High Shift HighShift',
     'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Static % of Organic Waste':
-            'What a Waste Solid Waste Management Static %',
+            'What a Waste Solid Waste Management Static',
     'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic % of Organic Waste':
-            'What a Waste Solid Waste Management Dynamic %',
+            'What a Waste Solid Waste Management Dynamic',
     'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic Organic Fraction by Un Mediam Variant':
             'What a Waste Solid Waste Management Dynamic Organic Fraction',
+    'IPCC, 2006 - Calculated': 'IPCC, 2006 Calculated',
+    "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Highest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Highest Ranges',
+    "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Middle Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges',
+    "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Lowest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges',
     }
   normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
   if normalized in special_cases:
@@ -715,7 +722,11 @@ def write_ad(f, wb, outputdir):
         f.write("        },\n")
     f.write("      },\n")
   f.write("    }\n")
-  f.write("    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)\n")
+  f.write("    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,\n")
+  regional = convert_bool(a.cell(29, 1).value) and convert_bool(a.cell(30, 1).value)
+  if regional:
+    f.write("        world_includes_regional=True,\n")
+  f.write("        adconfig=adconfig)\n")
   f.write("\n")
 
 
@@ -801,7 +812,7 @@ def write_s_curve_ad(f, wb):
   f.write("\n")
 
 
-def write_ht(f, wb, has_custom_ref_ad, has_single_source, is_land):
+def write_ht(f, wb, has_custom_ref_ad, is_land):
   """Generate the Helper Tables section of a solution.
      Arguments:
        f: file-like object for output
@@ -844,9 +855,8 @@ def write_ht(f, wb, has_custom_ref_ad, has_single_source, is_land):
     f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
   if has_custom_ref_ad:
     f.write("        ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
-  if has_single_source:
-    f.write("        pds_adoption_is_single_source=pds_adoption_is_single_source,\n")
-  f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region)\n")
+  f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
+  f.write("        pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
   f.write("\n")
 
 
@@ -1077,7 +1087,10 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
         break
       if tab.cell(line-1, col).ctype != xlrd.XL_CELL_EMPTY:
         case = normalize_case_name(tab.cell(line-1, col).value)
-      source_name = normalize_source_name(tab.cell(line, col).value)
+      # it is important to get the source name from the regional_data.columns here, not re-read
+      # the source_name from Excel, because some solutions like Composting have duplicate
+      # column names and pd.read_excel automatically appends ".1" and ".2" to make them unique.
+      source_name = region_data[region].columns[col-2]
       filename = sources.get(source_name, None)
       if source_name is not None and filename is not None:
         key = 'Region: ' + region
@@ -1184,6 +1197,7 @@ def lookup_unit(tab, row, col):
     'Million Households': u'MHholds',
     'Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates': u'Mm\u00B2',
     'Giga-Liter Water': u'GL H\u2082O',
+    'Million Metric tonnes per year': 'MMt',
   }
   name = str(tab.cell_value(row, col))
   return unit_mapping.get(name, name)
@@ -1356,7 +1370,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   if has_s_curve_pds_ad:
     write_s_curve_ad(f=f, wb=wb)
 
-  has_single_source = False
   f.write("    if False:\n")
   f.write("      # One may wonder why this is here. This file was code generated.\n")
   f.write("      # This 'if False' allows subsequent conditions to all be elif.\n")
@@ -1365,23 +1378,25 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write("    elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':\n")
     f.write("      pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
     f.write("      pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
+    f.write("      pds_adoption_is_single_source = None\n")
   if has_s_curve_pds_ad:
     f.write("    elif self.ac.soln_pds_adoption_basis == 'S-Curve':\n")
     f.write("      pds_adoption_data_per_region = None\n")
     f.write("      pds_adoption_trend_per_region = self.sc.logistic_adoption()\n")
+    f.write("      pds_adoption_is_single_source = None\n")
   if has_default_pds_ad or has_default_ref_ad:
     f.write("    elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':\n")
     f.write("      pds_adoption_data_per_region = self.ad.adoption_data_per_region()\n")
     f.write("      pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()\n")
     f.write("      pds_adoption_is_single_source = self.ad.adoption_is_single_source()\n")
-    has_single_source = True
   if has_linear_pds_ad:
     f.write("    elif self.ac.soln_pds_adoption_basis == 'Linear':\n")
     f.write("      pds_adoption_data_per_region = None\n")
     f.write("      pds_adoption_trend_per_region = None\n")
+    f.write("      pds_adoption_is_single_source = None\n")
   f.write("\n")
 
-  write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad, has_single_source=has_single_source, is_land=is_land)
+  write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad, is_land=is_land)
 
   f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
   f.write("\n")

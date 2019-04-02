@@ -174,7 +174,7 @@ def solution_treemap(solutions, width, height):
           "encode": {
             "enter": {
               "stroke": {"value": "#fff"},
-              "tooltip": {"signal": "{title: datum.name, 'CO2eq': datum.size + ' Gigatons'}"}
+              "tooltip": {"signal": "{title: datum.name, 'CO2eq': format(datum['size'], '.2f') + ' Gigatons'}"}
             },
             "update": {
               "x": {"field": "x0"},
@@ -306,7 +306,7 @@ def solution_donut_chart(solutions, width, height):
           "fill": {"scale": "color", "field": "sector"},
           "x": {"signal": "width / 2"},
           "y": {"signal": "height / 2"},
-          "tooltip": {"signal": "{title: datum.name, 'CO2eq': datum.size + ' Gigatons'}"}
+          "tooltip": {"signal": "{title: datum.name, 'CO2eq': format(datum['size'], '.2f') + ' Gigatons'}"}
         },
         "update": {
           "startAngle": {"field": "startAngle"},
@@ -326,7 +326,7 @@ def solution_donut_chart(solutions, width, height):
           "fill": {"scale": "color", "field": "sector"},
           "x": {"signal": "width / 2"},
           "y": {"signal": "height / 2"},
-          "tooltip": {"signal": "{title: datum.name, 'CO2eq': datum.size + ' Gigatons'}"}
+          "tooltip": {"signal": "{title: datum.name, 'CO2eq': format(datum['size'], '.2f') + ' Gigatons'}"}
         },
         "update": {
           "startAngle": {"field": "startAngle"},
