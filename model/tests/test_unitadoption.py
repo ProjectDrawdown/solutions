@@ -553,18 +553,23 @@ def test_soln_pds_new_iunits_reqd_repeated_cost_for_iunits():
   expected.name = "soln_pds_new_iunits_reqd"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_soln_pds_new_iunits_reqd_with_zero_funits_somtimes():
-  soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_leds_commercial_list[1:],
+def test_soln_new_iunits_reqd_with_zero_funits_sometimes():
+  funits_adopted = pd.DataFrame(soln_pds_funits_adopted_leds_commercial_list[1:],
       columns=soln_pds_funits_adopted_leds_commercial_list[0]).set_index('Year')
   ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=50000.0,
           soln_avg_annual_use=3635.85)
   ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
       ref_tam_per_region=None, pds_tam_per_region=None,
-      soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None)
+      soln_pds_funits_adopted=funits_adopted, soln_ref_funits_adopted=None)
   result = ua.soln_pds_new_iunits_reqd()
   expected = pd.DataFrame(soln_pds_new_iunits_reqd_leds_commercial_list[1:],
       columns=soln_pds_new_iunits_reqd_leds_commercial_list[0]).set_index('Year')
   expected.name = "soln_pds_new_iunits_reqd"
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=None, soln_ref_funits_adopted=funits_adopted)
+  result = ua.soln_ref_new_iunits_reqd()
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_new_iunits_reqd_rounding_bug():
@@ -581,8 +586,7 @@ def test_new_iunits_reqd_rounding_bug():
   # 63998.595/2844.382 = 22.5 which cannot be represented by a floating point number
   # and will instead be 22.4999. Python's round() will return 22. Excel handles
   # this differently to return the 23 that humans expect.
-  # This test case will fail if *_new_iunits_reqd() uses round(), and pass
-  # if decimal.quantize is used.
+  # This test case will fail if *_new_iunits_reqd() uses the basic Python round().
   ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
       ref_tam_per_region=None, pds_tam_per_region=None,
       soln_pds_funits_adopted=soln_pds_funits_adopted,
