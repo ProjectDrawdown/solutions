@@ -11,6 +11,8 @@ import buildingautomation
 import carpooling
 import composting
 import concentratedsolar
+import districtheating
+import electricbikes
 import electricvehicles
 import highspeedrail
 import improvedcookstoves
@@ -19,6 +21,7 @@ import insulation
 import landfillmethane
 import leds_commercial
 import leds_residential
+import masstransit
 import microwind
 import offshorewind
 import onshorewind
@@ -35,7 +38,10 @@ import telepresence
 import trains
 import trucks
 import tropicalforests
+import walkablecities
+import waterdistribution
 import waterefficiency
+import waveandtidal
 
 def test_airplanes():
   scenario = list(airplanes.scenarios.keys())[0]
@@ -97,6 +103,18 @@ def test_concentratedsolar():
   assert obj.scenario == scenario
   assert obj.name
 
+def test_districtheating():
+  scenario = list(districtheating.scenarios.keys())[0]
+  obj = districtheating.DistrictHeating(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_electricbikes():
+  scenario = list(electricbikes.scenarios.keys())[0]
+  obj = electricbikes.ElectricBicycles(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
 def test_electricvehicles():
   scenario = list(electricvehicles.scenarios.keys())[0]
   obj = electricvehicles.ElectricVehicles(scenario=scenario)
@@ -142,6 +160,12 @@ def test_leds_commercial():
 def test_leds_residential():
   scenario = list(leds_residential.scenarios.keys())[0]
   obj = leds_residential.ResidentialLEDLighting(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_masstransit():
+  scenario = list(masstransit.scenarios.keys())[0]
+  obj = masstransit.MassTransit(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
@@ -241,8 +265,26 @@ def test_tropicalforests():
   assert obj.scenario == scenario
   assert obj.name
 
+def test_walkablecities():
+  scenario = list(walkablecities.scenarios.keys())[0]
+  obj = walkablecities.WalkableCities(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_waterdistribution():
+  scenario = list(waterdistribution.scenarios.keys())[0]
+  obj = waterdistribution.WaterDistribution(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
 def test_waterefficiency():
   scenario = list(waterefficiency.scenarios.keys())[0]
   obj = waterefficiency.WaterEfficiencyMeasures(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_waveandtidal():
+  scenario = list(waveandtidal.scenarios.keys())[0]
+  obj = waveandtidal.WaveAndTidal(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name

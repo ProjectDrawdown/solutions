@@ -145,7 +145,7 @@ def get_rrs_scenarios(wb):
                 ]
 
       assert sr_tab.cell_value(row + 183, 1) == 'Existing PDS Prognostication Assumptions'
-      adopt = str(sr_tab.cell_value(row + 184, 4)).strip()
+      adopt = normalize_source_name(str(sr_tab.cell_value(row + 184, 4)).strip())
       if adopt: s['soln_pds_adoption_prognostication_source'] = adopt
       adopt = str(sr_tab.cell_value(row + 185, 4)).strip()
       if adopt: s['soln_pds_adoption_prognostication_trend'] = adopt
@@ -752,7 +752,7 @@ def write_custom_ad(case, f, wb, outputdir):
   f.write("    ca_{}_data_sources = [\n".format(case.lower()))
 
   for s in scenarios:
-    f.write("      {'name': '" + s['name'] + "', 'include': " + str(s['include']) + ",\n")
+    f.write("      {'name': '" + s['name'].strip() + "', 'include': " + str(s['include']) + ",\n")
     f.write("          'filename': THISDIR.joinpath({})}},\n".format(
         "'ca_{}_data', '{}'".format(case.lower(), s['filename'])))
   f.write("    ]\n")
@@ -1432,12 +1432,15 @@ def infer_classname(filename):
       ('CSP_', 'ConcentratedSolar'),
       ('High Efficient Heat Pumps', 'HeatPumps'),
       ('Household & Commercial Recycling', 'Recycling'),
+      ('Increasing Distribution Efficiency in WDSs', 'WaterDistribution'),
       ('Instream Hydro', 'InstreamHydro'),
       ('Large Biodigesters', 'Biogas'),
       ('MicroWind Turbines', 'MicroWind'),
       ('Oceanic Freight Improvements', 'Ships'),
       ('Regenerative_Agriculture', 'RegenerativeAgriculture'),
+      ('Renewable District Heating', 'DistrictHeating'),
       ('Rooftop Solar PV', 'SolarPVRoof'),
+      ('Small Biogas Digesters', 'BiogasSmall'),
       ('SolarPVUtility', 'SolarPVUtil'),
       ('SolarPVRooftop', 'SolarPVRoof'),
       ('solution_xls_extract_RRS_test_A', 'TestClassA'),
