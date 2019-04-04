@@ -28,7 +28,6 @@ from solution import biomass
 from solution import bioplastic
 from solution import buildingautomation
 from solution import carpooling
-from solution import cars
 from solution import composting
 from solution import concentratedsolar
 from solution import districtheating
@@ -916,21 +915,6 @@ def test_Carpooling_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in carpooling.scenarios.keys():
     obj = carpooling.Carpooling(scenario=scenario)
-    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
-    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
-
-
-
-@pytest.mark.integration
-@pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('cars', 'testdata',
-        'Drawdown-Car Fuel Efficiency_RRS_v1,1_31Dec2018_PUBLIC.xlsm'))],
-    indirect=True)
-def test_Cars_RRS(start_excel, tmpdir):
-  """Test for Excel model file Cars*."""
-  workbook = start_excel
-  for scenario in cars.scenarios.keys():
-    obj = cars.Cars(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
