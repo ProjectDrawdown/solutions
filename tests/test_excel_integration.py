@@ -28,9 +28,10 @@ from solution import biomass
 from solution import bioplastic
 from solution import buildingautomation
 from solution import carpooling
-from solution import cars
 from solution import composting
 from solution import concentratedsolar
+from solution import districtheating
+from solution import electricbikes
 from solution import electricvehicles
 from solution import highspeedrail
 from solution import improvedcookstoves
@@ -39,6 +40,7 @@ from solution import insulation
 from solution import landfillmethane
 from solution import leds_commercial
 from solution import leds_residential
+from solution import masstransit
 from solution import microwind
 from solution import offshorewind
 from solution import onshorewind
@@ -55,7 +57,10 @@ from solution import telepresence
 from solution import trains
 from solution import trucks
 from solution import tropicalforests
+from solution import walkablecities
+from solution import waterdistribution
 from solution import waterefficiency
+from solution import waveandtidal
 
 solutiondir = pathlib.Path(__file__).parents[1].joinpath('solution')
 
@@ -451,7 +456,7 @@ def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=Tr
     ref_tam_mask = None
     verify['Unit Adoption Calculations'] = []
 
-  if not include_regional_data:
+  if not include_regional_data or is_custom_ad_with_no_regional_data(obj):
     regional_mask = obj.ua.soln_pds_cumulative_funits().reset_index()
     regional_mask.loc[:, :] = True
     regional_mask.loc[:, ['Year', 'World']] = False
@@ -660,7 +665,7 @@ def verify_ch4_calcs(obj, verify=None):
   return verify
 
 
-def is_custom_pds_with_no_regional_data(obj):
+def is_custom_ad_with_no_regional_data(obj):
   """Check for Custom PDS adoption with no regional adoption data.
 
      This situation is not handled well in Excel:
@@ -674,11 +679,14 @@ def is_custom_pds_with_no_regional_data(obj):
      will be NaN. For the test, if there is Custom PDS Adoption and it
      contains no regional data, we skip checking the regional results.
   """
-  if obj.ac.soln_pds_adoption_basis != 'Fully Customized PDS':
-    return False
-  data = obj.pds_ca.adoption_data_per_region()
-  if all(pd.isnull(data.drop(columns='World'))):
-    return True
+  if obj.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
+    data = obj.pds_ca.adoption_data_per_region()
+    if all(pd.isnull(data.drop(columns='World'))):
+      return True
+  if obj.ac.soln_ref_adoption_basis == 'Custom':
+    data = obj.ref_ca.adoption_data_per_region()
+    if all(pd.isnull(data.drop(columns='World'))):
+      return True
   return False
 
 
@@ -689,7 +697,7 @@ def RRS_solution_verify_list(obj, workbook):
        workbook: xlwings workbook of the Excel file to verify against.
   """
   verify = {}
-  include_regional_data = not is_custom_pds_with_no_regional_data(obj)
+  include_regional_data = not is_custom_ad_with_no_regional_data(obj)
 
   sheet = workbook.sheets['TAM Data']
   if excel_read_cell_xlwings(sheet, 'N45') == 'Functional Unit':
@@ -911,21 +919,6 @@ def test_Carpooling_RRS(start_excel, tmpdir):
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
-
-@pytest.mark.integration
-@pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('cars', 'testdata',
-        'Drawdown-Car Fuel Efficiency_RRS_v1,1_31Dec2018_PUBLIC.xlsm'))],
-    indirect=True)
-def test_Cars_RRS(start_excel, tmpdir):
-  """Test for Excel model file Cars*."""
-  workbook = start_excel
-  for scenario in cars.scenarios.keys():
-    obj = cars.Cars(scenario=scenario)
-    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
-    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
-
-
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('composting', 'testdata',
@@ -951,6 +944,34 @@ def test_ConcentratedSolar_RRS_ELECGEN(start_excel, tmpdir):
   workbook = start_excel
   for scenario in concentratedsolar.scenarios.keys():
     obj = concentratedsolar.ConcentratedSolar(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('districtheating', 'testdata',
+        'Drawdown-Renewable District Heating_RRS_v1.1_18Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_DistrictHeating_RRS(start_excel, tmpdir):
+  """Test for Excel model file District Heating."""
+  workbook = start_excel
+  for scenario in districtheating.scenarios.keys():
+    obj = districtheating.DistrictHeating(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('electricbikes', 'testdata',
+        'Drawdown-Electric Bicycles_RRS_v1.1_30Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_ElectricBikes_RRS(start_excel, tmpdir):
+  """Test for Excel model file Electric Bikes."""
+  workbook = start_excel
+  for scenario in electricbikes.scenarios.keys():
+    obj = electricbikes.ElectricBicycles(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1067,6 +1088,20 @@ def test_LEDResidentialLighting_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in leds_residential.scenarios.keys():
     obj = leds_residential.ResidentialLEDLighting(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('masstransit', 'testdata',
+        'Drawdown-Mass Transit_RRS_v1.1_29Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_MassTransit_RRS(start_excel, tmpdir):
+  """Test for Excel model file Mass Transit_RRS_*."""
+  workbook = start_excel
+  for scenario in masstransit.scenarios.keys():
+    obj = masstransit.MassTransit(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1301,6 +1336,34 @@ def test_Trucks_RRS(start_excel):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('walkablecities', 'testdata',
+        'Drawdown-Walkable Cities_RRS_v1,1_31Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_WalkableCities_RRS(start_excel):
+  """Test for Excel model file Walkable Cities*."""
+  workbook = start_excel
+  for scenario in walkablecities.scenarios.keys():
+    obj = walkablecities.WalkableCities(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('waterdistribution', 'testdata',
+        'Drawdown-Increasing Distribution Efficiency in WDSs_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_WaterDistribution_RRS(start_excel):
+  """Test for Excel model file WaterDistribution*."""
+  workbook = start_excel
+  for scenario in waterdistribution.scenarios.keys():
+    obj = waterdistribution.WaterDistribution(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('waterefficiency', 'testdata',
         'Drawdown-Water Efficiency Measures_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
     indirect=True)
@@ -1309,5 +1372,19 @@ def test_WaterEfficiency_RRS(start_excel):
   workbook = start_excel
   for scenario in waterefficiency.scenarios.keys():
     obj = waterefficiency.WaterEfficiencyMeasures(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('waveandtidal', 'testdata',
+        'Drawdown-Wave and Tidal_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_WaveAndTidal_RRS(start_excel):
+  """Test for Excel model file Wave and Tidal *."""
+  workbook = start_excel
+  for scenario in waveandtidal.scenarios.keys():
+    obj = waveandtidal.WaveAndTidal(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)

@@ -25,9 +25,9 @@ Farmland Restoration,, Food
 Improved Rice Cultivation,, Food
 Concentrated Solar, concentratedsolar, Electricity Generation
 Electric Vehicles, electricvehicles, Transport
-District Heating,, Buildings and Cities
+District Heating, districtheating, Buildings and Cities
 Multistrata Agroforestry,, Food
-Wave and Tidal,, Electricity Generation
+Wave and Tidal, waveandtidal, Electricity Generation
 Methane Digesters (Large), biogas, Electricity Generation
 Insulation, insulation, Buildings and Cities
 Ships, ships, Transport
@@ -35,7 +35,7 @@ LED Lighting (Household), leds_residential, Buildings and Cities
 Biomass, biomass, Electricity Generation
 Bamboo,, Land Use
 Alternative Cement, altcement, Materials
-Mass Transit,, Transport
+Mass Transit, masstransit, Transport
 Forest Protection,, Land Use
 Indigenous Peoples’ Land Management,, Land Use
 Trucks, trucks, Transport
@@ -52,7 +52,7 @@ Cogeneration,, Electricity Generation
 Perennial Biomass,, Land Use
 Coastal Wetlands,, Land Use
 System of Rice Intensification,, Food
-Walkable Cities,, Buildings and Cities
+Walkable Cities, walkablecities, Buildings and Cities
 Household Recycling,, Materials
 Industrial Recycling,, Materials
 Smart Thermostats, smartthermostats, Buildings and Cities
@@ -67,9 +67,9 @@ Nutrient Management,, Food
 High-speed Rail, highspeedrail, Transport
 Farmland Irrigation,, Food
 Waste-to-Energy,, Electricity Generation
-Electric Bikes,, Transport
+Electric Bikes, electricbikes, Transport
 Recycled Paper, recycledpaper, Materials
-Water Distribution,, Buildings and Cities
+Water Distribution, waterdistribution, Buildings and Cities
 Biochar,, Food
 Green Roofs,, Buildings and Cities
 Trains, trains, Transport
