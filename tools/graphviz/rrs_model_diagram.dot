@@ -1,0 +1,35 @@
+strict digraph {
+    emissionsfactors [shape=box,id=ef];
+    TAM [shape=box,id=tm];
+    customadoption_ref [shape=box,id=caref,label="customadoption\n(REF)"];
+    customadoption_pds [shape=box,id=capds,label="customadoption\n(PDS)"];
+    s_curve [shape=box,id=sc];
+    VMA [shape=box,id=vma];
+    adoptiondata [shape=box,id=ad];
+    helpertables [shape=box,id=ht];
+    unitadoption [shape=box,id=ua];
+    ch4calcs [shape=box,id=c4];
+    co2calcs [shape=box,id=c2];
+    firstcost [shape=box,id=fc];
+    operatingcost [shape=box,id=oc];
+
+    {rank=same; helpertables; unitadoption;}
+    {rank=same; emissionsfactors; firstcost; ch4calcs; }
+    {rank=same; co2calcs; operatingcost;}
+
+    TAM -> helpertables [tooltip="TAM per region",id="tm_to_ht"];
+    adoptiondata -> helpertables [tooltip="adoption",id="ad_to_ht"];
+    customadoption_ref -> helpertables [tooltip="adoption",id="caref_to_ht"];
+    customadoption_pds -> helpertables [tooltip="adoption",id="capds_to_ht"];
+    s_curve -> helpertables [tooltip="adoption",id="sc_to_ht"];
+    TAM -> unitadoption [tooltip="TAM per region",id="tm_to_ua"];
+    helpertables -> unitadoption [tooltip="funits",constraint=false,id="ht_to_ua"];
+    unitadoption -> firstcost [tooltip="iunits",id="ua_to_fc"];
+    unitadoption -> operatingcost [tooltip="funits, iunits",id="ua_to_oc"];
+    firstcost -> operatingcost [tooltip="first cost, install cost",id="fc_to_oc"];
+
+    emissionsfactors -> co2calcs [tooltip="CO2 per KWh",id="ef_to_c2",constraint=false];
+    unitadoption -> ch4calcs [tooltip="funits",id="ua_to_c4"];
+    ch4calcs -> co2calcs [tooltip="CH4 PPB",id="c4_to_c2"];
+    unitadoption -> co2calcs [tooltip="electricity, emissions, funits, iunits",id="ua_to_c2"];
+}
