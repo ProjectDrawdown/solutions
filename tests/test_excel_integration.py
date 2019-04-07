@@ -33,6 +33,7 @@ from solution import concentratedsolar
 from solution import districtheating
 from solution import electricbikes
 from solution import electricvehicles
+from solution import forestprotection
 from solution import highspeedrail
 from solution import improvedcookstoves
 from solution import instreamhydro
@@ -53,6 +54,7 @@ from solution import smartthermostats
 from solution import solarhotwater
 from solution import solarpvutil
 from solution import solarpvroof
+from solution import temperateforests
 from solution import telepresence
 from solution import trains
 from solution import trucks
@@ -992,6 +994,21 @@ def test_ElectricVehicles_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('forestprotection', 'testdata',
+        'Forest_Protection_L-UseProtect_Model_v1.1c_26July18.xlsm'))],
+    indirect=True)
+@pytest.mark.skip(reason='requires unitadoption and co2calcs to deal with degraded land')
+def test_ForestProtection_LAND(start_excel, tmpdir):
+  """Test for Excel model file Forest_Protection_L-Use*"""
+  workbook = start_excel
+  for scenario in forestprotection.scenarios.keys():
+    obj = forestprotection.ForestProtection(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('highspeedrail', 'testdata',
         'Drawdown-High Speed Rail_RRS_v1.1_5Dec2018_PUBLIC.xlsm'))],
     indirect=True)
@@ -1281,6 +1298,28 @@ def test_Telepresence_RRS(start_excel):
   for scenario in telepresence.scenarios.keys():
     obj = telepresence.Telepresence(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('temperateforests', 'testdata', 'Temperate_Forest_Restoration_L-Use_v1.1b_27July18.xlsm'))],
+    indirect=True)
+def test_TemperateForests_LAND(start_excel, tmpdir):
+  """Test for Excel model file Temperate_Forest_Restoration_L-Use*."""
+  workbook = start_excel
+  for scenario, ac in temperateforests.scenarios.items():
+    if not ac.use_custom_tla:
+        # Temperate Forests has a custom TLA very similar to the allocated TLA. Some of the custom adoption data
+        # arbitrarily links to the value for World TLA in Advanced Controls, causing them to vary very slightly
+        # if 'Use Customized TLA' is switched on. The saved CSV files for Custom PDS Adoption are a snapshot of
+        # the avg book version scenario, which uses custom TLA. Thus, we only test scenarios which also use custom
+        # TLA. We will figure out how to deal with linked custom adoption values later, although in the case of
+        # this solution the values do not change a significant amount anyway (it is questionable whether there
+        # is a good reason for having a custom TLA in the first place).
+        continue
+    obj = temperateforests.TemperateForests(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

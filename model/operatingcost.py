@@ -200,9 +200,14 @@ class OperatingCost:
     breakout.index.name = 'Year'
     breakout.index = breakout.index.astype(int)
 
+    # if there are no operating costs we return a table of 0s
+    if not self.ac.has_var_costs and not fixed_oper_cost_per_iunit:
+      return breakout
+
     for year in range(first_year, last_year + 1):
       # within the years of interest, assume replacement of worn out equipment.
       lifetime = lifetime_replacement
+      assert lifetime_replacement != 0, 'Cannot have a lifetime replacement of 0 and non-zero operating costs'
       while math.ceil(lifetime) < (last_year + 1 - year):
         lifetime += lifetime_replacement
 

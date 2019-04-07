@@ -30,28 +30,6 @@ COLUMN_DTYPE_MAP = {
     'Exclude Data?': lambda x: convert_bool(x) if x is not nan else x,
 }
 
-ADOPTION_VARIABLES = [
-    'Current Adoption', 'CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies',
-    'SOLUTION First Cost per Implementation Unit of the solution',
-    'CONVENTIONAL Operating Cost per Functional Unit per Annum',
-    'SOLUTION Operating Cost per Functional Unit per Annum',
-    'CONVENTIONAL Net Profit Margin per Functional Unit per Annum',
-    'SOLUTION Net Profit Margin per Functional Unit per Annum', 'Yield  from CONVENTIONAL Practice',
-    'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)'
-]
-
-EMISSIONS_REDUCTION_VARIABLES = [
-    'Electricty Consumed per CONVENTIONAL Functional Unit', 'Energy Efficiency Factor - SOLUTION',
-    'Total Energy Used per SOLUTION functional unit', 'Fuel Consumed per CONVENTIONAL Functional Unit',
-    'Fuel Reduction Factor SOLUTION', 't CO2-eq (Aggregate emissions) Reduced per Land Unit',
-    't CO2 Reduced per Land Unit', 't N2O-CO2-eq Reduced per Land Unit', 't CH4-CO2-eq Reduced per Land Unit',
-    'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE',
-    'Indirect CO2 Emissions per SOLUTION Implementation Unit'
-]
-
-SEQUESTRATION_AND_LAND_INPUTS = [
-    'Sequestration Rates', 'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing', 'Disturbance Rate']
-
 
 def make_vma_df_template():
     """
@@ -113,7 +91,7 @@ class VMAReader:
             row1, col1 = cell_to_offsets(source_id_cell)
         else:  # for use with read_xls
             row1, col1 = source_id_cell
-        for r in range(30):
+        for r in range(51):
             new_row = {}
             for c in range(15):
                 if c == 14:
@@ -132,26 +110,12 @@ class VMAReader:
                 df = df.append(new_row, ignore_index=True)
         else:
             warnings.warn(
-                'No blank row detected in table. Either there are 30+ VMAs in table, the table has been misused'
-                'or there is some error in the code.')
+                'No blank row detected in table. Either there are 51+ VMAs in table, the table has been misused '
+                'or there is some error in the code. Cell: {}'.format(source_id_cell))
         if (df['Weight'] == 0).all():
             # Sometimes all weights are set to 0 instead of blank. In this case we want them to be NaN.
             df['Weight'] = df['Weight'].replace(0, nan)
         return df
-
-    def _find_first_cells(self):
-        section_titles = ['ADOPTION VARIABLES', 'FINANCIAL VARIABLES', 'EMISSIONS REDUCTION VARIABLES',
-                          'SEQUESTRATION AND LAND INPUTS', 'ADDITIONAL VARIABLES']
-        first_cells = {}
-        for r in range(30, 1000):
-            if self.sheet.cell_value(r, 0) == section_titles[0]:
-                # first cell may be the row below but _find_tables will deal with that
-                first_cells[section_titles.pop(0)] = (r + 1, 2)
-            if not section_titles:
-                break
-        else:
-            print('Could not find section titles: {}'.format(section_titles))
-        self.first_cells = first_cells
 
     def _find_tables(self):
         """
@@ -160,55 +124,41 @@ class VMAReader:
         100 rows from each table title. We also comb 10 rows ahead of each title to find
         the SOURCE ID cell, as this is also a varying spacing.
         """
-        self._find_first_cells()
-        all_vars = OrderedDict([
-            ('ADOPTION VARIABLES', ADOPTION_VARIABLES),
-            ('EMISSIONS REDUCTION VARIABLES', EMISSIONS_REDUCTION_VARIABLES),
-            ('SEQUESTRATION AND LAND INPUTS', SEQUESTRATION_AND_LAND_INPUTS),
-            # additional variables go up to Variable 37 in accordance with the xls
-            ('ADDITIONAL VARIABLES', ['var' + str(i) for i in range(24, 38)])
-        ])
-        table_locations = OrderedDict()
-        for key, table_titles in all_vars.items():
-            row, col = self.first_cells[key]
-            for table_i, title in enumerate(table_titles):
-                found = False
-                for rows_to_next_table in range(100):
-                    if self.sheet.cell_value(row + rows_to_next_table, col) == title:
-                        for space_after_title in range(10):
-                            offset = rows_to_next_table + space_after_title
-                            if self.sheet.cell_value(row + offset, col) == 'SOURCE ID: Author/Org, Date, Info':
-                                table_locations[title] = (row + offset, col)
-                                row += offset
-                                found = True
-                                break
-                        else:
-                            raise Exception('Cannot find SOURCE ID cell for ' + title)
-                    elif title.startswith('var'):  # additional variables
-                        table_num = self.sheet.cell_value(row + rows_to_next_table, col - 2)
-                        # as we cannot do a name check for solution specific names, we check the table number one
-                        # cell to the left of the name to verify we have the title cell. This should start at 24.
-                        if table_num == table_i + 24:
-                            # we must also check the table has been named or we assume there are no additional vars
-                            title_from_cell = self.sheet.cell_value(row + rows_to_next_table, col)
-                            if title_from_cell.startswith('VARIABLE'):
-                                self.table_locations = table_locations
-                                return  # search for tables ends here
-                            else:
-                                for space_after_title in range(10):
-                                    offset = rows_to_next_table + space_after_title
-                                    if self.sheet.cell_value(row + offset, col) == 'SOURCE ID: Author/Org, Date, Info':
-                                        table_locations[title_from_cell] = (row + offset, col)
-                                        row += offset
-                                        found = True
-                                        break
-                                else:
-                                    raise Exception('Cannot find SOURCE ID cell for ' + title)
 
-                    if found:
-                        break
-                else:
-                    print(table_locations)
-                    raise Exception('Cannot find: ' + title)
+        table_locations = OrderedDict()
+        row, col = 40, 2
+        for table_num in range(1, 36):
+            found = False
+            for rows_to_next_table in range(100):
+                title_from_cell = self.sheet.cell_value(row + rows_to_next_table, col)
+                # print(title_from_cell)
+                if title_from_cell.startswith('VARIABLE'):
+                    # if the table has a generic VARIABLE title we assume there are no more variables to record
+                    self.table_locations = table_locations
+                    return  # search for tables ends here
+                elif not title_from_cell:
+                    continue
+
+                # rather than recording titles we will check for vma number. We need to validate both the number and
+                # ensure that the column where "common units" would be is empty, as the number alone is not enough
+                # to uniquely identify a title row (table rows are also numbered)
+                table_num_on_sheet = self.sheet.cell_value(row + rows_to_next_table, col - 2)
+                common_units_check = not self.sheet.cell_value(row + rows_to_next_table, col + 11)
+                if table_num_on_sheet == table_num and common_units_check:  # i.e. if title cell of table
+                    for space_after_title in range(10):
+                        offset = rows_to_next_table + space_after_title
+                        if self.sheet.cell_value(row + offset, col) == 'SOURCE ID: Author/Org, Date, Info':
+                            table_locations[title_from_cell] = (row + offset, col)
+                            row += offset
+                            found = True
+                            # print('----------------------------FOUND {}'.format(title_from_cell))
+                            break
+                    else:
+                        raise Exception('Cannot find SOURCE ID cell for {}'.format(title_from_cell))
+                if found:
+                    break
+            else:
+                print(table_locations)
+                raise Exception('Cannot find table number {}'.format(table_num))
         self.table_locations = table_locations
 
