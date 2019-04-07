@@ -1,8 +1,7 @@
 import pathlib
 import pandas as pd
 import xlrd
-from tools.vma_xls_extract import make_vma_df_template, VMAReader, ADOPTION_VARIABLES, EMISSIONS_REDUCTION_VARIABLES,\
-    SEQUESTRATION_AND_LAND_INPUTS
+from tools.vma_xls_extract import make_vma_df_template, VMAReader
 
 thisdir = pathlib.Path(__file__).parents[0]
 wb = xlrd.open_workbook(thisdir.joinpath('silvopasture_vma.xlsx'))
@@ -23,18 +22,6 @@ def test_single_table():
     expected = pd.read_csv(thisdir.joinpath('silvopasture_vma1.csv'))
     # integer values for years are causing an unimportant dtype issue in the test
     pd.testing.assert_frame_equal(expected.drop(columns=['Year / Date']), result.drop(columns=['Year / Date']))
-
-
-def test_find_tables():
-    vma_r = VMAReader(wb)
-    vma_r._find_tables()
-    # check all titles are there
-    for title in ADOPTION_VARIABLES + EMISSIONS_REDUCTION_VARIABLES + SEQUESTRATION_AND_LAND_INPUTS:
-        assert title in vma_r.table_locations.keys()
-
-    # check locations of title cells are correct
-    for _, location in vma_r.table_locations.items():
-        assert vma_r.sheet.cell_value(*location) == 'SOURCE ID: Author/Org, Date, Info'
 
 
 def test_read_xls_num_dfs():

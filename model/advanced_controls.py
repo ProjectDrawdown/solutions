@@ -354,9 +354,9 @@ class AdvancedControls:
     self.vmas = vmas
 
     self.pds_2014_cost = self._substitute_vma(
-      pds_2014_cost, vma_title='SOLUTION First Cost per Implementation Unit of the solution')
+      pds_2014_cost, vma_title='SOLUTION First Cost per Implementation Unit')
     self.ref_2014_cost = self._substitute_vma(
-      ref_2014_cost, vma_title='SOLUTION First Cost per Implementation Unit of the solution')
+      ref_2014_cost, vma_title='SOLUTION First Cost per Implementation Unit')
     self.conv_2014_cost = self._substitute_vma(
       conv_2014_cost, vma_title='CONVENTIONAL First Cost per Implementation Unit for replaced practices technologies')
     self.soln_first_cost_efficiency_rate = soln_first_cost_efficiency_rate
@@ -445,7 +445,7 @@ class AdvancedControls:
 
     # LAND only
     self.seq_rate_global = self._substitute_vma(seq_rate_global, vma_title='Sequestration Rates')
-    self.disturbance_rate = disturbance_rate
+    self.disturbance_rate = self._substitute_vma(disturbance_rate, vma_title='Disturbance Rate')
     self.soln_expected_lifetime = soln_expected_lifetime
     self.conv_expected_lifetime = conv_expected_lifetime
     self.yield_from_conv_practice = self._substitute_vma(yield_from_conv_practice,
@@ -560,7 +560,7 @@ class AdvancedControls:
       return val['value']
     elif isinstance(val, str):
       if vma_title not in self.vmas:
-        raise KeyError('{} must be included in vmas to calculate mean/high/low'.format(vma_title))
+        raise KeyError('{} must be included in vmas to calculate mean/high/low. vmas included: {}'.format(vma_title, self.vmas.keys()))
       return self.vmas[vma_title].avg_high_low(key=val.lower())
     else:
       return val

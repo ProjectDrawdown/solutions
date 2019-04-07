@@ -10,7 +10,7 @@ Solar Farms, solarpvutil, Electricity Generation
 Silvopasture,silvopasture, Food
 Rooftop Solar, solarpvroof, Electricity Generation
 Regenerative Agriculture,, Food
-Temperate Forests,, Land Use
+Temperate Forests, temperateforests, Land Use
 Peatlands,, Land Use
 Tropical Staple Trees,, Food
 Afforestation,, Land Use
@@ -36,7 +36,7 @@ Biomass, biomass, Electricity Generation
 Bamboo,, Land Use
 Alternative Cement, altcement, Materials
 Mass Transit, masstransit, Transport
-Forest Protection,, Land Use
+Forest Protection, forestprotection, Land Use
 Indigenous Peoples’ Land Management,, Land Use
 Trucks, trucks, Transport
 Solar Water, solarhotwater, Electricity Generation

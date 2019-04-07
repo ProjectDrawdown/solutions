@@ -14,6 +14,7 @@ import concentratedsolar
 import districtheating
 import electricbikes
 import electricvehicles
+import forestprotection
 import highspeedrail
 import improvedcookstoves
 import instreamhydro
@@ -35,6 +36,7 @@ import solarhotwater
 import solarpvroof
 import solarpvutil
 import telepresence
+import temperateforests
 import trains
 import trucks
 import tropicalforests
@@ -118,6 +120,12 @@ def test_electricbikes():
 def test_electricvehicles():
   scenario = list(electricvehicles.scenarios.keys())[0]
   obj = electricvehicles.ElectricVehicles(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_forestprotection():
+  scenario = list(forestprotection.scenarios.keys())[0]
+  obj = forestprotection.ForestProtection(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 
@@ -244,6 +252,12 @@ def test_solarpvutil():
 def test_telepresence():
   scenario = list(telepresence.scenarios.keys())[0]
   obj = telepresence.Telepresence(scenario=scenario)
+  assert obj.scenario == scenario
+  assert obj.name
+
+def test_temperateforests():
+  scenario = list(temperateforests.scenarios.keys())[0]
+  obj = temperateforests.TemperateForests(scenario=scenario)
   assert obj.scenario == scenario
   assert obj.name
 

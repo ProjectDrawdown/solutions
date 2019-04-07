@@ -382,9 +382,10 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['conv_emissions_per_funit', 'soln_emissions_per_funit'],
       prefix=prefix, suffix='\n')
 
-  f.write('\n' + prefix + '# sequestration' + '\n')
-  oneline(f=f, s=s, names=['seq_rate_global'], prefix=prefix,)
-  oneline(f=f, s=s, names=['disturbance_rate'], prefix=prefix, suffix='\n')
+  if 'seq_rate_global' in s:
+    f.write('\n' + prefix + '# sequestration' + '\n')
+    oneline(f=f, s=s, names=['seq_rate_global'], prefix=prefix,)
+    oneline(f=f, s=s, names=['disturbance_rate'], prefix=prefix, suffix='\n')
 
 def xls(tab, row, col):
   """Return a quoted string read from tab(row, col)."""
@@ -1294,11 +1295,13 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   else:
     scenarios = {}
 
-  #extract_vmas(wb=wb, outputdir=outputdir)
-
   f.write("DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
   f.write("THISDIR = pathlib.Path(__file__).parents[0]\n")
-  f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
+  if is_land:
+    extract_vmas(wb=wb, outputdir=outputdir)
+    f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
+  else:
+    f.write("\n")
   f.write("REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',\n")
   f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
   f.write("\n")
@@ -1476,11 +1479,11 @@ def link_vma(cell_value):
   """
   if not isinstance(cell_value, str) or 'Formula:=' not in cell_value:
     return convert_sr_float(cell_value)
-  if cell_value.endswith('80') or cell_value.endswith('95') or cell_value.endswith('175'):
+  if cell_value.endswith('80') or cell_value.endswith('95') or cell_value.endswith('175') or cell_value.endswith('189'):
     return 'mean'
-  elif cell_value.endswith('81') or cell_value.endswith('96') or cell_value.endswith('176'):
+  elif cell_value.endswith('81') or cell_value.endswith('96') or cell_value.endswith('176') or cell_value.endswith('190'):
     return 'high'
-  elif cell_value.endswith('82') or cell_value.endswith('97') or cell_value.endswith('177'):
+  elif cell_value.endswith('82') or cell_value.endswith('97') or cell_value.endswith('177') or cell_value.endswith('191'):
     return 'low'
   else:
     formula = cell_value.split(':=')[1]
