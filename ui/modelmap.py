@@ -1,12 +1,8 @@
 """Manipulates SVG of the model operation as an overview for the researcher."""
 
 import os.path
-import re
 import xml.etree.ElementTree as ET
 from model import advanced_controls
-
-# Suppress output of 'ns0' namespace
-ET.register_namespace("", "http://www.w3.org/2000/svg")
 
 def get_model_overview_svg(model, highlights=None, width=None):
     """Return an SVG containing only the modules used in this solution."""
@@ -42,7 +38,6 @@ def get_model_overview_svg(model, highlights=None, width=None):
         delete_module(tree, 'sc')
 
     if highlights:
-        remove_edge_labels(tree)
         for name in highlights:
             node_color_fill(tree=tree, name=name)
 
@@ -54,39 +49,38 @@ def get_model_overview_svg(model, highlights=None, width=None):
 
 def delete_module(tree, name):
     """Remove a node and all edges which connect to it."""
-    for node in tree.findall(r'.//{http://www.w3.org/2000/svg}g[@class="node"]'):
-        if node.attrib['id'] == name:
-            node.attrib['visibility'] = 'invisible'
-            for child in list(node):
-                node.remove(child)
-    for edge in tree.findall(r'.//{http://www.w3.org/2000/svg}g[@class="edge"]'):
-        (source, _, dest) = edge.attrib['id'].split('_')
+    node = tree.find(r'.//{http://www.w3.org/2000/svg}g[@id="' + name + '"]')
+    for child in list(node):
+        node.remove(child)
+    for edge in tree.findall(r'.//{http://www.w3.org/2000/svg}g'):
+        if 'id' not in edge.attrib:
+            continue
+        try:
+            (source, _, dest) = edge.attrib['id'].split('_')
+        except ValueError:
+            continue
         if source == name or dest == name:
-            edge.attrib['visibility'] = 'invisible'
             for child in list(edge):
                 edge.remove(child)
 
-def remove_edge_labels(tree):
-    """Remove text labels from edges."""
-    for edge in tree.findall(r'.//{http://www.w3.org/2000/svg}textPath/...'):
-        for child in list(edge):
-            if 'textPath' in child.tag:
-                edge.remove(child)
-
 def node_color_fill(tree, name):
-    """Color one node in the tree."""
+    """Color one node in the tree.
+
+    Note that a list of modules is passed in, some of which may not exist in
+    this specific solution because the code passing in the highlights is generic.
+    It is not an error for name to not exist.
+    """
     node = tree.find(r'.//{http://www.w3.org/2000/svg}g[@id="' + name + '"]')
-    polygon = node.find(r'.//{http://www.w3.org/2000/svg}polygon')
-    polygon.attrib['fill'] = '#3D9970'
+    if node is not None:
+        rect = node[1]
+        rect.attrib['fill'] = '#3D9970'
 
 def resize(tree, width):
     """Adjust the viewPort to fit a new width."""
     svg = tree.getroot()
-    (_, w, _) = re.split(r'(\d+)', svg.attrib['width'], maxsplit=1)
-    old_width = float(w)
-    (_, h, _) = re.split(r'(\d+)', svg.attrib['height'], maxsplit=1)
-    old_height = float(h)
+    old_width = float(svg.attrib['width'])
+    old_height = float(svg.attrib['height'])
     ratio = float(width) / old_width
     new_height = old_height * ratio
-    svg.attrib['width'] = str(width) + 'px'
-    svg.attrib['height'] = str(new_height) + 'px'
+    svg.attrib['width'] = str(width)
+    svg.attrib['height'] = str(new_height)

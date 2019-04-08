@@ -1,212 +1,196 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://www.w3.org/1999/xlink" height="260pt" viewBox="0.00 0.00 563.72 260.00" width="564pt">
-<g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 256)">
-<title>Model Overview</title>
-<polygon fill="#ffffff" points="-4,4 -4,-256 559.7173,-256 559.7173,4 -4,4" stroke="transparent" />
-
-<g class="node" id="ef" visibility="visible">
-<title visibility="inherit">emissionsfactors</title>
-<polygon fill="none" points="317.5351,-108 207.8994,-108 207.8994,-72 317.5351,-72 317.5351,-108" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="262.7173" y="-85.8">emissionsfactors</text>
-</g>
-
-<g class="node" id="c2" visibility="visible">
-<title visibility="inherit">co2calcs</title>
-<polygon fill="none" points="434.9109,-36 370.5236,-36 370.5236,0 434.9109,0 434.9109,-36" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="402.7173" y="-13.8">co2calcs</text>
-</g>
-
-<g class="edge" id="ef_to_c2" visibility="visible">
-<title visibility="inherit">emissionsfactors-&gt;co2calcs</title>
-<g id="a_ef_to_c2" visibility="inherit"><a visibility="inherit" ns1:title="CO2 per KWh">
-<path d="M298.0452,-71.8314C317.2924,-61.9328 341.2184,-49.628 361.3353,-39.2822" fill="none" id="p_ef_to_c2" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="362.9875,-42.3683 370.2796,-34.6822 359.786,-36.1432 362.9875,-42.3683" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_ef_to_c2" startOffset="10%" visibility="inherit">CO2 per KWh</textPath></text></a>
-</g>
-</g>
-
-<g class="node" id="tm" visibility="visible">
-<title visibility="inherit">TAM</title>
-<polygon fill="none" points="483.7173,-252 429.7173,-252 429.7173,-216 483.7173,-216 483.7173,-252" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="456.7173" y="-229.8">TAM</text>
-</g>
-
-<g class="node" id="ht" visibility="visible">
-<title visibility="inherit">helpertables</title>
-<polygon fill="none" points="317.3528,-180 234.0817,-180 234.0817,-144 317.3528,-144 317.3528,-180" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="275.7173" y="-157.8">helpertables</text>
-</g>
-
-<g class="edge" id="tm_to_ht" visibility="visible">
-<title visibility="inherit">TAM-&gt;helpertables</title>
-<g id="a_tm_to_ht" visibility="inherit"><a visibility="inherit" ns1:title="TAM per region">
-<path d="M429.3433,-219.9343C426.4509,-218.5619 423.537,-217.2258 420.7173,-216 390.0856,-202.6838 355.0031,-189.564 327.0197,-179.5913" fill="none" id="p_tm_to_ht" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="328.0314,-176.2367 317.4366,-176.1999 325.696,-182.8356 328.0314,-176.2367" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_tm_to_ht" startOffset="10%" visibility="inherit">TAM per region</textPath></text></a>
-</g>
-</g>
-
-<g class="node" id="ua" visibility="visible">
-<title visibility="inherit">unitadoption</title>
-<polygon fill="none" points="499.99,-180 413.4445,-180 413.4445,-144 499.99,-144 499.99,-180" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="456.7173" y="-157.8">unitadoption</text>
-</g>
-
-<g class="edge" id="tm_to_ua" visibility="visible">
-<title visibility="inherit">TAM-&gt;unitadoption</title>
-<g id="a_tm_to_ua" visibility="inherit"><a visibility="inherit" ns1:title="TAM per region">
-<path d="M456.7173,-215.8314C456.7173,-208.131 456.7173,-198.9743 456.7173,-190.4166" fill="none" id="p_tm_to_ua" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="460.2174,-190.4132 456.7173,-180.4133 453.2174,-190.4133 460.2174,-190.4132" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_tm_to_ua" startOffset="10%" visibility="inherit">TAM per region</textPath></text></a>
-</g>
-</g>
-
-<g class="node" id="caref" visibility="visible">
-<title visibility="inherit">customadoption_ref</title>
-<polygon fill="none" points="105.6528,-252 -.2182,-252 -.2182,-216 105.6528,-216 105.6528,-252" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="52.7173" y="-236.8">customadoption</text>
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="52.7173" y="-222.8">(REF)</text>
-</g>
-
-<g class="edge" id="caref_to_ht" visibility="visible">
-<title visibility="inherit">customadoption_ref-&gt;helpertables</title>
-<g id="a_caref_to_ht" visibility="inherit"><a visibility="inherit" ns1:title="adoption">
-<path d="M105.5652,-216.937C141.4724,-205.3436 188.7245,-190.0874 224.3205,-178.5945" fill="none" id="p_caref_to_ht" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="225.5914,-181.8621 234.0322,-175.4588 223.4406,-175.2007 225.5914,-181.8621" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_caref_to_ht" startOffset="10%" visibility="inherit">adoption</textPath></text></a>
-</g>
-</g>
-
-<g class="node" id="capds" visibility="visible">
-<title visibility="inherit">customadoption_pds</title>
-<polygon fill="none" points="228.6528,-252 122.7818,-252 122.7818,-216 228.6528,-216 228.6528,-252" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="175.7173" y="-236.8">customadoption</text>
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="175.7173" y="-222.8">(PDS)</text>
-</g>
-
-<g class="edge" id="capds_to_ht" visibility="visible">
-<title visibility="inherit">customadoption_pds-&gt;helpertables</title>
-<g id="a_capds_to_ht" visibility="inherit"><a visibility="inherit" ns1:title="adoption">
-<path d="M200.9515,-215.8314C213.5053,-206.7927 228.8456,-195.7476 242.3564,-186.0198" fill="none" id="p_capds_to_ht" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="244.4209,-188.8463 250.4911,-180.1628 240.3307,-183.1655 244.4209,-188.8463" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_capds_to_ht" startOffset="10%" visibility="inherit">adoption</textPath></text></a>
-</g>
-</g>
-
-<g class="node" id="sc" visibility="visible">
-<title visibility="inherit">s_curve</title>
-<polygon fill="none" points="305.2571,-252 246.1774,-252 246.1774,-216 305.2571,-216 305.2571,-252" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="275.7173" y="-229.8">s_curve</text>
-</g>
-
-<g class="edge" id="sc_to_ht" visibility="visible">
-<title visibility="inherit">s_curve-&gt;helpertables</title>
-<g id="a_sc_to_ht" visibility="inherit"><a visibility="inherit" ns1:title="adoption">
-<path d="M275.7173,-215.8314C275.7173,-208.131 275.7173,-198.9743 275.7173,-190.4166" fill="none" id="p_sc_to_ht" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="279.2174,-190.4132 275.7173,-180.4133 272.2174,-190.4133 279.2174,-190.4132" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_sc_to_ht" startOffset="10%" visibility="inherit">adoption</textPath></text></a>
-</g>
-</g>
-
-<g class="node" id="vma" visibility="visible">
-<title visibility="inherit">VMA</title>
-<polygon fill="none" points="555.7173,-252 501.7173,-252 501.7173,-216 555.7173,-216 555.7173,-252" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="528.7173" y="-229.8">VMA</text>
-</g>
-
-<g class="node" id="ad" visibility="visible">
-<title visibility="inherit">adoptiondata</title>
-<polygon fill="none" points="412.0284,-252 323.4062,-252 323.4062,-216 412.0284,-216 412.0284,-252" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="367.7173" y="-229.8">adoptiondata</text>
-</g>
-
-<g class="edge" id="ad_to_ht" visibility="visible">
-<title visibility="inherit">adoptiondata-&gt;helpertables</title>
-<g id="a_ad_to_ht" visibility="inherit"><a visibility="inherit" ns1:title="adoption">
-<path d="M344.5018,-215.8314C333.1703,-206.9632 319.3709,-196.1637 307.1146,-186.5718" fill="none" id="p_ad_to_ht" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="308.9575,-183.5697 298.9253,-180.1628 304.6433,-189.0822 308.9575,-183.5697" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_ad_to_ht" startOffset="10%" visibility="inherit">adoption</textPath></text></a>
-</g>
-</g>
-
-<g class="edge" id="ht_to_ua" visibility="visible">
-<title visibility="inherit">helpertables-&gt;unitadoption</title>
-<g id="a_ht_to_ua" visibility="inherit"><a visibility="inherit" ns1:title="funits">
-<path d="M317.4321,-162C345.9851,-162 374.5381,-162 403.0911,-162" fill="none" id="p_ht_to_ua" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="403.1907,-165.5001 413.1907,-162 403.1906,-158.5001 403.1907,-165.5001" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_ht_to_ua" startOffset="10%" visibility="inherit">funits</textPath></text></a>
-</g>
-</g>
-
-<g class="node" id="c4" visibility="visible">
-<title visibility="inherit">ch4calcs</title>
-<polygon fill="none" points="399.9109,-108 335.5236,-108 335.5236,-72 399.9109,-72 399.9109,-108" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="367.7173" y="-85.8">ch4calcs</text>
-</g>
-
-<g class="edge" id="ua_to_c4" visibility="visible">
-<title visibility="inherit">unitadoption-&gt;ch4calcs</title>
-<g id="a_ua_to_c4" visibility="inherit"><a visibility="inherit" ns1:title="funits">
-<path d="M434.2588,-143.8314C423.2968,-134.9632 409.9474,-124.1637 398.0908,-114.5718" fill="none" id="p_ua_to_c4" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="400.1444,-111.7313 390.1686,-108.1628 395.7417,-117.1734 400.1444,-111.7313" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_ua_to_c4" startOffset="10%" visibility="inherit">funits</textPath></text></a>
-</g>
-</g>
-
-<g class="edge" id="ua_to_c2" visibility="visible">
-<title visibility="inherit">unitadoption-&gt;co2calcs</title>
-<g id="a_ua_to_c2" visibility="inherit"><a visibility="inherit" ns1:title="electricity, emissions, funits, iunits">
-<path d="M449.8781,-143.7623C440.5865,-118.9846 423.8941,-74.4714 413.065,-45.5939" fill="none" id="p_ua_to_c2" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="416.2893,-44.224 409.5009,-36.0896 409.735,-46.6819 416.2893,-44.224" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_ua_to_c2" startOffset="10%" visibility="inherit">electricity, emissions, funits, iunits</textPath></text></a>
-</g>
-</g>
-
-<g class="node" id="fc" visibility="visible">
-<title visibility="inherit">firstcost</title>
-<polygon fill="none" points="516.0561,-108 455.3784,-108 455.3784,-72 516.0561,-72 516.0561,-108" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="485.7173" y="-85.8">firstcost</text>
-</g>
-
-<g class="edge" id="ua_to_fc" visibility="visible">
-<title visibility="inherit">unitadoption-&gt;firstcost</title>
-<g id="a_ua_to_fc" visibility="inherit"><a visibility="inherit" ns1:title="iunits">
-<path d="M464.0352,-143.8314C467.2049,-135.9617 470.9872,-126.5712 474.4986,-117.8533" fill="none" id="p_ua_to_fc" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="477.8112,-118.9968 478.3008,-108.4133 471.3181,-116.3815 477.8112,-118.9968" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_ua_to_fc" startOffset="10%" visibility="inherit">iunits</textPath></text></a>
-</g>
-</g>
-
-<g class="node" id="oc" visibility="visible">
-<title visibility="inherit">operatingcost</title>
-<polygon fill="none" points="555.6392,-36 463.7954,-36 463.7954,0 555.6392,0 555.6392,-36" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="14.00" text-anchor="middle" visibility="inherit" x="509.7173" y="-13.8">operatingcost</text>
-</g>
-
-<g class="edge" id="ua_to_oc" visibility="visible">
-<title visibility="inherit">unitadoption-&gt;operatingcost</title>
-<g id="a_ua_to_oc" visibility="inherit"><a visibility="inherit" ns1:title="funits, iunits">
-<path d="M490.8063,-143.9135C503.9381,-135.0032 517.507,-122.9331 524.7173,-108 534.1754,-88.4116 529.1707,-63.942 522.4977,-45.464" fill="none" id="p_ua_to_oc" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="525.7447,-44.1571 518.8124,-36.1449 519.2352,-46.7313 525.7447,-44.1571" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_ua_to_oc" startOffset="10%" visibility="inherit">funits, iunits</textPath></text></a>
-</g>
-</g>
-
-<g class="edge" id="c4_to_c2" visibility="visible">
-<title visibility="inherit">ch4calcs-&gt;co2calcs</title>
-<g id="a_c4_to_c2" visibility="inherit"><a visibility="inherit" ns1:title="CH4 PPB">
-<path d="M376.5493,-71.8314C380.4159,-63.8771 385.0379,-54.369 389.3141,-45.5723" fill="none" id="p_c4_to_c2" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="392.5422,-46.9371 393.7664,-36.4133 386.2466,-43.8768 392.5422,-46.9371" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_c4_to_c2" startOffset="10%" visibility="inherit">CH4 PPB</textPath></text></a>
-</g>
-</g>
-
-<g class="edge" id="fc_to_oc" visibility="visible">
-<title visibility="inherit">firstcost-&gt;operatingcost</title>
-<g id="a_fc_to_oc" visibility="inherit"><a visibility="inherit" ns1:title="first cost, install cost">
-<path d="M491.7735,-71.8314C494.3685,-64.0463 497.4596,-54.7729 500.339,-46.1347" fill="none" id="p_fc_to_oc" stroke="#000000" visibility="inherit" />
-<polygon fill="#000000" points="503.7376,-47.0069 503.5795,-36.4133 497.0968,-44.7933 503.7376,-47.0069" stroke="#000000" visibility="inherit" />
-<text fill="#000000" font-family="Times,serif" font-size="9.00" visibility="inherit"><textPath ns1:href="#p_fc_to_oc" startOffset="10%" visibility="inherit">first cost, install cost</textPath></text></a>
-</g>
-</g>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" height="299" version="1.1" viewBox="80 117 566 299" width="566">
+  <defs>
+    <filter filterUnits="userSpaceOnUse" id="Shadow" x="80" y="117">
+      <feGaussianBlur in="SourceAlpha" result="blur" stdDeviation="1.308" />
+      <feOffset dx="0" dy="2" in="blur" result="offset" />
+      <feFlood flood-color="black" flood-opacity=".5" result="flood" />
+      <feComposite in="flood" in2="offset" operator="in" result="color" />
+      <feMerge>
+        <feMergeNode in="color" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <font-face ascent="951.9958" cap-height="714" descent="-212.99744" font-family="Helvetica Neue" font-size="16" font-weight="400" panose-1="2 0 5 3 0 0 0 2 0 4" slope="0" underline-position="-100" underline-thickness="50" units-per-em="1000" x-height="517">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue" />
+      </font-face-src>
+    </font-face>
+    <marker color="black" id="FilledArrow_Marker" markerHeight="8" markerUnits="strokeWidth" markerWidth="10" orient="auto" overflow="visible" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -4 10 8">
+      <g>
+        <path d="M 8 0 L 0 -3 L 0 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1" />
+      </g>
+    </marker>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.10.2 
+    <dc:date>2019-04-08 04:51:11 +0000</dc:date>
+  </metadata>
+  <g fill="none" fill-opacity="1" id="Canvas_1" stroke="none" stroke-dasharray="none" stroke-opacity="1">
+    <title>Canvas 1</title>
+    <rect fill="white" height="299" width="566" x="80" y="117" />
+    <g id="Canvas_1: Layer 1">
+      <title>Layer 1</title>
+      <g filter="url(#Shadow)" id="capds">
+        <title>capds</title>
+        <rect fill="white" height="44" width="128" x="84" y="119" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="128" x="84" y="119" />
+        <text fill="black" transform="translate(89 122.552)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x=".608" y="15">customadoption</tspan>
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="38.856" y="33.448">(PDS)</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="caref">
+        <title>caref</title>
+        <rect fill="white" height="44" width="128" x="228" y="119" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="128" x="228" y="119" />
+        <text fill="black" transform="translate(233 122.552)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x=".608" y="15">customadoption</tspan>
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="39.896" y="33.448">(REF)</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="sc">
+        <title>sc</title>
+        <rect fill="white" height="44" width="66" x="372" y="119" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="66" x="372" y="119" />
+        <text fill="black" transform="translate(377 131)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x=".296" y="15">s_curve</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="ad">
+        <title>ad</title>
+        <rect fill="white" height="44" width="106" x="454" y="119" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="106" x="454" y="119" />
+        <text fill="black" transform="translate(459 131)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x=".432" y="15">adoptiondata</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="tm">
+        <title>tm</title>
+        <rect fill="white" height="44" width="66" x="576" y="119" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="66" x="576" y="119" />
+        <text fill="black" transform="translate(581 131)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="11.992" y="15">TAM</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="vma">
+        <title>vma</title>
+        <rect fill="white" height="44" width="66" x="102" y="214" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="66" x="102" y="214" />
+        <text fill="black" transform="translate(107 226)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="10.96" y="15">VMA</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="ht">
+        <title>ht</title>
+        <rect fill="white" height="44" width="106" x="279" y="214" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="106" x="279" y="214" />
+        <text fill="black" transform="translate(284 226)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="4.144" y="15">helpertables</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="ua">
+        <title>ua</title>
+        <rect fill="white" height="44" width="106" x="486" y="214" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="106" x="486" y="214" />
+        <text fill="black" transform="translate(491 226)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="3.096" y="15">unitadoption</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="ef">
+        <title>ef</title>
+        <rect fill="white" height="44" width="134" x="180" y="290" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="134" x="180" y="290" />
+        <text fill="black" transform="translate(185 302)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="1.552" y="15">emissionsfactors</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="c4">
+        <title>c4</title>
+        <rect fill="white" height="44" width="74" x="371" y="290" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="74" x="371" y="290" />
+        <text fill="black" transform="translate(376 302)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x=".144" y="15">ch4calcs</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="fc">
+        <title>fc</title>
+        <rect fill="white" height="44" width="74" x="502" y="290" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="74" x="502" y="290" />
+        <text fill="black" transform="translate(507 302)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="3.264" y="15">firstcost</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="c2">
+        <title>c2</title>
+        <rect fill="white" height="44" width="74" x="376" y="366" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="74" x="376" y="366" />
+        <text fill="black" transform="translate(381 378)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="0" y="15">co2calcs</tspan>
+        </text>
+      </g>
+      <g filter="url(#Shadow)" id="oc">
+        <title>oc</title>
+        <rect fill="white" height="44" width="112" x="530" y="366" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="112" x="530" y="366" />
+        <text fill="black" transform="translate(535 378)">
+          <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="1.664" y="15">operatingcost</tspan>
+        </text>
+      </g>
+      <g id="capds_to_ht">
+        <title>capds_to_ht</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="190.61053" x2="280.59276" y1="163" y2="209.45822" />
+      </g>
+      <g id="caref_to_ht">
+        <title>caref_to_ht</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="301.26316" x2="318.89508" y1="163" y2="204.8758" />
+      </g>
+      <g id="sc_to_ht">
+        <title>sc_to_ht</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="388.09474" x2="354.9374" y1="163" y2="206.14995" />
+      </g>
+      <g id="ad_to_ht">
+        <title>ad_to_ht</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="466.4737" x2="381.22696" y1="163" y2="209.2768" />
+      </g>
+      <g id="tm_to_ht">
+        <title>tm_to_ht</title>
+        <path d="M 578.20885 163 C 560.0132 173.97859 533.3212 187.54326 497 200 C 461.66685 212.11787 424.702 220.62165 394.73752 226.30926" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      </g>
+      <g id="tm_to_ua">
+        <title>tm_to_ua</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="592.7895" x2="561.0832" y1="163" y2="206.02995" />
+      </g>
+      <g id="ht_to_ua">
+        <title>ht_to_ua</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="385" x2="476.1" y1="236" y2="236" />
+      </g>
+      <g id="ua_to_c4">
+        <title>ua_to_c4</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="501.07895" x2="453.56324" y1="258" y2="285.56636" />
+      </g>
+      <g id="ua_to_fc">
+        <title>ua_to_fc</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="539" x2="539" y1="258" y2="280.1" />
+      </g>
+      <g id="ua_to_c2">
+        <title>ua_to_c2</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="520.76316" x2="437.5549" y1="258" y2="358.3782" />
+      </g>
+      <g id="fc_to_oc">
+        <title>fc_to_oc</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="552.60526" x2="567.18764" y1="334" y2="357.58" />
+      </g>
+      <g id="ua_to_oc">
+        <title>ua_to_oc</title>
+        <path d="M 575.7212 258 C 579.27204 263.29273 582.4823 269.85757 585 278 C 592.38014 301.86768 591.8865 333.0699 589.98005 356.144" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      </g>
+      <g id="c4_to_c2">
+        <title>c4_to_c2</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="409.44737" x2="410.9027" y1="334" y2="356.12136" />
+      </g>
+      <g id="ef_to_c2">
+        <title>ef_to_c2</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="295.05263" x2="366.99855" y1="334" y2="366.9391" />
+      </g>
+    </g>
+  </g>
 </svg>
