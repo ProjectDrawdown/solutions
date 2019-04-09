@@ -71,7 +71,7 @@ def node_color_fill(tree, name):
     It is not an error for name to not exist.
     """
     node = tree.find(r'.//{http://www.w3.org/2000/svg}g[@id="' + name + '"]')
-    if node is not None:
+    if node is not None and len(node) >= 1:
         rect = node[1]
         rect.attrib['fill'] = '#3D9970'
 
