@@ -205,3 +205,17 @@ Mar 25 - Mar 29, 2019
 + fix small mismatches between Python & Excel
   a) new_iunits_reqd threshold checking
   b) repeated cost for iunits (RRS v1.1c and later)
+
+Apr 1 - Apr 5, 2019
++ add eighteen solutions.
+  Bike Infrastructure, LEDs (Commercial), LEDs (Residential),
+  Refrigerant Management, Composting, Recycled Paper, Trains,
+  Water Efficiency, Carpooling, Trucks, District Heating,
+  Electric Bikes, Mass Transit, Walkable Cities, Water
+  Distribution, Wave and Tidal, plus Temperate Forests and
+  Tropical Forests,
++ fix small mismatches between Python & Excel
+  a) funit replacement checks current adoption
+  b) floating point ROUND() matching Excel, try #2
+  c) adoption & TAM support regional sums
+
