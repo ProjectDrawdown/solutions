@@ -33,13 +33,14 @@ class CO2Calcs:
         land_distribution: (from aez data)
     """
 
-  def __init__(self, ac, soln_net_annual_funits_adopted, ch4_ppb_calculator=None,
+  def __init__(self, ac, soln_net_annual_funits_adopted=None, ch4_ppb_calculator=None,
                soln_pds_net_grid_electricity_units_saved=None, soln_pds_net_grid_electricity_units_used=None,
                soln_pds_direct_co2_emissions_saved=None, soln_pds_direct_ch4_co2_emissions_saved=None,
                soln_pds_direct_n2o_co2_emissions_saved=None, soln_pds_new_iunits_reqd=None,
                soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None, conv_ref_grid_CO2_per_KWh=None,
                conv_ref_grid_CO2eq_per_KWh=None, fuel_in_liters=None, annual_land_area_harvested=None,
-               land_distribution=None):
+               land_distribution=None, tot_red_in_deg_land=None, pds_protected_deg_land=None,
+               ref_protected_deg_land=None, avoided_direct_emissions=None):
     self.ac = ac
     self.ch4_ppb_calculator = ch4_ppb_calculator
     self.soln_pds_net_grid_electricity_units_saved = soln_pds_net_grid_electricity_units_saved
@@ -58,6 +59,10 @@ class CO2Calcs:
     # Land info (for sequestration calcs)
     self.annual_land_area_harvested = annual_land_area_harvested
     self.land_distribution = land_distribution
+    self.tot_red_in_deg_land = tot_red_in_deg_land  # protection models
+    self.pds_protected_deg_land = pds_protected_deg_land  # protection models
+    self.ref_protected_deg_land = ref_protected_deg_land  # protection models
+    self.avoided_direct_emissions = avoided_direct_emissions
 
   @lru_cache()
   def co2_mmt_reduced(self):
@@ -107,18 +112,29 @@ class CO2Calcs:
           EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
        'CO2 Calcs'!A64:K110
     """
-    co2eq_reduced_grid_emissions = self.co2eq_reduced_grid_emissions()
-    m = pd.DataFrame(0.0, columns=co2eq_reduced_grid_emissions.columns.copy(),
-        index=co2eq_reduced_grid_emissions.index.copy(), dtype=np.float64)
-    m.index = m.index.astype(int)
     s = self.ac.report_start_year
     e = self.ac.report_end_year
-    m = m.add(co2eq_reduced_grid_emissions.loc[s:e], fill_value=0)
-    m = m.add(self.co2eq_replaced_grid_emissions().loc[s:e], fill_value=0)
-    m = m.sub(self.co2eq_increased_grid_usage_emissions().loc[s:e], fill_value=0)
-    m = m.add(self.co2eq_direct_reduced_emissions().loc[s:e], fill_value=0)
-    m = m.add(self.co2eq_reduced_fuel_emissions().loc[s:e], fill_value=0)
-    m = m.sub(self.co2eq_net_indirect_emissions().loc[s:e], fill_value=0)
+    if self.ac.solution_category != SOLUTION_CATEGORY.LAND:
+      # RRS
+      co2eq_reduced_grid_emissions = self.co2eq_reduced_grid_emissions()
+      m = pd.DataFrame(0.0, columns=co2eq_reduced_grid_emissions.columns.copy(),
+                       index=co2eq_reduced_grid_emissions.index.copy(), dtype=np.float64)
+      m.index = m.index.astype(int)
+      m = m.add(co2eq_reduced_grid_emissions.loc[s:e], fill_value=0)
+      m = m.add(self.co2eq_replaced_grid_emissions().loc[s:e], fill_value=0)
+      m = m.sub(self.co2eq_increased_grid_usage_emissions().loc[s:e], fill_value=0)
+      m = m.add(self.co2eq_direct_reduced_emissions().loc[s:e], fill_value=0)
+      m = m.add(self.co2eq_reduced_fuel_emissions().loc[s:e], fill_value=0)
+      m = m.sub(self.co2eq_net_indirect_emissions().loc[s:e], fill_value=0)
+    else:
+      # LAND
+      index = pd.Index(list(range(2015, 2061)), name='Year')
+      m = pd.DataFrame(0., columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                                     'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+                       index=index, dtype=np.float64)
+      if self.avoided_direct_emissions is not None:
+        m['World'] = m['World'].add(self.avoided_direct_emissions['World'].loc[s:e], fill_value=0)
+
     m.name = "co2eq_mmt_reduced"
     return m
 
@@ -134,18 +150,41 @@ class CO2Calcs:
     index = pd.Index(list(range(2015, 2061)), name='Year')
     df = pd.DataFrame(columns=cols, index=index)
 
-    # calculation
-    mystery_coefficient = 3.666  # I don't know where this number comes from
-    disturbance = 1 if self.ac.disturbance_rate is None else 1 - self.ac.disturbance_rate
-    net_land = self.soln_net_annual_funits_adopted.loc[index, 'World']
-    if self.annual_land_area_harvested is not None:
-      net_land -= self.annual_land_area_harvested.loc[index, 'World']
+    c_to_co2eq = 3.666
+    if self.tot_red_in_deg_land is not None:
+      # regrowth calculation
+      if self.ac.delay_regrowth_1yr:
+        delayed_index = pd.Index(list(range(2015, 2062)), name='Year')
+        undeg_land = self.tot_red_in_deg_land.reset_index(drop=True).set_index(delayed_index)
+        pds_deg_land = self.pds_protected_deg_land.reset_index(drop=True).set_index(delayed_index)
+        ref_deg_land = self.ref_protected_deg_land.reset_index(drop=True).set_index(delayed_index)
+      else:
+        undeg_land = self.tot_red_in_deg_land
+        pds_deg_land = self.pds_protected_deg_land
+        ref_deg_land = self.ref_protected_deg_land
 
-    df['All'] = mystery_coefficient * net_land * self.ac.seq_rate_global * disturbance
+      # The xls uses tables of mature and new growth seq rates across thermal moisture regimes. However, it seems
+      # like this was never fully implemented so we assume global seq rate is used for mature growth and new growth
+      # is mature growth multiplied by the new growth multiplier set in advanced controls. No functionality for
+      # specifying regime-specific seq rates has been implemented.
+      if self.ac.include_unprotected_land_in_regrowth_calcs:
+        undeg_seq_rate = self.ac.seq_rate_global * (1 - self.ac.global_multi_for_regrowth)
+        deg_seq_rate = self.ac.seq_rate_global * (self.ac.global_multi_for_regrowth - 1)
+      else:
+        undeg_seq_rate = self.ac.seq_rate_global
+        deg_seq_rate = self.ac.seq_rate_global * self.ac.global_multi_for_regrowth
+      df['All'] = c_to_co2eq * (undeg_land * undeg_seq_rate + (pds_deg_land - ref_deg_land) * deg_seq_rate)
+    else:
+      # simple calculation
+      disturbance = 1 if self.ac.disturbance_rate is None else 1 - self.ac.disturbance_rate
+      net_land = self.soln_net_annual_funits_adopted.loc[index, 'World']
+      if self.annual_land_area_harvested is not None:
+        net_land -= self.annual_land_area_harvested.loc[index, 'World']
+      df['All'] = c_to_co2eq * net_land * self.ac.seq_rate_global * disturbance
+
     for tmr in THERMAL_MOISTURE_REGIMES:
       df[tmr] = df['All'] * self.land_distribution.loc['Global', tmr] / self.land_distribution.loc['Global', 'All']
     return df
-
 
   @lru_cache()
   def co2_ppm_calculator(self):
@@ -169,9 +208,7 @@ class CO2Calcs:
       co2_vals = self.co2_mmt_reduced()['World']
 
     if self.ac.solution_category == SOLUTION_CATEGORY.LAND:
-      # In the xls sequestered co2 is added to co2eq_mmt_reduced. However, we assume
-      # co2eq_mmt_reduced is all 0's for all LAND models, so we only use sequestration
-      co2_vals = self.co2_sequestered_global()['All']
+      co2_vals = self.co2_sequestered_global()['All'] + self.co2eq_mmt_reduced()['World']
       assert self.ac.emissions_use_co2eq, 'Land models must use CO2 eq'
 
     columns = ['PPM', 'Total'] + list(range(2015, 2061))

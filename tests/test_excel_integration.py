@@ -648,6 +648,7 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
           ('AP345:AZ390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)])
   else:
     verify['CO2 Calcs'] = [
+        ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), regional_mask),
         ('A121:G166', obj.c2.co2_sequestered_global().reset_index().drop(columns=['Global Arctic']), None),
         ('A173:AW218', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), None),
         # CO2 eq table has an N20 column for LAND xls sheets that doesn't appear to be used, so we ignore it
@@ -749,7 +750,7 @@ def LAND_solution_verify_list(obj):
   verify_unit_adoption_calculations(obj, verify, include_regional_data=False, is_rrs=False)
   verify_first_cost(obj, verify)
   verify_operating_cost(obj, verify)
-  verify_co2_calcs(obj, verify, is_rrs=False)
+  verify_co2_calcs(obj, verify, is_rrs=False, include_regional_data=False)
   return verify
 
 
@@ -997,7 +998,6 @@ def test_ElectricVehicles_RRS(start_excel, tmpdir):
     [str(solutiondir.joinpath('forestprotection', 'testdata',
         'Forest_Protection_L-UseProtect_Model_v1.1c_26July18.xlsm'))],
     indirect=True)
-@pytest.mark.skip(reason='requires unitadoption and co2calcs to deal with degraded land')
 def test_ForestProtection_LAND(start_excel, tmpdir):
   """Test for Excel model file Forest_Protection_L-Use*"""
   workbook = start_excel

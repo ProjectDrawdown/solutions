@@ -1,11 +1,11 @@
 """Tests for unitadoption.py."""
 
-import io
 import pathlib
 
 import numpy as np
 import pandas as pd
 import pytest
+from unittest import mock
 from model import advanced_controls
 from model import unitadoption
 
@@ -131,6 +131,43 @@ def test_pds_tam_growth():
   assert tg['India'][2033] == pytest.approx(159.378951)
   assert tg['USA'][2060] == pytest.approx(33.502722)
   assert tg['OECD90'][2014] == ''
+
+def test_cumulative_degraded_land_unprotected():
+    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074, delay_protection_1yr=True)
+    tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'), index_col=0)
+    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'), index_col=0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=units_adopted,
+                                   tla_per_region=tla_per_reg)
+    expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_pds_deg_unprotected_land.csv'), index_col=0)
+    pd.testing.assert_frame_equal(ua._cumulative_degraded_land('PDS', 'unprotected'), expected)
+
+def test_cumulative_degraded_land_protected():
+    ac = advanced_controls.AdvancedControls(disturbance_rate=0.0000157962432447763, delay_protection_1yr=True)
+    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'), index_col=0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=units_adopted)
+    expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_pds_deg_protected_land.csv'), index_col=0)
+    pd.testing.assert_frame_equal(ua._cumulative_degraded_land('PDS', 'protected'), expected)
+
+def test_total_undegraded_land():
+    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074, disturbance_rate=0.0000157962432447763,
+                                            delay_protection_1yr=True)
+    tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'), index_col=0)
+    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'), index_col=0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=units_adopted,
+                                   tla_per_region=tla_per_reg)
+    expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_total_undegraded_land.csv'), index_col=0)
+    # identical for REF and PDS so just test PDS
+    pd.testing.assert_frame_equal(ua.pds_total_undegraded_land(), expected)
+
+def test_annual_reduction_in_total_degraded_land():
+    cumu_ridl = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_cumu_ridl.csv'), index_col=0)
+
+    def mock_critdl():
+        return lambda x: cumu_ridl
+    expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_annu_ridl.csv'), index_col=0)
+    with mock.patch.object(unitadoption.UnitAdoption, 'cumulative_reduction_in_total_degraded_land', new=mock_critdl()):
+        ua = unitadoption.UnitAdoption(ac=None, soln_ref_funits_adopted=None, soln_pds_funits_adopted=None)
+        pd.testing.assert_frame_equal(ua.annual_reduction_in_total_degraded_land(), expected)
 
 def test_soln_pds_cumulative_funits_bug_behavior():
   funits = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -783,6 +820,14 @@ def test_conv_ref_new_iunits_repeated_cost_for_iunits():
       columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
   expected.name = "conv_ref_new_iunits"
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+def test_direct_co2eq_emissions_saved_land():
+    annual_ridl = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_annu_ridl.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(tco2eq_reduced_per_land_unit=313.791126867655, tco2eq_rplu_rate='One-time')
+    expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_des_co2eq.csv'), index_col=0)
+    with mock.patch.object(unitadoption.UnitAdoption, 'annual_reduction_in_total_degraded_land', new=lambda x: annual_ridl):
+        ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=None)
+        pd.testing.assert_frame_equal(ua.direct_co2eq_emissions_saved_land(), expected)
 
 
 # SolarPVUtil 'Unit Adoption Calculations'!B134:L181

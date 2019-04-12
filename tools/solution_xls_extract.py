@@ -270,9 +270,19 @@ def get_land_scenarios(wb):
       s['conv_indirect_co2_per_unit'] = convert_sr_float(sr_tab.cell_value(row + 145, 4))
       s['soln_indirect_co2_per_iunit'] = convert_sr_float(sr_tab.cell_value(row + 146, 4))
 
+      assert sr_tab.cell_value(row + 132, 1) == 'Direct Emissions'
+      s['tco2eq_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 133, 4))
+      s['tco2eq_rplu_rate'] = str(sr_tab.cell_value(row + 133, 7))
+
       assert sr_tab.cell_value(row + 168, 1) == 'Carbon Sequestration and Land Inputs'
       s['seq_rate_global'] = link_vma(sr_tab.cell_value(row + 169, 4))
+      s['global_multi_for_regrowth'] = convert_sr_float(sr_tab.cell_value(row + 178, 4))
+      s['degradation_rate'] = link_vma(sr_tab.cell_value(row + 175, 4))
       s['disturbance_rate'] = link_vma(sr_tab.cell_value(row + 176, 4))
+
+      s['delay_protection_1yr'] = convert_bool(sr_tab.cell_value(row + 189, 4))
+      s['delay_regrowth_1yr'] = convert_bool(sr_tab.cell_value(row + 190, 4))
+      s['include_unprotected_land_in_regrowth_calcs'] = convert_bool(sr_tab.cell_value(row + 191, 4))
 
       scenarios[scenario_name] = s
   return scenarios
@@ -377,6 +387,9 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['conv_fuel_emissions_factor', 'soln_fuel_emissions_factor'],
       prefix=prefix, suffix='\n')
 
+  oneline(f=f, s=s, names=['tco2eq_reduced_per_land_unit'], prefix=prefix)
+  oneline(f=f, s=s, names=['tco2eq_rplu_rate'], prefix=prefix, suffix='\n')
+
   oneline(f=f, s=s, names=['emissions_grid_source', 'emissions_grid_range'], prefix=prefix)
   oneline(f=f, s=s, names=['emissions_use_co2eq'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_emissions_per_funit', 'soln_emissions_per_funit'],
@@ -384,8 +397,14 @@ def write_scenario(f, s):
 
   if 'seq_rate_global' in s:
     f.write('\n' + prefix + '# sequestration' + '\n')
-    oneline(f=f, s=s, names=['seq_rate_global'], prefix=prefix,)
+    oneline(f=f, s=s, names=['seq_rate_global'], prefix=prefix)
+    oneline(f=f, s=s, names=['global_multi_for_regrowth'], prefix=prefix)
+    oneline(f=f, s=s, names=['degradation_rate'], prefix=prefix)
     oneline(f=f, s=s, names=['disturbance_rate'], prefix=prefix, suffix='\n')
+    oneline(f=f, s=s, names=['delay_protection_1yr'], prefix=prefix)
+    oneline(f=f, s=s, names=['delay_regrowth_1yr'], prefix=prefix)
+    oneline(f=f, s=s, names=['include_unprotected_land_in_regrowth_calcs'], prefix=prefix, suffix='\n')
+
 
 def xls(tab, row, col):
   """Return a quoted string read from tab(row, col)."""
@@ -932,7 +951,7 @@ def write_oc(f, wb, is_land=False):
   f.write('\n')
 
 
-def write_c2_c4(f, is_rrs=True):
+def write_c2_c4(f, is_rrs=True, is_protect=False):
   """Write out the CO2 Calcs and CH4 Calcs modules for this solution class."""
   f.write("    self.c4 = ch4calcs.CH4Calcs(ac=self.ac,\n")
   f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)\n\n")
@@ -952,6 +971,11 @@ def write_c2_c4(f, is_rrs=True):
   if is_rrs:
     f.write("        fuel_in_liters=False)\n")
   else:
+    if is_protect:
+      f.write("        tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),\n")
+      f.write("        pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),\n")
+      f.write("        ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),\n")
+      f.write("        avoided_direct_emissions=self.ua.direct_co2eq_emissions_saved_land(),\n")
     f.write("        land_distribution=self.ae.get_land_distribution())\n")
   f.write("\n")
 
@@ -1307,7 +1331,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write("\n")
 
   has_default_pds_ad = has_custom_pds_ad = has_default_ref_ad = has_custom_ref_ad = False
-  has_s_curve_pds_ad = has_linear_pds_ad = use_custom_tla = False
+  has_s_curve_pds_ad = has_linear_pds_ad = use_custom_tla = is_protect = False
   for s in scenarios.values():
     if s.get('soln_pds_adoption_basis', '') == 'Existing Adoption Prognostications':
       has_default_pds_ad = True
@@ -1324,6 +1348,8 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     if s.get('use_custom_tla', ''):
       extract_custom_tla(wb, outputdir=outputdir)
       use_custom_tla = True
+    if 'delay_protection_1yr' in s.keys():
+      is_protect = True
 
   f.write('scenarios = {\n')
   for name, s in scenarios.items():
@@ -1406,7 +1432,8 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   write_ua(f=f, wb=wb, is_rrs=is_rrs)
   write_fc(f=f, wb=wb)
   write_oc(f=f, wb=wb, is_land=is_land)
-  write_c2_c4(f=f, is_rrs=is_rrs)
+
+  write_c2_c4(f=f, is_rrs=is_rrs, is_protect=is_protect)
 
   if is_rrs:
     f.write("    self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],\n")
@@ -1479,11 +1506,11 @@ def link_vma(cell_value):
   """
   if not isinstance(cell_value, str) or 'Formula:=' not in cell_value:
     return convert_sr_float(cell_value)
-  if cell_value.endswith('80') or cell_value.endswith('95') or cell_value.endswith('175') or cell_value.endswith('189'):
+  if True in [cell_value.endswith(x) for x in ['80', '95', '175', '189', '140']]:
     return 'mean'
-  elif cell_value.endswith('81') or cell_value.endswith('96') or cell_value.endswith('176') or cell_value.endswith('190'):
+  elif True in [cell_value.endswith(x) for x in ['81', '96', '176', '190', '141']]:
     return 'high'
-  elif cell_value.endswith('82') or cell_value.endswith('97') or cell_value.endswith('177') or cell_value.endswith('191'):
+  elif True in [cell_value.endswith(x) for x in ['82', '97', '177', '191', '142']]:
     return 'low'
   else:
     formula = cell_value.split(':=')[1]
