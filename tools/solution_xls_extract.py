@@ -1223,6 +1223,8 @@ def lookup_unit(tab, row, col):
     'Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates': u'Mm\u00B2',
     'Giga-Liter Water': u'GL H\u2082O',
     'Million Metric tonnes per year': 'MMt',
+    'million tonne-km': 'Mt-km',
+    'million tonne-kms': 'Mt-km',
   }
   name = str(tab.cell_value(row, col))
   return unit_mapping.get(name, name)
