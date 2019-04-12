@@ -11,8 +11,12 @@ from solution.forestprotection import ForestProtection
 # scen = 'PDS-58p2050-Plausible-PDScustomadoption-avg'
 # soln = LandfillMethane('PDS-0p2050-Plausible Book (Ed. 1)')
 # soln = TropicalForests(scenario=scen)
+
 soln = ForestProtection()
+# df = soln.ua.cumulative_reduction_in_total_degraded_land()
+
+# print(soln.ua.annual_reduction_in_total_degraded_land())
 print(soln.c2.co2_sequestered_global())
-# print('avg: {}'.format(soln.pds_ca.adoption_data_per_region().at[2015, 'World']))
-# print(soln.pds_ca.scenarios.keys())
-# print(scenarios.keys())
+print(soln.c2.co2eq_mmt_reduced())
+
+

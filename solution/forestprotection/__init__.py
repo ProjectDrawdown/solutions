@@ -77,12 +77,21 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      tco2eq_reduced_per_land_unit='mean', 
+      tco2eq_rplu_rate='One-time', 
+
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
+      global_multi_for_regrowth=1.0, 
+      degradation_rate='mean', 
       disturbance_rate='mean', 
+
+      delay_protection_1yr=True, 
+      delay_regrowth_1yr=True, 
+      include_unprotected_land_in_regrowth_calcs=False, 
 
     ),
   'PDS-89p2050-Drawdown-PDScustom-aggmax-BookVersion1': advanced_controls.AdvancedControls(
@@ -130,12 +139,21 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      tco2eq_reduced_per_land_unit='mean', 
+      tco2eq_rplu_rate='One-time', 
+
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
+      global_multi_for_regrowth=1.0, 
+      degradation_rate='mean', 
       disturbance_rate='mean', 
+
+      delay_protection_1yr=True, 
+      delay_regrowth_1yr=True, 
+      include_unprotected_land_in_regrowth_calcs=False, 
 
     ),
   'PDS-92p2050-Optimum-PDScustom-high-BookVersion1': advanced_controls.AdvancedControls(
@@ -183,12 +201,21 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      tco2eq_reduced_per_land_unit='mean', 
+      tco2eq_rplu_rate='One-time', 
+
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
+      global_multi_for_regrowth=1.0, 
+      degradation_rate='mean', 
       disturbance_rate='mean', 
+
+      delay_protection_1yr=True, 
+      delay_regrowth_1yr=True, 
+      include_unprotected_land_in_regrowth_calcs=False, 
 
     ),
 }
@@ -312,5 +339,9 @@ class ForestProtection:
         conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
         conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+        tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),
+        pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),
+        ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),
+        avoided_direct_emissions=self.ua.direct_co2eq_emissions_saved_land(),
         land_distribution=self.ae.get_land_distribution())
 

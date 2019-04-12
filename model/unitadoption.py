@@ -171,6 +171,129 @@ class UnitAdoption:
     return calc
 
   @lru_cache()
+  def cumulative_reduction_in_total_degraded_land(self):
+    """This is the increase in undegraded land in the PDS versus the REF (cumulatively in any year), and can be
+    traced to the direct action of increasing SOLUTION adoption. Units: millions ha.
+    Calculation:   Undegraded Land in the PDS Scenario - Undegraded Land in REF Scenario
+    ForestProtection 'Unit Adoption Calculations'!DR253:DS298"""
+    return self.pds_total_undegraded_land() - self.ref_total_undegraded_land()
+
+  @lru_cache()
+  def annual_reduction_in_total_degraded_land(self):
+    """This is the decrease in  total degraded land in the PDS versus the REF in each year. Units: Millions ha.
+    Note: in excel this is calculated from several tables but we can achieve the same results directly from
+    cumulative_reduction_in_total_degraded_land().
+    ForestProtection 'Unit Adoption Calculations'!CG253:CH298"""
+    return self.cumulative_reduction_in_total_degraded_land().diff().fillna(0.)
+
+  @lru_cache()
+  def pds_cumulative_degraded_land_unprotected(self):
+    """This represents the total land degraded that was never protected in the PDS assuming the rate entered
+    on the Advanced Controls sheet. This rate is applied only to the land that is not covered by the SOLUTION
+    (ie land not artificially protected) and that is not degraded.  The impact of protection may be delayed
+    (at User's input on Advanced Controls) and therefore the degradation rate may depend on the current year's
+    or previous year's protection.
+    ForestProtection 'Unit Adoption Calculations'!CG135:CH181"""
+    return self._cumulative_degraded_land('PDS', 'unprotected')
+
+  @lru_cache()
+  def pds_cumulative_degraded_land_protected(self):
+    """Even Protected Land suffers from Degradation via Disturbances (perhaps due to natural or anthropogenic
+    means such as logging, storms, fires or human settlement). The Rate of this Disturbance is Entered on
+    Advanced Controls, and is assumed equal in the PDS and REF. This Disturbance Rate affects annually, the
+    degradation of Protected Land, but is expected to be much less than the Degradation Rate of Unprotected Land.
+    ForestProtection 'Unit Adoption Calculations'!EI135:EJ181"""
+    return self._cumulative_degraded_land('PDS', 'protected')
+
+  @lru_cache()
+  def pds_total_undegraded_land(self):
+    """This represents the total land that is not degraded in any particular year of the PDS. It takes the TLA and
+    removes the degraded land, which is the same as summing the undegraded land under the SOLUTION and At Risk land.
+    Units: Millions ha
+    Calculation:
+    Total land/TLA - Land Degraded that was Unprotected - Protected Land that is Degraded (via a Disturbance)
+                                                                             in Current Year
+    ForestProtection 'Unit Adoption Calculations'!DS135:DT181"""
+    deg_land = self.pds_cumulative_degraded_land_unprotected() + self.pds_cumulative_degraded_land_protected()
+    return self.tla_per_region.loc[:, ['World']] - deg_land
+
+  @lru_cache()
+  def ref_cumulative_degraded_land_unprotected(self):
+    """This represents the total land degraded that was never protected in the REF assuming the rate entered
+    on the Advanced Controls sheet. This rate is applied only to the land that is not covered by the SOLUTION
+    (ie land not artificially protected) and that is not degraded.  The impact of protection may be delayed
+    (at User's input on Advanced Controls) and therefore the degradation rate may depend on the current year's
+    or previous year's protection.
+    ForestProtection 'Unit Adoption Calculations'!CG197:CH244"""
+    return self._cumulative_degraded_land('REF', 'unprotected')
+
+  @lru_cache()
+  def ref_cumulative_degraded_land_protected(self):
+    """Even Protected Land suffers from Degradation via Disturbances (perhaps due to natural or anthropogenic
+    means such as logging, storms, fires or human settlement). The Rate of this Disturbance is Entered on
+    Advanced Controls, and is assumed equal in the PDS and REF. This Disturbance Rate affects annually, the
+    degradation of Protected Land, but is expected to be much less than the Degradation Rate of Unprotected Land.
+    ForestProtection 'Unit Adoption Calculations'!EI197:EJ244"""
+    return self._cumulative_degraded_land('REF', 'protected')
+
+  @lru_cache()
+  def ref_total_undegraded_land(self):
+    """This represents the total land that is not degraded in any particular year of the REF. It takes the TLA and
+    removes the degraded land, which is the same as summing the undegraded land under the SOLUTION and At Risk land.
+    Units: Millions ha
+    Calculation:
+    Total land/TLA - Land Degraded that was Unprotected - Protected Land that is Degraded (via a Disturbance)
+                                                                             in Current Year
+    ForestProtection 'Unit Adoption Calculations'!DS197:DT244"""
+    deg_land = self.ref_cumulative_degraded_land_unprotected() + self.ref_cumulative_degraded_land_protected()
+    return self.tla_per_region.loc[:, ['World']] - deg_land
+
+  def _cumulative_degraded_land(self, ref_or_pds, protected_or_unprotected):
+    """
+    Calculation of annual land degradation. Units: Millions ha
+
+    Calculation (protected land):
+    Protected Land that was Degraded Up to Previous Year +
+    (Land Protected by SOL  - Protected Land Degraded up to Previous Year) * Disturbance Rate
+
+    Calculation (unprotected land):
+    Land Degraded Up to Previous Year +
+    (Total land/TLA - Land Protected by SOL  - Land Degraded in Previous Year) * Degradation Rate
+
+    Args:
+      ref_or_pds: whether we use 'REF' or 'PDS' unit adoption data
+      protected_or_unprotected: whether we calculate for 'protected' or 'unprotected' land
+
+    Note: we only calculate 'World' values
+    See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
+    """
+    if ref_or_pds == 'PDS':
+      units_adopted = self.soln_pds_funits_adopted
+    elif ref_or_pds == 'REF':
+      units_adopted = self.soln_ref_funits_adopted
+    else:
+      raise ValueError("Must indicate 'REF' or 'PDS'")
+    years = list(range(2014, 2061))
+    index = pd.Index(years, name='Year')
+    df = pd.DataFrame(0., columns=['World'], index=index)
+
+    delay = 1 if self.ac.delay_protection_1yr else 0
+    if protected_or_unprotected == 'protected':
+      # protected table starts with nonzero value
+      df.at[2014, 'World'] = units_adopted.at[2014, 'World'] * self.ac.disturbance_rate
+
+    for y in years[1:]:
+        protected_land = units_adopted.at[y - delay, 'World']
+        degraded_land = df.at[y - 1, 'World']
+        if protected_or_unprotected == 'protected':
+          val = min(degraded_land + (protected_land - degraded_land) * self.ac.disturbance_rate, protected_land)
+        elif protected_or_unprotected == 'unprotected':
+          tla = self.tla_per_region.at[y, 'World']
+          val = min(degraded_land + (tla - protected_land - degraded_land) * self.ac.degradation_rate, tla)
+        df.at[y, 'World'] = val
+    return df
+
+  @lru_cache()
   def soln_pds_cumulative_funits(self):
     """Cumulative Functional Units Utilized.
        SolarPVUtil 'Unit Adoption Calculations'!Q134:AA181
@@ -477,3 +600,21 @@ class UnitAdoption:
       result = self.soln_net_annual_funits_adopted() * ef.N2Omultiplier * self.ac.n2o_co2_per_twh
     result.name = "soln_pds_direct_n2o_co2_emissions_saved"
     return result
+
+  @lru_cache()
+  def direct_co2eq_emissions_saved_land(self):
+    """Emissions avoided:
+
+       [NOT IMPLEMNTED]
+       Emissions avoided (if Annual Emissions) =
+            (Cumulative Reduced Land Degradation/MHa - Cumulative Reduced Land after Emissions Lifetime/MHa)
+                            * Aggregate CO2 eq avoided rate (t CO2-eq/ha/yr)
+      [IMPLEMNTED]
+       Emissions avoided (if One-time Emissions) =
+            Marginal Reduced Land Degradation /MHa *  Aggregate CO2 eq avoided rate (t CO2-eq/ha)
+    ForestProtection 'Unit Adoption Calculations'!AT307:AU354
+    """
+    if self.ac.tco2eq_rplu_rate == 'Annual':
+      raise NotImplementedError('Annual reduced emissions not implemented yet')
+    return self.annual_reduction_in_total_degraded_land() * self.ac.tco2eq_reduced_per_land_unit
+

@@ -12,10 +12,10 @@ def make_dirs(dir_name):
 
 def make_soln_files(dir_name, class_name):
     outputdir = str(pathlib.Path(__file__).parents[0].joinpath(dir_name))
-    xls_name = [f for f in os.listdir(os.path.join(outputdir, 'testdata')) if not f.startswith('~')][0]
-    assert xls_name.endswith('xlsm')
-    # solution_xls_extract.output_solution_python_file(outputdir, os.path.join(outputdir, 'testdata', xls_name),
-    #                                                  class_name)
+    xls_name = \
+    [f for f in os.listdir(os.path.join(outputdir, 'testdata')) if not f.startswith('~') and f.endswith('xlsm')][0]
+    solution_xls_extract.output_solution_python_file(outputdir, os.path.join(outputdir, 'testdata', xls_name),
+                                                     class_name)
 
 
     # to copy + paste into test_solutions
@@ -49,7 +49,8 @@ if __name__ == '__main__':
 
     # make_dirs(dir_name)
     #
-    # print('Copy xls into testdata and make edits.\nSee: https://docs.google.com/document/d/1OiKg3_OOGjYOUdnHTQuZggsko5n31qv_YV4h77E3LHk/edit')
+    # print('Copy xls into testdata and make edits.\n '
+    #       'See: https://docs.google.com/document/d/1OiKg3_OOGjYOUdnHTQuZggsko5n31qv_YV4h77E3LHk/edit')
     # input('Press enter to continue after this is done...')
 
     make_soln_files(dir_name, class_name)

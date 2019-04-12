@@ -254,10 +254,17 @@ class AdvancedControls:
      emissions from an existing technology, REPLACEMENT of a technology to one with lower
      emissions, or NOT_APPLICABLE for something else entirely.  'Advanced Controls'!A159
 
+  tco2eq_reduced_per_land_unit: Aggregate emissions reduced per land unit
+    ForestProtection "Advanced Controls"!B138 (Land models)
+  tco2eq_rplu_rate: whether tco2eq_reduced_per_land_unit is 'One-time' or 'Annual'
+    ForestProtection "Advanced Controls"!B148 (Land models)
+
   seq_rate_global (float): carbon sequestration rate for All Land or All of Special Land.
     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
     "Advanced Controls"!B173 (Land models)
+  growth_rate_of_land_degradation: % annually ForestProtection "Advanced Controls"!B187 (Land models)
   disturbance_rate (float): disturbance rate TropicalForests. "Advanced Controls"!I173 (Land models)
+  global_multi_for_regrowth: Global multiplier for regrowth  ForestProtection "Advanced Controls"!E187 (Land models)
   soln_expected_lifetime: solution expected lifetime in year.s "Advanced Controls"!F92 (Land models)
   conv_expected_lifetime: conventional expected lifetime in years. Default value is 30.
    "Advanced Controls"!F77 (Land models)
@@ -269,6 +276,13 @@ class AdvancedControls:
     "Advanced Controls"!G92 (Land models)
   use_custom_tla: bool indicating whether to use custom TLA data instead of Drawdown land allocation
     "Advanced Controls"!E54 (Land models)
+
+    delay_protection_1yr (bool): Delay Impact of Protection by 1 Year? (Leakage)
+      ForestProtection "Advanced Controls"!B200 (land models)
+    delay_regrowth_1yr (bool): Delay Regrowth of Degraded Land by 1 Year?
+      ForestProtection "Advanced Controls"!C200 (land models)
+    include_unprotected_land_in_regrowth_calcs (bool): Include Unprotected Land in Regrowth Calculations?
+      ForestProtection "Advanced Controls"!D200 (land models)
   """
   def __init__(self,
                vmas=None,
@@ -342,13 +356,22 @@ class AdvancedControls:
                solution_category=None,
 
                # LAND only
+               tco2eq_reduced_per_land_unit=None,
+               tco2eq_rplu_rate=None,
+
                seq_rate_global=None,
+               degradation_rate=None,
                disturbance_rate=None,
+               global_multi_for_regrowth=None,
                soln_expected_lifetime=None,
                conv_expected_lifetime=None,
                yield_from_conv_practice=None,
                yield_gain_from_conv_to_soln=None,
                use_custom_tla=None,
+
+               delay_protection_1yr=None,
+               delay_regrowth_1yr=None,
+               include_unprotected_land_in_regrowth_calcs=None
                ):
 
     self.vmas = vmas
@@ -444,8 +467,15 @@ class AdvancedControls:
       self.solution_category = self.string_to_solution_category(solution_category)
 
     # LAND only
+    self.tco2eq_reduced_per_land_unit = self._substitute_vma(tco2eq_reduced_per_land_unit,
+                                                  vma_title='t CO2-eq (Aggregate emissions) Reduced per Land Unit')
+    self.tco2eq_rplu_rate = tco2eq_rplu_rate
+
     self.seq_rate_global = self._substitute_vma(seq_rate_global, vma_title='Sequestration Rates')
+    self.degradation_rate = self._substitute_vma(degradation_rate,
+                                                 vma_title='Growth Rate of Land Degradation')
     self.disturbance_rate = self._substitute_vma(disturbance_rate, vma_title='Disturbance Rate')
+    self.global_multi_for_regrowth = global_multi_for_regrowth
     self.soln_expected_lifetime = soln_expected_lifetime
     self.conv_expected_lifetime = conv_expected_lifetime
     self.yield_from_conv_practice = self._substitute_vma(yield_from_conv_practice,
@@ -453,6 +483,10 @@ class AdvancedControls:
     self.yield_gain_from_conv_to_soln = self._substitute_vma(yield_gain_from_conv_to_soln,
                                             vma_title='Yield Gain (% Increase from CONVENTIONAL to SOLUTION)')
     self.use_custom_tla = use_custom_tla
+
+    self.delay_protection_1yr = delay_protection_1yr
+    self.delay_regrowth_1yr = delay_regrowth_1yr
+    self.include_unprotected_land_in_regrowth_calcs = include_unprotected_land_in_regrowth_calcs
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.

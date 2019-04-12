@@ -2,11 +2,12 @@
 
 import numpy as np
 import pandas as pd
+import pathlib
 import pytest
+from unittest import mock
 from model import advanced_controls
 from model.advanced_controls import SOLUTION_CATEGORY
 from model import co2calcs
-import pathlib
 
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
@@ -84,6 +85,13 @@ def test_co2eq_mmt_reduced_allfields():
       columns=["A", "B"], index=[2020, 2021, 2022])
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_co2eq_mmt_reduced_land():
+    avoided_em = pd.read_csv(datadir.joinpath('fp_des_co2eq.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050, solution_category='LAND')
+    c2 = co2calcs.CO2Calcs(ac=ac, avoided_direct_emissions=avoided_em)
+    expected = pd.read_csv(datadir.joinpath('fp_co2eq_mmt_red.csv'), index_col=0)
+    pd.testing.assert_frame_equal(c2.co2eq_mmt_reduced().loc[:, ['World']], expected.loc[:, ['World']])
+
 
 def test_co2_ppm_calculator():
   soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
@@ -123,18 +131,24 @@ def test_co2_ppm_calculator_land():
   ac = advanced_controls.AdvancedControls(
       seq_rate_global=4.150868085, solution_category=SOLUTION_CATEGORY.LAND, emissions_use_co2eq=True,
       soln_indirect_co2_per_iunit=0.0, conv_indirect_co2_per_unit=0.0)
-  c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist,
-                         soln_pds_net_grid_electricity_units_used=funits.replace(funits, 0),
-                         soln_pds_net_grid_electricity_units_saved=funits.replace(funits, 0),
-                         conv_ref_grid_CO2eq_per_KWh=funits.replace(funits, 0),
-                         soln_pds_direct_co2_emissions_saved=funits.replace(funits, 0),
-                         soln_pds_direct_ch4_co2_emissions_saved=funits.replace(funits, 0),
-                         soln_pds_direct_n2o_co2_emissions_saved=funits.replace(funits, 0)
-                         )
+  c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist)
   result = c2.co2_ppm_calculator()
   assert result.at[2059, 'PPM'] == pytest.approx(6.79894469686587)
   assert result.at[2060, 'PPM'] == pytest.approx(6.98450283426954)
   assert result.at[2015, 'Total'] == pytest.approx(105.702086549681)
+
+def test_co2_ppm_calculator_land_with_avoided_emissions():
+  co2eq_mmt_red = pd.read_csv(datadir.joinpath('fp_co2eq_mmt_red.csv'), index_col=0)
+  co2_seq_global = pd.read_csv(datadir.joinpath('fp_co2_seq_global.csv'), index_col=0)
+  ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND, emissions_use_co2eq=True)
+  expected = pd.read_csv(datadir.joinpath('fp_co2_ppm_calc.csv'), index_col=0).fillna(0.)
+  with mock.patch.object(co2calcs.CO2Calcs, 'co2eq_mmt_reduced', new=lambda x: co2eq_mmt_red):
+    with mock.patch.object(co2calcs.CO2Calcs, 'co2_sequestered_global', new=lambda x: co2_seq_global):
+      c2 = co2calcs.CO2Calcs(ac=ac)
+      res = c2.co2_ppm_calculator()
+      res.columns = res.columns.astype(str)
+      pd.testing.assert_frame_equal(c2.co2_ppm_calculator(), expected, check_dtype=False)
+
 
 def test_co2eq_ppm_calculator():
   soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
@@ -457,7 +471,7 @@ def test_co2eq_net_indirect_emissions_iunits():
           columns=co2eq_net_indirect_emissions_iunits_electricvehicles_list[0]).set_index("Year")
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-def test_co2_sequestered_global():
+def test_co2_sequestered_global_simple():
     """ Test vals from Tropical Forests """
     ac = advanced_controls.AdvancedControls(seq_rate_global=4.150868085)
     funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
@@ -466,6 +480,21 @@ def test_co2_sequestered_global():
     df = c2.co2_sequestered_global()
     assert df.loc[2060, 'All'] == pytest.approx(2884.57122692783)
     assert df.loc[2015, 'Tropical-Semi-Arid'] == pytest.approx(42.2676049356999)
+
+def test_co2_sequestered_global_regrowth():
+    """ Test vals from Forest Protection """
+    ac = advanced_controls.AdvancedControls(seq_rate_global=0.596666666666667, delay_regrowth_1yr=True,
+                                            include_unprotected_land_in_regrowth_calcs=False,
+                                            global_multi_for_regrowth=1.)
+    land_dist = pd.read_csv(datadir.joinpath('fp_land_dist.csv'), index_col=0)
+    total_ridl = pd.read_csv(datadir.joinpath('fp_cumu_ridl.csv'), index_col=0)
+    pds_pdl = pd.read_csv(datadir.joinpath('fp_pds_deg_protected_land.csv'), index_col=0)
+    ref_pdl = pd.read_csv(datadir.joinpath('fp_ref_deg_protected_land.csv'), index_col=0)
+    c2 = co2calcs.CO2Calcs(ac=ac, tot_red_in_deg_land=total_ridl, pds_protected_deg_land=pds_pdl,
+                           ref_protected_deg_land=ref_pdl, land_distribution=land_dist)
+    result = c2.co2_sequestered_global().drop(columns=['Global Arctic'])
+    expected = pd.read_csv(datadir.joinpath('fp_co2_seq_global.csv'), index_col=0)
+    pd.testing.assert_frame_equal(result, expected)
 
 
 # 'Unit Adoption'!B251:L298
