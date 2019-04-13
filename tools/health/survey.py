@@ -7,6 +7,7 @@ import pandas as pd
 import solution.factory
 
 results = pd.DataFrame(columns=['RegionalFractionTAM', 'RegionalFractionAdoption'])
+results.index.name = 'Solution'
 all_solutions_scenarios = solution.factory.all_solutions_scenarios()
 for soln in all_solutions_scenarios.keys():
     constructor, scenarios = all_solutions_scenarios[soln]

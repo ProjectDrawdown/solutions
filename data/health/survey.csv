@@ -1,0 +1,136 @@
+Solution,RegionalFractionTAM,RegionalFractionAdoption
+airplanes:PDS1-68p2050_14.9% Efficiency (Book Ed.1),0.0,0.0
+airplanes:PDS2-73p2050_3rd Manufacturer+Retrofit (Book Ed.1),0.0,0.0
+airplanes:PDS3-73p2050_3rd Manufacturer+Retrofit+18% (Book Ed.1),0.0,0.0
+"altcement:PDS1,2,3-19p2050-Availability Analysis (Book Ed.1)",0.9890652701340027,0.9999999999999998
+bikeinfrastructure:PDS1-5p2050-Based on ITDP/UCD (Book Ed.1),0.0,0.0
+bikeinfrastructure:PDS2-8p2050-Based on Several Sources (Book Ed.1),0.0,0.0
+bikeinfrastructure:PDS3-10p2050-Only Ice Car users as conventional (Book Ed.1),0.0,0.0
+biogas:PDS-1p2050-Plausible (Book Ed.1),0.9762899024505536,0.005121225300418339
+biogas:PDS-1p2050-Drawdown (Book Ed. 1) ,0.9345614538951017,0.005121225300418339
+biogas:PDS-1p2050-Optimum (Book Ed. 1),0.9743482283184594,0.005121225300418339
+biomass:PDS-2p2050-Plausible (Book Ed. 1),0.9762899024505536,1.164802991198432
+biomass:PDS-1p2050-Drawdown (Book Ed. 1),0.9345614538951017,3.910747146183219
+biomass:PDS-0p2050-Optimum (Book Ed. 1),0.9743482283184594,6.213437325972755
+bioplastic:PDS1-33p2050-Feedstock Limit-385MMT (Book Ed.1),0.0,0.0
+bioplastic:PDS2-36p2050-Feedstock Limit - 453MMT (Book Ed.1),0.0,0.0
+bioplastic:PDS3-42p2050-Feedstock Limit -636MMT (Book Ed.1),0.0,0.0
+buildingautomation:PDS1-51p2050-SCurve (Book Ed.1),0.8032890314804253,1.0
+buildingautomation:PDS2-70p2050-Linear (Book Ed.1),0.8032890314804253,1.0
+buildingautomation:PDS3-72p2050-Linear (Book Ed.1),0.8032890314804253,1.0
+carpooling:PDS1-15p2050-(Book Ed.1),0.0,0.0
+carpooling:PDS2-20p2050-(Book Ed.1),0.0,0.0
+carpooling:PDS3-90p2050-Linear (Book Ed.1) ,0.0,0.0
+composting:PDS1-49p2050-Existing Prognostications (Book Ed.1),1.186401400092798,0.8832328179670306
+composting:PDS2-66p2050-Existing Projections + Rapid growth (Book Ed.1),1.186401400092798,0.0
+composting:PDS3-73p2050-Optimum (Book ed.1),1.186401400092798,0.0
+concentratedsolar:PDS-4p2050-Drawdown Plausible (Revison Case),0.9762899024505536,2.126001679569643
+concentratedsolar:PDS-8p2050-Drawdown Scenario (Revision Case),0.9345614538951017,1.083656067748819
+concentratedsolar:PDS-8p2050-Drawdown Optimum Scenario (Revision Case),0.9743482283184594,1.083656067748819
+concentratedsolar:PDS-4p2050-Plausible (Book Ed.1),0.9762899024505536,2.126001679569643
+concentratedsolar:PDS-8p2050-Drawdown (Book Ed. 1),0.9345614538951017,1.083656067748819
+concentratedsolar:PDS-8p2050-Optimum (Book Ed. 1),0.9743482283184594,1.083656067748819
+districtheating:PDS1-12p2050-Plausible (Book Ed.1),0.0,0.0
+districtheating:PDS2-13p2050-Drawdown Scen. (Book Ed.1),0.0,0.0
+districtheating:PDS3-14p2050-Optimum (Book Ed.1),0.0,0.0
+"electricbikes:PDS1-3p2050_Based on Navigant, Bloomberg (Book Ed.1)",0.6501258118270206,0.0
+electricbikes:PDS2-5p2050_Based on ITDP/UCD (Book Ed.1),0.6501258118270206,0.0
+electricbikes:PDS3-6p2050_Growth to 6.5% (Book Ed.1),0.6501258118270206,0.6501258118270205
+electricvehicles:PDS1-16p2050-Based on IEA 2DS (Book Ed.1),0.0,0.0
+electricvehicles:PDS2-30p2050-Based on IEA (2012 ETP) (Book Ed.1),0.0,0.0
+electricvehicles:PDS3-40p2050-Based on IEA (2012 ETP)+Double Occu (Book Ed.1),0.0,0.0
+highspeedrail:PDS1-4p2050-Announced Constr+1%Traffic Density (Book Ed.1),0.0,0.0
+highspeedrail:PDS2-4p2050-Announced Constr+2.5% Traffic Density Inc (Book Ed.1),0.0,0.0
+highspeedrail:PDS3-5p2050-Japanese Travel Density (Book Ed.1),0.0,0.0
+improvedcookstoves:PDS1-15p2050_Low Growth (Book Ed.1),1.108823676879944,0.0
+improvedcookstoves:PDS2-20p2050_High Growth (Book Ed.1),1.108823676879944,0.0
+improvedcookstoves:PDS3-25p2050_Linear to 25% (Book Ed.1),1.108823676879944,1.108823676879944
+instreamhydro:PDS-4p2050-Plausible (Book Ed. 1),0.9762899024505536,0.0
+instreamhydro:PDS-3p2050-Drawdown (Book Ed.1),0.9345614538951017,0.0
+instreamhydro:PDS-4p2050-Optimum (Book Ed. 1),0.9743482283184594,0.0
+"insulation:PDS1-69p2050-Slow Growth, Medium (Book Ed.1)",0.0,0.0
+"insulation:PDS2-100p2050-Medium Growth, Medium (Book Ed.1)",0.0,0.0
+"insulation:PDS3-100p2050-High Growth, Lower (Book Ed.1)",0.0,0.0
+landfillmethane:PDS-0p2050-Plausible Book (Ed. 1),0.9762899024505536,0.009174869799424595
+landfillmethane:PDS-0p2050-Drawdown (Book Ed.1)_Emissions1,0.9345614538951017,0.024670001209554482
+landfillmethane:PDS-0p2050-Drawdown (Book Ed.1)_emissions 2,0.9345614538951017,0.024670001209554482
+landfillmethane:PDS-0p2050-Optimum Book Ed.1) emissions 2,0.9743482283184594,0.02903388159492906
+landfillmethane:PDS-0p2050-Optimum (Book Ed.1) emissions 1,0.9743482283184594,0.02903388159492906
+leds_commercial:PDS1-82p2050-E18.8% (Book Ed.1),1.2171826193031994,0.8339150629177521
+leds_commercial:PDS3-95p2050-E17.3%-Linear 95% (Book Ed.1),1.2171826193031994,1.2171826193031994
+leds_commercial:PDS2-90p2050-E18.2%-Linear 90% (Book Ed.1),1.2171826193031994,1.2171826193031994
+leds_residential:PDS1-90p2050-linear (Book Ed.1),1.1017575492219833,1.1017575492219833
+leds_residential:PDS2-95p2050-linear (Book Ed.1),1.1017575492219833,1.1017575492219833
+leds_residential:PDS3-100p2050-linear (Book Ed.1),1.1017575492219833,1.1017575492219833
+masstransit:PDS1-21p2050-based on IEA (Book Ed.1),0.6400848029234244,0.0
+masstransit:PDS2-35p2050-based on ITDP/UCD (Book Ed.1),0.6400848029234244,0.0
+masstransit:PDS3-45p2050-linear (Book Ed.1),0.6400848029234244,0.6400848029234244
+microwind:PDS-0p2050-Plausible (Book Ed. 1),0.9762899024505536,0.0
+microwind:PDS-0p2050-Drawdown (Book Ed. 1),0.9345614538951017,0.0
+microwind:PDS-0p2050-Optimum (Book Ed. 1),0.9743482283184594,0.0
+offshorewind:PDS-4p2050-Plausible (Book Ed.1),0.9762899024505536,1.1328700521504487
+offshorewind:PDS-4p2050-Drawdown (Book Ed. 1),0.9345614538951017,1.0800275446362955
+offshorewind:PDS-6p2050-Optimum (Book Ed. 1),0.9743482283184594,0.7444032419036116
+onshorewind:PDS-22p2050-Plausible (Book Ed. 1),0.9762899024505536,0.4901224068218715
+onshorewind:PDS-33p2050-Drawdown (Book Ed. 1),0.9345614538951017,0.30479464973184245
+onshorewind:PDS-35p2050-Optimum (Book Ed. 1),0.9743482283184594,0.30479464973184245
+recycledpaper:PDS1-67p2050-Low Growth (Book Ed.1),1.2360617693542109,1.3873406306011877
+recycledpaper:PDS2-77p2050-Mean Growth (Book Ed.1),1.2360617693542109,0.0
+recycledpaper:PDS3-80p2050-High Growth (Book Ed.1),1.2360617693542109,0.0
+refrigerants:PDS1-93p2050-Individual Banks (Book Ed.1),0.0,0.0
+refrigerants:PDS2/3-100p2050-Combined Banks (Book Ed.1),0.0,0.0
+ships:PDS1-97p2050-Mean EEOI (Book Ed.1),0.0,0.0
+ships:PDS2-100p2050-1 SD Below Mean EEOI (Book Ed.1),0.0,0.0
+ships:PDS3-100p2050-Lowest EEOI (Book Ed.1),0.0,0.0
+silvopasture:PDS-45p2050-Plausible-PDScustom-low-BookVersion1,,1.2367665618128671
+silvopasture:PDS-54p2050-Drawdown-PDScustom-high-basedonpasture-BookVersion1,,0.0
+silvopasture:PDS-54p2050-Optimum-PDScustom-high0.5SD-BookVersion1,,1.0595774620880378
+smartglass:PDS1-29p2050-EE21.3% based on Navigant (Book Ed.1),0.0,0.0
+smartglass:PDS2-48p2050-EE21.3% based on Navigant (Book Ed.1),0.0,0.0
+smartglass:PDS3-75p2050-EE21.3% based on Navigant (Book Ed.1),0.0,0.0
+"smartthermostats:PDS1-28p2050-cs Low-E12.84, F8.89 (Book Ed.1)",0.0,0.0
+"smartthermostats:PDS2-39p2050-cs-Avg E11.65, F8.06 (Book Ed.1)",0.0,0.0
+"smartthermostats:PDS3-50p2050-cs-High E10.96, F7.59 (Book Ed.1)",0.0,0.0
+solarhotwater:PDS1-25p2050-Low of Custom Scen. (Book Ed.1),0.9046887610405554,0.0
+solarhotwater:PDS2-44p2050-Mean of Custom Scen. (Book Ed.1),0.9279498645673971,0.0
+solarhotwater:PDS3-62p2050-High of Custom Scen. (Book Ed.1),0.9344900592232549,0.0
+solarpvroof:PDS-7p2050-Plausible (Book Ed.1),0.9762899024505536,0.0
+solarpvroof:PDS-10p2050-Drawdown (Book Ed. 1),0.9345614538951017,0.0
+solarpvroof:PDS-10p2050-Optimum (Book Ed.1),0.9743482283184594,0.0
+solarpvroof:PDS-7p2050-Drawdown Plausible Scenario (Revision Case),0.9762899024505536,0.0
+solarpvroof:PDS-10p2050-Drawdown Scenario (Revision Case),0.9345614538951017,0.0
+solarpvroof:PDS-10p2050-Drawdown Optimum Scenario (Revision Case),0.9743482283184594,0.0
+solarpvutil:PDS3-16p2050-Optimum (Updated),0.9743482283184594,0.0
+solarpvutil:PDS2-15p2050-Drawdown (Updated),0.9345614538951017,0.0
+solarpvutil:PDS1-10p2050-Plausible (Updated),0.9762899024505536,0.0
+solarpvutil:PDS-16p2050- Optimum (Book Ed.1),0.9743482283184594,0.0
+solarpvutil:PDS-15p2050- Drawdown (Book Ed.1),0.9345614538951017,0.0
+solarpvutil:PDS-10p2050- Plausible (Book Ed.1),0.9762899024505536,0.0
+telepresence:PDS1-16p2050-Average Predicted Adoption (Book Ed.1),0.0,0.0
+telepresence:PDS2-29p2050-Maximum Prediction (Book Ed.1),0.0,0.0
+telepresence:PDS3-49p2050-50% Adoption (Book Ed.1),0.0,0.0
+tropicalforests:PDS-58p2050-Plausible-PDScustomadoption-avg,,0.0
+tropicalforests:PDS-77p2050-Drawdown-PDScustomadoption-high,,0.0
+tropicalforests:PDS-84p2050-Optimum-PDScustomadoption-100%in15years,,0.0
+tropicalforests:PDS-58p2050-Plausible-PDScustom-avg-BookVersion1,,0.0
+tropicalforests:PDS-79p2050-Drawdown-PDScustom-high-BookVersion1,,0.0
+tropicalforests:PDS-84p2050-Optimum-PDScustom-100%intact15years-BookVersion1,,0.0
+trains:PDS1-4p2050-Doubled Historical Electrification Rate (Book Ed.1),0.0,0.0
+trains:PDS2-5p2050-based on on IEA 2DS (Book Ed.1),0.0,0.0
+trains:PDS3-10p2050-Full Electrification (Book Ed.1),0.0,0.0
+trucks:PDS1-7p2050-Based on ICCT/RMI (Book Ed.1),0.0,0.0
+trucks:PDS2-9p2050-Based on ICCT (Book Ed.1),0.0,0.0
+trucks:PDS3-15p2050-Maximum (Book Ed.1),0.0,0.0
+walkablecities:PDS1-4p2050-Based on ITDP/UCD (Book Ed.1),0.0,0.0
+walkablecities:PDS3-8p2050-Linear (Book Ed.1),0.0,0.0
+walkablecities:PDS2-7p2050-2.4% Annual Density Increase (Book Ed.1),0.0,0.0
+waterdistribution:PDS1-40p2050-Linear Low (Book Ed.1),1.0779242594446097,0.0
+waterdistribution:PDS2-50p2050-Linear Medium (Book Ed.1),1.0779242594446097,0.0
+waterdistribution:PDS3-66p2050-Linear High (Book Ed.1),1.0779242594446097,0.0
+waterefficiency:PDS1-80p2050-70% of Demand (Book Ed.1),0.9675426576364617,0.936935494047989
+waterefficiency:PDS2-87p2050-80% of Demand (Book Ed.1),0.9675426576364617,0.9486753450503979
+waterefficiency:PDS3-97p2050-95% of Demand (Book Ed.1),0.9675426576364617,0.9633048017182637
+waveandtidal:PDS-4p2050-Optimum (Book Ed. 1),0.9743482283184588,0.0
+waveandtidal:PDS-3p2050-Plausible (Book Ed. 1),0.976289902450553,0.0
+waveandtidal:PDS-4p2050-Drawdown (Book Ed.1),0.9345614538951013,0.0
+waveandtidal:PDS-4p2050-Optimum (Book Ed.1),0.9743482283184588,0.0
