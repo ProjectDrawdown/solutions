@@ -334,8 +334,8 @@ class TAM:
         min_max_sd=self.forecast_min_max_sd_pds_global(),
         tamconfig=self.tamconfig['PDS World'],
         data_sources=data_sources)
-    result_2014 = result_world.loc[:2014]
-    result_2015 = result_world.loc[2015:]
+    result_2014 = result_world.loc[:2014].copy()
+    result_2015 = result_world.loc[2015:].copy()
     result_2015.update(other=result_pds, overwrite=True)
     result = pd.concat([result_2014, result_2015], sort=False)
     result.name = 'forecast_low_med_high_pds_global'
