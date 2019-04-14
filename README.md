@@ -54,86 +54,30 @@ Reaching the drawdown point, where humanity ceases to add greenhouses gases to t
 
 # Road Map
 
-### Kernel
+### Core model complete
 
-The four modules below may be thought of as the computational "kernel" of the Drawdown model. The order given is the preferred order and priority of implementation.
-
-1. **Complete Unit Adoption Calculations module**  
-   ~~At the end of the code.earth hackathon 9/7/2018, a good start of the Unit Adoption Module had been made but remains to be completed.~~
-
-   The Unit Adoption module was completed Oct 15, 2018.
-
-2. **First Cost module**  
-   ~~As with the Unit Adoption module, this should use VBAWEB to push data to the Python code.~~
-
-   ~~Note that this is the first place in the spreadsheets where there are a number of custom variants, where specific models need to replace the implementation with their own. It is strongly recommended that the Python code not try to accommodate this at this point: it will be much more clear what needs to be done when more of the system is moved out of Excel, attempting to design for model specialization too early is likely to over-design for the problem.~~
-
-   The First Cost module was completed Oct 7, 2018.
-
-3. **Operating Cost**  
-   ~~This module is similar to the earlier modules, where VBAWEB would push data over to the Python code for processing.~~
-
-   The Operating Cost module was completed Nov 3, 2018.
-
-4. **Continue development by CO2 Calcs**  
-   ~~As with earlier modules, this would use the VBAWEB module to push data from the spreadsheet over to Python for processing.~~
-
-   ~~Test cases should check that the numbers match the values computed by the original (unmodified) spreadsheet.~~
-
-   The CO2 Calcs and CH4 Calcs modules were completed Nov 17, 2018.
-
-### Preparing Input
-
-   A lower priority than the kernel modules are the following &quot;input preparation&quot; or &quot;input processing&quot; modules. These are used to, for example, move from convenient units for data entry to standard units for computation, and to perform other input checking and preparation. In a sense the existing spreadsheet still represents a "gold standard" against which you can test. The issue of how to report errors has not been addressed; feel free to design something awesome.
-
-5. **TAM Data**  
-   ~~This is the first module which makes extensive use of interpolation, where the source data is not supplied on an annual basis and so the models interpolate between data points. There are three interpolation implementations in the spreadsheet. Python will need to supply similar interpolation facilities.~~
-
-   ~~The Python implementation may not precisely match the original Excel interpolation values to the Nth bit of precision. The researchers can help determine whether the Python interpolation is reasonable.~~
-
-   The different interpolation methods (linear growth, 2nd order polynomial, 3rd order polynomial, and exponential) were completed Nov 4, 2018. The Python result matches the Excel within the normal tolerances for floating point operations.
-
-   The data tables and other calculations supplied by the TAM Data module were implemented Nov 21, 2018.
-
-6. **Adoption Data module with interpolation**  
-   ~~This is expected to be similar to the TAM Data tab, and also makes extensive use of interpolation.~~
-
-   The Adoption Data module was completed Nov 5, 2018.
-
-7. **VMA Variable Meta Analysis**  
-   ~~The Variable Meta-Analysis tab provides a variety of calculations which are not handled elsewhere. For example in the various solar solutions like Utility-Scale or Rooftop, the Variable Meta-Analysis module provides estimates of what percentage of overall solar adoption should be applied to each. More than most, the VMA module is customized according to the needs of each inndividual solution. For the Remodel we will supply code to use as building blocks, but expect that much of the Variable Meta Analysis handling will be done as code for individual solutions or classes of solutions.~~
-
-   Implementation of the VMA module was substantially completed Jan 7, 2019. There will always be more variables to add.
-
-8. **Other data input to be designed**  
-   There are other input parameters that may require significant human-centered design. However, we don't believe these should be addressed until the other above modules have been done.
-
----
-
-### Other Tasks
+At this point in development (4/2019) the core model for computing adoption, costs, and benefits is substantially complete and fully handles 43 of the 78 total solutions models developed by the project. Work from this point is continuing in several areas described below.
 
 Tasks which do not fit into an ordered list of things to be completed:
 
-* **Dashboard**  
+### Model enhancements
+
+Work is beginning on enhancements to the model beyond the original Excel-based models. The first area being worked on is a more sophisticated model of CO2 impacts, using an Impulse-Response model leveraging [FAIR](https://github.com/OMS-NetZero/FAIR).
+
+### User Interface
    The ultimate goal of this project is to produce a compelling, browser-delivered GUI. There are at least three mostly distinct audiences:
    + Researchers who want to work with the models, add data sources, etc.
    + Policy makers and deciders, who need tools to help guide effective use of resources.
    + Interested parties and the general public, to evangelize that there *are* solutions to global warming.
 
-   As of 1/2019, UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub). An early version of this UI is available on [mybinder.org](https://mybinder.org/v2/gl/codeearth%2Fdrawdown/master?urlpath=lab/tree/Drawdown.ipynb).
+   UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub). An early version of this UI is available on [mybinder.org](https://mybinder.org/v2/gl/codeearth%2Fdrawdown/master?urlpath=lab/tree/Drawdown.ipynb).
 
-* **Data Pipeline Hook Strategy**  
-   ~~&quot;Specialization&quot; is mentioned above as being an issue starting with the First Cost tab, where individual models have often needed to supply their own implementations and formulae. Though it is recommended that a design for this not be started too early so as to benefit from the understanding gained as the system is constructed, it will nonetheless have to be done at some point.~~
-
-   At this point we expect to handle Custom models for a particular solution in one of two ways: if the customization is a small tweak to the generic implementation, we'll see about making the generic implementation be able to handle it. Otherwise, we'll expect to supply a class within the solution/<solution_name> directory and instantiate that class instead of the generic version in model/\*.
-
-* **Automated testing**  
+### Automated testing
    One other goal for the project is to build a model implementation with good coverage by automated tests. There is a [YouTube video which demonstrates the three layers of tests](https://youtu.be/ipZrQWuMU3w) and another which [focuses on the Excel-based system test specifically](https://youtu.be/HLL7HrFcmjc).
 
-   Tests are being constructed at three layers:
+   Tests exist at two layers:
     1. unit tests of each function
-    2. an integration test which starts the webserver and runs test cases
-    3. a system test which starts Excel to compare the original, unmodified spreadsheet to the results from the new implementation
+    2. a system test which starts Excel to compare the original, unmodified spreadsheet to the results from the new implementation
 
 ---
 
