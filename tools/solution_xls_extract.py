@@ -129,6 +129,18 @@ def get_rrs_scenarios(wb):
       s['ref_source_post_2014'] = normalize_source_name(str(sr_tab.cell_value(row + 136, 7)))
       s['pds_source_post_2014'] = normalize_source_name(str(sr_tab.cell_value(row + 136, 10)))
 
+      s['pds_base_adoption'] = [
+          ('World', convert_sr_float(sr_tab.cell_value(row + 151, 4))),
+          ('OECD90', convert_sr_float(sr_tab.cell_value(row + 152, 4))),
+          ('Eastern Europe', convert_sr_float(sr_tab.cell_value(row + 153, 4))),
+          ('Asia (Sans Japan)', convert_sr_float(sr_tab.cell_value(row + 154, 4))),
+          ('Middle East and Africa', convert_sr_float(sr_tab.cell_value(row + 155, 4))),
+          ('Latin America', convert_sr_float(sr_tab.cell_value(row + 156, 4))),
+          ('China', convert_sr_float(sr_tab.cell_value(row + 157, 4))),
+          ('India', convert_sr_float(sr_tab.cell_value(row + 158, 4))),
+          ('EU', convert_sr_float(sr_tab.cell_value(row + 159, 4))),
+          ('USA', convert_sr_float(sr_tab.cell_value(row + 160, 4)))]
+
       assert sr_tab.cell_value(row + 163, 1) == 'PDS ADOPTION SCENARIO INPUTS'
       s['soln_pds_adoption_basis'] = str(sr_tab.cell_value(row + 164, 4)).strip()
       s['soln_pds_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 165, 4))
@@ -141,8 +153,18 @@ def get_rrs_scenarios(wb):
       s['pds_adoption_final_percentage'] = percentages
 
       if s['soln_pds_adoption_basis'] == 'DEFAULT S-Curve':
-        sconfig = [
-                ]
+        base_adoption = [
+            ('World', convert_sr_float(sr_tab.cell_value(row + 151, 4))),
+            ('OECD90', convert_sr_float(sr_tab.cell_value(row + 152, 4))),
+            ('Eastern Europe', convert_sr_float(sr_tab.cell_value(row + 153, 4))),
+            ('Asia (Sans Japan)', convert_sr_float(sr_tab.cell_value(row + 154, 4))),
+            ('Middle East and Africa', convert_sr_float(sr_tab.cell_value(row + 155, 4))),
+            ('Latin America', convert_sr_float(sr_tab.cell_value(row + 156, 4))),
+            ('China', convert_sr_float(sr_tab.cell_value(row + 157, 4))),
+            ('India', convert_sr_float(sr_tab.cell_value(row + 158, 4))),
+            ('EU', convert_sr_float(sr_tab.cell_value(row + 159, 4))),
+            ('USA', convert_sr_float(sr_tab.cell_value(row + 160, 4)))]
+        s['pds_base_adoption'] = base_adoption
 
       assert sr_tab.cell_value(row + 183, 1) == 'Existing PDS Prognostication Assumptions'
       adopt = normalize_source_name(str(sr_tab.cell_value(row + 184, 4)).strip())
@@ -352,6 +374,7 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['source_until_2014'], prefix=prefix)
   oneline(f=f, s=s, names=['ref_source_post_2014'], prefix=prefix)
   oneline(f=f, s=s, names=['pds_source_post_2014'], prefix=prefix)
+  oneline(f=f, s=s, names=['pds_base_adoption'], prefix=prefix)
   oneline(f=f, s=s, names=['pds_adoption_final_percentage'], prefix=prefix)
 
   f.write('\n' + prefix + '# financial' + '\n')
@@ -797,37 +820,24 @@ def write_s_curve_ad(f, wb):
   """
   s = wb.sheet_by_name('S-Curve Adoption')
   u = wb.sheet_by_name('Unit Adoption Calculations')
-  f.write("    sconfig_list = [\n")
-  f.write("      ['region', 'base_year', 'last_year', 'base_percent', 'last_percent', 'base_adoption', 'pds_tam_2050'],\n")
-  f.write("      ['World', " + xli(s, 16, 1) + ", " + xli(s, 19, 1) + ", " + xln(s, 17, 1) +
-          ", " + xln(s, 20, 1) + ", " + xln(s, 18, 1) + ", " + xln(u, 104, 1) + "],\n")
-  f.write("      ['OECD90', " + xli(s, 16, 2) + ", " + xli(s, 19, 2) + ", " + xln(s, 17, 2) +
-          ", " + xln(s, 20, 2) + ", " + xln(s, 18, 2) + ", " + xln(u, 104, 2) + "],\n")
-  f.write("      ['Eastern Europe', " + xli(s, 16, 3) + ", " + xli(s, 19, 3) + ", " +
-          xln(s, 17, 3) + ", " + xln(s, 20, 3) + ", " + xln(s, 18, 3) + ", " +
-          xln(u, 104, 3) + "],\n")
-  f.write("      ['Asia (Sans Japan)', " + xli(s, 16, 4) + ", " + xli(s, 19, 4) + ", " +
-          xln(s, 17, 4) + ", " + xln(s, 20, 4) + ", " + xln(s, 18, 4) + ", " +
-          xln(u, 104, 4) + "],\n")
-  f.write("      ['Middle East and Africa', " + xli(s, 16, 5) + ", " + xli(s, 19, 5) + ", " +
-          xln(s, 17, 5) + ", " + xln(s, 20, 5) + ", " + xln(s, 18, 5) + ", " +
-          xln(u, 104, 5) + "],\n")
-  f.write("      ['Latin America', " + xli(s, 16, 6) + ", " + xli(s, 19, 6) + ", " +
-          xln(s, 17, 6) + ", " + xln(s, 20, 6) + ", " + xln(s, 18, 6) + ", " +
-          xln(u, 104, 6) + "],\n")
-  f.write("      ['China', " + xli(s, 16, 7) + ", " + xli(s, 19, 7) + ", " +
-          xln(s, 17, 7) + ", " + xln(s, 20, 7) + ", " + xln(s, 18, 7) + ", " +
-          xln(u, 104, 7) + "],\n")
-  f.write("      ['India', " + xli(s, 16, 8) + ", " + xli(s, 19, 8) + ", " +
-          xln(s, 17, 8) + ", " + xln(s, 20, 8) + ", " + xln(s, 18, 8) + ", " +
-          xln(u, 104, 8) + "],\n")
-  f.write("      ['EU', " + xli(s, 16, 9) + ", " + xli(s, 19, 9) + ", " +
-          xln(s, 17, 9) + ", " + xln(s, 20, 9) + ", " + xln(s, 18, 9) + ", " +
-          xln(u, 104, 9) + "],\n")
-  f.write("      ['USA', " + xli(s, 16, 10) + ", " + xli(s, 19, 10) + ", " +
-          xln(s, 17, 10) + ", " + xln(s, 20, 10) + ", " + xln(s, 18, 10) + ", " +
-          xln(u, 104, 10) + "]]\n")
+  f.write("    sconfig_list = [['region', 'base_year', 'last_year'],\n")
+  f.write("      ['World', " + xli(s, 16, 1) + ", " + xli(s, 19, 1) + "],\n")
+  f.write("      ['OECD90', " + xli(s, 16, 2) + ", " + xli(s, 19, 2) + "],\n")
+  f.write("      ['Eastern Europe', " + xli(s, 16, 3) + ", " + xli(s, 19, 3) + "],\n")
+  f.write("      ['Asia (Sans Japan)', " + xli(s, 16, 4) + ", " + xli(s, 19, 4) + "],\n")
+  f.write("      ['Middle East and Africa', " + xli(s, 16, 5) + ", " + xli(s, 19, 5) + "],\n")
+  f.write("      ['Latin America', " + xli(s, 16, 6) + ", " + xli(s, 19, 6) + "],\n")
+  f.write("      ['China', " + xli(s, 16, 7) + ", " + xli(s, 19, 7) + "],\n")
+  f.write("      ['India', " + xli(s, 16, 8) + ", " + xli(s, 19, 8) + "],\n")
+  f.write("      ['EU', " + xli(s, 16, 9) + ", " + xli(s, 19, 9) + "],\n")
+  f.write("      ['USA', " + xli(s, 16, 10) + ", " + xli(s, 19, 10) + "]]\n")
   f.write("    sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0], dtype=np.object).set_index('region')\n")
+  f.write("    sconfig['pds_tam_2050'] = pds_tam_per_region.loc[[2050]].T\n")
+  f.write("    sc_regions, sc_percentages = zip(*self.ac.pds_base_adoption)\n")
+  f.write("    sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
+  f.write("    sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]\n")
+  f.write("    sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
+  f.write("    sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
   f.write("    self.sc = s_curve.SCurve(transition_period=" + xli(s, 14, 0) + ", sconfig=sconfig)\n")
   f.write("\n")
 
