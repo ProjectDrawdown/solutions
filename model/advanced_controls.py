@@ -598,7 +598,11 @@ class AdvancedControls:
     if isinstance(val, dict):
       return val['value']
     elif isinstance(val, str):
-      if vma_title not in self.vmas:
+      for vma_key in self.vmas.keys():
+        if vma_key.startswith(vma_title):  # This handles the case of 'first cost' title discrepancies
+          vma_title = vma_key
+          break
+      else:
         raise KeyError('{} must be included in vmas to calculate mean/high/low. vmas included: {}'.format(vma_title, self.vmas.keys()))
       return self.vmas[vma_title].avg_high_low(key=val.lower())
     else:

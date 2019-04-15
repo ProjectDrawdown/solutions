@@ -18,11 +18,15 @@ def test_make_vma_df_template():
 
 def test_single_table():
     vma_r = VMAReader(wb)
-    result = vma_r.read_single_table('C48')
+    result, _ = vma_r.read_single_table('C48')
     expected = pd.read_csv(thisdir.joinpath('silvopasture_vma1.csv'))
     # integer values for years are causing an unimportant dtype issue in the test
     pd.testing.assert_frame_equal(expected.drop(columns=['Year / Date']), result.drop(columns=['Year / Date']))
 
+def test_single_table_use_weight():
+    vma_r = VMAReader(wb)
+    _, uw = vma_r.read_single_table('C48')
+    assert not uw
 
 def test_read_xls_num_dfs():
     """ Check we produce the right amount of tables + discard empty ones """
@@ -37,9 +41,9 @@ def test_read_xls():
     """ Check some specifc values from Silvopasture """
     vma_r = VMAReader(wb)
     df_dict = vma_r.read_xls()
-    table = df_dict['SOLUTION Net Profit Margin per Functional Unit per Annum']
+    table = df_dict['SOLUTION Net Profit Margin per Functional Unit per Annum'][0]
     assert table.at[5, 'Raw Data Input'] == 416
-    table = df_dict['Sequestration Rates']
+    table = df_dict['Sequestration Rates'][0]
     assert len(table) == 28
     table = df_dict['Energy Efficiency Factor - SOLUTION']
     assert table is None

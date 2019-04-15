@@ -298,13 +298,16 @@ def get_land_scenarios(wb):
 
       assert sr_tab.cell_value(row + 168, 1) == 'Carbon Sequestration and Land Inputs'
       s['seq_rate_global'] = link_vma(sr_tab.cell_value(row + 169, 4))
-      s['global_multi_for_regrowth'] = convert_sr_float(sr_tab.cell_value(row + 178, 4))
-      s['degradation_rate'] = link_vma(sr_tab.cell_value(row + 175, 4))
+      if sr_tab.cell_value(row + 175, 3) == 'Growth Rate of Land Degradation':
+        s['global_multi_for_regrowth'] = convert_sr_float(sr_tab.cell_value(row + 178, 4))
+        s['degradation_rate'] = link_vma(sr_tab.cell_value(row + 175, 4))
       s['disturbance_rate'] = link_vma(sr_tab.cell_value(row + 176, 4))
 
-      s['delay_protection_1yr'] = convert_bool(sr_tab.cell_value(row + 189, 4))
-      s['delay_regrowth_1yr'] = convert_bool(sr_tab.cell_value(row + 190, 4))
-      s['include_unprotected_land_in_regrowth_calcs'] = convert_bool(sr_tab.cell_value(row + 191, 4))
+      assert sr_tab.cell_value(row + 188, 1) == 'General Land Inputs'
+      if sr_tab.cell_value(row + 189, 3) == 'Delay Impact of Protection by 1 Year? (Leakage)':
+        s['delay_protection_1yr'] = convert_bool(sr_tab.cell_value(row + 189, 4))
+        s['delay_regrowth_1yr'] = convert_bool(sr_tab.cell_value(row + 190, 4))
+        s['include_unprotected_land_in_regrowth_calcs'] = convert_bool(sr_tab.cell_value(row + 191, 4))
 
       scenarios[scenario_name] = s
   return scenarios
@@ -931,6 +934,9 @@ def write_fc(f, wb):
   f.write("        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
   if fc_tab.cell(14, 5).value == 1000000000 and fc_tab.cell(14, 6).value == '$/kW TO $/TW':
     f.write("        fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)\n")
+  elif fc_tab.cell(15, 5).value == 1000000 and fc_tab.cell(17, 5).value == 'million hectare':
+
+    f.write("        fc_convert_iunit_factor=land.MHA_TO_HA)\n")
   else:
     f.write("        fc_convert_iunit_factor=" + xln(fc_tab, 14, 5) + ")\n")
   f.write('\n')
@@ -1518,6 +1524,8 @@ def link_vma(cell_value):
   """
   if not isinstance(cell_value, str) or 'Formula:=' not in cell_value:
     return convert_sr_float(cell_value)
+  if 'Error' in cell_value:
+    return 0.
   if True in [cell_value.endswith(x) for x in ['80', '95', '175', '189', '140']]:
     return 'mean'
   elif True in [cell_value.endswith(x) for x in ['81', '96', '176', '190', '141']]:

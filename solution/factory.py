@@ -37,6 +37,7 @@ from solution import solarpvroof
 from solution import solarpvutil
 from solution import telepresence
 from solution import tropicalforests
+from solution import tropicaltreestaples
 from solution import trains
 from solution import trucks
 from solution import walkablecities
@@ -100,6 +101,8 @@ def all_solutions_scenarios():
     everything['telepresence'] = (telepresence.Telepresence, list(telepresence.scenarios.keys()))
     everything['tropicalforests'] = (tropicalforests.TropicalForests,
             list(tropicalforests.scenarios.keys()))
+    everything['tropicaltreestaples'] = (tropicaltreestaples.TropicalTreeStaples,
+            list(tropicaltreestaples.scenarios.keys()))
     everything['trains'] = (trains.TrainFuelEfficiency, list(trains.scenarios.keys()))
     everything['trucks'] = (trucks.Trucks, list(trucks.scenarios.keys()))
     everything['walkablecities'] = (walkablecities.WalkableCities,

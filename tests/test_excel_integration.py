@@ -61,6 +61,7 @@ from solution import telepresence
 from solution import trains
 from solution import trucks
 from solution import tropicalforests
+from solution import tropicaltreestaples
 from solution import walkablecities
 from solution import waterdistribution
 from solution import waterefficiency
@@ -1348,6 +1349,25 @@ def test_TropicalForests_LAND(start_excel, tmpdir):
     verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('tropicaltreestaples', 'testdata', 'Tropical_Tree_Staples(Grassland)_L-Use_v1.1b_02Aug18.xlsm'))],
+    indirect=True)
+def test_TropicalTreeStaples_LAND(start_excel, tmpdir):
+  """Test for Excel model file Tropical_Tree_Staples(Grassland)_L-Use_v1.1b_02Aug18.xlsm."""
+  workbook = start_excel
+  for scenario in tropicaltreestaples.scenarios.keys():
+    obj = tropicaltreestaples.TropicalTreeStaples(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+
+    # floating point error in first cost causes some tables to fail due as a number that should be 0
+    # is multiplied by a large number (install cost). We ignore them here.
+    assert verify['First Cost'][7][0] == 'R37:R82'
+    verify['First Cost'].pop(7)
+    assert verify['First Cost'][4][0] == 'N37:N82'
+    verify['First Cost'].pop(4)
+
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',

@@ -44,8 +44,8 @@ def test_{1}_LAND(start_excel, tmpdir):
         dir_name, class_name, xls_name))
 
 if __name__ == '__main__':
-    dir_name = 'forestprotection'
-    class_name = 'ForestProtection'
+    dir_name = 'tropicaltreestaples'
+    class_name = 'TropicalTreeStaples'
 
     # make_dirs(dir_name)
     #
