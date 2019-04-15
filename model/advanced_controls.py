@@ -11,9 +11,9 @@ from model import interpolation
 
 
 SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND')
-translate_adoption_bases = { "DEFAULT Linear": "Linear", "DEFAULT S-Curve": "S-Curve" }
-valid_pds_adoption_bases = {'Linear', 'S-Curve', 'Existing Adoption Prognostications',
-    'Customized S-Curve Adoption', 'Fully Customized PDS', None}
+translate_adoption_bases = { "DEFAULT Linear": "Linear", "DEFAULT S-Curve": "Logistic S-Curve" }
+valid_pds_adoption_bases = {'Linear', 'Logistic S-Curve', 'Existing Adoption Prognostications',
+    'Customized S-Curve Adoption', 'Fully Customized PDS', 'Bass Diffusion S-Curve', None}
 valid_ref_adoption_bases = {'Default', 'Custom', None}
 valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
@@ -252,6 +252,10 @@ class AdvancedControls:
   pds_adoption_final_percentage (dict): a list of (region, %) tuples of the final adoption
      percentage for the PDS calculations. For example: [('World', 0.54), ('OECD90', 0.60), ...]
      SolarPVUtil "ScenarioRecord" rows 170 - 179.
+  pds_adoption_s_curve_innovation (dict): a list of (region, float) tuples of the innovation
+     factor used in the Bass Diffusion S-Curve model.  SolarPVUtil "ScenarioRecord" rows 170 - 179.
+  pds_adoption_s_curve_imitation (dict): a list of (region, float) tuples of the innovation
+     factor used in the Bass Diffusion S-Curve model.  SolarPVUtil "ScenarioRecord" rows 170 - 179.
 
   solution_category (SOLUTION_CATEGORY): Whether the solution is primarily REDUCTION of
      emissions from an existing technology, REPLACEMENT of a technology to one with lower
@@ -356,6 +360,8 @@ class AdvancedControls:
                pds_adoption_use_ref_years=None,
                pds_base_adoption=None,
                pds_adoption_final_percentage=None,
+               pds_adoption_s_curve_innovation=None,
+               pds_adoption_s_curve_imitation=None,
 
                solution_category=None,
 
@@ -466,6 +472,8 @@ class AdvancedControls:
       raise ValueError(err)
     self.pds_base_adoption = pds_base_adoption
     self.pds_adoption_final_percentage = pds_adoption_final_percentage
+    self.pds_adoption_s_curve_innovation = pds_adoption_s_curve_innovation
+    self.pds_adoption_s_curve_imitation = pds_adoption_s_curve_imitation
 
     self.solution_category = solution_category
     if isinstance(solution_category, str):

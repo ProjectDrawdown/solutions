@@ -153,18 +153,35 @@ def get_rrs_scenarios(wb):
       s['pds_adoption_final_percentage'] = percentages
 
       if s['soln_pds_adoption_basis'] == 'DEFAULT S-Curve':
-        base_adoption = [
-            ('World', convert_sr_float(sr_tab.cell_value(row + 151, 4))),
-            ('OECD90', convert_sr_float(sr_tab.cell_value(row + 152, 4))),
-            ('Eastern Europe', convert_sr_float(sr_tab.cell_value(row + 153, 4))),
-            ('Asia (Sans Japan)', convert_sr_float(sr_tab.cell_value(row + 154, 4))),
-            ('Middle East and Africa', convert_sr_float(sr_tab.cell_value(row + 155, 4))),
-            ('Latin America', convert_sr_float(sr_tab.cell_value(row + 156, 4))),
-            ('China', convert_sr_float(sr_tab.cell_value(row + 157, 4))),
-            ('India', convert_sr_float(sr_tab.cell_value(row + 158, 4))),
-            ('EU', convert_sr_float(sr_tab.cell_value(row + 159, 4))),
-            ('USA', convert_sr_float(sr_tab.cell_value(row + 160, 4)))]
-        s['pds_base_adoption'] = base_adoption
+        s_curve_type = str(sr_tab.cell_value(row + 181, 4))
+        if s_curve_type  == 'Alternate S-Curve (Bass Model)':
+          s['soln_pds_adoption_basis'] = 'Bass Diffusion S-Curve'
+          s['pds_adoption_s_curve_innovation'] = [
+                  ('World', convert_sr_float(sr_tab.cell_value(row + 170, 6))),
+                  ('OECD90', convert_sr_float(sr_tab.cell_value(row + 171, 6))),
+                  ('Eastern Europe', convert_sr_float(sr_tab.cell_value(row + 172, 6))),
+                  ('Asia (Sans Japan)', convert_sr_float(sr_tab.cell_value(row + 173, 6))),
+                  ('Middle East and Africa', convert_sr_float(sr_tab.cell_value(row + 174, 6))),
+                  ('Latin America', convert_sr_float(sr_tab.cell_value(row + 175, 6))),
+                  ('China', convert_sr_float(sr_tab.cell_value(row + 176, 6))),
+                  ('India', convert_sr_float(sr_tab.cell_value(row + 177, 6))),
+                  ('EU', convert_sr_float(sr_tab.cell_value(row + 178, 6))),
+                  ('USA', convert_sr_float(sr_tab.cell_value(row + 179, 6)))]
+          s['pds_adoption_s_curve_imitation'] = [
+                  ('World', convert_sr_float(sr_tab.cell_value(row + 170, 7))),
+                  ('OECD90', convert_sr_float(sr_tab.cell_value(row + 171, 7))),
+                  ('Eastern Europe', convert_sr_float(sr_tab.cell_value(row + 172, 7))),
+                  ('Asia (Sans Japan)', convert_sr_float(sr_tab.cell_value(row + 173, 7))),
+                  ('Middle East and Africa', convert_sr_float(sr_tab.cell_value(row + 174, 7))),
+                  ('Latin America', convert_sr_float(sr_tab.cell_value(row + 175, 7))),
+                  ('China', convert_sr_float(sr_tab.cell_value(row + 176, 7))),
+                  ('India', convert_sr_float(sr_tab.cell_value(row + 177, 7))),
+                  ('EU', convert_sr_float(sr_tab.cell_value(row + 178, 7))),
+                  ('USA', convert_sr_float(sr_tab.cell_value(row + 179, 7)))]
+        elif s_curve_type == 'Default S-Curve (Logistic Model)':
+          s['soln_pds_adoption_basis'] = 'Logistic S-Curve'
+        else:
+          raise ValueError('Unknown S-Curve:' + s_curve_type)
 
       assert sr_tab.cell_value(row + 183, 1) == 'Existing PDS Prognostication Assumptions'
       adopt = normalize_source_name(str(sr_tab.cell_value(row + 184, 4)).strip())
@@ -379,6 +396,8 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['pds_source_post_2014'], prefix=prefix)
   oneline(f=f, s=s, names=['pds_base_adoption'], prefix=prefix)
   oneline(f=f, s=s, names=['pds_adoption_final_percentage'], prefix=prefix)
+  oneline(f=f, s=s, names=['pds_adoption_s_curve_innovation'], prefix=prefix)
+  oneline(f=f, s=s, names=['pds_adoption_s_curve_imitation'], prefix=prefix)
 
   f.write('\n' + prefix + '# financial' + '\n')
   oneline(f=f, s=s, names=['pds_2014_cost', 'ref_2014_cost'], prefix=prefix)
@@ -841,6 +860,12 @@ def write_s_curve_ad(f, wb):
   f.write("    sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]\n")
   f.write("    sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
   f.write("    sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
+  f.write("    if self.ac.pds_adoption_s_curve_innovation is not None:\n")
+  f.write("      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_innovation)\n")
+  f.write("      sconfig['innovation'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
+  f.write("    if self.ac.pds_adoption_s_curve_imitation is not None:\n")
+  f.write("      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_imitation)\n")
+  f.write("      sconfig['imitation'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
   f.write("    self.sc = s_curve.SCurve(transition_period=" + xli(s, 14, 0) + ", sconfig=sconfig)\n")
   f.write("\n")
 
@@ -956,14 +981,27 @@ def write_oc(f, wb, is_land=False):
   f.write("        single_iunit_purchase_year=" + xli(oc_tab, 120, 8) + ",\n")
   f.write("        soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),\n")
   f.write("        conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),\n")
+
   units = oc_tab.cell(12, 5).value
   is_energy_units = (units == '$/kW TO $/TW' or units == 'From US$2014 per kW to US$2014 per TW')
-  if oc_tab.cell(12, 4).value == 1000000000 and is_energy_units:
-    f.write("        conversion_factor=rrs.TERAWATT_TO_KILOWATT)\n")
-  elif is_land:
-    f.write("        conversion_factor=land.MHA_TO_HA)\n")
+  conversion_factor_fom = oc_tab.cell(12, 4).value
+  conversion_factor_vom = oc_tab.cell(13, 4).value
+
+  if conversion_factor_fom == 1000000000 and is_energy_units:
+    conversion_factor_fom = 'rrs.TERAWATT_TO_KILOWATT'
+  if conversion_factor_vom == 1000000000 and is_energy_units:
+    conversion_factor_vom = 'rrs.TERAWATT_TO_KILOWATT'
+  if is_land:
+    conversion_factor_fom = conversion_factor_vom = 'land.MHA_TO_HA'
+
+  # In almost all cases the two conversion factors are equal. We only know of one solution where
+  # they differ (Heatpumps). operatingcost.py accomodates this, if passed a single number it will
+  # use it for both factors.
+  if conversion_factor_fom == conversion_factor_vom:
+    f.write("        conversion_factor=" + str(conversion_factor_fom) + ")\n")
   else:
-    f.write("        conversion_factor=" + xln(oc_tab, 12, 4) + ")\n")
+    f.write("        conversion_factor=(" + str(conversion_factor_fom) + ", " +
+            str(conversion_factor_vom) + "))\n")
   f.write('\n')
 
 
@@ -1427,9 +1465,13 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write("      pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
     f.write("      pds_adoption_is_single_source = None\n")
   if has_s_curve_pds_ad:
-    f.write("    elif self.ac.soln_pds_adoption_basis == 'S-Curve':\n")
+    f.write("    elif self.ac.soln_pds_adoption_basis == 'Logistic S-Curve':\n")
     f.write("      pds_adoption_data_per_region = None\n")
     f.write("      pds_adoption_trend_per_region = self.sc.logistic_adoption()\n")
+    f.write("      pds_adoption_is_single_source = None\n")
+    f.write("    elif self.ac.soln_pds_adoption_basis == 'Bass Diffusion S-Curve':\n")
+    f.write("      pds_adoption_data_per_region = None\n")
+    f.write("      pds_adoption_trend_per_region = self.sc.bass_diffusion_adoption()\n")
     f.write("      pds_adoption_is_single_source = None\n")
   if has_default_pds_ad or has_default_ref_ad:
     f.write("    elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':\n")

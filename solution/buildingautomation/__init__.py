@@ -39,7 +39,7 @@ scenarios = {
       # adoption
       soln_ref_adoption_basis='Default', 
       soln_ref_adoption_regional_data=True, soln_pds_adoption_regional_data=True, 
-      soln_pds_adoption_basis='DEFAULT S-Curve', 
+      soln_pds_adoption_basis='Logistic S-Curve', 
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
@@ -318,7 +318,7 @@ class BuildingAutomationSystems:
       # One may wonder why this is here. This file was code generated.
       # This 'if False' allows subsequent conditions to all be elif.
       pass
-    elif self.ac.soln_pds_adoption_basis == 'S-Curve':
+    elif self.ac.soln_pds_adoption_basis == 'Logistic S-Curve':
       pds_adoption_data_per_region = None
       pds_adoption_trend_per_region = self.sc.logistic_adoption()
       pds_adoption_is_single_source = False
