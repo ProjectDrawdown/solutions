@@ -5,7 +5,6 @@ import pathlib
 import pandas as pd
 from numpy import nan
 from collections import OrderedDict
-import warnings
 from tools.util import cell_to_offsets, empty_to_nan, to_filename, convert_bool
 
 CSV_TEMPLATE_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'VMA', 'vma_template.csv')
@@ -59,24 +58,25 @@ class VMAReader:
         self._find_tables()
         df_dict = OrderedDict()
         for title, location in self.table_locations.items():
-            df = self.read_single_table(location)
+            df, use_weight = self.read_single_table(location)
             if df.empty:  # in line with our policy of setting empty tables to None
                 df_dict[title] = None
             else:
-                df_dict[title] = df
+                df_dict[title] = (df, use_weight)
 
         if csv_path is not None:
             idx = pd.Index(data=list(range(1, len(df_dict) + 1)), name='VMA number')
-            info_df = pd.DataFrame(columns=['Filename', 'Title on xls', 'Has data?'], index=idx)
+            info_df = pd.DataFrame(columns=['Filename', 'Title on xls', 'Has data?', 'Use weight?'], index=idx)
             i = 1
-            for title, df in df_dict.items():
+            for title, table in df_dict.items():
                 path_friendly_title = to_filename(title)
                 row = {'Filename': path_friendly_title, 'Title on xls': title,
-                       'Has data?': False if df is None else True}
+                       'Has data?': False if table is None else True,
+                       'Use weight?': False if table is None else table[1]}
                 info_df.loc[i, :] = row
                 i += 1
-                if df is not None:
-                    df.to_csv(os.path.join(csv_path, path_friendly_title + '.csv'), index=False)
+                if table is not None:
+                    table[0].to_csv(os.path.join(csv_path, path_friendly_title + '.csv'), index=False)
             info_df.to_csv(os.path.join(csv_path, 'VMA_info.csv'))
         return df_dict
 
@@ -105,17 +105,25 @@ class VMAReader:
                 cell_val = COLUMN_DTYPE_MAP[col_name](empty_to_nan(cell_val))  # conversions
                 new_row[col_name] = cell_val
             if all(pd.isna(v) for k, v in new_row.items() if k != 'Common Units'):
+                last_row = r
                 break  # assume an empty row (except for Common Units) indicates no more sources to copy
             else:
                 df = df.append(new_row, ignore_index=True)
         else:
-            warnings.warn(
+            raise Exception(
                 'No blank row detected in table. Either there are 51+ VMAs in table, the table has been misused '
                 'or there is some error in the code. Cell: {}'.format(source_id_cell))
         if (df['Weight'] == 0).all():
             # Sometimes all weights are set to 0 instead of blank. In this case we want them to be NaN.
             df['Weight'] = df['Weight'].replace(0, nan)
-        return df
+
+        for r in range(last_row, last_row + 50):  # look past last row
+            if self.sheet.cell_value(row1 + r, 18) == 'Use weight?':
+                use_weight = convert_bool(self.sheet.cell_value(row1 + r + 1, 18))
+                break
+        else:
+            raise ValueError("No 'Use weight?' cell found")
+        return df, use_weight
 
     def _find_tables(self):
         """

@@ -21,7 +21,11 @@ def generate_vma_dict(path_to_vma_data):
   vma_dict = {}
   for _, row in vma_info_df.iterrows():
     if row['Has data?']:
-      vma_dict[row['Title on xls']] = VMA(path_to_vma_data.joinpath(row['Filename'] + '.csv'))
+      if 'Use weight?' in row:
+        use_weight = row['Use weight?']
+      else:
+        use_weight = False
+      vma_dict[row['Title on xls']] = VMA(path_to_vma_data.joinpath(row['Filename'] + '.csv'), use_weight=use_weight)
   return vma_dict
 
 
@@ -44,14 +48,16 @@ class VMA:
          stddev away from the mean.
        postprocess: function to pass (mean, high, low) to before returning.
   """
-  def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3, postprocess=None):
+  def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3, use_weight=False, postprocess=None):
     df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
     self.source_data = df
     self.low_sd = low_sd
     self.high_sd = high_sd
     self.discard_multiplier = discard_multiplier
     self.postprocess = postprocess
-    self.use_weight = not all(pd.isnull(df['Weight']))
+    if use_weight:
+      assert not all(pd.isnull(df['Weight'])), "'Use weight' selected but no weights to use"
+    self.use_weight = use_weight
     weight = df['Weight'].apply(convert_percentages)
     weight.name = 'Weight'
     raw = df['Raw Data Input'].apply(convert_percentages)
