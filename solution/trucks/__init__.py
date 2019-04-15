@@ -207,7 +207,7 @@ class Trucks:
   name = 'Truck Fuel Efficiency'
   units = {
     "implementation unit": "Truck",
-    "functional unit": "million tonne-kms",
+    "functional unit": "Mt-km",
     "first cost": "US$B",
     "operating cost": "US$B",
   }

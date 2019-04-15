@@ -30,6 +30,9 @@ concentratedsolar:PDS-8p2050-Drawdown Optimum Scenario (Revision Case),0.9743482
 concentratedsolar:PDS-4p2050-Plausible (Book Ed.1),0.9762899024505536,2.126001679569643
 concentratedsolar:PDS-8p2050-Drawdown (Book Ed. 1),0.9345614538951017,1.083656067748819
 concentratedsolar:PDS-8p2050-Optimum (Book Ed. 1),0.9743482283184594,1.083656067748819
+coolroofs:PDS2-89p2050-Integrated-EE8.51%-FE-2.67% (Book),1.6165080339091265,0.0
+coolroofs:PDS1-61p2050-Integrated-EE8.72%-FE-2.81% (Book),1.6165080339091265,0.0
+coolroofs:PDS3-93p2050-Integrated-EE8.42%-FE-2.62% (Book),1.6165080339091265,0.0
 districtheating:PDS1-12p2050-Plausible (Book Ed.1),0.0,0.0
 districtheating:PDS2-13p2050-Drawdown Scen. (Book Ed.1),0.0,0.0
 districtheating:PDS3-14p2050-Optimum (Book Ed.1),0.0,0.0
@@ -39,6 +42,9 @@ electricbikes:PDS3-6p2050_Growth to 6.5% (Book Ed.1),0.6501258118270206,0.650125
 electricvehicles:PDS1-16p2050-Based on IEA 2DS (Book Ed.1),0.0,0.0
 electricvehicles:PDS2-30p2050-Based on IEA (2012 ETP) (Book Ed.1),0.0,0.0
 electricvehicles:PDS3-40p2050-Based on IEA (2012 ETP)+Double Occu (Book Ed.1),0.0,0.0
+greenroofs:PDS1-30p2050-Integrated-FE-12.75% (Book),1.3513034163031412,1.69366841566016
+greenroofs:PDS2-50p2050-Integrated-FE-12.6% (Book),1.3513034163031412,1.4210060632947086
+greenroofs:PDS3-75p2050-Integrated-FE-12.54% (Book),1.3513034163031412,1.3512832437339688
 highspeedrail:PDS1-4p2050-Announced Constr+1%Traffic Density (Book Ed.1),0.0,0.0
 highspeedrail:PDS2-4p2050-Announced Constr+2.5% Traffic Density Inc (Book Ed.1),0.0,0.0
 highspeedrail:PDS3-5p2050-Japanese Travel Density (Book Ed.1),0.0,0.0

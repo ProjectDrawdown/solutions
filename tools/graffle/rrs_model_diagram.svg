@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="80 117 566 299" width="566" height="299">
+<svg xmlns:xl="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" viewBox="80 117 566 299" width="566" height="299">
   <defs>
     <filter id="Shadow" filterUnits="userSpaceOnUse" x="80" y="117">
       <feGaussianBlur in="SourceAlpha" result="blur" stdDeviation="1.308"/>
@@ -24,9 +24,9 @@
     </marker>
   </defs>
   <metadata> Produced by OmniGraffle 7.10.2 
-    <dc:date>2019-04-08 04:51:11 +0000</dc:date>
+    <dc:date>2019-04-14 15:43:40 +0000</dc:date>
   </metadata>
-  <g id="Canvas_1" stroke="none" stroke-dasharray="none" fill-opacity="1" stroke-opacity="1" fill="none">
+  <g id="Canvas_1" stroke-opacity="1" stroke-dasharray="none" fill="none" fill-opacity="1" stroke="none">
     <title>Canvas 1</title>
     <rect fill="white" x="80" y="117" width="566" height="299"/>
     <g id="Canvas_1: Layer 1">
@@ -42,26 +42,26 @@
       </g>
       <g id="Graphic_4" filter="url(#Shadow)">
         <title>caref</title>
-        <rect x="228" y="119" width="128" height="44" fill="white"/>
-        <rect x="228" y="119" width="128" height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(233 122.552)" fill="black">
+        <rect x="220" y="119" width="128" height="44" fill="white"/>
+        <rect x="220" y="119" width="128" height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(225 122.552)" fill="black">
           <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x=".608" y="15">customadoption</tspan>
           <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="39.896" y="33.448">(REF)</tspan>
         </text>
       </g>
       <g id="Graphic_5" filter="url(#Shadow)">
         <title>sc</title>
-        <rect x="372" y="119" width="66" height="44" fill="white"/>
-        <rect x="372" y="119" width="66" height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(377 131)" fill="black">
+        <rect x="470" y="119" width="66" height="44" fill="white"/>
+        <rect x="470" y="119" width="66" height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(475 131)" fill="black">
           <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x=".296" y="15">s_curve</tspan>
         </text>
       </g>
       <g id="Graphic_6" filter="url(#Shadow)">
         <title>ad</title>
-        <rect x="454" y="119" width="106" height="44" fill="white"/>
-        <rect x="454" y="119" width="106" height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(459 131)" fill="black">
+        <rect x="356" y="119" width="106" height="44" fill="white"/>
+        <rect x="356" y="119" width="106" height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(361 131)" fill="black">
           <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x=".432" y="15">adoptiondata</tspan>
         </text>
       </g>
@@ -143,15 +143,11 @@
       </g>
       <g id="Line_17">
         <title>caref_to_ht</title>
-        <line x1="301.26316" y1="163" x2="318.89508" y2="204.8758" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-      </g>
-      <g id="Line_18">
-        <title>sc_to_ht</title>
-        <line x1="388.09474" y1="163" x2="354.9374" y2="206.14995" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <line x1="295.1158" y1="163" x2="316.41963" y2="205.16385" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Line_19">
         <title>ad_to_ht</title>
-        <line x1="466.4737" y1="163" x2="381.22696" y2="209.2768" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <line x1="391.1684" y1="163" x2="356.0653" y2="206.30905" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Line_20">
         <title>tm_to_ht</title>
@@ -192,6 +188,14 @@
       <g id="Line_29">
         <title>ef_to_c2</title>
         <line x1="295.05263" y1="334" x2="366.99855" y2="366.9391" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_32">
+        <title>sc_to_ht</title>
+        <path d="M 496.8498 163 C 490.9427 173.97859 479.4221 187.54326 457 200 C 438.3702 210.34988 415.58353 218.06333 394.59205 223.63748" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_33">
+        <title>tm_to_sc</title>
+        <line x1="576" y1="141" x2="545.9" y2="141" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
     </g>
   </g>

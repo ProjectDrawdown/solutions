@@ -210,7 +210,7 @@ class TrainFuelEfficiency:
   name = 'Train Fuel Efficiency'
   units = {
     "implementation unit": "km of track converted",
-    "functional unit": "million tonne-km",
+    "functional unit": "Mt-km",
     "first cost": "US$B",
     "operating cost": "US$B",
   }

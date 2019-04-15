@@ -22,7 +22,7 @@
     </marker>
   </defs>
   <metadata> Produced by OmniGraffle 7.10.2 
-    <dc:date>2019-04-08 04:51:11 +0000</dc:date>
+    <dc:date>2019-04-14 15:43:40 +0000</dc:date>
   </metadata>
   <g fill="none" fill-opacity="1" id="Canvas_1" stroke="none" stroke-dasharray="none" stroke-opacity="1">
     <title>Canvas 1</title>
@@ -40,26 +40,26 @@
       </g>
       <g filter="url(#Shadow)" id="caref">
         <title>caref</title>
-        <rect fill="white" height="44" width="128" x="228" y="119" />
-        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="128" x="228" y="119" />
-        <text fill="black" transform="translate(233 122.552)">
+        <rect fill="white" height="44" width="128" x="220" y="119" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="128" x="220" y="119" />
+        <text fill="black" transform="translate(225 122.552)">
           <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x=".608" y="15">customadoption</tspan>
           <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x="39.896" y="33.448">(REF)</tspan>
         </text>
       </g>
       <g filter="url(#Shadow)" id="sc">
         <title>sc</title>
-        <rect fill="white" height="44" width="66" x="372" y="119" />
-        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="66" x="372" y="119" />
-        <text fill="black" transform="translate(377 131)">
+        <rect fill="white" height="44" width="66" x="470" y="119" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="66" x="470" y="119" />
+        <text fill="black" transform="translate(475 131)">
           <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x=".296" y="15">s_curve</tspan>
         </text>
       </g>
       <g filter="url(#Shadow)" id="ad">
         <title>ad</title>
-        <rect fill="white" height="44" width="106" x="454" y="119" />
-        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="106" x="454" y="119" />
-        <text fill="black" transform="translate(459 131)">
+        <rect fill="white" height="44" width="106" x="356" y="119" />
+        <rect height="44" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" width="106" x="356" y="119" />
+        <text fill="black" transform="translate(361 131)">
           <tspan fill="black" font-family="Helvetica Neue" font-size="16" font-weight="400" x=".432" y="15">adoptiondata</tspan>
         </text>
       </g>
@@ -141,15 +141,11 @@
       </g>
       <g id="caref_to_ht">
         <title>caref_to_ht</title>
-        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="301.26316" x2="318.89508" y1="163" y2="204.8758" />
-      </g>
-      <g id="sc_to_ht">
-        <title>sc_to_ht</title>
-        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="388.09474" x2="354.9374" y1="163" y2="206.14995" />
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="295.1158" x2="316.41963" y1="163" y2="205.16385" />
       </g>
       <g id="ad_to_ht">
         <title>ad_to_ht</title>
-        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="466.4737" x2="381.22696" y1="163" y2="209.2768" />
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="391.1684" x2="356.0653" y1="163" y2="206.30905" />
       </g>
       <g id="tm_to_ht">
         <title>tm_to_ht</title>
@@ -190,6 +186,14 @@
       <g id="ef_to_c2">
         <title>ef_to_c2</title>
         <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="295.05263" x2="366.99855" y1="334" y2="366.9391" />
+      </g>
+      <g id="sc_to_ht">
+        <title>sc_to_ht</title>
+        <path d="M 496.8498 163 C 490.9427 173.97859 479.4221 187.54326 457 200 C 438.3702 210.34988 415.58353 218.06333 394.59205 223.63748" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      </g>
+      <g id="tm_to_sc">
+        <title>tm_to_sc</title>
+        <line marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="576" x2="545.9" y1="141" y2="141" />
       </g>
     </g>
   </g>

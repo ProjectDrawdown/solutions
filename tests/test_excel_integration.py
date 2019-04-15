@@ -30,10 +30,12 @@ from solution import buildingautomation
 from solution import carpooling
 from solution import composting
 from solution import concentratedsolar
+from solution import coolroofs
 from solution import districtheating
 from solution import electricbikes
 from solution import electricvehicles
 from solution import forestprotection
+from solution import greenroofs
 from solution import highspeedrail
 from solution import improvedcookstoves
 from solution import instreamhydro
@@ -817,7 +819,6 @@ def check_excel_against_object(obj, workbook, scenario, verify):
         'Drawdown-Alternative (High Vol. Fly Ash) Cement_RRS_v1.1_16Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_AltCement_RRS(start_excel, tmpdir):
-  """Test for Excel model file Alternative Cement."""
   workbook = start_excel
   for scenario in altcement.scenarios.keys():
     obj = altcement.AlternativeCement(scenario=scenario)
@@ -831,7 +832,6 @@ def test_AltCement_RRS(start_excel, tmpdir):
         'Drawdown-Aircraft Fuel Efficiency_RRS_v1.1_5Dec2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_Airplanes_RRS(start_excel, tmpdir):
-  """Test for Excel model file Aircraft Fuel Efficiency."""
   workbook = start_excel
   for scenario in airplanes.scenarios.keys():
     obj = airplanes.Airplanes(scenario=scenario)
@@ -845,7 +845,6 @@ def test_Airplanes_RRS(start_excel, tmpdir):
         'Drawdown-Bike Infrastructure_RRS_v1.1_4Dec2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_BikeInfrastructure_RRS(start_excel, tmpdir):
-  """Test for Excel model file BikeInfrastructure*."""
   workbook = start_excel
   for scenario in bikeinfrastructure.scenarios.keys():
     obj = bikeinfrastructure.BikeInfrastructure(scenario=scenario)
@@ -857,8 +856,7 @@ def test_BikeInfrastructure_RRS(start_excel, tmpdir):
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('biogas', 'testdata', 'Drawdown-Large Biodigesters (Biogas)_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
-def test_Biogas_RRS_ELECGEN(start_excel, tmpdir):
-  """Test for Excel model file Biogas*."""
+def test_Biogas_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in biogas.scenarios.keys():
     obj = biogas.Biogas(scenario=scenario)
@@ -871,8 +869,7 @@ def test_Biogas_RRS_ELECGEN(start_excel, tmpdir):
     [str(solutiondir.joinpath('biomass', 'testdata',
       'Drawdown-Biomass from Perennial Crops for Electricity Generation_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
-def test_Biomass_RRS_ELECGEN(start_excel, tmpdir):
-  """Test for Excel model file Biomass*."""
+def test_Biomass_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in biomass.scenarios.keys():
     obj = biomass.Biomass(scenario=scenario)
@@ -886,7 +883,6 @@ def test_Biomass_RRS_ELECGEN(start_excel, tmpdir):
       'Drawdown-Bioplastics_RRS_v1.1_16Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_Bioplastic_RRS(start_excel, tmpdir):
-  """Test for Excel model file Bioplastics*."""
   workbook = start_excel
   for scenario in ['PDS1-33p2050-Feedstock Limit-385MMT (Book Ed.1)']:
     obj = bioplastic.Bioplastic(scenario=scenario)
@@ -900,7 +896,6 @@ def test_Bioplastic_RRS(start_excel, tmpdir):
       'Drawdown-Building Automation Systems_RRS_v1.1_18Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_BuildingAutomation_RRS(start_excel, tmpdir):
-  """Test for Excel model file BuildingAutomation*."""
   workbook = start_excel
   for scenario in buildingautomation.scenarios.keys():
     obj = buildingautomation.BuildingAutomationSystems(scenario=scenario)
@@ -914,7 +909,6 @@ def test_BuildingAutomation_RRS(start_excel, tmpdir):
         'Drawdown-Carpooling_RRS_v1.1_29Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_Carpooling_RRS(start_excel, tmpdir):
-  """Test for Excel model file Carpooling*."""
   workbook = start_excel
   for scenario in carpooling.scenarios.keys():
     obj = carpooling.Carpooling(scenario=scenario)
@@ -928,7 +922,6 @@ def test_Carpooling_RRS(start_excel, tmpdir):
         'Drawdown-Composting_RRS_v1.1_18Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_Composting_RRS(start_excel, tmpdir):
-  """Test for Excel model file Composting*."""
   workbook = start_excel
   for scenario in composting.scenarios.keys():
     obj = composting.Composting(scenario=scenario)
@@ -939,14 +932,26 @@ def test_Composting_RRS(start_excel, tmpdir):
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('concentratedsolar', 'testdata',
-        'CSP_RRS_ELECGEN_v1.1b_24Oct18.xlsm'))],
+        'CSP_RRS_v1.1b_24Oct18.xlsm'))],
     indirect=True)
 @pytest.mark.skip(reason="need to resolve Adoption Data X367 and Z367")
-def test_ConcentratedSolar_RRS_ELECGEN(start_excel, tmpdir):
-  """Test for Excel model file CSP_RRS_ELECGEN_*."""
+def test_ConcentratedSolar_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in concentratedsolar.scenarios.keys():
     obj = concentratedsolar.ConcentratedSolar(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('coolroofs', 'testdata',
+        'Drawdown-Cool Roofs_RRS_v1.1_18Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_CoolRoofs_RRS(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in coolroofs.scenarios.keys():
+    obj = coolroofs.CoolRoofs(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -957,7 +962,6 @@ def test_ConcentratedSolar_RRS_ELECGEN(start_excel, tmpdir):
         'Drawdown-Renewable District Heating_RRS_v1.1_18Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_DistrictHeating_RRS(start_excel, tmpdir):
-  """Test for Excel model file District Heating."""
   workbook = start_excel
   for scenario in districtheating.scenarios.keys():
     obj = districtheating.DistrictHeating(scenario=scenario)
@@ -971,7 +975,6 @@ def test_DistrictHeating_RRS(start_excel, tmpdir):
         'Drawdown-Electric Bicycles_RRS_v1.1_30Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_ElectricBikes_RRS(start_excel, tmpdir):
-  """Test for Excel model file Electric Bikes."""
   workbook = start_excel
   for scenario in electricbikes.scenarios.keys():
     obj = electricbikes.ElectricBicycles(scenario=scenario)
@@ -985,7 +988,6 @@ def test_ElectricBikes_RRS(start_excel, tmpdir):
         'Drawdown-Electric Vehicles_RRS_v1,1_31Dec2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_ElectricVehicles_RRS(start_excel, tmpdir):
-  """Test for Excel model file Electric Vehicles."""
   workbook = start_excel
   for scenario in electricvehicles.scenarios.keys():
     obj = electricvehicles.ElectricVehicles(scenario=scenario)
@@ -999,7 +1001,6 @@ def test_ElectricVehicles_RRS(start_excel, tmpdir):
         'Forest_Protection_L-UseProtect_Model_v1.1c_26July18.xlsm'))],
     indirect=True)
 def test_ForestProtection_LAND(start_excel, tmpdir):
-  """Test for Excel model file Forest_Protection_L-Use*"""
   workbook = start_excel
   for scenario in forestprotection.scenarios.keys():
     obj = forestprotection.ForestProtection(scenario=scenario)
@@ -1009,11 +1010,23 @@ def test_ForestProtection_LAND(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('greenroofs', 'testdata',
+        'Drawdown-Green Roofs_RRS_v1.1_18Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_GreenRoofs_RRS(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in greenroofs.scenarios.keys():
+    obj = greenroofs.GreenRoofs(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('highspeedrail', 'testdata',
         'Drawdown-High Speed Rail_RRS_v1.1_5Dec2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_HighSpeedRail_RRS(start_excel, tmpdir):
-  """Test for Excel model file High Speed Rail."""
   workbook = start_excel
   for scenario in highspeedrail.scenarios.keys():
     obj = highspeedrail.HighSpeedRail(scenario=scenario)
@@ -1027,7 +1040,6 @@ def test_HighSpeedRail_RRS(start_excel, tmpdir):
         'Drawdown-Improved Cook Stoves (ICS)_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
-  """Test for Excel model file ImprovedCookStoves."""
   workbook = start_excel
   for scenario in improvedcookstoves.scenarios.keys():
     obj = improvedcookstoves.ImprovedCookStoves(scenario=scenario)
@@ -1040,7 +1052,6 @@ def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
     [str(solutiondir.joinpath('instreamhydro', 'testdata', 'Drawdown-Instream Hydro (Small Hydro sub10MW)_RRS.ES_v1.1_14Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_InstreamHydro_RRS(start_excel, tmpdir):
-  """Test for Excel model file Instream Hydro_RRS*."""
   workbook = start_excel
   for scenario in instreamhydro.scenarios.keys():
     obj = instreamhydro.InstreamHydro(scenario=scenario)
@@ -1054,7 +1065,6 @@ def test_InstreamHydro_RRS(start_excel, tmpdir):
       'Drawdown-Insulation_RRS_v1,1_18Dec2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_Insulation_RRS(start_excel, tmpdir):
-  """Test for Excel model file Insulation_RRS*."""
   workbook = start_excel
   for scenario in insulation.scenarios.keys():
     obj = insulation.Insulation(scenario=scenario)
@@ -1064,11 +1074,10 @@ def test_Insulation_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('landfillmethane', 'testdata', 'LandfillMethane_RRS_ELECGEN_v1.1c_24Oct18.xlsm'))],
+    [str(solutiondir.joinpath('landfillmethane', 'testdata', 'LandfillMethane_RRS_v1.1c_24Oct18.xlsm'))],
     indirect=True)
 @pytest.mark.skip(reason="need to resolve Unit Adoption Calculations W252 and X252")
-def test_LandfillMethane_RRS_ELECGEN(start_excel, tmpdir):
-  """Test for Excel model file LandfillMethane_RRS_ELECGEN_*."""
+def test_LandfillMethane_RRS(start_excel, tmpdir):
   workbook = start_excel
   # Regional data where all but the first row are #VALUE, and the regional
   # data is not used. Just zero out the first row, don't try to match it
@@ -1087,7 +1096,6 @@ def test_LandfillMethane_RRS_ELECGEN(start_excel, tmpdir):
         'Drawdown-LED Commercial Lighting_RRS_v1.1_19Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_LEDCommercialLighting_RRS(start_excel, tmpdir):
-  """Test for Excel model file LED Commercial Lighting*."""
   workbook = start_excel
   for scenario in leds_commercial.scenarios.keys():
     obj = leds_commercial.LEDCommercialLighting(scenario=scenario)
@@ -1101,7 +1109,6 @@ def test_LEDCommercialLighting_RRS(start_excel, tmpdir):
         'Drawdown-Residential LED Lighting_RRS_v1.1_19Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_LEDResidentialLighting_RRS(start_excel, tmpdir):
-  """Test for Excel model file Residential LED Lighting*."""
   workbook = start_excel
   for scenario in leds_residential.scenarios.keys():
     obj = leds_residential.ResidentialLEDLighting(scenario=scenario)
@@ -1115,7 +1122,6 @@ def test_LEDResidentialLighting_RRS(start_excel, tmpdir):
         'Drawdown-Mass Transit_RRS_v1.1_29Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_MassTransit_RRS(start_excel, tmpdir):
-  """Test for Excel model file Mass Transit_RRS_*."""
   workbook = start_excel
   for scenario in masstransit.scenarios.keys():
     obj = masstransit.MassTransit(scenario=scenario)
@@ -1127,8 +1133,7 @@ def test_MassTransit_RRS(start_excel, tmpdir):
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('microwind', 'testdata', 'Drawdown-MicroWind Turbines_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
-def test_MicroWind_RRS_ELECGEN(start_excel, tmpdir):
-  """Test for Excel model file MicroWind_RRS_*."""
+def test_MicroWind_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in microwind.scenarios.keys():
     obj = microwind.MicroWind(scenario=scenario)
@@ -1140,8 +1145,7 @@ def test_MicroWind_RRS_ELECGEN(start_excel, tmpdir):
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('offshorewind', 'testdata', 'Drawdown-Wind Offshore_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
-def test_OffshoreWind_RRS_ELECGEN(start_excel, tmpdir):
-  """Test for Excel model file OffshoreWind_*."""
+def test_OffshoreWind_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in offshorewind.scenarios.keys():
     obj = offshorewind.OffshoreWind(scenario=scenario)
@@ -1153,8 +1157,7 @@ def test_OffshoreWind_RRS_ELECGEN(start_excel, tmpdir):
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('onshorewind', 'testdata', 'Drawdown-Onshore Wind_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
-def test_OnshoreWind_RRS_ELECGEN(start_excel, tmpdir):
-  """Test for Excel model file OnshoreWind_*."""
+def test_OnshoreWind_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in onshorewind.scenarios.keys():
     obj = onshorewind.OnshoreWind(scenario=scenario)
@@ -1168,7 +1171,6 @@ def test_OnshoreWind_RRS_ELECGEN(start_excel, tmpdir):
         'Drawdown-Recycled Paper_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_RecycledPaper_RRS(start_excel, tmpdir):
-  """Test for Excel model file Recycled Paper*."""
   workbook = start_excel
   for scenario in recycledpaper.scenarios.keys():
     obj = recycledpaper.RecycledPaper(scenario=scenario)
@@ -1182,7 +1184,6 @@ def test_RecycledPaper_RRS(start_excel, tmpdir):
         'Drawdown-Refrigerant Management_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_Refrigerants_RRS(start_excel, tmpdir):
-  """Test for Excel model file Refrigerants*."""
   workbook = start_excel
   for scenario in refrigerants.scenarios.keys():
     obj = refrigerants.RefrigerantManagement(scenario=scenario)
@@ -1196,7 +1197,6 @@ def test_Refrigerants_RRS(start_excel, tmpdir):
         'Drawdown-Oceanic Freight Improvements_RRS_v1.1_5Dec2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_Ships_RRS(start_excel, tmpdir):
-  """Test for Excel model file Oceanic Freight Improvements*."""
   workbook = start_excel
   for scenario in ships.scenarios.keys():
     obj = ships.Ships(scenario=scenario)
@@ -1209,7 +1209,6 @@ def test_Ships_RRS(start_excel, tmpdir):
     [str(solutiondir.joinpath('silvopasture', 'testdata', 'Silvopasture_L-Use_v1.1a_3Aug18.xlsm'))],
     indirect=True)
 def test_Silvopasture_LAND(start_excel, tmpdir):
-  """Test for Excel model file Silvopasture_L-Use*."""
   workbook = start_excel
   for scenario in silvopasture.scenarios.keys():
     obj = silvopasture.Silvopasture(scenario=scenario)
@@ -1223,7 +1222,6 @@ def test_Silvopasture_LAND(start_excel, tmpdir):
       'Drawdown-Smart Glass_RRS_v1.1_21Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_SmartGlass_RRS(start_excel, tmpdir):
-  """Test for Excel model file Smart Glass*."""
   workbook = start_excel
   for scenario in smartglass.scenarios.keys():
     obj = smartglass.SmartGlass(scenario=scenario)
@@ -1236,7 +1234,6 @@ def test_SmartGlass_RRS(start_excel, tmpdir):
     [str(solutiondir.joinpath('smartthermostats', 'testdata', 'Drawdown-Smart Thermostats_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_SmartThermostats_RRS(start_excel, tmpdir):
-  """Test for Excel model file Smart Thermostats_RRS*."""
   workbook = start_excel
   for scenario in smartthermostats.scenarios.keys():
     obj = smartthermostats.SmartThermostats(scenario=scenario)
@@ -1249,7 +1246,6 @@ def test_SmartThermostats_RRS(start_excel, tmpdir):
     [str(solutiondir.joinpath('solarhotwater', 'testdata', 'Drawdown-Solar Hot Water_RRS_v1.1_21Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_SolarHotWater_RRS(start_excel, tmpdir):
-  """Test for Excel model file SolarHotWater_RRS*."""
   workbook = start_excel
   # Need to figure out how to handle 'Aggressive, High Growth, early' source in
   # PDS CustomAdoption, which varies according to data coming from UnitAdoption.
@@ -1262,11 +1258,10 @@ def test_SolarHotWater_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('solarpvroof', 'testdata', 'SolarPVRooftop_RRS_ELECGEN_v1.1b_24Oct18.xlsm'))],
+    [str(solutiondir.joinpath('solarpvroof', 'testdata', 'SolarPVRooftop_RRS_v1.1b_24Oct18.xlsm'))],
     indirect=True)
 @pytest.mark.skip(reason="no excel file checked in")
-def test_SolarRooftop_RRS_ELECGEN(start_excel, tmpdir):
-  """Test for Excel model file SolarPVRooftop_RRS_ELECGEN_*."""
+def test_SolarRooftop_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in solarpvroof.scenarios.keys():
     obj = solarpvroof.SolarPVRoof(scenario=scenario)
@@ -1276,10 +1271,9 @@ def test_SolarRooftop_RRS_ELECGEN(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('solarpvutil', 'testdata', 'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm'))],
+    [str(solutiondir.joinpath('solarpvutil', 'testdata', 'SolarPVUtility_RRS_v1.1d_27Aug18.xlsm'))],
     indirect=True)
-def test_SolarPVUtility_RRS_ELECGEN(start_excel):
-  """Test for Excel model file SolarPVUtility_RRS_ELECGEN_*."""
+def test_SolarPVUtility_RRS(start_excel):
   workbook = start_excel
   for scenario in solarpvutil.scenarios.keys():
     obj = solarpvutil.SolarPVUtil(scenario=scenario)
@@ -1293,7 +1287,6 @@ def test_SolarPVUtility_RRS_ELECGEN(start_excel):
         'Drawdown-Videoconferencing and Telepresence_RRS_v1.1_17Dec2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_Telepresence_RRS(start_excel):
-  """Test for Excel model file Videoconferencing and Telepresence*."""
   workbook = start_excel
   for scenario in telepresence.scenarios.keys():
     obj = telepresence.Telepresence(scenario=scenario)
@@ -1306,7 +1299,6 @@ def test_Telepresence_RRS(start_excel):
     [str(solutiondir.joinpath('temperateforests', 'testdata', 'Temperate_Forest_Restoration_L-Use_v1.1b_27July18.xlsm'))],
     indirect=True)
 def test_TemperateForests_LAND(start_excel, tmpdir):
-  """Test for Excel model file Temperate_Forest_Restoration_L-Use*."""
   workbook = start_excel
   for scenario, ac in temperateforests.scenarios.items():
     if not ac.use_custom_tla:
@@ -1329,7 +1321,6 @@ def test_TemperateForests_LAND(start_excel, tmpdir):
         'Drawdown-Train Fuel Efficiency_RRS_v1,1_4Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_Trains_RRS(start_excel):
-  """Test for Excel model file Trains*."""
   workbook = start_excel
   for scenario in trains.scenarios.keys():
     obj = trains.TrainFuelEfficiency(scenario=scenario)
@@ -1342,7 +1333,6 @@ def test_Trains_RRS(start_excel):
     [str(solutiondir.joinpath('tropicalforests', 'testdata', 'Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm'))],
     indirect=True)
 def test_TropicalForests_LAND(start_excel, tmpdir):
-  """Test for Excel model file Tropical_Forest_Restoration_L-Use*."""
   workbook = start_excel
   for scenario, ac in tropicalforests.scenarios.items():
     if not ac.use_custom_tla:
@@ -1365,7 +1355,6 @@ def test_TropicalForests_LAND(start_excel, tmpdir):
         'Drawdown-Truck Fuel Efficiency_RRS_v1,1_4Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_Trucks_RRS(start_excel):
-  """Test for Excel model file Trucks*."""
   workbook = start_excel
   for scenario in trucks.scenarios.keys():
     obj = trucks.Trucks(scenario=scenario)
@@ -1379,7 +1368,6 @@ def test_Trucks_RRS(start_excel):
         'Drawdown-Walkable Cities_RRS_v1,1_31Dec2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_WalkableCities_RRS(start_excel):
-  """Test for Excel model file Walkable Cities*."""
   workbook = start_excel
   for scenario in walkablecities.scenarios.keys():
     obj = walkablecities.WalkableCities(scenario=scenario)
@@ -1393,7 +1381,6 @@ def test_WalkableCities_RRS(start_excel):
         'Drawdown-Increasing Distribution Efficiency in WDSs_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_WaterDistribution_RRS(start_excel):
-  """Test for Excel model file WaterDistribution*."""
   workbook = start_excel
   for scenario in waterdistribution.scenarios.keys():
     obj = waterdistribution.WaterDistribution(scenario=scenario)
@@ -1407,7 +1394,6 @@ def test_WaterDistribution_RRS(start_excel):
         'Drawdown-Water Efficiency Measures_RRS_v1.1_17Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_WaterEfficiency_RRS(start_excel):
-  """Test for Excel model file WaterEfficiency*."""
   workbook = start_excel
   for scenario in waterefficiency.scenarios.keys():
     obj = waterefficiency.WaterEfficiencyMeasures(scenario=scenario)
@@ -1421,7 +1407,6 @@ def test_WaterEfficiency_RRS(start_excel):
         'Drawdown-Wave and Tidal_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_WaveAndTidal_RRS(start_excel):
-  """Test for Excel model file Wave and Tidal *."""
   workbook = start_excel
   for scenario in waveandtidal.scenarios.keys():
     obj = waveandtidal.WaveAndTidal(scenario=scenario)
