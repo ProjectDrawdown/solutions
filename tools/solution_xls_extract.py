@@ -1291,6 +1291,8 @@ def extract_vmas(wb, outputdir):
         os.mkdir(vma_dir_path)
     vma_r = VMAReader(wb)
     vma_r.read_xls(csv_path=vma_dir_path)
+    if 'Variable Meta-analysis-DD' in wb.sheet_names():
+        vma_r.read_xls(csv_path=vma_dir_path, alt_vma=True)
 
 
 def lookup_unit(tab, row, col):

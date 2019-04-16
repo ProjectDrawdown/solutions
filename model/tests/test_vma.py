@@ -94,8 +94,14 @@ def test_avg_high_low_exclude():
 
 def test_generate_vma_dict():
     vma_dict = vma.generate_vma_dict(datadir)
-    assert len(vma_dict) == 1
+    assert len(vma_dict) == 2
     assert 'Current Adoption' in vma_dict
+
+def test_fixed_summary():
+    vma_dict = vma.generate_vma_dict(datadir)
+    v = vma_dict['Testing Fixed Summary']
+    (avg, high, low) = v.avg_high_low()
+    assert (avg, high, low) == (2.0, 3.0, 1.0)
 
 def test_avg_high_low_by_regime():
   f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
