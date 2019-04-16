@@ -1329,8 +1329,8 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   wb = xlrd.open_workbook(filename=xl_filename)
   ac_tab = wb.sheet_by_name('Advanced Controls')
 
-  is_rrs = 'RRS' in xl_filename
-  is_land = 'PDLAND' in xl_filename or 'L-Use' in xl_filename
+  is_rrs = 'RRS' in xl_filename or 'TAM' in wb.sheet_names()
+  is_land = 'PDLAND' in xl_filename or 'L-Use' in xl_filename or 'AEZ Data' in wb.sheet_names()
   has_tam = is_rrs
 
   f = open(py_filename, 'w') if py_filename != '-' else sys.stdout
