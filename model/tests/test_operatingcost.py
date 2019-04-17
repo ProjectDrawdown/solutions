@@ -451,7 +451,7 @@ def test_annual_breakout_no_fractional_years():
   assert result.loc[2066, 2018] == 0.0
   assert result.loc[2067, 2019] == 0.0
 
-def test_annual_breakout_convert_iunit_factor():
+def test_annual_breakout_conversion_factor():
   soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
       columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
   soln_pds_tot_iunits_reqd = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
@@ -460,8 +460,9 @@ def test_annual_breakout_convert_iunit_factor():
       columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
   ac = advanced_controls.AdvancedControls(report_end_year=2050,
       soln_lifetime_capacity=41401.1076923077, soln_avg_annual_use=1725.04615384615,
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
-      soln_fixed_oper_cost_per_iunit=23.18791293579)
+      soln_var_oper_cost_per_funit=17.0, soln_fuel_cost_per_funit=7.0,
+      soln_fixed_oper_cost_per_iunit=23.0, conv_var_oper_cost_per_funit=0.0,
+      conv_fuel_cost_per_funit=0.0, conv_fixed_oper_cost_per_iunit=0.0)
   oc = operatingcost.OperatingCost(ac=ac,
       soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
       soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
@@ -469,10 +470,13 @@ def test_annual_breakout_convert_iunit_factor():
       conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
       soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
       single_iunit_purchase_year=None, soln_pds_install_cost_per_iunit=None,
-      conv_ref_install_cost_per_iunit=None, conversion_factor=1.0)
+      conv_ref_install_cost_per_iunit=None, conversion_factor=(27.0, 33.0))
   result = oc.soln_pds_annual_breakout()
-  assert result.loc[2015, 2015] == pytest.approx(0.744986264)
-  assert result.loc[2042, 2018] == pytest.approx(1.531430078)
+  # Expected results from SolarPVUtil with Advanced Controls H128 (var cost) set to 17.0,
+  # I128 (fixed cost) set to 23.0, and K128 (fuel cost) set to 7.0 and with Operating Cost
+  # E13 (fixed conv factor) set to 27 and E14 (var conv factor) set to 33.
+  assert result.loc[2015, 2015] == pytest.approx(46882.2152885102)  # Operating Cost!C262
+  assert result.loc[2042, 2018] == pytest.approx(96373.3669039766)  # Operating Cost!F289
 
 def test_annual_breakout_zero_cost_zero_lifetime_replacement():
   soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
@@ -542,17 +546,6 @@ def test_cashflow_no_fractional_years():
   assert result[2039] == 0.0
   result = oc.soln_only_single_iunit_cashflow()
   assert result[2039] == 0.0
-
-def test_conversion_factor():
-    oc = operatingcost.OperatingCost(ac=None, soln_net_annual_funits_adopted=None,
-                                     soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
-                                     conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
-                                     soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
-                                     single_iunit_purchase_year=2017,
-                                     soln_pds_install_cost_per_iunit=None,
-                                     conv_ref_install_cost_per_iunit=None,
-                                     conversion_factor=1)
-    assert oc.conversion_factor == 1
 
 def test_cashflow_conversion_factor():
   soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],

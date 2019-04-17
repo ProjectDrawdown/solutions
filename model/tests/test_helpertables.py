@@ -410,7 +410,7 @@ def test_soln_pds_funits_adopted_linear_interpolation_regional_data_tam_limit():
 
 def test_soln_pds_funits_adopted_s_curve():
   ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
-      soln_pds_adoption_basis='DEFAULT S-Curve')
+      soln_pds_adoption_basis='Logistic S-Curve')
   pds_datapoints = pd.DataFrame([
     [2014, 20.30881991465230, 0.0, 0.0, 25.04194984517460, 5.33726613132968, 36.92512711754970,
       0.0, 0.0, 0.0, 0.0],

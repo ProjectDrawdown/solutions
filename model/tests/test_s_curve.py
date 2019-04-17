@@ -78,7 +78,7 @@ def test_bass_diffusion():
         ['EU', 2014, 2050, 0.0, 0.0, 59700.4155768868, 0.0011209600, 0.1033334410],
         ['USA', 2014, 2050, 0.0, 0.0, 64756.7863759130, 0.0011209600, 0.1033334410]],
         columns = ['region', 'base_year', 'last_year', 'base_percent', 'base_adoption',
-            'M', 'P', 'Q']).set_index('region')
+            'pds_tam_2050', 'innovation', 'imitation']).set_index('region')
     sc = s_curve.SCurve(transition_period=None, sconfig=sconfig)
     result = sc.bass_diffusion_adoption()
     expected = pd.DataFrame(bass_diffusion_adoption_list[1:],
@@ -100,7 +100,7 @@ def test_bass_diffusion_regions_NaN():
         ['EU', 2014, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
         ['USA', 2014, 2050, 0.0, 0.0, 0.0, 0.0, 0.0]],
         columns = ['region', 'base_year', 'last_year', 'base_percent', 'base_adoption',
-            'M', 'P', 'Q']).set_index('region')
+            'pds_tam_2050', 'innovation', 'imitation']).set_index('region')
     sc = s_curve.SCurve(transition_period=None, sconfig=sconfig)
     result = sc.bass_diffusion_adoption()
     expected = pd.DataFrame(bass_diffusion_adoption_regions_NaN_list[1:],

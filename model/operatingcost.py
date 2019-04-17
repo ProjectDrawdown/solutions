@@ -25,7 +25,12 @@ class OperatingCost:
     soln_pds_install_cost_per_iunit: cost per implementation unit
     conv_ref_install_cost_per_iunit: cost per implementation unit
     conversion_factor: conversion factor from iunits to a more natural
-      monetary unit.
+      monetary unit. In almost all cases a single conversion factor is used for
+      both fixed and variable operating costs. Passing a single integer or float
+      to conversion_factor will suffice. For those cases where a different factor
+      is needed for fixed versus variable costs, passing a tuple of
+      (<fixed_conv>, <var_conv>) can be used. At the time of this writing in 4/2019
+      there is only one solution which does this (heatpumps).
   """
   def __init__(self, ac, soln_net_annual_funits_adopted,
       soln_pds_tot_iunits_reqd,
@@ -49,7 +54,12 @@ class OperatingCost:
     self.single_iunit_purchase_year = single_iunit_purchase_year
     self.soln_pds_install_cost_per_iunit = soln_pds_install_cost_per_iunit
     self.conv_ref_install_cost_per_iunit = conv_ref_install_cost_per_iunit
-    self.conversion_factor = conversion_factor
+    try:
+      self.conversion_factor_fom = conversion_factor[0]
+      self.conversion_factor_vom = conversion_factor[1]
+    except TypeError:
+      self.conversion_factor_fom = conversion_factor
+      self.conversion_factor_vom = conversion_factor
 
   @lru_cache()
   def soln_pds_annual_operating_cost(self):
@@ -212,9 +222,9 @@ class OperatingCost:
         lifetime += lifetime_replacement
 
       cost = var_oper_cost_per_funit + fuel_cost_per_funit if self.ac.has_var_costs else 0
-      total = new_funits_per_year.loc[year] * cost * self.conversion_factor
+      total = new_funits_per_year.loc[year] * cost * self.conversion_factor_vom
       cost = fixed_oper_cost_per_iunit
-      total += new_annual_iunits_reqd.loc[year] * cost * self.conversion_factor
+      total += new_annual_iunits_reqd.loc[year] * cost * self.conversion_factor_fom
 
       # for each year, add in operating costs for equipment purchased in that
       # starting year through the year where it wears out.
@@ -324,14 +334,14 @@ class OperatingCost:
 
       # Difference in fixed operating cost of conventional versus that of solution
       cost += (self.ac.conv_fixed_oper_cost_per_iunit * conv_usage_mult -
-          self.ac.soln_fixed_oper_cost_per_iunit) * self.conversion_factor
+          self.ac.soln_fixed_oper_cost_per_iunit) * self.conversion_factor_fom
 
       # Difference in variable operating cost of conventional versus that of solution
       if self.ac.has_var_costs:
         conv_var_cost = self.ac.conv_var_oper_cost_per_funit + self.ac.conv_fuel_cost_per_funit
         soln_var_cost = self.ac.soln_var_oper_cost_per_funit + self.ac.soln_fuel_cost_per_funit
         cost += (self.ac.soln_avg_annual_use * conv_var_cost - self.ac.soln_avg_annual_use * soln_var_cost)\
-              * self.conversion_factor
+              * self.conversion_factor_vom
 
       # account for a partial year at the end of the lifetime.
       cost *= min(1, soln_lifetime)
@@ -403,14 +413,14 @@ class OperatingCost:
 
       # Difference in fixed operating cost of conventional versus that of solution
       cost += (self.ac.conv_fixed_oper_cost_per_iunit * conv_usage_mult -
-          self.ac.soln_fixed_oper_cost_per_iunit) * self.conversion_factor
+          self.ac.soln_fixed_oper_cost_per_iunit) * self.conversion_factor_fom
 
       # Difference in variable operating cost of conventional versus that of solution
       if self.ac.has_var_costs:
         conv_var_cost = self.ac.conv_var_oper_cost_per_funit + self.ac.conv_fuel_cost_per_funit
         soln_var_cost = self.ac.soln_var_oper_cost_per_funit + self.ac.soln_fuel_cost_per_funit
         cost += (self.ac.soln_avg_annual_use * conv_var_cost -
-            self.ac.soln_avg_annual_use * soln_var_cost) * self.conversion_factor
+            self.ac.soln_avg_annual_use * soln_var_cost) * self.conversion_factor_vom
 
       # account for a partial year at the end of the lifetime.
       cost *= min(1, soln_lifetime)

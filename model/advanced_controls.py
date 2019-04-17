@@ -11,9 +11,9 @@ from model import interpolation
 
 
 SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND')
-translate_adoption_bases = { "DEFAULT Linear": "Linear", "DEFAULT S-Curve": "S-Curve" }
-valid_pds_adoption_bases = {'Linear', 'S-Curve', 'Existing Adoption Prognostications',
-    'Customized S-Curve Adoption', 'Fully Customized PDS', None}
+translate_adoption_bases = { "DEFAULT Linear": "Linear", "DEFAULT S-Curve": "Logistic S-Curve" }
+valid_pds_adoption_bases = {'Linear', 'Logistic S-Curve', 'Existing Adoption Prognostications',
+    'Customized S-Curve Adoption', 'Fully Customized PDS', 'Bass Diffusion S-Curve', None}
 valid_ref_adoption_bases = {'Default', 'Custom', None}
 valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
@@ -252,6 +252,10 @@ class AdvancedControls:
   pds_adoption_final_percentage (dict): a list of (region, %) tuples of the final adoption
      percentage for the PDS calculations. For example: [('World', 0.54), ('OECD90', 0.60), ...]
      SolarPVUtil "ScenarioRecord" rows 170 - 179.
+  pds_adoption_s_curve_innovation (dict): a list of (region, float) tuples of the innovation
+     factor used in the Bass Diffusion S-Curve model.  SolarPVUtil "ScenarioRecord" rows 170 - 179.
+  pds_adoption_s_curve_imitation (dict): a list of (region, float) tuples of the innovation
+     factor used in the Bass Diffusion S-Curve model.  SolarPVUtil "ScenarioRecord" rows 170 - 179.
 
   solution_category (SOLUTION_CATEGORY): Whether the solution is primarily REDUCTION of
      emissions from an existing technology, REPLACEMENT of a technology to one with lower
@@ -280,12 +284,14 @@ class AdvancedControls:
   use_custom_tla: bool indicating whether to use custom TLA data instead of Drawdown land allocation
     "Advanced Controls"!E54 (Land models)
 
-    delay_protection_1yr (bool): Delay Impact of Protection by 1 Year? (Leakage)
-      ForestProtection "Advanced Controls"!B200 (land models)
-    delay_regrowth_1yr (bool): Delay Regrowth of Degraded Land by 1 Year?
-      ForestProtection "Advanced Controls"!C200 (land models)
-    include_unprotected_land_in_regrowth_calcs (bool): Include Unprotected Land in Regrowth Calculations?
-      ForestProtection "Advanced Controls"!D200 (land models)
+  delay_protection_1yr (bool): Delay Impact of Protection by 1 Year? (Leakage)
+    ForestProtection "Advanced Controls"!B200 (land models)
+  delay_regrowth_1yr (bool): Delay Regrowth of Degraded Land by 1 Year?
+    ForestProtection "Advanced Controls"!C200 (land models)
+  include_unprotected_land_in_regrowth_calcs (bool): Include Unprotected Land in Regrowth Calculations?
+    ForestProtection "Advanced Controls"!D200 (land models)
+  land_annual_emissons_lifetime (bool): Lifetime of tracked emissions.
+    Conservation Agriculture "Advanced Controls"!D150 (land models)
   """
   def __init__(self,
                vmas=None,
@@ -356,6 +362,8 @@ class AdvancedControls:
                pds_adoption_use_ref_years=None,
                pds_base_adoption=None,
                pds_adoption_final_percentage=None,
+               pds_adoption_s_curve_innovation=None,
+               pds_adoption_s_curve_imitation=None,
 
                solution_category=None,
 
@@ -375,7 +383,8 @@ class AdvancedControls:
 
                delay_protection_1yr=None,
                delay_regrowth_1yr=None,
-               include_unprotected_land_in_regrowth_calcs=None
+               include_unprotected_land_in_regrowth_calcs=None,
+               land_annual_emissons_lifetime=None
                ):
 
     self.vmas = vmas
@@ -466,6 +475,8 @@ class AdvancedControls:
       raise ValueError(err)
     self.pds_base_adoption = pds_base_adoption
     self.pds_adoption_final_percentage = pds_adoption_final_percentage
+    self.pds_adoption_s_curve_innovation = pds_adoption_s_curve_innovation
+    self.pds_adoption_s_curve_imitation = pds_adoption_s_curve_imitation
 
     self.solution_category = solution_category
     if isinstance(solution_category, str):
@@ -492,6 +503,7 @@ class AdvancedControls:
     self.delay_protection_1yr = delay_protection_1yr
     self.delay_regrowth_1yr = delay_regrowth_1yr
     self.include_unprotected_land_in_regrowth_calcs = include_unprotected_land_in_regrowth_calcs
+    self.land_annual_emissons_lifetime = land_annual_emissons_lifetime
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.

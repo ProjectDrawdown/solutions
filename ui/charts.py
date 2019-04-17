@@ -549,7 +549,7 @@ def get_operating_cost_tab(solutions):
                         s.oc.marginal_annual_operating_cost().loc[2020:2050]],
                        axis=1)
         df.columns = ['PDS', 'REF', 'Marginal']
-        df[['PDS', 'REF', 'Marginal']] /= s.oc.conversion_factor
+        df[['PDS', 'REF', 'Marginal']] /= s.oc.conversion_factor_fom
         oc_table = ipywidgets.Output()
         with oc_table:
             IPython.display.display(IPython.display.HTML(df

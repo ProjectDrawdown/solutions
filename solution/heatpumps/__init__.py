@@ -1,5 +1,5 @@
-"""Cool Roofs solution model.
-   Excel filename: Drawdown-Cool Roofs_RRS_v1.1_18Nov2018_PUBLIC.xlsm
+"""High Efficient Heat Pumps solution model.
+   Excel filename: Drawdown-High Efficient Heat Pumps_RRS_v1.1_19Nov2018_PUBLIC.xlsm
 """
 
 import pathlib
@@ -31,11 +31,13 @@ REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle Eas
            'Latin America', 'China', 'India', 'EU', 'USA']
 
 scenarios = {
-  'PDS2-89p2050-Integrated-EE8.51%-FE-2.67% (Book)': advanced_controls.AdvancedControls(
-      # The Model is developed with a S-Curve adoption pattern in 2050 (to 90%). The
-      # Energy Efficiency variables are adjusted to account for Integration with other
-      # solutions in the Buildings Sector. 8.51% electricity reduction (cooling) with a
-      # 2.67% fuel increase (heating).
+  'PDS1-25p2050-Bass Diff. (Book Ed.1)': advanced_controls.AdvancedControls(
+      # Assuming that Heat Pumps replace only coal, oil, gas and electricity-based
+      # conventional space heating/cooling (that is, not biomass, renewables nor
+      # commercial heat), we estimate the cost and emissions for units of the current
+      # average conventional size used. We model the growth by a Bass-diffusion curve
+      # growing to 25% of the TAM by 2050. This scenario uses inputs calculated for the
+      # Drawdown book edition 1, some of which have been updated.
 
       # general
       report_start_year=2020, report_end_year=2050, 
@@ -43,51 +45,55 @@ scenarios = {
       # adoption
       soln_ref_adoption_basis='Default', 
       soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Logistic S-Curve', 
+      soln_pds_adoption_basis='Bass Diffusion S-Curve', 
       source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='ALL SOURCES', 
-      pds_source_post_2014='ALL SOURCES', 
-      pds_base_adoption=[('World', 1500000000.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.9), ('OECD90', 0.9), ('Eastern Europe', 0.9), ('Asia (Sans Japan)', 0.9), ('Middle East and Africa', 0.9), ('Latin America', 0.9), ('China', 0.9), ('India', 0.9), ('EU', 0.9), ('USA', 0.9)], 
+      ref_source_post_2014='Based on: IEA ETP 2016 4DS', 
+      pds_source_post_2014='Drawdown TAM: Drawdown Integrated TAM - PDS1', 
+      pds_base_adoption=[('World', 2.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
+      pds_adoption_s_curve_innovation=[('World', 0.00112096), ('OECD90', 0.00112096), ('Eastern Europe', 0.00112096), ('Asia (Sans Japan)', 0.00112096), ('Middle East and Africa', 0.00112096), ('Latin America', 0.00112096), ('China', 0.00112096), ('India', 0.00112096), ('EU', 0.00112096), ('USA', 0.00112096)], 
+      pds_adoption_s_curve_imitation=[('World', 0.09693403461267407), ('OECD90', 0.103333441), ('Eastern Europe', 0.103333441), ('Asia (Sans Japan)', 0.103333441), ('Middle East and Africa', 0.103333441), ('Latin America', 0.103333441), ('China', 0.103333441), ('India', 0.103333441), ('EU', 0.103333441), ('USA', 0.103333441)], 
 
       # financial
-      pds_2014_cost=59.62842109925933, ref_2014_cost=59.62842109925933, 
-      conv_2014_cost=56.43855563822238, 
-      soln_first_cost_efficiency_rate=0.0, 
+      pds_2014_cost=8417.842235795455, ref_2014_cost=8417.842235795455, 
+      conv_2014_cost=4179.335712753406, 
+      soln_first_cost_efficiency_rate=0.0961, 
       conv_first_cost_efficiency_rate=0.0, 
       soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=20.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=18.5, conv_avg_annual_use=1.0, 
+      npv_discount_rate=0.0536818181818182, 
+      soln_lifetime_capacity=4.965930424528303e-05, soln_avg_annual_use=2.452311320754717e-06, 
+      conv_lifetime_capacity=4.4824973684210526e-05, conv_avg_annual_use=2.3980438596491226e-06, 
 
-      soln_var_oper_cost_per_funit=6.966292405429371, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.20000000000000004, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=7.465849274710736, 
-      conv_fixed_oper_cost_per_iunit=0.43906285, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0416280354784867, 
+      soln_fixed_oper_cost_per_iunit=91.22464666666667, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0818, 
+      conv_fixed_oper_cost_per_iunit=97.73540814814815, 
 
       # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      ch4_is_co2eq=True, n2o_is_co2eq=True, 
       co2eq_conversion_source='AR5 with feedback', 
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
       conv_indirect_co2_is_iunits=False, 
       ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_energy_efficiency_factor=0.0851, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=5.91e-08, 
-      conv_fuel_consumed_per_funit=0.0003428818773002318, soln_fuel_efficiency_factor=-0.0267, 
-      conv_fuel_emissions_factor=61.051339971807074, soln_fuel_emissions_factor=61.051339971807074, 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=0.3295964804314072, conv_annual_energy_used=0.29063151854349806, 
+      conv_fuel_consumed_per_funit=2552.969708808781, soln_fuel_efficiency_factor=1.0, 
+      conv_fuel_emissions_factor=61.051339971807074, soln_fuel_emissions_factor=0.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
     ),
-  'PDS1-61p2050-Integrated-EE8.72%-FE-2.81% (Book)': advanced_controls.AdvancedControls(
-      # The Model is developed with a S-Curve adoption pattern in 2050 (to 60%). The
-      # Energy Efficiency variables are adjusted to account for Integration with other
-      # solutions in the Buildings Sector. 8.72% electricity reduction (cooling) with a
-      # 2.81% fuel increase (heating).
+  'PDS2-45p2050-Bass Diff. (Book Ed.1)': advanced_controls.AdvancedControls(
+      # Assuming that Heat Pumps replace only coal, oil, gas and electricity-based
+      # conventional space heating/cooling (that is, not biomass, renewables nor
+      # commercial heat), we estimate the cost and emissions for units of the current
+      # average conventional size used. We model the growth by a Bass-diffusion curve
+      # growing to 45% of the TAM by 2050. This scenario uses inputs calculated for the
+      # Drawdown book edition 1, some of which have been updated.
 
       # general
       report_start_year=2020, report_end_year=2050, 
@@ -95,51 +101,55 @@ scenarios = {
       # adoption
       soln_ref_adoption_basis='Default', 
       soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Logistic S-Curve', 
+      soln_pds_adoption_basis='Bass Diffusion S-Curve', 
       source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='ALL SOURCES', 
-      pds_source_post_2014='ALL SOURCES', 
-      pds_base_adoption=[('World', 1500000000.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.6), ('OECD90', 0.6), ('Eastern Europe', 0.6), ('Asia (Sans Japan)', 0.6), ('Middle East and Africa', 0.6), ('Latin America', 0.6), ('China', 0.6), ('India', 0.6), ('EU', 0.6), ('USA', 0.6)], 
+      ref_source_post_2014='Based on: IEA ETP 2016 4DS', 
+      pds_source_post_2014='Drawdown TAM: Drawdown Integrated TAM - PDS2', 
+      pds_base_adoption=[('World', 2.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
+      pds_adoption_s_curve_innovation=[('World', 0.00112096), ('OECD90', 0.00112096), ('Eastern Europe', 0.00112096), ('Asia (Sans Japan)', 0.00112096), ('Middle East and Africa', 0.00112096), ('Latin America', 0.00112096), ('China', 0.00112096), ('India', 0.00112096), ('EU', 0.00112096), ('USA', 0.00112096)], 
+      pds_adoption_s_curve_imitation=[('World', 0.13192094462919884), ('OECD90', 0.103333441), ('Eastern Europe', 0.103333441), ('Asia (Sans Japan)', 0.103333441), ('Middle East and Africa', 0.103333441), ('Latin America', 0.103333441), ('China', 0.103333441), ('India', 0.103333441), ('EU', 0.103333441), ('USA', 0.103333441)], 
 
       # financial
-      pds_2014_cost=59.62842109925933, ref_2014_cost=59.62842109925933, 
-      conv_2014_cost=56.43855563822238, 
-      soln_first_cost_efficiency_rate=0.0, 
+      pds_2014_cost=8417.842235795455, ref_2014_cost=8417.842235795455, 
+      conv_2014_cost=4179.335712753406, 
+      soln_first_cost_efficiency_rate=0.0961, 
       conv_first_cost_efficiency_rate=0.0, 
       soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=20.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=18.5, conv_avg_annual_use=1.0, 
+      npv_discount_rate=0.0536818181818182, 
+      soln_lifetime_capacity=4.965930424528303e-05, soln_avg_annual_use=2.452311320754717e-06, 
+      conv_lifetime_capacity=4.4824973684210526e-05, conv_avg_annual_use=2.3980438596491226e-06, 
 
-      soln_var_oper_cost_per_funit=6.964985881806296, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.2, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=7.465849274710736, 
-      conv_fixed_oper_cost_per_iunit=0.4390631781263562, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0416280354784867, 
+      soln_fixed_oper_cost_per_iunit=91.22464666666667, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0818, 
+      conv_fixed_oper_cost_per_iunit=97.73540814814815, 
 
       # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      ch4_is_co2eq=True, n2o_is_co2eq=True, 
       co2eq_conversion_source='AR5 with feedback', 
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
       conv_indirect_co2_is_iunits=False, 
       ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_energy_efficiency_factor=0.0872, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=5.91e-08, 
-      conv_fuel_consumed_per_funit=0.0003428818773002318, soln_fuel_efficiency_factor=-0.0281, 
-      conv_fuel_emissions_factor=61.051339971807074, soln_fuel_emissions_factor=61.051339971807074, 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=0.3295964804314072, conv_annual_energy_used=0.29063151854349806, 
+      conv_fuel_consumed_per_funit=2552.969708808781, soln_fuel_efficiency_factor=1.0, 
+      conv_fuel_emissions_factor=61.051339971807074, soln_fuel_emissions_factor=0.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
     ),
-  'PDS3-93p2050-Integrated-EE8.42%-FE-2.62% (Book)': advanced_controls.AdvancedControls(
-      # The Model is developed with a S-Curve adoption pattern in 2050 (to 95%). The
-      # Energy Efficiency variables are adjusted to account for Integration with other
-      # solutions in the Buildings Sector. 8.42% electricity reduction (cooling) with a
-      # 2.62% fuel increase (heating).
+  'PDS3-60p2050-Bass Diff (Book Ed.1)': advanced_controls.AdvancedControls(
+      # Assuming that Heat Pumps replace only coal, oil, gas and electricity-based
+      # conventional space heating/cooling (that is, not biomass, renewables nor
+      # commercial heat), we estimate the cost and emissions for units of the current
+      # average conventional size used. We model the growth by a Bass-diffusion curve
+      # growing to 60% of the TAM by 2050. This scenario uses inputs calculated for the
+      # Drawdown book edition 1, some of which have been updated.
 
       # general
       report_start_year=2020, report_end_year=2050, 
@@ -147,40 +157,42 @@ scenarios = {
       # adoption
       soln_ref_adoption_basis='Default', 
       soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Logistic S-Curve', 
+      soln_pds_adoption_basis='Bass Diffusion S-Curve', 
       source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='ALL SOURCES', 
-      pds_source_post_2014='ALL SOURCES', 
-      pds_base_adoption=[('World', 1500000000.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.95), ('OECD90', 0.95), ('Eastern Europe', 0.95), ('Asia (Sans Japan)', 0.95), ('Middle East and Africa', 0.95), ('Latin America', 0.95), ('China', 0.95), ('India', 0.95), ('EU', 0.95), ('USA', 0.95)], 
+      ref_source_post_2014='Based on: IEA ETP 2016 4DS', 
+      pds_source_post_2014='Drawdown TAM: Drawdown Integrated TAM - PDS3', 
+      pds_base_adoption=[('World', 2.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
+      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
+      pds_adoption_s_curve_innovation=[('World', 0.00112096), ('OECD90', 0.00112096), ('Eastern Europe', 0.00112096), ('Asia (Sans Japan)', 0.00112096), ('Middle East and Africa', 0.00112096), ('Latin America', 0.00112096), ('China', 0.00112096), ('India', 0.00112096), ('EU', 0.00112096), ('USA', 0.00112096)], 
+      pds_adoption_s_curve_imitation=[('World', 0.15404782805293277), ('OECD90', 0.103333441), ('Eastern Europe', 0.103333441), ('Asia (Sans Japan)', 0.103333441), ('Middle East and Africa', 0.103333441), ('Latin America', 0.103333441), ('China', 0.103333441), ('India', 0.103333441), ('EU', 0.103333441), ('USA', 0.103333441)], 
 
       # financial
-      pds_2014_cost=59.62842109925933, ref_2014_cost=59.62842109925933, 
-      conv_2014_cost=56.43855563822238, 
-      soln_first_cost_efficiency_rate=0.0, 
+      pds_2014_cost=8417.842235795455, ref_2014_cost=8417.842235795455, 
+      conv_2014_cost=4179.335712753406, 
+      soln_first_cost_efficiency_rate=0.0961, 
       conv_first_cost_efficiency_rate=0.0, 
       soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=20.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=18.5, conv_avg_annual_use=1.0, 
+      npv_discount_rate=0.0536818181818182, 
+      soln_lifetime_capacity=4.965930424528303e-05, soln_avg_annual_use=2.452311320754717e-06, 
+      conv_lifetime_capacity=4.4824973684210526e-05, conv_avg_annual_use=2.3980438596491226e-06, 
 
-      soln_var_oper_cost_per_funit=6.966852344124974, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.20000000000000004, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=7.465849274710736, 
-      conv_fixed_oper_cost_per_iunit=0.43906285, 
+      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0416280354784867, 
+      soln_fixed_oper_cost_per_iunit=91.22464666666667, 
+      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0818, 
+      conv_fixed_oper_cost_per_iunit=97.73540814814815, 
 
       # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
+      ch4_is_co2eq=True, n2o_is_co2eq=True, 
       co2eq_conversion_source='AR5 with feedback', 
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
       conv_indirect_co2_is_iunits=False, 
       ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
 
-      soln_energy_efficiency_factor=0.0842, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=5.91e-08, 
-      conv_fuel_consumed_per_funit=0.0003428818773002318, soln_fuel_efficiency_factor=-0.0262, 
-      conv_fuel_emissions_factor=61.051339971807074, soln_fuel_emissions_factor=61.051339971807074, 
+      soln_energy_efficiency_factor=0.0, 
+      soln_annual_energy_used=0.3295964804314072, conv_annual_energy_used=0.29063151854349806, 
+      conv_fuel_consumed_per_funit=2552.969708808781, soln_fuel_efficiency_factor=1.0, 
+      conv_fuel_emissions_factor=61.051339971807074, soln_fuel_emissions_factor=0.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
@@ -189,18 +201,18 @@ scenarios = {
     ),
 }
 
-class CoolRoofs:
-  name = 'Cool Roofs'
+class HeatPumps:
+  name = 'High Efficient Heat Pumps'
   units = {
-    "implementation unit": "Residential and Commercial roof area,  m2",
-    "functional unit": "Residential and Commercial roof area, m2",
+    "implementation unit": "Installation Units",
+    "functional unit": "TWh",
     "first cost": "US$B",
     "operating cost": "US$B",
   }
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS2-89p2050-Integrated-EE8.51%-FE-2.67% (Book)'
+      scenario = 'PDS1-25p2050-Bass Diff. (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -214,7 +226,7 @@ class CoolRoofs:
       ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
        'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
        'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
+      ['trend', '2nd Poly', '2nd Poly',
        '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
        '3rd Poly', '3rd Poly', '3rd Poly'],
       ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
@@ -224,42 +236,26 @@ class CoolRoofs:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolff471dab.csv'),
-          'Based on GBPN - BEST PRACTICE POLICIES FOR LOW CARBON & ENERGY BUILDINGS BASED ON SCENARIO ANALYSIS May 2012': THISDIR.joinpath('tam_based_on_GBPN_BEST_PRACTICE_POLICIES_FOR_LOW_CARBON_ENERGY_BUILb3c16d4e.csv'),
-          'IEA (2013)': THISDIR.joinpath('tam_IEA_2013.csv'),
+          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
       },
       'Conservative Cases': {
-          'Based on McKinsey': THISDIR.joinpath('tam_based_on_McKinsey.csv'),
-          'Navigant (2014)': THISDIR.joinpath('tam_Navigant_2014.csv'),
+          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
       },
-      'Region: OECD90': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolff471dab.csv'),
-        },
+      'Ambitious Cases': {
+          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
       },
-      'Region: Eastern Europe': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolff471dab.csv'),
-        },
+    }
+    tam_pds_data_sources = {
+      'Ambitious Cases': {
+          'Drawdown TAM: Drawdown Integrated TAM - PDS1': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS1.csv'),
+          'Drawdown TAM: Drawdown Integrated TAM - PDS2': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS2.csv'),
       },
-      'Region: Asia (Sans Japan)': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolff471dab.csv'),
-        },
-      },
-      'Region: Middle East and Africa': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolff471dab.csv'),
-        },
-      },
-      'Region: Latin America': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolff471dab.csv'),
-        },
+      'Maximum Cases': {
+          'Drawdown TAM: Drawdown Integrated TAM - PDS3': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS3.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_ref_data_sources)
+      tam_pds_data_sources=tam_pds_data_sources)
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 
@@ -270,12 +266,21 @@ class CoolRoofs:
        '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
        '3rd Poly', '3rd Poly', '3rd Poly'],
       ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-       'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
+       'Medium', 'Low', 'Medium', 'Medium', 'Medium',
        'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
+      'Baseline Cases': {
+          'No Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad_No_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakinf773431f.csv'),
+      },
+      'Conservative Cases': {
+          'Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakings_3ae88b3a.csv'),
+      },
+      'Ambitious Cases': {
+          'Aggressive Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad_Aggressive_Standards_Case_David_Siap_2016_based_on_US_Federal_R8b178f0d.csv'),
+      },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
         adconfig=adconfig)
@@ -298,6 +303,12 @@ class CoolRoofs:
     sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]
     sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)
     sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))
+    if self.ac.pds_adoption_s_curve_innovation is not None:
+      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_innovation)
+      sconfig['innovation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
+    if self.ac.pds_adoption_s_curve_imitation is not None:
+      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_imitation)
+      sconfig['imitation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
     self.sc = s_curve.SCurve(transition_period=16, sconfig=sconfig)
 
     if False:
@@ -308,13 +319,17 @@ class CoolRoofs:
       pds_adoption_data_per_region = None
       pds_adoption_trend_per_region = self.sc.logistic_adoption()
       pds_adoption_is_single_source = None
+    elif self.ac.soln_pds_adoption_basis == 'Bass Diffusion S-Curve':
+      pds_adoption_data_per_region = None
+      pds_adoption_trend_per_region = self.sc.bass_diffusion_adoption()
+      pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
       pds_adoption_is_single_source = self.ad.adoption_is_single_source()
 
     ht_ref_adoption_initial = pd.Series(
-      [1500000000.0, 0.0, 0.0, 0.0, 0.0,
+      [2.0, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0],
        index=REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
@@ -368,7 +383,7 @@ class CoolRoofs:
         single_iunit_purchase_year=2017,
         soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
         conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-        conversion_factor=1.0)
+        conversion_factor=(1.0, 1000000000.0))
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
