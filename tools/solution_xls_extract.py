@@ -312,6 +312,7 @@ def get_land_scenarios(wb):
       assert sr_tab.cell_value(row + 132, 1) == 'Direct Emissions'
       s['tco2eq_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 133, 4))
       s['tco2eq_rplu_rate'] = str(sr_tab.cell_value(row + 133, 7))
+      s['land_annual_emissons_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 137, 4))
 
       assert sr_tab.cell_value(row + 168, 1) == 'Carbon Sequestration and Land Inputs'
       s['seq_rate_global'] = link_vma(sr_tab.cell_value(row + 169, 4))
@@ -434,6 +435,7 @@ def write_scenario(f, s):
 
   oneline(f=f, s=s, names=['tco2eq_reduced_per_land_unit'], prefix=prefix)
   oneline(f=f, s=s, names=['tco2eq_rplu_rate'], prefix=prefix, suffix='\n')
+  oneline(f=f, s=s, names=['land_annual_emissons_lifetime'], prefix=prefix, suffix='\n')
 
   oneline(f=f, s=s, names=['emissions_grid_source', 'emissions_grid_range'], prefix=prefix)
   oneline(f=f, s=s, names=['emissions_use_co2eq'], prefix=prefix)
@@ -1029,7 +1031,7 @@ def write_c2_c4(f, is_rrs=True, is_protect=False):
       f.write("        tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),\n")
       f.write("        pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),\n")
       f.write("        ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),\n")
-      f.write("        avoided_direct_emissions=self.ua.direct_co2eq_emissions_saved_land(),\n")
+    f.write("        avoided_direct_emissions=self.ua.direct_co2eq_emissions_saved_land(),\n")
     f.write("        land_distribution=self.ae.get_land_distribution())\n")
   f.write("\n")
 

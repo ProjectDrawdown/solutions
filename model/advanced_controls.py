@@ -284,12 +284,14 @@ class AdvancedControls:
   use_custom_tla: bool indicating whether to use custom TLA data instead of Drawdown land allocation
     "Advanced Controls"!E54 (Land models)
 
-    delay_protection_1yr (bool): Delay Impact of Protection by 1 Year? (Leakage)
-      ForestProtection "Advanced Controls"!B200 (land models)
-    delay_regrowth_1yr (bool): Delay Regrowth of Degraded Land by 1 Year?
-      ForestProtection "Advanced Controls"!C200 (land models)
-    include_unprotected_land_in_regrowth_calcs (bool): Include Unprotected Land in Regrowth Calculations?
-      ForestProtection "Advanced Controls"!D200 (land models)
+  delay_protection_1yr (bool): Delay Impact of Protection by 1 Year? (Leakage)
+    ForestProtection "Advanced Controls"!B200 (land models)
+  delay_regrowth_1yr (bool): Delay Regrowth of Degraded Land by 1 Year?
+    ForestProtection "Advanced Controls"!C200 (land models)
+  include_unprotected_land_in_regrowth_calcs (bool): Include Unprotected Land in Regrowth Calculations?
+    ForestProtection "Advanced Controls"!D200 (land models)
+  land_annual_emissons_lifetime (bool): Lifetime of tracked emissions.
+    Conservation Agriculture "Advanced Controls"!D150 (land models)
   """
   def __init__(self,
                vmas=None,
@@ -381,7 +383,8 @@ class AdvancedControls:
 
                delay_protection_1yr=None,
                delay_regrowth_1yr=None,
-               include_unprotected_land_in_regrowth_calcs=None
+               include_unprotected_land_in_regrowth_calcs=None,
+               land_annual_emissons_lifetime=None
                ):
 
     self.vmas = vmas
@@ -500,6 +503,7 @@ class AdvancedControls:
     self.delay_protection_1yr = delay_protection_1yr
     self.delay_regrowth_1yr = delay_regrowth_1yr
     self.include_unprotected_land_in_regrowth_calcs = include_unprotected_land_in_regrowth_calcs
+    self.land_annual_emissons_lifetime = land_annual_emissons_lifetime
 
   def value_or_zero(self, val):
     """Allow a blank space or empty string to mean zero.

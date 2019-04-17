@@ -440,6 +440,14 @@ class UnitAdoption:
     result.name = "soln_net_annual_funits_adopted"
     return result
 
+  def net_annual_land_units_adopted(self):
+    """Similar to soln_net_annual_funits_adopted, for Land models.
+       Conservation Agriculture 'Unit Adoption Calculations'!B251:L298
+    """
+    result = self.soln_net_annual_funits_adopted()
+    result.name = 'net_annual_land_units_adopted'
+    return result
+
   @lru_cache()
   def conv_ref_tot_iunits(self):
     """
@@ -602,6 +610,27 @@ class UnitAdoption:
     return result
 
   @lru_cache()
+  def net_land_units_after_emissions_lifetime(self):
+    """Emissions after the calculated lifetime (which is often very long, ex: 100 years)
+
+       This table is used to calculate the Annual Direct Emissions of all GH Gases if the User
+       selects "Annual" accounting (ie the direct emissions are released for a certain number
+       of years rather than only in the year of adoption).
+
+       Conservation Agriculture 'Unit Adoption Calculations'!EI251:ES298
+    """
+    if self.ac.delay_protection_1yr:
+      raise NotImplementedError('L-UseProtect solutions not implemented')
+    funits = self.net_annual_land_units_adopted()
+    result = pd.DataFrame(0, index=funits.index.copy(), columns=funits.columns.copy())
+    first_year = result.first_valid_index() + 1
+    for year, row in result.iterrows():
+      if (year - first_year) > self.ac.land_annual_emissons_lifetime:
+        result.loc[year] = funits.loc[year - self.ac.land_annual_emissons_lifetime - 1]
+    result.name = 'net_land_units_after_emissions_lifetime'
+    return result
+
+  @lru_cache()
   def direct_co2eq_emissions_saved_land(self):
     """Emissions avoided:
 
@@ -612,9 +641,15 @@ class UnitAdoption:
       [IMPLEMNTED]
        Emissions avoided (if One-time Emissions) =
             Marginal Reduced Land Degradation /MHa *  Aggregate CO2 eq avoided rate (t CO2-eq/ha)
-    ForestProtection 'Unit Adoption Calculations'!AT307:AU354
+      Protection solution: ForestProtection 'Unit Adoption Calculations'!AT307:AU354
+      Non-protection, annual: Conservation Agriculture 'Unit Adoption Calculations'!AT307:AU354
     """
-    if self.ac.tco2eq_rplu_rate == 'Annual':
-      raise NotImplementedError('Annual reduced emissions not implemented yet')
-    return self.annual_reduction_in_total_degraded_land() * self.ac.tco2eq_reduced_per_land_unit
-
+    if self.ac.tco2eq_rplu_rate == 'Annual' and self.ac.delay_protection_1yr:
+      raise NotImplementedError('Annual reduction for Protect solutions not implemented yet')
+    elif self.ac.tco2eq_rplu_rate == 'Annual':
+      result = self.net_annual_land_units_adopted() - self.net_land_units_after_emissions_lifetime()
+      result *= self.ac.tco2eq_reduced_per_land_unit * (1.0 - self.ac.disturbance_rate)
+    else:
+      result = self.annual_reduction_in_total_degraded_land() * self.ac.tco2eq_reduced_per_land_unit
+    result.name = 'direct_co2eq_emissions_saved_land'
+    return result
