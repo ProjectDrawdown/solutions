@@ -315,7 +315,28 @@ def get_land_scenarios(wb):
       s['land_annual_emissons_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 137, 4))
 
       assert sr_tab.cell_value(row + 168, 1) == 'Carbon Sequestration and Land Inputs'
-      s['seq_rate_global'] = link_vma(sr_tab.cell_value(row + 169, 4))
+      if sr_tab.cell(row + 169, 4).ctype == xlrd.XL_CELL_EMPTY:
+        # Excel checks whether this cell == "" to trigger different handling. The best equivalent
+        # in Python is to set it to NaN. We can distinguish None (not set) from NaN, and if
+        # the value is ever inadvertantly used it will result in NaN.
+        s['seq_rate_global'] = np.nan
+
+        if 'Variable Meta-analysis-DD' not in wb.sheet_names():
+          assert NotImplementedError('VMA Thermal-Moisture Regime sequestration not implemented')
+          # (4/2019) vma.py does have support for regimes in avg_high_low, it needs to be
+          # implemented in advanced_controls to pass a regime name through to vma.py
+
+        # For the public models using 'Variable Meta-analysis-DD', the DD tab does not contain
+        # avg/high/low for the Thermal Moisture Regimes so we extract value from ScenarioRecord.
+        s['seq_rate_per_regime'] = {
+            'Tropical-Humid': convert_sr_float(sr_tab.cell_value(row + 170, 4)),
+            'Temperate/Boreal-Humid': convert_sr_float(sr_tab.cell_value(row + 171, 4)),
+            'Tropical-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 172, 4)),
+            'Temperate/Boreal-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 173, 4)),
+            'Global Arid': convert_sr_float(sr_tab.cell_value(row + 174, 7)),
+            'Global Arctic': 0.0}
+      else:
+        s['seq_rate_global'] = link_vma(sr_tab.cell_value(row + 169, 4))
       if sr_tab.cell_value(row + 175, 3) == 'Growth Rate of Land Degradation':
         s['global_multi_for_regrowth'] = convert_sr_float(sr_tab.cell_value(row + 178, 4))
         s['degradation_rate'] = link_vma(sr_tab.cell_value(row + 175, 4))
@@ -353,6 +374,8 @@ def oneline(f, s, names, prefix='', suffix=None):
       f.write(n + "=" + str(s[n]) + ", ")
     elif isinstance(s[n], str):
       f.write(str(n) + "='" + str(s[n]) + "', ")
+    elif isinstance(s[n], np.float) and np.isnan(s[n]):
+      f.write(str(n) + "=np.nan, ")
     else:
       f.write(str(n) + "=" + str(s[n]) + ", ")
     del s[n]
@@ -445,6 +468,7 @@ def write_scenario(f, s):
   if 'seq_rate_global' in s:
     f.write('\n' + prefix + '# sequestration' + '\n')
     oneline(f=f, s=s, names=['seq_rate_global'], prefix=prefix)
+    oneline(f=f, s=s, names=['seq_rate_per_regime'], prefix=prefix)
     oneline(f=f, s=s, names=['global_multi_for_regrowth'], prefix=prefix)
     oneline(f=f, s=s, names=['degradation_rate'], prefix=prefix)
     oneline(f=f, s=s, names=['disturbance_rate'], prefix=prefix, suffix='\n')
