@@ -35,7 +35,6 @@ def test_{0}():
     [str(solutiondir.joinpath('{0}', 'testdata', '{2}'))],
     indirect=True)
 def test_{1}_LAND(start_excel, tmpdir):
-  \"\"\"Test for Excel model file {2}.\"\"\"
   workbook = start_excel
   for scenario in {0}.scenarios.keys():
     obj = {0}.{1}(scenario=scenario)

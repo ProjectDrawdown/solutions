@@ -30,6 +30,7 @@ from solution import buildingautomation
 from solution import carpooling
 from solution import composting
 from solution import concentratedsolar
+from solution import conservationagriculture
 from solution import coolroofs
 from solution import districtheating
 from solution import electricbikes
@@ -955,6 +956,19 @@ def test_ConcentratedSolar_RRS(start_excel, tmpdir):
   for scenario in concentratedsolar.scenarios.keys():
     obj = concentratedsolar.ConcentratedSolar(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('conservationagriculture', 'testdata',
+        'Drawdown-Conservation Agriculture_BioS.Agri_v1.1_2Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_ConservationAgriculture_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in conservationagriculture.scenarios.keys():
+    obj = conservationagriculture.ConservationAgriculture(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

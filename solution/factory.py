@@ -10,6 +10,7 @@ from solution import buildingautomation
 from solution import carpooling
 from solution import composting
 from solution import concentratedsolar
+from solution import conservationagriculture
 from solution import coolroofs
 from solution import districtheating
 from solution import electricbikes
@@ -61,6 +62,8 @@ def all_solutions_scenarios():
     everything['composting'] = (composting.Composting, list(composting.scenarios.keys()))
     everything['concentratedsolar'] = (concentratedsolar.ConcentratedSolar,
             list(concentratedsolar.scenarios.keys()))
+    everything['conservationagriculture'] = (conservationagriculture.ConservationAgriculture,
+            list(conservationagriculture.scenarios.keys()))
     everything['coolroofs'] = (coolroofs.CoolRoofs, list(coolroofs.scenarios.keys()))
     everything['districtheating'] = (districtheating.DistrictHeating,
             list(districtheating.scenarios.keys()))
