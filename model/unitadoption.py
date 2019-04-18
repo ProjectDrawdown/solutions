@@ -620,8 +620,9 @@ class UnitAdoption:
        Conservation Agriculture 'Unit Adoption Calculations'!EI251:ES298
     """
     if self.ac.delay_protection_1yr:
-      raise NotImplementedError('L-UseProtect solutions not implemented')
-    funits = self.net_annual_land_units_adopted()
+      funits = self.cumulative_reduction_in_total_degraded_land()
+    else:
+      funits = self.net_annual_land_units_adopted()
     result = pd.DataFrame(0, index=funits.index.copy(), columns=funits.columns.copy())
     first_year = result.first_valid_index() + 1
     for year, row in result.iterrows():
@@ -631,25 +632,55 @@ class UnitAdoption:
     return result
 
   @lru_cache()
-  def direct_co2eq_emissions_saved_land(self):
+  def _direct_emissions_saved_land(self, ghg, ghg_avoided_rate):
     """Emissions avoided:
+      Args:
+        ghg: Greenhouse gas to calculate ('CO2-eq', 'CO2', 'N2O-CO2-eq' or 'CH4-CO2-eq')
+        ghg_avoided_rate: associated rate from advanced controls (self.ac.<ghg>_reduced_per_land_unit)
 
-       [NOT IMPLEMNTED]
+      [PROTECTION MODEL (e.g. Forest Protection]
        Emissions avoided (if Annual Emissions) =
             (Cumulative Reduced Land Degradation/MHa - Cumulative Reduced Land after Emissions Lifetime/MHa)
-                            * Aggregate CO2 eq avoided rate (t CO2-eq/ha/yr)
-      [IMPLEMNTED]
+                            * Aggregate GHG avoided rate (t GHG/ha/yr)
        Emissions avoided (if One-time Emissions) =
-            Marginal Reduced Land Degradation /MHa *  Aggregate CO2 eq avoided rate (t CO2-eq/ha)
-      Protection solution: ForestProtection 'Unit Adoption Calculations'!AT307:AU354
-      Non-protection, annual: Conservation Agriculture 'Unit Adoption Calculations'!AT307:AU354
-    """
-    if self.ac.tco2eq_rplu_rate == 'Annual' and self.ac.delay_protection_1yr:
-      raise NotImplementedError('Annual reduction for Protect solutions not implemented yet')
+            Marginal Reduced Land Degradation /MHa *  Aggregate GHG avoided rate (t GHG/ha)
+
+       [NON PROTECTION MODEL (e.g. Conservation Agriculture]
+       Emissions avoided (if Annual Emissions) =
+             (Net Land Units/MHa - Net Land Units after Emissions Lifetime /MHa)
+                            * Aggregate GHG avoided rate (t GHG/ha/yr)
+       Emissions avoided (if One-time Emissions) =
+              (Net Land Units in Year x/MHa - Net Land Units in Year x-1/MHa)* Aggregate GHG avoided rate (t GHG/ha)"""
+    if self.ac.delay_protection_1yr:
+      if self.ac.tco2eq_rplu_rate == 'Annual':
+        result = self.cumulative_reduction_in_total_degraded_land() - self.net_land_units_after_emissions_lifetime()
+        result *= ghg_avoided_rate
+      else:
+        result = self.annual_reduction_in_total_degraded_land() * self.ac.tco2eq_reduced_per_land_unit
     elif self.ac.tco2eq_rplu_rate == 'Annual':
       result = self.net_annual_land_units_adopted() - self.net_land_units_after_emissions_lifetime()
-      result *= self.ac.tco2eq_reduced_per_land_unit * (1.0 - self.ac.disturbance_rate)
+      result *= ghg_avoided_rate * (1.0 - self.ac.disturbance_rate)
     else:
-      result = self.annual_reduction_in_total_degraded_land() * self.ac.tco2eq_reduced_per_land_unit
-    result.name = 'direct_co2eq_emissions_saved_land'
+      raise NotImplementedError('One-time not implemented for non protection models')
+    result.name = 'direct_{}_emissions_saved_land'.format(ghg)
     return result
+
+  @lru_cache()
+  def direct_co2eq_emissions_saved_land(self):
+    """ForestProtection 'Unit Adoption Calculations'!AT307:AU354"""
+    return self._direct_emissions_saved_land(ghg='CO2-eq', ghg_avoided_rate=self.ac.tco2eq_reduced_per_land_unit)
+
+  @lru_cache()
+  def direct_co2_emissions_saved_land(self):
+    """ForestProtection 'Unit Adoption Calculations'!BF307:BG354"""
+    return self._direct_emissions_saved_land(ghg='CO2', ghg_avoided_rate=self.ac.tco2_reduced_per_land_unit)
+
+  @lru_cache()
+  def direct_n2o_co2_emissions_saved_land(self):
+    """ForestProtection 'Unit Adoption Calculations'!BR307:BS354"""
+    return self._direct_emissions_saved_land(ghg='N2O-CO2-eq', ghg_avoided_rate=self.ac.tn2o_co2_reduced_per_land_unit)
+
+  @lru_cache()
+  def direct_ch4_co2_emissions_saved_land(self):
+    """ForestProtection 'Unit Adoption Calculations'!CD307:CE354"""
+    return self._direct_emissions_saved_land(ghg='CH4-CO2-eq', ghg_avoided_rate=self.ac.tch4_co2_reduced_per_land_unit)
