@@ -35,16 +35,18 @@ class CO2Calcs:
 
   def __init__(self, ac, soln_net_annual_funits_adopted=None, ch4_ppb_calculator=None,
                soln_pds_net_grid_electricity_units_saved=None, soln_pds_net_grid_electricity_units_used=None,
+               soln_pds_direct_co2eq_emissions_saved=None,
                soln_pds_direct_co2_emissions_saved=None, soln_pds_direct_ch4_co2_emissions_saved=None,
                soln_pds_direct_n2o_co2_emissions_saved=None, soln_pds_new_iunits_reqd=None,
                soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None, conv_ref_grid_CO2_per_KWh=None,
                conv_ref_grid_CO2eq_per_KWh=None, fuel_in_liters=None, annual_land_area_harvested=None,
                land_distribution=None, tot_red_in_deg_land=None, pds_protected_deg_land=None,
-               ref_protected_deg_land=None, avoided_direct_emissions=None):
+               ref_protected_deg_land=None):
     self.ac = ac
     self.ch4_ppb_calculator = ch4_ppb_calculator
     self.soln_pds_net_grid_electricity_units_saved = soln_pds_net_grid_electricity_units_saved
     self.soln_pds_net_grid_electricity_units_used = soln_pds_net_grid_electricity_units_used
+    self.soln_pds_direct_co2eq_emissions_saved = soln_pds_direct_co2eq_emissions_saved
     self.soln_pds_direct_co2_emissions_saved = soln_pds_direct_co2_emissions_saved
     self.soln_pds_direct_ch4_co2_emissions_saved = soln_pds_direct_ch4_co2_emissions_saved
     self.soln_pds_direct_n2o_co2_emissions_saved = soln_pds_direct_n2o_co2_emissions_saved
@@ -62,7 +64,6 @@ class CO2Calcs:
     self.tot_red_in_deg_land = tot_red_in_deg_land  # protection models
     self.pds_protected_deg_land = pds_protected_deg_land  # protection models
     self.ref_protected_deg_land = ref_protected_deg_land  # protection models
-    self.avoided_direct_emissions = avoided_direct_emissions
 
   @lru_cache()
   def co2_mmt_reduced(self):
@@ -132,9 +133,13 @@ class CO2Calcs:
       m = pd.DataFrame(0., columns=['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
                                      'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
                        index=index, dtype=np.float64)
-      if self.avoided_direct_emissions is not None:
-        m['World'] = m['World'].add(self.avoided_direct_emissions['World'].loc[s:e], fill_value=0)
-
+      if self.soln_pds_direct_co2eq_emissions_saved is not None or self.soln_pds_direct_co2_emissions_saved is not None:
+        if self.ac.emissions_use_agg_co2eq:
+          m['World'] = m['World'].add(self.soln_pds_direct_co2eq_emissions_saved['World'].loc[s:e], fill_value=0)
+        else:
+          m['World'] = m['World'].add(self.soln_pds_direct_co2_emissions_saved['World'].loc[s:e], fill_value=0)
+          m['World'] = m['World'].add(self.soln_pds_direct_n2o_co2_emissions_saved['World'].loc[s:e], fill_value=0)
+          m['World'] = m['World'].add(self.soln_pds_direct_ch4_co2_emissions_saved['World'].loc[s:e], fill_value=0)
     m.name = "co2eq_mmt_reduced"
     return m
 

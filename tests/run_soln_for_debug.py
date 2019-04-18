@@ -8,7 +8,7 @@ from solution.peatlands import Peatlands
 
 soln = Peatlands()
 
-print(soln.ua.net_land_units_after_emissions_lifetime())
-# print(soln.c2.co2eq_mmt_reduced())
+# print(soln.ua.direct_ch4_co2_emissions_saved_land())
+print(soln.c2.co2eq_mmt_reduced())
 # print(soln.oc.soln_pds_annual_breakout())
 

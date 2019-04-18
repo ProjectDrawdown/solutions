@@ -501,7 +501,7 @@ class AdvancedControls:
     self.tco2_rplu_rate = tco2_rplu_rate
     self.tn2o_co2_reduced_per_land_unit = self._substitute_vma(tn2o_co2_reduced_per_land_unit,
                                                   vma_title='t N2O-CO2-eq Reduced per Land Unit')
-    self.tn2o_rplu_rate = tn2o_co2_rplu_rate
+    self.tn2o_co2_rplu_rate = tn2o_co2_rplu_rate
     self.tch4_co2_reduced_per_land_unit = self._substitute_vma(tch4_co2_reduced_per_land_unit,
                                                   vma_title='t CH4-CO2-eq Reduced per Land Unit')
     self.tch4_co2_rplu_rate = tch4_co2_rplu_rate

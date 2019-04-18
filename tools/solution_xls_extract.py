@@ -1030,9 +1030,15 @@ def write_c2_c4(f, is_rrs=True, is_protect=False):
   f.write("        ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),\n")
   f.write("        soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),\n")
   f.write("        soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),\n")
-  f.write("        soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),\n")
-  f.write("        soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),\n")
-  f.write("        soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),\n")
+  if is_rrs:
+    f.write("        soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),\n")
+    f.write("        soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),\n")
+    f.write("        soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),\n")
+  else:
+    f.write("        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),\n")
+    f.write("        soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),\n")
+    f.write("        soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),\n")
+    f.write("        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),\n")
   f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
   f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
   f.write("        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
@@ -1046,7 +1052,6 @@ def write_c2_c4(f, is_rrs=True, is_protect=False):
       f.write("        tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),\n")
       f.write("        pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),\n")
       f.write("        ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),\n")
-    f.write("        avoided_direct_emissions=self.ua.direct_co2eq_emissions_saved_land(),\n")
     f.write("        land_distribution=self.ae.get_land_distribution())\n")
   f.write("\n")
 
