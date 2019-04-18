@@ -23,7 +23,7 @@ def generate_vma_dict(path_to_vma_data):
   for _, row in vma_info_df.iterrows():
     if row['Has data?']:
       if 'Use weight?' in row:
-        use_weight = str(row['Use weight?']).lower() in ['yes', 'y', 'true']
+        use_weight = row['Use weight?']
       else:
         use_weight = False
       fixed_mean = row.get('Fixed Mean', np.nan)
