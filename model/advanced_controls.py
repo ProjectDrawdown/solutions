@@ -266,6 +266,8 @@ class AdvancedControls:
   tco2eq_rplu_rate: whether tco2eq_reduced_per_land_unit is 'One-time' or 'Annual'
     ForestProtection "Advanced Controls"!B148 (Land models)
   [similar vars for co2, n2o_co2 and ch4_co2 ForestProtection "Advanced Controls"!C148:E148 (Land models)]
+  emissions_use_agg_co2eq: Use Aggregate CO2-eq instead of Individual GHG? (for direct emissions)
+    ForestProtection "Advanced Controls"!C155 (Land models)
 
   seq_rate_global (float): carbon sequestration rate for All Land or All of Special Land.
     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
@@ -377,6 +379,7 @@ class AdvancedControls:
                tn2o_co2_rplu_rate=None,
                tch4_co2_reduced_per_land_unit=None,
                tch4_co2_rplu_rate=None,
+               emissions_use_agg_co2eq=None,
 
                seq_rate_global=None,
                degradation_rate=None,
@@ -502,6 +505,7 @@ class AdvancedControls:
     self.tch4_co2_reduced_per_land_unit = self._substitute_vma(tch4_co2_reduced_per_land_unit,
                                                   vma_title='t CH4-CO2-eq Reduced per Land Unit')
     self.tch4_co2_rplu_rate = tch4_co2_rplu_rate
+    self.emissions_use_agg_co2eq = emissions_use_agg_co2eq
 
     self.seq_rate_global = self._substitute_vma(seq_rate_global, vma_title='Sequestration Rates')
     self.degradation_rate = self._substitute_vma(degradation_rate,
