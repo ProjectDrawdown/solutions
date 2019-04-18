@@ -265,6 +265,7 @@ class AdvancedControls:
     ForestProtection "Advanced Controls"!B138 (Land models)
   tco2eq_rplu_rate: whether tco2eq_reduced_per_land_unit is 'One-time' or 'Annual'
     ForestProtection "Advanced Controls"!B148 (Land models)
+  [similar vars for co2, n2o_co2 and ch4_co2 ForestProtection "Advanced Controls"!C148:E148 (Land models)]
 
   seq_rate_global (float): carbon sequestration rate for All Land or All of Special Land.
     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
@@ -370,6 +371,12 @@ class AdvancedControls:
                # LAND only
                tco2eq_reduced_per_land_unit=None,
                tco2eq_rplu_rate=None,
+               tco2_reduced_per_land_unit=None,
+               tco2_rplu_rate=None,
+               tn2o_co2_reduced_per_land_unit=None,
+               tn2o_co2_rplu_rate=None,
+               tch4_co2_reduced_per_land_unit=None,
+               tch4_co2_rplu_rate=None,
 
                seq_rate_global=None,
                degradation_rate=None,
@@ -486,6 +493,15 @@ class AdvancedControls:
     self.tco2eq_reduced_per_land_unit = self._substitute_vma(tco2eq_reduced_per_land_unit,
                                                   vma_title='t CO2-eq (Aggregate emissions) Reduced per Land Unit')
     self.tco2eq_rplu_rate = tco2eq_rplu_rate
+    self.tco2_reduced_per_land_unit = self._substitute_vma(tco2_reduced_per_land_unit,
+                                                  vma_title='t CO2 Reduced per Land Unit')
+    self.tco2_rplu_rate = tco2_rplu_rate
+    self.tn2o_co2_reduced_per_land_unit = self._substitute_vma(tn2o_co2_reduced_per_land_unit,
+                                                  vma_title='t N2O-CO2-eq Reduced per Land Unit')
+    self.tn2o_rplu_rate = tn2o_co2_rplu_rate
+    self.tch4_co2_reduced_per_land_unit = self._substitute_vma(tch4_co2_reduced_per_land_unit,
+                                                  vma_title='t CH4-CO2-eq Reduced per Land Unit')
+    self.tch4_co2_rplu_rate = tch4_co2_rplu_rate
 
     self.seq_rate_global = self._substitute_vma(seq_rate_global, vma_title='Sequestration Rates')
     self.degradation_rate = self._substitute_vma(degradation_rate,
