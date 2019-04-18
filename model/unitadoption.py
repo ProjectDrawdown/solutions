@@ -179,16 +179,6 @@ class UnitAdoption:
     return self.pds_total_undegraded_land() - self.ref_total_undegraded_land()
 
   @lru_cache()
-  def cumulative_land_units_outside_of_direct_emissions(self):
-    """This table is used to calculate the Annual Direct Emissions of all GH Gases if the User selects "Annual"
-    accounting (ie the direct emissions are released for a certain number of years rather than only in the year
-    of adoption.
-    Peatlands 'Unit Adoption Calculations'!EI253:EJ298"""
-    df = self.cumulative_reduction_in_total_degraded_land()
-    # shift rows
-    return df
-
-  @lru_cache()
   def annual_reduction_in_total_degraded_land(self):
     """This is the decrease in  total degraded land in the PDS versus the REF in each year. Units: Millions ha.
     Note: in excel this is calculated from several tables but we can achieve the same results directly from
