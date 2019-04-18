@@ -47,6 +47,7 @@ from solution import masstransit
 from solution import microwind
 from solution import offshorewind
 from solution import onshorewind
+from solution import peatlands
 from solution import recycledpaper
 from solution import refrigerants
 from solution import ships
@@ -670,7 +671,6 @@ def verify_ch4_calcs(obj, verify=None):
       ]
   return verify
 
-
 def is_custom_ad_with_no_regional_data(obj):
   """Check for Custom PDS adoption with no regional adoption data.
 
@@ -1165,6 +1165,17 @@ def test_OnshoreWind_RRS(start_excel, tmpdir):
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('peatlands', 'testdata', 'Peatland_L-UseProtect_v1.1b_27July18.xlsm'))],
+    indirect=True)
+def test_Peatlands_LAND(start_excel, tmpdir):
+  """Test for Excel model file Peatland_L-UseProtect_v1.1b_27July18.xlsm."""
+  workbook = start_excel
+  for scenario in peatlands.scenarios.keys():
+    obj = peatlands.Peatlands(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',

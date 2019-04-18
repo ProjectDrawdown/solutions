@@ -159,13 +159,17 @@ def test_total_undegraded_land():
     # identical for REF and PDS so just test PDS
     pd.testing.assert_frame_equal(ua.pds_total_undegraded_land(), expected)
 
+def test_cumulative_land_units_outside_of_direct_emissions():
+    cumu_ridl = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_cumu_ridl.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls()
+    with mock.patch.object(unitadoption.UnitAdoption, 'cumulative_reduction_in_total_degraded_land', new=lambda x: cumu_ridl):
+        ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=None)
+        print(ua.cumulative_land_units_outside_of_direct_emissions())
+
 def test_annual_reduction_in_total_degraded_land():
     cumu_ridl = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_cumu_ridl.csv'), index_col=0)
-
-    def mock_critdl():
-        return lambda x: cumu_ridl
     expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_annu_ridl.csv'), index_col=0)
-    with mock.patch.object(unitadoption.UnitAdoption, 'cumulative_reduction_in_total_degraded_land', new=mock_critdl()):
+    with mock.patch.object(unitadoption.UnitAdoption, 'cumulative_reduction_in_total_degraded_land', new=lambda x: cumu_ridl):
         ua = unitadoption.UnitAdoption(ac=None, soln_ref_funits_adopted=None, soln_pds_funits_adopted=None)
         pd.testing.assert_frame_equal(ua.annual_reduction_in_total_degraded_land(), expected)
 

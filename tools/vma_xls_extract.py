@@ -91,7 +91,8 @@ class VMAReader:
             row1, col1 = cell_to_offsets(source_id_cell)
         else:  # for use with read_xls
             row1, col1 = source_id_cell
-        for r in range(51):
+        done = False
+        for r in range(120):
             new_row = {}
             for c in range(15):
                 if c == 14:
@@ -102,16 +103,19 @@ class VMAReader:
                     name_to_check = first_cell.strip().replace('*', '')
                     assert name_to_check == col_name, 'cell value: {} is not {}'.format(first_cell, col_name)
                 cell_val = self.sheet.cell_value(row1 + 1 + r, col1 + c)  # get raw val
+                if cell_val == '**Add calc above':
+                    done = True  # this is the edge case where the table is filled with no extra rows
+                    break
                 cell_val = COLUMN_DTYPE_MAP[col_name](empty_to_nan(cell_val))  # conversions
                 new_row[col_name] = cell_val
-            if all(pd.isna(v) for k, v in new_row.items() if k != 'Common Units'):
+            if done or all(pd.isna(v) for k, v in new_row.items() if k != 'Common Units'):
                 last_row = r
                 break  # assume an empty row (except for Common Units) indicates no more sources to copy
             else:
                 df = df.append(new_row, ignore_index=True)
         else:
             raise Exception(
-                'No blank row detected in table. Either there are 51+ VMAs in table, the table has been misused '
+                'No blank row detected in table. Either there are 120+ VMAs in table, the table has been misused '
                 'or there is some error in the code. Cell: {}'.format(source_id_cell))
         if (df['Weight'] == 0).all():
             # Sometimes all weights are set to 0 instead of blank. In this case we want them to be NaN.
@@ -137,7 +141,7 @@ class VMAReader:
         row, col = 40, 2
         for table_num in range(1, 36):
             found = False
-            for rows_to_next_table in range(100):
+            for rows_to_next_table in range(200):
                 title_from_cell = self.sheet.cell_value(row + rows_to_next_table, col)
                 # print(title_from_cell)
                 if title_from_cell.startswith('VARIABLE'):

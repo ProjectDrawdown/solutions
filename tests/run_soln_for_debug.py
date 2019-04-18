@@ -4,10 +4,10 @@ import pandas as pd
 from solution.solarpvutil import SolarPVUtil
 from solution.landfillmethane import LandfillMethane
 from solution.silvopasture import Silvopasture
-from solution.tropicaltreestaples import TropicalTreeStaples
+from solution.peatlands import Peatlands
 
-soln = TropicalTreeStaples()
-print(soln.ac.vmas['SOLUTION Operating Cost per Functional Unit per Annum'].df)
-print(soln.ac.soln_fixed_oper_cost_per_iunit)
+soln = Peatlands()
+
+print(soln.c2.co2eq_mmt_reduced())
 # print(soln.oc.soln_pds_annual_breakout())
 
