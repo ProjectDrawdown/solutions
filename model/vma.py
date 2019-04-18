@@ -68,7 +68,9 @@ class VMA:
     value.name = 'Value'
     exclude = df['Exclude Data?'].fillna(False)
     exclude.name = 'Exclude?'
-    self.df = pd.concat([value, units, raw, weight, exclude], axis=1)
+    tmr = df['Thermal-Moisture Regime'].fillna(False)
+    tmr.name = 'TMR'
+    self.df = pd.concat([value, units, raw, weight, exclude, tmr], axis=1)
     self.df['Value'].fillna(self.df['Raw'], inplace=True)
 
   def _discard_outliers(self):
@@ -84,10 +86,11 @@ class VMA:
     df = df[valid]
     return df
 
-  def avg_high_low(self, key=None):
+  def avg_high_low(self, key=None, regime=None):
     """
     Args:
       key: (optional) specify 'mean', 'high' or 'low' to get single value
+      regime: string name of the thermal moisture regime to select sources for.
 
     Returns:
       By default returns (mean, high, low) using low_sd/high_sd.
@@ -95,6 +98,9 @@ class VMA:
     """
     df = self._discard_outliers()
     df = df.loc[df['Exclude?'] == False]
+    if regime:
+      df = df.loc[df['TMR'] == regime]
+
     if self.use_weight:
       weights = df['Weight'].fillna(1.0)
       mean = (df['Value'] * weights).sum() / weights.sum()
