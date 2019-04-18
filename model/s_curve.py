@@ -140,13 +140,12 @@ class SCurve:
         """Calculate Bass Diffusion S-Curve for a solution."""
         result = pd.DataFrame()
         for region in self.sconfig.index:
-            M = self.sconfig.loc[region, 'M']
-            P = self.sconfig.loc[region, 'P']
-            Q = self.sconfig.loc[region, 'Q']
+            M = self.sconfig.loc[region, 'pds_tam_2050']
+            P = self.sconfig.loc[region, 'innovation']
+            Q = self.sconfig.loc[region, 'imitation']
             base_year = self.sconfig.loc[region, 'base_year']
             result.loc[base_year, region] = prev = self.sconfig.loc[region, 'base_adoption']
             for year in range(base_year + 1, CORE_END_YEAR + 1):
-                t = year - base_year
                 b = prev + (P + (Q * prev / M)) * (M - prev)
                 result.loc[year, region] = b
                 prev = b

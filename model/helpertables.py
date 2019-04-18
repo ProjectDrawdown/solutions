@@ -131,7 +131,7 @@ class HelperTables:
         elif self.ac.soln_pds_adoption_basis == 'Linear':
             last_year = 2060
             adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints)
-        elif self.ac.soln_pds_adoption_basis == 'S-Curve':
+        elif 'S-Curve' in self.ac.soln_pds_adoption_basis:
             adoption = self.pds_adoption_trend_per_region.copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
             adoption = self.pds_adoption_trend_per_region.fillna(0.0)

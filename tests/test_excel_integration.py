@@ -36,6 +36,7 @@ from solution import electricbikes
 from solution import electricvehicles
 from solution import forestprotection
 from solution import greenroofs
+from solution import heatpumps
 from solution import highspeedrail
 from solution import improvedcookstoves
 from solution import instreamhydro
@@ -438,7 +439,7 @@ def verify_adoption_data_eleven_sources(obj, verify=None):
   return verify
 
 
-def verify_s_curve(obj, verify=None):
+def verify_logistic_s_curve(obj, verify=None):
   """Verified tables in S-Curve Adoption."""
   if verify is None:
     verify = {}
@@ -446,6 +447,17 @@ def verify_s_curve(obj, verify=None):
       ('A24:K70', obj.sc.logistic_adoption().reset_index(), None),
       ]
   return verify
+
+
+def verify_bass_diffusion_s_curve(obj, verify=None):
+  """Verified tables in S-Curve Adoption."""
+  if verify is None:
+    verify = {}
+  verify['S-Curve Adoption'] = [
+      ('A130:K176', obj.sc.bass_diffusion_adoption().reset_index(), None),
+      ]
+  return verify
+
 
 
 def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=True, is_rrs=True):
@@ -717,8 +729,10 @@ def RRS_solution_verify_list(obj, workbook):
       verify_adoption_data_eleven_sources(obj, verify)
     else:
       verify_adoption_data(obj, verify)
-  elif 'S-Curve' in obj.ac.soln_pds_adoption_basis:
-    verify_s_curve(obj, verify)
+  elif obj.ac.soln_pds_adoption_basis == 'Logistic S-Curve':
+    verify_logistic_s_curve(obj, verify)
+  elif obj.ac.soln_pds_adoption_basis == 'Bass Diffusion S-Curve':
+    verify_bass_diffusion_s_curve(obj, verify)
 
   verify_helper_tables(obj, verify, include_regional_data=include_regional_data)
   verify_emissions_factors(obj, verify)
@@ -1024,6 +1038,19 @@ def test_GreenRoofs_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('heatpumps', 'testdata',
+        'Drawdown-High Efficient Heat Pumps_RRS_v1.1_19Nov2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_HeatPumps_RRS(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in heatpumps.scenarios.keys():
+    obj = heatpumps.HeatPumps(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('highspeedrail', 'testdata',
         'Drawdown-High Speed Rail_RRS_v1.1_5Dec2018_PUBLIC.xlsm'))],
     indirect=True)
@@ -1283,7 +1310,7 @@ def test_SolarRooftop_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('solarpvutil', 'testdata', 'SolarPVUtility_RRS_v1.1d_27Aug18.xlsm'))],
+    [str(solutiondir.joinpath('solarpvutil', 'testdata', 'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm'))],
     indirect=True)
 def test_SolarPVUtility_RRS(start_excel):
   workbook = start_excel

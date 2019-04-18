@@ -114,7 +114,7 @@ def test_soln_pds_adoption_args():
       soln_pds_adoption_basis="DEFAULT S-Curve",
       soln_pds_adoption_prognostication_growth="Low",
       soln_pds_adoption_prognostication_source="test2")
-  assert ac.soln_pds_adoption_basis == "S-Curve"
+  assert ac.soln_pds_adoption_basis == "Logistic S-Curve"
   assert ac.soln_pds_adoption_prognostication_growth == "Low"
   assert ac.soln_pds_adoption_prognostication_source == "test2"
   with pytest.raises(ValueError):
