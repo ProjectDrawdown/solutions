@@ -213,9 +213,13 @@ Apr 1 - Apr 5, 2019
   Water Efficiency, Carpooling, Trucks, District Heating,
   Electric Bikes, Mass Transit, Walkable Cities, Water
   Distribution, Wave and Tidal, plus Temperate Forests and
-  Tropical Forests,
+  Tropical Forests.
 + fix small mismatches between Python & Excel
   a) funit replacement checks current adoption
   b) floating point ROUND() matching Excel, try #2
   c) adoption & TAM support regional sums
 
+Apr 8 - Apr 12, 2019
++ Add three solutions.
+  Forest Protection, Cool Roofs, Green Roofs.
++ UI: add graphical overview of how the modules connect
