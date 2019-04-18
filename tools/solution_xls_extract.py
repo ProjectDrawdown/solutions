@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 """Extract parameters from a Drawdown excel model to help create
    the Python implementation of the solution and its scenarios.
+
+   The code in this file is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE
+   version 3.0.
+
+   Outputs of this utility are considered to be data and do not automatically
+   carry the license used for the code in this utility. It is up to the user and
+   copyright holder of the inputs to determine what copyright applies to the
+   output.
 """
 
 import argparse
