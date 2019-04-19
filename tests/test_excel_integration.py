@@ -1422,14 +1422,6 @@ def test_TropicalTreeStaples_LAND(start_excel, tmpdir):
   for scenario in tropicaltreestaples.scenarios.keys():
     obj = tropicaltreestaples.TropicalTreeStaples(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
-
-    # floating point error in first cost causes some tables to fail due as a number that should be 0
-    # is multiplied by a large number (install cost). We ignore them here.
-    assert verify['First Cost'][7][0] == 'R37:R82'
-    verify['First Cost'].pop(7)
-    assert verify['First Cost'][4][0] == 'N37:N82'
-    verify['First Cost'].pop(4)
-
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 @pytest.mark.integration
