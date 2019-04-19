@@ -272,6 +272,8 @@ class AdvancedControls:
   seq_rate_global (float): carbon sequestration rate for All Land or All of Special Land.
     Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
     "Advanced Controls"!B173 (Land models)
+  seq_rate_per_regime (dict of float): carbon sequestration rate for each thermal-moisture
+    regime. "Advanced Controls"!C173:G173 (Land models)
   growth_rate_of_land_degradation: % annually ForestProtection "Advanced Controls"!B187 (Land models)
   disturbance_rate (float): disturbance rate TropicalForests. "Advanced Controls"!I173 (Land models)
   global_multi_for_regrowth: Global multiplier for regrowth  ForestProtection "Advanced Controls"!E187 (Land models)
@@ -382,6 +384,7 @@ class AdvancedControls:
                emissions_use_agg_co2eq=None,
 
                seq_rate_global=None,
+               seq_rate_per_regime=None,
                degradation_rate=None,
                disturbance_rate=None,
                global_multi_for_regrowth=None,
@@ -508,6 +511,7 @@ class AdvancedControls:
     self.emissions_use_agg_co2eq = emissions_use_agg_co2eq
 
     self.seq_rate_global = self._substitute_vma(seq_rate_global, vma_title='Sequestration Rates')
+    self.seq_rate_per_regime = seq_rate_per_regime
     self.degradation_rate = self._substitute_vma(degradation_rate,
                                                  vma_title='Growth Rate of Land Degradation')
     self.disturbance_rate = self._substitute_vma(disturbance_rate, vma_title='Disturbance Rate')

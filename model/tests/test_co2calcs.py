@@ -149,7 +149,6 @@ def test_co2_ppm_calculator_land_with_avoided_emissions():
       res.columns = res.columns.astype(str)
       pd.testing.assert_frame_equal(c2.co2_ppm_calculator(), expected, check_dtype=False)
 
-
 def test_co2eq_ppm_calculator():
   soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
       columns=["World", "B"], index=[2020, 2021, 2022])
@@ -493,8 +492,26 @@ def test_co2_sequestered_global_regrowth():
     c2 = co2calcs.CO2Calcs(ac=ac, tot_red_in_deg_land=total_ridl, pds_protected_deg_land=pds_pdl,
                            ref_protected_deg_land=ref_pdl, land_distribution=land_dist)
     result = c2.co2_sequestered_global().drop(columns=['Global Arctic'])
-    expected = pd.read_csv(datadir.joinpath('fp_co2_seq_global.csv'), index_col=0)
+    expected = pd.read_csv(datadir.joinpath('fp_co2_seq_global.csv'), index_col=0, dtype=np.float64)
+    expected.index = expected.index.astype(int)
     pd.testing.assert_frame_equal(result, expected)
+
+def test_co2_sequestered_global_simple_with_regime_seq():
+    ac = advanced_controls.AdvancedControls(seq_rate_global=np.nan,
+        seq_rate_per_regime={'Tropical-Humid': 0.1, 'Temperate/Boreal-Humid': 0.2,
+            'Tropical-Semi-Arid': 0.3, 'Temperate/Boreal-Semi-Arid': 0.4, 'Global Arid': 0.5,
+            'Global Arctic': 0.0})
+    funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
+    land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
+    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist)
+    result = c2.co2_sequestered_global()
+    # Test data from Tropical Forests, with Advanced Controls B173 empty,
+    # C173=0.1, D173=0.2, E173=0.3, F173=0.4, and G173=0.5
+    assert result.loc[2020, 'All'] == pytest.approx(29.68565711657260)
+    assert result.loc[2025, 'Tropical-Semi-Arid'] == pytest.approx(33.60335559490990)
+    assert result.loc[2035, 'Tropical-Humid'] == pytest.approx(33.64221752250950)
+    assert result.loc[2040, 'All'] == pytest.approx(96.71753788853460)
+    assert result.loc[2055, 'Tropical-Semi-Arid'] == pytest.approx(70.32984072182640)
 
 
 # 'Unit Adoption'!B251:L298

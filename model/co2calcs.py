@@ -80,7 +80,7 @@ class CO2Calcs:
 
        CO2 MMT Reduced = (Grid Emissions Reduced + Grid Emissions Replaced - Grid Emissions by Solution)
          + Fuel Emissions Avoided + Direct Emissions Reduced - Net Indirect Emissions
-       'CO2 Calcs'!A9:K55
+       SolarPVUtil 'CO2 Calcs'!A9:K55
     """
     co2_reduced_grid_emissions = self.co2_reduced_grid_emissions()
     m = pd.DataFrame(0.0, columns=co2_reduced_grid_emissions.columns.copy(),
@@ -111,7 +111,7 @@ class CO2Calcs:
        where
           NEU(t) = Net Energy Units at time, t
           EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
-       'CO2 Calcs'!A64:K110
+       SolarPVUtil 'CO2 Calcs'!A64:K110
     """
     s = self.ac.report_start_year
     e = self.ac.report_end_year
@@ -148,12 +148,13 @@ class CO2Calcs:
     """
     Total Carbon Sequestration (World section only)
     Returns DataFrame of net annual sequestration by thermal moisture region.
-    'CO2 Calcs'!B119:G166 (Land models)
+    Tropical Forests 'CO2 Calcs'!A119:G166 (Land models)
     """
     assert self.ac.seq_rate_global is not None, 'No sequestration rate set in Advanced Controls'
     cols = ['All'] + THERMAL_MOISTURE_REGIMES
     index = pd.Index(list(range(2015, 2061)), name='Year')
-    df = pd.DataFrame(columns=cols, index=index)
+    df = pd.DataFrame(columns=cols, index=index, dtype=np.float64)
+    set_regions_from_distribution = False
 
     c_to_co2eq = 3.666
     if self.tot_red_in_deg_land is not None:
@@ -179,16 +180,30 @@ class CO2Calcs:
         undeg_seq_rate = self.ac.seq_rate_global
         deg_seq_rate = self.ac.seq_rate_global * self.ac.global_multi_for_regrowth
       df['All'] = c_to_co2eq * (undeg_land * undeg_seq_rate + (pds_deg_land - ref_deg_land) * deg_seq_rate)
+      set_regions_from_distribution = True
     else:
       # simple calculation
       disturbance = 1 if self.ac.disturbance_rate is None else 1 - self.ac.disturbance_rate
       net_land = self.soln_net_annual_funits_adopted.loc[index, 'World']
       if self.annual_land_area_harvested is not None:
         net_land -= self.annual_land_area_harvested.loc[index, 'World']
-      df['All'] = c_to_co2eq * net_land * self.ac.seq_rate_global * disturbance
+      if pd.isna(self.ac.seq_rate_global):
+        for tmr in THERMAL_MOISTURE_REGIMES:
+          seq_rate = pd.Series(self.ac.seq_rate_per_regime).loc[tmr]
+          df[tmr] = (c_to_co2eq * net_land * seq_rate * disturbance *
+                  self.land_distribution.loc['Global', tmr] /
+                  self.land_distribution.loc['Global', 'All'])
+        df['All'] = df.fillna(0.0).sum(axis=1)
+        set_regions_from_distribution = False
+      else:
+        df['All'] = c_to_co2eq * net_land * self.ac.seq_rate_global * disturbance
+        set_regions_from_distribution = True
 
-    for tmr in THERMAL_MOISTURE_REGIMES:
-      df[tmr] = df['All'] * self.land_distribution.loc['Global', tmr] / self.land_distribution.loc['Global', 'All']
+    if set_regions_from_distribution:
+      for tmr in THERMAL_MOISTURE_REGIMES:
+        df[tmr] = df['All'] * self.land_distribution.loc['Global', tmr] / self.land_distribution.loc['Global', 'All']
+
+    df.name = 'co2_sequestered_global'
     return df
 
   @lru_cache()
@@ -204,7 +219,8 @@ class CO2Calcs:
        of other GHGs. If these other GHGs are a significant part of overall reductions,
        this model may not be appropriate.
 
-       'CO2 Calcs'!A119:AW165
+       SolarPVUtil 'CO2 Calcs'!A119:AW165 (RRS)
+       Conservation Agriculture 'CO2 Calcs'!A172:AW218 (Land)
     """
 
     if self.ac.emissions_use_co2eq:
@@ -247,7 +263,7 @@ class CO2Calcs:
   @lru_cache()
   def co2eq_ppm_calculator(self):
     """PPM calculations for CO2, CH4, and CO2-eq from other sources.
-       'CO2 Calcs'!A171:F217
+       SolarPVUtil 'CO2 Calcs'!A171:F217
     """
     co2_ppm_calculator = self.co2_ppm_calculator()
     ppm_calculator = pd.DataFrame(0,
@@ -269,7 +285,7 @@ class CO2Calcs:
        where
           NE(t) = Net Energy Units at time, t
           EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
-       'CO2 Calcs'!A234:K280
+       SolarPVUtil 'CO2 Calcs'!A234:K280
     """
     return self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2_per_KWh
 
@@ -279,7 +295,7 @@ class CO2Calcs:
        where
           NAFU(Sol,t) = Net annual functional units captured by solution at time, t
           EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
-       'CO2 Calcs'!R234:AB280
+       SolarPVUtil 'CO2 Calcs'!R234:AB280
     """
     if self.ac.solution_category == SOLUTION_CATEGORY.REPLACEMENT:
       return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2_per_KWh
@@ -293,7 +309,7 @@ class CO2Calcs:
        where
           NEU(t) = Net Energy Units Used at time, t
           EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
-       'CO2 Calcs'!AI234:AS280
+       SolarPVUtil 'CO2 Calcs'!AI234:AS280
     """
     return self.soln_pds_net_grid_electricity_units_used * self.conv_ref_grid_CO2_per_KWh
 
@@ -304,7 +320,7 @@ class CO2Calcs:
        where
           NEU(t) = Net Energy Units at time, t
           EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
-       'CO2 Calcs'!A288:K334
+       SolarPVUtil 'CO2 Calcs'!A288:K334
     """
     return self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2eq_per_KWh
 
@@ -315,7 +331,7 @@ class CO2Calcs:
        where
           NAFU(Sol,t) = Net annual functional units captured by solution at time, t
           EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
-       'CO2 Calcs'!R288:AB334
+       SolarPVUtil 'CO2 Calcs'!R288:AB334
     """
     if self.ac.solution_category == SOLUTION_CATEGORY.REPLACEMENT:
       return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2eq_per_KWh
@@ -329,7 +345,7 @@ class CO2Calcs:
        where
           NEU(t) = Net Energy Units Used at time, t
           EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
-       'CO2 Calcs'!AI288:AS334
+       SolarPVUtil 'CO2 Calcs'!AI288:AS334
     """
     return self.soln_pds_net_grid_electricity_units_used * self.conv_ref_grid_CO2eq_per_KWh
 
@@ -342,7 +358,7 @@ class CO2Calcs:
           DEm(Sol,t) = Direct Emissions of Solution at time, t
 
           NOTE: Includes CH4-CO2-eq and N2O-CO2-eq
-       'CO2 Calcs'!A344:K390
+       SolarPVUtil 'CO2 Calcs'!A344:K390
     """
     return (self.soln_pds_direct_co2_emissions_saved/1000000 +
         self.soln_pds_direct_ch4_co2_emissions_saved/1000000 +
@@ -362,7 +378,7 @@ class CO2Calcs:
           Em(sf) = Emissions Factor of solution fuel type
           UCF = Unit Conversion Factor (TJ per Liter or L per TJ depending on
             Conventional and Solution Fuel units.
-       'CO2 Calcs'!U344:AE390
+       SolarPVUtil 'CO2 Calcs'!U344:AE390
     """
     factor = self.ac.conv_fuel_emissions_factor
     factor -= self.ac.soln_fuel_emissions_factor * self.ac.soln_fuel_learning_rate
@@ -382,7 +398,7 @@ class CO2Calcs:
           IEm(Sol,t) = Indirect CO2-eq Emission of solution at time, t
           NIU(Con,t) = New Implementation Units by conventional mix at time, t
           IEm(Con,t) = Indirect CO2-eq Emission of conventional mix at time, t
-       'CO2 Calcs'!AP344:AZ390
+       SolarPVUtil 'CO2 Calcs'!AP344:AZ390
     """
     if self.ac.conv_indirect_co2_is_iunits:
       delta = self.soln_pds_new_iunits_reqd - self.soln_ref_new_iunits_reqd

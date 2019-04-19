@@ -1,6 +1,7 @@
 """Implementation of the Variable Meta-Analysis module."""
 
 import math
+import numpy as np
 import pandas as pd
 
 
@@ -25,7 +26,14 @@ def generate_vma_dict(path_to_vma_data):
         use_weight = row['Use weight?']
       else:
         use_weight = False
-      vma_dict[row['Title on xls']] = VMA(path_to_vma_data.joinpath(row['Filename'] + '.csv'), use_weight=use_weight)
+      fixed_mean = row.get('Fixed Mean', np.nan)
+      fixed_high = row.get('Fixed High', np.nan)
+      fixed_low = row.get('Fixed Low', np.nan)
+      fixed_summary = None
+      if not pd.isna(fixed_mean) and not pd.isna(fixed_high) and not pd.isna(fixed_low):
+        fixed_summary = (fixed_mean, fixed_high, fixed_low)
+      vma_dict[row['Title on xls']] = VMA(path_to_vma_data.joinpath(row['Filename'] + '.csv'),
+              use_weight=use_weight, fixed_summary=fixed_summary)
   return vma_dict
 
 
@@ -47,14 +55,18 @@ class VMA:
        discard_multiplier: discard outlier values more than this many multiples of the
          stddev away from the mean.
        postprocess: function to pass (mean, high, low) to before returning.
+       fixed_summary: if present, should be a tuple to use for (mean, high, low) instead
+         of calculating those values
   """
-  def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3, use_weight=False, postprocess=None):
+  def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3, use_weight=False,
+          postprocess=None, fixed_summary=None):
     df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
     self.source_data = df
     self.low_sd = low_sd
     self.high_sd = high_sd
     self.discard_multiplier = discard_multiplier
     self.postprocess = postprocess
+    self.fixed_summary = fixed_summary
     if use_weight:
       assert not all(pd.isnull(df['Weight'])), "'Use weight' selected but no weights to use"
     self.use_weight = use_weight
@@ -68,7 +80,9 @@ class VMA:
     value.name = 'Value'
     exclude = df['Exclude Data?'].fillna(False)
     exclude.name = 'Exclude?'
-    self.df = pd.concat([value, units, raw, weight, exclude], axis=1)
+    tmr = df['Thermal-Moisture Regime'].fillna(False)
+    tmr.name = 'TMR'
+    self.df = pd.concat([value, units, raw, weight, exclude, tmr], axis=1)
     self.df['Value'].fillna(self.df['Raw'], inplace=True)
 
   def _discard_outliers(self):
@@ -84,10 +98,11 @@ class VMA:
     df = df[valid]
     return df
 
-  def avg_high_low(self, key=None):
+  def avg_high_low(self, key=None, regime=None):
     """
     Args:
       key: (optional) specify 'mean', 'high' or 'low' to get single value
+      regime: string name of the thermal moisture regime to select sources for.
 
     Returns:
       By default returns (mean, high, low) using low_sd/high_sd.
@@ -95,6 +110,9 @@ class VMA:
     """
     df = self._discard_outliers()
     df = df.loc[df['Exclude?'] == False]
+    if regime:
+      df = df.loc[df['TMR'] == regime]
+
     if self.use_weight:
       weights = df['Weight'].fillna(1.0)
       mean = (df['Value'] * weights).sum() / weights.sum()
@@ -107,8 +125,13 @@ class VMA:
       mean = df['Value'].mean()
       # whole population stddev, ddof=0
       sd = df['Value'].std(ddof=0)
-    high = mean + (self.high_sd * sd)
-    low = mean - (self.low_sd * sd)
+
+    if self.fixed_summary is not None:
+      (mean, high, low) = self.fixed_summary
+    else:
+      high = mean + (self.high_sd * sd)
+      low = mean - (self.low_sd * sd)
+
     if self.postprocess:
       return self.postprocess(mean, high, low)
     else:
