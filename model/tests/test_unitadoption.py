@@ -820,7 +820,8 @@ def test_conv_ref_new_iunits_repeated_cost_for_iunits():
 
 def test_direct_co2eq_emissions_saved_land():
     annual_ridl = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_annu_ridl.csv'), index_col=0)
-    ac = advanced_controls.AdvancedControls(tco2eq_reduced_per_land_unit=313.791126867655, tco2eq_rplu_rate='One-time')
+    ac = advanced_controls.AdvancedControls(tco2eq_reduced_per_land_unit=313.791126867655, tco2eq_rplu_rate='One-time',
+                                            delay_protection_1yr=False)
     expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_des_co2eq.csv'), index_col=0)
     with mock.patch.object(unitadoption.UnitAdoption, 'annual_reduction_in_total_degraded_land', new=lambda x: annual_ridl):
         ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=None)

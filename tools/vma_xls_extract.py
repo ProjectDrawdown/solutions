@@ -133,6 +133,7 @@ class VMAReader:
         else:  # for use with read_xls
             row1, col1 = source_id_cell
         max_sources = 120
+        done = False
         for r in range(max_sources):
             new_row = {}
             for c in range(15):
