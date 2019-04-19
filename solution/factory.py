@@ -3,6 +3,7 @@
 from solution import airplanes
 from solution import altcement
 from solution import bikeinfrastructure
+from solution import biochar
 from solution import biogas
 from solution import biomass
 from solution import bioplastic
@@ -54,6 +55,7 @@ def all_solutions_scenarios():
     everything['altcement'] = (altcement.AlternativeCement, list(altcement.scenarios.keys()))
     everything['bikeinfrastructure'] = (bikeinfrastructure.BikeInfrastructure,
             list(bikeinfrastructure.scenarios.keys()))
+    everything['biochar'] = (biochar.Biochar,  list(biochar.scenarios.keys()))
     everything['biogas'] = (biogas.Biogas,  list(biogas.scenarios.keys()))
     everything['biomass'] = (biomass.Biomass, list(biomass.scenarios.keys()))
     everything['bioplastic'] = (bioplastic.Bioplastic, list(bioplastic.scenarios.keys()))

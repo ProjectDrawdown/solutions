@@ -23,6 +23,7 @@ xlwings = pytest.importorskip("xlwings")
 from solution import airplanes
 from solution import altcement
 from solution import bikeinfrastructure
+from solution import biochar
 from solution import biogas
 from solution import biomass
 from solution import bioplastic
@@ -162,17 +163,46 @@ def verify_aez_data(obj, verify=None):
   return verify
 
 
+def _get_tam_trend_masks(obj):
+  """If the TAM data being analyzed is very close to linear, then the 2nd/3rd order polynomial
+     and exponential curve fits degenerate to where only the x^1 and constant terms matter and
+     the higher order terms do not.
+  
+     For example in biochar, Excel and Python both come up with {x}=1.57e+07 & const=1.049e+09
+     For degree2, Python comes up with -1.15e-09 while Excel decides it is -1.32e-09, but
+     it doesn't matter because they are 16 orders of magnitude less than the {x} term.
+  
+     If the TAM Data is very close to linear, skip comparing the higher order curve fits.
+  """
+  degree2 = obj.tm.forecast_trend_global(trend='Degree2')
+  d2_mask = d3_mask = exp_mask = None
+  if abs(degree2.loc[2015, 'x'] / degree2.loc[2015, 'x^2']) > 1e12:
+    d2_mask = degree2.reset_index(drop=True).copy(deep=True)
+    d2_mask.loc[:, :] = False
+    d2_mask['x^2'] = True
+    d3_mask = obj.tm.forecast_trend_global(trend='Degree3').reset_index(drop=True).copy(deep=True)
+    d3_mask.loc[:, :] = False
+    d3_mask['x^2'] = True
+    d3_mask['x^3'] = True
+    exp_mask = obj.tm.forecast_trend_global(trend='Exponential').reset_index(drop=True).copy(deep=True)
+    exp_mask.loc[:, :] = False
+    exp_mask['e^x'] = True
+  return (d2_mask, d3_mask, exp_mask)
+
+
 def verify_tam_data(obj, verify=None):
   """Verified tables in TAM Data."""
   if verify is None:
     verify = {}
+
+  (d2_mask, d3_mask, exp_mask) = _get_tam_trend_masks(obj=obj)
   verify['TAM Data'] = [
       ('W46:Y94', obj.tm.forecast_min_max_sd_global().reset_index(drop=True), None),
       ('AA46:AC94', obj.tm.forecast_low_med_high_global().reset_index(drop=True), None),
       ('BX50:BZ96', obj.tm.forecast_trend_global(trend='Linear').reset_index(drop=True), None),
-      ('CE50:CH96', obj.tm.forecast_trend_global(trend='Degree2').reset_index(drop=True), None),
-      ('CM50:CQ96', obj.tm.forecast_trend_global(trend='Degree3').reset_index(drop=True), None),
-      ('CV50:CX96', obj.tm.forecast_trend_global(trend='Exponential').reset_index(drop=True), None),
+      ('CE50:CH96', obj.tm.forecast_trend_global(trend='Degree2').reset_index(drop=True), d2_mask),
+      ('CM50:CQ96', obj.tm.forecast_trend_global(trend='Degree3').reset_index(drop=True), d3_mask),
+      ('CV50:CX96', obj.tm.forecast_trend_global(trend='Exponential').reset_index(drop=True), exp_mask),
       #('DZ45:EA91', obj.tm.forecast_trend_global().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
       # TODO Figure out PDS TAM handling
       ('W164:Y212', obj.tm.forecast_min_max_sd_oecd90().reset_index(drop=True), None),
@@ -250,13 +280,15 @@ def verify_tam_data_eleven_sources(obj, verify=None):
   """
   if verify is None:
     verify = {}
+
+  (d2_mask, d3_mask, exp_mask) = _get_tam_trend_masks(obj=obj)
   verify['TAM Data'] = [
       ('S46:U94', obj.tm.forecast_min_max_sd_global().reset_index(drop=True), None),
       ('W46:Y94', obj.tm.forecast_low_med_high_global().reset_index(drop=True), None),
       ('BT50:BV96', obj.tm.forecast_trend_global(trend='Linear').reset_index(drop=True), None),
-      ('CA50:CD96', obj.tm.forecast_trend_global(trend='Degree2').reset_index(drop=True), None),
-      ('CI50:CM96', obj.tm.forecast_trend_global(trend='Degree3').reset_index(drop=True), None),
-      ('CR50:CT96', obj.tm.forecast_trend_global(trend='Exponential').reset_index(drop=True), None),
+      ('CA50:CD96', obj.tm.forecast_trend_global(trend='Degree2').reset_index(drop=True), d2_mask),
+      ('CI50:CM96', obj.tm.forecast_trend_global(trend='Degree3').reset_index(drop=True), d3_mask),
+      ('CR50:CT96', obj.tm.forecast_trend_global(trend='Exponential').reset_index(drop=True), exp_mask),
       #('DV45:DW91', obj.tm.forecast_trend_global().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
       # TODO Figure out PDS TAM handling
       ('S164:U212', obj.tm.forecast_min_max_sd_oecd90().reset_index(drop=True), None),
@@ -874,6 +906,19 @@ def test_BikeInfrastructure_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in bikeinfrastructure.scenarios.keys():
     obj = bikeinfrastructure.BikeInfrastructure(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('biochar', 'testdata',
+        'Drawdown-Biochar_RRS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Biochar_RRS(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in biochar.scenarios.keys():
+    obj = biochar.Biochar(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
