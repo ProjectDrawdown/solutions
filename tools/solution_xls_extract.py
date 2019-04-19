@@ -1335,6 +1335,8 @@ def lookup_unit(tab, row, col):
     'Million Metric tonnes per year': 'MMt',
     'million tonne-km': 'Mt-km',
     'million tonne-kms': 'Mt-km',
+    'Residential and Commercial roof area, m2': u'm\u00B2',
+    'Residential and Commercial roof area,  m2': u'm\u00B2',
   }
   name = str(tab.cell_value(row, col))
   return unit_mapping.get(name, name)

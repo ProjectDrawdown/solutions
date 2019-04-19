@@ -192,8 +192,8 @@ scenarios = {
 class CoolRoofs:
   name = 'Cool Roofs'
   units = {
-    "implementation unit": "Residential and Commercial roof area,  m2",
-    "functional unit": "Residential and Commercial roof area, m2",
+    "implementation unit": u"m\u00B2",
+    "functional unit": u"m\u00B2",
     "first cost": "US$B",
     "operating cost": "US$B",
   }
