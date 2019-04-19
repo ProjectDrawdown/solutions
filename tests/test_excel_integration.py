@@ -51,6 +51,7 @@ from solution import offshorewind
 from solution import onshorewind
 from solution import recycledpaper
 from solution import refrigerants
+from solution import regenerativeagriculture
 from solution import ships
 from solution import silvopasture
 from solution import smartglass
@@ -570,11 +571,11 @@ def verify_first_cost(obj, verify=None):
       ('F37:F82', obj.fc.soln_pds_cumulative_install().loc[2015:].to_frame().reset_index(drop=True), None),
       ('L37:L82', obj.fc.soln_ref_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), None),
       #('M37:M82', checked by 'Unit Adoption Calculations'!AH199
-      ('N37:N82', obj.fc.soln_ref_annual_world_first_cost().loc[2015:].to_frame().reset_index(drop=True), None),
+      ('N37:N82', obj.fc.soln_ref_annual_world_first_cost().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
       ('O37:O82', obj.fc.conv_ref_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), None),
       #('P37:P82', checked by 'Unit Adoption Calculations'!AH253
       ('Q37:Q82', obj.fc.conv_ref_annual_world_first_cost().loc[2015:].to_frame().reset_index(drop=True), None),
-      ('R37:R82', obj.fc.ref_cumulative_install().loc[2015:].to_frame().reset_index(drop=True), None)
+      ('R37:R82', obj.fc.ref_cumulative_install().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent")
       ]
   return verify
 
@@ -822,8 +823,17 @@ def check_excel_against_object(obj, workbook, scenario, verify):
       (usecols, skiprows, nrows) = get_pd_read_excel_args(cellrange)
       expected_df = pd.read_excel(wb, engine='xlrd', sheet_name=sheetname, header=None,
         index_col=None, usecols=usecols, skiprows=skiprows, nrows=nrows)
-      if isinstance(mask, str) and mask == "Excel_NaN":
-        mask = expected_df.isna()
+      if isinstance(mask, str):
+        if mask == "Excel_NaN":
+          mask = expected_df.isna()
+        elif mask == "Excel_one_cent":
+          # Due to floating point precision, sometimes subtracting identical values for
+          # unit adoption is not zero it is 0.000000000000007105427357601000 which,
+          # when multiplied by a large unit cost, can result in a First Cost of (say) 2.5e-6
+          # instead of the zero which might otherwise be expected.
+          # Mask off values less than one penny.
+          s = expected_df
+          mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
       description = descr_base + sheetname + " " + cellrange
       compare_dataframes(actual_df=actual_df, expected_df=expected_df,
           description=description, mask=mask)
@@ -1232,6 +1242,18 @@ def test_Refrigerants_RRS(start_excel, tmpdir):
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('regenerativeagriculture', 'testdata',
+        'Drawdown-Regenerative Agriculture_BioS.Agri_v1.1_2Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_RegenerativeAgriculture_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in regenerativeagriculture.scenarios.keys():
+    obj = regenerativeagriculture.RegenerativeAgriculture(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
