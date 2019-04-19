@@ -326,6 +326,6 @@ class ConservationAgriculture:
         conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
         conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-        avoided_direct_emissions=self.ua.direct_co2eq_emissions_saved_land(),
+        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
         land_distribution=self.ae.get_land_distribution())
 

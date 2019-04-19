@@ -134,7 +134,7 @@ class CO2Calcs:
                                      'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
                        index=index, dtype=np.float64)
       if self.soln_pds_direct_co2eq_emissions_saved is not None or self.soln_pds_direct_co2_emissions_saved is not None:
-        if self.ac.emissions_use_agg_co2eq:
+        if self.ac.emissions_use_agg_co2eq is None or self.ac.emissions_use_agg_co2eq:
           m['World'] = m['World'].add(self.soln_pds_direct_co2eq_emissions_saved['World'].loc[s:e], fill_value=0)
         else:
           m['World'] = m['World'].add(self.soln_pds_direct_co2_emissions_saved['World'].loc[s:e], fill_value=0)
