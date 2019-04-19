@@ -87,11 +87,23 @@ def test_co2eq_mmt_reduced_allfields():
 
 def test_co2eq_mmt_reduced_land():
     avoided_em = pd.read_csv(datadir.joinpath('fp_des_co2eq.csv'), index_col=0)
-    ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050, solution_category='LAND')
-    c2 = co2calcs.CO2Calcs(ac=ac, avoided_direct_emissions=avoided_em)
+    ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050, solution_category='LAND',
+                                            emissions_use_agg_co2eq=True)
+    c2 = co2calcs.CO2Calcs(ac=ac, soln_pds_direct_co2eq_emissions_saved=avoided_em)
     expected = pd.read_csv(datadir.joinpath('fp_co2eq_mmt_red.csv'), index_col=0)
     pd.testing.assert_frame_equal(c2.co2eq_mmt_reduced().loc[:, ['World']], expected.loc[:, ['World']])
 
+def test_co2eq_mmt_reduced_land_not_aggregate():
+    avoided_co2 = pd.read_csv(datadir.joinpath('pl_co2_avoided.csv'), index_col=0)
+    avoided_n2o = pd.read_csv(datadir.joinpath('pl_n2o_avoided.csv'), index_col=0)
+    avoided_ch4 = pd.read_csv(datadir.joinpath('pl_ch4_avoided.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050, solution_category='LAND',
+                                            emissions_use_agg_co2eq=False)
+    c2 = co2calcs.CO2Calcs(ac=ac, soln_pds_direct_co2_emissions_saved=avoided_co2,
+                           soln_pds_direct_n2o_co2_emissions_saved=avoided_n2o,
+                           soln_pds_direct_ch4_co2_emissions_saved=avoided_ch4)
+    expected = pd.read_csv(datadir.joinpath('pl_co2eq_mmt_reduced.csv'), index_col=0)
+    pd.testing.assert_frame_equal(c2.co2eq_mmt_reduced().loc[:, ['World']], expected.loc[:, ['World']])
 
 def test_co2_ppm_calculator():
   soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],

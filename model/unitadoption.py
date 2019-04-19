@@ -652,7 +652,7 @@ class UnitAdoption:
                             * Aggregate GHG avoided rate (t GHG/ha/yr)
        Emissions avoided (if One-time Emissions) =
               (Net Land Units in Year x/MHa - Net Land Units in Year x-1/MHa)* Aggregate GHG avoided rate (t GHG/ha)"""
-    if self.ac.delay_protection_1yr:
+    if self.ac.delay_protection_1yr is not None:
       if ghg_rplu_rate == 'Annual':
         result = self.cumulative_reduction_in_total_degraded_land() - self.net_land_units_after_emissions_lifetime()
         result *= ghg_rplu

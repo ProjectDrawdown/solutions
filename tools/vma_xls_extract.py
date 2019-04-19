@@ -12,6 +12,7 @@
 import os
 import pathlib
 import pandas as pd
+import warnings
 from numpy import nan
 from collections import OrderedDict
 from tools.util import cell_to_offsets, empty_to_nan, to_filename, convert_bool
@@ -164,6 +165,12 @@ class VMAReader:
         for r in range(last_row, last_row + 50):  # look past last row
             if sheet.cell_value(row1 + r, 18) == 'Use weight?':
                 use_weight = convert_bool(sheet.cell_value(row1 + r + 1, 18))
+                if use_weight:
+                    warnings.warn(
+                        "May need to modify testdata spreadsheet to avoid weighted mean error."
+                        "\nWeights of excluded data and outliers should be set to 0 for table at {}"
+                        "\nSee: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#"
+                        "".format(source_id_cell))
                 break
         else:
             raise ValueError("No 'Use weight?' cell found")
