@@ -30,6 +30,7 @@ from solution import offshorewind
 from solution import onshorewind
 from solution import recycledpaper
 from solution import refrigerants
+from solution import regenerativeagriculture
 from solution import ships
 from solution import silvopasture
 from solution import smartglass
@@ -94,6 +95,8 @@ def all_solutions_scenarios():
             list(recycledpaper.scenarios.keys()))
     everything['refrigerants'] = (refrigerants.RefrigerantManagement,
             list(refrigerants.scenarios.keys()))
+    everything['regenerativeagriculture'] = (regenerativeagriculture.RegenerativeAgriculture,
+            list(regenerativeagriculture.scenarios.keys()))
     everything['ships'] = (ships.Ships, list(ships.scenarios.keys()))
     everything['silvopasture'] = (silvopasture.Silvopasture, list(silvopasture.scenarios.keys()))
     everything['smartglass'] = (smartglass.SmartGlass, list(smartglass.scenarios.keys()))
