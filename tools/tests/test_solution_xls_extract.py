@@ -1,5 +1,6 @@
 """Tests for solution_xls_extract.py"""
 
+import pathlib
 import os.path
 
 import pytest
@@ -86,5 +87,6 @@ def test_get_filename_for_source():
 
 
 def test_find_source_data_columns():
-  wb = xlrd.open_workbook(filename=os.path.join('tools', 'tests', 'solution_xls_extract_RRS_test_A.xlsm'))
+  this_dir = pathlib.Path(__file__).parents[0]
+  wb = xlrd.open_workbook(filename=os.path.join(this_dir, 'solution_xls_extract_RRS_test_A.xlsm'))
   assert sx.find_source_data_columns(wb=wb, sheet_name='Adoption Data', row=44) == 'B:R'
