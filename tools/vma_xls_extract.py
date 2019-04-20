@@ -180,7 +180,7 @@ class VMAReader:
             # Find the Average, High, Low cells.
             for r in range(last_row, last_row + 50):
                 if 'average' in str(sheet.cell_value(row1 + r, 17)).lower():
-                    col = 19 if use_weight else 18
+                    col = 20 if use_weight else 19
                     average = float(sheet.cell_value(row1 + r, col))
                     high = float(sheet.cell_value(row1 + r + 1, col))
                     low = float(sheet.cell_value(row1 + r + 2, col))
