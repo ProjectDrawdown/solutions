@@ -77,11 +77,20 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+
       tco2eq_reduced_per_land_unit='mean', 
       tco2eq_rplu_rate='One-time', 
+      tco2_reduced_per_land_unit=0.0, 
+      tco2_rplu_rate='One-time', 
+      tn2o_co2_reduced_per_land_unit=0.0, 
+      tn2o_co2_rplu_rate='One-time', 
+      tch4_co2_reduced_per_land_unit=0.0, 
+      tch4_co2_rplu_rate='One-time', 
+      land_annual_emissons_lifetime=30.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
+      emissions_use_agg_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
@@ -139,11 +148,20 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+
       tco2eq_reduced_per_land_unit='mean', 
       tco2eq_rplu_rate='One-time', 
+      tco2_reduced_per_land_unit=0.0, 
+      tco2_rplu_rate='One-time', 
+      tn2o_co2_reduced_per_land_unit=0.0, 
+      tn2o_co2_rplu_rate='One-time', 
+      tch4_co2_reduced_per_land_unit=0.0, 
+      tch4_co2_rplu_rate='One-time', 
+      land_annual_emissons_lifetime=30.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
+      emissions_use_agg_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
@@ -201,11 +219,20 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+
       tco2eq_reduced_per_land_unit='mean', 
       tco2eq_rplu_rate='One-time', 
+      tco2_reduced_per_land_unit=0.0, 
+      tco2_rplu_rate='One-time', 
+      tn2o_co2_reduced_per_land_unit=0.0, 
+      tn2o_co2_rplu_rate='One-time', 
+      tch4_co2_reduced_per_land_unit=0.0, 
+      tch4_co2_rplu_rate='One-time', 
+      land_annual_emissons_lifetime=30.0, 
 
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
+      emissions_use_agg_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
@@ -308,7 +335,7 @@ class ForestProtection:
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-        fc_convert_iunit_factor=0.0)
+        fc_convert_iunit_factor=land.MHA_TO_HA)
 
     self.oc = operatingcost.OperatingCost(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -324,15 +351,17 @@ class ForestProtection:
         conversion_factor=land.MHA_TO_HA)
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
+        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
         soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
-        soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),
-        soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),
-        soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),
+        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
+        soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),
+        soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),
+        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
@@ -342,6 +371,5 @@ class ForestProtection:
         tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),
         pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),
         ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),
-        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
         land_distribution=self.ae.get_land_distribution())
 

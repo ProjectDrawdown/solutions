@@ -707,13 +707,23 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
         # All other tables are not implemented as they appear to be all 0
     ]
 
-def verify_ch4_calcs(obj, verify=None):
+def verify_ch4_calcs_rrs(obj, verify=None):
   """Verified tables in CH4 Calcs."""
   if verify is None:
     verify = {}
   verify['CH4 Calcs'] = [
-      ('A11:K56', obj.c4.ch4_tons_reduced().reset_index(), None),
-      ('A65:AW110', obj.c4.ch4_ppb_calculator().reset_index(), None),
+      ('A11:K56', obj.c4.ch4_tons_reduced().loc[2015:, :].reset_index(), None),
+      ('A65:AW110', obj.c4.ch4_ppb_calculator().loc[2015:, :].reset_index(), None),
+      ]
+  return verify
+
+def verify_ch4_calcs_land(obj, verify=None):
+  """Verified tables in CH4 Calcs."""
+  if verify is None:
+    verify = {}
+  verify['CH4 Calcs'] = [
+      ('A13:B58', obj.c4.avoided_direct_emissions_ch4_land().loc[2015:, 'World'].reset_index(), None),
+      ('A67:AW112', obj.c4.ch4_ppb_calculator().loc[2015:, :].reset_index(), None),
       ]
   return verify
 
@@ -779,7 +789,7 @@ def RRS_solution_verify_list(obj, workbook):
     verify_co2_calcs(obj, verify, shifted=True, include_regional_data=include_regional_data)
   else:
     verify_co2_calcs(obj, verify, include_regional_data=include_regional_data)
-
+  verify_ch4_calcs_rrs(obj, verify)
   return verify
 
 
@@ -802,6 +812,7 @@ def LAND_solution_verify_list(obj):
   verify_first_cost(obj, verify)
   verify_operating_cost(obj, verify)
   verify_co2_calcs(obj, verify, is_rrs=False, include_regional_data=False)
+  verify_ch4_calcs_land(obj, verify)
   return verify
 
 
@@ -1335,6 +1346,7 @@ def test_Silvopasture_LAND(start_excel, tmpdir):
   for scenario in silvopasture.scenarios.keys():
     obj = silvopasture.Silvopasture(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
+    del verify['CH4 Calcs']
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

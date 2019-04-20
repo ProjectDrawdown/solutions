@@ -1,30 +1,30 @@
-VMA number,Filename,Title on xls,Has data?
-1,Current_Adoption,Current Adoption,True
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,False
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,False
-4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,False
-5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,False
-6,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,False
-7,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),False
-8,Average_Electricty_Used_DEGRADED_LAND,Average Electricty Used DEGRADED LAND,False
-9,Energy_Efficiency_Factor_UNDEGRADED_LAND,Energy Efficiency Factor UNDEGRADED LAND,False
-10,ALTERNATIVE_APPROACH_Annual_Energy_Used_UNDEGRADED_LAND,ALTERNATIVE APPROACH      Annual Energy Used UNDEGRADED LAND,False
-11,Fuel_Consumed_on_DEGRADED_Land,Fuel Consumed on DEGRADED Land,False
-12,Fuel_Reduction_Factor_for_UNDEGRADED_Land,Fuel Reduction Factor for UNDEGRADED Land,False
-13,t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit,t CO2-eq (Aggregate emissions) Reduced per Land Unit,True
-14,t_CO2_Reduced_per_Land_Unit,t CO2 Reduced per Land Unit,False
-15,t_N2O_CO2_eq_Reduced_per_Land_Unit,t N2O-CO2-eq Reduced per Land Unit,False
-16,t_CH4_CO2_eq_Reduced_per_Land_Unit,t CH4-CO2-eq Reduced per Land Unit,False
-17,Indirect_CO2_eq_Emissions_DEGRADED_LAND,Indirect CO2-eq Emissions DEGRADED LAND ,False
-18,Indirect_CO2_eq_Emissions_UNDEGRADED_LAND,Indirect CO2-eq Emissions UNDEGRADED LAND ,False
-19,Sequestration_Rates,Sequestration Rates,True
-20,Growth_Rate_of_Land_Degradation,Growth Rate of Land Degradation,True
-21,Disturbance_Rate,Disturbance Rate,True
-22,t_C_storage_in_Protected_Landtype,t C storage in Protected Landtype,True
-23,Global_Multipler_for_Regrowth,Global Multipler for Regrowth,False
-24,Tropical_Multipler_for_Regrowth,Tropical Multipler for Regrowth,False
-25,Temperate_Multiplier_for_Regrowth,Temperate Multiplier for Regrowth,False
-26,Cost_of_avoided_emission,Cost of avoided emission ,True
-27,Forest_area_with_Forest_Management_Plan,Forest area with Forest Management Plan ,True
-28,Forest_area_with_Forest_Management_Plan_for_Production,Forest area with Forest Management Plan for Production,True
-29,Forest_area_with_Forest_Management_Plan_for_Conservation,Forest area with Forest Management Plan for Conservation,True
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,,,
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,False,False,,,
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,False,False,,,
+4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,False,False,,,
+5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,False,False,,,
+6,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,False,False,,,
+7,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),False,False,,,
+8,Average_Electricty_Used_DEGRADED_LAND,Average Electricty Used DEGRADED LAND,False,False,,,
+9,Energy_Efficiency_Factor_UNDEGRADED_LAND,Energy Efficiency Factor UNDEGRADED LAND,False,False,,,
+10,ALTERNATIVE_APPROACH_Annual_Energy_Used_UNDEGRADED_LAND,ALTERNATIVE APPROACH      Annual Energy Used UNDEGRADED LAND,False,False,,,
+11,Fuel_Consumed_on_DEGRADED_Land,Fuel Consumed on DEGRADED Land,False,False,,,
+12,Fuel_Reduction_Factor_for_UNDEGRADED_Land,Fuel Reduction Factor for UNDEGRADED Land,False,False,,,
+13,t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit,t CO2-eq (Aggregate emissions) Reduced per Land Unit,True,False,,,
+14,t_CO2_Reduced_per_Land_Unit,t CO2 Reduced per Land Unit,False,False,,,
+15,t_N2O_CO2_eq_Reduced_per_Land_Unit,t N2O-CO2-eq Reduced per Land Unit,False,False,,,
+16,t_CH4_CO2_eq_Reduced_per_Land_Unit,t CH4-CO2-eq Reduced per Land Unit,False,False,,,
+17,Indirect_CO2_eq_Emissions_DEGRADED_LAND,Indirect CO2-eq Emissions DEGRADED LAND ,False,False,,,
+18,Indirect_CO2_eq_Emissions_UNDEGRADED_LAND,Indirect CO2-eq Emissions UNDEGRADED LAND ,False,False,,,
+19,Sequestration_Rates,Sequestration Rates,True,False,,,
+20,Growth_Rate_of_Land_Degradation,Growth Rate of Land Degradation,True,False,,,
+21,Disturbance_Rate,Disturbance Rate,True,False,,,
+22,t_C_storage_in_Protected_Landtype,t C storage in Protected Landtype,True,False,,,
+23,Global_Multipler_for_Regrowth,Global Multipler for Regrowth,False,False,,,
+24,Tropical_Multipler_for_Regrowth,Tropical Multipler for Regrowth,False,False,,,
+25,Temperate_Multiplier_for_Regrowth,Temperate Multiplier for Regrowth,False,False,,,
+26,Cost_of_avoided_emission,Cost of avoided emission ,True,False,,,
+27,Forest_area_with_Forest_Management_Plan,Forest area with Forest Management Plan ,True,False,,,
+28,Forest_area_with_Forest_Management_Plan_for_Production,Forest area with Forest Management Plan for Production,True,False,,,
+29,Forest_area_with_Forest_Management_Plan_for_Conservation,Forest area with Forest Management Plan for Conservation,True,False,,,

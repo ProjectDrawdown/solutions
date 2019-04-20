@@ -19,7 +19,7 @@ VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fix
 18,t_CH4_CO2_eq_Reduced_per_Land_Unit,t CH4-CO2-eq Reduced per Land Unit,False,False,,,
 19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE,False,False,,,
 20,Indirect_CO2_Emissions_per_Implementation_Unit_SOLUTION,Indirect CO2 Emissions per  Implementation Unit - SOLUTION,False,False,,,
-21,Sequestration_Rates,Sequestration Rates,True,False,0.5441319576543526,1.0408370277573207,0.04742688755138463
+21,Sequestration_Rates,Sequestration Rates,True,False,0.5137105759021046,0.9534626663525864,0.07395848545162276
 22,Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing,Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing,False,False,,,
 23,Disturbance_Rate,Disturbance Rate,False,False,,,
 24,Dataset_to_Use_for_Projecting_Adoption,Dataset to Use for Projecting Adoption,True,False,7.0,7.0,7.0

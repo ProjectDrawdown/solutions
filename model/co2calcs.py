@@ -263,7 +263,8 @@ class CO2Calcs:
   @lru_cache()
   def co2eq_ppm_calculator(self):
     """PPM calculations for CO2, CH4, and CO2-eq from other sources.
-       SolarPVUtil 'CO2 Calcs'!A171:F217
+       RRS: SolarPVUtil 'CO2 Calcs'!A171:F217
+       LAND: Improved Rice 'CO2 Calcs'!A224:H270
     """
     co2_ppm_calculator = self.co2_ppm_calculator()
     ppm_calculator = pd.DataFrame(0,

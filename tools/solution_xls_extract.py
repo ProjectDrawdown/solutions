@@ -1057,6 +1057,8 @@ def write_oc(f, wb, is_land=False):
 def write_c2_c4(f, is_rrs=True, is_protect=False):
   """Write out the CO2 Calcs and CH4 Calcs modules for this solution class."""
   f.write("    self.c4 = ch4calcs.CH4Calcs(ac=self.ac,\n")
+  if not is_rrs:
+    f.write("        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),\n")
   f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)\n\n")
   f.write("    self.c2 = co2calcs.CO2Calcs(ac=self.ac,\n")
   f.write("        ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),\n")

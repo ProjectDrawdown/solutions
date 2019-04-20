@@ -245,8 +245,10 @@ class Silvopasture:
         self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
         # (This whole sheet is 0)
-        self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
-                                    soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+        self.c4 = ch4calcs.CH4Calcs(
+            ac=self.ac,
+            soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
         self.c2 = co2calcs.CO2Calcs(
             ac=self.ac,
