@@ -36,6 +36,7 @@ from solution import coolroofs
 from solution import districtheating
 from solution import electricbikes
 from solution import electricvehicles
+from solution import farmlandrestoration
 from solution import forestprotection
 from solution import greenroofs
 from solution import heatpumps
@@ -1076,6 +1077,19 @@ def test_ElectricVehicles_RRS(start_excel, tmpdir):
   for scenario in electricvehicles.scenarios.keys():
     obj = electricvehicles.ElectricVehicles(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('farmlandrestoration', 'testdata',
+        'Drawdown-Farmland Restoration_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_FarmlandRestoration_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in farmlandrestoration.scenarios.keys():
+    obj = farmlandrestoration.FarmlandRestoration(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
