@@ -1,0 +1,24 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,7.0,7.0,7.0
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,False,False,,,
+3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit of the solution,False,False,,,
+4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,True,True,652.735403234368,944.0249679139572,361.44583855477885
+5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True,True,384.34648706769167,507.99545828921026,260.6975158461731
+6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,True,True,449.1639921107947,687.8154160286508,210.5125681929386
+7,SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum,SOLUTION Net Profit Margin per Functional Unit per Annum,True,True,640.0654296248848,949.4122100949514,330.71864915481814
+8,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,True,True,1176.9959612047824,2971.1380679370595,-617.1461455274946
+9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),True,False,-0.029402693486478743,0.053540577571417794,-0.11234596454437527
+10,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+12,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,False,False,,,
+13,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+14,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,False,False,,,
+15,t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit,t CO2-eq (Aggregate emissions) Reduced per Land Unit,False,False,,,
+16,t_CO2_Reduced_per_Land_Unit,t CO2 Reduced per Land Unit,False,False,,,
+17,t_N2O_CO2_eq_Reduced_per_Land_Unit,t N2O-CO2-eq Reduced per Land Unit,True,False,-0.38468571428571435,0.07421175869730845,-0.8435831872687372
+18,t_CH4_CO2_eq_Reduced_per_Land_Unit,t CH4-CO2-eq Reduced per Land Unit,True,False,5.601139534883721,17.281086706606786,-6.078807636839345
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE,False,False,,,
+20,Indirect_CO2_Emissions_per_Implementation_Unit_SOLUTION,Indirect CO2 Emissions per  Implementation Unit - SOLUTION,False,False,,,
+21,Sequestration_Rates,Sequestration Rates,True,False,1.45484,3.1242717519443555,-0.21459175194435565
+22,Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing,Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing,False,False,,,
+23,Disturbance_Rate,Disturbance Rate,False,False,,,

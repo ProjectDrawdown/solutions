@@ -42,6 +42,7 @@ from solution import greenroofs
 from solution import heatpumps
 from solution import highspeedrail
 from solution import improvedcookstoves
+from solution import improvedrice
 from solution import instreamhydro
 from solution import insulation
 from solution import landfillmethane
@@ -1170,7 +1171,21 @@ def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('instreamhydro', 'testdata', 'Drawdown-Instream Hydro (Small Hydro sub10MW)_RRS.ES_v1.1_14Jan2019_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('improvedrice', 'testdata',
+        'Drawdown-Improved Rice_BioS.Agri_v1.1_6Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_ImprovedRice_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in improvedrice.scenarios.keys():
+    obj = improvedrice.ImprovedRice(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('instreamhydro', 'testdata',
+        'Drawdown-Instream Hydro (Small Hydro sub10MW)_RRS.ES_v1.1_14Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_InstreamHydro_RRS(start_excel, tmpdir):
   workbook = start_excel

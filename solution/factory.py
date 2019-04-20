@@ -22,6 +22,7 @@ from solution import greenroofs
 from solution import heatpumps
 from solution import highspeedrail
 from solution import improvedcookstoves
+from solution import improvedrice
 from solution import instreamhydro
 from solution import insulation
 from solution import landfillmethane
@@ -86,6 +87,7 @@ def all_solutions_scenarios():
             list(highspeedrail.scenarios.keys()))
     everything['improvedcookstoves'] = (improvedcookstoves.ImprovedCookStoves,
             list(improvedcookstoves.scenarios.keys()))
+    everything['improvedrice'] = (improvedrice.ImprovedRice, list(improvedrice.scenarios.keys()))
     everything['instreamhydro'] = (instreamhydro.InstreamHydro,
             list(instreamhydro.scenarios.keys()))
     everything['insulation'] = (insulation.Insulation, list(insulation.scenarios.keys()))
