@@ -845,13 +845,33 @@ def test_net_land_units_after_emissions_lifetime():
   assert result.loc[2046, 'Eastern Europe'] == pytest.approx(60.326701097136)
   assert result.loc[2059, 'Middle East and Africa'] == pytest.approx(56.865588505200)
 
-def test_direct_co2eq_emissions_saved_land_annual():
+def test_direct_co2eq_emissions_saved_land_annual_not_protect():
   soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
       columns=net_annual_land_units_adopted[0]).set_index('Year')
   soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
   soln_ref_funits_adopted.loc[:, :] = 0.0
   ac = advanced_controls.AdvancedControls(land_annual_emissons_lifetime=100,
       tco2eq_rplu_rate='Annual', disturbance_rate=0.0,
+      tco2eq_reduced_per_land_unit=0.23357743333333333)
+  ua = unitadoption.UnitAdoption(ac=ac,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
+  result = ua.direct_co2eq_emissions_saved_land()
+  # Values from Conservation Agriculture
+  assert result.loc[2015, 'OECD90'] == pytest.approx(2.29507225337865)
+  assert result.loc[2021, 'World'] == pytest.approx(45.78887963463810)
+  assert result.loc[2024, 'Middle East and Africa'] == pytest.approx(11.59338822588380)
+  assert result.loc[2037, 'Latin America'] == pytest.approx(4.38116850491692)
+  assert result.loc[2048, 'Asia (Sans Japan)'] == pytest.approx(16.95946227408880)
+  assert result.loc[2060, 'Eastern Europe'] == pytest.approx(5.64414944055870)
+
+def test_direct_co2eq_emissions_saved_land_onetime_not_protect():
+  soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
+      columns=net_annual_land_units_adopted[0]).set_index('Year')
+  soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
+  soln_ref_funits_adopted.loc[:, :] = 0.0
+  ac = advanced_controls.AdvancedControls(land_annual_emissons_lifetime=100,
+      tco2eq_rplu_rate='One-time', disturbance_rate=0.0,
       tco2eq_reduced_per_land_unit=0.23357743333333333)
   ua = unitadoption.UnitAdoption(ac=ac,
       soln_pds_funits_adopted=soln_pds_funits_adopted,

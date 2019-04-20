@@ -658,11 +658,10 @@ class UnitAdoption:
         result *= ghg_rplu
       else:
         result = self.annual_reduction_in_total_degraded_land() * self.ac.tco2eq_reduced_per_land_unit
-    elif ghg_rplu_rate == 'Annual':
+    else:
+      # same handling for One-time (Farmland Restoration) and Annual (Conservation Agriculture)
       result = self.net_annual_land_units_adopted() - self.net_land_units_after_emissions_lifetime()
       result *= ghg_rplu * (1.0 - self.ac.disturbance_rate)
-    else:
-      raise NotImplementedError('One-time not implemented for non protection models')
     result.name = 'direct_{}_emissions_saved_land'.format(ghg)
     return result
 
