@@ -342,6 +342,6 @@ class ForestProtection:
         tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),
         pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),
         ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),
-        avoided_direct_emissions=self.ua.direct_co2eq_emissions_saved_land(),
+        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
         land_distribution=self.ae.get_land_distribution())
 

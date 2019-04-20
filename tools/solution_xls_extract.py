@@ -310,6 +310,7 @@ def get_land_scenarios(wb):
 
       assert sr_tab.cell_value(row + 156, 1) == 'General Emissions Inputs'
       s['emissions_use_co2eq'] = convert_bool(sr_tab.cell_value(row + 157, 4))
+      s['emissions_use_agg_co2eq'] = convert_bool(sr_tab.cell_value(row + 158, 4))
       s['emissions_grid_source'] = str(sr_tab.cell_value(row + 159, 4))
       s['emissions_grid_range'] = str(sr_tab.cell_value(row + 160, 4))
 
@@ -320,7 +321,14 @@ def get_land_scenarios(wb):
       assert sr_tab.cell_value(row + 132, 1) == 'Direct Emissions'
       s['tco2eq_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 133, 4))
       s['tco2eq_rplu_rate'] = str(sr_tab.cell_value(row + 133, 7))
+      s['tco2_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 134, 4))
+      s['tco2_rplu_rate'] = str(sr_tab.cell_value(row + 134, 7))
+      s['tn2o_co2_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 135, 4))
+      s['tn2o_co2_rplu_rate'] = str(sr_tab.cell_value(row + 135, 7))
+      s['tch4_co2_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 136, 4))
+      s['tch4_co2_rplu_rate'] = str(sr_tab.cell_value(row + 136, 7))
       s['land_annual_emissons_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 137, 4))
+
 
       assert sr_tab.cell_value(row + 168, 1) == 'Carbon Sequestration and Land Inputs'
       if sr_tab.cell(row + 169, 4).ctype == xlrd.XL_CELL_EMPTY:
@@ -464,12 +472,19 @@ def write_scenario(f, s):
   oneline(f=f, s=s, names=['conv_fuel_emissions_factor', 'soln_fuel_emissions_factor'],
       prefix=prefix, suffix='\n')
 
-  oneline(f=f, s=s, names=['tco2eq_reduced_per_land_unit'], prefix=prefix)
-  oneline(f=f, s=s, names=['tco2eq_rplu_rate'], prefix=prefix, suffix='\n')
+  oneline(f=f, s=s, names=['tco2eq_reduced_per_land_unit'], prefix='\n' + prefix)
+  oneline(f=f, s=s, names=['tco2eq_rplu_rate'], prefix=prefix)
+  oneline(f=f, s=s, names=['tco2_reduced_per_land_unit'], prefix=prefix)
+  oneline(f=f, s=s, names=['tco2_rplu_rate'], prefix=prefix)
+  oneline(f=f, s=s, names=['tn2o_co2_reduced_per_land_unit'], prefix=prefix)
+  oneline(f=f, s=s, names=['tn2o_co2_rplu_rate'], prefix=prefix)
+  oneline(f=f, s=s, names=['tch4_co2_reduced_per_land_unit'], prefix=prefix)
+  oneline(f=f, s=s, names=['tch4_co2_rplu_rate'], prefix=prefix)
   oneline(f=f, s=s, names=['land_annual_emissons_lifetime'], prefix=prefix, suffix='\n')
 
   oneline(f=f, s=s, names=['emissions_grid_source', 'emissions_grid_range'], prefix=prefix)
   oneline(f=f, s=s, names=['emissions_use_co2eq'], prefix=prefix)
+  oneline(f=f, s=s, names=['emissions_use_agg_co2eq'], prefix=prefix)
   oneline(f=f, s=s, names=['conv_emissions_per_funit', 'soln_emissions_per_funit'],
       prefix=prefix, suffix='\n')
 
@@ -1047,9 +1062,15 @@ def write_c2_c4(f, is_rrs=True, is_protect=False):
   f.write("        ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),\n")
   f.write("        soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),\n")
   f.write("        soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),\n")
-  f.write("        soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),\n")
-  f.write("        soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),\n")
-  f.write("        soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),\n")
+  if is_rrs:
+    f.write("        soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),\n")
+    f.write("        soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),\n")
+    f.write("        soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),\n")
+  else:
+    f.write("        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),\n")
+    f.write("        soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),\n")
+    f.write("        soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),\n")
+    f.write("        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),\n")
   f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
   f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
   f.write("        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
@@ -1063,7 +1084,6 @@ def write_c2_c4(f, is_rrs=True, is_protect=False):
       f.write("        tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),\n")
       f.write("        pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),\n")
       f.write("        ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),\n")
-    f.write("        avoided_direct_emissions=self.ua.direct_co2eq_emissions_saved_land(),\n")
     f.write("        land_distribution=self.ae.get_land_distribution())\n")
   f.write("\n")
 

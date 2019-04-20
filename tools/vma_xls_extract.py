@@ -12,6 +12,7 @@
 import os
 import pathlib
 import pandas as pd
+import warnings
 from numpy import nan
 from collections import OrderedDict
 from tools.util import cell_to_offsets, empty_to_nan, to_filename, convert_bool
@@ -131,7 +132,8 @@ class VMAReader:
             row1, col1 = cell_to_offsets(source_id_cell)
         else:  # for use with read_xls
             row1, col1 = source_id_cell
-        max_sources = 86
+        max_sources = 120
+        done = False
         for r in range(max_sources):
             new_row = {}
             for c in range(15):
@@ -143,9 +145,12 @@ class VMAReader:
                     name_to_check = self.normalize_col_name(first_cell.strip().replace('*', ''))
                     assert name_to_check == col_name, 'cell value: {} is not {}'.format(first_cell, col_name)
                 cell_val = sheet.cell_value(row1 + 1 + r, col1 + c)  # get raw val
+                if cell_val == '**Add calc above':
+                    done = True  # this is the edge case where the table is filled with no extra rows
+                    break
                 cell_val = COLUMN_DTYPE_MAP[col_name](empty_to_nan(cell_val))  # conversions
                 new_row[col_name] = cell_val
-            if all(pd.isna(v) for k, v in new_row.items() if k not in ['Common Units', 'Weight']):
+            if done or all(pd.isna(v) for k, v in new_row.items() if k not in ['Common Units', 'Weight']):
                 last_row = r
                 break  # assume an empty row (except for Common Units) indicates no more sources to copy
             else:
@@ -161,6 +166,12 @@ class VMAReader:
         for r in range(last_row, last_row + 50):  # look past last row
             if sheet.cell_value(row1 + r, 18) == 'Use weight?':
                 use_weight = convert_bool(sheet.cell_value(row1 + r + 1, 18))
+                if use_weight:
+                    warnings.warn(
+                        "May need to modify testdata spreadsheet to avoid weighted mean error."
+                        "\nWeights of excluded data and outliers should be set to 0 for table at {}"
+                        "\nSee: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#"
+                        "".format(source_id_cell))
                 break
         else:
             raise ValueError("No 'Use weight?' cell found")

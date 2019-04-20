@@ -18,13 +18,9 @@ def make_soln_files(dir_name, class_name):
                                                      class_name)
 
 
-    # to copy + paste into test_solutions
+    # to copy + paste into factory
     print("""
-def test_{0}():
-  scenario = list({0}.scenarios.keys())[0]
-  obj = {0}.{1}(scenario=scenario)
-  assert obj.scenario == scenario
-  assert obj.name""".format(dir_name, class_name))
+everything['{0}'] = ({0}.{1}, list({0}.scenarios.keys()))""".format(dir_name, class_name))
 
     print('\n')
 
@@ -42,9 +38,10 @@ def test_{1}_LAND(start_excel, tmpdir):
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)""".format(
         dir_name, class_name, xls_name))
 
+
 if __name__ == '__main__':
-    dir_name = 'tropicaltreestaples'
-    class_name = 'TropicalTreeStaples'
+    dir_name = 'peatlands'
+    class_name = 'Peatlands'
 
     # make_dirs(dir_name)
     #
