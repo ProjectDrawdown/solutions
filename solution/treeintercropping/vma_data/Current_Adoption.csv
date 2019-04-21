@@ -1,0 +1,4 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Zoomer et al 2016,https://www.nature.com/articles/srep29987.pdf,World,,,,,,,% of total cropland area,0.0,million hectares,,Total cropland area excluding global arid and arctic comes 1473 Mha based on GAEZ/FAO-IISA data,
+Project Drawdown Book Version 1 - Tropical Tree Intercropping Current Adoption Value,,,,,,,,,million hectares,,million hectares,,,1.0
+Project Drawdown Book Version 1 - Temperate Tree Intercropping Current Adoption Value,,,,,,,,,million hectares,,million hectares,,,1.0

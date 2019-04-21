@@ -66,6 +66,7 @@ from solution import solarpvutil
 from solution import solarpvroof
 from solution import temperateforests
 from solution import telepresence
+from solution import treeintercropping
 from solution import trains
 from solution import trucks
 from solution import tropicalforests
@@ -1468,6 +1469,19 @@ def test_Telepresence_RRS(start_excel):
   for scenario in telepresence.scenarios.keys():
     obj = telepresence.Telepresence(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('treeintercropping', 'testdata',
+        'Drawdown-Tree Intercropping_BioS.Agri_v1.1_9Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_TreeIntercropping_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in treeintercropping.scenarios.keys():
+    obj = treeintercropping.TreeIntercropping(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
