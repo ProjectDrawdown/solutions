@@ -23,6 +23,7 @@ xlwings = pytest.importorskip("xlwings")
 from solution import airplanes
 from solution import altcement
 from solution import bikeinfrastructure
+from solution import bamboo
 from solution import biochar
 from solution import biogas
 from solution import biomass
@@ -920,6 +921,19 @@ def test_BikeInfrastructure_RRS(start_excel, tmpdir):
   for scenario in bikeinfrastructure.scenarios.keys():
     obj = bikeinfrastructure.BikeInfrastructure(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('bamboo', 'testdata',
+        'Drawdown-Bamboo_BioS_v1.1_4Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Bamboo_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in bamboo.scenarios.keys():
+    obj = bamboo.Bamboo(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
