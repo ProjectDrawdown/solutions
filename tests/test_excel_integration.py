@@ -49,6 +49,7 @@ from solution import insulation
 from solution import landfillmethane
 from solution import leds_commercial
 from solution import leds_residential
+from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
 from solution import multistrataagroforestry
@@ -1265,6 +1266,19 @@ def test_LEDResidentialLighting_RRS(start_excel, tmpdir):
   for scenario in leds_residential.scenarios.keys():
     obj = leds_residential.ResidentialLEDLighting(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('managedgrazing', 'testdata',
+        'Drawdown-Managed Grazing_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_ManagedGrazing_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in managedgrazing.scenarios.keys():
+    obj = managedgrazing.ManagedGrazing(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

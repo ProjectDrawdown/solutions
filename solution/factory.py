@@ -29,6 +29,7 @@ from solution import insulation
 from solution import landfillmethane
 from solution import leds_commercial
 from solution import leds_residential
+from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
 from solution import multistrataagroforestry
@@ -102,6 +103,8 @@ def all_solutions_scenarios():
     everything['leds_residential'] = (leds_residential.ResidentialLEDLighting,
             list(leds_residential.scenarios.keys()))
     everything['masstransit'] = (masstransit.MassTransit, list(masstransit.scenarios.keys()))
+    everything['managedgrazing'] = (managedgrazing.ManagedGrazing,
+            list(managedgrazing.scenarios.keys()))
     everything['microwind'] = (microwind.MicroWind, list(microwind.scenarios.keys()))
     everything['multistrataagroforestry'] = (multistrataagroforestry.MultistrataAgroforestry,
             list(multistrataagroforestry.scenarios.keys()))
