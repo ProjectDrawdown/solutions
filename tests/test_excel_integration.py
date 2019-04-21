@@ -50,6 +50,7 @@ from solution import leds_commercial
 from solution import leds_residential
 from solution import masstransit
 from solution import microwind
+from solution import multistrataagroforestry
 from solution import offshorewind
 from solution import onshorewind
 from solution import recycledpaper
@@ -1274,6 +1275,19 @@ def test_MicroWind_RRS(start_excel, tmpdir):
   for scenario in microwind.scenarios.keys():
     obj = microwind.MicroWind(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('multistrataagroforestry', 'testdata',
+        'Drawdown-Multistrata Agroforestry_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_MultistrataAgroforestry_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in multistrataagroforestry.scenarios.keys():
+    obj = multistrataagroforestry.MultistrataAgroforestry(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

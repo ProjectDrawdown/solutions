@@ -30,6 +30,7 @@ from solution import leds_commercial
 from solution import leds_residential
 from solution import masstransit
 from solution import microwind
+from solution import multistrataagroforestry
 from solution import offshorewind
 from solution import onshorewind
 from solution import recycledpaper
@@ -99,6 +100,8 @@ def all_solutions_scenarios():
             list(leds_residential.scenarios.keys()))
     everything['masstransit'] = (masstransit.MassTransit, list(masstransit.scenarios.keys()))
     everything['microwind'] = (microwind.MicroWind, list(microwind.scenarios.keys()))
+    everything['multistrataagroforestry'] = (multistrataagroforestry.MultistrataAgroforestry,
+            list(multistrataagroforestry.scenarios.keys()))
     everything['offshorewind'] = (offshorewind.OffshoreWind, list(offshorewind.scenarios.keys()))
     everything['onshorewind'] = (onshorewind.OnshoreWind, list(onshorewind.scenarios.keys()))
     everything['recycledpaper'] = (recycledpaper.RecycledPaper,
