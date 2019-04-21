@@ -844,13 +844,14 @@ def write_ad(f, wb, outputdir):
   f.write("\n")
 
 
-def write_custom_ad(case, f, wb, outputdir):
+def write_custom_ad(case, f, wb, outputdir, is_land):
   """Generate the Custom Adoption Data section of a solution.
      Arguments:
        case: 'PDS' or 'REF'
        f: file-like object for output
        wb: an Excel workbook as returned by xlrd
        outputdir: name of directory to write CSV files to.
+       is_land: boolean of whether this is a Land solution
   """
   f.write("    # Custom {} Data\n".format(case))
   if outputdir is None:
@@ -874,12 +875,20 @@ def write_custom_ad(case, f, wb, outputdir):
   if case == 'REF':
     f.write("    self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,\n")
     f.write("        soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,\n")
-    f.write("        high_sd_mult={}, low_sd_mult={})\n".format(multipliers['high'], multipliers['low']))
+    f.write("        high_sd_mult={}, low_sd_mult={},\n".format(multipliers['high'], multipliers['low']))
+    if is_land:
+      f.write("        total_adoption_limit=self.tla_per_region)\n")
+    else:
+      f.write("        total_adoption_limit=ref_tam_per_region)\n")
     f.write("    ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
   if case == 'PDS':
     f.write("    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
     f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
-    f.write("        high_sd_mult={}, low_sd_mult={})\n".format(multipliers['high'], multipliers['low']))
+    f.write("        high_sd_mult={}, low_sd_mult={},\n".format(multipliers['high'], multipliers['low']))
+    if is_land:
+      f.write("        total_adoption_limit=self.tla_per_region)\n")
+    else:
+      f.write("        total_adoption_limit=pds_tam_per_region)\n")
   f.write("\n")
 
 
@@ -1509,9 +1518,9 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   if has_default_pds_ad or has_default_ref_ad:
     write_ad(f=f, wb=wb, outputdir=outputdir)
   if has_custom_pds_ad:
-    write_custom_ad(case='PDS', f=f, wb=wb, outputdir=outputdir)
+    write_custom_ad(case='PDS', f=f, wb=wb, outputdir=outputdir, is_land=is_land)
   if has_custom_ref_ad:
-    write_custom_ad(case='REF', f=f, wb=wb, outputdir=outputdir)
+    write_custom_ad(case='REF', f=f, wb=wb, outputdir=outputdir, is_land=is_land)
   if has_s_curve_pds_ad:
     write_s_curve_ad(f=f, wb=wb)
 

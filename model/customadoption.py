@@ -36,11 +36,17 @@ class CustomAdoption:
             For example: 'Average of All Custom PDS Scenarios'
          low_sd_mult: std deviation multiplier for 'low' values
          high_sd_mult: std deviation multiplier for 'high' values
+         total_adoption_limit: the total adoption possible, adoption can be no greater than this.
+            For RRS solutions this is typically tam.py:{pds,ref}_tam_per_region. For Land solutions
+            this is typically tla.py:tla_per_region.
+            The columns in total_adoption_limit must match the columns in generate_df_template.
     Generates average/high/low of chosen scenarios to be used as adoption data for the solution.
     """
-    def __init__(self, data_sources, soln_adoption_custom_name, low_sd_mult=1, high_sd_mult=1):
+    def __init__(self, data_sources, soln_adoption_custom_name, low_sd_mult=1, high_sd_mult=1,
+            total_adoption_limit=None):
         self.low_sd_mult = low_sd_mult
         self.high_sd_mult = high_sd_mult
+        self.total_adoption_limit = total_adoption_limit
         self.scenarios = {}
         for d in data_sources:
             name = d.get('name', 'noname')
@@ -57,10 +63,6 @@ class CustomAdoption:
 
     def _avg_high_low(self):
         """ Returns DataFrames of average, high and low scenarios. """
-        # NOTE: This may produce results different from the xls model due to bugs in the latter.
-        # These bugs have been documented here:
-        # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.kjrqk1o5e46m
-        # The bugs only impact regional data in certain cases - World data should be identical in all cases.
         regions_to_avg = {}
         for name, scen in self.scenarios.items():
             if scen['include']:
@@ -76,6 +78,10 @@ class CustomAdoption:
             avg_df[reg] = avg_vals = reg_df.mean(axis=1)
             high_df[reg] = avg_vals + reg_df.std(axis=1, ddof=0) * self.high_sd_mult
             low_df[reg] = avg_vals - reg_df.std(axis=1, ddof=0) * self.low_sd_mult
+        if self.total_adoption_limit is not None:
+            avg_df = avg_df.combine(self.total_adoption_limit, np.fmin)
+            high_df = high_df.combine(self.total_adoption_limit, np.fmin)
+            low_df = low_df.combine(self.total_adoption_limit, np.fmin)
         return avg_df, high_df, low_df
 
     @lru_cache()
