@@ -657,7 +657,7 @@ class UnitAdoption:
         result = self.cumulative_reduction_in_total_degraded_land() - self.net_land_units_after_emissions_lifetime()
         result *= ghg_rplu
       else:
-        result = self.annual_reduction_in_total_degraded_land() * self.ac.tco2eq_reduced_per_land_unit
+        result = self.annual_reduction_in_total_degraded_land() * ghg_rplu
     else:
       # same handling for One-time (Farmland Restoration) and Annual (Conservation Agriculture)
       result = self.net_annual_land_units_adopted() - self.net_land_units_after_emissions_lifetime()
