@@ -223,3 +223,12 @@ Apr 8 - Apr 12, 2019
 + Add three solutions.
   Forest Protection, Cool Roofs, Green Roofs.
 + UI: add graphical overview of how the modules connect
+
+Apr 15 - Apr 19, 2019
++ Add ModelHealth dashboard with overall statistics about solution models.
++ Add four solutions
+  Tropical Tree Staples, Heat Pumps, Conservation Agriculture,
+  Regenerative Agriculture.
++ Fix small discrepancies between Python and Excel:
+  a) OperatingCost conversion factor
+  b) ignore first cost differences less than one penny
