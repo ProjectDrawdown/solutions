@@ -32,12 +32,15 @@ class FirstCost:
       the Conventional Reference scenario, as a DataFrame with columns per region.
     fc_convert_iunit_factor: conversion factor from iunits to a more natural monetary
       unit.
+    conv_ref_first_cost_uses_tot_units: Many RRS solutions use conv_ref_new_iunits to
+      calculate conv_ref_annual_world_first_cost. Many Land solutions use the new
+      conv_ref_tot_iunits year over year (which are land units, not iunits, in this case).
   """
   def __init__(self, ac, pds_learning_increase_mult,
       ref_learning_increase_mult, conv_learning_increase_mult,
       soln_pds_tot_iunits_reqd, soln_ref_tot_iunits_reqd, conv_ref_tot_iunits,
       soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, conv_ref_new_iunits,
-      fc_convert_iunit_factor=1.0):
+      fc_convert_iunit_factor=1.0, conv_ref_first_cost_uses_tot_units=False):
     self.ac = ac
     self.pds_learning_increase_mult = pds_learning_increase_mult
     self.ref_learning_increase_mult = ref_learning_increase_mult
@@ -49,6 +52,7 @@ class FirstCost:
     self.soln_ref_new_iunits_reqd = soln_ref_new_iunits_reqd
     self.conv_ref_new_iunits = conv_ref_new_iunits
     self.fc_convert_iunit_factor = fc_convert_iunit_factor
+    self.conv_ref_first_cost_uses_tot_units = conv_ref_first_cost_uses_tot_units
 
   @lru_cache()
   def soln_pds_install_cost_per_iunit(self):
@@ -161,10 +165,13 @@ class FirstCost:
 
   @lru_cache()
   def conv_ref_annual_world_first_cost(self):
-    """Annual World First Cost (SOLUTION-REF)
+    """Annual World First Cost (CONVENTIONAL-REF)
        'First Cost'!Q37:Q82
     """
-    result = self.conv_ref_new_iunits["World"] * self.conv_ref_install_cost_per_iunit()
+    if self.conv_ref_first_cost_uses_tot_units:
+      result = self.conv_ref_tot_iunits["World"].diff() * self.conv_ref_install_cost_per_iunit()
+    else:
+      result = self.conv_ref_new_iunits["World"] * self.conv_ref_install_cost_per_iunit()
     result.name = "conv_ref_annual_world_first_cost"
     return result
 

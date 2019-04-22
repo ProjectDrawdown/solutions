@@ -1017,6 +1017,8 @@ def write_fc(f, wb):
   f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
   f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
   f.write("        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
+  if fc_tab.cell(35, 15).value == 'Implementation Units Installed Each Yr (CONVENTIONAL-REF)':
+    f.write("        conv_ref_first_cost_uses_tot_units=True,\n")
   if fc_tab.cell(14, 5).value == 1000000000 and fc_tab.cell(14, 6).value == '$/kW TO $/TW':
     f.write("        fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)\n")
   elif fc_tab.cell(15, 5).value == 1000000 and fc_tab.cell(17, 5).value == 'million hectare':
