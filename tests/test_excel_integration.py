@@ -55,6 +55,7 @@ from solution import microwind
 from solution import multistrataagroforestry
 from solution import offshorewind
 from solution import onshorewind
+from solution import peatlands
 from solution import recycledpaper
 from solution import refrigerants
 from solution import regenerativeagriculture
@@ -678,6 +679,12 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
   else:
     regional_mask = None
 
+  # # similar to operating cost, some co2 calcs values are very slightly offset from zero due to floating point errors
+  # # we mask the problematic tables when they are close to 0
+  # s = obj.c2.co2eq_ppm_calculator().reset_index()
+  # near_zero_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
+  near_zero_mask = None
+
   if is_rrs:
     verify['CO2 Calcs'] = [
         ('A10:K55', obj.c2.co2_mmt_reduced().loc[2015:].reset_index(), regional_mask),
@@ -707,8 +714,9 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
         ('A121:G166', obj.c2.co2_sequestered_global().reset_index().drop(columns=['Global Arctic']), None),
         ('A173:AW218', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), None),
         # CO2 eq table has an N20 column for LAND xls sheets that doesn't appear to be used, so we ignore it
-        ('A225:C270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CO2-eq PPM', 'CO2 PPM']].reset_index(), None),
-        ('E225:G270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CH4 PPB', 'CO2 RF', 'CH4 RF']].reset_index(drop=True), None)
+        ('A225:C270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CO2-eq PPM', 'CO2 PPM']].reset_index(), near_zero_mask),
+        ('E225:G270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CH4 PPB', 'CO2 RF', 'CH4 RF']].reset_index(drop=True),
+            near_zero_mask)
         # All other tables are not implemented as they appear to be all 0
     ]
 
@@ -1341,6 +1349,18 @@ def test_OnshoreWind_RRS(start_excel, tmpdir):
   for scenario in onshorewind.scenarios.keys():
     obj = onshorewind.OnshoreWind(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('peatlands', 'testdata', 'Peatland_L-UseProtect_v1.1b_27July18.xlsm'))],
+    indirect=True)
+def test_Peatlands_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in peatlands.scenarios.keys():
+    obj = peatlands.Peatlands(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

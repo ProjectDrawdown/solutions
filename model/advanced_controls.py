@@ -3,11 +3,11 @@
 """
 
 import enum
-import pandas as pd
+from pytest import approx
+from warnings import warn
 from model import emissionsfactors as ef
 from model import excel_math
-from model import helpertables as ht
-from model import interpolation
+
 
 
 SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND')
@@ -631,16 +631,30 @@ class AdvancedControls:
     Returns:
         mean, high or low value from VMA table or passes through value if it's a number or dict
     """
-    if isinstance(val, dict):
-      return val['value']
-    elif isinstance(val, str):
-      for vma_key in self.vmas.keys():
-        if vma_key.startswith(vma_title):  # This handles the case of 'first cost' title discrepancies
-          vma_title = vma_key
-          break
+    raw_val_from_excel = None  # the raw value from the scenario record tab
+    if isinstance(val, str):
+      stat = val
+    elif isinstance(val, dict):
+      if 'statistic' not in val:  # if there is no statistic to link we return the value
+        return val['value']
       else:
-        raise KeyError('{} must be included in vmas to calculate mean/high/low. vmas included: {}'.format(vma_title, self.vmas.keys()))
-      return self.vmas[vma_title].avg_high_low(key=val.lower())
+        raw_val_from_excel = val['value']
+        stat = val['statistic']
     else:
       return val
+
+    for vma_key in self.vmas.keys():
+      if vma_key.startswith(vma_title):  # This handles the case of 'first cost' title discrepancies
+        vma_title = vma_key
+        break
+    else:
+      raise KeyError(
+        '{} must be included in vmas to calculate mean/high/low. vmas included: {}'.format(vma_title, self.vmas.keys()))
+    result = self.vmas[vma_title].avg_high_low(key=stat.lower())
+    if raw_val_from_excel is not None and result != approx(raw_val_from_excel):
+      warn("raw value from scenario record tab in excel does not match the {0} of VMA table '{1}'. \nThis is probably "
+           "because the scenario was linked to the {0} of an older version of the table.".format(stat, vma_title))
+      result = raw_val_from_excel
+    return result
+
 

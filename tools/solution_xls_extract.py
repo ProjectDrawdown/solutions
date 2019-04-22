@@ -1638,11 +1638,11 @@ def link_vma(cell_value):
   if 'Error' in cell_value:
     return 0.
   if True in [cell_value.endswith(x) for x in ['80', '95', '175', '189', '140']]:
-    return 'mean'
+    return {'value': convert_sr_float(cell_value), 'statistic': 'mean'}
   elif True in [cell_value.endswith(x) for x in ['81', '96', '176', '190', '141']]:
-    return 'high'
+    return {'value': convert_sr_float(cell_value), 'statistic': 'high'}
   elif True in [cell_value.endswith(x) for x in ['82', '97', '177', '191', '142']]:
-    return 'low'
+    return {'value': convert_sr_float(cell_value), 'statistic': 'low'}
   else:
     formula = cell_value.split(':=')[1]
     warnings.warn('cell formula: {} not recognised - using value instead'.format(formula))

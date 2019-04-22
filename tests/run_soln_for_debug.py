@@ -12,6 +12,7 @@ soln = Peatlands()
 # print(soln.ac.vmas['Growth Rate of Land Degradation'].avg_high_low())
 # print(soln.ua.soln_net_annual_funits_adopted())
 # print(soln.ac.seq_rate_global)
-print(soln.ua.pds_cumulative_degraded_land_unprotected())
+print(soln.c4.avoided_direct_emissions_ch4_land())
+# print(soln.c2.co2eq_ppm_calculator())
 
 # print(soln.oc.soln_pds_annual_breakout())
