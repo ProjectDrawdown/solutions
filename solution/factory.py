@@ -3,6 +3,7 @@
 from solution import airplanes
 from solution import altcement
 from solution import bikeinfrastructure
+from solution import bamboo
 from solution import biochar
 from solution import biogas
 from solution import biomass
@@ -17,17 +18,21 @@ from solution import districtheating
 from solution import electricbikes
 from solution import electricvehicles
 from solution import farmlandrestoration
+from solution import forestprotection
 from solution import greenroofs
 from solution import heatpumps
 from solution import highspeedrail
 from solution import improvedcookstoves
+from solution import improvedrice
 from solution import instreamhydro
 from solution import insulation
 from solution import landfillmethane
 from solution import leds_commercial
 from solution import leds_residential
+from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
+from solution import multistrataagroforestry
 from solution import offshorewind
 from solution import onshorewind
 from solution import recycledpaper
@@ -41,6 +46,7 @@ from solution import solarhotwater
 from solution import solarpvroof
 from solution import solarpvutil
 from solution import telepresence
+from solution import treeintercropping
 from solution import tropicalforests
 from solution import tropicaltreestaples
 from solution import trains
@@ -56,8 +62,9 @@ def all_solutions_scenarios():
     everything['altcement'] = (altcement.AlternativeCement, list(altcement.scenarios.keys()))
     everything['bikeinfrastructure'] = (bikeinfrastructure.BikeInfrastructure,
             list(bikeinfrastructure.scenarios.keys()))
-    everything['biochar'] = (biochar.Biochar,  list(biochar.scenarios.keys()))
-    everything['biogas'] = (biogas.Biogas,  list(biogas.scenarios.keys()))
+    everything['bamboo'] = (bamboo.Bamboo, list(bamboo.scenarios.keys()))
+    everything['biochar'] = (biochar.Biochar, list(biochar.scenarios.keys()))
+    everything['biogas'] = (biogas.Biogas, list(biogas.scenarios.keys()))
     everything['biomass'] = (biomass.Biomass, list(biomass.scenarios.keys()))
     everything['bioplastic'] = (bioplastic.Bioplastic, list(bioplastic.scenarios.keys()))
     everything['buildingautomation'] = (buildingautomation.BuildingAutomationSystems,
@@ -77,12 +84,15 @@ def all_solutions_scenarios():
             list(electricvehicles.scenarios.keys()))
     everything['farmlandrestoration'] = (farmlandrestoration.FarmlandRestoration,
             list(farmlandrestoration.scenarios.keys()))
+    everything['forestprotection'] = (forestprotection.ForestProtection,
+            list(forestprotection.scenarios.keys()))
     everything['greenroofs'] = (greenroofs.GreenRoofs, list(greenroofs.scenarios.keys()))
     everything['heatpumps'] = (heatpumps.HeatPumps, list(heatpumps.scenarios.keys()))
     everything['highspeedrail'] = (highspeedrail.HighSpeedRail,
             list(highspeedrail.scenarios.keys()))
     everything['improvedcookstoves'] = (improvedcookstoves.ImprovedCookStoves,
             list(improvedcookstoves.scenarios.keys()))
+    everything['improvedrice'] = (improvedrice.ImprovedRice, list(improvedrice.scenarios.keys()))
     everything['instreamhydro'] = (instreamhydro.InstreamHydro,
             list(instreamhydro.scenarios.keys()))
     everything['insulation'] = (insulation.Insulation, list(insulation.scenarios.keys()))
@@ -93,7 +103,11 @@ def all_solutions_scenarios():
     everything['leds_residential'] = (leds_residential.ResidentialLEDLighting,
             list(leds_residential.scenarios.keys()))
     everything['masstransit'] = (masstransit.MassTransit, list(masstransit.scenarios.keys()))
+    everything['managedgrazing'] = (managedgrazing.ManagedGrazing,
+            list(managedgrazing.scenarios.keys()))
     everything['microwind'] = (microwind.MicroWind, list(microwind.scenarios.keys()))
+    everything['multistrataagroforestry'] = (multistrataagroforestry.MultistrataAgroforestry,
+            list(multistrataagroforestry.scenarios.keys()))
     everything['offshorewind'] = (offshorewind.OffshoreWind, list(offshorewind.scenarios.keys()))
     everything['onshorewind'] = (onshorewind.OnshoreWind, list(onshorewind.scenarios.keys()))
     everything['recycledpaper'] = (recycledpaper.RecycledPaper,
@@ -112,6 +126,8 @@ def all_solutions_scenarios():
     everything['solarpvroof'] = (solarpvroof.SolarPVRoof, list(solarpvroof.scenarios.keys()))
     everything['solarpvutil'] = (solarpvutil.SolarPVUtil, list(solarpvutil.scenarios.keys()))
     everything['telepresence'] = (telepresence.Telepresence, list(telepresence.scenarios.keys()))
+    everything['treeintercropping'] = (treeintercropping.TreeIntercropping,
+            list(treeintercropping.scenarios.keys()))
     everything['tropicalforests'] = (tropicalforests.TropicalForests,
             list(tropicalforests.scenarios.keys()))
     everything['tropicaltreestaples'] = (tropicaltreestaples.TropicalTreeStaples,

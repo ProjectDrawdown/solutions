@@ -68,6 +68,21 @@ def test_avg_high_low_different_multipliers():
     pd.testing.assert_frame_equal(lows, low_scen, check_exact=False, check_dtype=False)
 
 
+def test_avg_high_low_with_limit():
+    data_sources = [
+        {'name': 'scenario 1', 'filename': path1, 'include': True},
+        {'name': 'scenario 2', 'filename': path2, 'include': True},
+    ]
+    limit = pd.read_csv(datadir.joinpath('ca_limit_trr.csv'), index_col=0)
+    ca = customadoption.CustomAdoption(data_sources=data_sources, soln_adoption_custom_name='',
+            low_sd_mult=1.0, high_sd_mult=1.5, total_adoption_limit=limit)
+    high_scen = pd.read_csv(datadir.joinpath('ca_highx1p5_trr.csv'), index_col=0)
+    _, highs, _ = ca._avg_high_low()
+    pd.testing.assert_frame_equal(highs.loc[:2026, :], high_scen.loc[:2026, :],
+            check_exact=False, check_dtype=False)
+    pd.testing.assert_frame_equal(highs.loc[2027:, :], limit.loc[2027:, :], check_dtype=False)
+
+
 def test_adoption_data_per_region():
     data_sources = [
         {'name': 'scenario 1', 'filename': path1, 'include': True},

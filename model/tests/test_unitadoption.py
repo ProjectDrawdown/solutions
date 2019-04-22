@@ -885,6 +885,37 @@ def test_direct_co2eq_emissions_saved_land_onetime_not_protect():
   assert result.loc[2048, 'Asia (Sans Japan)'] == pytest.approx(16.95946227408880)
   assert result.loc[2060, 'Eastern Europe'] == pytest.approx(5.64414944055870)
 
+def test_various_direct_emissions_saved_land_onetime_protect():
+  soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
+      columns=net_annual_land_units_adopted[0]).set_index('Year')
+  soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
+  soln_ref_funits_adopted.loc[:, :] = 0.0
+  tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'), index_col=0)
+  ac = advanced_controls.AdvancedControls(delay_protection_1yr=True,
+      tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
+      tch4_co2_reduced_per_land_unit=0.1, tco2eq_reduced_per_land_unit=0.0)
+  ua = unitadoption.UnitAdoption(ac=ac, tla_per_region=tla_per_reg,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
+  result = ua.direct_ch4_co2_emissions_saved_land()
+  assert not all(result.loc[:, 'World'] == 0.0)
+  ac = advanced_controls.AdvancedControls(delay_protection_1yr=True,
+      tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
+      tn2o_co2_reduced_per_land_unit=0.1, tco2eq_reduced_per_land_unit=0.0)
+  ua = unitadoption.UnitAdoption(ac=ac, tla_per_region=tla_per_reg,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
+  result = ua.direct_n2o_co2_emissions_saved_land()
+  assert not all(result.loc[:, 'World'] == 0.0)
+  ac = advanced_controls.AdvancedControls(delay_protection_1yr=True,
+      tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
+      tco2_reduced_per_land_unit=0.1, tco2eq_reduced_per_land_unit=0.0)
+  ua = unitadoption.UnitAdoption(ac=ac, tla_per_region=tla_per_reg,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted)
+  result = ua.direct_co2_emissions_saved_land()
+  assert not all(result.loc[:, 'World'] == 0.0)
+
 
 # SolarPVUtil 'Unit Adoption Calculations'!B134:L181
 soln_pds_funits_adopted_list = [

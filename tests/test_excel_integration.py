@@ -23,6 +23,7 @@ xlwings = pytest.importorskip("xlwings")
 from solution import airplanes
 from solution import altcement
 from solution import bikeinfrastructure
+from solution import bamboo
 from solution import biochar
 from solution import biogas
 from solution import biomass
@@ -42,13 +43,16 @@ from solution import greenroofs
 from solution import heatpumps
 from solution import highspeedrail
 from solution import improvedcookstoves
+from solution import improvedrice
 from solution import instreamhydro
 from solution import insulation
 from solution import landfillmethane
 from solution import leds_commercial
 from solution import leds_residential
+from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
+from solution import multistrataagroforestry
 from solution import offshorewind
 from solution import onshorewind
 from solution import recycledpaper
@@ -63,6 +67,7 @@ from solution import solarpvutil
 from solution import solarpvroof
 from solution import temperateforests
 from solution import telepresence
+from solution import treeintercropping
 from solution import trains
 from solution import trucks
 from solution import tropicalforests
@@ -707,13 +712,23 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
         # All other tables are not implemented as they appear to be all 0
     ]
 
-def verify_ch4_calcs(obj, verify=None):
+def verify_ch4_calcs_rrs(obj, verify=None):
   """Verified tables in CH4 Calcs."""
   if verify is None:
     verify = {}
   verify['CH4 Calcs'] = [
-      ('A11:K56', obj.c4.ch4_tons_reduced().reset_index(), None),
-      ('A65:AW110', obj.c4.ch4_ppb_calculator().reset_index(), None),
+      ('A11:K56', obj.c4.ch4_tons_reduced().loc[2015:, :].reset_index(), None),
+      ('A65:AW110', obj.c4.ch4_ppb_calculator().loc[2015:, :].reset_index(), None),
+      ]
+  return verify
+
+def verify_ch4_calcs_land(obj, verify=None):
+  """Verified tables in CH4 Calcs."""
+  if verify is None:
+    verify = {}
+  verify['CH4 Calcs'] = [
+      ('A13:B58', obj.c4.avoided_direct_emissions_ch4_land().loc[2015:, 'World'].reset_index(), None),
+      ('A67:AW112', obj.c4.ch4_ppb_calculator().loc[2015:, :].reset_index(), None),
       ]
   return verify
 
@@ -779,7 +794,7 @@ def RRS_solution_verify_list(obj, workbook):
     verify_co2_calcs(obj, verify, shifted=True, include_regional_data=include_regional_data)
   else:
     verify_co2_calcs(obj, verify, include_regional_data=include_regional_data)
-
+  verify_ch4_calcs_rrs(obj, verify)
   return verify
 
 
@@ -802,6 +817,7 @@ def LAND_solution_verify_list(obj):
   verify_first_cost(obj, verify)
   verify_operating_cost(obj, verify)
   verify_co2_calcs(obj, verify, is_rrs=False, include_regional_data=False)
+  verify_ch4_calcs_land(obj, verify)
   return verify
 
 
@@ -907,6 +923,19 @@ def test_BikeInfrastructure_RRS(start_excel, tmpdir):
   for scenario in bikeinfrastructure.scenarios.keys():
     obj = bikeinfrastructure.BikeInfrastructure(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('bamboo', 'testdata',
+        'Drawdown-Bamboo_BioS_v1.1_4Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Bamboo_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in bamboo.scenarios.keys():
+    obj = bamboo.Bamboo(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
@@ -1159,7 +1188,21 @@ def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('instreamhydro', 'testdata', 'Drawdown-Instream Hydro (Small Hydro sub10MW)_RRS.ES_v1.1_14Jan2019_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('improvedrice', 'testdata',
+        'Drawdown-Improved Rice_BioS.Agri_v1.1_6Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_ImprovedRice_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in improvedrice.scenarios.keys():
+    obj = improvedrice.ImprovedRice(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('instreamhydro', 'testdata',
+        'Drawdown-Instream Hydro (Small Hydro sub10MW)_RRS.ES_v1.1_14Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_InstreamHydro_RRS(start_excel, tmpdir):
   workbook = start_excel
@@ -1228,6 +1271,19 @@ def test_LEDResidentialLighting_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('managedgrazing', 'testdata',
+        'Drawdown-Managed Grazing_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_ManagedGrazing_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in managedgrazing.scenarios.keys():
+    obj = managedgrazing.ManagedGrazing(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('masstransit', 'testdata',
         'Drawdown-Mass Transit_RRS_v1.1_29Nov2018_PUBLIC.xlsm'))],
     indirect=True)
@@ -1248,6 +1304,19 @@ def test_MicroWind_RRS(start_excel, tmpdir):
   for scenario in microwind.scenarios.keys():
     obj = microwind.MicroWind(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('multistrataagroforestry', 'testdata',
+        'Drawdown-Multistrata Agroforestry_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_MultistrataAgroforestry_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in multistrataagroforestry.scenarios.keys():
+    obj = multistrataagroforestry.MultistrataAgroforestry(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
@@ -1335,6 +1404,7 @@ def test_Silvopasture_LAND(start_excel, tmpdir):
   for scenario in silvopasture.scenarios.keys():
     obj = silvopasture.Silvopasture(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
+    del verify['CH4 Calcs']
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
@@ -1413,6 +1483,19 @@ def test_Telepresence_RRS(start_excel):
   for scenario in telepresence.scenarios.keys():
     obj = telepresence.Telepresence(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('treeintercropping', 'testdata',
+        'Drawdown-Tree Intercropping_BioS.Agri_v1.1_9Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_TreeIntercropping_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in treeintercropping.scenarios.keys():
+    obj = treeintercropping.TreeIntercropping(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

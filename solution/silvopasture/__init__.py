@@ -53,6 +53,15 @@ scenarios = {
         # emissions
         soln_indirect_co2_per_iunit=0.0,
         conv_indirect_co2_per_unit=0.0,
+        tco2eq_reduced_per_land_unit=0.0, 
+        tco2eq_rplu_rate='One-time', 
+        tco2_reduced_per_land_unit=0.0, 
+        tco2_rplu_rate='One-time', 
+        tn2o_co2_reduced_per_land_unit=0.0, 
+        tn2o_co2_rplu_rate='One-time', 
+        tch4_co2_reduced_per_land_unit=0.0, 
+        tch4_co2_rplu_rate='One-time', 
+        land_annual_emissons_lifetime=100.0, 
         emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean',
         emissions_use_co2eq=True,
 
@@ -98,6 +107,15 @@ scenarios = {
         # emissions
         soln_indirect_co2_per_iunit=0.0,
         conv_indirect_co2_per_unit=0.0,
+        tco2eq_reduced_per_land_unit=0.0, 
+        tco2eq_rplu_rate='One-time', 
+        tco2_reduced_per_land_unit=0.0, 
+        tco2_rplu_rate='One-time', 
+        tn2o_co2_reduced_per_land_unit=0.0, 
+        tn2o_co2_rplu_rate='One-time', 
+        tch4_co2_reduced_per_land_unit=0.0, 
+        tch4_co2_rplu_rate='One-time', 
+        land_annual_emissons_lifetime=100.0, 
         emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean',
         emissions_use_co2eq=True,
 
@@ -142,6 +160,15 @@ scenarios = {
         # emissions
         soln_indirect_co2_per_iunit=0.0,
         conv_indirect_co2_per_unit=0.0,
+        tco2eq_reduced_per_land_unit=0.0, 
+        tco2eq_rplu_rate='One-time', 
+        tco2_reduced_per_land_unit=0.0, 
+        tco2_rplu_rate='One-time', 
+        tn2o_co2_reduced_per_land_unit=0.0, 
+        tn2o_co2_rplu_rate='One-time', 
+        tch4_co2_reduced_per_land_unit=0.0, 
+        tch4_co2_rplu_rate='One-time', 
+        land_annual_emissons_lifetime=100.0, 
         emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean',
         emissions_use_co2eq=True,
 
@@ -245,14 +272,17 @@ class Silvopasture:
         self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
         # (This whole sheet is 0)
-        self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
-                                    soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+        self.c4 = ch4calcs.CH4Calcs(
+            ac=self.ac,
+            soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
         self.c2 = co2calcs.CO2Calcs(
             ac=self.ac,
             ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
             soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
             soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
+            soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
             soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),
             soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),
             soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),

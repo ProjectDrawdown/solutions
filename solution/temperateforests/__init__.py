@@ -79,8 +79,20 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+
+      tco2eq_reduced_per_land_unit=0.0, 
+      tco2eq_rplu_rate='One-time', 
+      tco2_reduced_per_land_unit=0.0, 
+      tco2_rplu_rate='One-time', 
+      tn2o_co2_reduced_per_land_unit=0.0, 
+      tn2o_co2_rplu_rate='One-time', 
+      tch4_co2_reduced_per_land_unit=0.0, 
+      tch4_co2_rplu_rate='One-time', 
+      land_annual_emissons_lifetime=100.0, 
+
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
+      emissions_use_agg_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
@@ -133,8 +145,20 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+
+      tco2eq_reduced_per_land_unit=0.0, 
+      tco2eq_rplu_rate='One-time', 
+      tco2_reduced_per_land_unit=0.0, 
+      tco2_rplu_rate='One-time', 
+      tn2o_co2_reduced_per_land_unit=0.0, 
+      tn2o_co2_rplu_rate='One-time', 
+      tch4_co2_reduced_per_land_unit=0.0, 
+      tch4_co2_rplu_rate='One-time', 
+      land_annual_emissons_lifetime=100.0, 
+
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
+      emissions_use_agg_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
@@ -187,8 +211,20 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+
+      tco2eq_reduced_per_land_unit=0.0, 
+      tco2eq_rplu_rate='One-time', 
+      tco2_reduced_per_land_unit=0.0, 
+      tco2_rplu_rate='One-time', 
+      tn2o_co2_reduced_per_land_unit=0.0, 
+      tn2o_co2_rplu_rate='One-time', 
+      tch4_co2_reduced_per_land_unit=0.0, 
+      tch4_co2_rplu_rate='One-time', 
+      land_annual_emissons_lifetime=100.0, 
+
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
+      emissions_use_agg_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
@@ -241,8 +277,20 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+
+      tco2eq_reduced_per_land_unit=0.0, 
+      tco2eq_rplu_rate='One-time', 
+      tco2_reduced_per_land_unit=0.0, 
+      tco2_rplu_rate='One-time', 
+      tn2o_co2_reduced_per_land_unit=0.0, 
+      tn2o_co2_rplu_rate='One-time', 
+      tch4_co2_reduced_per_land_unit=0.0, 
+      tch4_co2_rplu_rate='One-time', 
+      land_annual_emissons_lifetime=100.0, 
+
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
+      emissions_use_agg_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
@@ -295,8 +343,20 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+
+      tco2eq_reduced_per_land_unit=0.0, 
+      tco2eq_rplu_rate='One-time', 
+      tco2_reduced_per_land_unit=0.0, 
+      tco2_rplu_rate='One-time', 
+      tn2o_co2_reduced_per_land_unit=0.0, 
+      tn2o_co2_rplu_rate='One-time', 
+      tch4_co2_reduced_per_land_unit=0.0, 
+      tch4_co2_rplu_rate='One-time', 
+      land_annual_emissons_lifetime=100.0, 
+
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
+      emissions_use_agg_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
@@ -348,8 +408,20 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+
+      tco2eq_reduced_per_land_unit=0.0, 
+      tco2eq_rplu_rate='One-time', 
+      tco2_reduced_per_land_unit=0.0, 
+      tco2_rplu_rate='One-time', 
+      tn2o_co2_reduced_per_land_unit=0.0, 
+      tn2o_co2_rplu_rate='One-time', 
+      tch4_co2_reduced_per_land_unit=0.0, 
+      tch4_co2_rplu_rate='One-time', 
+      land_annual_emissons_lifetime=100.0, 
+
       emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
       emissions_use_co2eq=True, 
+      emissions_use_agg_co2eq=True, 
 
       # sequestration
       seq_rate_global='mean', 
@@ -385,23 +457,23 @@ class TemperateForests:
     # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, (Charlotte Wheeler, 2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_Charlottebae68a93.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_Charlotte378b901f.csv')},
       {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, WRI estimates (Charlotte Wheeler, 2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_WRI_estim874058df.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_WRI_estim5338973d.csv')},
       {'name': 'Conservative-Achieve Commitment in 15 years w/ 44.2% intact, (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_44_2_intact_Charlo3ce79d9d.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_44_2_intact_Charlob957690a.csv')},
       {'name': 'Conservative-Achieve Commitment in 15 years w/ 44.2% intact with continued growth post-2030, (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_44_2_intact_with_c2cf17cff.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_44_2_intact_with_c7051501e.csv')},
       {'name': 'Conservative-Achieve Commitment in 30 years w/ 100% intact, (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_100_intact_Charlota1ad48b4.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_100_intact_Charlot08198cbc.csv')},
       {'name': 'Conservative-Achieve Commitment in 30 years w/ 44.2% intact, (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_44_2_intact_Charlo3ce79d9d.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_44_2_intact_Charlob957690a.csv')},
       {'name': 'Conservative-Achieve Commitment in 30 years w/ 44.2% intact with continued growth, (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_44_2_intact_with_cae324b89.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_44_2_intact_with_c7cf7a19c.csv')},
       {'name': 'Conservative-Achieve Commitment in 45 years w/ 100% intact (Charlotte Wheeler,2016)', 'include': False,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_100_intact_Charlota1ad48b4.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_100_intact_Charlot08198cbc.csv')},
       {'name': 'Conservative-Achieve Commitment in 45 years w/ 44.2% intact (Charlotte Wheeler,2016)', 'include': False,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_44_2_intact_Charlo3ce79d9d.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_44_2_intact_Charlob957690a.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
@@ -457,7 +529,7 @@ class TemperateForests:
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-        fc_convert_iunit_factor=0.0)
+        fc_convert_iunit_factor=land.MHA_TO_HA)
 
     self.oc = operatingcost.OperatingCost(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -473,15 +545,17 @@ class TemperateForests:
         conversion_factor=land.MHA_TO_HA)
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
+        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
         soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
-        soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),
-        soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),
-        soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),
+        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
+        soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),
+        soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),
+        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
