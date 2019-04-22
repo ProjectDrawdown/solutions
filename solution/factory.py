@@ -35,6 +35,7 @@ from solution import microwind
 from solution import multistrataagroforestry
 from solution import offshorewind
 from solution import onshorewind
+from solution import peatlands
 from solution import recycledpaper
 from solution import refrigerants
 from solution import regenerativeagriculture
@@ -110,6 +111,7 @@ def all_solutions_scenarios():
             list(multistrataagroforestry.scenarios.keys()))
     everything['offshorewind'] = (offshorewind.OffshoreWind, list(offshorewind.scenarios.keys()))
     everything['onshorewind'] = (onshorewind.OnshoreWind, list(onshorewind.scenarios.keys()))
+    everything['peatlands'] = (peatlands.Peatlands, list(peatlands.scenarios.keys()))
     everything['recycledpaper'] = (recycledpaper.RecycledPaper,
             list(recycledpaper.scenarios.keys()))
     everything['refrigerants'] = (refrigerants.RefrigerantManagement,

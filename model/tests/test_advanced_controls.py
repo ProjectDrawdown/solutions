@@ -180,6 +180,14 @@ def test_substitute_vma_raises():
     with pytest.raises(KeyError):
         advanced_controls.AdvancedControls(vmas={}, seq_rate_global='mean')
 
+def test_substitute_vma_handles_raw_value_discrepancy():
+    with mock.patch('model.vma.VMA') as MockVMA:
+        MockVMA.return_value.avg_high_low.return_value = 1.2
+        seq_vma = vma.VMA()
+        ac = advanced_controls.AdvancedControls(vmas={'Sequestration Rates': seq_vma},
+                                                seq_rate_global={'value': 1.1, 'statistic': 'mean'})
+        assert ac.seq_rate_global == 1.1
+
 def test_yield_coeff():
     ac = advanced_controls.AdvancedControls(yield_from_conv_practice=2, yield_gain_from_conv_to_soln=4,
                                             disturbance_rate=0.25)
