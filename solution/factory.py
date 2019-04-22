@@ -33,6 +33,7 @@ from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
 from solution import multistrataagroforestry
+from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
 from solution import peatlands
@@ -109,6 +110,8 @@ def all_solutions_scenarios():
     everything['microwind'] = (microwind.MicroWind, list(microwind.scenarios.keys()))
     everything['multistrataagroforestry'] = (multistrataagroforestry.MultistrataAgroforestry,
             list(multistrataagroforestry.scenarios.keys()))
+    everything['nutrientmanagement'] = (nutrientmanagement.NutrientManagement,
+            list(nutrientmanagement.scenarios.keys()))
     everything['offshorewind'] = (offshorewind.OffshoreWind, list(offshorewind.scenarios.keys()))
     everything['onshorewind'] = (onshorewind.OnshoreWind, list(onshorewind.scenarios.keys()))
     everything['peatlands'] = (peatlands.Peatlands, list(peatlands.scenarios.keys()))

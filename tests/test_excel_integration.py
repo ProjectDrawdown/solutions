@@ -53,6 +53,7 @@ from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
 from solution import multistrataagroforestry
+from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
 from solution import peatlands
@@ -1324,6 +1325,19 @@ def test_MultistrataAgroforestry_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in multistrataagroforestry.scenarios.keys():
     obj = multistrataagroforestry.MultistrataAgroforestry(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('nutrientmanagement', 'testdata',
+        'Drawdown-Nutrient Management_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_NutrientManagement_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in nutrientmanagement.scenarios.keys():
+    obj = nutrientmanagement.NutrientManagement(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
