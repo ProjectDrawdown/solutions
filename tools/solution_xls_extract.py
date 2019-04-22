@@ -518,6 +518,8 @@ def xln(tab, row, col):
     return str(cell.value)
   if cell.ctype == xlrd.XL_CELL_EMPTY:
     return '0.0'
+  if cell.ctype == xlrd.XL_CELL_TEXT and cell.value == '':
+    return '0.0'
   raise ValueError("Unhandled cell ctype: " + str(cell.ctype) + " at r=" + str(row) + " c=" + str(col))
 
 def xli(tab, row, col):
