@@ -329,6 +329,9 @@ def get_land_scenarios(wb):
       s['tch4_co2_rplu_rate'] = str(sr_tab.cell_value(row + 136, 7))
       s['land_annual_emissons_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 137, 4))
 
+      assert sr_tab.cell_value(row + 109, 1) == 'Grid Emissions'
+      s['conv_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 110, 4))
+      s['soln_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 112, 4))
 
       assert sr_tab.cell_value(row + 168, 1) == 'Carbon Sequestration and Land Inputs'
       if sr_tab.cell(row + 169, 4).ctype == xlrd.XL_CELL_EMPTY:
