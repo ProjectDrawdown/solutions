@@ -987,6 +987,7 @@ def write_ua(f, wb, is_rrs=True):
       f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
   else:
       f.write("        tla_per_region=self.tla_per_region,\n")
+      f.write("        electricity_unit_factor=1000000.0,\n")
   f.write("        soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
   f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
   if 'Repeated First Cost to Maintaining Implementation Units' in ac_tab.cell(42, 0).value:
