@@ -26,11 +26,15 @@ class UnitAdoption:
        repeated_cost_for_iunits (bool): whether there is a repeated first cost to
          maintaining implementation units at a specified level in
          soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, & conv_ref_new_iunits.
+       electricity_unit_factor (float): a factor to multiply the electricity-related
+         results by. For example, Land solutions typically multiply by 1e6 because their
+         basic land unit is a million hectares but the electricity use (for irrigation, etc)
+         is calculated per hectare.
   """
 
   def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted, datadir=None, ref_tam_per_region=None,
                pds_tam_per_region=None, tla_per_region=None, bug_cfunits_double_count=False,
-               repeated_cost_for_iunits=False):
+               repeated_cost_for_iunits=False, electricity_unit_factor=1.0):
     self.ac = ac
 
     # NOTE: as datadir is static for all solutions this shouldn't be an arg
@@ -47,6 +51,7 @@ class UnitAdoption:
     self.soln_pds_funits_adopted = soln_pds_funits_adopted
     self.bug_cfunits_double_count = bug_cfunits_double_count
     self.repeated_cost_for_iunits = repeated_cost_for_iunits
+    self.electricity_unit_factor = electricity_unit_factor
 
   @lru_cache()
   def ref_population(self):
@@ -530,8 +535,10 @@ class UnitAdoption:
        in which case a separate tab for that variable may prove necessary.
 
        SolarPVUtil 'Unit Adoption Calculations'!B307:L354
+       Irrigation Efficiency 'Unit Adoption Calculations'!B307:L354, 10^6 electricity_unit_factor
     """
-    m = self.ac.soln_energy_efficiency_factor * self.ac.conv_annual_energy_used
+    m = (self.ac.soln_energy_efficiency_factor * self.ac.conv_annual_energy_used *
+            self.electricity_unit_factor)
     result = self.soln_net_annual_funits_adopted().multiply(m)
     result.name = "soln_pds_net_grid_electricity_units_saved"
     return result
@@ -547,10 +554,12 @@ class UnitAdoption:
        variable may prove necessary.
 
        SolarPVUtil 'Unit Adoption Calculations'!Q307:AA354
+       Irrigation Efficiency 'Unit Adoption Calculations'!Q307:AA354, 10^6 electricity_unit_factor
     """
     def calc(x):
       if self.ac.soln_annual_energy_used:
-        return (self.ac.soln_annual_energy_used * x) - (self.ac.conv_annual_energy_used * x)
+        return ((self.ac.soln_annual_energy_used - self.ac.conv_annual_energy_used) *
+                self.electricity_unit_factor * x)
       else:
         return 0.0
     result = self.soln_net_annual_funits_adopted().applymap(calc)

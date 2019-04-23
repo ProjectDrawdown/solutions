@@ -417,6 +417,18 @@ def test_soln_pds_net_grid_electricity_units_used():
   result = ua.soln_pds_net_grid_electricity_units_used()
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+  ac = advanced_controls.AdvancedControls(soln_annual_energy_used=4,
+      conv_annual_energy_used=1)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted,
+      electricity_unit_factor=10.0)
+  expected = pd.DataFrame([[30.0, 60.0, 90.0, 120.0], [150.0, 180.0, 210.0, 240.0]])
+  expected.name = "soln_pds_net_grid_electricity_units_used"
+  result = ua.soln_pds_net_grid_electricity_units_used()
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
 def test_soln_pds_net_grid_electricity_units_saved():
   soln_pds_funits_adopted = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0]])
   soln_ref_funits_adopted = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
@@ -441,6 +453,19 @@ def test_soln_pds_net_grid_electricity_units_saved():
   expected.name = "soln_pds_net_grid_electricity_units_saved"
   result = ua.soln_pds_net_grid_electricity_units_saved()
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+  ac = advanced_controls.AdvancedControls(soln_energy_efficiency_factor=2,
+      conv_annual_energy_used=3)
+  ua = unitadoption.UnitAdoption(ac=ac, datadir=None,
+      ref_tam_per_region=None, pds_tam_per_region=None,
+      soln_pds_funits_adopted=soln_pds_funits_adopted,
+      soln_ref_funits_adopted=soln_ref_funits_adopted,
+      electricity_unit_factor=10.0)
+  expected = pd.DataFrame([[60.0, 120.0, 180.0, 240.0], [300.0, 360.0, 420.0, 480.0]])
+  expected.name = "soln_pds_net_grid_electricity_units_saved"
+  result = ua.soln_pds_net_grid_electricity_units_saved()
+  pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
 
 def test_soln_pds_fuel_units_avoided():
   ac = advanced_controls.AdvancedControls(conv_fuel_consumed_per_funit=0,
