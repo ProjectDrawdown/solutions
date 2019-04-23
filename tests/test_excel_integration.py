@@ -46,6 +46,7 @@ from solution import improvedcookstoves
 from solution import improvedrice
 from solution import instreamhydro
 from solution import insulation
+from solution import irrigationefficiency
 from solution import landfillmethane
 from solution import leds_commercial
 from solution import leds_residential
@@ -1231,6 +1232,19 @@ def test_Insulation_RRS(start_excel, tmpdir):
   for scenario in insulation.scenarios.keys():
     obj = insulation.Insulation(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('irrigationefficiency', 'testdata',
+        'Drawdown-Irrigation Efficiency_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_IrrigationEfficiency_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in irrigationefficiency.scenarios.keys():
+    obj = irrigationefficiency.IrrigationEfficiency(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

@@ -26,6 +26,7 @@ from solution import improvedcookstoves
 from solution import improvedrice
 from solution import instreamhydro
 from solution import insulation
+from solution import irrigationefficiency
 from solution import landfillmethane
 from solution import leds_commercial
 from solution import leds_residential
@@ -98,6 +99,8 @@ def all_solutions_scenarios():
     everything['instreamhydro'] = (instreamhydro.InstreamHydro,
             list(instreamhydro.scenarios.keys()))
     everything['insulation'] = (insulation.Insulation, list(insulation.scenarios.keys()))
+    everything['irrigationefficiency'] = (irrigationefficiency.IrrigationEfficiency,
+            list(irrigationefficiency.scenarios.keys()))
     everything['landfillmethane'] = (landfillmethane.LandfillMethane,
             list(landfillmethane.scenarios.keys()))
     everything['leds_commercial'] = (leds_commercial.LEDCommercialLighting,
