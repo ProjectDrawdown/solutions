@@ -1134,7 +1134,7 @@ def test_FarmlandRestoration_LAND(start_excel, tmpdir):
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('forestprotection', 'testdata',
-        'Forest_Protection_L-UseProtect_Model_v1.1c_26July18.xlsm'))],
+        'Drawdown-Forest Protection_BioS.Prot_v1.1_3Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_ForestProtection_LAND(start_excel, tmpdir):
   workbook = start_excel
@@ -1549,7 +1549,8 @@ def test_TreeIntercropping_LAND(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('temperateforests', 'testdata', 'Temperate_Forest_Restoration_L-Use_v1.1b_27July18.xlsm'))],
+    [str(solutiondir.joinpath('temperateforests', 'testdata',
+        'Drawdown-Temperate Forest Restoration_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_TemperateForests_LAND(start_excel, tmpdir):
   workbook = start_excel
@@ -1583,7 +1584,8 @@ def test_Trains_RRS(start_excel):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('tropicalforests', 'testdata', 'Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm'))],
+    [str(solutiondir.joinpath('tropicalforests', 'testdata',
+        'Drawdown-Tropical Forest Restoration_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_TropicalForests_LAND(start_excel, tmpdir):
   workbook = start_excel

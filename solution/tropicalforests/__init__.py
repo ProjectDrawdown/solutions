@@ -1,5 +1,5 @@
 """Tropical Forest Restoration solution model.
-   Excel filename: Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm
+   Excel filename: Drawdown-Tropical Forest Restoration_BioS_v1.1_3Jan2019_PUBLIC.xlsm
 """
 
 import pathlib
@@ -79,6 +79,7 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
       tco2eq_reduced_per_land_unit=0.0, 
       tco2eq_rplu_rate='One-time', 
@@ -145,6 +146,7 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
       tco2eq_reduced_per_land_unit=0.0, 
       tco2eq_rplu_rate='One-time', 
@@ -213,6 +215,7 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
       tco2eq_reduced_per_land_unit=0.0, 
       tco2eq_rplu_rate='One-time', 
@@ -233,9 +236,9 @@ scenarios = {
       disturbance_rate=0.0, 
 
     ),
-  'PDS-58p2050-Plausible-PDScustom-avg-BookVersion1': advanced_controls.AdvancedControls(
-      # This scenario presents the plausible scenario results of the Book Version 1.
-      # Thus, it has the same inputs as that of Book Version 1. The results based on new
+  'PDS-58p2050-Plausible-PDScustom-avg-Bookedition1': advanced_controls.AdvancedControls(
+      # This scenario presents the plausible scenario results of the Book edition 1.
+      # Thus, it has the same inputs as that of Book edition 1. The results based on new
       # data points are stored as separate scenarios. The current adoption of the
       # solution was assumed to be 0. The future adoption scenarios were built on the
       # commitments given for temperate forest restoration in the Bonn Challenge and New
@@ -279,6 +282,7 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
       tco2eq_reduced_per_land_unit=0.0, 
       tco2eq_rplu_rate='One-time', 
@@ -299,9 +303,9 @@ scenarios = {
       disturbance_rate=0.0, 
 
     ),
-  'PDS-79p2050-Drawdown-PDScustom-high-BookVersion1': advanced_controls.AdvancedControls(
-      # This scenario presents the plausible scenario results of the Book Version 1.
-      # Thus, it has the same inputs as that of Book Version 1. The results based on new
+  'PDS-79p2050-Drawdown-PDScustom-high-Bookedition1': advanced_controls.AdvancedControls(
+      # This scenario presents the plausible scenario results of the Book edition 1.
+      # Thus, it has the same inputs as that of Book edition 1. The results based on new
       # data points are stored as separate scenarios. The current adoption of the
       # solution was assumed to be 0. The future adoption scenarios were built on the
       # commitments given for temperate forest restoration in the Bonn Challenge and New
@@ -345,6 +349,7 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
       tco2eq_reduced_per_land_unit=0.0, 
       tco2eq_rplu_rate='One-time', 
@@ -365,9 +370,9 @@ scenarios = {
       disturbance_rate=0.0, 
 
     ),
-  'PDS-84p2050-Optimum-PDScustom-100%intact15years-BookVersion1': advanced_controls.AdvancedControls(
-      # This scenario presents the plausible scenario results of the Book Version 1.
-      # Thus, it has the same inputs as that of Book Version 1. The results based on new
+  'PDS-84p2050-Optimum-PDScustom-100%intact15years-Bookedition1': advanced_controls.AdvancedControls(
+      # This scenario presents the plausible scenario results of the Book edition 1.
+      # Thus, it has the same inputs as that of Book edition 1. The results based on new
       # data points are stored as separate scenarios. The current adoption of the
       # solution was assumed to be 0. The future adoption scenarios were built on the
       # commitments given for temperate forest restoration in the Bonn Challenge and New
@@ -413,6 +418,7 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
       tco2eq_reduced_per_land_unit=0.0, 
       tco2eq_rplu_rate='One-time', 
@@ -462,27 +468,28 @@ class TropicalForests:
     # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, NYDF/2030 (Charlotte Wheeler, 2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_NYDF2030_e17b8ee1.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_NYDF2030_a0989ced.csv')},
       {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, WRI/2030 (Charlotte Wheeler, 2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_WRI2030_Cd482b59a.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_WRI2030_C3779a48e.csv')},
       {'name': 'Conservative-Achieve Commitment in 15 years w/ 32.8% intact, WRI/2030 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_WRI203f3ccfc7d.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_WRI2036995f18a.csv')},
       {'name': 'Conservative-Achieve Commitment in 15 years w/ 32.8% intact with continued growth post-2030, WRI/2030 and beyond (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_with_c09bf16cd.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_with_c1bb8b9cc.csv')},
       {'name': 'Conservative-Achieve Commitment in 30 years w/ 100% intact, WRI/2045 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_100_intact_WRI2045dd9dec32.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_100_intact_WRI20451dd0e069.csv')},
       {'name': 'Conservative-Achieve Commitment in 30 years w/ 32.8% intact, WRI/2045 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_WRI204b628fa3c.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_WRI2042a54d685.csv')},
       {'name': 'Conservative-Achieve Commitment in 30 years w/ 32.8% intact with continued growth, WRI/2045 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_with_c6ad04be5.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_with_c3be462ea.csv')},
       {'name': 'Conservative-Achieve Commitment in 45 years w/ 100% intact, WRI/2060 (Charlotte Wheeler,2016)', 'include': False,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_100_intact_WRI2060dd9dec32.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_100_intact_WRI20601dd0e069.csv')},
       {'name': 'Conservative-Achieve Commitment in 45 years w/ 32.8% intact, WRI/2060 (Charlotte Wheeler,2016)', 'include': False,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_32_8_intact_WRI206f3ccfc7d.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_32_8_intact_WRI2066995f18a.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=self.tla_per_region)
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -535,6 +542,7 @@ class TropicalForests:
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
+        conv_ref_first_cost_uses_tot_units=True,
         fc_convert_iunit_factor=land.MHA_TO_HA)
 
     self.oc = operatingcost.OperatingCost(ac=self.ac,
