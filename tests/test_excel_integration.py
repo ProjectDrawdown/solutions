@@ -61,6 +61,7 @@ from solution import peatlands
 from solution import recycledpaper
 from solution import refrigerants
 from solution import regenerativeagriculture
+from solution import riceintensification
 from solution import ships
 from solution import silvopasture
 from solution import smartglass
@@ -1429,6 +1430,20 @@ def test_RegenerativeAgriculture_LAND(start_excel, tmpdir):
     obj = regenerativeagriculture.RegenerativeAgriculture(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('riceintensification', 'testdata',
+        'Drawdown-SRI_BioS.Agri_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_RiceIntensification_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in riceintensification.scenarios.keys():
+    obj = riceintensification.RiceIntensification(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',

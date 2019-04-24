@@ -1,0 +1,5 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Jain et al 2014,http://link.springer.com/article/10.1007/s10333-013-0390-2,Asia (Sans Japan),India,,1  - Peer Reviewed,2013,,,Kg N2O/ha/year,0.0,t N2O-CO2-eq / ha / year,,Refer table 1,
+Choi et al 2015,http://onlinelibrary.wiley.com/doi/10.1002/ird.1843/abstract,Asia (Sans Japan),Korea,,1  - Peer Reviewed,2012,,,Kg N2O/ha/year,0.0,t N2O-CO2-eq / ha / year,,Refer table IV,
+Krishnan et al 2017,"https://www.ijcmas.com/6-9-2017/R.K.%20Rajesh%20Krishnan,%20et%20al.pdf",Asia (Sans Japan),India,,1  - Peer Reviewed,2017,,,Kg N2O/ha/year,0.0,t N2O-CO2-eq / ha / year,,Refer table 3,
+Hasanah et al 2017,https://scialert.net/fulltext/?doi=jest.2017.206.214,Asia (Sans Japan),India,,1  - Peer Reviewed,2017,,,Kg N2O-CO2-eq / m2 / year,0.0,t N2O-CO2-eq / ha / year,,Refer table 2,
