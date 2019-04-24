@@ -105,6 +105,25 @@ def test_co2eq_mmt_reduced_land_not_aggregate():
     expected = pd.read_csv(datadir.joinpath('pl_co2eq_mmt_reduced.csv'), index_col=0)
     pd.testing.assert_frame_equal(c2.co2eq_mmt_reduced().loc[:, ['World']], expected.loc[:, ['World']])
 
+def test_co2eq_mmt_reduced_land_with_electricity():
+    avoided_em = pd.read_csv(datadir.joinpath('fp_des_co2eq.csv'), index_col=0)
+    conv_ref_grid_CO2eq_per_KWh = pd.DataFrame(2.0, index=list(range(2014, 2061)),
+        columns=['World'])
+    soln_pds_net_grid_electricity_units_used = pd.DataFrame(3.0, index=list(range(2014, 2061)),
+        columns=['World'])
+    soln_pds_net_grid_electricity_units_saved = pd.DataFrame(5.0, index=list(range(2014, 2061)),
+        columns=['World'])
+    ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
+            solution_category='LAND')
+    c2 = co2calcs.CO2Calcs(ac=ac, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
+        soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+        soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved)
+    expected = pd.Series(0.0, index=list(range(2014, 2061)))
+    expected.loc[2020:2050] = 4.0
+    result = c2.co2eq_mmt_reduced()
+    pd.testing.assert_series_equal(result.loc[2015:, 'World'], expected.loc[2015:],
+            check_names=False, check_exact=False)
+
 def test_co2_ppm_calculator():
   soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
       columns=["World", "B"], index=[2020, 2021, 2022])

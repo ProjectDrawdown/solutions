@@ -1,5 +1,5 @@
 """Forest Protection solution model.
-   Excel filename: Forest_Protection_L-UseProtect_Model_v1.1c_26July18.xlsm
+   Excel filename: Drawdown-Forest Protection_BioS.Prot_v1.1_3Jan2019_PUBLIC.xlsm
 """
 
 import pathlib
@@ -33,7 +33,7 @@ REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle Eas
            'Latin America', 'China', 'India', 'EU', 'USA']
 
 scenarios = {
-  'PDS-87p2050-Plausible-PDScustom-avg-BookVersion1': advanced_controls.AdvancedControls(
+  'PDS-87p2050-Plausible-PDScustom-avg-Bookedition1': advanced_controls.AdvancedControls(
       # The current adoption is based on the FAO 2015 estimates for global area under
       # forest protection. The future adoption scenarios are based on the national and
       # international commitments for forest protection. Considering a higher rate of
@@ -42,7 +42,7 @@ scenarios = {
       # of the intact forest were assumed in different custom adoption scenarios with
       # some scenarios assuming an early adoption 75-90% by 2030. This scenario derives
       # the result from the "average of all" PDS custom adoption scenarios. The results
-      # are similar to that of the Book Version 1, so no new scenario was created for
+      # are similar to that of the Book edition 1, so no new scenario was created for
       # the latter. This model upgrade involves, changes in the TLA, current adoption,
       # and creation of new custom adoption scenarios.
 
@@ -77,8 +77,9 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
-      tco2eq_reduced_per_land_unit='mean', 
+      tco2eq_reduced_per_land_unit={'value': 313.791126867655, 'statistic': 'mean'}, 
       tco2eq_rplu_rate='One-time', 
       tco2_reduced_per_land_unit=0.0, 
       tco2_rplu_rate='One-time', 
@@ -93,17 +94,17 @@ scenarios = {
       emissions_use_agg_co2eq=True, 
 
       # sequestration
-      seq_rate_global='mean', 
+      seq_rate_global={'value': 0.596666666666667, 'statistic': 'mean'}, 
       global_multi_for_regrowth=1.0, 
-      degradation_rate='mean', 
-      disturbance_rate='mean', 
+      degradation_rate={'value': 0.003074, 'statistic': 'mean'}, 
+      disturbance_rate={'value': 1.57962432447763e-05, 'statistic': 'mean'}, 
 
       delay_protection_1yr=True, 
       delay_regrowth_1yr=True, 
       include_unprotected_land_in_regrowth_calcs=False, 
 
     ),
-  'PDS-89p2050-Drawdown-PDScustom-aggmax-BookVersion1': advanced_controls.AdvancedControls(
+  'PDS-89p2050-Drawdown-PDScustom-aggmax-Bookedition1': advanced_controls.AdvancedControls(
       # The current adoption is based on the FAO 2015 estimates for global area under
       # forest protection. The future adoption scenarios are based on the national and
       # international commitments for forest protection. Considering a higher rate of
@@ -113,7 +114,7 @@ scenarios = {
       # some scenarios assuming an early adoption 75-90% by 2030. This scenario presents
       # the result of the "Aggressive-Max, High early growth 2" PDS custom adoption
       # scenario, with standard deviation input set to "1.5" in the Custom PDS Adoption
-      # sheet. The results are marginally lesser than the Book Version 1, so no new
+      # sheet. The results are marginally lesser than the Book edition 1, so no new
       # scenario was created for the latter. This model upgrade involves, changes in the
       # TLA, current adoption, and creation of new custom adoption scenarios.
 
@@ -148,8 +149,9 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
-      tco2eq_reduced_per_land_unit='mean', 
+      tco2eq_reduced_per_land_unit={'value': 313.791126867655, 'statistic': 'mean'}, 
       tco2eq_rplu_rate='One-time', 
       tco2_reduced_per_land_unit=0.0, 
       tco2_rplu_rate='One-time', 
@@ -164,17 +166,17 @@ scenarios = {
       emissions_use_agg_co2eq=True, 
 
       # sequestration
-      seq_rate_global='mean', 
+      seq_rate_global={'value': 0.596666666666667, 'statistic': 'mean'}, 
       global_multi_for_regrowth=1.0, 
-      degradation_rate='mean', 
-      disturbance_rate='mean', 
+      degradation_rate={'value': 0.003074, 'statistic': 'mean'}, 
+      disturbance_rate={'value': 1.57962432447763e-05, 'statistic': 'mean'}, 
 
       delay_protection_1yr=True, 
       delay_regrowth_1yr=True, 
       include_unprotected_land_in_regrowth_calcs=False, 
 
     ),
-  'PDS-92p2050-Optimum-PDScustom-high-BookVersion1': advanced_controls.AdvancedControls(
+  'PDS-92p2050-Optimum-PDScustom-high-Bookedition1': advanced_controls.AdvancedControls(
       # The current adoption is based on the FAO 2015 estimates for global area under
       # forest protection. The future adoption scenarios are based on the national and
       # international commitments for forest protection. Considering a higher rate of
@@ -184,7 +186,7 @@ scenarios = {
       # some scenarios assuming an early adoption 75-90% by 2030. This scenario derives
       # the result from the "high of all" PDS custom adoption scenarios, with standard
       # deviation input set to "1.5" in the Custom PDS Adoption sheet. The results are
-      # marginally higher than the Book Version 1, so no new scenario was created for
+      # marginally higher than the Book edition 1, so no new scenario was created for
       # the latter. This model upgrade involves, changes in the TLA, current adoption,
       # and creation of new custom adoption scenarios.
 
@@ -219,8 +221,9 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
-      tco2eq_reduced_per_land_unit='mean', 
+      tco2eq_reduced_per_land_unit={'value': 313.791126867655, 'statistic': 'mean'}, 
       tco2eq_rplu_rate='One-time', 
       tco2_reduced_per_land_unit=0.0, 
       tco2_rplu_rate='One-time', 
@@ -235,10 +238,10 @@ scenarios = {
       emissions_use_agg_co2eq=True, 
 
       # sequestration
-      seq_rate_global='mean', 
+      seq_rate_global={'value': 0.596666666666667, 'statistic': 'mean'}, 
       global_multi_for_regrowth=1.0, 
-      degradation_rate='mean', 
-      disturbance_rate='mean', 
+      degradation_rate={'value': 0.003074, 'statistic': 'mean'}, 
+      disturbance_rate={'value': 1.57962432447763e-05, 'statistic': 'mean'}, 
 
       delay_protection_1yr=True, 
       delay_regrowth_1yr=True, 
@@ -258,7 +261,7 @@ class ForestProtection:
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS-87p2050-Plausible-PDScustom-avg-BookVersion1'
+      scenario = 'PDS-87p2050-Plausible-PDScustom-avg-Bookedition1'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -283,7 +286,8 @@ class ForestProtection:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.5, low_sd_mult=1.0)
+        high_sd_mult=1.5, low_sd_mult=1.0,
+        total_adoption_limit=self.tla_per_region)
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -319,6 +323,7 @@ class ForestProtection:
 
     self.ua = unitadoption.UnitAdoption(ac=self.ac,
         tla_per_region=self.tla_per_region,
+        electricity_unit_factor=1000000.0,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
         bug_cfunits_double_count=True)
@@ -335,6 +340,7 @@ class ForestProtection:
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
+        conv_ref_first_cost_uses_tot_units=True,
         fc_convert_iunit_factor=land.MHA_TO_HA)
 
     self.oc = operatingcost.OperatingCost(ac=self.ac,

@@ -46,6 +46,7 @@ from solution import improvedcookstoves
 from solution import improvedrice
 from solution import instreamhydro
 from solution import insulation
+from solution import irrigationefficiency
 from solution import landfillmethane
 from solution import leds_commercial
 from solution import leds_residential
@@ -53,6 +54,7 @@ from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
 from solution import multistrataagroforestry
+from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
 from solution import peatlands
@@ -1132,7 +1134,7 @@ def test_FarmlandRestoration_LAND(start_excel, tmpdir):
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('forestprotection', 'testdata',
-        'Forest_Protection_L-UseProtect_Model_v1.1c_26July18.xlsm'))],
+        'Drawdown-Forest Protection_BioS.Prot_v1.1_3Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_ForestProtection_LAND(start_excel, tmpdir):
   workbook = start_excel
@@ -1235,6 +1237,19 @@ def test_Insulation_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('irrigationefficiency', 'testdata',
+        'Drawdown-Irrigation Efficiency_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_IrrigationEfficiency_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in irrigationefficiency.scenarios.keys():
+    obj = irrigationefficiency.IrrigationEfficiency(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('landfillmethane', 'testdata', 'LandfillMethane_RRS_v1.1c_24Oct18.xlsm'))],
     indirect=True)
 @pytest.mark.skip(reason="need to resolve Unit Adoption Calculations W252 and X252")
@@ -1324,6 +1339,19 @@ def test_MultistrataAgroforestry_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in multistrataagroforestry.scenarios.keys():
     obj = multistrataagroforestry.MultistrataAgroforestry(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('nutrientmanagement', 'testdata',
+        'Drawdown-Nutrient Management_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_NutrientManagement_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in nutrientmanagement.scenarios.keys():
+    obj = nutrientmanagement.NutrientManagement(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1521,7 +1549,8 @@ def test_TreeIntercropping_LAND(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('temperateforests', 'testdata', 'Temperate_Forest_Restoration_L-Use_v1.1b_27July18.xlsm'))],
+    [str(solutiondir.joinpath('temperateforests', 'testdata',
+        'Drawdown-Temperate Forest Restoration_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_TemperateForests_LAND(start_excel, tmpdir):
   workbook = start_excel
@@ -1555,7 +1584,8 @@ def test_Trains_RRS(start_excel):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('tropicalforests', 'testdata', 'Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm'))],
+    [str(solutiondir.joinpath('tropicalforests', 'testdata',
+        'Drawdown-Tropical Forest Restoration_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_TropicalForests_LAND(start_excel, tmpdir):
   workbook = start_excel

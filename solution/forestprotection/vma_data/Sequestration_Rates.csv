@@ -1,8 +1,8 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Lewis et al 2009,http://www.afritron.org/upload/publication-store/itm_0/Lewis2009_Increaing_C_storage_nature07771.pdf,Middle East and Africa,Africa,Tropical-Semi-Arid,,,,0.63,t C/ha/yr,,t C/ha/yr,,"Mean, between 1968-2007; refer first para on page 1004",
-Lewis et al 2009,http://www.afritron.org/upload/publication-store/itm_0/Lewis2009_Increaing_C_storage_nature07771.pdf,Middle East and Africa,Africa,Tropical-Semi-Arid,,,,0.22,t C/ha/yr,,t C/ha/yr,,"Low, between 1987-1996; refer first para on page 1004",
-Lewis et al 2009,http://www.afritron.org/upload/publication-store/itm_0/Lewis2009_Increaing_C_storage_nature07771.pdf,Middle East and Africa,Africa,Tropical-Semi-Arid,,,,0.94,t C/ha/yr,,t C/ha/yr,,"High, between 1987-1997; refer first para on page 1004",
-Luyssaert et al 2008,https://www.nature.com/articles/nature07276,World,,Temperate/Boreal-Humid,,,,3.2,t C/ha/yr,,t C/ha/yr,,"Forests 200 years old and above sequester on average 2.4 ± 0.8 tC /ha/yr; refer page 1
-",1.0
-Luyssaert et al 2008,https://www.nature.com/articles/nature07276,World,,Temperate/Boreal-Humid,,,,1.5999999999999999,t C/ha/yr,,t C/ha/yr,,"Forests 200 years old and above sequester on average 2.4 ± 0.8 tC /ha/yr; refer page 1
-",1.0
+Lewis et al 2009,http://www.afritron.org/upload/publication-store/itm_0/Lewis2009_Increaing_C_storage_nature07771.pdf,Middle East and Africa,Africa,Tropical-Semi-Arid,,,,,t C/ha/yr,,t C/ha/yr,,"Mean, between 1968-2007; refer first para on page 1004",
+Lewis et al 2009,http://www.afritron.org/upload/publication-store/itm_0/Lewis2009_Increaing_C_storage_nature07771.pdf,Middle East and Africa,Africa,Tropical-Semi-Arid,,,,,t C/ha/yr,,t C/ha/yr,,"Low, between 1987-1996; refer first para on page 1004",
+Lewis et al 2009,http://www.afritron.org/upload/publication-store/itm_0/Lewis2009_Increaing_C_storage_nature07771.pdf,Middle East and Africa,Africa,Tropical-Semi-Arid,,,,,t C/ha/yr,,t C/ha/yr,,"High, between 1987-1997; refer first para on page 1004",
+Luyssaert et al 2008,https://www.nature.com/articles/nature07276,World,,Temperate/Boreal-Humid,,,,,t C/ha/yr,,t C/ha/yr,,"Forests 200 years old and above sequester on average 2.4 ± 0.8 tC /ha/yr; refer page 1
+",True
+Luyssaert et al 2008,https://www.nature.com/articles/nature07276,World,,Temperate/Boreal-Humid,,,,,t C/ha/yr,,t C/ha/yr,,"Forests 200 years old and above sequester on average 2.4 ± 0.8 tC /ha/yr; refer page 1
+",True

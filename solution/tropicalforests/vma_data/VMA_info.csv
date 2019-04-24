@@ -19,9 +19,9 @@ VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fix
 18,t_CH4_CO2_eq_Reduced_per_Land_Unit,t CH4-CO2-eq Reduced per Land Unit,False,False,,,
 19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE,False,False,,,
 20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit,Indirect CO2 Emissions per SOLUTION Implementation Unit,False,False,,,
-21,Sequestration_Rates,Sequestration Rates,True,False,,,
+21,Sequestration_Rates,Sequestration Rates,True,False,3.5592427272727267,4.886957230292456,2.231528224252997
 22,Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing,Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing,False,False,,,
 23,Disturbance_Rate,Disturbance Rate,False,False,,,
-24,Percent_of_Degraded_Land_Suitable_for_Intact_Tropical_Forest_Restoration,Percent of Degraded Land Suitable for Intact Tropical Forest Restoration,True,False,,,
-25,Root_shoot_ratio_of_degraded_forest,Root:shoot ratio of degraded forest,True,False,,,
-26,Start_Carbon_storage_in_Base_year,Start Carbon storage in Base year,True,False,,,
+24,Percent_of_Degraded_Land_Suitable_for_Intact_Tropical_Forest_Restoration,Percent of Degraded Land Suitable for Intact Tropical Forest Restoration,True,False,0.608,0.608,0.608
+25,Root_shoot_ratio_of_degraded_forest,Root:shoot ratio of degraded forest,True,False,0.2285,0.2994547978175778,0.15754520218242224
+26,Start_Carbon_storage_in_Base_year,Start Carbon storage in Base year,True,False,12.0,12.0,12.0

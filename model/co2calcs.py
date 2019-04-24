@@ -140,6 +140,10 @@ class CO2Calcs:
           m['World'] = m['World'].add(self.soln_pds_direct_co2_emissions_saved['World'].loc[s:e], fill_value=0)
           m['World'] = m['World'].add(self.soln_pds_direct_n2o_co2_emissions_saved['World'].loc[s:e], fill_value=0)
           m['World'] = m['World'].add(self.soln_pds_direct_ch4_co2_emissions_saved['World'].loc[s:e], fill_value=0)
+      if self.co2eq_reduced_grid_emissions() is not None:
+        m = m.add(self.co2eq_reduced_grid_emissions().loc[s:e], fill_value=0)
+      if self.co2eq_increased_grid_usage_emissions() is not None:
+        m = m.sub(self.co2eq_increased_grid_usage_emissions().loc[s:e], fill_value=0)
     m.name = "co2eq_mmt_reduced"
     return m
 
@@ -322,7 +326,11 @@ class CO2Calcs:
           NEU(t) = Net Energy Units at time, t
           EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
        SolarPVUtil 'CO2 Calcs'!A288:K334
+       Irrigation Efficiency 'CO2 Calcs'!A365:K411
     """
+    if (self.soln_pds_net_grid_electricity_units_saved is None or
+            self.conv_ref_grid_CO2eq_per_KWh is None):
+      return None
     return self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2eq_per_KWh
 
   @lru_cache()
@@ -333,6 +341,7 @@ class CO2Calcs:
           NAFU(Sol,t) = Net annual functional units captured by solution at time, t
           EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
        SolarPVUtil 'CO2 Calcs'!R288:AB334
+       (Not present in Land solutions)
     """
     if self.ac.solution_category == SOLUTION_CATEGORY.REPLACEMENT:
       return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2eq_per_KWh
@@ -347,7 +356,11 @@ class CO2Calcs:
           NEU(t) = Net Energy Units Used at time, t
           EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
        SolarPVUtil 'CO2 Calcs'!AI288:AS334
+       Irrigation Efficiency 'CO2 Calcs'!R417:AB463
     """
+    if (self.soln_pds_net_grid_electricity_units_used is None or
+            self.conv_ref_grid_CO2eq_per_KWh is None):
+        return None
     return self.soln_pds_net_grid_electricity_units_used * self.conv_ref_grid_CO2eq_per_KWh
 
   @lru_cache()

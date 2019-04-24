@@ -26,6 +26,7 @@ from solution import improvedcookstoves
 from solution import improvedrice
 from solution import instreamhydro
 from solution import insulation
+from solution import irrigationefficiency
 from solution import landfillmethane
 from solution import leds_commercial
 from solution import leds_residential
@@ -33,6 +34,7 @@ from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
 from solution import multistrataagroforestry
+from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
 from solution import peatlands
@@ -97,6 +99,8 @@ def all_solutions_scenarios():
     everything['instreamhydro'] = (instreamhydro.InstreamHydro,
             list(instreamhydro.scenarios.keys()))
     everything['insulation'] = (insulation.Insulation, list(insulation.scenarios.keys()))
+    everything['irrigationefficiency'] = (irrigationefficiency.IrrigationEfficiency,
+            list(irrigationefficiency.scenarios.keys()))
     everything['landfillmethane'] = (landfillmethane.LandfillMethane,
             list(landfillmethane.scenarios.keys()))
     everything['leds_commercial'] = (leds_commercial.LEDCommercialLighting,
@@ -109,6 +113,8 @@ def all_solutions_scenarios():
     everything['microwind'] = (microwind.MicroWind, list(microwind.scenarios.keys()))
     everything['multistrataagroforestry'] = (multistrataagroforestry.MultistrataAgroforestry,
             list(multistrataagroforestry.scenarios.keys()))
+    everything['nutrientmanagement'] = (nutrientmanagement.NutrientManagement,
+            list(nutrientmanagement.scenarios.keys()))
     everything['offshorewind'] = (offshorewind.OffshoreWind, list(offshorewind.scenarios.keys()))
     everything['onshorewind'] = (onshorewind.OnshoreWind, list(onshorewind.scenarios.keys()))
     everything['peatlands'] = (peatlands.Peatlands, list(peatlands.scenarios.keys()))

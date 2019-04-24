@@ -329,6 +329,9 @@ def get_land_scenarios(wb):
       s['tch4_co2_rplu_rate'] = str(sr_tab.cell_value(row + 136, 7))
       s['land_annual_emissons_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 137, 4))
 
+      assert sr_tab.cell_value(row + 109, 1) == 'Grid Emissions'
+      s['conv_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 110, 4))
+      s['soln_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 112, 4))
 
       assert sr_tab.cell_value(row + 168, 1) == 'Carbon Sequestration and Land Inputs'
       if sr_tab.cell(row + 169, 4).ctype == xlrd.XL_CELL_EMPTY:
@@ -517,6 +520,8 @@ def xln(tab, row, col):
   if cell.ctype == xlrd.XL_CELL_NUMBER:
     return str(cell.value)
   if cell.ctype == xlrd.XL_CELL_EMPTY:
+    return '0.0'
+  if cell.ctype == xlrd.XL_CELL_TEXT and cell.value == '':
     return '0.0'
   raise ValueError("Unhandled cell ctype: " + str(cell.ctype) + " at r=" + str(row) + " c=" + str(col))
 
@@ -985,6 +990,7 @@ def write_ua(f, wb, is_rrs=True):
       f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
   else:
       f.write("        tla_per_region=self.tla_per_region,\n")
+      f.write("        electricity_unit_factor=1000000.0,\n")
   f.write("        soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
   f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
   if 'Repeated First Cost to Maintaining Implementation Units' in ac_tab.cell(42, 0).value:
@@ -1015,6 +1021,8 @@ def write_fc(f, wb):
   f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
   f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
   f.write("        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
+  if fc_tab.cell(35, 15).value == 'Implementation Units Installed Each Yr (CONVENTIONAL-REF)':
+    f.write("        conv_ref_first_cost_uses_tot_units=True,\n")
   if fc_tab.cell(14, 5).value == 1000000000 and fc_tab.cell(14, 6).value == '$/kW TO $/TW':
     f.write("        fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)\n")
   elif fc_tab.cell(15, 5).value == 1000000 and fc_tab.cell(17, 5).value == 'million hectare':

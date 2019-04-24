@@ -407,7 +407,7 @@ class AdvancedControls:
     self.ref_2014_cost = self._substitute_vma(
       ref_2014_cost, vma_title='SOLUTION First Cost per Implementation Unit')
     self.conv_2014_cost = self._substitute_vma(
-      conv_2014_cost, vma_title='CONVENTIONAL First Cost per Implementation Unit for replaced practices technologies')
+      conv_2014_cost, vma_title='CONVENTIONAL First Cost per Implementation Unit for replaced practices')
     self.soln_first_cost_efficiency_rate = soln_first_cost_efficiency_rate
     self.conv_first_cost_efficiency_rate = conv_first_cost_efficiency_rate
     self.soln_first_cost_below_conv = soln_first_cost_below_conv

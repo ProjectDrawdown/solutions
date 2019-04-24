@@ -1,0 +1,30 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,7.0,7.0,7.0
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,False,671.3788076923078,1132.6491048089324,210.10851057568306
+3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit of the solution,True,False,1575.8629689166667,2376.2277466441205,775.4981911892127
+4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,True,False,341.5204997603357,341.5204997603357,341.5204997603357
+5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True,False,190.49638927201812,190.49638927201812,190.49638927201812
+6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,False,False,,,
+7,SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum,SOLUTION Net Profit Margin per Functional Unit per Annum,False,False,,,
+8,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,False,False,,,
+9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),False,False,,,
+10,Electricty_Consumed_per_CONVENTIONAL_Functional_Unit,Electricty Consumed per CONVENTIONAL Functional Unit,True,False,2.17e-06,2.3855569530309795e-06,1.9544430469690205e-06
+11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+12,Total_Energy_Used_per_SOLUTION_functional_unit,Total Energy Used per SOLUTION functional unit,True,False,1.4014312083333333e-06,1.5579153333333333e-06,1.2449470833333332e-06
+13,Fuel_Consumed_per_CONVENTIONAL_Functional_Unit,Fuel Consumed per CONVENTIONAL Functional Unit,False,False,,,
+14,Fuel_Reduction_Factor_SOLUTION,Fuel Reduction Factor SOLUTION,False,False,,,
+15,t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit,t CO2-eq (Aggregate emissions) Reduced per Land Unit,False,False,,,
+16,t_CO2_Reduced_per_Land_Unit,t CO2 Reduced per Land Unit,False,False,,,
+17,t_N2O_CO2_eq_Reduced_per_Land_Unit,t N2O-CO2-eq Reduced per Land Unit,False,False,,,
+18,t_CH4_CO2_eq_Reduced_per_Land_Unit,t CH4-CO2-eq Reduced per Land Unit,False,False,,,
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE,False,False,,,
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit,Indirect CO2 Emissions per SOLUTION Implementation Unit,False,False,,,
+21,Sequestration_Rates,Sequestration Rates,False,False,,,
+22,Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing,Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing,False,False,,,
+23,Disturbance_Rate,Disturbance Rate,False,False,,,
+24,Total_Irrigated_Area,Total Irrigated Area,True,False,52.933445199999994,109.56713671503618,-3.700246315036196
+25,Conventional_Irrigation_Efficiency,Conventional Irrigation Efficiency ,True,False,0.4673333333333333,0.5781765659739516,0.35649010069271503
+26,Sprinkler_Irrigation_efficiency,Sprinkler Irrigation efficiency,True,False,0.7493999999999998,0.8265473049864148,0.6722526950135849
+27,Drip_Irrigation_efficiency,Drip Irrigation efficiency,True,False,0.8936250000000002,0.9382020050025798,0.8490479949974207
+28,Energy_needed_to_irrigate_1_ha_kWh_ha_Sprinkler,Energy needed to irrigate 1 ha (kWh/ha) Sprinkler,True,False,1557.9153333333334,1712.6708551460415,1403.1598115206252
+29,Energy_needed_to_irrigate_1_ha_kWh_ha_Drip,Energy needed to irrigate 1 ha (kWh/ha) Drip,True,False,1244.947083333333,1368.613903595148,1121.280263071518

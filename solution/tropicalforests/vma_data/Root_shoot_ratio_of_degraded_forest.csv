@@ -1,7 +1,7 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Yuen (2013),https://courses.nus.edu.sg/course/geoadz/internet/publications/yuen%20et%20al%202013%20FEM%20310%20-%20uncertainty%20in%20below%20ground%20root%20biomass%20review.pdf,Asia (Sans Japan),Southeast Asia,,1  - Peer Reviewed,2013,,0.17,%,,%,,,
-Deans (1996),http://www.sciencedirect.com/science/article/pii/S0378112796038431?via%3Dihub,Middle East and Africa,Cameroon,,1  - Peer Reviewed,1996,,0.25,%,,%,,,
-Hertel (2009),http://www.sciencedirect.com/science/article/pii/S0378112709004940?via%3Dihub,Latin America,Latin America,,1  - Peer Reviewed,2009,,0.166,%,,%,,,
-Monkay (2006),http://reddcr.go.cr/sites/default/files/centro-de-documentacion/mokany_et_al._2006_-_critical_analysis_root_to_shoot_ratios.pdf,World,Pan-tropical,,1  - Peer Reviewed,2006,,0.235,%,,%,,,
-Phillips (2008),http://rstb.royalsocietypublishing.org/content/363/1498/1819,Latin America,Amazon,,1  - Peer Reviewed,2008,,0.37,%,,%,,,
-Niiyama (2010),https://www.cambridge.org/core/journals/journal-of-tropical-ecology/article/estimation-of-root-biomass-based-on-excavation-of-individual-root-systems-in-a-primary-dipterocarp-forest-in-pasoh-forest-reserve-peninsular-malaysia/523F092746792B1ABF3B18DEE483895F,Asia (Sans Japan),Malaysia,,1  - Peer Reviewed,2010,,0.18,%,,%,,,
+Yuen (2013),https://courses.nus.edu.sg/course/geoadz/internet/publications/yuen%20et%20al%202013%20FEM%20310%20-%20uncertainty%20in%20below%20ground%20root%20biomass%20review.pdf,Asia (Sans Japan),Southeast Asia,,1  - Peer Reviewed,2013,,,%,,%,,,
+Deans (1996),http://www.sciencedirect.com/science/article/pii/S0378112796038431?via%3Dihub,Middle East and Africa,Cameroon,,1  - Peer Reviewed,1996,,,%,,%,,,
+Hertel (2009),http://www.sciencedirect.com/science/article/pii/S0378112709004940?via%3Dihub,Latin America,Latin America,,1  - Peer Reviewed,2009,,,%,,%,,,
+Monkay (2006),http://reddcr.go.cr/sites/default/files/centro-de-documentacion/mokany_et_al._2006_-_critical_analysis_root_to_shoot_ratios.pdf,World,Pan-tropical,,1  - Peer Reviewed,2006,,,%,,%,,,
+Phillips (2008),http://rstb.royalsocietypublishing.org/content/363/1498/1819,Latin America,Amazon,,1  - Peer Reviewed,2008,,,%,,%,,,
+Niiyama (2010),https://www.cambridge.org/core/journals/journal-of-tropical-ecology/article/estimation-of-root-biomass-based-on-excavation-of-individual-root-systems-in-a-primary-dipterocarp-forest-in-pasoh-forest-reserve-peninsular-malaysia/523F092746792B1ABF3B18DEE483895F,Asia (Sans Japan),Malaysia,,1  - Peer Reviewed,2010,,,%,,%,,,
