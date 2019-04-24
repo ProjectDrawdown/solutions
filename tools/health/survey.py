@@ -4,9 +4,10 @@ import os.path
 import tempfile
 import numpy as np
 import pandas as pd
+import scipy.stats
 import solution.factory
 
-results = pd.DataFrame(columns=['RegionalFractionTAM', 'RegionalFractionAdoption'])
+results = pd.DataFrame(columns=['RegionalFractionTAM', 'RegionalFractionAdoption', 'Rvalue'])
 results.index.name = 'Solution'
 all_solutions_scenarios = solution.factory.all_solutions_scenarios()
 for soln in all_solutions_scenarios.keys():
@@ -31,6 +32,12 @@ for soln in all_solutions_scenarios.keys():
             'Middle East and Africa', 'Latin America']].sum()
         fraction = regional_sum / world if world else np.nan
         results.loc[name, 'RegionalFractionAdoption'] = fraction
+
+        x = s.ht.soln_pds_funits_adopted().index
+        y = s.ht.soln_pds_funits_adopted().loc[:, 'World'].values
+        slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
+        results.loc[name, 'Rvalue'] = r_value
+
 
 (_, outfile) = tempfile.mkstemp(prefix='survey_', suffix='.csv',
         dir=os.path.join('data', 'health'))
