@@ -14,6 +14,7 @@ import shutil
 import sys
 import time
 import tempfile
+import numpy as np
 import pandas as pd
 import pytest
 import xlrd
@@ -55,6 +56,7 @@ from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
 from solution import multistrataagroforestry
+from solution import nuclear
 from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
@@ -854,6 +856,8 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None):
         matches = (act == exp)
       elif pd.isna(act) or act == '' or act is None or act == 0 or act == pytest.approx(0.0):
         matches = pd.isna(exp) or exp == '' or exp is None or exp == 0 or exp == pytest.approx(0.0)
+      elif np.isinf(act):
+        matches = pd.isna(exp) or np.isinf(exp)  # Excel #DIV/0! turns into NaN.
       else:
         matches = (act == pytest.approx(exp))
       if not matches:
@@ -1355,6 +1359,19 @@ def test_MultistrataAgroforestry_LAND(start_excel, tmpdir):
   for scenario in multistrataagroforestry.scenarios.keys():
     obj = multistrataagroforestry.MultistrataAgroforestry(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('nuclear', 'testdata',
+        'Drawdown-Nuclear_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Nuclear_RRS(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in nuclear.scenarios.keys():
+    obj = nuclear.Nuclear(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
