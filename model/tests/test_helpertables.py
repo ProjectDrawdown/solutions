@@ -28,9 +28,9 @@ def test_soln_ref_funits_adopted():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
-      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
-      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-      pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=None,
+                                 pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+                                 pds_adoption_is_single_source=False)
   result = ht.soln_ref_funits_adopted()
   expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
@@ -62,9 +62,9 @@ def test_soln_ref_funits_adopted_tam_limit():
     [2059, 1.0, 1.0, 1.0, 1.0], [2060, 1.0, 1.0, 1.0, 1.0]],
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
-      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
-      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-      pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=None,
+                                 pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+                                 pds_adoption_is_single_source=False)
   result = ht.soln_ref_funits_adopted()
   expected = ref_tam_per_region.copy()
   expected.loc[2014, :] = 100.0
@@ -95,9 +95,9 @@ def test_soln_pds_funits_adopted_by_region_with_tam_limit_world():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-      pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region,
+                                 pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+                                 pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   assert result.loc[2030, 'World'] == pytest.approx(1.0)
 
@@ -109,9 +109,9 @@ def test_soln_ref_funits_adopted_regional_sums():
     columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
         "Middle East and Africa", "Latin America"]).set_index("Year")
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
-      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=None,
-      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-      pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=None,
+                                 pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+                                 pds_adoption_is_single_source=False)
   result = ht.soln_ref_funits_adopted()
   expected = pd.DataFrame([
       [2014, 10.0, 3.0, 2.0, 1.0, 0.0, 0.0], [2015, 6.0, 3.0, 2.0, 1.0, 0.0, 0.0],
@@ -158,8 +158,8 @@ def test_soln_ref_funits_adopted_custom_ref_adoption():
       columns=ref_tam_per_region_insulation_list[0]).set_index('Year')
   ref_tam_per_region_insulation.name = 'ref_tam_per_region'
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
-      ref_tam_per_region=ref_tam_per_region_insulation, pds_adoption_data_per_region=None,
-      ref_adoption_data_per_region=ref_adoption_data_per_region)
+                                 ref_adoption_limits=ref_tam_per_region_insulation, pds_adoption_data_per_region=None,
+                                 ref_adoption_data_per_region=ref_adoption_data_per_region)
   result = ht.soln_ref_funits_adopted()
   expected = ref_adoption_data_per_region.copy()
   expected.loc[2014, :] = 1.0
@@ -181,8 +181,8 @@ def test_soln_ref_funits_adopted_custom_ref_adoption_tam_limit():
       columns=ref_tam_per_region_limit_seven_list[0]).set_index('Year')
   ref_tam_per_region_limit_seven.name = 'ref_tam_per_region'
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
-      ref_tam_per_region=ref_tam_per_region_limit_seven, pds_adoption_data_per_region=None,
-      ref_adoption_data_per_region=ref_adoption_data_per_region)
+                                 ref_adoption_limits=ref_tam_per_region_limit_seven, pds_adoption_data_per_region=None,
+                                 ref_adoption_data_per_region=ref_adoption_data_per_region)
   result = ht.soln_ref_funits_adopted()
   expected = ref_tam_per_region_limit_seven
   expected.name = 'soln_ref_funits_adopted'
@@ -200,9 +200,9 @@ def test_soln_ref_funits_adopted_regional_tam_limit_NaN():
       columns=ref_tam_per_region_solarhotwater_list[0]).set_index('Year')
   ref_tam_per_region_solarhotwater.name = 'ref_tam_per_region'
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
-      ref_tam_per_region=ref_tam_per_region_solarhotwater, pds_tam_per_region=None,
-      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-      pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=ref_tam_per_region_solarhotwater, pds_adoption_limits=None,
+                                 pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+                                 pds_adoption_is_single_source=False)
   result = ht.soln_ref_funits_adopted()
   expected = pd.DataFrame(soln_ref_funits_adopted_solarhotwater_list[1:],
       columns=soln_ref_funits_adopted_solarhotwater_list[0]).set_index('Year')
@@ -228,9 +228,9 @@ def test_soln_pds_funits_adopted_single_source():
       columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
   pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      pds_adoption_data_per_region=pds_adoption_data_per_region,
-      pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=True)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region,
+                                 pds_adoption_data_per_region=pds_adoption_data_per_region,
+                                 pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=True)
   result = ht.soln_pds_funits_adopted()
   expected = pd.DataFrame(soln_pds_funits_adopted_single_source_list[1:],
       columns=soln_pds_funits_adopted_single_source_list[0]).set_index('Year')
@@ -255,9 +255,9 @@ def test_soln_pds_funits_adopted_passthru():
       columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
   pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      pds_adoption_data_per_region=pds_adoption_data_per_region,
-      pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region,
+                                 pds_adoption_data_per_region=pds_adoption_data_per_region,
+                                 pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   expected = pds_adoption_trend_per_region
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
@@ -279,9 +279,9 @@ def test_soln_pds_funits_adopted_datapoints_nan():
       columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
   pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      pds_adoption_data_per_region=pds_adoption_data_per_region,
-      pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region,
+                                 pds_adoption_data_per_region=pds_adoption_data_per_region,
+                                 pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   assert result.loc[2014, 'World'] == pytest.approx(112.633033)
   assert result.loc[2014, 'OECD90'] == pytest.approx(1.0)
@@ -307,9 +307,9 @@ def test_soln_pds_funits_adopted_zero_regional():
       columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
   pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      pds_adoption_data_per_region=pds_adoption_data_per_region,
-      pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region,
+                                 pds_adoption_data_per_region=pds_adoption_data_per_region,
+                                 pds_adoption_trend_per_region=pds_adoption_trend_per_region, pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   assert result.loc[2015, 'USA'] == 0
   assert result.loc[2030, 'OECD90'] == 0
@@ -343,7 +343,7 @@ def test_soln_pds_funits_custom_pds_tam_limit():
     pds_tam_per_region_limit_seven.name = 'pds_tam_per_region'
     ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen, ref_datapoints=ht_ref_datapoints,
                                    pds_datapoints=ht_pds_datapoints,
-                                   pds_tam_per_region=pds_tam_per_region_limit_seven)
+                                   pds_adoption_limits=pds_tam_per_region_limit_seven)
     expected = pds_tam_per_region_limit_seven
     expected.name = 'soln_pds_funits_adopted'
     result = ht.soln_pds_funits_adopted()
@@ -367,16 +367,16 @@ def test_soln_pds_funits_adopted_linear_interpolation():
       columns=soln_pds_funits_adopted_cookstoves_list[0]).set_index('Year')
   expected.name = 'soln_ref_funits_adopted'
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region_cookstoves,
-      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-      pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region_cookstoves,
+                                 pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+                                 pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False)
   # ensure that pds_adoption_is_single_source has no effect on Linear interpolation.
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region_cookstoves,
-      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-      pds_adoption_is_single_source=True)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region_cookstoves,
+                                 pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+                                 pds_adoption_is_single_source=True)
   result = ht.soln_pds_funits_adopted()
   pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False)
 
@@ -402,9 +402,9 @@ def test_soln_pds_funits_adopted_linear_interpolation_regional_data_tam_limit():
       columns=soln_pds_funits_adopted_buildingautomation_linear_list[0]).set_index('Year')
   expected.name = 'soln_ref_funits_adopted'
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region_buildingautomation,
-      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-      pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region_buildingautomation,
+                                 pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+                                 pds_adoption_is_single_source=False)
   result = ht.soln_pds_funits_adopted()
   pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False)
 
@@ -422,20 +422,20 @@ def test_soln_pds_funits_adopted_s_curve():
       columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
   pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      pds_adoption_data_per_region=None,
-      pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-      pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region,
+                                 pds_adoption_data_per_region=None,
+                                 pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+                                 pds_adoption_is_single_source=False)
   expected = pds_adoption_trend_per_region.copy(deep=True)
   expected.name = 'soln_ref_funits_adopted'
   result = ht.soln_pds_funits_adopted()
   pd.testing.assert_frame_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
   # ensure that pds_adoption_is_single_source has no effect on S-Curve interpolation.
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=None, pds_tam_per_region=pds_tam_per_region,
-      pds_adoption_data_per_region=None,
-      pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-      pds_adoption_is_single_source=True)
+                                 ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region,
+                                 pds_adoption_data_per_region=None,
+                                 pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+                                 pds_adoption_is_single_source=True)
   result = ht.soln_pds_funits_adopted()
   pd.testing.assert_frame_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
 
@@ -463,10 +463,10 @@ def test_ref_adoption_use_pds_years_and_vice_versa():
       columns=pds_adoption_trend_per_region_list[0], dtype=np.float64).set_index('Year')
   pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=pds_datapoints,
-      ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-      pds_adoption_data_per_region=pds_adoption_data_per_region,
-      pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-      pds_adoption_is_single_source=True)
+                                 ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+                                 pds_adoption_data_per_region=pds_adoption_data_per_region,
+                                 pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+                                 pds_adoption_is_single_source=True)
   ref_expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
       columns=soln_ref_funits_adopted_list[0]).set_index('Year')
   ref_expected.name = 'soln_ref_funits_adopted'
@@ -498,9 +498,9 @@ def test_soln_ref_funits_adopted_regional_sums_buildingautomation():
       columns=ref_tam_per_region_buildingautomation_list[0]).set_index('Year')
   ref_tam_per_region_buildingautomation.name = 'ref_tam_per_region'
   ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
-      ref_tam_per_region=ref_tam_per_region_buildingautomation, pds_tam_per_region=None,
-      pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-      pds_adoption_is_single_source=False)
+                                 ref_adoption_limits=ref_tam_per_region_buildingautomation, pds_adoption_limits=None,
+                                 pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+                                 pds_adoption_is_single_source=False)
   result = ht.soln_ref_funits_adopted()
   expected = pd.DataFrame(soln_ref_funits_adopted_buildingautomation_list[1:],
       columns=soln_ref_funits_adopted_buildingautomation_list[0]).set_index('Year')

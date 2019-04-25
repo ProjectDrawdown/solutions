@@ -313,11 +313,11 @@ class LandfillMethane:
       columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
           'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']).set_index('Year')
     self.ht = helpertables.HelperTables(ac=self.ac,
-        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
-        pds_adoption_data_per_region=self.ad.adoption_data_per_region(),
-        pds_adoption_trend_per_region=self.ad.adoption_trend_per_region(),
-        pds_adoption_is_single_source=self.ad.adoption_is_single_source())
+                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+                                        pds_adoption_data_per_region=self.ad.adoption_data_per_region(),
+                                        pds_adoption_trend_per_region=self.ad.adoption_trend_per_region(),
+                                        pds_adoption_is_single_source=self.ad.adoption_is_single_source())
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

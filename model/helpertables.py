@@ -13,9 +13,9 @@ import pandas as pd
 class HelperTables:
     """ Implementation for the Helper Tables module. """
 
-    def __init__(self, ac, pds_adoption_data_per_region, ref_datapoints, pds_datapoints, ref_tam_per_region=None,
-                 pds_tam_per_region=None, pds_adoption_trend_per_region=None, pds_adoption_is_single_source=False,
-                 ref_adoption_data_per_region=None):
+    def __init__(self, ac, pds_adoption_data_per_region, ref_datapoints, pds_datapoints, ref_adoption_limits=None,
+                 pds_adoption_limits=None, pds_adoption_trend_per_region=None,
+                 pds_adoption_is_single_source=False, ref_adoption_data_per_region=None):
         """
         HelperTables.
            Arguments:
@@ -25,10 +25,11 @@ class HelperTables:
                Europe, Latin America, etc).
              ref_datapoints: a DataFrame with columns per region and two rows for two years of data.
              pds_datapoints: a DataFrame with columns per region and two rows for two years of data.
-             ref_tam_per_region: dataframe of total addressable market per major
+             ref_adoption_limits: dataframe of total addressable market or total land area per major
                region for the Reference scenario.
-             pds_tam_per_region: dataframe of total addressable market per major
+             pds_adoption_limits: dataframe of total addressable market or total land area per major
                region for the PDS scenario.
+             tla_per_region: dataframe of total land area per region
              pds_adoption_trend_per_region: adoption trend (predictions using 2nd Poly, 3rd Poly, etc
                as configured in the solution) with one column per region
              pds_adoption_is_single_source (bool): whether the adoption data comes from a single source
@@ -41,8 +42,8 @@ class HelperTables:
         self.ac = ac
         self.ref_datapoints = ref_datapoints
         self.pds_datapoints = pds_datapoints
-        self.ref_tam_per_region = ref_tam_per_region
-        self.pds_tam_per_region = pds_tam_per_region
+        self.ref_adoption_limits = ref_adoption_limits
+        self.pds_adoption_limits = pds_adoption_limits
         self.pds_adoption_data_per_region = pds_adoption_data_per_region
         self.pds_adoption_trend_per_region = pds_adoption_trend_per_region
         self.pds_adoption_is_single_source = pds_adoption_is_single_source
@@ -67,17 +68,17 @@ class HelperTables:
           last_year = 2060
           adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints)
 
-        # cannot exceed tam
-        if self.ref_tam_per_region is not None:
+        # cannot exceed tam or tla
+        if self.ref_adoption_limits is not None:
             for col in adoption.columns:
-                adoption[col] = adoption[col].combine(self.ref_tam_per_region[col].fillna(0.0), min)
+                adoption[col] = adoption[col].combine(self.ref_adoption_limits[col].fillna(0.0), min)
 
         if self.ac.soln_ref_adoption_regional_data:
             adoption.loc[:, 'World'] = adoption[['OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
                 'Middle East and Africa', 'Latin America']].sum(axis=1)
-            if self.ref_tam_per_region is not None:
+            if self.ref_adoption_limits is not None:
                 adoption['World'] = adoption['World'].combine(
-                        self.ref_tam_per_region['World'].fillna(0.0), min)
+                        self.ref_adoption_limits['World'].fillna(0.0), min)
 
         # Where we have data, use the actual data not the interpolation. Excel model does this
         # even in Custom REF Adoption case.
@@ -142,18 +143,18 @@ class HelperTables:
         elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
             raise NotImplementedError('Custom S-Curve support not implemented')
 
-        # cannot exceed the total addressable market
-        if self.pds_tam_per_region is not None:
+        # cannot exceed the total addressable market or tla
+        if self.pds_adoption_limits is not None:
             for col in adoption.columns:
-                adoption[col] = adoption[col].combine(self.pds_tam_per_region[col].fillna(0.0), min)
+                adoption[col] = adoption[col].combine(self.pds_adoption_limits[col].fillna(0.0), min)
 
         if self.ac.soln_pds_adoption_regional_data:
             adoption.loc[:, 'World'] = adoption.loc[:, ['OECD90', 'Eastern Europe',
                 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America']].sum(axis=1)
-            if self.pds_tam_per_region is not None:
+            if self.pds_adoption_limits is not None:
                 for col in adoption.columns:
                     adoption['World'] = adoption['World'].combine(
-                            self.pds_tam_per_region['World'].fillna(0.0), min)
+                            self.pds_adoption_limits['World'].fillna(0.0), min)
 
         if not suppress_override and self.ac.pds_adoption_use_ref_years:
             y = self.ac.pds_adoption_use_ref_years
