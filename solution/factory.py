@@ -1,5 +1,6 @@
 """Return objects for solutions."""
 
+from solution import afforestation
 from solution import airplanes
 from solution import altcement
 from solution import bikeinfrastructure
@@ -64,6 +65,7 @@ from solution import waveandtidal
 
 def all_solutions_scenarios():
     everything = {}
+    everything['afforestation'] = (afforestation.Afforestation, list(afforestation.scenarios.keys()))
     everything['airplanes'] = (airplanes.Airplanes, list(airplanes.scenarios.keys()))
     everything['altcement'] = (altcement.AlternativeCement, list(altcement.scenarios.keys()))
     everything['bikeinfrastructure'] = (bikeinfrastructure.BikeInfrastructure,

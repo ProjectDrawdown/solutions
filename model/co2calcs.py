@@ -11,6 +11,8 @@ from model.advanced_controls import SOLUTION_CATEGORY
 
 THERMAL_MOISTURE_REGIMES = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
                             'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
+C_TO_CO2EQ = 3.666
+
 
 class CO2Calcs:
   """CO2 Calcs module.
@@ -140,6 +142,8 @@ class CO2Calcs:
           m['World'] = m['World'].add(self.soln_pds_direct_co2_emissions_saved['World'].loc[s:e], fill_value=0)
           m['World'] = m['World'].add(self.soln_pds_direct_n2o_co2_emissions_saved['World'].loc[s:e], fill_value=0)
           m['World'] = m['World'].add(self.soln_pds_direct_ch4_co2_emissions_saved['World'].loc[s:e], fill_value=0)
+      if self.annual_land_area_harvested is not None:
+        m = m.sub(self.direct_emissions_from_harvesting().loc[s:e], fill_value=0)
       if self.co2eq_reduced_grid_emissions() is not None:
         m = m.add(self.co2eq_reduced_grid_emissions().loc[s:e], fill_value=0)
       if self.co2eq_increased_grid_usage_emissions() is not None:
@@ -160,7 +164,6 @@ class CO2Calcs:
     df = pd.DataFrame(columns=cols, index=index, dtype=np.float64)
     set_regions_from_distribution = False
 
-    c_to_co2eq = 3.666
     if self.tot_red_in_deg_land is not None:
       # regrowth calculation
       if self.ac.delay_regrowth_1yr:
@@ -183,7 +186,7 @@ class CO2Calcs:
       else:
         undeg_seq_rate = self.ac.seq_rate_global
         deg_seq_rate = self.ac.seq_rate_global * self.ac.global_multi_for_regrowth
-      df['All'] = c_to_co2eq * (undeg_land * undeg_seq_rate + (pds_deg_land - ref_deg_land) * deg_seq_rate)
+      df['All'] = C_TO_CO2EQ * (undeg_land * undeg_seq_rate + (pds_deg_land - ref_deg_land) * deg_seq_rate)
       set_regions_from_distribution = True
     else:
       # simple calculation
@@ -194,13 +197,13 @@ class CO2Calcs:
       if pd.isna(self.ac.seq_rate_global):
         for tmr in THERMAL_MOISTURE_REGIMES:
           seq_rate = pd.Series(self.ac.seq_rate_per_regime).loc[tmr]
-          df[tmr] = (c_to_co2eq * net_land * seq_rate * disturbance *
-                  self.land_distribution.loc['Global', tmr] /
-                  self.land_distribution.loc['Global', 'All'])
+          df[tmr] = (C_TO_CO2EQ * net_land * seq_rate * disturbance *
+                     self.land_distribution.loc['Global', tmr] /
+                     self.land_distribution.loc['Global', 'All'])
         df['All'] = df.fillna(0.0).sum(axis=1)
         set_regions_from_distribution = False
       else:
-        df['All'] = c_to_co2eq * net_land * self.ac.seq_rate_global * disturbance
+        df['All'] = C_TO_CO2EQ * net_land * self.ac.seq_rate_global * disturbance
         set_regions_from_distribution = True
 
     if set_regions_from_distribution:
@@ -423,6 +426,16 @@ class CO2Calcs:
       result -= self.soln_net_annual_funits_adopted * self.ac.conv_indirect_co2_per_unit
     result /= 1000000
     return result
+
+  @lru_cache()
+  def direct_emissions_from_harvesting(self):
+    """Net Land Units [Mha]* (Carbon Sequestration Rate [t C/ha/yr] * Years of Sequestration [yr]-
+       Carbon Stored even After Harvesting/Clearing [t C/ha]) * (CO2 per C)
+       Afforestation 'CO2 Calcs'!CU365:DD411"""
+    return self.annual_land_area_harvested * (self.ac.seq_rate_global * self.ac.harvest_frequency -
+                                             self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
+
+
 
 
 # The following formulae come from the SolarPVUtil Excel implementation of 27Aug18.

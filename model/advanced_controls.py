@@ -288,6 +288,9 @@ class AdvancedControls:
     "Advanced Controls"!G92 (Land models)
   use_custom_tla: bool indicating whether to use custom TLA data instead of Drawdown land allocation
     "Advanced Controls"!E54 (Land models)
+  harvest_frequency (float): new growth is harvested/cleared every ... (years) Afforestation "Advanced Controls"!B187
+  carbon_not_emitted_after_harvesting (float): Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing
+    Afforestation "Advanced Controls"!H187
 
   delay_protection_1yr (bool): Delay Impact of Protection by 1 Year? (Leakage)
     ForestProtection "Advanced Controls"!B200 (land models)
@@ -393,6 +396,8 @@ class AdvancedControls:
                yield_from_conv_practice=None,
                yield_gain_from_conv_to_soln=None,
                use_custom_tla=None,
+               harvest_frequency=None,
+               carbon_not_emitted_after_harvesting=None,
 
                delay_protection_1yr=None,
                delay_regrowth_1yr=None,
@@ -523,6 +528,9 @@ class AdvancedControls:
     self.yield_gain_from_conv_to_soln = self._substitute_vma(yield_gain_from_conv_to_soln,
                                             vma_title='Yield Gain (% Increase from CONVENTIONAL to SOLUTION)')
     self.use_custom_tla = use_custom_tla
+    self.harvest_frequency = harvest_frequency
+    self.carbon_not_emitted_after_harvesting = self._substitute_vma(carbon_not_emitted_after_harvesting,
+                                      vma_title='Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing')
 
     self.delay_protection_1yr = delay_protection_1yr
     self.delay_regrowth_1yr = delay_regrowth_1yr

@@ -501,6 +501,14 @@ def test_co2eq_net_indirect_emissions_iunits():
           columns=co2eq_net_indirect_emissions_iunits_electricvehicles_list[0]).set_index("Year")
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_direct_emissions_from_harvesting():
+    land_harvested = pd.read_csv(datadir.joinpath('afforestation_harvest.csv'), index_col=0)
+    expected = pd.read_csv(datadir.joinpath('afforestation_co2_from_harvest.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(seq_rate_global=5.07437553005968, harvest_frequency=20.,
+                                            carbon_not_emitted_after_harvesting=50.696244944853)
+    c2 = co2calcs.CO2Calcs(ac=ac, annual_land_area_harvested=land_harvested)
+    pd.testing.assert_frame_equal(c2.direct_emissions_from_harvesting(), expected, check_dtype=False)
+
 def test_co2_sequestered_global_simple():
     """ Test vals from Tropical Forests """
     ac = advanced_controls.AdvancedControls(seq_rate_global=4.150868085)
