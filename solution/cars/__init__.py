@@ -326,7 +326,7 @@ class Cars:
     self.ht = helpertables.HelperTables(ac=self.ac,
         ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
         pds_adoption_data_per_region=pds_adoption_data_per_region,
-        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
         pds_adoption_trend_per_region=pds_adoption_trend_per_region,
         pds_adoption_is_single_source=pds_adoption_is_single_source)
 
