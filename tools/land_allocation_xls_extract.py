@@ -24,7 +24,8 @@ class LandAllocationReader:
             cell_to_offsets('EC18')  # rainfed croplands
         ]
         self.thermal_moisture_regimes = ['Tropical-Humid', 'Temperate_Boreal-Humid', 'Tropical-Semi-Arid',
-                                    'Temperate_Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
+
+                                         'Temperate_Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
         self.df_dict = None
         self._make_df_template()
 
