@@ -1,0 +1,61 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Potter, Christopher, et al. ",http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1020&context=nasapub,USA,US,,1  - Peer Reviewed,,,,gC/m2/yr,0.0,t C/ha/yr,,Refer total value of table 2,
+van Minnen 2008,https://cbmjournal.springeropen.com/articles/10.1186/1750-0680-3-3,OECD90,,,1  - Peer Reviewed,,,,Mg C/ha/yr,,t C/ha/yr,,Refer page 8; Afforestation rate in India,
+Dewar and Cannell 1992,http://treephys.oxfordjournals.org/content/11/1/49.short,OECD90,UK,,1  - Peer Reviewed,,,,Mg C/ha/yr,,t C/ha/yr,,Refer abstract; The rate of carbon storage during the first rotation in most plantations was in the range 2-5 Mg C ha(-1) year(-1).,
+Sathaye et al 2001,https://pubarchive.lbl.gov/islandora/object/ir:117767/datastream/PDF/download/citation.pdf,Asia (Sans Japan),China,,1  - Peer Reviewed,,,,Mg C/ha/yr,,t C/ha/yr,,Refer second para of section 2.1,
+Sathaye et al 2001,https://pubarchive.lbl.gov/islandora/object/ir:117767/datastream/PDF/download/citation.pdf,Middle East and Africa,Tanzania,,1  - Peer Reviewed,,,,Mg C/ha/yr,,t C/ha/yr,,Refer second para of section 2.1,
+Nosetto et al 2006,http://gea.unsl.edu.ar/pdfs/Nosetto_JAE_2006.pdf,Latin America,Argentina,,1  - Peer Reviewed,,,,Mg C/ha/yr,,t C/ha/yr,,Refer abstract,
+Redondo-Brenes and Montagnini,http://www.sciencedirect.com/science/article/pii/S0378112706003872,Latin America,Costa Rica,,1  - Peer Reviewed,,,,Mg C/ha/yr,,t C/ha/yr,,Refer table 4; plantation 1; mix of tree species,
+Redondo-Brenes and Montagnini,http://www.sciencedirect.com/science/article/pii/S0378112706003872,Latin America,Costa Rica,,1  - Peer Reviewed,,,,Mg C/ha/yr,,t C/ha/yr,,Refer table 4; plantation 2; mix of tree species,
+Redondo-Brenes and Montagnini,http://www.sciencedirect.com/science/article/pii/S0378112706003872,Latin America,Costa Rica,,1  - Peer Reviewed,,,,Mg C/ha/yr,,t C/ha/yr,,Refer table 4; plantation 3; mix of tree species,
+Potter et al 2007; cited Dixon1995,http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1020&context=nasapub,World,,,1  - Peer Reviewed,,,,t C /ac/yr,,t C/ha/yr,,Refer second para on page 324; low value,
+Potter et al 2007; cited Dixon1995,http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1020&context=nasapub,World,,,1  - Peer Reviewed,,,,t C /ac/yr,,t C/ha/yr,,Refer second para on page 324; high value,
+Potter et al 2007,http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1020&context=nasapub,World,,,1  - Peer Reviewed,,,,t C/ha/yr,,t C/ha/yr,,Refer table 1; Selected case studies of afforestation carbon gains in the United States,
+Potter et al 2007,http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1020&context=nasapub,World,,,1  - Peer Reviewed,,,,t C/ha/yr,,t C/ha/yr,,Refer table 1; Selected case studies of afforestation carbon gains in the United States,
+Potter et al 2007,http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1020&context=nasapub,World,,,1  - Peer Reviewed,,,,t C/ha/yr,,t C/ha/yr,,Refer table 1; Selected case studies of afforestation carbon gains in the United States,
+Potter et al 2007,http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1020&context=nasapub,World,,,1  - Peer Reviewed,,,,t C/ha/yr,,t C/ha/yr,,Refer table 1; Selected case studies of afforestation carbon gains in the United States,
+Potter et al 2007,http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1020&context=nasapub,World,,,1  - Peer Reviewed,,,,t C/ha/yr,,t C/ha/yr,,Refer table 1; Selected case studies of afforestation carbon gains in the United States,
+IPCC,http://www.ipcc.ch/ipccreports/sres/land_use/index.php?idp=151,World,,Temperate/Boreal-Humid,2 - Public Sector/ Multilateral Agency,,,,t C /ac/yr,,t C/ha/yr,,Refer table 3,
+IPCC,http://www.ipcc.ch/ipccreports/sres/land_use/index.php?idp=151,World,,Temperate/Boreal-Humid,2 - Public Sector/ Multilateral Agency,,,,t C /ac/yr,,t C/ha/yr,,Refer table 3,
+IPCC,http://www.ipcc.ch/ipccreports/sres/land_use/index.php?idp=151,World,,Temperate/Boreal-Humid,2 - Public Sector/ Multilateral Agency,,,,t C /ac/yr,,t C/ha/yr,,Refer table 3,
+IPCC,http://www.ipcc.ch/ipccreports/sres/land_use/index.php?idp=151,World,,Temperate/Boreal-Humid,2 - Public Sector/ Multilateral Agency,,,,t C /ac/yr,,t C/ha/yr,,Refer table 3,
+IPCC,http://www.ipcc.ch/ipccreports/sres/land_use/index.php?idp=151,World,,Tropical-Humid,2 - Public Sector/ Multilateral Agency,,,,t C /ac/yr,,t C/ha/yr,,Refer table 3,
+IPCC,http://www.ipcc.ch/ipccreports/sres/land_use/index.php?idp=151,World,,Tropical-Humid,2 - Public Sector/ Multilateral Agency,,,,t C /ac/yr,,t C/ha/yr,,Refer table 3,
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"JAPAN OVERSEAS FORESTRY CONSULTANTS ASSOCIATION 2007; Baseline study for Afforestation and Reforestation Clean Development
+Mechanism ",http://www.jofca.or.jp/CDM/2007-cdm-report-e.pdf,World,,,4 - Independently Verified,,,,t C /ac/yr,,t C/ha/yr,,"Refer page 162, Carbon sequestration case by main planting tree species of Ecuador in Guamote
+municipality, Chimborazo district",
+"IPCC, Chapter 11",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_chapter11.pdf,World,,,2 - Public Sector/ Multilateral Agency,,,,t C /ac/yr,,t C/ha/yr,,Refer table 11.4,
+,,,,,,,,,t C /ac/yr,,t C/ha/yr,,,

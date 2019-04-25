@@ -359,6 +359,9 @@ def get_land_scenarios(wb):
       if sr_tab.cell_value(row + 175, 3) == 'Growth Rate of Land Degradation':
         s['global_multi_for_regrowth'] = convert_sr_float(sr_tab.cell_value(row + 178, 4))
         s['degradation_rate'] = link_vma(sr_tab.cell_value(row + 175, 4))
+      elif sr_tab.cell_value(row + 175, 3) == 'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing':
+        s['carbon_not_emitted_after_harvesting'] = link_vma(sr_tab.cell_value(row + 175, 4))
+
       s['disturbance_rate'] = link_vma(sr_tab.cell_value(row + 176, 4))
 
       assert sr_tab.cell_value(row + 188, 1) == 'General Land Inputs'
@@ -366,7 +369,8 @@ def get_land_scenarios(wb):
         s['delay_protection_1yr'] = convert_bool(sr_tab.cell_value(row + 189, 4))
         s['delay_regrowth_1yr'] = convert_bool(sr_tab.cell_value(row + 190, 4))
         s['include_unprotected_land_in_regrowth_calcs'] = convert_bool(sr_tab.cell_value(row + 191, 4))
-
+      elif sr_tab.cell_value(row + 189, 3) == 'New Growth is Harvested/Cleared Every':
+        s['harvest_frequency'] = convert_sr_float(sr_tab.cell_value(row + 189, 4))
       scenarios[scenario_name] = s
   return scenarios
 
@@ -500,7 +504,10 @@ def write_scenario(f, s):
     oneline(f=f, s=s, names=['disturbance_rate'], prefix=prefix, suffix='\n')
     oneline(f=f, s=s, names=['delay_protection_1yr'], prefix=prefix)
     oneline(f=f, s=s, names=['delay_regrowth_1yr'], prefix=prefix)
-    oneline(f=f, s=s, names=['include_unprotected_land_in_regrowth_calcs'], prefix=prefix, suffix='\n')
+    oneline(f=f, s=s, names=['include_unprotected_land_in_regrowth_calcs'], prefix=prefix)
+    oneline(f=f, s=s, names=['harvest_frequency'], prefix=prefix)
+    oneline(f=f, s=s, names=['carbon_not_emitted_after_harvesting'], prefix=prefix)
+    f.write('\n')
 
 
 def xls(tab, row, col):
@@ -973,7 +980,9 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
   f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
   f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
   if not is_land:
-    f.write("        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
+    f.write("        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,\n")
+  else:
+    f.write("        ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,\n")
   if has_custom_ref_ad:
     f.write("        ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
   f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
@@ -1071,7 +1080,7 @@ def write_oc(f, wb, is_land=False):
   f.write('\n')
 
 
-def write_c2_c4(f, is_rrs=True, is_protect=False):
+def write_c2_c4(f, is_rrs=True, is_protect=False, has_harvest=False):
   """Write out the CO2 Calcs and CH4 Calcs modules for this solution class."""
   f.write("    self.c4 = ch4calcs.CH4Calcs(ac=self.ac,\n")
   if not is_rrs:
@@ -1103,6 +1112,8 @@ def write_c2_c4(f, is_rrs=True, is_protect=False):
       f.write("        tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),\n")
       f.write("        pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),\n")
       f.write("        ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),\n")
+    if has_harvest:
+      f.write("        annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),\n")
     f.write("        land_distribution=self.ae.get_land_distribution())\n")
   f.write("\n")
 
@@ -1464,7 +1475,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   f.write("\n")
 
   has_default_pds_ad = has_custom_pds_ad = has_default_ref_ad = has_custom_ref_ad = False
-  has_s_curve_pds_ad = has_linear_pds_ad = use_custom_tla = is_protect = False
+  has_s_curve_pds_ad = has_linear_pds_ad = use_custom_tla = is_protect = has_harvest = False
   for s in scenarios.values():
     if s.get('soln_pds_adoption_basis', '') == 'Existing Adoption Prognostications':
       has_default_pds_ad = True
@@ -1483,6 +1494,8 @@ def output_solution_python_file(outputdir, xl_filename, classname):
       use_custom_tla = True
     if 'delay_protection_1yr' in s.keys():
       is_protect = True
+    if 'carbon_not_emitted_after_harvesting' in s.keys():
+      has_harvest = True
 
   f.write('scenarios = {\n')
   for name, s in scenarios.items():
@@ -1570,7 +1583,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
   write_fc(f=f, wb=wb)
   write_oc(f=f, wb=wb, is_land=is_land)
 
-  write_c2_c4(f=f, is_rrs=is_rrs, is_protect=is_protect)
+  write_c2_c4(f=f, is_rrs=is_rrs, is_protect=is_protect, has_harvest=has_harvest)
 
   if is_rrs:
     f.write("    self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],\n")

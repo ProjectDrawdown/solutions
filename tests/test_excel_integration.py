@@ -20,6 +20,7 @@ import xlrd
 
 xlwings = pytest.importorskip("xlwings")
 
+from solution import afforestation
 from solution import airplanes
 from solution import altcement
 from solution import bikeinfrastructure
@@ -605,17 +606,18 @@ def verify_first_cost(obj, verify=None):
   """Verified tables in First Cost."""
   if verify is None:
     verify = {}
+
   verify['First Cost'] = [
-      ('C37:C82', obj.fc.soln_pds_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), None),
+      ('C37:C82', obj.fc.soln_pds_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
       #('D37:D82', checked by 'Unit Adoption Calculations'!AH137
-      ('E37:E82', obj.fc.soln_pds_annual_world_first_cost().loc[2015:].to_frame().reset_index(drop=True), None),
-      ('F37:F82', obj.fc.soln_pds_cumulative_install().loc[2015:].to_frame().reset_index(drop=True), None),
-      ('L37:L82', obj.fc.soln_ref_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), None),
+      ('E37:E82', obj.fc.soln_pds_annual_world_first_cost().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
+      ('F37:F82', obj.fc.soln_pds_cumulative_install().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
+      ('L37:L82', obj.fc.soln_ref_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
       #('M37:M82', checked by 'Unit Adoption Calculations'!AH199
       ('N37:N82', obj.fc.soln_ref_annual_world_first_cost().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
-      ('O37:O82', obj.fc.conv_ref_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), None),
+      ('O37:O82', obj.fc.conv_ref_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
       #('P37:P82', checked by 'Unit Adoption Calculations'!AH253
-      ('Q37:Q82', obj.fc.conv_ref_annual_world_first_cost().loc[2015:].to_frame().reset_index(drop=True), None),
+      ('Q37:Q82', obj.fc.conv_ref_annual_world_first_cost().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
       ('R37:R82', obj.fc.ref_cumulative_install().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent")
       ]
   return verify
@@ -683,9 +685,10 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
 
   # # similar to operating cost, some co2 calcs values are very slightly offset from zero due to floating point errors
   # # we mask the problematic tables when they are close to 0
-  # s = obj.c2.co2eq_ppm_calculator().reset_index()
-  # near_zero_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
-  near_zero_mask = None
+  s = obj.c2.co2eq_mmt_reduced().reset_index()
+  near_zero_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
+  if regional_mask is not None:
+    near_zero_mask = near_zero_mask | regional_mask
 
   if is_rrs:
     verify['CO2 Calcs'] = [
@@ -712,11 +715,11 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
           ('AP345:AZ390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)])
   else:
     verify['CO2 Calcs'] = [
-        ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), regional_mask),
+        ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), near_zero_mask),
         ('A121:G166', obj.c2.co2_sequestered_global().reset_index().drop(columns=['Global Arctic']), None),
         ('A173:AW218', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), None),
         # CO2 eq table has an N20 column for LAND xls sheets that doesn't appear to be used, so we ignore it
-        ('A225:C270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CO2-eq PPM', 'CO2 PPM']].reset_index(), near_zero_mask),
+        ('A225:C270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CO2-eq PPM', 'CO2 PPM']].reset_index(), None),
         ('E225:G270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CH4 PPB', 'CO2 RF', 'CH4 RF']].reset_index(drop=True),
             near_zero_mask)
         # All other tables are not implemented as they appear to be all 0
@@ -895,6 +898,18 @@ def check_excel_against_object(obj, workbook, scenario, verify):
       description = descr_base + sheetname + " " + cellrange
       compare_dataframes(actual_df=actual_df, expected_df=expected_df,
           description=description, mask=mask)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('afforestation', 'testdata', 'Drawdown-Afforestation_BioS_v1.1_4Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Afforestation_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in afforestation.scenarios.keys():
+    obj = afforestation.Afforestation(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
 @pytest.mark.integration

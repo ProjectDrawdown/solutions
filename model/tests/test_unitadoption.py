@@ -870,6 +870,15 @@ def test_net_land_units_after_emissions_lifetime():
   assert result.loc[2046, 'Eastern Europe'] == pytest.approx(60.326701097136)
   assert result.loc[2059, 'Middle East and Africa'] == pytest.approx(56.865588505200)
 
+def test_soln_pds_annual_land_area_harvested():
+    new_land_units_reqd = pd.read_csv(this_dir.parents[0].joinpath('data', 'afforestation_nlur.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(harvest_frequency=20)
+    expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'afforestation_harvest.csv'), index_col=0)
+    with mock.patch.object(unitadoption.UnitAdoption, 'soln_pds_new_iunits_reqd', new=lambda x: new_land_units_reqd):
+        ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=None)
+        pd.testing.assert_frame_equal(ua.soln_pds_annual_land_area_harvested().loc[:, ['World']],
+                                      expected.loc[:, ['World']])
+
 def test_direct_co2eq_emissions_saved_land_annual_not_protect():
   soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
       columns=net_annual_land_units_adopted[0]).set_index('Year')

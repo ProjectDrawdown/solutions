@@ -445,6 +445,7 @@ class UnitAdoption:
     result.name = "soln_net_annual_funits_adopted"
     return result
 
+  @lru_cache()
   def net_annual_land_units_adopted(self):
     """Similar to soln_net_annual_funits_adopted, for Land models.
        Conservation Agriculture 'Unit Adoption Calculations'!B251:L298
@@ -641,6 +642,37 @@ class UnitAdoption:
     return result
 
   @lru_cache()
+  def soln_pds_annual_land_area_harvested(self):
+    """Land Area Harvested is used to estimate the impact of harvesting the product of the land on
+       Carbon Sequestration (CO2 Calcs) and on Emissions (CO2 Calcs):
+
+       Since some land is cleared every x years, it cannot sequester Carbon in that year, not until
+       the land is fully re-planted by the following year. When land is cleared, there are emissions created from at
+       least some of the material on the land, these emissions are calculated based on this table.
+
+       There is a year's delay before the x-year harvesting frequency begins due to planting time in the first year.
+       After that, the x-year frequency continues.
+       Afforestation 'Unit Adoption Calculations'!EH135:ER182 """
+    funits = self.soln_pds_new_iunits_reqd()
+    result = pd.DataFrame(0, index=funits.index.copy(), columns=funits.columns.copy())
+    if self.ac.harvest_frequency is None:
+      return result
+    first_year = result.first_valid_index() + 1
+    for year, row in result.iterrows():
+      if (year - first_year) > self.ac.harvest_frequency:
+        year_last_harvested = year - 1
+        total_amount_harvested = 0
+        for _ in range(100):  # arbitrary finite range
+          year_last_harvested -= self.ac.harvest_frequency
+          if year_last_harvested < first_year:
+            break
+          total_amount_harvested += funits.loc[year_last_harvested]
+        else:
+          raise ValueError('Check value for harvest frequency: {}'.format(self.ac.harvest_frequency))
+        result.loc[year] = total_amount_harvested
+    result.name = 'annual_land_harvested_in_pds'
+    return result
+
   def _direct_emissions_saved_land(self, ghg, ghg_rplu, ghg_rplu_rate):
     """Emissions avoided:
       Args:

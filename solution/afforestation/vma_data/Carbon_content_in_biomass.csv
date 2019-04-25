@@ -1,0 +1,9 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Woolf et al 2010,https://www.nature.com/articles/ncomms1053.pdf,World,,,,,,,%,,%,,,
+"FAO, Carbon content in biomass",http://www.fao.org/forestry/17111/en/,World,,,,,,,%,,%,,Refer section 5.1; Low,
+"FAO, Carbon content in biomass",http://www.fao.org/forestry/17111/en/,World,,,,,,,%,,%,,Refer section 5.1; High,
+Jain et al 2010,https://www.fs.fed.us/rm/pubs/rmrs_p061/rmrs_p061_039_059.pdf,USA,,,,,,,%,,%,,Refer table 9,
+Thomas and Martin 2012,http://www.mdpi.com/1999-4907/3/2/332,World,,,,,,,%,,%,,"Refer abstract, tropical species",
+Thomas and Martin 2012,http://www.mdpi.com/1999-4907/3/2/332,World,,,,,,,%,,%,,"Refer abstract, sub-tropical/mediterraneanspecies",
+Thomas and Martin 2012,http://www.mdpi.com/1999-4907/3/2/332,World,,,,,,,%,,%,,"Refer abstract, temperate/boreal species",
+Slade et al 2011,http://www.ukerc.ac.uk/publications/energy-from-biomass-the-size-of-the-global-resource.html,World,,,,,,,%,,%,,Page number 10,
