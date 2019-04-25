@@ -56,7 +56,8 @@ class CustomAdoptionReader:
                 if c == 0:
                     # check once that years are correct
                     assert int(self.sheet.cell_value(row1 + 2 + r, col1)) == year, 'row mismatch'
-                col[year] = convert_float(self.sheet.cell_value(row1 + 2 + r, col1 + 1 + c), return_nan=True)
+                col[year] = convert_float(self.sheet.cell_value(row1 + 2 + r, col1 + 1 + c),
+                                          return_nan=True)
             df[region] = col
         return df
 

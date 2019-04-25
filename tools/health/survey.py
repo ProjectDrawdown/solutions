@@ -20,7 +20,7 @@ for soln in all_solutions_scenarios.keys():
             pds = s.tm.pds_tam_per_region()
             world = pds.loc[2050, 'World']
             regional_sum = pds.loc[2050, ['OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America']].sum()
+                                          'Middle East and Africa', 'Latin America']].sum()
             fraction = regional_sum / world if world else np.nan
             results.loc[name, 'RegionalFractionTAM'] = fraction
         else:
@@ -29,7 +29,7 @@ for soln in all_solutions_scenarios.keys():
         pds = s.ht.soln_pds_funits_adopted()
         world = pds.loc[2050, 'World']
         regional_sum = pds.loc[2050, ['OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-            'Middle East and Africa', 'Latin America']].sum()
+                                      'Middle East and Africa', 'Latin America']].sum()
         fraction = regional_sum / world if world else np.nan
         results.loc[name, 'RegionalFractionAdoption'] = fraction
 
@@ -38,9 +38,8 @@ for soln in all_solutions_scenarios.keys():
         slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
         results.loc[name, 'Rvalue'] = r_value
 
-
 (_, outfile) = tempfile.mkstemp(prefix='survey_', suffix='.csv',
-        dir=os.path.join('data', 'health'))
+                                dir=os.path.join('data', 'health'))
 outdata = results.to_csv(path_or_buf=outfile)
 
 # print the file name on exit, allows the calling script to decide whether to check it in.

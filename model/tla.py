@@ -10,6 +10,7 @@ from functools import lru_cache
 import pandas as pd
 import warnings
 
+
 def tla_per_region(land_dist, custom_world_values=None):
     """
     A utility function to convert the land distribution output from AEZ Data into a dataframe broken
@@ -26,7 +27,8 @@ def tla_per_region(land_dist, custom_world_values=None):
     Returns:
         df: DataFrame for use with UnitAdoption
     """
-    regions = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']
+    regions = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
+               'China', 'India', 'EU', 'USA']
     index = pd.Index(data=list(range(2014, 2061)), name='Year')
     df = pd.DataFrame(index=index)
     for region in regions:
@@ -70,4 +72,3 @@ class CustomTLA:
 
 if __name__ == '__main__':
     pass
-

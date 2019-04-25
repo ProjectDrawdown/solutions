@@ -20,11 +20,14 @@ pd.set_option('display.expand_frame_repr', False)
 
 class AEZ:
     """ AEZ Data module """
+
     def __init__(self, solution_name):
         self.solution_name = solution_name
         self.thermal_moisture_regimes = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
+
                                          'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
         self.regions = ['OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
+
                         'Global', 'China', 'India', 'EU', 'USA']
         self._populate_solution_land_allocation()
         self._get_applicable_zones()
@@ -48,7 +51,7 @@ class AEZ:
             for col in df:
                 if col.startswith('AEZ29'):  # this zone is not included in land allocation
                     continue
-                aez_path = tmr_path.joinpath(to_filename(col) +'.csv')
+                aez_path = tmr_path.joinpath(to_filename(col) + '.csv')
                 la_df = pd.read_csv(aez_path, index_col=0)
                 total_perc_allocated = la_df.loc[self.solution_name]['Total % allocated']
                 if total_perc_allocated > 0:
@@ -76,7 +79,8 @@ class AEZ:
         """
         self.world_land_alloc_dict = {}
         for tmr in self.thermal_moisture_regimes:
-            df = pd.read_csv(LAND_CSV_PATH.joinpath('world', to_filename(tmr) + '.csv'), index_col=0).drop('Total Area (km2)', 1)
+            df = pd.read_csv(LAND_CSV_PATH.joinpath('world', to_filename(tmr) + '.csv'), index_col=0).drop(
+                'Total Area (km2)', 1)
             self.world_land_alloc_dict[tmr] = df.mul(self.soln_land_alloc_df.loc[tmr], axis=1) / 10000
 
     def _populate_solution_land_distribution(self):
@@ -89,7 +93,8 @@ class AEZ:
         for reg in self.regions:
             for tmr, df in self.world_land_alloc_dict.items():
                 if reg == 'Global':
-                    soln_df.at[reg, tmr] = sum(soln_df[tmr].values[:5])  # sum from soln_df rather than read from df
+                    soln_df.at[reg, tmr] = sum(
+                        soln_df[tmr].values[:5])  # sum from soln_df rather than read from df
                 else:
                     soln_df.at[reg, tmr] = df.loc[reg, self.applicable_zones].sum()
 

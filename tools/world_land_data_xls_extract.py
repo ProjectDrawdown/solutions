@@ -19,7 +19,8 @@ class WorldLandDataReader:
 
         self.first_cell = cell_to_offsets('D4')
         self.thermal_moisture_regimes = ['Tropical-Humid', 'Temperate_Boreal-Humid', 'Tropical-Semi-Arid',
-                                    'Temperate_Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
+
+                                         'Temperate_Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
         self.df_dict = None
         self._make_df_template()
 
@@ -51,7 +52,7 @@ class WorldLandDataReader:
         df = self.df_template.copy(deep=True)
         for i in range(30):
             col = []
-            for j in [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]:   # skip blank row
+            for j in [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]:  # skip blank row
                 col.append(convert_float(self.sheet.cell_value(row1 + j, col1 + i)))
             df[self.columns[i]] = col
         return df
@@ -82,7 +83,7 @@ class WorldLandDataReader:
         self.columns = ['Total Area (km2)']
         index = []
         row, col = self.first_cell
-        for i in [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]:   # skip blank row
+        for i in [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]:  # skip blank row
             index.append(self.sheet.cell_value(row + i, col - 1))
         for i in range(29):
             self.columns.append(self.sheet.cell_value(row - 3, col + 1 + i))

@@ -330,12 +330,12 @@ region_mapping = {
     "Yugoslavia": "Eastern Europe",
     "Zambia": "Middle East and Africa",
     "Zimbabwe": "Middle East and Africa",
-    }
+}
 
 d = json.load(sys.stdin)
 for country in d['objects']['countries1']['geometries']:
-  name = country['properties']['name']
-  region = region_mapping[name]
-  country['dd_region'] = region
+    name = country['properties']['name']
+    region = region_mapping[name]
+    country['dd_region'] = region
 
 json.dump(obj=d, fp=sys.stdout, indent=2)

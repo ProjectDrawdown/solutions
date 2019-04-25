@@ -17,7 +17,8 @@ def test_find_table():
     ca_r = CustomAdoptionReader(thisdir.joinpath('silvopasture_custom_pds_adoption.xlsx'), 'pds')
     ca_r._find_tables()
     assert len(ca_r.table_locations) == 6
-    assert list(ca_r.table_locations.keys())[-1] == 'High growth, linear trend (based on improved pasture area)'
+    assert list(ca_r.table_locations.keys())[
+               -1] == 'High growth, linear trend (based on improved pasture area)'
 
 
 def test_read_xls():

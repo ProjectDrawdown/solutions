@@ -178,16 +178,16 @@ def _get_summary_ad(solutions):
             df[fullname(s)] = s.ua.soln_pds_tot_iunits_reqd().loc[2020:2050, 'World']
         if not df.empty:
             has_iunit_chart = True
-            iunit_df = df.reset_index().melt('Year', value_name='iunits', var_name='solution') #bb
-            iunit_chart = alt.Chart(iunit_df, width=400).mark_line().encode( #bb
-                y='iunits', #bb
-                x='Year:O', #bb
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')), #bb
-                tooltip=['solution', 'iunits', 'Year'], #bb
-            ).properties( #bb
-                title='World Adoption - Implementation Units' #bb
-            ).interactive() #bb
-            IPython.display.display(iunit_chart) #bb
+            iunit_df = df.reset_index().melt('Year', value_name='iunits', var_name='solution')
+            iunit_chart = alt.Chart(iunit_df, width=400).mark_line().encode(
+                y='iunits',
+                x='Year:O',
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                tooltip=['solution', 'iunits', 'Year'],
+            ).properties(
+                title='World Adoption - Implementation Units'
+            ).interactive()
+            IPython.display.display(iunit_chart)
 
     adoption_funit_chart = ipywidgets.Output()
     with adoption_funit_chart:
@@ -285,18 +285,18 @@ def _get_summary_climate(solutions):
     """
     climate_text = []
     for s in solutions:
-        if s.ac.solution_category == SOLUTION_CATEGORY.LAND: #bb
-            # Note the sequestration table in co2calcs doesn't set values to zero outside #bb
-            # the study years. In the xls there is a separate table which does this. Here, #bb
-            # we select the years directly. #bb
-            # The xls implemntation also excludes the year 2020, almost certainly by mistake. #bb
-            # Thus, this value will differ slightly from the one given in the Detailed Results #bb
-            # xls sheet. #bb
-            # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit #bb
-            g_tons = s.c2.co2_sequestered_global().loc[2020:2050, 'All'].sum() / 1000 #bb
-        else: #bb
-            g_tons = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].sum() / 1000 #bb
-        climate_text.append([fullname(s), f"{g_tons:.2f} Gt"]) #bb
+        if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+            # Note the sequestration table in co2calcs doesn't set values to zero outside
+            # the study years. In the xls there is a separate table which does this. Here,
+            # we select the years directly.
+            # The xls implemntation also excludes the year 2020, almost certainly by mistake.
+            # Thus, this value will differ slightly from the one given in the Detailed Results
+            # xls sheet.
+            # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit
+            g_tons = s.c2.co2_sequestered_global().loc[2020:2050, 'All'].sum() / 1000
+        else:
+            g_tons = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].sum() / 1000
+        climate_text.append([fullname(s), f"{g_tons:.2f} Gt"])
 
     climate_heading = ipywidgets.Output()
     with climate_heading:
@@ -353,42 +353,42 @@ def _get_summary_productivity(solutions):
        solutions: a list of solution objects to be processed.
     """
     has_prod_results = False
-    prod_text = [] #bb
-    for s in solutions: #bb
-        if s.ac.solution_category == SOLUTION_CATEGORY.LAND: #bb
+    prod_text = []
+    for s in solutions:
+        if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
             has_prod_results = True
-            pot_yield_incr = s.ua.soln_net_annual_funits_adopted( #bb
-                    ).loc[2020:2050, 'World'].sum() * s.ac.yield_coeff #bb
-            prod_text.append([fullname(s), f"{pot_yield_incr:.2f} MMt"]) #bb
-    prod_columns = ['Scenario', 'Potential yield increase over report years'] #bb
+            pot_yield_incr = s.ua.soln_net_annual_funits_adopted(
+                    ).loc[2020:2050, 'World'].sum() * s.ac.yield_coeff
+            prod_text.append([fullname(s), f"{pot_yield_incr:.2f} MMt"])
+    prod_columns = ['Scenario', 'Potential yield increase over report years']
 
     if not has_prod_results:
         return (None, None)
 
-    prod_heading = ipywidgets.Output() #bb
-    with prod_heading: #bb
-        df = pd.DataFrame(prod_text, columns=prod_columns) #bb
-        IPython.display.display(IPython.display.HTML(df.style.set_table_styles( #bb
-            dataframe_css_styles).hide_index().render())) #bb
+    prod_heading = ipywidgets.Output()
+    with prod_heading:
+        df = pd.DataFrame(prod_text, columns=prod_columns)
+        IPython.display.display(IPython.display.HTML(df.style.set_table_styles(
+            dataframe_css_styles).hide_index().render()))
 
-    prod_graph = ipywidgets.Output() #bb
-    with prod_graph: #bb
-        df = pd.DataFrame() #bb
-        for s in solutions: #bb
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND: #bb
-                funits = s.ua.soln_net_annual_funits_adopted().loc[2020:2050, 'World'] #bb
-                yield_df = (funits * s.ac.yield_coeff).cumsum() #bb
-                df[fullname(s)] = yield_df #bb
-        prod_df = df.reset_index().melt('Year', value_name='metric tons', var_name='solution') #bb
-        chart = alt.Chart(prod_df, width=300).mark_line().encode( #bb
-            y='metric tons', #bb
-            x=alt.X('Year', type='ordinal'), #bb
-            color=alt.Color('solution', legend=alt.Legend(orient='top-left')), #bb
-            tooltip=['solution', 'metric tons', 'Year'], #bb
-        ).properties( #bb
-            title='Cumulative Potential Yield Increase' #bb
-        ).interactive() #bb
-        IPython.display.display(chart) #bb
+    prod_graph = ipywidgets.Output()
+    with prod_graph:
+        df = pd.DataFrame()
+        for s in solutions:
+            if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+                funits = s.ua.soln_net_annual_funits_adopted().loc[2020:2050, 'World']
+                yield_df = (funits * s.ac.yield_coeff).cumsum()
+                df[fullname(s)] = yield_df
+        prod_df = df.reset_index().melt('Year', value_name='metric tons', var_name='solution')
+        chart = alt.Chart(prod_df, width=300).mark_line().encode(
+            y='metric tons',
+            x=alt.X('Year', type='ordinal'),
+            color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+            tooltip=['solution', 'metric tons', 'Year'],
+        ).properties(
+            title='Cumulative Potential Yield Increase'
+        ).interactive()
+        IPython.display.display(chart)
 
     return (prod_heading, prod_graph)
 
@@ -667,13 +667,13 @@ def get_adoption_data_tab(solutions):
             )
             IPython.display.display(chart)
 
-        if s.ac.solution_category == SOLUTION_CATEGORY.LAND: #bb
-            # The chart by geo region isn't really sensible for LAND solutions, which are much #bb
-            # more driven by Agro-ecological zones than by political boundaries. #bb
-            children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart])])) #bb
-        else: #bb
-            children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart, #bb
-                ad_abs_geo, ad_pct_geo])])) #bb
+        if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+            # The chart by geo region isn't really sensible for LAND solutions, which are much
+            # more driven by Agro-ecological zones than by political boundaries.
+            children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart])]))
+        else:
+            children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
+                ad_abs_geo, ad_pct_geo])]))
 
     adoption_data = ipywidgets.Accordion(children=children)
     for i, s in enumerate(solutions):
@@ -821,35 +821,35 @@ def get_co2_calcs_tab(solutions):
     return co2_calcs
 
 
-def get_aez_data_tab(solutions): #bb
-    """Return AEZ Data panel. #bb
+def get_aez_data_tab(solutions):
+    """Return AEZ Data panel.
 
-       Arguments: #bb
-       solutions: a list of solution objects to be processed. #bb
-    """ #bb
-    children = [] #bb
-    for s in solutions: #bb
-        if not hasattr(s, 'ae'): #bb
-            continue #bb
-        df = s.ae.get_land_distribution() #bb
-        ae_table = ipywidgets.Output() #bb
-        with ae_table: #bb
-            IPython.display.display(IPython.display.HTML(df #bb
-                .style.format('{:.02f}').set_table_styles(dataframe_css_styles).render())) #bb
-        ae_model = ipywidgets.Output() #bb
-        with ae_model: #bb
-            IPython.display.display(IPython.display.SVG( #bb
-                data=ui.modelmap.get_model_overview_svg( #bb
-                    model=sys.modules[s.__module__], highlights=['ae'], width=350))) #bb
-        children.append(ipywidgets.HBox([ae_table, ae_model])) #bb
+       Arguments:
+       solutions: a list of solution objects to be processed.
+    """
+    children = []
+    for s in solutions:
+        if not hasattr(s, 'ae'):
+            continue
+        df = s.ae.get_land_distribution()
+        ae_table = ipywidgets.Output()
+        with ae_table:
+            IPython.display.display(IPython.display.HTML(df
+                .style.format('{:.02f}').set_table_styles(dataframe_css_styles).render()))
+        ae_model = ipywidgets.Output()
+        with ae_model:
+            IPython.display.display(IPython.display.SVG(
+                data=ui.modelmap.get_model_overview_svg(
+                    model=sys.modules[s.__module__], highlights=['ae'], width=350)))
+        children.append(ipywidgets.HBox([ae_table, ae_model]))
 
-    if children: #bb
-        aez_data = ipywidgets.Accordion(children=children) #bb
-        for i, s in enumerate(solutions): #bb
-            aez_data.set_title(i, fullname(s)) #bb
-    else: #bb
-        aez_data = None #bb
-    return(aez_data) #bb
+    if children:
+        aez_data = ipywidgets.Accordion(children=children)
+        for i, s in enumerate(solutions):
+            aez_data.set_title(i, fullname(s))
+    else:
+        aez_data = None
+    return(aez_data)
 
 
 def get_detailed_results_tabs(solutions):
@@ -862,7 +862,7 @@ def get_detailed_results_tabs(solutions):
     adoption_data = get_adoption_data_tab(solutions)
     tam_data = get_tam_data_tab(solutions)
     co2_calcs = get_co2_calcs_tab(solutions)
-    aez_data = get_aez_data_tab(solutions) #bb
+    aez_data = get_aez_data_tab(solutions)
 
     # ------------------ Create tabs -----------------
     children = [summary, model_overview, variable_meta_analysis, adoption_data]
@@ -870,9 +870,9 @@ def get_detailed_results_tabs(solutions):
     if tam_data:
         children.append(tam_data)
         titles.append('TAM Data')
-    if aez_data: #bb
-        children.append(aez_data) #bb
-        titles.append('AEZ Data') #bb
+    if aez_data:
+        children.append(aez_data)
+        titles.append('AEZ Data')
     children.extend([first_cost, operating_cost, co2_calcs])
     titles.extend(["First Cost", "Operating Cost", "CO2"])
 
