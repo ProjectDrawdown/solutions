@@ -11,6 +11,7 @@ from solution import biomass
 from solution import bioplastic
 from solution import buildingautomation
 from solution import carpooling
+from solution import cars
 from solution import composting
 from solution import concentratedsolar
 from solution import conservationagriculture
@@ -35,6 +36,7 @@ from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
 from solution import multistrataagroforestry
+from solution import nuclear
 from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
@@ -42,6 +44,7 @@ from solution import peatlands
 from solution import recycledpaper
 from solution import refrigerants
 from solution import regenerativeagriculture
+from solution import riceintensification
 from solution import ships
 from solution import silvopasture
 from solution import smartglass
@@ -75,6 +78,7 @@ def all_solutions_scenarios():
     everything['buildingautomation'] = (buildingautomation.BuildingAutomationSystems,
             list(buildingautomation.scenarios.keys()))
     everything['carpooling'] = (carpooling.Carpooling, list(carpooling.scenarios.keys()))
+    everything['cars'] = (cars.Cars, list(cars.scenarios.keys()))
     everything['composting'] = (composting.Composting, list(composting.scenarios.keys()))
     everything['concentratedsolar'] = (concentratedsolar.ConcentratedSolar,
             list(concentratedsolar.scenarios.keys()))
@@ -115,6 +119,7 @@ def all_solutions_scenarios():
     everything['microwind'] = (microwind.MicroWind, list(microwind.scenarios.keys()))
     everything['multistrataagroforestry'] = (multistrataagroforestry.MultistrataAgroforestry,
             list(multistrataagroforestry.scenarios.keys()))
+    everything['nuclear'] = (nuclear.Nuclear, list(nuclear.scenarios.keys()))
     everything['nutrientmanagement'] = (nutrientmanagement.NutrientManagement,
             list(nutrientmanagement.scenarios.keys()))
     everything['offshorewind'] = (offshorewind.OffshoreWind, list(offshorewind.scenarios.keys()))
@@ -126,6 +131,8 @@ def all_solutions_scenarios():
             list(refrigerants.scenarios.keys()))
     everything['regenerativeagriculture'] = (regenerativeagriculture.RegenerativeAgriculture,
             list(regenerativeagriculture.scenarios.keys()))
+    everything['riceintensification'] = (riceintensification.RiceIntensification,
+            list(riceintensification.scenarios.keys()))
     everything['ships'] = (ships.Ships, list(ships.scenarios.keys()))
     everything['silvopasture'] = (silvopasture.Silvopasture, list(silvopasture.scenarios.keys()))
     everything['smartglass'] = (smartglass.SmartGlass, list(smartglass.scenarios.keys()))

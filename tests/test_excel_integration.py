@@ -14,6 +14,7 @@ import shutil
 import sys
 import time
 import tempfile
+import numpy as np
 import pandas as pd
 import pytest
 import xlrd
@@ -31,6 +32,7 @@ from solution import biomass
 from solution import bioplastic
 from solution import buildingautomation
 from solution import carpooling
+from solution import cars
 from solution import composting
 from solution import concentratedsolar
 from solution import conservationagriculture
@@ -55,6 +57,7 @@ from solution import managedgrazing
 from solution import masstransit
 from solution import microwind
 from solution import multistrataagroforestry
+from solution import nuclear
 from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
@@ -62,6 +65,7 @@ from solution import peatlands
 from solution import recycledpaper
 from solution import refrigerants
 from solution import regenerativeagriculture
+from solution import riceintensification
 from solution import ships
 from solution import silvopasture
 from solution import smartglass
@@ -855,6 +859,8 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None):
         matches = (act == exp)
       elif pd.isna(act) or act == '' or act is None or act == 0 or act == pytest.approx(0.0):
         matches = pd.isna(exp) or exp == '' or exp is None or exp == 0 or exp == pytest.approx(0.0)
+      elif np.isinf(act):
+        matches = pd.isna(exp) or np.isinf(exp)  # Excel #DIV/0! turns into NaN.
       else:
         matches = (act == pytest.approx(exp))
       if not matches:
@@ -1037,6 +1043,19 @@ def test_Carpooling_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in carpooling.scenarios.keys():
     obj = carpooling.Carpooling(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('cars', 'testdata',
+        'Drawdown-Car Fuel Efficiency_RRS_v1,1_31Dec2018_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Cars_RRS(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in cars.scenarios.keys():
+    obj = cars.Cars(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1360,6 +1379,19 @@ def test_MultistrataAgroforestry_LAND(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('nuclear', 'testdata',
+        'Drawdown-Nuclear_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_Nuclear_RRS(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in nuclear.scenarios.keys():
+    obj = nuclear.Nuclear(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
     [str(solutiondir.joinpath('nutrientmanagement', 'testdata',
         'Drawdown-Nutrient Management_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
     indirect=True)
@@ -1444,6 +1476,20 @@ def test_RegenerativeAgriculture_LAND(start_excel, tmpdir):
     obj = regenerativeagriculture.RegenerativeAgriculture(scenario=scenario)
     verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('riceintensification', 'testdata',
+        'Drawdown-SRI_BioS.Agri_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_RiceIntensification_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in riceintensification.scenarios.keys():
+    obj = riceintensification.RiceIntensification(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',

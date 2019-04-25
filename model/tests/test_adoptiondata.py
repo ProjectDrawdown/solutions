@@ -159,6 +159,23 @@ def test_adoption_low_med_high_global_all_sources():
   expected.index = expected.index.astype(int)
   pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_adoption_low_med_high_with_zero():
+  data_sources = {
+    'Baseline Cases': {
+      'zero': str(datadir.joinpath('ad_all_zero.csv')),
+      'one': str(datadir.joinpath('ad_all_one.csv')),
+      },
+    'Conservative Cases': {},
+    'Ambitious Cases': {},
+    '100% RES2050 Case': {},
+  }
+  ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='ALL SOURCES',
+      soln_pds_adoption_prognostication_growth='Medium')
+  ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+  result = ad.adoption_low_med_high_global()
+  # Zero should be dropped for the mean, to match Excel.
+  assert all(result.loc[:, 'Medium'] == 1.0)
+
 def test_adoption_with_regional_data():
   data_sources = {
     'Baseline Cases': {

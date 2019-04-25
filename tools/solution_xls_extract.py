@@ -892,7 +892,6 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
       f.write("        total_adoption_limit=self.tla_per_region)\n")
     else:
       f.write("        total_adoption_limit=ref_tam_per_region)\n")
-    f.write("    ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
   if case == 'PDS':
     f.write("    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
     f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
@@ -1228,15 +1227,23 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
       continue
     df.index = df.index.astype(int)
     df.index.name = 'Year'
-    # In the Excel implementation, adoption data of 0.0 is treated the same as N/A,
-    # no data available. We don't want to implement adoptiondata.py the same way, we
-    # want to be able to express the difference between a solution which did not
-    # exist prior to year N, and therefore had 0.0 adoption, from a solution which
-    # did exist but for which we have no data prior to year N.
-    # We're handling this in the code generator: when extracting adoption data from
-    # an Excel file, treat values of 0.0 as N/A and write out a CSV file with no
-    # data at that location.
-    df.replace(to_replace=0.0, value=np.nan, inplace=True)
+
+    zero_adoption_ok = False
+    zero_adoption_solutions = ['nuclear', 'cars']
+    for sname in zero_adoption_solutions:
+      if sname in outputdir:
+        zero_adoption_ok = True
+    if not zero_adoption_ok:
+      # In the Excel implementation, adoption data of 0.0 is treated the same as N/A,
+      # no data available. We don't want to implement adoptiondata.py the same way, we
+      # want to be able to express the difference between a solution which did not
+      # exist prior to year N, and therefore had 0.0 adoption, from a solution which
+      # did exist but for which we have no data prior to year N.
+      # We're handling this in the code generator: when extracting adoption data from
+      # an Excel file, treat values of 0.0 as N/A and write out a CSV file with no
+      # data at that location.
+      df.replace(to_replace=0.0, value=np.nan, inplace=True)
+
     outputfile = os.path.join(outputdir, filename)
     df.to_csv(outputfile, header=True)
     sources[source_name] = filename
@@ -1534,8 +1541,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     else:
       f.write("    self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())\n\n")
 
-  if has_custom_ref_ad and has_default_ref_ad:
-    raise NotImplementedError('Support for both Default and Custom REF adoption is not implemented')
   if has_default_pds_ad or has_default_ref_ad:
     write_ad(f=f, wb=wb, outputdir=outputdir)
   if has_custom_pds_ad:
@@ -1544,6 +1549,17 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     write_custom_ad(case='REF', f=f, wb=wb, outputdir=outputdir, is_land=is_land)
   if has_s_curve_pds_ad:
     write_s_curve_ad(f=f, wb=wb)
+
+  if has_custom_ref_ad and has_default_ref_ad:
+    f.write("    if self.ac.soln_ref_adoption_basis == 'Custom':\n")
+    f.write("      ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
+    f.write("    else:\n")
+    f.write("      ref_adoption_data_per_region = None\n")
+  elif has_custom_ref_ad:
+    f.write("    ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
+  elif has_default_ref_ad:
+    f.write("    ref_adoption_data_per_region = None\n")
+  f.write("\n")
 
   f.write("    if False:\n")
   f.write("      # One may wonder why this is here. This file was code generated.\n")
