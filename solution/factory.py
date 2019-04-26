@@ -42,6 +42,7 @@ from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
 from solution import peatlands
+from solution import perennialbioenergy
 from solution import recycledpaper
 from solution import refrigerants
 from solution import regenerativeagriculture
@@ -128,6 +129,8 @@ def all_solutions_scenarios():
     everything['offshorewind'] = (offshorewind.OffshoreWind, list(offshorewind.scenarios.keys()))
     everything['onshorewind'] = (onshorewind.OnshoreWind, list(onshorewind.scenarios.keys()))
     everything['peatlands'] = (peatlands.Peatlands, list(peatlands.scenarios.keys()))
+    everything['perennialbioenergy'] = (perennialbioenergy.PerennialBioenergy,
+            list(perennialbioenergy.scenarios.keys()))
     everything['recycledpaper'] = (recycledpaper.RecycledPaper,
             list(recycledpaper.scenarios.keys()))
     everything['refrigerants'] = (refrigerants.RefrigerantManagement,

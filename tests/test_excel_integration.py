@@ -63,6 +63,7 @@ from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
 from solution import peatlands
+from solution import perennialbioenergy
 from solution import recycledpaper
 from solution import refrigerants
 from solution import regenerativeagriculture
@@ -1500,6 +1501,19 @@ def test_Peatlands_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in peatlands.scenarios.keys():
     obj = peatlands.Peatlands(scenario=scenario)
+    verify = LAND_solution_verify_list(obj, workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('perennialbioenergy', 'testdata',
+        'Drawdown-Perennial Bioenergy Crops_BioS_v1.1_9Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_PerennialBioenergy_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in perennialbioenergy.scenarios.keys():
+    obj = perennialbioenergy.PerennialBioenergy(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
