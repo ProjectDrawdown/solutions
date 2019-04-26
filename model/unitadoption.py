@@ -671,7 +671,7 @@ class UnitAdoption:  # by Owen Barton
 
            Conservation Agriculture 'Unit Adoption Calculations'!EI251:ES298
         """
-        if self.ac.delay_protection_1yr:
+        if self.ac.delay_protection_1yr is not None:
             funits = self.cumulative_reduction_in_total_degraded_land()
         else:
             funits = self.net_annual_land_units_adopted()
@@ -700,9 +700,9 @@ class UnitAdoption:  # by Owen Barton
         result = pd.DataFrame(0, index=funits.index.copy(), columns=funits.columns.copy())
         if self.ac.harvest_frequency is None:
             return result
-        first_year = result.first_valid_index() + 1
+        first_year = result.first_valid_index()
         for year, row in result.iterrows():
-            if (year - first_year) > self.ac.harvest_frequency:
+            if (year - first_year) >= self.ac.harvest_frequency:
                 year_last_harvested = year - 1
                 total_amount_harvested = 0
                 for _ in range(100):  # arbitrary finite range
@@ -714,7 +714,7 @@ class UnitAdoption:  # by Owen Barton
                     raise ValueError(
                         'Check value for harvest frequency: {}'.format(self.ac.harvest_frequency))
                 result.loc[year] = total_amount_harvested
-        result.name = 'annual_land_harvested_in_pds'
+        result.name = 'soln_pds_annual_land_area_harvested'
         return result
 
     def _direct_emissions_saved_land(self, ghg, ghg_rplu, ghg_rplu_rate):
@@ -744,8 +744,11 @@ class UnitAdoption:  # by Owen Barton
             else:
                 result = self.annual_reduction_in_total_degraded_land() * ghg_rplu
         else:
-            # same handling for One-time (Farmland Restoration) and Annual (Conservation Agriculture)
-            result = self.net_annual_land_units_adopted() - self.net_land_units_after_emissions_lifetime()
+            if ghg_rplu_rate == 'Annual':
+                result = self.net_annual_land_units_adopted() - self.net_land_units_after_emissions_lifetime()
+            else:
+                result = self.net_annual_land_units_adopted().diff()
+                result.iloc[0] = self.net_annual_land_units_adopted().iloc[0]
             result *= ghg_rplu * (1.0 - self.ac.disturbance_rate)
         result.name = 'direct_{}_emissions_saved_land'.format(ghg)
         return result
