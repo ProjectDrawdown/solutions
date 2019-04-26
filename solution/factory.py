@@ -26,6 +26,7 @@ from solution import heatpumps
 from solution import highspeedrail
 from solution import improvedcookstoves
 from solution import improvedrice
+from solution import indigenouspeoplesland
 from solution import instreamhydro
 from solution import insulation
 from solution import irrigationefficiency
@@ -102,6 +103,8 @@ def all_solutions_scenarios():
     everything['improvedcookstoves'] = (improvedcookstoves.ImprovedCookStoves,
             list(improvedcookstoves.scenarios.keys()))
     everything['improvedrice'] = (improvedrice.ImprovedRice, list(improvedrice.scenarios.keys()))
+    everything['indigenouspeoplesland'] = (indigenouspeoplesland.IndigenousPeoplesLand,
+            list(indigenouspeoplesland.scenarios.keys()))
     everything['instreamhydro'] = (instreamhydro.InstreamHydro,
             list(instreamhydro.scenarios.keys()))
     everything['insulation'] = (insulation.Insulation, list(insulation.scenarios.keys()))

@@ -47,6 +47,7 @@ from solution import heatpumps
 from solution import highspeedrail
 from solution import improvedcookstoves
 from solution import improvedrice
+from solution import indigenouspeoplesland
 from solution import instreamhydro
 from solution import insulation
 from solution import irrigationefficiency
@@ -1227,6 +1228,19 @@ def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
   for scenario in improvedcookstoves.scenarios.keys():
     obj = improvedcookstoves.ImprovedCookStoves(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('indigenouspeoplesland', 'testdata',
+        'Drawdown-IP Forest Management_BioS.Prot_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_IndigenousPeoplesLand_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in indigenouspeoplesland.scenarios.keys():
+    obj = indigenouspeoplesland.IndigenousPeoplesLand(scenario=scenario)
+    verify = LAND_solution_verify_list(obj)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 

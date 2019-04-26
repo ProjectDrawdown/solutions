@@ -1,0 +1,6 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Pan 2011,http://www.nrs.fs.fed.us/pubs/jrnl/2011/nrs_2011_pan_002.pdf,,,Tropical-Humid,,2011,,,Pg C/yr,0.0,t C/ha/yr,,Refer table 1; Tropical (2000-07); 1392 Mha,
+Pan 2011,http://www.nrs.fs.fed.us/pubs/jrnl/2011/nrs_2011_pan_002.pdf,,,Temperate/Boreal-Humid,,2011,,,Pg C/yr,0.0,t C/ha/yr,,Refer table 1; Temperate (2000-07); 767 Mha,
+Pan 2011,http://www.nrs.fs.fed.us/pubs/jrnl/2011/nrs_2011_pan_002.pdf,,,Temperate/Boreal-Semi-Arid,,2011,,,Pg C/yr,0.0,t C/ha/yr,,Refer table 1; Boreal (2000-07); 1135 Mha,
+Achard 2014,http://onlinelibrary.wiley.com/doi/10.1111/gcb.12605/full,Global ,,,,1990-2000,,,Mt C/yr,0.0,t C/ha/yr,,Refer Abstract,
+Achard 2014,http://onlinelibrary.wiley.com/doi/10.1111/gcb.12605/full,Global ,,,,2000-2010,,,Mt C/yr,0.0,t C/ha/yr,,Refer Abstract,
