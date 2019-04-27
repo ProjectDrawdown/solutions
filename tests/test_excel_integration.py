@@ -149,7 +149,9 @@ def get_pd_read_excel_args(r):
 @pytest.fixture()
 def start_excel(request, tmpdir):
   excelfile = request.param
-  assert os.path.exists(excelfile)
+  if not os.path.exists(excelfile):
+    pytest.skip(f'no such file: {excelfile}')
+    return
   if sys.platform == 'darwin':
     dirpath = str(os.path.join(os.path.expanduser("~"), 'Library', 'Containers',
         'com.microsoft.Excel', 'Data'))
@@ -1129,10 +1131,8 @@ def test_Composting_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('concentratedsolar', 'testdata',
-        'CSP_RRS_v1.1b_24Oct18.xlsm'))],
+    [str(solutiondir.joinpath('concentratedsolar', 'testdata', 'CSP_RRS_v1.1b_24Oct18.xlsm'))],
     indirect=True)
-@pytest.mark.skip(reason="need to resolve Adoption Data X367 and Z367")
 def test_ConcentratedSolar_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in concentratedsolar.scenarios.keys():
