@@ -34,7 +34,7 @@ def test_{1}_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in {0}.scenarios.keys():
     obj = {0}.{1}(scenario=scenario)
-    verify = LAND_solution_verify_list(obj)
+    verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)""".format(
         dir_name, class_name, xls_name))
 
