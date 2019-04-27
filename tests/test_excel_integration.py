@@ -86,6 +86,7 @@ from solution import walkablecities
 from solution import waterdistribution
 from solution import waterefficiency
 from solution import waveandtidal
+from solution import womensmallholders
 
 solutiondir = pathlib.Path(__file__).parents[1].joinpath('solution')
 
@@ -1817,4 +1818,17 @@ def test_WaveAndTidal_RRS(start_excel):
   for scenario in waveandtidal.scenarios.keys():
     obj = waveandtidal.WaveAndTidal(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('womensmallholders', 'testdata',
+        'Drawdown-Smallholder Intensification_BioS.Agri_v1.1_3Jan2019_PUBLIC.xlsm'))],
+    indirect=True)
+def test_WomenSmallholders_LAND(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in womensmallholders.scenarios.keys():
+    obj = womensmallholders.WomenSmallholders(scenario=scenario)
+    verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)

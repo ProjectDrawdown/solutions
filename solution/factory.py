@@ -64,6 +64,7 @@ from solution import walkablecities
 from solution import waterdistribution
 from solution import waterefficiency
 from solution import waveandtidal
+from solution import womensmallholders
 
 def all_solutions_scenarios():
     everything = {}
@@ -164,4 +165,6 @@ def all_solutions_scenarios():
     everything['waterefficiency'] = (waterefficiency.WaterEfficiencyMeasures,
             list(waterefficiency.scenarios.keys()))
     everything['waveandtidal'] = (waveandtidal.WaveAndTidal, list(waveandtidal.scenarios.keys()))
+    everything['womensmallholders'] = (womensmallholders.WomenSmallholders,
+            list(womensmallholders.scenarios.keys()))
     return everything
