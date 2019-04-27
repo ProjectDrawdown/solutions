@@ -394,6 +394,12 @@ def get_land_scenarios(wb):
                     sr_tab.cell_value(row + 191, 4))
             elif sr_tab.cell_value(row + 189, 3) == 'New Growth is Harvested/Cleared Every':
                 s['harvest_frequency'] = convert_sr_float(sr_tab.cell_value(row + 189, 4))
+
+            for addl in range(271, 285):
+                label = 'Avoided Deforested Area With Increase in Agricultural Intensification'
+                if sr_tab.cell_value(row + addl, 3) == label:
+                    s['avoided_deforest_with_intensification'] = convert_sr_float(
+                            sr_tab.cell_value(row + addl, 4))
             scenarios[scenario_name] = s
     return scenarios
 
@@ -539,6 +545,7 @@ def write_scenario(f, s):
         oneline(f=f, s=s, names=['include_unprotected_land_in_regrowth_calcs'], prefix=prefix)
         oneline(f=f, s=s, names=['harvest_frequency'], prefix=prefix)
         oneline(f=f, s=s, names=['carbon_not_emitted_after_harvesting'], prefix=prefix)
+        oneline(f=f, s=s, names=['avoided_deforest_with_intensification'], prefix=prefix)
         f.write('\n')
 
 

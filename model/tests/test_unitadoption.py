@@ -1122,6 +1122,28 @@ def test_direct_co2eq_emissions_saved_land_onetime_not_protect():
     assert result.loc[2052, 'World'] == pytest.approx(0.85917976648569)
     assert result.loc[2060, 'World'] == pytest.approx(0.51015076817701)
 
+def test_direct_co2eq_emissions_saved_land_delta_pds_ref_factor():
+    soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_smallholder_list[1:],
+            columns=soln_pds_funits_adopted_smallholder_list[0]).set_index('Year')
+    soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_smallholder_list[1:],
+            columns=soln_ref_funits_adopted_smallholder_list[0]).set_index('Year')
+    ac = advanced_controls.AdvancedControls(tco2eq_reduced_per_land_unit=313.791126867655,
+            avoided_deforest_with_intensification=0.255526315789474)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
+    result = ua.direct_co2eq_emissions_saved_land()
+    # Values from Smallholder Intensification Unit Adoption Calculations AT308:AU354
+    assert result.loc[2015, 'World'] == pytest.approx(86.1366493749314)
+    assert result.loc[2016, 'World'] == pytest.approx(86.1366493749369)
+    assert result.loc[2024, 'World'] == pytest.approx(86.1366493749388)
+    assert result.loc[2030, 'World'] == pytest.approx(86.1366493749314)
+    assert result.loc[2031, 'World'] == pytest.approx(55.3589385314735)
+    assert result.loc[2040, 'World'] == pytest.approx(55.3589385314684)
+    assert result.loc[2050, 'World'] == pytest.approx(55.3589385314713)
+    assert result.loc[2051, 'World'] == pytest.approx(11.2040578334937)
+    assert result.loc[2060, 'World'] == pytest.approx(11.2040578334931)
+
 def test_various_direct_emissions_saved_land_onetime_protect():
     soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
             columns=net_annual_land_units_adopted[0]).set_index( 'Year')
@@ -2817,3 +2839,37 @@ net_annual_land_units_adopted_SRI_list = [
     [2053, 41.683197966299], [2054, 42.022887730787], [2055, 42.350656761902],
     [2056, 42.665659777437], [2057, 42.967041817449], [2058, 43.253953303807],
     [2059, 43.525567982113], [2060, 43.781103329828]]
+
+# Smallholder Intensification 'Helper Tables'!B91:C137
+soln_pds_funits_adopted_smallholder_list = [
+    ["Year", "World"],
+    [2014, 8.75], [2015, 9.824265632254], [2016, 10.898531264509], [2017, 11.972796896764],
+    [2018, 13.047062529019], [2019, 14.121328161274], [2020, 15.195593793529],
+    [2021, 16.269859425784], [2022, 17.344125058039], [2023, 18.418390690294],
+    [2024, 19.492656322549], [2025, 20.566921954803], [2026, 21.641187587058],
+    [2027, 22.715453219313], [2028, 23.789718851568], [2029, 24.863984483823],
+    [2030, 25.938250116078], [2031, 26.628667093451], [2032, 27.319084070824],
+    [2033, 28.009501048197], [2034, 28.699918025570], [2035, 29.390335002942],
+    [2036, 30.080751980315], [2037, 30.771168957688], [2038, 31.461585935061],
+    [2039, 32.152002912434], [2040, 32.842419889807], [2041, 33.532836867180],
+    [2042, 34.223253844553], [2043, 34.913670821925], [2044, 35.604087799298],
+    [2045, 36.294504776671], [2046, 36.984921754044], [2047, 37.675338731417],
+    [2048, 38.365755708790], [2049, 39.056172686163], [2050, 39.746589663536],
+    [2051, 39.886322684958], [2052, 40.026055706379], [2053, 40.165788727801],
+    [2054, 40.305521749223], [2055, 40.445254770645], [2056, 40.584987792067],
+    [2057, 40.724720813489], [2058, 40.864453834911], [2059, 41.004186856333],
+    [2060, 41.143919877755]]
+
+# Smallholder Intensification 'Helper Tables'!B91:C137
+soln_ref_funits_adopted_smallholder_list = [
+    ["Year", "World"],
+    [2014,  8.75], [2015,  8.75], [2016,  8.75], [2017,  8.75], [2018,  8.75],
+    [2019,  8.75], [2020,  8.75], [2021,  8.75], [2022,  8.75], [2023,  8.75],
+    [2024,  8.75], [2025,  8.75], [2026,  8.75], [2027,  8.75], [2028,  8.75],
+    [2029,  8.75], [2030,  8.75], [2031,  8.75], [2032,  8.75], [2033,  8.75],
+    [2034,  8.75], [2035,  8.75], [2036,  8.75], [2037,  8.75], [2038,  8.75],
+    [2039,  8.75], [2040,  8.75], [2041,  8.75], [2042,  8.75], [2043,  8.75],
+    [2044,  8.75], [2045,  8.75], [2046,  8.75], [2047,  8.75], [2048,  8.75],
+    [2049,  8.75], [2050,  8.75], [2051,  8.75], [2052,  8.75], [2053,  8.75],
+    [2054,  8.75], [2055,  8.75], [2056,  8.75], [2057,  8.75], [2058,  8.75],
+    [2059,  8.75], [2060,  8.75]]

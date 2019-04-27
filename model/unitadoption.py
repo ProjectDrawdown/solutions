@@ -717,12 +717,15 @@ class UnitAdoption:  # by Owen Barton
         result.name = 'soln_pds_annual_land_area_harvested'
         return result
 
-    def _direct_emissions_saved_land(self, ghg, ghg_rplu, ghg_rplu_rate):
+    def _direct_emissions_saved_land(self, ghg, ghg_rplu, ghg_rplu_rate, delta_pds_ref_factor=None):
         """Emissions avoided:
           Args:
             ghg: Greenhouse gas to calculate ('CO2-eq', 'CO2', 'N2O-CO2-eq' or 'CH4-CO2-eq')
             ghg_rplu: associated val from advanced controls (self.ac.<ghg>_reduced_per_land_unit)
             ghg_rplu_rate: 'Annual' or 'One-time' (self.ac.<ghg>_rplu_rate)
+            delta_pds_ref_factor: trigger an alternate calculation taking the delta in the diff()
+              of the PDS and REF, times this factor. Used by Smallholder Intensification (aka
+              Women Smallholders) for direct_co2eq_emissions_saved_land.
     
           [PROTECTION MODEL (e.g. Forest Protection]
            Emissions avoided (if Annual Emissions) =
@@ -737,7 +740,13 @@ class UnitAdoption:  # by Owen Barton
                                 * Aggregate GHG avoided rate (t GHG/ha/yr)
            Emissions avoided (if One-time Emissions) =
                   (Net Land Units in Year x/MHa - Net Land Units in Year x-1/MHa)* Aggregate GHG avoided rate (t GHG/ha)"""
-        if self.ac.delay_protection_1yr is not None:
+        if delta_pds_ref_factor is not None:
+            pds_delta = self.soln_pds_funits_adopted.diff()
+            pds_delta.iloc[0] = 0.0
+            ref_delta = self.soln_ref_funits_adopted.diff()
+            ref_delta.iloc[0] = 0.0
+            result = (pds_delta - ref_delta) * delta_pds_ref_factor * ghg_rplu
+        elif self.ac.delay_protection_1yr is not None:
             if ghg_rplu_rate == 'Annual':
                 result = self.cumulative_reduction_in_total_degraded_land() - self.net_land_units_after_emissions_lifetime()
                 result *= ghg_rplu
@@ -757,7 +766,8 @@ class UnitAdoption:  # by Owen Barton
     def direct_co2eq_emissions_saved_land(self):
         """ForestProtection 'Unit Adoption Calculations'!AT307:AU354"""
         return self._direct_emissions_saved_land(ghg='CO2-eq', ghg_rplu=self.ac.tco2eq_reduced_per_land_unit,
-                                                 ghg_rplu_rate=self.ac.tco2eq_rplu_rate)
+                                                 ghg_rplu_rate=self.ac.tco2eq_rplu_rate,
+                                                 delta_pds_ref_factor=self.ac.avoided_deforest_with_intensification)
 
     @lru_cache()
     def direct_co2_emissions_saved_land(self):
