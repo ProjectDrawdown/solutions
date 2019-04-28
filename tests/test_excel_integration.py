@@ -1639,9 +1639,9 @@ def test_SolarHotWater_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('solarpvroof', 'testdata', 'SolarPVRooftop_RRS_v1.1b_24Oct18.xlsm'))],
+    [str(solutiondir.joinpath('solarpvroof', 'testdata',
+        'Drawdown-Rooftop Solar PV_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
-@pytest.mark.skip(reason="no excel file checked in")
 def test_SolarRooftop_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in solarpvroof.scenarios.keys():
