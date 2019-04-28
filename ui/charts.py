@@ -467,9 +467,11 @@ def get_VMA_tab(solutions):
     with variable_meta_analysis:
         children = []
         for s in solutions:
-            for (name, v) in s.VMAs:
-                vma_widget = ipywidgets.Output()
-                with vma_widget:
+            if not hasattr(s.ac, 'vmas') or not s.ac.vmas:
+                continue
+            for (name, v) in s.ac.vmas.items():
+                sources_list = ipywidgets.Output()
+                with sources_list:
                     IPython.display.display(IPython.display.HTML(v.source_data.drop(['Link',
                         'Source Validation Code', 'License Code'], axis=1).fillna('').to_html()))
                 summary_table = ipywidgets.Output()
@@ -480,7 +482,7 @@ def get_VMA_tab(solutions):
                         ).set_properties(**{'width': '10em'}).set_table_styles(
                             dataframe_css_styles).hide_index().render()))
 
-                accordion = ipywidgets.Accordion(children=[vma_widget],
+                accordion = ipywidgets.Accordion(children=[sources_list],
                         layout=ipywidgets.Layout(width='90%'))
                 accordion.set_title(0, name)
                 vma_widget = ipywidgets.Output()
