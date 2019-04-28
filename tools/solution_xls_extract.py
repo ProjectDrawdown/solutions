@@ -1405,7 +1405,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
     for row in range(20, 36):
         if not re.search(r"Scenario \d+", str(custom_ad_tab.cell(row, 13).value)):
             continue
-        name = str(custom_ad_tab.cell(row, 14).value)
+        name = normalize_source_name(str(custom_ad_tab.cell(row, 14).value))
         includestr = str(custom_ad_tab.cell_value(row, 18))
         include = convert_bool(includestr) if includestr else False
         filename = get_filename_for_source(name, prefix=prefix)
