@@ -1652,7 +1652,8 @@ def test_SolarRooftop_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('solarpvutil', 'testdata', 'SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18.xlsm'))],
+    [str(solutiondir.joinpath('solarpvutil', 'testdata',
+        'Drawdown-Utility Scale Solar PV_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_SolarPVUtility_RRS(start_excel):
   workbook = start_excel
