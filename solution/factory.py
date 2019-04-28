@@ -21,6 +21,7 @@ from solution import electricbikes
 from solution import electricvehicles
 from solution import farmlandrestoration
 from solution import forestprotection
+from solution import geothermal
 from solution import greenroofs
 from solution import heatpumps
 from solution import highspeedrail
@@ -98,6 +99,7 @@ def all_solutions_scenarios():
             list(farmlandrestoration.scenarios.keys()))
     everything['forestprotection'] = (forestprotection.ForestProtection,
             list(forestprotection.scenarios.keys()))
+    everything['geothermal'] = (geothermal.Geothermal, list(geothermal.scenarios.keys()))
     everything['greenroofs'] = (greenroofs.GreenRoofs, list(greenroofs.scenarios.keys()))
     everything['heatpumps'] = (heatpumps.HeatPumps, list(heatpumps.scenarios.keys()))
     everything['highspeedrail'] = (highspeedrail.HighSpeedRail,

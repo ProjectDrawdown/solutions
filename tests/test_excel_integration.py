@@ -42,6 +42,7 @@ from solution import electricbikes
 from solution import electricvehicles
 from solution import farmlandrestoration
 from solution import forestprotection
+from solution import geothermal
 from solution import greenroofs
 from solution import heatpumps
 from solution import highspeedrail
@@ -1229,6 +1230,19 @@ def test_ForestProtection_LAND(start_excel, tmpdir):
   for scenario in forestprotection.scenarios.keys():
     obj = forestprotection.ForestProtection(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
+    check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize('start_excel',
+    [str(solutiondir.joinpath('geothermal', 'testdata',
+        'Geothermal_RRS_ELECGEN_v1.1b_12FEB2019.xlsm'))],
+    indirect=True)
+def test_Geothermal_RRS(start_excel, tmpdir):
+  workbook = start_excel
+  for scenario in geothermal.scenarios.keys():
+    obj = geothermal.Geothermal(scenario=scenario)
+    verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
