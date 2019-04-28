@@ -1496,7 +1496,8 @@ def test_OnshoreWind_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('peatlands', 'testdata', 'Peatland_L-UseProtect_v1.1b_27July18.xlsm'))],
+    [str(solutiondir.joinpath('peatlands', 'testdata',
+        'Drawdown-Peatland Protection_BioS.Prot_v1.1_3Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_Peatlands_LAND(start_excel, tmpdir):
   workbook = start_excel

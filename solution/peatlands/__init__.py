@@ -1,5 +1,5 @@
 """Peatland Protection solution model.
-   Excel filename: Peatland_L-UseProtect_v1.1b_27July18.xlsm
+   Excel filename: Drawdown-Peatland Protection_BioS.Prot_v1.1_3Jan2019_PUBLIC.xlsm
 """
 
 import pathlib
@@ -33,19 +33,19 @@ REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle Eas
            'Latin America', 'China', 'India', 'EU', 'USA']
 
 scenarios = {
-  'PDS-69p2050-Plausible-PDScustom-avg-BookVersion1': advanced_controls.AdvancedControls(
+  'PDS-69p2050-Plausible-PDScustom-avg-Bookedition1': advanced_controls.AdvancedControls(
       # The current adoption are based on the country level data available on peatland
       # protection in the Eastern Europe and OECD 90. The future adoption projections
       # are based on the IPCC and Irish Peatland Conservation Council's commitment to
       # protect 20% of the bogs of Ireland. In addition, aggressive custom adoption
       # scenarios were built considering the high carbon stock in the peatlands and
       # their limited availability. This scenario derives result from the "average of
-      # all" PDS custom adoption scenarios. The results are similar to the Book Version
-      # 1 results, so no separate scenarios were created for the latter. This version
+      # all" PDS custom adoption scenarios. The results are similar to the Book edition
+      # 1 results, so no separate scenarios were created for the latter. This edition
       # includes revisions made to the rate of peatland degradation, CO2 emissions from
       # peatland degradation, custom adoption scenarios. In addition, a delay of one
       # year due to the "leakage effect" and a further delay of one year in the
-      # "regrowth of the degraded peatland" has been considered in this version of the
+      # "regrowth of the degraded peatland" has been considered in this edition of the
       # model.
 
       # general
@@ -79,6 +79,7 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
       tco2eq_reduced_per_land_unit=0.0, 
       tco2eq_rplu_rate='One-time', 
@@ -105,19 +106,19 @@ scenarios = {
       include_unprotected_land_in_regrowth_calcs=False, 
 
     ),
-  'PDS-95p2050-Drawdown-PDScustom-high-BookVersion1': advanced_controls.AdvancedControls(
+  'PDS-95p2050-Drawdown-PDScustom-high-Bookedition1': advanced_controls.AdvancedControls(
       # The current adoption are based on the country level data available on peatland
       # protection in the Eastern Europe and OECD 90. The future adoption projections
       # are based on the IPCC and Irish Peatland Conservation Council's commitment to
       # protect 20% of the bogs of Ireland. In addition, aggressive custom adoption
       # scenarios were built considering the high carbon stock in the peatlands and
       # their limited availability. This scenario derives result from the "high of all"
-      # PDS custom adoption scenarios. The results are similar to the Book Version 1
-      # results, so no separate scenarios were created for the latter. This version
+      # PDS custom adoption scenarios. The results are similar to the Book edition 1
+      # results, so no separate scenarios were created for the latter. This edition
       # includes revisions made to the rate of peatland degradation, CO2 emissions from
       # peatland degradation, custom adoption scenarios. In addition, a delay of one
       # year due to the "leakage effect" and a further delay of one year in the
-      # "regrowth of the degraded peatland" has been considered in this version of the
+      # "regrowth of the degraded peatland" has been considered in this edition of the
       # model.
 
       # general
@@ -151,6 +152,7 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
       tco2eq_reduced_per_land_unit=0.0, 
       tco2eq_rplu_rate='One-time', 
@@ -177,7 +179,7 @@ scenarios = {
       include_unprotected_land_in_regrowth_calcs=False, 
 
     ),
-  'PDS-94p2050-Optimum-PDScustom-aggmax-BookVersion1': advanced_controls.AdvancedControls(
+  'PDS-94p2050-Optimum-PDScustom-aggmax-Bookedition1': advanced_controls.AdvancedControls(
       # The current adoption are based on the country level data available on peatland
       # protection in the Eastern Europe and OECD 90. The future adoption projections
       # are based on the IPCC and Irish Peatland Conservation Council's commitment to
@@ -185,12 +187,12 @@ scenarios = {
       # scenarios were built considering the high carbon stock in the peatlands and
       # their limited availability. This scenario presents the result of the "Aggressive
       # Max, Urgent Adoption" PDS custom adoption scenario. The results are similar to
-      # the Book Version 1 results, so no separate scenarios were created for the
-      # latter. This version includes revisions made to the rate of peatland
+      # the Book edition 1 results, so no separate scenarios were created for the
+      # latter. This edition includes revisions made to the rate of peatland
       # degradation, CO2 emissions from peatland degradation, custom adoption scenarios.
       # In addition, a delay of one year due to the "leakage effect" and a further delay
       # of one year in the "regrowth of the degraded peatland" has been considered in
-      # this version of the model.
+      # this edition of the model.
 
       # general
       solution_category=SOLUTION_CATEGORY.LAND, 
@@ -223,6 +225,7 @@ scenarios = {
       # emissions
       soln_indirect_co2_per_iunit=0.0, 
       conv_indirect_co2_per_unit=0.0, 
+      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
 
       tco2eq_reduced_per_land_unit=0.0, 
       tco2eq_rplu_rate='One-time', 
@@ -262,7 +265,7 @@ class Peatlands:
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS-69p2050-Plausible-PDScustom-avg-BookVersion1'
+      scenario = 'PDS-69p2050-Plausible-PDScustom-avg-Bookedition1'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -289,7 +292,9 @@ class Peatlands:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=self.tla_per_region)
+
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -318,6 +323,7 @@ class Peatlands:
     self.ht = helpertables.HelperTables(ac=self.ac,
         ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
         pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
         pds_adoption_trend_per_region=pds_adoption_trend_per_region,
         pds_adoption_is_single_source=pds_adoption_is_single_source)
 
@@ -342,6 +348,7 @@ class Peatlands:
         soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
         soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
         conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
+        conv_ref_first_cost_uses_tot_units=True,
         fc_convert_iunit_factor=land.MHA_TO_HA)
 
     self.oc = operatingcost.OperatingCost(ac=self.ac,
