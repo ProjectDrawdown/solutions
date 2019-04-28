@@ -1351,9 +1351,9 @@ def test_IrrigationEfficiency_LAND(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('landfillmethane', 'testdata', 'LandfillMethane_RRS_v1.1c_24Oct18.xlsm'))],
+    [str(solutiondir.joinpath('landfillmethane', 'testdata',
+        'Drawdown-Landfill Methane Capture_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
-@pytest.mark.skip(reason="need to resolve Unit Adoption Calculations W252 and X252")
 def test_LandfillMethane_RRS(start_excel, tmpdir):
   workbook = start_excel
   # Regional data where all but the first row are #VALUE, and the regional

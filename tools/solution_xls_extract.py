@@ -758,7 +758,9 @@ def normalize_source_name(sourcename):
         'Based on: Greenpeace (2015) Reference': 'Based on: Greenpeace 2015 Reference',
         'Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
         'Based on Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
+        'Based on: Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
         'Based on Greenpeace 2015 Reference': 'Based on: Greenpeace 2015 Reference',
+        'Based on: Greenpeace Reference Scenario': 'Based on: Greenpeace 2015 Reference',
         'Conservative: Based on- Greenpeace 2015 Reference': 'Based on: Greenpeace 2015 Reference',
         '100% REN: Based on- Greenpeace Advanced [R]evolution': 'Based on: Greenpeace 2015 Advanced Revolution',
 
@@ -766,22 +768,21 @@ def normalize_source_name(sourcename):
         'Drawdown TAM: Conservative Cases': 'Conservative Cases',
         'Drawdown TAM: Ambitious Cases': 'Ambitious Cases',
         'Drawdown TAM: Maximum Cases': 'Maximum Cases',
-        'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)':
-    'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)',
-    'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario':
-    'ITDP/UC Davis 2014 Global High Shift Baseline',
-    'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario':
-    'ITDP/UC Davis 2014 Global High Shift HighShift',
-    'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Static % of Organic Waste':
-    'What a Waste Solid Waste Management Static',
-    'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic % of Organic Waste':
-    'What a Waste Solid Waste Management Dynamic',
-    'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic Organic Fraction by Un Mediam Variant':
-    'What a Waste Solid Waste Management Dynamic Organic Fraction',
-    'IPCC, 2006 - Calculated': 'IPCC, 2006 Calculated',
-    "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Highest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Highest Ranges',
-    "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Middle Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges',
-    "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Lowest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges',
+        'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)': 'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)',
+        'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario':
+        'ITDP/UC Davis 2014 Global High Shift Baseline',
+        'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario':
+        'ITDP/UC Davis 2014 Global High Shift HighShift',
+        'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Static % of Organic Waste':
+        'What a Waste Solid Waste Management Static',
+        'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic % of Organic Waste':
+        'What a Waste Solid Waste Management Dynamic',
+        'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic Organic Fraction by Un Mediam Variant':
+        'What a Waste Solid Waste Management Dynamic Organic Fraction',
+        'IPCC, 2006 - Calculated': 'IPCC, 2006 Calculated',
+        "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Highest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Highest Ranges',
+        "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Middle Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges',
+        "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Lowest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges',
     }
     normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
     if normalized in special_cases:
@@ -846,10 +847,9 @@ def normalize_case_name(name):
         'Drawdown TAM: Conservative Cases': 'Conservative Cases',
         'Drawdown TAM: Ambitious Cases': 'Ambitious Cases',
         'Drawdown TAM: Maximum Cases': 'Maximum Cases',
+        '100% Case': '100% RES2050 Case',
     }
     return rewrites.get(name, name)
-
-
 
 
 def get_filename_for_source(sourcename, prefix=''):
@@ -1247,48 +1247,6 @@ def write_c2_c4(f, is_rrs=True, is_protect=False, has_harvest=False):
     f.write("\n")
 
 
-
-
-def extract_sources(wb_tab, lines):
-    """Pull the names of sources, by case, from the Excel file.
-       Arguments:
-         wb_tab: an Excel workbook tab as returned by wb.sheet_by_name
-         lines: list of row numbers to process
-
-       Returns: a dict of category keys, containing lists of source names.
-
-       Parsing the data sources can be messy: the number of sources within each category
-       varies between solutions, and even the names of the cases can vary. Most solutions have
-       Baseline/Ambitious/Conservative, but we're not sure that all do, and the final most
-       aggressive case varies in names like "100% REN" (renewables) or "Maximum Cases".
-       +-------------------+-------------------+-----------------------------+---------+
-       |   Baseline Cases  |  Ambitious Cases  |     Conservative Cases      |100% REN |
-       +-------------------+-------------------+-----------------------------+---------+
-       | source1 | source2 | source3 | source4 | source5 | source6 | source7 | source8 | Functional Unit
-
-       The category label like "Baseline Cases" is a merged cell one, two, three, or more cells
-       across. In xlrd, the first cell contains the string and the subsequent cells are ctype
-       XL_CELL_EMPTY. They have a border, but at the time of this writing xlrd does not extract
-       styling information like borders from xlsx/xlsm files (only the classic Excel file format).
-    """
-    sources = {}
-    for line in lines:
-        case = ''
-        for col in range(2, wb_tab.ncols):
-            if wb_tab.cell(line + 1, col).value == 'Functional Unit':
-                break
-            if wb_tab.cell(line, col).ctype != xlrd.XL_CELL_EMPTY:
-                case = wb_tab.cell(line, col).value
-                l = sources.get(case, list())
-            new_source = normalize_source_name(wb_tab.cell(line + 1, col).value)
-            if new_source is not None and new_source not in l:
-                l.append(new_source)
-                sources[case] = l
-    return sources
-
-
-
-
 def find_source_data_columns(wb, sheet_name, row):
     """Figure out which columns in Adoption Data (and similar tabs) should be extracted.
        Arguments:
@@ -1305,6 +1263,14 @@ def find_source_data_columns(wb, sheet_name, row):
     return 'B:' + chr(ord('A') + col - 1)
 
 
+def data_sources_equivalent_for_region(region, world):
+    for case, region_sources in region.items():
+        world_sources = world.get(case, {})
+        for source, region_filename in region_sources.items():
+            world_filename = world_sources.get(source, None)
+            if region_filename != world_filename:
+                return False
+    return True
 
 
 def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
@@ -1407,14 +1373,14 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
                     s[source_name] = filename
                     region_cases[case] = s
 
-    # suppress regions which are identical to World.
+    # suppress regions which are a subset of World.
     if 'Region: World' in tmp_cases:
         world = tmp_cases['Region: World']
         del tmp_cases['Region: World']
         cases = world.copy()
-        for (region, values) in tmp_cases.items():
-            if values != world:
-                cases[region] = values
+        for (region_name, sources) in tmp_cases.items():
+            if not data_sources_equivalent_for_region(region=sources, world=world):
+                cases[region_name] = sources
     else:
         cases = tmp_cases
     return cases
@@ -1783,6 +1749,7 @@ def infer_classname(filename):
         ('Household & Commercial Recycling', 'Recycling'),
         ('Increasing Distribution Efficiency in WDSs', 'WaterDistribution'),
         ('Instream Hydro', 'InstreamHydro'),
+        ('Landfill Methane', 'LandfillMethane'),
         ('Large Biodigesters', 'Biogas'),
         ('MicroWind Turbines', 'MicroWind'),
         ('Oceanic Freight Improvements', 'Ships'),
