@@ -4,7 +4,7 @@ Mostly reproduces the corresponding xls sheet, with a few simplifications:
 - All breakdowns by year have been removed as the TLA is assumed fixed for all years on all solutions.
 - 'Solution land data' table has not been replicated as it has no function in the model.
 
-Land areas are pulled from CSVs in the 'land/world' directory, and land allocations from the 'land/allocation'
+Areas are pulled from CSVs in the 'land/world' directory, and allocations from the 'land/allocation'
 directory. These in turn are generated from their corresponding spreadsheets in the 'land' directory. These
 values are fixed across all solutions but if they do need updating the xls sheets can be changed and the CSVs
 can be updated by running the relevant script in the 'tools' directory.
@@ -12,6 +12,7 @@ can be updated by running the relevant script in the 'tools' directory.
 
 import pandas as pd
 import pathlib
+from model.dd import THERMAL_MOISTURE_REGIMES, REGIONS
 from tools.util import to_filename
 
 LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land')
@@ -23,12 +24,12 @@ class AEZ:
 
     def __init__(self, solution_name):
         self.solution_name = solution_name
-        self.thermal_moisture_regimes = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
+        self.regimes = THERMAL_MOISTURE_REGIMES
 
-                                         'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
-        self.regions = ['OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
+        # AEZ data has a slightly different format for regions than the rest of the model.
+        # This is in line with the xls version but should be changed later to keep regions consistent
+        self.regions = REGIONS[1:6] + ['Global'] + REGIONS[6:]
 
-                        'Global', 'China', 'India', 'EU', 'USA']
         self._populate_solution_land_allocation()
         self._get_applicable_zones()
         self._populate_world_land_allocation()
@@ -43,10 +44,9 @@ class AEZ:
         'AEZ Data'!A63:AD70
         Calculates solution specific Drawdown land allocation using values from 'allocation' directory.
         """
-        # TODO: drawdown allocation yes/no toggle
         df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_la_template.csv'), index_col=0)
         df = df.fillna(0)
-        for tmr in self.thermal_moisture_regimes:
+        for tmr in self.regimes:
             tmr_path = LAND_CSV_PATH.joinpath('allocation', to_filename(tmr))
             for col in df:
                 if col.startswith('AEZ29'):  # this zone is not included in land allocation
@@ -78,7 +78,7 @@ class AEZ:
         DataFrames sorted by Thermal Moisture Region.
         """
         self.world_land_alloc_dict = {}
-        for tmr in self.thermal_moisture_regimes:
+        for tmr in self.regimes:
             df = pd.read_csv(LAND_CSV_PATH.joinpath('world', to_filename(tmr) + '.csv'), index_col=0).drop(
                 'Total Area (km2)', 1)
             self.world_land_alloc_dict[tmr] = df.mul(self.soln_land_alloc_df.loc[tmr], axis=1) / 10000
@@ -88,7 +88,7 @@ class AEZ:
         'AEZ Data'!A47:H58
         Calculates total land distribution for solution by region (currently fixed for all years).
         """
-        cols = self.thermal_moisture_regimes
+        cols = self.regimes
         soln_df = pd.DataFrame(columns=cols, index=self.regions).fillna(0.)
         for reg in self.regions:
             for tmr, df in self.world_land_alloc_dict.items():
@@ -103,4 +103,4 @@ class AEZ:
 
 
 if __name__ == '__main__':
-    a = AEZ('Tropical Forest Restoration')
+    pass
