@@ -4,9 +4,7 @@ import pandas as pd
 # from solution.solarpvutil import SolarPVUtil
 # from solution.landfillmethane import LandfillMethane
 # from solution.silvopasture import Silvopasture
-from solution.afforestation import Afforestation
+from solution.tropicaltreestaples import TropicalTreeStaples
 
-soln = Afforestation()
-
-# print(soln.tla_per_region)
-print(soln.c2.co2eq_mmt_reduced())
+soln = TropicalTreeStaples()
+print(soln.ae.get_land_distribution())
