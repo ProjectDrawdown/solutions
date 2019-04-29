@@ -1070,11 +1070,21 @@ def test_soln_pds_annual_land_area_harvested():
         pd.testing.assert_frame_equal(ua.soln_pds_annual_land_area_harvested().loc[:, ['World']],
                                       expected.loc[:, ['World']])
 
+def test_soln_pds_annual_land_area_harvested_perennial_biomass():
+    soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted_perbiomass_list[1:],
+            columns=net_annual_land_units_adopted_perbiomass_list[0]).set_index('Year')
+    ac = advanced_controls.AdvancedControls(harvest_frequency=20, soln_expected_lifetime=30.0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted)
+    result = ua.soln_pds_annual_land_area_harvested()
+    expected = pd.DataFrame(soln_pds_annual_land_area_harvested_perennial_biomass_list[1:],
+            columns=soln_pds_annual_land_area_harvested_perennial_biomass_list[0]).set_index('Year')
+    expected.name = 'soln_pds_annual_land_area_harvested'
+    pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_direct_co2eq_emissions_saved_land_annual_not_protect():
     soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
-                                           columns=net_annual_land_units_adopted[0]).set_index(
-        'Year')
+            columns=net_annual_land_units_adopted[0]).set_index('Year')
     soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
     soln_ref_funits_adopted.loc[:, :] = 0.0
     ac = advanced_controls.AdvancedControls(land_annual_emissons_lifetime=100,
@@ -1092,71 +1102,79 @@ def test_direct_co2eq_emissions_saved_land_annual_not_protect():
     assert result.loc[2048, 'Asia (Sans Japan)'] == pytest.approx(16.95946227408880)
     assert result.loc[2060, 'Eastern Europe'] == pytest.approx(5.64414944055870)
 
-
-
 def test_direct_co2eq_emissions_saved_land_onetime_not_protect():
-    soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
-                                           columns=net_annual_land_units_adopted[0]).set_index(
-        'Year')
+    soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted_SRI_list[1:],
+            columns=net_annual_land_units_adopted_SRI_list[0]).set_index('Year')
     soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
     soln_ref_funits_adopted.loc[:, :] = 0.0
     ac = advanced_controls.AdvancedControls(land_annual_emissons_lifetime=100,
-                                            tco2eq_rplu_rate='One-time', disturbance_rate=0.0,
-                                            tco2eq_reduced_per_land_unit=0.23357743333333333)
+            tco2eq_rplu_rate='One-time', disturbance_rate=0.0,
+            tco2eq_reduced_per_land_unit=1.9964000000000002)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_co2eq_emissions_saved_land()
-    # Values from Conservation Agriculture
-    assert result.loc[2015, 'OECD90'] == pytest.approx(2.29507225337865)
-    assert result.loc[2021, 'World'] == pytest.approx(45.78887963463810)
-    assert result.loc[2024, 'Middle East and Africa'] == pytest.approx(11.59338822588380)
-    assert result.loc[2037, 'Latin America'] == pytest.approx(4.38116850491692)
-    assert result.loc[2048, 'Asia (Sans Japan)'] == pytest.approx(16.95946227408880)
-    assert result.loc[2060, 'Eastern Europe'] == pytest.approx(5.64414944055870)
+    # Values from System of Rice Intensification Unit Adoption Calculations AT308:AU354
+    assert result.loc[2015, 'World'] == pytest.approx(2.33469083300138)
+    assert result.loc[2026, 'World'] == pytest.approx(2.33469083300142)
+    assert result.loc[2034, 'World'] == pytest.approx(2.21940156759949)
+    assert result.loc[2043, 'World'] == pytest.approx(1.44103756555924)
+    assert result.loc[2052, 'World'] == pytest.approx(0.85917976648569)
+    assert result.loc[2060, 'World'] == pytest.approx(0.51015076817701)
 
-
+def test_direct_co2eq_emissions_saved_land_delta_pds_ref_factor():
+    soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_smallholder_list[1:],
+            columns=soln_pds_funits_adopted_smallholder_list[0]).set_index('Year')
+    soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_smallholder_list[1:],
+            columns=soln_ref_funits_adopted_smallholder_list[0]).set_index('Year')
+    ac = advanced_controls.AdvancedControls(tco2eq_reduced_per_land_unit=313.791126867655,
+            avoided_deforest_with_intensification=0.255526315789474)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
+    result = ua.direct_co2eq_emissions_saved_land()
+    # Values from Smallholder Intensification Unit Adoption Calculations AT308:AU354
+    assert result.loc[2015, 'World'] == pytest.approx(86.1366493749314)
+    assert result.loc[2016, 'World'] == pytest.approx(86.1366493749369)
+    assert result.loc[2024, 'World'] == pytest.approx(86.1366493749388)
+    assert result.loc[2030, 'World'] == pytest.approx(86.1366493749314)
+    assert result.loc[2031, 'World'] == pytest.approx(55.3589385314735)
+    assert result.loc[2040, 'World'] == pytest.approx(55.3589385314684)
+    assert result.loc[2050, 'World'] == pytest.approx(55.3589385314713)
+    assert result.loc[2051, 'World'] == pytest.approx(11.2040578334937)
+    assert result.loc[2060, 'World'] == pytest.approx(11.2040578334931)
 
 def test_various_direct_emissions_saved_land_onetime_protect():
     soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
-                                           columns=net_annual_land_units_adopted[0]).set_index(
-        'Year')
+            columns=net_annual_land_units_adopted[0]).set_index( 'Year')
     soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
     soln_ref_funits_adopted.loc[:, :] = 0.0
     tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'),
-                              index_col=0)
-    ac = advanced_controls.AdvancedControls(delay_protection_1yr=True,
-                                            tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
-
-                                            tch4_co2_reduced_per_land_unit=0.1,
-                                            tco2eq_reduced_per_land_unit=0.0)
+            index_col=0)
+    ac = advanced_controls.AdvancedControls(delay_protection_1yr=True, tco2eq_rplu_rate='One-time',
+            disturbance_rate=0.0, degradation_rate=0.1, tch4_co2_reduced_per_land_unit=0.1,
+            tco2eq_reduced_per_land_unit=0.0)
     ua = unitadoption.UnitAdoption(ac=ac, tla_per_region=tla_per_reg,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_ch4_co2_emissions_saved_land()
     assert not all(result.loc[:, 'World'] == 0.0)
     ac = advanced_controls.AdvancedControls(delay_protection_1yr=True,
-                                            tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
-
-                                            tn2o_co2_reduced_per_land_unit=0.1,
-                                            tco2eq_reduced_per_land_unit=0.0)
+            tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
+            tn2o_co2_reduced_per_land_unit=0.1, tco2eq_reduced_per_land_unit=0.0)
     ua = unitadoption.UnitAdoption(ac=ac, tla_per_region=tla_per_reg,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_n2o_co2_emissions_saved_land()
     assert not all(result.loc[:, 'World'] == 0.0)
     ac = advanced_controls.AdvancedControls(delay_protection_1yr=True,
-                                            tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
-
-                                            tco2_reduced_per_land_unit=0.1,
-                                            tco2eq_reduced_per_land_unit=0.0)
+            tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
+            tco2_reduced_per_land_unit=0.1, tco2eq_reduced_per_land_unit=0.0)
     ua = unitadoption.UnitAdoption(ac=ac, tla_per_region=tla_per_reg,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_co2_emissions_saved_land()
     assert not all(result.loc[:, 'World'] == 0.0)
-
-
 
 
 # SolarPVUtil 'Unit Adoption Calculations'!B134:L181
@@ -2765,3 +2783,93 @@ net_annual_land_units_adopted = [
      0.0, 0.0, 0.0],
     [2060, 125.385132921962, 35.513092879863, 24.163932962240, 36.707491168307, 40.354331744346, 2.182389471924, 0.0,
      0.0, 0.0, 0.0]]
+
+# Perennial Biomass 'Helper Tables'!B91:C137
+net_annual_land_units_adopted_perbiomass_list = [
+    ["Year", "World"],
+    [2014, 0.018875000000], [2015, 1.592449158401], [2016, 3.166023316803],
+    [2017, 4.739597475204], [2018, 6.313171633605], [2019, 7.886745792006],
+    [2020, 9.460319950407], [2021, 11.033894108809], [2022, 12.607468267210],
+    [2023, 14.181042425611], [2024, 15.754616584012], [2025, 17.328190742413],
+    [2026, 18.901764900815], [2027, 20.475339059216], [2028, 22.048913217617],
+    [2029, 23.622487376018], [2030, 25.196061534420], [2031, 26.603521590755],
+    [2032, 28.010981647090], [2033, 29.418441703425], [2034, 30.825901759760],
+    [2035, 32.233361816095], [2036, 33.640821872431], [2037, 35.048281928766],
+    [2038, 36.455741985101], [2039, 37.863202041436], [2040, 39.270662097771],
+    [2041, 40.678122154107], [2042, 42.085582210442], [2043, 43.493042266777],
+    [2044, 44.900502323112], [2045, 46.307962379447], [2046, 47.715422435783],
+    [2047, 49.122882492118], [2048, 50.530342548453], [2049, 51.937802604788],
+    [2050, 53.345262661123], [2051, 54.752722717459], [2052, 56.160182773794],
+    [2053, 57.567642830129], [2054, 58.975102886464], [2055, 60.382562942799],
+    [2056, 61.790022999135], [2057, 63.197483055470], [2058, 64.356942826961],
+    [2059, 65.500902580650], [2060, 66.644862334338]]
+
+# Perennial Biomass 'Unit Adoption Calculations'!EH136:EI182
+soln_pds_annual_land_area_harvested_perennial_biomass_list = [
+    ["Year", "World"],
+    [2015, 0.0], [2016, 0.0], [2017, 0.0], [2018, 0.0], [2019, 0.0], [2020, 0.0], [2021, 0.0],
+    [2022, 0.0], [2023, 0.0], [2024, 0.0], [2025, 0.0], [2026, 0.0], [2027, 0.0], [2028, 0.0],
+    [2029, 0.0], [2030, 0.0], [2031, 0.0], [2032, 0.0], [2033, 0.0], [2034, 0.0], [2035, 0.0],
+    [2036, 1.5735741584013], [2037, 1.5735741584013], [2038, 1.5735741584013],
+    [2039, 1.5735741584010], [2040, 1.5735741584012], [2041, 1.5735741584011],
+    [2042, 1.5735741584010], [2043, 1.5735741584012], [2044, 1.5735741584012],
+    [2045, 1.5735741584012], [2046, 1.5735741584011], [2047, 1.5735741584012],
+    [2048, 1.5735741584011], [2049, 1.5735741584013], [2050, 1.5735741584010],
+    [2051, 1.5735741584013], [2052, 1.4074600563350], [2053, 1.4074600563350],
+    [2054, 1.4074600563353], [2055, 1.4074600563351], [2056, 2.9810342147365],
+    [2057, 2.9810342147363], [2058, 2.9810342147365], [2059, 2.9810342147363],
+    [2060, 2.9810342147363]]
+
+# System of Rice Intensification 'Helper Tables'!B91:C137
+net_annual_land_units_adopted_SRI_list = [
+    ["Year", "World"],
+    [2014, 3.490000000000], [2015, 4.659450427270], [2016, 5.828900854540],
+    [2017, 6.998351281809], [2018, 8.167801709079], [2019, 9.337252136349],
+    [2020, 10.506702563619], [2021, 11.676152990889], [2022, 12.845603418159],
+    [2023, 14.015053845428], [2024, 15.184504272698], [2025, 16.353954699968],
+    [2026, 17.523405127238], [2027, 18.700746952847], [2028, 20.325170091707],
+    [2029, 21.882091213410], [2030, 23.371297158388], [2031, 24.555735712325],
+    [2032, 25.718606768629], [2033, 26.857321482078], [2034, 27.969023329203],
+    [2035, 29.050598951173], [2036, 30.098709481992], [2037, 31.109848842324],
+    [2038, 32.080434679120], [2039, 33.006934930049], [2040, 33.886027888195],
+    [2041, 34.714786283780], [2042, 35.490867550749], [2043, 36.212685606028],
+    [2044, 36.896534905574], [2045, 37.557349448483], [2046, 38.191637316803],
+    [2047, 38.797050855640], [2048, 39.371276479349], [2049, 39.912124338590],
+    [2050, 40.417630733480], [2051, 40.886165021880], [2052, 41.316529561294],
+    [2053, 41.683197966299], [2054, 42.022887730787], [2055, 42.350656761902],
+    [2056, 42.665659777437], [2057, 42.967041817449], [2058, 43.253953303807],
+    [2059, 43.525567982113], [2060, 43.781103329828]]
+
+# Smallholder Intensification 'Helper Tables'!B91:C137
+soln_pds_funits_adopted_smallholder_list = [
+    ["Year", "World"],
+    [2014, 8.75], [2015, 9.824265632254], [2016, 10.898531264509], [2017, 11.972796896764],
+    [2018, 13.047062529019], [2019, 14.121328161274], [2020, 15.195593793529],
+    [2021, 16.269859425784], [2022, 17.344125058039], [2023, 18.418390690294],
+    [2024, 19.492656322549], [2025, 20.566921954803], [2026, 21.641187587058],
+    [2027, 22.715453219313], [2028, 23.789718851568], [2029, 24.863984483823],
+    [2030, 25.938250116078], [2031, 26.628667093451], [2032, 27.319084070824],
+    [2033, 28.009501048197], [2034, 28.699918025570], [2035, 29.390335002942],
+    [2036, 30.080751980315], [2037, 30.771168957688], [2038, 31.461585935061],
+    [2039, 32.152002912434], [2040, 32.842419889807], [2041, 33.532836867180],
+    [2042, 34.223253844553], [2043, 34.913670821925], [2044, 35.604087799298],
+    [2045, 36.294504776671], [2046, 36.984921754044], [2047, 37.675338731417],
+    [2048, 38.365755708790], [2049, 39.056172686163], [2050, 39.746589663536],
+    [2051, 39.886322684958], [2052, 40.026055706379], [2053, 40.165788727801],
+    [2054, 40.305521749223], [2055, 40.445254770645], [2056, 40.584987792067],
+    [2057, 40.724720813489], [2058, 40.864453834911], [2059, 41.004186856333],
+    [2060, 41.143919877755]]
+
+# Smallholder Intensification 'Helper Tables'!B91:C137
+soln_ref_funits_adopted_smallholder_list = [
+    ["Year", "World"],
+    [2014,  8.75], [2015,  8.75], [2016,  8.75], [2017,  8.75], [2018,  8.75],
+    [2019,  8.75], [2020,  8.75], [2021,  8.75], [2022,  8.75], [2023,  8.75],
+    [2024,  8.75], [2025,  8.75], [2026,  8.75], [2027,  8.75], [2028,  8.75],
+    [2029,  8.75], [2030,  8.75], [2031,  8.75], [2032,  8.75], [2033,  8.75],
+    [2034,  8.75], [2035,  8.75], [2036,  8.75], [2037,  8.75], [2038,  8.75],
+    [2039,  8.75], [2040,  8.75], [2041,  8.75], [2042,  8.75], [2043,  8.75],
+    [2044,  8.75], [2045,  8.75], [2046,  8.75], [2047,  8.75], [2048,  8.75],
+    [2049,  8.75], [2050,  8.75], [2051,  8.75], [2052,  8.75], [2053,  8.75],
+    [2054,  8.75], [2055,  8.75], [2056,  8.75], [2057,  8.75], [2058,  8.75],
+    [2059,  8.75], [2060,  8.75]]

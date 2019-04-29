@@ -294,6 +294,8 @@ class AdvancedControls:
     harvest_frequency (float): new growth is harvested/cleared every ... (years) Afforestation "Advanced Controls"!B187
     carbon_not_emitted_after_harvesting (float): Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing
       Afforestation "Advanced Controls"!H187
+    avoided_deforest_with_intensification (float): Factor for avoiding deforestation by more
+      intensively using the land. Women Smallholders "Advanced Controls"!E205
   
     delay_protection_1yr (bool): Delay Impact of Protection by 1 Year? (Leakage)
       ForestProtection "Advanced Controls"!B200 (land models)
@@ -402,6 +404,7 @@ class AdvancedControls:
                  use_custom_tla=None,
                  harvest_frequency=None,
                  carbon_not_emitted_after_harvesting=None,
+                 avoided_deforest_with_intensification=None,
 
                  delay_protection_1yr=None,
                  delay_regrowth_1yr=None,
@@ -538,8 +541,10 @@ class AdvancedControls:
         self.use_custom_tla = use_custom_tla
         self.harvest_frequency = harvest_frequency
         self.carbon_not_emitted_after_harvesting = self._substitute_vma(carbon_not_emitted_after_harvesting,
-
                                                                         vma_title='Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing')
+        self.avoided_deforest_with_intensification = self._substitute_vma(
+                avoided_deforest_with_intensification,
+                vma_title='Avoided_Deforested_Area_With_Increase_in_Agricultural_Intensification')
 
         self.delay_protection_1yr = delay_protection_1yr
         self.delay_regrowth_1yr = delay_regrowth_1yr

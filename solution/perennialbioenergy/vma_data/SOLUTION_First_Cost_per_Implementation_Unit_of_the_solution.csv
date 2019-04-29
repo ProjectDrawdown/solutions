@@ -1,0 +1,12 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+SAC (2008),http://www.sruc.ac.uk/download/downloads/id/103/willow_short_rotation_coppice_2008,EU,UK,,1  - Peer Reviewed,2008,,,£2008/ha,0.0,US$2014/ ha,,"Refer page 2; The willow SRC crop cycle starts with the relatively
+costly establishment phase however the planting grant
+of £1,000 ha is expected to cover most of these costs. 
+",
+CALU (2010),http://www.calu.bangor.ac.uk/Technical%20leaflets/Miscanthus%20-%20does%20it%20payv3.pdf,EU,UK,,1  - Peer Reviewed,2010,,,£2009/ha,0.0,US$2014/ ha,,Refer page 1; Miscanthus,
+Park (1996),http://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=12558&context=rtd,USA,Midwest,,1  - Peer Reviewed,1996,,,$1996/acre,0.0,US$2014/ ha,,"Refer to table 5.4, establishment cost (prorated for 4 years) for alfafa ",
+Park (1996),http://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=12558&context=rtd,USA,Midwest,,1  - Peer Reviewed,1996,,,$1996/acre,0.0,US$2014/ ha,,"Refer to table 5.4, establishment cost (prorated for 10 years)  for Reed Canarygrass",
+Park (1996),http://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=12558&context=rtd,USA,Midwest,,1  - Peer Reviewed,1996,,,$1996/acre,0.0,US$2014/ ha,,"Refer to table 5.4, establishment cost (prorated for 10 years) for Switchgrass",
+Hoque (2014),http://www.extension.iastate.edu/AGDm/crops/pdf/a1-28.pdf,USA,Midwest,,2 - Public Sector/ Multilateral Agency,2014,,,$2014/acre,0.0,US$2014/ ha,,"Refer table 1, cost of field preparation",
+Wit and Faaij 2008,https://ec.europa.eu/energy/intelligent/projects/sites/iee-projects/files/projects/documents/refuel_biomass_resources_potential_and_related_costs.pdf,OECD90,,,2 - Public Sector/ Multilateral Agency,2007,,,£2007/ha,0.0,US$2014/ ha,,Refer footnote of table 5;  Cost for switchgrass are derived from a study by Monti et al. (2007).,
+Wit and Faaij 2008,https://ec.europa.eu/energy/intelligent/projects/sites/iee-projects/files/projects/documents/refuel_biomass_resources_potential_and_related_costs.pdf,OECD90,,,2 - Public Sector/ Multilateral Agency,2006,,,£2006/ha,0.0,US$2014/ ha,,Refer footnote of table 5;  Cost for switchgrass are derived from a study by Monti et al. (2007).,

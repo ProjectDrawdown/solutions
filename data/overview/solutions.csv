@@ -37,7 +37,7 @@ Bamboo, bamboo, Land Use
 Alternative Cement, altcement, Materials
 Mass Transit, masstransit, Transport
 Forest Protection, forestprotection, Land Use
-Indigenous Peoples’ Land Management,, Land Use
+Indigenous Peoples’ Land Management, indigenouspeoplesland, Land Use
 Trucks, trucks, Transport
 Solar Water, solarhotwater, Electricity Generation
 Heat Pumps, heatpumps, Buildings and Cities
@@ -49,7 +49,7 @@ Bioplastic, bioplastic, Materials
 In-Stream Hydro, instreamhydro, Electricity Generation
 Cars, cars, Transport
 Cogeneration,, Electricity Generation
-Perennial Biomass,, Land Use
+Perennial Biomass, perennialbioenergy, Land Use
 Coastal Wetlands,, Land Use
 System of Rice Intensification, riceintensification, Food
 Walkable Cities, walkablecities, Buildings and Cities
@@ -60,7 +60,7 @@ Landfill Methane, landfillmethane, Buildings and Cities
 Bike Infrastructure, bikeinfrastructure, Buildings and Cities
 Composting, composting, Food
 Smart Glass, smartglass, Buildings and Cities
-Women Smallholders,, Women and Girls
+Women Smallholders, womensmallholders, Women and Girls
 Telepresence, telepresence, Transport
 Methane Digesters (Small),, Electricity Generation
 Nutrient Management, nutrientmanagement, Food

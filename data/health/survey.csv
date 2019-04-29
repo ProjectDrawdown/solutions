@@ -1,4 +1,6 @@
 Solution,RegionalFractionTAM,RegionalFractionAdoption,Rvalue
+afforestation:PDS-84p2050-Plausible-PDScustom-low-Bookedition1,,0.7245918925992045,0.9988767777545321
+afforestation:PDS-99p2050-Drawdown-Optimum-PDScustom-high-Bookedition1,,0.8888850452918098,0.89902684011359
 airplanes:PDS1-68p2050_14.9% Efficiency (Book Ed.1),0.0,0.0,0.9237175225431983
 airplanes:PDS2-73p2050_3rd Manufacturer+Retrofit (Book Ed.1),0.0,0.0,0.9366046638662329
 airplanes:PDS3-73p2050_3rd Manufacturer+Retrofit+18% (Book Ed.1),0.0,0.0,0.9366046638662329
@@ -27,6 +29,9 @@ buildingautomation:PDS3-72p2050-Linear (Book Ed.1),0.8032890314804253,1.0,0.9994
 carpooling:PDS1-15p2050-(Book Ed.1),0.0,0.0,0.9896722408591557
 carpooling:PDS2-20p2050-(Book Ed.1),0.0,0.0,0.9912834000939634
 carpooling:PDS3-90p2050-Linear (Book Ed.1) ,0.0,0.0,0.999937644540021
+cars:PDS1-6p2050-Conservative (Book Ed.1),0.0,0.0,0.889791668578832
+cars:PDS2-13p2050-Amitious Cases (Book Ed.1),0.0,0.0,0.8209732414636313
+cars:PDS3-5p2050-Ambitious+DoubleOccu (Book Ed.1),0.0,0.0,0.40610888187213773
 composting:PDS1-49p2050-Existing Prognostications (Book Ed.1),1.186401400092798,0.8832328179670306,0.9904985516358482
 composting:PDS2-66p2050-Existing Projections + Rapid growth (Book Ed.1),1.186401400092798,0.0,0.9901176291272826
 composting:PDS3-73p2050-Optimum (Book ed.1),1.186401400092798,0.0,0.9861816859677728
@@ -72,6 +77,9 @@ improvedcookstoves:PDS3-25p2050_Linear to 25% (Book Ed.1),1.108823676879944,1.10
 improvedrice:PDS-54p2050-Plausible-PDScustom-avg-BookVersion1,,1.0965081860576658,0.9935967365701459
 improvedrice:PDS-80p2050-Drawdown-PDScustom-high-BookVersion1,,1.1953342887235465,0.9906189046246853
 improvedrice:PDS-100p2050-Optimum-PDS-max-BookVersion1,,1.0028053430281516,0.9862282435904238
+indigenouspeoplesland:PDS-61p2050-Plausible-PDScustom-low-Bookedition1,,1.6274272187221726,0.9812726297141984
+indigenouspeoplesland:PDS-76p2050-Drawdown-PDScustom-avg-Bppkedition1,,1.314740468912531,0.9922529020563144
+indigenouspeoplesland:PDS-91p2050-Optimum-PDScustom-high-Bookedition1,,1.1028447087997548,0.9952536248728295
 instreamhydro:PDS-4p2050-Plausible (Book Ed. 1),0.9762899024505536,0.0,0.9855441082824213
 instreamhydro:PDS-3p2050-Drawdown (Book Ed.1),0.9345614538951017,0.0,0.9986790056769711
 instreamhydro:PDS-4p2050-Optimum (Book Ed. 1),0.9743482283184594,0.0,0.9855441082824213
@@ -104,6 +112,9 @@ microwind:PDS-0p2050-Optimum (Book Ed. 1),0.9743482283184594,0.0,0.9993940920431
 multistrataagroforestry:PDS-22p2050-PDScustom-Low-Bookedition1,,0.0,0.9961464337419509
 multistrataagroforestry:PDS-26p2050-PDScustom-Average-Bookedition1,,0.0,0.9925355053301742
 multistrataagroforestry:PDS-30p2050-PDScustom-High-Bookedition1,,0.0,0.9902158647638502
+nuclear:PDS-12p2050-Plausible (Book Ed. 1),0.976289902450553,0.6142118542856996,0.9809488184656787
+nuclear:PDS-10p2050-Drawdown Scenario,0.9345614538951013,0.7373708706262061,0.9316410728694225
+nuclear:PDS-0p2050-Optimum (Book Ed.1),0.9743482283184588,,-0.949175408789699
 nutrientmanagement:PDS-54p2050-Plausible-PDScustom-avg-Bookedition1,,0.9983899159653724,0.9994183232990235
 nutrientmanagement:PDS-74p2050-Drawdown-PDScustom-high-Bookedition1,,1.0124242885142212,0.9995196366054828
 nutrientmanagement:PDS-80p2050-Optimum-PDScustom-max-Bookedition1,,1.0000000000000049,0.9999918075968625
@@ -116,6 +127,9 @@ onshorewind:PDS-35p2050-Optimum (Book Ed. 1),0.9743482283184594,0.30479464973184
 peatlands:PDS-69p2050-Plausible-PDScustom-avg-BookVersion1,,0.0,0.9197220039778472
 peatlands:PDS-95p2050-Drawdown-PDScustom-high-BookVersion1,,0.0,0.8603687470433032
 peatlands:PDS-94p2050-Optimum-PDScustom-aggmax-BookVersion1,,0.0,0.7742349987766715
+perennialbioenergy:PDS-72p2050-Plausible-PDScustom-avg-Bookedition1,,1.3946896451857556,0.9996213577715484
+perennialbioenergy:PDS-85p2050-Drawdown-PDScustom-max-Bookedition1,,0.0,0.9976198856686919
+perennialbioenergy:PDS-100p2050-Optimum-PDScustom-high-Bookedition1,,0.9999999999999998,0.9749816666708636
 recycledpaper:PDS1-67p2050-Low Growth (Book Ed.1),1.2360617693542109,1.3873406306011877,0.9920519546842813
 recycledpaper:PDS2-77p2050-Mean Growth (Book Ed.1),1.2360617693542109,0.0,0.9945898305433198
 recycledpaper:PDS3-80p2050-High Growth (Book Ed.1),1.2360617693542109,0.0,0.9852818152808984
@@ -188,3 +202,6 @@ waveandtidal:PDS-4p2050-Optimum (Book Ed. 1),0.9743482283184588,0.0,0.9806135743
 waveandtidal:PDS-3p2050-Plausible (Book Ed. 1),0.976289902450553,0.0,0.9759863084890293
 waveandtidal:PDS-4p2050-Drawdown (Book Ed.1),0.9345614538951013,0.0,0.9802012144412671
 waveandtidal:PDS-4p2050-Optimum (Book Ed.1),0.9743482283184588,0.0,0.9802012144412671
+womensmallholders:PDS-68p2050-Plausible-PDScustom-avg-Bookedition1,,1.4648323982509162,0.9810274184723932
+womensmallholders:PDS-91p2050-Drawdown-PDScustom-high-Bookedition1,,1.1020482349246106,0.9731695291189449
+womensmallholders:PDS-100p2050-Optimum-PDScustom-max-Bookedition1,,0.0,0.955761345214216

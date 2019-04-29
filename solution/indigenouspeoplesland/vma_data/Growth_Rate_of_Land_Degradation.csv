@@ -1,0 +1,6 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+FAO 2015,http://www.fao.org/3/a-i4793e.pdf,World,,,1  - Peer Reviewed,,,,% Annually,0.0,% Annually,,Refer page 3,True
+Keenan et al 2015,https://ac.els-cdn.com/S0378112715003400/1-s2.0-S0378112715003400-main.pdf?_tid=edfb7557-d86d-4b0b-9f50-cd82eec70005&acdnat=1532649195_74dbde2db606369ef60ad98aea8bc805,World,,,1  - Peer Reviewed,,,,% Annually,0.0,% Annually,,Refer abstract,True
+RSS 2010; Keenan et al 2015,http://www.fao.org/3/be7b339c-dbe9-4d48-ac73-2a8ba1ae7ee2/i4895e.pdf,World,,,1  - Peer Reviewed,,,,% Annually,0.0,% Annually,,Refer table 12,True
+RSS 2015; Keenan et al 2015,http://www.fao.org/3/be7b339c-dbe9-4d48-ac73-2a8ba1ae7ee2/i4895e.pdf,World,,,1  - Peer Reviewed,,,,% Annually,0.0,% Annually,,Refer table 12,True
+"Project Drawdown (2016), weight average forest degradation rate based on ""total forest area"" and ""forest at Risk"" status",See WeightedDegradationMethod Sheet,Global ,,,1  - Peer Reviewed,,,,% Annually,0.0,% Annually,,,

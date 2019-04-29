@@ -11,6 +11,7 @@
 
 import os
 import pathlib
+import numpy as np
 import pandas as pd
 import warnings
 from numpy import nan
@@ -20,6 +21,17 @@ from tools.util import cell_to_offsets, empty_to_nan, to_filename, convert_bool
 CSV_TEMPLATE_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'VMA', 'vma_template.csv')
 pd.set_option('display.expand_frame_repr', False)
 
+
+def convert_year(x):
+    if pd.isna(x):
+        return np.nan
+    try:
+        return int(x)
+    except ValueError:
+        # a few VMAs use a range like '1990-2000'
+        return str(x)
+
+
 # dtype conversion map
 COLUMN_DTYPE_MAP = {
     'SOURCE ID: Author/Org, Date, Info': lambda x: x,
@@ -28,7 +40,7 @@ COLUMN_DTYPE_MAP = {
     'Specific Geographic Location': lambda x: x,
     'Thermal-Moisture Regime': lambda x: x,
     'Source Validation Code': lambda x: x,
-    'Year / Date': lambda x: int(x) if x is not nan else x,
+    'Year / Date': lambda x: convert_year(x),
     'License Code': lambda x: x,
     'Raw Data Input': lambda x: float(x) if x is not nan else x,
     'Original Units': lambda x: x,
@@ -184,7 +196,8 @@ class VMAReader:
         if fixed_summary:
             # Find the Average, High, Low cells.
             for r in range(last_row, last_row + 50):
-                if 'average' in str(sheet.cell_value(row1 + r, 17)).lower():
+                label = str(sheet.cell_value(row1 + r, 17)).lower()
+                if 'average' in label or 'sum' in label:
                     col = 20 if use_weight else 19
                     average = float(sheet.cell_value(row1 + r, col))
                     high = float(sheet.cell_value(row1 + r + 1, col))

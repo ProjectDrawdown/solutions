@@ -26,6 +26,7 @@ from solution import heatpumps
 from solution import highspeedrail
 from solution import improvedcookstoves
 from solution import improvedrice
+from solution import indigenouspeoplesland
 from solution import instreamhydro
 from solution import insulation
 from solution import irrigationefficiency
@@ -41,6 +42,7 @@ from solution import nutrientmanagement
 from solution import offshorewind
 from solution import onshorewind
 from solution import peatlands
+from solution import perennialbioenergy
 from solution import recycledpaper
 from solution import refrigerants
 from solution import regenerativeagriculture
@@ -62,6 +64,7 @@ from solution import walkablecities
 from solution import waterdistribution
 from solution import waterefficiency
 from solution import waveandtidal
+from solution import womensmallholders
 
 def all_solutions_scenarios():
     everything = {}
@@ -102,6 +105,8 @@ def all_solutions_scenarios():
     everything['improvedcookstoves'] = (improvedcookstoves.ImprovedCookStoves,
             list(improvedcookstoves.scenarios.keys()))
     everything['improvedrice'] = (improvedrice.ImprovedRice, list(improvedrice.scenarios.keys()))
+    everything['indigenouspeoplesland'] = (indigenouspeoplesland.IndigenousPeoplesLand,
+            list(indigenouspeoplesland.scenarios.keys()))
     everything['instreamhydro'] = (instreamhydro.InstreamHydro,
             list(instreamhydro.scenarios.keys()))
     everything['insulation'] = (insulation.Insulation, list(insulation.scenarios.keys()))
@@ -125,6 +130,8 @@ def all_solutions_scenarios():
     everything['offshorewind'] = (offshorewind.OffshoreWind, list(offshorewind.scenarios.keys()))
     everything['onshorewind'] = (onshorewind.OnshoreWind, list(onshorewind.scenarios.keys()))
     everything['peatlands'] = (peatlands.Peatlands, list(peatlands.scenarios.keys()))
+    everything['perennialbioenergy'] = (perennialbioenergy.PerennialBioenergy,
+            list(perennialbioenergy.scenarios.keys()))
     everything['recycledpaper'] = (recycledpaper.RecycledPaper,
             list(recycledpaper.scenarios.keys()))
     everything['refrigerants'] = (refrigerants.RefrigerantManagement,
@@ -158,4 +165,6 @@ def all_solutions_scenarios():
     everything['waterefficiency'] = (waterefficiency.WaterEfficiencyMeasures,
             list(waterefficiency.scenarios.keys()))
     everything['waveandtidal'] = (waveandtidal.WaveAndTidal, list(waveandtidal.scenarios.keys()))
+    everything['womensmallholders'] = (womensmallholders.WomenSmallholders,
+            list(womensmallholders.scenarios.keys()))
     return everything
