@@ -1601,7 +1601,8 @@ def test_Ships_RRS(start_excel, tmpdir):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('silvopasture', 'testdata', 'Silvopasture_L-Use_v1.1a_3Aug18.xlsm'))],
+    [str(solutiondir.joinpath('silvopasture', 'testdata',
+        'Drawdown-Silvopasture_BioS_v1.1_3Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_Silvopasture_LAND(start_excel, tmpdir):
   workbook = start_excel

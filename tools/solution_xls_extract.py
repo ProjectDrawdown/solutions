@@ -866,7 +866,7 @@ def get_filename_for_source(sourcename, prefix=''):
     filename = re.sub(r"\s+", '_', filename)
     filename = re.sub(r"\.+", '_', filename)
     filename = filename.replace('Based_on_', 'based_on_')
-    if len(filename) > 63:
+    if len(filename) > 71:
         s = filename[63:]
         h = hex(abs(hash(s)))[-8:]
         filename = filename[:63] + h
@@ -1417,7 +1417,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
             continue
         skip = True
         for row in range(0, custom_ad_tab.nrows):
-            if str(custom_ad_tab.cell(row, 1).value) == name:
+            if normalize_source_name(str(custom_ad_tab.cell(row, 1).value)) == name:
                 df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name,
                                    header=0, index_col=0, usecols="A:K", skiprows=row + 1, nrows=49)
                 df.rename(mapper={'Middle East & Africa': 'Middle East and Africa'},

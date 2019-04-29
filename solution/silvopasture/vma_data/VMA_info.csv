@@ -1,25 +1,25 @@
-VMA number,Filename,Title on xls,Has data?
-1,Current_Adoption,Current Adoption,True
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,False
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True
-4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,True
-5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True
-6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,True
-7,SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum,SOLUTION Net Profit Margin per Functional Unit per Annum,True
-8,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,True
-9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),True
-10,Electricty_Consumed_per_CONVENTIONAL_Functional_Unit,Electricty Consumed per CONVENTIONAL Functional Unit,False
-11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False
-12,Total_Energy_Used_per_SOLUTION_functional_unit,Total Energy Used per SOLUTION functional unit,False
-13,Fuel_Consumed_per_CONVENTIONAL_Functional_Unit,Fuel Consumed per CONVENTIONAL Functional Unit,False
-14,Fuel_Reduction_Factor_SOLUTION,Fuel Reduction Factor SOLUTION,False
-15,t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit,t CO2-eq (Aggregate emissions) Reduced per Land Unit,False
-16,t_CO2_Reduced_per_Land_Unit,t CO2 Reduced per Land Unit,False
-17,t_N2O_CO2_eq_Reduced_per_Land_Unit,t N2O-CO2-eq Reduced per Land Unit,False
-18,t_CH4_CO2_eq_Reduced_per_Land_Unit,t CH4-CO2-eq Reduced per Land Unit,True
-19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE,False
-20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit,Indirect CO2 Emissions per SOLUTION Implementation Unit,False
-21,Sequestration_Rates,Sequestration Rates,True
-22,Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing,Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing,False
-23,Disturbance_Rate,Disturbance Rate,False
-24,Percent_silvopasture_area_to_the_total_grassland_area_including_potential,Percent silvopasture area to the total grassland area (including potential),True
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,314.15,450.00000000000006,178.2999999999999
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,False,False,,,
+3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit of the solution,True,False,462.4530059390729,713.7436578412799,211.16235403686593
+4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,True,True,328.4158577699379,706.1886004726335,-49.356884932757794
+5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True,False,837.6431309090909,1694.6259966128516,-19.339734794669766
+6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,True,False,143.54391845443618,231.31902469904455,55.768812209827814
+7,SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum,SOLUTION Net Profit Margin per Functional Unit per Annum,True,False,460.2196969230769,732.9968200868964,187.44257375925747
+8,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,True,False,3.4285714285714284,5.085344786391886,1.771798070750971
+9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),True,False,0.10054496724576324,0.18294669726472942,0.01814323722679706
+10,Electricty_Consumed_per_CONVENTIONAL_Functional_Unit,Electricty Consumed per CONVENTIONAL Functional Unit,False,False,,,
+11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+12,Total_Energy_Used_per_SOLUTION_functional_unit,Total Energy Used per SOLUTION functional unit,False,False,,,
+13,Fuel_Consumed_per_CONVENTIONAL_Functional_Unit,Fuel Consumed per CONVENTIONAL Functional Unit,False,False,,,
+14,Fuel_Reduction_Factor_SOLUTION,Fuel Reduction Factor SOLUTION,False,False,,,
+15,t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit,t CO2-eq (Aggregate emissions) Reduced per Land Unit,False,False,,,
+16,t_CO2_Reduced_per_Land_Unit,t CO2 Reduced per Land Unit,False,False,,,
+17,t_N2O_CO2_eq_Reduced_per_Land_Unit,t N2O-CO2-eq Reduced per Land Unit,False,False,,,
+18,t_CH4_CO2_eq_Reduced_per_Land_Unit,t CH4-CO2-eq Reduced per Land Unit,True,False,0.0,0.0,0.0
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE,False,False,,,
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit,Indirect CO2 Emissions per SOLUTION Implementation Unit,False,False,,,
+21,Sequestration_Rates,Sequestration Rates,True,False,4.645616883116883,8.242493486939804,1.0487402792939635
+22,Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing,Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing,False,False,,,
+23,Disturbance_Rate,Disturbance Rate,False,False,,,
+24,Percent_silvopasture_area_to_the_total_grassland_area_including_potential,Percent silvopasture area to the total grassland area (including potential),True,False,0.2415057625301528,0.36171938304948187,0.12129214201082372
