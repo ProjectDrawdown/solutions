@@ -797,6 +797,9 @@ def normalize_source_name(sourcename):
         if '450' in name: return 'Based on: CES ITU AMPERE 450'
         raise ValueError('Unknown UN CES ITU AMPERE source: ' + sourcename)
     if 'IEA' in name and 'ETP' in name:
+        if '2014' in name and '2DS' in name: return 'Based on: IEA ETP 2014 2DS'
+        if '2014' in name and '4DS' in name: return 'Based on: IEA ETP 2014 4DS'
+        if '2014' in name and '6DS' in name: return 'Based on: IEA ETP 2014 6DS'
         if '2016' in name and '6DS' in name: return 'Based on: IEA ETP 2016 6DS'
         if '2016' in name and '4DS' in name: return 'Based on: IEA ETP 2016 4DS'
         if '2016' in name and '2DS' in name and 'OPT2-PERENNIALS' in name:
@@ -863,7 +866,7 @@ def get_filename_for_source(sourcename, prefix=''):
     filename = re.sub(r"\s+", '_', filename)
     filename = re.sub(r"\.+", '_', filename)
     filename = filename.replace('Based_on_', 'based_on_')
-    if len(filename) > 63:
+    if len(filename) > 71:
         s = filename[63:]
         h = hex(abs(hash(s)))[-8:]
         filename = filename[:63] + h
@@ -1331,7 +1334,7 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
         df.index.name = 'Year'
 
         zero_adoption_ok = False
-        zero_adoption_solutions = ['nuclear', 'cars']
+        zero_adoption_solutions = ['nuclear', 'cars', 'geothermal']
         for sname in zero_adoption_solutions:
             if sname in outputdir:
                 zero_adoption_ok = True
@@ -1352,13 +1355,14 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
 
     tmp_cases = {}
     tab = wb.sheet_by_name(sheet_name)
+    case_line = regions['World'] - 1
     for (region, line) in regions.items():
         case = ''
         for col in range(2, tab.ncols):
             if tab.cell(line, col).value == 'Functional Unit':
                 break
-            if tab.cell(line - 1, col).ctype != xlrd.XL_CELL_EMPTY:
-                case = normalize_case_name(tab.cell(line - 1, col).value)
+            if tab.cell(case_line, col).ctype != xlrd.XL_CELL_EMPTY:
+                case = normalize_case_name(tab.cell(case_line, col).value)
             # it is important to get the source name from the regional_data.columns here, not re-read
             # the source_name from Excel, because some solutions like Composting have duplicate
             # column names and pd.read_excel automatically appends ".1" and ".2" to make them unique.
@@ -1413,7 +1417,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
             continue
         skip = True
         for row in range(0, custom_ad_tab.nrows):
-            if str(custom_ad_tab.cell(row, 1).value) == name:
+            if normalize_source_name(str(custom_ad_tab.cell(row, 1).value)) == name:
                 df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name,
                                    header=0, index_col=0, usecols="A:K", skiprows=row + 1, nrows=49)
                 df.rename(mapper={'Middle East & Africa': 'Middle East and Africa'},
