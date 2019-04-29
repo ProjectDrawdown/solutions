@@ -232,3 +232,11 @@ Apr 15 - Apr 19, 2019
 + Fix small discrepancies between Python and Excel:
   a) OperatingCost conversion factor
   b) ignore first cost differences less than one penny
+
+Apr 22 - Apr 26, 2019
++ Add eleven solutions
+  Improved Rice, Multistrata Agriculture, Bamboo, Tree Intercropping,
+  Managed Grazing, Afforestation, Nutrient Management, Irrigation
+  Efficiency, Peatlands.
++ Add chart of linearity of adoption data to ModelHealth.
++ wrote [HOWTO / Getting Started guide](https://docs.google.com/document/d/1uavVbXPTssHceoJcVP0gWlb6Ms8ElFsvMpeH6p1K1Ng/comment)
