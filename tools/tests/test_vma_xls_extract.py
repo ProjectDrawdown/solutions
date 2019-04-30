@@ -68,10 +68,18 @@ def test_read_xls_additional_var():
     assert 'Percent silvopasture area to the total grassland area (including potential)' in df_dict
 
 
-
-
 def test_normalize_col_name():
     vma_r = VMAReader(wb)
     assert vma_r.normalize_col_name('Conedition calculation') == 'Conversion calculation'
     assert vma_r.normalize_col_name('Manually Exclude Data?') == 'Exclude Data?'
     assert vma_r.normalize_col_name('Weight by: Production') == 'Weight'
+
+
+def test_rrs():
+    wb = xlrd.open_workbook(thisdir.joinpath('solarpvutil_vma.xlsm'))
+    vma_r = VMAReader(wb)
+    df_dict = vma_r.read_xls(alt_vma=True)
+    table = df_dict['Current Adoption'][0]
+    assert table.at[0, 'SOURCE ID: Author/Org, Date, Info'] == 'IRENA (2016)_Historical data for solar PV'
+    assert table.at[0, 'Assumptions'] == 'Assuming that PV utility represents around 60% of total Solar PV'
+    assert table.at[0, 'Exclude Data?'] == True
