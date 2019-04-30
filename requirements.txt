@@ -1,5 +1,6 @@
 altair==2.3.0
 bqplot>=0.11.5
+ipywidgets>=7.4.2
 jsonschema>=3.0.1
 jupyter-client>=5.2.3
 jupyterlab>=0.35.4
