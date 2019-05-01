@@ -26,6 +26,7 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -245,13 +246,13 @@ class Biochar:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. Alpha Scenario': THISDIR.joinpath('tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_anccefe78c.csv'),
+          'Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. Alpha Scenario': THISDIR.joinpath('tam', 'tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_and_Woolf_et_al_2010_method_144eca81.csv'),
       },
       'Conservative Cases': {
-          'Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. Beta Scenario': THISDIR.joinpath('tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_an5e09995b.csv'),
+          'Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. Beta Scenario': THISDIR.joinpath('tam', 'tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_and_Woolf_et_al_2010_method_2a78e935.csv'),
       },
       'Maximum Cases': {
-          'Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. MSTP Scenario': THISDIR.joinpath('tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_anfb6a5a74.csv'),
+          'Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. MSTP Scenario': THISDIR.joinpath('tam', 'tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_and_Woolf_et_al_2010_method_a5bf52aa.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -281,7 +282,7 @@ class Biochar:
       {'name': 'Linear, low growth', 'include': True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Linear_low_growth.csv')},
       {'name': 'High Growth, 2nd Poly, based on International Biochar Initiative (2015)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_High_Growth_2nd_Poly_based_on_International_Biochar_Initiative_0d44a8d2.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_High_Growth_2nd_Poly_based_on_International_Biochar_Initiative_2015.csv')},
       {'name': 'Linear, high growth', 'include': True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Linear_high_growth.csv')},
       {'name': 'Linear, max growth', 'include': True,
@@ -289,7 +290,10 @@ class Biochar:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -320,11 +324,11 @@ class Biochar:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

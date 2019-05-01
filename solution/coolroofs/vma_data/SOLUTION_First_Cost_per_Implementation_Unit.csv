@@ -1,0 +1,13 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Homewyse ,http://www.homewyse.com/costs/cost_of_rubber_roofing.html,USA,Miami (Zone 1) - Low est,,,,,,$/square foot,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
+Homewyse,http://www.homewyse.com/costs/cost_of_rubber_roofing.html,USA,Miami (Zone 1) - High est,,,,,,$/square foot,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
+Homewyse ,http://www.homewyse.com/costs/cost_of_rubber_roofing.html,USA,San Diego (Zone 3) - Low est,,,,,,$/square foot,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
+Homewyse,http://www.homewyse.com/costs/cost_of_rubber_roofing.html,USA,San Diego (Zone 3) - high est,,,,,,$/square foot,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
+Homewyse ,http://www.homewyse.com/costs/cost_of_rubber_roofing.html,USA,Houston (Zone 2) - low est,,,,,,$/square foot,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
+Homewyse,http://www.homewyse.com/costs/cost_of_rubber_roofing.html,USA,Houston (Zone 2) - high est,,,,,,$/square foot,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
+"Julian Sproul, Man Pun Wan, Benjamin H. Mandel,∗ , Arthur H. Rosenfeld, Energy and Buildings 71 (2014) 20–27",,,,,,2014.0,,,US$2014per sq. m,,"US2014$/Residential and Commercial roof area,  m2",,,
+Levinson et al. (2010),,,,,,2010.0,,,US$2014per sq. m,56.43855563822238,"US2014$/Residential and Commercial roof area,  m2",,,
+Levinson et al. (2010),,,,,,2010.0,,,US$2014per sq. m,56.43855563822238,"US2014$/Residential and Commercial roof area,  m2",,,
+Kats and Glassbrook (2015),,,,,,2015.0,,,US$2015per sq. m,56.43855563822238,"US2014$/Residential and Commercial roof area,  m2",,,
+Kats and Glassbrook (2015),,,,,,2015.0,,,US$2015per sq. m,56.43855563822238,"US2014$/Residential and Commercial roof area,  m2",,,
+Kats and Glassbrook (2015),,,,,,2015.0,,,US$2015per sq. m,56.43855563822238,"US2014$/Residential and Commercial roof area,  m2",,,
