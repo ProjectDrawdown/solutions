@@ -1,0 +1,71 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,World,,,2 - Public Sector/ Multilateral Agency,2014,,9.004,TWh,9.004,TWh,,,
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,OECD90,,,2 - Public Sector/ Multilateral Agency,2014,,8.159,TWh,8.159,TWh,,,
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,Eastern Europe,,,2 - Public Sector/ Multilateral Agency,2014,,0.0,TWh,0.0,TWh,,,
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,Asia (Sans Japan),,,2 - Public Sector/ Multilateral Agency,2014,,0.334,TWh,0.334,TWh,,,
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,Middle East and Africa,,,2 - Public Sector/ Multilateral Agency,2014,,0.511,TWh,0.511,TWh,,,
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,Latin America,,,2 - Public Sector/ Multilateral Agency,2014,,0.0,TWh,0.0,TWh,,,
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,China,,,2 - Public Sector/ Multilateral Agency,2014,,0.007,TWh,0.007,TWh,,,
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,India,,,2 - Public Sector/ Multilateral Agency,2014,,0.321,TWh,0.321,TWh,,,
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,EU,,,2 - Public Sector/ Multilateral Agency,2014,,5.467,TWh,5.467,TWh,,,
+Historical value for 2014 IRENA RE Statistics 2016 report,http://www.irena.org/DocumentDownloads/Publications/IRENA_RE_Statistics_2016.pdf,USA,,,2 - Public Sector/ Multilateral Agency,2014,,2.688,TWh,2.688,TWh,,,
+"IRENA (2018). Global Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,World,,,2 - Public Sector/ Multilateral Agency,2015,,10.25,TWh,10.25,TWh,,,
+"IRENA (2018). Middle East and Africa Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,Middle East and Africa,,,2 - Public Sector/ Multilateral Agency,2015,,0.732,TWh,0.732,TWh,,,
+"IRENA (2018). Asia Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,World,Asia,,2 - Public Sector/ Multilateral Agency,2015,,0.369,TWh,0.369,TWh,,,
+"IRENA (2018). EU Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,EU,,,2 - Public Sector/ Multilateral Agency,2015,,5.605,TWh,5.605,TWh,,,
+"IRENA (2018). US Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,USA,,,2 - Public Sector/ Multilateral Agency,2015,,3.544,TWh,3.544,TWh,,,
+"IRENA (2018). China Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,China,,,2 - Public Sector/ Multilateral Agency,2015,,0.009,TWh,0.009,TWh,,,
+"IRENA (2018). India Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,India,,,2 - Public Sector/ Multilateral Agency,2015,,0.36,TWh,0.36,TWh,,,
+"IRENA (2018). South Africa Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,Middle East and Africa,South Africa,,2 - Public Sector/ Multilateral Agency,2015,,0.263,TWh,0.263,TWh,,,
+"IRENA (2018). Spain Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,EU,Spain,,2 - Public Sector/ Multilateral Agency,2015,,5.593,TWh,5.593,TWh,,,
+"EIA (2018). US electricity generation from CSP.EIA. (2018a). Electricity : Electric Power Annual. Washington: EIA, US.",https://www.eia.gov/electricity/annual/html/epa_03_01_b.html,USA,,,2 - Public Sector/ Multilateral Agency,2015,,3.227,TWh,3.227,TWh,,,
+"IRENA (2018). Global Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,World,,,2 - Public Sector/ Multilateral Agency,2016,,11.04,TWh,11.04,TWh,,,
+"IRENA (2018). Middle East and Africa Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,Middle East and Africa,,,2 - Public Sector/ Multilateral Agency,2016,,1.368,TWh,1.368,TWh,,,
+"IRENA (2018). Asia Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,World,Asia,,2 - Public Sector/ Multilateral Agency,2016,,0.369,TWh,0.369,TWh,,,
+"IRENA (2018). EU Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,EU,,,2 - Public Sector/ Multilateral Agency,2016,,5.591,TWh,5.591,TWh,,,
+"IRENA (2018). US Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,USA,,,2 - Public Sector/ Multilateral Agency,2016,,3.701,TWh,3.701,TWh,,,
+"IRENA (2018). China Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,China,,,2 - Public Sector/ Multilateral Agency,2016,,0.009,TWh,0.009,TWh,,,
+"IRENA (2018). India Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,India,,,2 - Public Sector/ Multilateral Agency,2016,,0.36,TWh,0.36,TWh,,,
+"IRENA (2018). South Africa Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,Middle East and Africa,South Africa,,2 - Public Sector/ Multilateral Agency,2016,,0.498,TWh,0.498,TWh,,,
+"IEA, (2018), Global  CSP Generation 2016. IEA.(2018). World Energy Outlook 2018. Paris: International Energy Agency. p-528",https://webstore.iea.org/world-energy-outlook-2018,World,,,2 - Public Sector/ Multilateral Agency,2016,,10.0,TWh,10.0,TWh,,,
+"IRENA (2018). Spain Generation.IRENA. (2018). Renewable Energy Statistics 2018. Abu Dhabi: IRENA.
+
+",https://www.irena.org/publications/2018/Mar/Renewable-Capacity-Statistics-2018,EU,Spain,,2 - Public Sector/ Multilateral Agency,2016,,5.579,TWh,5.579,TWh,,,
+"EIA (2018). US electricity generation from CSP.EIA. (2018a). Electricity : Electric Power Annual. Washington: EIA, US.",https://www.eia.gov/electricity/annual/html/epa_03_01_b.html,USA,,,2 - Public Sector/ Multilateral Agency,2016,,3.384,TWh,3.384,TWh,,,
+"Teske (2016). Approx current generation.Teske, S. L. et al.(2016). Solar Thermal Electricity : Global Outlook 2016. Amsterdam: Greenpeace International.",https://www.researchgate.net/publication/303640370_Market_Projection_Solar_Thermal_Electricity_Global_Outlook_2016,World,,,2 - Public Sector/ Multilateral Agency,2016,,11.65,TWh,11.65,TWh,,"Approximate global generation from PT, CR and FLR systems",
+"IEA, (2018), Global  CSP Generation 2017. IEA.(2018). World Energy Outlook 2018. Paris: International Energy Agency. p-528",https://webstore.iea.org/world-energy-outlook-2018,World,,,2 - Public Sector/ Multilateral Agency,2017,,11.0,TWh,11.0,TWh,,,
+"EIA (2018). US electricity generation from CSP.EIA. (2018a). Electricity : Electric Power Annual. Washington: EIA, US.",https://www.eia.gov/electricity/annual/html/epa_03_01_b.html,USA,,,2 - Public Sector/ Multilateral Agency,2017,,3.269,TWh,3.269,TWh,,,

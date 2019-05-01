@@ -42,6 +42,7 @@ scenarios = {
       # adoption projection using older data. These have all since been updated.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -98,6 +99,7 @@ scenarios = {
       # developed for the book, which have since been updated.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -153,6 +155,7 @@ scenarios = {
       # book. These values have all since been updated.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption

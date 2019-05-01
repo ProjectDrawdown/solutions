@@ -39,6 +39,7 @@ scenarios = {
       # 2.67% fuel increase (heating).
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -91,6 +92,7 @@ scenarios = {
       # 2.81% fuel increase (heating).
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -143,6 +145,7 @@ scenarios = {
       # 2.62% fuel increase (heating).
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption

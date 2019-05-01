@@ -43,6 +43,7 @@ scenarios = {
       # newer scenarios.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -99,6 +100,7 @@ scenarios = {
       # have been updated in newer scenarios.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -153,6 +155,7 @@ scenarios = {
       # book edition 1, some inputs which have been updated.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption

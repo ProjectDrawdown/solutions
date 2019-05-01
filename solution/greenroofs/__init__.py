@@ -39,6 +39,7 @@ scenarios = {
       # solutions reduce the total impact of Green Roofs.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -91,6 +92,7 @@ scenarios = {
       # solutions reduce the total impact of Green Roofs.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -143,6 +145,7 @@ scenarios = {
       # solutions reduce the total impact of Green Roofs.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
