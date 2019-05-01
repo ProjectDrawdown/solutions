@@ -1337,7 +1337,8 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
         df.index.name = 'Year'
 
         zero_adoption_ok = False
-        zero_adoption_solutions = ['nuclear', 'cars', 'geothermal']
+        zero_adoption_solutions = ['nuclear', 'cars', 'geothermal', 'improvedcookstoves',
+                'waterefficiency']
         for sname in zero_adoption_solutions:
             if sname in outputdir:
                 zero_adoption_ok = True

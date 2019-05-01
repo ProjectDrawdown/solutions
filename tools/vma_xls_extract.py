@@ -32,6 +32,14 @@ def convert_year(x):
         return str(x)
 
 
+def convert_conversion_calculation(x):
+    if x == 'Removed due to Copyright':
+        return np.nan
+    if not pd.isna(x):
+        return float(x)
+    return x
+
+
 # dtype conversion map
 COLUMN_DTYPE_MAP = {
     'SOURCE ID: Author/Org, Date, Info': lambda x: x,
@@ -44,7 +52,7 @@ COLUMN_DTYPE_MAP = {
     'License Code': lambda x: x,
     'Raw Data Input': lambda x: float(x) if x is not nan else x,
     'Original Units': lambda x: x,
-    'Conversion calculation': lambda x: float(x) if x is not nan else x,
+    'Conversion calculation': lambda x: convert_conversion_calculation(x),
     'Common Units': lambda x: x,
     'Weight': lambda x: x,
     'Assumptions': lambda x: x,
@@ -156,7 +164,8 @@ class VMAReader:
         skipcols = []
         for c in range(16):
             val = str(sheet.cell_value(row1, col1 + c))
-            if not val or idx >= len(col_names):
+            if not val or idx >= len(col_names) or val == 'Battery Size':
+                # Electric Bikes added 'Battery Size' in the empty column
                 skipcols.append(c)
                 continue    # skip blank columns
             name_to_check = self.normalize_col_name(val.strip().replace('*', ''))
