@@ -1,0 +1,7 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+World Nuclear Association,http://www.world-nuclear.org/information-library/economic-aspects/economics-of-nuclear-power.aspx,World,,,2 - Public Sector/ Multilateral Agency,2017,,,€2017/kWh,0.0,$US2014/kWh,,"Conversion rate used €/$ - 1,130051. Excluded since the number is very different from the others",True
+EIA (2016) ,http://www.eia.gov/electricity/annual/html/epa_08_04.html,World,,,2 - Public Sector/ Multilateral Agency,2015,,,US$2015/MWh,0.0,$US2014/kWh,,,
+Nuclear Energy Institute (2016),https://www.nei.org/CorporateSite/media/filefolder/Policy/Papers/Nuclear-Costs-in-Context.pdf?ext=.pdf,World,,,2 - Public Sector/ Multilateral Agency,2016,,,US$2016/MWh,0.0,$US2014/kWh,,,
+"Lazard's LCOE Analysis–Version 11.0, 2017_Nuclear",https://www.lazard.com/perspective/levelized-cost-of-energy-2017/,USA,,,3 - For Profit,2017,,,$2017/MMBtu,0.0,$US2014/kWh,,Excluded since the number is very different from the others,True
+"IPCC WG3 AR5,max  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,,1  - Peer Reviewed,2014,,,$2010/GJ,0.003132,$US2014/kWh,,,
+"IPCC WG3 AR5,min (Table A.III.2)",,World,,,1  - Peer Reviewed,2014,,,$2010/GJ,0.002664,$US2014/kWh,,,

@@ -26,7 +26,7 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {}
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -50,6 +50,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018', 
+      pds_base_adoption=[('World', 65804.4675187948), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -84,8 +85,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-50p2050-Linear Medium (Book Ed.1)': advanced_controls.AdvancedControls(
       # We project linearly the adoption to 2050. This represents an annual increase
@@ -104,6 +103,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018', 
+      pds_base_adoption=[('World', 65804.4675187948), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -138,8 +138,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-66p2050-Linear High (Book Ed.1)': advanced_controls.AdvancedControls(
       # We project linearly the adoption to 2050. This represents an annual increase
@@ -158,6 +156,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018', 
+      pds_base_adoption=[('World', 65804.4675187948), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -192,8 +191,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -232,37 +229,17 @@ class WaterDistribution:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Drawdown Custom projection 1': THISDIR.joinpath('tam_Drawdown_Custom_projection_1.csv'),
-          'Drawdown Custom Projection 2': THISDIR.joinpath('tam_Drawdown_Custom_Projection_2.csv'),
-      },
-      'Region: China': {
-        'Baseline Cases': {
-          'Drawdown Custom Projection 2': THISDIR.joinpath('tam_Drawdown_Custom_Projection_2.csv'),
-        },
-      },
-      'Region: India': {
-        'Baseline Cases': {
-          'Drawdown Custom Projection 2': THISDIR.joinpath('tam_Drawdown_Custom_Projection_2.csv'),
-        },
-      },
-      'Region: EU': {
-        'Baseline Cases': {
-          'Drawdown Custom Projection 2': THISDIR.joinpath('tam_Drawdown_Custom_Projection_2.csv'),
-        },
-      },
-      'Region: USA': {
-        'Baseline Cases': {
-          'Drawdown Custom Projection 2': THISDIR.joinpath('tam_Drawdown_Custom_Projection_2.csv'),
-        },
+          'Drawdown Custom projection 1': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_projection_1.csv'),
+          'Drawdown Custom Projection 2': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_Projection_2.csv'),
       },
     }
     tam_pds_data_sources = {
       'Conservative Cases': {
-          'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Homeb6ee2b19.csv'),
+          'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Plausible_Scenario_Reduc_f47a5b4e.csv'),
       },
       'Ambitious Cases': {
-          'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Drawdown Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home890f9950.csv'),
-          'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Optimum Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home4d9f990b.csv'),
+          'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Drawdown Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Drawdown_Scenario_Reduce_a7c36895.csv'),
+          'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Optimum Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Optimum_Scenario_Reduces_2beea6a5.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -290,15 +267,18 @@ class WaterDistribution:
     # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'Low Linear Growth in the Annual Adoption', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Low_Linear_Growth_in_the_Annual_Adoption_.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Low_Linear_Growth_in_the_Annual_Adoption.csv')},
       {'name': 'Medium Linear Growth in the Annual Adoption', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Medium_Linear_Growth_in_the_Annual_Adoption_.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Medium_Linear_Growth_in_the_Annual_Adoption.csv')},
       {'name': 'High Linear Growth in the Annual Adoption', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_High_Linear_Growth_in_the_Annual_Adoption_.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_High_Linear_Growth_in_the_Annual_Adoption.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -329,11 +309,11 @@ class WaterDistribution:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

@@ -1,0 +1,32 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,0.021734003589617863,0.021734003589617863,0.021734003589617863
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,True,4761.6633908572885,9886.322664548454,15.725000000000001
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,True,10194.794998414847,18674.30609873923,1715.2838980904635
+4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,True,False,4.4824973684210526e-05,5.962648698252458e-05,3.0023460385896473e-05
+5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,False,4.965930424528303e-05,6.823609723722848e-05,3.108251125333757e-05
+6,Average_Annual_Use_CONVENTIONAL,Average Annual Use - CONVENTIONAL,True,True,7.117870663645154e-05,0.00012977004981621666,1.2587363456686426e-05
+7,Average_Annual_Use_SOLUTION,Average Annual Use - SOLUTION,True,True,5.768358878504599e-05,0.00012377315547567992,2.2203155847909377e-06
+8,CONVENTIONAL_VARIABLE_Operating_Cost_per_Functional_Unit,CONVENTIONAL VARIABLE Operating Cost per Functional Unit,False,False,,,
+9,SOLUTION_VARIABLE_Operating_Cost_per_Functional_Unit,SOLUTION VARIABLE Operating Cost per Functional Unit ,False,False,,,
+10,CONVENTIONAL_FIXED_Operating_Cost_per_Implementation_Unit,CONVENTIONAL FIXED Operating Cost per Implementation Unit,True,True,118.4657142857143,244.04397928289904,2.4042857142857144
+11,SOLUTION_FIXED_Operating_Cost_per_Implementation_Unit,SOLUTION FIXED Operating Cost per Implementation Unit ,True,True,93.16,147.18213768447154,39.13786231552846
+12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,True,False,0.2907000038009888,0.2907000038009888,0.2907000038009888
+13,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+14,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,True,False,0.2830188679245283,0.2830188679245283,0.2830188679245283
+15,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,True,False,2553.47998631644,2553.47998631644,2553.47998631644
+16,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,True,False,1.0,1.0,1.0
+17,Direct_Emissions_per_CONVENTIONAL_Functional_Unit,Direct Emissions per CONVENTIONAL Functional Unit,False,False,,,
+18,Direct_Emissions_per_SOLUTION_Functional_Unit,Direct Emissions per SOLUTION Functional Unit,False,False,,,
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE_on_Advanced_Controls,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls,False,False,,,
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls),False,False,,,
+21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
+22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
+23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
+24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
+25,TAM_Share_from_Space_Heating,TAM Share from Space Heating,True,False,0.8220252783470526,0.8787647039256181,0.7652858527684872
+26,High_Efficiency_Heat_Pump_Coefficient_of_Performance,High Efficiency Heat Pump Coefficient of Performance,True,False,3.533333333333333,3.8732679675728523,3.193398699093814
+27,Average_Size_of_Heat_Pumps_residential_Units,Average Size of Heat Pumps (residential) Units,True,False,7.680111704,13.59515534127531,1.7650680667246892
+28,Average_Size_of_Heat_Pumps_commercial_Units,Average Size of Heat Pumps (commercial) Units,True,False,513.2406622075,1218.5605540431352,14.067411359999998
+29,Average_Size_of_Conventional_Technologies,Average Size of Conventional Technologies,True,True,46.347096355714285,124.45325673412079,0.08547906208333331
+30,Learning_Rate,Learning Rate,True,False,0.0961,0.0961,0.0961
+31,Discount_Rate,Discount Rate,True,True,0.053681818181818185,0.08203601394845664,0.025327622415179735

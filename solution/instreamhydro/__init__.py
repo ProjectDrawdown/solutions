@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -46,6 +51,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario', 
+      pds_base_adoption=[('World', 547.672), ('OECD90', 69.035), ('Eastern Europe', 38.758), ('Asia (Sans Japan)', 403.057), ('Middle East and Africa', 17.967), ('Latin America', 18.856), ('China', 383.689), ('India', 4.014), ('EU', 23.027), ('USA', 3.148)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -80,8 +86,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS-3p2050-Drawdown (Book Ed.1)': advanced_controls.AdvancedControls(
       # Drawdown Scenario, This scenario is derived from the evaluation of the ambitious
@@ -103,6 +107,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario', 
+      pds_base_adoption=[('World', 547.672), ('OECD90', 69.035), ('Eastern Europe', 38.758), ('Asia (Sans Japan)', 403.057), ('Middle East and Africa', 17.967), ('Latin America', 18.856), ('China', 383.689), ('India', 4.014), ('EU', 23.027), ('USA', 3.148)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -137,8 +142,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS-4p2050-Optimum (Book Ed. 1)': advanced_controls.AdvancedControls(
       # Optimum Scenario, follows a customized high-growth adoption. As the Plausible
@@ -158,6 +161,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 
+      pds_base_adoption=[('World', 547.672), ('OECD90', 69.035), ('Eastern Europe', 38.758), ('Asia (Sans Japan)', 403.057), ('Middle East and Africa', 17.967), ('Latin America', 18.856), ('China', 383.689), ('India', 4.014), ('EU', 23.027), ('USA', 3.148)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -192,8 +196,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -207,14 +209,12 @@ class InstreamHydro:
   }
 
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS-4p2050-Plausible (Book Ed. 1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -251,35 +251,41 @@ class InstreamHydro:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Baseline Cases': {
-          'Based on: IEA ETP 2016 6DS': thisdir.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': thisdir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
+          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_6DS.csv'),
+          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
       },
       'Conservative Cases': {
-          'Based on: IEA ETP 2016 4DS': thisdir.joinpath('ad_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: Greenpeace Reference Scenario': thisdir.joinpath('ad_based_on_Greenpeace_Reference_Scenario.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': thisdir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
+          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_4DS.csv'),
+          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Reference.csv'),
+          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
       },
       'Ambitious Cases': {
-          'Based on: IEA ETP 2016 2DS': thisdir.joinpath('ad_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': thisdir.joinpath('ad_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': thisdir.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
+          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
+          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Energy_Revolution.csv'),
+          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
       },
-      '100% Case': {
-          'Based on: Greenpeace 2015 Advanced Revolution': thisdir.joinpath('ad_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
+      '100% RES2050 Case': {
+          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
       },
     }
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        adconfig=adconfig)
 
+    # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'High Ambitious, double growth by 2030 & 2050', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_High_Ambitious_double_growth_by_2030_2050.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_High_Ambitious_double_growth_by_2030_2050.csv')},
       {'name': 'Conservative Growth of 2.5% annum', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Conservative_Growth_of_2_5_annum.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Conservative_Growth_of_2_5_annum.csv')},
       {'name': 'Low Ambitious Growth, 10% higher compared to REF case', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Low_Ambitious_Growth_10_higher_compared_to_REF_case.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Low_Ambitious_Growth_10_higher_compared_to_REF_case.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
+        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -288,7 +294,7 @@ class InstreamHydro:
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
       pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-      pds_adoption_is_single_source = True
+      pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
@@ -310,15 +316,15 @@ class InstreamHydro:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -353,6 +359,7 @@ class InstreamHydro:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -371,6 +378,4 @@ class InstreamHydro:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 

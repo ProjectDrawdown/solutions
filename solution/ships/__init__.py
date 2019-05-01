@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -49,6 +54,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 14427.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -83,8 +89,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-100p2050-1 SD Below Mean EEOI (Book Ed.1)': advanced_controls.AdvancedControls(
       # We take (1 standard deviation below the mean of) the estimates of EEOI (Energy
@@ -108,6 +112,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 14427.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -142,8 +147,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-100p2050-Lowest EEOI (Book Ed.1)': advanced_controls.AdvancedControls(
       # We take the lowest estimates of EEOI (Energy Efficiency Operations Index in
@@ -167,6 +170,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 14427.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -201,8 +205,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -215,16 +217,13 @@ class Ships:
     "operating cost": "US$B",
   }
 
-
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS1-97p2050-Mean EEOI (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -244,17 +243,17 @@ class Ships:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Based on Smith et al, 2014 (max scenario); Fig 82,83 Pg 159,160': thisdir.joinpath('tam_based_on_Smith_et_al_2014_max_scenario_Fig_8283_Pg_159160.csv'),
-          'Based on Buhaug et al,2009 (max scenario) Table 7.4 pg 94': thisdir.joinpath('tam_based_on_Buhaug_et_al2009_max_scenario_Table_7_4_pg_94.csv'),
-          'Based on  RACE (max) Table 30 pg 126': thisdir.joinpath('tam_based_on_RACE_max_Table_30_pg_126.csv'),
+          'Based on Smith et al, 2014 (max scenario); Fig 82,83 Pg 159,160': THISDIR.joinpath('tam', 'tam_based_on_Smith_et_al_2014_max_scenario_Fig_8283_Pg_159160.csv'),
+          'Based on Buhaug et al,2009 (max scenario) Table 7.4 pg 94': THISDIR.joinpath('tam', 'tam_based_on_Buhaug_et_al2009_max_scenario_Table_7_4_pg_94.csv'),
+          'Based on  RACE (max) Table 30 pg 126': THISDIR.joinpath('tam', 'tam_based_on_RACE_max_Table_30_pg_126.csv'),
       },
       'Ambitious Cases': {
-          'Based on Smith et al, 2014 (min BAU scenario); Fig 82,83 Pg 159,160': thisdir.joinpath('tam_based_on_Smith_et_al_2014_min_BAU_scenario_Fig_8283_Pg_159160.csv'),
-          'Based on Buhaug et al,2009 (min BAU) Table 7.4 pg 94': thisdir.joinpath('tam_based_on_Buhaug_et_al2009_min_BAU_Table_7_4_pg_94.csv'),
-          'Based on RACE (min BAU) Table 30 pg 126': thisdir.joinpath('tam_based_on_RACE_min_BAU_Table_30_pg_126.csv'),
+          'Based on Smith et al, 2014 (min BAU scenario); Fig 82,83 Pg 159,160': THISDIR.joinpath('tam', 'tam_based_on_Smith_et_al_2014_min_BAU_scenario_Fig_8283_Pg_159160.csv'),
+          'Based on Buhaug et al,2009 (min BAU) Table 7.4 pg 94': THISDIR.joinpath('tam', 'tam_based_on_Buhaug_et_al2009_min_BAU_Table_7_4_pg_94.csv'),
+          'Based on RACE (min BAU) Table 30 pg 126': THISDIR.joinpath('tam', 'tam_based_on_RACE_min_BAU_Table_30_pg_126.csv'),
       },
       'Maximum Cases': {
-          'OPRF study Pg 30 Appdx 1': thisdir.joinpath('tam_OPRF_study_Pg_30_Appdx_1.csv'),
+          'OPRF study Pg 30 Appdx 1': THISDIR.joinpath('tam', 'tam_OPRF_study_Pg_30_Appdx_1.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -276,24 +275,30 @@ class Ships:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
     }
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        adconfig=adconfig)
 
+    # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'PDS1 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - Mean of projected EEOI values', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS1_Drawdown_Team_Calculations_based_on_Projections_from_Smith_.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Drawdown_Team_Calculations_based_on_Projections_from_Smith_et_al_2014_3rd_GHG_Repor_3eb1a907.csv')},
       {'name': 'PDS2 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - 1 StDev more Ambitious than mean in EEOI terms', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS2_Drawdown_Team_Calculations_based_on_Projections_from_Smith_.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Drawdown_Team_Calculations_based_on_Projections_from_Smith_et_al_2014_3rd_GHG_Repor_e1bf2fbd.csv')},
       {'name': 'PDS3 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - most ambitious values from all scenarios', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS3_Drawdown_Team_Calculations_based_on_Projections_from_Smith_.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Drawdown_Team_Calculations_based_on_Projections_from_Smith_et_al_2014_3rd_GHG_Repor_40d75a6d.csv')},
       {'name': 'Drawdown Book Edition 1 Scenario 1', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv')},
       {'name': 'Drawdown Book Edition 1 Scenario 2', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_Scenario_2.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_2.csv')},
       {'name': 'Drawdown Book Edition 1 Scenario 3', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_Scenario_3.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_3.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
+        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -302,7 +307,7 @@ class Ships:
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
       pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-      pds_adoption_is_single_source = True
+      pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
@@ -324,15 +329,15 @@ class Ships:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -367,6 +372,7 @@ class Ships:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -385,6 +391,4 @@ class Ships:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 

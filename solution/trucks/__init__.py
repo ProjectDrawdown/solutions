@@ -26,6 +26,8 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
@@ -49,8 +51,9 @@ scenarios = {
       soln_pds_adoption_basis='Fully Customized PDS', 
       soln_pds_adoption_custom_name='Book Ed.1 Scenario 1', 
       source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Based on: IEA ETP 2016 6DS', 
-      pds_source_post_2014='Based on: IEA ETP 2016 2DS', 
+      ref_source_post_2014='Based on: IEA ETP 2014 6DS', 
+      pds_source_post_2014='Based on: IEA ETP 2014 2DS', 
+      pds_base_adoption=[('World', 600621.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -85,8 +88,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-9p2050-Based on ICCT (Book Ed.1)': advanced_controls.AdvancedControls(
       # We use the number of truck sales estimated for each of ICCT's 16 regions
@@ -106,8 +107,9 @@ scenarios = {
       soln_pds_adoption_basis='Fully Customized PDS', 
       soln_pds_adoption_custom_name='PDS2 - Based on an ICCT Truck Sales extrapolation', 
       source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Based on: IEA ETP 2016 6DS', 
-      pds_source_post_2014='Based on: IEA ETP 2016 2DS', 
+      ref_source_post_2014='Based on: IEA ETP 2014 6DS', 
+      pds_source_post_2014='Based on: IEA ETP 2014 2DS', 
+      pds_base_adoption=[('World', 600621.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -142,8 +144,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-15p2050-Maximum (Book Ed.1)': advanced_controls.AdvancedControls(
       # IEA"s estimated Truck freight work data are interpolated and extrapolated and we
@@ -162,8 +162,9 @@ scenarios = {
       soln_pds_adoption_basis='Fully Customized PDS', 
       soln_pds_adoption_custom_name='Book Ed.1 Scenario 3', 
       source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Based on: IEA ETP 2016 6DS', 
-      pds_source_post_2014='Based on: IEA ETP 2016 2DS', 
+      ref_source_post_2014='Based on: IEA ETP 2014 6DS', 
+      pds_source_post_2014='Based on: IEA ETP 2014 2DS', 
+      pds_base_adoption=[('World', 600621.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -198,8 +199,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -238,13 +237,13 @@ class Trucks:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
+          'Based on: IEA ETP 2014 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_6DS.csv'),
       },
       'Conservative Cases': {
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
+          'Based on: IEA ETP 2014 4DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_4DS.csv'),
       },
       'Ambitious Cases': {
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
+          'Based on: IEA ETP 2014 2DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_2DS.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -267,7 +266,8 @@ class Trucks:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
 
     # Custom REF Data
     ca_ref_data_sources = [
@@ -276,7 +276,9 @@ class Trucks:
     ]
     self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
         soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=ref_tam_per_region)
+
     ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
     if False:
@@ -304,12 +306,12 @@ class Trucks:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        ref_adoption_data_per_region=ref_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        ref_adoption_data_per_region=ref_adoption_data_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

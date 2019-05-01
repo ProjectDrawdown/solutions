@@ -1,0 +1,3 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+IEA-ETSAP.org,http://iea-etsap.org/E-TechDS/PDF/E16_DistrHeat_EA_Final_Jan2013_GSOK.pdf,World,,,2 - Public Sector/ Multilateral Agency,2013,,,€ per MWh,0.0,US2014$/kWh,,Geothermal,
+Energinet.dk 2012,http://www.energinet.dk/SiteCollectionDocuments/Danske%20dokumenter/Forskning/Technology_data_for_energy_plants.pdf,OECD90,Denmark,,2 - Public Sector/ Multilateral Agency,2012,,,€ per MWh,0.0,US2014$/kWh,,Solar district heating,

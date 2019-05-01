@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -43,6 +48,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 16577.82591670033), ('OECD90', 14915.99), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 1087.7709445216651), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 1087.7709445216651), ('India', 0.0), ('EU', 3622.85), ('USA', 11293.14)], 
       pds_adoption_final_percentage=[('World', 0.95), ('OECD90', 0.999999999999999), ('Eastern Europe', 0.21270960344383177), ('Asia (Sans Japan)', 0.44770734907359283), ('Middle East and Africa', 0.08508384137753272), ('Latin America', 0.22385367453679642), ('China', 0.0), ('India', 0.0), ('EU', 0.999999999999999), ('USA', 0.999999999999999)], 
 
       # financial
@@ -77,8 +83,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-70p2050-Linear (Book Ed.1)': advanced_controls.AdvancedControls(
       # This scenario sums the adoption of individual regions (each of which has its own
@@ -96,6 +100,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 16577.82591670033), ('OECD90', 14915.99), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 1087.7709445216651), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 1087.7709445216651), ('India', 0.0), ('EU', 3622.85), ('USA', 11293.14)], 
       pds_adoption_final_percentage=[('World', 0.95), ('OECD90', 0.999999999999999), ('Eastern Europe', 0.5), ('Asia (Sans Japan)', 0.8), ('Middle East and Africa', 0.5), ('Latin America', 0.5), ('China', 0.0), ('India', 0.0), ('EU', 0.999999999999999), ('USA', 0.999999999999999)], 
 
       # financial
@@ -130,8 +135,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-72p2050-Linear (Book Ed.1)': advanced_controls.AdvancedControls(
       # This scenario sums the adoption of individual regions (each of which has its own
@@ -149,6 +152,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 16577.82591670033), ('OECD90', 14915.99), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 1087.7709445216651), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 1087.7709445216651), ('India', 0.0), ('EU', 3622.85), ('USA', 11293.14)], 
       pds_adoption_final_percentage=[('World', 0.95), ('OECD90', 0.999999999999999), ('Eastern Europe', 0.8), ('Asia (Sans Japan)', 0.8), ('Middle East and Africa', 0.8), ('Latin America', 0.8), ('China', 0.0), ('India', 0.0), ('EU', 0.999999999999999), ('USA', 0.999999999999999)], 
 
       # financial
@@ -183,8 +187,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -198,14 +200,12 @@ class BuildingAutomationSystems:
   }
 
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS1-51p2050-SCurve (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -225,56 +225,31 @@ class BuildingAutomationSystems:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Ürge-Vorsatz et al. (2015) – see TAM Factoring': thisdir.joinpath('tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
-      },
-      'Region: OECD90': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: Eastern Europe': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: Asia (Sans Japan)': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: Middle East and Africa': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: Latin America': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-        },
+          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+          'Ürge-Vorsatz et al. (2015) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
       },
       'Region: China': {
         'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Hong et al. (2014) – see TAM Factoring': thisdir.joinpath('tam_Hong_et_al__2014_see_TAM_Factoring.csv'),
+          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+          'Hong et al. (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Hong_et_al__2014_see_TAM_Factoring.csv'),
         },
       },
       'Region: India': {
         'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Chaturvedi et al (2014) – see TAM Factoring': thisdir.joinpath('tam_Chaturvedi_et_al_2014_see_TAM_Factoring.csv'),
+          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+          'Chaturvedi et al (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Chaturvedi_et_al_2014_see_TAM_Factoring.csv'),
         },
       },
       'Region: EU': {
         'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Boermans et al. (2012); BPIE (2014) – see TAM Factoring': thisdir.joinpath('tam_Boermans_et_al__2012_BPIE_2014_see_TAM_Factoring.csv'),
+          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+          'Boermans et al. (2012); BPIE (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Boermans_et_al__2012_BPIE_2014_see_TAM_Factoring.csv'),
         },
       },
       'Region: USA': {
         'Baseline Cases': {
-          'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case': thisdir.joinpath('tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case.csv'),
-          'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case w/o CPP': thisdir.joinpath('tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case_wo_CPP.csv'),
+          'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case': THISDIR.joinpath('tam', 'tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case.csv'),
+          'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case w/o CPP': THISDIR.joinpath('tam', 'tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case_wo_CPP.csv'),
         },
       },
     }
@@ -297,22 +272,36 @@ class BuildingAutomationSystems:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
     }
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        adconfig=adconfig)
 
-    sconfig_list = [
-      ['region', 'base_year', 'last_year', 'base_percent', 'last_percent', 'base_adoption', 'pds_tam_2050'],
-      ['World', 2014, 2050, 0.3469591450521351, 0.95, 16577.82591670033, 77969.42578838725],
-      ['OECD90', 2014, 2050, 0.6774945040969459, 0.999999999999999, 14915.99, 30578.761254288427],
-      ['Eastern Europe', 2014, 2050, 0.0, 0.21270960344383177, 0.0, 1532.2953039347105],
-      ['Asia (Sans Japan)', 2014, 2050, 0.07415399905935922, 0.44770734907359283, 1087.7709445216651, 25358.333975041056],
-      ['Middle East and Africa', 2014, 2050, 0.0, 0.08508384137753272, 0.0, 4140.661070930817],
-      ['Latin America', 2014, 2050, 0.0, 0.22385367453679642, 0.0, 1021.9329224434589],
-      ['China', 2014, 2050, 0.08478075075770555, 0.0, 1087.7709445216651, 18965.135056084015],
-      ['India', 2014, 2050, 0.0, 0.0, 0.0, 8804.235498036302],
-      ['EU', 2014, 2050, 0.48260313794749193, 0.999999999999999, 3622.85, 11003.357475720299],
-      ['USA', 2014, 2050, 0.4456343028887654, 0.999999999999999, 11293.14, 36879.95839663896]]
+    sconfig_list = [['region', 'base_year', 'last_year'],
+      ['World', 2014, 2050],
+      ['OECD90', 2014, 2050],
+      ['Eastern Europe', 2014, 2050],
+      ['Asia (Sans Japan)', 2014, 2050],
+      ['Middle East and Africa', 2014, 2050],
+      ['Latin America', 2014, 2050],
+      ['China', 2014, 2050],
+      ['India', 2014, 2050],
+      ['EU', 2014, 2050],
+      ['USA', 2014, 2050]]
     sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0], dtype=np.object).set_index('region')
+    sconfig['pds_tam_2050'] = pds_tam_per_region.loc[[2050]].T
+    sc_regions, sc_percentages = zip(*self.ac.pds_base_adoption)
+    sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))
+    sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]
+    sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)
+    sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))
+    if self.ac.pds_adoption_s_curve_innovation is not None:
+      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_innovation)
+      sconfig['innovation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
+    if self.ac.pds_adoption_s_curve_imitation is not None:
+      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_imitation)
+      sconfig['imitation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
     self.sc = s_curve.SCurve(transition_period=16, sconfig=sconfig)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -321,7 +310,11 @@ class BuildingAutomationSystems:
     elif self.ac.soln_pds_adoption_basis == 'Logistic S-Curve':
       pds_adoption_data_per_region = None
       pds_adoption_trend_per_region = self.sc.logistic_adoption()
-      pds_adoption_is_single_source = False
+      pds_adoption_is_single_source = None
+    elif self.ac.soln_pds_adoption_basis == 'Bass Diffusion S-Curve':
+      pds_adoption_data_per_region = None
+      pds_adoption_trend_per_region = self.sc.bass_diffusion_adoption()
+      pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
@@ -329,7 +322,7 @@ class BuildingAutomationSystems:
     elif self.ac.soln_pds_adoption_basis == 'Linear':
       pds_adoption_data_per_region = None
       pds_adoption_trend_per_region = None
-      pds_adoption_is_single_source = False
+      pds_adoption_is_single_source = None
 
     ht_ref_adoption_initial = pd.Series(
       [16577.82591670033, 14915.99, 0.0, 1087.7709445216651, 0.0,
@@ -347,15 +340,15 @@ class BuildingAutomationSystems:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -391,6 +384,7 @@ class BuildingAutomationSystems:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -409,6 +403,4 @@ class BuildingAutomationSystems:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 

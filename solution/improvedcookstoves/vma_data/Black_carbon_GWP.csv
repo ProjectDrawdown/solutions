@@ -1,0 +1,7 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Bond et al (2013) - Direct Effect,,World,,,Yes,2013,yes,,CO2 eq,,CO2 eq,,Direct effect,
+Bond et al (2013) - Total Climate Forcing,,World,,,Yes,2013,yes,,CO2 eq,,CO2 eq,,Total climate forcing,
+Bond and Sun (2005),http://pubs.acs.org/doi/pdf/10.1021/es0480421,World,,,Yes,2005,yes,,CO2 eq,,CO2 eq,,,
+Rypdal (2009),http://folk.uio.no/gunnarmy/paper/rypdal_tellus_2009.pdf,World,,,Yes,2009,yes,,CO2 eq,,CO2 eq,,,
+Bachmann (2009) - high,http://www.c2es.org/docUploads/black-carbon-12-16-09.pdf,World,,,No,2009,yes,,CO2 eq,,CO2 eq,,,
+Bachmann (2009) - low,http://www.c2es.org/docUploads/black-carbon-12-16-09.pdf,World,,,No,2009,yes,,CO2 eq,,CO2 eq,,,

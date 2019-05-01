@@ -26,6 +26,7 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -236,22 +237,22 @@ class HeatPumps:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
+          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_6DS.csv'),
       },
       'Conservative Cases': {
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
+          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_4DS.csv'),
       },
       'Ambitious Cases': {
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
+          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_2DS.csv'),
       },
     }
     tam_pds_data_sources = {
       'Ambitious Cases': {
-          'Drawdown TAM: Drawdown Integrated TAM - PDS1': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS1.csv'),
-          'Drawdown TAM: Drawdown Integrated TAM - PDS2': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS2.csv'),
+          'Drawdown TAM: Drawdown Integrated TAM - PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS1.csv'),
+          'Drawdown TAM: Drawdown Integrated TAM - PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS2.csv'),
       },
       'Maximum Cases': {
-          'Drawdown TAM: Drawdown Integrated TAM - PDS3': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS3.csv'),
+          'Drawdown TAM: Drawdown Integrated TAM - PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS3.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -273,13 +274,13 @@ class HeatPumps:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Baseline Cases': {
-          'No Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad_No_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakinf773431f.csv'),
+          'No Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad', 'ad_No_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakings_2016.csv'),
       },
       'Conservative Cases': {
-          'Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakings_3ae88b3a.csv'),
+          'Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad', 'ad_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakings_2016.csv'),
       },
       'Ambitious Cases': {
-          'Aggressive Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad_Aggressive_Standards_Case_David_Siap_2016_based_on_US_Federal_R8b178f0d.csv'),
+          'Aggressive Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad', 'ad_Aggressive_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakings_2016.csv'),
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
@@ -310,6 +311,8 @@ class HeatPumps:
       sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_imitation)
       sconfig['imitation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
     self.sc = s_curve.SCurve(transition_period=16, sconfig=sconfig)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -344,11 +347,11 @@ class HeatPumps:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

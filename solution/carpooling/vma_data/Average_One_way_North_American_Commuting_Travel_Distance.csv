@@ -1,0 +1,4 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+US FHWA (2009) Summary of Travel Trends - 2009 National Household Travel Survey,http://nhts.ornl.gov/2009/pub/stt.pdf,OECD90,USA,,2 - Public Sector/ Multilateral Agency,2009,,,miles,0.0,km/trip,,,
+Kneebone and Holmes (2016) The growing distance between people and jobs in metropolitan America. Brookings Institute - Metropolitan Policy Program,https://www.brookings.edu/wp-content/uploads/2016/07/Srvy_JobsProximity.pdf,OECD90,USA,,4 - Independently Verified,2015,,,miles,0.0,km/trip,,average commute distance of 96 metropolitan areas. ,
+Statistic Brain,http://www.statisticbrain.com/commute-statistics/,OECD90,USA,,3 - For Profit,2016,,,miles,0.0,km/trip,,weighted average or reported data,

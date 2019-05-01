@@ -26,6 +26,8 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
@@ -49,6 +51,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Ambitious Cases', 
       pds_source_post_2014='Ambitious Cases', 
+      pds_base_adoption=[('World', 120.0), ('OECD90', 69.02), ('Eastern Europe', 4.13), ('Asia (Sans Japan)', 13.0), ('Middle East and Africa', 5.66), ('Latin America', 14.0), ('China', 2.75), ('India', 7.29), ('EU', 36.8), ('USA', 20.84)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -83,8 +86,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=468619.23333333334, soln_emissions_per_funit=203388.7650793651, 
 
-
-      # sequestration
     ),
   'PDS2-66p2050-Existing Projections + Rapid growth (Book Ed.1)': advanced_controls.AdvancedControls(
       # This scenario uses mainly the high growth prognostication from existing sources,
@@ -104,6 +105,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Ambitious Cases', 
       pds_source_post_2014='Ambitious Cases', 
+      pds_base_adoption=[('World', 120.0), ('OECD90', 69.02), ('Eastern Europe', 4.13), ('Asia (Sans Japan)', 13.0), ('Middle East and Africa', 5.66), ('Latin America', 14.0), ('China', 2.75), ('India', 7.29), ('EU', 36.8), ('USA', 20.84)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -138,8 +140,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=468619.23333333334, soln_emissions_per_funit=203388.7650793651, 
 
-
-      # sequestration
     ),
   'PDS3-73p2050-Optimum (Book ed.1)': advanced_controls.AdvancedControls(
       # This scenario uses mainly the high growth prognostication from existing sources
@@ -160,6 +160,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Ambitious Cases', 
       pds_source_post_2014='Ambitious Cases', 
+      pds_base_adoption=[('World', 120.0), ('OECD90', 69.02), ('Eastern Europe', 4.13), ('Asia (Sans Japan)', 13.0), ('Middle East and Africa', 5.66), ('Latin America', 14.0), ('China', 2.75), ('India', 7.29), ('EU', 36.8), ('USA', 20.84)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -194,8 +195,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=468619.23333333334, soln_emissions_per_funit=203388.7650793651, 
 
-
-      # sequestration
     ),
 }
 
@@ -234,115 +233,115 @@ class Composting:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
-          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
-          'What a Waste Solid Waste Management Dynamic Organic Fraction': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Dynamic_Organic_Fraction.csv'),
+          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
+          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
+          'What a Waste Solid Waste Management Dynamic Organic Fraction': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Dynamic_Organic_Fraction.csv'),
       },
       'Conservative Cases': {
-          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_o7173d425.csv'),
-          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
-          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
+          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam', 'tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_organic_fraction_from_What_95c7eead.csv'),
+          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
+          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
       },
       'Ambitious Cases': {
-          'Hoornweg et al 2015': THISDIR.joinpath('tam_Hoornweg_et_al_2015.csv'),
+          'Hoornweg et al 2015': THISDIR.joinpath('tam', 'tam_Hoornweg_et_al_2015.csv'),
       },
       'Region: OECD90': {
         'Baseline Cases': {
-          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
-          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
-          'Hoornweg et al 2015': THISDIR.joinpath('tam_Hoornweg_et_al_2015.csv'),
+          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
+          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
+          'Hoornweg et al 2015': THISDIR.joinpath('tam', 'tam_Hoornweg_et_al_2015.csv'),
         },
         'Conservative Cases': {
-          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_o7173d425.csv'),
-          'OECD Data. http://www.eea.europa.eu/data-and-maps/figures/municipal-waste-generation-within-the-oecd-area': THISDIR.joinpath('tam_OECD_Data__httpwww_eea_europa_eudataandmapsfiguresmunicipalwastffa6aed8.csv'),
+          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam', 'tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_organic_fraction_from_What_95c7eead.csv'),
+          'OECD Data. http://www.eea.europa.eu/data-and-maps/figures/municipal-waste-generation-within-the-oecd-area': THISDIR.joinpath('tam', 'tam_OECD_Data__httpwww_eea_europa_eudataandmapsfiguresmunicipalwastegenerationwithintheoecdarea.csv'),
         },
         'Ambitious Cases': {
-          'What a Waste Solid Waste Management Dynamic Organic Fraction': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Dynamic_Organic_Fraction.csv'),
-          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
-          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
+          'What a Waste Solid Waste Management Dynamic Organic Fraction': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Dynamic_Organic_Fraction.csv'),
+          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
+          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
         },
       },
       'Region: Eastern Europe': {
         'Baseline Cases': {
-          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
-          'What a Waste Solid Waste Management Dynamic Organic Fraction': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Dynamic_Organic_Fraction.csv'),
-          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_o7173d425.csv'),
+          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
+          'What a Waste Solid Waste Management Dynamic Organic Fraction': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Dynamic_Organic_Fraction.csv'),
+          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam', 'tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_organic_fraction_from_What_95c7eead.csv'),
         },
         'Conservative Cases': {
-          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
+          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
         },
         'Ambitious Cases': {
-          'Hoornweg et al 2015': THISDIR.joinpath('tam_Hoornweg_et_al_2015.csv'),
-          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
-          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
+          'Hoornweg et al 2015': THISDIR.joinpath('tam', 'tam_Hoornweg_et_al_2015.csv'),
+          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
+          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
         },
       },
       'Region: Middle East and Africa': {
         'Baseline Cases': {
-          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
-          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_o7173d425.csv'),
-          'Hoornweg et al 2015': THISDIR.joinpath('tam_Hoornweg_et_al_2015.csv'),
+          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
+          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam', 'tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_organic_fraction_from_What_95c7eead.csv'),
+          'Hoornweg et al 2015': THISDIR.joinpath('tam', 'tam_Hoornweg_et_al_2015.csv'),
         },
         'Conservative Cases': {
-          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
-          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
-          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied.1': THISDIR.joinpath('tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_oe8ce57e4.csv'),
+          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
+          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
+          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied.1': THISDIR.joinpath('tam', 'tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_organic_fraction_from_What_35ed52f6.csv'),
         },
         'Ambitious Cases': {
-          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
+          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
         },
       },
       'Region: Latin America': {
         'Baseline Cases': {
-          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
-          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
-          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_o7173d425.csv'),
+          'What a Waste Solid Waste Management Static': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Static.csv'),
+          'What a Waste Solid Waste Management Dynamic': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Dynamic.csv'),
+          'Bahor et al (2009) DOI: 10.1177/0734242X09350485 - interpolated and organic fraction from What a  Waste applied': THISDIR.joinpath('tam', 'tam_Bahor_et_al_2009_DOI_10_11770734242X09350485_interpolated_and_organic_fraction_from_What_95c7eead.csv'),
         },
         'Conservative Cases': {
-          'What a Waste Solid Waste Management Dynamic Organic Fraction': THISDIR.joinpath('tam_What_a_Waste_Solid_Waste_Management_Dynamic_Organic_Fraction.csv'),
+          'What a Waste Solid Waste Management Dynamic Organic Fraction': THISDIR.joinpath('tam', 'tam_What_a_Waste_Solid_Waste_Management_Dynamic_Organic_Fraction.csv'),
         },
         'Ambitious Cases': {
-          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
-          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
-          'Hoornweg et al 2015': THISDIR.joinpath('tam_Hoornweg_et_al_2015.csv'),
+          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
+          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
+          'Hoornweg et al 2015': THISDIR.joinpath('tam', 'tam_Hoornweg_et_al_2015.csv'),
         },
       },
       'Region: China': {
         'Baseline Cases': {
-          'World Bank': THISDIR.joinpath('tam_World_Bank.csv'),
+          'World Bank': THISDIR.joinpath('tam', 'tam_World_Bank.csv'),
         },
         'Conservative Cases': {
-          'What a Waste': THISDIR.joinpath('tam_What_a_Waste.csv'),
-          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
+          'What a Waste': THISDIR.joinpath('tam', 'tam_What_a_Waste.csv'),
+          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
         },
       },
       'Region: India': {
         'Baseline Cases': {
-          'Kumar, Sunil. Municipal Solid Waste Management in India: Present Practices and Future Challenge. Clean Development Mechanism, United Nations Framework Convention on Climate Change': THISDIR.joinpath('tam_Kumar_Sunil__Municipal_Solid_Waste_Management_in_India_Present_ffc49692.csv'),
-          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
-          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
+          'Kumar, Sunil. Municipal Solid Waste Management in India: Present Practices and Future Challenge. Clean Development Mechanism, United Nations Framework Convention on Climate Change': THISDIR.joinpath('tam', 'tam_Kumar_Sunil__Municipal_Solid_Waste_Management_in_India_Present_Practices_and_Future_Chal_a1d3f433.csv'),
+          'IPCC, 2006 - Calculated based on bottom up analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_bottom_up_analysis.csv'),
+          'IPCC, 2006 - Calculated based on top down analysis': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated_based_on_top_down_analysis.csv'),
         },
         'Maximum Cases': {
-          'CPCB, Satus of MSW India, 2000': THISDIR.joinpath('tam_CPCB_Satus_of_MSW_India_2000.csv'),
+          'CPCB, Satus of MSW India, 2000': THISDIR.joinpath('tam', 'tam_CPCB_Satus_of_MSW_India_2000.csv'),
         },
       },
       'Region: EU': {
         'Baseline Cases': {
-          'IPCC, 2006 Calculated': THISDIR.joinpath('tam_IPCC_2006_Calculated.csv'),
+          'IPCC, 2006 Calculated': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated.csv'),
         },
         'Maximum Cases': {
-          'EUROSTAT, Municipal Solid Waste Statistics, 2016': THISDIR.joinpath('tam_EUROSTAT_Municipal_Solid_Waste_Statistics_2016.csv'),
+          'EUROSTAT, Municipal Solid Waste Statistics, 2016': THISDIR.joinpath('tam', 'tam_EUROSTAT_Municipal_Solid_Waste_Statistics_2016.csv'),
         },
       },
       'Region: USA': {
         'Baseline Cases': {
-          'EPA, Municipal Solid Waste Generation, Recycling, and Disposal in the United States: Facts and Figures for 2012': THISDIR.joinpath('tam_EPA_Municipal_Solid_Waste_Generation_Recycling_and_Disposal_in_97668659.csv'),
+          'EPA, Municipal Solid Waste Generation, Recycling, and Disposal in the United States: Facts and Figures for 2012': THISDIR.joinpath('tam', 'tam_EPA_Municipal_Solid_Waste_Generation_Recycling_and_Disposal_in_the_United_States_Facts_a_7fa2141a.csv'),
         },
         'Ambitious Cases': {
-          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('tam_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
+          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('tam', 'tam_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
         },
         'Maximum Cases': {
-          'IPCC, 2006 Calculated': THISDIR.joinpath('tam_IPCC_2006_Calculated.csv'),
+          'IPCC, 2006 Calculated': THISDIR.joinpath('tam', 'tam_IPCC_2006_Calculated.csv'),
         },
       },
     }
@@ -366,69 +365,69 @@ class Composting:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Baseline Cases': {
-          'Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Aa795de02.csv'),
+          'Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
       },
       'Conservative Cases': {
-          'IPCC, 2006 Calculated': THISDIR.joinpath('ad_IPCC_2006_Calculated.csv'),
+          'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
       },
       'Ambitious Cases': {
-          'Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Ad908acd27.csv'),
+          'Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
       },
       'Region: OECD90': {
         'Baseline Cases': {
-          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
+          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('ad', 'ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
         },
         'Conservative Cases': {
-          'IPCC, 2006 Calculated': THISDIR.joinpath('ad_IPCC_2006_Calculated.csv'),
+          'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
         },
         'Ambitious Cases': {
-          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW).1': THISDIR.joinpath('ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW_1.csv'),
+          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW).1': THISDIR.joinpath('ad', 'ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW_1.csv'),
         },
       },
       'Region: Asia (Sans Japan)': {
         'Baseline Cases': {
-          'IPCC, 2006 Calculated': THISDIR.joinpath('ad_IPCC_2006_Calculated.csv'),
+          'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
         },
         'Conservative Cases': {
-          'Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Aa795de02.csv'),
+          'Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
         },
         'Ambitious Cases': {
-          'Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Ad908acd27.csv'),
+          'Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
         },
       },
       'Region: Middle East and Africa': {
         'Baseline Cases': {
-          'IPCC, 2006 Calculated': THISDIR.joinpath('ad_IPCC_2006_Calculated.csv'),
-          'Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Aa795de02.csv'),
+          'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
+          'Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
         },
         'Ambitious Cases': {
-          'Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Ad908acd27.csv'),
+          'Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
         },
       },
       'Region: China': {
         'Baseline Cases': {
-          'Song, L. et al. Study on the Current Situation of Municipal Solid Waste Composting in China and Development Trend. 2012': THISDIR.joinpath('ad_Song_L__et_al__Study_on_the_Current_Situation_of_Municipal_Solieb71fc1e.csv'),
+          'Song, L. et al. Study on the Current Situation of Municipal Solid Waste Composting in China and Development Trend. 2012': THISDIR.joinpath('ad', 'ad_Song_L__et_al__Study_on_the_Current_Situation_of_Municipal_Solid_Waste_Composting_in_Chi_f57570b9.csv'),
         },
         'Conservative Cases': {
-          'IPCC, 2006 Calculated': THISDIR.joinpath('ad_IPCC_2006_Calculated.csv'),
+          'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
         },
       },
       'Region: India': {
         'Baseline Cases': {
-          'Kharvel, R. Sustainable Solid Waste Management in Inidia. SEAS, Columbia Thesis. 2012': THISDIR.joinpath('ad_Kharvel_R__Sustainable_Solid_Waste_Management_in_Inidia__SEAS_C06927965.csv'),
+          'Kharvel, R. Sustainable Solid Waste Management in Inidia. SEAS, Columbia Thesis. 2012': THISDIR.joinpath('ad', 'ad_Kharvel_R__Sustainable_Solid_Waste_Management_in_Inidia__SEAS_Columbia_Thesis__2012.csv'),
         },
       },
       'Region: EU': {
         'Baseline Cases': {
-          'EUROSTAT, 2016. http://ec.europa.eu/eurostat/statistics-explained/index.php/Municipal_waste_statistics': THISDIR.joinpath('ad_EUROSTAT_2016__httpec_europa_eueurostatstatisticsexplainedindex33404fb3.csv'),
-          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
+          'EUROSTAT, 2016. http://ec.europa.eu/eurostat/statistics-explained/index.php/Municipal_waste_statistics': THISDIR.joinpath('ad', 'ad_EUROSTAT_2016__httpec_europa_eueurostatstatisticsexplainedindex_phpMunicipal_waste_statistics.csv'),
+          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('ad', 'ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
         },
       },
       'Region: USA': {
         'Baseline Cases': {
-          'EPA, MSW trends, 2012 https://www.epa.gov/sites/production/files/2015-09/documents/2012_msw_fs.pdf': THISDIR.joinpath('ad_EPA_MSW_trends_2012_httpswww_epa_govsitesproductionfiles201509dffe51a3d.csv'),
-          'IPCC, 2006 Calculated': THISDIR.joinpath('ad_IPCC_2006_Calculated.csv'),
-          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
+          'EPA, MSW trends, 2012 https://www.epa.gov/sites/production/files/2015-09/documents/2012_msw_fs.pdf': THISDIR.joinpath('ad', 'ad_EPA_MSW_trends_2012_httpswww_epa_govsitesproductionfiles201509documents2012_msw_fs_pdf.csv'),
+          'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
+          'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('ad', 'ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
         },
       },
     }
@@ -449,7 +448,10 @@ class Composting:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -480,11 +482,11 @@ class Composting:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

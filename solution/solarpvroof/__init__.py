@@ -26,6 +26,7 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -246,27 +247,27 @@ class SolarPVRoof:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Baseline Cases': {
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('ad_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv'),
+          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
+          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
+          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
+          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_6DS.csv'),
       },
       'Conservative Cases': {
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('ad_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: Greenpeace Reference (2015)': THISDIR.joinpath('ad_based_on_Greenpeace_Reference_2015.csv'),
+          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
+          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
+          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_GEM_E3_550.csv'),
+          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_4DS.csv'),
+          'Based on: Greenpeace Reference (2015)': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_Reference_2015.csv'),
       },
       'Ambitious Cases': {
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('ad_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('ad_based_on_Greenpeace_2015_Energy_Revolution.csv'),
+          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
+          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
+          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('ad', 'ad_based_on_AMPERE_2014_GEM_E3_450.csv'),
+          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
+          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Energy_Revolution.csv'),
       },
       '100% RES2050 Case': {
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('ad_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
+          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,

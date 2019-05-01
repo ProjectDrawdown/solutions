@@ -1,0 +1,30 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,172.2814014096829,384.28276914051594,-39.71996632115014
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,False,310606165.6666667,732492672.8705401,23669304.0
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,27208664.405802872,35998677.53393008,18418651.277675662
+4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,True,False,26.934010544521403,26.934010544521403,26.934010544521403
+5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,False,0.7619132726245667,0.7619132726245667,0.7619132726245667
+6,Average_Annual_Use_CONVENTIONAL,Average Annual Use - CONVENTIONAL,True,False,1.3467005272260701,1.3467005272260701,1.3467005272260701
+7,Average_Annual_Use_SOLUTION,Average Annual Use - SOLUTION,True,False,0.02176895064641619,0.02176895064641619,0.02176895064641619
+8,CONVENTIONAL_VARIABLE_Operating_Cost_per_Functional_Unit,CONVENTIONAL VARIABLE Operating Cost per Functional Unit,True,False,103177006.5777112,103177006.5777112,103177006.5777112
+9,SOLUTION_VARIABLE_Operating_Cost_per_Functional_Unit,SOLUTION VARIABLE Operating Cost per Functional Unit ,True,False,150250830.9709442,256309322.784456,44192339.15743238
+10,CONVENTIONAL_FIXED_Operating_Cost_per_Implementation_Unit,CONVENTIONAL FIXED Operating Cost per Implementation Unit,False,False,,,
+11,SOLUTION_FIXED_Operating_Cost_per_Implementation_Unit,SOLUTION FIXED Operating Cost per Implementation Unit ,False,False,,,
+12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+13,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+14,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,True,False,0.062211259271640215,0.08428307126157225,0.040139447281708186
+15,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,True,False,64340127.996129535,71471535.7865218,57208720.20573726
+16,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,True,False,1.0,1.0,1.0
+17,Direct_Emissions_per_CONVENTIONAL_Functional_Unit,Direct Emissions per CONVENTIONAL Functional Unit,False,False,,,
+18,Direct_Emissions_per_SOLUTION_Functional_Unit,Direct Emissions per SOLUTION Functional Unit,False,False,,,
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE_on_Advanced_Controls,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls,True,True,72997.5,178882.08645354147,4290.0
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls),True,False,11905.970340927155,17509.041504781882,6302.899177072429
+21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
+22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
+23,Discount_Rate_Governments,Discount Rate - Governments,True,True,0.06379756793388117,0.10097470327256891,0.02662043259519343
+24,Airport_Operating_Costs,Airport Operating Costs,True,False,12494748.77852349,15535539.751988655,9453957.805058325
+25,Airline_Operating_Costs,Airline Operating Costs,True,False,90682257.7991877,116253822.80956763,65110692.78880778
+26,HSR_Rolling_Stock_Running_Costs_Europe,HSR Rolling Stock Running Costs- Europe,True,False,235752715.39200002,290327609.5493487,181177821.2346513
+27,HSR_Infrastructure_Cost_Europe,HSR Infrastructure Cost - Europe,True,False,4500201.7853634525,7310911.114346751,1689492.456380154
+28,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
+29,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,

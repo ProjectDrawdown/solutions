@@ -26,6 +26,7 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -238,14 +239,14 @@ class Cars:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'IEA (2016), "Energy Technology Perspectives - 6DS", IEA/OECD': THISDIR.joinpath('tam_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD.csv'),
-          'ICCT (2012) "Global Transport Roadmap Model", http://www.theicct.org/global-transportation-roadmap-model': THISDIR.joinpath('tam_ICCT_2012_Global_Transport_Roadmap_Model_httpwww_theicct_orggloe40d9495.csv'),
+          'IEA (2016), "Energy Technology Perspectives - 6DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD.csv'),
+          'ICCT (2012) "Global Transport Roadmap Model", http://www.theicct.org/global-transportation-roadmap-model': THISDIR.joinpath('tam', 'tam_ICCT_2012_Global_Transport_Roadmap_Model_httpwww_theicct_orgglobaltransportationroadmapmodel.csv'),
       },
       'Conservative Cases': {
-          'IEA (2016), "Energy Technology Perspectives - 4DS", IEA/OECD': THISDIR.joinpath('tam_IEA_2016_Energy_Technology_Perspectives_4DS_IEAOECD.csv'),
+          'IEA (2016), "Energy Technology Perspectives - 4DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_IEA_2016_Energy_Technology_Perspectives_4DS_IEAOECD.csv'),
       },
       'Ambitious Cases': {
-          'IEA (2016), "Energy Technology Perspectives - 2DS", IEA/OECD': THISDIR.joinpath('tam_IEA_2016_Energy_Technology_Perspectives_2DS_IEAOECD.csv'),
+          'IEA (2016), "Energy Technology Perspectives - 2DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_IEA_2016_Energy_Technology_Perspectives_2DS_IEAOECD.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -267,13 +268,13 @@ class Cars:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Conservative Cases': {
-          'Navigant Research': THISDIR.joinpath('ad_Navigant_Research.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on Clean Energy Manufacturing Analysis Center': THISDIR.joinpath('ad_based_on_Clean_Energy_Manufacturing_Analysis_Center.csv'),
+          'Navigant Research': THISDIR.joinpath('ad', 'ad_Navigant_Research.csv'),
+          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_4DS.csv'),
+          'Based on Clean Energy Manufacturing Analysis Center': THISDIR.joinpath('ad', 'ad_based_on_Clean_Energy_Manufacturing_Analysis_Center.csv'),
       },
       'Ambitious Cases': {
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad_based_on_IEA_ETP_2016_2DS.csv'),
-          'Interpolation Based on World Energy Council 2011 - Global Transport Scenarios 2050': THISDIR.joinpath('ad_Interpolation_based_on_World_Energy_Council_2011_Global_Transpo0acbf715.csv'),
+          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
+          'Interpolation Based on World Energy Council 2011 - Global Transport Scenarios 2050': THISDIR.joinpath('ad', 'ad_Interpolation_based_on_World_Energy_Council_2011_Global_Transport_Scenarios_2050.csv'),
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
@@ -282,7 +283,7 @@ class Cars:
     # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'PDS2 - Project Drawdown based on data from IEA, ICCT and World Energy Council.', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Project_Drawdown_based_on_data_from_IEA_ICCT_and_World_Enebeb55100.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Project_Drawdown_based_on_data_from_IEA_ICCT_and_World_Energy_Council_.csv')},
       {'name': 'PDS3- Quick Doubling of Hybrid Car Occupancy', 'include': True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Quick_Doubling_of_Hybrid_Car_Occupancy.csv')},
       {'name': 'Drawdown Book - Edition 1- Quick Doubling of Hybrid Car Occupancy', 'include': True,

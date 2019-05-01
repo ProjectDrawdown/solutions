@@ -1,0 +1,10 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+JRC (2013) Wave,http://publications.jrc.ec.europa.eu/repository/handle/JRC85804,EU,,,2 - Public Sector/ Multilateral Agency,2013,,,US$2010/kW,0.0,US$2014/kW,,,
+JRC (2013) tidal energy stream and range,http://publications.jrc.ec.europa.eu/repository/handle/JRC85804,EU,,,2 - Public Sector/ Multilateral Agency,2013,,,US$2010/kW,0.0,US$2014/kW,,,
+JRC ETRI (2014) low Wave,http://publications.jrc.ec.europa.eu/repository/handle/JRC92496,EU,,,2 - Public Sector/ Multilateral Agency,2014,,,US$2013/kW,0.0,US$2014/kW,,3% of Investment Costs,
+JRC ETRI (2014) high Wave,http://publications.jrc.ec.europa.eu/repository/handle/JRC92496,EU,,,2 - Public Sector/ Multilateral Agency,2014,,,US$2013/kW,0.0,US$2014/kW,,3% of Investment Costs,
+JRC ETRI (2014) low Tidal,http://publications.jrc.ec.europa.eu/repository/handle/JRC92496,EU,,,2 - Public Sector/ Multilateral Agency,2014,,,US$2013/kW,0.0,US$2014/kW,,3.4% of Investment Costs,
+JRC ETRI (2014) high Tidal,http://publications.jrc.ec.europa.eu/repository/handle/JRC92496,EU,,,2 - Public Sector/ Multilateral Agency,2014,,,US$2013/kW,0.0,US$2014/kW,,3.4% of Investment Costs,
+"IPCC Ocean Energy 2011, Wave ",https://www.ipcc.ch/pdf/special-reports/srren/Chapter 6 Ocean Energy.pdf,World,,,1  - Peer Reviewed,2011,,,US$2005/kW,0.0,US$2014/kW,,,
+"IPCC Ocean Energy 2011, Tidal current ",https://www.ipcc.ch/pdf/special-reports/srren/Chapter 6 Ocean Energy.pdf,World,,,1  - Peer Reviewed,2011,,,US$2005/kW,0.0,US$2014/kW,,,
+"IPCC Ocean Energy 2011, Tidal range",https://www.ipcc.ch/pdf/special-reports/srren/Chapter 6 Ocean Energy.pdf,World,,,1  - Peer Reviewed,2011,,,US$2005/kW,0.0,US$2014/kW,,,

@@ -1,0 +1,31 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,10.860782664870584,26.61594164398371,-4.8943763142425425
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,True,2010.0317085196398,3373.5568673016687,646.5065497376106
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,4940.999360429326,7384.562047605417,2497.436673253234
+4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,True,True,178021.6744009262,225212.4575469707,130830.89125488169
+5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,False,150171.4399091095,182755.57192957238,117587.30788864661
+6,Average_Annual_Use_CONVENTIONAL,Average Annual Use - CONVENTIONAL,True,True,4967.648441815689,6603.246811821508,3332.050071809869
+7,Average_Annual_Use_SOLUTION,Average Annual Use - SOLUTION,True,False,5751.246634816959,7250.501675212996,4251.991594420922
+8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,True,0.0047524321679508165,0.007992783095689826,0.0015120812402118068
+9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit ,True,False,0.024200290578173474,0.04657239973758506,0.0018281814187618844
+10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),True,True,32.89064573433522,63.04748100463679,2.7338104640336525
+11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),True,False,97.31412581290286,146.67119538600107,47.95705623980464
+12,Electricity_Consumed_per_Functional_Unit_CONVENTIONAL,Electricity Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+13,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+14,Total_Energy_Used_per_SOLUTION_functional_unit,Total Energy Used per SOLUTION functional unit,False,False,,,
+15,Fuel_Consumed_per_CONVENTIONAL_Functional_Unit,Fuel Consumed per CONVENTIONAL Functional Unit,False,False,,,
+16,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,False,False,,,
+17,Direct_Emissions_per_CONVENTIONAL_Functional_Unit,Direct Emissions per CONVENTIONAL Functional Unit,False,False,,,
+18,Direct_Emissions_per_SOLUTION_Functional_Unit,Direct Emissions per SOLUTION Functional Unit,True,False,67500.0,116569.19312853753,18430.806871462475
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE_on_Advanced_Controls,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls,False,False,,,
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls),True,False,31860.185185185182,41895.7066728555,21824.663697514865
+21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
+22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
+23,2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit,2005-2014 Average CONVENTIONAL Fuel Price per functional unit,True,True,0.03446521920306304,0.04109236644397384,0.027838071962152235
+24,Weighted_Average_CONVENTIONAL_Plant_Efficiency,Weighted Average CONVENTIONAL Plant Efficiency ,True,True,0.4102147445137418,0.4736845414315057,0.3467449475959779
+25,Coal_Plant_Efficiency,Coal Plant Efficiency,True,False,0.36697534187007497,0.4322357828600367,0.3017149008801132
+26,Natural_Gas_Plant_Efficiency,Natural Gas Plant Efficiency,True,False,0.4733587008768759,0.565872832325824,0.3808445694279278
+27,Oil_Plant_Efficiency,Oil Plant Efficiency,True,False,0.39,0.39,0.39
+28,Biomass_Plant_Efficiency,Biomass Plant Efficiency,True,False,0.34444444444444444,0.373925553692048,0.3149633351968409
+29,Learning_Rate,Learning Rate,True,False,0.075,0.09302775637731996,0.05697224362268004
+30,Biomass_Prices,Biomass Prices,True,False,0.027405000000000002,0.035154000000000005,0.019656

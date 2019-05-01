@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -46,6 +51,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 1.67), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -80,8 +86,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=2449285.714285714, soln_emissions_per_funit=1404893.6314006243, 
 
-
-      # sequestration
     ),
   'PDS2-36p2050-Feedstock Limit - 453MMT (Book Ed.1)': advanced_controls.AdvancedControls(
       # Taking several possible custom projections developed by Project Drawdown, the
@@ -102,6 +106,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 1.67), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -136,8 +141,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=2449285.714285714, soln_emissions_per_funit=1404893.6314006243, 
 
-
-      # sequestration
     ),
   'PDS3-42p2050-Feedstock Limit -636MMT (Book Ed.1)': advanced_controls.AdvancedControls(
       # Taking several possible custom projections developed by Project Drawdown, the
@@ -158,6 +161,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 1.67), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -192,8 +196,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=2449285.714285714, soln_emissions_per_funit=1404893.6314006243, 
 
-
-      # sequestration
     ),
 }
 
@@ -206,16 +208,13 @@ class Bioplastic:
     "operating cost": "US$B",
   }
 
-
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS1-33p2050-Feedstock Limit-385MMT (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -235,12 +234,12 @@ class Bioplastic:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Custom TAM based on PlasticsEurope (2015) & World Economic Forum (2016)': thisdir.joinpath('tam_Custom_TAM_based_on_PlasticsEurope_2015_World_Economic_Forum_201.csv'),
-          'Custom TAM based on PlasticsEurope (2015) & 3.6% growth rate': thisdir.joinpath('tam_Custom_TAM_based_on_PlasticsEurope_2015_3_6_growth_rate.csv'),
+          'Custom TAM based on PlasticsEurope (2015) & World Economic Forum (2016)': THISDIR.joinpath('tam', 'tam_Custom_TAM_based_on_PlasticsEurope_2015_World_Economic_Forum_2016.csv'),
+          'Custom TAM based on PlasticsEurope (2015) & 3.6% growth rate': THISDIR.joinpath('tam', 'tam_Custom_TAM_based_on_PlasticsEurope_2015_3_6_growth_rate.csv'),
       },
       'Ambitious Cases': {
-          'Custom TAM based on Mosko (2012) assuming 5.3% growth from 2013-2020': thisdir.joinpath('tam_Custom_TAM_based_on_Mosko_2012_assuming_5_3_growth_from_20132020.csv'),
-          'PlasticsEurope (PEMRG) (2015), for historic values / Mosko (2012) est. 385MMt in 2050': thisdir.joinpath('tam_PlasticsEurope_PEMRG_2015_for_historic_values_Mosko_2012_est__38.csv'),
+          'Custom TAM based on Mosko (2012) assuming 5.3% growth from 2013-2020': THISDIR.joinpath('tam', 'tam_Custom_TAM_based_on_Mosko_2012_assuming_5_3_growth_from_20132020.csv'),
+          'PlasticsEurope (PEMRG) (2015), for historic values / Mosko (2012) est. 385MMt in 2050': THISDIR.joinpath('tam', 'tam_PlasticsEurope_PEMRG_2015_for_historic_values_Mosko_2012_est__385MMt_in_2050.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -262,31 +261,37 @@ class Bioplastic:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Ambitious Cases': {
-          'European Bioplastics (2013), 2nd Poly extrapolation': thisdir.joinpath('ad_European_Bioplastics_2013_2nd_Poly_extrapolation.csv'),
+          'European Bioplastics (2013), 2nd Poly extrapolation': THISDIR.joinpath('ad', 'ad_European_Bioplastics_2013_2nd_Poly_extrapolation.csv'),
       },
     }
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        adconfig=adconfig)
 
+    # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'ConservativeLow Based on CAGR 29.3% with continued trend to 2060', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_ConservativeLow_based_on_CAGR_29_3_with_continued_trend_to_2060.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeLow_based_on_CAGR_29_3_with_continued_trend_to_2060.csv')},
       {'name': 'ConservativeHigh, continued 3rd poly trend to 2060', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_ConservativeHigh_continued_3rd_poly_trend_to_2060.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeHigh_continued_3rd_poly_trend_to_2060.csv')},
       {'name': 'AggressiveMed, 40% by 2050, 3rd Poly', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_AggressiveMed_40_by_2050_3rd_Poly.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_AggressiveMed_40_by_2050_3rd_Poly.csv')},
       {'name': 'ConservativeHigh, 75% by 2045, 3rd Poly', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_ConservativeHigh_75_by_2045_3rd_Poly.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeHigh_75_by_2045_3rd_Poly.csv')},
       {'name': 'ConservativeLow, 25% by 2050, 3rd Poly', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_ConservativeLow_25_by_2050_3rd_Poly.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeLow_25_by_2050_3rd_Poly.csv')},
       {'name': 'AggressiveLow, 50% by 2050, 3rd Poly', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_AggressiveLow_50_by_2050_3rd_Poly.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_AggressiveLow_50_by_2050_3rd_Poly.csv')},
       {'name': 'AggressiveMax, 30% by 2030, 3rd Poly', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_AggressiveMax_30_by_2030_3rd_Poly.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_AggressiveMax_30_by_2030_3rd_Poly.csv')},
       {'name': 'AggressiveMax, 90 % by 2030, 90% by 2050', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_AggressiveMax_90_by_2030_90_by_2050.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_AggressiveMax_90_by_2030_90_by_2050.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
+        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -295,7 +300,7 @@ class Bioplastic:
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
       pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-      pds_adoption_is_single_source = True
+      pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
@@ -317,15 +322,15 @@ class Bioplastic:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -361,6 +366,7 @@ class Bioplastic:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -379,6 +385,4 @@ class Bioplastic:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 

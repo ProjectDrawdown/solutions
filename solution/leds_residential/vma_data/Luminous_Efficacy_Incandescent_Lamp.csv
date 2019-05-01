@@ -1,0 +1,8 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"US DOE, 2014, Data for incandescent lamp",,OECD90,USA,,,2014,,,lm/W,,,,,
+"IEA, 2006, incandescent lamp typical",,World,,,,2006,,,lm/W,,,,,
+"Incandescent lamp, http://ext.homedepot.com/shopping-tools/light-bulbs/bulbcomparison.html",,OECD90,USA,,,,,,lm/W,,,,,
+"Incandescent lamp, http://www.premiumlight.eu/index.php?page=guide-common-lamp-types-6#h20",,OECD90,EU,,,,,,lm/W,,,,,
+"Incandescent lamp, Book: S. Kitsinelis (2011) Light sources (table 3.1 & Appendix A)",,World,,,,,,,lm/W,,,,,
+"Incandescent lamp, MELISA Model (see above table)",,OECD90,EU,,,,,,lm/W,,,,,
+"IEA, 2006, incandescent lamp",,World,,,,2006,,,lm/W,12.0,,,,

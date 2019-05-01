@@ -1,0 +1,12 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Global alliance For Clean cookstoves,http://carbonfinanceforcookstoves.org/implementation/case-studies/the-wwf-cookstove-project/,World,,,yes,,,,,,%,0.0736228574495207,Firewood,
+International institute for Applied Systems analysis,http://www.iiasa.ac.at/web/home/research/Flagship-Projects/Global-Energy-Assessment/Chapter2.en.html,World,,,yes,,,,,,%,0.0736228574495207,Firewood,
+Cashman (2015),,Asia (Sans Japan),China,,Yes,2015.0,,,,,%,0.055230736643593875,Coal,
+Malla (2014) - firewood,,World,,,Yes,2014.0,,,,,%,0.0736228574495207,Firewood,
+Malla (2014) - crop residue,,World,,,Yes,2014.0,,,,,%,0.0736228574495207,Firewood,
+Malla (2014) - kerosene,,World,,,Yes,2014.0,,,,,%,0.011319614592035532,Kerosene,
+Malla (2014) - coal with coal gas,,World,,,Yes,2014.0,,,,,%,0.055230736643593875,Coal,
+WHO (2010) - firewood,http://www.who.int/indoorair/guidelines/hhfc/IARC_monographs_Vol.95.pdf,World,,,Yes,2010.0,,,,,%,0.0736228574495207,Firewood,
+WHO (2010) -coal,http://www.who.int/indoorair/guidelines/hhfc/IARC_monographs_Vol.95.pdf,World,,,Yes,2010.0,,,,,%,0.055230736643593875,Coal,
+WHO (2010) - kerosene,http://www.who.int/indoorair/guidelines/hhfc/IARC_monographs_Vol.95.pdf,World,,,Yes,2010.0,,,,,%,0.011319614592035532,Kerosene,
+Dresen (2014),,Middle East and Africa,Africa,,Yes,2014.0,,,,,%,0.0736228574495207,Firewood,

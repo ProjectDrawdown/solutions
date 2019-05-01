@@ -26,6 +26,7 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -192,8 +193,8 @@ scenarios = {
 class GreenRoofs:
   name = 'Green Roofs'
   units = {
-    "implementation unit": u"m\u00B2",
-    "functional unit": u"m\u00B2",
+    "implementation unit": "m²",
+    "functional unit": "m²",
     "first cost": "US$B",
     "operating cost": "US$B",
   }
@@ -224,38 +225,13 @@ class GreenRoofs:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestool35cc6660.csv'),
-          'Based on GBPN - BEST PRACTICE POLICIES FOR LOW CARBON & ENERGY BUILDINGS BASED ON SCENARIO ANALYSIS May 2012': THISDIR.joinpath('tam_based_on_GBPN_BEST_PRACTICE_POLICIES_FOR_LOW_CARBON_ENERGY_BUILd289128b.csv'),
-          'IEA (2013)': THISDIR.joinpath('tam_IEA_2013.csv'),
+          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam', 'tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolsmrvtoolmethodology_.csv'),
+          'Based on GBPN - BEST PRACTICE POLICIES FOR LOW CARBON & ENERGY BUILDINGS BASED ON SCENARIO ANALYSIS May 2012': THISDIR.joinpath('tam', 'tam_based_on_GBPN_BEST_PRACTICE_POLICIES_FOR_LOW_CARBON_ENERGY_BUILDINGS_BASED_ON_SCENARIO_A_c7e92439.csv'),
+          'IEA (2013)': THISDIR.joinpath('tam', 'tam_IEA_2013.csv'),
       },
       'Conservative Cases': {
-          'McKinsey': THISDIR.joinpath('tam_McKinsey.csv'),
-          'Navigant (2014)': THISDIR.joinpath('tam_Navigant_2014.csv'),
-      },
-      'Region: OECD90': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestool35cc6660.csv'),
-        },
-      },
-      'Region: Eastern Europe': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestool35cc6660.csv'),
-        },
-      },
-      'Region: Asia (Sans Japan)': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestool35cc6660.csv'),
-        },
-      },
-      'Region: Middle East and Africa': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestool35cc6660.csv'),
-        },
-      },
-      'Region: Latin America': {
-        'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestool35cc6660.csv'),
-        },
+          'McKinsey': THISDIR.joinpath('tam', 'tam_McKinsey.csv'),
+          'Navigant (2014)': THISDIR.joinpath('tam', 'tam_Navigant_2014.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -298,7 +274,15 @@ class GreenRoofs:
     sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]
     sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)
     sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))
+    if self.ac.pds_adoption_s_curve_innovation is not None:
+      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_innovation)
+      sconfig['innovation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
+    if self.ac.pds_adoption_s_curve_imitation is not None:
+      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_imitation)
+      sconfig['imitation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
     self.sc = s_curve.SCurve(transition_period=16, sconfig=sconfig)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -307,6 +291,10 @@ class GreenRoofs:
     elif self.ac.soln_pds_adoption_basis == 'Logistic S-Curve':
       pds_adoption_data_per_region = None
       pds_adoption_trend_per_region = self.sc.logistic_adoption()
+      pds_adoption_is_single_source = None
+    elif self.ac.soln_pds_adoption_basis == 'Bass Diffusion S-Curve':
+      pds_adoption_data_per_region = None
+      pds_adoption_trend_per_region = self.sc.bass_diffusion_adoption()
       pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
@@ -329,11 +317,11 @@ class GreenRoofs:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

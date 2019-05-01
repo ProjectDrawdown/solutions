@@ -26,6 +26,8 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
@@ -51,6 +53,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 9607070620938.643), ('OECD90', 2177533057697.923), ('Eastern Europe', 575975431282.0925), ('Asia (Sans Japan)', 4506889445113.769), ('Middle East and Africa', 1416146219920.7346), ('Latin America', 1334877448730.5225), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -85,8 +88,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-35p2050-based on ITDP/UCD (Book Ed.1)': advanced_controls.AdvancedControls(
       # We take the Global High Shift Cycling Scenario data from the ITDP's 2015
@@ -109,6 +110,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 9607070620938.643), ('OECD90', 2177533057697.923), ('Eastern Europe', 575975431282.0925), ('Asia (Sans Japan)', 4506889445113.769), ('Middle East and Africa', 1416146219920.7346), ('Latin America', 1334877448730.5225), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -143,8 +145,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-45p2050-linear (Book Ed.1)': advanced_controls.AdvancedControls(
       # Taking the maximum expected mass transit mobility worldwide as 45% of the Urban
@@ -166,6 +166,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 9607070620938.643), ('OECD90', 2177533057697.923), ('Eastern Europe', 575975431282.0925), ('Asia (Sans Japan)', 4506889445113.769), ('Middle East and Africa', 1416146219920.7346), ('Latin America', 1334877448730.5225), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.45), ('OECD90', 0.45), ('Eastern Europe', 0.45), ('Asia (Sans Japan)', 0.45), ('Middle East and Africa', 0.45), ('Latin America', 0.45), ('China', 0.45), ('India', 0.45), ('EU', 0.45), ('USA', 0.45)], 
 
       # financial
@@ -200,8 +201,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -240,40 +239,40 @@ class MassTransit:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
-          'ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Trav7dc8c23e.csv'),
+          'ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
+          'ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv'),
       },
       'Conservative Cases': {
-          'ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
-          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated700acab5.csv'),
+          'ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
+          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_Baseline_Scenario.csv'),
       },
       'Ambitious Cases': {
-          'ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
-          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - HighShift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updatede9cf6e2b.csv'),
+          'ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
+          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - HighShift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_HighShift_Scenario.csv'),
       },
       'Region: OECD90': {
         'Ambitious Cases': {
-          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated052085ff.csv'),
+          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv'),
         },
       },
       'Region: Eastern Europe': {
         'Ambitious Cases': {
-          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated052085ff.csv'),
+          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv'),
         },
       },
       'Region: Asia (Sans Japan)': {
         'Ambitious Cases': {
-          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated052085ff.csv'),
+          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv'),
         },
       },
       'Region: Middle East and Africa': {
         'Ambitious Cases': {
-          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated052085ff.csv'),
+          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv'),
         },
       },
       'Region: Latin America': {
         'Ambitious Cases': {
-          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated052085ff.csv'),
+          'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv'),
         },
       },
     }
@@ -291,7 +290,8 @@ class MassTransit:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
 
     # Custom REF Data
     ca_ref_data_sources = [
@@ -302,7 +302,9 @@ class MassTransit:
     ]
     self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
         soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=ref_tam_per_region)
+
     ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
     if False:
@@ -334,12 +336,12 @@ class MassTransit:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        ref_adoption_data_per_region=ref_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        ref_adoption_data_per_region=ref_adoption_data_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

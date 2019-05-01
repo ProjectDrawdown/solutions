@@ -26,7 +26,7 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {}
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -52,6 +52,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 1523.491464812742), ('OECD90', 205.85584501120192), ('Eastern Europe', 57.71269810953001), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 310.14334483044007), ('India', 180.29053359808), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -86,8 +87,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-8p2050-Linear (Book Ed.1)': advanced_controls.AdvancedControls(
       # We project a straight linear growth in passenger-km to 7.6% of the global urban
@@ -105,6 +104,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 1523.491464812742), ('OECD90', 205.85584501120192), ('Eastern Europe', 57.71269810953001), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 310.14334483044007), ('India', 180.29053359808), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.076), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -139,8 +139,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-7p2050-2.4% Annual Density Increase (Book Ed.1)': advanced_controls.AdvancedControls(
       # We project the amount of walking that would happen in 1,737 cities worldwide
@@ -171,6 +169,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 1523.491464812742), ('OECD90', 205.85584501120192), ('Eastern Europe', 57.71269810953001), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 310.14334483044007), ('India', 180.29053359808), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -205,8 +204,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -245,16 +242,16 @@ class WalkableCities:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
-          'ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Trav60d6cda6.csv'),
+          'ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
+          'ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv'),
       },
       'Conservative Cases': {
-          'ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
-          'ITDP/UC Davis 2014 Global High Shift Baseline': THISDIR.joinpath('tam_ITDPUC_Davis_2014_Global_High_Shift_Baseline.csv'),
+          'ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
+          'ITDP/UC Davis 2014 Global High Shift Baseline': THISDIR.joinpath('tam', 'tam_ITDPUC_Davis_2014_Global_High_Shift_Baseline.csv'),
       },
       'Ambitious Cases': {
-          'ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
-          'ITDP/UC Davis 2014 Global High Shift HighShift': THISDIR.joinpath('tam_ITDPUC_Davis_2014_Global_High_Shift_HighShift.csv'),
+          'ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
+          'ITDP/UC Davis 2014 Global High Shift HighShift': THISDIR.joinpath('tam', 'tam_ITDPUC_Davis_2014_Global_High_Shift_HighShift.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -276,10 +273,10 @@ class WalkableCities:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Baseline Cases': {
-          'ITDP/UCD (2015) A Global High Shift Cycling Scenario - Baseline Scenario': THISDIR.joinpath('ad_ITDPUCD_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scen7871901d.csv'),
+          'ITDP/UCD (2015) A Global High Shift Cycling Scenario - Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDPUCD_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
       },
       'Ambitious Cases': {
-          'ITDP/UCD (2015) A Global High Shift Cycling Scenario - High Shift Scenario': THISDIR.joinpath('ad_ITDPUCD_2015_A_Global_High_Shift_Cycling_Scenario_High_Shift_Sc378978a8.csv'),
+          'ITDP/UCD (2015) A Global High Shift Cycling Scenario - High Shift Scenario': THISDIR.joinpath('ad', 'ad_ITDPUCD_2015_A_Global_High_Shift_Cycling_Scenario_High_Shift_Scenario.csv'),
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
@@ -288,13 +285,14 @@ class WalkableCities:
     # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'PDS2 - Density remains Constant and is the key driver of walking in cities.', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Density_remains_Constant_and_is_the_key_driver_of_walking_fdc2dc3e.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Density_remains_Constant_and_is_the_key_driver_of_walking_in_cities_.csv')},
       {'name': 'PDS2 - Increasing Urban Density with Density Driving Urban Walking (Book Ed.1)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Increasing_Urban_Density_with_Density_Driving_Urban_Walkin05da072b.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Increasing_Urban_Density_with_Density_Driving_Urban_Walking_Book_Ed_1.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
 
     # Custom REF Data
     ca_ref_data_sources = [
@@ -303,7 +301,9 @@ class WalkableCities:
     ]
     self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
         soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=ref_tam_per_region)
+
     ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
     if False:
@@ -339,12 +339,12 @@ class WalkableCities:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        ref_adoption_data_per_region=ref_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        ref_adoption_data_per_region=ref_adoption_data_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

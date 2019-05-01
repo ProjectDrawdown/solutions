@@ -1,0 +1,7 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"average from Market Prices Chart, ptonline",,World,,,5 - Not Verified,2011,,,US$2011/kg,0.0,US2014$/MMt of Plastic Produced Annually,,Traditional Plastics,
+"average from Market Prices Chart, ptonline",,World,,,5 - Not Verified,2014,,,US$2014/kg,0.0,US2014$/MMt of Plastic Produced Annually,,Traditional Plastics,
+"Biron 2012, based on oil price $150/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,PP,
+"Biron 2012, based on oil price $300/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,"PP, Excluded due to excessive oil assumption input",1.0
+"Biron 2012, historical modeling, low","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,PP,
+"Biron 2012, historical modeling, high","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,PP,

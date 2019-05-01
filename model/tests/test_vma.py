@@ -134,3 +134,16 @@ def test_avg_high_low_by_regime():
     assert result[0] == pytest.approx(0.5)
     result = v.avg_high_low(regime='Temperate/Boreal-Humid')
     assert result[0] == pytest.approx(0.45)
+
+
+
+def test_no_warnings_in_avg_high_low():
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+      A, 1.0, Mha,, 0.0, False
+      B, 1.0, Mha,, 0.0, False
+      C, 1.0, Mha,, 0.0, False
+      """)
+    with pytest.warns(None) as warnings:
+        v = vma.VMA(filename=f)
+        _ = v.avg_high_low()
+    assert len(warnings) == 0

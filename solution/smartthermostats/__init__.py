@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -48,6 +53,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 3.2), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.7), ('USA', 2.5)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -82,8 +88,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-39p2050-cs-Avg E11.65, F8.06 (Book Ed.1)': advanced_controls.AdvancedControls(
       # After Integrating the results of other solutions in the Buildings Sector, the
@@ -106,6 +110,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 3.2), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.7), ('USA', 2.5)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -140,8 +145,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-50p2050-cs-High E10.96, F7.59 (Book Ed.1)': advanced_controls.AdvancedControls(
       # After Integrating the results of other solutions in the Buildings Sector, the
@@ -164,6 +167,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 3.2), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.7), ('USA', 2.5)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -198,30 +202,25 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
-
 
 class SmartThermostats:
   name = 'Smart Thermostats'
   units = {
-    "implementation unit": "Million Households",
-    "functional unit": "Million Households",
+    "implementation unit": "MHholds",
+    "functional unit": "Million Households ",
     "first cost": "US$B",
     "operating cost": "US$B",
   }
 
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS1-28p2050-cs Low-E12.84, F8.89 (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -241,9 +240,9 @@ class SmartThermostats:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Based on: CES ITU AMPERE Baseline': thisdir.joinpath('tam_based_on_CES_ITU_AMPERE_Baseline.csv'),
-          'Based on: CES ITU AMPERE 550': thisdir.joinpath('tam_based_on_CES_ITU_AMPERE_550.csv'),
-          'Based on: CES ITU AMPERE 450': thisdir.joinpath('tam_based_on_CES_ITU_AMPERE_450.csv'),
+          'Based on: CES ITU AMPERE Baseline': THISDIR.joinpath('tam', 'tam_based_on_CES_ITU_AMPERE_Baseline.csv'),
+          'Based on: CES ITU AMPERE 550': THISDIR.joinpath('tam', 'tam_based_on_CES_ITU_AMPERE_550.csv'),
+          'Based on: CES ITU AMPERE 450': THISDIR.joinpath('tam', 'tam_based_on_CES_ITU_AMPERE_450.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -265,26 +264,32 @@ class SmartThermostats:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
     }
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        adconfig=adconfig)
 
+    # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'Aggressive, Low', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Aggressive_Low.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Aggressive_Low.csv')},
       {'name': 'Conservative, Low', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Conservative_Low.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Conservative_Low.csv')},
       {'name': 'Aggressive, high', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Aggressive_high.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Aggressive_high.csv')},
       {'name': 'Aggressive, high, early', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Aggressive_high_early.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Aggressive_high_early.csv')},
       {'name': 'Drawdown Book Ed.1 Scenario 1', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Ed_1_Scenario_1.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Ed_1_Scenario_1.csv')},
       {'name': 'Drawdown Book Ed.1 Scenario 2', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Ed_1_Scenario_2.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Ed_1_Scenario_2.csv')},
       {'name': 'Drawdown Book Ed.1 Scenario 3', 'include': False,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Ed_1_Scenario_3.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Ed_1_Scenario_3.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
+        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -293,7 +298,7 @@ class SmartThermostats:
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
       pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-      pds_adoption_is_single_source = True
+      pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
@@ -315,19 +320,19 @@ class SmartThermostats:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-        bug_cfunits_double_count=False)
+        bug_cfunits_double_count=True)
     soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
     soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
     conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
@@ -358,6 +363,7 @@ class SmartThermostats:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -376,6 +382,4 @@ class SmartThermostats:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 
