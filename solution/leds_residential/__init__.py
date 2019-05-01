@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -41,6 +46,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 0.6794492428871898), ('OECD90', 0.3191954710617667), ('Eastern Europe', 0.10696600912194591), ('Asia (Sans Japan)', 0.14940816617982913), ('Middle East and Africa', 0.05052731382746539), ('Latin America', 0.028682249324419262), ('China', 0.27338382605688477), ('India', 0.06226876414656746), ('EU', 0.08601359398921465), ('USA', 0.12076301805261236)], 
       pds_adoption_final_percentage=[('World', 0.9), ('OECD90', 0.9), ('Eastern Europe', 0.9), ('Asia (Sans Japan)', 0.9), ('Middle East and Africa', 0.9), ('Latin America', 0.9), ('China', 0.9), ('India', 0.9), ('EU', 0.9), ('USA', 0.9)], 
 
       # financial
@@ -75,8 +81,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-95p2050-linear (Book Ed.1)': advanced_controls.AdvancedControls(
       # We take a linear growth to 95% adoption by 2050. This scenario uses inputs
@@ -92,6 +96,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 0.6794492428871898), ('OECD90', 0.3191954710617667), ('Eastern Europe', 0.10696600912194591), ('Asia (Sans Japan)', 0.14940816617982913), ('Middle East and Africa', 0.05052731382746539), ('Latin America', 0.028682249324419262), ('China', 0.27338382605688477), ('India', 0.06226876414656746), ('EU', 0.08601359398921465), ('USA', 0.12076301805261236)], 
       pds_adoption_final_percentage=[('World', 0.95), ('OECD90', 0.95), ('Eastern Europe', 0.95), ('Asia (Sans Japan)', 0.95), ('Middle East and Africa', 0.95), ('Latin America', 0.95), ('China', 0.95), ('India', 0.95), ('EU', 0.95), ('USA', 0.95)], 
 
       # financial
@@ -126,8 +131,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-100p2050-linear (Book Ed.1)': advanced_controls.AdvancedControls(
       # We take a linear growth to 100% adoption by 2050. This scenario uses inputs
@@ -143,6 +146,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 0.6794492428871898), ('OECD90', 0.3191954710617667), ('Eastern Europe', 0.10696600912194591), ('Asia (Sans Japan)', 0.14940816617982913), ('Middle East and Africa', 0.05052731382746539), ('Latin America', 0.028682249324419262), ('China', 0.27338382605688477), ('India', 0.06226876414656746), ('EU', 0.08601359398921465), ('USA', 0.12076301805261236)], 
       pds_adoption_final_percentage=[('World', 1.0), ('OECD90', 1.0), ('Eastern Europe', 1.0), ('Asia (Sans Japan)', 1.0), ('Middle East and Africa', 1.0), ('Latin America', 1.0), ('China', 1.0), ('India', 1.0), ('EU', 1.0), ('USA', 1.0)], 
 
       # financial
@@ -177,8 +181,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -191,16 +193,13 @@ class ResidentialLEDLighting:
     "operating cost": "US$B",
   }
 
-
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS1-90p2050-linear (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -220,68 +219,32 @@ class ResidentialLEDLighting:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-          'Calculations on the basis of floor space (m2, Urge-Vorsats et al. 2013 data), average illuminance (lm/m2) and annual operating time (constant 1000 h/a)': thisdir.joinpath('tam_Calculations_on_the_basis_of_floor_space_m2_UrgeVorsats_et_al__98738cf3.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
-      },
-      'Region: OECD90': {
-        'Baseline Cases': {
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
-        },
-      },
-      'Region: Eastern Europe': {
-        'Baseline Cases': {
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
-        },
-      },
-      'Region: Asia (Sans Japan)': {
-        'Baseline Cases': {
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
-        },
-      },
-      'Region: Middle East and Africa': {
-        'Baseline Cases': {
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
-        },
-      },
-      'Region: Latin America': {
-        'Baseline Cases': {
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
-        },
+          'Calculations, see sheet "IEA 2006 TAM" for details': THISDIR.joinpath('tam', 'tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
+          'Calculations on the basis of floor space (m2, Urge-Vorsats et al. 2013 data), average illuminance (lm/m2) and annual operating time (constant 1000 h/a)': THISDIR.joinpath('tam', 'tam_Calculations_on_the_basis_of_floor_space_m2_UrgeVorsats_et_al__2013_data_average_illumin_66d3beb0.csv'),
+          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
       },
       'Region: China': {
         'Baseline Cases': {
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-          'Calculations on the basis of floor space (m2, Hong et al. 2014 data), average illuminance (lm/m2) and annual operating time (constant 1000 h/a)': thisdir.joinpath('tam_Calculations_on_the_basis_of_floor_space_m2_Hong_et_al__2014_da4b48c2ca.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
-        },
-      },
-      'Region: India': {
-        'Baseline Cases': {
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
+          'Calculations, see sheet "IEA 2006 TAM" for details': THISDIR.joinpath('tam', 'tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
+          'Calculations on the basis of floor space (m2, Hong et al. 2014 data), average illuminance (lm/m2) and annual operating time (constant 1000 h/a)': THISDIR.joinpath('tam', 'tam_Calculations_on_the_basis_of_floor_space_m2_Hong_et_al__2014_data_average_illuminance_lm_d069a17b.csv'),
+          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
         },
       },
       'Region: EU': {
         'Baseline Cases': {
-          'VITO 2015 Task 7, corrected': thisdir.joinpath('tam_VITO_2015_Task_7_corrected.csv'),
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
+          'VITO 2015 Task 7, corrected': THISDIR.joinpath('tam', 'tam_VITO_2015_Task_7_corrected.csv'),
+          'Calculations, see sheet "IEA 2006 TAM" for details': THISDIR.joinpath('tam', 'tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
+          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
         },
       },
       'Region: USA': {
         'Baseline Cases': {
-          'Navigant Consulting 2010 http://apps1.eere.energy.gov/buildings/publications/pdfs/ssl/ssl_energy-savings-report_10-30.pdf, growth rate 1.31% in http://apps1.eere.energy.gov/buildings/publications/pdfs/ssl/energysavingsforecast14.pdf': thisdir.joinpath('tam_Navigant_Consulting_2010_httpapps1_eere_energy_govbuildingspuble1ec448a.csv'),
-          'US DOE 2014 Energy saving forecast (total Tlmh lighting in Figure 3.2) & US DOE 2012 (2010 US Lighting Market) for 8% residential lighting, assumed to be constant': thisdir.joinpath('tam_US_DOE_2014_Energy_saving_forecast_total_Tlmh_lighting_in_Figur61f74442.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': thisdir.joinpath('tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_204510d02.csv'),
+          'Navigant Consulting 2010 http://apps1.eere.energy.gov/buildings/publications/pdfs/ssl/ssl_energy-savings-report_10-30.pdf, growth rate 1.31% in http://apps1.eere.energy.gov/buildings/publications/pdfs/ssl/energysavingsforecast14.pdf': THISDIR.joinpath('tam', 'tam_Navigant_Consulting_2010_httpapps1_eere_energy_govbuildingspublicationspdfssslssl_energy_95d1ca30.csv'),
+          'US DOE 2014 Energy saving forecast (total Tlmh lighting in Figure 3.2) & US DOE 2012 (2010 US Lighting Market) for 8% residential lighting, assumed to be constant': THISDIR.joinpath('tam', 'tam_US_DOE_2014_Energy_saving_forecast_total_Tlmh_lighting_in_Figure_3_2_US_DOE_2012_2010_US_0abbe87d.csv'),
+          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
         },
         'Conservative Cases': {
-          'Calculations, see sheet "IEA 2006 TAM" for details': thisdir.joinpath('tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
+          'Calculations, see sheet "IEA 2006 TAM" for details': THISDIR.joinpath('tam', 'tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
         },
       },
     }
@@ -304,7 +267,10 @@ class ResidentialLEDLighting:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
     }
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        adconfig=adconfig)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -317,7 +283,7 @@ class ResidentialLEDLighting:
     elif self.ac.soln_pds_adoption_basis == 'Linear':
       pds_adoption_data_per_region = None
       pds_adoption_trend_per_region = None
-      pds_adoption_is_single_source = False
+      pds_adoption_is_single_source = None
 
     ht_ref_adoption_initial = pd.Series(
       [0.6794492428871898, 0.3191954710617667, 0.10696600912194591, 0.14940816617982913, 0.05052731382746539,
@@ -335,15 +301,15 @@ class ResidentialLEDLighting:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -378,6 +344,7 @@ class ResidentialLEDLighting:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -396,6 +363,4 @@ class ResidentialLEDLighting:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 

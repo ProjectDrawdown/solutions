@@ -1,0 +1,11 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+World Bank (2011),"http://cleancookstoves.org/resources_files/household-cookstoves.pdf
+",World,Developing countries,,2 - Public Sector/ Multilateral Agency,2011,,,Metric tons of solid fuel/year/stove (metric tons per 56.9 MBTUs),0.0,TJ/ TWh thermal,0.11569808637111653,Firewood,
+WHO-Household use of solid fuels (2010) - wood,http://www.who.int/indoorair/guidelines/hhfc/IARC_monographs_Vol.95.pdf,World,,,2 - Public Sector/ Multilateral Agency,2010,,,kg fuelwood /5 GJ cooking,0.0,TJ/ TWh thermal,0.11569808637111653,Firewood,
+WHO-Household use of solid fuels (2010) - kerosene,http://www.who.int/indoorair/guidelines/hhfc/IARC_monographs_Vol.95.pdf,World,,,2 - Public Sector/ Multilateral Agency,2011,,,kg kerosene/ 5 GJ cooking energy,0.0,TJ/ TWh thermal,0.033359903256370615,Kerosene,
+WHO-Household use of solid fuels (2010) - charcoal,http://www.who.int/indoorair/guidelines/hhfc/IARC_monographs_Vol.95.pdf,World,,,2 - Public Sector/ Multilateral Agency,2012,,,kg charcoal/ 5 GJ cooking energy,0.0,TJ/ TWh thermal,0.2219271503017005,Coal,
+WHO-Household use of solid fuels (2010) - crop residue,http://www.who.int/indoorair/guidelines/hhfc/IARC_monographs_Vol.95.pdf,World,,,2 - Public Sector/ Multilateral Agency,2013,,,kg crop residue/ 5 GJ cooking energy,0.0,TJ/ TWh thermal,0.11569808637111653,Firewood,
+"Development and dissemination of Clean cookstoves: a Model Law for Developed Countries
+
+",http://www.colorado.edu/law/sites/default/files/Developed%20Country%20Model%20Laws_6713.pdf,World,,,,,,,Metric tons of solid fuel/year/stove ,0.0,TJ/ TWh thermal,0.11569808637111653,Firewood,
+Miah at al (2009),http://www.sciencedirect.com/science/article/pii/S0961953408001025,Asia (Sans Japan),Bangladesh,,1  - Peer Reviewed,2009,,,ton fuel wood/household/year,0.0,TJ/ TWh thermal,0.11569808637111653,Firewood,

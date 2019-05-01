@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -53,6 +58,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 29.609913664850783), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -87,8 +93,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=2326086.9565217393, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2/3-100p2050-Combined Banks (Book Ed.1)': advanced_controls.AdvancedControls(
       # Taking the estimated "banks" of refrigerants globally in existence decadally
@@ -117,6 +121,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 29.609913664850783), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -151,8 +156,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=2326086.9565217393, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -165,16 +168,13 @@ class RefrigerantManagement:
     "operating cost": "US$B",
   }
 
-
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS1-93p2050-Individual Banks (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -194,13 +194,13 @@ class RefrigerantManagement:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Drawdown Calculations - High Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': thisdir.joinpath('tam_Drawdown_Calculations_High_Projection_based_on_Data_from_Gschrey.csv'),
+          'Drawdown Calculations - High Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_High_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Pro_3a9477d3.csv'),
       },
       'Conservative Cases': {
-          'Drawdown Calculations - Medium Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': thisdir.joinpath('tam_Drawdown_Calculations_Medium_Projection_based_on_Data_from_Gschr.csv'),
+          'Drawdown Calculations - Medium Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_Medium_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__P_557e4efd.csv'),
       },
       'Ambitious Cases': {
-          'Drawdown Calculations - Low Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': thisdir.joinpath('tam_Drawdown_Calculations_Low_Projection_based_on_Data_from_Gschrey_.csv'),
+          'Drawdown Calculations - Low Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_Low_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Proj_5ee67131.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -222,22 +222,28 @@ class RefrigerantManagement:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
     }
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        adconfig=adconfig)
 
+    # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'PDS1 - Projected Based on Published and Estimated Rates of Refrigerant Recovery and Destruction (With HFC Sectors Summed)', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS1_Projected_based_on_Published_and_Estimated_Rates_of_Refrige.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Projected_based_on_Published_and_Estimated_Rates_of_Refrigerant_Recovery_and_Destru_80b1ed21.csv')},
       {'name': 'PDS2 - Projected Based on Published and Estimated Rates of Refrigerant Recovery and Destruction (With Averages for HFC Banks used)', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS2_Projected_based_on_Published_and_Estimated_Rates_of_Refrige.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Projected_based_on_Published_and_Estimated_Rates_of_Refrigerant_Recovery_and_Destru_ee48c99e.csv')},
       {'name': 'PDS3 - Same as PDS2 (Maximum Adoption Obtained)', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS3_Same_as_PDS2_Maximum_Adoption_Obtained.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Same_as_PDS2_Maximum_Adoption_Obtained.csv')},
       {'name': 'Drawdown Book Edition 1 Scenario 1', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv')},
       {'name': 'Drawdown Book Edition 1 Scenario 2 and Scenario 3', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_Scenario_2_and_Scenario_3.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_2_and_Scenario_3.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
+        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -246,7 +252,7 @@ class RefrigerantManagement:
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
       pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-      pds_adoption_is_single_source = True
+      pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
@@ -268,15 +274,15 @@ class RefrigerantManagement:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -311,6 +317,7 @@ class RefrigerantManagement:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -329,6 +336,4 @@ class RefrigerantManagement:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 

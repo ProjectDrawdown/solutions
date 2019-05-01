@@ -1,0 +1,33 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,64646599722.55068,74659570334.3678,54633629110.73356
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,True,27301.838757440706,34446.2976378079,20157.379877073516
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,True,32952.42190413766,40895.10088673392,25009.742921541394
+4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,True,False,312461.1068981493,390197.2103653039,234725.00343099466
+5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,False,312461.10689814953,312461.10689814953,312461.10689814953
+6,Average_Annual_Use_CONVENTIONAL,Average Annual Use - CONVENTIONAL,True,False,24807.10964561463,24807.10964561463,24807.10964561463
+7,Average_Annual_Use_SOLUTION,Average Annual Use - SOLUTION,True,False,24807.10964561465,24807.10964561465,24807.10964561465
+8,CONVENTIONAL_VARIABLE_Operating_Cost_per_Functional_Unit,CONVENTIONAL VARIABLE Operating Cost per Functional Unit,True,False,0.011798301217552484,0.016441231532959562,0.007155370902145404
+9,SOLUTION_VARIABLE_Operating_Cost_per_Functional_Unit,SOLUTION VARIABLE Operating Cost per Functional Unit ,True,False,0.00700545722102493,0.009794792407209041,0.004216122034840819
+10,CONVENTIONAL_FIXED_Operating_Cost_per_Implementation_Unit,CONVENTIONAL FIXED Operating Cost per Implementation Unit,True,False,9794.335088291715,14350.943144486899,5237.727032096531
+11,SOLUTION_FIXED_Operating_Cost_per_Implementation_Unit,SOLUTION FIXED Operating Cost per Implementation Unit ,True,False,9794.335088291715,14350.943144486899,5237.727032096531
+12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+13,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+14,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,False,False,,,
+15,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,True,False,0.052941803480931623,0.0633205904462522,0.04256301651561105
+16,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,True,False,0.3683548938375828,0.4282278369760641,0.3084819506991015
+17,Direct_Emissions_per_CONVENTIONAL_Functional_Unit,Direct Emissions per CONVENTIONAL Functional Unit,False,False,,,
+18,Direct_Emissions_per_SOLUTION_Functional_Unit,Direct Emissions per SOLUTION Functional Unit,False,False,,,
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE_on_Advanced_Controls,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls,True,False,9.651605026524015,15.45198044998235,3.8512296030656783
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls),True,False,10.011136535413234,14.251816769410006,5.770456301416464
+21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
+22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
+23,Urban_Travel_TAM_Current,Urban Travel TAM - Current,True,False,27295.73066666667,28930.70485171493,25660.75648161841
+24,Urban_Travel_TAM_Projected,Urban Travel TAM - Projected,True,False,52910.92242178973,60843.40271941565,44978.442124163805
+25,Interurban_Travel_TAM_Current,Interurban Travel TAM - Current,True,False,26233.703999999998,26665.487999999998,25801.92
+26,Interurban_Travel_TAM_Projected,Interurban Travel TAM - Projected,True,False,49964.62353180468,57294.52673429901,42634.72032931035
+27,Average_Global_Car_Occupancy_Conventional,Average Global Car Occupancy - Conventional,True,False,1.5735559559539887,1.5735559559539887,1.5735559559539887
+28,Discount_Rate_Households,Discount Rate: Households,True,False,0.04,0.04999999999999999,0.030000000000000013
+29,Learning_Rate,Learning Rate,True,False,0.07,0.07,0.07
+30,Average_Global_Car_Occupancy_Solution,Average Global Car Occupancy - Solution,True,False,1.5735559559539887,1.5735559559539887,1.5735559559539887
+31,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
+32,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,

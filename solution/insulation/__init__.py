@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -45,6 +50,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 35739.1097265955), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -79,8 +85,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-100p2050-Medium Growth, Medium (Book Ed.1)': advanced_controls.AdvancedControls(
       # This scenario envisions a medium adoption of medium insulation. We use a 3.5%
@@ -100,6 +104,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 35739.1097265955), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -134,8 +139,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-100p2050-High Growth, Lower (Book Ed.1)': advanced_controls.AdvancedControls(
       # This scenario envisions a relatively aggressive adoption of slightly lower
@@ -155,6 +158,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='ALL SOURCES', 
+      pds_base_adoption=[('World', 35739.1097265955), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -189,8 +193,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -204,14 +206,12 @@ class Insulation:
   }
 
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS1-69p2050-Slow Growth, Medium (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -231,7 +231,7 @@ class Insulation:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Project Drawdown Analysis of Several Sources.Click to see source.': thisdir.joinpath('tam_Project_Drawdown_Analysis_of_Several_Sources_Click_to_see_source.csv'),
+          'Project Drawdown Analysis of Several Sources.Click to see source.': THISDIR.joinpath('tam', 'tam_Project_Drawdown_Analysis_of_Several_Sources_Click_to_see_source_.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -239,31 +239,38 @@ class Insulation:
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 
+    # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'Halfway to Passive House', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Halfway_to_Passive_House.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Halfway_to_Passive_House.csv')},
       {'name': 'Almost Passive House', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Almost_Passive_House.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Almost_Passive_House.csv')},
       {'name': 'Passive House', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Passive_House.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Passive_House.csv')},
       {'name': 'Drawdown Book Edition 1 PDS 1 Scenario', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_PDS_1_Scenario.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_PDS_1_Scenario.csv')},
       {'name': 'Drawdown Book Edition 1 PDS 2 Scenario', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_PDS_2_Scenario.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_PDS_2_Scenario.csv')},
       {'name': 'Drawdown Book Edition 1 PDS 3 Scenario', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_PDS_3_Scenario.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_PDS_3_Scenario.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
+        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
 
+    # Custom REF Data
     ca_ref_data_sources = [
       {'name': 'Frozen Efficiency - Natural Rate of Insulation (1.4%)', 'include': False,
-          'filename': str(thisdir.joinpath('custom_ref_ad_Frozen_Efficiency_Natural_Rate_of_Insulation_1_4.csv'))},
+          'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Frozen_Efficiency_Natural_Rate_of_Insulation_1_4.csv')},
       {'name': 'Drawdown Book Edition 1 REF Scenario', 'include': False,
-          'filename': str(thisdir.joinpath('custom_ref_ad_Drawdown_Book_Edition_1_REF_Scenario.csv'))},
+          'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Drawdown_Book_Edition_1_REF_Scenario.csv')},
     ]
     self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-        soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name)
+        soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=ref_tam_per_region)
+
     ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
     if False:
@@ -273,7 +280,7 @@ class Insulation:
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
       pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-      pds_adoption_is_single_source = True
+      pds_adoption_is_single_source = None
 
     ht_ref_adoption_initial = pd.Series(
       [35739.10972659552, 0.0, 0.0, 0.0, 0.0,
@@ -291,16 +298,16 @@ class Insulation:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_data_per_region=ref_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        ref_adoption_data_per_region=ref_adoption_data_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -335,6 +342,7 @@ class Insulation:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -353,6 +361,4 @@ class Insulation:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 

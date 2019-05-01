@@ -1,0 +1,27 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,15670.037319988645,15670.037319988645,15670.037319988645
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,False,7.0,7.0,7.0
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,11520609.511049619,11520609.511049619,11520609.511049619
+4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,True,False,34.62518245159868,34.62518245159868,34.62518245159868
+5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,False,34.62518245159868,34.62518245159868,34.62518245159868
+6,Average_Annual_Use_CONVENTIONAL,Average Annual Use - CONVENTIONAL,True,False,1.3850072980639474,1.3850072980639474,1.3850072980639474
+7,Average_Annual_Use_SOLUTION,Average Annual Use - SOLUTION,True,False,1.3850072980639474,1.3850072980639474,1.3850072980639474
+8,CONVENTIONAL_VARIABLE_Operating_Cost_per_Functional_Unit,CONVENTIONAL VARIABLE Operating Cost per Functional Unit,False,False,,,
+9,SOLUTION_VARIABLE_Operating_Cost_per_Functional_Unit,SOLUTION VARIABLE Operating Cost per Functional Unit ,True,False,126122.92933096059,126122.92933096059,126122.92933096059
+10,CONVENTIONAL_FIXED_Operating_Cost_per_Implementation_Unit,CONVENTIONAL FIXED Operating Cost per Implementation Unit,False,False,,,
+11,SOLUTION_FIXED_Operating_Cost_per_Implementation_Unit,SOLUTION FIXED Operating Cost per Implementation Unit ,False,False,,,
+12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+13,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+14,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,False,False,,,
+15,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,True,False,3663130.5135886758,3663130.5135886758,3663130.5135886758
+16,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,True,False,0.5010773206596144,0.5010773206596144,0.5010773206596144
+17,Direct_Emissions_per_CONVENTIONAL_Functional_Unit,Direct Emissions per CONVENTIONAL Functional Unit,False,False,,,
+18,Direct_Emissions_per_SOLUTION_Functional_Unit,Direct Emissions per SOLUTION Functional Unit,False,False,,,
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE_on_Advanced_Controls,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls,False,False,,,
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls),False,False,,,
+21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
+22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
+23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
+24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
+25,Discount_Rate_Commercial_Industry,Discount Rate: Commercial / Industry,True,False,0.09219999999999999,0.1231735370921695,0.06122646290783049
+26,Learning_Rate,Learning Rate,True,False,0.1,0.1,0.1

@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -47,6 +52,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 614.0), ('OECD90', 202.18263170296004), ('Eastern Europe', 2.738), ('Asia (Sans Japan)', 409.376), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 386.3), ('India', 0.0), ('EU', 107.5006306909091), ('USA', 0.7167517029599999)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -81,8 +87,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-4p2050-Announced Constr+2.5% Traffic Density Inc (Book Ed.1)': advanced_controls.AdvancedControls(
       # Taking the announcements of HSR track projects, and estimated completion date,
@@ -104,6 +108,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 614.0), ('OECD90', 202.18263170296004), ('Eastern Europe', 2.738), ('Asia (Sans Japan)', 409.376), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 386.3), ('India', 0.0), ('EU', 107.5006306909091), ('USA', 0.7167517029599999)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -138,8 +143,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-5p2050-Japanese Travel Density (Book Ed.1)': advanced_controls.AdvancedControls(
       # Taking the announcements of HSR track projects, and estimated completion date,
@@ -160,6 +163,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 614.0), ('OECD90', 202.18263170296004), ('Eastern Europe', 2.738), ('Asia (Sans Japan)', 409.376), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 386.3), ('India', 0.0), ('EU', 107.5006306909091), ('USA', 0.7167517029599999)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -194,8 +198,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -208,16 +210,13 @@ class HighSpeedRail:
     "operating cost": "US$B",
   }
 
-
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS1-4p2050-Announced Constr+1%Traffic Density (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -237,11 +236,11 @@ class HighSpeedRail:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'IEA (2016), "Energy Technology Perspectives - 6DS", IEA/OECD': thisdir.joinpath('tam_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD.csv'),
-          'ICCT (2012) "Global Transport Roadmap Model", http://www.theicct.org/global-transportation-roadmap-model': thisdir.joinpath('tam_ICCT_2012_Global_Transport_Roadmap_Model_httpwww_theicct_orgglob.csv'),
+          'IEA (2016), "Energy Technology Perspectives - 6DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD.csv'),
+          'ICCT (2012) "Global Transport Roadmap Model", http://www.theicct.org/global-transportation-roadmap-model': THISDIR.joinpath('tam', 'tam_ICCT_2012_Global_Transport_Roadmap_Model_httpwww_theicct_orgglobaltransportationroadmapmodel.csv'),
       },
       'Conservative Cases': {
-          'IEA (2016), "Energy Technology Perspectives - 4DS", IEA/OECD': thisdir.joinpath('tam_IEA_2016_Energy_Technology_Perspectives_4DS_IEAOECD.csv'),
+          'IEA (2016), "Energy Technology Perspectives - 4DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_IEA_2016_Energy_Technology_Perspectives_4DS_IEAOECD.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -263,18 +262,24 @@ class HighSpeedRail:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
     }
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        adconfig=adconfig)
 
+    # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'PDS1 - Projecting HSR Travel based on announced Track building plans', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS1_Projecting_HSR_Travel_based_on_announced_Track_building_pla.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Projecting_HSR_Travel_based_on_announced_Track_building_plans.csv')},
       {'name': 'PDS2 - Projecting HSR Travel based on announced Track building plans', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS2_Projecting_HSR_Travel_based_on_announced_Track_building_pla.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Projecting_HSR_Travel_based_on_announced_Track_building_plans.csv')},
       {'name': 'PDS3 - Projecting HSR Travel based on announced Track building plans', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS3_Projecting_HSR_Travel_based_on_announced_Track_building_pla.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Projecting_HSR_Travel_based_on_announced_Track_building_plans.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
+        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -283,7 +288,7 @@ class HighSpeedRail:
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
       pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-      pds_adoption_is_single_source = True
+      pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
@@ -305,15 +310,15 @@ class HighSpeedRail:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -348,6 +353,7 @@ class HighSpeedRail:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -366,6 +372,4 @@ class HighSpeedRail:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 

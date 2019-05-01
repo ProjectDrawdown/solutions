@@ -1,0 +1,8 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+IPCC WG3 AR5 (Table A.III.1) Median,https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_full.pdf,World,,,1  - Peer Reviewed,2014,,,2010USD/kWh,0.01744,US$2014/kWh,,,True
+IPCC WG3 AR5 (Table A.III.1) Maximum,https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_full.pdf,World,,,1  - Peer Reviewed,2014,,,2010USD/kWh,0.06867000000000001,US$2014/kWh,,,
+IPCC WG3 AR5 (Table A.III.1) Minimum,https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_full.pdf,World,,,1  - Peer Reviewed,2014,,,2010USD/kWh,0.0,US$2014/kWh,,,
+IRENA (2012) minimum,https://www.irena.org/publications/2013/Jan/Renewable-Power-Generation-Costs-in-2012-An-Overview,World,,,2  - Peer Reviewed,2012,,,2011USD/kWh,0.02835,US$2014/kWh,,,
+IRENA (2012) maximum,https://www.irena.org/publications/2013/Jan/Renewable-Power-Generation-Costs-in-2012-An-Overview,World,,,3  - Peer Reviewed,2012,,,2011USD/kWh,0.0567,US$2014/kWh,,,
+"Ram, M., Bogdanov, D., Aghahosseini, A., Gulagi, A., Oyewo, A. S., Child, M., … Breyer, C. (2018). Global Energy System based on 100% Renewable Energy-Energy Transition in Europe Across Power, Heat, Transport and Desalination Sectors. Retrieved from http://energywatchgroup.org/new-study-100-renewable-energy-across-europe,   pg37
+",http://energywatchgroup.org/wp-content/uploads/2018/12/EWG-LUT_Full-Study_Energy-Transition-Europe.pdf,EU,,,1  - Peer Reviewed,2015,,,2015 EUR/kWh,0.0,US$2014/kWh,,,

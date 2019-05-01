@@ -1,0 +1,32 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,1.60520492362198,3.315811220688096,-0.1054013734441357
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,False,295187860.62091506,649955828.3813355,41176470.5882353
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,850715054.5454545,1475798389.3668225,225631719.72408652
+4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,True,False,88.0,88.0,88.0
+5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,False,88.0,88.0,88.0
+6,Average_Annual_Use_CONVENTIONAL,Average Annual Use - CONVENTIONAL,False,False,,,
+7,Average_Annual_Use_SOLUTION,Average Annual Use - SOLUTION,False,False,,,
+8,CONVENTIONAL_VARIABLE_Operating_Cost_per_Functional_Unit,CONVENTIONAL VARIABLE Operating Cost per Functional Unit,False,False,,,
+9,SOLUTION_VARIABLE_Operating_Cost_per_Functional_Unit,SOLUTION VARIABLE Operating Cost per Functional Unit ,False,False,,,
+10,CONVENTIONAL_FIXED_Operating_Cost_per_Implementation_Unit,CONVENTIONAL FIXED Operating Cost per Implementation Unit,False,False,,,
+11,SOLUTION_FIXED_Operating_Cost_per_Implementation_Unit,SOLUTION FIXED Operating Cost per Implementation Unit ,False,False,,,
+12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+13,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+14,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,False,False,,,
+15,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+16,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,False,False,,,
+17,Direct_Emissions_per_CONVENTIONAL_Functional_Unit,Direct Emissions per CONVENTIONAL Functional Unit,False,False,,,
+18,Direct_Emissions_per_SOLUTION_Functional_Unit,Direct Emissions per SOLUTION Functional Unit,False,False,,,
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE_on_Advanced_Controls,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls,False,False,,,
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls),False,False,,,
+21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
+22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
+23,Commercial_Window_to_Floor_Area_Ratio,Commercial Window to Floor Area Ratio,True,False,0.155,0.20623475382979797,0.10376524617020202
+24,Energy_Efficiency_of_Cooling_with_Smart_Glass,Energy Efficiency of Cooling with Smart Glass,True,False,0.22666666666666668,0.3323653999713862,0.12096793336194717
+25,Energy_Efficiency_of_Lighting_with_Smart_Glass,Energy Efficiency of Lighting with Smart Glass,True,False,0.3514285714285714,0.5493050532065137,0.1535520896506292
+26,Average_Energy_for_Commercial_Cooling_per_Floor_Area,Average Energy for Commercial Cooling per Floor Area,True,False,0.02435528604600556,0.025833359999999996,0.022877212092011125
+27,Average_Energy_for_Commercial_Lighting_per_Floor_Area,Average Energy for Commercial Lighting per Floor Area,True,False,0.051082951120197055,0.07319451999999999,0.028971382240394132
+28,Learning_Rate_for_Similar_Technology_A_C_units,Learning Rate for Similar Technology (A/C units),True,False,0.13,0.17966554808583785,0.08033445191416218
+29,Discount_Rate_Commercial,Discount Rate - Commercial,True,False,0.09219999999999999,0.1231735370921695,0.06122646290783049
+30,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
+31,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,

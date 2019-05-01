@@ -1,0 +1,5 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Calculations in Lighting model, LFL",,,,,,2014,,,hours,,hours,0.75,,
+"Calculations in Lighting model, CFL",,,,,,2014,,,hours,,hours,0.1,,
+"Calculations in Lighting model, INC&HAL",,,,,,2014,,,hours,,hours,0.02,,
+"Calculations in Lighting model, HID",,,,,,2014,,,hours,,hours,0.1,,

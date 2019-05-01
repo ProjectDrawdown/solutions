@@ -1,0 +1,6 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"IPCC WG3 AR5, min  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,,1  - Peer Reviewed,2014,,,%,,%,,,
+"IPCC WG3 AR5, median  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,,1  - Peer Reviewed,2014,,,%,,%,,,True
+"IPCC WG3 AR5, max  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,,1  - Peer Reviewed,2014,,,%,,%,,,
+"IEA 2010, Power Generation from Coal (p. 61), lower heating value (LHV)",https://www.iea.org/ciab/papers/power_generation_from_coal.pdf,World,,,2 - Public Sector/ Multilateral Agency,2010,,,%,,%,,,
+"US EIA, Average 2004-2014",http://www.eia.gov/electricity/annual/html/epa_08_01.html,USA,,,2 - Public Sector/ Multilateral Agency,2015,,,BTU/kWh,7.0,%,,,

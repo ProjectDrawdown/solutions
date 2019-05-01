@@ -26,7 +26,7 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {}
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -47,6 +47,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown Integrated TAM - PDS1', 
+      pds_base_adoption=[('World', 1.99921610218339), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -81,8 +82,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-13p2050-Drawdown Scen. (Book Ed.1)': advanced_controls.AdvancedControls(
       # Drawdown Scenario. Average adoption of all Custom scenarios.
@@ -98,6 +97,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown Integrated TAM - PDS2', 
+      pds_base_adoption=[('World', 1.99921610218339), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -132,8 +132,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-14p2050-Optimum (Book Ed.1)': advanced_controls.AdvancedControls(
       # Optimum Scenario. High of all custom scenarios
@@ -149,6 +147,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown Integrated TAM - PDS3', 
+      pds_base_adoption=[('World', 1.99921610218339), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -183,8 +182,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -223,22 +220,22 @@ class DistrictHeating:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
+          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_6DS.csv'),
       },
       'Conservative Cases': {
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
+          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_4DS.csv'),
       },
       'Ambitious Cases': {
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
+          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_2DS.csv'),
       },
     }
     tam_pds_data_sources = {
       'Ambitious Cases': {
-          'Drawdown TAM: Drawdown Integrated TAM - PDS1': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS1.csv'),
-          'Drawdown TAM: Drawdown Integrated TAM - PDS2': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS2.csv'),
+          'Drawdown TAM: Drawdown Integrated TAM - PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS1.csv'),
+          'Drawdown TAM: Drawdown Integrated TAM - PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS2.csv'),
       },
       'Maximum Cases': {
-          'Drawdown TAM: Drawdown Integrated TAM - PDS3': THISDIR.joinpath('tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS3.csv'),
+          'Drawdown TAM: Drawdown Integrated TAM - PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS3.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -267,14 +264,17 @@ class DistrictHeating:
     ca_pds_data_sources = [
       {'name': 'Trajectory Adapted from REF Scenario Greenpeace (2015)', 'include': True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Trajectory_Adapted_from_REF_Scenario_Greenpeace_2015.csv')},
-      {'name': 'Trajectory Adapted from Energy Revolution Scenario Greenpeace (2015)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Trajectory_Adapted_from_Energy_Revolution_Scenario_Greenpeace_27d562962.csv')},
-      {'name': 'Trajectory Adapted from Advanced Energy Revolution Scenario Greenpeace (2015)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Trajectory_Adapted_from_Advanced_Energy_Revolution_Scenario_Gre52328a9d.csv')},
+      {'name': 'Based on: Greenpeace 2015 Energy Revolution', 'include': True,
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_based_on_Greenpeace_2015_Energy_Revolution.csv')},
+      {'name': 'Based on: Greenpeace 2015 Advanced Revolution', 'include': True,
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_based_on_Greenpeace_2015_Advanced_Revolution.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -305,11 +305,11 @@ class DistrictHeating:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

@@ -26,6 +26,8 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
@@ -52,6 +54,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 561.0), ('OECD90', 35.63818652262168), ('Eastern Europe', 1.9927024684919843), ('Asia (Sans Japan)', 441.0159122922099), ('Middle East and Africa', 1.248023339153054), ('Latin America', 3.6014881104912106), ('China', 277.7410283849392), ('India', 5.674389798859366), ('EU', 28.00294411913302), ('USA', 7.901342605929202)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -86,8 +89,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-5p2050_Based on ITDP/UCD (Book Ed.1)': advanced_controls.AdvancedControls(
       # ITDP and UCDavis published their Global High Shift (and then High Shift Cycling)
@@ -109,6 +110,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 561.0), ('OECD90', 35.63818652262168), ('Eastern Europe', 1.9927024684919843), ('Asia (Sans Japan)', 441.0159122922099), ('Middle East and Africa', 1.248023339153054), ('Latin America', 3.6014881104912106), ('China', 277.7410283849392), ('India', 5.674389798859366), ('EU', 28.00294411913302), ('USA', 7.901342605929202)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -143,8 +145,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-6p2050_Growth to 6.5% (Book Ed.1)': advanced_controls.AdvancedControls(
       # We assume that adoption growth to 6.5% linearly by 2050, and also that all users
@@ -163,6 +163,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 561.0), ('OECD90', 35.63818652262168), ('Eastern Europe', 1.9927024684919843), ('Asia (Sans Japan)', 441.0159122922099), ('Middle East and Africa', 1.248023339153054), ('Latin America', 3.6014881104912106), ('China', 277.7410283849392), ('India', 5.674389798859366), ('EU', 28.00294411913302), ('USA', 7.901342605929202)], 
       pds_adoption_final_percentage=[('World', 0.065), ('OECD90', 0.065), ('Eastern Europe', 0.065), ('Asia (Sans Japan)', 0.065), ('Middle East and Africa', 0.065), ('Latin America', 0.065), ('China', 0.065), ('India', 0.065), ('EU', 0.065), ('USA', 0.065)], 
 
       # financial
@@ -197,8 +198,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -237,87 +236,87 @@ class ElectricBicycles:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
-          'ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travd9c4b8f9.csv'),
+          'ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
+          'ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv'),
       },
       'Conservative Cases': {
-          'ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
-          'ITDP/UC Davis 2014 Global High Shift Baseline': THISDIR.joinpath('tam_ITDPUC_Davis_2014_Global_High_Shift_Baseline.csv'),
+          'ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
+          'ITDP/UC Davis 2014 Global High Shift Baseline': THISDIR.joinpath('tam', 'tam_ITDPUC_Davis_2014_Global_High_Shift_Baseline.csv'),
       },
       'Ambitious Cases': {
-          'ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
-          'ITDP/UC Davis 2014 Global High Shift HighShift': THISDIR.joinpath('tam_ITDPUC_Davis_2014_Global_High_Shift_HighShift.csv'),
+          'ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
+          'ITDP/UC Davis 2014 Global High Shift HighShift': THISDIR.joinpath('tam', 'tam_ITDPUC_Davis_2014_Global_High_Shift_HighShift.csv'),
       },
       'Region: OECD90': {
         'Baseline Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baselinc9982a01.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
         },
         'Ambitious Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_sh9baf7ca0.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
         },
       },
       'Region: Eastern Europe': {
         'Baseline Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baselinc9982a01.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
         },
         'Ambitious Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_sh9baf7ca0.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
         },
       },
       'Region: Asia (Sans Japan)': {
         'Baseline Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baselinc9982a01.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
         },
         'Ambitious Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_sh9baf7ca0.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
         },
       },
       'Region: Middle East and Africa': {
         'Baseline Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baselinc9982a01.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
         },
         'Ambitious Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_sh9baf7ca0.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
         },
       },
       'Region: Latin America': {
         'Baseline Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baselinc9982a01.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
         },
         'Ambitious Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_sh9baf7ca0.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
         },
       },
       'Region: China': {
         'Baseline Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baselinc9982a01.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
         },
         'Ambitious Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_sh9baf7ca0.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
         },
       },
       'Region: India': {
         'Baseline Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baselinc9982a01.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
         },
         'Ambitious Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_sh9baf7ca0.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
         },
       },
       'Region: EU': {
         'Baseline Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baselinc9982a01.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
         },
         'Ambitious Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_sh9baf7ca0.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
         },
       },
       'Region: USA': {
         'Baseline Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baselinc9982a01.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
         },
         'Ambitious Cases': {
-          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_sh9baf7ca0.csv'),
+          'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
         },
       },
     }
@@ -335,7 +334,8 @@ class ElectricBicycles:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
 
     # Custom REF Data
     ca_ref_data_sources = [
@@ -344,7 +344,9 @@ class ElectricBicycles:
     ]
     self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
         soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=ref_tam_per_region)
+
     ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
     if False:
@@ -376,12 +378,12 @@ class ElectricBicycles:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        ref_adoption_data_per_region=ref_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        ref_adoption_data_per_region=ref_adoption_data_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

@@ -1,0 +1,34 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,5525.941972233443,10258.585554408313,793.2983900585732
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,False,4.442162256132418,4.442162256132418,4.442162256132418
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,True,6.93288626734667,8.925829268116503,4.939943266576837
+4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,True,False,27.5,30.0,25.0
+5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,False,17.5,23.090169943749473,11.909830056250525
+6,Average_Annual_Use_CONVENTIONAL,Average Annual Use - CONVENTIONAL,True,False,1.0,1.0,1.0
+7,Average_Annual_Use_SOLUTION,Average Annual Use - SOLUTION,True,False,1.0,1.0,1.0
+8,CONVENTIONAL_VARIABLE_Operating_Cost_per_Functional_Unit,CONVENTIONAL VARIABLE Operating Cost per Functional Unit,False,False,,,
+9,SOLUTION_VARIABLE_Operating_Cost_per_Functional_Unit,SOLUTION VARIABLE Operating Cost per Functional Unit ,False,False,,,
+10,CONVENTIONAL_FIXED_Operating_Cost_per_Implementation_Unit,CONVENTIONAL FIXED Operating Cost per Implementation Unit,False,False,,,
+11,SOLUTION_FIXED_Operating_Cost_per_Implementation_Unit,SOLUTION FIXED Operating Cost per Implementation Unit ,False,False,,,
+12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,True,False,0.2026956015586753,0.2026956015586753,0.2026956015586753
+13,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,True,True,0.12260109334620312,0.22059487448615556,0.02460731220625069
+14,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,False,False,,,
+15,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,True,False,241.42579438817637,241.42579438817637,241.42579438817637
+16,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,True,True,0.24086352660799773,0.3306709808332372,0.15105607238275826
+17,Direct_Emissions_per_CONVENTIONAL_Functional_Unit,Direct Emissions per CONVENTIONAL Functional Unit,False,False,,,
+18,Direct_Emissions_per_SOLUTION_Functional_Unit,Direct Emissions per SOLUTION Functional Unit,False,False,,,
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE_on_Advanced_Controls,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls,False,False,,,
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls),False,False,,,
+21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
+22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
+23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,True,False,7.0,7.0,7.0
+24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
+25,Commercial_Building_Energy_Consumption_kWh_m2_yr_Weighted_Average_by_Region,Commercial Building Energy Consumption (kWh/m2/yr) (Weighted Average by Region),True,True,269.861403167409,331.2438059870597,208.47900034775824
+26,Commercial_Building_Energy_Consumption_for_Thermal_Purposes_Heating_and_Cooling_of_total,Commercial Building Energy Consumption for Thermal Purposes (Heating and Cooling) (% of total),True,True,0.25546686396451806,0.41268775089569565,0.09824597703334048
+27,Commercial_Building_Energy_Consumption_for_Non_Thermal_Purposes_all_other_end_uses_of_total,Commercial Building Energy Consumption for Non-Thermal Purposes (all other end-uses) (% of total),True,True,0.7441511586791743,0.901476306364056,0.5868260109942925
+28,Commercial_Building_Electricity_Consumption_for_Space_Heating_of_total,Commercial Building Electricity Consumption for Space Heating (% of total),True,True,0.044179758563447885,0.07951169505392561,0.008847822072970156
+29,Commercial_Building_Electricity_Consumption_for_Cooling_of_total,Commercial Building Electricity Consumption for Cooling (% of total),True,False,1.0,1.0,1.0
+30,Commercial_Building_Fuel_Consumption_for_Space_Heating_of_total_Space_Heating_Cooling,Commercial Building Fuel Consumption for Space Heating (% of total Space Heating/Cooling),True,False,0.9727602538171701,0.9727602538171701,0.9727602538171701
+31,BAS_Efficiency_Factors_for_Non_Thermal_Efficiency_Electricity_End_Uses,BAS Efficiency Factors for Non-Thermal Efficiency (Electricity End-Uses),True,True,0.08200163637051475,0.11828765504706903,0.045715617693960466
+32,BAS_Efficiency_Factors_for_Thermal_Efficiency_Heating_Cooling_End_Uses,BAS Efficiency Factors for Thermal Efficiency (Heating/Cooling End-Uses),True,True,0.24086352660799773,0.3306709808332372,0.15105607238275826
+33,Discount_Rates_Commercial,Discount Rates - Commercial,True,False,0.09219999999999999,0.1231735370921695,0.06122646290783049

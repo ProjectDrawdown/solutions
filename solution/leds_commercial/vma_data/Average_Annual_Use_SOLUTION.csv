@@ -1,0 +1,23 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+EN 15193 standard: offices,,OECD90,Europe,,,2008,,,hours,,Hours,,Estimated on the basis of several sources for lighting in different types of office buildings,
+EN 15193 standard: educational buildings,,OECD90,Europe,,,2008,,,hours,,Hours,,,
+EN 15193 standard: hospitals,,OECD90,Europe,,,2008,,,hours,,Hours,,,
+EN 15193 standard: hotels,,OECD90,Europe,,,2008,,,hours,,Hours,,,
+EN 15193 standard: restaurants,,OECD90,Europe,,,2008,,,hours,,Hours,,,
+EN 15193 standard: sports facilities,,OECD90,Europe,,,2008,,,hours,,Hours,,,
+EN 15193 standard: wholesale and retail,,OECD90,Europe,,,2008,,,hours,,Hours,,,
+"US DOE /Navigantconsulting 2012: 2010 U.S. Lighting Market
+Characterization",,OECD90,USA,,,2010,,,hours,,Hours,,,
+VITO: http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task7%20Final%2020151031.pdf,,OECD90,Europe,,,2015-2030,,,hours,,Hours,,,
+Navigant / US DOE 2015 http://energy.gov/sites/prod/files/2015/07/f24/led-adoption-report_2015.pdf,,OECD90,USA,,,2015,,,hours,,Hours,,,
+Light's Labour's Lost,,OECD90,California,,,2000,,,,,Hours,,,True
+Light's Labour's Lost,,OECD90,Canada,,,2002,,,,,Hours,,,True
+Light's Labour's Lost,,OECD90,Japan,,,2003,,,,,Hours,,,True
+Light's Labour's Lost,,OECD90,Europe,,,1999…2005,,,,,Hours,,,True
+Light's Labour's Lost,,OECD90,JapanKorea,,,2000,,,,,Hours,,,True
+Light's Labour's Lost,,OECD90,Australia/NZ,,,2000,,,,,Hours,,,True
+Light's Labour's Lost,,OECD90,North America,,,2000,,,,,Hours,,,True
+Light's Labour's Lost,,OECD90,OECD Europe,,,2000,,,,,Hours,,,True
+Light's Labour's Lost,,OECD90,OECD,,,2000,,,,,Hours,,,True
+Light's Labour's Lost,,Eastern Europe,Russia,,,2001,,,,,Hours,,,True
+Light's Labour's Lost,,Asia (Sans Japan),China,,,2004,,,,,Hours,,,True

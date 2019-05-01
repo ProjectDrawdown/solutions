@@ -1,0 +1,4 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+PHEVs,,,,,,,,,,,%,,,
+US EIA Alternative Fuels Data Center,http://www.afdc.energy.gov/calc/,OECD90,USA - 2014 Chevrolet Volt Plug-in Hybrid,,2 - Public Sector/ Multilateral Agency,2016,,,Gallons/yr,1.0,%,7,"Car is driven 15765km/ year 40% on HW for source calculation, but scaled according to model input driving distance.",
+US EIA Alternative Fuels Data Center,http://www.afdc.energy.gov/calc/,OECD90,USA - 2014 Toyota Prius Pug-in Hybrid,,2 - Public Sector/ Multilateral Agency,2016,,,Gallons/yr,1.0,%,7,"Car is driven 15765km/ year 40% on HW for source calculation, but scaled according to model input driving distance.",

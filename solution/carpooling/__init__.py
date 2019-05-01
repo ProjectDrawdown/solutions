@@ -26,6 +26,8 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
@@ -47,6 +49,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 167778037799.2084), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -81,8 +84,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-20p2050-(Book Ed.1)': advanced_controls.AdvancedControls(
       # Drawdown Team Calculations (assuming 20% carpooling in 2050) based on:Polzin &
@@ -101,6 +102,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 167778037799.2084), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -135,8 +137,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-90p2050-Linear (Book Ed.1) ': advanced_controls.AdvancedControls(
       # Drawdown Team Assumption of linear growth to 90% of the TAM (which is all annual
@@ -153,6 +153,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 167778037799.2084), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.9), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -187,8 +188,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -227,7 +226,7 @@ class Carpooling:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Drawdown Team Calculations based on: US BLS, StatCan, Data on Driving Distance': THISDIR.joinpath('tam_Drawdown_Team_Calculations_based_on_US_BLS_StatCan_Data_on_Driv6259fe21.csv'),
+          'Drawdown Team Calculations based on: US BLS, StatCan, Data on Driving Distance': THISDIR.joinpath('tam', 'tam_Drawdown_Team_Calculations_based_on_US_BLS_StatCan_Data_on_Driving_Distance.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -249,11 +248,11 @@ class Carpooling:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Conservative Cases': {
-          'PDS1 - Drawdown Team Calculations based on:Polzin & Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from US BLS and StatCan - 15% adoption by Car commuters  in 2050': THISDIR.joinpath('ad_PDS1_Drawdown_Team_Calculations_based_onPolzin_Pisarski_2015_USa109bd8f.csv'),
-          'PDS2 - Drawdown Team Calculations based on:Polzin & Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from US BLS and StatCan - 20% adoption by Car commuters in 2050': THISDIR.joinpath('ad_PDS2_Drawdown_Team_Calculations_based_onPolzin_Pisarski_2015_US6000b3f1.csv'),
+          'PDS1 - Drawdown Team Calculations based on:Polzin & Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from US BLS and StatCan - 15% adoption by Car commuters  in 2050': THISDIR.joinpath('ad', 'ad_PDS1_Drawdown_Team_Calculations_based_onPolzin_Pisarski_2015_US_Census_Bureau_and_Statis_bd22f196.csv'),
+          'PDS2 - Drawdown Team Calculations based on:Polzin & Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from US BLS and StatCan - 20% adoption by Car commuters in 2050': THISDIR.joinpath('ad', 'ad_PDS2_Drawdown_Team_Calculations_based_onPolzin_Pisarski_2015_US_Census_Bureau_and_Statis_fc19b619.csv'),
       },
       'Ambitious Cases': {
-          'PDS Ambitious - Drawdown Team Calculations based on:Polzin & Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from US BLS and StatCan - 30% adoption by Car commuters  in 2050': THISDIR.joinpath('ad_PDS_Ambitious_Drawdown_Team_Calculations_based_onPolzin_Pisarsk29e96191.csv'),
+          'PDS Ambitious - Drawdown Team Calculations based on:Polzin & Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from US BLS and StatCan - 30% adoption by Car commuters  in 2050': THISDIR.joinpath('ad', 'ad_PDS_Ambitious_Drawdown_Team_Calculations_based_onPolzin_Pisarski_2015_US_Census_Bureau_a_0cbed033.csv'),
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
@@ -270,7 +269,10 @@ class Carpooling:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -305,11 +307,11 @@ class Carpooling:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

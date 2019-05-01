@@ -1,0 +1,34 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,501.09444854406854,553.7272322399999,448.46166484813716
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,True,3983375.7466606316,4005410.828073221,3961340.6652480424
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,True,327204.30051643995,1119801.6978678186,4065.0998400000008
+4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,True,True,0.165285578945327,0.2667484001470297,0.06382275774362425
+5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,True,0.019568952480010518,0.03330931508010683,0.005828589879914208
+6,Average_Annual_Use_CONVENTIONAL,Average Annual Use - CONVENTIONAL,True,False,0.009300303712680364,0.009300303712680364,0.009300303712680364
+7,Average_Annual_Use_SOLUTION,Average Annual Use - SOLUTION,True,False,0.008027999412826559,0.008933172994330872,0.007122825831322245
+8,CONVENTIONAL_VARIABLE_Operating_Cost_per_Functional_Unit,CONVENTIONAL VARIABLE Operating Cost per Functional Unit,True,True,41152748.603397906,42015343.56248977,40290153.64430604
+9,SOLUTION_VARIABLE_Operating_Cost_per_Functional_Unit,SOLUTION VARIABLE Operating Cost per Functional Unit ,False,False,,,
+10,CONVENTIONAL_FIXED_Operating_Cost_per_Implementation_Unit,CONVENTIONAL FIXED Operating Cost per Implementation Unit,False,False,,,
+11,SOLUTION_FIXED_Operating_Cost_per_Implementation_Unit,SOLUTION FIXED Operating Cost per Implementation Unit ,False,False,,,
+12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,True,False,0.004239652217925736,0.004239652217925736,0.004239652217925736
+13,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+14,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,True,False,0.011835641756895237,0.011835641756895237,0.011835641756895237
+15,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,True,False,34734831.72341607,34734831.72341607,34734831.72341607
+16,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,True,False,1.0,1.0,1.0
+17,Direct_Emissions_per_CONVENTIONAL_Functional_Unit,Direct Emissions per CONVENTIONAL Functional Unit,False,False,,,
+18,Direct_Emissions_per_SOLUTION_Functional_Unit,Direct Emissions per SOLUTION Functional Unit,False,False,,,
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE_on_Advanced_Controls,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls,True,True,20869.628212017076,33578.531621634655,8160.724802399502
+20,Indirect_CO2_Emissions_per_SOLUTION_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Unit (Select on Advanced Controls),True,True,8777.772983972376,12276.964474955166,5278.581492989586
+21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
+22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
+23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
+24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
+25,Average_Car_Occupancy,Average Car Occupancy,True,False,1.57,1.57,1.57
+26,Average_Car_Lifetime,Average Car Lifetime,True,False,311755.0004967467,389315.4342275199,234194.56676597343
+27,Discount_Rates_Households,Discount Rates - Households,True,False,0.04,0.04999999999999999,0.030000000000000013
+28,Average_Annual_Passenger_km_per_Car,Average Annual Passenger-km per Car,True,False,24751.05,24751.05,24751.05
+29,First_Cost_of_ICE_Car,First Cost of ICE Car,True,True,27301.838757440706,34446.2976378079,20157.379877073516
+30,Average_Bike_Pass_km_per_Year,Average Bike Pass-km per Year,True,False,3276.0,3276.0,3276.0
+31,E_bike_Battery_Size,E-bike Battery Size,True,True,349.25999999999993,543.3727776025355,155.1472223974644
+32,E_bike_Work_Rate,E-bike Work Rate,True,False,12.42742384474,12.42742384474,12.42742384474
+33,Percentage_of_E_bike_Rides_with_2_Riders,Percentage of E-bike Rides with 2 Riders,True,False,0.05,0.05,0.05

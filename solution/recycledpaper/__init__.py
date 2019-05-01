@@ -26,6 +26,8 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
@@ -49,6 +51,7 @@ scenarios = {
       source_until_2014='See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%', 
       ref_source_post_2014='Maximum Cases', 
       pds_source_post_2014='Maximum Cases', 
+      pds_base_adoption=[('World', 207.0), ('OECD90', 125.0), ('Eastern Europe', 6.3), ('Asia (Sans Japan)', 78.0), ('Middle East and Africa', 2.75), ('Latin America', 12.21), ('China', 44.0), ('India', 3.0), ('EU', 69.0), ('USA', 46.5)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -83,8 +86,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=1318973.9612408415, soln_emissions_per_funit=1230043.9188259256, 
 
-
-      # sequestration
     ),
   'PDS2-77p2050-Mean Growth (Book Ed.1)': advanced_controls.AdvancedControls(
       # The growth of adoption is based on medium values of adoption from existing
@@ -104,6 +105,7 @@ scenarios = {
       source_until_2014='See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%', 
       ref_source_post_2014='Maximum Cases', 
       pds_source_post_2014='Maximum Cases', 
+      pds_base_adoption=[('World', 207.0), ('OECD90', 125.0), ('Eastern Europe', 6.3), ('Asia (Sans Japan)', 78.0), ('Middle East and Africa', 2.75), ('Latin America', 12.21), ('China', 44.0), ('India', 3.0), ('EU', 69.0), ('USA', 46.5)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -138,8 +140,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=1318973.9612408415, soln_emissions_per_funit=1230043.9188259256, 
 
-
-      # sequestration
     ),
   'PDS3-80p2050-High Growth (Book Ed.1)': advanced_controls.AdvancedControls(
       # The growth of adoption is based on high values of adoption from existing
@@ -159,6 +159,7 @@ scenarios = {
       source_until_2014='See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%', 
       ref_source_post_2014='Maximum Cases', 
       pds_source_post_2014='Maximum Cases', 
+      pds_base_adoption=[('World', 207.0), ('OECD90', 125.0), ('Eastern Europe', 6.3), ('Asia (Sans Japan)', 78.0), ('Middle East and Africa', 2.75), ('Latin America', 12.21), ('China', 44.0), ('India', 3.0), ('EU', 69.0), ('USA', 46.5)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -193,8 +194,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=1318973.9612408415, soln_emissions_per_funit=1230043.9188259256, 
 
-
-      # sequestration
     ),
 }
 
@@ -233,67 +232,67 @@ class RecycledPaper:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGedf64645.csv'),
-          'See sheet FAO 2009, annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045) from RISI': THISDIR.joinpath('tam_See_sheet_FAO_2009_annual_growth_rates_in_Drawdown_regions_2015489d056e.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
+          'See sheet FAO 2009, annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045) from RISI': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009_annual_growth_rates_in_Drawdown_regions_20152020_20202030_and_2030204_01422925.csv'),
       },
       'Ambitious Cases': {
-          'See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%': THISDIR.joinpath('tam_See_McKinnsey_Co_2013_sheet_annual_growth_after_2030_27.csv'),
+          'See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%': THISDIR.joinpath('tam', 'tam_See_McKinnsey_Co_2013_sheet_annual_growth_after_2030_27.csv'),
       },
       'Maximum Cases': {
-          'See McKinnsey & Co 2013 sheet (annual growth after 2030 2,2%': THISDIR.joinpath('tam_See_McKinnsey_Co_2013_sheet_annual_growth_after_2030_22.csv'),
+          'See McKinnsey & Co 2013 sheet (annual growth after 2030 2,2%': THISDIR.joinpath('tam', 'tam_See_McKinnsey_Co_2013_sheet_annual_growth_after_2030_22.csv'),
       },
       'Region: OECD90': {
         'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGedf64645.csv'),
-          'See sheet FAO 2009': THISDIR.joinpath('tam_See_sheet_FAO_2009.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
+          'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
         },
       },
       'Region: Eastern Europe': {
         'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGedf64645.csv'),
-          'See sheet FAO 2009': THISDIR.joinpath('tam_See_sheet_FAO_2009.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
+          'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
         },
       },
       'Region: Asia (Sans Japan)': {
         'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGedf64645.csv'),
-          'See sheet FAO 2009': THISDIR.joinpath('tam_See_sheet_FAO_2009.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
+          'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
         },
       },
       'Region: Middle East and Africa': {
         'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGedf64645.csv'),
-          'See sheet FAO 2009': THISDIR.joinpath('tam_See_sheet_FAO_2009.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
+          'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
         },
       },
       'Region: Latin America': {
         'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGedf64645.csv'),
-          'See sheet FAO 2009': THISDIR.joinpath('tam_See_sheet_FAO_2009.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
+          'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
         },
       },
       'Region: China': {
         'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIG26cb163b.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__f4ea722f.csv'),
         },
         'Ambitious Cases': {
-          'See sheet PÖYRY 2013. Linear interpolation 2011-2025 is used. After 2025 annual growth rate of 3,6% is used according to FAO 2009 Asia and the Pacific region annual growth rate 2020-2030.': THISDIR.joinpath('tam_See_sheet_PÖYRY_2013__Linear_interpolation_20112025_is_used__Afc4cf2831.csv'),
+          'See sheet PÖYRY 2013. Linear interpolation 2011-2025 is used. After 2025 annual growth rate of 3,6% is used according to FAO 2009 Asia and the Pacific region annual growth rate 2020-2030.': THISDIR.joinpath('tam', 'tam_See_sheet_PÖYRY_2013__Linear_interpolation_20112025_is_used__After_2025_annual_growth_ra_5f611a03.csv'),
         },
       },
       'Region: India': {
         'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIG26cb163b.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__f4ea722f.csv'),
         },
       },
       'Region: EU': {
         'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIG26cb163b.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__f4ea722f.csv'),
         },
       },
       'Region: USA': {
         'Baseline Cases': {
-          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIG26cb163b.csv'),
-          'See sheet FAO 2015-2020, prognostication based on RIGI -0.9% annum growth': THISDIR.joinpath('tam_See_sheet_FAO_20152020_prognostication_based_on_RIGI_0_9_annum_739b4dc6.csv'),
+          '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__f4ea722f.csv'),
+          'See sheet FAO 2015-2020, prognostication based on RIGI -0.9% annum growth': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_20152020_prognostication_based_on_RIGI_0_9_annum_growth.csv'),
         },
       },
     }
@@ -317,117 +316,18 @@ class RecycledPaper:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
+          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad', 'ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_defined_for_each_region_and_cou_45c9627f.csv'),
       },
       'Conservative Cases': {
-          'See PÖYRY 2013 sheet': THISDIR.joinpath('ad_See_PÖYRY_2013_sheet.csv'),
-          'See McKinsey and Co. 2013 (adoption doubles every 25 years), 3rd Polynomial prognostication': THISDIR.joinpath('ad_See_McKinsey_and_Co__2013_adoption_doubles_every_25_years_3rd_Pbc48626a.csv'),
+          'See PÖYRY 2013 sheet': THISDIR.joinpath('ad', 'ad_See_PÖYRY_2013_sheet.csv'),
+          'See McKinsey and Co. 2013 (adoption doubles every 25 years), 3rd Polynomial prognostication': THISDIR.joinpath('ad', 'ad_See_McKinsey_and_Co__2013_adoption_doubles_every_25_years_3rd_Polynomial_prognostication.csv'),
       },
       'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
+          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad', 'ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
       },
       'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-          'See McKinsey and Co. 2013 (adoption doubles every 15 years), 3rd Polynomial prognostication': THISDIR.joinpath('ad_See_McKinsey_and_Co__2013_adoption_doubles_every_15_years_3rd_Pbc48626a.csv'),
-      },
-      'Region: OECD90': {
-        'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
-        },
-        'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-        },
-        'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-        },
-      },
-      'Region: Eastern Europe': {
-        'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
-        },
-        'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-        },
-        'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-        },
-      },
-      'Region: Asia (Sans Japan)': {
-        'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
-        },
-        'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-        },
-        'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-        },
-      },
-      'Region: Middle East and Africa': {
-        'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
-        },
-        'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-        },
-        'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-        },
-      },
-      'Region: Latin America': {
-        'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
-        },
-        'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-        },
-        'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-        },
-      },
-      'Region: China': {
-        'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
-        },
-        'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-        },
-        'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-        },
-      },
-      'Region: India': {
-        'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
-        },
-        'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-        },
-        'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-        },
-      },
-      'Region: EU': {
-        'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
-        },
-        'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-        },
-        'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-        },
-      },
-      'Region: USA': {
-        'Baseline Cases': {
-          'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_definec0952f24.csv'),
-        },
-        'Ambitious Cases': {
-          'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-        },
-        'Maximum Cases': {
-          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-        },
+          'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad', 'ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
+          'See McKinsey and Co. 2013 (adoption doubles every 15 years), 3rd Polynomial prognostication': THISDIR.joinpath('ad', 'ad_See_McKinsey_and_Co__2013_adoption_doubles_every_15_years_3rd_Polynomial_prognostication.csv'),
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
@@ -438,11 +338,14 @@ class RecycledPaper:
       {'name': 'Custom Scenario No.1 - Using Medium Trend of Prognostications', 'include': True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Custom_Scenario_No_1_Using_Medium_Trend_of_Prognostications.csv')},
       {'name': 'Custom Scenario No.2 - Using High Trend of Existing Prognostications', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Custom_Scenario_No_2_Using_High_Trend_of_Existing_Prognosticati92e283db.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Custom_Scenario_No_2_Using_High_Trend_of_Existing_Prognostications.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -473,11 +376,11 @@ class RecycledPaper:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

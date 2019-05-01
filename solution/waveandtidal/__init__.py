@@ -26,7 +26,7 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {}
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -51,6 +51,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 
+      pds_base_adoption=[('World', 0.954), ('OECD90', 0.483), ('Eastern Europe', 0.002), ('Asia (Sans Japan)', 0.453), ('Middle East and Africa', 0.0), ('Latin America', 0.016), ('China', 0.007), ('India', 0.0), ('EU', 0.483), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -85,8 +86,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS-3p2050-Plausible (Book Ed. 1)': advanced_controls.AdvancedControls(
       # Plausible Scenario, Based on Ambitious scenarios projections, High Growth
@@ -106,6 +105,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario', 
+      pds_base_adoption=[('World', 0.954), ('OECD90', 0.483), ('Eastern Europe', 0.002), ('Asia (Sans Japan)', 0.453), ('Middle East and Africa', 0.0), ('Latin America', 0.016), ('China', 0.007), ('India', 0.0), ('EU', 0.483), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -140,8 +140,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS-4p2050-Drawdown (Book Ed.1)': advanced_controls.AdvancedControls(
       # Drawdown Scenario, Based on Greenpeace (2015) Advanced Revolution Scenario,
@@ -161,6 +159,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario', 
+      pds_base_adoption=[('World', 0.954), ('OECD90', 0.483), ('Eastern Europe', 0.002), ('Asia (Sans Japan)', 0.453), ('Middle East and Africa', 0.0), ('Latin America', 0.016), ('China', 0.007), ('India', 0.0), ('EU', 0.483), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -195,8 +194,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS-4p2050-Optimum (Book Ed.1)': advanced_controls.AdvancedControls(
       # Optimum Scenario, Based on Greenpeace (2015) Advanced Revolution Scenario,
@@ -216,6 +213,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 
+      pds_base_adoption=[('World', 0.954), ('OECD90', 0.483), ('Eastern Europe', 0.002), ('Asia (Sans Japan)', 0.453), ('Middle East and Africa', 0.0), ('Latin America', 0.016), ('China', 0.007), ('India', 0.0), ('EU', 0.483), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -250,8 +248,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -288,203 +284,7 @@ class WaveAndTidal:
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
-    tam_ref_data_sources = {
-      'Baseline Cases': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-      },
-      'Conservative Cases': {
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-      },
-      'Ambitious Cases': {
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-      },
-      '100% RES2050 Case': {
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-      },
-      'Region: OECD90': {
-        'Data sets': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-        },
-      },
-      'Region: Eastern Europe': {
-        'Data sets': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-        },
-      },
-      'Region: Asia (Sans Japan)': {
-        'Data sets': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-        },
-      },
-      'Region: Middle East and Africa': {
-        'Data sets': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-        },
-      },
-      'Region: Latin America': {
-        'Data sets': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-        },
-      },
-      'Region: China': {
-        'Data sets': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-        },
-      },
-      'Region: India': {
-        'Data sets': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-        },
-      },
-      'Region: EU': {
-        'Data sets': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-        },
-      },
-      'Region: USA': {
-        'Data sets': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_6DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv'),
-          'Based on: AMPERE 2014 GEM E3 Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_Reference.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER Reference': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv'),
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv'),
-          'Based on: AMPERE 2014 GEM E3 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_550.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 550': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Reference.csv'),
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: AMPERE 2014 MESSAGE MACRO 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv'),
-          'Based on: AMPERE 2014 GEM E3 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_GEM_E3_450.csv'),
-          'Based on: AMPERE 2014 IMAGE TIMER 450': THISDIR.joinpath('tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-        },
-      },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
+    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=rrs.tam_ref_data_sources,
       tam_pds_data_sources=rrs.tam_pds_data_sources)
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
@@ -503,22 +303,24 @@ class WaveAndTidal:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
       'Baseline Cases': {
-          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('ad_based_on_IEA_ETP_2016_6DS.csv'),
+          'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_6DS.csv'),
       },
       'Conservative Cases': {
-          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad_based_on_IEA_ETP_2016_4DS.csv'),
-          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('ad_based_on_Greenpeace_2015_Reference.csv'),
+          'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_4DS.csv'),
+          'Based on: Greenpeace 2015 Reference': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Reference.csv'),
       },
       'Ambitious Cases': {
-          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad_based_on_IEA_ETP_2016_2DS.csv'),
-          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('ad_based_on_Greenpeace_2015_Energy_Revolution.csv'),
+          'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
+          'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Energy_Revolution.csv'),
       },
-      '100% Case': {
-          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('ad_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
+      '100% RES2050 Case': {
+          'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
         adconfig=adconfig)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -545,11 +347,11 @@ class WaveAndTidal:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

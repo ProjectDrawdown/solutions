@@ -26,6 +26,8 @@ from solution import rrs
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
@@ -52,6 +54,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 2751916.5073962263), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -86,8 +89,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-5p2050-based on on IEA 2DS (Book Ed.1)': advanced_controls.AdvancedControls(
       # UIC data for 2014 indicates 27% electrification of rails. The IEA 2DS scenario
@@ -109,6 +110,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 2751916.5073962263), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -143,8 +145,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-10p2050-Full Electrification (Book Ed.1)': advanced_controls.AdvancedControls(
       # UIC data for 2014 indicates 27% electrification of rails. The IEA 2DS scenario
@@ -167,6 +167,7 @@ scenarios = {
       source_until_2014='ALL SOURCES', 
       ref_source_post_2014='Baseline Cases', 
       pds_source_post_2014='Baseline Cases', 
+      pds_base_adoption=[('World', 2751916.5073962263), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -201,8 +202,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
 
@@ -241,13 +240,13 @@ class TrainFuelEfficiency:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Highest Ranges': THISDIR.joinpath('tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Hiad7fb878.csv'),
+          'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Highest Ranges': THISDIR.joinpath('tam', 'tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Highest_Ranges.csv'),
       },
       'Conservative Cases': {
-          'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges': THISDIR.joinpath('tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Mi69f0936b.csv'),
+          'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges': THISDIR.joinpath('tam', 'tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Middle_Ranges.csv'),
       },
       'Ambitious Cases': {
-          'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges': THISDIR.joinpath('tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Lo7d61991e.csv'),
+          'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges': THISDIR.joinpath('tam', 'tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Lowest_Ranges.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -260,13 +259,14 @@ class TrainFuelEfficiency:
       {'name': 'PDS1 - Doubling of Historical Electrification Rate (UIC data)', 'include': True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Doubling_of_Historical_Electrification_Rate_UIC_data.csv')},
       {'name': 'PDS2 - Linear projection of Electricity-powered rail freight from 27% of rail freight in 2014 to 40% in 2050 (IEA 2DS projection)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Linear_projection_of_Electricitypowered_rail_freight_from_542ea4b3.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Linear_projection_of_Electricitypowered_rail_freight_from_27_of_rail_freight_in_201_37e3af9a.csv')},
       {'name': 'PDS3 - Linear projection of Electricity-powered rail freight from 27% of rail freight in 2014 to 100% in 2050', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Linear_projection_of_Electricitypowered_rail_freight_from_40f0d809.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Linear_projection_of_Electricitypowered_rail_freight_from_27_of_rail_freight_in_201_bdba7429.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
 
     # Custom REF Data
     ca_ref_data_sources = [
@@ -275,7 +275,9 @@ class TrainFuelEfficiency:
     ]
     self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
         soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=ref_tam_per_region)
+
     ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
     if False:
@@ -303,12 +305,12 @@ class TrainFuelEfficiency:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        ref_adoption_data_per_region=ref_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        ref_adoption_data_per_region=ref_adoption_data_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

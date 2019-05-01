@@ -19,9 +19,14 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
+from model.advanced_controls import SOLUTION_CATEGORY
 
 from model import tam
 from solution import rrs
+
+DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+THISDIR = pathlib.Path(__file__).parents[0]
+VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
@@ -52,6 +57,7 @@ scenarios = {
       source_until_2014='IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area', 
+      pds_base_adoption=[('World', 1.9734999131249993), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -86,8 +92,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS2-48p2050-EE21.3% based on Navigant (Book Ed.1)': advanced_controls.AdvancedControls(
       # The integrated energy efficiency of the glass is assumed to be 21.3% after other
@@ -114,6 +118,7 @@ scenarios = {
       source_until_2014='IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area', 
+      pds_base_adoption=[('World', 1.9734999131249993), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -148,8 +153,6 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
   'PDS3-75p2050-EE21.3% based on Navigant (Book Ed.1)': advanced_controls.AdvancedControls(
       # After integrating building solutions, smart glass Energy Efficiency adjusted to
@@ -176,6 +179,7 @@ scenarios = {
       source_until_2014='IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring', 
       ref_source_post_2014='ALL SOURCES', 
       pds_source_post_2014='Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area', 
+      pds_base_adoption=[('World', 1.9734999131249993), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
       pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
 
       # financial
@@ -210,11 +214,8 @@ scenarios = {
       emissions_use_co2eq=True, 
       conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
 
-
-      # sequestration
     ),
 }
-
 
 class SmartGlass:
   name = 'Smart Glass'
@@ -226,14 +227,12 @@ class SmartGlass:
   }
 
   def __init__(self, scenario=None):
-    datadir = str(pathlib.Path(__file__).parents[2].joinpath('data'))
-    parentdir = pathlib.Path(__file__).parents[1]
-    thisdir = pathlib.Path(__file__).parents[0]
     if scenario is None:
       scenario = 'PDS1-29p2050-EE21.3% based on Navigant (Book Ed.1)'
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
+    # TAM
     tamconfig_list = [
       ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -253,18 +252,18 @@ class SmartGlass:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': thisdir.joinpath('tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Ürge-Vorsatz et al. (2015) – see TAM Factoring': thisdir.joinpath('tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
+          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+          'Ürge-Vorsatz et al. (2015) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
       },
       'Region: USA': {
         'Baseline Cases': {
-          'Annual Energy Outlook 2016, U.S. Energy Information Administration, 2016.': thisdir.joinpath('tam_Annual_Energy_Outlook_2016_U_S__Energy_Information_Administratio.csv'),
+          'Annual Energy Outlook 2016, U.S. Energy Information Administration, 2016.': THISDIR.joinpath('tam', 'tam_Annual_Energy_Outlook_2016_U_S__Energy_Information_Administration_2016_.csv'),
         },
       },
     }
     tam_pds_data_sources = {
       'Baseline Cases': {
-          'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area': thisdir.joinpath('tam_pds_Drawdown_TAM_Adjusted_GBPN_Data_Commercial_Floor_Area.csv'),
+          'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Adjusted_GBPN_Data_Commercial_Floor_Area.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -286,20 +285,26 @@ class SmartGlass:
     adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
     ad_data_sources = {
     }
-    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources, adconfig=adconfig)
+    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        adconfig=adconfig)
 
+    # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'PDS1 - Adoption based on Navigant Sales and World Green Buildings Council Targets', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS1_Adoption_based_on_Navigant_Sales_and_World_Green_Buildings_.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Adoption_based_on_Navigant_Sales_and_World_Green_Buildings_Council_Targets.csv')},
       {'name': 'PDS2 - Adoption based on Navigant Sales and World Green Buildings Council Targets', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS2_Adoption_based_on_Navigant_Sales_and_World_Green_Buildings_.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Adoption_based_on_Navigant_Sales_and_World_Green_Buildings_Council_Targets.csv')},
       {'name': 'PDS3 - Adoption based on Navigant Sales and World Green Buildings Council Targets', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_PDS3_Adoption_based_on_Navigant_Sales_and_World_Green_Buildings_.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Adoption_based_on_Navigant_Sales_and_World_Green_Buildings_Council_Targets.csv')},
       {'name': 'Drawdown Book (Edition 1) Scenario 3', 'include': True,
-          'filename': str(thisdir.joinpath('custom_pds_ad_Drawdown_Book_Edition_1_Scenario_3.csv'))},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_3.csv')},
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name)
+        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+        high_sd_mult=1.0, low_sd_mult=1.0,
+        total_adoption_limit=pds_tam_per_region)
+
+    ref_adoption_data_per_region = None
 
     if False:
       # One may wonder why this is here. This file was code generated.
@@ -308,7 +313,7 @@ class SmartGlass:
     elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
       pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
       pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-      pds_adoption_is_single_source = True
+      pds_adoption_is_single_source = None
     elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
       pds_adoption_data_per_region = self.ad.adoption_data_per_region()
       pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
@@ -330,15 +335,15 @@ class SmartGlass:
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,
-                                        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                                        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                                        pds_adoption_data_per_region=pds_adoption_data_per_region,
-                                        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                                        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+        pds_adoption_data_per_region=pds_adoption_data_per_region,
+        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+        pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+        pds_adoption_is_single_source=pds_adoption_is_single_source)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
-    self.ua = unitadoption.UnitAdoption(ac=self.ac, datadir=datadir,
+    self.ua = unitadoption.UnitAdoption(ac=self.ac,
         ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -374,6 +379,7 @@ class SmartGlass:
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
@@ -392,6 +398,4 @@ class SmartGlass:
     self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
         soln_avg_annual_use=self.ac.soln_avg_annual_use,
         conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    self.VMAs = []
 
