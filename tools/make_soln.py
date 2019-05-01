@@ -7,7 +7,7 @@ from tools import solution_xls_extract, vma_xls_extract
 
 
 def make_soln_files(dir_name, class_name):
-    outputdir = str(pathlib.Path(__file__).parents[0].joinpath(dir_name))
+    outputdir = str(pathlib.Path(__file__).parents[1].joinpath('solution', dir_name))
     xls_name = glob.glob(os.path.join(outputdir, 'testdata', '[!~]*.xlsm'))[0]
     solution_xls_extract.output_solution_python_file(outputdir=outputdir,
             xl_filename=xls_name, classname=class_name)
@@ -34,6 +34,6 @@ def test_{class_name}_{stype}(start_excel, tmpdir):
 
 
 if __name__ == '__main__':
-    dir_name = 'afforestation'
-    class_name = 'Afforestation'
+    dir_name = 'biomass'
+    class_name = 'Biomass'
     make_soln_files(dir_name, class_name)
