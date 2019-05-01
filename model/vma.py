@@ -119,12 +119,16 @@ class VMA:
 
         if self.use_weight:
             weights = df['Weight'].fillna(1.0)
-            mean = (df['Value'] * weights).sum() / weights.sum()
-            # A weighted standard deviation is not the same as stddev()
-            numerator = (weights * ((df['Value'] - mean) ** 2)).sum()
+            total_weights = weights.sum() if weights.sum() != 0.0 else 1.0
+            mean = (df['Value'] * weights).sum() / total_weights
             M = (weights != 0).sum()
-            denominator = ((M - 1) / M) * weights.sum()
-            sd = math.sqrt(numerator / denominator)
+            if M == 0.0:
+                sd = 0.0
+            else:
+                # A weighted standard deviation is not the same as stddev()
+                numerator = (weights * ((df['Value'] - mean) ** 2)).sum()
+                denominator = ((M - 1) / M) * total_weights
+                sd = math.sqrt(numerator / denominator)
         else:
             mean = df['Value'].mean()
             # whole population stddev, ddof=0
