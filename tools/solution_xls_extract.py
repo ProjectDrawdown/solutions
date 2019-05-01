@@ -12,6 +12,7 @@
 """
 
 import argparse
+import hashlib
 import os.path
 import re
 import sys
@@ -674,22 +675,24 @@ def write_tam(f, wb, outputdir):
     tam_regions = {'World': 44, 'OECD90': 162, 'Eastern Europe': 226,
                    'Asia (Sans Japan)': 289, 'Middle East and Africa': 352, 'Latin America': 415,
                    'China': 478, 'India': 542, 'EU': 606, 'USA': 671}
+    tamoutputdir = os.path.join(outputdir, 'tam')
+    os.makedirs(tamoutputdir, exist_ok=True)
     ref_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
-                                      outputdir=outputdir, prefix='tam_')
+                                      outputdir=tamoutputdir, prefix='tam_')
     if recursive_keys(ref_sources) == recursive_keys(rrs.tam_ref_data_sources):
         arg_ref = 'rrs.tam_ref_data_sources'
-        abandon_files(ref_sources, outputdir=outputdir)
+        abandon_files(ref_sources, outputdir=tamoutputdir)
     else:
         f.write("    tam_ref_data_sources = {\n")
         for region, cases in ref_sources.items():
             f.write("      '" + region + "': {\n")
             for (case, sources) in cases.items():
                 if isinstance(sources, str):
-                    f.write("          '" + case + "': THISDIR.joinpath('" + sources + "'),\n")
+                    f.write("          '" + case + "': THISDIR.joinpath('tam', '" + sources + "'),\n")
                 else:
                     f.write("        '" + case + "': {\n")
                     for (source, filename) in sources.items():
-                        f.write("          '" + source + "': THISDIR.joinpath('" + filename + "'),\n")
+                        f.write("          '" + source + "': THISDIR.joinpath('tam', '" + filename + "'),\n")
                     f.write("        },\n")
             f.write("      },\n")
         f.write("    }\n")
@@ -697,13 +700,13 @@ def write_tam(f, wb, outputdir):
 
     tam_regions = {'World': 102}
     pds_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
-                                      outputdir=outputdir, prefix='tam_pds_')
+                                      outputdir=tamoutputdir, prefix='tam_pds_')
     if recursive_keys(pds_sources) == recursive_keys(rrs.tam_pds_data_sources):
         arg_pds = 'rrs.tam_pds_data_sources'
-        abandon_files(pds_sources, outputdir=outputdir)
+        abandon_files(pds_sources, outputdir=tamoutputdir)
     elif recursive_keys(pds_sources) == recursive_keys(rrs.tam_ref_data_sources):
         arg_pds = 'rrs.tam_ref_data_sources'
-        abandon_files(pds_sources, outputdir=outputdir)
+        abandon_files(pds_sources, outputdir=tamoutputdir)
     elif not pds_sources:
         arg_pds = 'tam_ref_data_sources'
     else:
@@ -712,11 +715,11 @@ def write_tam(f, wb, outputdir):
             f.write("      '" + region + "': {\n")
             for (case, sources) in cases.items():
                 if isinstance(sources, str):
-                    f.write("          '" + case + "': THISDIR.joinpath('" + sources + "'),\n")
+                    f.write("          '" + case + "': THISDIR.joinpath('tam', '" + sources + "'),\n")
                 else:
                     f.write("        '" + case + "': {\n")
                     for (source, filename) in sources.items():
-                        f.write("          '" + source + "': THISDIR.joinpath('" + filename + "'),\n")
+                        f.write("          '" + source + "': THISDIR.joinpath('tam', '" + filename + "'),\n")
                     f.write("        },\n")
             f.write("      },\n")
         f.write("    }\n")
@@ -862,17 +865,15 @@ def get_filename_for_source(sourcename, prefix=''):
     if re.search(r'Drawdown TAM: \[Source \d+', sourcename):
         return None
 
-    filename = re.sub(r"[^\w\s\.]", '', sourcename)
+    filename = sourcename.strip()
+    filename = re.sub(r"[^\w\s\.]", '', filename)
     filename = re.sub(r"\s+", '_', filename)
     filename = re.sub(r"\.+", '_', filename)
     filename = filename.replace('Based_on_', 'based_on_')
-    if len(filename) > 71:
-        s = filename[63:]
-        h = hex(abs(hash(s)))[-8:]
-        filename = filename[:63] + h
+    if len(filename) > 96:
+        h = hashlib.sha256(filename.encode('utf-8')).hexdigest()[-8:]
+        filename = filename[:88] + '_' + h
     return prefix + filename + '.csv'
-
-
 
 
 def write_ad(f, wb, outputdir):
@@ -912,18 +913,20 @@ def write_ad(f, wb, outputdir):
                   'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484, 'EU': 548,
 
                   'USA': 613}
+    ad_outputdir = os.path.join(outputdir, 'ad')
+    os.makedirs(ad_outputdir, exist_ok=True)
     sources = extract_source_data(wb=wb, sheet_name='Adoption Data', regions=ad_regions,
-                                  outputdir=outputdir, prefix='ad_')
+                                  outputdir=ad_outputdir, prefix='ad_')
     f.write("    ad_data_sources = {\n")
     for region, cases in sources.items():
         f.write("      '" + region + "': {\n")
         for (case, sources) in cases.items():
             if isinstance(sources, str):
-                f.write("          '" + case + "': THISDIR.joinpath('" + sources + "'),\n")
+                f.write("          '" + case + "': THISDIR.joinpath('ad', '" + sources + "'),\n")
             else:
                 f.write("        '" + case + "': {\n")
                 for (source, filename) in sources.items():
-                    f.write("          '" + source + "': THISDIR.joinpath('" + filename + "'),\n")
+                    f.write("          '" + source + "': THISDIR.joinpath('ad', '" + filename + "'),\n")
                 f.write("        },\n")
         f.write("      },\n")
     f.write("    }\n")
@@ -1390,8 +1393,6 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
     return cases
 
 
-
-
 def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
     """Extract custom adoption scenarios from an Excel file.
        Arguments:
@@ -1453,8 +1454,6 @@ def extract_custom_tla(wb, outputdir):
         df.to_csv(os.path.join(outputdir, 'custom_tla_data.csv'), index=True, header=True)
 
 
-
-
 def extract_vmas(wb, outputdir):
     """Extract VMAs from an Excel file.
        Arguments:
@@ -1489,8 +1488,6 @@ def lookup_unit(tab, row, col):
     return unit_mapping.get(name, name)
 
 
-
-
 def write_units_rrs(f, wb):
     """Write out units for this solution."""
     sr_tab = wb.sheet_by_name('ScenarioRecord')
@@ -1507,8 +1504,6 @@ def write_units_rrs(f, wb):
     f.write('  }\n\n')
 
 
-
-
 def write_units_land(f, wb):
     """Write out units for this solution."""
     sr_tab = wb.sheet_by_name('ScenarioRecord')
@@ -1523,8 +1518,6 @@ def write_units_land(f, wb):
             f.write('    "operating cost": "' + lookup_unit(sr_tab, row + 13, 5) + '",\n')
             break
     f.write('  }\n\n')
-
-
 
 
 def output_solution_python_file(outputdir, xl_filename, classname):
@@ -1588,11 +1581,8 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 
     f.write("DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
     f.write("THISDIR = pathlib.Path(__file__).parents[0]\n")
-    if is_land:
-        extract_vmas(wb=wb, outputdir=outputdir)
-        f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
-    else:
-        f.write("\n")
+    extract_vmas(wb=wb, outputdir=outputdir)
+    f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
     f.write(
         "REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',\n")
     f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
@@ -1735,8 +1725,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.close()
 
 
-
-
 def infer_classname(filename):
     """Pick a reasonable classname if none is specified."""
     special_cases = [
@@ -1782,7 +1770,6 @@ def infer_classname(filename):
     return namelist[0].replace(' ', '')
 
 
-
 def link_vma(cell_value):
     """
     Certain AdvancedControls inputs are linked to the mean, high or low value of their
@@ -1810,8 +1797,6 @@ def link_vma(cell_value):
         formula = cell_value.split(':=')[1]
         warnings.warn('cell formula: {} not recognised - using value instead'.format(formula))
         return {'value': convert_sr_float(cell_value), 'xls cell formula': formula}
-
-
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ require() {
 tmpdir=$(mktemp -d soln_xls.XXXXXX)
 PYTHONPATH=.:${PYTHONPATH} ./tools/solution_xls_extract.py --excelfile=./tools/tests/solution_xls_extract_RRS_test_A.xlsm --outputdir=${tmpdir}
 output=$(cat ${tmpdir}/__init__.py)
-ad_data=$(cat ${tmpdir}/ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv)
+ad_data=$(cat ${tmpdir}/ad/ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv)
 
 # Check infer class name
 require "$output" "class TestClassA" && \

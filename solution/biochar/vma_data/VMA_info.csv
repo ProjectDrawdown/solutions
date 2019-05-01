@@ -1,0 +1,32 @@
+VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
+1,Current_Adoption,Current Adoption,True,False,7457.0,7457.0,7457.0
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,False,False,,,
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,21639272.727272723,44005816.44405451,-727270.989509061
+4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,False,False,,,
+5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,False,410116.3636363636,410116.3636363636,410116.3636363636
+6,Average_Annual_Use_CONVENTIONAL,Average Annual Use - CONVENTIONAL,False,False,,,
+7,Average_Annual_Use_SOLUTION,Average Annual Use - SOLUTION,True,False,20505.81818181818,46121.01751140012,-5109.381147763754
+8,CONVENTIONAL_VARIABLE_Operating_Cost_per_Functional_Unit,CONVENTIONAL VARIABLE Operating Cost per Functional Unit,False,False,,,
+9,SOLUTION_VARIABLE_Operating_Cost_per_Functional_Unit,SOLUTION VARIABLE Operating Cost per Functional Unit ,True,False,193.9207142857143,328.63462323269533,59.20680533873326
+10,CONVENTIONAL_FIXED_Operating_Cost_per_Implementation_Unit,CONVENTIONAL FIXED Operating Cost per Implementation Unit,False,False,,,
+11,SOLUTION_FIXED_Operating_Cost_per_Implementation_Unit,SOLUTION FIXED Operating Cost per Implementation Unit ,False,False,,,
+12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+13,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+14,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,False,False,,,
+15,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,False,False,,,
+16,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,False,False,,,
+17,Direct_Emissions_per_CONVENTIONAL_Functional_Unit,Direct Emissions per CONVENTIONAL Functional Unit,False,False,,,
+18,Direct_Emissions_per_SOLUTION_Functional_Unit,Direct Emissions per SOLUTION Functional Unit,True,False,-0.9583317307692307,-0.7049036389816374,-1.211759822556824
+19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE_on_Advanced_Controls,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls,False,False,,,
+20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls),False,False,,,
+21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
+22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
+23,Biochar_retail_price_US_tons,Biochar retail price (US$/tons),True,False,3025.96,5155.453764818296,896.4662351817042
+24,Biochar_wholesale_price_US_tons,Biochar wholesale price (US$/tons),True,False,2057.6923076923076,4127.211589837704,-11.826974453088951
+25,Net_Biochar_Production_per_Biochar_Facility,Net Biochar Production per Biochar Facility,True,False,17797.058823529413,39243.58585618489,-3649.4682091260656
+26,SOLUTION_Net_Profit_Margin,SOLUTION Net Profit Margin,True,False,423.386978021978,558.100886968959,288.673069074997
+27,Biochar_potential_based_on_biomass_availability_by_type_crop_residues,Biochar potential based on biomass availability by type (crop residues),True,False,65800000.0,106025073.80353701,25574926.19646299
+28,Biochar_potential_based_on_biomass_availability_by_type_biomass_crops,Biochar potential based on biomass availability by type (biomass crops),True,False,216562500.0,275503346.9357202,157621653.0642798
+29,Biochar_potential_based_on_biomass_availability_by_type_other_residues,Biochar potential based on biomass availability by type (other residues),True,False,55825000.0,93975799.16020763,17674200.83979238
+30,Carbon_content_in_biomass,Carbon content in biomass (%),True,False,0.48124999999999996,0.5448537538200384,0.4176462461799615
+31,Estimated_Fraction_of_Input_Biochar_that_is_output_to_be_Sold,Estimated Fraction of Input Biochar that is output to be Sold,True,False,0.3,0.3,0.3

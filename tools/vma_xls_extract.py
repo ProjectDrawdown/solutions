@@ -128,6 +128,8 @@ class VMAReader:
             'Weight by: Production': 'Weight',
             # someone did a global replace of 'version' with 'edition' in Conservation Ag.
             'Conedition calculation': 'Conversion calculation',
+            # Airplanes removed Geographic Location from one of the VMAs.
+            'Specific': 'Specific Geographic Location',
         }
         return known_aliases.get(name, name)
 
@@ -147,25 +149,42 @@ class VMAReader:
             row1, col1 = cell_to_offsets(source_id_cell)
         else:  # for use with read_xls
             row1, col1 = source_id_cell
+
+        # Check column names before proceeding
+        col_names = list(df.columns)
+        idx = 0
+        skipcols = []
+        for c in range(16):
+            val = str(sheet.cell_value(row1, col1 + c))
+            if not val or idx >= len(col_names):
+                skipcols.append(c)
+                continue    # skip blank columns
+            name_to_check = self.normalize_col_name(val.strip().replace('*', ''))
+            col_name = col_names[idx]
+            if col_name == 'Thermal-Moisture Regime' and name_to_check != col_name:
+                # RRS solutions do not have a Thermal-Moisture Regime. Allow it to be skipped.
+                col_names.remove('Thermal-Moisture Regime')
+                col_name = col_names[idx]
+            assert col_name == name_to_check, f'unknown VMA column: {name_to_check} on row {row1}'
+            idx += 1
+        assert idx == len(col_names), f'columns not present: {idx} != {len(col_names)}'
+
         max_sources = 120
         done = False
         for r in range(max_sources):
             new_row = {}
-            for c in range(15):
-                if c == 14:
-                    c += 1  # There is a blank column before the "Exclude Data?" column
-                col_name = df.columns[c] if c != 15 else df.columns[-1]
-                if r == 0:  # check col name before proceeding
-                    first_cell = sheet.cell_value(row1, col1 + c)
-                    name_to_check = self.normalize_col_name(first_cell.strip().replace('*', ''))
-                    assert name_to_check == col_name, 'cell value: {} is not {}'.format(first_cell,
-                                                                                        col_name)
+            idx = 0
+            for c in range(16):
+                if c in skipcols:
+                    continue
+                col_name = col_names[idx]
                 cell_val = sheet.cell_value(row1 + 1 + r, col1 + c)  # get raw val
                 if cell_val == '**Add calc above':
                     done = True  # this is the edge case where the table is filled with no extra rows
                     break
                 cell_val = COLUMN_DTYPE_MAP[col_name](empty_to_nan(cell_val))  # conversions
                 new_row[col_name] = cell_val
+                idx += 1
             if done or all(
                 pd.isna(v) for k, v in new_row.items() if k not in ['Common Units', 'Weight']):
                 last_row = r
@@ -181,24 +200,33 @@ class VMAReader:
             df['Weight'] = df['Weight'].replace(0, nan)
 
         for r in range(last_row, last_row + 50):  # look past last row
+            if sheet.cell_value(row1 + r, 17) == 'Use weight?':
+                use_weight = convert_bool(sheet.cell_value(row1 + r + 1, 17))
+                break
             if sheet.cell_value(row1 + r, 18) == 'Use weight?':
                 use_weight = convert_bool(sheet.cell_value(row1 + r + 1, 18))
-                if use_weight:
-                    warnings.warn(
-                        "May need to modify testdata spreadsheet to avoid weighted mean error."
-                        "\nWeights of excluded data and outliers should be set to 0 for table at {}"
-                        "\nSee: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#"
-                        "".format(source_id_cell))
                 break
         else:
             raise ValueError("No 'Use weight?' cell found")
 
+        if use_weight:
+            warnings.warn(
+                "May need to modify testdata spreadsheet to avoid weighted mean error."
+                "\nWeights of excluded data and outliers should be set to 0 for table at {}"
+                "\nSee: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#"
+                "".format(source_id_cell))
+
         if fixed_summary:
             # Find the Average, High, Low cells.
             for r in range(last_row, last_row + 50):
+                col = 0
                 label = str(sheet.cell_value(row1 + r, 17)).lower()
                 if 'average' in label or 'sum' in label:
                     col = 20 if use_weight else 19
+                label = str(sheet.cell_value(row1 + r, 16)).lower()
+                if 'average' in label or 'sum' in label:
+                    col = 19 if use_weight else 18
+                if col:
                     average = float(sheet.cell_value(row1 + r, col))
                     high = float(sheet.cell_value(row1 + r + 1, col))
                     low = float(sheet.cell_value(row1 + r + 2, col))
@@ -229,7 +257,7 @@ class VMAReader:
         for table_num in range(1, 36):
             found = False
             for rows_to_next_table in range(200):
-                title_from_cell = sheet.cell_value(row + rows_to_next_table, col)
+                title_from_cell = str(sheet.cell_value(row + rows_to_next_table, col))
                 # print(title_from_cell)
                 if title_from_cell.startswith('VARIABLE'):
                     # if the table has a generic VARIABLE title we assume there are no more variables to record
@@ -238,12 +266,15 @@ class VMAReader:
                 elif not title_from_cell:
                     continue
 
-                # rather than recording titles we will check for vma number. We need to validate both the number and
-                # ensure that the column where "common units" would be is empty, as the number alone is not enough
-                # to uniquely identify a title row (table rows are also numbered)
+                # Rather than recording titles we will check for vma number. We need to validate
+                # that this really is a Title, as VMAs are also numbered. We check that two rows
+                # down is "Number", the heading for the numbered VMAs. 
                 table_num_on_sheet = sheet.cell_value(row + rows_to_next_table, col - 2)
-                common_units_check = not sheet.cell_value(row + rows_to_next_table, col + 11)
-                if table_num_on_sheet == table_num and common_units_check:  # i.e. if title cell of table
+                VMA_heading_check = False
+                for offset in [1, 2, 3]:
+                    if str(sheet.cell_value(row + rows_to_next_table + offset, col - 2)) == 'Number':
+                        VMA_heading_check = True
+                if table_num_on_sheet == table_num and VMA_heading_check:  # i.e. if title cell of table
                     for space_after_title in range(10):
                         offset = rows_to_next_table + space_after_title
                         if sheet.cell_value(row + offset,
