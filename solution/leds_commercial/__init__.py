@@ -40,6 +40,7 @@ scenarios = {
       # updated.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -95,6 +96,7 @@ scenarios = {
       # the Drawdown book edition 1, some of which have been updated.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -149,6 +151,7 @@ scenarios = {
       # which have been updated.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption

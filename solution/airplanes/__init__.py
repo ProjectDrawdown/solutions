@@ -44,6 +44,7 @@ scenarios = {
       # fuel emissions factors) which have been updated in the latest scenario.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -106,6 +107,7 @@ scenarios = {
       # fuel emissions factors) which have been updated in the latest scenario
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -168,6 +170,7 @@ scenarios = {
       # fuel emissions factors) which have been updated in the latest scenario
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption

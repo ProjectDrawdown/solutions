@@ -74,6 +74,8 @@ def get_rrs_scenarios(wb):
             scenario_name = col_e
             s = {}
 
+            s['vmas'] = 'VMAs'
+
             s['description'] = sr_tab.cell_value(row + 1, 4)
             report_years = sr_tab.cell_value(row + 2, 4)  # E:2 from top of scenario
             (start, end) = report_years.split('-')
@@ -262,7 +264,6 @@ def get_land_scenarios(wb):
             scenario_name = col_e
             s = {}
 
-            # Note: these cases are handled in oneline()
             s['solution_category'] = SOLUTION_CATEGORY.LAND
             s['vmas'] = 'VMAs'
 

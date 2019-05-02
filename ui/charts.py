@@ -3,6 +3,11 @@
 import os.path
 import sys
 
+# we don't want FutureWarning messages appearing in the Jupyter notebook. The person running
+# the notebook is likely not the person who could address the warning.
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 import altair as alt
 import IPython.display
 import ipywidgets

@@ -37,6 +37,7 @@ scenarios = {
       # after the low of all custom scenarios.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -87,6 +88,7 @@ scenarios = {
       # Drawdown Scenario. Average adoption of all Custom scenarios.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -137,6 +139,7 @@ scenarios = {
       # Optimum Scenario. High of all custom scenarios
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption

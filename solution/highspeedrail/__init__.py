@@ -41,6 +41,7 @@ scenarios = {
       # cost variables, all of which have since been updated with more data.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -97,6 +98,7 @@ scenarios = {
       # operating cost variables, all of which have since been updated with more data.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -152,6 +154,7 @@ scenarios = {
       # all of which have since been updated with more data.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption

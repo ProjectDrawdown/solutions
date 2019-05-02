@@ -48,6 +48,7 @@ scenarios = {
       # 1, some of which have been updated since publication.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -111,6 +112,7 @@ scenarios = {
       # updated since publication.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption

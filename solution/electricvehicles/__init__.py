@@ -38,6 +38,7 @@ scenarios = {
       # ICCT.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -91,6 +92,7 @@ scenarios = {
       # estimate the total passenger-km of EV during the period of analysis.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
@@ -144,6 +146,7 @@ scenarios = {
       # the period of analysis.
 
       # general
+      vmas=VMAs,
       report_start_year=2020, report_end_year=2050, 
 
       # adoption
