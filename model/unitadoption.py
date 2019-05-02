@@ -35,8 +35,7 @@ class UnitAdoption:  # by Owen Barton
     """
 
     def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted, datadir=None, ref_tam_per_region=None,
-
-                 pds_tam_per_region=None, tla_per_region=None, bug_cfunits_double_count=False,
+                 pds_tam_per_region=None, tla_per_region=None, toa_per_region=None, bug_cfunits_double_count=False,
                  repeated_cost_for_iunits=False, electricity_unit_factor=1.0):
         self.ac = ac
 
@@ -50,12 +49,12 @@ class UnitAdoption:  # by Owen Barton
         self.ref_tam_per_region = ref_tam_per_region
         self.pds_tam_per_region = pds_tam_per_region
         self.tla_per_region = tla_per_region
+        self.toa_per_region = toa_per_region
         self.soln_ref_funits_adopted = soln_ref_funits_adopted
         self.soln_pds_funits_adopted = soln_pds_funits_adopted
         self.bug_cfunits_double_count = bug_cfunits_double_count
         self.repeated_cost_for_iunits = repeated_cost_for_iunits
         self.electricity_unit_factor = electricity_unit_factor
-
 
     @lru_cache()
     def ref_population(self):
@@ -69,7 +68,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "ref_population"
         return result
 
-
     @lru_cache()
     def ref_gdp(self):
         """GDP by region for the reference case.
@@ -82,7 +80,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "ref_gdp"
         return result
 
-
     @lru_cache()
     def ref_gdp_per_capita(self):
         """GDP per capita for the reference case.
@@ -91,7 +88,6 @@ class UnitAdoption:  # by Owen Barton
         result = self.ref_gdp() / self.ref_population()
         result.name = "ref_gdp_per_capita"
         return result
-
 
     @lru_cache()
     def ref_tam_per_capita(self):
@@ -102,7 +98,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "ref_tam_per_capita"
         return result
 
-
     @lru_cache()
     def ref_tam_per_gdp_per_capita(self):
         """Total Addressable Market per unit of GDP per capita for the reference case.
@@ -111,7 +106,6 @@ class UnitAdoption:  # by Owen Barton
         result = self.ref_tam_per_region / self.ref_gdp_per_capita()
         result.name = "ref_tam_per_gdp_per_capita"
         return result
-
 
     @lru_cache()
     def ref_tam_growth(self):
@@ -122,7 +116,6 @@ class UnitAdoption:  # by Owen Barton
         calc.loc[2014] = [''] * calc.shape[1]  # empty row
         calc.name = "ref_tam_growth"
         return calc
-
 
     @lru_cache()
     def pds_population(self):
@@ -136,7 +129,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "pds_population"
         return result
 
-
     @lru_cache()
     def pds_gdp(self):
         """GDP by region for the Project Drawdown Solution case.
@@ -149,7 +141,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "pds_gdp"
         return result
 
-
     @lru_cache()
     def pds_gdp_per_capita(self):
         """GDP per capita for the Project Drawdown Solution case.
@@ -158,7 +149,6 @@ class UnitAdoption:  # by Owen Barton
         result = self.pds_gdp() / self.pds_population()
         result.name = "pds_gdp_per_capita"
         return result
-
 
     @lru_cache()
     def pds_tam_per_capita(self):
@@ -169,7 +159,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "pds_tam_per_capita"
         return result
 
-
     @lru_cache()
     def pds_tam_per_gdp_per_capita(self):
         """Total Addressable Market per unit of GDP per capita for the Project Drawdown Solution case.
@@ -178,7 +167,6 @@ class UnitAdoption:  # by Owen Barton
         result = self.pds_tam_per_region / self.pds_gdp_per_capita()
         result.name = "pds_tam_per_gdp_per_capita"
         return result
-
 
     @lru_cache()
     def pds_tam_growth(self):
@@ -189,7 +177,6 @@ class UnitAdoption:  # by Owen Barton
         calc.loc[2014] = [''] * calc.shape[1]  # empty row
         calc.name = "pds_tam_growth"
         return calc
-
 
     @lru_cache()
     def cumulative_reduction_in_total_degraded_land(self):
@@ -334,7 +321,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "soln_pds_cumulative_funits"
         return result
 
-
     @lru_cache()
     def soln_pds_tot_iunits_reqd(self):
         """Total iunits required each year.
@@ -345,7 +331,6 @@ class UnitAdoption:  # by Owen Barton
             result = result / self.ac.soln_avg_annual_use
         result.name = "soln_pds_tot_iunits_reqd"
         return result
-
 
     @lru_cache()
     def soln_pds_new_iunits_reqd(self):
@@ -362,8 +347,7 @@ class UnitAdoption:  # by Owen Barton
         """
         if self.repeated_cost_for_iunits:
             return self.soln_pds_tot_iunits_reqd().iloc[1:].copy(deep=True).clip(lower=0.0)
-        result = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[
-                 1:]  # iloc[0] NA after diff
+        result = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
         for region, column in result.iteritems():
             for year, value in column.iteritems():
                 # Add replacement units, if needed by adding the number of units
@@ -376,7 +360,6 @@ class UnitAdoption:  # by Owen Barton
                         result.at[year, region] += result.at[replacement_year, region]
         result.name = "soln_pds_new_iunits_reqd"
         return result
-
 
     @lru_cache()
     def soln_pds_big4_iunits_reqd(self):
@@ -399,7 +382,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "soln_pds_big4_iunits_reqd"
         return result
 
-
     @lru_cache()
     def soln_ref_cumulative_funits(self):
         """Cumulative functional units.
@@ -408,7 +390,6 @@ class UnitAdoption:  # by Owen Barton
         result = self.soln_ref_funits_adopted.fillna(0.0).cumsum(axis=0)
         result.name = "soln_ref_cumulative_funits"
         return result
-
 
     @lru_cache()
     def soln_ref_tot_iunits_reqd(self):
@@ -419,7 +400,6 @@ class UnitAdoption:  # by Owen Barton
             result = result / self.ac.soln_avg_annual_use
         result.name = "soln_ref_tot_iunits_reqd"
         return result
-
 
     @lru_cache()
     def soln_ref_new_iunits_reqd(self):
@@ -450,7 +430,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "soln_ref_new_iunits_reqd"
         return result
 
-
     @lru_cache()
     def soln_net_annual_funits_adopted(self):
         """Net annual functional units adopted.
@@ -472,7 +451,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "soln_net_annual_funits_adopted"
         return result
 
-
     @lru_cache()
     def net_annual_land_units_adopted(self):
         """Similar to soln_net_annual_funits_adopted, for Land models.
@@ -481,7 +459,6 @@ class UnitAdoption:  # by Owen Barton
         result = self.soln_net_annual_funits_adopted()
         result.name = 'net_annual_land_units_adopted'
         return result
-
 
     @lru_cache()
     def conv_ref_tot_iunits(self):
@@ -502,12 +479,13 @@ class UnitAdoption:  # by Owen Barton
 
         if self.tla_per_region is not None:  # LAND
             result = self.tla_per_region - self.soln_ref_funits_adopted
+        elif self.toa_per_region is not None:  # OCEAN
+            result = self.toa_per_region - self.soln_ref_funits_adopted
         else:  # RRS
             result = ((self.ref_tam_per_region - self.soln_ref_funits_adopted.fillna(0.0)) /
                       self.ac.conv_avg_annual_use)
         result.name = "conv_ref_tot_iunits"
         return result
-
 
     @lru_cache()
     def conv_ref_annual_tot_iunits(self):
@@ -526,7 +504,6 @@ class UnitAdoption:  # by Owen Barton
             result = result / self.ac.conv_avg_annual_use
         result.name = "conv_ref_annual_tot_iunits"
         return result
-
 
     @lru_cache()
     def conv_ref_new_iunits(self):
@@ -559,7 +536,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "conv_ref_new_iunits"
         return result
 
-
     @lru_cache()
     def soln_pds_net_grid_electricity_units_saved(self):
         """Energy Units (e.g. TWh, tonnes oil equivalent, million therms, etc.) are
@@ -576,7 +552,6 @@ class UnitAdoption:  # by Owen Barton
         result = self.soln_net_annual_funits_adopted().multiply(m)
         result.name = "soln_pds_net_grid_electricity_units_saved"
         return result
-
 
     @lru_cache()
     def soln_pds_net_grid_electricity_units_used(self):
@@ -603,7 +578,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "soln_pds_net_grid_electricity_units_used"
         return result
 
-
     @lru_cache()
     def soln_pds_fuel_units_avoided(self):
         """Fuel consumption avoided annually.
@@ -616,7 +590,6 @@ class UnitAdoption:  # by Owen Barton
         result = self.soln_net_annual_funits_adopted().multiply(m)
         result.name = "soln_pds_fuel_units_avoided"
         return result
-
 
     @lru_cache()
     def soln_pds_direct_co2_emissions_saved(self):
@@ -631,7 +604,6 @@ class UnitAdoption:  # by Owen Barton
         result.name = "soln_pds_direct_co2_emissions_saved"
         return result
 
-
     @lru_cache()
     def soln_pds_direct_ch4_co2_emissions_saved(self):
         """Direct emissions of CH4 avoided, in tons of equivalent CO2.
@@ -645,7 +617,6 @@ class UnitAdoption:  # by Owen Barton
             result = self.soln_net_annual_funits_adopted() * ef.CH4multiplier * self.ac.ch4_co2_per_twh
         result.name = "soln_pds_direct_ch4_co2_emissions_saved"
         return result
-
 
     @lru_cache()
     def soln_pds_direct_n2o_co2_emissions_saved(self):
@@ -682,7 +653,6 @@ class UnitAdoption:  # by Owen Barton
                 result.loc[year] = funits.loc[year - self.ac.land_annual_emissons_lifetime - 1]
         result.name = 'net_land_units_after_emissions_lifetime'
         return result
-
 
     @lru_cache()
     def soln_pds_annual_land_area_harvested(self):

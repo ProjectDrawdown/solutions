@@ -35,8 +35,8 @@ class DEZ:
         self._populate_world_ocean_allocation()
         self._populate_solution_ocean_distribution()
 
-    def get_land_distribution(self):
-        """ Returns relevant land data for Unit Adoption module"""
+    def get_ocean_distribution(self):
+        """ Returns relevant ocean data for Unit Adoption module"""
         return self.soln_ocean_dist_df
 
     def _populate_solution_ocean_allocation(self):
