@@ -1,22 +1,16 @@
 """Adoption Data module."""
 
 from functools import lru_cache
-import math
 import pathlib
-import os
 
 from model import interpolation
 from model import metaclass_cache
+from model.dd import REGIONS
 import numpy as np
 import pandas as pd
-from statistics import mean
-
 
 
 class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
-    REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-               'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']
-
     """Implements Adoption Data module."""
 
     def __init__(self, ac, data_sources, adconfig, world_includes_regional=None):
@@ -217,7 +211,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
             adoption = self.adoption_data_global()
         result = self._low_med_high(adoption_data=adoption,
                                     min_max_sd=self.adoption_min_max_sd_global(), adconfig=self.adconfig['World'],
-
                                     source=self.ac.soln_pds_adoption_prognostication_source,
                                     data_sources=data_sources)
         result.name = 'adoption_low_med_high_global'
@@ -310,7 +303,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         """
         result = self._low_med_high(self.adoption_data_eastern_europe(),
                                     self.adoption_min_max_sd_eastern_europe(), self.adconfig['Eastern Europe'],
-
                                     source="ALL SOURCES",
                                     data_sources=self._get_data_sources(region='Eastern Europe'))
         result.name = 'adoption_low_med_high_eastern_europe'
@@ -357,7 +349,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         """
         result = self._low_med_high(self.adoption_data_asia_sans_japan(),
                                     self.adoption_min_max_sd_asia_sans_japan(), self.adconfig['Asia (Sans Japan)'],
-
                                     source="ALL SOURCES",
                                     data_sources=self._get_data_sources(region='Asia (Sans Japan)'))
         result.name = 'adoption_low_med_high_asia_sans_japan'
@@ -385,7 +376,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         """
         return self._adoption_data_middle_east_and_africa
 
-
     @lru_cache()
     def adoption_min_max_sd_middle_east_and_africa(self):
         """Return the min, max, and standard deviation for the adoption data in the 'Middle East and Africa' region.
@@ -396,7 +386,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                       region='Middle East and Africa'))
         result.name = 'adoption_min_max_sd_middle_east_and_africa'
         return result
-
 
     @lru_cache()
     def adoption_low_med_high_middle_east_and_africa(self):
@@ -411,7 +400,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         result.name = 'adoption_low_med_high_middle_east_and_africa'
         return result
 
-
     @lru_cache()
     def adoption_trend_middle_east_and_africa(self, trend=None):
         """Adoption prediction via one of several interpolation algorithms in the 'Middle East and Africa' region.
@@ -421,11 +409,9 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         if not trend:
             trend = self.adconfig.loc['trend', 'Middle East and Africa']
         growth = self.adconfig.loc['growth', 'Middle East and Africa']
-        result = self._adoption_trend(self.adoption_low_med_high_middle_east_and_africa(), growth,
-                                      trend)
+        result = self._adoption_trend(self.adoption_low_med_high_middle_east_and_africa(), growth, trend)
         result.name = 'adoption_trend_middle_east_and_africa_' + str(trend).lower()
         return result
-
 
     @lru_cache()
     def adoption_data_latin_america(self):
@@ -433,7 +419,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
            SolarPVUtil 'Adoption Data'!B358:R407
         """
         return self._adoption_data_latin_america
-
 
     @lru_cache()
     def adoption_min_max_sd_latin_america(self):
@@ -444,7 +429,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                   data_sources=self._get_data_sources(region='Latin America'))
         result.name = 'adoption_min_max_sd_latin_america'
         return result
-
 
     @lru_cache()
     def adoption_low_med_high_latin_america(self):
@@ -459,7 +443,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         result.name = 'adoption_low_med_high_latin_america'
         return result
 
-
     @lru_cache()
     def adoption_trend_latin_america(self, trend=None):
         """Adoption prediction via one of several interpolation algorithms in the 'Latin America' region.
@@ -473,14 +456,12 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         result.name = 'adoption_trend_latin_america_' + str(trend).lower()
         return result
 
-
     @lru_cache()
     def adoption_data_china(self):
         """Return adoption data for the given solution in the 'China' region.
            SolarPVUtil 'Adoption Data'!B421:R470
         """
         return self._adoption_data_china
-
 
     @lru_cache()
     def adoption_min_max_sd_china(self):
@@ -491,7 +472,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                   data_sources=self._get_data_sources(region='China'))
         result.name = 'adoption_min_max_sd_china'
         return result
-
 
     @lru_cache()
     def adoption_low_med_high_china(self):
@@ -504,7 +484,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                     data_sources=self._get_data_sources(region='China'))
         result.name = 'adoption_low_med_high_china'
         return result
-
 
     @lru_cache()
     def adoption_trend_china(self, trend=None):
@@ -519,14 +498,12 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         result.name = 'adoption_trend_china_' + str(trend).lower()
         return result
 
-
     @lru_cache()
     def adoption_data_india(self):
         """Return adoption data for the given solution in the 'India' region.
            SolarPVUtil 'Adoption Data'!B485:R534
         """
         return self._adoption_data_india
-
 
     @lru_cache()
     def adoption_min_max_sd_india(self):
@@ -537,7 +514,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                   data_sources=self._get_data_sources(region='India'))
         result.name = 'adoption_min_max_sd_india'
         return result
-
 
     @lru_cache()
     def adoption_low_med_high_india(self):
@@ -550,7 +526,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                     data_sources=self._get_data_sources(region='India'))
         result.name = 'adoption_low_med_high_india'
         return result
-
 
     @lru_cache()
     def adoption_trend_india(self, trend=None):
@@ -565,14 +540,12 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         result.name = 'adoption_trend_india_' + str(trend).lower()
         return result
 
-
     @lru_cache()
     def adoption_data_eu(self):
         """Return adoption data for the given solution in the 'EU' region.
            SolarPVUtil 'Adoption Data'!B549:R598
         """
         return self._adoption_data_eu
-
 
     @lru_cache()
     def adoption_min_max_sd_eu(self):
@@ -583,7 +556,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                   data_sources=self._get_data_sources(region='EU'))
         result.name = 'adoption_min_max_sd_eu'
         return result
-
 
     @lru_cache()
     def adoption_low_med_high_eu(self):
@@ -596,7 +568,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                     data_sources=self._get_data_sources(region='EU'))
         result.name = 'adoption_low_med_high_eu'
         return result
-
 
     @lru_cache()
     def adoption_trend_eu(self, trend=None):
@@ -611,14 +582,12 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         result.name = 'adoption_trend_eu_' + str(trend).lower()
         return result
 
-
     @lru_cache()
     def adoption_data_usa(self):
         """Return adoption data for the given solution in the 'USA' region.
            SolarPVUtil 'Adoption Data'!B614:R663
         """
         return self._adoption_data_usa
-
 
     @lru_cache()
     def adoption_min_max_sd_usa(self):
@@ -629,7 +598,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                   data_sources=self._get_data_sources(region='USA'))
         result.name = 'adoption_min_max_sd_usa'
         return result
-
 
     @lru_cache()
     def adoption_low_med_high_usa(self):
@@ -642,7 +610,6 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
                                     data_sources=self._get_data_sources(region='USA'))
         result.name = 'adoption_low_med_high_usa'
         return result
-
 
     @lru_cache()
     def adoption_trend_usa(self, trend=None):
@@ -657,19 +624,16 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         result.name = 'adoption_trend_usa_' + str(trend).lower()
         return result
 
-
     @lru_cache()
     def adoption_is_single_source(self):
         """Whether the source data selected is one source or multiple."""
         return not interpolation.is_group_name(data_sources=self.data_sources,
                                                name=self.ac.soln_pds_adoption_prognostication_source)
 
-
     def _set_adoption_one_region(self, result, region, adoption_trend, adoption_low_med_high):
         result[region] = adoption_trend.loc[:, 'adoption']
         first_year = result.first_valid_index()
         result.loc[first_year, region] = adoption_low_med_high.loc[first_year, 'Medium']
-
 
     @lru_cache()
     def adoption_data_per_region(self):
@@ -677,9 +641,9 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         growth = self.ac.soln_pds_adoption_prognostication_growth
         if growth is None:
             tmp = self.adoption_low_med_high_global()
-            df = pd.DataFrame(np.nan, columns=self.REGIONS, index=tmp.index)
+            df = pd.DataFrame(np.nan, columns=REGIONS, index=tmp.index)
         else:
-            df = pd.DataFrame(columns=self.REGIONS)
+            df = pd.DataFrame(columns=REGIONS)
             df.loc[:, 'World'] = self.adoption_low_med_high_global()[growth]
             df.loc[:, 'OECD90'] = self.adoption_low_med_high_oecd90()[growth]
             df.loc[:, 'Eastern Europe'] = self.adoption_low_med_high_eastern_europe()[growth]
@@ -694,11 +658,10 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         df.name = 'adoption_data_per_region'
         return df
 
-
     @lru_cache()
     def adoption_trend_per_region(self):
         """Return a dataframe of adoption trends, one column per region."""
-        df = pd.DataFrame(columns=self.REGIONS)
+        df = pd.DataFrame(columns=REGIONS)
         df['World'] = self.adoption_trend_global()['adoption']
         df['OECD90'] = self.adoption_trend_oecd90()['adoption']
         df['Eastern Europe'] = self.adoption_trend_eastern_europe()['adoption']

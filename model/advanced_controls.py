@@ -8,16 +8,13 @@ from warnings import warn
 from model import emissionsfactors as ef
 from model import excel_math
 
-
-
-SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND')
+SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND OCEAN')
 translate_adoption_bases = {"DEFAULT Linear": "Linear", "DEFAULT S-Curve": "Logistic S-Curve"}
 valid_pds_adoption_bases = {'Linear', 'Logistic S-Curve', 'Existing Adoption Prognostications',
                             'Customized S-Curve Adoption', 'Fully Customized PDS', 'Bass Diffusion S-Curve',
                             None}
 valid_ref_adoption_bases = {'Default', 'Custom', None}
 valid_adoption_growth = {'High', 'Medium', 'Low', None}
-
 
 
 class AdvancedControls:
@@ -543,8 +540,8 @@ class AdvancedControls:
         self.carbon_not_emitted_after_harvesting = self._substitute_vma(carbon_not_emitted_after_harvesting,
                                                                         vma_title='Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing')
         self.avoided_deforest_with_intensification = self._substitute_vma(
-                avoided_deforest_with_intensification,
-                vma_title='Avoided_Deforested_Area_With_Increase_in_Agricultural_Intensification')
+            avoided_deforest_with_intensification,
+            vma_title='Avoided_Deforested_Area_With_Increase_in_Agricultural_Intensification')
 
         self.delay_protection_1yr = delay_protection_1yr
         self.delay_regrowth_1yr = delay_regrowth_1yr
@@ -580,16 +577,13 @@ class AdvancedControls:
     def soln_first_cost_learning_rate(self):
         return 1.0 - self.soln_first_cost_efficiency_rate
 
-
     @property
     def conv_first_cost_learning_rate(self):
         return 1.0 - self.conv_first_cost_efficiency_rate
 
-
     @property
     def soln_fuel_learning_rate(self):
         return 1.0 - self.soln_fuel_efficiency_factor
-
 
     @property
     def soln_lifetime_replacement(self):
@@ -600,7 +594,6 @@ class AdvancedControls:
         else:
             raise ValueError(
                 'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for solution')
-
 
     @property
     def soln_lifetime_replacement_rounded(self):
@@ -616,7 +609,6 @@ class AdvancedControls:
             raise ValueError(
                 'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for solution')
 
-
     @property
     def conv_lifetime_replacement(self):
         if self.conv_lifetime_capacity is not None:  # RRS
@@ -626,7 +618,6 @@ class AdvancedControls:
         else:
             raise ValueError(
                 'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for conventional')
-
 
     @property
     def conv_lifetime_replacement_rounded(self):
@@ -641,7 +632,6 @@ class AdvancedControls:
         else:
             raise ValueError(
                 'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for conventional')
-
 
     def string_to_solution_category(self, text):
         ltext = str(text).lower()
@@ -678,8 +668,7 @@ class AdvancedControls:
             return val
 
         for vma_key in self.vmas.keys():
-            if vma_key.startswith(
-                vma_title):  # This handles the case of 'first cost' title discrepancies
+            if vma_key.startswith(vma_title):  # This handles the case of 'first cost' title discrepancies
                 vma_title = vma_key
                 break
         else:

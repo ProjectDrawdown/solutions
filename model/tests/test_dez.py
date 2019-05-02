@@ -14,4 +14,4 @@ def test_populate_solution_land_distribution():
     de._populate_world_ocean_allocation()
     de._populate_solution_ocean_distribution()
 
-    pd.testing.assert_frame_equal(de.get_land_distribution(), expected, check_dtype=False)
+    pd.testing.assert_frame_equal(de.get_ocean_distribution(), expected, check_dtype=False)

@@ -9,6 +9,7 @@ can be used instead of Drawdown's allocations. Thus, this class is named CustomT
 from functools import lru_cache
 import pandas as pd
 import warnings
+from model.dd import REGIONS
 
 
 def tla_per_region(land_dist, custom_world_values=None):
@@ -27,8 +28,7 @@ def tla_per_region(land_dist, custom_world_values=None):
     Returns:
         df: DataFrame for use with UnitAdoption
     """
-    regions = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
-               'China', 'India', 'EU', 'USA']
+    regions = REGIONS
     index = pd.Index(data=list(range(2014, 2061)), name='Year')
     df = pd.DataFrame(index=index)
     for region in regions:
@@ -51,8 +51,7 @@ class CustomTLA:
             filename: path to 'custom_tla_data.csv' file
         """
         try:
-            self.df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-                                  skip_blank_lines=True)
+            self.df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True, skip_blank_lines=True)
         except FileNotFoundError:
             warnings.warn('{} file not found. Custom TLA will not be used'.format(filename))
             self.df = None
@@ -68,7 +67,3 @@ class CustomTLA:
     @lru_cache()
     def get_world_values(self):
         return self._avg_high_low()
-
-
-if __name__ == '__main__':
-    pass

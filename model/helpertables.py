@@ -6,17 +6,12 @@ the Linear/2nd order poly/3rd order poly/etc curve fitting implementations
 from interpolation.py, or use a simple linear fit implemented here.
 """
 from functools import lru_cache
-import numpy as np
 import pandas as pd
-
-
 
 
 class HelperTables:
     """ Implementation for the Helper Tables module. """
-
     def __init__(self, ac, pds_adoption_data_per_region, ref_datapoints, pds_datapoints, ref_adoption_limits=None,
-
                  pds_adoption_limits=None, pds_adoption_trend_per_region=None,
                  pds_adoption_is_single_source=False, ref_adoption_data_per_region=None):
         """
