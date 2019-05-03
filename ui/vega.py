@@ -14,6 +14,7 @@ sector_colormap = {
     'Women and Girls': 'DarkGoldenRod',
     'Transport': 'Teal',
     'Buildings and Cities': 'SteelBlue',
+    'Oceans': 'Aquamarine',
 }
 
 def get_sector_color(sector):
@@ -28,13 +29,19 @@ def solution_treemap(solutions, width, height):
        solutions: Pandas DataFrame with columns 'Solution', 'Sector', and 'CO2eq'
        width, height: in pixels
   """
-  sectors = solutions.pivot_table(index='Sector', aggfunc=sum)
-
   elements = {'root': {'id': 1}}
-  idx = 2
-  for row in sectors.itertuples(index=True):
-    name = getattr(row, 'Index')
-    elements[name] = {'id': idx, 'name': name, 'parent': 1, 'color': get_sector_color(name)}
+  elements['row1'] = {'id': 2, 'parent': 1}
+  elements['row2'] = {'id': 3, 'parent': 1}
+  elements['row3'] = {'id': 4, 'parent': 1}
+  idx = 5
+  for name in ['Transport', 'Oceans', 'Materials']:
+    elements[name] = {'id': idx, 'name': name, 'parent': 2, 'color': get_sector_color(name)}
+    idx += 1
+  for name in ['Electricity Generation', 'Food']:
+    elements[name] = {'id': idx, 'name': name, 'parent': 3, 'color': get_sector_color(name)}
+    idx += 1
+  for name in ['Land Use', 'Buildings and Cities', 'Women and Girls']:
+    elements[name] = {'id': idx, 'name': name, 'parent': 4, 'color': get_sector_color(name)}
     idx += 1
   for row in solutions.itertuples(index=False):
     name = getattr(row, 'Solution')
@@ -57,7 +64,7 @@ def solution_treemap(solutions, width, height):
           "name": "layout", "value": "squarify",
         },
         {
-          "name": "aspectRatio", "value": 1.6,
+          "name": "aspectRatio", "value": 1.4,
         }
       ],
 
@@ -74,7 +81,6 @@ def solution_treemap(solutions, width, height):
             {
               "type": "treemap",
               "field": "size",
-              "sort": {"field": "value"},
               "round": True,
               "method": {"signal": "layout"},
               "ratio": {"signal": "aspectRatio"},
