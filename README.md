@@ -13,22 +13,20 @@ git clone git@gitlab.com:codeearth/drawdown.git
 cd drawdown
 ```
 
-Create and activate a python virtual environment:
+Create and activate a python virtual environment. We recommend [Anaconda](https://www.anaconda.com/distribution/#download-section).
 
 ```sh
-python3 -m venv venv
-. venv/bin/activate
+$ conda create --name drawdown
+$ conda activate drawdown
+(drawdown) $ conda install -c conda-forge jupyterlab altair=2.3 bqplot
+(drawdown) $ conda install -c conda-forge ipywidgets nodejs xlrd pytest
+(drawdown) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
+(drawdown) $ jupyter labextension install bqplot
 ```
 
-Install dependencies:
-
+Then start the Jupyter Notebook:
 ```sh
-pip install -r requirements.txt
-```
-
-To run the Jupyter Notebook first run the commands in binder/postBuild to ensure all needed JupyterLab extensions are installed, then:
-```sh
-./venv/bin/jupyter lab ./Drawdown.ipynb
+(drawdown) $ jupyter lab ./Drawdown.ipynb
 ```
 
 # Understanding the Drawdown solution models: Reference and Summary
