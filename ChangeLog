@@ -239,4 +239,11 @@ Apr 22 - Apr 26, 2019
   Managed Grazing, Afforestation, Nutrient Management, Irrigation
   Efficiency, Peatlands.
 + Add chart of linearity of adoption data to ModelHealth.
-+ wrote [HOWTO / Getting Started guide](https://docs.google.com/document/d/1uavVbXPTssHceoJcVP0gWlb6Ms8ElFsvMpeH6p1K1Ng/comment)
+
+Apr 29 - May 3, 2019
++ Add seven solutions
+  Rice Intensification, Cars, Nuclear, Indigenous Peoples' Land,
+  Perennial Bioenergy, Women Smallholders, Geothermal.
++ regenerate almost all solution afresh, using current tooling.
+  RRS solutions now have VMAs.
++ add first Ocean solution: Limited Bottom Trawling
