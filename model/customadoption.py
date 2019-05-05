@@ -2,14 +2,11 @@
 
 from functools import lru_cache
 from model import metaclass_cache
+from model.dd import REGIONS
 import pandas as pd
 import numpy as np
 
 pd.set_option('display.expand_frame_repr', False)
-
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China',
-
-           'India', 'EU', 'USA']
 YEARS = list(range(2012, 2061))
 
 

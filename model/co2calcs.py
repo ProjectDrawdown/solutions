@@ -135,15 +135,11 @@ class CO2Calcs:
             m = pd.DataFrame(0., columns=regions, index=index, dtype=np.float64)
             if self.soln_pds_direct_co2eq_emissions_saved is not None or self.soln_pds_direct_co2_emissions_saved is not None:
                 if self.ac.emissions_use_agg_co2eq is None or self.ac.emissions_use_agg_co2eq:
-                    m['World'] = m['World'].add(self.soln_pds_direct_co2eq_emissions_saved['World'].loc[s:e],
-                                                fill_value=0)
+                    m = m.add(self.soln_pds_direct_co2eq_emissions_saved.loc[s:e], fill_value=0)
                 else:
-                    m['World'] = m['World'].add(self.soln_pds_direct_co2_emissions_saved['World'].loc[s:e],
-                                                fill_value=0)
-                    m['World'] = m['World'].add(self.soln_pds_direct_n2o_co2_emissions_saved['World'].loc[s:e],
-                                                fill_value=0)
-                    m['World'] = m['World'].add(self.soln_pds_direct_ch4_co2_emissions_saved['World'].loc[s:e],
-                                                fill_value=0)
+                    m = m.add(self.soln_pds_direct_co2_emissions_saved.loc[s:e], fill_value=0)
+                    m = m.add(self.soln_pds_direct_n2o_co2_emissions_saved.loc[s:e], fill_value=0)
+                    m = m.add(self.soln_pds_direct_ch4_co2_emissions_saved.loc[s:e], fill_value=0)
             if self.annual_land_area_harvested is not None:
                 m = m.sub(self.direct_emissions_from_harvesting().loc[s:e], fill_value=0)
             if self.co2eq_reduced_grid_emissions() is not None:

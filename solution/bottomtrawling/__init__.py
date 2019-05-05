@@ -129,7 +129,7 @@ class LimitingBottomTrawling:
 
         self.ua = unitadoption.UnitAdoption(
             ac=self.ac,
-            toa_per_region=self.toa_per_region,
+            pds_total_adoption_units=self.toa_per_region,
             electricity_unit_factor=1000000.0,
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
