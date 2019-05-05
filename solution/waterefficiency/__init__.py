@@ -318,7 +318,7 @@ class WaterEfficiencyMeasures:
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
     self.ua = unitadoption.UnitAdoption(ac=self.ac,
-        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,
+        ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
         bug_cfunits_double_count=True)
