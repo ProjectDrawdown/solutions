@@ -312,7 +312,7 @@ class ImprovedRice:
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
     self.ua = unitadoption.UnitAdoption(ac=self.ac,
-        tla_per_region=self.tla_per_region,
+        pds_total_adoption_units=self.tla_per_region,
         electricity_unit_factor=1000000.0,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),

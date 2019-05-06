@@ -5,7 +5,8 @@ import os.path
 import pathlib
 import pandas as pd  # by Owen Barton
 from model import emissionsfactors
-
+from model.dd import REGIONS, OCEAN_REGIONS
+from model.advanced_controls import SOLUTION_CATEGORY
 
 # by Owen Barton
 # by Owen Barton
@@ -14,17 +15,11 @@ class UnitAdoption:  # by Owen Barton
 
        Arguments:
          ac: advanced_controls.py object, settings to control model operation.
-         soln_ref_funits_adopted: Annual functional units adopted in the
-           Reference scenario.
-         soln_pds_funits_adopted: Annual functional units adopted in the
-           PDS scenario.
-         datadir: directory where CSV files can be found
-         ref_tam_per_region: (RRS only) dataframe of total addressible market per major
-           region for the Referene scenario.
-         pds_tam_per_region: (RRS only) dataframe of total addressible market per major
-           region for the PDS scenario.
-         tla_per_region: (LAND only): dataframe of total land area per region.
-         bug_pds_cfunits_double_count (bool): enable bug-for-bug compatibility
+         soln_ref_funits_adopted: Annual functional units adopted in the Reference scenario.
+         soln_pds_funits_adopted: Annual functional units adopted in the PDS scenario.
+         ref_total_adoption_units: dataframe of TAM/TLA/TOA per region for the Reference scenario.
+         pds_total_adoption_units: dataframe of TAM/TLA/TOA per region for the PDS scenario.
+         bug_cfunits_double_count (bool): enable bug-for-bug compatibility
          repeated_cost_for_iunits (bool): whether there is a repeated first cost to
            maintaining implementation units at a specified level in
            soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, & conv_ref_new_iunits.
@@ -34,22 +29,14 @@ class UnitAdoption:  # by Owen Barton
            is calculated per hectare.
     """
 
-    def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted, datadir=None, ref_tam_per_region=None,
-                 pds_tam_per_region=None, tla_per_region=None, toa_per_region=None, bug_cfunits_double_count=False,
-                 repeated_cost_for_iunits=False, electricity_unit_factor=1.0):
+    def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted,
+                 ref_total_adoption_units=None, pds_total_adoption_units=None,
+                 bug_cfunits_double_count=False, repeated_cost_for_iunits=False, electricity_unit_factor=1.0):
         self.ac = ac
-
-        # NOTE: as datadir is static for all solutions this shouldn't be an arg
-        # For now it is kept in for backwards compatibility with solutions
-        if datadir is None:
-            self.datadir = str(pathlib.Path(__file__).parents[1].joinpath('data'))
-        else:
-            self.datadir = datadir
-
-        self.ref_tam_per_region = ref_tam_per_region
-        self.pds_tam_per_region = pds_tam_per_region
-        self.tla_per_region = tla_per_region
-        self.toa_per_region = toa_per_region
+        self.datadir = str(pathlib.Path(__file__).parents[1].joinpath('data'))
+        self.ref_tam_per_region = ref_total_adoption_units
+        self.pds_tam_per_region = pds_total_adoption_units
+        self.total_area_per_region = pds_total_adoption_units  # ref and pds should be the same for TLA/TOA
         self.soln_ref_funits_adopted = soln_ref_funits_adopted
         self.soln_pds_funits_adopted = soln_pds_funits_adopted
         self.bug_cfunits_double_count = bug_cfunits_double_count
@@ -223,7 +210,7 @@ class UnitAdoption:  # by Owen Barton
                                                                                  in Current Year
         ForestProtection 'Unit Adoption Calculations'!DS135:DT181"""
         deg_land = self.pds_cumulative_degraded_land_unprotected() + self.pds_cumulative_degraded_land_protected()
-        return self.tla_per_region.loc[:, ['World']] - deg_land
+        return self.total_area_per_region - deg_land
 
     @lru_cache()
     def ref_cumulative_degraded_land_unprotected(self):
@@ -254,7 +241,7 @@ class UnitAdoption:  # by Owen Barton
                                                                                  in Current Year
         ForestProtection 'Unit Adoption Calculations'!DS197:DT244"""
         deg_land = self.ref_cumulative_degraded_land_unprotected() + self.ref_cumulative_degraded_land_protected()
-        return self.tla_per_region.loc[:, ['World']] - deg_land
+        return self.total_area_per_region - deg_land
 
     def _cumulative_degraded_land(self, ref_or_pds, protected_or_unprotected):
         """
@@ -271,9 +258,6 @@ class UnitAdoption:  # by Owen Barton
         Args:
           ref_or_pds: whether we use 'REF' or 'PDS' unit adoption data
           protected_or_unprotected: whether we calculate for 'protected' or 'unprotected' land
-    
-        Note: we only calculate 'World' values
-        See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
         """
         if ref_or_pds == 'PDS':
             units_adopted = self.soln_pds_funits_adopted
@@ -283,24 +267,25 @@ class UnitAdoption:  # by Owen Barton
             raise ValueError("Must indicate 'REF' or 'PDS'")
         years = list(range(2014, 2061))
         index = pd.Index(years, name='Year')
-        df = pd.DataFrame(0., columns=['World'], index=index)
+        regions = OCEAN_REGIONS if self.ac.solution_category == 'OCEAN' else REGIONS
+        df = pd.DataFrame(0., columns=regions, index=index)
 
         delay = 1 if self.ac.delay_protection_1yr else 0
         if protected_or_unprotected == 'protected':
             # protected table starts with nonzero value
-            df.at[2014, 'World'] = units_adopted.at[2014, 'World'] * self.ac.disturbance_rate
+            df.loc[2014, :] = units_adopted.loc[2014, :] * self.ac.disturbance_rate
 
         for y in years[1:]:
-            protected_land = units_adopted.at[y - delay, 'World']
-            degraded_land = df.at[y - 1, 'World']
+            protected_land = units_adopted.loc[y - delay, :]
+            degraded_land = df.loc[y - 1, :]
             if protected_or_unprotected == 'protected':
-                val = min(degraded_land + (protected_land - degraded_land) * self.ac.disturbance_rate,
-                          protected_land)
+                row = degraded_land + (protected_land - degraded_land) * self.ac.disturbance_rate
+                row = pd.DataFrame([row, protected_land]).min()
             elif protected_or_unprotected == 'unprotected':
-                tla = self.tla_per_region.at[y, 'World']
-                val = min(degraded_land + (tla - protected_land - degraded_land) * self.ac.degradation_rate,
-                          tla)
-            df.at[y, 'World'] = val
+                tot_area = self.total_area_per_region.loc[y, :]
+                row = degraded_land + (tot_area - protected_land - degraded_land) * self.ac.degradation_rate
+                row = pd.DataFrame([row, tot_area]).min()
+            df.loc[y, :] = row
         return df
 
     @lru_cache()
@@ -477,10 +462,8 @@ class UnitAdoption:  # by Owen Barton
         SolarPVUtil 'Unit Adoption Calculations'!Q251:AA298
         """
 
-        if self.tla_per_region is not None:  # LAND
-            result = self.tla_per_region - self.soln_ref_funits_adopted
-        elif self.toa_per_region is not None:  # OCEAN
-            result = self.toa_per_region - self.soln_ref_funits_adopted
+        if self.ac.solution_category == SOLUTION_CATEGORY.LAND or self.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+            result = self.total_area_per_region - self.soln_ref_funits_adopted
         else:  # RRS
             result = ((self.ref_tam_per_region - self.soln_ref_funits_adopted.fillna(0.0)) /
                       self.ac.conv_avg_annual_use)
