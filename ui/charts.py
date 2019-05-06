@@ -10,8 +10,13 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 import altair as alt
 import IPython.display
+import ipyvolume as ipv
 import ipywidgets
+import numpy as np
 import pandas as pd
+import PIL
+import PIL.ImageDraw
+import PIL.ImageFont
 
 from model.advanced_controls import SOLUTION_CATEGORY
 
@@ -621,9 +626,12 @@ def get_adoption_data_tab(solutions):
                 color=alt.Color('column'),
                 tooltip=['column', 'adoption', 'Year'],
             ).properties(
-                title='Adoption'
+                title='World Adoption'
             ).interactive()
             IPython.display.display(chart)
+
+        ad_frizz = get_frizzle_chart(df=s.ht.soln_pds_funits_adopted(), ylabel='funits', size=450,
+                key=fullname(s)+":adoption_data")
 
         geo_source = alt.topo_feature(os.path.join('data',
             'world_topo_sans_antartica_with_dd_regions.json'), 'regions')
@@ -680,7 +688,7 @@ def get_adoption_data_tab(solutions):
             children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart])]))
         else:
             children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
-                ad_abs_geo, ad_pct_geo])]))
+                ad_frizz, ad_abs_geo, ad_pct_geo])]))
 
     adoption_data = ipywidgets.Accordion(children=children)
     for i, s in enumerate(solutions):
@@ -714,6 +722,11 @@ def get_tam_data_tab(solutions):
             header += 'background-color:#f7f7f9;width:100%">REF TAM per region</div>'
             IPython.display.display(IPython.display.HTML(header + df.style.format('{:.02f}')
                 .set_table_styles(dataframe_css_styles).render()))
+
+        tm_pds_frizz = get_frizzle_chart(df=s.tm.pds_tam_per_region(), ylabel='PDS TAM', size=300,
+                key=fullname(s)+":pds_tam")
+        tm_ref_frizz = get_frizzle_chart(df=s.tm.ref_tam_per_region(), ylabel='REF TAM', size=300,
+                key=fullname(s)+":ref_tam")
 
         tm_model = ipywidgets.Output()
         with tm_model:
@@ -771,8 +784,8 @@ def get_tam_data_tab(solutions):
             IPython.display.display(chart)
 
         children.append(ipywidgets.VBox(
-            [ipywidgets.HBox([tm_table_pds, ipywidgets.VBox([tm_model, tm_geo_pds])]),
-             ipywidgets.HBox([tm_table_ref, ipywidgets.VBox([tm_geo_ref])])]))
+            [ipywidgets.HBox([tm_table_pds, ipywidgets.VBox([tm_model, tm_pds_frizz, tm_geo_pds])]),
+             ipywidgets.HBox([tm_table_ref, ipywidgets.VBox([tm_ref_frizz, tm_geo_ref])])]))
         titles.append(fullname(s))
 
     if children:
@@ -906,3 +919,65 @@ def get_solutions_from_checkboxes(checkboxes):
             solutions.append(constructor(scenario))
 
     return solutions
+
+
+def get_frizzle_chart(df, ylabel, size=None, key=None):
+    """Returns a 3D Frizz chart, one frizzle strip per column in the dataframe.
+
+       Arguments:
+         df: the DataFrame to graph.
+         ylabel: text label to place on the Y axis.
+         size: in integer pixels
+
+       Returns:
+         an ipywidget
+    """
+    (width, height) = (size, size) if size is not None else (500, 500)
+    ipv.figure(width=width, height=height, key=key, controls=True)
+    color = [(161,222,240), (56,116,114), (16,237,220), (28,69,133), (238,128,254),
+            (180,39,183), (92,130,210), (22,66,205), (228,204,241), (138,68,136),
+            (134,202,98), (35,137,16), (68,242,112), (106,127,47), (237,212,94),
+            (103,61,23), (251,120,16), (180,39,32), (253,108,160), (184,114,90)]
+
+    # Draw a strip of triangles for each region, tracing the dataframe values
+    for (z, region) in enumerate(df.columns):
+        years = list(df.index)
+        nyears = len(years)
+        year = years.pop(0)
+        X = [year, year]
+        y = df.loc[year, region]
+        Y = [y, y]
+        Z = [float(z), float(z) + 1.0]
+        U = [0.0, 0.0]
+        V = [0.0, 1.0]
+        triangles = []
+        offset = 2
+        for (idx, year) in enumerate(years, 1):
+            X.extend([year, year])
+            y = df.loc[year, region]
+            Y.extend([y, y * 0.97])
+            Z.extend([float(z), float(z) + 1.0])
+            u = float(idx) / nyears
+            U.extend([u, u])
+            V.extend([0.0, 1.0])
+            triangles.extend([[offset-2, offset-1, offset+1], [offset-2, offset, offset+1]])
+            offset += 2
+        img = PIL.Image.new(mode='RGB', size=(1000, 100), color=color[z])
+        draw = PIL.ImageDraw.Draw(img)
+        font = PIL.ImageFont.truetype(os.path.join('data', 'fonts', 'Roboto-Medium.ttf'), 90)
+        draw.text(xy=(100, 0), text=region, fill=(255,0,0), font=font)
+        ipv.pylab.plot_trisurf(np.array(X), np.array(Y), np.array(Z), triangles=triangles,
+                u=U, v=V, texture=img.transpose(PIL.Image.FLIP_TOP_BOTTOM))
+
+    ipv.style.box_on()
+    ipv.pylab.xlabel('Year')
+    first_year = df.index[0]
+    last_year = df.index[-1]
+    ipv.pylab.xlim(first_year - 2, last_year + 2)
+    ipv.pylab.ylabel(ylabel)
+    ipv.pylab.zlabel('Region')
+    nregions = len(df.columns)
+    ipv.pylab.zlim(-0.5, nregions + 0.5)
+    ipv.pylab.view(10.0, 10.0, 3.0)
+    ipv.pylab.view(-165.0, 80.0, 2.2)
+    return ipv.gcc()
