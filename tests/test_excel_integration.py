@@ -222,7 +222,7 @@ def verify_tam_data(obj, verify=None):
       ('CE50:CH96', obj.tm.forecast_trend_global(trend='Degree2').reset_index(drop=True), d2_mask),
       ('CM50:CQ96', obj.tm.forecast_trend_global(trend='Degree3').reset_index(drop=True), d3_mask),
       ('CV50:CX96', obj.tm.forecast_trend_global(trend='Exponential').reset_index(drop=True), exp_mask),
-      #('DZ45:EA91', obj.tm.forecast_trend_global().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ45:EA91', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'World']], None),
       # TODO Figure out PDS TAM handling
       ('W164:Y212', obj.tm.forecast_min_max_sd_oecd90().reset_index(drop=True), None),
       ('AA164:AC212', obj.tm.forecast_low_med_high_oecd90().reset_index(drop=True), None),
@@ -230,63 +230,63 @@ def verify_tam_data(obj, verify=None):
       ('CE168:CH214', obj.tm.forecast_trend_oecd90(trend='Degree2').reset_index(drop=True), None),
       ('CM168:CQ214', obj.tm.forecast_trend_oecd90(trend='Degree3').reset_index(drop=True), None),
       ('CV168:CX214', obj.tm.forecast_trend_oecd90(trend='Exponential').reset_index(drop=True), None),
-      #('DZ163:EA209', obj.tm.forecast_trend_oecd90().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ163:EA209', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'OECD90']], None),
       ('W228:Y276', obj.tm.forecast_min_max_sd_eastern_europe().reset_index(drop=True), None),
       ('AA228:AC276', obj.tm.forecast_low_med_high_eastern_europe().reset_index(drop=True), None),
       ('BX232:BZ278', obj.tm.forecast_trend_eastern_europe(trend='Linear').reset_index(drop=True), None),
       ('CE232:CH278', obj.tm.forecast_trend_eastern_europe(trend='Degree2').reset_index(drop=True), None),
       ('CM232:CQ278', obj.tm.forecast_trend_eastern_europe(trend='Degree3').reset_index(drop=True), None),
       ('CV232:CX278', obj.tm.forecast_trend_eastern_europe(trend='Exponential').reset_index(drop=True), None),
-      #('DZ227:EA273', obj.tm.forecast_trend_eastern_europe().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ227:EA273', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'Eastern Europe']], None),
       ('W291:Y339', obj.tm.forecast_min_max_sd_asia_sans_japan().reset_index(drop=True), None),
       ('AA291:AC339', obj.tm.forecast_low_med_high_asia_sans_japan().reset_index(drop=True), None),
       ('BX295:BZ341', obj.tm.forecast_trend_asia_sans_japan(trend='Linear').reset_index(drop=True), None),
       ('CE295:CH341', obj.tm.forecast_trend_asia_sans_japan(trend='Degree2').reset_index(drop=True), None),
       ('CM295:CQ341', obj.tm.forecast_trend_asia_sans_japan(trend='Degree3').reset_index(drop=True), None),
       ('CV295:CX341', obj.tm.forecast_trend_asia_sans_japan(trend='Exponential').reset_index(drop=True), None),
-      #('DZ290:EA336', obj.tm.forecast_trend_asia_sans_japan().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ290:EA336', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'Asia (Sans Japan)']], None),
       ('W354:Y402', obj.tm.forecast_min_max_sd_middle_east_and_africa().reset_index(drop=True), None),
       ('AA354:AC402', obj.tm.forecast_low_med_high_middle_east_and_africa().reset_index(drop=True), None),
       ('BX358:BZ404', obj.tm.forecast_trend_middle_east_and_africa(trend='Linear').reset_index(drop=True), None),
       ('CE358:CH404', obj.tm.forecast_trend_middle_east_and_africa(trend='Degree2').reset_index(drop=True), None),
       ('CM358:CQ404', obj.tm.forecast_trend_middle_east_and_africa(trend='Degree3').reset_index(drop=True), None),
       ('CV358:CX404', obj.tm.forecast_trend_middle_east_and_africa(trend='Exponential').reset_index(drop=True), None),
-      #('DZ353:EA399', obj.tm.forecast_trend_middle_east_and_africa().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ353:EA399', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'Middle East and Africa']], None),
       ('W417:Y465', obj.tm.forecast_min_max_sd_latin_america().reset_index(drop=True), None),
       ('AA417:AC465', obj.tm.forecast_low_med_high_latin_america().reset_index(drop=True), None),
       ('BX421:BZ467', obj.tm.forecast_trend_latin_america(trend='Linear').reset_index(drop=True), None),
       ('CE421:CH467', obj.tm.forecast_trend_latin_america(trend='Degree2').reset_index(drop=True), None),
       ('CM421:CQ467', obj.tm.forecast_trend_latin_america(trend='Degree3').reset_index(drop=True), None),
       ('CV421:CX467', obj.tm.forecast_trend_latin_america(trend='Exponential').reset_index(drop=True), None),
-      #('DZ416:EA465', obj.tm.forecast_trend_latin_america().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ416:EA462', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'Latin America']], None),
       ('W480:Y528', obj.tm.forecast_min_max_sd_china().reset_index(drop=True), None),
       ('AA480:AC528', obj.tm.forecast_low_med_high_china().reset_index(drop=True), None),
       ('BX484:BZ530', obj.tm.forecast_trend_china(trend='Linear').reset_index(drop=True), None),
       ('CE484:CH530', obj.tm.forecast_trend_china(trend='Degree2').reset_index(drop=True), None),
       ('CM484:CQ530', obj.tm.forecast_trend_china(trend='Degree3').reset_index(drop=True), None),
       ('CV484:CX530', obj.tm.forecast_trend_china(trend='Exponential').reset_index(drop=True), None),
-      #('DZ479:EA525', obj.tm.forecast_trend_china().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ479:EA525', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'China']], None),
       ('W544:Y592', obj.tm.forecast_min_max_sd_india().reset_index(drop=True), None),
       ('AA544:AC592', obj.tm.forecast_low_med_high_india().reset_index(drop=True), None),
       ('BX548:BZ594', obj.tm.forecast_trend_india(trend='Linear').reset_index(drop=True), None),
       ('CE548:CH594', obj.tm.forecast_trend_india(trend='Degree2').reset_index(drop=True), None),
       ('CM548:CQ594', obj.tm.forecast_trend_india(trend='Degree3').reset_index(drop=True), None),
       ('CV548:CX594', obj.tm.forecast_trend_india(trend='Exponential').reset_index(drop=True), None),
-      #('DZ543:EA591', obj.tm.forecast_trend_india().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ543:EA589', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'India']], None),
       ('W608:Y656', obj.tm.forecast_min_max_sd_eu().reset_index(drop=True), None),
       ('AA608:AC656', obj.tm.forecast_low_med_high_eu().reset_index(drop=True), None),
       ('BX612:BZ658', obj.tm.forecast_trend_eu(trend='Linear').reset_index(drop=True), None),
       ('CE612:CH658', obj.tm.forecast_trend_eu(trend='Degree2').reset_index(drop=True), None),
       ('CM612:CQ658', obj.tm.forecast_trend_eu(trend='Degree3').reset_index(drop=True), None),
       ('CV612:CX658', obj.tm.forecast_trend_eu(trend='Exponential').reset_index(drop=True), None),
-      #('DZ607:EA653', obj.tm.forecast_trend_eu().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ607:EA653', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'EU']], None),
       ('W673:Y721', obj.tm.forecast_min_max_sd_usa().reset_index(drop=True), None),
       ('AA673:AC721', obj.tm.forecast_low_med_high_usa().reset_index(drop=True), None),
       ('BX677:BZ723', obj.tm.forecast_trend_usa(trend='Linear').reset_index(drop=True), None),
       ('CE677:CH723', obj.tm.forecast_trend_usa(trend='Degree2').reset_index(drop=True), None),
       ('CM677:CQ723', obj.tm.forecast_trend_usa(trend='Degree3').reset_index(drop=True), None),
       ('CV677:CX723', obj.tm.forecast_trend_usa(trend='Exponential').reset_index(drop=True), None),
-      #('DZ672:EA718', obj.tm.forecast_trend_usa().reset_index().loc[:, ['Year', 'adoption']], None), first year differs
+      ('DZ672:EA718', obj.tm.ref_tam_per_region().reset_index().loc[:, ['Year', 'USA']], None),
       ]
   return verify
 
