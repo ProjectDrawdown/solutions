@@ -1,9 +1,6 @@
 import ui.charts
-from solution import solarpvutil
 
-def test_get_overview():
-    _ = ui.charts.get_overview()
-
-def test_tabs():
-    s = solarpvutil.SolarPVUtil()
-    _ = ui.charts.get_detailed_results_tabs([s])
+def test_JupyterUI():
+    ju = ui.charts.JupyterUI()
+    _ = ju.get_overview()
+    _ = ju.get_detailed_results_tabs()
