@@ -21,6 +21,7 @@ import PIL.ImageFont
 from model.advanced_controls import SOLUTION_CATEGORY
 
 import solution.factory
+import ui.color
 import ui.modelmap
 import ui.vega
 
@@ -69,6 +70,16 @@ class JupyterUI:
         # checkboxes is a dict of solution names to ipywidget.checkbox objects.
         self.checkboxes = None
 
+
+    def _get_sector_for_solution(self, module_name):
+        row = self.all_solutions.loc[self.all_solutions['DirName'] == module_name]
+        if row.empty:
+            # remove prepended 'solution.solarpvutil'
+            mn = module_name.split('.')[-1]
+            row = self.all_solutions.loc[self.all_solutions['DirName'] == mn]
+        if row.empty:
+            return ''
+        return row.iloc[0]['Sector']
 
 
     def get_overview(self):
@@ -640,8 +651,9 @@ class JupyterUI:
                 ).interactive()
                 IPython.display.display(chart)
 
-            ad_frizz = self.get_frizzle_chart(df=s.ht.soln_pds_funits_adopted(), ylabel='funits',
-                    size=450, key=fullname(s)+":adoption_data")
+            color = ui.color.get_sector_color(self._get_sector_for_solution(s.__module__))
+            ad_frizz = self.get_frizzle_chart(df=s.ht.soln_pds_funits_adopted().fillna(0.0),
+                    ylabel='funits', size=450, key=fullname(s)+":adoption_data", color=color)
 
             geo_source = alt.topo_feature(os.path.join('data',
                 'world_topo_sans_antartica_with_dd_regions.json'), 'regions')
@@ -736,10 +748,11 @@ class JupyterUI:
                 IPython.display.display(IPython.display.HTML(header + df.style.format('{:.02f}')
                     .set_table_styles(dataframe_css_styles).render()))
 
-            tm_pds_frizz = self.get_frizzle_chart(df=s.tm.pds_tam_per_region(), ylabel='PDS TAM',
-                    size=300, key=fullname(s)+":pds_tam")
-            tm_ref_frizz = self.get_frizzle_chart(df=s.tm.ref_tam_per_region(), ylabel='REF TAM',
-                    size=300, key=fullname(s)+":ref_tam")
+            color = ui.color.get_sector_color(self._get_sector_for_solution(s.__module__))
+            tm_pds_frizz = self.get_frizzle_chart(df=s.tm.pds_tam_per_region().fillna(0.0),
+                    ylabel='PDS TAM', size=300, key=fullname(s)+":pds_tam", color=color)
+            tm_ref_frizz = self.get_frizzle_chart(df=s.tm.ref_tam_per_region().fillna(0.0),
+                    ylabel='REF TAM', size=300, key=fullname(s)+":ref_tam", color=color)
 
             tm_model = ipywidgets.Output()
             with tm_model:
@@ -935,23 +948,23 @@ class JupyterUI:
         return solutions
 
 
-    def get_frizzle_chart(self, df, ylabel, size=None, key=None):
+    def get_frizzle_chart(self, df, ylabel, size=None, key=None, color=None):
         """Returns a 3D Frizz chart, one frizzle strip per column in the dataframe.
 
            Arguments:
              df: the DataFrame to graph.
              ylabel: text label to place on the Y axis.
              size: in integer pixels
+             key: string key to pass to ipyvolume, allows replacement of earlier charts
+             color: base color to generate a gradient from (if None, a default color will be used)
 
            Returns:
              an ipywidget
         """
         (width, height) = (size, size) if size is not None else (500, 500)
         ipv.figure(width=width, height=height, key=key, controls=True)
-        color = [(161,222,240), (56,116,114), (16,237,220), (28,69,133), (238,128,254),
-                (180,39,183), (92,130,210), (22,66,205), (228,204,241), (138,68,136),
-                (134,202,98), (35,137,16), (68,242,112), (106,127,47), (237,212,94),
-                (103,61,23), (251,120,16), (180,39,32), (253,108,160), (184,114,90)]
+        if isinstance(color, str):
+            color = ui.color.webcolor_to_rgb(color)
 
         # Draw a strip of triangles for each region, tracing the dataframe values
         for (z, region) in enumerate(df.columns):
@@ -970,16 +983,16 @@ class JupyterUI:
                 X.extend([year, year])
                 y = df.loc[year, region]
                 Y.extend([y, y * 0.97])
-                Z.extend([float(z), float(z) + 1.0])
+                Z.extend([float(z), float(z) + 0.95])
                 u = float(idx) / nyears
                 U.extend([u, u])
                 V.extend([0.0, 1.0])
                 triangles.extend([[offset-2, offset-1, offset+1], [offset-2, offset, offset+1]])
                 offset += 2
-            img = PIL.Image.new(mode='RGB', size=(1000, 100), color=color[z])
+            img = PIL.Image.new(mode='RGB', size=(1000, 100), color=color)
             draw = PIL.ImageDraw.Draw(img)
-            font = PIL.ImageFont.truetype(os.path.join('data', 'fonts', 'Roboto-Medium.ttf'), 90)
-            draw.text(xy=(100, 0), text=region, fill=(255,0,0), font=font)
+            font = PIL.ImageFont.truetype(os.path.join('data', 'fonts', 'Roboto-Medium.ttf'), 85)
+            draw.text(xy=(40, 0), text=region, fill=(255,250,250), font=font)
             ipv.pylab.plot_trisurf(np.array(X), np.array(Y), np.array(Z), triangles=triangles,
                     u=U, v=V, texture=img.transpose(PIL.Image.FLIP_TOP_BOTTOM))
 
