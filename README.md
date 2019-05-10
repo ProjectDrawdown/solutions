@@ -20,8 +20,9 @@ $ conda create --name drawdown
 $ conda activate drawdown
 (drawdown) $ conda install -c conda-forge jupyterlab altair=2.3 bqplot
 (drawdown) $ conda install -c conda-forge ipywidgets nodejs xlrd pytest
+(drawdown) $ conda install -c conda-forge ipyvolume PIL
 (drawdown) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
-(drawdown) $ jupyter labextension install bqplot
+(drawdown) $ jupyter labextension install bqplot ipyvolume jupyter-threejs
 ```
 
 Then start the Jupyter Notebook:

@@ -1,25 +1,7 @@
 """Functions to support the Drawdown models in Jupyter notebooks."""
 
 import pandas as pd
-
-pd.set_option('display.max_columns', 200)
-pd.set_option('display.max_rows', 200)
-
-# stable colors to be applied to Drawdown solution sectors.
-sector_colormap = {
-    'Materials': 'RebeccaPurple',
-    'Electricity Generation': 'Peru',
-    'Food': 'FireBrick',
-    'Land Use': 'Green',
-    'Women and Girls': 'DarkGoldenRod',
-    'Transport': 'Teal',
-    'Buildings and Cities': 'SteelBlue',
-    'Oceans': 'Aquamarine',
-}
-
-def get_sector_color(sector):
-  """Convenience method with a default, intended for Pandas apply() operations."""
-  return sector_colormap.get(sector, 'Beige')
+import ui.color
 
 def solution_treemap(solutions, width, height):
   """Return a Vega description of a treemap of sectors + solutions.
@@ -35,13 +17,16 @@ def solution_treemap(solutions, width, height):
   elements['row3'] = {'id': 4, 'parent': 1}
   idx = 5
   for name in ['Transport', 'Oceans', 'Materials']:
-    elements[name] = {'id': idx, 'name': name, 'parent': 2, 'color': get_sector_color(name)}
+    elements[name] = {'id': idx, 'name': name, 'parent': 2,
+            'color': ui.color.get_sector_color(name)}
     idx += 1
   for name in ['Electricity Generation', 'Food']:
-    elements[name] = {'id': idx, 'name': name, 'parent': 3, 'color': get_sector_color(name)}
+    elements[name] = {'id': idx, 'name': name, 'parent': 3,
+            'color': ui.color.get_sector_color(name)}
     idx += 1
   for name in ['Land Use', 'Buildings and Cities', 'Women and Girls']:
-    elements[name] = {'id': idx, 'name': name, 'parent': 4, 'color': get_sector_color(name)}
+    elements[name] = {'id': idx, 'name': name, 'parent': 4,
+            'color': ui.color.get_sector_color(name)}
     idx += 1
   for row in solutions.itertuples(index=False):
     name = getattr(row, 'Solution')
@@ -104,8 +89,8 @@ def solution_treemap(solutions, width, height):
         {
           "name": "color",
           "type": "ordinal",
-          "domain": list(sector_colormap.keys()),
-          "range": list(sector_colormap.values())
+          "domain": list(ui.color.sector_colormap.keys()),
+          "range": list(ui.color.sector_colormap.values())
         },
       ],
 
@@ -250,8 +235,8 @@ def solution_donut_chart(solutions, width, height):
     {
       "name": "color",
       "type": "ordinal",
-      "domain": list(sector_colormap.keys()),
-      "range": list(sector_colormap.values())
+      "domain": list(ui.color.sector_colormap.keys()),
+      "range": list(ui.color.sector_colormap.values())
     },
   ],
 
