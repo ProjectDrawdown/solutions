@@ -710,7 +710,8 @@ class JupyterUI:
             if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
                 # The chart by geo region isn't really sensible for LAND solutions, which are much
                 # more driven by Agro-ecological zones than by political boundaries.
-                children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart])]))
+                children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
+                    ad_frizz])]))
             else:
                 children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
                     ad_frizz, ad_abs_geo, ad_pct_geo])]))
