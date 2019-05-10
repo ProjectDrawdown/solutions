@@ -66,8 +66,7 @@ class CustomAdoption:
         regions_to_avg = {}
         for name, scen in self.scenarios.items():
             if scen['include']:
-                scen_df = scen['df'].dropna(axis=1,
-                                            how='all')  # ignore null columns (i.e. blank regional data)
+                scen_df = scen['df'].dropna(axis=1, how='all')  # ignore null columns (i.e. blank regional data)
                 for reg in scen_df.columns:
                     if reg not in regions_to_avg:
                         regions_to_avg[reg] = pd.DataFrame({name: scen_df[reg]})
