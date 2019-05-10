@@ -93,14 +93,9 @@ class AEZ:
         for reg in self.regions:
             for tmr, df in self.world_land_alloc_dict.items():
                 if reg == 'Global':
-                    soln_df.at[reg, tmr] = sum(
-                        soln_df[tmr].values[:5])  # sum from soln_df rather than read from df
+                    soln_df.at[reg, tmr] = sum(soln_df[tmr].values[:5])  # sum from soln_df rather than read from df
                 else:
                     soln_df.at[reg, tmr] = df.loc[reg, self.applicable_zones].sum()
 
         soln_df['All'] = soln_df.sum(axis=1)
         self.soln_land_dist_df = soln_df
-
-
-if __name__ == '__main__':
-    pass
