@@ -47,8 +47,12 @@ def test_sigmoid_logistic_divide_by_zero():
     expected = pd.DataFrame(nan_sigmoid_logistic_list[1:],
                             columns=nan_sigmoid_logistic_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
-
-
+    with pytest.warns(None) as warnings:
+        result = sc._sigmoid_logistic(base_year=2014, last_year=2050,
+                                      base_percent=np.float64(0.1), last_percent=np.float64(0.0),
+                                      base_adoption=1000.0, pds_tam_2050=1000.0)
+    assert len(warnings) == 0
+    pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 def test_logistic_adoption():
     # From Building Automation System "S Curve Adoption"!AJ17:AJ22
