@@ -9,9 +9,7 @@ from model import advanced_controls
 from model.advanced_controls import SOLUTION_CATEGORY
 from model import co2calcs
 
-
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
-
 
 
 def test_co2_mmt_reduced_allfields():
@@ -19,7 +17,6 @@ def test_co2_mmt_reduced_allfields():
     # Most of the values here are nonsensical for the real world, designed to ensure that
     # every factor influencing co2_mmt_reduced is non-zero.
     soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[11.0, 11.0], [11.0, 11.0], [11.0, 11.0]],
-
                                                              columns=["A", "B"],
                                                              index=[2020, 2021, 2022])
     soln_pds_net_grid_electricity_units_used = pd.DataFrame([[7.0, 7.0], [7.0, 7.0], [7.0, 7.0]],
@@ -61,7 +58,6 @@ def test_co2_mmt_reduced_allfields():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_co2eq_mmt_reduced_allfields():
     # the real data from the SolarPVUtil solution has many fields as zero. Test them all.
     # Most of the values here are nonsensical for the real world, designed to ensure that
@@ -83,23 +79,17 @@ def test_co2eq_mmt_reduced_allfields():
                                                columns=["Year", "A", "B"]).set_index('Year')
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
                                             solution_category="REPLACEMENT", conv_fuel_consumed_per_funit=1.0,
-
                                             conv_fuel_emissions_factor=4000000.0, soln_fuel_emissions_factor=0.0,
-
                                             soln_fuel_efficiency_factor=0.00,
                                             soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
-
                                             conv_indirect_co2_is_iunits=False)
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
                            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-
                            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-
                            soln_pds_direct_co2_emissions_saved=emissions_saved,
                            soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
                            soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=None,
                            conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -110,11 +100,9 @@ def test_co2eq_mmt_reduced_allfields():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_co2eq_mmt_reduced_land():
     avoided_em = pd.read_csv(datadir.joinpath('fp_des_co2eq.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050, solution_category='LAND',
-
                                             emissions_use_agg_co2eq=True)
     c2 = co2calcs.CO2Calcs(ac=ac, soln_pds_direct_co2eq_emissions_saved=avoided_em)
     expected = pd.read_csv(datadir.joinpath('fp_co2eq_mmt_red.csv'), index_col=0)
@@ -126,7 +114,6 @@ def test_co2eq_mmt_reduced_land_not_aggregate():
     avoided_n2o = pd.read_csv(datadir.joinpath('pl_n2o_avoided.csv'), index_col=0)
     avoided_ch4 = pd.read_csv(datadir.joinpath('pl_ch4_avoided.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050, solution_category='LAND',
-
                                             emissions_use_agg_co2eq=False)
     c2 = co2calcs.CO2Calcs(ac=ac, soln_pds_direct_co2_emissions_saved=avoided_co2,
                            soln_pds_direct_n2o_co2_emissions_saved=avoided_n2o,
@@ -147,14 +134,12 @@ def test_co2eq_mmt_reduced_land_with_electricity():
                                             solution_category='LAND')
     c2 = co2calcs.CO2Calcs(ac=ac, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
                            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-
                            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved)
     expected = pd.Series(0.0, index=list(range(2014, 2061)))
     expected.loc[2020:2050] = 4.0
     result = c2.co2eq_mmt_reduced()
     pd.testing.assert_series_equal(result.loc[2015:, 'World'], expected.loc[2015:],
                                    check_names=False, check_exact=False)
-
 
 
 def test_co2_ppm_calculator():
@@ -177,14 +162,11 @@ def test_co2_ppm_calculator():
                                             conv_indirect_co2_is_iunits=False)
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
                            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-
                            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-
                            soln_pds_direct_co2_emissions_saved=emissions_saved,
                            soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
                            soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
                            conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -195,16 +177,14 @@ def test_co2_ppm_calculator():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_co2_ppm_calculator_land():
     # test land model (data from Tropical Forests 3Aug18)
     funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
     land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(
         seq_rate_global=4.150868085, solution_category=SOLUTION_CATEGORY.LAND, emissions_use_co2eq=True,
-
         soln_indirect_co2_per_iunit=0.0, conv_indirect_co2_per_unit=0.0)
-    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist)
+    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, regime_distribution=land_dist)
     result = c2.co2_ppm_calculator()
     assert result.at[2059, 'PPM'] == pytest.approx(6.79894469686587)
     assert result.at[2060, 'PPM'] == pytest.approx(6.98450283426954)
@@ -249,14 +229,11 @@ def test_co2eq_ppm_calculator():
                                             conv_indirect_co2_is_iunits=False)
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=ch4_ppb_calculator,
                            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-
                            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-
                            soln_pds_direct_co2_emissions_saved=emissions_saved,
                            soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
                            soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
                            conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -265,7 +242,6 @@ def test_co2eq_ppm_calculator():
                             columns=co2eq_ppm_calculator_list[0]).set_index('Year')
     result = c2.co2eq_ppm_calculator()
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
-
 
 
 def test_co2_reduced_grid_emissions():
@@ -279,7 +255,6 @@ def test_co2_reduced_grid_emissions():
     c2 = co2calcs.CO2Calcs(ac=ac,
                            ch4_ppb_calculator=None,
                            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-
                            soln_pds_net_grid_electricity_units_used=None,
                            soln_pds_direct_co2_emissions_saved=None,
                            soln_pds_direct_ch4_co2_emissions_saved=None,
@@ -298,7 +273,6 @@ def test_co2_reduced_grid_emissions():
     pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
 
 
-
 def test_co2_replaced_grid_emissions():
     ac = advanced_controls.AdvancedControls(solution_category="REPLACEMENT")
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
@@ -314,16 +288,13 @@ def test_co2_replaced_grid_emissions():
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
-
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                            fuel_in_liters=False)
     result = c2.co2_replaced_grid_emissions()
     expected = pd.DataFrame(co2_replaced_grid_emissions_list[1:],
                             columns=co2_replaced_grid_emissions_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
-
 
 
 def test_co2_replaced_grid_emissions_not_replacement():
@@ -341,9 +312,7 @@ def test_co2_replaced_grid_emissions_not_replacement():
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
-
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                            fuel_in_liters=False)
     result = c2.co2_replaced_grid_emissions()
@@ -352,27 +321,21 @@ def test_co2_replaced_grid_emissions_not_replacement():
     pd.testing.assert_frame_equal(result, expected)
 
 
-
 def test_co2_increased_grid_usage_emissions():
     soln_pds_net_grid_electricity_units_used = pd.DataFrame([[2014, 2.0, 2.0, 2.0],
                                                              [2015, 2.0, 2.0, 2.0], [2016, 2.0, 2.0, 2.0]],
-
-                                                            columns=["Year", "A", "B", "C"]).set_index(
-        "Year")
+                                                            columns=["Year", "A", "B", "C"]).set_index("Year")
     conv_ref_grid_CO2_per_KWh = pd.DataFrame([[2014, 3.0, 3.0, 3.0],
                                               [2015, 3.0, 3.0, 3.0], [2016, 3.0, 3.0, 3.0]],
                                              columns=["Year", "A", "B", "C"]).set_index("Year")
     c2 = co2calcs.CO2Calcs(ac=None, ch4_ppb_calculator=None,
                            soln_pds_net_grid_electricity_units_saved=None,
                            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-
                            soln_pds_direct_co2_emissions_saved=None,
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
-
                            soln_net_annual_funits_adopted=None, fuel_in_liters=False)
     result = c2.co2_increased_grid_usage_emissions()
     expected = pd.DataFrame([[2014, 6.0, 6.0, 6.0], [2015, 6.0, 6.0, 6.0], [2016, 6.0, 6.0, 6.0]],
@@ -380,14 +343,11 @@ def test_co2_increased_grid_usage_emissions():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_co2eq_replaced_grid_emissions():
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index(
-        'Year')
+                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     conv_ref_grid_CO2eq_per_KWh = pd.DataFrame(conv_ref_grid_CO2eq_per_KWh_list[1:],
-                                               columns=conv_ref_grid_CO2eq_per_KWh_list[0]).set_index(
-        'Year')
+                                               columns=conv_ref_grid_CO2eq_per_KWh_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(solution_category="REPLACEMENT")
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
                            soln_pds_net_grid_electricity_units_saved=None,
@@ -396,9 +356,7 @@ def test_co2eq_replaced_grid_emissions():
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
-
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                            fuel_in_liters=False)
     result = c2.co2eq_replaced_grid_emissions()
@@ -407,14 +365,11 @@ def test_co2eq_replaced_grid_emissions():
     pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
 
 
-
 def test_co2eq_replaced_grid_emissions_not_replacement():
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index(
-        'Year')
+                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     conv_ref_grid_CO2eq_per_KWh = pd.DataFrame(conv_ref_grid_CO2eq_per_KWh_list[1:],
-                                               columns=conv_ref_grid_CO2eq_per_KWh_list[0]).set_index(
-        'Year')
+                                               columns=conv_ref_grid_CO2eq_per_KWh_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(solution_category="REDUCTION")
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
                            soln_pds_net_grid_electricity_units_saved=None,
@@ -423,16 +378,13 @@ def test_co2eq_replaced_grid_emissions_not_replacement():
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
-
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                            fuel_in_liters=False)
     result = c2.co2eq_replaced_grid_emissions()
     expected = pd.DataFrame(0, index=soln_net_annual_funits_adopted.index.copy(),
                             columns=soln_net_annual_funits_adopted.columns.copy(), dtype=np.float64)
     pd.testing.assert_frame_equal(result, expected)
-
 
 
 def test_co2eq_reduced_grid_emissions():
@@ -444,15 +396,12 @@ def test_co2eq_reduced_grid_emissions():
         columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
     c2 = co2calcs.CO2Calcs(ac=None, ch4_ppb_calculator=None,
                            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-
                            soln_pds_net_grid_electricity_units_used=None,
                            soln_pds_direct_co2_emissions_saved=None,
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
-
                            soln_net_annual_funits_adopted=None, fuel_in_liters=False)
     result = c2.co2eq_reduced_grid_emissions()
     expected = pd.DataFrame([
@@ -461,11 +410,9 @@ def test_co2eq_reduced_grid_emissions():
     pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
 
 
-
 def test_co2eq_reduced_fuel_emissions():
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index(
-        'Year')
+                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(
         conv_fuel_consumed_per_funit=100.0,
         conv_fuel_emissions_factor=140.0,
@@ -478,7 +425,6 @@ def test_co2eq_reduced_fuel_emissions():
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                            fuel_in_liters=False)
@@ -488,11 +434,9 @@ def test_co2eq_reduced_fuel_emissions():
     pd.testing.assert_frame_equal(result.loc[2015:], expected)
 
 
-
 def test_co2eq_reduced_fuel_emissions_liters():
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index(
-        'Year')
+                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(
         conv_fuel_consumed_per_funit=100.0,
         conv_fuel_emissions_factor=140.0,
@@ -505,7 +449,6 @@ def test_co2eq_reduced_fuel_emissions_liters():
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                            fuel_in_liters=True)
@@ -513,27 +456,21 @@ def test_co2eq_reduced_fuel_emissions_liters():
         _ = c2.co2eq_reduced_fuel_emissions()
 
 
-
 def test_co2eq_increased_grid_usage_emissions():
     soln_pds_net_grid_electricity_units_used = pd.DataFrame([[2014, 2.0, 2.0, 2.0],
                                                              [2015, 2.0, 2.0, 2.0], [2016, 2.0, 2.0, 2.0]],
-
-                                                            columns=["Year", "A", "B", "C"]).set_index(
-        "Year")
+                                                            columns=["Year", "A", "B", "C"]).set_index("Year")
     conv_ref_grid_CO2eq_per_KWh = pd.DataFrame([[2014, 3.0, 3.0, 3.0],
                                                 [2015, 3.0, 3.0, 3.0], [2016, 3.0, 3.0, 3.0]],
                                                columns=["Year", "A", "B", "C"]).set_index("Year")
     c2 = co2calcs.CO2Calcs(ac=None, ch4_ppb_calculator=None,
                            soln_pds_net_grid_electricity_units_saved=None,
                            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-
                            soln_pds_direct_co2_emissions_saved=None,
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
-
                            soln_net_annual_funits_adopted=None, fuel_in_liters=True)
     result = c2.co2eq_increased_grid_usage_emissions()
     expected = pd.DataFrame([[2014, 6.0, 6.0, 6.0], [2015, 6.0, 6.0, 6.0], [2016, 6.0, 6.0, 6.0]],
@@ -541,49 +478,37 @@ def test_co2eq_increased_grid_usage_emissions():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_co2eq_direct_reduced_emissions():
     soln_pds_direct_co2_emissions_saved = pd.DataFrame([[2014, 1000000.0, 1100000.0, 1200000.0],
                                                         [2015, 1000001.0, 1100001.0, 1200001.0],
                                                         [2016, 1000002.0, 1100002.0, 1200002.0]],
-                                                       columns=["Year", "A", "B", "C"]).set_index(
-        "Year")
+                                                       columns=["Year", "A", "B", "C"]).set_index("Year")
     soln_pds_direct_ch4_co2_emissions_saved = pd.DataFrame([[2014, 2200000.0, 2200000.0, 2200000.0],
                                                             [2015, 2200002.0, 2200002.0, 2200002.0],
                                                             [2016, 2200004.0, 2200004.0, 2200004.0]],
-
-                                                           columns=["Year", "A", "B", "C"]).set_index(
-        "Year")
+                                                           columns=["Year", "A", "B", "C"]).set_index("Year")
     soln_pds_direct_n2o_co2_emissions_saved = pd.DataFrame([[2014, 3300000.0, 3300000.0, 3300000.0],
                                                             [2015, 3300003.0, 3300003.0, 3300003.0],
                                                             [2016, 3300006.0, 3300006.0, 3300006.0]],
-
-                                                           columns=["Year", "A", "B", "C"]).set_index(
-        "Year")
+                                                           columns=["Year", "A", "B", "C"]).set_index("Year")
     c2 = co2calcs.CO2Calcs(ac=None, ch4_ppb_calculator=None,
                            soln_pds_net_grid_electricity_units_saved=None,
                            soln_pds_net_grid_electricity_units_used=None,
                            soln_pds_direct_co2_emissions_saved=soln_pds_direct_co2_emissions_saved,
                            soln_pds_direct_ch4_co2_emissions_saved=soln_pds_direct_ch4_co2_emissions_saved,
-
                            soln_pds_direct_n2o_co2_emissions_saved=soln_pds_direct_n2o_co2_emissions_saved,
-
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
                            soln_net_annual_funits_adopted=None, fuel_in_liters=False)
     result = c2.co2eq_direct_reduced_emissions()
     expected = pd.DataFrame([[2014, 6.5, 6.6, 6.7], [2015, 6.500006, 6.600006, 6.700006],
-                             [2016, 6.500012, 6.600012, 6.700012]], columns=["Year", "A", "B", "C"]).set_index(
-        "Year")
+                             [2016, 6.500012, 6.600012, 6.700012]], columns=["Year", "A", "B", "C"]).set_index("Year")
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
-
 
 
 def test_co2eq_net_indirect_emissions():
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index(
-        'Year')
+                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(conv_indirect_co2_is_iunits=False,
                                             soln_indirect_co2_per_iunit=47157.2222222222,
                                             conv_indirect_co2_per_unit=0.0)
@@ -594,7 +519,6 @@ def test_co2eq_net_indirect_emissions():
                            soln_pds_direct_ch4_co2_emissions_saved=None,
                            soln_pds_direct_n2o_co2_emissions_saved=None,
                            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
                            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
                            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                            fuel_in_liters=True)
@@ -602,7 +526,6 @@ def test_co2eq_net_indirect_emissions():
                             columns=co2eq_net_indirect_emissions_list[0]).set_index('Year')
     result = c2.co2eq_net_indirect_emissions()
     pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
-
 
 
 def test_co2eq_net_indirect_emissions_iunits():
@@ -636,7 +559,6 @@ def test_co2eq_net_indirect_emissions_iunits():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_direct_emissions_from_harvesting():
     land_harvested = pd.read_csv(datadir.joinpath('afforestation_harvest.csv'), index_col=0)
     expected = pd.read_csv(datadir.joinpath('afforestation_co2_from_harvest.csv'), index_col=0)
@@ -648,10 +570,10 @@ def test_direct_emissions_from_harvesting():
 
 def test_co2_sequestered_global_simple():
     """ Test vals from Tropical Forests """
-    ac = advanced_controls.AdvancedControls(seq_rate_global=4.150868085)
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND, seq_rate_global=4.150868085)
     funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
     land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
-    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, land_distribution=land_dist)
+    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, regime_distribution=land_dist)
     df = c2.co2_sequestered_global()
     assert df.loc[2060, 'All'] == pytest.approx(2884.57122692783)
     assert df.loc[2015, 'Tropical-Semi-Arid'] == pytest.approx(42.2676049356999)
@@ -661,13 +583,13 @@ def test_co2_sequestered_global_regrowth():
     """ Test vals from Forest Protection """
     ac = advanced_controls.AdvancedControls(seq_rate_global=0.596666666666667, delay_regrowth_1yr=True,
                                             include_unprotected_land_in_regrowth_calcs=False,
-                                            global_multi_for_regrowth=1.)
+                                            global_multi_for_regrowth=1., solution_category=SOLUTION_CATEGORY.LAND)
     land_dist = pd.read_csv(datadir.joinpath('fp_land_dist.csv'), index_col=0)
     total_ridl = pd.read_csv(datadir.joinpath('fp_cumu_ridl.csv'), index_col=0)
     pds_pdl = pd.read_csv(datadir.joinpath('fp_pds_deg_protected_land.csv'), index_col=0)
     ref_pdl = pd.read_csv(datadir.joinpath('fp_ref_deg_protected_land.csv'), index_col=0)
     c2 = co2calcs.CO2Calcs(ac=ac, tot_red_in_deg_land=total_ridl, pds_protected_deg_land=pds_pdl,
-                           ref_protected_deg_land=ref_pdl, land_distribution=land_dist)
+                           ref_protected_deg_land=ref_pdl, regime_distribution=land_dist)
     result = c2.co2_sequestered_global().drop(columns=['Global Arctic'])
     expected = pd.read_csv(datadir.joinpath('fp_co2_seq_global.csv'), index_col=0, dtype=np.float64)
     expected.index = expected.index.astype(int)
@@ -675,17 +597,15 @@ def test_co2_sequestered_global_regrowth():
 
 
 def test_co2_sequestered_global_simple_with_regime_seq():
-    ac = advanced_controls.AdvancedControls(seq_rate_global=np.nan,
+    ac = advanced_controls.AdvancedControls(seq_rate_global=np.nan, solution_category=SOLUTION_CATEGORY.LAND,
                                             seq_rate_per_regime={'Tropical-Humid': 0.1, 'Temperate/Boreal-Humid': 0.2,
-
                                                                  'Tropical-Semi-Arid': 0.3,
                                                                  'Temperate/Boreal-Semi-Arid': 0.4, 'Global Arid': 0.5,
-
                                                                  'Global Arctic': 0.0})
     funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
     land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
     c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits,
-                           land_distribution=land_dist)
+                           regime_distribution=land_dist)
     result = c2.co2_sequestered_global()
     # Test data from Tropical Forests, with Advanced Controls B173 empty,
     # C173=0.1, D173=0.2, E173=0.3, F173=0.4, and G173=0.5
@@ -696,6 +616,11 @@ def test_co2_sequestered_global_simple_with_regime_seq():
     assert result.loc[2055, 'Tropical-Semi-Arid'] == pytest.approx(70.32984072182640)
 
 
+def test_co2_sequestered_global_raises():
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.REPLACEMENT)
+    c2 = co2calcs.CO2Calcs(ac=ac)
+    with pytest.raises(ValueError):
+        c2.co2_sequestered_global()
 
 
 # 'Unit Adoption'!B251:L298
