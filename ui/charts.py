@@ -67,10 +67,16 @@ class JupyterUI:
         all_solutions['SectorCO2eq'] = all_solutions.apply(
                 lambda row: sectors.loc[row['Sector'], 'CO2eq'], axis=1)
 
-        # all_solutions is a list of all solutions the system knows about
+        # all_solutions is a list of all solutions the system knows about, solutions is the list
+        # of solution objects currently being analyzed with detailed results tabs.
         self.all_solutions = all_solutions
+        self.solutions = []
+
         # checkboxes is a dict of solution names to ipywidget.checkbox objects.
         self.checkboxes = None
+
+        # ui_elements holds state for different parts of the UI which the user can manipulate
+        self.ui_elements = {}
 
 
     def _get_sector_for_solution(self, module_name):
@@ -138,7 +144,12 @@ class JupyterUI:
 
         chrt_layout = ipywidgets.Layout(flex='3 1 0%', width='auto')
         charts = ipywidgets.VBox(children=[solution_chart, solution_treemap], layout=chrt_layout)
-        overview = ipywidgets.HBox(children=[solution_list, charts], layout=cntr_layout)
+        details_progressbar = ipywidgets.FloatProgress(value=0.0, min=0.0, max=1.0,
+                step=0.01, orientation='horizontal', layout=ipywidgets.Layout(width='100%'))
+        self.ui_elements['details_progressbar'] = details_progressbar
+        overview = ipywidgets.VBox(children=[
+            ipywidgets.HBox(children=[solution_list, charts], layout=cntr_layout),
+            details_progressbar])
 
         self.checkboxes = checkboxes
         return overview
@@ -258,6 +269,7 @@ class JupyterUI:
         adoption_graphs = ipywidgets.HBox(children=children)
 
         return (adoption_heading, adoption_graphs)
+
 
     def _get_summary_financial(self, solutions):
         """Return Summary panel for financial results.
@@ -430,6 +442,7 @@ class JupyterUI:
 
         return climate_heading, mmt_graphs, concentration_graphs
 
+
     def _get_summary_productivity(self, solutions):
         """Return Summary panel for land/ocean productivity.
 
@@ -547,32 +560,63 @@ class JupyterUI:
            Arguments:
            solutions: a list of solution objects to be processed.
         """
+        modules = []
+        for s in solutions:
+            m = sys.modules[s.__module__]
+            if m not in modules:
+                modules.append(m)
+        summary_css_styles = [
+            dict(selector="th", props=[
+                ('font-size', '1em'), ('text-align', 'center'), ('font-weight', 'bold'),
+                ('color', '#6d6d6d'), ('background-color', '#f7f7f9')
+            ]),
+            dict(selector="td", props=[
+                ('font-size', '0.9em'), ('text-align', 'center'), ('font-weight', 'bold')
+            ]),
+          ]
         variable_meta_analysis = ipywidgets.Output()
         with variable_meta_analysis:
             children = []
-            for s in solutions:
-                if not hasattr(s.ac, 'vmas') or not s.ac.vmas:
+            for m in modules:
+                if not hasattr(m, 'VMAs') or not m.VMAs:
                     continue
-                for (name, v) in s.ac.vmas.items():
-                    sources_list = ipywidgets.Output()
-                    with sources_list:
-                        IPython.display.display(IPython.display.HTML(v.source_data.drop(['Link',
-                            'Source Validation Code', 'License Code'], axis=1).fillna('').to_html()))
-                    summary_table = ipywidgets.Output()
-                    with summary_table:
-                        (mean, high, low) = v.avg_high_low()
-                        df = pd.DataFrame([[mean, high, low]], columns=['Mean', 'High', 'Low'])
-                        IPython.display.display(IPython.display.HTML(df.style.format("{:.01f}"
-                            ).set_properties(**{'width': '10em'}).set_table_styles(
-                                dataframe_css_styles).hide_index().render()))
+                vmas_for_module = []
+                for (name, v) in m.VMAs.items():
+                    div = '<div style="background-color:gainsboro;border:1px solid dimgray;'
+                    div += 'font-weight:bold;text-align:center;font-size:1.1em;color:dimgray;">'
+                    vma_name = ipywidgets.HTML(f'{div}{name}</div>',
+                            layout=ipywidgets.Layout(width='auto', grid_area='vma_name'))
+                    mean, high, low = v.avg_high_low()
+                    hdr_style = ('font-size:1em;text-align:center;font-weight:bold;' +
+                            'color:#6d6d6d;background-color:#f7f7f9')
+                    num_style = 'font-size:0.9em;text-align:center;font-weight:bold;'
+                    summary = ipywidgets.HTML('<table>' +
+                                              f'<tr><td style={hdr_style}>Mean</td></tr>' +
+                                              f'<tr><td style={num_style}>{mean:.1f}</td></tr>' +
+                                              f'<tr><td style={hdr_style}>High</td></tr>' +
+                                              f'<tr><td style={num_style}>{high:.1f}</td></tr>' +
+                                              f'<tr><td style={hdr_style}>Low</td></tr>' +
+                                              f'<tr><td style={num_style}>{low:.1f}</td></tr>' +
+                                              '</table>',
+                            layout=ipywidgets.Layout(width='auto', grid_area='summary'))
+                    table = ipywidgets.Output(layout=ipywidgets.Layout(width='auto', grid_area='table'))
+                    with table:
+                        IPython.display.display(IPython.display.HTML(v.source_data.drop(
+                            ['Link', 'Source Validation Code', 'License Code'],
+                            axis=1).fillna('').to_html()))
+                    vma_widget = ipywidgets.GridBox(children=[vma_name, summary, table],
+                            layout=ipywidgets.Layout(width='100%', grid_template_rows='auto auto',
+                                    grid_template_columns='7% 93%',
+                                    grid_template_areas='''
+                                    "vma_name vma_name"
+                                    "summary table"
+                                    '''))
+                    vmas_for_module.append(vma_widget)
 
-                    accordion = ipywidgets.Accordion(children=[sources_list],
-                            layout=ipywidgets.Layout(width='90%'))
-                    accordion.set_title(0, name)
-                    vma_widget = ipywidgets.Output()
-                    with vma_widget:
-                        IPython.display.display(ipywidgets.HBox(children=[summary_table, accordion]))
-                    children.append(vma_widget)
+                accordion = ipywidgets.Accordion(
+                        children=[ipywidgets.VBox(children=vmas_for_module)])
+                accordion.set_title(0, m.__name__.split('.')[-1])
+                children.append(accordion)
             IPython.display.display(ipywidgets.VBox(children=children))
         return variable_meta_analysis
 
@@ -922,6 +966,7 @@ class JupyterUI:
             co2_calcs.set_title(i, fullname(s))
         return co2_calcs
 
+
     def get_aez_data_tab(self, solutions):
         """Return AEZ Data panel.
 
@@ -951,6 +996,7 @@ class JupyterUI:
         else:
             aez_data = None
         return(aez_data)
+
 
     def get_dez_data_tab(self, solutions):
         """Return DEZ Data panel.
@@ -985,17 +1031,33 @@ class JupyterUI:
 
     def get_detailed_results_tabs(self):
         """Return tab bar of detailed results for a set of solutions."""
+        details_progressbar = self.ui_elements['details_progressbar']
+        details_progressbar.value = 0.0
         solutions = self.get_solutions_from_checkboxes()
+        self.solutions = solutions
+
+        remaining = 1.0 - details_progressbar.value
+        increment = remaining / 10.0
         summary = self.get_summary_tab(solutions)
+        details_progressbar.value += increment
         model_overview = self.get_model_tab(solutions)
+        details_progressbar.value += increment
         variable_meta_analysis = self.get_VMA_tab(solutions)
+        details_progressbar.value += increment
         first_cost = self.get_first_cost_tab(solutions)
+        details_progressbar.value += increment
         operating_cost = self.get_operating_cost_tab(solutions)
+        details_progressbar.value += increment
         adoption_data = self.get_adoption_data_tab(solutions)
+        details_progressbar.value += increment
         tam_data = self.get_tam_data_tab(solutions)
+        details_progressbar.value += increment
         co2_calcs = self.get_co2_calcs_tab(solutions)
+        details_progressbar.value += increment
         aez_data = self.get_aez_data_tab(solutions)
+        details_progressbar.value += increment
         dez_data = self.get_dez_data_tab(solutions)
+        details_progressbar.value = 1.0
 
         # ------------------ Create tabs -----------------
         children = [summary, model_overview, variable_meta_analysis, adoption_data]
@@ -1015,24 +1077,34 @@ class JupyterUI:
         tabs = ipywidgets.Tab(children=children)
         for (idx, title) in enumerate(titles):
             tabs.set_title(idx, title)
+        details_progressbar.value = 0.0
         return tabs
 
 
     def get_solutions_from_checkboxes(self):
         """Iterate through a dict of checkboxes, return objects for all selected solutions."""
         all_solutions_scenarios = solution.factory.all_solutions_scenarios()
-        solutions = []
+        constructors = []
         for soln, cbox in self.checkboxes.items():
             if cbox.value:
                 constructor, scenarios = all_solutions_scenarios[soln]
                 for scenario in scenarios:
-                    solutions.append(constructor(scenario))
+                    constructors.append((constructor, scenario))
 
-        if not solutions:
+        if not constructors:
             soln = 'silvopasture'
             constructor, scenarios = all_solutions_scenarios[soln]
             for scenario in scenarios:
-                solutions.append(constructor(scenario))
+                constructors.append((constructor, scenario))
+
+        total = float(len(constructors) + 2)
+        increment = 1.0 / total
+        details_progressbar = self.ui_elements['details_progressbar']
+
+        solutions = []
+        for (constructor, scenario) in constructors:
+            solutions.append(constructor(scenario))
+            details_progressbar.value += increment
 
         return solutions
 
@@ -1051,9 +1123,11 @@ class JupyterUI:
              an ipywidget
         """
         (width, height) = (size, size) if size is not None else (500, 500)
-        ipv.figure(width=width, height=height, key=key, controls=True)
+        fig = ipv.figure(width=width, height=height, key=key, controls=True)
         if isinstance(color, str):
             color = ui.color.webcolor_to_rgb(color)
+        if not color:
+            color = (128, 128, 128)
 
         # Draw a strip of triangles for each region, tracing the dataframe values
         for (z, region) in enumerate(df.columns):
@@ -1095,5 +1169,5 @@ class JupyterUI:
         nregions = len(df.columns)
         ipv.pylab.zlim(-0.5, nregions + 0.5)
         ipv.pylab.view(10.0, 10.0, 3.0)
-        ipv.pylab.view(-165.0, 80.0, 2.2)
+        ipv.pylab.view(-24.46, 73.7, 2.32)
         return ipv.gcc()
