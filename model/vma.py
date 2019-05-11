@@ -62,16 +62,20 @@ class VMA:
 
     def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3, use_weight=False,
                  postprocess=None, fixed_summary=None):
-        df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
-        self.source_data = df
+        self.filename = filename
         self.low_sd = low_sd
         self.high_sd = high_sd
         self.discard_multiplier = discard_multiplier
+        self.use_weight = use_weight
         self.postprocess = postprocess
         self.fixed_summary = fixed_summary
-        if use_weight:
+        self._read_csv(filename=self.filename)
+
+    def _read_csv(self, filename):
+        df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
+        self.source_data = df
+        if self.use_weight:
             assert not all(pd.isnull(df['Weight'])), "'Use weight' selected but no weights to use"
-        self.use_weight = use_weight
         weight = df['Weight'].apply(convert_percentages)
         weight.name = 'Weight'
         raw = df['Raw Data Input'].apply(convert_percentages)
@@ -152,4 +156,32 @@ class VMA:
             elif key == 'low':
                 return low
             else:
-                raise ValueError("invalid key: {}. key must be 'mean', 'high', 'low' or None")
+                raise ValueError(f"invalid key: {key}. key must be 'mean', 'high', 'low' or None")
+
+
+    def get_editable_source_data(self):
+        """Return a dataframe of the source_data suitable for editing (like in a spreadsheet)."""
+        df = self.source_data.copy(deep=True)
+
+        # add an empty row at the end, to be able to add a new source.
+        other = {'SOURCE ID: Author/Org, Date, Info': '', 'Link': '',
+                'World / Drawdown Region': '', 'Specific Geographic Location': '',
+                'Thermal-Moisture Regime':'', 'Source Validation Code':'', 'Year / Date':'',
+                'License Code':'', 'Raw Data Input':0.0, 'Original Units':'',
+                'Conversion calculation':'', 'Common Units':'', 'Weight':1.0, 'Assumptions':'',
+                'Exclude Data?':False}
+        df = df.append(other, ignore_index=True)
+
+        text_columns = ['SOURCE ID: Author/Org, Date, Info', 'Link', 'World / Drawdown Region',
+                'Specific Geographic Location', 'Thermal-Moisture Regime', 'Source Validation Code',
+                'Year / Date', 'Conversion calculation', 'Common Units', 'Assumptions']
+        df[text_columns].fillna('', inplace=True)
+        df['Exclude Data?'].fillna(False, inplace=True)
+        if not self.use_weight:
+            df.loc[:, 'Weight'].fillna(1.0, inplace=True)
+
+        return df
+
+    def write_to_file(self, new_df):
+        new_df.to_csv(path_or_buf=self.filename, index=False)
+        self._read_csv(filename=self.filename)

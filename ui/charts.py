@@ -17,6 +17,7 @@ import pandas as pd
 import PIL
 import PIL.ImageDraw
 import PIL.ImageFont
+import qgrid
 
 from model.advanced_controls import SOLUTION_CATEGORY
 from model.co2calcs import C_TO_CO2EQ
@@ -50,6 +51,12 @@ def solnname(s):
 
 def fullname(s):
     return type(s).__name__ + ':' + s.scenario
+
+
+def vma_button_clicked(button):
+    """on_click() handler for Jupyter UI buttons."""
+    uiobj = button.d['uiobj']
+    uiobj._vma_button_clicked(button.d['button_name'])
 
 
 class JupyterUI:
@@ -444,6 +451,7 @@ class JupyterUI:
         return climate_heading, mmt_graphs, concentration_graphs
 
 
+
     def _get_summary_productivity(self, solutions):
         """Return Summary panel for land/ocean productivity.
 
@@ -636,6 +644,34 @@ class JupyterUI:
         return model_overview
 
 
+    def _vma_button_clicked(self, button_name):
+        state = self.ui_elements[button_name]
+        button = state['button']
+        table = state['table']
+        v = state['vmaobj']
+        if state['editing'] == True:
+            state['editing'] = False
+            v.write_to_file(table.children[0].get_changed_df())
+            table.children = [self.get_vma_readonly_sources_list(v)]
+            button.description = 'Edit'
+        else:
+            state['editing'] = True
+            table.children = [self.get_vma_editable_sources_list(v)]
+            button.description = 'Save'
+
+
+    def get_vma_readonly_sources_list(self, v):
+        return qgrid.show_grid(data_frame=v.source_data.fillna(''), precision=2,
+                grid_options={'forceFitColumns':False, 'maxVisibleRows':25},
+                column_options={'editable':False})
+
+
+    def get_vma_editable_sources_list(self, v):
+        return qgrid.show_grid(data_frame=v.source_data.fillna(''), show_toolbar=True,
+                grid_options={'forceFitColumns':False, 'maxVisibleRows':23},
+                column_options={'editable':True})
+
+
     def get_VMA_tab(self, solutions):
         """Return VMA panel.
 
@@ -679,21 +715,32 @@ class JupyterUI:
                                               f'<tr><td style={num_style}>{high:.1f}</td></tr>' +
                                               f'<tr><td style={hdr_style}>Low</td></tr>' +
                                               f'<tr><td style={num_style}>{low:.1f}</td></tr>' +
-                                              '</table>',
-                            layout=ipywidgets.Layout(width='auto', grid_area='summary'))
-                    table = ipywidgets.Output(layout=ipywidgets.Layout(width='auto', grid_area='table'))
-                    with table:
-                        IPython.display.display(IPython.display.HTML(v.source_data.drop(
-                            ['Link', 'Source Validation Code', 'License Code'],
-                            axis=1).fillna('').to_html()))
-                    vma_widget = ipywidgets.GridBox(children=[vma_name, summary, table],
+                                              '</table>')
+                    edit_button = ipywidgets.Button(description='Edit', button_style='',
+                            tooltip='Edit VMA Sources', layout=ipywidgets.Layout(width='auto'))
+                    button_name = f'{m.__name__}:{name}:edit_button'
+                    edit_button.d = {
+                            'uiobj': self,
+                            'button_name': button_name,
+                            }
+                    edit_button.on_click(vma_button_clicked)
+                    sidebar = ipywidgets.VBox(children=[summary, edit_button],
+                            layout=ipywidgets.Layout(width='auto', grid_area='sidebar'))
+                    table = ipywidgets.VBox(children=[self.get_vma_readonly_sources_list(v)])
+                    vma_widget = ipywidgets.GridBox(children=[vma_name, sidebar, table],
                             layout=ipywidgets.Layout(width='100%', grid_template_rows='auto auto',
                                     grid_template_columns='7% 93%',
                                     grid_template_areas='''
                                     "vma_name vma_name"
-                                    "summary table"
+                                    "sidebar table"
                                     '''))
                     vmas_for_module.append(vma_widget)
+                    self.ui_elements[button_name] = {
+                            'button': edit_button,
+                            'table': table,
+                            'editing': False,
+                            'vmaobj': v,
+                            }
 
                 accordion = ipywidgets.Accordion(
                         children=[ipywidgets.VBox(children=vmas_for_module)])
