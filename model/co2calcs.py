@@ -8,7 +8,7 @@ import math
 import numpy as np
 import pandas as pd
 from model.advanced_controls import SOLUTION_CATEGORY
-from model.dd import THERMAL_MOISTURE_REGIMES, REGIONS, OCEAN_REGIONS
+from model.dd import THERMAL_MOISTURE_REGIMES, THERMAL_DYNAMICAL_REGIMES, REGIONS, OCEAN_REGIONS
 
 C_TO_CO2EQ = 3.666
 
@@ -31,7 +31,7 @@ class CO2Calcs:
           soln_net_annual_funits_adopted:
           fuel_in_liters:
           annual_land_area_harvested: (from unit adoption calcs)
-          land_distribution: (from aez data)
+          regime_distribution: (land/ocean distribution from aez/dez data)
       """
 
     def __init__(self, ac, soln_net_annual_funits_adopted=None, ch4_ppb_calculator=None,
@@ -41,7 +41,7 @@ class CO2Calcs:
                  soln_pds_direct_n2o_co2_emissions_saved=None, soln_pds_new_iunits_reqd=None,
                  soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None, conv_ref_grid_CO2_per_KWh=None,
                  conv_ref_grid_CO2eq_per_KWh=None, fuel_in_liters=None, annual_land_area_harvested=None,
-                 land_distribution=None, tot_red_in_deg_land=None, pds_protected_deg_land=None,
+                 regime_distribution=None, tot_red_in_deg_land=None, pds_protected_deg_land=None,
                  ref_protected_deg_land=None):
         self.ac = ac
         self.ch4_ppb_calculator = ch4_ppb_calculator
@@ -61,7 +61,7 @@ class CO2Calcs:
 
         # Land info (for sequestration calcs)
         self.annual_land_area_harvested = annual_land_area_harvested
-        self.land_distribution = land_distribution
+        self.regime_distribution = regime_distribution
         self.tot_red_in_deg_land = tot_red_in_deg_land  # protection models
         self.pds_protected_deg_land = pds_protected_deg_land  # protection models
         self.ref_protected_deg_land = ref_protected_deg_land  # protection models
@@ -157,8 +157,16 @@ class CO2Calcs:
         Returns DataFrame of net annual sequestration by thermal moisture region.
         Tropical Forests 'CO2 Calcs'!A119:G166 (Land models)
         """
-        assert self.ac.seq_rate_global is not None, 'No sequestration rate set in Advanced Controls'
-        cols = ['All'] + THERMAL_MOISTURE_REGIMES
+
+        if self.ac.solution_category == SOLUTION_CATEGORY.LAND:
+            regimes = THERMAL_MOISTURE_REGIMES
+        elif self.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+            regimes = THERMAL_DYNAMICAL_REGIMES
+        else:
+            raise ValueError(
+                'Sequestration calculation not valid for solution category: {}'.format(self.ac.solution_category))
+
+        cols = ['All'] + regimes
         index = pd.Index(list(range(2015, 2061)), name='Year')
         df = pd.DataFrame(columns=cols, index=index, dtype=np.float64)
         set_regions_from_distribution = False
@@ -197,20 +205,19 @@ class CO2Calcs:
             if self.annual_land_area_harvested is not None:
                 net_land -= self.annual_land_area_harvested.loc[index, 'World']
             if pd.isna(self.ac.seq_rate_global):
-                for tmr in THERMAL_MOISTURE_REGIMES:
-                    seq_rate = pd.Series(self.ac.seq_rate_per_regime).loc[tmr]
-                    df[tmr] = (C_TO_CO2EQ * net_land * seq_rate * disturbance *
-                               self.land_distribution.loc['Global', tmr] /
-                               self.land_distribution.loc['Global', 'All'])
+                for reg in regimes:
+                    seq_rate = pd.Series(self.ac.seq_rate_per_regime).loc[reg]
+                    df[reg] = (C_TO_CO2EQ * net_land * seq_rate * disturbance *
+                               self.regime_distribution.loc['Global', reg] /
+                               self.regime_distribution.loc['Global', 'All'])
                 df['All'] = df.fillna(0.0).sum(axis=1)
-                set_regions_from_distribution = False
             else:
                 df['All'] = C_TO_CO2EQ * net_land * self.ac.seq_rate_global * disturbance
                 set_regions_from_distribution = True
 
         if set_regions_from_distribution:
-            for tmr in THERMAL_MOISTURE_REGIMES:
-                df[tmr] = df['All'] * self.land_distribution.loc['Global', tmr] / self.land_distribution.loc[
+            for reg in regimes:
+                df[reg] = df['All'] * self.regime_distribution.loc['Global', reg] / self.regime_distribution.loc[
                     'Global', 'All']
 
         df.name = 'co2_sequestered_global'

@@ -72,6 +72,7 @@ scenarios = {
         emissions_use_agg_co2eq=True,
 
         # sequestration
+        seq_rate_global=0.,
         disturbance_rate=0.02,
     )
 }
@@ -184,4 +185,4 @@ class LimitingBottomTrawling:
             conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
             conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-            land_distribution=self.toa_per_region)
+            regime_distribution=self.de.get_ocean_distribution())

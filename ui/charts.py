@@ -43,10 +43,12 @@ dataframe_css_styles = [
   ]
 
 
+def solnname(s):
+    return type(s).__name__
+
 
 def fullname(s):
     return type(s).__name__ + ':' + s.scenario
-
 
 
 class JupyterUI:
@@ -163,7 +165,7 @@ class JupyterUI:
             unit_adoption_text.append([fullname(s), iunits, funits])
 
         unit_adoption_columns = ['Scenario', 'Implementation Adoption Increase in 2050 (PDS vs REF)',
-                                 'Functional/Land Adoption Increase in 2050 (PDS vs REF)']
+                                 'Functional Units/Area Adoption Increase in 2050 (PDS vs REF)']
         details_ua = ipywidgets.Output()
         with details_ua:
             df = pd.DataFrame(unit_adoption_text, columns=unit_adoption_columns)
@@ -189,7 +191,7 @@ class JupyterUI:
             funits = f'{s.ht.soln_pds_funits_adopted().loc[2050, "World"]:.2f} {flabel}'
             adoption_text.append([fullname(s), iunits, funits, '%', '%', '%'])
         adoption_columns = ['Scenario', 'Global Solution Implementation Units in 2050',
-                            'Global Solution Functional/Land Units in 2050',
+                            'Global Solution Functional Units/Area in 2050',
                             'Global Solution Adoption Share - 2014',
                             'Global Solution Adoption Share - 2020',
                             'Global Solution Adoption Share - 2050']
@@ -224,8 +226,11 @@ class JupyterUI:
         with adoption_funit_chart:
             df = pd.DataFrame()
             for s in solutions:
+                # tla/toa is constant between scenarios in the same solution so we only plot it once
                 if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
-                    df['Total Land Area:'+fullname(s)] = s.tla_per_region.loc[2020:2050, 'World']
+                    df['Total Land Area:'+solnname(s)] = s.tla_per_region.loc[2020:2050, 'World']
+                elif s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+                    df['Total Ocean Area:' + solnname(s)] = s.toa_per_region.loc[2020:2050, 'World']
                 else:
                     ref_tam = s.tm.ref_tam_per_region().loc[2020:2050, 'World']
                     pds_tam = s.tm.pds_tam_per_region().loc[2020:2050, 'World']
@@ -242,7 +247,7 @@ class JupyterUI:
                     color=alt.Color('solution', legend=alt.Legend(orient='top-right')),
                     tooltip=['solution', 'units:O', 'Year']
                 ).properties(
-                    title='World Adoption - Functional/Land Units'
+                    title='World Adoption - Functional Units/Area'
                 ).interactive()
             IPython.display.display(funit_chart)
 
@@ -316,7 +321,7 @@ class JupyterUI:
         """
         climate_text = []
         for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.LAND:
                 # Note the sequestration table in co2calcs doesn't set values to zero outside
                 # the study years. In the xls there is a separate table which does this. Here,
                 # we select the years directly.
@@ -338,9 +343,8 @@ class JupyterUI:
         # Reduction
         df = pd.DataFrame()
         for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
-                df[fullname(s)] = s.c2.co2_sequestered_global(
-                        ).loc[2020:2050, 'All'].cumsum().mul(0.001)
+            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+                df[fullname(s)] = s.c2.co2_sequestered_global().loc[2020:2050, 'All'].cumsum().mul(0.001)
             else:
                 df[fullname(s)] = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].cumsum().mul(0.001)
         reduction_df = df.reset_index().melt('Year', value_name='Gt CO2-eq', var_name='solution')
@@ -378,7 +382,7 @@ class JupyterUI:
         return (climate_heading, climate_graphs)
 
     def _get_summary_productivity(self, solutions):
-        """Return Summary panel for land productivity.
+        """Return Summary panel for land/ocean productivity.
 
            Arguments:
            solutions: a list of solution objects to be processed.
@@ -386,7 +390,7 @@ class JupyterUI:
         has_prod_results = False
         prod_text = []
         for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
                 has_prod_results = True
                 pot_yield_incr = s.ua.soln_net_annual_funits_adopted(
                         ).loc[2020:2050, 'World'].sum() * s.ac.yield_coeff
@@ -406,7 +410,7 @@ class JupyterUI:
         with prod_graph:
             df = pd.DataFrame()
             for s in solutions:
-                if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+                if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
                     funits = s.ua.soln_net_annual_funits_adopted().loc[2020:2050, 'World']
                     yield_df = (funits * s.ac.yield_coeff).cumsum()
                     df[fullname(s)] = yield_df
@@ -707,9 +711,9 @@ class JupyterUI:
             else:
                 ad_pct_geo = None
 
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
-                # The chart by geo region isn't really sensible for LAND solutions, which are much
-                # more driven by Agro-ecological zones than by political boundaries.
+            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+                # The chart by geo region isn't really sensible for LAND/OCEAN solutions, which are much
+                # more driven by AEZ/DEZs than by political boundaries.
                 children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
                     ad_frizz])]))
             else:
@@ -832,7 +836,7 @@ class JupyterUI:
         """
         children = []
         for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
                 df = pd.DataFrame(s.c2.co2_sequestered_global().loc[2020:2050, 'All'])
                 df.columns = ['CO2']
             else:
@@ -867,7 +871,6 @@ class JupyterUI:
             co2_calcs.set_title(i, fullname(s))
         return co2_calcs
 
-
     def get_aez_data_tab(self, solutions):
         """Return AEZ Data panel.
 
@@ -898,6 +901,36 @@ class JupyterUI:
             aez_data = None
         return(aez_data)
 
+    def get_dez_data_tab(self, solutions):
+        """Return DEZ Data panel.
+
+           Arguments:
+           solutions: a list of solution objects to be processed.
+        """
+        children = []
+        for s in solutions:
+            if not hasattr(s, 'de'):
+                continue
+            df = s.de.get_ocean_distribution()
+            de_table = ipywidgets.Output()
+            with de_table:
+                IPython.display.display(IPython.display.HTML(df
+                    .style.format('{:.02f}').set_table_styles(dataframe_css_styles).render()))
+            de_model = ipywidgets.Output()
+            with de_model:
+                IPython.display.display(IPython.display.SVG(
+                    data=ui.modelmap.get_model_overview_svg(
+                        model=sys.modules[s.__module__], highlights=['de'], width=350)))
+            children.append(ipywidgets.HBox([de_table, de_model]))
+
+        if children:
+            dez_data = ipywidgets.Accordion(children=children)
+            for i, s in enumerate(solutions):
+                dez_data.set_title(i, fullname(s))
+        else:
+            dez_data = None
+        return(dez_data)
+
 
     def get_detailed_results_tabs(self):
         """Return tab bar of detailed results for a set of solutions."""
@@ -911,6 +944,7 @@ class JupyterUI:
         tam_data = self.get_tam_data_tab(solutions)
         co2_calcs = self.get_co2_calcs_tab(solutions)
         aez_data = self.get_aez_data_tab(solutions)
+        dez_data = self.get_dez_data_tab(solutions)
 
         # ------------------ Create tabs -----------------
         children = [summary, model_overview, variable_meta_analysis, adoption_data]
@@ -921,6 +955,9 @@ class JupyterUI:
         if aez_data:
             children.append(aez_data)
             titles.append('AEZ Data')
+        if dez_data:
+            children.append(dez_data)
+            titles.append('DEZ Data')
         children.extend([first_cost, operating_cost, co2_calcs])
         titles.extend(["First Cost", "Operating Cost", "CO2"])
 

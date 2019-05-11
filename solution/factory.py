@@ -9,6 +9,7 @@ from solution import biochar
 from solution import biogas
 from solution import biomass
 from solution import bioplastic
+from solution import bottomtrawling
 from solution import buildingautomation
 from solution import carpooling
 from solution import cars
@@ -79,6 +80,7 @@ def all_solutions_scenarios():
     everything['biogas'] = (biogas.Biogas, list(biogas.scenarios.keys()))
     everything['biomass'] = (biomass.Biomass, list(biomass.scenarios.keys()))
     everything['bioplastic'] = (bioplastic.Bioplastic, list(bioplastic.scenarios.keys()))
+    everything['bottomtrawling'] = (bottomtrawling.LimitingBottomTrawling, list(bottomtrawling.scenarios.keys()))
     everything['buildingautomation'] = (buildingautomation.BuildingAutomationSystems,
             list(buildingautomation.scenarios.keys()))
     everything['carpooling'] = (carpooling.Carpooling, list(carpooling.scenarios.keys()))

@@ -6,7 +6,7 @@ from model import advanced_controls
 
 def get_model_overview_svg(model, highlights=None, width=None):
     """Return an SVG containing only the modules used in this solution."""
-    is_land = False
+    is_land = is_ocean = False
     has_default_pds_ad = has_custom_pds_ad = has_s_curve_pds_ad = False
     has_default_ref_ad = has_custom_ref_ad = False
     for s in model.scenarios.values():
@@ -22,9 +22,13 @@ def get_model_overview_svg(model, highlights=None, width=None):
             has_custom_ref_ad = True
         if s.solution_category == advanced_controls.SOLUTION_CATEGORY.LAND:
             is_land = True
+        if s.solution_category == advanced_controls.SOLUTION_CATEGORY.OCEAN:
+            is_ocean = True
 
     if is_land:
         tree = ET.parse(os.path.join('data', 'land_model_diagram.svg'))
+    elif is_ocean:
+        tree = ET.parse(os.path.join('data', 'ocean_model_diagram.svg'))
     else:
         tree = ET.parse(os.path.join('data', 'rrs_model_diagram.svg'))
 
