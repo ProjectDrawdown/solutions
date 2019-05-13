@@ -69,20 +69,20 @@ class SCurve:
             # close to 100% ends up being approximately LN(0.0000000000000009) instead of LN(0).
             # We pull in the value which Excel comes up with, -34.65735902799730.
             magic = -34.65735902799730
+            np_err_settings = np.seterr(divide='raise')
             try:
                 # lcot == log change over time
                 # =((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))
                 last_percent_log_term = magic if last_percent >= 0.999999 else math.log(
                     1.0 / last_percent - 1.0)
                 lcot = ((math.log(1.0 / base_percent - 1.0) - last_percent_log_term) /
-                        (last_year - base_year))
+                    (last_year - base_year))
 
                 # term1a = ((1-AH$18)/(1+EXP(-((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))*
-                #         ($AG24-(LN(1/AH$18-1)/((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))+AH$17))
-                #         ))*'Unit Adoption Calculations'!B$105)
-                term1a = ((1.0 - base_percent) / (1.0 + math.exp(-lcot *
-                                                                 (year - (math.log(
-                                                                     1.0 / base_percent - 1.0) / lcot + base_year)))) * pds_tam_2050)
+                #     ($AG24-(LN(1/AH$18-1)/((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))+AH$17))
+                #     ))*'Unit Adoption Calculations'!B$105)
+                term1a = ((1.0 - base_percent) / (1.0 + math.exp(-lcot * (year - (math.log(
+                    1.0 / base_percent - 1.0) / lcot + base_year)))) * pds_tam_2050)
 
                 # term1b = AH$21*AH$18*'Unit Adoption Calculations'!B$105
                 term1b = last_percent * base_percent * pds_tam_2050
@@ -103,9 +103,10 @@ class SCurve:
                 # using the same definitions for the cells as in the First Half function above.
                 # This is the same as term1a plus (AH$19/AH$21)
                 secondHalf = term1a + (base_adoption / last_percent)
-            except ZeroDivisionError:
+            except (ZeroDivisionError, FloatingPointError):
                 firstHalf = np.nan
                 secondHalf = np.nan
+            np.seterr(**np_err_settings)
             result.loc[year, 'first_half'] = firstHalf
             result.loc[year, 'second_half'] = secondHalf
 
