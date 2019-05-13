@@ -245,9 +245,9 @@ class CO2Calcs:
         else:
             co2_vals = self.co2_mmt_reduced()['World']
 
-        if self.ac.solution_category == SOLUTION_CATEGORY.LAND:
+        if self.ac.solution_category == SOLUTION_CATEGORY.LAND or self.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
             co2_vals = self.co2_sequestered_global()['All'] + self.co2eq_mmt_reduced()['World']
-            assert self.ac.emissions_use_co2eq, 'Land models must use CO2 eq'
+            assert self.ac.emissions_use_co2eq, 'Land/ocean models must use CO2 eq'
 
         columns = ['PPM', 'Total'] + list(range(2015, 2061))
         ppm_calculator = pd.DataFrame(0, columns=columns, index=co2_vals.index.copy(),
@@ -288,7 +288,6 @@ class CO2Calcs:
         co2_ppm_calculator = self.co2_ppm_calculator()
         ppm_calculator = pd.DataFrame(0,
                                       columns=["CO2-eq PPM", "CO2 PPM", "CH4 PPB", "CO2 RF", "CH4 RF"],
-
                                       index=co2_ppm_calculator.index.copy(), dtype=np.float64)
         ppm_calculator.index = ppm_calculator.index.astype(int)
         ppm_calculator["CO2 PPM"] = co2_ppm_calculator["PPM"]

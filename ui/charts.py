@@ -321,7 +321,8 @@ class JupyterUI:
         """
         climate_text = []
         for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+            g_tons = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].sum() / 1000
+            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
                 # Note the sequestration table in co2calcs doesn't set values to zero outside
                 # the study years. In the xls there is a separate table which does this. Here,
                 # we select the years directly.
@@ -329,45 +330,88 @@ class JupyterUI:
                 # Thus, this value will differ slightly from the one given in the Detailed Results
                 # xls sheet.
                 # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit
-                g_tons = s.c2.co2_sequestered_global().loc[2020:2050, 'All'].sum() / 1000
-            else:
-                g_tons = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].sum() / 1000
+                g_tons += s.c2.co2_sequestered_global().loc[2020:2050, 'All'].sum() / 1000
             climate_text.append([fullname(s), f"{g_tons:.2f} Gt"])
 
         climate_heading = ipywidgets.Output()
         with climate_heading:
-            df = pd.DataFrame(climate_text, columns=['Scenario', 'Total CO2-eq Reduced/Sequestered'])
+            df = pd.DataFrame(climate_text, columns=['Scenario', 'Total Atmospheric CO2-eq Reduction'])
             IPython.display.display(IPython.display.HTML(df.style.set_table_styles(
                 dataframe_css_styles).hide_index().render()))
 
-        # Reduction
-        df = pd.DataFrame()
+        # Reduction/sequestration/TAR data
+        red_df, seq_df, tar_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+        ymin = ymax = 0
         for s in solutions:
+            reduction = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].cumsum().mul(0.001)
+            red_df[fullname(s)] = reduction
             if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
-                df[fullname(s)] = s.c2.co2_sequestered_global().loc[2020:2050, 'All'].cumsum().mul(0.001)
+                sequestration = s.c2.co2_sequestered_global().loc[2020:2050, 'All'].cumsum().mul(0.001)
+                seq_df[fullname(s)] = sequestration
+                tar_df[fullname(s)] = reduction + sequestration
+                ymax = max(seq_df.max().max(), red_df.max().max(), ymax)
+                ymin = min(seq_df.min().min(), red_df.min().min(), ymin)
             else:
-                df[fullname(s)] = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].cumsum().mul(0.001)
-        reduction_df = df.reset_index().melt('Year', value_name='Gt CO2-eq', var_name='solution')
-        reduction_graph = ipywidgets.Output()
-        with reduction_graph:
-            chart = alt.Chart(reduction_df, width=300).mark_line().encode(
-                y='Gt CO2-eq',
+                tar_df[fullname(s)] = reduction
+                ymax = max(red_df.max().max(), ymax)
+                ymin = min(0, ymin)
+
+        # Sequestration graph
+        if not seq_df.empty:
+            sequestration_df = seq_df.reset_index().melt('Year', value_name='Gt CO2', var_name='solution')
+            sequestration_graph = ipywidgets.Output()
+            with sequestration_graph:
+                chart = alt.Chart(sequestration_df, width=300).mark_line().encode(
+                    y=alt.Y('Gt CO2', scale=alt.Scale(domain=[ymin, ymax])),  # use same scale
+                    x=alt.X('Year', type='ordinal'),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    tooltip=['solution', 'Gt CO2', 'Year'],
+                ).properties(
+                    title='World Cumulative CO2 Sequestered'
+                ).interactive()
+                IPython.display.display(chart)
+
+            # Reduction graph
+            reduction_df = red_df.reset_index().melt('Year', value_name='Gt CO2-eq', var_name='solution')
+            reduction_graph = ipywidgets.Output()
+            with reduction_graph:
+                chart = alt.Chart(reduction_df, width=300).mark_line().encode(
+                    y=alt.Y('Gt CO2-eq', scale=alt.Scale(domain=[ymin, ymax])),  # use same scale
+                    x=alt.X('Year', type='ordinal'),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    tooltip=['solution', 'Gt CO2-eq', 'Year'],
+                ).properties(
+                    title='World Cumulative CO2-eq Reduced'
+                ).interactive()
+                IPython.display.display(chart)
+
+            tar_graph_width = 300
+        else:
+            # resize total atmospheric reduction graph to fill display
+            tar_graph_width = 700
+
+        # Total atmospheric reduction graph
+        total_reduction_df = tar_df.reset_index().melt('Year', value_name='Gt CO2-eq', var_name='solution')
+        total_reduction_graph = ipywidgets.Output()
+        with total_reduction_graph:
+            chart = alt.Chart(total_reduction_df, width=tar_graph_width).mark_line().encode(
+                y=alt.Y('Gt CO2-eq', scale=alt.Scale(domain=[ymin, ymax])),  # use same scale
                 x=alt.X('Year', type='ordinal'),
                 color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
                 tooltip=['solution', 'Gt CO2-eq', 'Year'],
             ).properties(
-                title='World Cumulative CO2-eq Reduced/Sequestered'
+                title='World Cumulative Total Atmospheric CO2-eq Reduction'
             ).interactive()
             IPython.display.display(chart)
 
-        # Concentration
+        # Concentration data/graph
         df = pd.DataFrame()
         for s in solutions:
             df[fullname(s)] = s.c2.co2eq_ppm_calculator().loc[2020:2050, 'CO2-eq PPM']
         concentration_df = df.reset_index().melt('Year', value_name='concentration', var_name='solution')
         concentration_graph = ipywidgets.Output()
         with concentration_graph:
-            chart = alt.Chart(concentration_df, width=300).mark_line().encode(
+            chart = alt.Chart(concentration_df, width=700).mark_line().encode(
                 y='concentration',
                 x=alt.X('Year', type='ordinal'),
                 color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
@@ -377,9 +421,14 @@ class JupyterUI:
             ).interactive()
             IPython.display.display(chart)
 
-        climate_graphs = ipywidgets.HBox(children=[reduction_graph, concentration_graph])
+        climate_graph_list = [total_reduction_graph]
+        if not seq_df.empty:
+            climate_graph_list += [reduction_graph, sequestration_graph]
 
-        return (climate_heading, climate_graphs)
+        mmt_graphs = ipywidgets.HBox(children=climate_graph_list)
+        concentration_graphs = ipywidgets.HBox(children=[concentration_graph])
+
+        return climate_heading, mmt_graphs, concentration_graphs
 
     def _get_summary_productivity(self, solutions):
         """Return Summary panel for land/ocean productivity.
@@ -448,7 +497,7 @@ class JupyterUI:
         (financial_heading, cost_graphs) = self._get_summary_financial(solutions)
 
         climate_results_label = self.blue_label('The Key Climate Results')
-        (climate_heading, climate_graphs) = self._get_summary_climate(solutions)
+        (climate_heading, mmt_graphs, concentration_graphs) = self._get_summary_climate(solutions)
 
         prod_results_label = self.blue_label('The Key Productivity Results')
         (prod_heading, prod_graph) = self._get_summary_productivity(solutions)
@@ -458,7 +507,7 @@ class JupyterUI:
         with detailed_results:
             to_disp = [key_results_label, unit_adoption_heading, adoption_heading, adoption_graphs,
                     financial_results_label, financial_heading, cost_graphs, climate_results_label,
-                    climate_heading, climate_graphs]
+                    climate_heading, mmt_graphs, concentration_graphs]
             if has_prod_results:
                 to_disp.extend([prod_results_label, prod_heading, prod_graph])
             IPython.display.display(ipywidgets.VBox(to_disp))
@@ -837,12 +886,14 @@ class JupyterUI:
         children = []
         for s in solutions:
             if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
-                df = pd.DataFrame(s.c2.co2_sequestered_global().loc[2020:2050, 'All'])
-                df.columns = ['CO2']
+                co2_red = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World']
+                co2_seq = s.c2.co2_sequestered_global().loc[2020:2050, 'All']
+                df = pd.concat([co2_red, co2_seq, co2_red + co2_seq], axis=1)
+                df.columns = ['CO2-eq emissions reduced', 'CO2 sequestered', 'Total atmospheric CO2-eq reduction']
             else:
                 df = pd.concat([s.c2.co2_mmt_reduced().loc[2020:2050, 'World'],
                                 s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World']], axis=1)
-                df.columns = ['CO2', 'CO2eq']
+                df.columns = ['CO2', 'CO2-eq']
             c2_table = ipywidgets.Output()
             with c2_table:
                 IPython.display.display(IPython.display.HTML(df
@@ -856,7 +907,7 @@ class JupyterUI:
                     color=alt.Color('column'),
                     tooltip=['column', 'mmt', 'Year'],
                 ).properties(
-                    title='CO2 MMt'
+                    title='Cumulative Atmospheric CO2-eq Reduction (MMt)'
                 ).interactive()
                 IPython.display.display(chart)
             c2_model = ipywidgets.Output()
