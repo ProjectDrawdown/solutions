@@ -95,6 +95,7 @@ scenarios = {
 
       # sequestration
       seq_rate_global=0.41883186313819837, 
+      tC_storage_in_protected_land_type={'value': 262.941683097068, 'xls cell formula': "D189+(B138/'Variable Meta-analysis'!$AN$32)"}, 
       global_multi_for_regrowth=1.0, 
       degradation_rate={'value': 0.003074, 'statistic': 'mean'}, 
       disturbance_rate={'value': 0.00048945, 'statistic': 'mean'}, 
@@ -165,6 +166,7 @@ scenarios = {
 
       # sequestration
       seq_rate_global=0.41883186313819837, 
+      tC_storage_in_protected_land_type={'value': 262.941683097068, 'xls cell formula': "D189+(B138/'Variable Meta-analysis'!$AN$32)"}, 
       global_multi_for_regrowth=1.0, 
       degradation_rate={'value': 0.003074, 'statistic': 'mean'}, 
       disturbance_rate={'value': 0.00048945, 'statistic': 'mean'}, 
@@ -235,6 +237,7 @@ scenarios = {
 
       # sequestration
       seq_rate_global=0.41883186313819837, 
+      tC_storage_in_protected_land_type={'value': 262.941683097068, 'xls cell formula': "D189+(B138/'Variable Meta-analysis'!$AN$32)"}, 
       global_multi_for_regrowth=1.0, 
       degradation_rate={'value': 0.003074, 'statistic': 'mean'}, 
       disturbance_rate={'value': 0.00048945, 'statistic': 'mean'}, 
@@ -318,7 +321,7 @@ class IndigenousPeoplesLand:
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
     self.ua = unitadoption.UnitAdoption(ac=self.ac,
-        pds_total_adoption_units=self.tla_per_region,
+        ref_total_adoption_units=self.tla_per_region, pds_total_adoption_units=self.tla_per_region,
         electricity_unit_factor=1000000.0,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -357,21 +360,21 @@ class IndigenousPeoplesLand:
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
-                                ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
-                                soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
-                                soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
-                                soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
-                                soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),
-                                soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),
-                                soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
-                                soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
-                                soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
-                                conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-                                conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
-                                conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
-                                soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                                tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),
-                                pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),
-                                ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),
-                                regime_distribution=self.ae.get_land_distribution())
+        ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+        soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
+        soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
+        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
+        soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),
+        soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),
+        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
+        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
+        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
+        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
+        conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
+        conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+        tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),
+        pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),
+        ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),
+        regime_distribution=self.ae.get_land_distribution())
 

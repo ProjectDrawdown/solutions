@@ -84,7 +84,7 @@ def full_survey():
         - % of tla adopted
         - avg abatement cost
     """
-    results = pd.DataFrame(columns=['% tla', 'avg abatement cost'])
+    results = pd.DataFrame(columns=['% tla', 'avg abatement cost', 'model type'])
     results.index.name = 'Solution'
     for name, (constructor, scenarios) in land_solutions_scenarios.items():
         print('processing: {}'.format(name))
@@ -99,8 +99,15 @@ def full_survey():
                 max_land = land_adopted
                 abatement_cost = avg_abatement_cost(s)
         perc_tla = 100 * max_land / s.tla_per_region.at[2050, 'World']
+        if s.ua.pds_cumulative_degraded_land_protected()['World'].loc[2050] > 0:
+            model_type = 'protect'
+        elif s.ac.yield_coeff > 0:
+            model_type = 'yield'
+        else:
+            model_type = 'core'
         results.at[name, '% tla'] = perc_tla
         results.at[name, 'avg abatement cost'] = abatement_cost
+        results.at[name, 'model type'] = model_type
     results.to_csv(datadir.joinpath('health', 'landsurvey.csv'))
     return results
 

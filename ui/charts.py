@@ -19,6 +19,7 @@ import PIL.ImageDraw
 import PIL.ImageFont
 
 from model.advanced_controls import SOLUTION_CATEGORY
+from model.co2calcs import C_TO_CO2EQ
 
 import solution.factory
 import ui.color
@@ -449,17 +450,18 @@ class JupyterUI:
            Arguments:
            solutions: a list of solution objects to be processed.
         """
-        has_prod_results = False
         prod_text = []
+        yield_df = pd.DataFrame()
         for s in solutions:
             if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
-                has_prod_results = True
-                pot_yield_incr = s.ua.soln_net_annual_funits_adopted(
-                        ).loc[2020:2050, 'World'].sum() * s.ac.yield_coeff
-                prod_text.append([fullname(s), f"{pot_yield_incr:.2f} MMt"])
+                funits = s.ua.soln_net_annual_funits_adopted().loc[2020:2050, 'World']
+                pot_yield_incr = funits.sum() * s.ac.yield_coeff
+                if pot_yield_incr > 0:
+                    yield_df[fullname(s)] = (funits * s.ac.yield_coeff).cumsum()
+                    prod_text.append([fullname(s), f"{pot_yield_incr:.2f} MMt"])
         prod_columns = ['Scenario', 'Potential yield increase over report years']
 
-        if not has_prod_results:
+        if not prod_text:
             return (None, None)
 
         prod_heading = ipywidgets.Output()
@@ -470,13 +472,7 @@ class JupyterUI:
 
         prod_graph = ipywidgets.Output()
         with prod_graph:
-            df = pd.DataFrame()
-            for s in solutions:
-                if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
-                    funits = s.ua.soln_net_annual_funits_adopted().loc[2020:2050, 'World']
-                    yield_df = (funits * s.ac.yield_coeff).cumsum()
-                    df[fullname(s)] = yield_df
-            prod_df = df.reset_index().melt('Year', value_name='metric tons', var_name='solution')
+            prod_df = yield_df.reset_index().melt('Year', value_name='metric tons', var_name='solution')
             chart = alt.Chart(prod_df, width=300).mark_line().encode(
                 y='metric tons',
                 x=alt.X('Year', type='ordinal'),
@@ -488,6 +484,86 @@ class JupyterUI:
             IPython.display.display(chart)
 
         return (prod_heading, prod_graph)
+
+
+    def _get_summary_protection(self, solutions):
+        """Return Summary panel for land/ocean protection results.
+
+           Arguments:
+                solutions: a list of solution objects to be processed.
+        """
+        protect_text = []
+        cridl_df, protected_co2_df, protected_c_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+        for s in solutions:
+            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+                cumulative_land_deg = s.ua.cumulative_reduction_in_total_degraded_land()['World']
+                red_land_deg = cumulative_land_deg[2050] - cumulative_land_deg[2019]
+                if red_land_deg > 0:
+                    cridl_df[fullname(s)] = cumulative_land_deg.loc[2020:2050]
+                    protected_c = (s.ua.soln_pds_funits_adopted.loc[2020:2050, 'World'] -
+                            s.ua.pds_cumulative_degraded_land_protected().loc[2020:2050, 'World'])
+                    protected_c *= s.ac.tC_storage_in_protected_land_type / 1000
+                    protected_c_df[fullname(s)] = protected_c
+                    protected_co2 = protected_c * C_TO_CO2EQ
+                    protected_co2_df[fullname(s)] = protected_c
+                    protect_text.append([fullname(s),
+                                         f"{red_land_deg:.2f} MHa",
+                                         f"{protected_co2[2050]:.2f} Gt CO2",
+                                         f"{protected_c[2050]:.2f} Gt Carbon"])
+        protect_columns = ['Scenario', 'Reduced Land Degradation from 2020-2050', 'Total CO2 Under Protection by 2050',
+                                'Total Carbon Under Protection by 2050']
+
+        if not protect_text:
+            return (None, None)
+
+        protect_heading = ipywidgets.Output()
+        with protect_heading:
+            df = pd.DataFrame(protect_text, columns=protect_columns)
+            IPython.display.display(IPython.display.HTML(df.style.set_table_styles(
+                dataframe_css_styles).hide_index().render()))
+
+        cridl_graph = ipywidgets.Output()
+        with cridl_graph:
+            cridl_df = cridl_df.reset_index().melt('Year', value_name='million hectare', var_name='solution')
+            chart = alt.Chart(cridl_df, width=300).mark_line().encode(
+                y='million hectare',
+                x=alt.X('Year', type='ordinal'),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                tooltip=['solution', 'million hectare', 'Year'],
+            ).properties(
+                title='Cumulative Reduced Land Degradation'
+            ).interactive()
+            IPython.display.display(chart)
+
+        protected_co2_graph = ipywidgets.Output()
+        with protected_co2_graph:
+            protected_co2_df = protected_co2_df.reset_index().melt('Year', value_name='Gt CO2', var_name='solution')
+            chart = alt.Chart(protected_co2_df, width=300).mark_line().encode(
+                y='Gt CO2',
+                x=alt.X('Year', type='ordinal'),
+                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right')),
+                tooltip=['solution', 'Gt CO2', 'Year'],
+            ).properties(
+                title='Total CO2 Under Protection'
+            ).interactive()
+            IPython.display.display(chart)
+            
+        protected_c_graph = ipywidgets.Output()
+        with protected_c_graph:
+            protected_c_df = protected_c_df.reset_index().melt('Year', value_name='Gt carbon', var_name='solution')
+            chart = alt.Chart(protected_c_df, width=300).mark_line().encode(
+                y='Gt carbon',
+                x=alt.X('Year', type='ordinal'),
+                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right')),
+                tooltip=['solution', 'Gt carbon', 'Year'],
+            ).properties(
+                title='Total Carbon Under Protection'
+            ).interactive()
+            IPython.display.display(chart)
+
+        protect_graphs = ipywidgets.HBox(children=[cridl_graph, protected_co2_graph, protected_c_graph])
+
+        return (protect_heading, protect_graphs)
 
 
     def blue_label(self, text):
@@ -516,6 +592,10 @@ class JupyterUI:
         (prod_heading, prod_graph) = self._get_summary_productivity(solutions)
         has_prod_results = True if (prod_heading and prod_graph) else False
 
+        protect_results_label = self.blue_label('The Key Protection Results')
+        (protect_heading, protect_graphs) = self._get_summary_protection(solutions)
+        has_protect_results = True if (protect_heading and protect_graphs) else False
+
         detailed_results = ipywidgets.Output()
         with detailed_results:
             to_disp = [key_results_label, unit_adoption_heading, adoption_heading, adoption_graphs,
@@ -523,6 +603,8 @@ class JupyterUI:
                     climate_heading, mmt_graphs, concentration_graphs]
             if has_prod_results:
                 to_disp.extend([prod_results_label, prod_heading, prod_graph])
+            if has_protect_results:
+                to_disp.extend([protect_results_label, protect_heading, protect_graphs])
             IPython.display.display(ipywidgets.VBox(to_disp))
 
         return detailed_results
@@ -1092,7 +1174,7 @@ class JupyterUI:
                     constructors.append((constructor, scenario))
 
         if not constructors:
-            soln = 'silvopasture'
+            soln = 'forestprotection'
             constructor, scenarios = all_solutions_scenarios[soln]
             for scenario in scenarios:
                 constructors.append((constructor, scenario))

@@ -11,7 +11,8 @@ from model.advanced_controls import SOLUTION_CATEGORY
 from model.dd import THERMAL_MOISTURE_REGIMES, THERMAL_DYNAMICAL_REGIMES, REGIONS, OCEAN_REGIONS
 
 C_TO_CO2EQ = 3.666
-
+# Note: a different value of 3.64 is sometimes used for certain results in Excel
+# Here we will always use this value for consistency
 
 class CO2Calcs:
     """CO2 Calcs module.
