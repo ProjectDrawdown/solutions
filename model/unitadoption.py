@@ -270,6 +270,9 @@ class UnitAdoption:  # by Owen Barton
         regions = OCEAN_REGIONS if self.ac.solution_category == 'OCEAN' else REGIONS
         df = pd.DataFrame(0., columns=regions, index=index)
 
+        if None in [self.ac.delay_protection_1yr, self.ac.disturbance_rate, self.ac.degradation_rate]:
+            return df  # passthru a DataFrame of zeros for non protection solutions
+
         delay = 1 if self.ac.delay_protection_1yr else 0
         if protected_or_unprotected == 'protected':
             # protected table starts with nonzero value

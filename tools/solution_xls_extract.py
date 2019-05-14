@@ -382,6 +382,7 @@ def get_land_scenarios(wb):
             if sr_tab.cell_value(row + 175, 3) == 'Growth Rate of Land Degradation':
                 s['global_multi_for_regrowth'] = convert_sr_float(sr_tab.cell_value(row + 178, 4))
                 s['degradation_rate'] = link_vma(sr_tab.cell_value(row + 175, 4))
+                s['tC_storage_in_protected_land_type'] = link_vma(sr_tab.cell_value(row + 177, 4))
             elif sr_tab.cell_value(row + 175,
                                    3) == 'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing':
                 s['carbon_not_emitted_after_harvesting'] = link_vma(sr_tab.cell_value(row + 175, 4))
@@ -539,6 +540,7 @@ def write_scenario(f, s):
         f.write('\n' + prefix + '# sequestration' + '\n')
         oneline(f=f, s=s, names=['seq_rate_global'], prefix=prefix)
         oneline(f=f, s=s, names=['seq_rate_per_regime'], prefix=prefix)
+        oneline(f=f, s=s, names=['tC_storage_in_protected_land_type'], prefix=prefix)
         oneline(f=f, s=s, names=['global_multi_for_regrowth'], prefix=prefix)
         oneline(f=f, s=s, names=['degradation_rate'], prefix=prefix)
         oneline(f=f, s=s, names=['disturbance_rate'], prefix=prefix, suffix='\n')
@@ -1108,9 +1110,9 @@ def write_ua(f, wb, is_rrs=True):
     f.write("    self.ua = unitadoption.UnitAdoption(ac=self.ac,\n")
     if is_rrs:
         f.write(
-            "        ref_tam_per_region=ref_tam_per_region, pds_tam_per_region=pds_tam_per_region,\n")
+            "        ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,\n")
     else:
-        f.write("        tla_per_region=self.tla_per_region,\n")
+        f.write("        ref_total_adoption_units=self.tla_per_region, pds_total_adoption_units=self.tla_per_region,\n")
         f.write("        electricity_unit_factor=1000000.0,\n")
     f.write("        soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
     f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
@@ -1250,7 +1252,7 @@ def write_c2_c4(f, is_rrs=True, is_protect=False, has_harvest=False):
         if has_harvest:
             f.write(
                 "        annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),\n")
-        f.write("        land_distribution=self.ae.get_land_distribution())\n")
+        f.write("        regime_distribution=self.ae.get_land_distribution())\n")
     f.write("\n")
 
 

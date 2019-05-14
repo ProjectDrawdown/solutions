@@ -146,7 +146,7 @@ def test_pds_tam_growth():
 
 
 def test_cumulative_degraded_land_unprotected():
-    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074, delay_protection_1yr=True)
+    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074, delay_protection_1yr=True, disturbance_rate=1)
     tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'), index_col=0)
     units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'),
                                 index_col=0)
@@ -157,7 +157,8 @@ def test_cumulative_degraded_land_unprotected():
 
 
 def test_cumulative_degraded_land_protected():
-    ac = advanced_controls.AdvancedControls(disturbance_rate=0.0000157962432447763, delay_protection_1yr=True)
+    ac = advanced_controls.AdvancedControls(
+        disturbance_rate=0.0000157962432447763, delay_protection_1yr=True,degradation_rate=1)
     units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'), index_col=0)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=units_adopted)
     expected_world = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_pds_deg_protected_land.csv'), index_col=0)

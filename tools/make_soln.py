@@ -34,6 +34,6 @@ def test_{class_name}_{stype}(start_excel, tmpdir):
 
 
 if __name__ == '__main__':
-    dir_name = 'biomass'
-    class_name = 'Biomass'
+    dir_name = 'indigenouspeoplesland'
+    class_name = 'IndigenousPeoplesLand'
     make_soln_files(dir_name, class_name)

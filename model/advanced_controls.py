@@ -403,6 +403,7 @@ class AdvancedControls:
                  carbon_not_emitted_after_harvesting=None,
                  avoided_deforest_with_intensification=None,
 
+                 tC_storage_in_protected_land_type=None,
                  delay_protection_1yr=None,
                  delay_regrowth_1yr=None,
                  include_unprotected_land_in_regrowth_calcs=None,
@@ -510,7 +511,7 @@ class AdvancedControls:
 
         # LAND only
         self.tco2eq_reduced_per_land_unit = self._substitute_vma(tco2eq_reduced_per_land_unit,
-                                                                 vma_title='t CO2-eq (Aggregate emissions) Reduced per Land Unit')
+                                                vma_title='t CO2-eq (Aggregate emissions) Reduced per Land Unit')
         self.tco2eq_rplu_rate = tco2eq_rplu_rate
         self.tco2_reduced_per_land_unit = self._substitute_vma(tco2_reduced_per_land_unit,
                                                                vma_title='t CO2 Reduced per Land Unit')
@@ -534,15 +535,16 @@ class AdvancedControls:
         self.yield_from_conv_practice = self._substitute_vma(yield_from_conv_practice,
                                                              vma_title='Yield  from CONVENTIONAL Practice')
         self.yield_gain_from_conv_to_soln = self._substitute_vma(yield_gain_from_conv_to_soln,
-                                                                 vma_title='Yield Gain (% Increase from CONVENTIONAL to SOLUTION)')
+                                            vma_title='Yield Gain (% Increase from CONVENTIONAL to SOLUTION)')
         self.use_custom_tla = use_custom_tla
         self.harvest_frequency = harvest_frequency
         self.carbon_not_emitted_after_harvesting = self._substitute_vma(carbon_not_emitted_after_harvesting,
-                                                                        vma_title='Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing')
-        self.avoided_deforest_with_intensification = self._substitute_vma(
-            avoided_deforest_with_intensification,
+                                        vma_title='Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing')
+        self.avoided_deforest_with_intensification = self._substitute_vma(avoided_deforest_with_intensification,
             vma_title='Avoided_Deforested_Area_With_Increase_in_Agricultural_Intensification')
 
+        self.tC_storage_in_protected_land_type = self._substitute_vma(tC_storage_in_protected_land_type,
+                                                                    vma_title='t C storage in Protected Landtype')
         self.delay_protection_1yr = delay_protection_1yr
         self.delay_regrowth_1yr = delay_regrowth_1yr
         self.include_unprotected_land_in_regrowth_calcs = include_unprotected_land_in_regrowth_calcs
