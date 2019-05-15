@@ -247,3 +247,9 @@ Apr 29 - May 3, 2019
 + regenerate almost all solution afresh, using current tooling.
   RRS solutions now have VMAs.
 + add first Ocean solution: Limited Bottom Trawling
+
+May 6 - May 10, 2019
++ add Frizzle charts
+  https://codingrelic.geekhold.com/2019/05/ipyvolume-frizzle-charts.html
+  allows a denser information display of Adoption/TAM by region
++ initial work adding Land-specific data to ModelHealth.ipynb
