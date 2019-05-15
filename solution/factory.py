@@ -57,6 +57,7 @@ from solution import solarhotwater
 from solution import solarpvroof
 from solution import solarpvutil
 from solution import telepresence
+from solution import temperateforests
 from solution import treeintercropping
 from solution import tropicalforests
 from solution import tropicaltreestaples
@@ -154,6 +155,8 @@ def all_solutions_scenarios():
     everything['solarpvroof'] = (solarpvroof.SolarPVRoof, list(solarpvroof.scenarios.keys()))
     everything['solarpvutil'] = (solarpvutil.SolarPVUtil, list(solarpvutil.scenarios.keys()))
     everything['telepresence'] = (telepresence.Telepresence, list(telepresence.scenarios.keys()))
+    everything['temperateforests'] = (temperateforests.TemperateForests,
+            list(temperateforests.scenarios.keys()))
     everything['treeintercropping'] = (treeintercropping.TreeIntercropping,
             list(treeintercropping.scenarios.keys()))
     everything['tropicalforests'] = (tropicalforests.TropicalForests,
