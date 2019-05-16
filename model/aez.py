@@ -20,9 +20,14 @@ pd.set_option('display.expand_frame_repr', False)
 
 
 class AEZ:
-    """ AEZ Data module """
+    """
+    AEZ Data module.
+    Args:
+        solution_name: <soln file>.name
+        ignore_allocation: optionally turn off land allocation to use max tla values
+    """
 
-    def __init__(self, solution_name):
+    def __init__(self, solution_name, ignore_allocation=False):
         self.solution_name = solution_name
         self.regimes = THERMAL_MOISTURE_REGIMES
 
@@ -30,6 +35,7 @@ class AEZ:
         # This is in line with the xls version but should be changed later to keep regions consistent
         self.regions = REGIONS[1:6] + ['Global'] + REGIONS[6:]
 
+        self.ignore_allocation = ignore_allocation
         self._populate_solution_land_allocation()
         self._get_applicable_zones()
         self._populate_world_land_allocation()
@@ -45,7 +51,12 @@ class AEZ:
         Calculates solution specific Drawdown land allocation using values from 'allocation' directory.
         """
         df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_la_template.csv'), index_col=0)
-        df = df.fillna(0)
+        if self.ignore_allocation:
+            self.soln_land_alloc_df = df.fillna(1)
+            return
+        else:
+            df = df.fillna(0)
+
         for tmr in self.regimes:
             tmr_path = LAND_CSV_PATH.joinpath('allocation', to_filename(tmr))
             for col in df:
@@ -56,7 +67,8 @@ class AEZ:
                 total_perc_allocated = la_df.loc[self.solution_name]['Total % allocated']
                 if total_perc_allocated > 0:
                     df.at[tmr, col] = total_perc_allocated
-        self.soln_land_alloc_df = df
+        else:
+            self.soln_land_alloc_df = df
 
     def _get_applicable_zones(self):
         """

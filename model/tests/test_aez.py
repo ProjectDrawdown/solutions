@@ -25,3 +25,9 @@ def test_populate_world_land_allocation():
 def test_populate_solution_land_distribution():
     trr_aez = aez.AEZ('Tropical Forest Restoration')
     assert trr_aez.soln_land_dist_df.loc['Global', 'All'] == pytest.approx(303.9980581327790)
+
+
+def test_ignore_allocation():
+    trr_aez = aez.AEZ('Tropical Forest Restoration', ignore_allocation=True)
+    res = trr_aez.soln_land_dist_df
+    assert res[res == 1].all().all()
