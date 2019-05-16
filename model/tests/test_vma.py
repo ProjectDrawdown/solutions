@@ -2,13 +2,14 @@
 
 import io
 import pathlib
+import tempfile
+
 from model import vma
 import pytest
 
 
 basedir = pathlib.Path(__file__).parents[2]
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
-
 
 
 def test_vals_from_real_soln():
@@ -20,7 +21,6 @@ def test_vals_from_real_soln():
     assert result == pytest.approx(expected)
 
 
-
 def test_source_data():
     s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
         Check that this text is present, 0%, %, 0, 0
@@ -28,7 +28,6 @@ def test_source_data():
     f = io.StringIO(s)
     v = vma.VMA(filename=f)
     assert 'Check that this text is present' in v.source_data.to_html()
-
 
 
 def test_invalid_discards():
@@ -57,7 +56,6 @@ def test_invalid_discards():
     assert result == pytest.approx(expected)
 
 
-
 def test_single_study():
     f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
       A, 39%, %, 
@@ -68,7 +66,6 @@ def test_single_study():
     assert result == pytest.approx(expected)
 
 
-
 def test_missing_columns():
     f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
       A, 1000
@@ -77,7 +74,6 @@ def test_missing_columns():
     result = v.avg_high_low()
     expected = (1000, 1000, 1000)
     assert result == pytest.approx(expected)
-
 
 
 def test_inverse():
@@ -114,13 +110,11 @@ def test_generate_vma_dict():
     assert 'Current Adoption' in vma_dict
 
 
-
 def test_fixed_summary():
     vma_dict = vma.generate_vma_dict(datadir)
     v = vma_dict['Testing Fixed Summary']
     (avg, high, low) = v.avg_high_low()
     assert (avg, high, low) == (2.0, 3.0, 1.0)
-
 
 
 def test_avg_high_low_by_regime():
@@ -136,7 +130,6 @@ def test_avg_high_low_by_regime():
     assert result[0] == pytest.approx(0.45)
 
 
-
 def test_no_warnings_in_avg_high_low():
     f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
       A, 1.0, Mha,, 0.0, False
@@ -147,3 +140,18 @@ def test_no_warnings_in_avg_high_low():
         v = vma.VMA(filename=f)
         _ = v.avg_high_low()
     assert len(warnings) == 0
+
+
+def test_write_to_file():
+    f = tempfile.NamedTemporaryFile(mode='w')
+    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+      A, 1.0,,,,
+      B, 1.0,,,,
+      C, 1.0,,,,
+      """)
+    f.flush()
+    v = vma.VMA(filename=f.name)
+    df = v.source_data.copy(deep=True)
+    df.loc[0, 'Source ID'] = 'updated source ID'
+    v.write_to_file(df)
+    assert 'updated source ID' in open(f.name).read()

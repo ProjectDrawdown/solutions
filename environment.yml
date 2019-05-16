@@ -12,7 +12,7 @@ dependencies:
   - backcall=0.1.0
   - bleach=3.1.0
   - bqplot=0.11.5
-  - ca-certificates=2019.3.9
+  - ca-certificates=2019.1.23
   - certifi=2019.3.9
   - cffi=1.12.3
   - chardet=3.0.4
@@ -38,7 +38,6 @@ dependencies:
   - ipydatawidgets=4.0.0
   - ipykernel=5.1.0
   - ipyscales=0.3.0
-  - ipysheet=0.3.5
   - ipython=7.5.0
   - ipython_genutils=0.2.0
   - ipyvolume=0.5.1
@@ -113,6 +112,7 @@ dependencies:
   - pytz=2019.1
   - pywavelets=1.0.3
   - pyzmq=18.0.0
+  - qgrid=1.1.1
   - qt=5.9.7
   - qtconsole=4.4.3
   - readline=7.0

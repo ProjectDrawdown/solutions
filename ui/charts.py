@@ -17,6 +17,7 @@ import pandas as pd
 import PIL
 import PIL.ImageDraw
 import PIL.ImageFont
+import qgrid
 
 from model.advanced_controls import SOLUTION_CATEGORY
 from model.co2calcs import C_TO_CO2EQ
@@ -50,6 +51,12 @@ def solnname(s):
 
 def fullname(s):
     return type(s).__name__ + ':' + s.scenario
+
+
+def vma_button_clicked(button):
+    """on_click() handler for Jupyter UI buttons."""
+    uiobj = button.d['uiobj']
+    uiobj._vma_button_clicked(button.d['button_name'])
 
 
 class JupyterUI:
@@ -146,7 +153,7 @@ class JupyterUI:
         chrt_layout = ipywidgets.Layout(flex='3 1 0%', width='auto')
         charts = ipywidgets.VBox(children=[solution_chart, solution_treemap], layout=chrt_layout)
         details_progressbar = ipywidgets.FloatProgress(value=0.0, min=0.0, max=1.0,
-                step=0.01, orientation='horizontal', layout=ipywidgets.Layout(width='100%'))
+                step=0.01, orientation='horizontal', layout=ipywidgets.Layout(width='99%'))
         self.ui_elements['details_progressbar'] = details_progressbar
         overview = ipywidgets.VBox(children=[
             ipywidgets.HBox(children=[solution_list, charts], layout=cntr_layout),
@@ -227,8 +234,8 @@ class JupyterUI:
                 iunit_chart = alt.Chart(iunit_df, width=400).mark_line().encode(
                     y='iunits',
                     x='Year:O',
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
-                    tooltip=['solution', 'iunits', 'Year'],
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
+                    tooltip=['solution', alt.Tooltip('iunits:Q', format='.2f'), 'Year'],
                 ).properties(
                     title='World Adoption - Implementation Units'
                 ).interactive()
@@ -237,10 +244,10 @@ class JupyterUI:
         adoption_funit_chart = ipywidgets.Output()
         with adoption_funit_chart:
             df = pd.DataFrame()
-            for s in solutions:
+            for s in self.solutions:
                 # tla/toa is constant between scenarios in the same solution so we only plot it once
                 if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
-                    df['Total Land Area:'+solnname(s)] = s.tla_per_region.loc[2020:2050, 'World']
+                    df['Total Land Area:' + solnname(s)] = s.tla_per_region.loc[2020:2050, 'World']
                 elif s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
                     df['Total Ocean Area:' + solnname(s)] = s.toa_per_region.loc[2020:2050, 'World']
                 else:
@@ -248,20 +255,48 @@ class JupyterUI:
                     pds_tam = s.tm.pds_tam_per_region().loc[2020:2050, 'World']
                     df['Total Market-REF:' + fullname(s)] = ref_tam
                     df['Total Market-PDS:' + fullname(s)] = pds_tam
-                ref_funits = s.ht.soln_ref_funits_adopted().loc[2020:2050, 'World']
-                pds_funits = s.ht.soln_pds_funits_adopted().loc[2020:2050, 'World']
-                df['Solution-REF:' + fullname(s)] = ref_funits
-                df['Solution-PDS:' + fullname(s)] = pds_funits
-            funit_df = df.reset_index().melt('Year', value_name='units', var_name='solution')
-            funit_chart = alt.Chart(funit_df, width=400).mark_line().encode(
+            funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
+            funit_df[['variable','solution']] = funit_df.fullname.str.split(':', n=1, expand=True)
+            chart1 = alt.Chart(funit_df, width=400).mark_line().encode(
                     y='units:Q',
                     x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-right')),
-                    tooltip=['solution', 'units:O', 'Year']
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
+                    detail='fullname',
+                    tooltip=['variable', 'solution', alt.Tooltip('units:Q', format='.2f'), 'Year']
                 ).properties(
                     title='World Adoption - Functional Units/Area'
                 ).interactive()
-            IPython.display.display(funit_chart)
+            df = pd.DataFrame()
+            for s in self.solutions:
+                ref_funits = s.ht.soln_ref_funits_adopted().loc[2020:2050, 'World']
+                df['Solution-REF:' + fullname(s)] = ref_funits
+            funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
+            funit_df[['variable','solution']] = funit_df.fullname.str.split(':', n=1, expand=True)
+            chart2 = alt.Chart(funit_df, width=400).mark_line(strokeDash=[1,1]).encode(
+                    y='units:Q',
+                    x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
+                    detail='fullname',
+                    tooltip=['variable', 'solution', alt.Tooltip('units:Q', format='.2f'), 'Year']
+                ).properties(
+                    title='World Adoption - Functional Units/Area'
+                ).interactive()
+            df = pd.DataFrame()
+            for s in self.solutions:
+                pds_funits = s.ht.soln_pds_funits_adopted().loc[2020:2050, 'World']
+                df['Solution-PDS:' + fullname(s)] = pds_funits
+            funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
+            funit_df[['variable','solution']] = funit_df.fullname.str.split(':', n=1, expand=True)
+            chart3 = alt.Chart(funit_df, width=400).mark_line(strokeDash=[3,2]).encode(
+                    y='units:Q',
+                    x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
+                    detail='fullname',
+                    tooltip=['variable', 'solution', alt.Tooltip('units:Q', format='.2f'), 'Year']
+                ).properties(
+                    title='World Adoption - Functional Units/Area'
+                ).interactive()
+            IPython.display.display(chart1 + chart2 + chart3)
 
         if has_iunit_chart:
             children = [adoption_iunit_chart, adoption_funit_chart]
@@ -310,18 +345,34 @@ class JupyterUI:
             for s in solutions:
                 pds_oc = s.oc.soln_pds_annual_operating_cost().loc[2020:2050] / 1000000000
                 df['Solution Operating Costs/Savings:' + fullname(s)] = pds_oc
-                cref_oc = s.oc.conv_ref_annual_operating_cost().loc[2020:2050] / 1000000000
-                df['Conventional Operating Costs/Savings:' + fullname(s)] = cref_oc
-            cost_df = df.reset_index().melt('Year', value_name='costs', var_name='solution')
-            cost_chart = alt.Chart(cost_df, width=350).mark_line().encode(
+            cost_df = df.reset_index().melt('Year', value_name='costs', var_name='fullname')
+            cost_df[['variable','solution']] = cost_df.fullname.str.split(':', n=1, expand=True)
+            chart1 = alt.Chart(cost_df, width=350).mark_line().encode(
                 y=alt.Y('costs', title='US$B'),
                 x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
-                tooltip=['solution', 'costs', 'Year'],
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
+                detail='fullname',
+                tooltip=['variable', 'solution', alt.Tooltip('costs:Q', format='.2f'), 'Year']
             ).properties(
                 title='World Operating Cost Difference'
             ).interactive()
-            IPython.display.display(cost_chart)
+
+            df = pd.DataFrame()
+            for s in solutions:
+                cref_oc = s.oc.conv_ref_annual_operating_cost().loc[2020:2050] / 1000000000
+                df['Conventional Operating Costs/Savings:' + fullname(s)] = cref_oc
+            cost_df = df.reset_index().melt('Year', value_name='costs', var_name='fullname')
+            cost_df[['variable','solution']] = cost_df.fullname.str.split(':', n=1, expand=True)
+            chart2 = alt.Chart(cost_df, width=350).mark_line(strokeDash=[3,2]).encode(
+                y=alt.Y('costs', title='US$B'),
+                x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
+                detail='fullname',
+                tooltip=['variable', 'solution', alt.Tooltip('costs:Q', format='.2f'), 'Year']
+            ).properties(
+                title='World Operating Cost Difference'
+            ).interactive()
+            IPython.display.display(chart1 + chart2)
 
         return (financial_heading, financial_graphs)
 
@@ -377,7 +428,7 @@ class JupyterUI:
                 chart = alt.Chart(sequestration_df, width=300).mark_line().encode(
                     y=alt.Y('Gt CO2', scale=alt.Scale(domain=[ymin, ymax])),  # use same scale
                     x=alt.X('Year', type='ordinal'),
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                     tooltip=['solution', 'Gt CO2', 'Year'],
                 ).properties(
                     title='World Cumulative CO2 Sequestered'
@@ -391,7 +442,7 @@ class JupyterUI:
                 chart = alt.Chart(reduction_df, width=300).mark_line().encode(
                     y=alt.Y('Gt CO2-eq', scale=alt.Scale(domain=[ymin, ymax])),  # use same scale
                     x=alt.X('Year', type='ordinal'),
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                     tooltip=['solution', 'Gt CO2-eq', 'Year'],
                 ).properties(
                     title='World Cumulative CO2-eq Reduced'
@@ -410,7 +461,7 @@ class JupyterUI:
             chart = alt.Chart(total_reduction_df, width=tar_graph_width).mark_line().encode(
                 y=alt.Y('Gt CO2-eq', scale=alt.Scale(domain=[ymin, ymax])),  # use same scale
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 tooltip=['solution', 'Gt CO2-eq', 'Year'],
             ).properties(
                 title='World Cumulative Total Atmospheric CO2-eq Reduction'
@@ -427,7 +478,7 @@ class JupyterUI:
             chart = alt.Chart(concentration_df, width=700).mark_line().encode(
                 y='concentration',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 tooltip=['solution', 'concentration', 'Year'],
             ).properties(
                 title='World Cumulative GHG Concentration Reduction'
@@ -442,6 +493,7 @@ class JupyterUI:
         concentration_graphs = ipywidgets.HBox(children=[concentration_graph])
 
         return climate_heading, mmt_graphs, concentration_graphs
+
 
 
     def _get_summary_productivity(self, solutions):
@@ -476,7 +528,7 @@ class JupyterUI:
             chart = alt.Chart(prod_df, width=300).mark_line().encode(
                 y='metric tons',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 tooltip=['solution', 'metric tons', 'Year'],
             ).properties(
                 title='Cumulative Potential Yield Increase'
@@ -528,7 +580,7 @@ class JupyterUI:
             chart = alt.Chart(cridl_df, width=300).mark_line().encode(
                 y='million hectare',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 tooltip=['solution', 'million hectare', 'Year'],
             ).properties(
                 title='Cumulative Reduced Land Degradation'
@@ -541,7 +593,7 @@ class JupyterUI:
             chart = alt.Chart(protected_co2_df, width=300).mark_line().encode(
                 y='Gt CO2',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right')),
+                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right', title=None)),
                 tooltip=['solution', 'Gt CO2', 'Year'],
             ).properties(
                 title='Total CO2 Under Protection'
@@ -554,7 +606,7 @@ class JupyterUI:
             chart = alt.Chart(protected_c_df, width=300).mark_line().encode(
                 y='Gt carbon',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right')),
+                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right', title=None)),
                 tooltip=['solution', 'Gt carbon', 'Year'],
             ).properties(
                 title='Total Carbon Under Protection'
@@ -636,6 +688,34 @@ class JupyterUI:
         return model_overview
 
 
+    def _vma_button_clicked(self, button_name):
+        state = self.ui_elements[button_name]
+        button = state['button']
+        table = state['table']
+        v = state['vmaobj']
+        if state['editing'] == True:
+            state['editing'] = False
+            v.write_to_file(table.children[0].get_changed_df())
+            table.children = [self.get_vma_readonly_sources_list(v)]
+            button.description = 'Edit'
+        else:
+            state['editing'] = True
+            table.children = [self.get_vma_editable_sources_list(v)]
+            button.description = 'Save'
+
+
+    def get_vma_readonly_sources_list(self, v):
+        return qgrid.show_grid(data_frame=v.source_data.fillna(''), precision=2,
+                grid_options={'forceFitColumns':False, 'maxVisibleRows':25},
+                column_options={'editable':False})
+
+
+    def get_vma_editable_sources_list(self, v):
+        return qgrid.show_grid(data_frame=v.source_data.fillna(''), show_toolbar=True,
+                grid_options={'forceFitColumns':False, 'maxVisibleRows':23},
+                column_options={'editable':True})
+
+
     def get_VMA_tab(self, solutions):
         """Return VMA panel.
 
@@ -679,21 +759,32 @@ class JupyterUI:
                                               f'<tr><td style={num_style}>{high:.1f}</td></tr>' +
                                               f'<tr><td style={hdr_style}>Low</td></tr>' +
                                               f'<tr><td style={num_style}>{low:.1f}</td></tr>' +
-                                              '</table>',
-                            layout=ipywidgets.Layout(width='auto', grid_area='summary'))
-                    table = ipywidgets.Output(layout=ipywidgets.Layout(width='auto', grid_area='table'))
-                    with table:
-                        IPython.display.display(IPython.display.HTML(v.source_data.drop(
-                            ['Link', 'Source Validation Code', 'License Code'],
-                            axis=1).fillna('').to_html()))
-                    vma_widget = ipywidgets.GridBox(children=[vma_name, summary, table],
+                                              '</table>')
+                    edit_button = ipywidgets.Button(description='Edit', button_style='',
+                            tooltip='Edit VMA Sources', layout=ipywidgets.Layout(width='auto'))
+                    button_name = f'{m.__name__}:{name}:edit_button'
+                    edit_button.d = {
+                            'uiobj': self,
+                            'button_name': button_name,
+                            }
+                    edit_button.on_click(vma_button_clicked)
+                    sidebar = ipywidgets.VBox(children=[summary, edit_button],
+                            layout=ipywidgets.Layout(width='auto', grid_area='sidebar'))
+                    table = ipywidgets.VBox(children=[self.get_vma_readonly_sources_list(v)])
+                    vma_widget = ipywidgets.GridBox(children=[vma_name, sidebar, table],
                             layout=ipywidgets.Layout(width='100%', grid_template_rows='auto auto',
                                     grid_template_columns='7% 93%',
                                     grid_template_areas='''
                                     "vma_name vma_name"
-                                    "summary table"
+                                    "sidebar table"
                                     '''))
                     vmas_for_module.append(vma_widget)
+                    self.ui_elements[button_name] = {
+                            'button': edit_button,
+                            'table': table,
+                            'editing': False,
+                            'vmaobj': v,
+                            }
 
                 accordion = ipywidgets.Accordion(
                         children=[ipywidgets.VBox(children=vmas_for_module)])
