@@ -234,7 +234,7 @@ class JupyterUI:
                 iunit_chart = alt.Chart(iunit_df, width=400).mark_line().encode(
                     y='iunits',
                     x='Year:O',
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                     tooltip=['solution', alt.Tooltip('iunits:Q', format='.2f'), 'Year'],
                 ).properties(
                     title='World Adoption - Implementation Units'
@@ -260,7 +260,7 @@ class JupyterUI:
             chart1 = alt.Chart(funit_df, width=400).mark_line().encode(
                     y='units:Q',
                     x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                     detail='fullname',
                     tooltip=['variable', 'solution', alt.Tooltip('units:Q', format='.2f'), 'Year']
                 ).properties(
@@ -275,7 +275,7 @@ class JupyterUI:
             chart2 = alt.Chart(funit_df, width=400).mark_line(strokeDash=[1,1]).encode(
                     y='units:Q',
                     x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                     detail='fullname',
                     tooltip=['variable', 'solution', alt.Tooltip('units:Q', format='.2f'), 'Year']
                 ).properties(
@@ -290,7 +290,7 @@ class JupyterUI:
             chart3 = alt.Chart(funit_df, width=400).mark_line(strokeDash=[3,2]).encode(
                     y='units:Q',
                     x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                     detail='fullname',
                     tooltip=['variable', 'solution', alt.Tooltip('units:Q', format='.2f'), 'Year']
                 ).properties(
@@ -350,7 +350,7 @@ class JupyterUI:
             chart1 = alt.Chart(cost_df, width=350).mark_line().encode(
                 y=alt.Y('costs', title='US$B'),
                 x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 detail='fullname',
                 tooltip=['variable', 'solution', alt.Tooltip('costs:Q', format='.2f'), 'Year']
             ).properties(
@@ -366,7 +366,7 @@ class JupyterUI:
             chart2 = alt.Chart(cost_df, width=350).mark_line(strokeDash=[3,2]).encode(
                 y=alt.Y('costs', title='US$B'),
                 x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 detail='fullname',
                 tooltip=['variable', 'solution', alt.Tooltip('costs:Q', format='.2f'), 'Year']
             ).properties(
@@ -428,7 +428,7 @@ class JupyterUI:
                 chart = alt.Chart(sequestration_df, width=300).mark_line().encode(
                     y=alt.Y('Gt CO2', scale=alt.Scale(domain=[ymin, ymax])),  # use same scale
                     x=alt.X('Year', type='ordinal'),
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                     tooltip=['solution', 'Gt CO2', 'Year'],
                 ).properties(
                     title='World Cumulative CO2 Sequestered'
@@ -442,7 +442,7 @@ class JupyterUI:
                 chart = alt.Chart(reduction_df, width=300).mark_line().encode(
                     y=alt.Y('Gt CO2-eq', scale=alt.Scale(domain=[ymin, ymax])),  # use same scale
                     x=alt.X('Year', type='ordinal'),
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                     tooltip=['solution', 'Gt CO2-eq', 'Year'],
                 ).properties(
                     title='World Cumulative CO2-eq Reduced'
@@ -461,7 +461,7 @@ class JupyterUI:
             chart = alt.Chart(total_reduction_df, width=tar_graph_width).mark_line().encode(
                 y=alt.Y('Gt CO2-eq', scale=alt.Scale(domain=[ymin, ymax])),  # use same scale
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 tooltip=['solution', 'Gt CO2-eq', 'Year'],
             ).properties(
                 title='World Cumulative Total Atmospheric CO2-eq Reduction'
@@ -478,7 +478,7 @@ class JupyterUI:
             chart = alt.Chart(concentration_df, width=700).mark_line().encode(
                 y='concentration',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 tooltip=['solution', 'concentration', 'Year'],
             ).properties(
                 title='World Cumulative GHG Concentration Reduction'
@@ -528,7 +528,7 @@ class JupyterUI:
             chart = alt.Chart(prod_df, width=300).mark_line().encode(
                 y='metric tons',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 tooltip=['solution', 'metric tons', 'Year'],
             ).properties(
                 title='Cumulative Potential Yield Increase'
@@ -580,7 +580,7 @@ class JupyterUI:
             chart = alt.Chart(cridl_df, width=300).mark_line().encode(
                 y='million hectare',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left', title=None)),
                 tooltip=['solution', 'million hectare', 'Year'],
             ).properties(
                 title='Cumulative Reduced Land Degradation'
@@ -593,7 +593,7 @@ class JupyterUI:
             chart = alt.Chart(protected_co2_df, width=300).mark_line().encode(
                 y='Gt CO2',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right')),
+                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right', title=None)),
                 tooltip=['solution', 'Gt CO2', 'Year'],
             ).properties(
                 title='Total CO2 Under Protection'
@@ -606,7 +606,7 @@ class JupyterUI:
             chart = alt.Chart(protected_c_df, width=300).mark_line().encode(
                 y='Gt carbon',
                 x=alt.X('Year', type='ordinal'),
-                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right')),
+                color=alt.Color('solution', legend=alt.Legend(orient='bottom-right', title=None)),
                 tooltip=['solution', 'Gt carbon', 'Year'],
             ).properties(
                 title='Total Carbon Under Protection'
