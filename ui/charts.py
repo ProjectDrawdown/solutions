@@ -153,7 +153,7 @@ class JupyterUI:
         chrt_layout = ipywidgets.Layout(flex='3 1 0%', width='auto')
         charts = ipywidgets.VBox(children=[solution_chart, solution_treemap], layout=chrt_layout)
         details_progressbar = ipywidgets.FloatProgress(value=0.0, min=0.0, max=1.0,
-                step=0.01, orientation='horizontal', layout=ipywidgets.Layout(width='100%'))
+                step=0.01, orientation='horizontal', layout=ipywidgets.Layout(width='99%'))
         self.ui_elements['details_progressbar'] = details_progressbar
         overview = ipywidgets.VBox(children=[
             ipywidgets.HBox(children=[solution_list, charts], layout=cntr_layout),
@@ -235,7 +235,7 @@ class JupyterUI:
                     y='iunits',
                     x='Year:O',
                     color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
-                    tooltip=['solution', 'iunits', 'Year'],
+                    tooltip=['solution', alt.Tooltip('iunits:Q', format='.2f'), 'Year'],
                 ).properties(
                     title='World Adoption - Implementation Units'
                 ).interactive()
@@ -244,31 +244,59 @@ class JupyterUI:
         adoption_funit_chart = ipywidgets.Output()
         with adoption_funit_chart:
             df = pd.DataFrame()
-            for s in solutions:
+            for s in self.solutions:
                 # tla/toa is constant between scenarios in the same solution so we only plot it once
                 if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
-                    df['Total Land Area:'+solnname(s)] = s.tla_per_region.loc[2020:2050, 'World']
+                    df['Total Land Area:' + ui.charts.solnname(s)] = s.tla_per_region.loc[2020:2050, 'World']
                 elif s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
-                    df['Total Ocean Area:' + solnname(s)] = s.toa_per_region.loc[2020:2050, 'World']
+                    df['Total Ocean Area:' + ui.charts.solnname(s)] = s.toa_per_region.loc[2020:2050, 'World']
                 else:
                     ref_tam = s.tm.ref_tam_per_region().loc[2020:2050, 'World']
                     pds_tam = s.tm.pds_tam_per_region().loc[2020:2050, 'World']
-                    df['Total Market-REF:' + fullname(s)] = ref_tam
-                    df['Total Market-PDS:' + fullname(s)] = pds_tam
-                ref_funits = s.ht.soln_ref_funits_adopted().loc[2020:2050, 'World']
-                pds_funits = s.ht.soln_pds_funits_adopted().loc[2020:2050, 'World']
-                df['Solution-REF:' + fullname(s)] = ref_funits
-                df['Solution-PDS:' + fullname(s)] = pds_funits
-            funit_df = df.reset_index().melt('Year', value_name='units', var_name='solution')
-            funit_chart = alt.Chart(funit_df, width=400).mark_line().encode(
+                    df['Total Market-REF:' + ui.charts.fullname(s)] = ref_tam
+                    df['Total Market-PDS:' + ui.charts.fullname(s)] = pds_tam
+            funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
+            funit_df[['variable','solution']] = funit_df.fullname.str.split(':', n=1, expand=True)
+            chart1 = alt.Chart(funit_df, width=400).mark_line().encode(
                     y='units:Q',
                     x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
-                    color=alt.Color('solution', legend=alt.Legend(orient='top-right')),
-                    tooltip=['solution', 'units:O', 'Year']
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    detail='fullname',
+                    tooltip=['variable', 'solution', alt.Tooltip('units:Q', format='.2f'), 'Year']
                 ).properties(
                     title='World Adoption - Functional Units/Area'
                 ).interactive()
-            IPython.display.display(funit_chart)
+            df = pd.DataFrame()
+            for s in self.solutions:
+                ref_funits = s.ht.soln_ref_funits_adopted().loc[2020:2050, 'World']
+                df['Solution-REF:' + ui.charts.fullname(s)] = ref_funits
+            funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
+            funit_df[['variable','solution']] = funit_df.fullname.str.split(':', n=1, expand=True)
+            chart2 = alt.Chart(funit_df, width=400).mark_line(strokeDash=[1,1]).encode(
+                    y='units:Q',
+                    x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    detail='fullname',
+                    tooltip=['variable', 'solution', alt.Tooltip('units:Q', format='.2f'), 'Year']
+                ).properties(
+                    title='World Adoption - Functional Units/Area'
+                ).interactive()
+            df = pd.DataFrame()
+            for s in self.solutions:
+                pds_funits = s.ht.soln_pds_funits_adopted().loc[2020:2050, 'World']
+                df['Solution-PDS:' + ui.charts.fullname(s)] = pds_funits
+            funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
+            funit_df[['variable','solution']] = funit_df.fullname.str.split(':', n=1, expand=True)
+            chart3 = alt.Chart(funit_df, width=400).mark_line(strokeDash=[3,2]).encode(
+                    y='units:Q',
+                    x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
+                    color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                    detail='fullname',
+                    tooltip=['variable', 'solution', alt.Tooltip('units:Q', format='.2f'), 'Year']
+                ).properties(
+                    title='World Adoption - Functional Units/Area'
+                ).interactive()
+            IPython.display.display(chart1 + chart2 + chart3)
 
         if has_iunit_chart:
             children = [adoption_iunit_chart, adoption_funit_chart]
@@ -317,18 +345,34 @@ class JupyterUI:
             for s in solutions:
                 pds_oc = s.oc.soln_pds_annual_operating_cost().loc[2020:2050] / 1000000000
                 df['Solution Operating Costs/Savings:' + fullname(s)] = pds_oc
-                cref_oc = s.oc.conv_ref_annual_operating_cost().loc[2020:2050] / 1000000000
-                df['Conventional Operating Costs/Savings:' + fullname(s)] = cref_oc
-            cost_df = df.reset_index().melt('Year', value_name='costs', var_name='solution')
-            cost_chart = alt.Chart(cost_df, width=350).mark_line().encode(
+            cost_df = df.reset_index().melt('Year', value_name='costs', var_name='fullname')
+            cost_df[['variable','solution']] = cost_df.fullname.str.split(':', n=1, expand=True)
+            chart1 = alt.Chart(cost_df, width=350).mark_line().encode(
                 y=alt.Y('costs', title='US$B'),
                 x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
                 color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
-                tooltip=['solution', 'costs', 'Year'],
+                detail='fullname',
+                tooltip=['variable', 'solution', alt.Tooltip('costs:Q', format='.2f'), 'Year']
             ).properties(
                 title='World Operating Cost Difference'
             ).interactive()
-            IPython.display.display(cost_chart)
+
+            df = pd.DataFrame()
+            for s in solutions:
+                cref_oc = s.oc.conv_ref_annual_operating_cost().loc[2020:2050] / 1000000000
+                df['Conventional Operating Costs/Savings:' + fullname(s)] = cref_oc
+            cost_df = df.reset_index().melt('Year', value_name='costs', var_name='fullname')
+            cost_df[['variable','solution']] = cost_df.fullname.str.split(':', n=1, expand=True)
+            chart2 = alt.Chart(cost_df, width=350).mark_line(strokeDash=[3,2]).encode(
+                y=alt.Y('costs', title='US$B'),
+                x=alt.X('Year', type='ordinal', scale=alt.Scale(domain=list(range(2015, 2056)))),
+                color=alt.Color('solution', legend=alt.Legend(orient='top-left')),
+                detail='fullname',
+                tooltip=['variable', 'solution', alt.Tooltip('costs:Q', format='.2f'), 'Year']
+            ).properties(
+                title='World Operating Cost Difference'
+            ).interactive()
+            IPython.display.display(chart1 + chart2)
 
         return (financial_heading, financial_graphs)
 
