@@ -57,9 +57,9 @@ electricvehicles:PDS3-40p2050-Based on IEA (2012 ETP)+Double Occu (Book Ed.1),0.
 farmlandrestoration:PDS-43p2050-Plausible-PDScustom-highlinear-Bookedition1,,0.0,0.986559760382436
 farmlandrestoration:PDS-52p2050-Drawdown-PDScustom-avg-Bookedition1,,0.0,0.9948951940103812
 farmlandrestoration:PDS-87p2050-Optimum-PDScustom-high-Bookedition1,,0.0,0.9940244518599679
-forestprotection:PDS-87p2050-Plausible-PDScustom-avg-Bookedition1,,1.152829032756988,0.9195468536979597
+forestprotection:PDS-87p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9195468536979597
 forestprotection:PDS-89p2050-Drawdown-PDScustom-aggmax-Bookedition1,,0.0,0.8419295689979969
-forestprotection:PDS-92p2050-Optimum-PDScustom-high-Bookedition1,,1.0885085934774228,0.7633818895973588
+forestprotection:PDS-92p2050-Optimum-PDScustom-high-Bookedition1,,0.0,0.7633818895973588
 geothermal:PDS-5p2050-Plausible (Book Ed. 1),0.9762899024505536,0.0,0.9956329972618944
 geothermal:PDS-8p2050-Drawdown (Book Ed.1),0.9345614538951017,0.0,0.9911749956375664
 geothermal:PDS-9p2050-Optimum (Book Ed.1),0.9743482283184594,0.0,0.9911749956375664
@@ -78,9 +78,9 @@ improvedcookstoves:PDS3-25p2050_Linear to 25% (Book Ed.1),1.108823676879944,1.10
 improvedrice:PDS-54p2050-Plausible-PDScustom-avg-BookVersion1,,1.0965081860576658,0.9935967365701459
 improvedrice:PDS-80p2050-Drawdown-PDScustom-high-BookVersion1,,1.1953342887235465,0.9906189046246853
 improvedrice:PDS-100p2050-Optimum-PDS-max-BookVersion1,,1.0028053430281516,0.9862282435904238
-indigenouspeoplesland:PDS-61p2050-Plausible-PDScustom-low-Bookedition1,,1.6274272187221726,0.9812726297141984
-indigenouspeoplesland:PDS-76p2050-Drawdown-PDScustom-avg-Bppkedition1,,1.314740468912531,0.9922529020563144
-indigenouspeoplesland:PDS-91p2050-Optimum-PDScustom-high-Bookedition1,,1.1028447087997548,0.9952536248728295
+indigenouspeoplesland:PDS-61p2050-Plausible-PDScustom-low-Bookedition1,,0.0,0.9812726297141984
+indigenouspeoplesland:PDS-76p2050-Drawdown-PDScustom-avg-Bppkedition1,,0.0,0.9922529020563144
+indigenouspeoplesland:PDS-91p2050-Optimum-PDScustom-high-Bookedition1,,0.0,0.9952536248728295
 instreamhydro:PDS-4p2050-Plausible (Book Ed. 1),0.9762899024505536,0.0,0.9855441082824213
 instreamhydro:PDS-3p2050-Drawdown (Book Ed.1),0.9345614538951017,0.0,0.9986790056769711
 instreamhydro:PDS-4p2050-Optimum (Book Ed. 1),0.9743482283184594,0.0,0.9855441082824213
@@ -123,12 +123,12 @@ offshorewind:PDS-6p2050-Optimum (Book Ed. 1),0.9743482283184594,0.74440324190361
 onshorewind:PDS-22p2050-Plausible (Book Ed. 1),0.9762899024505536,0.4901224068218715,0.998480965080447
 onshorewind:PDS-33p2050-Drawdown (Book Ed. 1),0.9345614538951017,0.30479464973184245,0.9948658124227593
 onshorewind:PDS-35p2050-Optimum (Book Ed. 1),0.9743482283184594,0.30479464973184245,0.9948658124227593
-peatlands:PDS-69p2050-Plausible-PDScustom-avg-Bookedition1,,1.4522473943438252,0.9197220039778472
-peatlands:PDS-95p2050-Drawdown-PDScustom-high-Bookedition1,,1.0570526591589833,0.8603687470433032
+peatlands:PDS-69p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9197220039778472
+peatlands:PDS-95p2050-Drawdown-PDScustom-high-Bookedition1,,0.0,0.8603687470433032
 peatlands:PDS-94p2050-Optimum-PDScustom-aggmax-Bookedition1,,0.0,0.7742349987766715
-perennialbioenergy:PDS-72p2050-Plausible-PDScustom-avg-Bookedition1,,1.3946896451857556,0.9996213577715484
+perennialbioenergy:PDS-72p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9996213577715484
 perennialbioenergy:PDS-85p2050-Drawdown-PDScustom-max-Bookedition1,,0.0,0.9976198856686919
-perennialbioenergy:PDS-100p2050-Optimum-PDScustom-high-Bookedition1,,0.9999999999999998,0.9749816666708636
+perennialbioenergy:PDS-100p2050-Optimum-PDScustom-high-Bookedition1,,0.0,0.9749816666708636
 recycledpaper:PDS1-67p2050-Low Growth (Book Ed.1),1.2360617693542109,1.387340630601187,0.9920519546842815
 recycledpaper:PDS2-77p2050-Mean Growth (Book Ed.1),1.2360617693542109,0.0,0.9945898305433198
 recycledpaper:PDS3-80p2050-High Growth (Book Ed.1),1.2360617693542109,0.0,0.9852818152808984
@@ -137,9 +137,9 @@ refrigerants:PDS2/3-100p2050-Combined Banks (Book Ed.1),0.0,0.0,0.89825860732117
 regenerativeagriculture:PDS-47p2050-Plausible-PDScustom-avg-BookEdition1,,0.9998561674923554,0.987119778160576
 regenerativeagriculture:PDS-61p2050-Drawdown-PDScustom-high-BookEdition1,,1.017045566324402,0.9834178206695765
 regenerativeagriculture:PDS-62p2050-Optimum-PDScustom-max-BookEdition1,,0.999999999961688,0.9447045807857277
-riceintensification:PDS-73p2050-Plausible-PDScustom-low-BookEdition1,,1.376930718247923,0.9813077826786218
-riceintensification:PDS-87p2050-Drawdown-PDScustom-avg-BookEdition1,,1.1483757284467029,0.93008982078744
-riceintensification:PDS-100p2050-Optimum-PDScustom-high-BookEdition1,,1.0000000000000002,0.8372224742588057
+riceintensification:PDS-73p2050-Plausible-PDScustom-low-BookEdition1,,0.0,0.9813077826786218
+riceintensification:PDS-87p2050-Drawdown-PDScustom-avg-BookEdition1,,0.0,0.93008982078744
+riceintensification:PDS-100p2050-Optimum-PDScustom-high-BookEdition1,,0.0,0.8372224742588057
 ships:PDS1-97p2050-Mean EEOI (Book Ed.1),0.0,0.0,0.9724283454965719
 ships:PDS2-100p2050-1 SD Below Mean EEOI (Book Ed.1),0.0,0.0,0.9820682230087809
 ships:PDS3-100p2050-Lowest EEOI (Book Ed.1),0.0,0.0,0.9842934729175642
@@ -152,9 +152,9 @@ smartglass:PDS3-75p2050-EE21.3% based on Navigant (Book Ed.1),0.0,0.0,0.93740593
 "smartthermostats:PDS1-28p2050-cs Low-E12.84, F8.89 (Book Ed.1)",0.0,0.0,0.9825915058369361
 "smartthermostats:PDS2-39p2050-cs-Avg E11.65, F8.06 (Book Ed.1)",0.0,0.0,0.9964279450768085
 "smartthermostats:PDS3-50p2050-cs-High E10.96, F7.59 (Book Ed.1)",0.0,0.0,0.9980200231325126
-solarhotwater:PDS1-25p2050-Low of Custom Scen. (Book Ed.1),0.9046887610405554,3.573065352377036,0.9879042187258014
-solarhotwater:PDS2-44p2050-Mean of Custom Scen. (Book Ed.1),0.9279498645673971,2.069021376423449,0.9927907862828841
-solarhotwater:PDS3-62p2050-High of Custom Scen. (Book Ed.1),0.9344900592232549,1.4560940321245437,0.9836001275999503
+solarhotwater:PDS1-25p2050-Low of Custom Scen. (Book Ed.1),0.9046887610405554,0.0,0.9879042187258014
+solarhotwater:PDS2-44p2050-Mean of Custom Scen. (Book Ed.1),0.9279498645673971,0.0,0.9927907862828841
+solarhotwater:PDS3-62p2050-High of Custom Scen. (Book Ed.1),0.9344900592232549,0.0,0.9836001275999503
 solarpvroof:PDS-7p2050-Plausible (Book Ed. 1),0.9762899024505536,0.0,0.9877844008374621
 solarpvroof:PDS-10p2050-Drawdown (Book Ed.1),0.9345614538951017,0.0,0.9972520298326472
 solarpvroof:PDS-10p2050-Optimum (Book Ed. 1),0.9743482283184594,0.0,0.9972520298326472
@@ -164,14 +164,14 @@ solarpvutil:PDS-16p2050-Optimum (Book Ed. 1),0.9743482283184594,0.0,0.9972528044
 telepresence:PDS1-16p2050-Average Predicted Adoption (Book Ed.1),0.0,0.0,0.983683610317763
 telepresence:PDS2-29p2050-Maximum Prediction (Book Ed.1),0.0,0.0,0.9768936324185968
 telepresence:PDS3-49p2050-50% Adoption (Book Ed.1),0.0,0.0,0.9927398173086593
-treeintercropping:PDS-56p2050-Plausible-PDScustom-low-Bookedition1,,1.7764604158079544,0.9996330240940794
-treeintercropping:PDS-75p2050-Drawdown-PDScustom-avg-Bookedition1,,1.3333333333333335,0.9974089810380126
-treeintercropping:PDS-100p2050-Optimum-PDScustom-high-Bookedition1,,1.0,0.9820857510771038
-tropicalforests:PDS-58p2050-Plausible-PDScustomadoption-avg,,1.7266386758288648,0.945045559331942
-tropicalforests:PDS-77p2050-Drawdown-PDScustomadoption-high,,1.2730329862063148,0.9063190023259233
+treeintercropping:PDS-56p2050-Plausible-PDScustom-low-Bookedition1,,0.0,0.9996330240940794
+treeintercropping:PDS-75p2050-Drawdown-PDScustom-avg-Bookedition1,,0.0,0.9974089810380126
+treeintercropping:PDS-100p2050-Optimum-PDScustom-high-Bookedition1,,0.0,0.9820857510771038
+tropicalforests:PDS-58p2050-Plausible-PDScustomadoption-avg,,0.0,0.945045559331942
+tropicalforests:PDS-77p2050-Drawdown-PDScustomadoption-high,,0.0,0.9063190023259233
 tropicalforests:PDS-84p2050-Optimum-PDScustomadoption-100%in15years,,0.0,0.7928126296921494
-tropicalforests:PDS-58p2050-Plausible-PDScustom-avg-Bookedition1,,1.7266386758288648,0.945045559331942
-tropicalforests:PDS-79p2050-Drawdown-PDScustom-high-Bookedition1,,1.2730329862063148,0.9063190023259233
+tropicalforests:PDS-58p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.945045559331942
+tropicalforests:PDS-79p2050-Drawdown-PDScustom-high-Bookedition1,,0.0,0.9063190023259233
 tropicalforests:PDS-84p2050-Optimum-PDScustom-100%intact15years-Bookedition1,,0.0,0.7928126296921494
 tropicaltreestaples:PDS-52p2050-Plausible-PDScustom-low-BookVersion1,,0.0,0.9994335263954615
 tropicaltreestaples:PDS-68p2050-Drawdown-PDScustom-avg-BookVersion1,,0.0,0.9839759480242581
@@ -195,6 +195,6 @@ waveandtidal:PDS-4p2050-Optimum (Book Ed. 1),0.9743482283184594,0.0,0.9806135743
 waveandtidal:PDS-3p2050-Plausible (Book Ed. 1),0.9762899024505536,0.0,0.9759863084890293
 waveandtidal:PDS-4p2050-Drawdown (Book Ed.1),0.9345614538951017,0.0,0.9802012144412671
 waveandtidal:PDS-4p2050-Optimum (Book Ed.1),0.9743482283184594,0.0,0.9802012144412671
-womensmallholders:PDS-68p2050-Plausible-PDScustom-avg-Bookedition1,,1.4648323982509162,0.9810274184723932
-womensmallholders:PDS-91p2050-Drawdown-PDScustom-high-Bookedition1,,1.1020482349246106,0.9731695291189449
+womensmallholders:PDS-68p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9810274184723932
+womensmallholders:PDS-91p2050-Drawdown-PDScustom-high-Bookedition1,,0.0,0.9731695291189449
 womensmallholders:PDS-100p2050-Optimum-PDScustom-max-Bookedition1,,0.0,0.955761345214216

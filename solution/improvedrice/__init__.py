@@ -277,7 +277,7 @@ class ImprovedRice:
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-        high_sd_mult=1.0, low_sd_mult=1.0)
+        high_sd_mult=1.0, low_sd_mult=1.0, total_adoption_limit=self.tla_per_region)
 
     if False:
       # One may wonder why this is here. This file was code generated.

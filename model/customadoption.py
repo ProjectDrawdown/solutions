@@ -79,9 +79,9 @@ class CustomAdoption:
             high_df[reg] = avg_vals + reg_df.std(axis=1, ddof=0) * self.high_sd_mult
             low_df[reg] = avg_vals - reg_df.std(axis=1, ddof=0) * self.low_sd_mult
         if self.total_adoption_limit is not None:
-            avg_df = avg_df.combine(self.total_adoption_limit, np.fmin)
-            high_df = high_df.combine(self.total_adoption_limit, np.fmin)
-            low_df = low_df.combine(self.total_adoption_limit, np.fmin)
+            avg_df = avg_df.combine(self.total_adoption_limit, np.minimum)
+            high_df = high_df.combine(self.total_adoption_limit, np.minimum)
+            low_df = low_df.combine(self.total_adoption_limit, np.minimum)
         return avg_df, high_df, low_df
 
     @lru_cache()
