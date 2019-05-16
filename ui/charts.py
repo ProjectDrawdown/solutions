@@ -247,14 +247,14 @@ class JupyterUI:
             for s in self.solutions:
                 # tla/toa is constant between scenarios in the same solution so we only plot it once
                 if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
-                    df['Total Land Area:' + ui.charts.solnname(s)] = s.tla_per_region.loc[2020:2050, 'World']
+                    df['Total Land Area:' + solnname(s)] = s.tla_per_region.loc[2020:2050, 'World']
                 elif s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
-                    df['Total Ocean Area:' + ui.charts.solnname(s)] = s.toa_per_region.loc[2020:2050, 'World']
+                    df['Total Ocean Area:' + solnname(s)] = s.toa_per_region.loc[2020:2050, 'World']
                 else:
                     ref_tam = s.tm.ref_tam_per_region().loc[2020:2050, 'World']
                     pds_tam = s.tm.pds_tam_per_region().loc[2020:2050, 'World']
-                    df['Total Market-REF:' + ui.charts.fullname(s)] = ref_tam
-                    df['Total Market-PDS:' + ui.charts.fullname(s)] = pds_tam
+                    df['Total Market-REF:' + fullname(s)] = ref_tam
+                    df['Total Market-PDS:' + fullname(s)] = pds_tam
             funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
             funit_df[['variable','solution']] = funit_df.fullname.str.split(':', n=1, expand=True)
             chart1 = alt.Chart(funit_df, width=400).mark_line().encode(
@@ -269,7 +269,7 @@ class JupyterUI:
             df = pd.DataFrame()
             for s in self.solutions:
                 ref_funits = s.ht.soln_ref_funits_adopted().loc[2020:2050, 'World']
-                df['Solution-REF:' + ui.charts.fullname(s)] = ref_funits
+                df['Solution-REF:' + fullname(s)] = ref_funits
             funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
             funit_df[['variable','solution']] = funit_df.fullname.str.split(':', n=1, expand=True)
             chart2 = alt.Chart(funit_df, width=400).mark_line(strokeDash=[1,1]).encode(
@@ -284,7 +284,7 @@ class JupyterUI:
             df = pd.DataFrame()
             for s in self.solutions:
                 pds_funits = s.ht.soln_pds_funits_adopted().loc[2020:2050, 'World']
-                df['Solution-PDS:' + ui.charts.fullname(s)] = pds_funits
+                df['Solution-PDS:' + fullname(s)] = pds_funits
             funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
             funit_df[['variable','solution']] = funit_df.fullname.str.split(':', n=1, expand=True)
             chart3 = alt.Chart(funit_df, width=400).mark_line(strokeDash=[3,2]).encode(
