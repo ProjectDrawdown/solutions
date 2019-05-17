@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 require() {
   output="$1"
