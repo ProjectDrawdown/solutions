@@ -253,3 +253,11 @@ May 6 - May 10, 2019
   https://codingrelic.geekhold.com/2019/05/ipyvolume-frizzle-charts.html
   allows a denser information display of Adoption/TAM by region
 + initial work adding Land-specific data to ModelHealth.ipynb
+
+May 13 - May 17, 2019
++ Getting Started links and resources
+  set up initial discourse site: discourse.geekhold.com
+  YouTube video: https://www.youtube.com/watch?v=cvnh1us8mfs
++ in-UI editing of VMA sources
+  supports cloud operation; set up several GCE instances
++ update CO2 results and graphs
