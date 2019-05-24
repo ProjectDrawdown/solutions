@@ -14,8 +14,11 @@
 # source file from
 # https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json
 #
-# toposimplify -p command reduces the level of detail of the topology,
+# toposimplify -s command reduces the level of detail of the topology,
 # to reduce the file size for the small view we're going to use.
+# The -f argument tells it to remove small, detached rings (like small islands).
+# We do this in the lowres file to save space, though we leave the islands in place
+# in the higher res file.
 #
 # region_annotate.py annotates each country with its Drawdown region.
 #
@@ -24,19 +27,20 @@
 # topomerge -f 'false' removes the original country boundaries, leaving only
 # the drawdown regions.
 #
-# toposimplify -f removes the now unreferenced arcs from the country boundaries.
+# the second toposimplify removes the now unreferenced arcs which had
+# been part of the country boundaries.
 
-toposimplify -p 0.0000001 -f world-countries.json |\
+toposimplify -s 0.0005 -f world-countries.json |\
 	python region_annotate.py |\
 	topomerge areas=countries1 -k "d.dd_region" |\
 	topomerge -f 'false' countries1=countries1 |\
-       	toposimplify -f > world_topo_with_dd_regions.json
+	toposimplify -f > world_topo_lowres.json
 
-toposimplify -p 0.0000001 -f world-countries-sans-antarctica.json |\
+toposimplify -s 0.000001 world-countries-sans-antarctica.json |\
 	python region_annotate.py |\
 	topomerge areas=countries1 -k "d.dd_region" |\
 	topomerge -f 'false' countries1=countries1 |\
-       	toposimplify -f > world_topo_sans_antartica_with_dd_regions.json
+	toposimplify > world_topo_sans_antartica_highres.json
 
 
 # ==============================================

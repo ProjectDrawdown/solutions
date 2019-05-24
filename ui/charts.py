@@ -927,13 +927,13 @@ class JupyterUI:
                     ylabel='funits', size=450, key=fullname(s)+":adoption_data", color=color)
 
             geo_source = alt.topo_feature(os.path.join('data',
-                'world_topo_sans_antartica_with_dd_regions.json'), 'regions')
+                'world_topo_sans_antartica_highres.json'), 'areas')
 
             ad_abs_geo = ipywidgets.Output()
             with ad_abs_geo:
-                pds_per_region_melted = s.ht.soln_pds_funits_adopted(
-                        ).loc[[2050]].fillna(0.0).reset_index().melt('Year',
-                                value_name='adoption', var_name='region')[['region', 'adoption']]
+                pds_per_region = s.ht.soln_pds_funits_adopted().loc[[2050]]
+                pds_per_region_melted = pds_per_region.reset_index().melt(
+                        'Year', value_name='adoption', var_name='region')[['region', 'adoption']]
                 chart = alt.Chart(geo_source).mark_geoshape(
                     fill='#dddddd',
                     stroke='black',
@@ -952,8 +952,8 @@ class JupyterUI:
                 )
                 IPython.display.display(chart)
 
-            ad_abs_globe = ui.geo.get_globe(os.path.join('data', 'world_topo_with_dd_regions.json'),
-                    values=s.ht.soln_pds_funits_adopted().loc[2050].fillna(0.0), size=450,
+            ad_abs_globe = ui.geo.get_globe(os.path.join('data', 'world_topo_lowres.json'),
+                    df=s.ht.soln_pds_funits_adopted().loc[2020:2050, :], size=450,
                     key=fullname(s)+":adoption_data_globe")
 
             if hasattr(s, 'tm'):
@@ -1042,7 +1042,7 @@ class JupyterUI:
                 pds_tam_per_region_melted = pds_tam_per_region.reset_index().melt(
                         'Year', value_name='adoption', var_name='region')[['region', 'adoption']]
                 source = alt.topo_feature(os.path.join('data',
-                    'world_topo_sans_antartica_with_dd_regions.json'), 'regions')
+                    'world_topo_sans_antartica_highres.json'), 'areas')
                 chart = alt.Chart(source).mark_geoshape(
                     fill='#dddddd',
                     stroke='black',
@@ -1067,7 +1067,7 @@ class JupyterUI:
                 ref_tam_per_region_melted = ref_tam_per_region.reset_index().melt(
                         'Year', value_name='adoption', var_name='region')[['region', 'adoption']]
                 source = alt.topo_feature(os.path.join('data',
-                    'world_topo_sans_antartica_with_dd_regions.json'), 'regions')
+                    'world_topo_sans_antartica_highres.json'), 'areas')
                 chart = alt.Chart(source).mark_geoshape(
                     fill='#dddddd',
                     stroke='black',
@@ -1085,8 +1085,13 @@ class JupyterUI:
                 )
                 IPython.display.display(chart)
 
+            tm_globe_pds = ui.geo.get_globe(os.path.join('data', 'world_topo_lowres.json'),
+                    df=s.tm.pds_tam_per_region().loc[2020:2050, :], size=450,
+                    key=fullname(s)+":tam_pds_globe")
+
             children.append(ipywidgets.VBox(
-                [ipywidgets.HBox([tm_table_pds, ipywidgets.VBox([tm_model, tm_pds_frizz, tm_geo_pds])]),
+                [ipywidgets.HBox([tm_table_pds, ipywidgets.VBox([tm_model, tm_pds_frizz,
+                    tm_geo_pds, tm_globe_pds])]),
                  ipywidgets.HBox([tm_table_ref, ipywidgets.VBox([tm_ref_frizz, tm_geo_ref])])]))
             titles.append(fullname(s))
 

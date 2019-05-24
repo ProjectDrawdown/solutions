@@ -65,52 +65,73 @@ def _latlon2xyz(lat, lon, radius=1, unit='deg'):
     return (x, y, z)
 
 
-def get_globe(topofile, values=None, size=None, key=None):
+def get_globe(topofile, df, size=None, key=None):
     """Return an ipywidget with an interactive globe.
 
        Arguments:
          topofile: filename of a TopoJSON file to render. This file is expected to have its
             major regions arranged as a list in ['objects']['areas']['geometries'].
-         values: dict-like structure of values for each region. Must also contain a 'Total' or
-            'World' entry to use to compute relative heights.
+         df: dataframe where each row will be turned into an animation frame and columns
+            are expected to match the major regions in the topofile.
          size: in integer pixels
          key: string key to pass to ipyvolume, allows replacement of earlier charts
     """
-    data = json.load(open(topofile))
+    topo = json.load(open(topofile))
     (width, height) = (size, size) if size is not None else (500, 500)
+    ipv.pylab.clear()
     fig = ipv.figure(width=width, height=height, key=key, controls=True)
-    if values is None:
-        values = {}
 
     # Make a simple globe
     x, y, z = np.array([[0.], [0.], [0.]])
     ipv.scatter(x, y, z, size=100, color='blue', marker="sphere")
 
     # draw raised outlines for each area
-    for area in data['objects']['areas']['geometries']:
+    animate = []
+    for area in topo['objects']['areas']['geometries']:
         name = area['id']
-        lines = _extract_lines(data, name=name)
-        x = np.array([0])
-        y = np.array([0])
-        z = np.array([0])
+        if name not in df.columns:
+            continue
+        lines = _extract_lines(topo, name=name)
+        x = []
+        y = []
+        z = []
         triangles = []
-        total = values.get('Total', values.get('World', 1.0))
-        val = values.get(name, 0.0)
-        radius = 1.0 + ((val / total) * 0.2) if total != 0.0 else 1.0
-        for line in lines:
-            xyz = [_latlon2xyz(lat, lon, radius=radius) for (lon, lat) in line]
-            x1, y1, z1 = np.array(xyz).T
-            offset = x.size
-            x = np.append(arr=x, values=np.append(x1, [0]))
-            y = np.append(arr=y, values=np.append(y1, [0]))
-            z = np.append(arr=z, values=np.append(z1, [0]))
-            for idx in range(0, len(x1)-1):
-                triangles.append([0, offset+idx, offset+idx+1])
+        data = df.loc[:, name].fillna(0.0)
+        for (year, row) in df.iterrows():
+            x_t = [0]
+            y_t = [0]
+            z_t = [0]
+            tri_t = []
+            offset = 1
+            total = row.get('Total', row.get('World', 1.0))
+            val = row.get(name, 0.0)
+            radius = 1.01 + (((val / total) * 0.15) if total > 0.0 else 0.0)
+            for line in lines:
+                xyz = [_latlon2xyz(lat, lon, radius=radius) for (lon, lat) in line]
+                x1, y1, z1 = [list(t) for t in zip(*xyz)]
+                x_t.extend(x1 + [0])
+                y_t.extend(y1 + [0])
+                z_t.extend(z1 + [0])
+                for _ in range(0, len(x1)):
+                    tri_t.append([0, offset, offset+1])
+                    offset += 1
+                offset += 1
+            x.append(x_t)
+            y.append(y_t)
+            z.append(z_t)
+            triangles.append(tri_t)
 
         color = ui.color.webcolor_to_hex(ui.color.get_region_color(name))
-        s = ipv.scatter(-x, z, y, color=color, size=0.5, connected=True, marker='sphere')
+        s = ipv.scatter(x=-np.array(x), y=np.array(z), z=np.array(y), color=color,
+                size=0.5, connected=True, marker='sphere')
         s.material.visible = False
-        ipv.pylab.plot_trisurf(-x, z, y, color=color, triangles=triangles)
+        animate.append(s)
+        s = ipv.pylab.plot_trisurf(-np.array(x), np.array(z), np.array(y), color=color,
+                triangles=triangles)
+        animate.append(s)
 
+    ipv.animation_control(animate, interval=100)
     ipv.xyzlim(-1, 1)
+    ipv.style.box_on()
+    ipv.style.axes_off()
     return ipv.gcc()
