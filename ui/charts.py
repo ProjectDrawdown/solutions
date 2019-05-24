@@ -24,6 +24,7 @@ from model.co2calcs import C_TO_CO2EQ
 
 import solution.factory
 import ui.color
+import ui.geo
 import ui.modelmap
 import ui.vega
 
@@ -930,9 +931,9 @@ class JupyterUI:
 
             ad_abs_geo = ipywidgets.Output()
             with ad_abs_geo:
-                pds_per_region = s.ht.soln_pds_funits_adopted().loc[[2050]]
-                pds_per_region_melted = pds_per_region.reset_index().melt(
-                        'Year', value_name='adoption', var_name='region')[['region', 'adoption']]
+                pds_per_region_melted = s.ht.soln_pds_funits_adopted(
+                        ).loc[[2050]].fillna(0.0).reset_index().melt('Year',
+                                value_name='adoption', var_name='region')[['region', 'adoption']]
                 chart = alt.Chart(geo_source).mark_geoshape(
                     fill='#dddddd',
                     stroke='black',
@@ -950,6 +951,10 @@ class JupyterUI:
                     title='Regional Adoption (total funits in 2050)'
                 )
                 IPython.display.display(chart)
+
+            ad_abs_globe = ui.geo.get_globe(os.path.join('data', 'world_topo_with_dd_regions.json'),
+                    values=s.ht.soln_pds_funits_adopted().loc[2050].fillna(0.0), size=450,
+                    key=fullname(s)+":adoption_data_globe")
 
             if hasattr(s, 'tm'):
                 ad_pct_geo = ipywidgets.Output()
@@ -984,7 +989,7 @@ class JupyterUI:
                     ad_frizz])]))
             else:
                 children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
-                    ad_frizz, ad_abs_geo, ad_pct_geo])]))
+                    ad_frizz, ad_abs_geo, ad_abs_globe, ad_pct_geo])]))
 
         adoption_data = ipywidgets.Accordion(children=children)
         for i, s in enumerate(solutions):
