@@ -1,7 +1,9 @@
 import pathlib
 import pytest
 from model import customadoption
+from model.dd import MAIN_REGIONS
 import pandas as pd
+from numpy import nan
 
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
@@ -60,7 +62,6 @@ def test_avg_high_low_different_multipliers():
         {'name': 'scenario 2', 'filename': path2, 'include': True},
     ]
     ca = customadoption.CustomAdoption(data_sources=data_sources, soln_adoption_custom_name='', low_sd_mult=0.5,
-
                                        high_sd_mult=1.5)
     high_scen = pd.read_csv(datadir.joinpath('ca_highx1p5_trr.csv'), index_col=0)
     low_scen = pd.read_csv(datadir.joinpath('ca_lowx0p5_trr.csv'), index_col=0)
@@ -85,6 +86,12 @@ def test_avg_high_low_with_limit():
     pd.testing.assert_frame_equal(highs.loc[2027:, :], limit.loc[2027:, :], check_dtype=False)
 
 
+def test_adjust_main_regions():
+    df = pd.read_csv(datadir.joinpath('af_high_ca_no_limits.csv'), index_col=0)
+    ca = customadoption.CustomAdoption(data_sources=[], soln_adoption_custom_name='')
+    ca._adjust_main_regions(df)
+    diff = df.loc[:, MAIN_REGIONS].sum(axis=1) - df.loc[:, 'World']
+    assert diff.sum() == pytest.approx(0)
 
 
 def test_adoption_data_per_region():
@@ -115,8 +122,6 @@ def test_adoption_data_per_region():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
-
 def test_adoption_data_with_NaN():
     path_to_nan = str(datadir.joinpath('ca_scenario_with_NaN.csv'))
     data_sources = [
@@ -128,3 +133,17 @@ def test_adoption_data_with_NaN():
     assert not pd.isna(avgs.loc[2030, 'World'])
     assert pd.isna(avgs.loc[2012, 'World'])
     assert pd.isna(avgs.loc[2030, 'OECD90'])
+
+
+def test_report():
+    data_sources = []
+    for i in range(1, 3):
+        name = f'af_ca{i}'
+        data_sources.append({'name': name, 'filename': datadir.joinpath(name + '.csv'), 'include': True})
+    lims = pd.read_csv(datadir.joinpath('af_tla.csv'), index_col=0)
+    ca = customadoption.CustomAdoption(data_sources=data_sources, soln_adoption_custom_name='',
+                                       total_adoption_limit=lims)
+    report, data = ca.report()
+    print(report.iloc[1, :].values)
+    assert list(report.iloc[0, :].values) == [True, True, True, False]
+    assert list(report.iloc[1, :].values) == [False, False, nan, nan]

@@ -1,25 +1,25 @@
 Solutions,"AEZ1: Forest, prime, minimal","AEZ2: Forest, good, minimal","AEZ3: Forest, good, moderate","AEZ4: Forest, good, steep","AEZ5: Forest, marginal, minimal","AEZ6: Forest, marginal, moderate","AEZ7: Forest, marginal, steep","AEZ8: Grassland, prime, minimal","AEZ9: Grassland, good, minimal","AEZ10: Grassland, good, moderate","AEZ11: Grassland, good, steep","AEZ12: Grassland, marginal, minimal","AEZ13: Grassland, marginal, moderate","AEZ14: Grassland, marginal, steep","AEZ15: Irrigated Cropland, prime, minimal","AEZ16: Irrigated Cropland, good, minimal","AEZ17: Irrigated Cropland, good, moderate","AEZ18: Irrigated Cropland, good, steep","AEZ19: Irrigated Cropland, marginal, minimal","AEZ20: Irrigated Cropland, marginal, moderate","AEZ21: Irrigated Cropland, marginal, steep","AEZ22: Rainfed Cropland, prime, minimal","AEZ23: Rainfed Cropland, good, minimal","AEZ24: Rainfed Cropland, good, moderate","AEZ25: Rainfed Cropland, good, steep","AEZ26: Rainfed Cropland, marginal, minimal","AEZ27: Rainfed Cropland, marginal, moderate","AEZ28: Rainfed Cropland, marginal, steep",AEZ29: All Barren Land
-Biochar,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
-SRI,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,no,yes,yes,yes,yes,yes,yes,no,yes,yes,no,no
-Regenerative Agriculture,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no
-Farmland Restoration,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
-Smallholder Intensification,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no
-Conservation Agriculture,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,no,yes,yes,no,yes,yes,yes,no,yes,yes,no,no
-Improved Rice,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no,yes,yes,no,no
-Irrigation Efficiency,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no
-Nutrient Management,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no
-Tree Intercropping,no,no,no,no,no,no,no,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no
-Managed Grazing,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
-Livestock Feed Modifications,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
-Silvopasture,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
-Tropical Tree Staples,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no
-Perennial Bioenergy Crops,no,no,no,no,no,no,no,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,no
-Multistrata Agroforestry,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no
-Bamboo,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,no
-Afforestation,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,no
-Forest Protection,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
-IP Forest Management,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
-Peatland Protection,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
-Temperate Forest Restoration,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,no
-Tropical Forest Restoration,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,yes,yes,no,yes,yes,no
-Wetland Protection,yes,yes,yes,yes,yes,yes,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
+Biochar,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+SRI,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,False,True,True,True,True,True,True,False,True,True,False,False
+Regenerative Agriculture,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,False,True,True,False,True,True,True,False,True,True,False,False
+Farmland Restoration,False,False,False,False,False,False,False,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+Smallholder Intensification,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False
+Conservation Agriculture,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,False,True,True,False,True,True,True,False,True,True,False,False
+Improved Rice,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,False,True,True,False,False
+Irrigation Efficiency,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False
+Nutrient Management,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False
+Tree Intercropping,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False
+Managed Grazing,False,False,False,False,False,False,False,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+Livestock Feed Modifications,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+Silvopasture,False,False,False,False,False,False,False,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+Tropical Tree Staples,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False
+Perennial Bioenergy Crops,False,False,False,False,False,False,False,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,True,True,False,True,True,False
+Multistrata Agroforestry,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False
+Bamboo,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,True,True,False,True,True,False
+Afforestation,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,True,True,False,True,True,False
+Forest Protection,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+IP Forest Management,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+Peatland Protection,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+Temperate Forest Restoration,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,True,True,False,True,True,False
+Tropical Forest Restoration,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,True,True,False,True,True,False
+Wetland Protection,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
