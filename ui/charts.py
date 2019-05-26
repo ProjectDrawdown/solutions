@@ -555,7 +555,10 @@ class JupyterUI:
                     cridl_df[fullname(s)] = cumulative_land_deg.loc[2020:2050]
                     protected_c = (s.ua.soln_pds_funits_adopted.loc[2020:2050, 'World'] -
                             s.ua.pds_cumulative_degraded_land_protected().loc[2020:2050, 'World'])
-                    protected_c *= s.ac.tC_storage_in_protected_land_type / 1000
+                    if s.ac.tC_storage_in_protected_land_type is not None:
+                        protected_c *= s.ac.tC_storage_in_protected_land_type / 1000
+                    else:
+                        protected_c *= 0.0
                     protected_c_df[fullname(s)] = protected_c
                     protected_co2 = protected_c * C_TO_CO2EQ
                     protected_co2_df[fullname(s)] = protected_c
@@ -918,13 +921,14 @@ class JupyterUI:
                     color=alt.Color('column'),
                     tooltip=['column', 'adoption', 'Year'],
                 ).properties(
-                    title='World Adoption'
+                    title=f'World Adoption ({s.units["functional unit"]})'
                 ).interactive()
                 IPython.display.display(chart)
 
             color = ui.color.get_sector_color(self._get_sector_for_solution(s.__module__))
             ad_frizz = self.get_frizzle_chart(df=s.ht.soln_pds_funits_adopted().fillna(0.0),
-                    ylabel='funits', size=450, key=fullname(s)+":adoption_data", color=color)
+                    ylabel=f'adoption ({s.units["functional unit"]})', size=450,
+                    key=fullname(s)+":adoption_data", color=color)
 
             geo_source = alt.topo_feature(os.path.join('data',
                 'world_topo_sans_antartica_highres.json'), 'areas')
