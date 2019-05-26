@@ -74,14 +74,13 @@ class AEZ:
         """
         'AEZ Data'!A2:AD29
         Gathers list of AEZs applicable to solution from lookup matrix in 'aez' directory.
+
+        Note: DD land allocation already takes applicability into consideration, so applicable_zones
+        will be redundant in solutions which use DD allocation.
         """
-        df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_aez_matrix.csv'), index_col=0)
-        self.applicable_zones = []
-        for col, val in df.loc[self.solution_name].iteritems():
-            if val == 'yes':
-                self.applicable_zones.append(col)
-            elif val != 'no':
-                raise ValueError('cells in matrix should be "yes" or "no"')
+        row = pd.read_csv(
+            LAND_CSV_PATH.joinpath('aez', 'solution_aez_matrix.csv'), index_col=0).loc[self.solution_name]
+        self.applicable_zones = row[row].index.tolist()
 
     def _populate_world_land_allocation(self):
         """
@@ -111,3 +110,4 @@ class AEZ:
 
         soln_df['All'] = soln_df.sum(axis=1)
         self.soln_land_dist_df = soln_df
+

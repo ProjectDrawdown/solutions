@@ -1,25 +1,25 @@
 ﻿Solutions,"DEZ1: Epipelagic, EEZ","DEZ2: Epipelagic, ABNJ","DEZ3: Mesopelagic, EEZ","DEZ4: Mesopelagic, ABNJ","DEZ5: Bathypelagic, EEZ","DEZ6: Bathypelagic, ABNJ"
-Ocean Protection,yes,yes,no,no,no,no
-Marine Permaculture Arrays,no,no,no,no,no,no
-Marine Farms,no,no,no,no,no,no
-Management of Coastal Pump,no,no,no,no,no,no
-Managed Grazing,no,no,no,no,no,no
-OTEC,no,no,no,no,no,no
-Ocean Plastic Recovery,no,no,no,no,no,no
-Fish production of CaCO3,no,no,no,no,no,no
-Limiting bottom trawling,yes,yes,no,no,no,no
-Oceans Blank Solution 2,no,no,no,no,no,no
-Oceans Blank Solution 3,no,no,no,no,no,no
-Oceans Blank Solution 4,no,no,no,no,no,no
-Oceans Blank Solution 5,no,no,no,no,no,no
-Oceans Blank Solution 6,no,no,no,no,no,no
-Oceans Blank Solution 7,no,no,no,no,no,no
-Oceans Blank Solution 8,no,no,no,no,no,no
-Oceans Blank Solution 9,no,no,no,no,no,no
-Oceans Blank Solution 10,no,no,no,no,no,no
-Oceans Blank Solution 11,no,no,no,no,no,no
-Oceans Blank Solution 12,no,no,no,no,no,no
-Oceans Blank Solution 13,no,no,no,no,no,no
-Oceans Blank Solution 14,no,no,no,no,no,no
-Saltmartshes (placeholder,no,no,no,no,no,no
-Seagrasses (placeholder),no,no,no,no,no,no
+Ocean Protection,True,True,False,False,False,False
+Marine Permaculture Arrays,False,False,False,False,False,False
+Marine Farms,False,False,False,False,False,False
+Management of Coastal Pump,False,False,False,False,False,False
+Managed Grazing,False,False,False,False,False,False
+OTEC,False,False,False,False,False,False
+Ocean Plastic Recovery,False,False,False,False,False,False
+Fish production of CaCO3,False,False,False,False,False,False
+Limiting bottom trawling,True,True,False,False,False,False
+Oceans Blank Solution 2,False,False,False,False,False,False
+Oceans Blank Solution 3,False,False,False,False,False,False
+Oceans Blank Solution 4,False,False,False,False,False,False
+Oceans Blank Solution 5,False,False,False,False,False,False
+Oceans Blank Solution 6,False,False,False,False,False,False
+Oceans Blank Solution 7,False,False,False,False,False,False
+Oceans Blank Solution 8,False,False,False,False,False,False
+Oceans Blank Solution 9,False,False,False,False,False,False
+Oceans Blank Solution 10,False,False,False,False,False,False
+Oceans Blank Solution 11,False,False,False,False,False,False
+Oceans Blank Solution 12,False,False,False,False,False,False
+Oceans Blank Solution 13,False,False,False,False,False,False
+Oceans Blank Solution 14,False,False,False,False,False,False
+Saltmartshes (placeholder,False,False,False,False,False,False
+Seagrasses (placeholder),False,False,False,False,False,False

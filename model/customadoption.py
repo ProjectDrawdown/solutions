@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 from model import metaclass_cache
-from model.dd import REGIONS
+from model.dd import REGIONS, MAIN_REGIONS
 import pandas as pd
 import numpy as np
 
@@ -39,14 +39,17 @@ class CustomAdoption:
             For RRS solutions this is typically tam.py:{pds,ref}_tam_per_region. For Land solutions
             this is typically tla.py:tla_per_region.
             The columns in total_adoption_limit must match the columns in generate_df_template.
+         match_regions_to_world: optionally adjust regional avg/high/low values so the main regions sum
+            to the world value.
     Generates average/high/low of chosen scenarios to be used as adoption data for the solution.
     """
 
     def __init__(self, data_sources, soln_adoption_custom_name, low_sd_mult=1, high_sd_mult=1,
-                 total_adoption_limit=None):
+                 total_adoption_limit=None, match_regions_to_world=False):
         self.low_sd_mult = low_sd_mult
         self.high_sd_mult = high_sd_mult
         self.total_adoption_limit = total_adoption_limit
+        self.match_regions_to_world = match_regions_to_world  # python-only feature
         self.scenarios = {}
         for d in data_sources:
             name = d.get('name', 'noname')
@@ -72,28 +75,46 @@ class CustomAdoption:
                         regions_to_avg[reg] = pd.DataFrame({name: scen_df[reg]})
                     else:  # build regional df
                         regions_to_avg[reg][name] = scen_df[reg]
-
         avg_df, high_df, low_df = generate_df_template(), generate_df_template(), generate_df_template()
         for reg, reg_df in regions_to_avg.items():
             avg_df[reg] = avg_vals = reg_df.mean(axis=1)
             high_df[reg] = avg_vals + reg_df.std(axis=1, ddof=0) * self.high_sd_mult
             low_df[reg] = avg_vals - reg_df.std(axis=1, ddof=0) * self.low_sd_mult
+        if self.match_regions_to_world and len(regions_to_avg) > 1:
+            self._adjust_main_regions(avg_df)
+            self._adjust_main_regions(high_df)
+            self._adjust_main_regions(low_df)
         if self.total_adoption_limit is not None:
             avg_df = avg_df.combine(self.total_adoption_limit, np.minimum)
             high_df = high_df.combine(self.total_adoption_limit, np.minimum)
             low_df = low_df.combine(self.total_adoption_limit, np.minimum)
         return avg_df, high_df, low_df
+    
+    def _adjust_main_regions(self, regional_df):
+        """
+        For various reasons, the sum of the main region values can diverge from their corresponding
+        world values. This can produce problematic results.
+        We can fix this by proportionally adjusting the regional values to preserve their relative
+        ratios. This is a reasonable adjustment in the case where we are combining sources with
+        differing completeness of regional data, but would not be appropriate where the mismatch
+        is caused by error or a faulty calculation.
+        Args:
+            regional_df: DataFrame with REGIONS as columns and years as index.
+
+        Note: modifies DataFrame inplace
+        """
+        regional_df.loc[:, MAIN_REGIONS] = regional_df.loc[:, MAIN_REGIONS].mul(
+            regional_df.loc[:, 'World'] / regional_df.loc[:, MAIN_REGIONS].sum(axis=1), axis=0)
 
     @lru_cache()
     def adoption_data_per_region(self):
         """ Return a dataframe of adoption data, one column per region. """
-
         if self.soln_adoption_custom_name.startswith('Average of All Custom'):
             (result, _, _) = self._avg_high_low()
-        elif self.soln_adoption_custom_name.startswith('Low of All Custom'):
-            (_, _, result) = self._avg_high_low()
         elif self.soln_adoption_custom_name.startswith('High of All Custom'):
             (_, result, _) = self._avg_high_low()
+        elif self.soln_adoption_custom_name.startswith('Low of All Custom'):
+            (_, _, result) = self._avg_high_low()
         elif self.soln_adoption_custom_name in self.scenarios:
             data = self.scenarios[self.soln_adoption_custom_name]
             result = data['df'].copy()
@@ -111,3 +132,38 @@ class CustomAdoption:
         We return the custom data.
         """
         return self.adoption_data_per_region()
+
+    def report(self, adoption_limits=None):
+        if adoption_limits is None:
+            adoption_limits = self.total_adoption_limit
+        report_data = {}  # dict of dataframes of detailed results
+        report_summary = pd.DataFrame(
+            columns=['Has regional data', 'Exceeds limits', 'Regions exceed world', 'World exceeds regions'])
+        for name, scen in self.scenarios.items():
+            report_data[name] = {}
+            if not scen['include']:
+                continue  # no need to check excluded scenarios
+            df = scen['df'].loc[2020:, :]
+
+            # check if any regional data
+            has_regional_data = df.loc[2020:, MAIN_REGIONS].any().any()
+            report_summary.loc[name, 'Has regional data'] = has_regional_data
+
+            # check which scenarios exceed the given regional adoption limits
+            if adoption_limits is not None:
+                # use slightly higher limits to avoid tiny amounts of overlap when data is clipped to limits
+                limits_diff = (1.01 * adoption_limits - df).fillna(0)
+                amount_exceeded = -limits_diff[limits_diff < 0]
+                report_data[name]['amount exceeded'] = amount_exceeded
+                report_summary.loc[name, 'Exceeds limits'] = True if amount_exceeded.any().any() else False
+
+            # check ratio of the sum of the main regions to world region (should be ~1)
+            if has_regional_data:
+                adoption_ratio = df.loc[2020:, MAIN_REGIONS].sum(axis=1) / df.loc[:, 'World']
+                report_data[name]['adoption ratio'] = adoption_ratio
+                # we allow a tolerance of 1%
+                report_summary.loc[name, 'Regions exceed world'] = adoption_ratio[adoption_ratio > 1.01].any()
+                report_summary.loc[name, 'World exceeds regions'] = adoption_ratio[adoption_ratio < 0.99].any()
+
+        report_summary.index.name = 'Custom adoption scenario'
+        return report_summary, report_data

@@ -63,13 +63,9 @@ class DEZ:
 
         NOTE: this matrix is in development and WILL change. Make sure to update accordingly.
         """
-        df = pd.read_csv(OCEAN_CSV_PATH.joinpath('dez', 'solution_dez_matrix.csv'), index_col=0)
-        self.applicable_zones = []
-        for col, val in df.loc[self.solution_name].iteritems():
-            if val == 'yes':
-                self.applicable_zones.append(col)
-            elif val != 'no':
-                raise ValueError('cells in matrix should be "yes" or "no"')
+        row = pd.read_csv(
+            OCEAN_CSV_PATH.joinpath('dez', 'solution_dez_matrix.csv'), index_col=0).loc[self.solution_name]
+        self.applicable_zones = row[row].index.tolist()
 
     def _populate_world_ocean_allocation(self):
         """
