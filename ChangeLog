@@ -261,3 +261,8 @@ May 13 - May 17, 2019
 + in-UI editing of VMA sources
   supports cloud operation; set up several GCE instances
 + update CO2 results and graphs
+
+May 20 - May 24, 2019
++ work was mostly outside of this codebase
+  setting up JupyterHub and Discourse.
+
