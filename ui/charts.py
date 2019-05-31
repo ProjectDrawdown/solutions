@@ -24,6 +24,7 @@ from model.co2calcs import C_TO_CO2EQ
 
 import solution.factory
 import ui.color
+import ui.geo
 import ui.modelmap
 import ui.vega
 
@@ -554,7 +555,10 @@ class JupyterUI:
                     cridl_df[fullname(s)] = cumulative_land_deg.loc[2020:2050]
                     protected_c = (s.ua.soln_pds_funits_adopted.loc[2020:2050, 'World'] -
                             s.ua.pds_cumulative_degraded_land_protected().loc[2020:2050, 'World'])
-                    protected_c *= s.ac.tC_storage_in_protected_land_type / 1000
+                    if s.ac.tC_storage_in_protected_land_type is not None:
+                        protected_c *= s.ac.tC_storage_in_protected_land_type / 1000
+                    else:
+                        protected_c *= 0.0
                     protected_c_df[fullname(s)] = protected_c
                     protected_co2 = protected_c * C_TO_CO2EQ
                     protected_co2_df[fullname(s)] = protected_c
@@ -917,16 +921,17 @@ class JupyterUI:
                     color=alt.Color('column'),
                     tooltip=['column', 'adoption', 'Year'],
                 ).properties(
-                    title='World Adoption'
+                    title=f'World Adoption ({s.units["functional unit"]})'
                 ).interactive()
                 IPython.display.display(chart)
 
             color = ui.color.get_sector_color(self._get_sector_for_solution(s.__module__))
             ad_frizz = self.get_frizzle_chart(df=s.ht.soln_pds_funits_adopted().fillna(0.0),
-                    ylabel='funits', size=450, key=fullname(s)+":adoption_data", color=color)
+                    ylabel=f'adoption ({s.units["functional unit"]})', size=450,
+                    key=fullname(s)+":adoption_data", color=color)
 
             geo_source = alt.topo_feature(os.path.join('data',
-                'world_topo_sans_antartica_with_dd_regions.json'), 'regions')
+                'world_topo_sans_antartica_highres.json'), 'areas')
 
             ad_abs_geo = ipywidgets.Output()
             with ad_abs_geo:
@@ -950,6 +955,10 @@ class JupyterUI:
                     title='Regional Adoption (total funits in 2050)'
                 )
                 IPython.display.display(chart)
+
+            ad_abs_globe = ui.geo.get_globe(os.path.join('data', 'world_topo_lowres.json'),
+                    df=s.ht.soln_pds_funits_adopted().loc[2020:2050, :], size=450,
+                    key=fullname(s)+":adoption_data_globe")
 
             if hasattr(s, 'tm'):
                 ad_pct_geo = ipywidgets.Output()
@@ -984,7 +993,7 @@ class JupyterUI:
                     ad_frizz])]))
             else:
                 children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
-                    ad_frizz, ad_abs_geo, ad_pct_geo])]))
+                    ad_frizz, ad_abs_geo, ad_abs_globe, ad_pct_geo])]))
 
         adoption_data = ipywidgets.Accordion(children=children)
         for i, s in enumerate(solutions):
@@ -1037,7 +1046,7 @@ class JupyterUI:
                 pds_tam_per_region_melted = pds_tam_per_region.reset_index().melt(
                         'Year', value_name='adoption', var_name='region')[['region', 'adoption']]
                 source = alt.topo_feature(os.path.join('data',
-                    'world_topo_sans_antartica_with_dd_regions.json'), 'regions')
+                    'world_topo_sans_antartica_highres.json'), 'areas')
                 chart = alt.Chart(source).mark_geoshape(
                     fill='#dddddd',
                     stroke='black',
@@ -1062,7 +1071,7 @@ class JupyterUI:
                 ref_tam_per_region_melted = ref_tam_per_region.reset_index().melt(
                         'Year', value_name='adoption', var_name='region')[['region', 'adoption']]
                 source = alt.topo_feature(os.path.join('data',
-                    'world_topo_sans_antartica_with_dd_regions.json'), 'regions')
+                    'world_topo_sans_antartica_highres.json'), 'areas')
                 chart = alt.Chart(source).mark_geoshape(
                     fill='#dddddd',
                     stroke='black',
@@ -1080,8 +1089,13 @@ class JupyterUI:
                 )
                 IPython.display.display(chart)
 
+            tm_globe_pds = ui.geo.get_globe(os.path.join('data', 'world_topo_lowres.json'),
+                    df=s.tm.pds_tam_per_region().loc[2020:2050, :], size=450,
+                    key=fullname(s)+":tam_pds_globe")
+
             children.append(ipywidgets.VBox(
-                [ipywidgets.HBox([tm_table_pds, ipywidgets.VBox([tm_model, tm_pds_frizz, tm_geo_pds])]),
+                [ipywidgets.HBox([tm_table_pds, ipywidgets.VBox([tm_model, tm_pds_frizz,
+                    tm_geo_pds, tm_globe_pds])]),
                  ipywidgets.HBox([tm_table_ref, ipywidgets.VBox([tm_ref_frizz, tm_geo_ref])])]))
             titles.append(fullname(s))
 

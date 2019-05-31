@@ -19,6 +19,22 @@ def get_sector_color(sector):
     return sector_colormap.get(sector, 'Beige')
 
 
+region_colormap = {
+    'USA': 'SteelBlue',
+    'EU': 'FireBrick',
+    'Asia (Sans Japan)': 'Salmon',
+    'China': 'OrangeRed',
+    'India': 'Sienna',
+    'Middle East and Africa': 'Wheat',
+    'Eastern Europe': 'GreenYellow',
+    'Latin America': 'PaleGoldenrod',
+    'OECD90': 'Magenta',
+    'Not included': 'Grey',
+}
+def get_region_color(name):
+    return region_colormap.get(name, 'Grey')
+
+
 # from SVG spec https://www.w3.org/TR/SVG11/types.html#ColorKeywords
 webcolors = {
     'aliceblue': (240, 248, 255), 'antiquewhite': (250, 235, 215),
@@ -103,3 +119,9 @@ webcolors = {
 
 def webcolor_to_rgb(name):
     return webcolors.get(name.lower(), (128, 128, 128))
+
+def webcolor_to_hex(name):
+    return rgb_to_hex(webcolor_to_rgb(name))
+
+def rgb_to_hex(rgb):
+    return '#%02x%02x%02x' % rgb
