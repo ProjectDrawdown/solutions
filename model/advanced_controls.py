@@ -3,10 +3,13 @@
 """
 
 import enum
+import pandas as pd
+from numpy import nan, isnan
 from pytest import approx
 from warnings import warn
 from model import emissionsfactors as ef
 from model import excel_math
+from model.dd import REGIONS, MAIN_REGIONS
 
 SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND OCEAN')
 translate_adoption_bases = {"DEFAULT Linear": "Linear", "DEFAULT S-Curve": "Logistic S-Curve"}
@@ -651,15 +654,24 @@ class AdvancedControls:
         """
         If val is 'mean', 'high' or 'low', returns the corresponding statistic from the VMA object in
         self.vmas with the corresponding title.
+        If val is 'mean per region', 'high per region' or 'low per region', returns a Series of regions and
+        corresponding stats. Note that 'World' region will be NaN, as these will be calculated by summing the main
+        regions throughout the model.
         Args:
-          val: input can be a number, a string ('mean', 'high' or 'low') or a dict containing a 'value' key
+          val: input can be:
+                - a number
+                - a string ('mean', 'high' or 'low') or ('mean per region', 'high per region' or 'low per region')
+                - a dict containing a 'value' key
           vma_title: title of VMA table (can be found in vma_info.csv in the soln dir)
-        Returns:
-            mean, high or low value from VMA table or passes through value if it's a number or dict
         """
         raw_val_from_excel = None  # the raw value from the scenario record tab
+        return_regional_series = False
         if isinstance(val, str):
-            stat = val
+            if val.endswith('per region'):
+                stat = val.split()[0]
+                return_regional_series = True
+            else:
+                stat = val
         elif isinstance(val, dict):
             if 'statistic' not in val:  # if there is no statistic to link we return the value
                 return val['value']
@@ -677,11 +689,37 @@ class AdvancedControls:
             raise KeyError(
                 '{} must be included in vmas to calculate mean/high/low. vmas included: {}'.format(vma_title,
                                                                                                    self.vmas.keys()))
-        result = self.vmas[vma_title].avg_high_low(key=stat.lower())
+        if return_regional_series:
+            result = pd.Series(name='regional values')
+            for reg in REGIONS:
+                result[reg] = self.vmas[vma_title].avg_high_low(key=stat.lower(), region=reg)
+        else:
+            result = self.vmas[vma_title].avg_high_low(key=stat.lower())
         if raw_val_from_excel is not None and result != approx(raw_val_from_excel):
             warn(
-                "raw value from scenario record tab in excel does not match the {0} of VMA table '{1}'. \nThis is probably "
-                "because the scenario was linked to the {0} of an older version of the table.".format(stat,
-                                                                                                      vma_title))
+                "raw value from scenario record tab in excel does not match the {0} of VMA table '{1}'."
+                "\nThis is probably because the scenario was linked to the {0} of an older version of the table.".format(stat, vma_title))
             result = raw_val_from_excel
         return result
+
+
+def fill_missing_regions_from_world(data):
+    """
+    AdvancedControls attributes linked to VMAs can optionally be Series of regional values rather than
+    single floats. Some calculations in the model require all main regions (not special countries) to have
+    values (i.e. not NaN); this function can be used to substitute any missing main regional values
+    with the 'World' value, which is calculated as a weighted average of the available regional data by the
+    VMA class.
+    Note that in most cases it is better practice to input values for all main regions into the VMA table
+    if regional data is to be considered for the solution.
+    Args:
+        data: A Series object with REGIONS as index or float
+
+    Returns: the processed Series object or passes through float
+    """
+    if isinstance(data, pd.Series):
+        filled_data = data.copy(deep=True)
+        filled_data.loc[MAIN_REGIONS] = filled_data[MAIN_REGIONS].fillna(data['World'])
+        return filled_data
+    else:
+        return data
