@@ -3,8 +3,7 @@
 import math
 import numpy as np
 import pandas as pd
-
-
+from model.dd import COUNTRY_REGION_MAP, SPECIAL_COUNTRIES, MAIN_REGIONS
 
 
 def generate_vma_dict(path_to_vma_data):
@@ -41,8 +40,6 @@ def convert_percentages(val):
     if isinstance(val, str) and val.endswith('%'):
         return float(val.strip('%')) / 100.0
     return val
-
-
 
 
 class VMA:
@@ -88,9 +85,15 @@ class VMA:
         exclude.name = 'Exclude?'
         tmr = df['Thermal-Moisture Regime'].fillna(False)
         tmr.name = 'TMR'
-        self.df = pd.concat([value, units, raw, weight, exclude, tmr], axis=1)
+        region = df['World / Drawdown Region'].replace(
+            'Middle East & Africa', 'Middle East and Africa').replace('Asia (sans Japan)', 'Asia (Sans Japan)')
+        region.name = 'Region'
+        main_region = region.copy(deep=True)
+        for k, v in COUNTRY_REGION_MAP.items():
+            main_region.replace(k, v, inplace=True)
+        main_region.name = 'Main Region'
+        self.df = pd.concat([value, units, raw, weight, exclude, tmr, region, main_region], axis=1)
         self.df['Value'].fillna(self.df['Raw'], inplace=True)
-
 
     def _discard_outliers(self):
         """Discard outlier values beyond a multiple of the stddev."""
@@ -105,12 +108,12 @@ class VMA:
         df = df[valid]
         return df
 
-
-    def avg_high_low(self, key=None, regime=None):
+    def avg_high_low(self, key=None, regime=None, region=None):
         """
         Args:
           key: (optional) specify 'mean', 'high' or 'low' to get single value
           regime: string name of the thermal moisture regime to select sources for.
+          region: string name of the world region to select sources for.
 
         Returns:
           By default returns (mean, high, low) using low_sd/high_sd.
@@ -120,6 +123,11 @@ class VMA:
         df = df.loc[df['Exclude?'] == False]
         if regime:
             df = df.loc[df['TMR'] == regime]
+        if region in SPECIAL_COUNTRIES:
+            df = df.loc[df['Region'] == region]
+        elif region in MAIN_REGIONS:
+            # we include the values for special countries in their corresponding main regions' statistics
+            df = df.loc[df['Main Region'] == region]
 
         if self.use_weight:
             weights = df['Weight'].fillna(1.0)
@@ -157,7 +165,6 @@ class VMA:
                 return low
             else:
                 raise ValueError(f"invalid key: {key}. key must be 'mean', 'high', 'low' or None")
-
 
     def get_editable_source_data(self):
         """Return a dataframe of the source_data suitable for editing (like in a spreadsheet)."""

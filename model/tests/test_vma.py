@@ -22,7 +22,7 @@ def test_vals_from_real_soln():
 
 
 def test_source_data():
-    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
         Check that this text is present, 0%, %, 0, 0
         """
     f = io.StringIO(s)
@@ -31,7 +31,7 @@ def test_source_data():
 
 
 def test_invalid_discards():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
         a, 10000, , 
         b, 10000, , 
         c, 10000, , 
@@ -57,7 +57,7 @@ def test_invalid_discards():
 
 
 def test_single_study():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 39%, %, 
       """)
     v = vma.VMA(filename=f)
@@ -67,7 +67,7 @@ def test_single_study():
 
 
 def test_missing_columns():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 1000
       """)
     v = vma.VMA(filename=f)
@@ -77,7 +77,7 @@ def test_missing_columns():
 
 
 def test_inverse():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 43%, %, 
       """)
     postprocess = lambda x, y, z: (1.0 - x, 1.0 - y, 1.0 - z)
@@ -118,7 +118,7 @@ def test_fixed_summary():
 
 
 def test_avg_high_low_by_regime():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 0.4, Mha,, 1.0, False, Temperate/Boreal-Humid
       B, 0.5, Mha,, 1.0, False, Temperate/Boreal-Humid
       C, 0.6, Mha,, 1.0, False, Tropical-Humid
@@ -130,8 +130,36 @@ def test_avg_high_low_by_regime():
     assert result[0] == pytest.approx(0.45)
 
 
+def test_avg_high_low_by_region():
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 0.4, Mha,, 1.0, False, Temperate/Boreal-Humid, OECD90
+      B, 0.5, Mha,, 1.0, False, Temperate/Boreal-Humid, OECD90
+      C, 0.6, Mha,, 1.0, False, Tropical-Humid, Latin America
+      """)
+    v = vma.VMA(filename=f)
+    result = v.avg_high_low()
+    assert result[0] == pytest.approx(0.5)
+    result = v.avg_high_low(region='OECD90')
+    assert result[0] == pytest.approx(0.45)
+
+
+def test_avg_high_low_by_region_with_special_countries():
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 0.4, Mha,, 1.0, False, Temperate/Boreal-Humid, OECD90
+      B, 0.5, Mha,, 1.0, False, Temperate/Boreal-Humid, USA
+      C, 0.6, Mha,, 1.0, False, Tropical-Humid, Latin America
+      """)
+    v = vma.VMA(filename=f)
+    result = v.avg_high_low()
+    assert result[0] == pytest.approx(0.5)
+    result = v.avg_high_low(region='OECD90')
+    assert result[0] == pytest.approx(0.45)
+    result = v.avg_high_low(region='USA')
+    assert result[0] == pytest.approx(0.5)
+
+
 def test_no_warnings_in_avg_high_low():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 1.0, Mha,, 0.0, False
       B, 1.0, Mha,, 0.0, False
       C, 1.0, Mha,, 0.0, False
@@ -144,7 +172,7 @@ def test_no_warnings_in_avg_high_low():
 
 def test_write_to_file():
     f = tempfile.NamedTemporaryFile(mode='w')
-    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime
+    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 1.0,,,,
       B, 1.0,,,,
       C, 1.0,,,,

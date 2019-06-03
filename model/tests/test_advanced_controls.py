@@ -1,11 +1,12 @@
 """Test advanced_controls.py."""
 
+import pandas as pd
 import pytest
+from numpy import nan
 from unittest import mock
 from model import advanced_controls, vma
+from model.advanced_controls import fill_missing_regions_from_world
 from model import emissionsfactors as ef
-
-
 
 
 def test_learning_rate():
@@ -30,7 +31,6 @@ def test_learning_rate():
     assert ac.soln_fuel_learning_rate == pytest.approx(1.0)
 
 
-
 def test_electricity_factors():
     soln_energy_efficiency_factor = ""
     conv_annual_energy_used = 2.117
@@ -45,14 +45,12 @@ def test_electricity_factors():
     assert ac.soln_annual_energy_used == 0
 
 
-
 def test_lifetime_replacement():
     ac = advanced_controls.AdvancedControls(
         soln_lifetime_capacity=50000, soln_avg_annual_use=1000,
         conv_lifetime_capacity=10000, conv_avg_annual_use=3)
     assert ac.soln_lifetime_replacement == 50
     assert ac.conv_lifetime_replacement == pytest.approx(3333.333333333333)
-
 
 
 def test_lifetime_replacement_rounded():
@@ -72,7 +70,6 @@ def test_lifetime_replacement_rounded():
         conv_lifetime_capacity=1629.9388631986958, conv_avg_annual_use=72.44172725327537)
     assert ac.conv_lifetime_replacement_rounded == 23
     assert ac.soln_lifetime_replacement_rounded == 15
-
 
 
 def test_replacement_raises_error():
@@ -100,7 +97,6 @@ def test_co2eq_conversion_source():
         _ = advanced_controls.AdvancedControls(co2eq_conversion_source="???")
 
 
-
 def test_emissions_grid():
     ac = advanced_controls.AdvancedControls(
         emissions_grid_source="IPCC Only", emissions_grid_range="high")
@@ -114,7 +110,6 @@ def test_emissions_grid():
         _ = advanced_controls.AdvancedControls(emissions_grid_source="???")
     with pytest.raises(ValueError):
         _ = advanced_controls.AdvancedControls(emissions_grid_range="???")
-
 
 
 def test_soln_pds_adoption_args():
@@ -138,7 +133,6 @@ def test_soln_pds_adoption_args():
         _ = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_growth="???")
 
 
-
 def test_soln_ref_adoption_args():
     ac = advanced_controls.AdvancedControls(soln_ref_adoption_basis="Default")
     assert ac.soln_ref_adoption_basis == "Default"
@@ -146,7 +140,6 @@ def test_soln_ref_adoption_args():
     assert ac.soln_ref_adoption_basis == "Custom"
     with pytest.raises(ValueError):
         _ = advanced_controls.AdvancedControls(soln_ref_adoption_basis="???")
-
 
 
 def test_solution_category():
@@ -166,7 +159,6 @@ def test_solution_category():
         _ = advanced_controls.AdvancedControls(solution_category="invalid")
 
 
-
 def test_pds_ref_use_years():
     ac = advanced_controls.AdvancedControls(ref_adoption_use_pds_years=[2014],
                                             pds_adoption_use_ref_years=[2015])
@@ -174,15 +166,12 @@ def test_pds_ref_use_years():
         _ = advanced_controls.AdvancedControls(ref_adoption_use_pds_years=[2014],
                                                pds_adoption_use_ref_years=[2014])
 
-
 def test_has_var_costs():
     ac = advanced_controls.AdvancedControls(soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
-
                                             conv_var_oper_cost_per_funit=0.0,
                                             conv_fuel_cost_per_funit=0.0)
     assert ac.has_var_costs
     ac = advanced_controls.AdvancedControls(soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0,
-
                                             conv_var_oper_cost_per_funit=0.0)
     assert not ac.has_var_costs
 
@@ -213,13 +202,37 @@ def test_substitute_vma_raises():
 def test_substitute_vma_handles_raw_value_discrepancy():
     with mock.patch('model.vma.VMA') as MockVMA:
         MockVMA.return_value.avg_high_low.return_value = 1.2
-        seq_vma = vma.VMA()
-        ac = advanced_controls.AdvancedControls(vmas={'Sequestration Rates': seq_vma},
+        ac = advanced_controls.AdvancedControls(vmas={'Sequestration Rates': vma.VMA()},
                                                 seq_rate_global={'value': 1.1, 'statistic': 'mean'})
         assert ac.seq_rate_global == 1.1
+
+
+def test_substitute_vma_regional_statistics():
+    vals = {'World': 0, 'OECD90': 1, 'Eastern Europe': 2, 'Asia (Sans Japan)': 3, 'Middle East and Africa': 4, 'Latin America': 5,
+            'China': 0, 'India': 0, 'EU': 0, 'USA': 0}
+    with mock.patch.object(vma.VMA, '__init__', new=lambda *args, **kwargs: None):
+        with mock.patch.object(vma.VMA, 'avg_high_low', new=lambda *args, **kwargs: vals[kwargs['region']]):
+            ac = advanced_controls.AdvancedControls(vmas={'SOLUTION First Cost per Implementation Unit': vma.VMA()},
+                                                    pds_2014_cost='mean per region')
+            expected = pd.Series(data=vals, name='regional values')
+            pd.testing.assert_series_equal(expected, ac.pds_2014_cost)
 
 
 def test_yield_coeff():
     ac = advanced_controls.AdvancedControls(yield_from_conv_practice=2, yield_gain_from_conv_to_soln=4,
                                             disturbance_rate=0.25)
     assert ac.yield_coeff == 6
+
+
+def test_fill_missing_regions_from_world():
+    vals = {'World': 2, 'OECD90': 1, 'Eastern Europe': nan, 'Asia (Sans Japan)': 3, 'Middle East and Africa': 4,
+            'Latin America': 5, 'China': 0, 'India': nan, 'EU': 0, 'USA': 0}
+    data = pd.Series(data=vals, name='regional values')
+    exp_vals = {'World': 2, 'OECD90': 1, 'Eastern Europe': 2, 'Asia (Sans Japan)': 3, 'Middle East and Africa': 4,
+            'Latin America': 5, 'China': 0, 'India': nan, 'EU': 0, 'USA': 0}
+    expected = pd.Series(data=exp_vals, name='regional values')
+    pd.testing.assert_series_equal(expected, fill_missing_regions_from_world(data))
+
+
+def test_fill_missing_regions_from_world_passthru():
+    assert fill_missing_regions_from_world(1) == 1

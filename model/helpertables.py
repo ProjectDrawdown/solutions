@@ -7,6 +7,7 @@ from interpolation.py, or use a simple linear fit implemented here.
 """
 from functools import lru_cache
 import pandas as pd
+from model.dd import MAIN_REGIONS
 
 
 class HelperTables:
@@ -72,15 +73,16 @@ class HelperTables:
                 adoption[col] = adoption[col].combine(self.ref_adoption_limits[col].fillna(0.0), min)
 
         if self.ac.soln_ref_adoption_regional_data:
-            adoption.loc[:, 'World'] = adoption[['OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                                                 'Middle East and Africa', 'Latin America']].sum(
-                axis=1)
+            adoption.loc[:, 'World'] = adoption[MAIN_REGIONS].sum(axis=1)
             if self.ref_adoption_limits is not None:
                 adoption['World'] = adoption['World'].combine(
                     self.ref_adoption_limits['World'].fillna(0.0), min)
 
         # Where we have data, use the actual data not the interpolation. Excel model does this
         # even in Custom REF Adoption case.
+        # Note: this should be changed later. The jump between pds_datapoints
+        # and the first row of custom adoption data causes anomalies in the regional results.
+        # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
         adoption.update(self.ref_datapoints.iloc[[0]])
 
         if not suppress_override and self.ac.ref_adoption_use_pds_years:
@@ -148,9 +150,7 @@ class HelperTables:
                 adoption[col] = adoption[col].combine(self.pds_adoption_limits[col].fillna(0.0), min)
 
         if self.ac.soln_pds_adoption_regional_data:
-            adoption.loc[:, 'World'] = adoption.loc[:, ['OECD90', 'Eastern Europe',
-                                                        'Asia (Sans Japan)', 'Middle East and Africa',
-                                                        'Latin America']].sum(axis=1)
+            adoption.loc[:, 'World'] = adoption.loc[:, MAIN_REGIONS].sum(axis=1)
             if self.pds_adoption_limits is not None:
                 for col in adoption.columns:
                     adoption['World'] = adoption['World'].combine(
@@ -162,6 +162,9 @@ class HelperTables:
 
         # Where we have actual data, use the actual data not the interpolation. Excel model does
         # this in all cases, even Custom PDS Adoption.
+        # Note: this should be changed later. The jump between pds_datapoints
+        # and the first row of custom adoption data causes anomalies in the regional results.
+        # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
         adoption.update(self.pds_datapoints.iloc[[0]])
 
         adoption.name = "soln_pds_funits_adopted"

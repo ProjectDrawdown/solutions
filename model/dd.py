@@ -7,6 +7,7 @@ REGIONS = [
 ]
 MAIN_REGIONS = REGIONS[1:6]
 SPECIAL_COUNTRIES = REGIONS[6:]
+COUNTRY_REGION_MAP = {'China': 'Asia (Sans Japan)', 'India': 'Asia (Sans Japan)', 'EU': 'OECD90', 'USA': 'OECD90'}
 
 # Land
 THERMAL_MOISTURE_REGIMES = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
