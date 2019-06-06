@@ -129,12 +129,12 @@ def test_conv_ref_install_cost_per_iunit_no_conversion_factor():
 
 def test_conv_ref_install_cost_per_iunit_with_regions():
     """ Vals from silvopasture oct 2018 with some modified data to test more functionality """
-    ac = advanced_controls.AdvancedControls(conv_first_cost_efficiency_rate=0.1)
     conv_fc_regional_vals = {
         'World': 462.453006, 'OECD90': 339.770200, 'Eastern Europe': 100, 'Asia (Sans Japan)': np.nan,
         'Middle East and Africa': np.nan,
         'Latin America': 489.715852, 'China': np.nan, 'India': np.nan, 'EU': np.nan, 'USA': 339.770200}
-    ac.conv_2014_cost = pd.Series(data=conv_fc_regional_vals, name='regional values')
+    ac = advanced_controls.AdvancedControls(conv_first_cost_efficiency_rate=0.1,
+            conv_2014_cost=pd.Series(data=conv_fc_regional_vals, name='regional values'))
     tot_iunits = pd.read_csv(datadir.joinpath('sp_conv_tot_iunits.csv'), index_col=0)
     tot_iunits['Eastern Europe'] = np.arange(100, 147)
     tot_iunits.loc[2050, 'Eastern Europe'] = 0  # check the increasing cost gets corrected
@@ -180,12 +180,13 @@ def test_soln_pds_install_cost_per_iunit_not_less_conv():
 
 def test_soln_pds_install_cost_per_iunit_with_regions():
     """ Vals from silvopasture oct 2018 with some modified data to test more functionality """
-    ac = advanced_controls.AdvancedControls(soln_first_cost_efficiency_rate=0.1, soln_first_cost_below_conv=True)
     pds_fc_regional_vals = {
         'World': 462.453006, 'OECD90': 339.770200, 'Eastern Europe': 100, 'Asia (Sans Japan)': np.nan,
         'Middle East and Africa': np.nan,
         'Latin America': 489.715852, 'China': np.nan, 'India': np.nan, 'EU': np.nan, 'USA': 339.770200}
-    ac.pds_2014_cost = pd.Series(data=pds_fc_regional_vals, name='regional values')
+    ac = advanced_controls.AdvancedControls(soln_first_cost_efficiency_rate=0.1,
+            soln_first_cost_below_conv=True,
+            pds_2014_cost=pd.Series(data=pds_fc_regional_vals, name='regional values'))
     tot_iunits = pd.read_csv(datadir.joinpath('sp_conv_tot_iunits.csv'), index_col=0)  # use same data as conb for test
     tot_iunits['Eastern Europe'] = np.arange(100, 147)
     tot_iunits.loc[2050, 'Eastern Europe'] = 0  # check the increasing cost gets corrected
@@ -231,12 +232,13 @@ def test_soln_ref_install_cost_per_iunit():
 
 def test_soln_ref_install_cost_per_iunit_with_regions():
     """ Vals from silvopasture oct 2018 with some modified data to test more functionality """
-    ac = advanced_controls.AdvancedControls(soln_first_cost_efficiency_rate=0.1, soln_first_cost_below_conv=True)
     ref_fc_regional_vals = {
         'World': 462.453006, 'OECD90': 339.770200, 'Eastern Europe': 100, 'Asia (Sans Japan)': np.nan,
         'Middle East and Africa': np.nan,
         'Latin America': 489.715852, 'China': np.nan, 'India': np.nan, 'EU': np.nan, 'USA': 339.770200}
-    ac.ref_2014_cost = pd.Series(data=ref_fc_regional_vals, name='regional values')
+    ac = advanced_controls.AdvancedControls(soln_first_cost_efficiency_rate=0.1,
+            soln_first_cost_below_conv=True,
+            ref_2014_cost=pd.Series(data=ref_fc_regional_vals, name='regional values'))
     tot_iunits = pd.read_csv(datadir.joinpath('sp_conv_tot_iunits.csv'), index_col=0)  # use same data as conb for test
     tot_iunits['Eastern Europe'] = np.arange(100, 147)
     tot_iunits.loc[2050, 'Eastern Europe'] = 0  # check the increasing cost gets corrected
