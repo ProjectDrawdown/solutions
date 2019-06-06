@@ -85,9 +85,10 @@ class CustomAdoption:
             self._adjust_main_regions(high_df)
             self._adjust_main_regions(low_df)
         if self.total_adoption_limit is not None:
-            avg_df = avg_df.combine(self.total_adoption_limit, np.minimum)
-            high_df = high_df.combine(self.total_adoption_limit, np.minimum)
-            low_df = low_df.combine(self.total_adoption_limit, np.minimum)
+            idx = self.total_adoption_limit.first_valid_index()
+            avg_df.loc[idx:, :] = avg_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
+            high_df.loc[idx:, :] = high_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
+            low_df.loc[idx:, :] = low_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
         return avg_df, high_df, low_df
     
     def _adjust_main_regions(self, regional_df):
