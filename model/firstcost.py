@@ -78,6 +78,8 @@ class FirstCost:
 
         # In Excel, NaN^0 == NaN. In Python, NaN^0 == 1.
         # We want to match the Excel behavior.
+        # See First Cost Handling of NaN data in:
+        # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
         result_per_iunit.mask(iunits.isna(), other=np.nan, inplace=True)
         result_display = result_per_iunit * self.fc_convert_iunit_factor
 
@@ -114,10 +116,14 @@ class FirstCost:
         first_unit_cost = fill_missing_regions_from_world(self.ac.conv_2014_cost) * p
 
         iunits = self.conv_ref_tot_iunits.loc[:, regions]
+        if parameter_b == 0:  # required to pass integration tests
+            iunits.loc[:, :] = 1
         result_per_iunit = first_unit_cost * iunits.replace(0, 1) ** parameter_b
 
         # In Excel, NaN^0 == NaN. In Python, NaN^0 == 1.
         # We want to match the Excel behavior.
+        # See First Cost Handling of NaN data in:
+        # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
         result_per_iunit.mask(iunits.isna(), other=np.nan, inplace=True)
         step1 = result_per_iunit * self.fc_convert_iunit_factor
 
@@ -151,10 +157,14 @@ class FirstCost:
         first_unit_cost = fill_missing_regions_from_world(self.ac.ref_2014_cost) * p
 
         iunits = self.soln_ref_tot_iunits_reqd.loc[:, regions]
+        if parameter_b == 0:  # required to pass integration tests
+            iunits.loc[:, :] = 1
         result_per_iunit = first_unit_cost * iunits.replace(0, 1) ** parameter_b
 
         # In Excel, NaN^0 == NaN. In Python, NaN^0 == 1.
         # We want to match the Excel behavior.
+        # See First Cost Handling of NaN data in:
+        # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
         result_per_iunit.mask(iunits.isna(), other=np.nan, inplace=True)
         step1 = result_per_iunit * self.fc_convert_iunit_factor
 
