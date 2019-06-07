@@ -1,5 +1,7 @@
 """Test advanced_controls.py."""
 
+import pathlib
+
 import pandas as pd
 import pytest
 from numpy import nan
@@ -7,6 +9,9 @@ from unittest import mock
 from model import advanced_controls, vma
 from model.advanced_controls import fill_missing_regions_from_world
 from model import emissionsfactors as ef
+
+
+datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
 
 def test_learning_rate():
@@ -236,3 +241,12 @@ def test_fill_missing_regions_from_world():
 
 def test_fill_missing_regions_from_world_passthru():
     assert fill_missing_regions_from_world(1) == 1
+
+
+def test_from_json():
+    ac = advanced_controls.from_json(datadir.joinpath('ac_dataclass.json'))
+    assert ac.pds_2014_cost == pytest.approx(1.0)
+    assert ac.ref_2014_cost == pytest.approx(2.0)
+    assert ac.conv_2014_cost == pytest.approx(3.0)
+    assert ac.soln_first_cost_efficiency_rate == pytest.approx(4.0)
+    assert ac.conv_first_cost_efficiency_rate == pytest.approx(5.0)

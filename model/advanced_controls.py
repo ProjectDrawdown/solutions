@@ -4,6 +4,7 @@
 
 import dataclasses
 import enum
+import json
 import typing
 
 import pandas as pd
@@ -20,6 +21,11 @@ valid_pds_adoption_bases = {'Linear', 'Logistic S-Curve', 'Existing Adoption Pro
                             'Bass Diffusion S-Curve', None}
 valid_ref_adoption_bases = {'Default', 'Custom', None}
 valid_adoption_growth = {'High', 'Medium', 'Low', None}
+
+
+def from_json(filename):
+    j = json.load(open(filename))
+    return AdvancedControls(**j)
 
 
 @dataclasses.dataclass(eq=True, frozen=True)
