@@ -53,17 +53,19 @@ class VMA:
          high_sd: number of multiples of the stddev to use for the high result.
          discard_multiplier: discard outlier values more than this many multiples of the
            stddev away from the mean.
+         stat_correction: discard outliers more than discard_multiplier stddev away from the mean.
          postprocess: function to pass (mean, high, low) to before returning.
          fixed_summary: if present, should be a tuple to use for (mean, high, low) instead
            of calculating those values
     """
 
-    def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3, use_weight=False,
-                 postprocess=None, fixed_summary=None):
+    def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3,
+            stat_correction=True, use_weight=False, postprocess=None, fixed_summary=None):
         self.filename = filename
         self.low_sd = low_sd
         self.high_sd = high_sd
         self.discard_multiplier = discard_multiplier
+        self.stat_correction = stat_correction
         self.use_weight = use_weight
         self.postprocess = postprocess
         self.fixed_summary = fixed_summary
@@ -125,7 +127,7 @@ class VMA:
           By default returns (mean, high, low) using low_sd/high_sd.
           If key is specified will return associated value only
         """
-        df = self._discard_outliers()
+        df = self._discard_outliers() if self.stat_correction else self.df
         df = df.loc[df['Exclude?'] == False]
         if regime:
             df = df.loc[df['TMR'] == regime]
