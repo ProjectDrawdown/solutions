@@ -131,7 +131,6 @@ def test_avg_high_low_by_regime():
       C, 0.6, Mha,, 1.0, False, Tropical-Humid
       """)
     v = vma.VMA(filename=f)
-    print(v.df)
     result = v.avg_high_low()
     assert result[0] == pytest.approx(0.5)
     result = v.avg_high_low(regime='Temperate/Boreal-Humid')
