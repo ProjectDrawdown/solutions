@@ -5,6 +5,7 @@ import pathlib
 import tempfile
 import numpy as np
 import pandas as pd
+import xarray as xr
 import scipy.stats
 from pprint import pprint
 
@@ -42,21 +43,6 @@ def adoption_basis():
     return pds_adoption_basis_counts
 
 
-def get_tla_per_regime():
-    """ Total land area per regime (Mha) """
-    total_land_dict = {}
-    for tmr in THERMAL_MOISTURE_REGIMES:
-        df = pd.read_csv(datadir.joinpath('land', 'world', to_filename(tmr) + '.csv'), index_col=0).iloc[
-            :5, 0] / 10000
-        total_land_dict[tmr] = df
-    return total_land_dict
-
-
-def get_total_world_area():
-    """ All land area considered for DD solutions (Mha) """
-    return sum([x.sum() for x in get_tla_per_regime().values()])
-
-
 def get_scenario_variables():
     """ See which variables change between scenarios"""
     vars_per_soln = {}
@@ -83,9 +69,9 @@ def get_scenario_variables():
     return vars_per_soln, total_var_dict
 
 
-def land_alloc_sum(solns=None):
+def land_alloc_sum(solns=None, save_csv=False):
     """
-    Sums land allocations for each TMR/AEZ type. Prints df of %s.
+    Sums land allocations for each TMR/AEZ type. Prints df of remaining %s.
     Args:
         solns: optional subset of solutions in the form of the
             land_solutions_scenarios dict: {name: (constructor, scenarios)}
@@ -104,8 +90,12 @@ def land_alloc_sum(solns=None):
         else:
             df += s.ae.soln_land_alloc_df
     df *= 100
+    df = 100 - df
+    df[df < 0] = 0
     pd.options.display.float_format = '{:.1f}'.format
     print(df)
+    if save_csv:
+        df.to_csv(datadir.joinpath('land', 'allocation', 'perc_land_remaining_after_allocation.csv'))
     return df
 
 
@@ -231,8 +221,7 @@ if __name__ == '__main__':
     # res = adoption_basis()
     # res = get_scenario_variables()
     # res = full_survey()
-    aez_survey()
-    # res = get_tla_per_regime()
-    # res = land_alloc_sum()
+    # aez_survey()
+    res = land_alloc_sum(save_csv=True)
     # res = survey_regional_limits()
 
