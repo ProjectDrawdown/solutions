@@ -1,3 +1,5 @@
+import pathlib
+import pandas as pd
 import re
 from numpy import nan
 
@@ -43,3 +45,18 @@ def empty_to_nan(val):
 def to_filename(name):
     """ Removes special characters and separates words with single underscores"""
     return re.sub(' +', '_', re.sub('[^a-zA-Z0-9' '\n]', ' ', name)).strip('_')
+
+
+def get_full_soln_name(soln_name):
+    """ Returns full name of solution when given the module name.
+        e.g. 'tropicalforests'  -->  'Tropical Forests' """
+    solns_csv = pathlib.Path(__file__).parents[1].joinpath('data', 'overview', 'solutions.csv')
+    # remove leading spaces
+    solns_df = pd.read_csv(solns_csv).apply(lambda x: x.str.strip() if x.dtype == 'object' else x)
+    return solns_df[solns_df[' DirName'] == soln_name]['Solution'].values[0]
+
+
+def pretty_print_table(df):
+    """ Prints a nice-looking DataFrame """
+    from tabulate import tabulate
+    print(tabulate(df, headers='keys', tablefmt='psql', stralign='center', numalign='left', disable_numparse=True))

@@ -166,5 +166,5 @@ class CustomAdoption:
                 report_summary.loc[name, 'Regions exceed world'] = adoption_ratio[adoption_ratio > 1.01].any()
                 report_summary.loc[name, 'World exceeds regions'] = adoption_ratio[adoption_ratio < 0.99].any()
 
-        report_summary.index.name = 'Custom adoption scenario'
+        report_summary.index.rename('Custom adoption scenario', inplace=True)
         return report_summary, report_data

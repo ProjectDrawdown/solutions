@@ -92,6 +92,7 @@ class AEZ:
         for tmr in self.regimes:
             df = pd.read_csv(LAND_CSV_PATH.joinpath('world', to_filename(tmr) + '.csv'), index_col=0).drop(
                 'Total Area (km2)', 1)
+            # apply fixed world fraction to each region
             self.world_land_alloc_dict[tmr] = df.mul(self.soln_land_alloc_df.loc[tmr], axis=1) / 10000
 
     def _populate_solution_land_distribution(self):
