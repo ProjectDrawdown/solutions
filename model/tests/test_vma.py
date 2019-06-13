@@ -5,6 +5,8 @@ import pathlib
 import tempfile
 
 from model import vma
+import numpy as np
+import pandas as pd
 import pytest
 
 
@@ -31,7 +33,7 @@ def test_source_data():
 
 
 def test_invalid_discards():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
         a, 10000, , 
         b, 10000, , 
         c, 10000, , 
@@ -49,11 +51,16 @@ def test_invalid_discards():
         o, 10000, , 
         p, 10000000000, , 
         q, 1, , 
-    """)
+    """
+    f = io.StringIO(s)
     v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
     result = v.avg_high_low()
     expected = (10000, 10000, 10000)  # The 10,000,000,000 and 1 values should be discarded.
     assert result == pytest.approx(expected)
+    f = io.StringIO(s)
+    v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0, stat_correction=False)
+    result = v.avg_high_low()
+    assert result != pytest.approx(expected)
 
 
 def test_single_study():
@@ -183,3 +190,28 @@ def test_write_to_file():
     df.loc[0, 'Source ID'] = 'updated source ID'
     v.write_to_file(df)
     assert 'updated source ID' in open(f.name).read()
+
+def test_spelling_correction():
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 1.0, Mha,, 0.0, False,, Asia (sans Japan)
+      B, 1.0, Mha,, 0.0, False,, Middle East & Africa
+      """)
+    v = vma.VMA(filename=f)
+    assert v.df.loc[0, 'Region'] == 'Asia (Sans Japan)'
+    assert v.df.loc[1, 'Region'] == 'Middle East and Africa'
+
+def test_categorical_validation():
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 1.0, Mha,, 0.0, False, Global Arid, Invalid Region
+      B, 1.0, Mha,, 0.0, False,, USA
+      C, 1.0, Mha,, 0.0, False, Invalid TMR, China
+      """)
+    v = vma.VMA(filename=f)
+    assert pd.isna(v.df.loc[0, 'Region'])
+    assert v.df.loc[0, 'TMR'] == 'Global Arid'
+    assert v.df.loc[1, 'Region'] == 'USA'
+    assert v.df.loc[1, 'TMR'] == ''
+    assert v.df.loc[2, 'Region'] == 'China'
+    assert v.df.loc[2, 'TMR'] == ''
+    assert pd.isna(v.source_data.loc[0, 'World / Drawdown Region'])
+    assert pd.isna(v.source_data.loc[2, 'Thermal-Moisture Regime'])

@@ -10,13 +10,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 import altair as alt
 import IPython.display
-import ipyvolume as ipv
 import ipywidgets
 import numpy as np
 import pandas as pd
-import PIL
-import PIL.ImageDraw
-import PIL.ImageFont
 import qgrid
 
 from model.advanced_controls import SOLUTION_CATEGORY
@@ -24,8 +20,10 @@ from model.co2calcs import C_TO_CO2EQ
 
 import solution.factory
 import ui.color
+import ui.frizz
 import ui.geo
 import ui.modelmap
+import ui.scn_edit
 import ui.vega
 
 
@@ -628,6 +626,11 @@ class JupyterUI:
         return ipywidgets.HTML(value=div + text + '</div>')
 
 
+    def vertical_space(self):
+        div = '<div style="font-size=12px;">&nbsp;</div>'
+        return ipywidgets.HTML(value=div)
+
+
     def get_summary_tab(self, solutions):
         """Return Summary panel.
 
@@ -926,7 +929,7 @@ class JupyterUI:
                 IPython.display.display(chart)
 
             color = ui.color.get_sector_color(self._get_sector_for_solution(s.__module__))
-            ad_frizz = self.get_frizzle_chart(df=s.ht.soln_pds_funits_adopted().fillna(0.0),
+            ad_frizz = ui.frizz.get_frizzle_chart(df=s.ht.soln_pds_funits_adopted().fillna(0.0),
                     ylabel=f'adoption ({s.units["functional unit"]})', size=450,
                     key=fullname(s)+":adoption_data", color=color)
 
@@ -1029,9 +1032,9 @@ class JupyterUI:
                     .set_table_styles(dataframe_css_styles).render()))
 
             color = ui.color.get_sector_color(self._get_sector_for_solution(s.__module__))
-            tm_pds_frizz = self.get_frizzle_chart(df=s.tm.pds_tam_per_region().fillna(0.0),
+            tm_pds_frizz = ui.frizz.get_frizzle_chart(df=s.tm.pds_tam_per_region().fillna(0.0),
                     ylabel='PDS TAM', size=300, key=fullname(s)+":pds_tam", color=color)
-            tm_ref_frizz = self.get_frizzle_chart(df=s.tm.ref_tam_per_region().fillna(0.0),
+            tm_ref_frizz = ui.frizz.get_frizzle_chart(df=s.tm.ref_tam_per_region().fillna(0.0),
                     ylabel='REF TAM', size=300, key=fullname(s)+":ref_tam", color=color)
 
             tm_model = ipywidgets.Output()
@@ -1105,7 +1108,7 @@ class JupyterUI:
                 tam_data.set_title(idx, title)
         else:
             tam_data = None
-        return (tam_data)
+        return tam_data
 
 
     def get_co2_calcs_tab(self, solutions):
@@ -1182,7 +1185,7 @@ class JupyterUI:
                 aez_data.set_title(i, fullname(s))
         else:
             aez_data = None
-        return(aez_data)
+        return aez_data
 
 
     def get_dez_data_tab(self, solutions):
@@ -1213,7 +1216,46 @@ class JupyterUI:
                 dez_data.set_title(i, fullname(s))
         else:
             dez_data = None
-        return(dez_data)
+        return dez_data
+
+
+    def get_scenario_editor_tab(self, solutions):
+        """Return Scenario Editor panel.
+
+           Arguments:
+           solutions: a list of solution objects to be processed.
+        """
+        children = []
+        for s in solutions:
+            if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+                label1 = self.blue_label('Conventional')
+                row1 = ipywidgets.HBox([
+                    ui.scn_edit.conv_first_cost(s),
+                    ui.scn_edit.conv_oper_cost_total(s),
+                    ui.scn_edit.conv_net_profit_margin(s),
+                ])
+                label2 = self.blue_label('Solution')
+                row2 = ipywidgets.HBox([
+                    ui.scn_edit.soln_first_cost(s),
+                    ui.scn_edit.soln_oper_cost_total(s),
+                    ui.scn_edit.soln_net_profit_margin(s),
+                    ])
+                children.append(ipywidgets.VBox([
+                    label1, row1, self.vertical_space(),
+                    label2, row2]))
+            elif s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+                children.append(ipywidgets.VBox([]))
+            else:
+                children.append(ipywidgets.HBox([
+                    ui.scn_edit.conv_first_cost(s),
+                    ui.scn_edit.conv_lifetime_capacity(s),
+                    ui.scn_edit.soln_first_cost(s),
+                    ui.scn_edit.soln_oper_cost_fixed(s),
+                    ]))
+        scn_edit = ipywidgets.Accordion(children=children)
+        for i, s in enumerate(solutions):
+            scn_edit.set_title(i, fullname(s))
+        return scn_edit
 
 
     def get_detailed_results_tabs(self):
@@ -1224,10 +1266,12 @@ class JupyterUI:
         self.solutions = solutions
 
         remaining = 1.0 - details_progressbar.value
-        increment = remaining / 10.0
+        increment = remaining / 11.0
         summary = self.get_summary_tab(solutions)
         details_progressbar.value += increment
         model_overview = self.get_model_tab(solutions)
+        details_progressbar.value += increment
+        scn_edit = self.get_scenario_editor_tab(solutions)
         details_progressbar.value += increment
         variable_meta_analysis = self.get_VMA_tab(solutions)
         details_progressbar.value += increment
@@ -1247,8 +1291,8 @@ class JupyterUI:
         details_progressbar.value = 1.0
 
         # ------------------ Create tabs -----------------
-        children = [summary, model_overview, variable_meta_analysis, adoption_data]
-        titles = ["Summary", "Model", "Variable Meta-Analysis", "Adoption Data"]
+        children = [summary, model_overview, scn_edit, variable_meta_analysis, adoption_data]
+        titles = ["Summary", "Model", "Scenarios", "Variable Meta-Analysis", "Adoption Data"]
         if tam_data:
             children.append(tam_data)
             titles.append('TAM Data')
@@ -1294,67 +1338,3 @@ class JupyterUI:
             details_progressbar.value += increment
 
         return solutions
-
-
-    def get_frizzle_chart(self, df, ylabel, size=None, key=None, color=None):
-        """Returns a 3D Frizz chart, one frizzle strip per column in the dataframe.
-
-           Arguments:
-             df: the DataFrame to graph.
-             ylabel: text label to place on the Y axis.
-             size: in integer pixels
-             key: string key to pass to ipyvolume, allows replacement of earlier charts
-             color: base color to generate a gradient from (if None, a default color will be used)
-
-           Returns:
-             an ipywidget
-        """
-        (width, height) = (size, size) if size is not None else (500, 500)
-        fig = ipv.figure(width=width, height=height, key=key, controls=True)
-        if isinstance(color, str):
-            color = ui.color.webcolor_to_rgb(color)
-        if not color:
-            color = (128, 128, 128)
-
-        # Draw a strip of triangles for each region, tracing the dataframe values
-        for (z, region) in enumerate(df.columns):
-            years = list(df.index)
-            nyears = len(years)
-            year = years.pop(0)
-            X = [year, year]
-            y = df.loc[year, region]
-            Y = [y, y]
-            Z = [float(z), float(z) + 1.0]
-            U = [0.0, 0.0]
-            V = [0.0, 1.0]
-            triangles = []
-            offset = 2
-            for (idx, year) in enumerate(years, 1):
-                X.extend([year, year])
-                y = df.loc[year, region]
-                Y.extend([y, y * 0.97])
-                Z.extend([float(z), float(z) + 0.95])
-                u = float(idx) / nyears
-                U.extend([u, u])
-                V.extend([0.0, 1.0])
-                triangles.extend([[offset-2, offset-1, offset+1], [offset-2, offset, offset+1]])
-                offset += 2
-            img = PIL.Image.new(mode='RGB', size=(1000, 100), color=color)
-            draw = PIL.ImageDraw.Draw(img)
-            font = PIL.ImageFont.truetype(os.path.join('data', 'fonts', 'Roboto-Medium.ttf'), 85)
-            draw.text(xy=(40, 0), text=region, fill=(255,250,250), font=font)
-            ipv.pylab.plot_trisurf(np.array(X), np.array(Y), np.array(Z), triangles=triangles,
-                    u=U, v=V, texture=img.transpose(PIL.Image.FLIP_TOP_BOTTOM))
-
-        ipv.style.box_on()
-        ipv.pylab.xlabel('Year')
-        first_year = df.index[0]
-        last_year = df.index[-1]
-        ipv.pylab.xlim(first_year - 2, last_year + 2)
-        ipv.pylab.ylabel(ylabel)
-        ipv.pylab.zlabel('Region')
-        nregions = len(df.columns)
-        ipv.pylab.zlim(-0.5, nregions + 0.5)
-        ipv.pylab.view(10.0, 10.0, 3.0)
-        ipv.pylab.view(-24.46, 73.7, 2.32)
-        return ipv.gcc()

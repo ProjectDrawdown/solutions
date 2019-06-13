@@ -4,6 +4,7 @@ import math
 import numpy as np
 import pandas as pd
 from model.dd import COUNTRY_REGION_MAP, SPECIAL_COUNTRIES, MAIN_REGIONS
+import model.dd
 
 
 def generate_vma_dict(path_to_vma_data):
@@ -52,17 +53,19 @@ class VMA:
          high_sd: number of multiples of the stddev to use for the high result.
          discard_multiplier: discard outlier values more than this many multiples of the
            stddev away from the mean.
+         stat_correction: discard outliers more than discard_multiplier stddev away from the mean.
          postprocess: function to pass (mean, high, low) to before returning.
          fixed_summary: if present, should be a tuple to use for (mean, high, low) instead
            of calculating those values
     """
 
-    def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3, use_weight=False,
-                 postprocess=None, fixed_summary=None):
+    def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3,
+            stat_correction=True, use_weight=False, postprocess=None, fixed_summary=None):
         self.filename = filename
         self.low_sd = low_sd
         self.high_sd = high_sd
         self.discard_multiplier = discard_multiplier
+        self.stat_correction = stat_correction
         self.use_weight = use_weight
         self.postprocess = postprocess
         self.fixed_summary = fixed_summary
@@ -83,12 +86,17 @@ class VMA:
         value.name = 'Value'
         exclude = df['Exclude Data?'].fillna(False)
         exclude.name = 'Exclude?'
-        tmr = df['Thermal-Moisture Regime'].fillna(False)
+        df['Thermal-Moisture Regime'] = df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
+        tmr = df['Thermal-Moisture Regime'].fillna('')
         tmr.name = 'TMR'
-        region = df['World / Drawdown Region'].replace(
-            'Middle East & Africa', 'Middle East and Africa').replace('Asia (sans Japan)', 'Asia (Sans Japan)')
+        # correct some common typos and capitalization differences from Excel files.
+        normalized_region = (df['World / Drawdown Region']
+                .replace('Middle East & Africa', 'Middle East and Africa')
+                .replace('Asia (sans Japan)', 'Asia (Sans Japan)'))
+        df['World / Drawdown Region'] = normalized_region.astype(model.dd.rgn_cat_dtype)
+        region = df['World / Drawdown Region']
         region.name = 'Region'
-        main_region = region.copy(deep=True)
+        main_region = normalized_region.copy()
         for k, v in COUNTRY_REGION_MAP.items():
             main_region.replace(k, v, inplace=True)
         main_region.name = 'Main Region'
@@ -119,7 +127,7 @@ class VMA:
           By default returns (mean, high, low) using low_sd/high_sd.
           If key is specified will return associated value only
         """
-        df = self._discard_outliers()
+        df = self._discard_outliers() if self.stat_correction else self.df
         df = df.loc[df['Exclude?'] == False]
         if regime:
             df = df.loc[df['TMR'] == regime]
@@ -169,15 +177,6 @@ class VMA:
     def get_editable_source_data(self):
         """Return a dataframe of the source_data suitable for editing (like in a spreadsheet)."""
         df = self.source_data.copy(deep=True)
-
-        # add an empty row at the end, to be able to add a new source.
-        other = {'SOURCE ID: Author/Org, Date, Info': '', 'Link': '',
-                'World / Drawdown Region': '', 'Specific Geographic Location': '',
-                'Thermal-Moisture Regime':'', 'Source Validation Code':'', 'Year / Date':'',
-                'License Code':'', 'Raw Data Input':0.0, 'Original Units':'',
-                'Conversion calculation':'', 'Common Units':'', 'Weight':1.0, 'Assumptions':'',
-                'Exclude Data?':False}
-        df = df.append(other, ignore_index=True)
 
         text_columns = ['SOURCE ID: Author/Org, Date, Info', 'Link', 'World / Drawdown Region',
                 'Specific Geographic Location', 'Thermal-Moisture Regime', 'Source Validation Code',
