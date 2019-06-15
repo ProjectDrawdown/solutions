@@ -4,6 +4,7 @@
 
 import dataclasses
 import enum
+import glob
 import json
 import typing
 
@@ -23,11 +24,6 @@ valid_ref_adoption_bases = {'Default', 'Custom', None}
 valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
 
-def from_json(filename):
-    j = json.load(open(filename))
-    return AdvancedControls(**j)
-
-
 @dataclasses.dataclass(eq=True, frozen=True)
 class AdvancedControls:
     """Advanced Controls module, with settings impacting other modules."""
@@ -42,6 +38,17 @@ class AdvancedControls:
     #    Example:
     #    {'Sequestration Rates': vma.VMA('path_to_soln_vmas' + 'Sequestration_Rates.csv')}
     vmas: typing.Dict = None
+
+    # name: string name of this scenario.
+    name: str = None
+
+    # description: freeform text describing the construction or intention for this scenario.
+    description: str = None
+
+    # js: JSON this AdvancedControls object was created from (if any)
+    # jsfile: the filename containing the JSON (if any)
+    js: str = None
+    jsfile: str = None
 
     # pds_2014_cost: US$2014 cost to acquire + install, per implementation
     #   unit (ex: kW for energy scenarios), for the Project Drawdown
@@ -173,9 +180,9 @@ class AdvancedControls:
     #   SolarPVUtil "Advanced Controls"!I185
     co2eq_conversion_source: str = None
 
-    # ch4_co2_per_funit: CO2-equivalent CH4 emitted per TWh, in tons.
+    # ch4_co2_per_funit: CO2-equivalent CH4 emitted per functional unit, in tons.
     #   SolarPVUtil "Advanced Controls"!I174
-    # n2o_co2_per_funit: CO2-equivalent N2O emitted per TWh, in tons.
+    # n2o_co2_per_funit: CO2-equivalent N2O emitted per functional unit, in tons.
     #   SolarPVUtil "Advanced Controls"!J174
     ch4_co2_per_funit: float = None
     n2o_co2_per_funit: float = None
@@ -738,3 +745,17 @@ def fill_missing_regions_from_world(data):
         return filled_data
     else:
         return data
+
+
+def load_scenarios_from_json(directory, vmas):
+    """Load scenarios from JSON files in directory."""
+    result = {}
+    for filename in glob.glob(str(directory.joinpath('*.json'))):
+        j = json.load(open(filename))
+        js = j.copy()
+        js['vmas'] = vmas
+        js['js'] = j
+        js['jsfile'] = str(filename)
+        a = AdvancedControls(**js)
+        result[a.name] = a
+    return result

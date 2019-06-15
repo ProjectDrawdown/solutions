@@ -1,4 +1,5 @@
 {
+	"name": "ac_dataclass",
 	"pds_2014_cost": 1.0,
 	"ref_2014_cost": 2.0,
 	"conv_2014_cost": 3.0,
