@@ -24,6 +24,7 @@ valid_ref_adoption_bases = {'Default', 'Custom', None}
 valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
 
+
 @dataclasses.dataclass(eq=True, frozen=True)
 class AdvancedControls:
     """Advanced Controls module, with settings impacting other modules."""
@@ -446,57 +447,9 @@ class AdvancedControls:
     tC_storage_in_protected_land_type: typing.Any = None
 
     def __post_init__(self):
-        object.__setattr__(self, 'pds_2014_cost', self._substitute_vma(
-                self.pds_2014_cost, vma_title='SOLUTION First Cost per Implementation Unit'))
-        object.__setattr__(self, 'ref_2014_cost', self._substitute_vma(
-                self.ref_2014_cost, vma_title='SOLUTION First Cost per Implementation Unit'))
-        object.__setattr__(self, 'conv_2014_cost', self._substitute_vma(
-                self.conv_2014_cost,
-                vma_title='CONVENTIONAL First Cost per Implementation Unit for replaced practices'))
-        object.__setattr__(self, 'soln_fixed_oper_cost_per_iunit', self._substitute_vma(
-                self.soln_fixed_oper_cost_per_iunit,
-                vma_title='SOLUTION Operating Cost per Functional Unit per Annum'))
-        object.__setattr__(self, 'conv_fixed_oper_cost_per_iunit', self._substitute_vma(
-                self.conv_fixed_oper_cost_per_iunit,
-                vma_title='CONVENTIONAL Operating Cost per Functional Unit per Annum'))
-
-        # LAND only
-        object.__setattr__(self, 'tco2eq_reduced_per_land_unit', self._substitute_vma(
-                self.tco2eq_reduced_per_land_unit,
-                vma_title='t CO2-eq (Aggregate emissions) Reduced per Land Unit'))
-        object.__setattr__(self, 'tco2_reduced_per_land_unit', self._substitute_vma(
-                self.tco2_reduced_per_land_unit,
-                vma_title='t CO2 Reduced per Land Unit'))
-        object.__setattr__(self, 'tn2o_co2_reduced_per_land_unit', self._substitute_vma(
-                self.tn2o_co2_reduced_per_land_unit,
-                vma_title='t N2O-CO2-eq Reduced per Land Unit'))
-        object.__setattr__(self, 'tch4_co2_reduced_per_land_unit', self._substitute_vma(
-                self.tch4_co2_reduced_per_land_unit,
-                vma_title='t CH4-CO2-eq Reduced per Land Unit'))
-        object.__setattr__(self, 'seq_rate_global', self._substitute_vma(
-                self.seq_rate_global,
-                vma_title='Sequestration Rates'))
-        object.__setattr__(self, 'degradation_rate', self._substitute_vma(
-                self.degradation_rate,
-                vma_title='Growth Rate of Land Degradation'))
-        object.__setattr__(self, 'disturbance_rate', self._substitute_vma(
-                self.disturbance_rate,
-                vma_title='Disturbance Rate'))
-        object.__setattr__(self, 'yield_from_conv_practice', self._substitute_vma(
-                self.yield_from_conv_practice,
-                vma_title='Yield  from CONVENTIONAL Practice'))
-        object.__setattr__(self, 'yield_gain_from_conv_to_soln', self._substitute_vma(
-                self.yield_gain_from_conv_to_soln,
-                vma_title='Yield Gain (% Increase from CONVENTIONAL to SOLUTION)'))
-        object.__setattr__(self, 'carbon_not_emitted_after_harvesting', self._substitute_vma(
-                self.carbon_not_emitted_after_harvesting,
-                vma_title='Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing'))
-        object.__setattr__(self, 'avoided_deforest_with_intensification', self._substitute_vma(
-                self.avoided_deforest_with_intensification,
-                vma_title='Avoided_Deforested_Area_With_Increase_in_Agricultural_Intensification'))
-        object.__setattr__(self, 'tC_storage_in_protected_land_type', self._substitute_vma(
-                self.tC_storage_in_protected_land_type,
-                vma_title='t C storage in Protected Landtype'))
+        for param, vma_titles in param_to_vma_name:
+            val = getattr(self, param)
+            object.__setattr__(self, param, self._substitute_vma(val=val, vma_titles=vma_titles))
 
         if isinstance(self.solution_category, str):
             object.__setattr__(self, 'solution_category',
@@ -643,17 +596,17 @@ class AdvancedControls:
 
     def string_to_solution_category(self, text):
         ltext = str(text).lower()
-        if ltext == "replacement":
+        if ltext == 'replacement':
             return SOLUTION_CATEGORY.REPLACEMENT
-        elif ltext == "reduction":
+        elif ltext == 'reduction':
             return SOLUTION_CATEGORY.REDUCTION
         elif ltext == 'land':
             return SOLUTION_CATEGORY.LAND
-        elif ltext == "not_applicable" or ltext == "not applicable" or ltext == "na":
+        elif ltext == 'not_applicable' or ltext == 'not applicable' or ltext == 'na':
             return SOLUTION_CATEGORY.NOT_APPLICABLE
-        raise ValueError("invalid solution category: " + str(text))
+        raise ValueError('invalid solution category: ' + str(text))
 
-    def _substitute_vma(self, val, vma_title):
+    def _substitute_vma(self, val, vma_titles):
         """
         If val is 'mean', 'high' or 'low', returns the corresponding statistic from the VMA object in
         self.vmas with the corresponding title.
@@ -665,7 +618,8 @@ class AdvancedControls:
                 - a number
                 - a string ('mean', 'high' or 'low') or ('mean per region', 'high per region' or 'low per region')
                 - a dict containing a 'value' key
-          vma_title: title of VMA table (can be found in vma_info.csv in the soln dir)
+          vma_titles: list of titles of VMA tables to check (can be found in vma_info.csv in the
+             soln dir). The first one which exists will be used.
         """
         raw_val_from_excel = None  # the raw value from the scenario record tab
         return_regional_series = False
@@ -678,20 +632,20 @@ class AdvancedControls:
         elif isinstance(val, dict):
             if 'statistic' not in val:  # if there is no statistic to link we return the value
                 return val['value']
-            else:
-                raw_val_from_excel = val['value']
-                stat = val['statistic']
+            raw_val_from_excel = val['value']
+            stat = val['statistic']
+            if not stat:
+                return val['value']
         else:
             return val
 
-        for vma_key in self.vmas.keys():
-            if vma_key.startswith(vma_title):  # This handles the case of 'first cost' title discrepancies
-                vma_title = vma_key
+        for vma_title in vma_titles:
+            if self.vmas.get(vma_title, None):
                 break
         else:
-            raise KeyError(
-                '{} must be included in vmas to calculate mean/high/low. vmas included: {}'.format(vma_title,
-                                                                                                   self.vmas.keys()))
+            raise KeyError(f'{vma_title} must be included in vmas to calculate mean/high/low.'
+                    f'vmas included: {self.vmas.keys()}')
+
         if return_regional_series:
             result = pd.Series(name='regional values')
             for reg in REGIONS:
@@ -759,3 +713,62 @@ def load_scenarios_from_json(directory, vmas):
         a = AdvancedControls(**js)
         result[a.name] = a
     return result
+
+
+param_to_vma_name = [
+    ('pds_2014_cost', ['SOLUTION First Cost per Implementation Unit']),
+    ('ref_2014_cost', ['SOLUTION First Cost per Implementation Unit']),
+    ('conv_2014_cost', ['CONVENTIONAL First Cost per Implementation Unit for replaced practices']),
+    ('conv_lifetime_capacity', ['Lifetime Capacity - CONVENTIONAL']),
+    ('soln_lifetime_capacity', ['Lifetime Capacity - SOLUTION']),
+    ('conv_avg_annual_use', ['Average Annual Use - CONVENTIONAL']),
+    ('soln_avg_annual_use', ['Average Annual Use - SOLUTION']),
+    ('soln_fixed_oper_cost_per_iunit', ['SOLUTION Operating Cost per Functional Unit per Annum',
+        'SOLUTION Fixed Operating Cost (FOM)']),
+    ('conv_fixed_oper_cost_per_iunit', ['CONVENTIONAL Operating Cost per Functional Unit per Annum',
+        'CONVENTIONAL Fixed Operating Cost (FOM)']),
+    ('conv_var_oper_cost_per_funit',
+        ['CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit']),
+    ('soln_var_oper_cost_per_funit',
+        ['SOLUTION Variable Operating Cost (VOM) per Functional Unit']),
+    ('conv_annual_energy_used', ['Electricity Consumed per Functional Unit - CONVENTIONAL']),
+    ('soln_annual_energy_used', ['Total Energy Used per SOLUTION functional unit']),
+    ('soln_energy_efficiency_factor', ['Energy Efficiency Factor - SOLUTION']),
+    ('conv_fuel_consumed_per_funit', ['Fuel Consumed per CONVENTIONAL Functional Unit']),
+    ('soln_fuel_efficiency_factor', ['Fuel Efficiency Factor - SOLUTION']),
+    ('conv_emissions_per_funit', ['Direct Emissions per CONVENTIONAL Functional Unit']),
+    ('soln_emissions_per_funit', ['Direct Emissions per SOLUTION Functional Unit']),
+    ('soln_indirect_co2_per_iunit', ['Indirect CO2 Emissions per SOLUTION Unit']),
+    ('conv_indirect_co2_per_unit', ['Indirect CO2 Emissions per CONVENTIONAL Unit']),
+    ('ch4_co2_per_funit', ['CH4-CO2eq Tons Reduced']),
+    ('n2o_co2_per_funit', ['N2O-CO2eq Tons Reduced']),
+
+    # primarily LAND variables
+    ('tco2eq_reduced_per_land_unit', ['t CO2-eq (Aggregate emissions) Reduced per Land Unit']),
+    ('tco2_reduced_per_land_unit', ['t CO2 Reduced per Land Unit']),
+    ('tn2o_co2_reduced_per_land_unit', ['t N2O-CO2-eq Reduced per Land Unit']),
+    ('tch4_co2_reduced_per_land_unit', ['t CH4-CO2-eq Reduced per Land Unit']),
+    ('seq_rate_global', ['Sequestration Rates']),
+    ('degradation_rate', ['Growth Rate of Land Degradation']),
+    ('disturbance_rate', ['Disturbance Rate']),
+    ('yield_from_conv_practice', ['Yield from CONVENTIONAL Practice']),
+    ('yield_gain_from_conv_to_soln', ['Yield Gain (% Increase from CONVENTIONAL to SOLUTION)']),
+    ('carbon_not_emitted_after_harvesting',
+        ['Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing']),
+    ('avoided_deforest_with_intensification',
+        ['Avoided Deforested Area With Increase in Agricultural Intensification']),
+    ('tC_storage_in_protected_land_type', ['t C storage in Protected Landtype']),
+]
+
+def get_vma_for_param(param):
+    for param_name, vma_list in param_to_vma_name:
+        if param_name == param:
+            return vma_list
+    return []
+
+def get_param_for_vma_name(name):
+    for param_name, vma_list in param_to_vma_name:
+        for vma_name in vma_list:
+            if name == vma_name:
+                return param_name
+    return None

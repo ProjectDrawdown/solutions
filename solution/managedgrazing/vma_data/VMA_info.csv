@@ -1,12 +1,12 @@
 VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
 1,Current_Adoption,Current Adoption,True,False,7.0,7.0,7.0
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit of the solution,True,False,136.95130637304607,216.80932742229174,57.09328532380039
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices,False,False,,,
+3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit,True,False,136.95130637304607,216.80932742229174,57.09328532380039
 4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,True,False,328.4158577699379,684.5834152532939,-27.751699713418134
 5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True,False,3235.0238286643716,5074.853788822045,1395.193868506698
 6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,True,False,143.54391845443618,231.31902469904455,55.768812209827814
 7,SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum,SOLUTION Net Profit Margin per Functional Unit per Annum,True,False,254.03215995498095,391.73910840224335,116.32521150771854
-8,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,True,False,3.4285714285714284,5.085344786391886,1.771798070750971
+8,Yield_from_CONVENTIONAL_Practice,Yield from CONVENTIONAL Practice,True,False,3.4285714285714284,5.085344786391886,1.771798070750971
 9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),True,False,0.10230000000000002,0.15788935149828603,0.04671064850171398
 10,Electricty_Consumed_per_CONVENTIONAL_Functional_Unit,Electricty Consumed per CONVENTIONAL Functional Unit,False,False,,,
 11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,

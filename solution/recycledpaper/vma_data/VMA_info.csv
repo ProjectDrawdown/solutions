@@ -1,6 +1,6 @@
 VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
 1,Current_Adoption,Current Adoption,True,False,76.16626018181817,155.212125610491,-2.879605246854652
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,True,1386869779.6831584,2199631093.3360667,574108466.0302502
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices,True,True,1386869779.6831584,2199631093.3360667,574108466.0302502
 3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,True,2339773309.050419,3045545361.7143707,1634001256.386467
 4,Lifetime_Capacity_CONVENTIONAL,Lifetime Capacity - CONVENTIONAL,True,False,1.0,1.0,1.0
 5,Lifetime_Capacity_SOLUTION,Lifetime Capacity - SOLUTION,True,False,1.0,1.0,1.0

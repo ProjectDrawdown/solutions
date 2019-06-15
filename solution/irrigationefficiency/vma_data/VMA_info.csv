@@ -1,12 +1,12 @@
 VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
 1,Current_Adoption,Current Adoption,True,False,7.0,7.0,7.0
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,True,False,671.3788076923078,1132.6491048089324,210.10851057568306
-3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit of the solution,True,False,1575.8629689166667,2376.2277466441205,775.4981911892127
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices,True,False,671.3788076923078,1132.6491048089324,210.10851057568306
+3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit,True,False,1575.8629689166667,2376.2277466441205,775.4981911892127
 4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,True,False,341.5204997603357,341.5204997603357,341.5204997603357
 5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True,False,190.49638927201812,190.49638927201812,190.49638927201812
 6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,False,False,,,
 7,SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum,SOLUTION Net Profit Margin per Functional Unit per Annum,False,False,,,
-8,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,False,False,,,
+8,Yield_from_CONVENTIONAL_Practice,Yield from CONVENTIONAL Practice,False,False,,,
 9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),False,False,,,
 10,Electricty_Consumed_per_CONVENTIONAL_Functional_Unit,Electricty Consumed per CONVENTIONAL Functional Unit,True,False,2.17e-06,2.3855569530309795e-06,1.9544430469690205e-06
 11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
