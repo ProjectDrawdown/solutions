@@ -35,7 +35,7 @@ class CH4Calcs:
         if self.ac.ch4_is_co2eq:
             result = self.soln_net_annual_funits_adopted * 0
         else:
-            result = self.soln_net_annual_funits_adopted * self.ac.ch4_co2_per_twh
+            result = self.soln_net_annual_funits_adopted * self.ac.ch4_co2_per_funit
         result.loc[:self.ac.report_start_year - 1] = 0.0
         result.loc[self.ac.report_end_year + 1:] = 0.0
         result.name = "ch4_tons_reduced"

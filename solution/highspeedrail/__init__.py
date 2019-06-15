@@ -77,7 +77,7 @@ scenarios = {
       soln_indirect_co2_per_iunit=12014.334253425719, 
       conv_indirect_co2_per_unit=25644.77424305321, 
       conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
+      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
 
       soln_energy_efficiency_factor=0.0, 
       soln_annual_energy_used=0.062211259271640215, conv_annual_energy_used=0.0, 
@@ -134,7 +134,7 @@ scenarios = {
       soln_indirect_co2_per_iunit=12014.334253425719, 
       conv_indirect_co2_per_unit=25644.77424305321, 
       conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
+      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
 
       soln_energy_efficiency_factor=0.0, 
       soln_annual_energy_used=0.062211259271640215, conv_annual_energy_used=0.0, 
@@ -190,7 +190,7 @@ scenarios = {
       soln_indirect_co2_per_iunit=12014.334253425719, 
       conv_indirect_co2_per_unit=25644.77424305321, 
       conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_twh=0.0, n2o_co2_per_twh=0.0, 
+      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
 
       soln_energy_efficiency_factor=0.0, 
       soln_annual_energy_used=0.062211259271640215, conv_annual_energy_used=0.0, 

@@ -173,12 +173,12 @@ class AdvancedControls:
     #   SolarPVUtil "Advanced Controls"!I185
     co2eq_conversion_source: str = None
 
-    # ch4_co2_per_twh: CO2-equivalent CH4 emitted per TWh, in tons.
+    # ch4_co2_per_funit: CO2-equivalent CH4 emitted per TWh, in tons.
     #   SolarPVUtil "Advanced Controls"!I174
-    # n2o_co2_per_twh: CO2-equivalent N2O emitted per TWh, in tons.
+    # n2o_co2_per_funit: CO2-equivalent N2O emitted per TWh, in tons.
     #   SolarPVUtil "Advanced Controls"!J174
-    ch4_co2_per_twh: float = None
-    n2o_co2_per_twh: float = None
+    ch4_co2_per_funit: float = None
+    n2o_co2_per_funit: float = None
 
     # soln_indirect_co2_per_iunit: CO2-equivalent indirect emissions per
     #   iunit, in tons.  SolarPVUtil "Advanced Controls"!G174
@@ -522,10 +522,10 @@ class AdvancedControls:
                 self.value_or_zero(self.conv_emissions_per_funit))
         object.__setattr__(self, 'soln_emissions_per_funit',
                 self.value_or_zero(self.soln_emissions_per_funit))
-        object.__setattr__(self, 'ch4_co2_per_twh',
-                self.value_or_zero(self.ch4_co2_per_twh))
-        object.__setattr__(self, 'n2o_co2_per_twh',
-                self.value_or_zero(self.n2o_co2_per_twh))
+        object.__setattr__(self, 'ch4_co2_per_funit',
+                self.value_or_zero(self.ch4_co2_per_funit))
+        object.__setattr__(self, 'n2o_co2_per_funit',
+                self.value_or_zero(self.n2o_co2_per_funit))
 
 
         object.__setattr__(self, 'soln_ref_adoption_basis', translate_adoption_bases.get(
