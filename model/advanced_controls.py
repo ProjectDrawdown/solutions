@@ -52,128 +52,223 @@ class AdvancedControls:
     jsfile: str = None
 
     # pds_2014_cost: US$2014 cost to acquire + install, per implementation
-    #   unit (ex: kW for energy scenarios), for the Project Drawdown
+    #   unit (ex: kW for energy scenarios), for the Project Drawdown Solution (PDS)
     #   Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
-    #   Solution (PDS).  SolarPVUtil "Advanced Controls"!B128
+    pds_2014_cost: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['SOLUTION First Cost per Implementation Unit'],
+        'subtitle': '(implementation/land units)',
+        'tooltip': ("SOLUTION First Cost per Implementation Unit\n\n"
+            "NOTE: This is the cost of acquisition and the cost of installation "
+            "(sometimes one and the same) or the cost of initiating a program/practice "
+            "(for solutions where there is no direct artifact to acquire and install) "
+            "per Implementation unit of the SOLUTION.\n\n"
+            "E.g. What is the cost to acquire and install rooftop solar PV?"),
+        'excelref': 'SolarPVUtil "Advanced Controls"!B128',
+        })
+
     # ref_2014_cost: US$2014 cost to acquire + install, per implementation
     #   unit, for the reference technology.
     #   Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
-    #   SolarPVUtil "Advanced Controls"!B128 (same as PDS)
-    # conv_2014_cost: US$2014 cost to acquire + install, per implementation
-    #   unit, for the conventional technology.
+    ref_2014_cost: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['SOLUTION First Cost per Implementation Unit'],
+        'subtitle': '(implementation/land units)',
+        'tooltip': ("SOLUTION First Cost per Implementation Unit\n\n"
+            "NOTE: This is the cost of acquisition and the cost of installation "
+            "(sometimes one and the same) or the cost of initiating a program/practice "
+            "(for solutions where there is no direct artifact to acquire and install) "
+            "per Implementation unit of the SOLUTION.\n\n"
+            "E.g. What is the cost to acquire and install rooftop solar PV?"),
+        'excelref': 'SolarPVUtil "Advanced Controls"!B128',
+        })
+
     #   Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
-    #   SolarPVUtil "Advanced Controls"!B95
-    pds_2014_cost: typing.Any = None
-    ref_2014_cost: typing.Any = None
-    conv_2014_cost: typing.Any = None
+    conv_2014_cost: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['CONVENTIONAL First Cost per Implementation Unit for replaced practices'],
+        'subtitle': '(implementation units)',
+        'tooltip': ("CONVENTIONAL First Cost per Implementation Unit for replaced "
+            "practices/technologies\n\n"
+            "NOTE: This is the cost of acquisition and the cost of installation "
+            "(sometimes one and the same) or the cost of initiating a program/practice "
+            "(for solutions where there is no direct artifact to acquire and install) "
+            "per Unit of Implementation of the CONVENTIONAL mix of practices (those "
+            "practices that do not include the technology in question.\n\n"
+            "E.g. What is the cost to purchase an internal combustion engine (ICE) "
+            "vehicle?"),
+        'excelref': 'SolarPVUtil "Advanced Controls"!B95',
+        })
 
-    # soln_first_cost_efficiency_rate: rate that the modelled solution improves /
-    #   lowers in cost per year. In calculations this is usually converted
-    #   to the learning rate, which is 1/efficiency_rate.
-    #   SolarPVUtil "Advanced Controls"!C128
-    # conv_first_cost_efficiency_rate: rate that the conventional technology
-    #   improves / lowers in cost each year. Efficiency rates for the
-    #   conventional technology are typically close to zero, these technologies
-    #   have already had many years of development and maturation.
-    #   In calculations this is usually converted to the learning rate,
-    #   which is 1/efficiency_rate.  SolarPVUtil "Advanced Controls"!C95
-    # soln_first_cost_below_conv: The solution first cost may decline
-    #   below that of the Conventional due to the learning rate chosen. This may
-    #   be acceptable in some cases for instance when the projections in the
-    #   literature indicate so. In other cases, it may not be likely for the
-    #   Solution to become cheaper than the Conventional.
-    #   SolarPVUtil "Advanced Controls"!C132
-    soln_first_cost_efficiency_rate: float = None
-    conv_first_cost_efficiency_rate: float = None
-    soln_first_cost_below_conv: bool = None
+    soln_first_cost_efficiency_rate: float = dataclasses.field(default=None, metadata={
+        'vma_titles': [],
+        'subtitle': '(Rates are usually Close to 0%)',
+        'tooltip': ("First Cost Learning Rate\n"
+            "NOTE: Learning curves (sometimes called experience curves) are used to analyze "
+            "a well-known and easily observed phenomena: humans become increasingly efficient "
+            "with experience. The first time a product is manufactured or a service provided, "
+            "costs are high, work is inefficient, quality is marginal, and time is wasted. "
+            "As experience is acquired, costs decline, efficiency and quality improve, "
+            "and waste is reduced.\n\n"
 
-    # soln_energy_efficiency_factor: Units of energy reduced per year per
-    #   functional unit installed.
-    #
-    #   FOR CLEAN RENEWABLE ENERGY SOLUTIONS: enter 0 (e.g. implementing solar PV
-    #   fully replaces existing fossil fuel-based generation, but does not reduce
-    #   the amount of energy generated)
-    #
-    #   FOR ENERGY EFFICIENCY SOLUTIONS: enter positive number representing total
-    #   energy reduced, 0 < X < 1 (e.g. HVAC efficiencies reduce the average annual
-    #   energy consumption of buildings, by square meters of floor space; they still
-    #   use the electric grid, but significantly less)
-    #
-    #   FOR SOLUTIONS THAT CONSUME MORE ENERGY THAN THE CONVENTIONAL TECHNOLOGY/PRACTICE:
-    #   Use the next input, Total Annual Energy Used SOLUTION (e.g. electric vehicles
-    #   use energy from the electric grid, whereas conventional vehicles use only fuel)
-    #   SolarPVUtil "Advanced Controls"!C159
-    soln_energy_efficiency_factor: float = None
+            "In many situations, this pattern of improvement follows a predictable pattern: "
+            'for every doubling of (or some multiple of) production of units, the "cost" of '
+            "production (measured in dollars, hours, or in terms of other inputs) declines "
+            "to some fraction of previous costs.\n\n"
 
-    # conv_annual_energy_used: for solutions that reduce electricity
-    #   consumption per functional unit, enter the average electricity used per
-    #   functional unit of the conventional technologies/practices.
-    #   SolarPVUtil "Advanced Controls"!B159
-    # soln_annual_energy_used: This refers to the units of average energy
-    #   used per year per functional unit installed.
-    #
-    #   This is an optional variable to be used in cases where a) the literature
-    #   reports the energy use of the solution rather than energy efficiency; or
-    #   b) the solution uses more electricity than the conventional
-    #   technologies/practices.
-    #
-    #   E.g. electric vehicles use energy from the electric grid, whereas
-    #   conventional vehicles use only fuel)
-    #   SolarPVUtil "Advanced Controls"!D159
-    conv_annual_energy_used: float = None
-    soln_annual_energy_used: float = None
+            "This learning rate will be applied to the technology in question for both the "
+            "Optimal and BusinessAsUsual scenario."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!C128',
+        })
 
-    # conv_fuel_consumed_per_funit: This refers to the unit (default is Liters)
-    #   of FUEL used per year per cumulative unit installed. The equation may need to
-    #   be edited if your energy savings depend on the marginal unit installed rather
-    #   than the cumulative units. SolarPVUtil "Advanced Controls"!F159
-    # soln_fuel_efficiency_factor: This refers to the % fuel reduced by the
-    #   SOLUTION relative to the CONVENTIONAL mix of technologies/practices. The
-    #   Percent reduction is assumed to apply to the Conventional Fuel Unit, if
-    #   different to the Solution Fuel Unit.
-    #
-    #   FOR REPLACEMENT SOLUTIONS: enter 1 (e.g. electric vehicles fully replace fuel
-    #   consumption with electricity use -- but be sure to add a negative value for
-    #   Annual Energy Reduced from Electric Grid Mix!)
-    #
-    #   FOR FUEL EFFICIENCY SOLUTIONS: enter positive number representing total fuel
-    #   reduced, 0 < X < 1  (e.g. hybrid-electric vehicles partially replace fuel
-    #   consumption with electricity use, it thus uses less fuel compared to conventional
-    #   vehicles)
-    #
-    #   FOR SOLUTIONS THAT CONSUME MORE FUEL THAN THE CONVENTIONAL TECHNOLOGY/PRACTICE:
-    #   enter negative number representing total additional fuel used, X < 0 (e.g. we
-    #   hope solutions do not actually consume more fuel than the conventional practice,
-    #   check with the senior research team if you run into this)
-    #   SolarPVUtil "Advanced Controls"!G159
-    conv_fuel_consumed_per_funit: float = None
-    soln_fuel_efficiency_factor: float = None
+    conv_first_cost_efficiency_rate: float = dataclasses.field(default=None, metadata={
+        'vma_titles': [],
+        'subtitle': '(Rates are usually Close to 0%)',
+        'tooltip': ("First Cost Learning Rate\n"
+            "NOTE: Learning curves (sometimes called experience curves) are used to analyze "
+            "a well-known and easily observed phenomena: humans become increasingly efficient "
+            "with experience. The first time a product is manufactured or a service provided, "
+            "costs are high, work is inefficient, quality is marginal, and time is wasted. "
+            "As experience is acquired, costs decline, efficiency and quality improve, and "
+            "waste is reduced.\n\n"
+
+            "In many situations, this pattern of improvement follows a predictable pattern: "
+            'for every doubling of (or some multiple of) production of units, the "cost" of '
+            "production (measured in dollars, hours, or in terms of other inputs) declines "
+            "to some fraction of previous costs. \n\n"
+
+            "This would be the learning rate or efficiency rate for the CONVENTIONAL mix of "
+            "practices. In many/most cases this will be 0% if the market is mature."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!C95',
+        })
+
+    soln_first_cost_below_conv: bool = dataclasses.field(default=None, metadata={
+        'vma_titles': [],
+        'subtitle': '',
+        'tooltip': ("Allow solution First Cost to go Below Conventional?\n",
+            "NOTE: The Solution First Cost may decline below that of the Conventional due to "
+            "the learning rate chosen. This may be acceptable in some cases for instance when "
+            "the projections in the literature indicate so. In other cases, it may not be "
+            "likely for the Solution to become cheaper than the Conventional."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!C132',
+
+        })
+
+    soln_energy_efficiency_factor: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Energy Efficiency Factor - SOLUTION'],
+        'subtitle': '',
+        'tooltip': ("Energy Efficiency Factor SOLUTION\n"
+            "soln_energy_efficiency_factor: Units of energy reduced per year per "
+            "functional unit installed.\n\n"
+
+            "FOR CLEAN RENEWABLE ENERGY SOLUTIONS: enter 0 (e.g. implementing solar PV "
+            "fully replaces existing fossil fuel-based generation, but does not reduce "
+            "the amount of energy generated)\n\n"
+
+            "FOR ENERGY EFFICIENCY SOLUTIONS: enter positive number representing total "
+            "energy reduced, 0 < X < 1 (e.g. HVAC efficiencies reduce the average annual "
+            "energy consumption of buildings, by square meters of floor space; they still "
+            "use the electric grid, but significantly less)\n\n"
+
+            "FOR SOLUTIONS THAT CONSUME MORE ENERGY THAN THE CONVENTIONAL TECHNOLOGY/PRACTICE: "
+            "Use the next input, Total Annual Energy Used SOLUTION (e.g. electric vehicles "
+            "use energy from the electric grid, whereas conventional vehicles use only fuel)"
+            ),
+        'excelref': 'SolarPVUtil "Advanced Controls"!C159',
+        })
+
+    conv_annual_energy_used: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Electricity Consumed per Functional Unit - CONVENTIONAL'],
+        'subtitle': '',
+        'tooltip': ("Average Electricty Used CONVENTIONAL\n"
+            "NOTE: for solutions that reduce electricity consumption per functional unit, "
+            "enter the average electricity used per functional unit of the conventional "
+            "technologies/practices."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!B159',
+        })
+
+    soln_annual_energy_used: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Total Energy Used per SOLUTION functional unit'],
+        'subtitle': '',
+        'tooltip': ("ALTERNATIVE APPROACH Annual Energy Used SOLUTION\n"
+            "This refers to the units of average energy used per year per functional unit "
+            "installed.\n\n"
+            "This is an optional variable to be used in cases where a) the literature "
+            "reports the energy use of the solution rather than energy efficiency; or "
+            "b) the solution uses more electricity than the conventional "
+            "technologies/practices.\n\n"
+            "E.g. electric vehicles use energy from the electric grid, whereas "
+            "conventional vehicles use only fuel"),
+        'excelref': 'SolarPVUtil "Advanced Controls"!D159',
+        })
+
+    conv_fuel_consumed_per_funit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Fuel Consumed per CONVENTIONAL Functional Unit'],
+        'subtitle': '',
+        'tooltip': ("Fuel Consumed per CONVENTIONAL Functional Unit\n"
+            "This refers to the unit (default is Liters) of FUEL used per year per "
+            "cumulative unit installed. The equation may need to be edited if your "
+            "energy savings depend on the marginal unit installed rather than the "
+            "cumulative units."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!F159',
+        })
+
+    soln_fuel_efficiency_factor: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Fuel Efficiency Factor - SOLUTION'],
+        'subtitle': '',
+        'tooltip': ("Fuel Efficiency Factor - SOLUTION\n"
+            "This refers to the % fuel reduced by the SOLUTION relative to the "
+            "CONVENTIONAL mix of technologies/practices. The Percent reduction is "
+            "assumed to apply to the Conventional Fuel Unit, if different to the "
+            "Solution Fuel Unit.\n\n"
+
+            "FOR REPLACEMENT SOLUTIONS: enter 1 (e.g. electric vehicles fully replace fuel "
+            "consumption with electricity use -- but be sure to add a negative value for "
+            "Annual Energy Reduced from Electric Grid Mix!)\n\n"
+
+            "FOR FUEL EFFICIENCY SOLUTIONS: enter positive number representing total fuel "
+            "reduced, 0 < X < 1  (e.g. hybrid-electric vehicles partially replace fuel "
+            "consumption with electricity use, it thus uses less fuel compared to conventional "
+            "vehicles)\n\n"
+
+            "FOR SOLUTIONS THAT CONSUME MORE FUEL THAN THE CONVENTIONAL TECHNOLOGY/PRACTICE: "
+            "enter negative number representing total additional fuel used, X < 0 (e.g. we "
+            "hope solutions do not actually consume more fuel than the conventional practice, "
+            "check with the senior research team if you run into this)"),
+        'excelref': 'SolarPVUtil "Advanced Controls"!G159',
+        })
 
     # conv_fuel_emissions_factor: direct fuel emissions per funit, conventional
     #   SolarPVUtil "Advanced Controls"!I159
+    conv_fuel_emissions_factor: float = None
+
     # soln_fuel_emissions_factor: direct fuel emissions per funit, solution
     #   SolarPVUtil "Advanced Controls"!I163
-    conv_fuel_emissions_factor: float = None
     soln_fuel_emissions_factor: float = None
 
-    # conv_emissions_per_funit: This represents the direct CO2-eq emissions
-    #   that result per functional unit that are not accounted for by use of the
-    #   electric grid or fuel consumption.
-    #   SolarPVUtil "Advanced Controls"!C174
-    # soln_emissions_per_funit: This represents the direct CO2-eq emissions
-    #   that result per functional unit that are not accounted for by use of the
-    #   electric grid or fuel consumption.
-    #   SolarPVUtil "Advanced Controls"!D174
-    conv_emissions_per_funit: float = None
-    soln_emissions_per_funit: float = None
+    conv_emissions_per_funit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Direct Emissions per CONVENTIONAL Functional Unit'],
+        'subtitle': '',
+        'tooltip': ("Direct Emissions per CONVENTIONAL Functional Unit\n"
+            "This represents the direct CO2-eq emissions that result per functional unit "
+            "that are not accounted for by use of the electric grid or fuel consumption."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!C174',
+        })
+
+    soln_emissions_per_funit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Direct Emissions per SOLUTION Functional Unit'],
+        'subtitle': '',
+        'tooltip': ("Direct Emissions per SOLUTION Functional Unit\n"
+            "This represents the direct CO2-eq emissions that result per functional unit "
+            "that are not accounted for by use of the electric grid or fuel consumption."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!D174',
+        })
 
     # ch4_is_co2eq: True if CH4 emissions measurement is in terms of CO2
     #   equivalent, False if measurement is in units of CH4 mass.
     #   derived from SolarPVUtil "Advanced Controls"!I184
+    ch4_is_co2eq: bool = None
+
     # n2o_is_co2eq: True if N2O emissions measurement is in terms of CO2
     #   equivalent, False if measurement is in units of N2O mass.
     #   derived from SolarPVUtil "Advanced Controls"!J184
-    ch4_is_co2eq: bool = None
     n2o_is_co2eq: bool = None
 
     # co2eq_conversion_source: One of the conversion_source names
@@ -181,96 +276,187 @@ class AdvancedControls:
     #   SolarPVUtil "Advanced Controls"!I185
     co2eq_conversion_source: str = None
 
-    # ch4_co2_per_funit: CO2-equivalent CH4 emitted per functional unit, in tons.
-    #   SolarPVUtil "Advanced Controls"!I174
-    # n2o_co2_per_funit: CO2-equivalent N2O emitted per functional unit, in tons.
-    #   SolarPVUtil "Advanced Controls"!J174
-    ch4_co2_per_funit: float = None
-    n2o_co2_per_funit: float = None
+    ch4_co2_per_funit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['CH4-CO2eq Tons Reduced'],
+        'subtitle': '',
+        'tooltip': ("CH4-CO2eq Tons Reduced\n"
+            "CO2-equivalent CH4 emitted per functional unit, in tons."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!I174',
+        })
 
-    # soln_indirect_co2_per_iunit: CO2-equivalent indirect emissions per
-    #   iunit, in tons.  SolarPVUtil "Advanced Controls"!G174
-    # conv_indirect_co2_per_unit: CO2-equivalent indirect emissions per
-    #   unit (func or impl depending on conv_indirect_co2_in_iunits).
-    #   SolarPVUtil "Advanced Controls"!F174
-    soln_indirect_co2_per_iunit: float = None
-    conv_indirect_co2_per_unit: float = None
+    n2o_co2_per_funit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['N2O-CO2eq Tons Reduced'],
+        'subtitle': '',
+        'tooltip': ("N2O-CO2eq Tons Reduced\n"
+            "CO2-equivalent N2O emitted per functional unit, in tons."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!J174',
+        })
+
+    soln_indirect_co2_per_iunit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Indirect CO2 Emissions per SOLUTION Unit'],
+        'subtitle': '',
+        'tooltip': ("Indirect CO2 Emissions per SOLUTION Implementation Unit\n"
+            "CO2-equivalent indirect emissions per iunit, in tons."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!G174',
+        })
+
+    conv_indirect_co2_per_unit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Indirect CO2 Emissions per CONVENTIONAL Unit'],
+        'subtitle': '',
+        'tooltip': ("Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit\n"
+            "NOTE: this represents the indirect CO2 emissions that result per implementation "
+            "unit installed. The production, distribution, and installation of "
+            "technologies/practices often generate their own emissions that are not associated "
+            "with their function.\n\n"
+
+            "E.g. the production of ICE vehicles is an energy- and resource-intensive endeavor "
+            "that generates indirect emissions that must be accounted for.\n"),
+        'excelref': 'SolarPVUtil "Advanced Controls"!F174',
+        })
 
     # conv_indirect_co2_is_iunits: whether conv_indirect_co2_per_unit is
     #   iunits (True) or funits (False).  SolarPVUtil "Advanced Controls"!F184
     conv_indirect_co2_is_iunits: bool = None
 
-    # soln_lifetime_capacity: This is the average expected number of
-    #   functional units generated by the SOLUTION throughout their lifetime
-    #   before replacement is required.  If no replacement time is discovered or
-    #   applicable the fellow will default to 100 years.
-    #
-    #   E.g. an electric vehicle will have an average number of passenger kilometers
-    #   it can travel until it can no longer be used and a new vehicle is required.
-    #   Another example would be an efficient HVAC system, which can only service a
-    #   certain amount of floor space over a period of time before it will require
-    #   replacement.  SolarPVUtil "Advanced Controls"!E128
-    # soln_avg_annual_use: Average Annual Use is the average annual use of
-    #   the technology/practice, in functional units per implementation unit. This
-    #   will likely differ significantly based on location, be sure to note which
-    #   region the data is coming from. If data varies substantially by region, a
-    #   weighted average may need to be used.
-    #
-    #   E.g. the average annual number of passenger kilometers (pkm) traveled per
-    #   electric vehicle.  SolarPVUtil "Advanced Controls"!F128
-    soln_lifetime_capacity: float = None
-    soln_avg_annual_use: float = None
+    soln_lifetime_capacity: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Lifetime Capacity - SOLUTION'],
+        'subtitle': '(use until replacement is required)',
+        'tooltip': ("Lifetime Capacity - SOLUTION\n\n"
+            "NOTE: This is the average expected number of functional units generated by the "
+            "SOLUTION throughout their lifetime before replacement is required. If no replacement "
+            "time is discovered or applicable the fellow will default to 100 years.\n\n"
 
-    # conv_lifetime_capacity: as soln_lifetime_capacity but for the conventional
-    #   technology.  SolarPVUtil "Advanced Controls"!E95
-    # conv_avg_annual_use: as soln_avg_annual_use but for the conventional
-    #   technology.  SolarPVUtil "Advanced Controls"!F95
-    conv_lifetime_capacity: float = None
-    conv_avg_annual_use: float = None
+            "E.g. an electric vehicle will have an average number of passenger kilometers it "
+            "can travel until it can no longer be used and a new vehicle is required. Another "
+            "example would be an efficient HVAC system, which can only service a certain amount "
+            "of floor space over a period of time before it will require replacement."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!E128',
+        })
+
+    soln_avg_annual_use: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Average Annual Use - SOLUTION'],
+        'subtitle': '(annual use)',
+        'tooltip': ("Average Annual Use - SOLUTION\n\n"
+            "NOTE:  Average Annual Use is the average annual use of the technology/practice, "
+            "in functional units per implementation unit. This will likely differ significantly "
+            "based on location, be sure to note which region the data is coming from. If data "
+            "varies substantially by region, a weighted average may need to be used.\n\n"
+
+            "E.g. the average annual number of passenger kilometers (pkm) traveled per "
+            "electric vehicle."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!F128',
+        })
+
+    conv_lifetime_capacity: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Lifetime Capacity - CONVENTIONAL'],
+        'subtitle': '(use until replacement is required)',
+        'tooltip': ("Lifetime Capacity - CONVENTIONAL\n\n"
+            "NOTE: This is the average expected number of functional units "
+            "generated by the CONVENTIONAL mix of technologies/practices "
+            "throughout their lifetime before replacement is required.  "
+            "If no replacement time is discovered or applicable, please "
+            "use 100 years.\n\n"
+            "E.g. a vehicle will have an average number of passenger kilometers "
+            "it can travel until it can no longer be used and a new vehicle is "
+            "required. Another example would be an HVAC system, which can only "
+            "service a certain amount of floor space over a period of time before "
+            "it will require replacement."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!E95',
+        })
+
+    conv_avg_annual_use: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Average Annual Use - CONVENTIONAL'],
+        'subtitle': '(annual use)',
+        'tooltip': ("Average Annual Use - CONVENTIONAL\n\n"
+            "NOTE:  Average Annual Use is the average annual use of the technology/practice, "
+            "in functional units per implementation unit. This will likely differ significantly "
+            "based on location, be sure to note which region the data is coming from. If data "
+            "varies substantially by region, a weighted average may need to be used.\n\n"
+
+            "E.g. the average annual number of passenger kilometers (pkm) traveled per "
+            "conventional vehicle.\n"),
+        'excelref': 'SolarPVUtil "Advanced Controls"!F95',
+        })
 
     # report_start_year: first year of results to report (typically 2020).
     #   SolarPVUtil "Advanced Controls"!H4
+    report_start_year: int = 2020
+
     # report_end_year: last year of results to report (typically 2050).
     #   SolarPVUtil "Advanced Controls"!I4
-    report_start_year: int = 2020
     report_end_year: int = 2050
 
-    # soln_var_oper_cost_per_funit: This is the annual operating cost per functional
-    #   unit, derived from the SOLUTION.  In most cases this will be expressed as a
-    #   cost per 'some unit of energy'.
-    #
-    #   E.g., $1 per Kwh or $1,000,000,000 per TWh. In terms of transportation, this
-    #   can be considered the weighted average price of fuel per passenger kilometer.
-    #   SolarPVUtil "Advanced Controls"!H128
-    # soln_fixed_oper_cost_per_iunit: This is the annual operating cost per
-    #   implementation unit, derived from the SOLUTION.  In most cases this will be
-    #   expressed as a cost per 'some unit of installation size'
-    #
-    #   E.g., $10,000 per kw. In terms of transportation, this can be considered the
-    #   total insurance, and maintenance cost per car.
-    #
-    #   Purchase costs can be amortized here or included as a first cost, but not both.
-    # 
-    #   Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
-    #   SolarPVUtil "Advanced Controls"!I128
-    #
-    #   For LAND solutions this is simply the operating cost per funit
-    #   (funits == iunits == land units). The LAND model has no variable operating costs.
-    #   Silvopasture "Advanced Controls"!C92
+    soln_var_oper_cost_per_funit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['SOLUTION Variable Operating Cost (VOM) per Functional Unit'],
+        'subtitle': '(functional units)',
+        'tooltip': ("SOLUTION Variable Operating Cost (VOM)\n"
+            "NOTE: This is the annual operating cost per functional unit, derived from the "
+            "SOLUTION. In most cases this will be expressed as a cost per 'some unit of "
+            "energy'.\n\n"
+
+            "E.g., $1 per Kwh or $1,000,000,000 per TWh. In terms of transportation, this "
+            "can be considered the weighted average price of fuel per passenger kilometer."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!H128',
+        })
+
+    soln_fixed_oper_cost_per_iunit: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['SOLUTION Operating Cost per Functional Unit per Annum',
+            'SOLUTION Fixed Operating Cost (FOM)'],
+        'subtitle': '(per ha per annum)',
+        'tooltip': ("SOLUTION Operating Cost per Functional Unit per Annum\n\n"
+            "NOTE: This is the Operating Cost per functional unit, derived from the "
+            "SOLUTION. In most cases this will be expressed as a cost per 'hectare of "
+            "land'.\n\n"
+            "This annualized value should capture both the variable costs for maintaining "
+            "the SOLUTION practice as well as the fixed costs. The value should reflect "
+            "the average over the reasonable lifetime of the practice."),
+        # That tooltip is phrased for land solutions, one for RRS would be:
+        'tooltipFIXME': ("SOLUTION Operating Cost per Functional Unit per Annum\n\n"
+            "NOTE: This is the annual operating cost per implementation unit, derived from "
+            "the SOLUTION.  In most cases this will be expressed as a cost per 'some unit of "
+            "installation size' E.g., $10,000 per kw. In terms of transportation, this can be "
+            "considered the total insurance, and maintenance cost per car.\n\n"
+            
+            "Purchase costs can be amortized here or included as a first cost, but not both."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!I128; Silvopasture "Advanced Controls"!C92',
+        })
+
     # soln_fuel_cost_per_funit: Fuel/consumable cost per functional unit.
     #   SolarPVUtil "Advanced Controls"!K128
-    soln_var_oper_cost_per_funit: float = None
-    soln_fixed_oper_cost_per_iunit: typing.Any = None
     soln_fuel_cost_per_funit: float = None
 
-    # conv_var_oper_cost_per_funit: as soln_var_oper_cost_per_funit.
-    #   SolarPVUtil "Advanced Controls"!H95
+    conv_var_oper_cost_per_funit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit'],
+        'subtitle': '(functional units)',
+        'tooltip': ("CONVENTIONAL Variable Operating Cost (VOM)\n\n"
+            "NOTE: This is the annual operating cost per functional unit, derived from the "
+            "CONVENTIONAL mix of technologies. In most cases this will be expressed as a "
+            "cost per 'some unit of energy'.\n\n"
+
+            "E.g., $1 per Kwh or $1,000,000,000 per TWh. In terms of transportation, this "
+            "can be considered the weighted average price of fuel per passenger kilometer."),
+        'excelref': 'SolarPVUtil "Advanced Controls"!H95',
+        })
+
     # conv_fixed_oper_cost_per_iunit: as soln_fixed_oper_cost_per_funit.
     #   SolarPVUtil "Advanced Controls"!I95 / Silvopasture "Advanced Controls"!C77
+    conv_fixed_oper_cost_per_iunit: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['CONVENTIONAL Operating Cost per Functional Unit per Annum',
+            'CONVENTIONAL Fixed Operating Cost (FOM)'],
+        'subtitle': '(per ha per annum)',
+        'tooltip': ("CONVENTIONAL Operating Cost per Functional Unit per Annum\n\n"
+            "NOTE: This is the Operating Cost per functional unit, derived "
+            "from the CONVENTIONAL mix of technologies/practices.  In most "
+            "cases this will be expressed as a cost per 'hectare of land'.\n\n"
+            "This annualized value should capture the variable costs for "
+            "maintaining the CONVENTIONAL practice, as well as  fixed costs. "
+            "The value should reflect the average over the reasonable lifetime "
+            "of the practice.\n\n"),
+        'excelref': 'SolarPVUtil "Advanced Controls"!I95; Silvopasture "Advanced Controls"!C77',
+        })
+
     # conv_fuel_cost_per_funit: as soln_fuel_cost_per_funit.
     #   SolarPVUtil "Advanced Controls"!K95
-    conv_var_oper_cost_per_funit: float = None
-    conv_fixed_oper_cost_per_iunit: typing.Any = None
     conv_fuel_cost_per_funit: float = None
 
     # npv_discount_rate: discount rate for Net Present Value calculations.
@@ -357,20 +543,46 @@ class AdvancedControls:
     pds_adoption_s_curve_imitation: typing.List[tuple] = None
 
     # LAND only
-    # tco2eq_reduced_per_land_unit: Aggregate emissions reduced per land unit
-    #    ForestProtection "Advanced Controls"!B138 (Land models)
+    tco2eq_reduced_per_land_unit: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['t CO2-eq (Aggregate emissions) Reduced per Land Unit'],
+        'subtitle': '(t CO2-eq / ha)',
+        'tooltip': ("t CO2-eq (Aggregate emissions) Reduced per Land Unit\n"
+            "NOTE: This is the CO2-equivalent reduced per land unit (million Hectare)."),
+        'excelref': 'ForestProtection "Advanced Controls"!B138',
+        })
+
     # tco2eq_rplu_rate: whether tco2eq_reduced_per_land_unit is 'One-time' or 'Annual'
     #    ForestProtection "Advanced Controls"!B148 (Land models)
-    # [similar vars for co2, n2o_co2 and ch4_co2
-    #    ForestProtection "Advanced Controls"!C148:E148 (Land models)]
-    tco2eq_reduced_per_land_unit: typing.Any = None
     tco2eq_rplu_rate: str = None
-    tco2_reduced_per_land_unit: typing.Any = None
     tco2_rplu_rate: str = None
-    tn2o_co2_reduced_per_land_unit: typing.Any = None
     tn2o_co2_rplu_rate: str = None
-    tch4_co2_reduced_per_land_unit: typing.Any = None
     tch4_co2_rplu_rate: str = None
+
+    tco2_reduced_per_land_unit: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['t CO2 Reduced per Land Unit'],
+        'subtitle': '(t CO2 / ha)',
+        'tooltip': ("t CO2 Reduced per Land Unit\n"
+            "NOTE: This is the CO2 reduced per land unit (million Hectare)."),
+        'excelref': 'ForestProtection "Advanced Controls"!C148',
+        })
+
+    tn2o_co2_reduced_per_land_unit: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['t N2O-CO2-eq Reduced per Land Unit'],
+        'subtitle': '(t N2O-CO2-eq / ha)',
+        'tooltip': ("t N2O-CO2-eq Reduced per Land Unit\n"
+            "NOTE: This is the N2O reduced per land unit (million Hectare) but converted "
+            "to CO2-eq."),
+        'excelref': 'ForestProtection "Advanced Controls"!D148',
+        })
+
+    tch4_co2_reduced_per_land_unit: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['t CH4-CO2-eq Reduced per Land Unit'],
+        'subtitle': '',
+        'tooltip': ("t CH4-CO2-eq Reduced per Land Unit\n"
+            "NOTE: This is the CH4 reduced per land unit (million Hectare) but "
+            "converted to CO2-eq."),
+        'excelref': 'ForestProtection "Advanced Controls"!E148',
+        })
 
     # emissions_use_agg_co2eq: Use Aggregate CO2-eq instead of Individual GHG for direct emissions
     #  ForestProtection "Advanced Controls"!C155 (Land models)
@@ -379,18 +591,42 @@ class AdvancedControls:
     # seq_rate_global: carbon sequestration rate for All Land or All of Special Land.
     #  Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
     #  "Advanced Controls"!B173 (Land models)
-    seq_rate_global: typing.Any = None
+    seq_rate_global: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Sequestration Rates'],
+        'subtitle': '(t C / ha /year)',
+        'tooltip': ("Sequestration Rate for All Land or All of Special Land\n"
+            "NOTE: Once a  Rate is entered here, it would be used. If rates are available for "
+            "each Thermal-Humidity Regime, leave this blank."),
+        'ecelref': '"Advanced Controls"!B173 (Land models)',
+        })
 
     #seq_rate_per_regime (dict of float): carbon sequestration rate for each thermal-moisture
     #  regime. "Advanced Controls"!C173:G173 (Land models)
     seq_rate_per_regime: typing.Dict = None
 
-    # degradation_rate: % annually
-    #    ForestProtection "Advanced Controls"!B187 (Land models)
-    # disturbance_rate: disturbance rate
-    #    TropicalForests. "Advanced Controls"!I173 (Land models)
-    degradation_rate: typing.Any = None
-    disturbance_rate: typing.Any = None
+    degradation_rate: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Growth Rate of Land Degradation'],
+        'subtitle': '',
+        'tooltip': ("Growth Rate of Land Degradation\n"
+            'NOTE: This is the rate of degradation of unprotected land (or "At Risk" land '
+            "that is neither protected nor already degraded. This number should exclude the "
+            "Disturbance Rate if that is also entered."),
+        'excelref': 'ForestProtection "Advanced Controls"!B187',
+        })
+
+    disturbance_rate: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Disturbance Rate'],
+        'subtitle': '',
+        'tooltip': ("Disturbance Rate\n"
+            "NOTE: This is the annual percent of some output that fails for some reason "
+            "(possibly due to weather, human activities, etc). It applies ONLY to land "
+            "adopted/protected with the SOLUTION, and affects degraded land, direct emissions, "
+            "sequestration and  yield. The SOLUTION adoption remains unaffected.\n\n"
+
+            "Ensure that the Growth Rate of Land degradation does not already account for "
+            "the Disturbance Rate if it is entered here."),
+        'excelref': 'TropicalForests. "Advanced Controls"!I173',
+        })
 
     # global_multi_for_regrowth: Global multiplier for regrowth
     #   ForestProtection "Advanced Controls"!E187 (Land models)
@@ -406,11 +642,22 @@ class AdvancedControls:
     # yield_from_conv_practice: conventional yield in DM tons fodder/ha/year.
     #   Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
     #   "Advanced Controls"!G77 (Land models)
+    yield_from_conv_practice: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Yield from CONVENTIONAL Practice'],
+        'subtitle': '(kg / ha /yr)',
+        'tooltip': ("Yield  from CONVENTIONAL Practice"),
+        'excelref': '"Advanced Controls"!G77 (Land models)',
+        })
+
     # yield_gain_from_conv_to_soln: yield % increase from conventional to solution.
     #   Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
     #   "Advanced Controls"!G92 (Land models)
-    yield_from_conv_practice: typing.Any = None
-    yield_gain_from_conv_to_soln: typing.Any = None
+    yield_gain_from_conv_to_soln: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Yield Gain (% Increase from CONVENTIONAL to SOLUTION)'],
+        'subtitle': '%',
+        'tooltip': ("Yield Gain (% Increase from CONVENTIONAL to SOLUTION)"),
+        'excelref': '"Advanced Controls"!G92 (Land models)',
+        })
 
     # use_custom_tla: whether to use custom TLA data instead of Drawdown land allocation
     #   "Advanced Controls"!E54 (Land models)
@@ -420,14 +667,22 @@ class AdvancedControls:
     #   Afforestation "Advanced Controls"!B187
     harvest_frequency: float = None
 
-    # carbon_not_emitted_after_harvesting: Sequestered Carbon NOT Emitted after Cyclical
-    #   Harvesting/Clearing    Afforestation "Advanced Controls"!H187
-    carbon_not_emitted_after_harvesting: typing.Any = None
+    carbon_not_emitted_after_harvesting: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing'],
+        'subtitle': '(t C/ha)',
+        'tooltip': ("Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing\n"),
+        'excelref': 'Afforestation "Advanced Controls"!H173',
+        })
 
     # avoided_deforest_with_intensification: Factor for avoiding deforestation by more
     #   intensively using the land. Women Smallholders "Advanced Controls"!E205
-    avoided_deforest_with_intensification: typing.Any = None
-  
+    avoided_deforest_with_intensification: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['Avoided Deforested Area With Increase in Agricultural Intensification'],
+        'subtitle': '',
+        'tooltip': ("Avoided Deforested Area With Increase in Agricultural Intensification"),
+        'excelref': 'Women Smallholders "Advanced Controls"!E205',
+        })
+
     # delay_protection_1yr: Delay Impact of Protection by 1 Year? (Leakage)
     #   ForestProtection "Advanced Controls"!B200 (land models)
     # delay_regrowth_1yr: Delay Regrowth of Degraded Land by 1 Year?
@@ -444,12 +699,20 @@ class AdvancedControls:
     land_annual_emissons_lifetime: bool = None
 
     # MISSING DESCRIPTION
-    tC_storage_in_protected_land_type: typing.Any = None
+    tC_storage_in_protected_land_type: typing.Any = dataclasses.field(default=None, metadata={
+        'vma_titles': ['t C storage in Protected Landtype'],
+        'subtitle': '',
+        'tooltip': ("t C storage in Protected Landtype"),
+        'excelref': '',
+        })
 
     def __post_init__(self):
-        for param, vma_titles in param_to_vma_name:
-            val = getattr(self, param)
-            object.__setattr__(self, param, self._substitute_vma(val=val, vma_titles=vma_titles))
+        for field in dataclasses.fields(self):
+            vma_titles = field.metadata.get('vma_titles', [])
+            if vma_titles:
+                val = getattr(self, field.name)
+                object.__setattr__(self, field.name,
+                        self._substitute_vma(val=val, vma_titles=vma_titles))
 
         if isinstance(self.solution_category, str):
             object.__setattr__(self, 'solution_category',
@@ -714,61 +977,15 @@ def load_scenarios_from_json(directory, vmas):
         result[a.name] = a
     return result
 
-
-param_to_vma_name = [
-    ('pds_2014_cost', ['SOLUTION First Cost per Implementation Unit']),
-    ('ref_2014_cost', ['SOLUTION First Cost per Implementation Unit']),
-    ('conv_2014_cost', ['CONVENTIONAL First Cost per Implementation Unit for replaced practices']),
-    ('conv_lifetime_capacity', ['Lifetime Capacity - CONVENTIONAL']),
-    ('soln_lifetime_capacity', ['Lifetime Capacity - SOLUTION']),
-    ('conv_avg_annual_use', ['Average Annual Use - CONVENTIONAL']),
-    ('soln_avg_annual_use', ['Average Annual Use - SOLUTION']),
-    ('soln_fixed_oper_cost_per_iunit', ['SOLUTION Operating Cost per Functional Unit per Annum',
-        'SOLUTION Fixed Operating Cost (FOM)']),
-    ('conv_fixed_oper_cost_per_iunit', ['CONVENTIONAL Operating Cost per Functional Unit per Annum',
-        'CONVENTIONAL Fixed Operating Cost (FOM)']),
-    ('conv_var_oper_cost_per_funit',
-        ['CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit']),
-    ('soln_var_oper_cost_per_funit',
-        ['SOLUTION Variable Operating Cost (VOM) per Functional Unit']),
-    ('conv_annual_energy_used', ['Electricity Consumed per Functional Unit - CONVENTIONAL']),
-    ('soln_annual_energy_used', ['Total Energy Used per SOLUTION functional unit']),
-    ('soln_energy_efficiency_factor', ['Energy Efficiency Factor - SOLUTION']),
-    ('conv_fuel_consumed_per_funit', ['Fuel Consumed per CONVENTIONAL Functional Unit']),
-    ('soln_fuel_efficiency_factor', ['Fuel Efficiency Factor - SOLUTION']),
-    ('conv_emissions_per_funit', ['Direct Emissions per CONVENTIONAL Functional Unit']),
-    ('soln_emissions_per_funit', ['Direct Emissions per SOLUTION Functional Unit']),
-    ('soln_indirect_co2_per_iunit', ['Indirect CO2 Emissions per SOLUTION Unit']),
-    ('conv_indirect_co2_per_unit', ['Indirect CO2 Emissions per CONVENTIONAL Unit']),
-    ('ch4_co2_per_funit', ['CH4-CO2eq Tons Reduced']),
-    ('n2o_co2_per_funit', ['N2O-CO2eq Tons Reduced']),
-
-    # primarily LAND variables
-    ('tco2eq_reduced_per_land_unit', ['t CO2-eq (Aggregate emissions) Reduced per Land Unit']),
-    ('tco2_reduced_per_land_unit', ['t CO2 Reduced per Land Unit']),
-    ('tn2o_co2_reduced_per_land_unit', ['t N2O-CO2-eq Reduced per Land Unit']),
-    ('tch4_co2_reduced_per_land_unit', ['t CH4-CO2-eq Reduced per Land Unit']),
-    ('seq_rate_global', ['Sequestration Rates']),
-    ('degradation_rate', ['Growth Rate of Land Degradation']),
-    ('disturbance_rate', ['Disturbance Rate']),
-    ('yield_from_conv_practice', ['Yield from CONVENTIONAL Practice']),
-    ('yield_gain_from_conv_to_soln', ['Yield Gain (% Increase from CONVENTIONAL to SOLUTION)']),
-    ('carbon_not_emitted_after_harvesting',
-        ['Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing']),
-    ('avoided_deforest_with_intensification',
-        ['Avoided Deforested Area With Increase in Agricultural Intensification']),
-    ('tC_storage_in_protected_land_type', ['t C storage in Protected Landtype']),
-]
-
 def get_vma_for_param(param):
-    for param_name, vma_list in param_to_vma_name:
-        if param_name == param:
-            return vma_list
+    for field in dataclasses.fields(AdvancedControls):
+        if field.name == param:
+            return field.metadata.get('vma_titles', [])
     return []
 
 def get_param_for_vma_name(name):
-    for param_name, vma_list in param_to_vma_name:
-        for vma_name in vma_list:
+    for field in dataclasses.fields(AdvancedControls):
+        for vma_name in field.metadata.get('vma_titles', []):
             if name == vma_name:
-                return param_name
+                return field.name
     return None
