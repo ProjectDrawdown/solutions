@@ -29,242 +29,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
+units = {
+  "implementation unit": None,
+  "functional unit": "Mha",
+  "first cost": "US$B",
+  "operating cost": "US$B",
+}
+
+name = 'Forest Protection'
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
-scenarios = {
-  'PDS-87p2050-Plausible-PDScustom-avg-Bookedition1': advanced_controls.AdvancedControls(
-      # The current adoption is based on the FAO 2015 estimates for global area under
-      # forest protection. The future adoption scenarios are based on the national and
-      # international commitments for forest protection. Considering a higher rate of
-      # forest degradation and reduced area of intact forest, adoption scenarios are
-      # build to maximize the area under forest protection. Thus, protection of 80%-100%
-      # of the intact forest were assumed in different custom adoption scenarios with
-      # some scenarios assuming an early adoption 75-90% by 2030. This scenario derives
-      # the result from the "average of all" PDS custom adoption scenarios. The results
-      # are similar to that of the Book edition 1, so no new scenario was created for
-      # the latter. This model upgrade involves, changes in the TLA, current adoption,
-      # and creation of new custom adoption scenarios.
+scenarios = advanced_controls.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
-      # general
-      solution_category=SOLUTION_CATEGORY.LAND, 
-      vmas=VMAs, 
-      report_start_year=2020, report_end_year=2050, 
-
-      # TLA
-      use_custom_tla=False, 
-
-      # adoption
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Average of All Custom Scenarios', 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=0.0, ref_2014_cost=0.0, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      npv_discount_rate=0.1, 
-      soln_expected_lifetime=0.0, 
-      conv_expected_lifetime=0.0, 
-      yield_from_conv_practice=0.0, 
-      yield_gain_from_conv_to_soln=0.0, 
-
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-
-      tco2eq_reduced_per_land_unit={'value': 313.791126867655, 'statistic': 'mean'}, 
-      tco2eq_rplu_rate='One-time', 
-      tco2_reduced_per_land_unit=0.0, 
-      tco2_rplu_rate='One-time', 
-      tn2o_co2_reduced_per_land_unit=0.0, 
-      tn2o_co2_rplu_rate='One-time', 
-      tch4_co2_reduced_per_land_unit=0.0, 
-      tch4_co2_rplu_rate='One-time', 
-      land_annual_emissons_lifetime=30.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      emissions_use_agg_co2eq=True, 
-
-      # sequestration
-      seq_rate_global={'value': 0.596666666666667, 'statistic': 'mean'}, 
-      tC_storage_in_protected_land_type={'value': 177.3, 'statistic': 'mean'}, 
-      global_multi_for_regrowth=1.0, 
-      degradation_rate={'value': 0.003074, 'statistic': 'mean'}, 
-      disturbance_rate={'value': 1.57962432447763e-05, 'statistic': 'mean'}, 
-
-      delay_protection_1yr=True, 
-      delay_regrowth_1yr=True, 
-      include_unprotected_land_in_regrowth_calcs=False, 
-
-    ),
-  'PDS-89p2050-Drawdown-PDScustom-aggmax-Bookedition1': advanced_controls.AdvancedControls(
-      # The current adoption is based on the FAO 2015 estimates for global area under
-      # forest protection. The future adoption scenarios are based on the national and
-      # international commitments for forest protection. Considering a higher rate of
-      # forest degradation and reduced area of intact forest, adoption scenarios are
-      # build to maximize the area under forest protection. Thus, protection of 80%-100%
-      # of the intact forest were assumed in different custom adoption scenarios with
-      # some scenarios assuming an early adoption 75-90% by 2030. This scenario presents
-      # the result of the "Aggressive-Max, High early growth 2" PDS custom adoption
-      # scenario, with standard deviation input set to "1.5" in the Custom PDS Adoption
-      # sheet. The results are marginally lesser than the Book edition 1, so no new
-      # scenario was created for the latter. This model upgrade involves, changes in the
-      # TLA, current adoption, and creation of new custom adoption scenarios.
-
-      # general
-      solution_category=SOLUTION_CATEGORY.LAND, 
-      vmas=VMAs, 
-      report_start_year=2020, report_end_year=2050, 
-
-      # TLA
-      use_custom_tla=False, 
-
-      # adoption
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Aggressive-Max, high early growth2', 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=0.0, ref_2014_cost=0.0, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      npv_discount_rate=0.1, 
-      soln_expected_lifetime=0.0, 
-      conv_expected_lifetime=0.0, 
-      yield_from_conv_practice=0.0, 
-      yield_gain_from_conv_to_soln=0.0, 
-
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-
-      tco2eq_reduced_per_land_unit={'value': 313.791126867655, 'statistic': 'mean'}, 
-      tco2eq_rplu_rate='One-time', 
-      tco2_reduced_per_land_unit=0.0, 
-      tco2_rplu_rate='One-time', 
-      tn2o_co2_reduced_per_land_unit=0.0, 
-      tn2o_co2_rplu_rate='One-time', 
-      tch4_co2_reduced_per_land_unit=0.0, 
-      tch4_co2_rplu_rate='One-time', 
-      land_annual_emissons_lifetime=30.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      emissions_use_agg_co2eq=True, 
-
-      # sequestration
-      seq_rate_global={'value': 0.596666666666667, 'statistic': 'mean'}, 
-      tC_storage_in_protected_land_type={'value': 177.3, 'statistic': 'mean'}, 
-      global_multi_for_regrowth=1.0, 
-      degradation_rate={'value': 0.003074, 'statistic': 'mean'}, 
-      disturbance_rate={'value': 1.57962432447763e-05, 'statistic': 'mean'}, 
-
-      delay_protection_1yr=True, 
-      delay_regrowth_1yr=True, 
-      include_unprotected_land_in_regrowth_calcs=False, 
-
-    ),
-  'PDS-92p2050-Optimum-PDScustom-high-Bookedition1': advanced_controls.AdvancedControls(
-      # The current adoption is based on the FAO 2015 estimates for global area under
-      # forest protection. The future adoption scenarios are based on the national and
-      # international commitments for forest protection. Considering a higher rate of
-      # forest degradation and reduced area of intact forest, adoption scenarios are
-      # build to maximize the area under forest protection. Thus, protection of 80%-100%
-      # of the intact forest were assumed in different custom adoption scenarios with
-      # some scenarios assuming an early adoption 75-90% by 2030. This scenario derives
-      # the result from the "high of all" PDS custom adoption scenarios, with standard
-      # deviation input set to "1.5" in the Custom PDS Adoption sheet. The results are
-      # marginally higher than the Book edition 1, so no new scenario was created for
-      # the latter. This model upgrade involves, changes in the TLA, current adoption,
-      # and creation of new custom adoption scenarios.
-
-      # general
-      solution_category=SOLUTION_CATEGORY.LAND, 
-      vmas=VMAs, 
-      report_start_year=2020, report_end_year=2050, 
-
-      # TLA
-      use_custom_tla=False, 
-
-      # adoption
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='High of All Custom Scenarios', 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=0.0, ref_2014_cost=0.0, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      npv_discount_rate=0.1, 
-      soln_expected_lifetime=0.0, 
-      conv_expected_lifetime=0.0, 
-      yield_from_conv_practice=0.0, 
-      yield_gain_from_conv_to_soln=0.0, 
-
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-
-      tco2eq_reduced_per_land_unit={'value': 313.791126867655, 'statistic': 'mean'}, 
-      tco2eq_rplu_rate='One-time', 
-      tco2_reduced_per_land_unit=0.0, 
-      tco2_rplu_rate='One-time', 
-      tn2o_co2_reduced_per_land_unit=0.0, 
-      tn2o_co2_rplu_rate='One-time', 
-      tch4_co2_reduced_per_land_unit=0.0, 
-      tch4_co2_rplu_rate='One-time', 
-      land_annual_emissons_lifetime=30.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      emissions_use_agg_co2eq=True, 
-
-      # sequestration
-      seq_rate_global={'value': 0.596666666666667, 'statistic': 'mean'}, 
-      tC_storage_in_protected_land_type={'value': 177.3, 'statistic': 'mean'}, 
-      global_multi_for_regrowth=1.0, 
-      degradation_rate={'value': 0.003074, 'statistic': 'mean'}, 
-      disturbance_rate={'value': 1.57962432447763e-05, 'statistic': 'mean'}, 
-
-      delay_protection_1yr=True, 
-      delay_regrowth_1yr=True, 
-      include_unprotected_land_in_regrowth_calcs=False, 
-
-    ),
-}
 
 class ForestProtection:
-  name = 'Forest Protection'
-  units = {
-    "implementation unit": None,
-    "functional unit": "Mha",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS-87p2050-Plausible-PDScustom-avg-Bookedition1'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 

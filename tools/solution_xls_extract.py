@@ -13,7 +13,9 @@
 
 import argparse
 import hashlib
+import json
 import os.path
+import pathlib
 import re
 import sys
 import textwrap
@@ -26,7 +28,7 @@ from solution import rrs
 
 from tools.util import convert_bool, cell_to_offsets
 from tools.vma_xls_extract import VMAReader
-from model.advanced_controls import SOLUTION_CATEGORY
+from model import advanced_controls as ac
 
 
 pd.set_option('display.max_rows', 500)
@@ -74,6 +76,7 @@ def get_rrs_scenarios(wb):
             scenario_name = col_e
             s = {}
 
+            s['name'] = scenario_name
             s['vmas'] = 'VMAs'
 
             s['description'] = sr_tab.cell_value(row + 1, 4)
@@ -84,24 +87,23 @@ def get_rrs_scenarios(wb):
 
             assert sr_tab.cell_value(row + 46, 1) == 'Conventional'
             assert sr_tab.cell_value(row + 47, 3) == 'First Cost:'
-            s['conv_2014_cost'] = convert_sr_float(sr_tab.cell_value(row + 47, 4))
+            s['conv_2014_cost'] = link_vma(sr_tab.cell_value(row + 47, 4))
             s['conv_first_cost_efficiency_rate'] = convert_sr_float(sr_tab.cell_value(row + 48, 4))
-            s['conv_lifetime_capacity'] = convert_sr_float(sr_tab.cell_value(row + 49, 4))
-            s['conv_avg_annual_use'] = convert_sr_float(sr_tab.cell_value(row + 50, 4))
-            s['conv_var_oper_cost_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 51, 4))
-            s['conv_fixed_oper_cost_per_iunit'] = convert_sr_float(sr_tab.cell_value(row + 52, 4))
+            s['conv_lifetime_capacity'] = link_vma(sr_tab.cell_value(row + 49, 4))
+            s['conv_avg_annual_use'] = link_vma(sr_tab.cell_value(row + 50, 4))
+            s['conv_var_oper_cost_per_funit'] = link_vma(sr_tab.cell_value(row + 51, 4))
+            s['conv_fixed_oper_cost_per_iunit'] = link_vma(sr_tab.cell_value(row + 52, 4))
             s['conv_fuel_cost_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 54, 4))
 
             assert sr_tab.cell_value(row + 64, 1) == 'Solution'
             assert sr_tab.cell_value(row + 65, 3) == 'First Cost:'
-            s['pds_2014_cost'] = s['ref_2014_cost'] = convert_sr_float(
-                sr_tab.cell_value(row + 65, 4))
+            s['pds_2014_cost'] = s['ref_2014_cost'] = link_vma(sr_tab.cell_value(row + 65, 4))
             s['soln_first_cost_efficiency_rate'] = convert_sr_float(sr_tab.cell_value(row + 66, 4))
             s['soln_first_cost_below_conv'] = convert_bool(sr_tab.cell_value(row + 66, 6))
-            s['soln_lifetime_capacity'] = convert_sr_float(sr_tab.cell_value(row + 67, 4))
-            s['soln_avg_annual_use'] = convert_sr_float(sr_tab.cell_value(row + 68, 4))
-            s['soln_var_oper_cost_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 69, 4))
-            s['soln_fixed_oper_cost_per_iunit'] = convert_sr_float(sr_tab.cell_value(row + 70, 4))
+            s['soln_lifetime_capacity'] = link_vma(sr_tab.cell_value(row + 67, 4))
+            s['soln_avg_annual_use'] = link_vma(sr_tab.cell_value(row + 68, 4))
+            s['soln_var_oper_cost_per_funit'] = link_vma(sr_tab.cell_value(row + 69, 4))
+            s['soln_fixed_oper_cost_per_iunit'] = link_vma(sr_tab.cell_value(row + 70, 4))
             s['soln_fuel_cost_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 72, 4))
 
             assert sr_tab.cell_value(row + 76, 1) == 'General'
@@ -110,30 +112,30 @@ def get_rrs_scenarios(wb):
             assert sr_tab.cell_value(row + 86, 1) == 'EMISSIONS INPUTS'
 
             assert sr_tab.cell_value(row + 88, 1) == 'Grid Emissions'
-            s['conv_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 89, 4))
-            s['soln_energy_efficiency_factor'] = convert_sr_float(sr_tab.cell_value(row + 90, 4))
-            s['soln_annual_energy_used'] = convert_sr_float(sr_tab.cell_value(row + 91, 4))
+            s['conv_annual_energy_used'] = link_vma(sr_tab.cell_value(row + 89, 4))
+            s['soln_energy_efficiency_factor'] = link_vma(sr_tab.cell_value(row + 90, 4))
+            s['soln_annual_energy_used'] = link_vma(sr_tab.cell_value(row + 91, 4))
 
             assert sr_tab.cell_value(row + 94, 1) == 'Fuel Emissions'
-            s['conv_fuel_consumed_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 95, 4))
-            s['soln_fuel_efficiency_factor'] = convert_sr_float(sr_tab.cell_value(row + 96, 4))
-            s['conv_fuel_emissions_factor'] = convert_sr_float(sr_tab.cell_value(row + 97, 4))
-            s['soln_fuel_emissions_factor'] = convert_sr_float(sr_tab.cell_value(row + 98, 4))
+            s['conv_fuel_consumed_per_funit'] = link_vma(sr_tab.cell_value(row + 95, 4))
+            s['soln_fuel_efficiency_factor'] = link_vma(sr_tab.cell_value(row + 96, 4))
+            s['conv_fuel_emissions_factor'] = link_vma(sr_tab.cell_value(row + 97, 4))
+            s['soln_fuel_emissions_factor'] = link_vma(sr_tab.cell_value(row + 98, 4))
 
             assert sr_tab.cell_value(row + 103, 1) == 'Direct Emissions'
-            s['conv_emissions_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 105, 4))
-            s['soln_emissions_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 106, 4))
+            s['conv_emissions_per_funit'] = link_vma(sr_tab.cell_value(row + 105, 4))
+            s['soln_emissions_per_funit'] = link_vma(sr_tab.cell_value(row + 106, 4))
 
             assert sr_tab.cell_value(row + 111, 1) == 'Indirect Emissions'
-            s['conv_indirect_co2_per_unit'] = convert_sr_float(sr_tab.cell_value(row + 112, 4))
-            s['soln_indirect_co2_per_iunit'] = convert_sr_float(sr_tab.cell_value(row + 113, 4))
+            s['conv_indirect_co2_per_unit'] = link_vma(sr_tab.cell_value(row + 112, 4))
+            s['soln_indirect_co2_per_iunit'] = link_vma(sr_tab.cell_value(row + 113, 4))
             i_vs_f = str(sr_tab.cell_value(row + 114, 4)).lower().strip()
             s['conv_indirect_co2_is_iunits'] = False if i_vs_f == 'functional' else True
 
             assert sr_tab.cell_value(row + 118, 1) == 'Optional Inputs'
-            s['ch4_co2_per_twh'] = convert_sr_float(sr_tab.cell_value(row + 119, 4))
+            s['ch4_co2_per_funit'] = link_vma(sr_tab.cell_value(row + 119, 4))
             s['ch4_is_co2eq'] = (sr_tab.cell_value(row + 119, 5) == 't CH4-CO2eq per TWh')
-            s['n2o_co2_per_twh'] = convert_sr_float(sr_tab.cell_value(row + 120, 4))
+            s['n2o_co2_per_funit'] = link_vma(sr_tab.cell_value(row + 120, 4))
             s['n2o_is_co2eq'] = (sr_tab.cell_value(row + 120, 5) == 't N2O-CO2eq per TWh')
             s['co2eq_conversion_source'] = str(sr_tab.cell_value(row + 121, 4)).strip()
 
@@ -264,7 +266,8 @@ def get_land_scenarios(wb):
             scenario_name = col_e
             s = {}
 
-            s['solution_category'] = SOLUTION_CATEGORY.LAND
+            s['name'] = scenario_name
+            s['solution_category'] = ac.SOLUTION_CATEGORY.LAND
             s['vmas'] = 'VMAs'
 
             s['description'] = sr_tab.cell_value(row + 1, 4)
@@ -427,7 +430,7 @@ def oneline(f, s, names, prefix='', suffix=None):
     for n in names:
         if n == 'vmas':
             f.write(n + "=" + s[n] + ", ")
-        elif isinstance(s[n], SOLUTION_CATEGORY):
+        elif isinstance(s[n], ac.SOLUTION_CATEGORY):
             f.write(n + "=" + str(s[n]) + ", ")
         elif isinstance(s[n], str):
             f.write(str(n) + "='" + str(s[n]) + "', ")
@@ -442,116 +445,29 @@ def oneline(f, s, names, prefix='', suffix=None):
 
 
 
+def json_dumps_default(obj):
+    """Default function for json.dumps."""
+    if isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, pd.DataFrame):
+        return [[obj.index.name, *obj.columns.tolist()]] + obj.reset_index().values.tolist()
+    elif isinstance(obj, pd.Series):
+        return [[obj.index.name, obj.name]] + obj.reset_index().values.tolist()
+    elif isinstance(obj, ac.SOLUTION_CATEGORY):
+        return ac.solution_category_as_string(obj)
+    else:
+        raise TypeError('Unable to JSON encode: ' + repr(obj))
 
-def write_scenario(f, s):
+
+
+def write_scenario(filename, s):
     """Write out the advanced_controls entries for a given scenario."""
-    prefix = '      '
-
-    if 'description' in s:
-        description = re.sub(r'\s+', ' ', s['description'])
-        for line in textwrap.wrap(description, width=80):
-            f.write(prefix + '# ' + line + '\n')
-        del s['description']
-        f.write('\n')
-
-    f.write(prefix + '# general' + '\n')
-    oneline(f=f, s=s, names=['solution_category'], prefix=prefix)
-    oneline(f=f, s=s, names=['vmas'], prefix=prefix)
-    oneline(f=f, s=s, names=['report_start_year', 'report_end_year'], prefix=prefix)
-
-    if 'use_custom_tla' in s:
-        f.write('\n' + prefix + '# TLA' + '\n')
-        oneline(f=f, s=s, names=['use_custom_tla'], prefix=prefix)
-
-    f.write('\n' + prefix + '# adoption' + '\n')
-    oneline(f=f, s=s, names=['soln_ref_adoption_basis'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_ref_adoption_custom_name'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_ref_adoption_regional_data', 'soln_pds_adoption_regional_data'],
-            prefix=prefix)
-    oneline(f=f, s=s, names=['soln_pds_adoption_basis'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_pds_adoption_custom_name'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_source'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_trend'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_pds_adoption_prognostication_growth'], prefix=prefix)
-    oneline(f=f, s=s, names=['ref_adoption_use_pds_years'], prefix=prefix)
-    oneline(f=f, s=s, names=['pds_adoption_use_ref_years'], prefix=prefix)
-    oneline(f=f, s=s, names=['source_until_2014'], prefix=prefix)
-    oneline(f=f, s=s, names=['ref_source_post_2014'], prefix=prefix)
-    oneline(f=f, s=s, names=['pds_source_post_2014'], prefix=prefix)
-    oneline(f=f, s=s, names=['pds_base_adoption'], prefix=prefix)
-    oneline(f=f, s=s, names=['pds_adoption_final_percentage'], prefix=prefix)
-    oneline(f=f, s=s, names=['pds_adoption_s_curve_innovation'], prefix=prefix)
-    oneline(f=f, s=s, names=['pds_adoption_s_curve_imitation'], prefix=prefix)
-
-    f.write('\n' + prefix + '# financial' + '\n')
-    oneline(f=f, s=s, names=['pds_2014_cost', 'ref_2014_cost'], prefix=prefix)
-    oneline(f=f, s=s, names=['conv_2014_cost'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_first_cost_efficiency_rate'], prefix=prefix)
-    oneline(f=f, s=s, names=['conv_first_cost_efficiency_rate'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_first_cost_below_conv'], prefix=prefix)
-    oneline(f=f, s=s, names=['npv_discount_rate'], prefix=prefix)
-
-    oneline(f=f, s=s, names=['soln_lifetime_capacity', 'soln_avg_annual_use'], prefix=prefix)
-    oneline(f=f, s=s, names=['conv_lifetime_capacity', 'conv_avg_annual_use'], prefix=prefix,
-            suffix='\n')
-    oneline(f=f, s=s, names=['soln_expected_lifetime'], prefix=prefix)
-    oneline(f=f, s=s, names=['conv_expected_lifetime'], prefix=prefix)
-    oneline(f=f, s=s, names=['yield_from_conv_practice'], prefix=prefix)
-    oneline(f=f, s=s, names=['yield_gain_from_conv_to_soln'], prefix=prefix, suffix='\n')
-
-    oneline(f=f, s=s, names=['soln_var_oper_cost_per_funit', 'soln_fuel_cost_per_funit'],
-            prefix=prefix)
-    oneline(f=f, s=s, names=['soln_fixed_oper_cost_per_iunit'], prefix=prefix)
-    oneline(f=f, s=s, names=['conv_var_oper_cost_per_funit', 'conv_fuel_cost_per_funit'],
-            prefix=prefix)
-    oneline(f=f, s=s, names=['conv_fixed_oper_cost_per_iunit'], prefix=prefix)
-
-    f.write('\n' + prefix + '# emissions' + '\n')
-    oneline(f=f, s=s, names=['ch4_is_co2eq', 'n2o_is_co2eq'], prefix=prefix)
-    oneline(f=f, s=s, names=['co2eq_conversion_source'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_indirect_co2_per_iunit'], prefix=prefix)
-    oneline(f=f, s=s, names=['conv_indirect_co2_per_unit'], prefix=prefix)
-    oneline(f=f, s=s, names=['conv_indirect_co2_is_iunits'], prefix=prefix)
-    oneline(f=f, s=s, names=['ch4_co2_per_twh', 'n2o_co2_per_twh'], prefix=prefix, suffix='\n')
-    oneline(f=f, s=s, names=['soln_energy_efficiency_factor'], prefix=prefix)
-    oneline(f=f, s=s, names=['soln_annual_energy_used', 'conv_annual_energy_used'], prefix=prefix)
-    oneline(f=f, s=s, names=['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor'],
-            prefix=prefix)
-    oneline(f=f, s=s, names=['conv_fuel_emissions_factor', 'soln_fuel_emissions_factor'],
-            prefix=prefix, suffix='\n')
-
-    oneline(f=f, s=s, names=['tco2eq_reduced_per_land_unit'], prefix='\n' + prefix)
-    oneline(f=f, s=s, names=['tco2eq_rplu_rate'], prefix=prefix)
-    oneline(f=f, s=s, names=['tco2_reduced_per_land_unit'], prefix=prefix)
-    oneline(f=f, s=s, names=['tco2_rplu_rate'], prefix=prefix)
-    oneline(f=f, s=s, names=['tn2o_co2_reduced_per_land_unit'], prefix=prefix)
-    oneline(f=f, s=s, names=['tn2o_co2_rplu_rate'], prefix=prefix)
-    oneline(f=f, s=s, names=['tch4_co2_reduced_per_land_unit'], prefix=prefix)
-    oneline(f=f, s=s, names=['tch4_co2_rplu_rate'], prefix=prefix)
-    oneline(f=f, s=s, names=['land_annual_emissons_lifetime'], prefix=prefix, suffix='\n')
-
-    oneline(f=f, s=s, names=['emissions_grid_source', 'emissions_grid_range'], prefix=prefix)
-    oneline(f=f, s=s, names=['emissions_use_co2eq'], prefix=prefix)
-    oneline(f=f, s=s, names=['emissions_use_agg_co2eq'], prefix=prefix)
-    oneline(f=f, s=s, names=['conv_emissions_per_funit', 'soln_emissions_per_funit'],
-            prefix=prefix, suffix='\n')
-
-    if 'seq_rate_global' in s:
-        f.write('\n' + prefix + '# sequestration' + '\n')
-        oneline(f=f, s=s, names=['seq_rate_global'], prefix=prefix)
-        oneline(f=f, s=s, names=['seq_rate_per_regime'], prefix=prefix)
-        oneline(f=f, s=s, names=['tC_storage_in_protected_land_type'], prefix=prefix)
-        oneline(f=f, s=s, names=['global_multi_for_regrowth'], prefix=prefix)
-        oneline(f=f, s=s, names=['degradation_rate'], prefix=prefix)
-        oneline(f=f, s=s, names=['disturbance_rate'], prefix=prefix, suffix='\n')
-        oneline(f=f, s=s, names=['delay_protection_1yr'], prefix=prefix)
-        oneline(f=f, s=s, names=['delay_regrowth_1yr'], prefix=prefix)
-        oneline(f=f, s=s, names=['include_unprotected_land_in_regrowth_calcs'], prefix=prefix)
-        oneline(f=f, s=s, names=['harvest_frequency'], prefix=prefix)
-        oneline(f=f, s=s, names=['carbon_not_emitted_after_harvesting'], prefix=prefix)
-        oneline(f=f, s=s, names=['avoided_deforest_with_intensification'], prefix=prefix)
-        f.write('\n')
-
+    with filename.open(mode='w') as f:
+        json.dump(obj=s, fp=f, indent=4, default=json_dumps_default)
 
 
 
@@ -1495,33 +1411,33 @@ def lookup_unit(tab, row, col):
 def write_units_rrs(f, wb):
     """Write out units for this solution."""
     sr_tab = wb.sheet_by_name('ScenarioRecord')
-    f.write('  units = {\n')
+    f.write('units = {\n')
     for row in range(1, sr_tab.nrows):
         col_d = sr_tab.cell_value(row, 3)
         col_e = sr_tab.cell_value(row, 4)
         if col_d == 'Name of Scenario:' and 'TEMPLATE' not in col_e:
-            f.write('    "implementation unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
-            f.write('    "functional unit": "' + lookup_unit(sr_tab, row + 7, 5) + '",\n')
-            f.write('    "first cost": "' + lookup_unit(sr_tab, row + 16, 5) + '",\n')
-            f.write('    "operating cost": "' + lookup_unit(sr_tab, row + 17, 5) + '",\n')
+            f.write('  "implementation unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
+            f.write('  "functional unit": "' + lookup_unit(sr_tab, row + 7, 5) + '",\n')
+            f.write('  "first cost": "' + lookup_unit(sr_tab, row + 16, 5) + '",\n')
+            f.write('  "operating cost": "' + lookup_unit(sr_tab, row + 17, 5) + '",\n')
             break
-    f.write('  }\n\n')
+    f.write('}\n\n')
 
 
 def write_units_land(f, wb):
     """Write out units for this solution."""
     sr_tab = wb.sheet_by_name('ScenarioRecord')
-    f.write('  units = {\n')
+    f.write('units = {\n')
     for row in range(1, sr_tab.nrows):
         col_d = sr_tab.cell_value(row, 3)
         col_e = sr_tab.cell_value(row, 4)
         if col_d == 'Name of Scenario:' and 'TEMPLATE' not in col_e:
-            f.write('    "implementation unit": None,\n')
-            f.write('    "functional unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
-            f.write('    "first cost": "' + lookup_unit(sr_tab, row + 12, 5) + '",\n')
-            f.write('    "operating cost": "' + lookup_unit(sr_tab, row + 13, 5) + '",\n')
+            f.write('  "implementation unit": None,\n')
+            f.write('  "functional unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
+            f.write('  "first cost": "' + lookup_unit(sr_tab, row + 12, 5) + '",\n')
+            f.write('  "operating cost": "' + lookup_unit(sr_tab, row + 13, 5) + '",\n')
             break
-    f.write('  }\n\n')
+    f.write('}\n\n')
 
 
 def output_solution_python_file(outputdir, xl_filename, classname):
@@ -1587,6 +1503,12 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write("THISDIR = pathlib.Path(__file__).parents[0]\n")
     extract_vmas(wb=wb, outputdir=outputdir)
     f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
+    if is_rrs:
+        write_units_rrs(f=f, wb=wb)
+    if is_land:
+        write_units_land(f=f, wb=wb)
+    f.write("name = '" + str(solution_name) + "'\n")
+
     f.write(
         "REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',\n")
     f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
@@ -1615,23 +1537,23 @@ def output_solution_python_file(outputdir, xl_filename, classname):
         if 'carbon_not_emitted_after_harvesting' in s.keys():
             has_harvest = True
 
-    f.write('scenarios = {\n')
+    p = pathlib.Path(f'{outputdir}/ac')
+    p.mkdir(parents=False, exist_ok=True)
     for name, s in scenarios.items():
-        prefix = '  '
-        f.write(prefix + "'" + name + "': advanced_controls.AdvancedControls(\n")
-        write_scenario(f=f, s=s)
-        f.write(2 * prefix + '),\n')
-    f.write('}\n\n')
+        fname = p.joinpath(re.sub("['\"\n()\\/\.]", "", name).replace(' ', '_').strip() + '.json')
+        write_scenario(filename=fname, s=s)
+    f.write("scenarios = advanced_controls.load_scenarios_from_json("
+        "directory=THISDIR.joinpath('ac'), vmas=VMAs)\n")
+    f.write("\n\n")
 
     f.write("class " + str(classname) + ":\n")
-    f.write("  name = '" + str(solution_name) + "'\n")
-    if is_rrs:
-        write_units_rrs(f=f, wb=wb)
-    if is_land:
-        write_units_land(f=f, wb=wb)
+    f.write("  name = name\n")
+    f.write("  units = units\n")
+    f.write("  vmas = VMAs\n")
+    f.write("\n")
     f.write("  def __init__(self, scenario=None):\n")
     f.write("    if scenario is None:\n")
-    f.write("      scenario = '" + list(scenarios.keys())[0] + "'\n")
+    f.write("      scenario = list(scenarios.keys())[0]\n")
     f.write("    self.scenario = scenario\n")
     f.write("    self.ac = scenarios[scenario]\n")
     f.write("\n")
@@ -1722,10 +1644,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
         f.write("        conv_avg_annual_use=self.ac.conv_avg_annual_use)\n")
         f.write("\n")
 
-    for key, values in scenarios.items():
-        if values:
-            raise KeyError('Scenario ' + key + ' has unconsumed fields: ' + str(values.keys()))
-
     f.close()
 
 
@@ -1780,7 +1698,7 @@ def link_vma(cell_value):
     corresponding VMA tables. In the Excel ScenarioRecord, the cell value will look like:
     'Val:(328.415857769938) Formula:=C80'
     We can infer the chosen statistic from the cell reference. If there is no forumla we
-    return the cell value as a float.
+    return the cell value as a float with no reference to the VMA result.
     Args:
       cell_value: raw string from the Excel cell
   
@@ -1788,7 +1706,7 @@ def link_vma(cell_value):
       'mean', 'high' or 'low' or raw value if no formula in cell
     """
     if not isinstance(cell_value, str) or 'Formula:=' not in cell_value:
-        return convert_sr_float(cell_value)
+        return {'value': convert_sr_float(cell_value), 'statistic': ''}
     if 'Error' in cell_value:
         return 0.
     if True in [cell_value.endswith(x) for x in ['80', '95', '175', '189', '140']]:

@@ -16,11 +16,12 @@ tmpdir=$(mktemp -d soln_xls.XXXXXX)
 PYTHONPATH=.:${PYTHONPATH} ./tools/solution_xls_extract.py --excelfile=./tools/tests/solution_xls_extract_RRS_test_A.xlsm --outputdir=${tmpdir}
 output=$(cat ${tmpdir}/__init__.py)
 ad_data=$(cat ${tmpdir}/ad/ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv)
+ac_files=$(cat ${tmpdir}/ac/*)
 
 # Check infer class name
 require "$output" "class TestClassA" && \
 # Check scenario parsing
-require "$output" "PDS-16p2050- Optimum (Book Ed.1)" && \
+require "${output}${ac_files}" "PDS-16p2050- Optimum (Book Ed.1)" && \
 # Check Solution name extraction
 require "$output" "name = 'Utility Scale Solar PV'" && \
 # Check Helper Tables extraction

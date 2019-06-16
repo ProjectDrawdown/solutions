@@ -32,203 +32,8 @@ VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
            'Latin America', 'China', 'India', 'EU', 'USA']
 
-scenarios = {
-  'PDS-45p2050-Plausible-PDScustom-low-Bookedition1': advanced_controls.AdvancedControls(
-      # This scenario represents the results based on the revisions made to the current
-      # adoption, future adoption scenarios, first cost, net profit margin, and carbon
-      # sequestration. In addition, the revised model also estimates the operational
-      # cost which was missing in the Book edition 1. This scenario derives result from
-      # "low of all" PDS custom scenario. The results are marginally lower than Book
-      # edition1, so no new scenario was created for the latter.
+scenarios = advanced_controls.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
-      # general
-      solution_category=SOLUTION_CATEGORY.LAND,
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050,
-
-      # TLA
-      use_custom_tla=False,
-
-      # adoption
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False,
-      soln_pds_adoption_basis='Fully Customized PDS',
-      soln_pds_adoption_custom_name='Low of All Custom Scenarios',
-      pds_adoption_use_ref_years=[2015, 2016],
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)],
-
-      # financial
-      pds_2014_cost={'value': 462.453005939073, 'statistic': 'mean'}, ref_2014_cost={'value': 462.453005939073, 'statistic': 'mean'},
-      conv_2014_cost=0.0,
-      soln_first_cost_efficiency_rate=0.0,
-      conv_first_cost_efficiency_rate=0.0,
-      npv_discount_rate=0.1,
-      soln_expected_lifetime=30.0,
-      conv_expected_lifetime=30.0,
-      yield_from_conv_practice={'value': 3.42857142857143, 'statistic': 'mean'},
-      yield_gain_from_conv_to_soln={'value': 0.100544967245763, 'statistic': 'mean'},
-
-      soln_fixed_oper_cost_per_iunit={'value': 837.643130909091, 'statistic': 'mean'},
-      conv_fixed_oper_cost_per_iunit={'value': 328.415857769938, 'statistic': 'mean'},
-
-      # emissions
-      soln_indirect_co2_per_iunit=0.0,
-      conv_indirect_co2_per_unit=0.0,
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0,
-
-      tco2eq_reduced_per_land_unit=0.0,
-      tco2eq_rplu_rate='One-time',
-      tco2_reduced_per_land_unit=0.0,
-      tco2_rplu_rate='One-time',
-      tn2o_co2_reduced_per_land_unit=0.0,
-      tn2o_co2_rplu_rate='One-time',
-      tch4_co2_reduced_per_land_unit=0.0,
-      tch4_co2_rplu_rate='One-time',
-      land_annual_emissons_lifetime=100.0,
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean',
-      emissions_use_co2eq=True,
-      emissions_use_agg_co2eq=True,
-
-      # sequestration
-      seq_rate_global={'value': 4.64561688311688, 'statistic': 'mean'},
-      disturbance_rate=0.0,
-
-      harvest_frequency=100.0,
-      carbon_not_emitted_after_harvesting=0.0,
-
-    ),
-  'PDS-54p2050-Drawdown-PDScustom-high-basedonpasture-Bookedition1': advanced_controls.AdvancedControls(
-      # This scenario represents the results based on the revisions made to the current
-      # adoption, future adoption scenarios, first cost, net profit margin, and carbon
-      # sequestration. In addition, the revised model also estimates the operational
-      # cost which was missing in the Book edition 1. This scenario present the result
-      # of the from "high growth, linear trend (based on improved pasture area) " PDS
-      # custom scenario. The results are higher than the Book edition1, largely due to
-      # the correction of the current adoption, which was almost half in the Book
-      # edition1.
-
-      # general
-      solution_category=SOLUTION_CATEGORY.LAND,
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050,
-
-      # TLA
-      use_custom_tla=False,
-
-      # adoption
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False,
-      soln_pds_adoption_basis='Fully Customized PDS',
-      soln_pds_adoption_custom_name='High growth, linear trend (based on improved pasture area)',
-      pds_adoption_use_ref_years=[2015, 2016],
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)],
-
-      # financial
-      pds_2014_cost={'value': 462.453005939073, 'statistic': 'mean'}, ref_2014_cost={'value': 462.453005939073, 'statistic': 'mean'},
-      conv_2014_cost=0.0,
-      soln_first_cost_efficiency_rate=0.0,
-      conv_first_cost_efficiency_rate=0.0,
-      npv_discount_rate=0.1,
-      soln_expected_lifetime=30.0,
-      conv_expected_lifetime=30.0,
-      yield_from_conv_practice={'value': 3.42857142857143, 'statistic': 'mean'},
-      yield_gain_from_conv_to_soln={'value': 0.100544967245763, 'statistic': 'mean'},
-
-      soln_fixed_oper_cost_per_iunit={'value': 837.643130909091, 'statistic': 'mean'},
-      conv_fixed_oper_cost_per_iunit={'value': 328.415857769938, 'statistic': 'mean'},
-
-      # emissions
-      soln_indirect_co2_per_iunit=0.0,
-      conv_indirect_co2_per_unit=0.0,
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0,
-
-      tco2eq_reduced_per_land_unit=0.0,
-      tco2eq_rplu_rate='One-time',
-      tco2_reduced_per_land_unit=0.0,
-      tco2_rplu_rate='One-time',
-      tn2o_co2_reduced_per_land_unit=0.0,
-      tn2o_co2_rplu_rate='One-time',
-      tch4_co2_reduced_per_land_unit=0.0,
-      tch4_co2_rplu_rate='One-time',
-      land_annual_emissons_lifetime=100.0,
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean',
-      emissions_use_co2eq=True,
-      emissions_use_agg_co2eq=True,
-
-      # sequestration
-      seq_rate_global={'value': 4.64561688311688, 'statistic': 'mean'},
-      disturbance_rate=0.0,
-
-      harvest_frequency=100.0,
-      carbon_not_emitted_after_harvesting=0.0,
-
-    ),
-  'PDS-54p2050-Optimum-PDScustom-high0.5SD-Bookedition1': advanced_controls.AdvancedControls(
-      # This scenario represents the results based on the revisions made to the current
-      # adoption, future adoption scenarios, first cost, net profit margin, and carbon
-      # sequestration. In addition, the revised model also estimates the operational
-      # cost which was missing in the Book edition 1. This scenario derives result from
-      # "high (with 0.5 standard deviation) of all" PDS custom scenarios. The results
-      # are higher than the Book edition1, largely due to the correction of the current
-      # adoption, which was almost half in the Book edition1.
-
-      # general
-      solution_category=SOLUTION_CATEGORY.LAND,
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050,
-
-      # TLA
-      use_custom_tla=False,
-
-      # adoption
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False,
-      soln_pds_adoption_basis='Fully Customized PDS',
-      soln_pds_adoption_custom_name='High of All Custom Scenarios',
-      pds_adoption_use_ref_years=[2015, 2016],
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)],
-
-      # financial
-      pds_2014_cost={'value': 462.453005939073, 'statistic': 'mean'}, ref_2014_cost={'value': 462.453005939073, 'statistic': 'mean'},
-      conv_2014_cost=0.0,
-      soln_first_cost_efficiency_rate=0.0,
-      conv_first_cost_efficiency_rate=0.0,
-      npv_discount_rate=0.1,
-      soln_expected_lifetime=30.0,
-      conv_expected_lifetime=30.0,
-      yield_from_conv_practice={'value': 3.42857142857143, 'statistic': 'mean'},
-      yield_gain_from_conv_to_soln={'value': 0.100544967245763, 'statistic': 'mean'},
-
-      soln_fixed_oper_cost_per_iunit={'value': 837.643130909091, 'statistic': 'mean'},
-      conv_fixed_oper_cost_per_iunit={'value': 328.415857769938, 'statistic': 'mean'},
-
-      # emissions
-      soln_indirect_co2_per_iunit=0.0,
-      conv_indirect_co2_per_unit=0.0,
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0,
-
-      tco2eq_reduced_per_land_unit=0.0,
-      tco2eq_rplu_rate='One-time',
-      tco2_reduced_per_land_unit=0.0,
-      tco2_rplu_rate='One-time',
-      tn2o_co2_reduced_per_land_unit=0.0,
-      tn2o_co2_rplu_rate='One-time',
-      tch4_co2_reduced_per_land_unit=0.0,
-      tch4_co2_rplu_rate='One-time',
-      land_annual_emissons_lifetime=100.0,
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean',
-      emissions_use_co2eq=True,
-      emissions_use_agg_co2eq=True,
-
-      # sequestration
-      seq_rate_global={'value': 4.64561688311688, 'statistic': 'mean'},
-      disturbance_rate=0.0,
-
-      harvest_frequency=100.0,
-      carbon_not_emitted_after_harvesting=0.0,
-
-    ),
-}
 
 class Silvopasture:
   name = 'Silvopasture'
@@ -252,9 +57,9 @@ class Silvopasture:
     # Custom PDS Data
     ca_pds_data_sources = [
       {'name': 'Linear trend based on Zomers  >30% tree cover percent area applied in grassland area', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Linear_trend_based_on_Zomers_30_tree_cover_percent_area_applied77dc7578.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Linear_trend_based_on_Zomers_30_tree_cover_percent_area_applied_in_grassland_area.csv')},
       {'name': 'Linear trend based on Zomers >30% tree cover percent area and conversion of >10% are to 30% tree cover area applied in grassland area', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Linear_trend_based_on_Zomers_30_tree_cover_percent_area_and_con55dcebcb.csv')},
+          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Linear_trend_based_on_Zomers_30_tree_cover_percent_area_and_conversion_of_10_are_to_30_t_d419700f.csv')},
       {'name': 'Medium growth, linear trend', 'include': True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Medium_growth_linear_trend.csv')},
       {'name': 'High growth, linear trend', 'include': False,
@@ -304,7 +109,7 @@ class Silvopasture:
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
     self.ua = unitadoption.UnitAdoption(ac=self.ac,
-        pds_total_adoption_units=self.tla_per_region,
+        ref_total_adoption_units=self.tla_per_region, pds_total_adoption_units=self.tla_per_region,
         electricity_unit_factor=1000000.0,
         soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
         soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -343,19 +148,19 @@ class Silvopasture:
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
-                                ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
-                                soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
-                                soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
-                                soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
-                                soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),
-                                soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),
-                                soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
-                                soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
-                                soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
-                                conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-                                conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
-                                conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
-                                soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                                annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
-                                regime_distribution=self.ae.get_land_distribution())
+        ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+        soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
+        soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
+        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
+        soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),
+        soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),
+        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
+        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
+        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
+        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
+        conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
+        conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+        annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
+        regime_distribution=self.ae.get_land_distribution())
 
