@@ -1225,36 +1225,43 @@ class JupyterUI:
            Arguments:
            solutions: a list of solution objects to be processed.
         """
-        children = []
+        classes = set()
         for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+            classes.add(sys.modules[s.__module__])
+
+        children = []
+        titles = []
+        for c in classes:
+            first_scenario = list(c.scenarios.keys())[0]
+            solution_category = c.scenarios[first_scenario].solution_category
+            if solution_category == SOLUTION_CATEGORY.LAND:
                 label1 = self.blue_label('Conventional')
                 row1 = ipywidgets.HBox([
-                    ui.scn_edit.conv_first_cost(s),
-                    ui.scn_edit.conv_oper_cost_total(s),
-                    ui.scn_edit.conv_net_profit_margin(s),
+                    ui.scn_edit.conv_first_cost(scenarios=c.scenarios, vmas=c.VMAs),
+                    ui.scn_edit.conv_oper_cost_total(scenarios=c.scenarios, vmas=c.VMAs),
                 ])
                 label2 = self.blue_label('Solution')
                 row2 = ipywidgets.HBox([
-                    ui.scn_edit.soln_first_cost(s),
-                    ui.scn_edit.soln_oper_cost_total(s),
-                    ui.scn_edit.soln_net_profit_margin(s),
+                    ui.scn_edit.soln_first_cost(scenarios=c.scenarios, vmas=c.VMAs),
+                    ui.scn_edit.soln_oper_cost_total(scenarios=c.scenarios, vmas=c.VMAs),
                     ])
                 children.append(ipywidgets.VBox([
                     label1, row1, self.vertical_space(),
                     label2, row2]))
-            elif s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+            elif solution_category == SOLUTION_CATEGORY.OCEAN:
                 children.append(ipywidgets.VBox([]))
             else:
                 children.append(ipywidgets.HBox([
-                    ui.scn_edit.conv_first_cost(s),
-                    ui.scn_edit.conv_lifetime_capacity(s),
-                    ui.scn_edit.soln_first_cost(s),
-                    ui.scn_edit.soln_oper_cost_fixed(s),
+                    ui.scn_edit.conv_first_cost(scenarios=c.scenarios, vmas=c.VMAs),
+                    ui.scn_edit.conv_lifetime_capacity(scenarios=c.scenarios, vmas=c.VMAs),
+                    ui.scn_edit.soln_first_cost(scenarios=c.scenarios, vmas=c.VMAs),
+                    ui.scn_edit.soln_oper_cost_fixed(scenarios=c.scenarios, vmas=c.VMAs),
                     ]))
+            titles.append(c.__name__)
+
         scn_edit = ipywidgets.Accordion(children=children)
-        for i, s in enumerate(solutions):
-            scn_edit.set_title(i, fullname(s))
+        for i, _ in enumerate(classes):
+            scn_edit.set_title(i, titles[i])
         return scn_edit
 
 
