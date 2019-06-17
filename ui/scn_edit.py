@@ -1,5 +1,8 @@
 """Scenario / Advanced Controls editor."""
 
+import dataclasses
+import sys
+
 import ipywidgets
 import IPython.core.display
 import numpy as np
@@ -26,7 +29,7 @@ def _set_value_entry_shadows(state):
     return all_scenarios_equal
 
 
-def dropdown_observe(change):
+def _dropdown_observe(change):
     """Observer callback for dropdown selection changes.
 
        When the selected scenario changes we need to:
@@ -56,7 +59,7 @@ def dropdown_observe(change):
     state['value_entry'].value = str(new_value)
 
 
-def value_entry_observe(change):
+def _value_entry_observe(change):
     """Observer callback for when text is added to value_entry widget.
 
        Arguments:
@@ -77,22 +80,22 @@ def value_entry_observe(change):
     _set_value_entry_shadows(widget.state)
 
 
-def on_vma_button_click(b):
+def _on_vma_button_click(b):
     """Called when the Mean/High/Low buttons are clicked."""
     b.state['value_entry'].value = b.value_name
 
 
-def scn_edit_vma_var(scenarios, vma, title, tooltip, subtitle):
+def scn_edit_vma_var(scenarios, varname, vma, title, tooltip, subtitle):
     """Render an editor box for a single VMA.
        Arguments:
          scenarios: a dict where the keys are scenario names, values are AdvancedControls objects
+         varname: variable name in AdvancedControls to edit, like 'conv_2014_cost'
          vma: model.VMA object being edited
          title: name of the VMA being edited
          tooltip: tooltip to display with the title
          subtitle: line to print under the title, typically includes the units of the value
            being allocated like "MHa" or "US$2014/TWh"
     """
-    varname = ac.get_param_for_vma_name(title)
     mean = high = low = np.nan
     total_sources = 0
     use_weight = False
@@ -108,6 +111,7 @@ def scn_edit_vma_var(scenarios, vma, title, tooltip, subtitle):
 
     dd_styles = "<style>"
     dd_styles += ".dd_vma_val input {background-color:#D0F0D0 !important;text-align:center;}"
+    dd_styles += ".dd_txt_center {text-align:center;}"
     dd_styles += ".dd_vma_shadow {box-shadow:4px 4px 0px #20A020,8px 8px 0px #20A020;}"
     dd_styles += "</style>"
 
@@ -123,11 +127,11 @@ def scn_edit_vma_var(scenarios, vma, title, tooltip, subtitle):
 
     value_entry = ipywidgets.Text(value=f'{value}', continuous_update=False, layout=ly_butn)
     value_entry.add_class('dd_vma_val')
-    value_entry.observe(value_entry_observe, names='value')
+    value_entry.observe(_value_entry_observe, names='value')
 
     options = [ALL_SCENARIOS] + list(scenarios.keys())
     dropdown = ipywidgets.Dropdown(options=options, indent=False, layout=ly_drop)
-    dropdown.observe(dropdown_observe, names='value')
+    dropdown.observe(_dropdown_observe, names='value')
 
     element_state = { 'scenarios': scenarios, 'vma': vma, 'varname': varname,
             'value_entry': value_entry, 'dropdown': dropdown, 'values': values, }
@@ -138,22 +142,25 @@ def scn_edit_vma_var(scenarios, vma, title, tooltip, subtitle):
     mean_button = ipywidgets.Button(description=f'{mean:.3f}', layout=ly_butn)
     mean_button.value_name = MEAN_MAGIC
     mean_button.state = element_state
-    mean_button.on_click(on_vma_button_click)
+    mean_button.on_click(_on_vma_button_click)
     high_button = ipywidgets.Button(description=f'{high:.3f}', layout=ly_butn)
     high_button.value_name = HIGH_MAGIC
     high_button.state = element_state
-    high_button.on_click(on_vma_button_click)
+    high_button.on_click(_on_vma_button_click)
     low_button = ipywidgets.Button(description=f'{low:.3f}', layout=ly_butn)
     low_button.value_name = LOW_MAGIC
     low_button.state = element_state
-    low_button.on_click(on_vma_button_click)
+    low_button.on_click(_on_vma_button_click)
     if not vma:
         mean_button.disabled = high_button.disabled = low_button.disabled = True
+    varname_text = ipywidgets.Text(value=varname, disabled=True, indent=False, layout=ly_full)
+    varname_text.add_class('dd_txt_center')
 
     children = [
         ipywidgets.HTML(dd_styles),
         ipywidgets.Button(description=title, disabled=True, tooltip=tooltip, layout=ly_full),
         ipywidgets.Button(description=subtitle, disabled=True, tooltip=tooltip, layout=ly_full),
+        varname_text,
         dropdown,
         ipywidgets.HBox([ipywidgets.Label('Value', layout=ly_labl), value_entry], layout=ly_full),
         ipywidgets.HBox([ipywidgets.Label('Mean', layout=ly_labl), mean_button], layout=ly_full),
@@ -172,145 +179,81 @@ def scn_edit_vma_var(scenarios, vma, title, tooltip, subtitle):
     return box
 
 
-def conv_first_cost(scenarios, vmas):
-    """Conventional First Cost column for scenario editor.
+def _get_editor_for_var(c, varname):
+    fields = dataclasses.fields(list(c.scenarios.values())[0])
+
+    for field in fields:
+        if field.name != varname:
+            continue
+        vma = None
+        for vma_name in field.metadata.get('vma_titles', []):
+            if vma_name in c.VMAs:
+                vma = c.VMAs[vma_name]
+        return scn_edit_vma_var(scenarios=c.scenarios, vma=vma, varname=varname, title=vma_name,
+                tooltip=field.metadata.get('tooltip', ''),
+                subtitle=field.metadata.get('subtitle', ''))
+    return None
+
+
+edit_ui_layout_land = [
+    ('separator', 'Financial'),
+    ('row', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit', ]),
+    ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit', ]),
+]
+
+edit_ui_layout_ocean = [
+    ('separator', 'Financial'),
+    ('editor', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit', ]),
+    ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit', ]),
+]
+
+edit_ui_layout_rrs = [
+    ('separator', 'Financial'),
+    ('editor', ['conv_2014_cost', 'conv_lifetime_capacity', 'conv_avg_annual_use',
+        'conv_var_oper_cost_per_funit', 'conv_fixed_oper_cost_per_iunit', ]),
+    ('editor', ['pds_2014_cost', 'soln_lifetime_capacity', 'soln_avg_annual_use',
+        'soln_var_oper_cost_per_funit', 'soln_fixed_oper_cost_per_iunit', ]),
+    ('separator', 'Emissions'),
+    ('editor', ['conv_annual_energy_used', 'soln_energy_efficiency_factor',
+        'soln_annual_energy_used', 'conv_fuel_consumed_per_funit',
+        'soln_fuel_efficiency_factor',]),
+    ('separator', 'Annual Direct Emissions (excl. electricity- or fuel-based)'),
+    ('editor', ['conv_emissions_per_funit', 'soln_emissions_per_funit',]),
+    ('separator', 'Indirect Emissions (CO2-eq)'),
+    ('editor', ['conv_indirect_co2_per_unit', 'soln_indirect_co2_per_iunit',]),
+    ('separator', 'Optional Emissions Factors'),
+    ('editor', ['ch4_co2_per_funit', 'n2o_co2_per_funit',]),
+]
+
+
+def get_scenario_editor_for_solution(soln_mod):
+    """Return Scenario Editor for a given solution.
+
        Arguments:
-          scenarios: dict of {scenario_name: AdvancedControls_object}
-          vmas: dict of {vma_name: VMA_object}
+          soln_mod: a module for a particular solution, like solution.solarpvutil
     """
-    title = 'CONVENTIONAL First Cost per Implementation Unit for replaced practices'
-    tooltip = ("CONVENTIONAL First Cost per Implementation Unit for replaced practices\n\n"
-               "NOTE: This is the cost of acquisition and the cost of installation "
-               "(sometimes one and the same) or the cost of initiating a program/practice "
-               "(for solutions where there is no direct artifact to acquire and install) "
-               "per Unit of Implementation of the CONVENTIONAL mix of practices (those "
-               "practices that do not include the technology in question.\n\n"
-               "E.g. What is the cost to purchase an internal combustion engine (ICE) "
-               "vehicle?")
-    subtitle = '(implementation units)'
-    return scn_edit_vma_var(scenarios=scenarios, vma=vmas.get(title, None),
-            title=title, tooltip=tooltip, subtitle=subtitle)
-
-
-def conv_oper_cost_total(scenarios, vmas):
-    """Conventional Operating Cost, including Fixed and Variable. Typically used for Land solutions.
-       Arguments:
-          scenarios: dict of {scenario_name: AdvancedControls_object}
-          vmas: dict of {vma_name: VMA_object}
-    """
-    title = 'CONVENTIONAL Operating Cost per Functional Unit per Annum'
-    tooltip = ("CONVENTIONAL Operating Cost per Functional Unit per Annum\n\n"
-               "NOTE: This is the Operating Cost per functional unit, derived "
-               "from the CONVENTIONAL mix of technologies/practices.  In most "
-               "cases this will be expressed as a cost per 'hectare of land'.\n\n"
-               "This annualized value should capture the variable costs for "
-               "maintaining the CONVENTIONAL practice, as well as  fixed costs. "
-               "The value should reflect the average over the reasonable lifetime "
-               "of the practice.\n\n"
-               "Note: If the Operating Cost changes significantly across years, "
-               "you can use a customized calculation at bottom of 'Operating Cost' sheet.")
-    subtitle = '(per ha per annum)'
-    return scn_edit_vma_var(scenarios=scenarios, vma=vmas.get(title, None),
-            title=title, tooltip=tooltip, subtitle=subtitle)
-
-
-def conv_lifetime_capacity(scenarios, vmas):
-    """Conventional lifetime capacity column for scenario editor.
-       Arguments:
-          scenarios: dict of {scenario_name: AdvancedControls_object}
-          vmas: dict of {vma_name: VMA_object}
-    """
-    title = 'Lifetime Capacity - CONVENTIONAL'
-    tooltip = ("Lifetime Capacity - CONVENTIONAL\n\n"
-               "NOTE: This is the average expected number of functional units "
-               "generated by the CONVENTIONAL mix of technologies/practices "
-               "throughout their lifetime before replacement is required.  "
-               "If no replacement time is discovered or applicable, please "
-               "use 100 years.\n\n"
-               "E.g. a vehicle will have an average number of passenger kilometers "
-               "it can travel until it can no longer be used and a new vehicle is "
-               "required. Another example would be an HVAC system, which can only "
-               "service a certain amount of floor space over a period of time before "
-               "it will require replacement.")
-    subtitle = 'use until replacement is required'
-    return scn_edit_vma_var(scenarios=scenarios, vma=vmas.get(title, None),
-            title=title, tooltip=tooltip, subtitle=subtitle)
-
-
-def soln_first_cost(scenarios, vmas):
-    """Solution First Cost column for scenario editor.
-       Arguments:
-          scenarios: dict of {scenario_name: AdvancedControls_object}
-          vmas: dict of {vma_name: VMA_object}
-    """
-    title = 'SOLUTION First Cost per Implementation Unit'
-    tooltip = ("SOLUTION First Cost per Implementation Unit\n\n"
-               "NOTE: This is the cost of acquisition and the cost of installation "
-               "(sometimes one and the same) or the cost of initiating a program/practice "
-               "(for solutions where there is no direct artifact to acquire and install) "
-               "per Implementation unit of the SOLUTION.\n\n"
-               "E.g. What is the cost to acquire and install rooftop solar PV?")
-    if list(scenarios.values())[0].solution_category == ac.SOLUTION_CATEGORY.LAND:
-        subtitle = '(per ha)'
+    first_scenario = list(soln_mod.scenarios.keys())[0]
+    solution_category = soln_mod.scenarios[first_scenario].solution_category
+    edit_ui_layout = []
+    if solution_category == ac.SOLUTION_CATEGORY.LAND:
+        edit_ui_layout = edit_ui_layout_land
+    elif solution_category == ac.SOLUTION_CATEGORY.OCEAN:
+        edit_ui_layout = edit_ui_layout_ocean
     else:
-        subtitle = '(implementation units)'
-    return scn_edit_vma_var(scenarios=scenarios, vma=vmas.get(title, None),
-            title=title, tooltip=tooltip, subtitle=subtitle)
+        edit_ui_layout = edit_ui_layout_rrs
 
+    children = []
+    for (row_type, row) in edit_ui_layout:
+        if row_type == 'separator':
+            div = '<div style="background-color:LightSkyBlue;border:1px solid black;'
+            div += 'font-weight:bold;text-align:center;font-size:0.875em;">'
+            label = ipywidgets.HTML(value=f"{div}{row}</div>")
+            children.append(label)
+        elif row_type == 'editor':
+            row_children = []
+            for varname in row:
+                row_children.append(_get_editor_for_var(soln_mod, varname))
+            children.append(ipywidgets.HBox(row_children))
+            children.append(ipywidgets.HTML(value='<div>&nbsp;</div>'))
 
-def soln_oper_cost_total(scenarios, vmas):
-    """Solution Operating Cost, including Fixed and Variable. Typically used for Land solutions.
-       Arguments:
-          scenarios: dict of {scenario_name: AdvancedControls_object}
-          vmas: dict of {vma_name: VMA_object}
-    """
-    title = 'SOLUTION Operating Cost per Functional Unit per Annum'
-    tooltip = ("SOLUTION Operating Cost per Functional Unit per Annum\n\n"
-               "NOTE: This is the Operating Cost per functional unit, derived from the SOLUTION. "
-               "In most cases this will be expressed as a cost per 'hectare of land'.\n\n"
-               "This annualized value should capture both the variable costs for maintaining the "
-               "SOLUTION practice as well as the fixed costs. The value should reflect the average "
-               "over the reasonable lifetime of the practice.")
-    subtitle = '(per ha per annum)'
-    return scn_edit_vma_var(scenarios=scenarios, vma=vmas.get(title, None),
-            title=title, tooltip=tooltip, subtitle=subtitle)
-
-
-def soln_oper_cost_fixed(scenarios, vmas):
-    """Solution Fixed Operating Cost. Typically used for RRS solutions.
-       Arguments:
-          scenarios: dict of {scenario_name: AdvancedControls_object}
-          vmas: dict of {vma_name: VMA_object}
-    """
-    title = 'SOLUTION Fixed Operating Cost (FOM)'
-    tooltip = ("SOLUTION Fixed Operating Cost (FOM)\n\n"
-               "NOTE: This is the annual operating cost per implementation unit, derived from "
-               "the SOLUTION.  In most cases this will be expressed as a cost per 'some unit "
-               "of installation size'\n\n"
-               "E.g., $10,000 per kw. In terms of transportation, this can be considered the "
-               "total insurance, and maintenance cost per car.\n\n"
-               "Purchase costs can be amortized here or included as a first cost, but not both.")
-    subtitle = '(implementation units)'
-    return scn_edit_vma_var(scenarios=scenarios, vma=vmas.get(title, None),
-            title=title, tooltip=tooltip, subtitle=subtitle)
-
-
-def soln_net_profit_margin(scenarios, vmas):
-    """Solution net profit margin.
-       Arguments:
-          scenarios: dict of {scenario_name: AdvancedControls_object}
-          vmas: dict of {vma_name: VMA_object}
-    """
-    title = 'SOLUTION Net Profit Margin per Functional Unit per Annum'
-    tooltip = ("SOLUTION Net Profit Margin per Functional Unit per Annum\n\n"
-               "NOTE: This is the net annual profit margin per functional unit, derived from "
-               "the SOLUTION mix of technologies/practices.  In most cases this will be expressed "
-               "as a profit per 'hectare of land'.\n\n"
-               "This annualized value should capture net margin, not gross margin that result "
-               "from the practice, whether sales of plant or animal products. The value should "
-               "reflect the average over the reasonable lifetime of the practice.\n\n"
-               "Note: If the net profit margin changes significantly across years, you can use a "
-               "customized calculation at bottom of 'Net Profit Margin' sheet.")
-    subtitle = 'years'
-    return scn_edit_vma_var(scenarios=scenarios, vma=vmas.get(title, None),
-            title=title, tooltip=tooltip, subtitle=subtitle)
+    return ipywidgets.VBox(children=children)
