@@ -266,3 +266,16 @@ May 20 - May 24, 2019
 + work was mostly outside of this codebase
   setting up JupyterHub and Discourse.
 
+May 27 - May 31, 2019
++ More work on cloud-hosted solution models
+  Discourse SSO from JupyterHub and gitlab.com OAuth:
+  https://gitlab.com/DentonGentry/discourse-gitlab-sso
+  customize the login screen, redirect straight to the Drawdown.ipynb file.
+
+June 3 - June 7, 2019
++ Experimental support for regionalized first cost computation.
+
+June 10 - June 14, 2019
++ initial work toward an Advanced Controls editor
+  editing widget showing VMA high/med/low, with data entry box.
++ convert advanced_controls Python object to a dataclass with defined fields.
