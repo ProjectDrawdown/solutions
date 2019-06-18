@@ -60,13 +60,13 @@ def convert_sr_float(val):
 
 
 
-def get_rrs_scenarios(wb):
+def get_rrs_scenarios(wb, solution_category):
     """Extract scenarios from an RRS Excel file.
        Arguments:
          wb: Excel workbook as returned by xlrd.
+         solution_category: to populate in the scenario
     """
     sr_tab = wb.sheet_by_name('ScenarioRecord')
-    ac_tab = wb.sheet_by_name('Advanced Controls')
     scenarios = {}
     for row in range(1, sr_tab.nrows):
         col_d = sr_tab.cell_value(row, 3)
@@ -77,6 +77,7 @@ def get_rrs_scenarios(wb):
             s = {}
 
             s['name'] = scenario_name
+            s['solution_category'] = solution_category
             s['vmas'] = 'VMAs'
 
             s['description'] = sr_tab.cell_value(row + 1, 4)
@@ -240,10 +241,6 @@ def get_rrs_scenarios(wb):
             if adjust and adjust != "(none)":
                 s['ref_adoption_use_pds_years'] = [int(x) for x in adjust.split(',') if x is not '']
 
-            # From Advanced Controls
-            category = ac_tab.cell_value(*cell_to_offsets('A159'))
-            if category: s['solution_category'] = category
-
             row += 202
             scenarios[scenario_name] = s
     return scenarios
@@ -251,10 +248,11 @@ def get_rrs_scenarios(wb):
 
 
 
-def get_land_scenarios(wb):
+def get_land_scenarios(wb, solution_category):
     """Extract scenarios from a LAND Excel file.
        Arguments:
          wb: Excel workbook returned by xlrd.
+         solution_category: to populate in the scenario
     """
     sr_tab = wb.sheet_by_name('ScenarioRecord')
     scenarios = {}
@@ -267,7 +265,7 @@ def get_land_scenarios(wb):
             s = {}
 
             s['name'] = scenario_name
-            s['solution_category'] = ac.SOLUTION_CATEGORY.LAND
+            s['solution_category'] = solution_category
             s['vmas'] = 'VMAs'
 
             s['description'] = sr_tab.cell_value(row + 1, 4)
@@ -458,7 +456,7 @@ def json_dumps_default(obj):
     elif isinstance(obj, pd.Series):
         return [[obj.index.name, obj.name]] + obj.reset_index().values.tolist()
     elif isinstance(obj, ac.SOLUTION_CATEGORY):
-        return ac.solution_category_as_string(obj)
+        return ac.solution_category_to_string(obj)
     else:
         raise TypeError('Unable to JSON encode: ' + repr(obj))
 
@@ -978,11 +976,11 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     f.write("      [" + ", ".join(r) + ",\n")
     r = [xln(h, 20, n) for n in range(7, 12)]
     f.write("       " + ", ".join(r) + "],\n")
-    f.write("       index=REGIONS)\n")
+    f.write("       index=dd.REGIONS)\n")
     f.write(
         "    ht_ref_adoption_final = {0}.loc[{1}] * (ht_ref_adoption_initial / {0}.loc[{2}])\n".format(
             tam_or_tla, final_datapoint_year, initial_datapoint_year))
-    f.write("    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)\n")
+    f.write("    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
     f.write("    ht_ref_datapoints.loc[" + str(
         initial_datapoint_year) + "] = ht_ref_adoption_initial\n")
     f.write("    ht_ref_datapoints.loc[" + str(
@@ -995,7 +993,7 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
         "    ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))\n")
     f.write("    ht_pds_adoption_final = ht_pds_adoption_final_percentage * {}.loc[{}]\n".format(
         tam_or_tla, final_datapoint_year))
-    f.write("    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)\n")
+    f.write("    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
     f.write("    ht_pds_datapoints.loc[" + str(
         initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
     f.write("    ht_pds_datapoints.loc[" + str(
@@ -1470,12 +1468,13 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write('import pandas as pd\n')
     f.write('\n')
     f.write('from model import adoptiondata\n')
-    f.write('from model import advanced_controls\n')
+    f.write('from model import advanced_controls as ac\n')
     if is_land:
         f.write('from model import aez\n')
     f.write('from model import ch4calcs\n')
     f.write('from model import co2calcs\n')
     f.write('from model import customadoption\n')
+    f.write('from model import dd\n')
     f.write('from model import emissionsfactors\n')
     f.write('from model import firstcost\n')
     f.write('from model import helpertables\n')
@@ -1483,7 +1482,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write('from model import s_curve\n')
     f.write('from model import unitadoption\n')
     f.write('from model import vma\n')
-    f.write('from model.advanced_controls import SOLUTION_CATEGORY\n\n')
 
     if has_tam:
         f.write('from model import tam\n')
@@ -1492,10 +1490,16 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 
     if is_rrs:
         f.write('from solution import rrs\n\n')
-        scenarios = get_rrs_scenarios(wb=wb)
+        ac_tab = wb.sheet_by_name('Advanced Controls')
+        sc_val = str(ac_tab.cell_value(*cell_to_offsets('A159')))
+        solution_category = f'ac.SOLUTION_CATEGORY.{sc_val}'
+        sc = ac.string_to_solution_category(solution_category)
+        scenarios = get_rrs_scenarios(wb=wb, solution_category=sc)
     elif is_land:
         f.write('from solution import land\n\n')
-        scenarios = get_land_scenarios(wb=wb)
+        solution_category = 'ac.SOLUTION_CATEGORY.LAND'
+        sc = ac.string_to_solution_category(solution_category)
+        scenarios = get_land_scenarios(wb=wb, solution_category=sc)
     else:
         scenarios = {}
 
@@ -1507,11 +1511,8 @@ def output_solution_python_file(outputdir, xl_filename, classname):
         write_units_rrs(f=f, wb=wb)
     if is_land:
         write_units_land(f=f, wb=wb)
-    f.write("name = '" + str(solution_name) + "'\n")
-
-    f.write(
-        "REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',\n")
-    f.write("           'Latin America', 'China', 'India', 'EU', 'USA']\n")
+    f.write(f"name = '{solution_name}'\n")
+    f.write(f"solution_category = {solution_category}\n")
     f.write("\n")
 
     has_default_pds_ad = has_custom_pds_ad = has_default_ref_ad = has_custom_ref_ad = False
@@ -1542,7 +1543,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     for name, s in scenarios.items():
         fname = p.joinpath(re.sub("['\"\n()\\/\.]", "", name).replace(' ', '_').strip() + '.json')
         write_scenario(filename=fname, s=s)
-    f.write("scenarios = advanced_controls.load_scenarios_from_json("
+    f.write("scenarios = ac.load_scenarios_from_json("
         "directory=THISDIR.joinpath('ac'), vmas=VMAs)\n")
     f.write("\n\n")
 
@@ -1550,6 +1551,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.write("  name = name\n")
     f.write("  units = units\n")
     f.write("  vmas = VMAs\n")
+    f.write("  solution_category = solution_category\n")
     f.write("\n")
     f.write("  def __init__(self, scenario=None):\n")
     f.write("    if scenario is None:\n")

@@ -716,7 +716,7 @@ class AdvancedControls:
 
         if isinstance(self.solution_category, str):
             object.__setattr__(self, 'solution_category',
-                    self.string_to_solution_category(self.solution_category))
+                    string_to_solution_category(self.solution_category))
         if isinstance(self.co2eq_conversion_source, str):
             object.__setattr__(self, 'co2eq_conversion_source', ef.string_to_conversion_source(
                     self.co2eq_conversion_source))
@@ -857,18 +857,6 @@ class AdvancedControls:
             raise ValueError(
                 'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for conventional')
 
-    def string_to_solution_category(self, text):
-        ltext = str(text).lower()
-        if ltext == 'replacement':
-            return SOLUTION_CATEGORY.REPLACEMENT
-        elif ltext == 'reduction':
-            return SOLUTION_CATEGORY.REDUCTION
-        elif ltext == 'land':
-            return SOLUTION_CATEGORY.LAND
-        elif ltext == 'not_applicable' or ltext == 'not applicable' or ltext == 'na':
-            return SOLUTION_CATEGORY.NOT_APPLICABLE
-        raise ValueError('invalid solution category: ' + str(text))
-
     def _substitute_vma(self, val, vma_titles):
         """
         If val is 'mean', 'high' or 'low', returns the corresponding statistic from the VMA object in
@@ -989,3 +977,25 @@ def get_param_for_vma_name(name):
             if name == vma_name:
                 return field.name
     return None
+
+def solution_category_to_string(cat):
+    if cat == SOLUTION_CATEGORY.REPLACEMENT:
+        return 'replacement'
+    elif cat == SOLUTION_CATEGORY.REDUCTION:
+        return 'reduction'
+    elif cat == SOLUTION_CATEGORY.LAND:
+        return 'land'
+    elif SOLUTION_CATEGORY.NOT_APPLICABLE:
+        return 'not_applicable'
+
+def string_to_solution_category(text):
+    ltext = str(text).lower()
+    if 'replacement' in ltext:
+        return SOLUTION_CATEGORY.REPLACEMENT
+    elif 'reduction' in ltext:
+        return SOLUTION_CATEGORY.REDUCTION
+    elif 'land' in ltext:
+        return SOLUTION_CATEGORY.LAND
+    elif 'not_applicable' in ltext or 'not applicable' in ltext or ltext == 'na':
+        return SOLUTION_CATEGORY.NOT_APPLICABLE
+    raise ValueError('invalid solution category: ' + str(text))

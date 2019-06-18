@@ -1,5 +1,6 @@
 {
     "name": "PDS-10p2050-Plausible (Book Ed. 1)",
+    "solution_category": "replacement",
     "vmas": "VMAs",
     "description": "Plausible Scenario, Based on Ambitious scenarios trajectories,. high growth",
     "report_start_year": 2020,
@@ -206,6 +207,5 @@
     "soln_pds_adoption_prognostication_trend": "3rd Poly",
     "soln_pds_adoption_prognostication_growth": "High",
     "soln_ref_adoption_basis": "Default",
-    "soln_ref_adoption_regional_data": false,
-    "solution_category": "REPLACEMENT"
+    "soln_ref_adoption_regional_data": false
 }
