@@ -197,8 +197,20 @@ def _get_editor_for_var(c, varname):
 
 edit_ui_layout_land = [
     ('separator', 'Financial'),
-    ('row', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit', ]),
-    ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit', ]),
+    ('editor', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit',
+        'yield_from_conv_practice', ]),
+    ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit',
+        'yield_gain_from_conv_to_soln', ]),
+    ('separator', 'Electricity Grid based Emissions'),
+    ('editor', ['conv_annual_energy_used', 'soln_energy_efficiency_factor',
+        'soln_annual_energy_used', ]),
+    ('separator', 'Non-Electricity Fuel Combustion-based Emissions'),
+    ('editor', ['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor',]),
+    ('separator', 'Direct Emissions (excl. electricity- or fuel-based)'),
+    ('editor', ['tco2eq_reduced_per_land_unit', 'tco2_reduced_per_land_unit',
+        'tn2o_co2_reduced_per_land_unit', 'tch4_co2_reduced_per_land_unit']),
+    ('separator', 'CARBON SEQUESTRATION AND LAND INPUTS'),
+    ('editor', ['seq_rate_global', 'carbon_not_emitted_after_harvesting', 'disturbance_rate', ]),
 ]
 
 edit_ui_layout_ocean = [

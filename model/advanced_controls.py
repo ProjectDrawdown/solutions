@@ -171,7 +171,7 @@ class AdvancedControls:
             "Use the next input, Total Annual Energy Used SOLUTION (e.g. electric vehicles "
             "use energy from the electric grid, whereas conventional vehicles use only fuel)"
             ),
-        'excelref': 'SolarPVUtil "Advanced Controls"!C159',
+        'excelref': 'SolarPVUtil "Advanced Controls"!C159; Silvopasture "Advanced Controls"!C123',
         })
 
     conv_annual_energy_used: float = dataclasses.field(default=None, metadata={
@@ -181,7 +181,7 @@ class AdvancedControls:
             "NOTE: for solutions that reduce electricity consumption per functional unit, "
             "enter the average electricity used per functional unit of the conventional "
             "technologies/practices."),
-        'excelref': 'SolarPVUtil "Advanced Controls"!B159',
+        'excelref': 'SolarPVUtil "Advanced Controls"!B159; Silvopasture "Advanced Controls"!B123',
         })
 
     soln_annual_energy_used: float = dataclasses.field(default=None, metadata={
@@ -207,7 +207,7 @@ class AdvancedControls:
             "cumulative unit installed. The equation may need to be edited if your "
             "energy savings depend on the marginal unit installed rather than the "
             "cumulative units."),
-        'excelref': 'SolarPVUtil "Advanced Controls"!F159',
+        'excelref': 'SolarPVUtil "Advanced Controls"!F159; Silvopasture "Advanced Controls"!F123',
         })
 
     soln_fuel_efficiency_factor: float = dataclasses.field(default=None, metadata={
@@ -232,7 +232,7 @@ class AdvancedControls:
             "enter negative number representing total additional fuel used, X < 0 (e.g. we "
             "hope solutions do not actually consume more fuel than the conventional practice, "
             "check with the senior research team if you run into this)"),
-        'excelref': 'SolarPVUtil "Advanced Controls"!G159',
+        'excelref': 'SolarPVUtil "Advanced Controls"!G159; Silvopasture "Advanced Controls"!G123',
         })
 
     # conv_fuel_emissions_factor: direct fuel emissions per funit, conventional
