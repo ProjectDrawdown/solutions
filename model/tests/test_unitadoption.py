@@ -573,7 +573,7 @@ def test_soln_pds_direct_co2_emissions_saved():
 
 def test_soln_pds_direct_ch4_emissions_saved():
     ac = advanced_controls.AdvancedControls(co2eq_conversion_source='AR5 with feedback',
-                                            ch4_is_co2eq=False, ch4_co2_per_twh=2.0)
+                                            ch4_is_co2eq=False, ch4_co2_per_funit=2.0)
     soln_pds_funits_adopted = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [1.0, 2.0, 3.0, 4.0]])
     soln_ref_funits_adopted = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     ua = unitadoption.UnitAdoption(ac=ac,
@@ -586,7 +586,7 @@ def test_soln_pds_direct_ch4_emissions_saved():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     ac = advanced_controls.AdvancedControls(co2eq_conversion_source='AR5 with feedback',
-                                            ch4_is_co2eq=True, ch4_co2_per_twh=2.0)
+                                            ch4_is_co2eq=True, ch4_co2_per_funit=2.0)
     ua = unitadoption.UnitAdoption(ac=ac,
                                    ref_total_adoption_units=None, pds_total_adoption_units=None,
                                    soln_pds_funits_adopted=soln_pds_funits_adopted,
@@ -599,7 +599,7 @@ def test_soln_pds_direct_ch4_emissions_saved():
 
 def test_soln_pds_direct_n2o_emissions_saved():
     ac = advanced_controls.AdvancedControls(co2eq_conversion_source='AR5 with feedback',
-                                            n2o_is_co2eq=False, n2o_co2_per_twh=2.0)
+                                            n2o_is_co2eq=False, n2o_co2_per_funit=2.0)
     soln_pds_funits_adopted = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [1.0, 2.0, 3.0, 4.0]])
     soln_ref_funits_adopted = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     ua = unitadoption.UnitAdoption(ac=ac,
@@ -612,7 +612,7 @@ def test_soln_pds_direct_n2o_emissions_saved():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     ac = advanced_controls.AdvancedControls(co2eq_conversion_source='AR5 with feedback',
-                                            n2o_is_co2eq=True, n2o_co2_per_twh=2.0)
+                                            n2o_is_co2eq=True, n2o_co2_per_funit=2.0)
     ua = unitadoption.UnitAdoption(ac=ac,
                                    ref_total_adoption_units=None, pds_total_adoption_units=None,
                                    soln_pds_funits_adopted=soln_pds_funits_adopted,

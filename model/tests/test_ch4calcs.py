@@ -13,7 +13,7 @@ def test_ch4_tons_reduced():
                                                   columns=soln_net_annual_funits_adopted_list[0]).set_index(
         'Year')
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-                                            ch4_co2_per_twh=0.01, ch4_is_co2eq=False)
+                                            ch4_co2_per_funit=0.01, ch4_is_co2eq=False)
     c4 = ch4calcs.CH4Calcs(ac=ac, soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
     result = c4.ch4_tons_reduced()
     expected = pd.DataFrame(ch4_tons_reduced_list[1:],
@@ -27,7 +27,7 @@ def test_ch4_tons_reduced_co2eq():
                                                   columns=soln_net_annual_funits_adopted_list[0]).set_index(
         'Year')
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-                                            ch4_co2_per_twh=0.01, ch4_is_co2eq=True)
+                                            ch4_co2_per_funit=0.01, ch4_is_co2eq=True)
     c4 = ch4calcs.CH4Calcs(ac=ac, soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
     result = c4.ch4_tons_reduced()
     assert result.values.sum() == 0.0
@@ -55,7 +55,7 @@ def test_ch4_ppb_calculator():
                                                   columns=soln_net_annual_funits_adopted_list[0]).set_index(
         'Year')
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-                                            ch4_co2_per_twh=0.01, ch4_is_co2eq=False)
+                                            ch4_co2_per_funit=0.01, ch4_is_co2eq=False)
     c4 = ch4calcs.CH4Calcs(ac=ac, soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
     result = c4.ch4_ppb_calculator()
     expected = pd.DataFrame(ch4_ppb_calculator_list[1:],

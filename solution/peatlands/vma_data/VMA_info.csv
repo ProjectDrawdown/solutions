@@ -1,10 +1,10 @@
 VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
 1,Current_Adoption,Current Adoption,True,False,7.0,7.0,7.0
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies,False,False,,,
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices,False,False,,,
 3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,False,False,,,
 4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,False,False,,,
 5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,False,False,,,
-6,Yield_from_CONVENTIONAL_Practice,Yield  from CONVENTIONAL Practice,False,False,,,
+6,Yield_from_CONVENTIONAL_Practice,Yield from CONVENTIONAL Practice,False,False,,,
 7,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),False,False,,,
 8,Average_Electricty_Used_DEGRADED_LAND,Average Electricty Used DEGRADED LAND,False,False,,,
 9,Energy_Efficiency_Factor_UNDEGRADED_LAND,Energy Efficiency Factor UNDEGRADED LAND,False,False,,,

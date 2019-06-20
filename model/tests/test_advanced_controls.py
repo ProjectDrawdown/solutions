@@ -41,7 +41,13 @@ def test_electricity_factors():
     conv_annual_energy_used = 2.117
     soln_annual_energy_used = None
 
-    ac = advanced_controls.AdvancedControls(
+    class fakeVMA:
+        def avg_high_low(self, key):
+            return (0.0, 0.0, 0.0)
+
+    vmas = {'Energy Efficiency Factor - SOLUTION': fakeVMA()}
+
+    ac = advanced_controls.AdvancedControls(vmas=vmas,
         soln_energy_efficiency_factor=soln_energy_efficiency_factor,
         conv_annual_energy_used=conv_annual_energy_used,
         soln_annual_energy_used=soln_annual_energy_used)
@@ -244,9 +250,22 @@ def test_fill_missing_regions_from_world_passthru():
 
 
 def test_from_json():
-    ac = advanced_controls.from_json(datadir.joinpath('ac_dataclass.json'))
+    l = advanced_controls.load_scenarios_from_json(directory=datadir.joinpath('ac'), vmas=None)
+    assert len(l) == 1
+    ac = l['ac_dataclass']
     assert ac.pds_2014_cost == pytest.approx(1.0)
     assert ac.ref_2014_cost == pytest.approx(2.0)
     assert ac.conv_2014_cost == pytest.approx(3.0)
     assert ac.soln_first_cost_efficiency_rate == pytest.approx(4.0)
     assert ac.conv_first_cost_efficiency_rate == pytest.approx(5.0)
+
+def test_vma_to_param_names():
+    result = advanced_controls.get_vma_for_param('yield_gain_from_conv_to_soln')
+    assert 'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)' in result
+    result = advanced_controls.get_vma_for_param('conv_fixed_oper_cost_per_iunit')
+    assert 'CONVENTIONAL Operating Cost per Functional Unit per Annum' in result
+    assert 'CONVENTIONAL Fixed Operating Cost (FOM)' in result
+    result = advanced_controls.get_param_for_vma_name('t C storage in Protected Landtype')
+    assert result == 'tC_storage_in_protected_land_type'
+    result = advanced_controls.get_param_for_vma_name('CONVENTIONAL Fixed Operating Cost (FOM)')
+    assert result == 'conv_fixed_oper_cost_per_iunit'

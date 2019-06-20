@@ -626,11 +626,6 @@ class JupyterUI:
         return ipywidgets.HTML(value=div + text + '</div>')
 
 
-    def vertical_space(self):
-        div = '<div style="font-size=12px;">&nbsp;</div>'
-        return ipywidgets.HTML(value=div)
-
-
     def get_summary_tab(self, solutions):
         """Return Summary panel.
 
@@ -682,13 +677,16 @@ class JupyterUI:
         children = []
         titles = []
         for c in classes:
-            d = ipywidgets.Output()
-            with d:
+            modelmap = ipywidgets.Output()
+            with modelmap:
                 IPython.display.display(IPython.display.SVG(
                     data=ui.modelmap.get_model_overview_svg(model=c)))
-            children.append(d)
+            editor = ui.scn_edit.get_scenario_editor_for_solution(soln_mod=c)
+            divider = ipywidgets.HTML(value='<br/><hr/><br/>')
+            children.append(ipywidgets.VBox(children=[modelmap, divider, editor]))
             titles.append(c.__name__)
-        model_overview = ipywidgets.Accordion(children=children, layout=ipywidgets.Layout(width='90%'))
+        layout = ipywidgets.Layout(width='90%')
+        model_overview = ipywidgets.Accordion(children=children, layout=layout)
         for idx, name in enumerate(titles):
             model_overview.set_title(idx, name)
 
@@ -1219,45 +1217,6 @@ class JupyterUI:
         return dez_data
 
 
-    def get_scenario_editor_tab(self, solutions):
-        """Return Scenario Editor panel.
-
-           Arguments:
-           solutions: a list of solution objects to be processed.
-        """
-        children = []
-        for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
-                label1 = self.blue_label('Conventional')
-                row1 = ipywidgets.HBox([
-                    ui.scn_edit.conv_first_cost(s),
-                    ui.scn_edit.conv_oper_cost_total(s),
-                    ui.scn_edit.conv_net_profit_margin(s),
-                ])
-                label2 = self.blue_label('Solution')
-                row2 = ipywidgets.HBox([
-                    ui.scn_edit.soln_first_cost(s),
-                    ui.scn_edit.soln_oper_cost_total(s),
-                    ui.scn_edit.soln_net_profit_margin(s),
-                    ])
-                children.append(ipywidgets.VBox([
-                    label1, row1, self.vertical_space(),
-                    label2, row2]))
-            elif s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
-                children.append(ipywidgets.VBox([]))
-            else:
-                children.append(ipywidgets.HBox([
-                    ui.scn_edit.conv_first_cost(s),
-                    ui.scn_edit.conv_lifetime_capacity(s),
-                    ui.scn_edit.soln_first_cost(s),
-                    ui.scn_edit.soln_oper_cost_fixed(s),
-                    ]))
-        scn_edit = ipywidgets.Accordion(children=children)
-        for i, s in enumerate(solutions):
-            scn_edit.set_title(i, fullname(s))
-        return scn_edit
-
-
     def get_detailed_results_tabs(self):
         """Return tab bar of detailed results for a set of solutions."""
         details_progressbar = self.ui_elements['details_progressbar']
@@ -1266,12 +1225,10 @@ class JupyterUI:
         self.solutions = solutions
 
         remaining = 1.0 - details_progressbar.value
-        increment = remaining / 11.0
+        increment = remaining / 10.0
         summary = self.get_summary_tab(solutions)
         details_progressbar.value += increment
         model_overview = self.get_model_tab(solutions)
-        details_progressbar.value += increment
-        scn_edit = self.get_scenario_editor_tab(solutions)
         details_progressbar.value += increment
         variable_meta_analysis = self.get_VMA_tab(solutions)
         details_progressbar.value += increment
@@ -1291,8 +1248,8 @@ class JupyterUI:
         details_progressbar.value = 1.0
 
         # ------------------ Create tabs -----------------
-        children = [summary, model_overview, scn_edit, variable_meta_analysis, adoption_data]
-        titles = ["Summary", "Model", "Scenarios", "Variable Meta-Analysis", "Adoption Data"]
+        children = [summary, model_overview, variable_meta_analysis, adoption_data]
+        titles = ["Summary", "Model", "Variable Meta-Analysis", "Adoption Data"]
         if tam_data:
             children.append(tam_data)
             titles.append('TAM Data')

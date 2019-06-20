@@ -256,9 +256,23 @@ class VMAReader:
         the SOURCE ID cell, as this is also a varying spacing.
 
         Arguments:
-            sheetname: name of the Excel Sheet. Some solutions use 'Variable Meta-analysis',
-                some use 'Variable Meta-analysis-DD'.
+            sheetname: name of the Excel Sheet. Internal solution files use
+                'Variable Meta-analysis', public files use 'Variable Meta-analysis-DD'.
         """
+
+        normalize_vma_names = {
+            'SOLUTION First Cost per Implementation Unit of the solution':
+                'SOLUTION First Cost per Implementation Unit',
+            'Yield  from CONVENTIONAL Practice': 'Yield from CONVENTIONAL Practice',
+            'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls':
+                'Indirect CO2 Emissions per CONVENTIONAL Unit',
+            'Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls)':
+                'Indirect CO2 Emissions per SOLUTION Unit',
+            'CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies':
+                'CONVENTIONAL First Cost per Implementation Unit for replaced practices',
+            'ALTERNATIVE APPROACH      Annual Energy Used UNDEGRADED LAND':
+                'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND',
+        }
 
         table_locations = OrderedDict()
         sheet = self.wb.sheet_by_name(sheetname)
@@ -266,7 +280,8 @@ class VMAReader:
         for table_num in range(1, 36):
             found = False
             for rows_to_next_table in range(200):
-                title_from_cell = str(sheet.cell_value(row + rows_to_next_table, col))
+                title_from_cell = str(sheet.cell_value(row + rows_to_next_table, col)).strip()
+                title_from_cell = normalize_vma_names.get(title_from_cell, title_from_cell)
                 # print(title_from_cell)
                 if title_from_cell.startswith('VARIABLE'):
                     # if the table has a generic VARIABLE title we assume there are no more variables to record

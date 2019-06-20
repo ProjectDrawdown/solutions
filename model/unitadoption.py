@@ -598,9 +598,9 @@ class UnitAdoption:  # by Owen Barton
         """
         ef = emissionsfactors.CO2Equiv(self.ac.co2eq_conversion_source)
         if self.ac.ch4_is_co2eq:
-            result = self.soln_net_annual_funits_adopted() * self.ac.ch4_co2_per_twh
+            result = self.soln_net_annual_funits_adopted() * self.ac.ch4_co2_per_funit
         else:
-            result = self.soln_net_annual_funits_adopted() * ef.CH4multiplier * self.ac.ch4_co2_per_twh
+            result = self.soln_net_annual_funits_adopted() * ef.CH4multiplier * self.ac.ch4_co2_per_funit
         result.name = "soln_pds_direct_ch4_co2_emissions_saved"
         return result
 
@@ -612,9 +612,9 @@ class UnitAdoption:  # by Owen Barton
         """
         ef = emissionsfactors.CO2Equiv(self.ac.co2eq_conversion_source)
         if self.ac.n2o_is_co2eq:
-            result = self.soln_net_annual_funits_adopted() * self.ac.n2o_co2_per_twh
+            result = self.soln_net_annual_funits_adopted() * self.ac.n2o_co2_per_funit
         else:
-            result = self.soln_net_annual_funits_adopted() * ef.N2Omultiplier * self.ac.n2o_co2_per_twh
+            result = self.soln_net_annual_funits_adopted() * ef.N2Omultiplier * self.ac.n2o_co2_per_funit
         result.name = "soln_pds_direct_n2o_co2_emissions_saved"
         return result
 
