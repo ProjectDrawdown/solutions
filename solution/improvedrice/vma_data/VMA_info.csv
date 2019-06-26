@@ -1,7 +1,7 @@
 VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
 1,Current_Adoption,Current Adoption,True,False,7.0,7.0,7.0
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit,False,False,,,
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,False,False,,,
 4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,True,True,652.735403234368,944.0249679139572,361.44583855477885
 5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True,True,384.34648706769167,507.99545828921026,260.6975158461731
 6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,True,True,449.1639921107947,687.8154160286508,210.5125681929386
@@ -9,10 +9,10 @@ VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fix
 8,Yield_from_CONVENTIONAL_Practice,Yield from CONVENTIONAL Practice,True,True,1176.9959612047824,2971.1380679370595,-617.1461455274946
 9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),True,False,-0.029402693486478743,0.053540577571417794,-0.11234596454437527
 10,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
-11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
-12,Total_Energy_Used_per_functional_unit_SOLUTION,Total Energy Used per functional unit - SOLUTION,False,False,,,
-13,Fuel_Consumed_per_Functional_Unit_CONVENTIONAL,Fuel Consumed per Functional Unit - CONVENTIONAL,False,False,,,
-14,Fuel_Efficiency_Factor_SOLUTION,Fuel Efficiency Factor - SOLUTION,False,False,,,
+11,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
+12,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
+13,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,False,False,,,
+14,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,False,False,,,
 15,t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit,t CO2-eq (Aggregate emissions) Reduced per Land Unit,False,False,,,
 16,t_CO2_Reduced_per_Land_Unit,t CO2 Reduced per Land Unit,False,False,,,
 17,t_N2O_CO2_eq_Reduced_per_Land_Unit,t N2O-CO2-eq Reduced per Land Unit,True,False,-0.38468571428571435,0.07421175869730845,-0.8435831872687372

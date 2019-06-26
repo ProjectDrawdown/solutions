@@ -1,7 +1,7 @@
 VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
 1,Current_Adoption,Current Adoption,False,False,,,
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit,True,False,612.3704109062288,884.6214088792835,340.1194129331741
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,612.3704109062288,884.6214088792835,340.1194129331741
 4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,False,False,,,
 5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True,False,24.48333333333333,31.058593603394716,17.908073063271946
 6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,False,False,,,
@@ -9,7 +9,7 @@ VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fix
 8,Yield_from_CONVENTIONAL_Practice,Yield from CONVENTIONAL Practice,False,False,,,
 9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),False,False,,,
 10,Electricty_Consumed_per_CONVENTIONAL_Functional_Unit,Electricty Consumed per CONVENTIONAL Functional Unit,False,False,,,
-11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+11,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
 12,Total_Energy_Used_per_SOLUTION_functional_unit,Total Energy Used per SOLUTION functional unit,False,False,,,
 13,Fuel_Consumed_per_CONVENTIONAL_Functional_Unit,Fuel Consumed per CONVENTIONAL Functional Unit,False,False,,,
 14,Fuel_Reduction_Factor_SOLUTION,Fuel Reduction Factor SOLUTION,False,False,,,

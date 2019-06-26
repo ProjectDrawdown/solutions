@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,195 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS-12p2050-Plausible (Book Ed. 1)': advanced_controls.AdvancedControls(
-      # Plausible Scenario; Based on the evaluation of ambitious scenarios from four
-      # global energy systems models, this scenario follows a high growth trajectory of
-      # the adoption cases.
-
-      # general
-      solution_category='REPLACEMENT', 
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Custom', 
-      soln_ref_adoption_custom_name='Custom REF Adoption mirroring decline in nuclear in Plausible SCenario', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Existing Adoption Prognostications', 
-      soln_pds_adoption_prognostication_source='Ambitious Cases', 
-      soln_pds_adoption_prognostication_trend='3rd Poly', 
-      soln_pds_adoption_prognostication_growth='High', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario', 
-      pds_base_adoption=[('World', 2417.0), ('OECD90', 2067.538596846472), ('Eastern Europe', 337.7907984353286), ('Asia (Sans Japan)', 422.9280547381077), ('Middle East and Africa', 19.434007595770563), ('Latin America', 34.286204887889326), ('China', 186.72565568543357), ('India', 81.7511387032866), ('EU', 911.5844464681002), ('USA', 822.7334922881862)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=4680.011875, ref_2014_cost=4680.011875, 
-      conv_2014_cost=2010.0317085196398, 
-      soln_first_cost_efficiency_rate=0.03, 
-      conv_first_cost_efficiency_rate=0.02, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=358697.6666666667, soln_avg_annual_use=7173.953333333334, 
-      conv_lifetime_capacity=182411.2757676607, conv_avg_annual_use=4946.8401873420025, 
-
-      soln_var_oper_cost_per_funit=0.014706279999999999, soln_fuel_cost_per_funit=0.00341387997268896, 
-      soln_fixed_oper_cost_per_iunit=46.870000000000005, 
-      conv_var_oper_cost_per_funit=0.003752690403548987, conv_fuel_cost_per_funit=0.0731, 
-      conv_fixed_oper_cost_per_iunit=32.951404311078015, 
-
-      # emissions
-      ch4_is_co2eq=True, n2o_is_co2eq=True, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=16830.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
-      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS-10p2050-Drawdown Scenario': advanced_controls.AdvancedControls(
-      # Drawdown Scenario, It is assumed that because of the higher adoption of other
-      # renewable energy systems, such as wind and solar, the need for new nuclear
-      # energy facilities will decline. This scenario is built upon the same
-      # trajectories as the Plausible Scenario, but presents a medium growth trajectory,
-      # dipping below the Reference Scenario in 2041. It also uses the Default REF.
-
-      # general
-      solution_category='REPLACEMENT', 
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Existing Adoption Prognostications', 
-      soln_pds_adoption_prognostication_source='Ambitious Cases', 
-      soln_pds_adoption_prognostication_trend='3rd Poly', 
-      soln_pds_adoption_prognostication_growth='Medium', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario', 
-      pds_base_adoption=[('World', 2417.0), ('OECD90', 2067.538596846472), ('Eastern Europe', 337.7907984353286), ('Asia (Sans Japan)', 422.9280547381077), ('Middle East and Africa', 19.434007595770563), ('Latin America', 34.286204887889326), ('China', 186.72565568543357), ('India', 81.7511387032866), ('EU', 911.5844464681002), ('USA', 822.7334922881862)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=4680.011875, ref_2014_cost=4680.011875, 
-      conv_2014_cost=2010.0317085196398, 
-      soln_first_cost_efficiency_rate=0.03, 
-      conv_first_cost_efficiency_rate=0.02, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=358697.6666666667, soln_avg_annual_use=7173.953333333334, 
-      conv_lifetime_capacity=182411.2757676607, conv_avg_annual_use=4946.8401873420025, 
-
-      soln_var_oper_cost_per_funit=0.014706279999999999, soln_fuel_cost_per_funit=0.00341387997268896, 
-      soln_fixed_oper_cost_per_iunit=46.870000000000005, 
-      conv_var_oper_cost_per_funit=0.003752690403548987, conv_fuel_cost_per_funit=0.0731, 
-      conv_fixed_oper_cost_per_iunit=32.951404311078015, 
-
-      # emissions
-      ch4_is_co2eq=True, n2o_is_co2eq=True, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=16830.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
-      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS-0p2050-Optimum (Book Ed.1)': advanced_controls.AdvancedControls(
-      # Optimum Scenario, with the target of 100 percent electricity generation from no-
-      # regrets, renewable energy sources in 2050, this scenario shows the peak in
-      # nuclear energy by 2023 following REFpol Ampere (max generation; after is
-      # followed by a decline to zero in 2050.
-
-      # general
-      solution_category='REPLACEMENT', 
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Optimum Nuclear reduces to 0% of TAM by 2050, based on AMPERE RefPol Scenario (2014) till peaking', 
-      pds_adoption_use_ref_years=[2015], 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 
-      pds_base_adoption=[('World', 2417.0), ('OECD90', 2067.538596846472), ('Eastern Europe', 337.7907984353286), ('Asia (Sans Japan)', 422.9280547381077), ('Middle East and Africa', 19.434007595770563), ('Latin America', 34.286204887889326), ('China', 186.72565568543357), ('India', 81.7511387032866), ('EU', 911.5844464681002), ('USA', 822.7334922881862)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=4680.011875, ref_2014_cost=4680.011875, 
-      conv_2014_cost=2010.0317085196398, 
-      soln_first_cost_efficiency_rate=0.03, 
-      conv_first_cost_efficiency_rate=0.02, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=358697.6666666667, soln_avg_annual_use=7173.953333333334, 
-      conv_lifetime_capacity=182411.2757676607, conv_avg_annual_use=4946.8401873420025, 
-
-      soln_var_oper_cost_per_funit=0.014706279999999999, soln_fuel_cost_per_funit=0.00341387997268896, 
-      soln_fixed_oper_cost_per_iunit=46.870000000000005, 
-      conv_var_oper_cost_per_funit=0.003752690403548987, conv_fuel_cost_per_funit=0.0731, 
-      conv_fixed_oper_cost_per_iunit=32.951404311078015, 
-
-      # emissions
-      ch4_is_co2eq=True, n2o_is_co2eq=True, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=16830.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
-      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
+units = {
+  "implementation unit": "TW",
+  "functional unit": "TWh",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Nuclear'
+solution_category = ac.SOLUTION_CATEGORY.REPLACEMENT
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class Nuclear:
-  name = 'Nuclear'
-  units = {
-    "implementation unit": "TW",
-    "functional unit": "TWh",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS-12p2050-Plausible (Book Ed. 1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -326,16 +158,16 @@ class Nuclear:
     ht_ref_adoption_initial = pd.Series(
       [2417.0, 2067.538596846472, 337.7907984353286, 422.9280547381077, 19.434007595770563,
        34.286204887889326, 186.72565568543357, 81.7511387032866, 911.5844464681002, 822.7334922881862],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

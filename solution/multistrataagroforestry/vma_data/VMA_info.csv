@@ -1,7 +1,7 @@
 VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
 1,Current_Adoption,Current Adoption,False,False,,,
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit_for_replaced_practices_technologies,CONVENTIONAL First Cost per Implementation Unit for replaced practices,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit_of_the_solution,SOLUTION First Cost per Implementation Unit,True,False,1996.7133281834824,4348.655438403677,-355.2287820367126
+2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
+3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,1996.7133281834824,4348.655438403677,-355.2287820367126
 4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,True,False,328.4158577699379,684.5834152532939,-27.751699713418134
 5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True,False,368.8248405032644,727.0975270175563,10.552153988972407
 6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,True,False,143.54391845443618,231.31902469904455,55.768812209827814
@@ -9,7 +9,7 @@ VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fix
 8,Yield_from_CONVENTIONAL_Practice,Yield from CONVENTIONAL Practice,True,False,3.4285714285714284,5.085344786391886,1.771798070750971
 9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),False,False,,,
 10,Electricty_Consumed_per_CONVENTIONAL_Functional_Unit,Electricty Consumed per CONVENTIONAL Functional Unit,False,False,,,
-11,Energy_Efficiency_Factor_SOLUTION,Energy Efficiency Factor - SOLUTION,False,False,,,
+11,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
 12,Total_Energy_Used_per_SOLUTION_functional_unit,Total Energy Used per SOLUTION functional unit,False,False,,,
 13,Fuel_Consumed_per_CONVENTIONAL_Functional_Unit,Fuel Consumed per CONVENTIONAL Functional Unit,False,False,,,
 14,Fuel_Reduction_Factor_SOLUTION,Fuel Reduction Factor SOLUTION,False,False,,,

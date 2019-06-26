@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,201 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS1-97p2050-Mean EEOI (Book Ed.1)': advanced_controls.AdvancedControls(
-      # We take the mean estimates of EEOI (Energy Efficiency Operations Index in
-      # gCO2/ton-nmile) as projected by several studies referenced in the 3rd GHG IMO
-      # Study (Smith et al, 2014), interpolate for missing years and convert them to
-      # Estimated ton-nautical mile adoptions assuming that an efficient ship is one
-      # that adopts a fixed set of 17 technologies and slow steaming, and a conventional
-      # (non-efficient) ship is one that has average efficiency in 2008. This scenario
-      # uses inputs calculated for the Drawdown book edition 1, some of which were
-      # updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Drawdown Book Edition 1 Scenario 1', 
-      pds_adoption_use_ref_years=[2015], 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 14427.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=11520609.511049619, ref_2014_cost=11520609.511049619, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.05, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.0922, 
-      soln_lifetime_capacity=34.62518245159868, soln_avg_annual_use=1.3850072980639474, 
-      conv_lifetime_capacity=34.62518245159868, conv_avg_annual_use=1.3850072980639474, 
-
-      soln_var_oper_cost_per_funit=126122.92933096059, soln_fuel_cost_per_funit=1381104.13088959, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=1818597.774776236, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=3663130.5135886758, soln_fuel_efficiency_factor=0.5010773206596144, 
-      conv_fuel_emissions_factor=0.00289602, soln_fuel_emissions_factor=0.00289602, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS2-100p2050-1 SD Below Mean EEOI (Book Ed.1)': advanced_controls.AdvancedControls(
-      # We take (1 standard deviation below the mean of) the estimates of EEOI (Energy
-      # Efficiency Operations Index in gCO2/ton-nmile) as projected by several studies
-      # referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing
-      # years and convert them to Estimated ton-nautical mile adoptions assuming that an
-      # efficient ship is one that adopts a fixed set of 17 technologies and slow
-      # steaming, and a conventional (non-efficient) ship is one that has average
-      # efficiency in 2008. This scenario uses inputs calculated for the Drawdown book
-      # edition 1, some of which were updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Drawdown Book Edition 1 Scenario 2', 
-      pds_adoption_use_ref_years=[2015], 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 14427.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=11520609.511049619, ref_2014_cost=11520609.511049619, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.05, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.0922, 
-      soln_lifetime_capacity=34.62518245159868, soln_avg_annual_use=1.3850072980639474, 
-      conv_lifetime_capacity=34.62518245159868, conv_avg_annual_use=1.3850072980639474, 
-
-      soln_var_oper_cost_per_funit=126122.92933096059, soln_fuel_cost_per_funit=1381104.13088959, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=1818597.774776236, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=3663130.5135886758, soln_fuel_efficiency_factor=0.5010773206596144, 
-      conv_fuel_emissions_factor=0.00289602, soln_fuel_emissions_factor=0.00289602, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS3-100p2050-Lowest EEOI (Book Ed.1)': advanced_controls.AdvancedControls(
-      # We take the lowest estimates of EEOI (Energy Efficiency Operations Index in
-      # gCO2/ton-nmile) as projected by several studies referenced in the 3rd GHG IMO
-      # Study (Smith et al, 2014), interpolate for missing years and convert them to
-      # Estimated ton-nautical mile adoptions assuming that an efficient ship is one
-      # that adopts a fixed set of 17 technologies and slow steaming, and a conventional
-      # (non-efficient) ship is one that has average efficiency in 2008. This scenario
-      # uses inputs calculated for the Drawdown book edition 1, some of which were
-      # updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Drawdown Book Edition 1 Scenario 3', 
-      pds_adoption_use_ref_years=[2015], 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 14427.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=11520609.511049619, ref_2014_cost=11520609.511049619, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.05, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.0922, 
-      soln_lifetime_capacity=34.62518245159868, soln_avg_annual_use=1.3850072980639474, 
-      conv_lifetime_capacity=34.62518245159868, conv_avg_annual_use=1.3850072980639474, 
-
-      soln_var_oper_cost_per_funit=126122.92933096059, soln_fuel_cost_per_funit=1381104.13088959, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=1818597.774776236, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=3663130.5135886758, soln_fuel_efficiency_factor=0.5010773206596144, 
-      conv_fuel_emissions_factor=0.00289602, soln_fuel_emissions_factor=0.00289602, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
+units = {
+  "implementation unit": "Ship",
+  "functional unit": "Billion Ton - nmiles",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Oceanic Freight Improvements'
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class Ships:
-  name = 'Oceanic Freight Improvements'
-  units = {
-    "implementation unit": "Ship",
-    "functional unit": "Billion Ton - nmiles",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS1-97p2050-Mean EEOI (Book Ed.1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -319,16 +145,16 @@ class Ships:
     ht_ref_adoption_initial = pd.Series(
       [14427.0, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

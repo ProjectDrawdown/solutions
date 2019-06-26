@@ -1,6 +1,6 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,Asia (Sans Japan),,,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,164.63091,Referred Stout 1990 estimates,
-FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,Eastern Europe,,,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,15.694969,Referred Stout 1990 estimates,
-FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,Latin America,,,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,19.527153,Referred Stout 1990 estimates,
-FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,Middle East and Africa,,,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,22.033933999999995,Referred Stout 1990 estimates,
-FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,OECD 90,,,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,42.78025999999999,Referred Stout 1990 estimates,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,Asia (Sans Japan),,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,164.63091,Referred Stout 1990 estimates,
+FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,Eastern Europe,,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,15.694969,Referred Stout 1990 estimates,
+FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,Latin America,,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,19.527153,Referred Stout 1990 estimates,
+FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,Middle East and Africa,,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,22.033933999999995,Referred Stout 1990 estimates,
+FAO,http://fenixapps2.fao.org/alba/db1/modules/faostat-download-js/PDF/EN/GN.pdf,OECD 90,,2 - Public Sector/ Multilateral Agency,,,,KWH/ha,,KWH/ha,42.78025999999999,Referred Stout 1990 estimates,

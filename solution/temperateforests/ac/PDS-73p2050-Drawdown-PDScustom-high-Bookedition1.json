@@ -1,0 +1,130 @@
+{
+    "name": "PDS-73p2050-Drawdown-PDScustom-high-Bookedition1",
+    "solution_category": "land",
+    "vmas": "VMAs",
+    "description": "This scenario presents the plausible scenario results of the Book edition 1. Thus, it has the same inputs as that of Book edition 1. The results based on new changes are stored as separate scenarios. \r\n\r\nThe current adoption of the solution was assumed to be 0. The future adoption scenarios were built on the commitments given for temperate forest restoration in the Bonn Challenge and New York Deceleration in addition to the World Resources Institute's projected estimates for the solution.  Several custom adoption scenarios were built to project either the intact or wide scale restoration of temperate forests in 15 years (by 2030), in 30 years (by 2045), and in 45 years (by 2060) compare to the situation in 2015. This scenario derives the result from the \"high of all\" PDS custom adoption scenarios. Please note; there are nine custom adoption scenarios, but this scenario has used only first seven custom adoption scenarios given in the  \"Custom PDS adoption sheet\".",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "use_custom_tla": true,
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "soln_ref_adoption_regional_data": false,
+    "conv_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_expected_lifetime": 30.0,
+    "yield_from_conv_practice": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "pds_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_expected_lifetime": 30.0,
+    "yield_gain_from_conv_to_soln": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "npv_discount_rate": 0.1,
+    "emissions_use_co2eq": true,
+    "emissions_use_agg_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "conv_indirect_co2_per_unit": 0.0,
+    "soln_indirect_co2_per_iunit": 0.0,
+    "tco2eq_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tco2eq_rplu_rate": "One-time",
+    "tco2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tco2_rplu_rate": "One-time",
+    "tn2o_co2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tn2o_co2_rplu_rate": "One-time",
+    "tch4_co2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tch4_co2_rplu_rate": "One-time",
+    "land_annual_emissons_lifetime": 100.0,
+    "conv_annual_energy_used": 0.0,
+    "soln_annual_energy_used": 0.0,
+    "seq_rate_global": {
+        "value": 2.96222222222222,
+        "statistic": "mean"
+    },
+    "carbon_not_emitted_after_harvesting": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "disturbance_rate": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "harvest_frequency": 100.0
+}

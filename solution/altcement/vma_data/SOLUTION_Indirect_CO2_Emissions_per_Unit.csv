@@ -1,0 +1,2 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Project Drawdown assumption,,OECD90,USA,,,,,t CO2 / t FlyAsh shipped,0.0,t CO2-eq/ MMt Cement,,It is assumed that the FlyAsh used in the production of cement is shipped by the average rail (1400km) and average truck (960km) distances in the US (50% each). Truck emissions: 134g CO2/ t-km. Rail Emissions: 23g CO2/ t-km.,

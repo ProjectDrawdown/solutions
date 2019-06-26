@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,198 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS1-4p2050-Doubled Historical Electrification Rate (Book Ed.1)': advanced_controls.AdvancedControls(
-      # Electrified railway tkms increase at TWICE the historical average annual rate of
-      # track electrification. Using UIC data, we estimate the average electrification
-      # rate at 1.4% annually. We double this and use this rate as the optimistically
-      # plausible electrification rate. This is reasonable since it still remains below
-      # the annual rate of many year's growth according to UIC data below. This may come
-      # from increased track length and uniform usage, or higher usage of electrified
-      # tracks versus other tracks. This scenario uses inputs from the model developed
-      # for the Drawdown book, some of which have been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Custom', 
-      soln_ref_adoption_custom_name='Drawdown Book Reference Scenario', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='PDS1 - Doubling of Historical Electrification Rate (UIC data)', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 2751916.5073962263), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=1888940.5168064325, ref_2014_cost=1888940.5168064325, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.06245, 
-      soln_lifetime_capacity=217.4654190680037, soln_avg_annual_use=7.248847302266793, 
-      conv_lifetime_capacity=217.46541906800368, conv_avg_annual_use=7.248847302266793, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=1043.9785714285686, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=8946.708608056493, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=1.1035714285714256e-05, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=6855.0407555928305, soln_fuel_efficiency_factor=1.0, 
-      conv_fuel_emissions_factor=0.00268891857, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS2-5p2050-based on on IEA 2DS (Book Ed.1)': advanced_controls.AdvancedControls(
-      # UIC data for 2014 indicates 27% electrification of rails. The IEA 2DS scenario
-      # projects that 40% of rail freight can be powered by electricity by 2050. We
-      # linearly interpolate between these two percentages. We also use an annual
-      # average use rate that is 25% higher for the electrified tracks than the
-      # conventional. This scenario uses inputs from the model prepared for the Drawdown
-      # book, some of which have been updated for new scenarios.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Custom', 
-      soln_ref_adoption_custom_name='Drawdown Book Reference Scenario', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='PDS2 - Linear projection of Electricity-powered rail freight from 27% of rail freight in 2014 to 40% in 2050 (IEA 2DS projection)', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 2751916.5073962263), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=1888940.5168064325, ref_2014_cost=1888940.5168064325, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.06245, 
-      soln_lifetime_capacity=217.4654190680037, soln_avg_annual_use=9.061059127833488, 
-      conv_lifetime_capacity=217.46541906800368, conv_avg_annual_use=7.248847302266793, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=1043.9785714285686, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=8946.708608056493, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=1.1035714285714256e-05, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=6855.0407555928305, soln_fuel_efficiency_factor=1.0, 
-      conv_fuel_emissions_factor=0.00268891857, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS3-10p2050-Full Electrification (Book Ed.1)': advanced_controls.AdvancedControls(
-      # UIC data for 2014 indicates 27% electrification of rails. The IEA 2DS scenario
-      # projects that 40% of rail freight can be powered by electricity by 2050. We
-      # examine the impact of making this target 100% in 2050 by linearly interpolating
-      # between these two percentages (Note TAM is all freight including non-rail). We
-      # also assume a doubling of the electrified track usage versus the conventional.
-      # This scenario uses inputs to the model developed for the Drawdown book, some of
-      # which have been updated for later scenarios.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Custom', 
-      soln_ref_adoption_custom_name='Drawdown Book Reference Scenario', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='PDS3 - Linear projection of Electricity-powered rail freight from 27% of rail freight in 2014 to 100% in 2050', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 2751916.5073962263), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=1888940.5168064325, ref_2014_cost=1888940.5168064325, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.06245, 
-      soln_lifetime_capacity=217.4654190680037, soln_avg_annual_use=14.49769460453358, 
-      conv_lifetime_capacity=217.46541906800368, conv_avg_annual_use=7.248847302266793, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=1043.9785714285686, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=8946.708608056493, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=1.1035714285714256e-05, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=6855.0407555928305, soln_fuel_efficiency_factor=1.0, 
-      conv_fuel_emissions_factor=0.00268891857, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
+units = {
+  "implementation unit": "km of track converted",
+  "functional unit": "Mt-km",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Train Fuel Efficiency'
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class TrainFuelEfficiency:
-  name = 'Train Fuel Efficiency'
-  units = {
-    "implementation unit": "km of track converted",
-    "functional unit": "Mt-km",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS1-4p2050-Doubled Historical Electrification Rate (Book Ed.1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -295,16 +124,16 @@ class TrainFuelEfficiency:
     ht_ref_adoption_initial = pd.Series(
       [2751916.5073962263, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

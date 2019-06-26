@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,190 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS1-67p2050-Low Growth (Book Ed.1)': advanced_controls.AdvancedControls(
-      # The growth of adoption is based on low (1 standard deviation below the mean
-      # annual) values of adoption from existing prognostications from the literature.
-      # No learning rate is assumed. This scenario uses inputs calculated for the
-      # Drawdown book edition 1, some of which have been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Existing Adoption Prognostications', 
-      soln_pds_adoption_prognostication_source='ALL SOURCES', 
-      soln_pds_adoption_prognostication_trend='3rd Poly', 
-      soln_pds_adoption_prognostication_growth='Low', 
-      source_until_2014='See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%', 
-      ref_source_post_2014='Maximum Cases', 
-      pds_source_post_2014='Maximum Cases', 
-      pds_base_adoption=[('World', 207.0), ('OECD90', 125.0), ('Eastern Europe', 6.3), ('Asia (Sans Japan)', 78.0), ('Middle East and Africa', 2.75), ('Latin America', 12.21), ('China', 44.0), ('India', 3.0), ('EU', 69.0), ('USA', 46.5)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=2024020321.786245, ref_2014_cost=2024020321.786245, 
-      conv_2014_cost=1505666896.630999, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=1.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=188839.77976666667, 
-      conv_indirect_co2_per_unit=524550.4702999999, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
-      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=1318973.9612408415, soln_emissions_per_funit=1230043.9188259256, 
-
-    ),
-  'PDS2-77p2050-Mean Growth (Book Ed.1)': advanced_controls.AdvancedControls(
-      # The growth of adoption is based on medium values of adoption from existing
-      # prognostications from the literature. At later years, restrictions on feedstock
-      # due to integration with other Drawdown solutions reduces demand from this trend
-      # however. A 14.9% solution learning rate is assumed. This scenario uses inputs
-      # calculated for the Drawdown book edition 1, some of which have been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Custom Scenario No.1 - Using Medium Trend of Prognostications', 
-      source_until_2014='See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%', 
-      ref_source_post_2014='Maximum Cases', 
-      pds_source_post_2014='Maximum Cases', 
-      pds_base_adoption=[('World', 207.0), ('OECD90', 125.0), ('Eastern Europe', 6.3), ('Asia (Sans Japan)', 78.0), ('Middle East and Africa', 2.75), ('Latin America', 12.21), ('China', 44.0), ('India', 3.0), ('EU', 69.0), ('USA', 46.5)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=2024020321.786245, ref_2014_cost=2024020321.786245, 
-      conv_2014_cost=1505666896.630999, 
-      soln_first_cost_efficiency_rate=0.149, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=1.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=188839.77976666667, 
-      conv_indirect_co2_per_unit=524550.4702999999, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
-      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=1318973.9612408415, soln_emissions_per_funit=1230043.9188259256, 
-
-    ),
-  'PDS3-80p2050-High Growth (Book Ed.1)': advanced_controls.AdvancedControls(
-      # The growth of adoption is based on high values of adoption from existing
-      # prognostications from the literature. At later years, restrictions on feedstock
-      # due to integration with other Drawdown solutions reduces demand from this trend
-      # however. A 14.9% solution learning rate is assumed. This scenario uses inputs
-      # calculated for the Drawdown book edition 1, some of which have been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Custom Scenario No.2 - Using High Trend of Existing Prognostications', 
-      source_until_2014='See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%', 
-      ref_source_post_2014='Maximum Cases', 
-      pds_source_post_2014='Maximum Cases', 
-      pds_base_adoption=[('World', 207.0), ('OECD90', 125.0), ('Eastern Europe', 6.3), ('Asia (Sans Japan)', 78.0), ('Middle East and Africa', 2.75), ('Latin America', 12.21), ('China', 44.0), ('India', 3.0), ('EU', 69.0), ('USA', 46.5)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=2024020321.786245, ref_2014_cost=2024020321.786245, 
-      conv_2014_cost=1505666896.630999, 
-      soln_first_cost_efficiency_rate=0.149, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=1.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=188839.77976666667, 
-      conv_indirect_co2_per_unit=524550.4702999999, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
-      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=1318973.9612408415, soln_emissions_per_funit=1230043.9188259256, 
-
-    ),
+units = {
+  "implementation unit": "Million Metric Tonnes of Recycled Paper Produced",
+  "functional unit": "Million Metric Tonnes of Paper Produced",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Recycled Paper'
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class RecycledPaper:
-  name = 'Recycled Paper'
-  units = {
-    "implementation unit": "Million Metric Tonnes of Recycled Paper Produced",
-    "functional unit": "Million Metric Tonnes of Paper Produced",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS1-67p2050-Low Growth (Book Ed.1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -366,16 +203,16 @@ class RecycledPaper:
     ht_ref_adoption_initial = pd.Series(
       [207.0, 125.0, 6.3, 78.0, 2.75,
        12.21, 44.0, 3.0, 69.0, 46.5],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

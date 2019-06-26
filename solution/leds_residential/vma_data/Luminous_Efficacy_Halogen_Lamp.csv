@@ -1,7 +1,7 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Halogen lamp, MELISA Model (see above table)",,OECD90,EU,,,,,,lm/W,,,,,
-"Halogen lamp, Book: S. Kitsinelis (2011) Light sources (table 3.1 & Appendix A)",,World,,,,,,,lm/W,,,,,
-"Halogen lamp, http://ext.homedepot.com/shopping-tools/light-bulbs/bulbcomparison.html",,OECD90,USA,,,,,,lm/W,,,,,
-"IEA, 2006, halogen lamp",,World,,,,2006,,,lm/W,26.5,,,,
-"Halogen lamp, http://www.premiumlight.eu/index.php?page=guide-common-lamp-types-6#h20",,OECD90,EU,,,,,,lm/W,,,,,
-"US DOE, 2014, Data for halogen lamp",,OECD90,USA,,,2014,,,lm/W,,,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Halogen lamp, MELISA Model (see above table)",,OECD90,EU,,,,,lm/W,,,,,
+"Halogen lamp, Book: S. Kitsinelis (2011) Light sources (table 3.1 & Appendix A)",,World,,,,,,lm/W,,,,,
+"Halogen lamp, http://ext.homedepot.com/shopping-tools/light-bulbs/bulbcomparison.html",,OECD90,USA,,,,,lm/W,,,,,
+"IEA, 2006, halogen lamp",,World,,,2006,,,lm/W,26.5,,,,
+"Halogen lamp, http://www.premiumlight.eu/index.php?page=guide-common-lamp-types-6#h20",,OECD90,EU,,,,,lm/W,,,,,
+"US DOE, 2014, Data for halogen lamp",,OECD90,USA,,2014,,,lm/W,,,,,

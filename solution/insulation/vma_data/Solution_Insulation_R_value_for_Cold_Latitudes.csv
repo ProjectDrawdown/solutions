@@ -1,4 +1,4 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Project Drawdown,Scenario Table,World,,,,,,,,,K.m2/W,,,
-Project Drawdown,Scenario Table,World,,,,,,,,,,,,
-Project Drawdown,Scenario Table,World,,,,,,,,,,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Project Drawdown,Scenario Table,World,,,,,,,,K.m2/W,,,
+Project Drawdown,Scenario Table,World,,,,,,,,,,,
+Project Drawdown,Scenario Table,World,,,,,,,,,,,

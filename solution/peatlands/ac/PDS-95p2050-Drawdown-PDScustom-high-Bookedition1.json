@@ -1,0 +1,137 @@
+{
+    "name": "PDS-95p2050-Drawdown-PDScustom-high-Bookedition1",
+    "solution_category": "land",
+    "vmas": "VMAs",
+    "description": "The current adoption are based on the country level data available on peatland protection in the Eastern Europe and OECD 90. The future adoption projections are based on the IPCC and Irish Peatland Conservation Council's commitment to protect 20% of the bogs of Ireland. In addition, aggressive custom adoption scenarios were built considering the high carbon stock in the peatlands and their limited availability.  This scenario derives result from the \"high of all\" PDS custom adoption scenarios. The results are similar to the Book edition 1 results, so no separate scenarios were created for the latter. This edition includes revisions made to the rate of peatland degradation, CO2 emissions from peatland degradation, custom adoption scenarios. In addition, a delay of one year due to the \"leakage effect\" and a further delay of one year in the \"regrowth of the degraded peatland\" has been considered in this edition of the model.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "use_custom_tla": false,
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "soln_ref_adoption_regional_data": false,
+    "conv_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_expected_lifetime": 0.0,
+    "yield_from_conv_practice": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "pds_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_expected_lifetime": 0.0,
+    "yield_gain_from_conv_to_soln": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "npv_discount_rate": 0.1,
+    "emissions_use_co2eq": true,
+    "emissions_use_agg_co2eq": false,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "conv_indirect_co2_per_unit": 0.0,
+    "soln_indirect_co2_per_iunit": 0.0,
+    "tco2eq_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tco2eq_rplu_rate": "One-time",
+    "tco2_reduced_per_land_unit": {
+        "value": 44.9914412146797,
+        "statistic": "mean"
+    },
+    "tco2_rplu_rate": "Annual",
+    "tn2o_co2_reduced_per_land_unit": {
+        "value": 2.9447,
+        "statistic": "mean"
+    },
+    "tn2o_co2_rplu_rate": "Annual",
+    "tch4_co2_reduced_per_land_unit": {
+        "value": -0.0182736842105263,
+        "statistic": "mean"
+    },
+    "tch4_co2_rplu_rate": "Annual",
+    "land_annual_emissons_lifetime": 30.0,
+    "conv_annual_energy_used": 0.0,
+    "soln_annual_energy_used": 0.0,
+    "seq_rate_global": {
+        "value": 1.40640861845066,
+        "statistic": "mean"
+    },
+    "global_multi_for_regrowth": 1.0,
+    "degradation_rate": {
+        "value": 0.00506640879193976,
+        "statistic": "mean"
+    },
+    "tC_storage_in_protected_land_type": {
+        "value": 1188.02884615385,
+        "statistic": "mean"
+    },
+    "disturbance_rate": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "delay_protection_1yr": true,
+    "delay_regrowth_1yr": true,
+    "include_unprotected_land_in_regrowth_calcs": false
+}

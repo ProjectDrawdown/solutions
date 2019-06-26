@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,192 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS-4p2050-Plausible (Book Ed. 1)': advanced_controls.AdvancedControls(
-      # Plausible Scenario, Due to the uncertainty associated with the development of
-      # these technologies, the Plausible Scenario follows a customized high-growth
-      # adoption. Using the 2030 projection from IRENA (2016), it is assumed that
-      # electricity generation from small hydro will double by 2050
-
-      # general
-      solution_category='REPLACEMENT', 
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='High Ambitious, double growth by 2030 & 2050', 
-      pds_adoption_use_ref_years=[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023], 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario', 
-      pds_base_adoption=[('World', 547.672), ('OECD90', 69.035), ('Eastern Europe', 38.758), ('Asia (Sans Japan)', 403.057), ('Middle East and Africa', 17.967), ('Latin America', 18.856), ('China', 383.689), ('India', 4.014), ('EU', 23.027), ('USA', 3.148)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=2721.6052631578946, ref_2014_cost=2721.6052631578946, 
-      conv_2014_cost=2010.0317085196398, 
-      soln_first_cost_efficiency_rate=0.02, 
-      conv_first_cost_efficiency_rate=0.02, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.063, 
-      soln_lifetime_capacity=161608.13345783597, soln_avg_annual_use=3834.769268491023, 
-      conv_lifetime_capacity=182411.2757676607, conv_avg_annual_use=4946.8401873420025, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.003752690403548987, conv_fuel_cost_per_funit=0.07, 
-      conv_fixed_oper_cost_per_iunit=32.951404311078015, 
-
-      # emissions
-      ch4_is_co2eq=True, n2o_is_co2eq=True, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=22932.352941176472, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
-      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS-3p2050-Drawdown (Book Ed.1)': advanced_controls.AdvancedControls(
-      # Drawdown Scenario, This scenario is derived from the evaluation of the ambitious
-      # scenarios of three energy systems models, following a low-growth trajectory.
-      # None of the models explicitly identify the evolution of small hydro systems for
-      # electricity generation; therefore, a conservative assumption was adopted that,
-      # in the future, the current share of 14 percent of all hydroelectricity would
-      # continue to come from small systems.
-
-      # general
-      solution_category='REPLACEMENT', 
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Low Ambitious Growth, 10% higher compared to REF case', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario', 
-      pds_base_adoption=[('World', 547.672), ('OECD90', 69.035), ('Eastern Europe', 38.758), ('Asia (Sans Japan)', 403.057), ('Middle East and Africa', 17.967), ('Latin America', 18.856), ('China', 383.689), ('India', 4.014), ('EU', 23.027), ('USA', 3.148)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=2721.6052631578946, ref_2014_cost=2721.6052631578946, 
-      conv_2014_cost=2010.0317085196398, 
-      soln_first_cost_efficiency_rate=0.02, 
-      conv_first_cost_efficiency_rate=0.02, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.063, 
-      soln_lifetime_capacity=161608.13345783597, soln_avg_annual_use=3834.769268491023, 
-      conv_lifetime_capacity=182411.2757676607, conv_avg_annual_use=4946.8401873420025, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.003752690403548987, conv_fuel_cost_per_funit=0.07, 
-      conv_fixed_oper_cost_per_iunit=32.951404311078015, 
-
-      # emissions
-      ch4_is_co2eq=True, n2o_is_co2eq=True, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=22932.352941176472, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
-      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS-4p2050-Optimum (Book Ed. 1)': advanced_controls.AdvancedControls(
-      # Optimum Scenario, follows a customized high-growth adoption. As the Plausible
-      # Scenario, uses the 2030 projection from IRENA (2016), it is assumed that
-      # electricity generation from small hydro will double by 2050.
-
-      # general
-      solution_category='REPLACEMENT', 
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='High Ambitious, double growth by 2030 & 2050', 
-      pds_adoption_use_ref_years=[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023], 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario', 
-      pds_base_adoption=[('World', 547.672), ('OECD90', 69.035), ('Eastern Europe', 38.758), ('Asia (Sans Japan)', 403.057), ('Middle East and Africa', 17.967), ('Latin America', 18.856), ('China', 383.689), ('India', 4.014), ('EU', 23.027), ('USA', 3.148)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=2721.6052631578946, ref_2014_cost=2721.6052631578946, 
-      conv_2014_cost=2010.0317085196398, 
-      soln_first_cost_efficiency_rate=0.02, 
-      conv_first_cost_efficiency_rate=0.02, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.063, 
-      soln_lifetime_capacity=161608.13345783597, soln_avg_annual_use=3834.769268491023, 
-      conv_lifetime_capacity=182411.2757676607, conv_avg_annual_use=4946.8401873420025, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.003752690403548987, conv_fuel_cost_per_funit=0.07, 
-      conv_fixed_oper_cost_per_iunit=32.951404311078015, 
-
-      # emissions
-      ch4_is_co2eq=True, n2o_is_co2eq=True, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=22932.352941176472, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0, soln_fuel_efficiency_factor=0.0, 
-      conv_fuel_emissions_factor=0.0, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
+units = {
+  "implementation unit": "TW",
+  "functional unit": "TWh",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Instream Hydro (Small Hydro <10MW)'
+solution_category = ac.SOLUTION_CATEGORY.REPLACEMENT
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class InstreamHydro:
-  name = 'Instream Hydro (Small Hydro <10MW)'
-  units = {
-    "implementation unit": "TW",
-    "functional unit": "TWh",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS-4p2050-Plausible (Book Ed. 1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -306,16 +141,16 @@ class InstreamHydro:
     ht_ref_adoption_initial = pd.Series(
       [547.672, 69.035, 38.758, 403.057, 17.967,
        18.856, 383.689, 4.014, 23.027, 3.148],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

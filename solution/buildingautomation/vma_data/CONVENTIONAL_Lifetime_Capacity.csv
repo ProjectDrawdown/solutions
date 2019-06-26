@@ -1,0 +1,3 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"FannieMae (2014) Estimated Useful Life (EUL) Table, p. 9 ",https://www.fanniemae.com/content/guide_form/4099f.pdf,,,2 - Public Sector/ Multilateral Agency,2014,,,years,,years,,"Estimate for ""Pneumatic lines and Controls"" ",
+Rochester Institute of Technology (2013),https://www.rit.edu/fa/controller/sites/rit.edu.fa.controller/files/files/docs/Capital%20Projects%20Useful%20Lives%20_rev_%20Jun13.pdf,,,2 - Public Sector/ Multilateral Agency,2013,,,years,,years,,"Estimate for ""HVAC and mechanical controls…""",

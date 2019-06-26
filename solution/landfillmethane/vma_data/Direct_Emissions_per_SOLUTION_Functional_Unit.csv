@@ -1,4 +1,0 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Custom Calculation, Erika Boeing, 2016 Fellow_Low",,World,,,4 - Independently Verified,,,,tCO2-eq/TWh,0.0,t CO2-eq/TWh,,Uses CO2-emissions from mass balance with first order decay LOW and CH4 and N2O emissions from burning from IPCC default value,False
-"Custom Calculation, Erika Boeing, 2016 Fellow_High",,World,,,4 - Independently Verified,,,,tCO2-eq/TWh,0.0,t CO2-eq/TWh,,Uses CO2-emissions from mass balance with first order decay HIGH and CH4 and N2O emissions from burning from IPCC default value,False
-"Custom Calculation, Erika Boeing, 2016 Fellow",,World,,,4 - Independently Verified,,,,tCO2-eq/TWh,0.0,t CO2-eq/TWh,,"Uses CO2, CH4 and N2O emissions from burning from IPCC default value",

@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,184 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS1-15p2050-(Book Ed.1)': advanced_controls.AdvancedControls(
-      # Drawdown Team Calculations (assuming 15% carpooling in 2050) based on:Polzin &
-      # Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from
-      # US BLS and StatCan. This scenario uses inputs calculated for the Drawdown book
-      # edition 1, some of which were updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='PDS1 (15%) - Drawdown Book Edition 1', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 167778037799.2084), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=0.0, ref_2014_cost=0.0, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.04, 
-      soln_lifetime_capacity=41.9405507136, soln_avg_annual_use=41.9405507136, 
-      conv_lifetime_capacity=18.156082559999998, conv_avg_annual_use=18.156082559999998, 
-
-      soln_var_oper_cost_per_funit=0.010437363715801258, soln_fuel_cost_per_funit=0.0376722341305045, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.026439498120628405, conv_fuel_cost_per_funit=0.0870228608414654, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.08330689018636556, soln_fuel_efficiency_factor=0.5670995670995671, 
-      conv_fuel_emissions_factor=0.002273941593, soln_fuel_emissions_factor=0.002273941593, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS2-20p2050-(Book Ed.1)': advanced_controls.AdvancedControls(
-      # Drawdown Team Calculations (assuming 20% carpooling in 2050) based on:Polzin &
-      # Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from
-      # US BLS and StatCan. This scenario uses inputs calculated for the Drawdown book
-      # edition 1, some of which were updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='PDS2 (20%) - Drawdown Book Edition 1', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 167778037799.2084), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=0.0, ref_2014_cost=0.0, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.04, 
-      soln_lifetime_capacity=41.9405507136, soln_avg_annual_use=41.9405507136, 
-      conv_lifetime_capacity=18.156082559999998, conv_avg_annual_use=18.156082559999998, 
-
-      soln_var_oper_cost_per_funit=0.010437363715801258, soln_fuel_cost_per_funit=0.0376722341305045, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.026439498120628405, conv_fuel_cost_per_funit=0.0870228608414654, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.08330689018636556, soln_fuel_efficiency_factor=0.5670995670995671, 
-      conv_fuel_emissions_factor=0.002273941593, soln_fuel_emissions_factor=0.002273941593, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS3-90p2050-Linear (Book Ed.1) ': advanced_controls.AdvancedControls(
-      # Drawdown Team Assumption of linear growth to 90% of the TAM (which is all annual
-      # commuting in North America). This scenario was developed for the Drawdown book
-      # edition 1 and has been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='DEFAULT Linear', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 167778037799.2084), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.9), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=0.0, ref_2014_cost=0.0, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.04, 
-      soln_lifetime_capacity=41.9405507136, soln_avg_annual_use=41.9405507136, 
-      conv_lifetime_capacity=18.156082559999998, conv_avg_annual_use=18.156082559999998, 
-
-      soln_var_oper_cost_per_funit=0.010437363715801258, soln_fuel_cost_per_funit=0.0376722341305045, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.026439498120628405, conv_fuel_cost_per_funit=0.0870228608414654, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.08330689018636556, soln_fuel_efficiency_factor=0.5670995670995671, 
-      conv_fuel_emissions_factor=0.002273941593, soln_fuel_emissions_factor=0.002273941593, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
+units = {
+  "implementation unit": "trip",
+  "functional unit": "passenger-km",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Carpooling'
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class Carpooling:
-  name = 'Carpooling'
-  units = {
-    "implementation unit": "trip",
-    "functional unit": "passenger-km",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS1-15p2050-(Book Ed.1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -297,16 +140,16 @@ class Carpooling:
     ht_ref_adoption_initial = pd.Series(
       [167778037799.2084, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

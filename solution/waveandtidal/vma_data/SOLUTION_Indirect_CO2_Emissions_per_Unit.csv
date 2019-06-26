@@ -1,0 +1,16 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+2013_Masanet et al. Low (ocean),http://www.annualreviews.org/doi/pdf/10.1146/annurev-environ-010710-100409,World,,1  - Peer Reviewed,2013,,,g-CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+2013_Masanet et al. High (ocean),http://www.annualreviews.org/doi/pdf/10.1146/annurev-environ-010710-100410,World,,1  - Peer Reviewed,2013,,,g-CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+2009_Rule et al. Comparison of Life Cycle Carbon Dioxide Emissions and Embodied Energy in Four Renewable Electricity Generation Technologies in New Zealand,https://www.ncbi.nlm.nih.gov/pubmed/19746744,World,New Zealand,1  - Peer Reviewed,2009,,,g-CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+"IPCC (2014), median",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,1  - Peer Reviewed,2014,,,g-CO2eq/kWh,0.0,t CO2-eq/ TWh,,,1.0
+"IPCC (2014), high",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,1  - Peer Reviewed,2014,,,g-CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+"IPCC (2014), low",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,1  - Peer Reviewed,2014,,,g-CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+"Walker & Howell 2011, Tidal Stream (Seagen)",http://pim.sagepub.com/content/225/4/325.abstract,EU ,UK,1  - Peer Reviewed,2011,,,g CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+"Walker & Howell 2011, Wave (Oyester)",http://pim.sagepub.com/content/225/4/325.abstract,EU ,UK,1  - Peer Reviewed,2011,,,g CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+"POST 2011, Wave",http://researchbriefings.parliament.uk/ResearchBriefing/Summary/POST-PN-383,EU ,UK,2 - Public Sector/ Multilateral Agency,2011,,,g CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+"POST 2011, Tidal Barrage Low",http://researchbriefings.parliament.uk/ResearchBriefing/Summary/POST-PN-383,EU ,UK,2 - Public Sector/ Multilateral Agency,2011,,,g CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+"POST 2011, Tidal Barrage, High",http://researchbriefings.parliament.uk/ResearchBriefing/Summary/POST-PN-383,EU ,UK,2 - Public Sector/ Multilateral Agency,2011,,,g CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+"POST 2011, Tidal Stream",http://researchbriefings.parliament.uk/ResearchBriefing/Summary/POST-PN-383,EU ,UK,2 - Public Sector/ Multilateral Agency,2011,,,g CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+"Uihlein, A. Int J Life Cycle Assess (2016) 21: 1425. doi:10.1007/s11367-016-1120-y",http://link.springer.com/article/10.1007/s11367-016-1120-y,World,,1  - Peer Reviewed,2016,,,g CO2eq/kWh,0.0,t CO2-eq/ TWh,,,
+JRC ETRI (2014) Wave - average,http://publications.jrc.ec.europa.eu/repository/handle/JRC92496,EU,,2 - Public Sector/ Multilateral Agency,2014,,,tCO2eq/GWh,0.0,t CO2-eq/ TWh,,,
+JRC ETRI (2014) Tidal - average,http://publications.jrc.ec.europa.eu/repository/handle/JRC92496,EU,,2 - Public Sector/ Multilateral Agency,2014,,,tCO2eq/GWh,0.0,t CO2-eq/ TWh,,,

@@ -1,0 +1,292 @@
+{
+    "name": "PDS2-45p2050-Bass Diff. (Book Ed.1)",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "description": "Assuming that Heat Pumps replace only coal, oil, gas and electricity-based conventional space heating/cooling (that is, not biomass, renewables nor commercial heat), we estimate the cost and emissions for units of the current average conventional size used. We model the growth by a Bass-diffusion curve growing to 45% of the TAM by 2050. This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 4179.335712753406,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 4.4824973684210526e-05,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 2.3980438596491226e-06,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 97.73540814814815,
+        "statistic": ""
+    },
+    "conv_fuel_cost_per_funit": 0.0818,
+    "pds_2014_cost": {
+        "value": 8417.842235795455,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 8417.842235795455,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0961,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 4.965930424528303e-05,
+        "statistic": ""
+    },
+    "soln_avg_annual_use": {
+        "value": 2.452311320754717e-06,
+        "statistic": ""
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 91.22464666666667,
+        "statistic": ""
+    },
+    "soln_fuel_cost_per_funit": 0.0416280354784867,
+    "npv_discount_rate": 0.0536818181818182,
+    "conv_annual_energy_used": {
+        "value": 0.29063151854349806,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.3295964804314072,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 2552.969708808781,
+        "statistic": ""
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 61.051339971807074,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": true,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": true,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "Based on: IEA ETP 2016 4DS",
+    "pds_source_post_2014": "Drawdown TAM: Drawdown Integrated TAM - PDS2",
+    "pds_base_adoption": [
+        [
+            "World",
+            2.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_basis": "Bass Diffusion S-Curve",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "pds_adoption_s_curve_innovation": [
+        [
+            "World",
+            0.00112096
+        ],
+        [
+            "OECD90",
+            0.00112096
+        ],
+        [
+            "Eastern Europe",
+            0.00112096
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.00112096
+        ],
+        [
+            "Middle East and Africa",
+            0.00112096
+        ],
+        [
+            "Latin America",
+            0.00112096
+        ],
+        [
+            "China",
+            0.00112096
+        ],
+        [
+            "India",
+            0.00112096
+        ],
+        [
+            "EU",
+            0.00112096
+        ],
+        [
+            "USA",
+            0.00112096
+        ]
+    ],
+    "pds_adoption_s_curve_imitation": [
+        [
+            "World",
+            0.13192094462919884
+        ],
+        [
+            "OECD90",
+            0.103333441
+        ],
+        [
+            "Eastern Europe",
+            0.103333441
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.103333441
+        ],
+        [
+            "Middle East and Africa",
+            0.103333441
+        ],
+        [
+            "Latin America",
+            0.103333441
+        ],
+        [
+            "China",
+            0.103333441
+        ],
+        [
+            "India",
+            0.103333441
+        ],
+        [
+            "EU",
+            0.103333441
+        ],
+        [
+            "USA",
+            0.103333441
+        ]
+    ],
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false
+}

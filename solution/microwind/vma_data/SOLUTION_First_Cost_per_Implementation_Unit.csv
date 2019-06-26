@@ -1,8 +1,8 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"US DOE, medium",http://energy.gov/sites/prod/files/2015/08/f25/2014-Distributed-Wind-Market-Report-8.7_0.pdf,USA,,,2 - Public Sector/ Multilateral Agency,,,,US$2014/kW,,US$2014/kW,0.3,,
-"US DOE, high",http://energy.gov/sites/prod/files/2015/08/f25/2014-Distributed-Wind-Market-Report-8.7_0.pdf,USA,,,2 - Public Sector/ Multilateral Agency,,,,US$2014/kW,,US$2014/kW,0.3,,
-"US DOE, low",http://energy.gov/sites/prod/files/2015/08/f25/2014-Distributed-Wind-Market-Report-8.7_0.pdf,USA,,,2 - Public Sector/ Multilateral Agency,,,,US$2014/kW,,US$2014/kW,0.3,,
-SWR 2014 medium,http://www.fcirce.es/static/2014_SmallWindWorldReport.pdf,China,,,2 - Public Sector/ Multilateral Agency,,,,US $2011/kW,0.0,US$2014/kW,0.41,,
-SWR 2016 medium,http://www.wwindea.org/small-wind-world-market-back-on-track-again/,EU,,,2 - Public Sector/ Multilateral Agency,,,,US $2014/kW,,US$2014/kW,0.15,,
-SWR 2016 medium,http://www.wwindea.org/small-wind-world-market-back-on-track-again/,EU,,,2 - Public Sector/ Multilateral Agency,,,,US $2014/kW,,US$2014/kW,0.15,,
-Hau 2013’s Ch 19 on Wind Turbine Costs,http://www.springer.com/gp/book/9783642063480,USA,,,1  - Peer Reviewed,,,,US $2013/kW,0.0,US$2014/kW,0.3,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"US DOE, medium",http://energy.gov/sites/prod/files/2015/08/f25/2014-Distributed-Wind-Market-Report-8.7_0.pdf,USA,,2 - Public Sector/ Multilateral Agency,,,,US$2014/kW,,US$2014/kW,0.3,,
+"US DOE, high",http://energy.gov/sites/prod/files/2015/08/f25/2014-Distributed-Wind-Market-Report-8.7_0.pdf,USA,,2 - Public Sector/ Multilateral Agency,,,,US$2014/kW,,US$2014/kW,0.3,,
+"US DOE, low",http://energy.gov/sites/prod/files/2015/08/f25/2014-Distributed-Wind-Market-Report-8.7_0.pdf,USA,,2 - Public Sector/ Multilateral Agency,,,,US$2014/kW,,US$2014/kW,0.3,,
+SWR 2014 medium,http://www.fcirce.es/static/2014_SmallWindWorldReport.pdf,China,,2 - Public Sector/ Multilateral Agency,,,,US $2011/kW,0.0,US$2014/kW,0.41,,
+SWR 2016 medium,http://www.wwindea.org/small-wind-world-market-back-on-track-again/,EU,,2 - Public Sector/ Multilateral Agency,,,,US $2014/kW,,US$2014/kW,0.15,,
+SWR 2016 medium,http://www.wwindea.org/small-wind-world-market-back-on-track-again/,EU,,2 - Public Sector/ Multilateral Agency,,,,US $2014/kW,,US$2014/kW,0.15,,
+Hau 2013’s Ch 19 on Wind Turbine Costs,http://www.springer.com/gp/book/9783642063480,USA,,1  - Peer Reviewed,,,,US $2013/kW,0.0,US$2014/kW,0.3,,

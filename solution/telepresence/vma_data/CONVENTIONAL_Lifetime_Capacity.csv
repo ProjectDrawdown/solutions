@@ -1,0 +1,2 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Number of passenger kilometers in an average trip,Sheet S4,Global ,,,,,,passenger kms per trip,,passenger-km/ pkm equivalent/Active VC user,,Model assumes a lifetime of functional units (pkms) per implementation unit (trip). Used for both replacement cost calculation and replacement unit calculation.,

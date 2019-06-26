@@ -1,4 +1,4 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"CBECS 2012 (Table B.7. Building Size, floorspace, 2012 p.9)",https://www.eia.gov/consumption/commercial/data/2012/bc/pdf/b7.pdf,USA,,,2 - Public Sector/ Multilateral Agency,2012,,,million ft2,0.0,million m2 commercial floor space,,,
-BSRIA 2014,http://www.slideshare.net/BSRIA/zoltan-chillventa-presentationv1-ja-gversin3zk20131013finaledited,EU,,,3 - For Profit,2014,,,million m2,,million m2 commercial floor space,,,
-"Custom calculation based on (Memoori, 2013)",http://www.automatedbuildings.com/news/nov13/articles/memoori/131023124808memoori.html,China,,,5 - Not Verified,2014,,,million m2,,million m2 commercial floor space,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"CBECS 2012 (Table B.7. Building Size, floorspace, 2012 p.9)",https://www.eia.gov/consumption/commercial/data/2012/bc/pdf/b7.pdf,USA,,2 - Public Sector/ Multilateral Agency,2012,,,million ft2,0.0,million m2 commercial floor space,,,
+BSRIA 2014,http://www.slideshare.net/BSRIA/zoltan-chillventa-presentationv1-ja-gversin3zk20131013finaledited,EU,,3 - For Profit,2014,,,million m2,,million m2 commercial floor space,,,
+"Custom calculation based on (Memoori, 2013)",http://www.automatedbuildings.com/news/nov13/articles/memoori/131023124808memoori.html,China,,5 - Not Verified,2014,,,million m2,,million m2 commercial floor space,,,

@@ -1,3 +1,3 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-SWWR 2016,,China,,,2 - Public Sector/ Multilateral Agency,2009,,,%,,%,0.41,,
-Distributed Wind Market Report,http://energy.gov/sites/prod/files/2015/08/f25/2014-Distributed-Wind-Market-Report-8.7_0.pdf,USA,,,2 - Public Sector/ Multilateral Agency,2014,,,%,,%,0.3,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+SWWR 2016,,China,,2 - Public Sector/ Multilateral Agency,2009,,,%,,%,0.41,,
+Distributed Wind Market Report,http://energy.gov/sites/prod/files/2015/08/f25/2014-Distributed-Wind-Market-Report-8.7_0.pdf,USA,,2 - Public Sector/ Multilateral Agency,2014,,,%,,%,0.3,,

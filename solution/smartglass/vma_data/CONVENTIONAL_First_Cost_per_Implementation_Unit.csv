@@ -1,0 +1,10 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+VentureBeat,http://venturebeat.com/2013/08/19/heliotrope-smart-glass/,World,,,2013,,,US$/ft2,0.0,US2014$/million m2 commercial floor space,,"for ""ordinary double paned windows""",
+VentureBeat,http://venturebeat.com/2013/08/19/heliotrope-smart-glass/,World,,,2013,,,US$/ft2,0.0,US2014$/million m2 commercial floor space,,"for ""ordinary double paned windows""",
+Kankakee Valley REMC,http://members.questline.com/Article.aspx?articleID=27155&accountID=2618&nl=15303,USA,,,n.d.,,,US$/ft2,0.0,US2014$/million m2 commercial floor space,,"for ""high-performing conventional windows""",
+Spivak (2016) Smart Glass out of the Shadows,http://urbanland.uli.org/infrastructure-transit/smart-glass-shadows/,USA,,,2016,,,US$/ft2,0.0,US2014$/million m2 commercial floor space,,"estimate for ""low-e"" glass",
+MIT TechReview,https://www.technologyreview.com/s/420221/making-smart-windows-that-are-also-cheap/,USA,,,2010,,,US$/ft2,0.0,US2014$/million m2 commercial floor space,,"estimate for ""low-e"" glass",
+Christie glass,http://www.christieglass.com/pricecalculator.php,EU,UK,,2016,,,Pound per M2,0.0,US2014$/million m2 commercial floor space,,,
+Alibaba.com,https://www.alibaba.com/product-detail/10-mm-tempered-glass-per-square_60264957627.html?s=p,World,,,2016,,,USD per m2,0.0,US2014$/million m2 commercial floor space,,,
+kissourglass.com,https://kissourglass.com/,USA,,,2016,,,USD per 1.7 M2,0.0,US2014$/million m2 commercial floor space,,,
+http://verresurmesures.com,http://verresurmesures.com/index.php/fr/boutique-verre-sur-mesures-produits-et-tarifs-verre-sur-mesure-ferrure-inox/prix-verre-feuillete-de-securite-floatglass,EU,France,,2016,,,EURO per m2,0.0,US2014$/million m2 commercial floor space,,,

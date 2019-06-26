@@ -1,3 +1,3 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Ford, Jim. Climate for Ideas.org",http://s3.amazonaws.com/zanran_storage/www.cascades.com/ContentPages/46158957.pdf,OECD90,North America,,no,2008,,,kg/tonne,0.0,t CO2-eq/ million metric tons paper,,,
-ICF International/EPA 2015,https://www3.epa.gov/warm/pdfs/WARM_Documentation.pdf,OECD90,USA,,2 - Public Sector/ Multilateral Agency,2015,,,tons CO2/ short ton,0.0,t CO2-eq/ million metric tons paper,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Ford, Jim. Climate for Ideas.org",http://s3.amazonaws.com/zanran_storage/www.cascades.com/ContentPages/46158957.pdf,OECD90,North America,no,2008,,,kg/tonne,0.0,t CO2-eq/ million metric tons paper,,,
+ICF International/EPA 2015,https://www3.epa.gov/warm/pdfs/WARM_Documentation.pdf,OECD90,USA,2 - Public Sector/ Multilateral Agency,2015,,,tons CO2/ short ton,0.0,t CO2-eq/ million metric tons paper,,,

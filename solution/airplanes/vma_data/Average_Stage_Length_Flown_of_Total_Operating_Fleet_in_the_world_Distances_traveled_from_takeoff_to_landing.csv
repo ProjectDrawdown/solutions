@@ -1,8 +1,8 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-World Watch Institute (2013),http://www.worldwatch.org/global-air-transport-continues-expand-0,World,,,,2012,,,km,,,,,
-IATA (2006),https://www.iata.org/whatwedo/Documents/economics/airline_cost_performance.pdf,World,,,,2004,,,km,,,,,
-IPCC (2007),https://www.ipcc.ch/publications_and_data/ar4/wg3/en/ch5s5-3-3.html,World,,,,2005,,,km,,,,,
-Oliver Wyman (2011),http://emmanuelcombe.org/wyman.pdf,World,,,,2010,,,km,,,,,
-Oliver Wyman (2014),http://www.oliverwyman.com/content/dam/oliver-wyman/global/en/2014/nov/Airline%20Economic%20Analysis_Screen_OW.pdf,World,,,,2013,,,km,,,,,
-Oliver Wyman (2015),http://www.oliverwyman.com/content/dam/oliver-wyman/global/en/2016/jan/oliver-wyman-airline-economic-analysis-2015-2016.pdf,World,,,,2014,,,km,,,,,
-Quartz (2013),https://qz.com/94765/the-center-of-the-international-airline-industry-is-in-the-middle-of-rural-poland/,World,,,,2013,,,km,,,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+World Watch Institute (2013),http://www.worldwatch.org/global-air-transport-continues-expand-0,World,,,2012,,,km,,,,,
+IATA (2006),https://www.iata.org/whatwedo/Documents/economics/airline_cost_performance.pdf,World,,,2004,,,km,,,,,
+IPCC (2007),https://www.ipcc.ch/publications_and_data/ar4/wg3/en/ch5s5-3-3.html,World,,,2005,,,km,,,,,
+Oliver Wyman (2011),http://emmanuelcombe.org/wyman.pdf,World,,,2010,,,km,,,,,
+Oliver Wyman (2014),http://www.oliverwyman.com/content/dam/oliver-wyman/global/en/2014/nov/Airline%20Economic%20Analysis_Screen_OW.pdf,World,,,2013,,,km,,,,,
+Oliver Wyman (2015),http://www.oliverwyman.com/content/dam/oliver-wyman/global/en/2016/jan/oliver-wyman-airline-economic-analysis-2015-2016.pdf,World,,,2014,,,km,,,,,
+Quartz (2013),https://qz.com/94765/the-center-of-the-international-airline-industry-is-in-the-middle-of-rural-poland/,World,,,2013,,,km,,,,,

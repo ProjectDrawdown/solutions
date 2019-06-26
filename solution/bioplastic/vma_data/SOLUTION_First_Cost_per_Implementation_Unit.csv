@@ -1,9 +1,9 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Braasch 2015, PLA, low",Private Communication,World,,,5 - Not Verified,2015,,,US$2014/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
-"Braasch 2015, PLA, high",Private Communication,World,,,5 - Not Verified,2015,,,US$2014/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
-"Guzman 2012, PHA, low",https://greenchemicalsblog.com/2012/11/11/pha-bioplastic-update/,World,,,5 - Not Verified,2012,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
-"Guzman 2012, PHA/ high",https://greenchemicalsblog.com/2012/11/11/pha-bioplastic-update/,World,,,5 - Not Verified,2012,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
-"Biron 2012, based on oil price $150/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
-"Biron 2012, based on oil price $300/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,Excluded due to excessive oil assumption input,1.0
-"Biron 2012, historical modeling","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
-"Biron 2012, historical modeling","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Braasch 2015, PLA, low",Private Communication,World,,5 - Not Verified,2015,,,US$2014/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
+"Braasch 2015, PLA, high",Private Communication,World,,5 - Not Verified,2015,,,US$2014/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
+"Guzman 2012, PHA, low",https://greenchemicalsblog.com/2012/11/11/pha-bioplastic-update/,World,,5 - Not Verified,2012,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
+"Guzman 2012, PHA/ high",https://greenchemicalsblog.com/2012/11/11/pha-bioplastic-update/,World,,5 - Not Verified,2012,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
+"Biron 2012, based on oil price $150/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
+"Biron 2012, based on oil price $300/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,Excluded due to excessive oil assumption input,1.0
+"Biron 2012, historical modeling","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,
+"Biron 2012, historical modeling","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,,

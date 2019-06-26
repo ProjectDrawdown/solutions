@@ -1,0 +1,208 @@
+{
+    "name": "PDS2-50p2050-Integrated-FE-12.6% (Book)",
+    "solution_category": "not_applicable",
+    "vmas": "VMAs",
+    "description": "The adoption of Green Roofs is modeled as a Logistic S-Curve growing from current adoption to 50% of the TAM by 2050. To account for integration effects, the fuel efficiency of the solution was reduced to 12.6% since other buildings solutions reduce the total impact of Green Roofs.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 90.10418681818182,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 18.5,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 1.3761,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_cost_per_funit": 0.0,
+    "pds_2014_cost": {
+        "value": 182.99459999999996,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 182.99459999999996,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 40.0,
+        "statistic": ""
+    },
+    "soln_avg_annual_use": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 0.13912500000000017,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_cost_per_funit": 0.0,
+    "npv_discount_rate": 0.094,
+    "conv_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 0.00026161200949465267,
+        "statistic": ""
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 0.126,
+        "statistic": ""
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 61.051339971807074,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 61.051339971807074,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "ALL SOURCES",
+    "pds_source_post_2014": "ALL SOURCES",
+    "pds_base_adoption": [
+        [
+            "World",
+            165284837.0
+        ],
+        [
+            "OECD90",
+            153214036.0
+        ],
+        [
+            "Eastern Europe",
+            2001574.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            10001070.0
+        ],
+        [
+            "Middle East and Africa",
+            1759.0
+        ],
+        [
+            "Latin America",
+            66398.0
+        ],
+        [
+            "China",
+            10000000.0
+        ],
+        [
+            "India",
+            1070.0
+        ],
+        [
+            "EU",
+            129000000.0
+        ],
+        [
+            "USA",
+            21532448.0
+        ]
+    ],
+    "soln_pds_adoption_basis": "Logistic S-Curve",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.5
+        ],
+        [
+            "OECD90",
+            0.6
+        ],
+        [
+            "Eastern Europe",
+            0.5
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.5
+        ],
+        [
+            "Middle East and Africa",
+            0.5
+        ],
+        [
+            "Latin America",
+            0.5
+        ],
+        [
+            "China",
+            0.5
+        ],
+        [
+            "India",
+            0.5
+        ],
+        [
+            "EU",
+            0.6
+        ],
+        [
+            "USA",
+            0.5
+        ]
+    ],
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false
+}

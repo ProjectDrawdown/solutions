@@ -1,5 +1,5 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Lal (2012) - Yu et al (2010),https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2010GL043584,World,Northern,,1  - Peer Reviewed,2010,yes,,Pg C / 400Mha,0.0,t C / ha,,Refer abstract,
-Lal (2012) - Yu et al (2010),https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2010GL043584,World,Tropical,,1  - Peer Reviewed,2010,yes,,Pg C / 50Mha,0.0,t C / ha,,Refer abstract,
-Lal (2012) - Yu et al (2010),https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2010GL043584,World,Southern,,1  - Peer Reviewed,2010,yes,,Pg C / 15Mha,0.0,t C / ha,,Refer abstract,
-Lal (2012) - Yu et al (2010),https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2010GL043584,World,,,1  - Peer Reviewed,2010,yes,,Pg C / 442Mha,0.0,t C / ha,,Refer abstract,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Lal (2012) - Yu et al (2010),https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2010GL043584,World,Northern,1  - Peer Reviewed,2010,yes,,Pg C / 400Mha,0.0,t C / ha,,Refer abstract,
+Lal (2012) - Yu et al (2010),https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2010GL043584,World,Tropical,1  - Peer Reviewed,2010,yes,,Pg C / 50Mha,0.0,t C / ha,,Refer abstract,
+Lal (2012) - Yu et al (2010),https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2010GL043584,World,Southern,1  - Peer Reviewed,2010,yes,,Pg C / 15Mha,0.0,t C / ha,,Refer abstract,
+Lal (2012) - Yu et al (2010),https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2010GL043584,World,,1  - Peer Reviewed,2010,yes,,Pg C / 442Mha,0.0,t C / ha,,Refer abstract,

@@ -1,14 +1,14 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Meehan (2013),http://dx.doi.org/10.1371/journal.pone.0080093,USA,Midwest,,1  - Peer Reviewed,2013,,,million US$,0.0,US$2014/ ha/ yr,,"Refer page 6, projected net profit margin from the cultivation of perennial crops in 16727 hectares",
-Coote (2000),http://projects.nri.org/biomass/conference_papers/economics_of_src.pdf,Asia (Sans Japan),Sri Lanka,,4 - Independently Verified,2000,,,Rs2000/ac/yr,0.0,US$2014/ ha/ yr,,Refer table 8,
-Coote (2000),http://projects.nri.org/biomass/conference_papers/economics_of_src.pdf,Asia (Sans Japan),Sri Lanka,,4 - Independently Verified,2000,,,Rs2000/ac/yr,0.0,US$2014/ ha/ yr,,Refer table 8,
-Coote (2000),http://projects.nri.org/biomass/conference_papers/economics_of_src.pdf,Asia (Sans Japan),Sri Lanka,,4 - Independently Verified,2000,,,Rs2000/ac/yr,0.0,US$2014/ ha/ yr,,Refer table 8,
-Coote (2000),http://projects.nri.org/biomass/conference_papers/economics_of_src.pdf,Asia (Sans Japan),Sri Lanka,,4 - Independently Verified,2000,,,Rs2000/ac/yr,0.0,US$2014/ ha/ yr,,Refer table 8,
-SAC (2008),http://www.sruc.ac.uk/download/downloads/id/103/willow_short_rotation_coppice_2008,EU,UK,,1  - Peer Reviewed,2008,,,£/ha/yr,0.0,US$2014/ ha/ yr,,"Refer page 2; Once harvesting commences the average enterprise margin for the crop was estimated at £116/ha/yr over the assumed 16 year life cycle. 
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Meehan (2013),http://dx.doi.org/10.1371/journal.pone.0080093,USA,Midwest,1  - Peer Reviewed,2013,,,million US$,0.0,US$2014/ ha/ yr,,"Refer page 6, projected net profit margin from the cultivation of perennial crops in 16727 hectares",
+Coote (2000),http://projects.nri.org/biomass/conference_papers/economics_of_src.pdf,Asia (Sans Japan),Sri Lanka,4 - Independently Verified,2000,,,Rs2000/ac/yr,0.0,US$2014/ ha/ yr,,Refer table 8,
+Coote (2000),http://projects.nri.org/biomass/conference_papers/economics_of_src.pdf,Asia (Sans Japan),Sri Lanka,4 - Independently Verified,2000,,,Rs2000/ac/yr,0.0,US$2014/ ha/ yr,,Refer table 8,
+Coote (2000),http://projects.nri.org/biomass/conference_papers/economics_of_src.pdf,Asia (Sans Japan),Sri Lanka,4 - Independently Verified,2000,,,Rs2000/ac/yr,0.0,US$2014/ ha/ yr,,Refer table 8,
+Coote (2000),http://projects.nri.org/biomass/conference_papers/economics_of_src.pdf,Asia (Sans Japan),Sri Lanka,4 - Independently Verified,2000,,,Rs2000/ac/yr,0.0,US$2014/ ha/ yr,,Refer table 8,
+SAC (2008),http://www.sruc.ac.uk/download/downloads/id/103/willow_short_rotation_coppice_2008,EU,UK,1  - Peer Reviewed,2008,,,£/ha/yr,0.0,US$2014/ ha/ yr,,"Refer page 2; Once harvesting commences the average enterprise margin for the crop was estimated at £116/ha/yr over the assumed 16 year life cycle. 
 ",
-CALU (2010),http://www.calu.bangor.ac.uk/Technical%20leaflets/Miscanthus%20-%20does%20it%20payv3.pdf,EU,UK,,1  - Peer Reviewed,2010,,,£/ha/yr,0.0,US$2014/ ha/ yr,,"Refer page 2, last table, Miscanthus",
-Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.045,EU,Italy,,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; poplar,
-Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.046,EU,Italy,,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; cardoon,
-Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.047,EU,Italy,,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; giant reed,
-Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.048,EU,Italy,,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; miscanthus,
-Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.049,EU,Italy,,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; switchgrass,
+CALU (2010),http://www.calu.bangor.ac.uk/Technical%20leaflets/Miscanthus%20-%20does%20it%20payv3.pdf,EU,UK,1  - Peer Reviewed,2010,,,£/ha/yr,0.0,US$2014/ ha/ yr,,"Refer page 2, last table, Miscanthus",
+Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.045,EU,Italy,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; poplar,
+Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.046,EU,Italy,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; cardoon,
+Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.047,EU,Italy,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; giant reed,
+Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.048,EU,Italy,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; miscanthus,
+Fazio and Barbanti (2014),http://dx.doi.org/10.1016/j.renene.2014.03.049,EU,Italy,1  - Peer Reviewed,2014,,,£2014/ha/yr,0.0,US$2014/ ha/ yr,,Full paper not available; switchgrass,

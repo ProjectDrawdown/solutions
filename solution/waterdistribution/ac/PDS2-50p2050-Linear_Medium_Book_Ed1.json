@@ -1,0 +1,209 @@
+{
+    "name": "PDS2-50p2050-Linear Medium (Book Ed.1)",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "description": "We project linearly the adoption to 2050. This represents an annual increase over the REF scenario of 8.5 billion m3 annually of water supply covered by a pressure management and active leak control regime. This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 15.0,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 444783.27878216875,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_cost_per_funit": 0.0,
+    "pds_2014_cost": {
+        "value": 33402.87862552218,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 33402.87862552218,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.1,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 15.0,
+        "statistic": ""
+    },
+    "soln_avg_annual_use": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 211436.27878216875,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_cost_per_funit": 0.0,
+    "npv_discount_rate": 0.064,
+    "conv_annual_energy_used": {
+        "value": 0.00127023216319711,
+        "statistic": "mean"
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.29294444444444445,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "ALL SOURCES",
+    "pds_source_post_2014": "Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018",
+    "pds_base_adoption": [
+        [
+            "World",
+            65804.4675187948
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_custom_name": "Medium Linear Growth in the Annual Adoption",
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false
+}

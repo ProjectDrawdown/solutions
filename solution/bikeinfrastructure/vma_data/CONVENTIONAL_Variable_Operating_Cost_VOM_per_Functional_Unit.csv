@@ -1,0 +1,8 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Victoria Transport Policy Institute (number from Florida DOT),http://www.vtpi.org/tca/tca0506.pdf. P. 10,OECD90,Florida,,2003,,,US$2007/mile/yr,0.0,US2014$/billion passenger-km,,Routine annual maintenace - 4 lane; Adjusted to 2007 numbers to account for inflation,
+ITDP/UCD (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,World,World,,2015,,,US$2014/km/yr,0.0,US2014$/billion passenger-km,,"Sheet 'World', cell B433. ",
+Victoria Transport Policy Institute (number from Texas DOT),http://www.vtpi.org/tca/tca0506.pdf. P. 10,OECD90,Texas,,2008,,,US$2007/mile,0.0,US2014$/billion passenger-km,,Routine maintenance. ; Adjusted to 2007 numbers to account for inflation,
+Florida DOT,http://www.vtpi.org/tca/tca0506.pdf. P. 10,OECD90,Florida,,2003,,,US$2003/mile/yr,0.0,US2014$/billion passenger-km,,Routine annual maintenance 4-lane urban highway,
+Florida DOT,http://www.vtpi.org/tca/tca0506.pdf. P. 10,OECD90,Florida,,2003,,,US$2003/mile/yr,0.0,US2014$/billion passenger-km,,Routine annual maintenance 2-lane urban highway,
+ITDP/UCD (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,OECD90,OECD,,2015,,,US$2014/km/yr,0.0,US2014$/billion passenger-km,,,
+ITDP/UCD (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,World,non-OECD,,2015,,,US$2014/km/yr,0.0,US2014$/billion passenger-km,,,

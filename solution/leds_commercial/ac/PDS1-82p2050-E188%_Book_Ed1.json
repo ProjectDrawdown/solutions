@@ -1,0 +1,211 @@
+{
+    "name": "PDS1-82p2050-E18.8% (Book Ed.1)",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "description": "We take the average of published adoption projections from several sources and use the average energy efficiency after other Building solutions have been applied through Project Drawdown's integration process. This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 49.5887068333939,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 18587.628865979383,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 3635.85,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 0.00206359259555884,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_cost_per_funit": 0.0,
+    "pds_2014_cost": {
+        "value": 64.0177777777778,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 64.0177777777778,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0831,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 50000.0,
+        "statistic": ""
+    },
+    "soln_avg_annual_use": {
+        "value": 3635.85,
+        "statistic": ""
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 0.00166026455054077,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_cost_per_funit": 0.0,
+    "npv_discount_rate": 0.094,
+    "conv_annual_energy_used": {
+        "value": 16.56247833674782,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.188,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 197474.2757220778,
+        "statistic": ""
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 466307.05230240553,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": true,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "ALL SOURCES",
+    "pds_source_post_2014": "ALL SOURCES",
+    "pds_base_adoption": [
+        [
+            "World",
+            2.0559386403033844
+        ],
+        [
+            "OECD90",
+            1.203539561682151
+        ],
+        [
+            "Eastern Europe",
+            0.17104652142368798
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.5420894798241899
+        ],
+        [
+            "Middle East and Africa",
+            0.15340928478053964
+        ],
+        [
+            "Latin America",
+            0.12392820164125475
+        ],
+        [
+            "China",
+            0.3234205780581264
+        ],
+        [
+            "India",
+            0.07626534974849451
+        ],
+        [
+            "EU",
+            0.3954239644503743
+        ],
+        [
+            "USA",
+            0.8447244056291314
+        ]
+    ],
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_prognostication_source": "ALL SOURCES",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "Medium",
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false
+}

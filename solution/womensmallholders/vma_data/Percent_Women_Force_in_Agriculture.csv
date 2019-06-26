@@ -1,4 +1,4 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-UN DESA 2013,https://sustainabledevelopment.un.org/content/documents/2843WESS2013.pdf,Middle East and Africa,Africa,,2 - Public Sector/ Multilateral Agency,2013,,,%,0.0,%,,Page no 104,
-FAO 2012,http://www.fao.org/fileadmin/templates/nr/sustainability_pathways/docs/Factsheet_SMALLHOLDERS.pdf,World,Developing Countries,,2 - Public Sector/ Multilateral Agency,2012,,,%,0.0,%,,Page 1,
-FAO 2012,http://www.fao.org/fileadmin/templates/nr/sustainability_pathways/docs/Factsheet_SMALLHOLDERS.pdf,Asia (Sans Japan),East and South Asia,,2 - Public Sector/ Multilateral Agency,2012,,,%,0.0,%,,Page 1,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+UN DESA 2013,https://sustainabledevelopment.un.org/content/documents/2843WESS2013.pdf,Middle East and Africa,Africa,2 - Public Sector/ Multilateral Agency,2013,,,%,0.0,%,,Page no 104,
+FAO 2012,http://www.fao.org/fileadmin/templates/nr/sustainability_pathways/docs/Factsheet_SMALLHOLDERS.pdf,World,Developing Countries,2 - Public Sector/ Multilateral Agency,2012,,,%,0.0,%,,Page 1,
+FAO 2012,http://www.fao.org/fileadmin/templates/nr/sustainability_pathways/docs/Factsheet_SMALLHOLDERS.pdf,Asia (Sans Japan),East and South Asia,2 - Public Sector/ Multilateral Agency,2012,,,%,0.0,%,,Page 1,

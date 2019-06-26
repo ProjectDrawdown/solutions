@@ -1,5 +1,0 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Calculations and assumption on Lighting models, incandescent lamp",,Global ,,,,,,,,1000.0,Petalumen hours (Plmh)/Petalumens (Plm),0.19116788321167885,,
-"Calculations and assumption on Lighting models, halogen lamp",,Global ,,,,,,,,2000.0,Petalumen hours (Plmh)/Petalumens (Plm),0.3186131386861314,,
-"Calculations and assumption on Lighting models, LFL",,Global ,,,,,,,,20000.0,Petalumen hours (Plmh)/Petalumens (Plm),0.14160583941605842,,
-"Calculations and assumption on Lighting models, CFL",,Global ,,,,,,,,10000.0,Petalumen hours (Plmh)/Petalumens (Plm),0.3186131386861314,,
