@@ -272,6 +272,8 @@ class VMAReader:
                 'CONVENTIONAL First Cost per Implementation Unit for replaced practices',
             'ALTERNATIVE APPROACH      Annual Energy Used UNDEGRADED LAND':
                 'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND',
+            'SOLUTION VARIABLE Operating Cost per Functional Unit':
+                'SOLUTION Variable Operating Cost (VOM) per Functional Unit',
         }
 
         table_locations = OrderedDict()
