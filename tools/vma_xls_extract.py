@@ -56,6 +56,8 @@ COLUMN_DTYPE_MAP = {
     'Common Units': lambda x: x,
     'Weight': lambda x: x,
     'Assumptions': lambda x: x,
+    'Closest Matching Standard Crop (by Revenue/ha)': lambda x: x,
+    'Crop': lambda x: x,
     'Exclude Data?': lambda x: convert_bool(x) if x is not nan else x,
 }
 
@@ -138,6 +140,7 @@ class VMAReader:
             'Conedition calculation': 'Conversion calculation',
             # Airplanes removed Geographic Location from one of the VMAs.
             'Specific': 'Specific Geographic Location',
+            'Closest Matching Crop (by Revenue/ha)': 'Closest Matching Standard Crop (by Revenue/ha)',
         }
         return known_aliases.get(name, name)
 
@@ -169,11 +172,16 @@ class VMAReader:
                 skipcols.append(c)
                 continue    # skip blank columns
             name_to_check = self.normalize_col_name(val.strip().replace('*', ''))
+
+            # A few VMA columns are only present in some solutions, like data which is
+            # specific to Land or Ocean solutions. Skip and remove them if not present.
+            optional_columns = ['Thermal-Moisture Regime', 'Crop',
+                    'Closest Matching Standard Crop (by Revenue/ha)',]
             col_name = col_names[idx]
-            if col_name == 'Thermal-Moisture Regime' and name_to_check != col_name:
-                # RRS solutions do not have a Thermal-Moisture Regime. Allow it to be skipped.
-                col_names.remove('Thermal-Moisture Regime')
+            while col_name in optional_columns and name_to_check != col_name:
+                col_names.remove(col_name)
                 col_name = col_names[idx]
+
             assert col_name == name_to_check, f'unknown VMA column: {name_to_check} on row {row1}'
             idx += 1
         assert idx == len(col_names), f'columns not present: {idx} != {len(col_names)}'
