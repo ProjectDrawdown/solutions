@@ -218,13 +218,6 @@ class VMAReader:
         else:
             raise ValueError("No 'Use weight?' cell found")
 
-        if use_weight:
-            warnings.warn(
-                "May need to modify testdata spreadsheet to avoid weighted mean error."
-                "\nWeights of excluded data and outliers should be set to 0 for table at {}"
-                "\nSee: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#"
-                "".format(source_id_cell))
-
         if fixed_summary:
             # Find the Average, High, Low cells.
             for r in range(last_row, last_row + 50):
