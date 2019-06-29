@@ -894,7 +894,7 @@ class AdvancedControls:
             if self.vmas.get(vma_title, None):
                 break
         else:
-            raise KeyError(f'{vma_title} must be included in vmas to calculate mean/high/low.'
+            raise KeyError(f'"{vma_title}" must be included in vmas to calculate mean/high/low.'
                     f'vmas included: {self.vmas.keys()}')
 
         if return_regional_series:
