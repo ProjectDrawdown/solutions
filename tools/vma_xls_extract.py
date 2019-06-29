@@ -21,6 +21,10 @@ from tools.util import cell_to_offsets, empty_to_nan, to_filename, convert_bool
 CSV_TEMPLATE_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'VMA', 'vma_template.csv')
 pd.set_option('display.expand_frame_repr', False)
 
+# A few VMA columns are only present in some solutions, like data which is
+# specific to Land or Ocean solutions.
+optional_columns = ['Thermal-Moisture Regime', 'Crop',
+        'Closest Matching Standard Crop (by Revenue/ha)',]
 
 def convert_year(x):
     if pd.isna(x):
@@ -126,6 +130,9 @@ class VMAReader:
                 info_df.loc[i, :] = row
                 i += 1
                 if table is not None:
+                    for col in optional_columns:
+                        if table.loc[:, col].isnull().all():
+                            table.drop(labels=col, axis='columns', inplace=True)
                     table.to_csv(os.path.join(csv_path, path_friendly_title + '.csv'), index=False)
             info_df.to_csv(os.path.join(csv_path, 'VMA_info.csv'))
         return df_dict
@@ -173,10 +180,6 @@ class VMAReader:
                 continue    # skip blank columns
             name_to_check = self.normalize_col_name(val.strip().replace('*', ''))
 
-            # A few VMA columns are only present in some solutions, like data which is
-            # specific to Land or Ocean solutions. Skip and remove them if not present.
-            optional_columns = ['Thermal-Moisture Regime', 'Crop',
-                    'Closest Matching Standard Crop (by Revenue/ha)',]
             col_name = col_names[idx]
             while col_name in optional_columns and name_to_check != col_name:
                 col_names.remove(col_name)
@@ -264,17 +267,27 @@ class VMAReader:
         normalize_vma_names = {
             'SOLUTION First Cost per Implementation Unit of the solution':
                 'SOLUTION First Cost per Implementation Unit',
+            'CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies':
+                'CONVENTIONAL First Cost per Implementation Unit for replaced practices',
             'Yield  from CONVENTIONAL Practice': 'Yield from CONVENTIONAL Practice',
             'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls':
                 'Indirect CO2 Emissions per CONVENTIONAL Unit',
             'Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls)':
                 'Indirect CO2 Emissions per SOLUTION Unit',
-            'CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies':
-                'CONVENTIONAL First Cost per Implementation Unit for replaced practices',
             'ALTERNATIVE APPROACH      Annual Energy Used UNDEGRADED LAND':
                 'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND',
             'SOLUTION VARIABLE Operating Cost per Functional Unit':
                 'SOLUTION Variable Operating Cost (VOM) per Functional Unit',
+            'SOLUTION FIXED Operating Cost per Implementation Unit':
+                'SOLUTION Fixed Operating Cost (FOM)',
+            'CONVENTIONAL VARIABLE Operating Cost per Functional Unit':
+                'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit',
+            'CONVENTIONAL FIXED Operating Cost per Implementation Unit':
+                'CONVENTIONAL Fixed Operating Cost (FOM)',
+            'Fuel Consumed per Functional Unit - CONVENTIONAL':
+                'Fuel Consumed per CONVENTIONAL Functional Unit',
+            'Total Energy Used per functional unit - SOLUTION':
+                'Total Energy Used per SOLUTION functional unit',
         }
 
         table_locations = OrderedDict()

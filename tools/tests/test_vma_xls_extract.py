@@ -10,11 +10,11 @@ wb = xlrd.open_workbook(thisdir.joinpath('silvopasture_vma.xlsx'))
 def test_make_vma_df_template():
     df = make_vma_df_template()
     expected_cols = {'SOURCE ID: Author/Org, Date, Info', 'Link', 'World / Drawdown Region',
-                     'Specific Geographic Location', 'Thermal-Moisture Regime', 'Source Validation Code', 'Year / Date',
-
-                     'License Code', 'Raw Data Input', 'Original Units', 'Conversion calculation', 'Common Units',
-
-                     'Weight', 'Assumptions', 'Exclude Data?'}
+                     'Specific Geographic Location', 'Thermal-Moisture Regime',
+                     'Source Validation Code', 'Year / Date', 'License Code', 'Raw Data Input',
+                     'Original Units', 'Conversion calculation', 'Common Units', 'Weight',
+                     'Assumptions', 'Exclude Data?', 'Crop',
+                     'Closest Matching Standard Crop (by Revenue/ha)'}
     assert expected_cols == set(df.columns)
 
 
@@ -23,9 +23,8 @@ def test_single_table():
     result, _, _ = vma_r.read_single_table('C48', sheetname='Variable Meta-analysis',
                                            fixed_summary=False)
     expected = pd.read_csv(thisdir.joinpath('silvopasture_vma1.csv'))
-    # integer values for years are causing an unimportant dtype issue in the test
-    pd.testing.assert_frame_equal(expected.drop(columns=['Year / Date']),
-                                  result.drop(columns=['Year / Date']))
+    expected['Year / Date'] = expected['Year / Date'].astype('object')
+    pd.testing.assert_frame_equal(expected, result)
 
 
 def test_single_table_use_weight():

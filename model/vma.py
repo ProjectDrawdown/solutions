@@ -92,9 +92,6 @@ class VMA:
         value.name = 'Value'
         exclude = df['Exclude Data?'].fillna(False)
         exclude.name = 'Exclude?'
-        df['Thermal-Moisture Regime'] = df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
-        tmr = df['Thermal-Moisture Regime'].fillna('')
-        tmr.name = 'TMR'
         # correct some common typos and capitalization differences from Excel files.
         normalized_region = (df['World / Drawdown Region']
                 .replace('Middle East & Africa', 'Middle East and Africa')
@@ -106,7 +103,10 @@ class VMA:
         for k, v in COUNTRY_REGION_MAP.items():
             main_region.replace(k, v, inplace=True)
         main_region.name = 'Main Region'
-        self.df = pd.concat([value, units, raw, weight, exclude, tmr, region, main_region], axis=1)
+        self.df = pd.concat([value, units, raw, weight, exclude, region, main_region], axis=1)
+        if 'Thermal-Moisture Regime' in df.columns:
+            df['Thermal-Moisture Regime'] = df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
+            self.df['TMR'] = df['Thermal-Moisture Regime'].fillna('')
         self.df['Value'].fillna(self.df['Raw'], inplace=True)
 
     def _discard_outliers(self):
