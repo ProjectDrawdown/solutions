@@ -50,11 +50,7 @@ class CustomTLA:
         Args:
             filename: path to 'custom_tla_data.csv' file
         """
-        try:
-            self.df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True, skip_blank_lines=True)
-        except FileNotFoundError:
-            warnings.warn('{} file not found. Custom TLA will not be used'.format(filename))
-            self.df = None
+        self.df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True, skip_blank_lines=True)
 
     def _avg_high_low(self):
         # This is not yet implemented as the only solution that uses Custom TLA so far (Tropical Forests)
