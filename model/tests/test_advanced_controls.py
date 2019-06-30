@@ -45,7 +45,7 @@ def test_electricity_factors():
         def avg_high_low(self, key):
             return (0.0, 0.0, 0.0)
 
-    vmas = {'Energy Efficiency Factor - SOLUTION': fakeVMA()}
+    vmas = {'SOLUTION Energy Efficiency Factor': fakeVMA()}
 
     ac = advanced_controls.AdvancedControls(vmas=vmas,
         soln_energy_efficiency_factor=soln_energy_efficiency_factor,

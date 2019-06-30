@@ -234,10 +234,10 @@ class VMAReader:
             for r in range(last_row, last_row + 50):
                 col = 0
                 label = str(sheet.cell_value(row1 + r, 17)).lower()
-                if 'average' in label or 'sum' in label:
+                if label.startswith('average') or 'sum' in label:
                     col = 20 if use_weight else 19
                 label = str(sheet.cell_value(row1 + r, 16)).lower()
-                if 'average' in label or 'sum' in label:
+                if label.startswith('average') or 'sum' in label:
                     col = 19 if use_weight else 18
                 if col:
                     average = float(sheet.cell_value(row1 + r, col))
@@ -268,12 +268,12 @@ class VMAReader:
             'SOLUTION First Cost per Implementation Unit of the solution':
                 'SOLUTION First Cost per Implementation Unit',
             'CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies':
-                'CONVENTIONAL First Cost per Implementation Unit for replaced practices',
+                'CONVENTIONAL First Cost per Implementation Unit',
             'Yield  from CONVENTIONAL Practice': 'Yield from CONVENTIONAL Practice',
             'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls':
-                'Indirect CO2 Emissions per CONVENTIONAL Unit',
+                'CONVENTIONAL Indirect CO2 Emissions per Unit',
             'Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls)':
-                'Indirect CO2 Emissions per SOLUTION Unit',
+                'SOLUTION Indirect CO2 Emissions per Unit',
             'ALTERNATIVE APPROACH      Annual Energy Used UNDEGRADED LAND':
                 'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND',
             'SOLUTION VARIABLE Operating Cost per Functional Unit':
@@ -285,9 +285,23 @@ class VMAReader:
             'CONVENTIONAL FIXED Operating Cost per Implementation Unit':
                 'CONVENTIONAL Fixed Operating Cost (FOM)',
             'Fuel Consumed per Functional Unit - CONVENTIONAL':
-                'Fuel Consumed per CONVENTIONAL Functional Unit',
+                'CONVENTIONAL Fuel Consumed per Functional Unit',
             'Total Energy Used per functional unit - SOLUTION':
-                'Total Energy Used per SOLUTION functional unit',
+                'SOLUTION Total Energy Used per Functional Unit',
+            'Electricity Consumed per Functional Unit - CONVENTIONAL':
+                'CONVENTIONAL Total Energy Used per Functional Unit',
+            'Electricty Consumed per Functional Unit - CONVENTIONAL':
+                'CONVENTIONAL Total Energy Used per Functional Unit',
+            'Fuel Efficiency Factor - SOLUTION': 'SOLUTION Fuel Efficiency Factor',
+            'Energy Efficiency Factor - SOLUTION': 'SOLUTION Energy Efficiency Factor',
+            'Direct Emissions per CONVENTIONAL Functional Unit':
+                'CONVENTIONAL Direct Emissions per Functional Unit',
+            'Direct Emissions per SOLUTION Functional Unit':
+                'SOLUTION Direct Emissions per Functional Unit',
+            'Lifetime Capacity - SOLUTION': 'SOLUTION Lifetime Capacity',
+            'Lifetime Capacity - CONVENTIONAL': 'CONVENTIONAL Lifetime Capacity',
+            'Average Annual Use - SOLUTION': 'SOLUTION Average Annual Use',
+            'Average Annual Use - CONVENTIONAL': 'CONVENTIONAL Average Annual Use',
         }
 
         table_locations = OrderedDict()

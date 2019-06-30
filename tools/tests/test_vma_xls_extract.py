@@ -51,7 +51,7 @@ def test_read_xls():
     assert table.at[5, 'Raw Data Input'] == 416
     table = df_dict['Sequestration Rates'][0]
     assert len(table) == 28
-    (table, exclude, summary) = df_dict['Energy Efficiency Factor - SOLUTION']
+    (table, exclude, summary) = df_dict['SOLUTION Energy Efficiency Factor']
     assert table is None
     assert exclude == False
     assert len(summary) == 3

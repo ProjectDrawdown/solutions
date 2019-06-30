@@ -83,7 +83,7 @@ class AdvancedControls:
 
     #   Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
     conv_2014_cost: typing.Any = dataclasses.field(default=None, metadata={
-        'vma_titles': ['CONVENTIONAL First Cost per Implementation Unit for replaced practices'],
+        'vma_titles': ['CONVENTIONAL First Cost per Implementation Unit'],
         'subtitle': '(implementation units)',
         'tooltip': ("CONVENTIONAL First Cost per Implementation Unit for replaced "
             "practices/technologies\n\n"
@@ -152,7 +152,7 @@ class AdvancedControls:
         })
 
     soln_energy_efficiency_factor: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Energy Efficiency Factor - SOLUTION'],
+        'vma_titles': ['SOLUTION Energy Efficiency Factor'],
         'subtitle': '',
         'tooltip': ("Energy Efficiency Factor SOLUTION\n"
             "soln_energy_efficiency_factor: Units of energy reduced per year per "
@@ -175,7 +175,7 @@ class AdvancedControls:
         })
 
     conv_annual_energy_used: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Electricity Consumed per Functional Unit - CONVENTIONAL'],
+        'vma_titles': ['CONVENTIONAL Total Energy Used per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Average Electricty Used CONVENTIONAL\n"
             "NOTE: for solutions that reduce electricity consumption per functional unit, "
@@ -185,7 +185,7 @@ class AdvancedControls:
         })
 
     soln_annual_energy_used: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Total Energy Used per SOLUTION functional unit'],
+        'vma_titles': ['SOLUTION Total Energy Used per Functional Unit'],
         'subtitle': '',
         'tooltip': ("ALTERNATIVE APPROACH Annual Energy Used SOLUTION\n"
             "This refers to the units of average energy used per year per functional unit "
@@ -200,7 +200,7 @@ class AdvancedControls:
         })
 
     conv_fuel_consumed_per_funit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Fuel Consumed per CONVENTIONAL Functional Unit'],
+        'vma_titles': ['CONVENTIONAL Fuel Consumed per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Fuel Consumed per CONVENTIONAL Functional Unit\n"
             "This refers to the unit (default is Liters) of FUEL used per year per "
@@ -211,7 +211,7 @@ class AdvancedControls:
         })
 
     soln_fuel_efficiency_factor: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Fuel Efficiency Factor - SOLUTION'],
+        'vma_titles': ['SOLUTION Fuel Efficiency Factor'],
         'subtitle': '',
         'tooltip': ("Fuel Efficiency Factor - SOLUTION\n"
             "This refers to the % fuel reduced by the SOLUTION relative to the "
@@ -244,7 +244,7 @@ class AdvancedControls:
     soln_fuel_emissions_factor: float = None
 
     conv_emissions_per_funit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Direct Emissions per CONVENTIONAL Functional Unit'],
+        'vma_titles': ['CONVENTIONAL Direct Emissions per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Direct Emissions per CONVENTIONAL Functional Unit\n"
             "This represents the direct CO2-eq emissions that result per functional unit "
@@ -253,7 +253,7 @@ class AdvancedControls:
         })
 
     soln_emissions_per_funit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Direct Emissions per SOLUTION Functional Unit'],
+        'vma_titles': ['SOLUTION Direct Emissions per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Direct Emissions per SOLUTION Functional Unit\n"
             "This represents the direct CO2-eq emissions that result per functional unit "
@@ -293,7 +293,7 @@ class AdvancedControls:
         })
 
     soln_indirect_co2_per_iunit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Indirect CO2 Emissions per SOLUTION Unit'],
+        'vma_titles': ['SOLUTION Indirect CO2 Emissions per Unit'],
         'subtitle': '',
         'tooltip': ("Indirect CO2 Emissions per SOLUTION Implementation Unit\n"
             "CO2-equivalent indirect emissions per iunit, in tons."),
@@ -301,7 +301,7 @@ class AdvancedControls:
         })
 
     conv_indirect_co2_per_unit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Indirect CO2 Emissions per CONVENTIONAL Unit'],
+        'vma_titles': ['CONVENTIONAL Indirect CO2 Emissions per Unit'],
         'subtitle': '',
         'tooltip': ("Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit\n"
             "NOTE: this represents the indirect CO2 emissions that result per implementation "
@@ -319,7 +319,7 @@ class AdvancedControls:
     conv_indirect_co2_is_iunits: bool = None
 
     soln_lifetime_capacity: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Lifetime Capacity - SOLUTION'],
+        'vma_titles': ['SOLUTION Lifetime Capacity'],
         'subtitle': '(use until replacement is required)',
         'tooltip': ("Lifetime Capacity - SOLUTION\n\n"
             "NOTE: This is the average expected number of functional units generated by the "
@@ -334,7 +334,7 @@ class AdvancedControls:
         })
 
     soln_avg_annual_use: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Average Annual Use - SOLUTION'],
+        'vma_titles': ['SOLUTION Average Annual Use'],
         'subtitle': '(annual use)',
         'tooltip': ("Average Annual Use - SOLUTION\n\n"
             "NOTE:  Average Annual Use is the average annual use of the technology/practice, "
@@ -348,7 +348,7 @@ class AdvancedControls:
         })
 
     conv_lifetime_capacity: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Lifetime Capacity - CONVENTIONAL'],
+        'vma_titles': ['CONVENTIONAL Lifetime Capacity'],
         'subtitle': '(use until replacement is required)',
         'tooltip': ("Lifetime Capacity - CONVENTIONAL\n\n"
             "NOTE: This is the average expected number of functional units "
@@ -365,7 +365,7 @@ class AdvancedControls:
         })
 
     conv_avg_annual_use: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Average Annual Use - CONVENTIONAL'],
+        'vma_titles': ['CONVENTIONAL Average Annual Use'],
         'subtitle': '(annual use)',
         'tooltip': ("Average Annual Use - CONVENTIONAL\n\n"
             "NOTE:  Average Annual Use is the average annual use of the technology/practice, "

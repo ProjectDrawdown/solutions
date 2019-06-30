@@ -1502,14 +1502,13 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 
     if is_rrs:
         f.write('from solution import rrs\n\n')
-        sc_val = find_RRS_solution_category(wb=wb)
-        solution_category = f'ac.SOLUTION_CATEGORY.{sc_val}'
-        sc = ac.string_to_solution_category(sc_val)
+        sc = ac.string_to_solution_category(find_RRS_solution_category(wb=wb))
+        solution_category = f'ac.SOLUTION_CATEGORY.{ac.solution_category_to_string(sc).upper()}'
         scenarios = get_rrs_scenarios(wb=wb, solution_category=sc)
     elif is_land:
         f.write('from solution import land\n\n')
-        solution_category = 'ac.SOLUTION_CATEGORY.LAND'
         sc = ac.string_to_solution_category('LAND')
+        solution_category = 'ac.SOLUTION_CATEGORY.LAND'
         scenarios = get_land_scenarios(wb=wb, solution_category=sc)
     else:
         scenarios = {}
@@ -1674,20 +1673,26 @@ def infer_classname(filename):
         ('CSP_', 'ConcentratedSolar'),
         ('High Efficient Heat Pumps', 'HeatPumps'),
         ('Household & Commercial Recycling', 'Recycling'),
+        ('IP Forest Management', 'IndigenousPeoplesLand'),
         ('Increasing Distribution Efficiency in WDSs', 'WaterDistribution'),
         ('Instream Hydro', 'InstreamHydro'),
         ('Landfill Methane', 'LandfillMethane'),
         ('Large Biodigesters', 'Biogas'),
         ('MicroWind Turbines', 'MicroWind'),
         ('Oceanic Freight Improvements', 'Ships'),
+        ('Peatland Protection', 'Peatlands'),
+        ('Perennial Bioenergy Crops', 'PerennialBioenergy'),
         ('Regenerative_Agriculture', 'RegenerativeAgriculture'),
         ('Renewable District Heating', 'DistrictHeating'),
         ('Rooftop Solar PV', 'SolarPVRoof'),
         ('Small Biogas Digesters', 'BiogasSmall'),
+        ('Smallholder Intensification', 'WomenSmallholders'),
         ('SolarPVUtility', 'SolarPVUtil'),
         ('SolarPVRooftop', 'SolarPVRoof'),
         ('solution_xls_extract_RRS_test_A', 'TestClassA'),
-        ('Tropical_Forest_Restoration', 'TropicalForests'),
+        ('SRI', 'RiceIntensification'),
+        ('Temperate Forest Restoration', 'TemperateForests'),
+        ('Tropical Forest Restoration', 'TropicalForests'),
         ('Truck Fuel Efficiency', 'Trucks'),
         ('Utility Scale Solar PV', 'SolarPVUtil'),
         ('Videoconferencing and Telepresence', 'Telepresence'),
