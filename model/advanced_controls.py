@@ -235,13 +235,19 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!G159; Silvopasture "Advanced Controls"!G123',
         })
 
-    # conv_fuel_emissions_factor: direct fuel emissions per funit, conventional
-    #   SolarPVUtil "Advanced Controls"!I159
-    conv_fuel_emissions_factor: float = None
+    conv_fuel_emissions_factor: float = dataclasses.field(default=None, metadata={
+        'vma_titles': [],
+        'subtitle': '',
+        'tooltip': 'direct fuel emissions per funit, conventional',
+        'excelref': 'SolarPVUtil "Advanced Controls"!I159',
+        })
 
-    # soln_fuel_emissions_factor: direct fuel emissions per funit, solution
-    #   SolarPVUtil "Advanced Controls"!I163
-    soln_fuel_emissions_factor: float = None
+    soln_fuel_emissions_factor: float = dataclasses.field(default=None, metadata={
+        'vma_titles': [],
+        'subtitle': '',
+        'tooltip': 'direct fuel emissions per funit, solution',
+        'excelref': 'SolarPVUtil "Advanced Controls"!I163; DistrictHeating "Advanced Controls"!I144',
+        })
 
     conv_emissions_per_funit: float = dataclasses.field(default=None, metadata={
         'vma_titles': ['CONVENTIONAL Direct Emissions per Functional Unit'],
@@ -708,11 +714,11 @@ class AdvancedControls:
 
     def __post_init__(self):
         for field in dataclasses.fields(self):
-            vma_titles = field.metadata.get('vma_titles', [])
-            if vma_titles:
+            vma_titles = field.metadata.get('vma_titles', None)
+            if vma_titles is not None:
                 val = getattr(self, field.name)
-                object.__setattr__(self, field.name,
-                        self._substitute_vma(val=val, vma_titles=vma_titles))
+                object.__setattr__(self, field.name, self._substitute_vma(
+                    val=val, vma_titles=vma_titles))
 
         if isinstance(self.solution_category, str):
             object.__setattr__(self, 'solution_category',
@@ -726,30 +732,6 @@ class AdvancedControls:
         if isinstance(self.emissions_grid_range, str):
             object.__setattr__(self, 'emissions_grid_range', ef.string_to_emissions_grid_range(
                     self.emissions_grid_range))
-
-        object.__setattr__(self, 'soln_energy_efficiency_factor',
-                self.value_or_zero(self.soln_energy_efficiency_factor))
-        object.__setattr__(self, 'conv_annual_energy_used',
-                self.value_or_zero(self.conv_annual_energy_used))
-        object.__setattr__(self, 'soln_annual_energy_used',
-                self.value_or_zero(self.soln_annual_energy_used))
-        object.__setattr__(self, 'conv_fuel_consumed_per_funit',
-                self.value_or_zero(self.conv_fuel_consumed_per_funit))
-        object.__setattr__(self, 'soln_fuel_efficiency_factor',
-                self.value_or_zero(self.soln_fuel_efficiency_factor))
-        object.__setattr__(self, 'conv_fuel_emissions_factor',
-                self.value_or_zero(self.conv_fuel_emissions_factor))
-        object.__setattr__(self, 'soln_fuel_emissions_factor',
-                self.value_or_zero(self.soln_fuel_emissions_factor))
-        object.__setattr__(self, 'conv_emissions_per_funit',
-                self.value_or_zero(self.conv_emissions_per_funit))
-        object.__setattr__(self, 'soln_emissions_per_funit',
-                self.value_or_zero(self.soln_emissions_per_funit))
-        object.__setattr__(self, 'ch4_co2_per_funit',
-                self.value_or_zero(self.ch4_co2_per_funit))
-        object.__setattr__(self, 'n2o_co2_per_funit',
-                self.value_or_zero(self.n2o_co2_per_funit))
-
 
         object.__setattr__(self, 'soln_ref_adoption_basis', translate_adoption_bases.get(
                 self.soln_ref_adoption_basis, self.soln_ref_adoption_basis))
@@ -770,15 +752,6 @@ class AdvancedControls:
             err = ("cannot be in both ref_adoption_use_pds_years and pds_adoption_use_ref_years:"
                     + str(intersect))
             raise ValueError(err)
-
-
-    def value_or_zero(self, val):
-        """Allow a blank space or empty string to mean zero.
-           Useful for advanced controls like conv_average_electricity_used."""
-        try:
-            return float(val)
-        except (ValueError, TypeError):
-            return 0.0
 
     @property
     def yield_coeff(self):
@@ -882,6 +855,7 @@ class AdvancedControls:
                 stat = val
         elif isinstance(val, dict):
             if 'statistic' not in val:  # if there is no statistic to link we return the value
+                print(str(val))
                 return val['value']
             raw_val_from_excel = val['value']
             stat = val['statistic']
@@ -890,11 +864,14 @@ class AdvancedControls:
         else:
             return val
 
+        if not vma_titles:
+            return None
+
         for vma_title in vma_titles:
             if self.vmas.get(vma_title, None):
                 break
         else:
-            raise KeyError(f'"{vma_title}" must be included in vmas to calculate mean/high/low.'
+            raise KeyError(f'"{vma_titles}" must be included in vmas to calculate mean/high/low.'
                     f'vmas included: {self.vmas.keys()}')
 
         if return_regional_series:
