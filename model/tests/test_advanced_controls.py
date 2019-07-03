@@ -37,9 +37,7 @@ def test_learning_rate():
 
 
 def test_electricity_factors():
-    soln_energy_efficiency_factor = ""
     conv_annual_energy_used = 2.117
-    soln_annual_energy_used = None
 
     class fakeVMA:
         def avg_high_low(self, key):
@@ -48,9 +46,7 @@ def test_electricity_factors():
     vmas = {'SOLUTION Energy Efficiency Factor': fakeVMA()}
 
     ac = advanced_controls.AdvancedControls(vmas=vmas,
-        soln_energy_efficiency_factor=soln_energy_efficiency_factor,
-        conv_annual_energy_used=conv_annual_energy_used,
-        soln_annual_energy_used=soln_annual_energy_used)
+        conv_annual_energy_used=conv_annual_energy_used)
     assert ac.soln_energy_efficiency_factor == 0
     assert ac.conv_annual_energy_used == pytest.approx(conv_annual_energy_used)
     assert ac.soln_annual_energy_used == 0
@@ -199,7 +195,13 @@ def test_substitute_vma():
 def test_substitute_vma_passthru_value():
     ac = advanced_controls.AdvancedControls(seq_rate_global=4.3)
     assert ac.seq_rate_global == 4.3
-    ac = advanced_controls.AdvancedControls(seq_rate_global={'value': 4.3})
+
+    class fakeVMA:
+        def avg_high_low(self, key):
+            return (0.0, 0.0, 0.0)
+
+    vmas = {'Sequestration Rates': fakeVMA()}
+    ac = advanced_controls.AdvancedControls(vmas=vmas, seq_rate_global={'value': 4.3})
     assert ac.seq_rate_global == 4.3
 
 

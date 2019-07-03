@@ -151,7 +151,7 @@ class AdvancedControls:
 
         })
 
-    soln_energy_efficiency_factor: float = dataclasses.field(default=None, metadata={
+    soln_energy_efficiency_factor: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['SOLUTION Energy Efficiency Factor'],
         'subtitle': '',
         'tooltip': ("Energy Efficiency Factor SOLUTION\n"
@@ -174,7 +174,7 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!C159; Silvopasture "Advanced Controls"!C123',
         })
 
-    conv_annual_energy_used: float = dataclasses.field(default=None, metadata={
+    conv_annual_energy_used: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['CONVENTIONAL Total Energy Used per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Average Electricty Used CONVENTIONAL\n"
@@ -184,7 +184,7 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!B159; Silvopasture "Advanced Controls"!B123',
         })
 
-    soln_annual_energy_used: float = dataclasses.field(default=None, metadata={
+    soln_annual_energy_used: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['SOLUTION Total Energy Used per Functional Unit'],
         'subtitle': '',
         'tooltip': ("ALTERNATIVE APPROACH Annual Energy Used SOLUTION\n"
@@ -199,7 +199,7 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!D159',
         })
 
-    conv_fuel_consumed_per_funit: float = dataclasses.field(default=None, metadata={
+    conv_fuel_consumed_per_funit: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['CONVENTIONAL Fuel Consumed per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Fuel Consumed per CONVENTIONAL Functional Unit\n"
@@ -210,7 +210,7 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!F159; Silvopasture "Advanced Controls"!F123',
         })
 
-    soln_fuel_efficiency_factor: float = dataclasses.field(default=None, metadata={
+    soln_fuel_efficiency_factor: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['SOLUTION Fuel Efficiency Factor'],
         'subtitle': '',
         'tooltip': ("Fuel Efficiency Factor - SOLUTION\n"
@@ -235,21 +235,21 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!G159; Silvopasture "Advanced Controls"!G123',
         })
 
-    conv_fuel_emissions_factor: float = dataclasses.field(default=None, metadata={
+    conv_fuel_emissions_factor: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': [],
         'subtitle': '',
         'tooltip': 'direct fuel emissions per funit, conventional',
         'excelref': 'SolarPVUtil "Advanced Controls"!I159',
         })
 
-    soln_fuel_emissions_factor: float = dataclasses.field(default=None, metadata={
+    soln_fuel_emissions_factor: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': [],
         'subtitle': '',
         'tooltip': 'direct fuel emissions per funit, solution',
         'excelref': 'SolarPVUtil "Advanced Controls"!I163; DistrictHeating "Advanced Controls"!I144',
         })
 
-    conv_emissions_per_funit: float = dataclasses.field(default=None, metadata={
+    conv_emissions_per_funit: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['CONVENTIONAL Direct Emissions per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Direct Emissions per CONVENTIONAL Functional Unit\n"
@@ -258,7 +258,7 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!C174',
         })
 
-    soln_emissions_per_funit: float = dataclasses.field(default=None, metadata={
+    soln_emissions_per_funit: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['SOLUTION Direct Emissions per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Direct Emissions per SOLUTION Functional Unit\n"
@@ -282,7 +282,7 @@ class AdvancedControls:
     #   SolarPVUtil "Advanced Controls"!I185
     co2eq_conversion_source: str = None
 
-    ch4_co2_per_funit: float = dataclasses.field(default=None, metadata={
+    ch4_co2_per_funit: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['CH4-CO2eq Tons Reduced'],
         'subtitle': '',
         'tooltip': ("CH4-CO2eq Tons Reduced\n"
@@ -290,7 +290,7 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!I174',
         })
 
-    n2o_co2_per_funit: float = dataclasses.field(default=None, metadata={
+    n2o_co2_per_funit: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['N2O-CO2eq Tons Reduced'],
         'subtitle': '',
         'tooltip': ("N2O-CO2eq Tons Reduced\n"
@@ -715,10 +715,11 @@ class AdvancedControls:
     def __post_init__(self):
         for field in dataclasses.fields(self):
             vma_titles = field.metadata.get('vma_titles', None)
-            if vma_titles is not None:
+            if vma_titles is not None and self.vmas is not None:
                 val = getattr(self, field.name)
-                object.__setattr__(self, field.name, self._substitute_vma(
-                    val=val, vma_titles=vma_titles))
+                newval = self._substitute_vma(val=val, vma_titles=vma_titles)
+                if newval is not None:
+                    object.__setattr__(self, field.name, newval)
 
         if isinstance(self.solution_category, str):
             object.__setattr__(self, 'solution_category',
@@ -855,7 +856,6 @@ class AdvancedControls:
                 stat = val
         elif isinstance(val, dict):
             if 'statistic' not in val:  # if there is no statistic to link we return the value
-                print(str(val))
                 return val['value']
             raw_val_from_excel = val['value']
             stat = val['statistic']
@@ -863,9 +863,6 @@ class AdvancedControls:
                 return val['value']
         else:
             return val
-
-        if not vma_titles:
-            return None
 
         for vma_title in vma_titles:
             if self.vmas.get(vma_title, None):
