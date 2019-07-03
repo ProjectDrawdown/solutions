@@ -3,9 +3,9 @@ VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fix
 2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
 3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,1199.8861226016184,2019.5956820982665,380.1765631049702
 4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,False,False,,,
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,17129.24100317985,24789.670460397218,9468.811545962482
+5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,17129.2410031799,24789.670460397218,9468.811545962482
 6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,False,False,,,
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,856.4620501589925,1002.0447233830746,710.8793769349104
+7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,856.462050158993,1002.0447233830746,710.8793769349104
 8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,True,0.10171703017262183,0.19021128705877768,0.013222773286465983
 9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,0.05771209548005298,0.10213943838314535,0.004378477714574574
 10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
