@@ -1,0 +1,14 @@
+﻿Land use ,Area (Mha),Solution dirname
+Forest (undegraded),2804.845437,
+Forest (degraded),854.0166667,
+Peatland,368.8249774,peatlands
+Wetland (Mangrove),14.27515793,
+Tropical Forest Restoration,304,tropicalforests
+Temperate Forest Restoration,196,temperateforests
+Mulitstrata Agroforestry (current adoption),100,multistrataagroforestry
+Managed Grazing (Applicable AEZ area),949.7208958,managedgrazing
+Silvopasture (Applicable AEZ area),1792.730782,silvopasture
+CA (Applicable AEZ area),788,conservationagriculture
+RA (Applicable AEZ area),788,regenerativeagriculture
+Rice (Applicable AEZ area for mechanized farming),107.3471429,improvedrice
+SRI (Applicable AEZ area for smallhoder farming),55.65285714,riceintensification
