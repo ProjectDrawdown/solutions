@@ -115,7 +115,7 @@ class JupyterUI:
         c2eq_layout = ipywidgets.Layout(flex='2 1 0%', width='auto')
         cbox_layout = ipywidgets.Layout(flex='1 1 0%', width='auto')
         cntr_layout = ipywidgets.Layout(display="flex", flex_flow="row",
-                justify_items="stretch", width="100%")
+                align_items="stretch", width="100%")
         white_row = '<div style="font-size:medium; background-color:white;padding-left:2px;">'
         grey_row = '<div style="font-size:medium; background-color:#ececec;padding-left:2px;">'
         hdr_row = '<div style="font-size:large;background-color:white;'
