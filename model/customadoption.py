@@ -45,7 +45,7 @@ class CustomAdoption:
     """
 
     def __init__(self, data_sources, soln_adoption_custom_name, low_sd_mult=1, high_sd_mult=1,
-                 total_adoption_limit=None, match_regions_to_world=False):
+                 total_adoption_limit=None, match_regions_to_world=True):
         self.low_sd_mult = low_sd_mult
         self.high_sd_mult = high_sd_mult
         self.total_adoption_limit = total_adoption_limit
@@ -135,6 +135,21 @@ class CustomAdoption:
         return self.adoption_data_per_region()
 
     def report(self, adoption_limits=None):
+        """
+        Provides information on two potential issues with the scenarios:
+            1) Checks if any of the regions exceed their adoption limits
+            2) Checks if the sum of the main regions matches the corresponding World value
+        Args:
+            adoption_limits: optionally input adoption limits for check #1
+
+        Returns:
+            A DataFrame summary of the checks for each scenario and a data dict.
+            The data dict has the scenarios as keys and dicts of the following format as values:
+               {'amount exceeded': DataFrame (rows = years, cols = regions) containing the amount each datapoint
+                                   exceeds that region's limit (NaN if it is under the limit).
+                'adoption ratio': Series (index = years) containing the sum of the main regional values divided
+                                  by the corresponding World value for each year (should be 1). }
+        """
         if adoption_limits is None:
             adoption_limits = self.total_adoption_limit
         report_data = {}  # dict of dataframes of detailed results

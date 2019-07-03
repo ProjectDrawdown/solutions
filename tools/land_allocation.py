@@ -57,11 +57,13 @@ def total_land_array(compress_aezs=False):
     return array
 
 
-def get_max_adoption_per_region(soln):
+def get_max_adoption_per_region(soln, match_regions_to_world=False):
     """
     Finds max adoption value for each region from every dataset included in CustomAdoption
     Args:
         soln: Solution class
+        match_regions_to_world: Adjust regional values so main regions sum to World while maintaining
+                                their relative ratios.
 
     Returns: Series of max values with regions as index
     """
@@ -72,10 +74,12 @@ def get_max_adoption_per_region(soln):
                 max_vals = scen['df'].max(axis=0)
             else:
                 max_vals = max_vals.combine(scen['df'].max(axis=0), max)
+    if match_regions_to_world:
+        max_vals[MAIN_REGIONS] = max_vals[MAIN_REGIONS] * max_vals['World'] / max_vals[MAIN_REGIONS].sum()
     return max_vals.fillna(0)
 
 
-def allocate_region(tla, allocation_target, assigned_land_types):
+def allocate_region(tla, allocation_target, land_type_guide):
     """
     Allocates land to a region, attempting to meet a target adoption value.
     The user must supply a table of land types assigned to the solution. The algorithm will then try to
@@ -83,21 +87,21 @@ def allocate_region(tla, allocation_target, assigned_land_types):
     Args:
         tla: A DataFrame specifying the TLA for the region (rows: regimes, cols: AEZs)
         allocation_target: The target adoption area to allocate
-        assigned_land_types: A DataFrame of the same format as TLA, which specifies which combinations
+        land_type_guide: A DataFrame of the same format as TLA, which specifies which combinations
             of regime and AEZ have been assigned to the solution. Land types that have not been assigned
             should have a value of 0, while those that have been assigned can specify a guide ratio for
             the algorithm to aim for.
 
-            For example, consider a simplified land type table consisting of 4 AEZs and no regimes.
+            For example, consider a simplified land type guide table consisting of 4 AEZs and no regimes.
 
-            To attempt to allocate land to AEZs 2-4 evenly, the assignment values would be 0 for AEZ 1
+            To attempt to allocate land to AEZs 2-4 evenly, the guide values would be 0 for AEZ 1
             and 1 elsewhere:
             +-------+-------+-------+-------+
             | AEZ 1 | AEZ 2 | AEZ 3 | AEZ 4 |
             +-------+-------+-------+-------+
             |   0   |   1   |   1   |   1   |
 
-            To attempt to allocate as much land to AEZ 4 as AEZ 2 and 3 combined, the assignment values
+            To attempt to allocate as much land to AEZ 4 as AEZ 2 and 3 combined, the guide values
             would look like this:
             +-------+-------+-------+-------+
             | AEZ 1 | AEZ 2 | AEZ 3 | AEZ 4 |
@@ -106,10 +110,9 @@ def allocate_region(tla, allocation_target, assigned_land_types):
 
             Note these values are normalised so only the ratio between them matters - not the absolute values.
 
-            These ratios only guide the allocation attempts. With unlimited TLA the ratios will match the
-            final allocation exactly, but when land types fill up out the algorithm will continue filling
-            the remaining ones. This can potentially result in a final allocation spread that looks very
-            different to the initial allocation guide.
+            With unlimited TLA the ratios will match the final allocation exactly, but when land types fill
+            up out the algorithm will continue filling the remaining ones. This can potentially result in a
+            final allocation spread that looks very different to the initial allocation guide.
 
     Returns:
         success_flag: True if the allocation target is met else False
@@ -117,16 +120,16 @@ def allocate_region(tla, allocation_target, assigned_land_types):
         land_allocated: DataFrame of land allocated by land type (rows: regimes, cols: AEZs)
     """
     success_flag = False
-    land_allocated = pd.DataFrame().reindex_like(assigned_land_types).fillna(0)
+    land_allocated = pd.DataFrame().reindex_like(land_type_guide).fillna(0)
     total_remaining_land = allocation_target
     for _ in range(10):
         # remove assigned land types where tla is already 0
-        assigned_land_types_with_land_left = assigned_land_types[tla > 0].fillna(0)
+        assigned_land_types_with_land_left = land_type_guide[tla > 0].fillna(0)
         if assigned_land_types_with_land_left.sum().sum() == 0:
             break
 
-        # normalise assigned land ratios so combined they add up to 1
-        # if assigned_land_types are all 1, this will divide the assigned land evenly between them
+        # normalise assigned land type ratios so combined they add up to 1
+        # if ratios are all 1, this will divide the allocated land evenly between them
         target_alloc_spread = assigned_land_types_with_land_left / assigned_land_types_with_land_left.sum().sum()
         land_to_allocate = target_alloc_spread * total_remaining_land
 
@@ -135,7 +138,7 @@ def allocate_region(tla, allocation_target, assigned_land_types):
         # we sum these negative values to calculate how much land we have left to allocate
         total_remaining_land = -tla[tla < 0].sum().sum()
 
-        # the land allocated in this pass is thus land_to_allocate + the negative tla values
+        # the land allocated in this iteration is thus land_to_allocate + the negative tla values
         land_allocated += land_to_allocate + tla[tla < 0].fillna(0)
 
         # we can now set the negative tla values to 0, denoting land types that have been totally filled
@@ -148,16 +151,18 @@ def allocate_region(tla, allocation_target, assigned_land_types):
     return success_flag, tla, land_allocated
 
 
-def ranked_land_allocation(save_csvs=False):
+def ranked_land_allocation(csv_dirname=None):
     """
-    Allocates land solutions one by one, using a ranked order specified by the user. Solutions are
-    assumed to require the maximum adoption area specified for each region across all included Custom
-    Adoption scenarios. Allocation failures will not raise Exceptions, but will show up in the printout.
+    Allocates land solutions one by one, using a ranked order specified by the user.
+    Solutions are assumed to require the maximum adoption area specified for each region across all included
+    Custom Adoption scenarios, subject to scaling (sum of main regions is matched to World value).
+    Allocation failures will not raise Exceptions, but will show up in the printout.
     This function is intended to be edited as needed. It may be useful to print or plot certain values
     during allocation.
 
     Args:
-        save_csvs: If True, saves solution allocations and TLA remaining to data/land/allocation/ranked
+        csv_dirname: directory to save solution allocations and TLA remaining (stored in data/land/allocation/ranked).
+                     Will create if it doesn't exist.
     """
     from tools.health.landsurvey import land_solutions_scenarios
 
@@ -169,18 +174,17 @@ def ranked_land_allocation(save_csvs=False):
     # Remaining solutions are divided into those with regional data and those without.
     # Ones with specified regional data are allocated first.
     # Lists of solutions are ranked by priority of allocation (first gets highest priority).
-    # Here they are ordered by abatement cost (cheapest first).
-    # The exception is tropicalforests, which has been moved to highest priority to avoid other
-    # solutions taking all the tropical land first.
     solns_with_reg_data = ['conservationagriculture', 'improvedrice', 'afforestation', 'bamboo', 'silvopasture',
                            'managedgrazing']
-    solns_without_reg_data = ['tropicalforests', 'riceintensification', 'forestprotection', 'indigenouspeoplesland',
-                              'peatlands', 'temperateforests', 'multistrataagroforestry', 'treeintercropping',
-                              'farmlandrestoration', 'tropicaltreestaples', 'perennialbioenergy']
+    solns_without_reg_data = ['indigenouspeoplesland', 'peatlands', 'tropicalforests', 'forestprotection',
+                              'temperateforests', 'multistrataagroforestry', 'treeintercropping',
+                              'riceintensification', 'farmlandrestoration', 'tropicaltreestaples',
+                              'perennialbioenergy']
 
     # Add on solutions can share allocation with other solutions. They are included here for completeness.
     add_on_solns = ['irrigationefficiency', 'regenerativeagriculture', 'nutrientmanagement']
 
+    num_dashes = 127  # number of dashes for divider lines in the printout
     print('Allocating solutions with fixed allocation...')
     regional_tlas = {}
     for reg in MAIN_REGIONS:
@@ -197,19 +201,24 @@ def ranked_land_allocation(save_csvs=False):
     solution_allocation_results = {s: {} for s in solns_with_reg_data + solns_without_reg_data}
     print('Allocating solutions with regional data...')
     for reg in MAIN_REGIONS:
-        print('-' * 100 + f'\n{reg}\n' + '-' * 100)
+        print('-' * num_dashes + f'\n{reg}\n' + '-' * num_dashes)
         for name in solns_with_reg_data:
             print(f'Processing: {name}...', end=' ' * (30 - len(name)))
             constructor, _ = land_solutions_scenarios[name]
             soln = constructor()
             # Set target area to allocate based on max adoption value for this region
-            target_regional_adoption = get_max_adoption_per_region(soln)[reg]
+            # In the case where the sum of the max main region values is less than the max World value,
+            # the regional values will be boosted so their sum is equal to the World value.
+            target_regional_adoption = \
+            get_max_adoption_per_region(soln, match_regions_to_world=True)[reg]
+
             if target_regional_adoption == 0:
                 print('Success - no adoption forecasted for this region')
                 continue
-            assigned_land_types = soln.ae.soln_land_alloc_df
-            success_flag, regional_tlas[reg], allocated = allocate_region(
-                regional_tlas[reg], target_regional_adoption, assigned_land_types)
+            success_flag, regional_tlas[reg], allocated =\
+                allocate_region(tla=regional_tlas[reg],
+                                allocation_target=target_regional_adoption,
+                                land_type_guide=soln.ae.soln_land_alloc_df)
             if success_flag:
                 print('Success')
             else:
@@ -221,10 +230,10 @@ def ranked_land_allocation(save_csvs=False):
             else:
                 solution_allocation_results[name][reg] += allocated
 
-    print('-' * 100 + '\n\nAllocating solutions without regional data...')
+    print('-' * num_dashes + '\n\nAllocating solutions without regional data...')
 
     for name in solns_without_reg_data:
-        print('-' * 100 + f'\n{name}\n' + '-' * 100)
+        print('\n' + '-' * num_dashes + f'\n{name}\n' + '-' * num_dashes)
         constructor, _ = land_solutions_scenarios[name]
         soln = constructor()
 
@@ -258,14 +267,15 @@ def ranked_land_allocation(save_csvs=False):
                 if target_regional_adoption < 0.1:
                     continue  # skip region if no assigned land left
 
-                assigned_land_types = soln.ae.soln_land_alloc_df
-                success_flag, regional_tlas[reg], allocated = allocate_region(
-                    regional_tlas[reg], target_regional_adoption, assigned_land_types)
+                success_flag, regional_tlas[reg], allocated = \
+                    allocate_region(tla=regional_tlas[reg],
+                                    allocation_target=target_regional_adoption,
+                                    land_type_guide=soln.ae.soln_land_alloc_df)
 
                 land_remaining = target_regional_adoption - allocated.sum().sum()
                 if not success_flag:
                     print(f'Allocation for {reg} failed to meet target of {target_regional_adoption:.1f} Mha. '
-                          f'{land_remaining:.1f}Mha will be carried over to the remaining regions.')
+                          f'{land_remaining:.1f} Mha will be carried over to the remaining regions.')
                 else:
                     assert land_remaining < 0.1, \
                         f'Error: success_flag is True but land remaining is nonzero ({land_remaining:.1f} Mha)'
@@ -284,11 +294,15 @@ def ranked_land_allocation(save_csvs=False):
                 print('Success')
                 break
             else:
-                print(f'Failed to allocate all land on iteration {i}. Remaining: {target_world_adoption:.1f}Mha')
+                # Note: with regional allocation divided proportionally based on TLA remaining, there is
+                # no benefit to iterating (if it fails first time it means no applicable land is left).
+                # However, if the criteria for allocating to each region changes, we may want to try
+                # multiple iterations.
+                print(f'Failed to allocate all land on iteration {i}. Remaining: {target_world_adoption:.1f} Mha')
         else:
             raise Exception('Cannot allocate land after 10 iterations. Potential issue in allocation algorithm')
 
-    print('\n' + '-' * 200)
+    print('\n' + '-' * num_dashes)
     tla_left = None
     for reg, tl in regional_tlas.items():
         if tla_left is None:
@@ -300,8 +314,10 @@ def ranked_land_allocation(save_csvs=False):
     print(tla_left)
     print('-' * 200)
 
-    if save_csvs:
-        ranked_allocation_csv_path = datadir.joinpath('land', 'allocation', 'ranked')
+    if csv_dirname is not None:
+        ranked_allocation_csv_path = datadir.joinpath('land', 'allocation', 'ranked', csv_dirname)
+        if not os.path.exists(ranked_allocation_csv_path):
+            os.mkdir(ranked_allocation_csv_path)
         for name in solution_allocation_results:
             solution_allocation_csv_path = ranked_allocation_csv_path.joinpath(name)
             if not os.path.exists(solution_allocation_csv_path):
@@ -310,20 +326,27 @@ def ranked_land_allocation(save_csvs=False):
                 tl.to_csv(solution_allocation_csv_path.joinpath(f'{to_filename(reg)}_allocation.csv'))
 
         tla_remaining_csv_path = ranked_allocation_csv_path.joinpath('tla_remaining')
+        if not os.path.exists(tla_remaining_csv_path):
+            os.mkdir(tla_remaining_csv_path)
         for reg, tl in regional_tlas.items():
             tl.to_csv(tla_remaining_csv_path.joinpath(f'{to_filename(reg)}_tla_remaining.csv'))
         tla_left.to_csv(tla_remaining_csv_path.joinpath('World_tla_remaining.csv'))
 
+        ranked_order = pd.Series(solns_with_fixed_allocation + solns_with_reg_data + solns_without_reg_data)
+        ranked_order.name = 'solutions in ranked order'
+        ranked_order.to_csv(ranked_allocation_csv_path.joinpath('solution_order.csv'))
 
-def plot_tla_remaining(reg=None):
+
+def plot_tla_remaining(alloc_name, reg=None):
     """
     Plots TLA remaining after land allocation, comparing results of the ranked allocation with
     the original DD allocation. Defaults to 'World' values, but can also plot individual regions.
     Args:
+        alloc_name: dirname of ranked allocation run (e.g. initial_abatement_cost_run)
         reg: optional region name (e.g. 'OECD90')
     """
     import matplotlib.pyplot as plt
-    csv_path = datadir.joinpath('land', 'allocation', 'ranked')
+    csv_path = datadir.joinpath('land', 'allocation', 'ranked', alloc_name, 'tla_remaining')
     reg_tla_remaining = {r: pd.read_csv(
         csv_path.joinpath(f'{to_filename(r)}_tla_remaining.csv'), index_col=0) for r in ['World'] + MAIN_REGIONS}
 
@@ -356,18 +379,19 @@ def plot_tla_remaining(reg=None):
     plt.show()
 
 
-def plot_solution_allocation(soln_name):
+def plot_solution_allocation(soln_name, alloc_name):
     """
     Plots land allocation charts for a given solution, comparing results of the ranked allocation
     with the original DD allocation.
     Args:
         soln_name: Solution dirname (e.g. 'tropicalforests')
+        alloc_name: dirname of ranked allocation run (e.g. initial_abatement_cost_run)
     """
     import matplotlib.pyplot as plt
     fullname = get_full_soln_name(soln_name)
     orig_assigned_land = AEZ(fullname).soln_land_alloc_df
 
-    csv_path = datadir.joinpath('land', 'allocation', 'ranked', soln_name)
+    csv_path = datadir.joinpath('land', 'allocation', 'ranked', alloc_name, soln_name)
     regional_allocations = {}
     orig_regional_allocations = {}
     soln_regional_df = pd.DataFrame()
@@ -388,19 +412,21 @@ def plot_solution_allocation(soln_name):
         soln_regional_df[reg] = regional_allocations[reg].sum(axis=1)
         orig_soln_regional_df[reg] = orig_regional_allocations[reg].sum(axis=1)
 
-    fig, axes = plt.subplots(2, 2, figsize=(20, 10))
+    fig, axes = plt.subplots(2, 2, figsize=(15, 11))
 
     max_lim = max(regional_allocations['World'].sum(axis=0).max(),
                   orig_regional_allocations['World'].sum(axis=0).max()) * 1.1
-    plot_alloc(regional_allocations['World'], ax=axes[0, 0], title='Allocation by AEZ (ranked)', xlims=(0, max_lim))
-    plot_alloc(orig_regional_allocations['World'], ax=axes[1, 0], title='Allocation by AEZ (original)',
+    plot_alloc(regional_allocations['World'], ax=axes[1, 0], title='Allocation by AEZ (ranked)', xlims=(0, max_lim))
+    plot_alloc(orig_regional_allocations['World'], ax=axes[0, 0], title='Allocation by AEZ (original)',
                xlims=(0, max_lim))
 
     max_lim = max(soln_regional_df.sum(axis=0).max(), orig_soln_regional_df.sum(axis=0).max()) * 1.1
-    plot_alloc(soln_regional_df, ax=axes[0, 1], title='Allocation by region (ranked)', xlims=(0, max_lim))
-    plot_alloc(orig_soln_regional_df, ax=axes[1, 1], title='Allocation by region (original)', xlims=(0, max_lim))
+    plot_alloc(soln_regional_df, ax=axes[1, 1], title='Allocation by region (ranked)', xlims=(0, max_lim))
+    plot_alloc(orig_soln_regional_df, ax=axes[0, 1], title='Allocation by region (original)', xlims=(0, max_lim))
 
-    fig.suptitle(f'Land allocation breakdown for {fullname}', fontsize=16)
+    pd.options.display.float_format = '{:.1f}'.format
+
+    fig.suptitle(f'Land allocation breakdown for {fullname}', fontsize=20)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.show()
 
@@ -435,5 +461,10 @@ def plot_alloc(df, ax=None, title=None, regimes_subset=None, y_subset=None, xlim
 
 
 if __name__ == '__main__':
-    ranked_land_allocation(save_csvs=False)
-    # plot_solution_allocation('multistrataagroforestry')
+    # ranked_land_allocation(csv_dirname='matching_tla')
+
+    # for s in ['riceintensification', 'forestprotection', 'indigenouspeoplesland', 'peatlands']:
+    s = 'peatlands'
+    # s = 'improvedrice'
+    # plot_solution_allocation(s, 'matching_tla')
+    # plot_tla_remaining('matching_tla')
