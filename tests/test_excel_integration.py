@@ -732,8 +732,8 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
   else:
     regional_mask = None
 
-  # # similar to operating cost, some co2 calcs values are very slightly offset from zero due to floating point errors
-  # # we mask the problematic tables when they are close to 0
+  # similar to operating cost, some co2 calcs values are very slightly offset from zero due to
+  # floating point errors. We mask the problematic tables when they are close to 0.
   s = obj.c2.co2eq_mmt_reduced().reset_index()
   near_zero_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
   if regional_mask is not None:
@@ -741,10 +741,6 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
 
   if is_rrs:
     verify['CO2 Calcs'] = [
-        ('A10:K55', obj.c2.co2_mmt_reduced().loc[2015:].reset_index(), regional_mask),
-        ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), regional_mask),
-        ('A120:AW165', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), None),
-        ('A172:F217', obj.c2.co2eq_ppm_calculator().loc[2015:].reset_index(), None),
         ('A235:K280', obj.c2.co2_reduced_grid_emissions().loc[2015:].reset_index(), regional_mask),
         ('R235:AB280', obj.c2.co2_replaced_grid_emissions().loc[2015:].reset_index(), regional_mask),
         ('AI235:AS280', obj.c2.co2_increased_grid_usage_emissions().loc[2015:].reset_index(), regional_mask),
@@ -753,6 +749,7 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
         ('AI289:AS334', obj.c2.co2eq_increased_grid_usage_emissions().loc[2015:].reset_index(), regional_mask),
         ('A345:K390', obj.c2.co2eq_direct_reduced_emissions().loc[2015:].reset_index(), regional_mask),
         ]
+
     if shifted:
       # Some spreadsheets have the last two blocks shifted by several cells
       verify['CO2 Calcs'].extend([
@@ -762,6 +759,13 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
       verify['CO2 Calcs'].extend([
           ('U345:AE390', obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index(), regional_mask),
           ('AP345:AZ390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)])
+
+    verify['CO2 Calcs'].extend([
+        ('A10:K55', obj.c2.co2_mmt_reduced().loc[2015:].reset_index(), regional_mask),
+        ('A120:AW165', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), None),
+        ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), regional_mask),
+        ('A172:F217', obj.c2.co2eq_ppm_calculator().loc[2015:].reset_index(), None),])
+
   else:
     verify['CO2 Calcs'] = [
         ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), near_zero_mask),

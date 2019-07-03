@@ -1,4 +1,4 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-US DOE, http://energy.gov/energysaver/furnaces-and-boilers,OECD90,USA,,2 - Public Sector/ Multilateral Agency,,,,%,,,0.25771292872866886,Natural Gas,
-JRC- (2013),,OECD90,EU,,2 - Public Sector/ Multilateral Agency,2013.0,,,,,,0.15129078739785234,Oil,
-JRC (2013),,OECD90,EU,,2 - Public Sector/ Multilateral Agency,2013.0,,,,,,0.3275519681788085,Biomass,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+US DOE, http://energy.gov/energysaver/furnaces-and-boilers,OECD90,USA,2 - Public Sector/ Multilateral Agency,,,,%,,,0.25771292872866886,Natural Gas,
+JRC- (2013),,OECD90,EU,2 - Public Sector/ Multilateral Agency,2013.0,,,,,,0.15129078739785234,Oil,
+JRC (2013),,OECD90,EU,2 - Public Sector/ Multilateral Agency,2013.0,,,,,,0.3275519681788085,Biomass,

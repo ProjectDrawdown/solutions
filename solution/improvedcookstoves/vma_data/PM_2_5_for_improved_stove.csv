@@ -1,4 +1,4 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Jetter (2012) - Philips HD4012 fan -wood burning,,World,,,yes,2011,,,g/MJ,0.0,ton/Twhth,0.1472457148990414,Firewood,
-Jetter (2012) - StoveTec TLUD  - wood pellets,,World,,,yes,2012,,,g/MJ,0.0,ton/Twhth,0.1472457148990414,Firewood,
-"Jetter (2012) - Envirofit G-3300, reduced fuel feed -wood",,World,,,yes,2013,,,g/MJ,0.0,ton/Twhth,0.1472457148990414,Firewood,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Jetter (2012) - Philips HD4012 fan -wood burning,,World,,yes,2011,,,g/MJ,0.0,ton/Twhth,0.1472457148990414,Firewood,
+Jetter (2012) - StoveTec TLUD  - wood pellets,,World,,yes,2012,,,g/MJ,0.0,ton/Twhth,0.1472457148990414,Firewood,
+"Jetter (2012) - Envirofit G-3300, reduced fuel feed -wood",,World,,yes,2013,,,g/MJ,0.0,ton/Twhth,0.1472457148990414,Firewood,

@@ -1,0 +1,6 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Global alliance For Clean cookstoves, 2015",http://catalog.cleancookstoves.org/stoves/227,World,,no,2015,,,Years,0.0,TWh thermal/Number of ICS,,5 years is average lifetime of ICS,
+Jeuland (2014)-2,http://pdf.usaid.gov/pdf_docs/pbaab016.pdf ,Asia (Sans Japan),India,yes,2014,,,Years,0.0,TWh thermal/Number of ICS,,Average age of improved biomass stove,
+"upenergygroup.com, 2015",http://upenergygroup.com/company-news/voluntary-carbon-report-to-show-surge-in-carbon-funding-for-clean-cook-stoves/,World,,no,2015,,,Years,0.0,TWh thermal/Number of ICS,,improved wood,
+Wang (2013),http://www-wds.worldbank.org/external/default/WDSContentServer/WDSP/IB/2013/04/03/000333037_20130403121441/Rendered/PDF/762220Revised00kstove0FINALFULL0REV.pdf,Latin America,Central America,yes,2013,,,Years,0.0,TWh thermal/Number of ICS,,improved wood,
+Jeuland (2012) - Improved Wood,e30338. doi:10.1371/journal.pone.0030338,World,,yes,2012,,,Years,0.0,TWh thermal/Number of ICS,,improved wood,

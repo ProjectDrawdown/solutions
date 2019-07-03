@@ -1,9 +1,9 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"IPCC WG3 AR5, min  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,,1  - Peer Reviewed,2014,,,%,,%,,,
-"IPCC WG3 AR5, median  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,,1  - Peer Reviewed,2014,,,%,,%,,,True
-"IPCC WG3 AR5, max  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,,1  - Peer Reviewed,2014,,,%,,%,,,
-"IEA 2010, ETSAP, OCGT, lower heating value, min",http://www.iea-etsap.org/web/e-techds/pdf/e02-gas_fired_power-gs-ad-gct.pdf,World,,,2 - Public Sector/ Multilateral Agency,2010,,,%,,%,,,
-"IEA 2010, ETSAP, OCGT, lower heating value, max",http://www.iea-etsap.org/web/e-techds/pdf/e02-gas_fired_power-gs-ad-gct.pdf,World,,,2 - Public Sector/ Multilateral Agency,2010,,,%,,%,,,
-"IEA 2010, ETSAP, CCGT, lower heating value, min",http://www.iea-etsap.org/web/e-techds/pdf/e02-gas_fired_power-gs-ad-gct.pdf,World,,,2 - Public Sector/ Multilateral Agency,2010,,,%,,%,,,
-"IEA 2010, ETSAP, CCGT, lower heating value, max",http://www.iea-etsap.org/web/e-techds/pdf/e02-gas_fired_power-gs-ad-gct.pdf,World,,,2 - Public Sector/ Multilateral Agency,2010,,,%,,%,,,
-"US EIA, Average 2004-2014",http://www.eia.gov/electricity/annual/html/epa_08_01.html,World,,,2 - Public Sector/ Multilateral Agency,2015,,,Btu/kWh,7.0,%,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"IPCC WG3 AR5, min  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,1  - Peer Reviewed,2014,,,%,,%,,,
+"IPCC WG3 AR5, median  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,1  - Peer Reviewed,2014,,,%,,%,,,True
+"IPCC WG3 AR5, max  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,1  - Peer Reviewed,2014,,,%,,%,,,
+"IEA 2010, ETSAP, OCGT, lower heating value, min",http://www.iea-etsap.org/web/e-techds/pdf/e02-gas_fired_power-gs-ad-gct.pdf,World,,2 - Public Sector/ Multilateral Agency,2010,,,%,,%,,,
+"IEA 2010, ETSAP, OCGT, lower heating value, max",http://www.iea-etsap.org/web/e-techds/pdf/e02-gas_fired_power-gs-ad-gct.pdf,World,,2 - Public Sector/ Multilateral Agency,2010,,,%,,%,,,
+"IEA 2010, ETSAP, CCGT, lower heating value, min",http://www.iea-etsap.org/web/e-techds/pdf/e02-gas_fired_power-gs-ad-gct.pdf,World,,2 - Public Sector/ Multilateral Agency,2010,,,%,,%,,,
+"IEA 2010, ETSAP, CCGT, lower heating value, max",http://www.iea-etsap.org/web/e-techds/pdf/e02-gas_fired_power-gs-ad-gct.pdf,World,,2 - Public Sector/ Multilateral Agency,2010,,,%,,%,,,
+"US EIA, Average 2004-2014",http://www.eia.gov/electricity/annual/html/epa_08_01.html,World,,2 - Public Sector/ Multilateral Agency,2015,,,Btu/kWh,7.0,%,,,

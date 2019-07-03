@@ -1,0 +1,4 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Ragnauth et al, EPA, 2013",https://www.epa.gov/sites/production/files/2016-06/documents/mac_report_2013.pdf,World,,2 - Public Sector/ Multilateral Agency,2013,,,Years,0.0,TWh/TW,,,
+"EPA, 2016, LFG project lifetimes",https://www.epa.gov/sites/production/files/2016-09/documents/pdh_chapter4.pdf,USA,,2 - Public Sector/ Multilateral Agency,2016,,,Years,0.0,TWh/TW,,,
+World Bank (2005),http://documents.worldbank.org/curated/en/634581468333897517/pdf/430990ESM0REVISED01public1.pdf,World,,2 - Public Sector/ Multilateral Agency,2005,,,Years,0.0,TWh/TW,,,

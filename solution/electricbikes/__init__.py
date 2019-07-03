@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,194 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS1-3p2050_Based on Navigant, Bloomberg (Book Ed.1)': advanced_controls.AdvancedControls(
-      # Using sales data from Navigant and other data from Bloomberg, we estimate the
-      # stock of e-bikes in each Drawdown Region. We assume that Sealed Lead Acid (SLA)
-      # batteries are retired/replaced every three years, and that Lithium Ion batteries
-      # (Li) are replaced every 8 years. We further assume that over time more sales for
-      # Li batteries occurs as a percent of all e-bike battery sales. Sales growth slows
-      # from 5% or 2% in some regions to 1% worldwide. This scenario has older inputs
-      # that match those used for the book edition 1, but which have been updated in the
-      # newer scenarios.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Custom', 
-      soln_ref_adoption_custom_name='Book Reference Scenario', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Book Ed.1 Scenario 1', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 561.0), ('OECD90', 35.63818652262168), ('Eastern Europe', 1.9927024684919843), ('Asia (Sans Japan)', 441.0159122922099), ('Middle East and Africa', 1.248023339153054), ('Latin America', 3.6014881104912106), ('China', 277.7410283849392), ('India', 5.674389798859366), ('EU', 28.00294411913302), ('USA', 7.901342605929202)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=391146.9061220421, ref_2014_cost=391146.9061220421, 
-      conv_2014_cost=533792.5232451062, 
-      soln_first_cost_efficiency_rate=0.06, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.045, 
-      soln_lifetime_capacity=0.017048616067320818, soln_avg_annual_use=0.009300303712680364, 
-      conv_lifetime_capacity=0.1615250444807001, conv_avg_annual_use=0.010728885808352105, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=8200.07908254629, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=19796898.423763297, conv_fuel_cost_per_funit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=119.47434825446553, 
-      conv_indirect_co2_per_unit=363.08846239681094, 
-      conv_indirect_co2_is_iunits=True, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=5.865578742880033e-05, conv_annual_energy_used=0.004239652217925736, 
-      conv_fuel_consumed_per_funit=34734831.72341607, soln_fuel_efficiency_factor=1.0, 
-      conv_fuel_emissions_factor=0.002273941593, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS2-5p2050_Based on ITDP/UCD (Book Ed.1)': advanced_controls.AdvancedControls(
-      # ITDP and UCDavis published their Global High Shift (and then High Shift Cycling)
-      # Scenario results in 2014-2015. Using this raw data, we interpolate and
-      # extrapolate where data are unavailable. Regions are regrouped according to our
-      # best matching to Drawdown regions. This scenario uses inputs from previous
-      # models used to develop results for the Drawdown book Edition 1, some of which
-      # have been updated in newer scenarios.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Custom', 
-      soln_ref_adoption_custom_name='Book Reference Scenario', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Book Ed.1 Scenario 2', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 561.0), ('OECD90', 35.63818652262168), ('Eastern Europe', 1.9927024684919843), ('Asia (Sans Japan)', 441.0159122922099), ('Middle East and Africa', 1.248023339153054), ('Latin America', 3.6014881104912106), ('China', 277.7410283849392), ('India', 5.674389798859366), ('EU', 28.00294411913302), ('USA', 7.901342605929202)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=391146.9061220421, ref_2014_cost=391146.9061220421, 
-      conv_2014_cost=533792.5232451062, 
-      soln_first_cost_efficiency_rate=0.06, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.045, 
-      soln_lifetime_capacity=0.017048616067320818, soln_avg_annual_use=0.009300303712680364, 
-      conv_lifetime_capacity=0.1615250444807001, conv_avg_annual_use=0.010728885808352105, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=8200.07908254629, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=19796898.423763297, conv_fuel_cost_per_funit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=119.47434825446553, 
-      conv_indirect_co2_per_unit=363.08846239681094, 
-      conv_indirect_co2_is_iunits=True, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=5.865578742880033e-05, conv_annual_energy_used=0.004239652217925736, 
-      conv_fuel_consumed_per_funit=34734831.72341607, soln_fuel_efficiency_factor=1.0, 
-      conv_fuel_emissions_factor=0.002273941593, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS3-6p2050_Growth to 6.5% (Book Ed.1)': advanced_controls.AdvancedControls(
-      # We assume that adoption growth to 6.5% linearly by 2050, and also that all users
-      # switch from ICE cars, hence the conventional emissions are based on only fuel
-      # emissions. This scenario uses inputs for the model developed for the Drawdown
-      # book edition 1, some inputs which have been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Custom', 
-      soln_ref_adoption_custom_name='Book Reference Scenario', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='DEFAULT Linear', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 561.0), ('OECD90', 35.63818652262168), ('Eastern Europe', 1.9927024684919843), ('Asia (Sans Japan)', 441.0159122922099), ('Middle East and Africa', 1.248023339153054), ('Latin America', 3.6014881104912106), ('China', 277.7410283849392), ('India', 5.674389798859366), ('EU', 28.00294411913302), ('USA', 7.901342605929202)], 
-      pds_adoption_final_percentage=[('World', 0.065), ('OECD90', 0.065), ('Eastern Europe', 0.065), ('Asia (Sans Japan)', 0.065), ('Middle East and Africa', 0.065), ('Latin America', 0.065), ('China', 0.065), ('India', 0.065), ('EU', 0.065), ('USA', 0.065)], 
-
-      # financial
-      pds_2014_cost=391146.9061220421, ref_2014_cost=391146.9061220421, 
-      conv_2014_cost=533792.5232451062, 
-      soln_first_cost_efficiency_rate=0.06, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.045, 
-      soln_lifetime_capacity=0.017048616067320818, soln_avg_annual_use=0.009300303712680364, 
-      conv_lifetime_capacity=0.1615250444807001, conv_avg_annual_use=0.010728885808352105, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=8200.07908254629, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=19796898.423763297, conv_fuel_cost_per_funit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=119.47434825446553, 
-      conv_indirect_co2_per_unit=363.08846239681094, 
-      conv_indirect_co2_is_iunits=True, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=5.865578742880033e-05, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=52940977.6576322, soln_fuel_efficiency_factor=1.0, 
-      conv_fuel_emissions_factor=0.002273941593, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
+units = {
+  "implementation unit": "MWh of Batteries",
+  "functional unit": "Billion PKM",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Electric Bicycles'
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class ElectricBicycles:
-  name = 'Electric Bicycles'
-  units = {
-    "implementation unit": "MWh of Batteries",
-    "functional unit": "Billion PKM",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS1-3p2050_Based on Navigant, Bloomberg (Book Ed.1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -368,16 +201,16 @@ class ElectricBicycles:
     ht_ref_adoption_initial = pd.Series(
       [561.0, 35.63818652262168, 1.9927024684919843, 441.0159122922099, 1.248023339153054,
        3.6014881104912106, 277.7410283849392, 5.674389798859366, 28.00294411913302, 7.901342605929202],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

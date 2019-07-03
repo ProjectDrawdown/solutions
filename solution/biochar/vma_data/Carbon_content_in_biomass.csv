@@ -1,9 +1,9 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Woolf et al 2010,http://www.nature.com/articles/ncomms1057,World,,,,,,,%,,,,,
-FAO ,http://www.fao.org/forestry/17111/en/,World,,,,,,,%,,,,,
-FAO ,http://www.fao.org/forestry/17111/en/,World,,,,,,,%,,,,,
-Jain et al 2010,https://www.fs.fed.us/rm/pubs/rmrs_p061/rmrs_p061_039_059.pdf,USA,,,,,,,%,,,,,
-Jain et al 2010,https://www.fs.fed.us/rm/pubs/rmrs_p061/rmrs_p061_039_059.pdf,USA,,,,,,,%,,,,,
-Thomas and Martin 2012,https://ai2-s2-pdfs.s3.amazonaws.com/9a67/4d3e8b2feccaaed1736ca45a50094c03c9e2.pdf,World,,,,,,,%,,,,,
-Thomas and Martin 2012,https://ai2-s2-pdfs.s3.amazonaws.com/9a67/4d3e8b2feccaaed1736ca45a50094c03c9e2.pdf,World,,,,,,,%,,,,,
-Slade et al 2011,http://www.ukerc.ac.uk/publications/energy-from-biomass-the-size-of-the-global-resource.html,World,,,,,,,%,,,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Woolf et al 2010,http://www.nature.com/articles/ncomms1057,World,,,,,,%,,,,,
+FAO ,http://www.fao.org/forestry/17111/en/,World,,,,,,%,,,,,
+FAO ,http://www.fao.org/forestry/17111/en/,World,,,,,,%,,,,,
+Jain et al 2010,https://www.fs.fed.us/rm/pubs/rmrs_p061/rmrs_p061_039_059.pdf,USA,,,,,,%,,,,,
+Jain et al 2010,https://www.fs.fed.us/rm/pubs/rmrs_p061/rmrs_p061_039_059.pdf,USA,,,,,,%,,,,,
+Thomas and Martin 2012,https://ai2-s2-pdfs.s3.amazonaws.com/9a67/4d3e8b2feccaaed1736ca45a50094c03c9e2.pdf,World,,,,,,%,,,,,
+Thomas and Martin 2012,https://ai2-s2-pdfs.s3.amazonaws.com/9a67/4d3e8b2feccaaed1736ca45a50094c03c9e2.pdf,World,,,,,,%,,,,,
+Slade et al 2011,http://www.ukerc.ac.uk/publications/energy-from-biomass-the-size-of-the-global-resource.html,World,,,,,,%,,,,,

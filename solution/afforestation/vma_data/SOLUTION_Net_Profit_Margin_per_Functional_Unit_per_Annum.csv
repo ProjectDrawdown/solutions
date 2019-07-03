@@ -1,10 +1,10 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Luwbowski et al 2002,https://foragforum.org/docs/2002/4-4-lubowski_landuse-paper.pdf,USA,,,1  - Peer Reviewed,2002,,,USD2002/ha/year,0.0,US$2014/ ha/ yr,,Data not found,True
-"Pagiola, Stefano, and Benoit Bosquet 2004",https://mpra.ub.uni-muenchen.de/13726/1/REDD-Econ-20090224.pdf,World,"REDD, tropical",,1  - Peer Reviewed,2009,,,USD2009/ha/year,0.0,US$2014/ ha/ yr,,Data not found,True
-"Olschewski, Roland, and Pablo C. Benitez",http://www.faustmann-conference.de/fileadmin/Dokumente/Abstracts/Olschewski.pdf,Latin America,Ecuador,,1  - Peer Reviewed,2010,,,USD2010/ha/year,0.0,US$2014/ ha/ yr,,Refer table 1,
-"Olschewski, Roland, and Pablo C. Benitez",http://www.faustmann-conference.de/fileadmin/Dokumente/Abstracts/Olschewski.pdf,Latin America,Ecuador,,1  - Peer Reviewed,2010,,,USD2010/ha/year,0.0,US$2014/ ha/ yr,,Refer table 1,
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Argentina,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Brazil,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Chile,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Uruguay,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,USA,USA,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Luwbowski et al 2002,https://foragforum.org/docs/2002/4-4-lubowski_landuse-paper.pdf,USA,,1  - Peer Reviewed,2002,,,USD2002/ha/year,0.0,US$2014/ ha/ yr,,Data not found,True
+"Pagiola, Stefano, and Benoit Bosquet 2004",https://mpra.ub.uni-muenchen.de/13726/1/REDD-Econ-20090224.pdf,World,"REDD, tropical",1  - Peer Reviewed,2009,,,USD2009/ha/year,0.0,US$2014/ ha/ yr,,Data not found,True
+"Olschewski, Roland, and Pablo C. Benitez",http://www.faustmann-conference.de/fileadmin/Dokumente/Abstracts/Olschewski.pdf,Latin America,Ecuador,1  - Peer Reviewed,2010,,,USD2010/ha/year,0.0,US$2014/ ha/ yr,,Refer table 1,
+"Olschewski, Roland, and Pablo C. Benitez",http://www.faustmann-conference.de/fileadmin/Dokumente/Abstracts/Olschewski.pdf,Latin America,Ecuador,1  - Peer Reviewed,2010,,,USD2010/ha/year,0.0,US$2014/ ha/ yr,,Refer table 1,
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Argentina,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Brazil,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Chile,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Uruguay,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,USA,USA,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,

@@ -1,0 +1,3 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+JRC (2013) District Heating  Wood chips boiler,http://publications.jrc.ec.europa.eu/repository/handle/JRC85804,OECD90,EU,2 - Public Sector/ Multilateral Agency,2013,,,€2010/kW,0.0,US$2014/kW,,Wood Chips Boiler DH,
+JRC (2013) District Heating  Natural gas boiler,http://publications.jrc.ec.europa.eu/repository/handle/JRC85804,OECD90,EU,2 - Public Sector/ Multilateral Agency,2013,,,€2010/kW,0.0,US$2014/kW,,Natural Gas Boiler DH,1.0

@@ -1,0 +1,3 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Several Sources,See VMA Table C1115,World,,,2018,,,US$2014 per million fixtures,,US2014$/Million Low Flow Fixtures,0.6318128079920171,"For new persons growing the TAM, the cost of the comparator (buy and install a new conventional fixture) is this value. Based on 20 data points.",
+Project Drawdown Assumption,,World,,,2018,,,US$2014 per million fixtures,,US2014$/Million Low Flow Fixtures,0.5,"For retrofits, the cost of the comparator (do nothing and use existing conventional fixture) is 0.",

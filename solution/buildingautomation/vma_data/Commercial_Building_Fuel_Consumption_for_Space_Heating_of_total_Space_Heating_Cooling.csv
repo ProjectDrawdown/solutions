@@ -1,2 +1,2 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Project Drawdown Assumption,,,,,,,,,%,0.9727602538171701,%,,Assumes that all space heating that is non-electric is from fuel (natural gas),
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Project Drawdown Assumption,,,,,,,,%,0.9727602538171701,%,,Assumes that all space heating that is non-electric is from fuel (natural gas),

@@ -1,0 +1,209 @@
+{
+    "name": "PDS2-44p2050-Mean of Custom Scen. (Book Ed.1)",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "description": "Several custom scenarios (and some developed by other sources) were recorded and statistically combined to create low, medium and high meta-scenarios (based on -1, 0 and +1 standard deviations from the mean). The mean was used for this scenario. We assume that solar water heating would replace only natural gas, oil, coal and electricity heaters (that is, no biomass or commercial heat). This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_cost_per_funit": 0.0795,
+    "pds_2014_cost": {
+        "value": 1199.8861226016184,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 1199.8861226016184,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.036,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 17129.2410031799,
+        "statistic": "mean"
+    },
+    "soln_avg_annual_use": {
+        "value": 856.462050158993,
+        "statistic": "mean"
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 0.047,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_cost_per_funit": 0.0,
+    "npv_discount_rate": 0.04,
+    "conv_annual_energy_used": {
+        "value": 0.11587780896849142,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 2483.195162856096,
+        "statistic": ""
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 69.71707858620789,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "IEA 4DS (2016), Residential & Commercial Water Heating",
+    "pds_source_post_2014": "Drawdown TAM: PDS2 - post-Low-Flow",
+    "pds_base_adoption": [
+        [
+            "World",
+            335.463
+        ],
+        [
+            "OECD90",
+            56.493
+        ],
+        [
+            "Eastern Europe",
+            2.374
+        ],
+        [
+            "Asia (Sans Japan)",
+            240.305
+        ],
+        [
+            "Middle East and Africa",
+            9.948
+        ],
+        [
+            "Latin America",
+            9.113
+        ],
+        [
+            "China",
+            231.838
+        ],
+        [
+            "India",
+            6.4350000000000005
+        ],
+        [
+            "EU",
+            23.777
+        ],
+        [
+            "USA",
+            17.233
+        ]
+    ],
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_custom_name": "Average of All Custom PDS Scenarios",
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false
+}

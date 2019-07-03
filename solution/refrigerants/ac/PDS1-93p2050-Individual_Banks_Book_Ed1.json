@@ -1,0 +1,209 @@
+{
+    "name": "PDS1-93p2050-Individual Banks (Book Ed.1)",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "description": "Taking the estimated \"banks\" of refrigerants globally in existence decadally from 2010 to 2050, we estimate the Global Warming Potential (GWP) of a \"Standardized Refrigerant\" using the refrigerant distribution of the most recently available data. This standardized refrigerant is used to convert between CO2 emissions and Refregerant emissions throughout the analysis. We combine estimates of Refrigerant banks with estimated leakage rates, potential replacement rates of \"overcharged\" banks, retirement-, recovery- and destruction-rates of refrigerants decadally, and sum the net reduction in CO2 emissions expected from these processes. The decadal results are interpolated in the Data Interpolator, mostly with S-Curve fits over the analysis period. Individual HFC sector bank estimates are used (Commercial, Domestic, Mobile and Stationary). This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated since publication.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_cost_per_funit": 0.0,
+    "pds_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "soln_avg_annual_use": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 24811458.424998194,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_cost_per_funit": 0.0,
+    "npv_discount_rate": 0.064,
+    "conv_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.0027288888888888888,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 2326086.9565217393,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "ALL SOURCES",
+    "pds_source_post_2014": "ALL SOURCES",
+    "pds_base_adoption": [
+        [
+            "World",
+            29.609913664850783
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 Scenario 1",
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false
+}

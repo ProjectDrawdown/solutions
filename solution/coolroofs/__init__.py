@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,183 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS2-89p2050-Integrated-EE8.51%-FE-2.67% (Book)': advanced_controls.AdvancedControls(
-      # The Model is developed with a S-Curve adoption pattern in 2050 (to 90%). The
-      # Energy Efficiency variables are adjusted to account for Integration with other
-      # solutions in the Buildings Sector. 8.51% electricity reduction (cooling) with a
-      # 2.67% fuel increase (heating).
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Logistic S-Curve', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='ALL SOURCES', 
-      pds_source_post_2014='ALL SOURCES', 
-      pds_base_adoption=[('World', 1500000000.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.9), ('OECD90', 0.9), ('Eastern Europe', 0.9), ('Asia (Sans Japan)', 0.9), ('Middle East and Africa', 0.9), ('Latin America', 0.9), ('China', 0.9), ('India', 0.9), ('EU', 0.9), ('USA', 0.9)], 
-
-      # financial
-      pds_2014_cost=59.62842109925933, ref_2014_cost=59.62842109925933, 
-      conv_2014_cost=56.43855563822238, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=20.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=18.5, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=6.966292405429371, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.20000000000000004, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=7.465849274710736, 
-      conv_fixed_oper_cost_per_iunit=0.43906285, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0851, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=5.91e-08, 
-      conv_fuel_consumed_per_funit=0.0003428818773002318, soln_fuel_efficiency_factor=-0.0267, 
-      conv_fuel_emissions_factor=61.051339971807074, soln_fuel_emissions_factor=61.051339971807074, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS1-61p2050-Integrated-EE8.72%-FE-2.81% (Book)': advanced_controls.AdvancedControls(
-      # The Model is developed with a S-Curve adoption pattern in 2050 (to 60%). The
-      # Energy Efficiency variables are adjusted to account for Integration with other
-      # solutions in the Buildings Sector. 8.72% electricity reduction (cooling) with a
-      # 2.81% fuel increase (heating).
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Logistic S-Curve', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='ALL SOURCES', 
-      pds_source_post_2014='ALL SOURCES', 
-      pds_base_adoption=[('World', 1500000000.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.6), ('OECD90', 0.6), ('Eastern Europe', 0.6), ('Asia (Sans Japan)', 0.6), ('Middle East and Africa', 0.6), ('Latin America', 0.6), ('China', 0.6), ('India', 0.6), ('EU', 0.6), ('USA', 0.6)], 
-
-      # financial
-      pds_2014_cost=59.62842109925933, ref_2014_cost=59.62842109925933, 
-      conv_2014_cost=56.43855563822238, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=20.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=18.5, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=6.964985881806296, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.2, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=7.465849274710736, 
-      conv_fixed_oper_cost_per_iunit=0.4390631781263562, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0872, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=5.91e-08, 
-      conv_fuel_consumed_per_funit=0.0003428818773002318, soln_fuel_efficiency_factor=-0.0281, 
-      conv_fuel_emissions_factor=61.051339971807074, soln_fuel_emissions_factor=61.051339971807074, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS3-93p2050-Integrated-EE8.42%-FE-2.62% (Book)': advanced_controls.AdvancedControls(
-      # The Model is developed with a S-Curve adoption pattern in 2050 (to 95%). The
-      # Energy Efficiency variables are adjusted to account for Integration with other
-      # solutions in the Buildings Sector. 8.42% electricity reduction (cooling) with a
-      # 2.62% fuel increase (heating).
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Logistic S-Curve', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='ALL SOURCES', 
-      pds_source_post_2014='ALL SOURCES', 
-      pds_base_adoption=[('World', 1500000000.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.95), ('OECD90', 0.95), ('Eastern Europe', 0.95), ('Asia (Sans Japan)', 0.95), ('Middle East and Africa', 0.95), ('Latin America', 0.95), ('China', 0.95), ('India', 0.95), ('EU', 0.95), ('USA', 0.95)], 
-
-      # financial
-      pds_2014_cost=59.62842109925933, ref_2014_cost=59.62842109925933, 
-      conv_2014_cost=56.43855563822238, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.094, 
-      soln_lifetime_capacity=20.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=18.5, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=6.966852344124974, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.20000000000000004, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=7.465849274710736, 
-      conv_fixed_oper_cost_per_iunit=0.43906285, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0842, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=5.91e-08, 
-      conv_fuel_consumed_per_funit=0.0003428818773002318, soln_fuel_efficiency_factor=-0.0262, 
-      conv_fuel_emissions_factor=61.051339971807074, soln_fuel_emissions_factor=61.051339971807074, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
+units = {
+  "implementation unit": "m²",
+  "functional unit": "m²",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Cool Roofs'
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class CoolRoofs:
-  name = 'Cool Roofs'
-  units = {
-    "implementation unit": "m²",
-    "functional unit": "m²",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS2-89p2050-Integrated-EE8.51%-FE-2.67% (Book)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -229,7 +73,7 @@ class CoolRoofs:
     tam_ref_data_sources = {
       'Baseline Cases': {
           'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam', 'tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolsmrvtoolmethodology_.csv'),
-          'Based on GBPN - BEST PRACTICE POLICIES FOR LOW CARBON & ENERGY BUILDINGS BASED ON SCENARIO ANALYSIS May 2012': THISDIR.joinpath('tam', 'tam_based_on_GBPN_BEST_PRACTICE_POLICIES_FOR_LOW_CARBON_ENERGY_BUIL_a08fdffd.csv'),
+          'Based on GBPN - BEST PRACTICE POLICIES FOR LOW CARBON & ENERGY BUILDINGS BASED ON SCENARIO ANALYSIS May 2012': THISDIR.joinpath('tam', 'tam_based_on_GBPN_BEST_PRACTICE_POLICIES_FOR_LOW_CARBON_ENERGY_BUILDINGS_BASED_ON_SCENARIO_A_c7e92439.csv'),
           'IEA (2013)': THISDIR.joinpath('tam', 'tam_IEA_2013.csv'),
       },
       'Conservative Cases': {
@@ -307,16 +151,16 @@ class CoolRoofs:
     ht_ref_adoption_initial = pd.Series(
       [1500000000.0, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

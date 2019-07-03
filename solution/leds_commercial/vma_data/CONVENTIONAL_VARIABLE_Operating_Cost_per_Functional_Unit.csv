@@ -1,5 +1,0 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Calculations based on average luminaire data (luminous flux, power), annual operating time and electricity price in commercial buildings",,World,LFL,,,,,,USD2014/year,0.0,US2014$/kilo-lumen-hr,0.75,,
-"Calculations based on average luminaire data (luminous flux, power), annual operating time and electricity price in commercial buildings",,World,CFL,,,,,,USD2014/year,0.0,US2014$/kilo-lumen-hr,0.1,,
-"Calculations based on average luminaire data (luminous flux, power), annual operating time and electricity price in commercial buildings",,World,Incandescent&Halogen,,,,,,USD2014/year,0.0,US2014$/kilo-lumen-hr,0.02,,
-"Calculations based on average luminaire data (luminous flux, power), annual operating time and electricity price in commercial buildings",,World,HID,,,,,,USD2014/year,0.0,US2014$/kilo-lumen-hr,0.1,,

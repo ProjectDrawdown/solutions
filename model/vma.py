@@ -32,7 +32,8 @@ def generate_vma_dict(path_to_vma_data):
             if not pd.isna(fixed_mean) and not pd.isna(fixed_high) and not pd.isna(fixed_low):
                 fixed_summary = (fixed_mean, fixed_high, fixed_low)
             vma_dict[row['Title on xls']] = VMA(path_to_vma_data.joinpath(row['Filename'] + '.csv'),
-                                                use_weight=use_weight, fixed_summary=fixed_summary)
+                                                use_weight=use_weight,
+                                                fixed_summary=fixed_summary)
     return vma_dict
 
 
@@ -60,13 +61,18 @@ class VMA:
     """
 
     def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3,
-            stat_correction=True, use_weight=False, postprocess=None, fixed_summary=None):
+            stat_correction=None, use_weight=False, postprocess=None, fixed_summary=None):
         self.filename = filename
         self.low_sd = low_sd
         self.high_sd = high_sd
         self.discard_multiplier = discard_multiplier
         self.stat_correction = stat_correction
         self.use_weight = use_weight
+        if stat_correction is None:
+            # Excel does not discard outliers if weights are used, we do the same by default.
+            self.stat_correction = not use_weight
+        else:
+            self.stat_correction = stat_correction
         self.postprocess = postprocess
         self.fixed_summary = fixed_summary
         self._read_csv(filename=self.filename)
@@ -86,9 +92,6 @@ class VMA:
         value.name = 'Value'
         exclude = df['Exclude Data?'].fillna(False)
         exclude.name = 'Exclude?'
-        df['Thermal-Moisture Regime'] = df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
-        tmr = df['Thermal-Moisture Regime'].fillna('')
-        tmr.name = 'TMR'
         # correct some common typos and capitalization differences from Excel files.
         normalized_region = (df['World / Drawdown Region']
                 .replace('Middle East & Africa', 'Middle East and Africa')
@@ -100,7 +103,10 @@ class VMA:
         for k, v in COUNTRY_REGION_MAP.items():
             main_region.replace(k, v, inplace=True)
         main_region.name = 'Main Region'
-        self.df = pd.concat([value, units, raw, weight, exclude, tmr, region, main_region], axis=1)
+        self.df = pd.concat([value, units, raw, weight, exclude, region, main_region], axis=1)
+        if 'Thermal-Moisture Regime' in df.columns:
+            df['Thermal-Moisture Regime'] = df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
+            self.df['TMR'] = df['Thermal-Moisture Regime'].fillna('')
         self.df['Value'].fillna(self.df['Raw'], inplace=True)
 
     def _discard_outliers(self):
@@ -127,6 +133,17 @@ class VMA:
           By default returns (mean, high, low) using low_sd/high_sd.
           If key is specified will return associated value only
         """
+        if self.use_weight:
+            # Sum the weights before discarding outliers, to match Excel.
+            # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.qkdzs364y2t2
+            # Once reproducing Excel results is no longer essential, total_weight computation
+            # can be moved down to the second use_weight conditional below. That way the sum
+            # of the weights will only include sources which are being included in the mean.
+            total_weights = self.df['Weight'].fillna(1.0).sum()
+            total_weights = total_weights if total_weights != 0.0 else 1.0
+            all_weights = self.df['Weight'].fillna(1.0)
+            M = (all_weights != 0).sum()
+
         df = self._discard_outliers() if self.stat_correction else self.df
         df = df.loc[df['Exclude?'] == False]
         if regime:
@@ -139,14 +156,13 @@ class VMA:
 
         if self.use_weight:
             weights = df['Weight'].fillna(1.0)
-            total_weights = weights.sum() if weights.sum() != 0.0 else 1.0
             mean = (df['Value'] * weights).sum() / total_weights
-            M = (weights != 0).sum()
             if M == 0.0:
                 sd = 0.0
             else:
                 # A weighted standard deviation is not the same as stddev()
                 numerator = (weights * ((df['Value'] - mean) ** 2)).sum()
+                # when Excel is deprecated, remove all_weights and use: M = (weights != 0).sum()
                 denominator = ((M - 1) / M) * total_weights
                 sd = math.sqrt(numerator / denominator)
         else:

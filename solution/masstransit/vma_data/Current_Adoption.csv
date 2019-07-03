@@ -1,9 +1,9 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,World,,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
-"ICCT, 2012, ""Global Transportation Roadmap Model""",http://www.theicct.org/global-transportation-roadmap-model,World,,,4 - Independently Verified,2012,,,billion Pkm,0.0,Pkm (urban),,Urban figures extracted through assumptions of mode share from ICCT and ETP,
-"IEA, ETP 16 Figure 5.2",http://www.iea.org/Textbase/nppdf/stud/16/ETP2016.pdf,World,,,2 - Public Sector/ Multilateral Agency,2016,,,billion Pkm,0.0,Pkm (urban),,,
-ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,OECD90,,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
-ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Eastern Europe,,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
-ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Asia (Sans Japan),,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
-ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Middle East and Africa,,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
-ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Latin America,,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,World,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
+"ICCT, 2012, ""Global Transportation Roadmap Model""",http://www.theicct.org/global-transportation-roadmap-model,World,,4 - Independently Verified,2012,,,billion Pkm,0.0,Pkm (urban),,Urban figures extracted through assumptions of mode share from ICCT and ETP,
+"IEA, ETP 16 Figure 5.2",http://www.iea.org/Textbase/nppdf/stud/16/ETP2016.pdf,World,,2 - Public Sector/ Multilateral Agency,2016,,,billion Pkm,0.0,Pkm (urban),,,
+ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,OECD90,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
+ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Eastern Europe,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
+ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Asia (Sans Japan),,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
+ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Middle East and Africa,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,
+ITDP/UC Davis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Latin America,,5 - Not Verified,2015,,,billion Pkm,0.0,Pkm (urban),,,

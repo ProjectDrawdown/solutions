@@ -21,6 +21,10 @@ from tools.util import cell_to_offsets, empty_to_nan, to_filename, convert_bool
 CSV_TEMPLATE_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'VMA', 'vma_template.csv')
 pd.set_option('display.expand_frame_repr', False)
 
+# A few VMA columns are only present in some solutions, like data which is
+# specific to Land or Ocean solutions.
+optional_columns = ['Thermal-Moisture Regime', 'Crop',
+        'Closest Matching Standard Crop (by Revenue/ha)',]
 
 def convert_year(x):
     if pd.isna(x):
@@ -56,6 +60,8 @@ COLUMN_DTYPE_MAP = {
     'Common Units': lambda x: x,
     'Weight': lambda x: x,
     'Assumptions': lambda x: x,
+    'Closest Matching Standard Crop (by Revenue/ha)': lambda x: x,
+    'Crop': lambda x: x,
     'Exclude Data?': lambda x: convert_bool(x) if x is not nan else x,
 }
 
@@ -124,6 +130,9 @@ class VMAReader:
                 info_df.loc[i, :] = row
                 i += 1
                 if table is not None:
+                    for col in optional_columns:
+                        if table.loc[:, col].isnull().all():
+                            table.drop(labels=col, axis='columns', inplace=True)
                     table.to_csv(os.path.join(csv_path, path_friendly_title + '.csv'), index=False)
             info_df.to_csv(os.path.join(csv_path, 'VMA_info.csv'))
         return df_dict
@@ -138,6 +147,7 @@ class VMAReader:
             'Conedition calculation': 'Conversion calculation',
             # Airplanes removed Geographic Location from one of the VMAs.
             'Specific': 'Specific Geographic Location',
+            'Closest Matching Crop (by Revenue/ha)': 'Closest Matching Standard Crop (by Revenue/ha)',
         }
         return known_aliases.get(name, name)
 
@@ -169,11 +179,12 @@ class VMAReader:
                 skipcols.append(c)
                 continue    # skip blank columns
             name_to_check = self.normalize_col_name(val.strip().replace('*', ''))
+
             col_name = col_names[idx]
-            if col_name == 'Thermal-Moisture Regime' and name_to_check != col_name:
-                # RRS solutions do not have a Thermal-Moisture Regime. Allow it to be skipped.
-                col_names.remove('Thermal-Moisture Regime')
+            while col_name in optional_columns and name_to_check != col_name:
+                col_names.remove(col_name)
                 col_name = col_names[idx]
+
             assert col_name == name_to_check, f'unknown VMA column: {name_to_check} on row {row1}'
             idx += 1
         assert idx == len(col_names), f'columns not present: {idx} != {len(col_names)}'
@@ -218,22 +229,15 @@ class VMAReader:
         else:
             raise ValueError("No 'Use weight?' cell found")
 
-        if use_weight:
-            warnings.warn(
-                "May need to modify testdata spreadsheet to avoid weighted mean error."
-                "\nWeights of excluded data and outliers should be set to 0 for table at {}"
-                "\nSee: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#"
-                "".format(source_id_cell))
-
         if fixed_summary:
             # Find the Average, High, Low cells.
             for r in range(last_row, last_row + 50):
                 col = 0
                 label = str(sheet.cell_value(row1 + r, 17)).lower()
-                if 'average' in label or 'sum' in label:
+                if label.startswith('average') or 'sum' in label:
                     col = 20 if use_weight else 19
                 label = str(sheet.cell_value(row1 + r, 16)).lower()
-                if 'average' in label or 'sum' in label:
+                if label.startswith('average') or 'sum' in label:
                     col = 19 if use_weight else 18
                 if col:
                     average = float(sheet.cell_value(row1 + r, col))
@@ -263,15 +267,41 @@ class VMAReader:
         normalize_vma_names = {
             'SOLUTION First Cost per Implementation Unit of the solution':
                 'SOLUTION First Cost per Implementation Unit',
+            'CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies':
+                'CONVENTIONAL First Cost per Implementation Unit',
             'Yield  from CONVENTIONAL Practice': 'Yield from CONVENTIONAL Practice',
             'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls':
-                'Indirect CO2 Emissions per CONVENTIONAL Unit',
+                'CONVENTIONAL Indirect CO2 Emissions per Unit',
             'Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls)':
-                'Indirect CO2 Emissions per SOLUTION Unit',
-            'CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies':
-                'CONVENTIONAL First Cost per Implementation Unit for replaced practices',
+                'SOLUTION Indirect CO2 Emissions per Unit',
             'ALTERNATIVE APPROACH      Annual Energy Used UNDEGRADED LAND':
                 'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND',
+            'SOLUTION VARIABLE Operating Cost per Functional Unit':
+                'SOLUTION Variable Operating Cost (VOM) per Functional Unit',
+            'SOLUTION FIXED Operating Cost per Implementation Unit':
+                'SOLUTION Fixed Operating Cost (FOM)',
+            'CONVENTIONAL VARIABLE Operating Cost per Functional Unit':
+                'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit',
+            'CONVENTIONAL FIXED Operating Cost per Implementation Unit':
+                'CONVENTIONAL Fixed Operating Cost (FOM)',
+            'Fuel Consumed per Functional Unit - CONVENTIONAL':
+                'CONVENTIONAL Fuel Consumed per Functional Unit',
+            'Total Energy Used per functional unit - SOLUTION':
+                'SOLUTION Total Energy Used per Functional Unit',
+            'Electricity Consumed per Functional Unit - CONVENTIONAL':
+                'CONVENTIONAL Total Energy Used per Functional Unit',
+            'Electricty Consumed per Functional Unit - CONVENTIONAL':
+                'CONVENTIONAL Total Energy Used per Functional Unit',
+            'Fuel Efficiency Factor - SOLUTION': 'SOLUTION Fuel Efficiency Factor',
+            'Energy Efficiency Factor - SOLUTION': 'SOLUTION Energy Efficiency Factor',
+            'Direct Emissions per CONVENTIONAL Functional Unit':
+                'CONVENTIONAL Direct Emissions per Functional Unit',
+            'Direct Emissions per SOLUTION Functional Unit':
+                'SOLUTION Direct Emissions per Functional Unit',
+            'Lifetime Capacity - SOLUTION': 'SOLUTION Lifetime Capacity',
+            'Lifetime Capacity - CONVENTIONAL': 'CONVENTIONAL Lifetime Capacity',
+            'Average Annual Use - SOLUTION': 'SOLUTION Average Annual Use',
+            'Average Annual Use - CONVENTIONAL': 'CONVENTIONAL Average Annual Use',
         }
 
         table_locations = OrderedDict()

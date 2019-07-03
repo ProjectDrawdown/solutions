@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,195 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS1-25p2050-Low of Custom Scen. (Book Ed.1)': advanced_controls.AdvancedControls(
-      # Several custom scenarios (and some developed by other sources) were recorded and
-      # statistically combined to create low, medium and high meta-scenarios (based on
-      # -1, 0 and +1 standard deviations from the mean). The low was used for this
-      # scenario. We assume that solar water heating would replace only natural gas,
-      # oil, coal and electricity heaters (that is, no biomass or commercial heat). This
-      # scenario uses inputs calculated for the Drawdown book edition 1, some of which
-      # have been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Low of All Custom PDS Scenarios', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='IEA 4DS (2016), Residential & Commercial Water Heating', 
-      pds_source_post_2014='Drawdown TAM: PDS1 - post-Low-Flow', 
-      pds_base_adoption=[('World', 335.463), ('OECD90', 56.493), ('Eastern Europe', 2.374), ('Asia (Sans Japan)', 240.305), ('Middle East and Africa', 9.948), ('Latin America', 9.113), ('China', 231.838), ('India', 6.4350000000000005), ('EU', 23.777), ('USA', 17.233)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=1199.8861226016184, ref_2014_cost=1199.8861226016184, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.036, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.04, 
-      soln_lifetime_capacity=17129.2410031799, soln_avg_annual_use=856.462050158993, 
-      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=0.047, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0795, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=1.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.11587780896849142, 
-      conv_fuel_consumed_per_funit=2483.195162856096, soln_fuel_efficiency_factor=1.0, 
-      conv_fuel_emissions_factor=69.71707858620789, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS2-44p2050-Mean of Custom Scen. (Book Ed.1)': advanced_controls.AdvancedControls(
-      # Several custom scenarios (and some developed by other sources) were recorded and
-      # statistically combined to create low, medium and high meta-scenarios (based on
-      # -1, 0 and +1 standard deviations from the mean). The mean was used for this
-      # scenario. We assume that solar water heating would replace only natural gas,
-      # oil, coal and electricity heaters (that is, no biomass or commercial heat). This
-      # scenario uses inputs calculated for the Drawdown book edition 1, some of which
-      # have been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Average of All Custom PDS Scenarios', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='IEA 4DS (2016), Residential & Commercial Water Heating', 
-      pds_source_post_2014='Drawdown TAM: PDS2 - post-Low-Flow', 
-      pds_base_adoption=[('World', 335.463), ('OECD90', 56.493), ('Eastern Europe', 2.374), ('Asia (Sans Japan)', 240.305), ('Middle East and Africa', 9.948), ('Latin America', 9.113), ('China', 231.838), ('India', 6.4350000000000005), ('EU', 23.777), ('USA', 17.233)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=1199.8861226016184, ref_2014_cost=1199.8861226016184, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.036, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.04, 
-      soln_lifetime_capacity=17129.2410031799, soln_avg_annual_use=856.462050158993, 
-      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=0.047, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0795, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=1.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.11587780896849142, 
-      conv_fuel_consumed_per_funit=2483.195162856096, soln_fuel_efficiency_factor=1.0, 
-      conv_fuel_emissions_factor=69.71707858620789, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS3-62p2050-High of Custom Scen. (Book Ed.1)': advanced_controls.AdvancedControls(
-      # Several custom scenarios (and some developed by other sources) were recorded and
-      # statistically combined to create low, medium and high meta-scenarios (based on
-      # -1, 0 and +1 standard deviations from the mean). The high was used for this
-      # scenario. We assume that solar water heating would replace only natural gas,
-      # oil, coal and electricity heaters (that is, no biomass or commercial heat). This
-      # scenario uses inputs calculated for the Drawdown book edition 1, some of which
-      # have been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='High of All Custom PDS Scenarios', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='IEA 4DS (2016), Residential & Commercial Water Heating', 
-      pds_source_post_2014='Drawdown TAM: PDS3 - post-Low-Flow', 
-      pds_base_adoption=[('World', 335.463), ('OECD90', 56.493), ('Eastern Europe', 2.374), ('Asia (Sans Japan)', 240.305), ('Middle East and Africa', 9.948), ('Latin America', 9.113), ('China', 231.838), ('India', 6.4350000000000005), ('EU', 23.777), ('USA', 17.233)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=1199.8861226016184, ref_2014_cost=1199.8861226016184, 
-      conv_2014_cost=0.0, 
-      soln_first_cost_efficiency_rate=0.036, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.04, 
-      soln_lifetime_capacity=17129.2410031799, soln_avg_annual_use=856.462050158993, 
-      conv_lifetime_capacity=1.0, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=0.047, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0795, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=0.0, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=1.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.11587780896849142, 
-      conv_fuel_consumed_per_funit=2483.195162856096, soln_fuel_efficiency_factor=1.0, 
-      conv_fuel_emissions_factor=69.71707858620789, soln_fuel_emissions_factor=0.0, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
+units = {
+  "implementation unit": "TW",
+  "functional unit": "TWh(th)",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Solar Hot Water'
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class SolarHotWater:
-  name = 'Solar Hot Water'
-  units = {
-    "implementation unit": "TW",
-    "functional unit": "TWh(th)",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS1-25p2050-Low of Custom Scen. (Book Ed.1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -353,16 +185,16 @@ class SolarHotWater:
     ht_ref_adoption_initial = pd.Series(
       [335.463, 56.493, 2.374, 240.305, 9.948,
        9.113, 231.838, 6.4350000000000005, 23.777, 17.233],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

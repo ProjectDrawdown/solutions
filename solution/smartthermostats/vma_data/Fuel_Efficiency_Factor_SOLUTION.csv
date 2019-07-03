@@ -1,8 +1,0 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Nest Labs White Paper 2015 (MyEnergy Pilot),https://nest.com/downloads/press/documents/energy-savings-white-paper.pdf,USA,,,,2015,,,%,0.11,%,,,
-"Nest Labs White Paper 2015 (Indiana Utility Pilot), average",https://nest.com/downloads/press/documents/energy-savings-white-paper.pdf,USA,,,,2015,,,%,0.125,%,,,
-Carrier Côr Thermostat (third-party study),http://dms.hvacpartners.com/docs/1009/public/02/tp-wem-01pd.pdf,,,,,2012,,,%,0.2,%,,,
-"Fraunhofer IBP Report 2013 (Simulation based on Tado technology), minimum",https://www.tado.com/img/content/press/releases/Study_Fraunhofer_Institute_for_Building_Physics_tado_en.pdf,EU,Germany,,,2013,,,%,0.14,%,,,
-"Fraunhofer IBP Report 2013 (Simulation based on Tado technology), maximum",https://www.tado.com/img/content/press/releases/Study_Fraunhofer_Institute_for_Building_Physics_tado_en.pdf,EU,Germany,,,2013,,,%,0.26,%,,,
-"Urban and Roth (2014), p. 29, mean value",https://www.energystar.gov/sites/default/files/specs/Nest%20Supplementary%20Comments.pdf,USA,"Washington, D.C.",,,2014,,,%,0.19,%,,,
-"The Cadmus Group, Inc (2013), p. iv",https://www.puc.nh.gov/Regulatory/Docketbk/2012/12-262/LETTERS-MEMOS-TARIFFS/12-262%202013-08-22%20ENGI%20DBA%20LIBERTY%20FILING%20ITS%20PROGRAM%20EVALUATION%20STUDY.PDF,USA,Massachusetts ,,,2013,,,%,0.08,%,,,

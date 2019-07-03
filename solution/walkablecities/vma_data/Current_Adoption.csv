@@ -1,7 +1,7 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,World,,,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,
-Drawdown Team Estimations: See 'Mobility Output',Mobility Output,World,,,5 - Not Verified,2014,,,Billion pkm,,billion pass-km,,,
-ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,OECD90,,,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,
-ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Eastern Europe,,,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,
-ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Asia (Sans Japan),China,,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,
-ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Asia (Sans Japan),India,,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,World,,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,
+Drawdown Team Estimations: See 'Mobility Output',Mobility Output,World,,5 - Not Verified,2014,,,Billion pkm,,billion pass-km,,,
+ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,OECD90,,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,
+ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Eastern Europe,,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,
+ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Asia (Sans Japan),China,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,
+ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,Asia (Sans Japan),India,5 - Not Verified,2015,,,Billion pkm,,billion pass-km,,,

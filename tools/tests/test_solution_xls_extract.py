@@ -40,7 +40,7 @@ def test_infer_classname():
     assert ic('Regenerative_Agriculture_L-UseAgri_v1.1b_02Aug18.xlsm') == 'RegenerativeAgriculture'
     assert ic('SmartThermostats-RRSv1.1b-24Apr18.xlsm') == 'SmartThermostats'
     assert ic('SolarPVRooftop_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'SolarPVRoof'
-    assert ic('Tropical_Forest_Restoration_L-Use_v1.1b_3Aug18.xlsm') == 'TropicalForests'
+    assert ic('Tropical Forest Restoration_L-Use_v1.1b_3Aug18.xlsm') == 'TropicalForests'
     assert ic('WastetoEnergy_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'WasteToEnergy'
     assert ic('Wave&Tidal_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'WaveAndTidal'
     assert ic('WindOffshore_RRS_ELECGEN_v1.1b_24Oct18.xlsm') == 'OffshoreWind'

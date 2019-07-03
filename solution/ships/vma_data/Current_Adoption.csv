@@ -1,3 +1,3 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Drawdown Team Calculations, See 'Custom PDS Adoption' sheet,World,,,,2014,,,Billion ton miles,,Billion Ton - nmiles,,,
-,Cell B81,,,,,,,,,,Billion Ton - nmiles,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Drawdown Team Calculations, See 'Custom PDS Adoption' sheet,World,,,2014,,,Billion ton miles,,Billion Ton - nmiles,,,
+,Cell B81,,,,,,,,,Billion Ton - nmiles,,,

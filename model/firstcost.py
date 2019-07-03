@@ -81,6 +81,7 @@ class FirstCost:
         # See First Cost Handling of NaN data in:
         # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
         result_per_iunit.mask(iunits.isna(), other=np.nan, inplace=True)
+        result_per_iunit.mask(iunits == 0.0, other=np.nan, inplace=True)
         result_display = result_per_iunit * self.fc_convert_iunit_factor
 
         if self.ac.soln_first_cost_below_conv:

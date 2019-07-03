@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,82 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS1,2,3-19p2050-Availability Analysis (Book Ed.1)': advanced_controls.AdvancedControls(
-      # This scenario is based on a Fly Ash availability analysis since Fly Ash
-      # incorporation in cement is the definition of this solution and that is based on
-      # coal burning which has an uncertain future. Fly Ash cement is therefore a
-      # transition solution. The availability assumptions are shown in the Custom
-      # Adoption sheets. All PDS scenarios are the same. This scenario uses inputs
-      # calculated for the Drawdown book edition 1, some of which have been updated
-      # since publication.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Custom', 
-      soln_ref_adoption_custom_name='Drawdown Book Edition 1 Scenario REF Adoption', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Drawdown Book Edition 1 PDS 1, 2 and 3', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='ALL SOURCES', 
-      pds_source_post_2014='ALL SOURCES', 
-      pds_base_adoption=[('World', 222.222222222222), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=32130000.0, ref_2014_cost=32130000.0, 
-      conv_2014_cost=45900000.0, 
-      soln_first_cost_efficiency_rate=0.0, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.0922, 
-      soln_lifetime_capacity=30.0, soln_avg_annual_use=1.0, 
-      conv_lifetime_capacity=30.0, conv_avg_annual_use=1.0, 
-
-      soln_var_oper_cost_per_funit=0.0, soln_fuel_cost_per_funit=0.0, 
-      soln_fixed_oper_cost_per_iunit=0.0, 
-      conv_var_oper_cost_per_funit=0.0, conv_fuel_cost_per_funit=0.0, 
-      conv_fixed_oper_cost_per_iunit=0.0, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=36189.00000000001, 
-      conv_indirect_co2_per_unit=0.0, 
-      conv_indirect_co2_is_iunits=False, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.45, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0585, 
-      conv_fuel_consumed_per_funit=3113.0, soln_fuel_efficiency_factor=0.45, 
-      conv_fuel_emissions_factor=95.3, soln_fuel_emissions_factor=95.3, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=505606.67, soln_emissions_per_funit=278083.6685, 
-
-    ),
+units = {
+  "implementation unit": "MMt",
+  "functional unit": "MMt Cement",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Alternative (High Vol. Fly Ash) Cement'
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class AlternativeCement:
-  name = 'Alternative (High Vol. Fly Ash) Cement'
-  units = {
-    "implementation unit": "MMt",
-    "functional unit": "MMt Cement",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS1,2,3-19p2050-Availability Analysis (Book Ed.1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -127,7 +72,7 @@ class AlternativeCement:
     tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
-          'Project Drawdown - Based on Data from Several Sources. (See HVFAC Links Sheet and HVFAC Material Availability Models)': THISDIR.joinpath('tam', 'tam_Project_Drawdown_based_on_Data_from_Several_Sources__See_HVFAC__f6273dd8.csv'),
+          'Project Drawdown - Based on Data from Several Sources. (See HVFAC Links Sheet and HVFAC Material Availability Models)': THISDIR.joinpath('tam', 'tam_Project_Drawdown_based_on_Data_from_Several_Sources__See_HVFAC_Links_Sheet_and_HVFAC_Mat_2961774c.csv'),
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
@@ -177,16 +122,16 @@ class AlternativeCement:
     ht_ref_adoption_initial = pd.Series(
       [222.22222222222223, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

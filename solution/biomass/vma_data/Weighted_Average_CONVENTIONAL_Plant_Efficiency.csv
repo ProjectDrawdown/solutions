@@ -1,4 +1,4 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"From ""Coal Plant Efficiency"" variable",,World,,,,Various,,,%,,%,0.3869914976735052,see explanation for weighting methodology,
-"From ""Natural Gas Plant Efficiency variable",,World,,,,Various,,,%,,%,0.2187748175594088,see explanation for weighting methodology,
-"From ""Oil Plant Efficiency variable""",,OECD90,Japan,,,2005,,,%,,%,0.04736499192245056,see explanation for weighting methodology,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"From ""Coal Plant Efficiency"" variable",,World,,,Various,,,%,,%,0.3869914976735052,see explanation for weighting methodology,
+"From ""Natural Gas Plant Efficiency variable",,World,,,Various,,,%,,%,0.2187748175594088,see explanation for weighting methodology,
+"From ""Oil Plant Efficiency variable""",,OECD90,Japan,,2005,,,%,,%,0.04736499192245056,see explanation for weighting methodology,

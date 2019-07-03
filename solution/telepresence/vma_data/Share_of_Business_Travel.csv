@@ -1,3 +1,3 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Ashgate: International Business Travel in Global Economy (Table 9.2),http://lib.lhu.edu.vn/ViewFile/10536/BusinessTravel.pdf#page=244,OECD90,EU,,,2010,,,%,,%,,,
-US National Household Travel Survey,https://ntl.custhelp.com/app/answers/detail/a_id/252/~/percentage-of-air-travel-for-business-vs-other-purposes,OECD90,USA,,,2001,,,%,,%,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Ashgate: International Business Travel in Global Economy (Table 9.2),http://lib.lhu.edu.vn/ViewFile/10536/BusinessTravel.pdf#page=244,OECD90,EU,,2010,,,%,,%,,,
+US National Household Travel Survey,https://ntl.custhelp.com/app/answers/detail/a_id/252/~/percentage-of-air-travel-for-business-vs-other-purposes,OECD90,USA,,2001,,,%,,%,,,

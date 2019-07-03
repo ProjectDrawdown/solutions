@@ -1,8 +1,8 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Pagiola Stefano and Benoit Bosquet,https://mpra.ub.uni-muenchen.de/13726/1/REDD-Econ-20090224.pdf,World,"REDD, tropical",,1  - Peer Reviewed,2009,,,US$2009/ha/yr,0.0,US$2014/ ha/ yr,,"Figure 3, opportunity cost for the conversion of deforested land to agroforestry",
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Argentina,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Brazil,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Chile,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Uruguay,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
-Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,USA,USA,,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
-Berger 1994,http://www.unece.lsu.edu/ebusiness/documents/2013Mar/sc13_16.pdf,Latin America,Brazil,,1  - Peer Reviewed,1994,,,US$1994/year,0.0,US$2014/ ha/ yr,,Refer table 9; Rotation age of 20 years,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Pagiola Stefano and Benoit Bosquet,https://mpra.ub.uni-muenchen.de/13726/1/REDD-Econ-20090224.pdf,World,"REDD, tropical",1  - Peer Reviewed,2009,,,US$2009/ha/yr,0.0,US$2014/ ha/ yr,,"Figure 3, opportunity cost for the conversion of deforested land to agroforestry",
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Argentina,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Brazil,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Chile,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,Latin America,Uruguay,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+Cubbage et al. 2007,http://link.springer.com/article/10.1007/s11056-006-9025-4,USA,USA,1  - Peer Reviewed,2007,,,US$2014/yr,,US$2014/ ha/ yr,,See EconCalcs sheet,
+Berger 1994,http://www.unece.lsu.edu/ebusiness/documents/2013Mar/sc13_16.pdf,Latin America,Brazil,1  - Peer Reviewed,1994,,,US$1994/year,0.0,US$2014/ ha/ yr,,Refer table 9; Rotation age of 20 years,

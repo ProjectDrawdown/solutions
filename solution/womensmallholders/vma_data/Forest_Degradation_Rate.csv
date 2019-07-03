@@ -1,6 +1,6 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-FAO,http://www.fao.org/3/a-i4793e.pdf,World,,,2 - Public Sector/ Multilateral Agency,,,,%,,,,Refer page 3,True
-Keenan et al 2015,http://www.fao.org/3/be7b339c-dbe9-4d48-ac73-2a8ba1ae7ee2/i4895e.pdf,World,,,1  - Peer Reviewed,,,,%,,,,Refer abstract,True
-RSS 2010,http://www.fao.org/3/be7b339c-dbe9-4d48-ac73-2a8ba1ae7ee2/i4895e.pdf,World,,,2 - Public Sector/ Multilateral Agency,,,,%,,,,Refer table 12,True
-RSS 2015,http://www.fao.org/3/be7b339c-dbe9-4d48-ac73-2a8ba1ae7ee2/i4895e.pdf,World,,,2 - Public Sector/ Multilateral Agency,,,,%,,,,Refer table 12,True
-"Project Drawdown (2016), weight average based on ""At Risk"" status",See WeightedDegradationMethod Sheet,World,,,,,,,%,,,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+FAO,http://www.fao.org/3/a-i4793e.pdf,World,,2 - Public Sector/ Multilateral Agency,,,,%,,,,Refer page 3,True
+Keenan et al 2015,http://www.fao.org/3/be7b339c-dbe9-4d48-ac73-2a8ba1ae7ee2/i4895e.pdf,World,,1  - Peer Reviewed,,,,%,,,,Refer abstract,True
+RSS 2010,http://www.fao.org/3/be7b339c-dbe9-4d48-ac73-2a8ba1ae7ee2/i4895e.pdf,World,,2 - Public Sector/ Multilateral Agency,,,,%,,,,Refer table 12,True
+RSS 2015,http://www.fao.org/3/be7b339c-dbe9-4d48-ac73-2a8ba1ae7ee2/i4895e.pdf,World,,2 - Public Sector/ Multilateral Agency,,,,%,,,,Refer table 12,True
+"Project Drawdown (2016), weight average based on ""At Risk"" status",See WeightedDegradationMethod Sheet,World,,,,,,%,,,,,

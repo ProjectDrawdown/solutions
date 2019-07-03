@@ -1,0 +1,136 @@
+{
+    "name": "PDS-91p2050-Drawdown-PDScustom-high-Bookedition1",
+    "solution_category": "land",
+    "vmas": "VMAs",
+    "description": "The current adoption data on area operated by smallholder women was not available, so we have used the FAO data on percent of women taking financial credit, as this was the closest related data available. The future area under this solution is projected based on the historical data available on women cultivators of India from 1981-2011, as well as based on the customized high adoption projections assuming an adoption of 80-100% by 2050. Some of these scenarios have also assumed an early growth rate (70% adoption by 2030). This scenario stores the results derived from the \"high of all\" PDS custom adoption scenarios. The revised results are similar to the Book edition 1 result, so no separate scenario is stored for the Book OPT2 result. This edition also involves the correction of the net profit margin with revised methodology and the estimation of operational cost which was missing in the Book edition 1 result.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "use_custom_tla": false,
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "soln_ref_adoption_regional_data": false,
+    "conv_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_expected_lifetime": 30.0,
+    "yield_from_conv_practice": {
+        "value": 4966.87589930957,
+        "statistic": "mean"
+    },
+    "pds_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_expected_lifetime": 30.0,
+    "yield_gain_from_conv_to_soln": {
+        "value": 0.255526315789474,
+        "statistic": "mean"
+    },
+    "npv_discount_rate": 0.1,
+    "emissions_use_co2eq": true,
+    "emissions_use_agg_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "conv_indirect_co2_per_unit": 0.0,
+    "soln_indirect_co2_per_iunit": 0.0,
+    "tco2eq_reduced_per_land_unit": {
+        "value": 313.791126867655,
+        "statistic": "mean"
+    },
+    "tco2eq_rplu_rate": "One-time",
+    "tco2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tco2_rplu_rate": "One-time",
+    "tn2o_co2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tn2o_co2_rplu_rate": "One-time",
+    "tch4_co2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tch4_co2_rplu_rate": "One-time",
+    "land_annual_emissons_lifetime": 100.0,
+    "conv_annual_energy_used": 0.0,
+    "soln_annual_energy_used": 0.0,
+    "seq_rate_global": NaN,
+    "seq_rate_per_regime": {
+        "Tropical-Humid": 0.0,
+        "Temperate/Boreal-Humid": 0.0,
+        "Tropical-Semi-Arid": 0.0,
+        "Temperate/Boreal-Semi-Arid": 0.0,
+        "Global Arid": 0.0,
+        "Global Arctic": 0.0
+    },
+    "carbon_not_emitted_after_harvesting": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "disturbance_rate": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "harvest_frequency": 100.0,
+    "avoided_deforest_with_intensification": 0.255526315789474
+}

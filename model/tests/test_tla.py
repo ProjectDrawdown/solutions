@@ -42,5 +42,5 @@ def test_custom_tla():
 
 
 def test_custom_tla_handles_bad_filename():
-    tl = tla.CustomTLA(filename='adfadf')
-    assert tl.get_world_values() is None
+    with pytest.raises(FileNotFoundError):
+        _ = tla.CustomTLA(filename='adfadf')

@@ -12,6 +12,7 @@
 """
 
 import argparse
+import glob
 import hashlib
 import json
 import os.path
@@ -88,23 +89,23 @@ def get_rrs_scenarios(wb, solution_category):
 
             assert sr_tab.cell_value(row + 46, 1) == 'Conventional'
             assert sr_tab.cell_value(row + 47, 3) == 'First Cost:'
-            s['conv_2014_cost'] = link_vma(sr_tab.cell_value(row + 47, 4))
+            s['conv_2014_cost'] = link_vma(sr_tab, row + 47, 4)
             s['conv_first_cost_efficiency_rate'] = convert_sr_float(sr_tab.cell_value(row + 48, 4))
-            s['conv_lifetime_capacity'] = link_vma(sr_tab.cell_value(row + 49, 4))
-            s['conv_avg_annual_use'] = link_vma(sr_tab.cell_value(row + 50, 4))
-            s['conv_var_oper_cost_per_funit'] = link_vma(sr_tab.cell_value(row + 51, 4))
-            s['conv_fixed_oper_cost_per_iunit'] = link_vma(sr_tab.cell_value(row + 52, 4))
+            s['conv_lifetime_capacity'] = link_vma(sr_tab, row + 49, 4)
+            s['conv_avg_annual_use'] = link_vma(sr_tab, row + 50, 4)
+            s['conv_var_oper_cost_per_funit'] = link_vma(sr_tab, row + 51, 4)
+            s['conv_fixed_oper_cost_per_iunit'] = link_vma(sr_tab, row + 52, 4)
             s['conv_fuel_cost_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 54, 4))
 
             assert sr_tab.cell_value(row + 64, 1) == 'Solution'
             assert sr_tab.cell_value(row + 65, 3) == 'First Cost:'
-            s['pds_2014_cost'] = s['ref_2014_cost'] = link_vma(sr_tab.cell_value(row + 65, 4))
+            s['pds_2014_cost'] = s['ref_2014_cost'] = link_vma(sr_tab, row + 65, 4)
             s['soln_first_cost_efficiency_rate'] = convert_sr_float(sr_tab.cell_value(row + 66, 4))
             s['soln_first_cost_below_conv'] = convert_bool(sr_tab.cell_value(row + 66, 6))
-            s['soln_lifetime_capacity'] = link_vma(sr_tab.cell_value(row + 67, 4))
-            s['soln_avg_annual_use'] = link_vma(sr_tab.cell_value(row + 68, 4))
-            s['soln_var_oper_cost_per_funit'] = link_vma(sr_tab.cell_value(row + 69, 4))
-            s['soln_fixed_oper_cost_per_iunit'] = link_vma(sr_tab.cell_value(row + 70, 4))
+            s['soln_lifetime_capacity'] = link_vma(sr_tab, row + 67, 4)
+            s['soln_avg_annual_use'] = link_vma(sr_tab, row + 68, 4)
+            s['soln_var_oper_cost_per_funit'] = link_vma(sr_tab, row + 69, 4)
+            s['soln_fixed_oper_cost_per_iunit'] = link_vma(sr_tab, row + 70, 4)
             s['soln_fuel_cost_per_funit'] = convert_sr_float(sr_tab.cell_value(row + 72, 4))
 
             assert sr_tab.cell_value(row + 76, 1) == 'General'
@@ -113,30 +114,30 @@ def get_rrs_scenarios(wb, solution_category):
             assert sr_tab.cell_value(row + 86, 1) == 'EMISSIONS INPUTS'
 
             assert sr_tab.cell_value(row + 88, 1) == 'Grid Emissions'
-            s['conv_annual_energy_used'] = link_vma(sr_tab.cell_value(row + 89, 4))
-            s['soln_energy_efficiency_factor'] = link_vma(sr_tab.cell_value(row + 90, 4))
-            s['soln_annual_energy_used'] = link_vma(sr_tab.cell_value(row + 91, 4))
+            s['conv_annual_energy_used'] = link_vma(sr_tab, row + 89, 4)
+            s['soln_energy_efficiency_factor'] = link_vma(sr_tab, row + 90, 4)
+            s['soln_annual_energy_used'] = link_vma(sr_tab, row + 91, 4)
 
             assert sr_tab.cell_value(row + 94, 1) == 'Fuel Emissions'
-            s['conv_fuel_consumed_per_funit'] = link_vma(sr_tab.cell_value(row + 95, 4))
-            s['soln_fuel_efficiency_factor'] = link_vma(sr_tab.cell_value(row + 96, 4))
-            s['conv_fuel_emissions_factor'] = link_vma(sr_tab.cell_value(row + 97, 4))
-            s['soln_fuel_emissions_factor'] = link_vma(sr_tab.cell_value(row + 98, 4))
+            s['conv_fuel_consumed_per_funit'] = link_vma(sr_tab, row + 95, 4)
+            s['soln_fuel_efficiency_factor'] = link_vma(sr_tab, row + 96, 4)
+            s['conv_fuel_emissions_factor'] = link_vma(sr_tab, row + 97, 4)
+            s['soln_fuel_emissions_factor'] = link_vma(sr_tab, row + 98, 4)
 
             assert sr_tab.cell_value(row + 103, 1) == 'Direct Emissions'
-            s['conv_emissions_per_funit'] = link_vma(sr_tab.cell_value(row + 105, 4))
-            s['soln_emissions_per_funit'] = link_vma(sr_tab.cell_value(row + 106, 4))
+            s['conv_emissions_per_funit'] = link_vma(sr_tab, row + 105, 4)
+            s['soln_emissions_per_funit'] = link_vma(sr_tab, row + 106, 4)
 
             assert sr_tab.cell_value(row + 111, 1) == 'Indirect Emissions'
-            s['conv_indirect_co2_per_unit'] = link_vma(sr_tab.cell_value(row + 112, 4))
-            s['soln_indirect_co2_per_iunit'] = link_vma(sr_tab.cell_value(row + 113, 4))
+            s['conv_indirect_co2_per_unit'] = link_vma(sr_tab, row + 112, 4)
+            s['soln_indirect_co2_per_iunit'] = link_vma(sr_tab, row + 113, 4)
             i_vs_f = str(sr_tab.cell_value(row + 114, 4)).lower().strip()
             s['conv_indirect_co2_is_iunits'] = False if i_vs_f == 'functional' else True
 
             assert sr_tab.cell_value(row + 118, 1) == 'Optional Inputs'
-            s['ch4_co2_per_funit'] = link_vma(sr_tab.cell_value(row + 119, 4))
+            s['ch4_co2_per_funit'] = link_vma(sr_tab, row + 119, 4)
             s['ch4_is_co2eq'] = (sr_tab.cell_value(row + 119, 5) == 't CH4-CO2eq per TWh')
-            s['n2o_co2_per_funit'] = link_vma(sr_tab.cell_value(row + 120, 4))
+            s['n2o_co2_per_funit'] = link_vma(sr_tab, row + 120, 4)
             s['n2o_is_co2eq'] = (sr_tab.cell_value(row + 120, 5) == 't N2O-CO2eq per TWh')
             s['co2eq_conversion_source'] = str(sr_tab.cell_value(row + 121, 4)).strip()
 
@@ -314,19 +315,19 @@ def get_land_scenarios(wb, solution_category):
 
             assert sr_tab.cell_value(row + 54, 1) == 'Conventional'
             assert sr_tab.cell_value(row + 55, 3) == 'First Cost:'
-            s['conv_2014_cost'] = link_vma(sr_tab.cell_value(row + 55, 4))
+            s['conv_2014_cost'] = link_vma(sr_tab, row + 55, 4)
             s['conv_first_cost_efficiency_rate'] = 0.0  # always 0 for LAND models
-            s['conv_fixed_oper_cost_per_iunit'] = link_vma(sr_tab.cell_value(row + 56, 4))
+            s['conv_fixed_oper_cost_per_iunit'] = link_vma(sr_tab, row + 56, 4)
             s['conv_expected_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 59, 4))
-            s['yield_from_conv_practice'] = link_vma(sr_tab.cell_value(row + 60, 4))
+            s['yield_from_conv_practice'] = link_vma(sr_tab, row + 60, 4)
 
             assert sr_tab.cell_value(row + 72, 1) == 'Solution'
             assert sr_tab.cell_value(row + 73, 3) == 'First Cost:'
-            s['pds_2014_cost'] = s['ref_2014_cost'] = link_vma(sr_tab.cell_value(row + 73, 4))
+            s['pds_2014_cost'] = s['ref_2014_cost'] = link_vma(sr_tab, row + 73, 4)
             s['soln_first_cost_efficiency_rate'] = 0.0  # always 0 for LAND models
-            s['soln_fixed_oper_cost_per_iunit'] = link_vma(sr_tab.cell_value(row + 74, 4))
+            s['soln_fixed_oper_cost_per_iunit'] = link_vma(sr_tab, row + 74, 4)
             s['soln_expected_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 77, 4))
-            s['yield_gain_from_conv_to_soln'] = link_vma(sr_tab.cell_value(row + 78, 4))
+            s['yield_gain_from_conv_to_soln'] = link_vma(sr_tab, row + 78, 4)
 
             assert sr_tab.cell_value(row + 90, 1) == 'General'
             s['npv_discount_rate'] = convert_sr_float(sr_tab.cell_value(row + 91, 4))
@@ -342,13 +343,13 @@ def get_land_scenarios(wb, solution_category):
             s['soln_indirect_co2_per_iunit'] = convert_sr_float(sr_tab.cell_value(row + 146, 4))
 
             assert sr_tab.cell_value(row + 132, 1) == 'Direct Emissions'
-            s['tco2eq_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 133, 4))
+            s['tco2eq_reduced_per_land_unit'] = link_vma(sr_tab, row + 133, 4)
             s['tco2eq_rplu_rate'] = str(sr_tab.cell_value(row + 133, 7))
-            s['tco2_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 134, 4))
+            s['tco2_reduced_per_land_unit'] = link_vma(sr_tab, row + 134, 4)
             s['tco2_rplu_rate'] = str(sr_tab.cell_value(row + 134, 7))
-            s['tn2o_co2_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 135, 4))
+            s['tn2o_co2_reduced_per_land_unit'] = link_vma(sr_tab, row + 135, 4)
             s['tn2o_co2_rplu_rate'] = str(sr_tab.cell_value(row + 135, 7))
-            s['tch4_co2_reduced_per_land_unit'] = link_vma(sr_tab.cell_value(row + 136, 4))
+            s['tch4_co2_reduced_per_land_unit'] = link_vma(sr_tab, row + 136, 4)
             s['tch4_co2_rplu_rate'] = str(sr_tab.cell_value(row + 136, 7))
             s['land_annual_emissons_lifetime'] = convert_sr_float(sr_tab.cell_value(row + 137, 4))
 
@@ -379,16 +380,16 @@ def get_land_scenarios(wb, solution_category):
                     'Global Arid': convert_sr_float(sr_tab.cell_value(row + 174, 7)),
                     'Global Arctic': 0.0}
             else:
-                s['seq_rate_global'] = link_vma(sr_tab.cell_value(row + 169, 4))
+                s['seq_rate_global'] = link_vma(sr_tab, row + 169, 4)
             if sr_tab.cell_value(row + 175, 3) == 'Growth Rate of Land Degradation':
                 s['global_multi_for_regrowth'] = convert_sr_float(sr_tab.cell_value(row + 178, 4))
-                s['degradation_rate'] = link_vma(sr_tab.cell_value(row + 175, 4))
-                s['tC_storage_in_protected_land_type'] = link_vma(sr_tab.cell_value(row + 177, 4))
+                s['degradation_rate'] = link_vma(sr_tab, row + 175, 4)
+                s['tC_storage_in_protected_land_type'] = link_vma(sr_tab, row + 177, 4)
             elif sr_tab.cell_value(row + 175,
                                    3) == 'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing':
-                s['carbon_not_emitted_after_harvesting'] = link_vma(sr_tab.cell_value(row + 175, 4))
+                s['carbon_not_emitted_after_harvesting'] = link_vma(sr_tab, row + 175, 4)
 
-            s['disturbance_rate'] = link_vma(sr_tab.cell_value(row + 176, 4))
+            s['disturbance_rate'] = link_vma(sr_tab, row + 176, 4)
 
             assert sr_tab.cell_value(row + 188, 1) == 'General Land Inputs'
             if sr_tab.cell_value(row + 189, 3) == 'Delay Impact of Protection by 1 Year? (Leakage)':
@@ -1438,6 +1439,17 @@ def write_units_land(f, wb):
     f.write('}\n\n')
 
 
+def find_RRS_solution_category(wb):
+    """Find the solution category (REPLACEMENT or REDUCTION)."""
+    ac_tab = wb.sheet_by_name('Advanced Controls')
+    possible = [('A157', 'A159'), ('A142', 'A144')]
+    for labelcell, valuecell in possible:
+        label = str(ac_tab.cell_value(*cell_to_offsets(labelcell)))
+        if 'Is this primarily a' in label:
+            return str(ac_tab.cell_value(*cell_to_offsets(valuecell)))
+    return None
+
+
 def output_solution_python_file(outputdir, xl_filename, classname):
     """Extract relevant fields from Excel file and output a Python class.
 
@@ -1490,15 +1502,13 @@ def output_solution_python_file(outputdir, xl_filename, classname):
 
     if is_rrs:
         f.write('from solution import rrs\n\n')
-        ac_tab = wb.sheet_by_name('Advanced Controls')
-        sc_val = str(ac_tab.cell_value(*cell_to_offsets('A159')))
-        solution_category = f'ac.SOLUTION_CATEGORY.{sc_val}'
-        sc = ac.string_to_solution_category(solution_category)
+        sc = ac.string_to_solution_category(find_RRS_solution_category(wb=wb))
+        solution_category = f'ac.SOLUTION_CATEGORY.{ac.solution_category_to_string(sc).upper()}'
         scenarios = get_rrs_scenarios(wb=wb, solution_category=sc)
     elif is_land:
         f.write('from solution import land\n\n')
+        sc = ac.string_to_solution_category('LAND')
         solution_category = 'ac.SOLUTION_CATEGORY.LAND'
-        sc = ac.string_to_solution_category(solution_category)
         scenarios = get_land_scenarios(wb=wb, solution_category=sc)
     else:
         scenarios = {}
@@ -1663,20 +1673,26 @@ def infer_classname(filename):
         ('CSP_', 'ConcentratedSolar'),
         ('High Efficient Heat Pumps', 'HeatPumps'),
         ('Household & Commercial Recycling', 'Recycling'),
+        ('IP Forest Management', 'IndigenousPeoplesLand'),
         ('Increasing Distribution Efficiency in WDSs', 'WaterDistribution'),
         ('Instream Hydro', 'InstreamHydro'),
         ('Landfill Methane', 'LandfillMethane'),
         ('Large Biodigesters', 'Biogas'),
         ('MicroWind Turbines', 'MicroWind'),
         ('Oceanic Freight Improvements', 'Ships'),
+        ('Peatland Protection', 'Peatlands'),
+        ('Perennial Bioenergy Crops', 'PerennialBioenergy'),
         ('Regenerative_Agriculture', 'RegenerativeAgriculture'),
         ('Renewable District Heating', 'DistrictHeating'),
         ('Rooftop Solar PV', 'SolarPVRoof'),
         ('Small Biogas Digesters', 'BiogasSmall'),
+        ('Smallholder Intensification', 'WomenSmallholders'),
         ('SolarPVUtility', 'SolarPVUtil'),
         ('SolarPVRooftop', 'SolarPVRoof'),
         ('solution_xls_extract_RRS_test_A', 'TestClassA'),
-        ('Tropical_Forest_Restoration', 'TropicalForests'),
+        ('SRI', 'RiceIntensification'),
+        ('Temperate Forest Restoration', 'TemperateForests'),
+        ('Tropical Forest Restoration', 'TropicalForests'),
         ('Truck Fuel Efficiency', 'Trucks'),
         ('Utility Scale Solar PV', 'SolarPVUtil'),
         ('Videoconferencing and Telepresence', 'Telepresence'),
@@ -1694,7 +1710,7 @@ def infer_classname(filename):
     return namelist[0].replace(' ', '')
 
 
-def link_vma(cell_value):
+def link_vma(tab, row, col):
     """
     Certain AdvancedControls inputs are linked to the mean, high or low value of their
     corresponding VMA tables. In the Excel ScenarioRecord, the cell value will look like:
@@ -1702,38 +1718,48 @@ def link_vma(cell_value):
     We can infer the chosen statistic from the cell reference. If there is no forumla we
     return the cell value as a float with no reference to the VMA result.
     Args:
-      cell_value: raw string from the Excel cell
+      tab: the Sheet object to use
+      row: numeric row number to look at
+      col: numeric column number to look at
   
     Returns:
       'mean', 'high' or 'low' or raw value if no formula in cell
     """
+    cell_value = str(tab.cell_value(row, col))
     if not isinstance(cell_value, str) or 'Formula:=' not in cell_value:
         return {'value': convert_sr_float(cell_value), 'statistic': ''}
     if 'Error' in cell_value:
         return 0.
-    if True in [cell_value.endswith(x) for x in ['80', '95', '175', '189', '140']]:
+    if True in [cell_value.endswith(x) for x in ['80', '95', '101', '116', '146', '161', '175', '189', '140']]:
         return {'value': convert_sr_float(cell_value), 'statistic': 'mean'}
-    elif True in [cell_value.endswith(x) for x in ['81', '96', '176', '190', '141']]:
+    elif True in [cell_value.endswith(x) for x in ['81', '96', '102', '117', '147', '162', '176', '190', '141']]:
         return {'value': convert_sr_float(cell_value), 'statistic': 'high'}
-    elif True in [cell_value.endswith(x) for x in ['82', '97', '177', '191', '142']]:
+    elif True in [cell_value.endswith(x) for x in ['82', '97', '103', '118', '148', '163', '177', '191', '142']]:
         return {'value': convert_sr_float(cell_value), 'statistic': 'low'}
     else:
         formula = cell_value.split(':=')[1]
-        warnings.warn('cell formula: {} not recognised - using value instead'.format(formula))
+        warnings.warn(f'formula "{formula}" in {col}:{str(row)} not recognised - using value')
         return {'value': convert_sr_float(cell_value), 'xls cell formula': formula}
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Create python Drawdown solution from Excel version.')
-    parser.add_argument('--excelfile', required=True, help='Excel filename to process')
-    parser.add_argument('--outputdir', default=None,
+    parser.add_argument('--excelfile', help='Excel filename to process')
+    parser.add_argument('--outputdir', default=None, required=True,
                         help='Directory to write generated Python code to')
     parser.add_argument('--classname', help='Name for Python class')
     args = parser.parse_args(sys.argv[1:])
+    outputdirpath = pathlib.Path(args.outputdir)
+
+    if args.excelfile is None:
+        files = list(glob.glob(str(outputdirpath.joinpath('testdata/[!~]*.xlsm'))))
+        if len(files) == 1:
+            args.excelfile = files[0]
+            print(f'Using excelfile: {str(args.excelfile)}')
 
     if args.classname is None:
         args.classname = infer_classname(filename=args.excelfile)
 
-    output_solution_python_file(outputdir=args.outputdir, xl_filename=args.excelfile,
+    output_solution_python_file(outputdir=outputdirpath, xl_filename=args.excelfile,
                                 classname=args.classname)

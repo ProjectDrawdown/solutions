@@ -1,0 +1,7 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"The World Bank, 2011",http://cleancookstoves.org/resources_files/household-cookstoves.pdf,World,,no,2011,,,Years,0.0,TWh thermal/Number of ICS,0.11569808637111653,Firewood,
+"CARE, Denmark, 2009",http://www.care.org/sites/default/files/documents/CC-2009-GHA-Cookstoves_Ghana.pdf,World,,no,2009,,,Years,0.0,TWh thermal/Number of ICS,0.11569808637111653,Firewood,
+"The Glacier Trust, UK, 2012",http://static1.1.sqspcdn.com/static/f/557676/21772951/1359420847167/Forest+Conservation+and+Improved+Cooking+Stoves+project+Middle+Mountains+Nepal+Report+updated+Jan+2013.pdf?token=VNVfBepofKC%2BmnsUcq6uDxgzFBE%3D,World,,no,2012,,,Years,0.0,TWh thermal/Number of ICS,0.11569808637111653,Firewood,
+SEI (2012),https://www.sei-international.org/mediamanager/documents/Publications/Atmospheric/sei-wp-2012-03-cookstoves.pdf,World,,yes,2012,,,Years,0.0,TWh thermal/Number of ICS,0.11569808637111653,Firewood,
+Mainali (2012),http://dx.doi.org/10.1063/1.4730416,OECD90,,yes,2005,,,Years,0.0,TWh thermal/Number of ICS,0.11569808637111653,Firewood,
+Jeuland (2012),e30338. doi:10.1371/journal.pone.0030338,World,,yes,2012,,,Years,0.0,TWh thermal/Number of ICS,0.2219271503017005,Coal,

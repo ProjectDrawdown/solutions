@@ -1,0 +1,8 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+ESMAP (2015) - Advanced ICS,https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf,World,,no,2014,,,US$2014/stove/year,0.0,US2014$/TWh thermal,0.027425818505713413,ICS,
+ESMAP (2015) - Ethanol,https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf,Asia (Sans Japan),,no,2014,,,US$2014/stove/year,0.0,US2014$/TWh thermal,0.027425818505713413,ICS,
+The World Bank (2011) - solid fuel,http://cleancookstoves.org/resources_files/household-cookstoves.pdf,World,,,2011,,,US$2011/total kg of solid fuel used per year per stove ,0.0,US2014$/TWh thermal,0.12601371676239537,Conventional - Efficiency Adjusted price,
+Jeuland (2014),http://sites.nicholasinstitute.duke.edu/environmentaleconomics/files/2014/07/WP-EE-14-07.pdf,Asia (Sans Japan),India,yes,2012,,,US$2012/56.9 MBTU,0.0,US2014$/TWh thermal,0.12601371676239537,Conventional - Efficiency Adjusted price,
+The World Bank (2011),http://cleancookstoves.org/resources_files/household-cookstoves.pdf,World,,,2011,,,US$2011/stove/year,0.0,US2014$/TWh thermal,0.12601371676239537,Conventional - Efficiency Adjusted price,
+Sustain Tech (2015),http://www.sustaintech.in/the_social.html,Asia (Sans Japan),India,no,2015,,,US$2014/stove/year,0.0,US2014$/TWh thermal,0.12601371676239537,Conventional - Efficiency Adjusted price,
+Jeuland (2012),e30338. doi:10.1371/journal.pone.0030338,World,,yes,2012,,,US$2012/stove/year,0.0,US2014$/TWh thermal,0.12601371676239537,Conventional - Efficiency Adjusted price,

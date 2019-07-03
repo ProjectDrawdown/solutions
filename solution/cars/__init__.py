@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 
 from model import adoptiondata
-from model import advanced_controls
+from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
 from model import customadoption
+from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
@@ -19,8 +20,6 @@ from model import operatingcost
 from model import s_curve
 from model import unitadoption
 from model import vma
-from model.advanced_controls import SOLUTION_CATEGORY
-
 from model import tam
 from solution import rrs
 
@@ -28,197 +27,28 @@ DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
-REGIONS = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-           'Latin America', 'China', 'India', 'EU', 'USA']
-
-scenarios = {
-  'PDS1-6p2050-Conservative (Book Ed.1)': advanced_controls.AdvancedControls(
-      # We use the average of collected conservative projections from several scenarios
-      # (including IEA 4DS, and Navigant Research for hybrid sales/stock and usage
-      # estimates from ICCT Global Roadmap model data). 50% of hybrid pass-km are urban
-      # each year.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Existing Adoption Prognostications', 
-      soln_pds_adoption_prognostication_source='Conservative Cases', 
-      soln_pds_adoption_prognostication_trend='3rd Poly', 
-      soln_pds_adoption_prognostication_growth='Medium', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 57650630795.526825), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 78638537576.59837)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=32952.42190413766, ref_2014_cost=32952.42190413766, 
-      conv_2014_cost=27301.838757440706, 
-      soln_first_cost_efficiency_rate=0.03, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.04, 
-      soln_lifetime_capacity=384805.9565014755, soln_avg_annual_use=24807.1096456147, 
-      conv_lifetime_capacity=312461.1068981493, conv_avg_annual_use=24807.10964561463, 
-
-      soln_var_oper_cost_per_funit=0.00700545722102493, soln_fuel_cost_per_funit=0.0349320683301916, 
-      soln_fixed_oper_cost_per_iunit=9794.33508829171, 
-      conv_var_oper_cost_per_funit=0.0117983012175525, conv_fuel_cost_per_funit=0.0553033150884721, 
-      conv_fixed_oper_cost_per_iunit=9794.33508829171, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=9.10961215909091, 
-      conv_indirect_co2_per_unit=9.67902477519781, 
-      conv_indirect_co2_is_iunits=True, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0529418034809316, soln_fuel_efficiency_factor=0.368354893837583, 
-      conv_fuel_emissions_factor=0.002273941593, soln_fuel_emissions_factor=0.002273941593, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS2-13p2050-Amitious Cases (Book Ed.1)': advanced_controls.AdvancedControls(
-      # We average two ambitious adoption prognostications (IEA 2016 - 2DS and World
-      # Energy Council's 2011 projections of sales/stock (with ICCT 2012 Global Roadmap
-      # Model estimates of usage), after interpolating their values for unavailable
-      # years. We additionally assume increased average annual use to 50% higher by 2050
-      # (increasing linearly from 100% in 2014 to 150% in 2050). This increase applies
-      # to hybrids only not conventional vehicles. The impact of this usage assumption
-      # is an average of 25% increase in average annual use (possibly car sharing)
-      # reduces the number of vehicle-km traveled per passenger-km, and increases the
-      # fuel saved. 50% of hybrid pass-km are urban each year until 2030 when this drops
-      # to 45% for 20 years then linearly drops to 0%. This scenario uses inputs
-      # calculated for the Drawdown book edition 1, some of which have been updated.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='PDS2 - Project Drawdown based on data from IEA, ICCT and World Energy Council.', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 57650630795.526825), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 78638537576.59837)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=32952.42190413766, ref_2014_cost=32952.42190413766, 
-      conv_2014_cost=27301.838757440706, 
-      soln_first_cost_efficiency_rate=0.03, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.04, 
-      soln_lifetime_capacity=384805.9565014755, soln_avg_annual_use=31008.8870570183, 
-      conv_lifetime_capacity=312461.1068981493, conv_avg_annual_use=24807.10964561463, 
-
-      soln_var_oper_cost_per_funit=0.00700545722102493, soln_fuel_cost_per_funit=0.034928669582753175, 
-      soln_fixed_oper_cost_per_iunit=7835.46807063337, 
-      conv_var_oper_cost_per_funit=0.0117983012175525, conv_fuel_cost_per_funit=0.0553033150884721, 
-      conv_fixed_oper_cost_per_iunit=7835.46807063337, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=9.75, 
-      conv_indirect_co2_per_unit=9.65160502652402, 
-      conv_indirect_co2_is_iunits=True, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0529418034809316, soln_fuel_efficiency_factor=0.3684064982866756, 
-      conv_fuel_emissions_factor=0.002273941593, soln_fuel_emissions_factor=0.002273941593, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
-  'PDS3-5p2050-Ambitious+DoubleOccu (Book Ed.1)': advanced_controls.AdvancedControls(
-      # We take the Average of two Ambitious adoption scenarios (on Adoption Data tab):
-      # Interpolation of IEA 2016 ETP 2DS(2016), and World Energy Council (2011) (both
-      # with annual use of ICCT Roadmap Model). We then double the HEV car occupancy
-      # from 2017 and interpolate back to current adoption for 2014. Adoption is limited
-      # to remaining TAM after other higher priority modes are adopted. Adoption is
-      # therefore drastically reduced to avoid TAM overshoot.
-
-      # general
-      vmas=VMAs,
-      report_start_year=2020, report_end_year=2050, 
-
-      # adoption
-      soln_ref_adoption_basis='Default', 
-      soln_ref_adoption_regional_data=False, soln_pds_adoption_regional_data=False, 
-      soln_pds_adoption_basis='Fully Customized PDS', 
-      soln_pds_adoption_custom_name='Drawdown Book - Edition 1- Quick Doubling of Hybrid Car Occupancy', 
-      source_until_2014='ALL SOURCES', 
-      ref_source_post_2014='Baseline Cases', 
-      pds_source_post_2014='Baseline Cases', 
-      pds_base_adoption=[('World', 57650630795.526825), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 78638537576.59837)], 
-      pds_adoption_final_percentage=[('World', 0.0), ('OECD90', 0.0), ('Eastern Europe', 0.0), ('Asia (Sans Japan)', 0.0), ('Middle East and Africa', 0.0), ('Latin America', 0.0), ('China', 0.0), ('India', 0.0), ('EU', 0.0), ('USA', 0.0)], 
-
-      # financial
-      pds_2014_cost=32952.42190413766, ref_2014_cost=32952.42190413766, 
-      conv_2014_cost=27301.838757440706, 
-      soln_first_cost_efficiency_rate=0.03, 
-      conv_first_cost_efficiency_rate=0.0, 
-      soln_first_cost_below_conv=True, 
-      npv_discount_rate=0.04, 
-      soln_lifetime_capacity=384805.9565014755, soln_avg_annual_use=49614.2192912293, 
-      conv_lifetime_capacity=312461.1068981493, conv_avg_annual_use=24807.10964561463, 
-
-      soln_var_oper_cost_per_funit=0.00700545722102493, soln_fuel_cost_per_funit=0.034928669582753175, 
-      soln_fixed_oper_cost_per_iunit=3976.4831226141373, 
-      conv_var_oper_cost_per_funit=0.0117983012175525, conv_fuel_cost_per_funit=0.0553033150884721, 
-      conv_fixed_oper_cost_per_iunit=3976.4831226141373, 
-
-      # emissions
-      ch4_is_co2eq=False, n2o_is_co2eq=False, 
-      co2eq_conversion_source='AR5 with feedback', 
-      soln_indirect_co2_per_iunit=10.01, 
-      conv_indirect_co2_per_unit=9.65160502652402, 
-      conv_indirect_co2_is_iunits=True, 
-      ch4_co2_per_funit=0.0, n2o_co2_per_funit=0.0, 
-
-      soln_energy_efficiency_factor=0.0, 
-      soln_annual_energy_used=0.0, conv_annual_energy_used=0.0, 
-      conv_fuel_consumed_per_funit=0.0529418034809316, soln_fuel_efficiency_factor=0.3684064982866756, 
-      conv_fuel_emissions_factor=0.002273941593, soln_fuel_emissions_factor=0.002273941593, 
-
-      emissions_grid_source='Meta-Analysis', emissions_grid_range='Mean', 
-      emissions_use_co2eq=True, 
-      conv_emissions_per_funit=0.0, soln_emissions_per_funit=0.0, 
-
-    ),
+units = {
+  "implementation unit": "Car",
+  "functional unit": "passenger-km",
+  "first cost": "US$B",
+  "operating cost": "US$B",
 }
 
+name = 'Car Fuel Efficiency'
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+
+
 class Cars:
-  name = 'Car Fuel Efficiency'
-  units = {
-    "implementation unit": "Car",
-    "functional unit": "passenger-km",
-    "first cost": "US$B",
-    "operating cost": "US$B",
-  }
+  name = name
+  units = units
+  vmas = VMAs
+  solution_category = solution_category
 
   def __init__(self, scenario=None):
     if scenario is None:
-      scenario = 'PDS1-6p2050-Conservative (Book Ed.1)'
+      scenario = list(scenarios.keys())[0]
     self.scenario = scenario
     self.ac = scenarios[scenario]
 
@@ -315,16 +145,16 @@ class Cars:
     ht_ref_adoption_initial = pd.Series(
       [57650630795.526825, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 78638537576.59837],
-       index=REGIONS)
+       index=dd.REGIONS)
     ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
-    ht_ref_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
     ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
     ht_pds_adoption_initial = ht_ref_adoption_initial
     ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
     ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
     ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
-    ht_pds_datapoints = pd.DataFrame(columns=REGIONS)
+    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
     ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
     ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
     self.ht = helpertables.HelperTables(ac=self.ac,

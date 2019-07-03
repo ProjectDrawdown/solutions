@@ -1,0 +1,211 @@
+{
+    "name": "PDS-7p2050-Plausible (Book Ed. 1)",
+    "solution_category": "replacement",
+    "vmas": "VMAs",
+    "description": "Plausible Scenario, Based on Ambitious Scenarios trajectories, High Growth",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 2010.0317085196398,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.02,
+    "conv_lifetime_capacity": {
+        "value": 182411.2757676607,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 4946.8401873420025,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 0.003752690403548987,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 32.951404311078015,
+        "statistic": ""
+    },
+    "conv_fuel_cost_per_funit": 0.07,
+    "pds_2014_cost": {
+        "value": 1883.5303928735746,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 1883.5303928735746,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.1966,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 41401.10769230769,
+        "statistic": ""
+    },
+    "soln_avg_annual_use": {
+        "value": 1725.0461538461536,
+        "statistic": ""
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 21.484190232072436,
+        "statistic": ""
+    },
+    "soln_fuel_cost_per_funit": 0.0,
+    "npv_discount_rate": 0.04,
+    "conv_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 46831.739130434784,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": true,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": true,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "Baseline Cases",
+    "pds_source_post_2014": "Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario",
+    "pds_base_adoption": [
+        [
+            "World",
+            75.43696666666665
+        ],
+        [
+            "OECD90",
+            50.234754444444434
+        ],
+        [
+            "Eastern Europe",
+            0.22261666666666663
+        ],
+        [
+            "Asia (Sans Japan)",
+            14.113495555555552
+        ],
+        [
+            "Middle East and Africa",
+            1.0549222222222219
+        ],
+        [
+            "Latin America",
+            9.81238111111111
+        ],
+        [
+            "China",
+            10.027777777777775
+        ],
+        [
+            "India",
+            1.8406988888888887
+        ],
+        [
+            "EU",
+            37.01894555555555
+        ],
+        [
+            "USA",
+            8.790349999999998
+        ]
+    ],
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_prognostication_source": "Ambitious Cases",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "High",
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false
+}

@@ -9,7 +9,7 @@ import json
 import typing
 
 import pandas as pd
-from pytest import approx
+import pytest
 from warnings import warn
 from model import emissionsfactors as ef
 from model import excel_math
@@ -83,7 +83,7 @@ class AdvancedControls:
 
     #   Can alternatively be set to 'mean', 'high' or 'low' of its corresponding VMA object
     conv_2014_cost: typing.Any = dataclasses.field(default=None, metadata={
-        'vma_titles': ['CONVENTIONAL First Cost per Implementation Unit for replaced practices'],
+        'vma_titles': ['CONVENTIONAL First Cost per Implementation Unit'],
         'subtitle': '(implementation units)',
         'tooltip': ("CONVENTIONAL First Cost per Implementation Unit for replaced "
             "practices/technologies\n\n"
@@ -151,8 +151,8 @@ class AdvancedControls:
 
         })
 
-    soln_energy_efficiency_factor: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Energy Efficiency Factor - SOLUTION'],
+    soln_energy_efficiency_factor: float = dataclasses.field(default=0.0, metadata={
+        'vma_titles': ['SOLUTION Energy Efficiency Factor'],
         'subtitle': '',
         'tooltip': ("Energy Efficiency Factor SOLUTION\n"
             "soln_energy_efficiency_factor: Units of energy reduced per year per "
@@ -174,8 +174,8 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!C159; Silvopasture "Advanced Controls"!C123',
         })
 
-    conv_annual_energy_used: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Electricity Consumed per Functional Unit - CONVENTIONAL'],
+    conv_annual_energy_used: float = dataclasses.field(default=0.0, metadata={
+        'vma_titles': ['CONVENTIONAL Total Energy Used per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Average Electricty Used CONVENTIONAL\n"
             "NOTE: for solutions that reduce electricity consumption per functional unit, "
@@ -184,8 +184,8 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!B159; Silvopasture "Advanced Controls"!B123',
         })
 
-    soln_annual_energy_used: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Total Energy Used per SOLUTION functional unit'],
+    soln_annual_energy_used: float = dataclasses.field(default=0.0, metadata={
+        'vma_titles': ['SOLUTION Total Energy Used per Functional Unit'],
         'subtitle': '',
         'tooltip': ("ALTERNATIVE APPROACH Annual Energy Used SOLUTION\n"
             "This refers to the units of average energy used per year per functional unit "
@@ -199,8 +199,8 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!D159',
         })
 
-    conv_fuel_consumed_per_funit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Fuel Consumed per CONVENTIONAL Functional Unit'],
+    conv_fuel_consumed_per_funit: float = dataclasses.field(default=0.0, metadata={
+        'vma_titles': ['CONVENTIONAL Fuel Consumed per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Fuel Consumed per CONVENTIONAL Functional Unit\n"
             "This refers to the unit (default is Liters) of FUEL used per year per "
@@ -210,8 +210,8 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!F159; Silvopasture "Advanced Controls"!F123',
         })
 
-    soln_fuel_efficiency_factor: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Fuel Efficiency Factor - SOLUTION'],
+    soln_fuel_efficiency_factor: float = dataclasses.field(default=0.0, metadata={
+        'vma_titles': ['SOLUTION Fuel Efficiency Factor'],
         'subtitle': '',
         'tooltip': ("Fuel Efficiency Factor - SOLUTION\n"
             "This refers to the % fuel reduced by the SOLUTION relative to the "
@@ -235,16 +235,22 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!G159; Silvopasture "Advanced Controls"!G123',
         })
 
-    # conv_fuel_emissions_factor: direct fuel emissions per funit, conventional
-    #   SolarPVUtil "Advanced Controls"!I159
-    conv_fuel_emissions_factor: float = None
+    conv_fuel_emissions_factor: float = dataclasses.field(default=0.0, metadata={
+        'vma_titles': [],
+        'subtitle': '',
+        'tooltip': 'direct fuel emissions per funit, conventional',
+        'excelref': 'SolarPVUtil "Advanced Controls"!I159',
+        })
 
-    # soln_fuel_emissions_factor: direct fuel emissions per funit, solution
-    #   SolarPVUtil "Advanced Controls"!I163
-    soln_fuel_emissions_factor: float = None
+    soln_fuel_emissions_factor: float = dataclasses.field(default=0.0, metadata={
+        'vma_titles': [],
+        'subtitle': '',
+        'tooltip': 'direct fuel emissions per funit, solution',
+        'excelref': 'SolarPVUtil "Advanced Controls"!I163; DistrictHeating "Advanced Controls"!I144',
+        })
 
-    conv_emissions_per_funit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Direct Emissions per CONVENTIONAL Functional Unit'],
+    conv_emissions_per_funit: float = dataclasses.field(default=0.0, metadata={
+        'vma_titles': ['CONVENTIONAL Direct Emissions per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Direct Emissions per CONVENTIONAL Functional Unit\n"
             "This represents the direct CO2-eq emissions that result per functional unit "
@@ -252,8 +258,8 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!C174',
         })
 
-    soln_emissions_per_funit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Direct Emissions per SOLUTION Functional Unit'],
+    soln_emissions_per_funit: float = dataclasses.field(default=0.0, metadata={
+        'vma_titles': ['SOLUTION Direct Emissions per Functional Unit'],
         'subtitle': '',
         'tooltip': ("Direct Emissions per SOLUTION Functional Unit\n"
             "This represents the direct CO2-eq emissions that result per functional unit "
@@ -276,7 +282,7 @@ class AdvancedControls:
     #   SolarPVUtil "Advanced Controls"!I185
     co2eq_conversion_source: str = None
 
-    ch4_co2_per_funit: float = dataclasses.field(default=None, metadata={
+    ch4_co2_per_funit: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['CH4-CO2eq Tons Reduced'],
         'subtitle': '',
         'tooltip': ("CH4-CO2eq Tons Reduced\n"
@@ -284,7 +290,7 @@ class AdvancedControls:
         'excelref': 'SolarPVUtil "Advanced Controls"!I174',
         })
 
-    n2o_co2_per_funit: float = dataclasses.field(default=None, metadata={
+    n2o_co2_per_funit: float = dataclasses.field(default=0.0, metadata={
         'vma_titles': ['N2O-CO2eq Tons Reduced'],
         'subtitle': '',
         'tooltip': ("N2O-CO2eq Tons Reduced\n"
@@ -293,7 +299,7 @@ class AdvancedControls:
         })
 
     soln_indirect_co2_per_iunit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Indirect CO2 Emissions per SOLUTION Unit'],
+        'vma_titles': ['SOLUTION Indirect CO2 Emissions per Unit'],
         'subtitle': '',
         'tooltip': ("Indirect CO2 Emissions per SOLUTION Implementation Unit\n"
             "CO2-equivalent indirect emissions per iunit, in tons."),
@@ -301,7 +307,7 @@ class AdvancedControls:
         })
 
     conv_indirect_co2_per_unit: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Indirect CO2 Emissions per CONVENTIONAL Unit'],
+        'vma_titles': ['CONVENTIONAL Indirect CO2 Emissions per Unit'],
         'subtitle': '',
         'tooltip': ("Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit\n"
             "NOTE: this represents the indirect CO2 emissions that result per implementation "
@@ -319,7 +325,7 @@ class AdvancedControls:
     conv_indirect_co2_is_iunits: bool = None
 
     soln_lifetime_capacity: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Lifetime Capacity - SOLUTION'],
+        'vma_titles': ['SOLUTION Lifetime Capacity'],
         'subtitle': '(use until replacement is required)',
         'tooltip': ("Lifetime Capacity - SOLUTION\n\n"
             "NOTE: This is the average expected number of functional units generated by the "
@@ -334,7 +340,7 @@ class AdvancedControls:
         })
 
     soln_avg_annual_use: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Average Annual Use - SOLUTION'],
+        'vma_titles': ['SOLUTION Average Annual Use'],
         'subtitle': '(annual use)',
         'tooltip': ("Average Annual Use - SOLUTION\n\n"
             "NOTE:  Average Annual Use is the average annual use of the technology/practice, "
@@ -348,7 +354,7 @@ class AdvancedControls:
         })
 
     conv_lifetime_capacity: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Lifetime Capacity - CONVENTIONAL'],
+        'vma_titles': ['CONVENTIONAL Lifetime Capacity'],
         'subtitle': '(use until replacement is required)',
         'tooltip': ("Lifetime Capacity - CONVENTIONAL\n\n"
             "NOTE: This is the average expected number of functional units "
@@ -365,7 +371,7 @@ class AdvancedControls:
         })
 
     conv_avg_annual_use: float = dataclasses.field(default=None, metadata={
-        'vma_titles': ['Average Annual Use - CONVENTIONAL'],
+        'vma_titles': ['CONVENTIONAL Average Annual Use'],
         'subtitle': '(annual use)',
         'tooltip': ("Average Annual Use - CONVENTIONAL\n\n"
             "NOTE:  Average Annual Use is the average annual use of the technology/practice, "
@@ -708,11 +714,12 @@ class AdvancedControls:
 
     def __post_init__(self):
         for field in dataclasses.fields(self):
-            vma_titles = field.metadata.get('vma_titles', [])
-            if vma_titles:
+            vma_titles = field.metadata.get('vma_titles', None)
+            if vma_titles is not None and self.vmas is not None:
                 val = getattr(self, field.name)
-                object.__setattr__(self, field.name,
-                        self._substitute_vma(val=val, vma_titles=vma_titles))
+                newval = self._substitute_vma(val=val, vma_titles=vma_titles)
+                if newval is not None:
+                    object.__setattr__(self, field.name, newval)
 
         if isinstance(self.solution_category, str):
             object.__setattr__(self, 'solution_category',
@@ -726,30 +733,6 @@ class AdvancedControls:
         if isinstance(self.emissions_grid_range, str):
             object.__setattr__(self, 'emissions_grid_range', ef.string_to_emissions_grid_range(
                     self.emissions_grid_range))
-
-        object.__setattr__(self, 'soln_energy_efficiency_factor',
-                self.value_or_zero(self.soln_energy_efficiency_factor))
-        object.__setattr__(self, 'conv_annual_energy_used',
-                self.value_or_zero(self.conv_annual_energy_used))
-        object.__setattr__(self, 'soln_annual_energy_used',
-                self.value_or_zero(self.soln_annual_energy_used))
-        object.__setattr__(self, 'conv_fuel_consumed_per_funit',
-                self.value_or_zero(self.conv_fuel_consumed_per_funit))
-        object.__setattr__(self, 'soln_fuel_efficiency_factor',
-                self.value_or_zero(self.soln_fuel_efficiency_factor))
-        object.__setattr__(self, 'conv_fuel_emissions_factor',
-                self.value_or_zero(self.conv_fuel_emissions_factor))
-        object.__setattr__(self, 'soln_fuel_emissions_factor',
-                self.value_or_zero(self.soln_fuel_emissions_factor))
-        object.__setattr__(self, 'conv_emissions_per_funit',
-                self.value_or_zero(self.conv_emissions_per_funit))
-        object.__setattr__(self, 'soln_emissions_per_funit',
-                self.value_or_zero(self.soln_emissions_per_funit))
-        object.__setattr__(self, 'ch4_co2_per_funit',
-                self.value_or_zero(self.ch4_co2_per_funit))
-        object.__setattr__(self, 'n2o_co2_per_funit',
-                self.value_or_zero(self.n2o_co2_per_funit))
-
 
         object.__setattr__(self, 'soln_ref_adoption_basis', translate_adoption_bases.get(
                 self.soln_ref_adoption_basis, self.soln_ref_adoption_basis))
@@ -770,15 +753,6 @@ class AdvancedControls:
             err = ("cannot be in both ref_adoption_use_pds_years and pds_adoption_use_ref_years:"
                     + str(intersect))
             raise ValueError(err)
-
-
-    def value_or_zero(self, val):
-        """Allow a blank space or empty string to mean zero.
-           Useful for advanced controls like conv_average_electricity_used."""
-        try:
-            return float(val)
-        except (ValueError, TypeError):
-            return 0.0
 
     @property
     def yield_coeff(self):
@@ -857,7 +831,7 @@ class AdvancedControls:
             raise ValueError(
                 'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for conventional')
 
-    def _substitute_vma(self, val, vma_titles):
+    def _substitute_vma(self, val, vma_titles, check_value=False):
         """
         If val is 'mean', 'high' or 'low', returns the corresponding statistic from the VMA object in
         self.vmas with the corresponding title.
@@ -871,6 +845,8 @@ class AdvancedControls:
                 - a dict containing a 'value' key
           vma_titles: list of titles of VMA tables to check (can be found in vma_info.csv in the
              soln dir). The first one which exists will be used.
+          check_value: raise an exception if the value: cached in val does not match the VMA
+             value specified by statistic.
         """
         raw_val_from_excel = None  # the raw value from the scenario record tab
         return_regional_series = False
@@ -894,7 +870,7 @@ class AdvancedControls:
             if self.vmas.get(vma_title, None):
                 break
         else:
-            raise KeyError(f'{vma_title} must be included in vmas to calculate mean/high/low.'
+            raise KeyError(f'"{vma_titles}" must be included in vmas to calculate mean/high/low.'
                     f'vmas included: {self.vmas.keys()}')
 
         if return_regional_series:
@@ -903,10 +879,11 @@ class AdvancedControls:
                 result[reg] = self.vmas[vma_title].avg_high_low(key=stat.lower(), region=reg)
         else:
             result = self.vmas[vma_title].avg_high_low(key=stat.lower())
-        if raw_val_from_excel is not None and result != approx(raw_val_from_excel):
-            warn(
-                "raw value from scenario record tab in excel does not match the {0} of VMA table '{1}'."
-                "\nThis is probably because the scenario was linked to the {0} of an older version of the table.".format(stat, vma_title))
+        if raw_val_from_excel is not None and result != pytest.approx(raw_val_from_excel):
+            if check_value:
+                raise ValueError(f"raw value from scenario record tab in excel does not match the "
+                    f"{stat} of VMA table '{vma_title}'.\nThis is probably because the scenario "
+                    f"was linked to the {stat} of an older version of the table.")
             result = raw_val_from_excel
         return result
 

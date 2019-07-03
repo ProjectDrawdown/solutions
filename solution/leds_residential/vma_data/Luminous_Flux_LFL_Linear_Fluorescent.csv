@@ -1,6 +1,6 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,,lm/unit,,,, T12,
-MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,,lm/unit,,,, T8 Halophosphor,
-MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,,lm/unit,,,, T8 tri-phosphor,
-MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,,lm/unit,,,, T5 new (14 - 80w) including Circular,
-MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,,lm/unit,,,, All others (including T5 old types 4 - 13w and Special Fl.),
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,lm/unit,,,, T12,
+MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,lm/unit,,,, T8 Halophosphor,
+MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,lm/unit,,,, T8 tri-phosphor,
+MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,lm/unit,,,, T5 new (14 - 80w) including Circular,
+MELISA MODEL,http://ecodesign-lightsources.eu/sites/ecodesign-lightsources.eu/files/attachments/LightSources%20Task3%20Final%2020151031.pdf,OECD90,EU,,,,,lm/unit,,,, All others (including T5 old types 4 - 13w and Special Fl.),

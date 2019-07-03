@@ -1,3 +1,3 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-EIA CBECS,http://www.eia.gov/consumption/commercial/data/archive/cbecs/cbecs2003/detailed_tables_2003/2003set19/2003html/e06a.html,USA,Office Buildings,,,2008,,,kWh/sq ft/yr,0.0,TWh/million m2 of commercial area/yr,,,
-IEA ETP (2016),http://www.iea.org/etp/etp2016/,World,Services Buildings,,,2013,,,PJ,0.0,TWh/million m2 of commercial area/yr,,,
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+EIA CBECS,http://www.eia.gov/consumption/commercial/data/archive/cbecs/cbecs2003/detailed_tables_2003/2003set19/2003html/e06a.html,USA,Office Buildings,,2008,,,kWh/sq ft/yr,0.0,TWh/million m2 of commercial area/yr,,,
+IEA ETP (2016),http://www.iea.org/etp/etp2016/,World,Services Buildings,,2013,,,PJ,0.0,TWh/million m2 of commercial area/yr,,,

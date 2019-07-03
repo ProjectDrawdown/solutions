@@ -1,0 +1,10 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"IPCC WG3 AR5, Biomass - dedicated  (Table A.III.1)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,1  - Peer Reviewed,2014,,,years,0.0,TWh/TW,,,
+"Lazard's LCOE Analysis–Version 10.0, 2016, Biomass Direct",https://www.lazard.com/media/2390/lazards-levelized-cost-of-energy-analysis-90.pdf,USA,,3 - For Profit,2015,,,years,0.0,TWh/TW,,,
+JRC (2013) - Steam turbine biomass solid conventional,http://publications.jrc.ec.europa.eu/repository/handle/JRC85804,EU,,2 - Public Sector/ Multilateral Agency,2013,,,years,0.0,TWh/TW,,,
+JRC (2013) - IGCC,http://publications.jrc.ec.europa.eu/repository/handle/JRC85804,EU,,2 - Public Sector/ Multilateral Agency,2013,,,years,0.0,TWh/TW,,,
+"IPCC WG3 AR5, Biomass - CHP  (Table A.III.1)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,1  - Peer Reviewed,2014,,,years,0.0,TWh/TW,,,
+JRC ETRI (2014) Grate furnace Steam turbine ,http://publications.jrc.ec.europa.eu/repository/handle/JRC92496,EU,,2 - Public Sector/ Multilateral Agency,2014,,,years,0.0,TWh/TW,,,
+JRC ETRI (2014) Fluidised Bed Boiler plus steam turbine,http://publications.jrc.ec.europa.eu/repository/handle/JRC92497,EU,,2 - Public Sector/ Multilateral Agency,2014,,,years,0.0,TWh/TW,,,
+"Lazard's LCOE Analysis–Version 11.0, 2017, Biomass Direct",https://www.lazard.com/perspective/levelized-cost-of-energy-2017/,USA,,3 - For Profit,2017,,,years,0.0,TWh/TW,,,
+"Ram, M,, Bogdanov, D., Aghahosseini, A., Oyewo, A.S., Gulagi, A., Child, M., Fell, J.J., Breyer, C. (2017). Globla Energy System Based on 100% Renewable Energy - Power Sector. Study by Lappeenranta University of technology and Energy Watch Group. Berlin. - Biomass CHP (page 105)",http://energywatchgroup.org/wp-content/uploads/2017/11/Full-Study-100-Renewable-Energy-Worldwide-Power-Sector.pdf,World,,2 - Public Sector/ Multilateral Agency,2017,,,years,0.0,TWh/TW,,,
