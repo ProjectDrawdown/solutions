@@ -10,10 +10,16 @@ solutions = solution.factory.all_solutions_scenarios()
     ids=list(solutions.keys())
 )
 def test_solutions(name, constructor, scenarios):
-    scenario = scenarios[0]
-    obj = constructor(scenario=scenario)
-    assert obj.scenario == scenario
-    assert obj.name
+    for scenario in scenarios:
+        obj = constructor(scenario=scenario)
+        assert obj.scenario == scenario
+        assert obj.name
+
+        # a few solutions currently fail and are skipped while we investigate.
+        skip = ['Car Fuel Efficiency', 'Electric Vehicles', 'Insulation']
+        if obj.name not in skip:
+            assert len(obj.ac.incorrect_cached_values) == 0
+
 
 def test_sane_number_of_solutions():
-    assert len(list(solutions.keys())) >= 35
+    assert len(list(solutions.keys())) >= 60

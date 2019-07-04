@@ -713,6 +713,7 @@ class AdvancedControls:
         })
 
     def __post_init__(self):
+        object.__setattr__(self, 'incorrect_cached_values', {})
         for field in dataclasses.fields(self):
             vma_titles = field.metadata.get('vma_titles', None)
             if vma_titles is not None and self.vmas is not None:
@@ -831,7 +832,7 @@ class AdvancedControls:
             raise ValueError(
                 'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for conventional')
 
-    def _substitute_vma(self, val, vma_titles, check_value=False):
+    def _substitute_vma(self, val, vma_titles):
         """
         If val is 'mean', 'high' or 'low', returns the corresponding statistic from the VMA object in
         self.vmas with the corresponding title.
@@ -845,8 +846,6 @@ class AdvancedControls:
                 - a dict containing a 'value' key
           vma_titles: list of titles of VMA tables to check (can be found in vma_info.csv in the
              soln dir). The first one which exists will be used.
-          check_value: raise an exception if the value: cached in val does not match the VMA
-             value specified by statistic.
         """
         raw_val_from_excel = None  # the raw value from the scenario record tab
         return_regional_series = False
@@ -880,10 +879,7 @@ class AdvancedControls:
         else:
             result = self.vmas[vma_title].avg_high_low(key=stat.lower())
         if raw_val_from_excel is not None and result != pytest.approx(raw_val_from_excel):
-            if check_value:
-                raise ValueError(f"raw value from scenario record tab in excel does not match the "
-                    f"{stat} of VMA table '{vma_title}'.\nThis is probably because the scenario "
-                    f"was linked to the {stat} of an older version of the table.")
+            self.incorrect_cached_values[vma_title] = (raw_val_from_excel, result)
             result = raw_val_from_excel
         return result
 
