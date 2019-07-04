@@ -18,7 +18,7 @@ Create and activate a python virtual environment. We recommend [Anaconda](https:
 ```sh
 $ conda create --name drawdown
 $ conda activate drawdown
-(drawdown) $ conda install -c conda-forge jupyterlab altair=2.3 bqplot
+(drawdown) $ conda install -c conda-forge jupyterlab altair bqplot
 (drawdown) $ conda install -c conda-forge ipywidgets nodejs xlrd pytest
 (drawdown) $ conda install -c conda-forge ipyvolume pillow qgrid
 (drawdown) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
@@ -59,17 +59,13 @@ At this point in development (4/2019) the core model for computing adoption, cos
 
 Tasks which do not fit into an ordered list of things to be completed:
 
-### Model enhancements
-
-Work is beginning on enhancements to the model beyond the original Excel-based models. The first area being worked on is a more sophisticated model of CO2 impacts, using an Impulse-Response model leveraging [FAIR](https://github.com/OMS-NetZero/FAIR).
-
 ### User Interface
    The ultimate goal of this project is to produce a compelling, browser-delivered GUI. There are at least three mostly distinct audiences:
    + Researchers who want to work with the models, add data sources, etc.
    + Policy makers and deciders, who need tools to help guide effective use of resources.
    + Interested parties and the general public, to evangelize that there *are* solutions to global warming.
 
-   UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub). An early version of this UI is available on [mybinder.org](https://mybinder.org/v2/gl/codeearth%2Fdrawdown/master?urlpath=lab/tree/Drawdown.ipynb).
+   UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub).
 
 ### Automated testing
    One other goal for the project is to build a model implementation with good coverage by automated tests. There is a [YouTube video which demonstrates the three layers of tests](https://youtu.be/ipZrQWuMU3w) and another which [focuses on the Excel-based system test specifically](https://youtu.be/HLL7HrFcmjc).
