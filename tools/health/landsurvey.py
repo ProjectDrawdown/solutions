@@ -2,18 +2,11 @@
 
 import importlib
 import pathlib
-import tempfile
-import numpy as np
 import pandas as pd
 import xarray as xr
-import scipy.stats
-from pprint import pprint
 
 import solution.factory
 from model.aez import AEZ
-from model.dd import THERMAL_MOISTURE_REGIMES, REGIONS, MAIN_REGIONS
-from model.tla import tla_per_region
-from tools.util import to_filename
 
 pd.set_option('display.expand_frame_repr', False)
 datadir = pathlib.Path(__file__).parents[2].joinpath('data')
