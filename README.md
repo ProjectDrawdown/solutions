@@ -18,7 +18,7 @@ Create and activate a python virtual environment. We recommend [Anaconda](https:
 ```sh
 $ conda create --name drawdown
 $ conda activate drawdown
-(drawdown) $ conda install -c conda-forge jupyterlab altair bqplot
+(drawdown) $ conda install -c conda-forge jupyterlab altair=2.3 bqplot
 (drawdown) $ conda install -c conda-forge ipywidgets nodejs xlrd pytest
 (drawdown) $ conda install -c conda-forge ipyvolume pillow qgrid
 (drawdown) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
