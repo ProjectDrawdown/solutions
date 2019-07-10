@@ -20,8 +20,6 @@ from model.co2calcs import C_TO_CO2EQ
 
 import solution.factory
 import ui.color
-import ui.frizz
-import ui.geo
 import ui.modelmap
 import ui.scn_edit
 import ui.vega
@@ -927,9 +925,6 @@ class JupyterUI:
                 IPython.display.display(chart)
 
             color = ui.color.get_sector_color(self._get_sector_for_solution(s.__module__))
-            ad_frizz = ui.frizz.get_frizzle_chart(df=s.ht.soln_pds_funits_adopted().fillna(0.0),
-                    ylabel=f'adoption ({s.units["functional unit"]})', size=450,
-                    key=fullname(s)+":adoption_data", color=color)
 
             geo_source = alt.topo_feature(os.path.join('data',
                 'world_topo_sans_antartica_highres.json'), 'areas')
@@ -956,10 +951,6 @@ class JupyterUI:
                     title='Regional Adoption (total funits in 2050)'
                 )
                 IPython.display.display(chart)
-
-            ad_abs_globe = ui.geo.get_globe(os.path.join('data', 'world_topo_lowres.json'),
-                    df=s.ht.soln_pds_funits_adopted().loc[2020:2050, :], size=450,
-                    key=fullname(s)+":adoption_data_globe")
 
             if hasattr(s, 'tm'):
                 ad_pct_geo = ipywidgets.Output()
@@ -991,10 +982,10 @@ class JupyterUI:
                 # The chart by geo region isn't really sensible for LAND/OCEAN solutions, which are much
                 # more driven by AEZ/DEZs than by political boundaries.
                 children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
-                    ad_frizz])]))
+                    ])]))
             else:
                 children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
-                    ad_frizz, ad_abs_geo, ad_abs_globe, ad_pct_geo])]))
+                    ad_abs_geo, ad_pct_geo])]))
 
         adoption_data = ipywidgets.Accordion(children=children)
         for i, s in enumerate(solutions):
@@ -1030,10 +1021,6 @@ class JupyterUI:
                     .set_table_styles(dataframe_css_styles).render()))
 
             color = ui.color.get_sector_color(self._get_sector_for_solution(s.__module__))
-            tm_pds_frizz = ui.frizz.get_frizzle_chart(df=s.tm.pds_tam_per_region().fillna(0.0),
-                    ylabel='PDS TAM', size=300, key=fullname(s)+":pds_tam", color=color)
-            tm_ref_frizz = ui.frizz.get_frizzle_chart(df=s.tm.ref_tam_per_region().fillna(0.0),
-                    ylabel='REF TAM', size=300, key=fullname(s)+":ref_tam", color=color)
 
             tm_model = ipywidgets.Output()
             with tm_model:
@@ -1090,14 +1077,10 @@ class JupyterUI:
                 )
                 IPython.display.display(chart)
 
-            tm_globe_pds = ui.geo.get_globe(os.path.join('data', 'world_topo_lowres.json'),
-                    df=s.tm.pds_tam_per_region().loc[2020:2050, :], size=450,
-                    key=fullname(s)+":tam_pds_globe")
-
             children.append(ipywidgets.VBox(
-                [ipywidgets.HBox([tm_table_pds, ipywidgets.VBox([tm_model, tm_pds_frizz,
-                    tm_geo_pds, tm_globe_pds])]),
-                 ipywidgets.HBox([tm_table_ref, ipywidgets.VBox([tm_ref_frizz, tm_geo_ref])])]))
+                [ipywidgets.HBox([tm_table_pds, ipywidgets.VBox([tm_model,
+                    tm_geo_pds])]),
+                 ipywidgets.HBox([tm_table_ref, ipywidgets.VBox([tm_geo_ref])])]))
             titles.append(fullname(s))
 
         if children:
