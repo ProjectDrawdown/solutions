@@ -190,20 +190,9 @@ class VMA:
             else:
                 raise ValueError(f"invalid key: {key}. key must be 'mean', 'high', 'low' or None")
 
-    def get_editable_source_data(self):
-        """Return a dataframe of the source_data suitable for editing (like in a spreadsheet)."""
-        df = self.source_data.copy(deep=True)
-
-        text_columns = ['SOURCE ID: Author/Org, Date, Info', 'Link', 'World / Drawdown Region',
-                'Specific Geographic Location', 'Thermal-Moisture Regime', 'Source Validation Code',
-                'Year / Date', 'Conversion calculation', 'Common Units', 'Assumptions']
-        df[text_columns].fillna('', inplace=True)
-        df['Exclude Data?'].fillna(False, inplace=True)
-        if not self.use_weight:
-            df.loc[:, 'Weight'].fillna(1.0, inplace=True)
-
-        return df
-
     def write_to_file(self, new_df):
         new_df.to_csv(path_or_buf=self.filename, index=False)
+        self._read_csv(filename=self.filename)
+
+    def reload_from_file(self):
         self._read_csv(filename=self.filename)
