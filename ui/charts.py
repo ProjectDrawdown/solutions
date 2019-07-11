@@ -1,5 +1,6 @@
 """Generate graphics for Jupyter notebook."""
 
+import dataclasses
 import os.path
 import sys
 
@@ -15,13 +16,12 @@ import numpy as np
 import pandas as pd
 import qgrid
 
-from model.advanced_controls import SOLUTION_CATEGORY
+from model import advanced_controls as ac
 from model.co2calcs import C_TO_CO2EQ
 
 import solution.factory
 import ui.color
 import ui.modelmap
-import ui.scn_edit
 import ui.vega
 
 
@@ -42,6 +42,14 @@ dataframe_css_styles = [
   ]
 
 
+# Magic values used in the AdvancedControls editor.
+MEAN_MAGIC = '📎 Mean'
+HIGH_MAGIC = '📎 High'
+LOW_MAGIC = '📎 Low'
+ALL_SCENARIOS = 'All Scenarios'
+VALUE_DIFFERS = '(differs between scenarios)'
+
+
 def solnname(s):
     return type(s).__name__
 
@@ -50,17 +58,49 @@ def fullname(s):
     return type(s).__name__ + ':' + s.scenario
 
 
-def vma_button_clicked(button):
-    """on_click() handler for Jupyter UI buttons."""
+def vma_qgrid_modified(event, qgrid_widget):
+    """Global callback when any qgrid widget is modified."""
+    uiobj = qgrid_widget.d['uiobj']
+    uiobj._vma_qgrid_modified(qgrid_widget.d['name'])
+
+
+def global_button_clicked(button):
+    """Called when one of the global UI buttons (Save, Abandon, etc) is clicked."""
     uiobj = button.d['uiobj']
-    uiobj._vma_button_clicked(button.d['button_name'])
+    name = button.d.get('name', 'no_name')
+    uiobj._global_button_clicked(button.d['button_name'])
+
+
+def vma_button_clicked(button):
+    """Called when the Mean/High/Low buttons are clicked."""
+    uiobj = button.d['uiobj']
+    ui_element_name = button.d['ui_element_name']
+    uiobj._vma_button_clicked(ui_element_name, button.value_name)
+
+
+def vma_value_entry_observe(change):
+    """Observer callback for when text is added to value_entry widget."""
+    widget = change['owner']
+    uiobj = widget.d['uiobj']
+    ui_element_name = widget.d['ui_element_name']
+    uiobj._vma_value_entry_observe(ui_element_name, change)
+
+
+def dropdown_observe(change):
+    """Observer callback for dropdown selection changes."""
+    dropdown = change['owner']
+    uiobj = dropdown.d['uiobj']
+    ui_element_name = dropdown.d['ui_element_name']
+    uiobj._dropdown_observe(ui_element_name, change)
 
 
 class JupyterUI:
     """Jupyter notebook UI for Drawdown solutions."""
-    def __init__(self):
+    def __init__(self, mutable=True):
+        self.mutable = mutable
         pd.set_option('display.max_columns', 200)
         pd.set_option('display.max_rows', 200)
+        qgrid.on(names=['cell_edited', 'row_added', 'row_removed'], handler=vma_qgrid_modified)
         all_solutions = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'),
                                             index_col=False, skipinitialspace=True, header=0,
                                             skip_blank_lines=True, comment='#')
@@ -152,9 +192,23 @@ class JupyterUI:
         details_progressbar = ipywidgets.FloatProgress(value=0.0, min=0.0, max=1.0,
                 step=0.01, orientation='horizontal', layout=ipywidgets.Layout(width='99%'))
         self.ui_elements['details_progressbar'] = details_progressbar
+
+        save_button = ipywidgets.Button(description='Save', disabled=True,
+                tooltip='Save changes to model')
+        save_button.d = {'uiobj': self, 'name': 'save_button'}
+        save_button.on_click(global_button_clicked)
+        self.ui_elements['save_button'] = save_button
+
+        abandon_button = ipywidgets.Button(description='Abandon', disabled=True,
+                tooltip='Abandon current changes and reload from most recent save')
+        abandon_button.d = {'uiobj': self, 'name': 'abandon_button'}
+        abandon_button.on_click(global_button_clicked)
+        self.ui_elements['abandon_button'] = abandon_button
+
         overview = ipywidgets.VBox(children=[
             ipywidgets.HBox(children=[solution_list, charts], layout=cntr_layout),
-            details_progressbar])
+            ipywidgets.HBox(children=[details_progressbar, save_button, abandon_button])
+            ])
 
         self.checkboxes = checkboxes
         return overview
@@ -243,9 +297,9 @@ class JupyterUI:
             df = pd.DataFrame()
             for s in self.solutions:
                 # tla/toa is constant between scenarios in the same solution so we only plot it once
-                if s.ac.solution_category == SOLUTION_CATEGORY.LAND:
+                if s.ac.solution_category == ac.SOLUTION_CATEGORY.LAND:
                     df['Total Land Area:' + solnname(s)] = s.tla_per_region.loc[2020:2050, 'World']
-                elif s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+                elif s.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN:
                     df['Total Ocean Area:' + solnname(s)] = s.toa_per_region.loc[2020:2050, 'World']
                 else:
                     ref_tam = s.tm.ref_tam_per_region().loc[2020:2050, 'World']
@@ -383,7 +437,8 @@ class JupyterUI:
         climate_text = []
         for s in solutions:
             g_tons = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].sum() / 1000
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+            if (s.ac.solution_category == ac.SOLUTION_CATEGORY.LAND or
+                    s.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN):
                 # Note the sequestration table in co2calcs doesn't set values to zero outside
                 # the study years. In the xls there is a separate table which does this. Here,
                 # we select the years directly.
@@ -406,7 +461,8 @@ class JupyterUI:
         for s in solutions:
             reduction = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].cumsum().mul(0.001)
             red_df[fullname(s)] = reduction
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+            if (s.ac.solution_category == ac.SOLUTION_CATEGORY.LAND or
+                    s.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN):
                 sequestration = s.c2.co2_sequestered_global().loc[2020:2050, 'All'].cumsum().mul(0.001)
                 seq_df[fullname(s)] = sequestration
                 tar_df[fullname(s)] = reduction + sequestration
@@ -419,7 +475,8 @@ class JupyterUI:
 
         # Sequestration graph
         if not seq_df.empty:
-            sequestration_df = seq_df.reset_index().melt('Year', value_name='Gt CO2', var_name='solution')
+            sequestration_df = seq_df.reset_index().melt('Year', value_name='Gt CO2',
+                    var_name='solution')
             sequestration_graph = ipywidgets.Output()
             with sequestration_graph:
                 chart = alt.Chart(sequestration_df, width=300).mark_line().encode(
@@ -433,7 +490,8 @@ class JupyterUI:
                 IPython.display.display(chart)
 
             # Reduction graph
-            reduction_df = red_df.reset_index().melt('Year', value_name='Gt CO2-eq', var_name='solution')
+            reduction_df = red_df.reset_index().melt('Year', value_name='Gt CO2-eq',
+                    var_name='solution')
             reduction_graph = ipywidgets.Output()
             with reduction_graph:
                 chart = alt.Chart(reduction_df, width=300).mark_line().encode(
@@ -502,7 +560,8 @@ class JupyterUI:
         prod_text = []
         yield_df = pd.DataFrame()
         for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+            if (s.ac.solution_category == ac.SOLUTION_CATEGORY.LAND or
+                    s.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN):
                 funits = s.ua.soln_net_annual_funits_adopted().loc[2020:2050, 'World']
                 pot_yield_incr = funits.sum() * s.ac.yield_coeff
                 if pot_yield_incr > 0:
@@ -544,7 +603,8 @@ class JupyterUI:
         protect_text = []
         cridl_df, protected_co2_df, protected_c_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
         for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+            if (s.ac.solution_category == ac.SOLUTION_CATEGORY.LAND or
+                    s.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN):
                 cumulative_land_deg = s.ua.cumulative_reduction_in_total_degraded_land()['World']
                 red_land_deg = cumulative_land_deg[2050] - cumulative_land_deg[2019]
                 if red_land_deg > 0:
@@ -599,7 +659,7 @@ class JupyterUI:
                 title='Total CO2 Under Protection'
             ).interactive()
             IPython.display.display(chart)
-            
+
         protected_c_graph = ipywidgets.Output()
         with protected_c_graph:
             protected_c_df = protected_c_df.reset_index().melt('Year', value_name='Gt carbon', var_name='solution')
@@ -679,7 +739,7 @@ class JupyterUI:
             with modelmap:
                 IPython.display.display(IPython.display.SVG(
                     data=ui.modelmap.get_model_overview_svg(model=c)))
-            editor = ui.scn_edit.get_scenario_editor_for_solution(soln_mod=c)
+            editor = self.get_scenario_editor_for_solution(soln_mod=c)
             divider = ipywidgets.HTML(value='<br/><hr/><br/>')
             children.append(ipywidgets.VBox(children=[modelmap, divider, editor]))
             titles.append(c.__name__)
@@ -691,32 +751,41 @@ class JupyterUI:
         return model_overview
 
 
-    def _vma_button_clicked(self, button_name):
-        state = self.ui_elements[button_name]
-        button = state['button']
-        table = state['table']
-        v = state['vmaobj']
-        if state['editing'] == True:
-            state['editing'] = False
-            v.write_to_file(table.children[0].get_changed_df())
-            table.children = [self.get_vma_readonly_sources_list(v)]
-            button.description = 'Edit'
-        else:
-            state['editing'] = True
-            table.children = [self.get_vma_editable_sources_list(v)]
-            button.description = 'Save'
+    def _mark_dirty(self, new_value):
+        """Called to update Save/Abandon buttons when data becomes newly clean or dirty.
+
+        Arguments:
+            new: new dirty state.
+              False == when changes are saved or cancelled, to mark the object clean.
+              True == something is marked dirty (VMA data, AdvancedControls, etc)
+        """
+        disabled = not new_value
+        for name in ['save_button', 'abandon_button']:
+            button = self.ui_elements[name]
+            button.disabled = disabled
 
 
-    def get_vma_readonly_sources_list(self, v):
-        return qgrid.show_grid(data_frame=v.source_data.fillna(''), precision=2,
-                grid_options={'forceFitColumns':False, 'maxVisibleRows':25},
-                column_options={'editable':False})
+    def _vma_qgrid_modified(self, qgrid_name):
+        state = self.ui_elements[qgrid_name]
+        state['dirty'] = True
+        self._mark_dirty(True)
 
 
-    def get_vma_editable_sources_list(self, v):
-        return qgrid.show_grid(data_frame=v.source_data.fillna(''), show_toolbar=True,
-                grid_options={'forceFitColumns':False, 'maxVisibleRows':23},
-                column_options={'editable':True})
+    def _global_button_clicked(self, name):
+        save = (name == 'save_button')
+        for state in self.ui_elements:
+            dirty = state.get('dirty', False)
+            if not dirty:
+                continue
+            if 'qgrid' in state:
+                qg = state['qgrid']
+                v = state['vmaobj']
+                if save:
+                    v.write_to_file(qg.get_changed_df())
+                else:
+                    v.reload_from_file()
+            state['dirty'] = False
+        self._mark_dirty(False)
 
 
     def get_VMA_tab(self, solutions):
@@ -763,17 +832,14 @@ class JupyterUI:
                                               f'<tr><td style={hdr_style}>Low</td></tr>' +
                                               f'<tr><td style={num_style}>{low:.1f}</td></tr>' +
                                               '</table>')
-                    edit_button = ipywidgets.Button(description='Edit', button_style='',
-                            tooltip='Edit VMA Sources', layout=ipywidgets.Layout(width='auto'))
-                    button_name = f'{m.__name__}:{name}:edit_button'
-                    edit_button.d = {
-                            'uiobj': self,
-                            'button_name': button_name,
-                            }
-                    edit_button.on_click(vma_button_clicked)
-                    sidebar = ipywidgets.VBox(children=[summary, edit_button],
+                    sidebar = ipywidgets.VBox(children=[summary],
                             layout=ipywidgets.Layout(width='auto', grid_area='sidebar'))
-                    table = ipywidgets.VBox(children=[self.get_vma_readonly_sources_list(v)])
+                    vma_qgrid = qgrid.show_grid(data_frame=v.source_data.fillna(''),
+                            grid_options={'forceFitColumns':False, 'maxVisibleRows':23},
+                            show_toolbar=True, column_options={'editable':self.mutable})
+                    vma_qgrid_name = f'{m.__name__}:{name}:qgrid'
+                    vma_qgrid.d = {'uiobj': self, 'name': vma_qgrid_name, }
+                    table = ipywidgets.VBox(children=[vma_qgrid])
                     vma_widget = ipywidgets.GridBox(children=[vma_name, sidebar, table],
                             layout=ipywidgets.Layout(width='100%', grid_template_rows='auto auto',
                                     grid_template_columns='7% 93%',
@@ -782,11 +848,10 @@ class JupyterUI:
                                     "sidebar table"
                                     '''))
                     vmas_for_module.append(vma_widget)
-                    self.ui_elements[button_name] = {
-                            'button': edit_button,
-                            'table': table,
-                            'editing': False,
+                    self.ui_elements[vma_qgrid_name] = {
+                            'qgrid': vma_qgrid,
                             'vmaobj': v,
+                            'dirty': False,
                             }
 
                 accordion = ipywidgets.Accordion(
@@ -978,7 +1043,8 @@ class JupyterUI:
             else:
                 ad_pct_geo = None
 
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+            if (s.ac.solution_category == ac.SOLUTION_CATEGORY.LAND or
+                    s.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN):
                 # The chart by geo region isn't really sensible for LAND/OCEAN solutions, which are much
                 # more driven by AEZ/DEZs than by political boundaries.
                 children.append(ipywidgets.HBox([ad_table, ipywidgets.VBox([ad_model, ad_chart,
@@ -1100,7 +1166,8 @@ class JupyterUI:
         """
         children = []
         for s in solutions:
-            if s.ac.solution_category == SOLUTION_CATEGORY.LAND or s.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+            if (s.ac.solution_category == ac.SOLUTION_CATEGORY.LAND
+                    or s.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN):
                 co2_red = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World']
                 co2_seq = s.c2.co2_sequestered_global().loc[2020:2050, 'All']
                 df = pd.concat([co2_red, co2_seq, co2_red + co2_seq], axis=1)
@@ -1278,3 +1345,261 @@ class JupyterUI:
             details_progressbar.value += increment
 
         return solutions
+
+
+    def scn_edit_vma_var(self, scenarios, varname, vma, title, tooltip, subtitle):
+        """Render an editor box for a single VMA.
+           Arguments:
+             scenarios: a dict where the keys are scenario names, values are AdvancedControls objects
+             varname: variable name in AdvancedControls to edit, like 'conv_2014_cost'
+             vma: model.VMA object being edited
+             title: name of the VMA being edited
+             tooltip: tooltip to display with the title
+             subtitle: line to print under the title, typically includes the units of the value
+               being allocated like "MHa" or "US$2014/TWh"
+        """
+        mean = high = low = np.nan
+        total_sources = 0
+        use_weight = False
+        if vma:
+            (mean, high, low) = vma.avg_high_low()
+            total_sources = len(vma.df)
+            use_weight = vma.use_weight
+
+        ly_full = ipywidgets.Layout(width='auto', grid_area='full_row')
+        ly_labl = ipywidgets.Layout(width='20%')
+        ly_butn = ipywidgets.Layout(width='80%')
+        ly_drop = ipywidgets.Layout(width='95%', grid_area='full_row')
+
+        dd_styles = "<style>"
+        dd_styles += ".dd_vma_val input {background-color:#D0F0D0 !important;text-align:center;}"
+        dd_styles += ".dd_txt_center {text-align:center;}"
+        dd_styles += ".dd_vma_shadow {box-shadow:4px 4px 0px #20A020,8px 8px 0px #20A020;}"
+        dd_styles += "</style>"
+
+        values = {}
+        for sc in scenarios.values():
+            values[sc.name] = getattr(sc, varname)
+        value_list = list(values.values())
+        all_scenarios_equal = (value_list.count(value_list[0]) == len(value_list))
+        if all_scenarios_equal:
+            value = value_list[0]
+        else:
+            value = VALUE_DIFFERS
+
+        value_entry = ipywidgets.Text(value=f'{value}', continuous_update=False, layout=ly_butn)
+        value_entry.add_class('dd_vma_val')
+        value_entry.observe(vma_value_entry_observe, names='value')
+
+        options = [ALL_SCENARIOS] + list(scenarios.keys())
+        dropdown = ipywidgets.Dropdown(options=options, indent=False, layout=ly_drop)
+        dropdown.observe(dropdown_observe, names='value')
+
+        ui_element_name = solnname(list(scenarios.values())[0]) + ':' + varname
+        element_state = { 'scenarios': scenarios, 'vma': vma, 'varname': varname,
+                'value_entry': value_entry, 'dropdown': dropdown, 'values': values }
+        self.ui_elements[ui_element_name] = element_state
+        self._set_value_entry_shadows(state=element_state)
+        value_entry.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+        dropdown.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+
+        mean_button = ipywidgets.Button(description=f'{mean:.3f}', layout=ly_butn)
+        mean_button.value_name = MEAN_MAGIC
+        mean_button.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+        mean_button.on_click(vma_button_clicked)
+        high_button = ipywidgets.Button(description=f'{high:.3f}', layout=ly_butn)
+        high_button.value_name = HIGH_MAGIC
+        high_button.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+        high_button.on_click(vma_button_clicked)
+        low_button = ipywidgets.Button(description=f'{low:.3f}', layout=ly_butn)
+        low_button.value_name = LOW_MAGIC
+        low_button.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+        low_button.on_click(vma_button_clicked)
+        if not vma:
+            mean_button.disabled = high_button.disabled = low_button.disabled = True
+        varname_text = ipywidgets.Text(value=varname, disabled=True, indent=False, layout=ly_full)
+        varname_text.add_class('dd_txt_center')
+
+        children = [
+            ipywidgets.HTML(dd_styles),
+            ipywidgets.Button(description=title, disabled=True, tooltip=tooltip, layout=ly_full),
+            ipywidgets.Button(description=subtitle, disabled=True, tooltip=tooltip, layout=ly_full),
+            varname_text,
+            dropdown,
+            ipywidgets.HBox([ipywidgets.Label('Value', layout=ly_labl), value_entry], layout=ly_full),
+            ipywidgets.HBox([ipywidgets.Label('Mean', layout=ly_labl), mean_button], layout=ly_full),
+            ipywidgets.HBox([ipywidgets.Label('High', layout=ly_labl), high_button], layout=ly_full),
+            ipywidgets.HBox([ipywidgets.Label('Low', layout=ly_labl), low_button], layout=ly_full),
+            ipywidgets.HBox([ipywidgets.Label('Weighted Average?',
+                layout=ipywidgets.Layout(width='auto')),
+                ipywidgets.Checkbox(value=use_weight, indent=False,
+                    layout=ipywidgets.Layout(width='auto'))], layout=ly_full),
+            ipywidgets.Label(f'Total Sources: {total_sources}',layout=ly_full),
+        ]
+        box = ipywidgets.VBox(children=children, layout=ipywidgets.Layout(width='250px',
+                grid_template_rows='auto auto auto auto', grid_template_columns='100%',
+                grid_template_areas='"full_row"'))
+        dropdown.box = box
+        return box
+
+
+    def _set_value_entry_shadows(self, state):
+        """Set drop-shadow on a VMA entry widget where scenarios have different values."""
+        value_entry = state['value_entry']
+        values = list(state['values'].values())
+        all_scenarios_equal = (values.count(values[0]) == len(values))
+
+        if all_scenarios_equal:
+            value_entry.remove_class('dd_vma_shadow')
+        else:
+            value_entry.add_class('dd_vma_shadow')
+
+        return all_scenarios_equal
+
+
+    def _vma_button_clicked(self, ui_element_name, value_name):
+        """Called when the Mean/High/Low buttons are clicked."""
+        state = self.ui_elements[ui_element_name]
+        state['value_entry'].value = value_name
+
+
+    def _vma_value_entry_observe(self, ui_element_name, change):
+        """Observer callback for when text is added to value_entry widget.
+
+           Arguments:
+             change: the observer callback information.
+        """
+        value = change['new']
+        if value == VALUE_DIFFERS:
+            return
+        state = self.ui_elements[ui_element_name]
+        values = state['values']
+        selection = state['dropdown'].value
+        if selection == ALL_SCENARIOS:
+            for scenario in values.keys():
+                values[scenario] = value
+        else:
+            values[selection] = value
+        self._set_value_entry_shadows(state)
+
+
+    def _dropdown_observe(self, ui_element_name, change):
+        """Observer callback for dropdown selection changes.
+
+           When the selected scenario changes we need to:
+              1. update the value displayed in the value_entry text input.
+              2. Determine if all scenarios have the same value or not, and if not then
+                 add the drop-shadow decoration to this editing box to show the user there
+                 are multiple values.
+
+           Arguments:
+             ui_element_name: string key to look up element_state in self.ui_elements
+             change: the observer callback information.
+        """
+        scenario = change['new']
+        state = self.ui_elements[ui_element_name]
+        values = state['values']
+
+        all_scenarios_equal = self._set_value_entry_shadows(state)
+        if scenario == ALL_SCENARIOS:
+            if all_scenarios_equal:
+                new_value = list(values.values())[0]
+            else:
+                new_value = VALUE_DIFFERS
+        else:
+            new_value = values[scenario]
+
+        value_entry = state['value_entry']
+        state['value_entry'].value = str(new_value)
+
+
+    def _get_editor_for_var(self, c, varname):
+        fields = dataclasses.fields(list(c.scenarios.values())[0])
+
+        for field in fields:
+            if field.name != varname:
+                continue
+            vma = None
+            for vma_name in field.metadata.get('vma_titles', []):
+                if vma_name in c.VMAs:
+                    vma = c.VMAs[vma_name]
+            return self.scn_edit_vma_var(scenarios=c.scenarios, vma=vma, varname=varname,
+                    title=vma_name, tooltip=field.metadata.get('tooltip', ''),
+                    subtitle=field.metadata.get('subtitle', ''))
+        return None
+
+
+    edit_ui_layout_land = [
+        ('separator', 'Financial'),
+        ('editor', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit',
+            'yield_from_conv_practice', ]),
+        ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit',
+            'yield_gain_from_conv_to_soln', ]),
+        ('separator', 'Electricity Grid based Emissions'),
+        ('editor', ['conv_annual_energy_used', 'soln_energy_efficiency_factor',
+            'soln_annual_energy_used', ]),
+        ('separator', 'Non-Electricity Fuel Combustion-based Emissions'),
+        ('editor', ['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor',]),
+        ('separator', 'Direct Emissions (excl. electricity- or fuel-based)'),
+        ('editor', ['tco2eq_reduced_per_land_unit', 'tco2_reduced_per_land_unit',
+            'tn2o_co2_reduced_per_land_unit', 'tch4_co2_reduced_per_land_unit']),
+        ('separator', 'CARBON SEQUESTRATION AND LAND INPUTS'),
+        ('editor', ['seq_rate_global', 'carbon_not_emitted_after_harvesting', 'disturbance_rate', ]),
+    ]
+
+    edit_ui_layout_ocean = [
+        ('separator', 'Financial'),
+        ('editor', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit', ]),
+        ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit', ]),
+    ]
+
+    edit_ui_layout_rrs = [
+        ('separator', 'Financial'),
+        ('editor', ['conv_2014_cost', 'conv_lifetime_capacity', 'conv_avg_annual_use',
+            'conv_var_oper_cost_per_funit', 'conv_fixed_oper_cost_per_iunit', ]),
+        ('editor', ['pds_2014_cost', 'soln_lifetime_capacity', 'soln_avg_annual_use',
+            'soln_var_oper_cost_per_funit', 'soln_fixed_oper_cost_per_iunit', ]),
+        ('separator', 'Emissions'),
+        ('editor', ['conv_annual_energy_used', 'soln_energy_efficiency_factor',
+            'soln_annual_energy_used', 'conv_fuel_consumed_per_funit',
+            'soln_fuel_efficiency_factor',]),
+        ('separator', 'Annual Direct Emissions (excl. electricity- or fuel-based)'),
+        ('editor', ['conv_emissions_per_funit', 'soln_emissions_per_funit',]),
+        ('separator', 'Indirect Emissions (CO2-eq)'),
+        ('editor', ['conv_indirect_co2_per_unit', 'soln_indirect_co2_per_iunit',]),
+        ('separator', 'Optional Emissions Factors'),
+        ('editor', ['ch4_co2_per_funit', 'n2o_co2_per_funit',]),
+    ]
+
+
+    def get_scenario_editor_for_solution(self, soln_mod):
+        """Return Scenario Editor for a given solution.
+
+           Arguments:
+              soln_mod: a module for a particular solution, like solution.solarpvutil
+        """
+        first_scenario = list(soln_mod.scenarios.keys())[0]
+        solution_category = soln_mod.scenarios[first_scenario].solution_category
+        edit_ui_layout = []
+        if solution_category == ac.SOLUTION_CATEGORY.LAND:
+            edit_ui_layout = self.edit_ui_layout_land
+        elif solution_category == ac.SOLUTION_CATEGORY.OCEAN:
+            edit_ui_layout = self.edit_ui_layout_ocean
+        else:
+            edit_ui_layout = self.edit_ui_layout_rrs
+
+        children = []
+        for (row_type, row) in edit_ui_layout:
+            if row_type == 'separator':
+                div = '<div style="background-color:LightSkyBlue;border:1px solid black;'
+                div += 'font-weight:bold;text-align:center;font-size:0.875em;">'
+                label = ipywidgets.HTML(value=f"{div}{row}</div>")
+                children.append(label)
+            elif row_type == 'editor':
+                row_children = []
+                for varname in row:
+                    row_children.append(self._get_editor_for_var(soln_mod, varname))
+                children.append(ipywidgets.HBox(row_children))
+                children.append(ipywidgets.HTML(value='<div>&nbsp;</div>'))
+
+        return ipywidgets.VBox(children=children)
