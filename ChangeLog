@@ -1,4 +1,4 @@
-Sept 5 - 7, 2018
+Sep 5 - 7, 2018
 <code>/earth hackathon at the Internet Archive in San Francisco.
 Initial commits to:
 + add a Heroku server app in Python
@@ -7,7 +7,7 @@ Initial commits to:
 + construct unit+integration tests
 + set up continuous integration & deployment
 
-Sept 10 - 14, 2018
+Sep 10 - 14, 2018
 + start/stop a flask server in excel integration test
 + make access to Excel more robust w/ retries for spurious failures
 + add a shell-based test to run a local flask server & check expected values
@@ -272,10 +272,19 @@ May 27 - May 31, 2019
   https://gitlab.com/DentonGentry/discourse-gitlab-sso
   customize the login screen, redirect straight to the Drawdown.ipynb file.
 
-June 3 - June 7, 2019
+Jun 3 - Jun 7, 2019
 + Experimental support for regionalized first cost computation.
 
-June 10 - June 14, 2019
+Jun 10 - Jun 14, 2019
 + initial work toward an Advanced Controls editor
   editing widget showing VMA high/med/low, with data entry box.
 + convert advanced_controls Python object to a dataclass with defined fields.
+
+Jun 17 - Jun 21, 2019
++ initial work on automatic land area allocation (for feedback)
++ connect variables to the VMAs backing them in RRS solutions (had already been done for Land)
++ move scenario definitions out of Python code and into JSON, to allow an editing UI
+
+Jul 1 - Jul 5, 2019
++ regenerate all solutions to store their scenario definitions in JSON files
++ more work on RandkedAllocation, including static land area definitions.

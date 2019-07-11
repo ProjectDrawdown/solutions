@@ -68,7 +68,7 @@ Tasks which do not fit into an ordered list of things to be completed:
    UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub).
 
 ### Automated testing
-   One other goal for the project is to build a model implementation with good coverage by automated tests. There is a [YouTube video which demonstrates the three layers of tests](https://youtu.be/ipZrQWuMU3w) and another which [focuses on the Excel-based system test specifically](https://youtu.be/HLL7HrFcmjc).
+   One other goal for the project is to build a model implementation with good coverage by automated tests. There is a [YouTube video which demonstrates the different layers of tests](https://youtu.be/ipZrQWuMU3w) and another which [focuses on the Excel-based system test specifically](https://youtu.be/HLL7HrFcmjc).
 
    Tests exist at two layers:
     1. unit tests of each function
@@ -77,10 +77,9 @@ Tasks which do not fit into an ordered list of things to be completed:
 ---
 
 # License
-This program (excluding the Excel code) is part of the &lt;code&gt;/earth project. The &lt;code&gt;/earth DD Model Engine is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at https://gitlab.com/codeearth/drawdown. No part of this Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
+This program (excluding the Excel code) is part of the &lt;code&gt;/earth project. The python code for the model engine is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at https://gitlab.com/codeearth/drawdown. No part of this Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
 
-The Project Drawdown Excel model file itself will be release under a license which has not yet been decided, but is not released at the time of this writing. The small bits of code in that model file copyright Robert L. Read are released under the AGPL; since they are tightly integrated with the spreadsheet, they are likely valuable only as examples.
-
+Data supplied from Project Drawdown (mostly in the form of CSV files) is licensed under the [CC-BY-NC-2.0](https://creativecommons.org/licenses/by-nc/2.0/) license for non-commercial use. The code for the model can be used (under the terms of the AGPL) to process whatever data the user wishes under whatever license the data carries. The data supplied for the Project Drawdown solutions is CC-BY-NC-2.0.
 ---
 
 # Contribution
