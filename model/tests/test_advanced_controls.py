@@ -1,6 +1,9 @@
 """Test advanced_controls.py."""
 
+import json
+import os
 import pathlib
+import tempfile
 
 import pandas as pd
 import pytest
@@ -260,6 +263,22 @@ def test_from_json():
     assert ac.conv_2014_cost == pytest.approx(3.0)
     assert ac.soln_first_cost_efficiency_rate == pytest.approx(4.0)
     assert ac.conv_first_cost_efficiency_rate == pytest.approx(5.0)
+
+
+def test_to_json():
+    (f, jsfile) = tempfile.mkstemp()
+    ac = advanced_controls.AdvancedControls(
+        soln_lifetime_capacity=1.0, soln_avg_annual_use=2.0,
+        conv_lifetime_capacity=3.0, conv_avg_annual_use=4.0,
+        jsfile=jsfile)
+    ac.write_to_json_file()
+    js = json.load(open(jsfile))
+    os.unlink(jsfile)
+    assert js['soln_lifetime_capacity'] == 1.0
+    assert js['soln_avg_annual_use'] == 2.0
+    assert js['conv_lifetime_capacity'] == 3.0
+    assert js['conv_avg_annual_use'] == 4.0
+
 
 def test_vma_to_param_names():
     result = advanced_controls.get_vma_for_param('yield_gain_from_conv_to_soln')
