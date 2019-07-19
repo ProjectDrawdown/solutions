@@ -8,7 +8,6 @@ import tempfile
 import pandas as pd
 import pytest
 from numpy import nan
-from unittest import mock
 from model import advanced_controls, vma
 from model.advanced_controls import fill_missing_regions_from_world
 from model import emissionsfactors as ef
@@ -187,12 +186,16 @@ def test_has_var_costs():
 
 
 def test_substitute_vma():
-    with mock.patch('model.vma.VMA') as MockVMA:
-        MockVMA.return_value.avg_high_low.return_value = 'expected return'
-        seq_vma = vma.VMA()
-        ac = advanced_controls.AdvancedControls(vmas={'Sequestration Rates': seq_vma},
-                                                seq_rate_global='mean')
-        assert ac.seq_rate_global == 'expected return'
+    class fakeVMA:
+        def avg_high_low(self, key):
+            if key == 'mean': return 'mean value'
+            if key == 'high': return 'high value'
+            if key == 'low': return 'low value'
+            return ('mean value', 'high value', 'low value')
+
+    seq_vma = {'Sequestration Rates': fakeVMA()}
+    ac = advanced_controls.AdvancedControls(vmas=seq_vma, seq_rate_global='mean')
+    assert ac.seq_rate_global == 'mean value'
 
 
 def test_substitute_vma_passthru_value():
@@ -216,36 +219,50 @@ def test_substitute_vma_raises():
 
 
 def test_substitute_vma_handles_raw_value_discrepancy():
-    with mock.patch('model.vma.VMA') as MockVMA:
-        MockVMA.return_value.avg_high_low.return_value = 1.2
-        ac = advanced_controls.AdvancedControls(vmas={'Sequestration Rates': vma.VMA()},
-                                                seq_rate_global={'value': 1.1, 'statistic': 'mean'})
-        assert ac.seq_rate_global == 1.1
+    class fakeVMA:
+        def avg_high_low(self, key):
+            if key == 'mean': return 1.2
+            if key == 'high': return 1.4
+            if key == 'low': return 1.0
+            return (1.2, 1.4, 1.0)
+
+    vmas = {'Sequestration Rates': fakeVMA()}
+    ac = advanced_controls.AdvancedControls(vmas=vmas,
+            seq_rate_global={'value': 1.1, 'statistic': 'mean'})
+    assert ac.seq_rate_global == pytest.approx(1.1)
 
 
 def test_substitute_vma_regional_statistics():
-    vals = {'World': 0, 'OECD90': 1, 'Eastern Europe': 2, 'Asia (Sans Japan)': 3, 'Middle East and Africa': 4, 'Latin America': 5,
-            'China': 0, 'India': 0, 'EU': 0, 'USA': 0}
-    with mock.patch.object(vma.VMA, '__init__', new=lambda *args, **kwargs: None):
-        with mock.patch.object(vma.VMA, 'avg_high_low', new=lambda *args, **kwargs: vals[kwargs['region']]):
-            ac = advanced_controls.AdvancedControls(vmas={'SOLUTION First Cost per Implementation Unit': vma.VMA()},
-                                                    pds_2014_cost='mean per region')
-            expected = pd.Series(data=vals, name='regional values')
-            pd.testing.assert_series_equal(expected, ac.pds_2014_cost)
+    vals = {'World': 0, 'OECD90': 1, 'Eastern Europe': 2, 'Asia (Sans Japan)': 3,
+            'Middle East and Africa': 4, 'Latin America': 5, 'China': 0, 'India': 0,
+            'EU': 0, 'USA': 0}
+
+    class fakeVMA:
+        def avg_high_low(self, key, region=None):
+            if key == 'mean': return vals[region]
+            return (None, None, None)
+
+    vmas = {'SOLUTION First Cost per Implementation Unit': fakeVMA()}
+
+    ac = advanced_controls.AdvancedControls(vmas=vmas, pds_2014_cost='mean per region')
+    expected = pd.Series(data=vals, name='regional values')
+    pd.testing.assert_series_equal(expected, ac.pds_2014_cost)
 
 
 def test_yield_coeff():
-    ac = advanced_controls.AdvancedControls(yield_from_conv_practice=2, yield_gain_from_conv_to_soln=4,
-                                            disturbance_rate=0.25)
+    ac = advanced_controls.AdvancedControls(yield_from_conv_practice=2,
+            yield_gain_from_conv_to_soln=4, disturbance_rate=0.25)
     assert ac.yield_coeff == 6
 
 
 def test_fill_missing_regions_from_world():
-    vals = {'World': 2, 'OECD90': 1, 'Eastern Europe': nan, 'Asia (Sans Japan)': 3, 'Middle East and Africa': 4,
-            'Latin America': 5, 'China': 0, 'India': nan, 'EU': 0, 'USA': 0}
+    vals = {'World': 2, 'OECD90': 1, 'Eastern Europe': nan, 'Asia (Sans Japan)': 3,
+            'Middle East and Africa': 4, 'Latin America': 5, 'China': 0, 'India': nan,
+            'EU': 0, 'USA': 0}
     data = pd.Series(data=vals, name='regional values')
-    exp_vals = {'World': 2, 'OECD90': 1, 'Eastern Europe': 2, 'Asia (Sans Japan)': 3, 'Middle East and Africa': 4,
-            'Latin America': 5, 'China': 0, 'India': nan, 'EU': 0, 'USA': 0}
+    exp_vals = {'World': 2, 'OECD90': 1, 'Eastern Europe': 2, 'Asia (Sans Japan)': 3,
+            'Middle East and Africa': 4, 'Latin America': 5, 'China': 0, 'India': nan,
+            'EU': 0, 'USA': 0}
     expected = pd.Series(data=exp_vals, name='regional values')
     pd.testing.assert_series_equal(expected, fill_missing_regions_from_world(data))
 
