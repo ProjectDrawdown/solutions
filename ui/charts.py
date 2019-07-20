@@ -87,11 +87,19 @@ def vma_value_entry_observe(change):
 
 
 def dropdown_observe(change):
-    """Observer callback for dropdown selection changes."""
+    """Observer callback for VMA scenario dropdown selection changes."""
     dropdown = change['owner']
     uiobj = dropdown.d['uiobj']
     ui_element_name = dropdown.d['ui_element_name']
     uiobj._dropdown_observe(ui_element_name, change)
+
+
+def checkbox_observe(change):
+    """Observer callback for solution list checkbox changes."""
+    checkbox = change['owner']
+    uiobj = checkbox.d['uiobj']
+    name = checkbox.d.get('name', 'no_name')
+    uiobj._checkbox_observe(name, change)
 
 
 class JupyterUI:
@@ -118,80 +126,24 @@ class JupyterUI:
         self.solutions = []
 
         # checkboxes is a dict of solution names to ipywidget.checkbox objects.
-        self.checkboxes = None
+        self.checkboxes = {}
 
         # ui_elements holds state for different parts of the UI which the user can manipulate
         self.ui_elements = {}
+        self.ui_elements['overview'] = ipywidgets.VBox()
+        self.ui_elements['topbar'] = self.get_topbar()
+        self.ui_elements['tabs'] = self.get_tabs()
+        self.ui_elements['ui'] = ipywidgets.VBox(children=[
+            self.ui_elements['topbar'],
+            self.ui_elements['tabs']
+            ])
+        self.render_empty_overview()
 
 
-    def _get_sector_for_solution(self, module_name):
-        row = self.all_solutions.loc[self.all_solutions['DirName'] == module_name]
-        if row.empty:
-            # remove prepended 'solution.solarpvutil'
-            mn = module_name.split('.')[-1]
-            row = self.all_solutions.loc[self.all_solutions['DirName'] == mn]
-        if row.empty:
-            return ''
-        return row.iloc[0]['Sector']
-
-
-    def get_overview(self):
-        """Returns overview
-
-           Where:
-             overview is an ipywidget to be displayed in Jupyter showing an overview
-               of available solutions, information about the solutions, and contains checkboxes
-               allowing specific solutions to be examined in more details.
-        """
-        solution_chart = ipywidgets.Output()
-        with solution_chart:
-            IPython.display.display({'application/vnd.vega.v4+json': ui.vega.solution_donut_chart(
-                solutions=self.all_solutions, width=400, height=400)}, raw=True)
-
-        soln_layout = ipywidgets.Layout(flex='12 1 0%', width='auto')
-        sctr_layout = ipywidgets.Layout(flex='8 1 0%', width='auto')
-        c2eq_layout = ipywidgets.Layout(flex='2 1 0%', width='auto')
-        cbox_layout = ipywidgets.Layout(flex='1 1 0%', width='auto')
-        cntr_layout = ipywidgets.Layout(display="flex", flex_flow="row",
-                align_items="stretch", width="100%")
-        white_row = '<div style="font-size:medium; background-color:white;padding-left:2px;">'
-        grey_row = '<div style="font-size:medium; background-color:#ececec;padding-left:2px;">'
-        hdr_row = '<div style="font-size:large;background-color:white;'
-        hdr_row += 'padding-left:2px;font-weight:bold;">'
-
-        checkboxes = {}
-        children = [ipywidgets.HBox([ipywidgets.HTML(f'{hdr_row}Solution</div>', layout=soln_layout),
-                                     ipywidgets.HTML(f'{hdr_row}Sector</div>', layout=sctr_layout),
-                                     ipywidgets.HTML(f'{hdr_row}CO2eq</div>', layout=c2eq_layout),
-                                     ipywidgets.HTML('<div></div>', layout=cbox_layout)],
-                                     layout=cntr_layout)]
-        style = white_row
-        for row in self.all_solutions.sort_values(['SectorCO2eq', 'CO2eq'],
-                ascending=False).fillna('').itertuples():
-            soln = ipywidgets.HTML(f'{style}{row.Solution}</div>', layout=soln_layout)
-            sctr = ipywidgets.HTML(f'{style}{row.Sector}</div>', layout=sctr_layout)
-            c2eq = ipywidgets.HTML(f'{style}{row.CO2eq:.02f}</div>', layout=c2eq_layout)
-            if row.DirName:
-                cbox = ipywidgets.Checkbox(layout=cbox_layout)
-                checkboxes[row.DirName] = cbox
-            else:
-                cbox = ipywidgets.HTML('<div></div>', layout=cbox_layout)
-            cbox.style.description_width = '0px'
-            children.append(ipywidgets.HBox([soln, sctr, c2eq, cbox], layout=cntr_layout))
-            style = grey_row if style == white_row else white_row
-        list_layout = ipywidgets.Layout(flex='5 1 0%', width='auto')
-        solution_list = ipywidgets.VBox(children=children, layout=list_layout)
-
-        solution_treemap = ipywidgets.Output()
-        with solution_treemap:
-            IPython.display.display({'application/vnd.vega.v4+json': ui.vega.solution_treemap(
-                solutions=self.all_solutions, width=400, height=800)}, raw=True)
-
-        chrt_layout = ipywidgets.Layout(flex='3 1 0%', width='auto')
-        charts = ipywidgets.VBox(children=[solution_chart, solution_treemap], layout=chrt_layout)
-        details_progressbar = ipywidgets.FloatProgress(value=0.0, min=0.0, max=1.0,
-                step=0.01, orientation='horizontal', layout=ipywidgets.Layout(width='99%'))
-        self.ui_elements['details_progressbar'] = details_progressbar
+    def get_topbar(self):
+        progressbar = ipywidgets.FloatProgress(value=0.0, min=0.0, max=1.0, step=0.01,
+                orientation='horizontal', layout=ipywidgets.Layout(width='99%'))
+        self.ui_elements['progressbar'] = progressbar
 
         save_button = ipywidgets.Button(description='Save', disabled=True,
                 tooltip='Save changes to model')
@@ -205,13 +157,120 @@ class JupyterUI:
         abandon_button.on_click(global_button_clicked)
         self.ui_elements['abandon_button'] = abandon_button
 
-        overview = ipywidgets.VBox(children=[
-            ipywidgets.HBox(children=[solution_list, charts], layout=cntr_layout),
-            ipywidgets.HBox(children=[details_progressbar, save_button, abandon_button])
-            ])
+        return ipywidgets.HBox(children = [progressbar, save_button, abandon_button])
+
+
+    def get_tabs(self):
+        tabs = ipywidgets.Tab()
+        tabs.children = [self.ui_elements['overview']]
+        tabs.set_title(0, 'Overview')
+        return tabs
+
+
+    def render_empty_overview(self):
+        overview = self.ui_elements['overview']
+        imagedata = open('data/images/loading.gif', 'rb').read()
+        overview.children = [ipywidgets.Image(value=imagedata, format='gif', width=220, height=19)]
+
+
+    def get_skeleton_ui(self):
+        """Return the progressbar and empty tabs, preparing to render the rest."""
+        return self.ui_elements['ui']
+
+
+    def _get_sector_for_solution(self, module_name):
+        row = self.all_solutions.loc[self.all_solutions['DirName'] == module_name]
+        if row.empty:
+            # remove prepended 'solution.solarpvutil'
+            mn = module_name.split('.')[-1]
+            row = self.all_solutions.loc[self.all_solutions['DirName'] == mn]
+        if row.empty:
+            return ''
+        return row.iloc[0]['Sector']
+
+
+    def _checkbox_observe(self, name, change):
+        """Observer when checkboxes in the solution list change."""
+        if change['value']:
+            # Uncheck any other selection
+            for _, cbox in self.checkboxes.items():
+                if cbox.value is not None and cbox.name != name:
+                    cbox.value = None
+            self.get_detailed_results_tabs()
+
+
+    def render_overview(self):
+        """Populates overview tab.
+
+           Where:
+             overview is an ipywidget to be displayed in Jupyter showing an overview
+               of available solutions, information about the solutions, and contains checkboxes
+               allowing specific solutions to be examined in more details.
+        """
+        total = 4.0
+        increment = 1.0 / total
+        progressbar = self.ui_elements['progressbar']
+        progressbar.value = increment
+
+        soln_layout = ipywidgets.Layout(flex='12 1 0%', width='auto')
+        sctr_layout = ipywidgets.Layout(flex='8 1 0%', width='auto')
+        c2eq_layout = ipywidgets.Layout(flex='2 1 0%', width='auto')
+        cbox_layout = ipywidgets.Layout(flex='1 1 0%', width='auto')
+        cntr_layout = ipywidgets.Layout(display="flex", flex_flow="row",
+                align_items="stretch", width="100%")
+        white_row = '<div style="font-size:medium; background-color:white;padding-left:2px;">'
+        grey_row = '<div style="font-size:medium; background-color:#ececec;padding-left:2px;">'
+        hdr_row = '<div style="font-size:large;background-color:white;'
+        hdr_row += 'padding-left:2px;font-weight:bold;">'
+
+        children = [ipywidgets.HBox([
+            ipywidgets.HTML(f'{hdr_row}Solution</div>', layout=soln_layout),
+            ipywidgets.HTML(f'{hdr_row}Sector</div>', layout=sctr_layout),
+            ipywidgets.HTML(f'{hdr_row}CO2eq</div>', layout=c2eq_layout),
+            ipywidgets.HTML('<div></div>', layout=cbox_layout)],
+            layout=cntr_layout)]
+
+        checkboxes = {}
+        style = white_row
+        for row in self.all_solutions.sort_values(['SectorCO2eq', 'CO2eq'],
+                ascending=False).fillna('').itertuples():
+            soln = ipywidgets.HTML(f'{style}{row.Solution}</div>', layout=soln_layout)
+            sctr = ipywidgets.HTML(f'{style}{row.Sector}</div>', layout=sctr_layout)
+            c2eq = ipywidgets.HTML(f'{style}{row.CO2eq:.02f}</div>', layout=c2eq_layout)
+            if row.DirName:
+                cbox = ipywidgets.RadioButtons(options=[''], layout=cbox_layout)
+                cbox.value = None
+                cbox.d = {'uiobj': self, 'name': 'checkbox:' + row.DirName}
+                cbox.observe(checkbox_observe, names='value')
+                checkboxes[row.DirName] = cbox
+            else:
+                cbox = ipywidgets.HTML('<div></div>', layout=cbox_layout)
+            cbox.style.description_width = '0px'
+            children.append(ipywidgets.HBox([soln, sctr, c2eq, cbox], layout=cntr_layout))
+            style = grey_row if style == white_row else white_row
+        list_layout = ipywidgets.Layout(flex='5 1 0%', width='auto')
+        solution_list = ipywidgets.VBox(children=children, layout=list_layout)
+        progressbar.value += increment
+
+        solution_chart = ipywidgets.Output()
+        with solution_chart:
+            IPython.display.display({'application/vnd.vega.v4+json': ui.vega.solution_donut_chart(
+                solutions=self.all_solutions, width=400, height=400)}, raw=True)
+        progressbar.value += increment
+
+        solution_treemap = ipywidgets.Output()
+        with solution_treemap:
+            IPython.display.display({'application/vnd.vega.v4+json': ui.vega.solution_treemap(
+                solutions=self.all_solutions, width=400, height=800)}, raw=True)
+
+        chrt_layout = ipywidgets.Layout(flex='3 1 0%', width='auto')
+        charts = ipywidgets.VBox(children=[solution_chart, solution_treemap], layout=chrt_layout)
+        progressbar.value += increment
 
         self.checkboxes = checkboxes
-        return overview
+        self.ui_elements['overview'].children = [ipywidgets.HBox(
+                children=[solution_list, charts], layout=cntr_layout)]
+        progressbar.value = 0.0
 
 
     def _get_summary_ua(self, solutions):
@@ -690,6 +749,9 @@ class JupyterUI:
            Arguments:
            solutions: a list of solution objects to be processed.
         """
+        detailed_results = ipywidgets.Output()
+        if not solutions:
+            return detailed_results
         key_results_label = self.blue_label('The Key Adoption Results')
         unit_adoption_heading = self._get_summary_ua(solutions)
         (adoption_heading, adoption_graphs) = self._get_summary_ad(solutions)
@@ -708,7 +770,6 @@ class JupyterUI:
         (protect_heading, protect_graphs) = self._get_summary_protection(solutions)
         has_protect_results = True if (protect_heading and protect_graphs) else False
 
-        detailed_results = ipywidgets.Output()
         with detailed_results:
             to_disp = [key_results_label, unit_adoption_heading, adoption_heading, adoption_graphs,
                     financial_results_label, financial_heading, cost_graphs, climate_results_label,
@@ -720,6 +781,264 @@ class JupyterUI:
             IPython.display.display(ipywidgets.VBox(to_disp))
 
         return detailed_results
+
+
+    def scn_edit_vma_var(self, scenarios, varname, vma, title, tooltip, subtitle):
+        """Render an editor box for a single VMA.
+           Arguments:
+             scenarios: a dict where the keys are scenario names, values are AdvancedControls objects
+             varname: variable name in AdvancedControls to edit, like 'conv_2014_cost'
+             vma: model.VMA object being edited
+             title: name of the VMA being edited
+             tooltip: tooltip to display with the title
+             subtitle: line to print under the title, typically includes the units of the value
+               being allocated like "MHa" or "US$2014/TWh"
+        """
+        mean = high = low = np.nan
+        total_sources = 0
+        use_weight = False
+        if vma:
+            (mean, high, low) = vma.avg_high_low()
+            total_sources = len(vma.df)
+            use_weight = vma.use_weight
+
+        ly_full = ipywidgets.Layout(width='auto', grid_area='full_row')
+        ly_labl = ipywidgets.Layout(width='20%')
+        ly_butn = ipywidgets.Layout(width='80%')
+        ly_drop = ipywidgets.Layout(width='95%', grid_area='full_row')
+
+        dd_styles = "<style>"
+        dd_styles += ".dd_vma_val input {background-color:#D0F0D0 !important;text-align:center;}"
+        dd_styles += ".dd_txt_center {text-align:center;}"
+        dd_styles += ".dd_vma_shadow {box-shadow:4px 4px 0px #20A020,8px 8px 0px #20A020;}"
+        dd_styles += "</style>"
+
+        values = {}
+        for sc in scenarios.values():
+            values[sc.name] = getattr(sc, varname)
+        value_list = list(values.values())
+        all_scenarios_equal = (value_list.count(value_list[0]) == len(value_list))
+        if all_scenarios_equal:
+            value = value_list[0]
+        else:
+            value = VALUE_DIFFERS
+
+        value_entry = ipywidgets.Text(value=f'{value}', continuous_update=False, layout=ly_butn)
+        value_entry.add_class('dd_vma_val')
+        value_entry.observe(vma_value_entry_observe, names='value')
+
+        options = [ALL_SCENARIOS] + list(scenarios.keys())
+        dropdown = ipywidgets.Dropdown(options=options, indent=False, layout=ly_drop)
+        dropdown.observe(dropdown_observe, names='value')
+
+        ui_element_name = solnname(list(scenarios.values())[0]) + ':' + varname
+        element_state = { 'scenarios': scenarios, 'vma': vma, 'varname': varname,
+                'value_entry': value_entry, 'dropdown': dropdown, 'values': values }
+        self.ui_elements[ui_element_name] = element_state
+        self._set_value_entry_shadows(state=element_state)
+        value_entry.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+        dropdown.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+
+        mean_button = ipywidgets.Button(description=f'{mean:.3f}', layout=ly_butn)
+        mean_button.value_name = MEAN_MAGIC
+        mean_button.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+        mean_button.on_click(vma_button_clicked)
+        high_button = ipywidgets.Button(description=f'{high:.3f}', layout=ly_butn)
+        high_button.value_name = HIGH_MAGIC
+        high_button.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+        high_button.on_click(vma_button_clicked)
+        low_button = ipywidgets.Button(description=f'{low:.3f}', layout=ly_butn)
+        low_button.value_name = LOW_MAGIC
+        low_button.d = {'uiobj': self, 'ui_element_name': ui_element_name}
+        low_button.on_click(vma_button_clicked)
+        if not vma:
+            mean_button.disabled = high_button.disabled = low_button.disabled = True
+        varname_text = ipywidgets.Text(value=varname, disabled=True, indent=False, layout=ly_full)
+        varname_text.add_class('dd_txt_center')
+
+        children = [
+            ipywidgets.HTML(dd_styles),
+            ipywidgets.Button(description=title, disabled=True, tooltip=tooltip, layout=ly_full),
+            ipywidgets.Button(description=subtitle, disabled=True, tooltip=tooltip, layout=ly_full),
+            varname_text,
+            dropdown,
+            ipywidgets.HBox([ipywidgets.Label('Value', layout=ly_labl), value_entry], layout=ly_full),
+            ipywidgets.HBox([ipywidgets.Label('Mean', layout=ly_labl), mean_button], layout=ly_full),
+            ipywidgets.HBox([ipywidgets.Label('High', layout=ly_labl), high_button], layout=ly_full),
+            ipywidgets.HBox([ipywidgets.Label('Low', layout=ly_labl), low_button], layout=ly_full),
+            ipywidgets.HBox([ipywidgets.Label('Weighted Average?',
+                layout=ipywidgets.Layout(width='auto')),
+                ipywidgets.Checkbox(value=use_weight, indent=False,
+                    layout=ipywidgets.Layout(width='auto'))], layout=ly_full),
+            ipywidgets.Label(f'Total Sources: {total_sources}',layout=ly_full),
+        ]
+        box = ipywidgets.VBox(children=children, layout=ipywidgets.Layout(width='250px',
+                grid_template_rows='auto auto auto auto', grid_template_columns='100%',
+                grid_template_areas='"full_row"'))
+        dropdown.box = box
+        return box
+
+
+    def _set_value_entry_shadows(self, state):
+        """Set drop-shadow on a VMA entry widget where scenarios have different values."""
+        value_entry = state['value_entry']
+        values = list(state['values'].values())
+        all_scenarios_equal = (values.count(values[0]) == len(values))
+
+        if all_scenarios_equal:
+            value_entry.remove_class('dd_vma_shadow')
+        else:
+            value_entry.add_class('dd_vma_shadow')
+
+        return all_scenarios_equal
+
+
+    def _vma_button_clicked(self, ui_element_name, value_name):
+        """Called when the Mean/High/Low buttons are clicked."""
+        state = self.ui_elements[ui_element_name]
+        state['value_entry'].value = value_name
+
+
+    def _vma_value_entry_observe(self, ui_element_name, change):
+        """Observer callback for when text is added to value_entry widget.
+
+           Arguments:
+             change: the observer callback information.
+        """
+        value = change['new']
+        if value == VALUE_DIFFERS:
+            return
+        state = self.ui_elements[ui_element_name]
+        values = state['values']
+        selection = state['dropdown'].value
+        if selection == ALL_SCENARIOS:
+            for scenario in values.keys():
+                values[scenario] = value
+        else:
+            values[selection] = value
+        self._set_value_entry_shadows(state)
+
+
+    def _dropdown_observe(self, ui_element_name, change):
+        """Observer callback for dropdown selection changes.
+
+           When the selected scenario changes we need to:
+              1. update the value displayed in the value_entry text input.
+              2. Determine if all scenarios have the same value or not, and if not then
+                 add the drop-shadow decoration to this editing box to show the user there
+                 are multiple values.
+
+           Arguments:
+             ui_element_name: string key to look up element_state in self.ui_elements
+             change: the observer callback information.
+        """
+        scenario = change['new']
+        state = self.ui_elements[ui_element_name]
+        values = state['values']
+
+        all_scenarios_equal = self._set_value_entry_shadows(state)
+        if scenario == ALL_SCENARIOS:
+            if all_scenarios_equal:
+                new_value = list(values.values())[0]
+            else:
+                new_value = VALUE_DIFFERS
+        else:
+            new_value = values[scenario]
+
+        value_entry = state['value_entry']
+        state['value_entry'].value = str(new_value)
+
+
+    def _get_editor_for_var(self, c, varname):
+        fields = dataclasses.fields(list(c.scenarios.values())[0])
+
+        for field in fields:
+            if field.name != varname:
+                continue
+            vma = None
+            for vma_name in field.metadata.get('vma_titles', []):
+                if vma_name in c.VMAs:
+                    vma = c.VMAs[vma_name]
+            return self.scn_edit_vma_var(scenarios=c.scenarios, vma=vma, varname=varname,
+                    title=vma_name, tooltip=field.metadata.get('tooltip', ''),
+                    subtitle=field.metadata.get('subtitle', ''))
+        return None
+
+
+    edit_ui_layout_land = [
+        ('separator', 'Financial'),
+        ('editor', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit',
+            'yield_from_conv_practice', ]),
+        ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit',
+            'yield_gain_from_conv_to_soln', ]),
+        ('separator', 'Electricity Grid based Emissions'),
+        ('editor', ['conv_annual_energy_used', 'soln_energy_efficiency_factor',
+            'soln_annual_energy_used', ]),
+        ('separator', 'Non-Electricity Fuel Combustion-based Emissions'),
+        ('editor', ['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor',]),
+        ('separator', 'Direct Emissions (excl. electricity- or fuel-based)'),
+        ('editor', ['tco2eq_reduced_per_land_unit', 'tco2_reduced_per_land_unit',
+            'tn2o_co2_reduced_per_land_unit', 'tch4_co2_reduced_per_land_unit']),
+        ('separator', 'CARBON SEQUESTRATION AND LAND INPUTS'),
+        ('editor', ['seq_rate_global', 'carbon_not_emitted_after_harvesting', 'disturbance_rate', ]),
+    ]
+
+    edit_ui_layout_ocean = [
+        ('separator', 'Financial'),
+        ('editor', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit', ]),
+        ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit', ]),
+    ]
+
+    edit_ui_layout_rrs = [
+        ('separator', 'Financial'),
+        ('editor', ['conv_2014_cost', 'conv_lifetime_capacity', 'conv_avg_annual_use',
+            'conv_var_oper_cost_per_funit', 'conv_fixed_oper_cost_per_iunit', ]),
+        ('editor', ['pds_2014_cost', 'soln_lifetime_capacity', 'soln_avg_annual_use',
+            'soln_var_oper_cost_per_funit', 'soln_fixed_oper_cost_per_iunit', ]),
+        ('separator', 'Emissions'),
+        ('editor', ['conv_annual_energy_used', 'soln_energy_efficiency_factor',
+            'soln_annual_energy_used', 'conv_fuel_consumed_per_funit',
+            'soln_fuel_efficiency_factor',]),
+        ('separator', 'Annual Direct Emissions (excl. electricity- or fuel-based)'),
+        ('editor', ['conv_emissions_per_funit', 'soln_emissions_per_funit',]),
+        ('separator', 'Indirect Emissions (CO2-eq)'),
+        ('editor', ['conv_indirect_co2_per_unit', 'soln_indirect_co2_per_iunit',]),
+        ('separator', 'Optional Emissions Factors'),
+        ('editor', ['ch4_co2_per_funit', 'n2o_co2_per_funit',]),
+    ]
+
+
+    def get_scenario_editor_for_solution(self, soln_mod):
+        """Return Scenario Editor for a given solution.
+
+           Arguments:
+              soln_mod: a module for a particular solution, like solution.solarpvutil
+        """
+        first_scenario = list(soln_mod.scenarios.keys())[0]
+        solution_category = soln_mod.scenarios[first_scenario].solution_category
+        edit_ui_layout = []
+        if solution_category == ac.SOLUTION_CATEGORY.LAND:
+            edit_ui_layout = self.edit_ui_layout_land
+        elif solution_category == ac.SOLUTION_CATEGORY.OCEAN:
+            edit_ui_layout = self.edit_ui_layout_ocean
+        else:
+            edit_ui_layout = self.edit_ui_layout_rrs
+
+        children = []
+        for (row_type, row) in edit_ui_layout:
+            if row_type == 'separator':
+                div = '<div style="background-color:LightSkyBlue;border:1px solid black;'
+                div += 'font-weight:bold;text-align:center;font-size:0.875em;">'
+                label = ipywidgets.HTML(value=f"{div}{row}</div>")
+                children.append(label)
+            elif row_type == 'editor':
+                row_children = []
+                for varname in row:
+                    row_children.append(self._get_editor_for_var(soln_mod, varname))
+                children.append(ipywidgets.HBox(row_children))
+                children.append(ipywidgets.HTML(value='<div>&nbsp;</div>'))
+
+        return ipywidgets.VBox(children=children)
 
 
     def get_model_tab(self, solutions):
@@ -1267,39 +1586,61 @@ class JupyterUI:
         return dez_data
 
 
+    def get_solutions_from_checkboxes(self):
+        """Iterate through a dict of checkboxes, return objects for all selected solutions."""
+        constructors = []
+        for soln, cbox in self.checkboxes.items():
+            if cbox.value is not None:
+                constructor, scenarios = solution.factory.one_solution_scenarios(soln)
+                for scenario in scenarios:
+                    constructors.append((constructor, scenario))
+
+        total = float(len(constructors) + 2)
+        increment = 1.0 / total
+        progressbar = self.ui_elements['progressbar']
+
+        solutions = []
+        for (constructor, scenario) in constructors:
+            solutions.append(constructor(scenario))
+            progressbar.value += increment
+
+        return solutions
+
+
     def get_detailed_results_tabs(self):
         """Return tab bar of detailed results for a set of solutions."""
-        details_progressbar = self.ui_elements['details_progressbar']
-        details_progressbar.value = 0.0
+        progressbar = self.ui_elements['progressbar']
+        progressbar.value = 0.0
         solutions = self.get_solutions_from_checkboxes()
         self.solutions = solutions
 
-        remaining = 1.0 - details_progressbar.value
+        remaining = 1.0 - progressbar.value
         increment = remaining / 10.0
         summary = self.get_summary_tab(solutions)
-        details_progressbar.value += increment
+        progressbar.value += increment
         model_overview = self.get_model_tab(solutions)
-        details_progressbar.value += increment
+        progressbar.value += increment
         variable_meta_analysis = self.get_VMA_tab(solutions)
-        details_progressbar.value += increment
+        progressbar.value += increment
         first_cost = self.get_first_cost_tab(solutions)
-        details_progressbar.value += increment
+        progressbar.value += increment
         operating_cost = self.get_operating_cost_tab(solutions)
-        details_progressbar.value += increment
+        progressbar.value += increment
         adoption_data = self.get_adoption_data_tab(solutions)
-        details_progressbar.value += increment
+        progressbar.value += increment
         tam_data = self.get_tam_data_tab(solutions)
-        details_progressbar.value += increment
+        progressbar.value += increment
         co2_calcs = self.get_co2_calcs_tab(solutions)
-        details_progressbar.value += increment
+        progressbar.value += increment
         aez_data = self.get_aez_data_tab(solutions)
-        details_progressbar.value += increment
+        progressbar.value += increment
         dez_data = self.get_dez_data_tab(solutions)
-        details_progressbar.value = 1.0
+        progressbar.value = 1.0
 
         # ------------------ Create tabs -----------------
-        children = [summary, model_overview, variable_meta_analysis, adoption_data]
-        titles = ["Summary", "Model", "Variable Meta-Analysis", "Adoption Data"]
+        overview = self.ui_elements['overview']
+        children = [overview, summary, model_overview, variable_meta_analysis, adoption_data]
+        titles = ["Overview", "Summary", "Model", "Variable Meta-Analysis", "Adoption Data"]
         if tam_data:
             children.append(tam_data)
             titles.append('TAM Data')
@@ -1312,294 +1653,8 @@ class JupyterUI:
         children.extend([first_cost, operating_cost, co2_calcs])
         titles.extend(["First Cost", "Operating Cost", "CO2"])
 
-        tabs = ipywidgets.Tab(children=children)
+        tabs = self.ui_elements['tabs']
+        tabs.children = children
         for (idx, title) in enumerate(titles):
             tabs.set_title(idx, title)
-        details_progressbar.value = 0.0
-        return tabs
-
-
-    def get_solutions_from_checkboxes(self):
-        """Iterate through a dict of checkboxes, return objects for all selected solutions."""
-        all_solutions_scenarios = solution.factory.all_solutions_scenarios()
-        constructors = []
-        for soln, cbox in self.checkboxes.items():
-            if cbox.value:
-                constructor, scenarios = all_solutions_scenarios[soln]
-                for scenario in scenarios:
-                    constructors.append((constructor, scenario))
-
-        if not constructors:
-            soln = 'forestprotection'
-            constructor, scenarios = all_solutions_scenarios[soln]
-            for scenario in scenarios:
-                constructors.append((constructor, scenario))
-
-        total = float(len(constructors) + 2)
-        increment = 1.0 / total
-        details_progressbar = self.ui_elements['details_progressbar']
-
-        solutions = []
-        for (constructor, scenario) in constructors:
-            solutions.append(constructor(scenario))
-            details_progressbar.value += increment
-
-        return solutions
-
-
-    def scn_edit_vma_var(self, scenarios, varname, vma, title, tooltip, subtitle):
-        """Render an editor box for a single VMA.
-           Arguments:
-             scenarios: a dict where the keys are scenario names, values are AdvancedControls objects
-             varname: variable name in AdvancedControls to edit, like 'conv_2014_cost'
-             vma: model.VMA object being edited
-             title: name of the VMA being edited
-             tooltip: tooltip to display with the title
-             subtitle: line to print under the title, typically includes the units of the value
-               being allocated like "MHa" or "US$2014/TWh"
-        """
-        mean = high = low = np.nan
-        total_sources = 0
-        use_weight = False
-        if vma:
-            (mean, high, low) = vma.avg_high_low()
-            total_sources = len(vma.df)
-            use_weight = vma.use_weight
-
-        ly_full = ipywidgets.Layout(width='auto', grid_area='full_row')
-        ly_labl = ipywidgets.Layout(width='20%')
-        ly_butn = ipywidgets.Layout(width='80%')
-        ly_drop = ipywidgets.Layout(width='95%', grid_area='full_row')
-
-        dd_styles = "<style>"
-        dd_styles += ".dd_vma_val input {background-color:#D0F0D0 !important;text-align:center;}"
-        dd_styles += ".dd_txt_center {text-align:center;}"
-        dd_styles += ".dd_vma_shadow {box-shadow:4px 4px 0px #20A020,8px 8px 0px #20A020;}"
-        dd_styles += "</style>"
-
-        values = {}
-        for sc in scenarios.values():
-            values[sc.name] = getattr(sc, varname)
-        value_list = list(values.values())
-        all_scenarios_equal = (value_list.count(value_list[0]) == len(value_list))
-        if all_scenarios_equal:
-            value = value_list[0]
-        else:
-            value = VALUE_DIFFERS
-
-        value_entry = ipywidgets.Text(value=f'{value}', continuous_update=False, layout=ly_butn)
-        value_entry.add_class('dd_vma_val')
-        value_entry.observe(vma_value_entry_observe, names='value')
-
-        options = [ALL_SCENARIOS] + list(scenarios.keys())
-        dropdown = ipywidgets.Dropdown(options=options, indent=False, layout=ly_drop)
-        dropdown.observe(dropdown_observe, names='value')
-
-        ui_element_name = solnname(list(scenarios.values())[0]) + ':' + varname
-        element_state = { 'scenarios': scenarios, 'vma': vma, 'varname': varname,
-                'value_entry': value_entry, 'dropdown': dropdown, 'values': values }
-        self.ui_elements[ui_element_name] = element_state
-        self._set_value_entry_shadows(state=element_state)
-        value_entry.d = {'uiobj': self, 'ui_element_name': ui_element_name}
-        dropdown.d = {'uiobj': self, 'ui_element_name': ui_element_name}
-
-        mean_button = ipywidgets.Button(description=f'{mean:.3f}', layout=ly_butn)
-        mean_button.value_name = MEAN_MAGIC
-        mean_button.d = {'uiobj': self, 'ui_element_name': ui_element_name}
-        mean_button.on_click(vma_button_clicked)
-        high_button = ipywidgets.Button(description=f'{high:.3f}', layout=ly_butn)
-        high_button.value_name = HIGH_MAGIC
-        high_button.d = {'uiobj': self, 'ui_element_name': ui_element_name}
-        high_button.on_click(vma_button_clicked)
-        low_button = ipywidgets.Button(description=f'{low:.3f}', layout=ly_butn)
-        low_button.value_name = LOW_MAGIC
-        low_button.d = {'uiobj': self, 'ui_element_name': ui_element_name}
-        low_button.on_click(vma_button_clicked)
-        if not vma:
-            mean_button.disabled = high_button.disabled = low_button.disabled = True
-        varname_text = ipywidgets.Text(value=varname, disabled=True, indent=False, layout=ly_full)
-        varname_text.add_class('dd_txt_center')
-
-        children = [
-            ipywidgets.HTML(dd_styles),
-            ipywidgets.Button(description=title, disabled=True, tooltip=tooltip, layout=ly_full),
-            ipywidgets.Button(description=subtitle, disabled=True, tooltip=tooltip, layout=ly_full),
-            varname_text,
-            dropdown,
-            ipywidgets.HBox([ipywidgets.Label('Value', layout=ly_labl), value_entry], layout=ly_full),
-            ipywidgets.HBox([ipywidgets.Label('Mean', layout=ly_labl), mean_button], layout=ly_full),
-            ipywidgets.HBox([ipywidgets.Label('High', layout=ly_labl), high_button], layout=ly_full),
-            ipywidgets.HBox([ipywidgets.Label('Low', layout=ly_labl), low_button], layout=ly_full),
-            ipywidgets.HBox([ipywidgets.Label('Weighted Average?',
-                layout=ipywidgets.Layout(width='auto')),
-                ipywidgets.Checkbox(value=use_weight, indent=False,
-                    layout=ipywidgets.Layout(width='auto'))], layout=ly_full),
-            ipywidgets.Label(f'Total Sources: {total_sources}',layout=ly_full),
-        ]
-        box = ipywidgets.VBox(children=children, layout=ipywidgets.Layout(width='250px',
-                grid_template_rows='auto auto auto auto', grid_template_columns='100%',
-                grid_template_areas='"full_row"'))
-        dropdown.box = box
-        return box
-
-
-    def _set_value_entry_shadows(self, state):
-        """Set drop-shadow on a VMA entry widget where scenarios have different values."""
-        value_entry = state['value_entry']
-        values = list(state['values'].values())
-        all_scenarios_equal = (values.count(values[0]) == len(values))
-
-        if all_scenarios_equal:
-            value_entry.remove_class('dd_vma_shadow')
-        else:
-            value_entry.add_class('dd_vma_shadow')
-
-        return all_scenarios_equal
-
-
-    def _vma_button_clicked(self, ui_element_name, value_name):
-        """Called when the Mean/High/Low buttons are clicked."""
-        state = self.ui_elements[ui_element_name]
-        state['value_entry'].value = value_name
-
-
-    def _vma_value_entry_observe(self, ui_element_name, change):
-        """Observer callback for when text is added to value_entry widget.
-
-           Arguments:
-             change: the observer callback information.
-        """
-        value = change['new']
-        if value == VALUE_DIFFERS:
-            return
-        state = self.ui_elements[ui_element_name]
-        values = state['values']
-        selection = state['dropdown'].value
-        if selection == ALL_SCENARIOS:
-            for scenario in values.keys():
-                values[scenario] = value
-        else:
-            values[selection] = value
-        self._set_value_entry_shadows(state)
-
-
-    def _dropdown_observe(self, ui_element_name, change):
-        """Observer callback for dropdown selection changes.
-
-           When the selected scenario changes we need to:
-              1. update the value displayed in the value_entry text input.
-              2. Determine if all scenarios have the same value or not, and if not then
-                 add the drop-shadow decoration to this editing box to show the user there
-                 are multiple values.
-
-           Arguments:
-             ui_element_name: string key to look up element_state in self.ui_elements
-             change: the observer callback information.
-        """
-        scenario = change['new']
-        state = self.ui_elements[ui_element_name]
-        values = state['values']
-
-        all_scenarios_equal = self._set_value_entry_shadows(state)
-        if scenario == ALL_SCENARIOS:
-            if all_scenarios_equal:
-                new_value = list(values.values())[0]
-            else:
-                new_value = VALUE_DIFFERS
-        else:
-            new_value = values[scenario]
-
-        value_entry = state['value_entry']
-        state['value_entry'].value = str(new_value)
-
-
-    def _get_editor_for_var(self, c, varname):
-        fields = dataclasses.fields(list(c.scenarios.values())[0])
-
-        for field in fields:
-            if field.name != varname:
-                continue
-            vma = None
-            for vma_name in field.metadata.get('vma_titles', []):
-                if vma_name in c.VMAs:
-                    vma = c.VMAs[vma_name]
-            return self.scn_edit_vma_var(scenarios=c.scenarios, vma=vma, varname=varname,
-                    title=vma_name, tooltip=field.metadata.get('tooltip', ''),
-                    subtitle=field.metadata.get('subtitle', ''))
-        return None
-
-
-    edit_ui_layout_land = [
-        ('separator', 'Financial'),
-        ('editor', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit',
-            'yield_from_conv_practice', ]),
-        ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit',
-            'yield_gain_from_conv_to_soln', ]),
-        ('separator', 'Electricity Grid based Emissions'),
-        ('editor', ['conv_annual_energy_used', 'soln_energy_efficiency_factor',
-            'soln_annual_energy_used', ]),
-        ('separator', 'Non-Electricity Fuel Combustion-based Emissions'),
-        ('editor', ['conv_fuel_consumed_per_funit', 'soln_fuel_efficiency_factor',]),
-        ('separator', 'Direct Emissions (excl. electricity- or fuel-based)'),
-        ('editor', ['tco2eq_reduced_per_land_unit', 'tco2_reduced_per_land_unit',
-            'tn2o_co2_reduced_per_land_unit', 'tch4_co2_reduced_per_land_unit']),
-        ('separator', 'CARBON SEQUESTRATION AND LAND INPUTS'),
-        ('editor', ['seq_rate_global', 'carbon_not_emitted_after_harvesting', 'disturbance_rate', ]),
-    ]
-
-    edit_ui_layout_ocean = [
-        ('separator', 'Financial'),
-        ('editor', ['conv_2014_cost', 'conv_fixed_oper_cost_per_iunit', ]),
-        ('editor', ['pds_2014_cost', 'soln_fixed_oper_cost_per_iunit', ]),
-    ]
-
-    edit_ui_layout_rrs = [
-        ('separator', 'Financial'),
-        ('editor', ['conv_2014_cost', 'conv_lifetime_capacity', 'conv_avg_annual_use',
-            'conv_var_oper_cost_per_funit', 'conv_fixed_oper_cost_per_iunit', ]),
-        ('editor', ['pds_2014_cost', 'soln_lifetime_capacity', 'soln_avg_annual_use',
-            'soln_var_oper_cost_per_funit', 'soln_fixed_oper_cost_per_iunit', ]),
-        ('separator', 'Emissions'),
-        ('editor', ['conv_annual_energy_used', 'soln_energy_efficiency_factor',
-            'soln_annual_energy_used', 'conv_fuel_consumed_per_funit',
-            'soln_fuel_efficiency_factor',]),
-        ('separator', 'Annual Direct Emissions (excl. electricity- or fuel-based)'),
-        ('editor', ['conv_emissions_per_funit', 'soln_emissions_per_funit',]),
-        ('separator', 'Indirect Emissions (CO2-eq)'),
-        ('editor', ['conv_indirect_co2_per_unit', 'soln_indirect_co2_per_iunit',]),
-        ('separator', 'Optional Emissions Factors'),
-        ('editor', ['ch4_co2_per_funit', 'n2o_co2_per_funit',]),
-    ]
-
-
-    def get_scenario_editor_for_solution(self, soln_mod):
-        """Return Scenario Editor for a given solution.
-
-           Arguments:
-              soln_mod: a module for a particular solution, like solution.solarpvutil
-        """
-        first_scenario = list(soln_mod.scenarios.keys())[0]
-        solution_category = soln_mod.scenarios[first_scenario].solution_category
-        edit_ui_layout = []
-        if solution_category == ac.SOLUTION_CATEGORY.LAND:
-            edit_ui_layout = self.edit_ui_layout_land
-        elif solution_category == ac.SOLUTION_CATEGORY.OCEAN:
-            edit_ui_layout = self.edit_ui_layout_ocean
-        else:
-            edit_ui_layout = self.edit_ui_layout_rrs
-
-        children = []
-        for (row_type, row) in edit_ui_layout:
-            if row_type == 'separator':
-                div = '<div style="background-color:LightSkyBlue;border:1px solid black;'
-                div += 'font-weight:bold;text-align:center;font-size:0.875em;">'
-                label = ipywidgets.HTML(value=f"{div}{row}</div>")
-                children.append(label)
-            elif row_type == 'editor':
-                row_children = []
-                for varname in row:
-                    row_children.append(self._get_editor_for_var(soln_mod, varname))
-                children.append(ipywidgets.HBox(row_children))
-                children.append(ipywidgets.HTML(value='<div>&nbsp;</div>'))
-
-        return ipywidgets.VBox(children=children)
+        progressbar.value = 0.0
