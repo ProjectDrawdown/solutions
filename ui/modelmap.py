@@ -48,7 +48,12 @@ def get_model_overview_svg(model, highlights=None, width=None):
     if width is not None:
         resize(tree, width)
 
-    return ET.tostring(tree.getroot(), encoding='utf8', method='xml')
+    # Jupyter Notebook display(SVG()) does not tolerate explicit namespaces on the SVG tags.
+    # Jupyterlab does, but we support use of the Notebook for https://github.com/QuantStack/voila
+    # Remove the ns0: namespace prefixes and emit a default namespace.
+    tree.getroot().attrib['xmlns'] = 'http://www.w3.org/2000/svg'
+    s = ET.tostring(tree.getroot(), encoding='utf8', method='xml')
+    return s.replace(b'ns0:', b'')
 
 
 def delete_module(tree, name):
