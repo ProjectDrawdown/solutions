@@ -78,7 +78,7 @@ scenarios = {
 }
 
 
-class LimitingBottomTrawling:
+class Scenario:
     name = 'Limiting bottom trawling'
     units = {
         "implementation unit": None,

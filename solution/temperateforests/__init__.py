@@ -41,7 +41,7 @@ solution_category = ac.SOLUTION_CATEGORY.LAND
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
 
-class TemperateForests:
+class Scenario:
   name = name
   units = units
   vmas = VMAs

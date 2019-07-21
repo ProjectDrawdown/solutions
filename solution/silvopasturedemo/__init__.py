@@ -99,7 +99,7 @@ scenarios = {
   'regional': advanced_controls.AdvancedControls(**regional_kwargs),
 }
 
-class SilvopastureDemo:
+class Scenario:
   name = 'Silvopasture'
   units = {
     "implementation unit": None,

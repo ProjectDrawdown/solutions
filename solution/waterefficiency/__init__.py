@@ -40,7 +40,7 @@ solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
 
-class WaterEfficiencyMeasures:
+class Scenario:
   name = name
   units = units
   vmas = VMAs

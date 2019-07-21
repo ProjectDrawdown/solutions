@@ -1450,14 +1450,13 @@ def find_RRS_solution_category(wb):
     return None
 
 
-def output_solution_python_file(outputdir, xl_filename, classname):
+def output_solution_python_file(outputdir, xl_filename):
     """Extract relevant fields from Excel file and output a Python class.
 
        Arguments:
          outputdir: filename to write to. None means stdout.
          xl_filename: an Excel file to open, can be xls/xlsm/etc.
            Note that we cannot run Macros from xlsm files, only read values.
-         classname: what name to give to the generated Python class.
     """
     py_filename = '-' if outputdir is None else os.path.join(outputdir, '__init__.py')
     wb = xlrd.open_workbook(filename=xl_filename)
@@ -1557,7 +1556,7 @@ def output_solution_python_file(outputdir, xl_filename, classname):
         "directory=THISDIR.joinpath('ac'), vmas=VMAs)\n")
     f.write("\n\n")
 
-    f.write("class " + str(classname) + ":\n")
+    f.write("class Scenario:\n")
     f.write("  name = name\n")
     f.write("  units = units\n")
     f.write("  vmas = VMAs\n")
@@ -1659,57 +1658,6 @@ def output_solution_python_file(outputdir, xl_filename, classname):
     f.close()
 
 
-def infer_classname(filename):
-    """Pick a reasonable classname if none is specified."""
-    special_cases = [
-        ('Aircraft Fuel Efficiency', 'Airplanes'),
-        ('BiomassELC', 'Biomass'),
-        ('Biomass from Perennial Crops for Electricity Generation', 'Biomass'),
-        ('Bioplastics', 'Bioplastic'),
-        ('Car Fuel Efficiency', 'Cars'),
-        ('Cement', 'AlternativeCement'),
-        ('CHP_A_', 'CoGenElectricity'),
-        ('CHP_B_', 'CoGenHeat'),
-        ('CSP_', 'ConcentratedSolar'),
-        ('High Efficient Heat Pumps', 'HeatPumps'),
-        ('Household & Commercial Recycling', 'Recycling'),
-        ('IP Forest Management', 'IndigenousPeoplesLand'),
-        ('Increasing Distribution Efficiency in WDSs', 'WaterDistribution'),
-        ('Instream Hydro', 'InstreamHydro'),
-        ('Landfill Methane', 'LandfillMethane'),
-        ('Large Biodigesters', 'Biogas'),
-        ('MicroWind Turbines', 'MicroWind'),
-        ('Oceanic Freight Improvements', 'Ships'),
-        ('Peatland Protection', 'Peatlands'),
-        ('Perennial Bioenergy Crops', 'PerennialBioenergy'),
-        ('Regenerative_Agriculture', 'RegenerativeAgriculture'),
-        ('Renewable District Heating', 'DistrictHeating'),
-        ('Rooftop Solar PV', 'SolarPVRoof'),
-        ('Small Biogas Digesters', 'BiogasSmall'),
-        ('Smallholder Intensification', 'WomenSmallholders'),
-        ('SolarPVUtility', 'SolarPVUtil'),
-        ('SolarPVRooftop', 'SolarPVRoof'),
-        ('solution_xls_extract_RRS_test_A', 'TestClassA'),
-        ('SRI', 'RiceIntensification'),
-        ('Temperate Forest Restoration', 'TemperateForests'),
-        ('Tropical Forest Restoration', 'TropicalForests'),
-        ('Truck Fuel Efficiency', 'Trucks'),
-        ('Utility Scale Solar PV', 'SolarPVUtil'),
-        ('Videoconferencing and Telepresence', 'Telepresence'),
-        ('WastetoEnergy', 'WasteToEnergy'),
-        ('Wave&Tidal', 'WaveAndTidal'),
-        ('Wave and Tidal', 'WaveAndTidal'),
-        ('Wind Offshore', 'OffshoreWind'),
-    ]
-    for (pattern, classname) in special_cases:
-        if pattern.replace(' ', '').lower() in filename.replace(' ', '').lower():
-            return classname
-    namelist = re.split('[(_-]', os.path.basename(filename))
-    if namelist[0] == 'Drawdown':
-        namelist.pop(0)
-    return namelist[0].replace(' ', '')
-
-
 def link_vma(tab, row, col):
     """
     Certain AdvancedControls inputs are linked to the mean, high or low value of their
@@ -1748,7 +1696,6 @@ if __name__ == "__main__":
     parser.add_argument('--excelfile', help='Excel filename to process')
     parser.add_argument('--outputdir', default=None, required=True,
                         help='Directory to write generated Python code to')
-    parser.add_argument('--classname', help='Name for Python class')
     args = parser.parse_args(sys.argv[1:])
     outputdirpath = pathlib.Path(args.outputdir)
 
@@ -1758,8 +1705,4 @@ if __name__ == "__main__":
             args.excelfile = files[0]
             print(f'Using excelfile: {str(args.excelfile)}')
 
-    if args.classname is None:
-        args.classname = infer_classname(filename=args.excelfile)
-
-    output_solution_python_file(outputdir=outputdirpath, xl_filename=args.excelfile,
-                                classname=args.classname)
+    output_solution_python_file(outputdir=outputdirpath, xl_filename=args.excelfile)
