@@ -216,10 +216,6 @@ class JupyterUI:
 
     def _checkbox_observe(self, name, change):
         """Observer when checkboxes in the solution list change."""
-        # Uncheck any other selection
-        #for _, cbox in self.checkboxes.items():
-        #    if cbox.value is not None and cbox.name != name:
-        #        cbox.value = None
         self.get_detailed_results_tabs()
 
 
@@ -262,8 +258,7 @@ class JupyterUI:
             sctr = ipywidgets.HTML(f'{style}{row.Sector}</div>', layout=sctr_layout)
             c2eq = ipywidgets.HTML(f'{style}{row.CO2eq:.02f}</div>', layout=c2eq_layout)
             if row.DirName:
-                cbox = ipywidgets.RadioButtons(options=[''], layout=cbox_layout)
-                cbox.value = None
+                cbox = ipywidgets.Checkbox(value=False, layout=cbox_layout)
                 cbox.d = {'uiobj': self, 'name': 'checkbox:' + row.DirName}
                 cbox.observe(checkbox_observe, names='value')
                 checkboxes[row.DirName] = cbox
@@ -1612,7 +1607,7 @@ class JupyterUI:
         """Iterate through a dict of checkboxes, return objects for all selected solutions."""
         constructors = []
         for soln, cbox in self.checkboxes.items():
-            if cbox.value is not None:
+            if cbox.value:
                 constructor, scenarios = solution.factory.one_solution_scenarios(soln)
                 for scenario in scenarios:
                     constructors.append((constructor, scenario))
