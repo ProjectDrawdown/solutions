@@ -16,6 +16,14 @@ import numpy as np
 import pandas as pd
 import qgrid
 
+try:
+    import vega.widget
+    # assume Jupyter notebook
+    is_jupyterlab = False
+except ImportError as e:
+    # assume Jupyterlab
+    is_jupyterlab = True
+
 from model import advanced_controls as ac
 from model.co2calcs import C_TO_CO2EQ
 
@@ -102,12 +110,29 @@ def checkbox_observe(change):
     uiobj._checkbox_observe(name, change)
 
 
+def vega_widget(data):
+    """Return an ipywidget to display the Vega description held in data.
+
+       Arguments:
+        data: a dict() containing a Vega description.
+    """
+    if is_jupyterlab:
+        out = ipywidgets.Output()
+        with out:
+            IPython.display.display({'application/vnd.vega.v4+json': data}, raw=True)
+        return out
+    else:
+        return vega.widget.VegaWidget(data)
+
+
 class JupyterUI:
     """Jupyter notebook UI for Drawdown solutions."""
     def __init__(self, mutable=True):
         self.mutable = mutable
         pd.set_option('display.max_columns', 200)
         pd.set_option('display.max_rows', 200)
+        if not is_jupyterlab:
+            alt.renderers.enable('notebook')
         qgrid.on(names=['cell_edited', 'row_added', 'row_removed'], handler=vma_qgrid_modified)
         all_solutions = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'),
                                             index_col=False, skipinitialspace=True, header=0,
@@ -191,12 +216,11 @@ class JupyterUI:
 
     def _checkbox_observe(self, name, change):
         """Observer when checkboxes in the solution list change."""
-        if change['value']:
-            # Uncheck any other selection
-            for _, cbox in self.checkboxes.items():
-                if cbox.value is not None and cbox.name != name:
-                    cbox.value = None
-            self.get_detailed_results_tabs()
+        # Uncheck any other selection
+        #for _, cbox in self.checkboxes.items():
+        #    if cbox.value is not None and cbox.name != name:
+        #        cbox.value = None
+        self.get_detailed_results_tabs()
 
 
     def render_overview(self):
@@ -252,17 +276,12 @@ class JupyterUI:
         solution_list = ipywidgets.VBox(children=children, layout=list_layout)
         progressbar.value += increment
 
-        solution_chart = ipywidgets.Output()
-        with solution_chart:
-            IPython.display.display({'application/vnd.vega.v4+json': ui.vega.solution_donut_chart(
-                solutions=self.all_solutions, width=400, height=400)}, raw=True)
+        solution_chart = vega_widget(ui.vega.solution_donut_chart(
+            solutions=self.all_solutions, width=400, height=400))
         progressbar.value += increment
 
-        solution_treemap = ipywidgets.Output()
-        with solution_treemap:
-            IPython.display.display({'application/vnd.vega.v4+json': ui.vega.solution_treemap(
-                solutions=self.all_solutions, width=400, height=800)}, raw=True)
-
+        solution_treemap = vega_widget(ui.vega.solution_treemap(
+            solutions=self.all_solutions, width=400, height=800))
         chrt_layout = ipywidgets.Layout(flex='3 1 0%', width='auto')
         charts = ipywidgets.VBox(children=[solution_chart, solution_treemap], layout=chrt_layout)
         progressbar.value += increment
@@ -1154,8 +1173,11 @@ class JupyterUI:
                     sidebar = ipywidgets.VBox(children=[summary],
                             layout=ipywidgets.Layout(width='auto', grid_area='sidebar'))
                     vma_qgrid = qgrid.show_grid(data_frame=v.source_data.fillna(''),
-                            grid_options={'forceFitColumns':False, 'maxVisibleRows':23},
-                            show_toolbar=True, column_options={'editable':self.mutable})
+                            grid_options={'forceFitColumns': True, 'maxVisibleRows':23},
+                            column_options={'editable':self.mutable})
+                    # Work around blank data in Jupyter Notebook (though not Lab) by enabling
+                    # the toolbar after the grid is created.
+                    vma_qgrid.show_toolbar = True
                     vma_qgrid_name = f'{m.__name__}:{name}:qgrid'
                     vma_qgrid.d = {'uiobj': self, 'name': vma_qgrid_name, }
                     table = ipywidgets.VBox(children=[vma_qgrid])
