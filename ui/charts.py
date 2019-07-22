@@ -16,14 +16,6 @@ import numpy as np
 import pandas as pd
 import qgrid
 
-try:
-    import vega.widget
-    # assume Jupyter notebook
-    is_jupyterlab = False
-except ImportError as e:
-    # assume Jupyterlab
-    is_jupyterlab = True
-
 from model import advanced_controls as ac
 from model.co2calcs import C_TO_CO2EQ
 
@@ -110,29 +102,23 @@ def checkbox_observe(change):
     uiobj._checkbox_observe(name, change)
 
 
-def vega_widget(data):
-    """Return an ipywidget to display the Vega description held in data.
-
-       Arguments:
-        data: a dict() containing a Vega description.
-    """
-    if is_jupyterlab:
-        out = ipywidgets.Output()
-        with out:
-            IPython.display.display({'application/vnd.vega.v4+json': data}, raw=True)
-        return out
-    else:
-        return vega.widget.VegaWidget(data)
+def get_ui():
+    j = ui.charts.JupyterUI()
+    j.render_overview()
+    tabs = j.get_skeleton_ui()
+    return (j, tabs)
 
 
 class JupyterUI:
     """Jupyter notebook UI for Drawdown solutions."""
-    def __init__(self, mutable=True):
+    def __init__(self, mutable=True, is_jupyterlab=True):
         self.mutable = mutable
         pd.set_option('display.max_columns', 200)
         pd.set_option('display.max_rows', 200)
-        if not is_jupyterlab:
+        self.is_jupyterlab = is_jupyterlab
+        if not self.is_jupyterlab:
             alt.renderers.enable('notebook')
+            import vega.widget
         qgrid.on(names=['cell_edited', 'row_added', 'row_removed'], handler=vma_qgrid_modified)
         all_solutions = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'),
                                             index_col=False, skipinitialspace=True, header=0,
@@ -203,6 +189,21 @@ class JupyterUI:
         return self.ui_elements['ui']
 
 
+    def _vega_widget(self, data):
+        """Return an ipywidget to display the Vega description held in data.
+
+           Arguments:
+            data: a dict() containing a Vega description.
+        """
+        if self.is_jupyterlab:
+            out = ipywidgets.Output()
+            with out:
+                IPython.display.display({'application/vnd.vega.v4+json': data}, raw=True)
+            return out
+        else:
+            return vega.widget.VegaWidget(data)
+
+
     def _get_sector_for_solution(self, module_name):
         row = self.all_solutions.loc[self.all_solutions['DirName'] == module_name]
         if row.empty:
@@ -271,11 +272,11 @@ class JupyterUI:
         solution_list = ipywidgets.VBox(children=children, layout=list_layout)
         progressbar.value += increment
 
-        solution_chart = vega_widget(ui.vega.solution_donut_chart(
+        solution_chart = self._vega_widget(ui.vega.solution_donut_chart(
             solutions=self.all_solutions, width=400, height=400))
         progressbar.value += increment
 
-        solution_treemap = vega_widget(ui.vega.solution_treemap(
+        solution_treemap = self._vega_widget(ui.vega.solution_treemap(
             solutions=self.all_solutions, width=400, height=800))
         chrt_layout = ipywidgets.Layout(flex='3 1 0%', width='auto')
         charts = ipywidgets.VBox(children=[solution_chart, solution_treemap], layout=chrt_layout)
