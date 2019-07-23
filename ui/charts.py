@@ -10,11 +10,17 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 import altair as alt
+import ipysheet
 import IPython.display
 import ipywidgets
 import numpy as np
 import pandas as pd
-import qgrid
+
+try:
+    import vega.widget
+    vega_import_success = True
+except ImportError:
+    vega_import_success = False
 
 from model import advanced_controls as ac
 from model.co2calcs import C_TO_CO2EQ
@@ -58,10 +64,10 @@ def fullname(s):
     return type(s).__name__ + ':' + s.scenario
 
 
-def vma_qgrid_modified(event, qgrid_widget):
-    """Global callback when any qgrid widget is modified."""
-    uiobj = qgrid_widget.d['uiobj']
-    uiobj._vma_qgrid_modified(qgrid_widget.d['name'])
+def vma_table_modified(event, table_widget):
+    """Global callback when any table widget is modified."""
+    uiobj = table_widget.d['uiobj']
+    uiobj._vma_table_modified(table_widget.d['name'])
 
 
 def global_button_clicked(button):
@@ -118,8 +124,6 @@ class JupyterUI:
         self.is_jupyterlab = is_jupyterlab
         if not self.is_jupyterlab:
             alt.renderers.enable('notebook')
-            import vega.widget
-        qgrid.on(names=['cell_edited', 'row_added', 'row_removed'], handler=vma_qgrid_modified)
         all_solutions = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'),
                                             index_col=False, skipinitialspace=True, header=0,
                                             skip_blank_lines=True, comment='#')
@@ -1099,8 +1103,8 @@ class JupyterUI:
             button.disabled = disabled
 
 
-    def _vma_qgrid_modified(self, qgrid_name):
-        state = self.ui_elements[qgrid_name]
+    def _vma_table_modified(self, name):
+        state = self.ui_elements[name]
         state['dirty'] = True
         self._mark_dirty(True)
 
@@ -1111,11 +1115,11 @@ class JupyterUI:
             dirty = state.get('dirty', False)
             if not dirty:
                 continue
-            if 'qgrid' in state:
-                qg = state['qgrid']
+            if 'table' in state:
+                table = state['table']
                 v = state['vmaobj']
                 if save:
-                    v.write_to_file(qg.get_changed_df())
+                    v.write_to_file(table.to_dataframe())
                 else:
                     v.reload_from_file()
             state['dirty'] = False
@@ -1168,15 +1172,10 @@ class JupyterUI:
                                               '</table>')
                     sidebar = ipywidgets.VBox(children=[summary],
                             layout=ipywidgets.Layout(width='auto', grid_area='sidebar'))
-                    vma_qgrid = qgrid.show_grid(data_frame=v.source_data.fillna(''),
-                            grid_options={'forceFitColumns': True, 'maxVisibleRows':23},
-                            column_options={'editable':self.mutable})
-                    # Work around blank data in Jupyter Notebook (though not Lab) by enabling
-                    # the toolbar after the grid is created.
-                    vma_qgrid.show_toolbar = True
-                    vma_qgrid_name = f'{m.__name__}:{name}:qgrid'
-                    vma_qgrid.d = {'uiobj': self, 'name': vma_qgrid_name, }
-                    table = ipywidgets.VBox(children=[vma_qgrid])
+                    vma_table = ipysheet.pandas_loader.from_dataframe(v.source_data.fillna(''))
+                    vma_table_name = f'{m.__name__}:{name}:vma_table'
+                    vma_table.d = {'uiobj': self, 'name': vma_table_name, }
+                    table = ipywidgets.VBox(children=[vma_table])
                     vma_widget = ipywidgets.GridBox(children=[vma_name, sidebar, table],
                             layout=ipywidgets.Layout(width='100%', grid_template_rows='auto auto',
                                     grid_template_columns='7% 93%',
@@ -1185,8 +1184,8 @@ class JupyterUI:
                                     "sidebar table"
                                     '''))
                     vmas_for_module.append(vma_widget)
-                    self.ui_elements[vma_qgrid_name] = {
-                            'qgrid': vma_qgrid,
+                    self.ui_elements[vma_table_name] = {
+                            'table': vma_table,
                             'vmaobj': v,
                             'dirty': False,
                             }
