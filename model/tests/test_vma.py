@@ -250,6 +250,24 @@ def test_write_to_file():
     v.write_to_file(df)
     assert 'updated source ID' in open(f.name).read()
 
+def test_reload_from_file():
+    f = tempfile.NamedTemporaryFile(mode='w')
+    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      original source ID, 1.0,,,,
+      """)
+    f.flush()
+    v = vma.VMA(filename=f.name)
+    df = v.source_data.copy(deep=True)
+    assert df.loc[0, 'Source ID'] == 'original source ID'
+    f.seek(0)
+    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      updated source ID, 1.0,,,,
+      """)
+    f.flush()
+    v.reload_from_file()
+    df = v.source_data.copy(deep=True)
+    assert df.loc[0, 'Source ID'] == 'updated source ID'
+
 def test_spelling_correction():
     f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 1.0, Mha,, 0.0, False,, Asia (sans Japan)

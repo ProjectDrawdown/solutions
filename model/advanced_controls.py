@@ -6,6 +6,7 @@ import dataclasses
 import enum
 import glob
 import json
+import os
 import typing
 
 import pandas as pd
@@ -901,6 +902,15 @@ class AdvancedControls:
         for field in dataclasses.fields(self):
             key = key ^ self._hash_item(field)
         return key
+
+    def write_to_json_file(self):
+        jsfilenew = self.jsfile + '.new'
+        d = dataclasses.asdict(self)
+        for rem in ['vmas', 'js', 'jsfile']:
+            del d[rem]
+        with open(jsfilenew, 'w') as f:
+            json.dump(d, f)
+            os.replace(jsfilenew, self.jsfile)
 
 
 def fill_missing_regions_from_world(data):
