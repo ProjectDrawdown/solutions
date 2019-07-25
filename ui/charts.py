@@ -59,11 +59,11 @@ VALUE_DIFFERS = '(differs between scenarios)'
 
 
 def solnname(s):
-    return type(s).__name__
+    return s.name
 
 
 def fullname(s):
-    return type(s).__name__ + ':' + s.scenario
+    return s.name + ':' + s.scenario
 
 
 def vma_table_modified(event, table_widget):
@@ -140,7 +140,7 @@ class JupyterUI:
         # all_solutions is a list of all solutions the system knows about, solutions is the list
         # of solution objects currently being analyzed with detailed results tabs.
         self.all_solutions = all_solutions
-        self.solutions = []
+        self.solutions = {}
 
         # checkboxes is a dict of solution names to ipywidget.checkbox objects.
         self.checkboxes = {}
@@ -375,7 +375,7 @@ class JupyterUI:
         adoption_funit_chart = ipywidgets.Output()
         with adoption_funit_chart:
             df = pd.DataFrame()
-            for s in self.solutions:
+            for s in solutions:
                 # tla/toa is constant between scenarios in the same solution so we only plot it once
                 if s.ac.solution_category == ac.SOLUTION_CATEGORY.LAND:
                     df['Total Land Area:' + solnname(s)] = s.tla_per_region.loc[2020:2050, 'World']
@@ -398,7 +398,7 @@ class JupyterUI:
                     title='World Adoption - Functional Units/Area'
                 ).interactive()
             df = pd.DataFrame()
-            for s in self.solutions:
+            for s in solutions:
                 ref_funits = s.ht.soln_ref_funits_adopted().loc[2020:2050, 'World']
                 df['Solution-REF:' + fullname(s)] = ref_funits
             funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
@@ -413,7 +413,7 @@ class JupyterUI:
                     title='World Adoption - Functional Units/Area'
                 ).interactive()
             df = pd.DataFrame()
-            for s in self.solutions:
+            for s in solutions:
                 pds_funits = s.ht.soln_pds_funits_adopted().loc[2020:2050, 'World']
                 df['Solution-PDS:' + fullname(s)] = pds_funits
             funit_df = df.reset_index().melt('Year', value_name='units', var_name='fullname')
@@ -1620,22 +1620,35 @@ class JupyterUI:
         return dez_data
 
 
-    def get_solutions_from_checkboxes(self):
-        """Iterate through a dict of checkboxes, return objects for all selected solutions."""
+    def get_solutions_from_checkboxes(self, current_solutions):
+        """Iterate through a dict of checkboxes, return objects for all selected solutions.
+           Arguments:
+             current_solutions: dict where the keys are fullname() of a solution+scenario and
+               the values are Scenario objects.
+        """
+        solutions = {}
         constructors = []
         for soln, cbox in self.checkboxes.items():
-            if cbox.value:
-                constructor, scenarios = solution.factory.one_solution_scenarios(soln)
-                for scenario in scenarios:
-                    constructors.append((constructor, scenario))
+            if not cbox.value:
+                continue
+            constructor, scenarios = solution.factory.one_solution_scenarios(soln)
+            for scenario in scenarios:
+                name = soln + ':' + scenario
+                obj = current_solutions.get(name, None)
+                if obj:
+                    solutions[name] = obj
+                else:
+                    constructors.append((soln, constructor, scenario))
 
-        total = float(len(constructors) + 2)
+        total = float(len(constructors) + len(solutions) + 2)
         increment = 1.0 / total
         progressbar = self.ui_elements['progressbar']
+        progressbar.value += (increment * len(solutions))
 
-        solutions = []
-        for (constructor, scenario) in constructors:
-            solutions.append(constructor(scenario))
+        for (soln, constructor, scenario) in constructors:
+            name = soln + ':' + scenario
+            s = constructor(scenario)
+            solutions[name] = s
             progressbar.value += increment
 
         return solutions
@@ -1645,30 +1658,30 @@ class JupyterUI:
         """Return tab bar of detailed results for a set of solutions."""
         progressbar = self.ui_elements['progressbar']
         progressbar.value = 0.0
-        solutions = self.get_solutions_from_checkboxes()
+        solutions = self.get_solutions_from_checkboxes(self.solutions)
         self.solutions = solutions
 
         remaining = 1.0 - progressbar.value
         increment = remaining / 10.0
-        summary = self.get_summary_tab(solutions)
+        summary = self.get_summary_tab(solutions.values())
         progressbar.value += increment
-        model_overview = self.get_model_tab(solutions)
+        model_overview = self.get_model_tab(solutions.values())
         progressbar.value += increment
-        variable_meta_analysis = self.get_VMA_tab(solutions)
+        variable_meta_analysis = self.get_VMA_tab(solutions.values())
         progressbar.value += increment
-        first_cost = self.get_first_cost_tab(solutions)
+        first_cost = self.get_first_cost_tab(solutions.values())
         progressbar.value += increment
-        operating_cost = self.get_operating_cost_tab(solutions)
+        operating_cost = self.get_operating_cost_tab(solutions.values())
         progressbar.value += increment
-        adoption_data = self.get_adoption_data_tab(solutions)
+        adoption_data = self.get_adoption_data_tab(solutions.values())
         progressbar.value += increment
-        tam_data = self.get_tam_data_tab(solutions)
+        tam_data = self.get_tam_data_tab(solutions.values())
         progressbar.value += increment
-        co2_calcs = self.get_co2_calcs_tab(solutions)
+        co2_calcs = self.get_co2_calcs_tab(solutions.values())
         progressbar.value += increment
-        aez_data = self.get_aez_data_tab(solutions)
+        aez_data = self.get_aez_data_tab(solutions.values())
         progressbar.value += increment
-        dez_data = self.get_dez_data_tab(solutions)
+        dez_data = self.get_dez_data_tab(solutions.values())
         progressbar.value = 1.0
 
         # ------------------ Create tabs -----------------
