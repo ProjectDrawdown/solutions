@@ -5,6 +5,10 @@ def test_JupyterUI():
     # just checking if we get an exception for any reason
     _ = j.get_skeleton_ui()
     j.render_overview()
+    first_soln = list(j.checkboxes.keys())[0]
+    j.checkboxes[first_soln].value = True
+    j.get_detailed_results_tabs()
+
 
 def test_get_sector():
     j = ui.charts.JupyterUI()
