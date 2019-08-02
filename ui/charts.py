@@ -267,7 +267,7 @@ class JupyterUI:
                 cbox.observe(checkbox_observe, names='value')
                 checkboxes[row.DirName] = cbox
             else:
-                cbox = ipywidgets.HTML('<div>&nbsp;</div>', layout=cbox_layout)
+                cbox = ipywidgets.Checkbox(value=False, disabled=True, layout=cbox_layout)
             cbox.style.description_width = '0px'
             children.append(ipywidgets.HBox([soln, sctr, c2eq, cbox], layout=cntr_layout))
             style = grey_row if style == white_row else white_row
