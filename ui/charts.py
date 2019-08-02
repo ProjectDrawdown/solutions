@@ -1,6 +1,7 @@
 """Generate graphics for Jupyter notebook."""
 
 import dataclasses
+import importlib
 import os.path
 import sys
 
@@ -126,6 +127,7 @@ class JupyterUI:
         self.is_jupyterlab = is_jupyterlab
         if not self.is_jupyterlab:
             alt.renderers.enable('notebook')
+            self.vega_widget = importlib.import_module('vega.widget')
         all_solutions = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'),
                                             index_col=False, skipinitialspace=True, header=0,
                                             skip_blank_lines=True, comment='#')
@@ -207,7 +209,7 @@ class JupyterUI:
                 IPython.display.display({'application/vnd.vega.v4+json': data}, raw=True)
             return out
         else:
-            return vega.widget.VegaWidget(data)
+            return self.vega_widget.VegaWidget(data)
 
 
     def _get_sector_for_solution(self, module_name):
@@ -270,7 +272,7 @@ class JupyterUI:
                 cbox.observe(checkbox_observe, names='value')
                 checkboxes[row.DirName] = cbox
             else:
-                cbox = ipywidgets.HTML('<div></div>', layout=cbox_layout)
+                cbox = ipywidgets.HTML('<div>&nbsp;</div>', layout=cbox_layout)
             cbox.style.description_width = '0px'
             children.append(ipywidgets.HBox([soln, sctr, c2eq, cbox], layout=cntr_layout))
             style = grey_row if style == white_row else white_row
