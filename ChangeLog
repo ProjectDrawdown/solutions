@@ -288,3 +288,21 @@ Jun 17 - Jun 21, 2019
 Jul 1 - Jul 5, 2019
 + regenerate all solutions to store their scenario definitions in JSON files
 + more work on RandkedAllocation, including static land area definitions.
+
+Jul 8 - Jul 12, 2019
++ regenerate health dashboard data
++ initial version of ranked land allocation
+
+Jul 15 - Jul 19, 2019
++ speed UI by not importing all solutions
++ make ipynb file work in Jupyter Notebook (for Voila)
+  Allow Drawdown.ipynb to be handled by https://github.com/QuantStack/voila
+
+Jul 22 - Jul 26, 2019
++ single panel UI interface: list of solutions is now a tab
+  Allows Voila in production use, not requiring any code cell to be clicked.
++ update drawdown logo
+
+Jul 29 - Aug 2, 2019
++ add pytest coverage metric
+
