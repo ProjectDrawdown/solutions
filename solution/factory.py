@@ -2,11 +2,14 @@
 
 import importlib
 import os
+import pathlib
+
 import pandas as pd
 
 def all_solutions():
-    overview = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'),
-            index_col=False, skipinitialspace=True, header=0, skip_blank_lines=True, comment='#')
+    path = pathlib.Path(__file__).parents[1].joinpath('data', 'overview', 'solutions.csv')
+    overview = pd.read_csv(path, index_col=False, skipinitialspace=True, header=0,
+            skip_blank_lines=True, comment='#')
     return sorted(overview['DirName'].dropna().tolist())
 
 

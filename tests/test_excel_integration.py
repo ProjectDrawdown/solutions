@@ -969,12 +969,13 @@ def check_excel_against_object(obj, workbook, scenario, verify):
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('afforestation', 'testdata', 'Drawdown-Afforestation_BioS_v1.1_4Jan2019_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('afforestation', 'testdata',
+        'Drawdown-Afforestation_BioS_v1.1_4Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_Afforestation_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in afforestation.scenarios.keys():
-    obj = afforestation.Afforestation(scenario=scenario)
+    obj = afforestation.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -987,7 +988,7 @@ def test_Afforestation_LAND(start_excel, tmpdir):
 def test_AltCement_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in altcement.scenarios.keys():
-    obj = altcement.AlternativeCement(scenario=scenario)
+    obj = altcement.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1000,7 +1001,7 @@ def test_AltCement_RRS(start_excel, tmpdir):
 def test_Airplanes_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in airplanes.scenarios.keys():
-    obj = airplanes.Airplanes(scenario=scenario)
+    obj = airplanes.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1013,7 +1014,7 @@ def test_Airplanes_RRS(start_excel, tmpdir):
 def test_BikeInfrastructure_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in bikeinfrastructure.scenarios.keys():
-    obj = bikeinfrastructure.BikeInfrastructure(scenario=scenario)
+    obj = bikeinfrastructure.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1026,7 +1027,7 @@ def test_BikeInfrastructure_RRS(start_excel, tmpdir):
 def test_Bamboo_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in bamboo.scenarios.keys():
-    obj = bamboo.Bamboo(scenario=scenario)
+    obj = bamboo.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1039,19 +1040,20 @@ def test_Bamboo_LAND(start_excel, tmpdir):
 def test_Biochar_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in biochar.scenarios.keys():
-    obj = biochar.Biochar(scenario=scenario)
+    obj = biochar.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('biogas', 'testdata', 'Drawdown-Large Biodigesters (Biogas)_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('biogas', 'testdata',
+        'Drawdown-Large Biodigesters (Biogas)_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_Biogas_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in biogas.scenarios.keys():
-    obj = biogas.Biogas(scenario=scenario)
+    obj = biogas.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1064,7 +1066,7 @@ def test_Biogas_RRS(start_excel, tmpdir):
 def test_Biomass_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in biomass.scenarios.keys():
-    obj = biomass.Biomass(scenario=scenario)
+    obj = biomass.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1077,7 +1079,7 @@ def test_Biomass_RRS(start_excel, tmpdir):
 def test_Bioplastic_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in ['PDS1-33p2050-Feedstock Limit-385MMT (Book Ed.1)']:
-    obj = bioplastic.Bioplastic(scenario=scenario)
+    obj = bioplastic.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1090,7 +1092,7 @@ def test_Bioplastic_RRS(start_excel, tmpdir):
 def test_BuildingAutomation_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in buildingautomation.scenarios.keys():
-    obj = buildingautomation.BuildingAutomationSystems(scenario=scenario)
+    obj = buildingautomation.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1103,7 +1105,7 @@ def test_BuildingAutomation_RRS(start_excel, tmpdir):
 def test_Carpooling_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in carpooling.scenarios.keys():
-    obj = carpooling.Carpooling(scenario=scenario)
+    obj = carpooling.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1116,7 +1118,7 @@ def test_Carpooling_RRS(start_excel, tmpdir):
 def test_Cars_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in cars.scenarios.keys():
-    obj = cars.Cars(scenario=scenario)
+    obj = cars.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1129,7 +1131,7 @@ def test_Cars_RRS(start_excel, tmpdir):
 def test_Composting_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in composting.scenarios.keys():
-    obj = composting.Composting(scenario=scenario)
+    obj = composting.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1141,7 +1143,7 @@ def test_Composting_RRS(start_excel, tmpdir):
 def test_ConcentratedSolar_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in concentratedsolar.scenarios.keys():
-    obj = concentratedsolar.ConcentratedSolar(scenario=scenario)
+    obj = concentratedsolar.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1154,7 +1156,7 @@ def test_ConcentratedSolar_RRS(start_excel, tmpdir):
 def test_ConservationAgriculture_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in conservationagriculture.scenarios.keys():
-    obj = conservationagriculture.ConservationAgriculture(scenario=scenario)
+    obj = conservationagriculture.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1167,7 +1169,7 @@ def test_ConservationAgriculture_LAND(start_excel, tmpdir):
 def test_CoolRoofs_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in coolroofs.scenarios.keys():
-    obj = coolroofs.CoolRoofs(scenario=scenario)
+    obj = coolroofs.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1180,7 +1182,7 @@ def test_CoolRoofs_RRS(start_excel, tmpdir):
 def test_DistrictHeating_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in districtheating.scenarios.keys():
-    obj = districtheating.DistrictHeating(scenario=scenario)
+    obj = districtheating.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1193,7 +1195,7 @@ def test_DistrictHeating_RRS(start_excel, tmpdir):
 def test_ElectricBikes_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in electricbikes.scenarios.keys():
-    obj = electricbikes.ElectricBicycles(scenario=scenario)
+    obj = electricbikes.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1206,7 +1208,7 @@ def test_ElectricBikes_RRS(start_excel, tmpdir):
 def test_ElectricVehicles_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in electricvehicles.scenarios.keys():
-    obj = electricvehicles.ElectricVehicles(scenario=scenario)
+    obj = electricvehicles.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1219,7 +1221,7 @@ def test_ElectricVehicles_RRS(start_excel, tmpdir):
 def test_FarmlandRestoration_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in farmlandrestoration.scenarios.keys():
-    obj = farmlandrestoration.FarmlandRestoration(scenario=scenario)
+    obj = farmlandrestoration.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1232,7 +1234,7 @@ def test_FarmlandRestoration_LAND(start_excel, tmpdir):
 def test_ForestProtection_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in forestprotection.scenarios.keys():
-    obj = forestprotection.ForestProtection(scenario=scenario)
+    obj = forestprotection.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1245,7 +1247,7 @@ def test_ForestProtection_LAND(start_excel, tmpdir):
 def test_Geothermal_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in geothermal.scenarios.keys():
-    obj = geothermal.Geothermal(scenario=scenario)
+    obj = geothermal.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1258,7 +1260,7 @@ def test_Geothermal_RRS(start_excel, tmpdir):
 def test_GreenRoofs_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in greenroofs.scenarios.keys():
-    obj = greenroofs.GreenRoofs(scenario=scenario)
+    obj = greenroofs.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1271,7 +1273,7 @@ def test_GreenRoofs_RRS(start_excel, tmpdir):
 def test_HeatPumps_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in heatpumps.scenarios.keys():
-    obj = heatpumps.HeatPumps(scenario=scenario)
+    obj = heatpumps.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1284,7 +1286,7 @@ def test_HeatPumps_RRS(start_excel, tmpdir):
 def test_HighSpeedRail_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in highspeedrail.scenarios.keys():
-    obj = highspeedrail.HighSpeedRail(scenario=scenario)
+    obj = highspeedrail.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1297,7 +1299,7 @@ def test_HighSpeedRail_RRS(start_excel, tmpdir):
 def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in improvedcookstoves.scenarios.keys():
-    obj = improvedcookstoves.ImprovedCookStoves(scenario=scenario)
+    obj = improvedcookstoves.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1310,7 +1312,7 @@ def test_ImprovedCookStoves_RRS(start_excel, tmpdir):
 def test_IndigenousPeoplesLand_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in indigenouspeoplesland.scenarios.keys():
-    obj = indigenouspeoplesland.IndigenousPeoplesLand(scenario=scenario)
+    obj = indigenouspeoplesland.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1323,7 +1325,7 @@ def test_IndigenousPeoplesLand_LAND(start_excel, tmpdir):
 def test_ImprovedRice_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in improvedrice.scenarios.keys():
-    obj = improvedrice.ImprovedRice(scenario=scenario)
+    obj = improvedrice.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1336,7 +1338,7 @@ def test_ImprovedRice_LAND(start_excel, tmpdir):
 def test_InstreamHydro_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in instreamhydro.scenarios.keys():
-    obj = instreamhydro.InstreamHydro(scenario=scenario)
+    obj = instreamhydro.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1349,7 +1351,7 @@ def test_InstreamHydro_RRS(start_excel, tmpdir):
 def test_Insulation_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in insulation.scenarios.keys():
-    obj = insulation.Insulation(scenario=scenario)
+    obj = insulation.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1362,7 +1364,7 @@ def test_Insulation_RRS(start_excel, tmpdir):
 def test_IrrigationEfficiency_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in irrigationefficiency.scenarios.keys():
-    obj = irrigationefficiency.IrrigationEfficiency(scenario=scenario)
+    obj = irrigationefficiency.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1380,7 +1382,7 @@ def test_LandfillMethane_RRS(start_excel, tmpdir):
   rewrites = [('Unit Adoption Calculations', 'B251:BH298', 1, 21, 0.0),
       ('Unit Adoption Calculations', 'B251:BH298', 1, 22, 0.0),]
   for scenario in landfillmethane.scenarios.keys():
-    obj = landfillmethane.LandfillMethane(scenario=scenario)
+    obj = landfillmethane.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1393,7 +1395,7 @@ def test_LandfillMethane_RRS(start_excel, tmpdir):
 def test_LEDCommercialLighting_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in leds_commercial.scenarios.keys():
-    obj = leds_commercial.LEDCommercialLighting(scenario=scenario)
+    obj = leds_commercial.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1406,7 +1408,7 @@ def test_LEDCommercialLighting_RRS(start_excel, tmpdir):
 def test_LEDResidentialLighting_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in leds_residential.scenarios.keys():
-    obj = leds_residential.ResidentialLEDLighting(scenario=scenario)
+    obj = leds_residential.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1419,7 +1421,7 @@ def test_LEDResidentialLighting_RRS(start_excel, tmpdir):
 def test_ManagedGrazing_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in managedgrazing.scenarios.keys():
-    obj = managedgrazing.ManagedGrazing(scenario=scenario)
+    obj = managedgrazing.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1432,19 +1434,20 @@ def test_ManagedGrazing_LAND(start_excel, tmpdir):
 def test_MassTransit_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in masstransit.scenarios.keys():
-    obj = masstransit.MassTransit(scenario=scenario)
+    obj = masstransit.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('microwind', 'testdata', 'Drawdown-MicroWind Turbines_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('microwind', 'testdata',
+        'Drawdown-MicroWind Turbines_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_MicroWind_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in microwind.scenarios.keys():
-    obj = microwind.MicroWind(scenario=scenario)
+    obj = microwind.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1457,7 +1460,7 @@ def test_MicroWind_RRS(start_excel, tmpdir):
 def test_MultistrataAgroforestry_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in multistrataagroforestry.scenarios.keys():
-    obj = multistrataagroforestry.MultistrataAgroforestry(scenario=scenario)
+    obj = multistrataagroforestry.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1470,7 +1473,7 @@ def test_MultistrataAgroforestry_LAND(start_excel, tmpdir):
 def test_Nuclear_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in nuclear.scenarios.keys():
-    obj = nuclear.Nuclear(scenario=scenario)
+    obj = nuclear.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1483,31 +1486,33 @@ def test_Nuclear_RRS(start_excel, tmpdir):
 def test_NutrientManagement_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in nutrientmanagement.scenarios.keys():
-    obj = nutrientmanagement.NutrientManagement(scenario=scenario)
+    obj = nutrientmanagement.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('offshorewind', 'testdata', 'Drawdown-Wind Offshore_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('offshorewind', 'testdata',
+        'Drawdown-Wind Offshore_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_OffshoreWind_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in offshorewind.scenarios.keys():
-    obj = offshorewind.OffshoreWind(scenario=scenario)
+    obj = offshorewind.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('onshorewind', 'testdata', 'Drawdown-Onshore Wind_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('onshorewind', 'testdata',
+        'Drawdown-Onshore Wind_RRS.ES_v1.1_13Jan2019_PUBLIC.xlsm'))],
     indirect=True)
 def test_OnshoreWind_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in onshorewind.scenarios.keys():
-    obj = onshorewind.OnshoreWind(scenario=scenario)
+    obj = onshorewind.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1520,7 +1525,7 @@ def test_OnshoreWind_RRS(start_excel, tmpdir):
 def test_Peatlands_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in peatlands.scenarios.keys():
-    obj = peatlands.Peatlands(scenario=scenario)
+    obj = peatlands.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1533,7 +1538,7 @@ def test_Peatlands_LAND(start_excel, tmpdir):
 def test_PerennialBioenergy_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in perennialbioenergy.scenarios.keys():
-    obj = perennialbioenergy.PerennialBioenergy(scenario=scenario)
+    obj = perennialbioenergy.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1546,7 +1551,7 @@ def test_PerennialBioenergy_LAND(start_excel, tmpdir):
 def test_RecycledPaper_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in recycledpaper.scenarios.keys():
-    obj = recycledpaper.RecycledPaper(scenario=scenario)
+    obj = recycledpaper.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1559,7 +1564,7 @@ def test_RecycledPaper_RRS(start_excel, tmpdir):
 def test_Refrigerants_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in refrigerants.scenarios.keys():
-    obj = refrigerants.RefrigerantManagement(scenario=scenario)
+    obj = refrigerants.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1572,7 +1577,7 @@ def test_Refrigerants_RRS(start_excel, tmpdir):
 def test_RegenerativeAgriculture_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in regenerativeagriculture.scenarios.keys():
-    obj = regenerativeagriculture.RegenerativeAgriculture(scenario=scenario)
+    obj = regenerativeagriculture.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1585,7 +1590,7 @@ def test_RegenerativeAgriculture_LAND(start_excel, tmpdir):
 def test_RiceIntensification_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in riceintensification.scenarios.keys():
-    obj = riceintensification.RiceIntensification(scenario=scenario)
+    obj = riceintensification.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1598,7 +1603,7 @@ def test_RiceIntensification_LAND(start_excel, tmpdir):
 def test_Ships_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in ships.scenarios.keys():
-    obj = ships.Ships(scenario=scenario)
+    obj = ships.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1611,7 +1616,7 @@ def test_Ships_RRS(start_excel, tmpdir):
 def test_Silvopasture_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in silvopasture.scenarios.keys():
-    obj = silvopasture.Silvopasture(scenario=scenario)
+    obj = silvopasture.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     del verify['CH4 Calcs']
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
@@ -1625,26 +1630,28 @@ def test_Silvopasture_LAND(start_excel, tmpdir):
 def test_SmartGlass_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in smartglass.scenarios.keys():
-    obj = smartglass.SmartGlass(scenario=scenario)
+    obj = smartglass.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('smartthermostats', 'testdata', 'Drawdown-Smart Thermostats_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('smartthermostats', 'testdata',
+        'Drawdown-Smart Thermostats_RRS_v1.1_28Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_SmartThermostats_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in smartthermostats.scenarios.keys():
-    obj = smartthermostats.SmartThermostats(scenario=scenario)
+    obj = smartthermostats.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('solarhotwater', 'testdata', 'Drawdown-Solar Hot Water_RRS_v1.1_21Nov2018_PUBLIC.xlsm'))],
+    [str(solutiondir.joinpath('solarhotwater', 'testdata',
+        'Drawdown-Solar Hot Water_RRS_v1.1_21Nov2018_PUBLIC.xlsm'))],
     indirect=True)
 def test_SolarHotWater_RRS(start_excel, tmpdir):
   workbook = start_excel
@@ -1652,7 +1659,7 @@ def test_SolarHotWater_RRS(start_excel, tmpdir):
   # PDS CustomAdoption, which varies according to data coming from UnitAdoption.
   # The checked-in CSV file isa snapshot of the first scenario values.
   for scenario in ['PDS1-25p2050-Low of Custom Scen. (Book Ed.1)']:
-    obj = solarhotwater.SolarHotWater(scenario=scenario)
+    obj = solarhotwater.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1665,7 +1672,7 @@ def test_SolarHotWater_RRS(start_excel, tmpdir):
 def test_SolarRooftop_RRS(start_excel, tmpdir):
   workbook = start_excel
   for scenario in solarpvroof.scenarios.keys():
-    obj = solarpvroof.SolarPVRoof(scenario=scenario)
+    obj = solarpvroof.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1678,7 +1685,7 @@ def test_SolarRooftop_RRS(start_excel, tmpdir):
 def test_SolarPVUtility_RRS(start_excel):
   workbook = start_excel
   for scenario in solarpvutil.scenarios.keys():
-    obj = solarpvutil.SolarPVUtil(scenario=scenario)
+    obj = solarpvutil.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1691,7 +1698,7 @@ def test_SolarPVUtility_RRS(start_excel):
 def test_Telepresence_RRS(start_excel):
   workbook = start_excel
   for scenario in telepresence.scenarios.keys():
-    obj = telepresence.Telepresence(scenario=scenario)
+    obj = telepresence.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1704,7 +1711,7 @@ def test_Telepresence_RRS(start_excel):
 def test_TreeIntercropping_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in treeintercropping.scenarios.keys():
-    obj = treeintercropping.TreeIntercropping(scenario=scenario)
+    obj = treeintercropping.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1718,15 +1725,16 @@ def test_TemperateForests_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario, ac in temperateforests.scenarios.items():
     if not ac.use_custom_tla:
-        # Temperate Forests has a custom TLA very similar to the allocated TLA. Some of the custom adoption data
-        # arbitrarily links to the value for World TLA in Advanced Controls, causing them to vary very slightly
-        # if 'Use Customized TLA' is switched on. The saved CSV files for Custom PDS Adoption are a snapshot of
-        # the avg book version scenario, which uses custom TLA. Thus, we only test scenarios which also use custom
-        # TLA. We will figure out how to deal with linked custom adoption values later, although in the case of
-        # this solution the values do not change a significant amount anyway (it is questionable whether there
-        # is a good reason for having a custom TLA in the first place).
+        # Temperate Forests has a custom TLA very similar to the allocated TLA. Some of the
+        # custom adoption data arbitrarily links to the value for World TLA in Advanced Controls,
+        # causing them to vary very slightly if 'Use Customized TLA' is switched on. The saved
+        # CSV files for Custom PDS Adoption are a snapshot of the avg book version scenario,
+        # which uses custom TLA. Thus, we only test scenarios which also use custom TLA. We
+        # will figure out how to deal with linked custom adoption values later, although in the
+        # case of this solution the values do not change a significant amount anyway (it is
+        # questionable whether there is a good reason for having a custom TLA in the first place).
         continue
-    obj = temperateforests.TemperateForests(scenario=scenario)
+    obj = temperateforests.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1739,7 +1747,7 @@ def test_TemperateForests_LAND(start_excel, tmpdir):
 def test_Trains_RRS(start_excel):
   workbook = start_excel
   for scenario in trains.scenarios.keys():
-    obj = trains.TrainFuelEfficiency(scenario=scenario)
+    obj = trains.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1753,27 +1761,29 @@ def test_TropicalForests_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario, ac in tropicalforests.scenarios.items():
     if not ac.use_custom_tla:
-        # Tropical Forests has a custom TLA very similar to the allocated TLA. Some of the custom adoption data
-        # arbitrarily links to the value for World TLA in Advanced Controls, causing them to vary very slightly
-        # if 'Use Customized TLA' is switched on. The saved CSV files for Custom PDS Adoption are a snapshot of
-        # the avg book version scenario, which uses custom TLA. Thus, we only test scenarios which also use custom
-        # TLA. We will figure out how to deal with linked custom adoption values later, although in the case of
-        # this solution the values do not change a significant amount anyway (it is questionable whether there
-        # is a good reason for having a custom TLA in the first place).
+        # Tropical Forests has a custom TLA very similar to the allocated TLA. Some of the
+        # custom adoption data arbitrarily links to the value for World TLA in Advanced Controls,
+        # causing them to vary very slightly if 'Use Customized TLA' is switched on. The saved
+        # CSV files for Custom PDS Adoption are a snapshot of the avg book version scenario,
+        # which uses custom TLA. Thus, we only test scenarios which also use custom TLA. We
+        # will figure out how to deal with linked custom adoption values later, although in the
+        # case of this solution the values do not change a significant amount anyway (it is
+        # questionable whether there is a good reason for having a custom TLA in the first place).
         continue
-    obj = tropicalforests.TropicalForests(scenario=scenario)
+    obj = tropicalforests.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
 @pytest.mark.integration
 @pytest.mark.parametrize('start_excel',
-    [str(solutiondir.joinpath('tropicaltreestaples', 'testdata', 'Tropical_Tree_Staples(Grassland)_L-Use_v1.1b_02Aug18.xlsm'))],
+    [str(solutiondir.joinpath('tropicaltreestaples', 'testdata',
+        'Tropical_Tree_Staples(Grassland)_L-Use_v1.1b_02Aug18.xlsm'))],
     indirect=True)
 def test_TropicalTreeStaples_LAND(start_excel, tmpdir):
   """Test for Excel model file Tropical_Tree_Staples(Grassland)_L-Use_v1.1b_02Aug18.xlsm."""
   workbook = start_excel
   for scenario in tropicaltreestaples.scenarios.keys():
-    obj = tropicaltreestaples.TropicalTreeStaples(scenario=scenario)
+    obj = tropicaltreestaples.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1785,7 +1795,7 @@ def test_TropicalTreeStaples_LAND(start_excel, tmpdir):
 def test_Trucks_RRS(start_excel):
   workbook = start_excel
   for scenario in trucks.scenarios.keys():
-    obj = trucks.Trucks(scenario=scenario)
+    obj = trucks.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1798,7 +1808,7 @@ def test_Trucks_RRS(start_excel):
 def test_WalkableCities_RRS(start_excel):
   workbook = start_excel
   for scenario in walkablecities.scenarios.keys():
-    obj = walkablecities.WalkableCities(scenario=scenario)
+    obj = walkablecities.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1811,7 +1821,7 @@ def test_WalkableCities_RRS(start_excel):
 def test_WaterDistribution_RRS(start_excel):
   workbook = start_excel
   for scenario in waterdistribution.scenarios.keys():
-    obj = waterdistribution.WaterDistribution(scenario=scenario)
+    obj = waterdistribution.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1824,7 +1834,7 @@ def test_WaterDistribution_RRS(start_excel):
 def test_WaterEfficiency_RRS(start_excel):
   workbook = start_excel
   for scenario in waterefficiency.scenarios.keys():
-    obj = waterefficiency.WaterEfficiencyMeasures(scenario=scenario)
+    obj = waterefficiency.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1837,7 +1847,7 @@ def test_WaterEfficiency_RRS(start_excel):
 def test_WaveAndTidal_RRS(start_excel):
   workbook = start_excel
   for scenario in waveandtidal.scenarios.keys():
-    obj = waveandtidal.WaveAndTidal(scenario=scenario)
+    obj = waveandtidal.Scenario(scenario=scenario)
     verify = RRS_solution_verify_list(obj=obj, workbook=workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
 
@@ -1850,6 +1860,6 @@ def test_WaveAndTidal_RRS(start_excel):
 def test_WomenSmallholders_LAND(start_excel, tmpdir):
   workbook = start_excel
   for scenario in womensmallholders.scenarios.keys():
-    obj = womensmallholders.WomenSmallholders(scenario=scenario)
+    obj = womensmallholders.Scenario(scenario=scenario)
     verify = LAND_solution_verify_list(obj, workbook)
     check_excel_against_object(obj=obj, workbook=workbook, scenario=scenario, verify=verify)
