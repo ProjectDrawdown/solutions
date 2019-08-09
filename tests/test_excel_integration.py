@@ -913,6 +913,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
                     description=description, mask=mask)
 
 
+@pytest.mark.slow
 def test_Afforestation_LAND():
     zipfilename = str(solutiondir.joinpath('afforestation', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -922,6 +923,7 @@ def test_Afforestation_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_AltCement_RRS():
     zipfilename = str(solutiondir.joinpath('altcement', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -931,6 +933,7 @@ def test_AltCement_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Airplanes_RRS():
     zipfilename = str(solutiondir.joinpath('airplanes', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -940,6 +943,7 @@ def test_Airplanes_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_BikeInfrastructure_RRS():
     zipfilename = str(solutiondir.joinpath('bikeinfrastructure', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -949,6 +953,7 @@ def test_BikeInfrastructure_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Bamboo_LAND():
     zipfilename = str(solutiondir.joinpath('bamboo', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -958,6 +963,7 @@ def test_Bamboo_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Biochar_RRS():
     zipfilename = str(solutiondir.joinpath('biochar', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -967,6 +973,7 @@ def test_Biochar_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Biogas_RRS():
     zipfilename = str(solutiondir.joinpath('biogas', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -976,6 +983,7 @@ def test_Biogas_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Biomass_RRS():
     zipfilename = str(solutiondir.joinpath('biomass', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -985,6 +993,7 @@ def test_Biomass_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Bioplastic_RRS():
     zipfilename = str(solutiondir.joinpath('bioplastic', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -994,6 +1003,7 @@ def test_Bioplastic_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_BuildingAutomation_RRS():
     zipfilename = str(solutiondir.joinpath('buildingautomation', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1003,6 +1013,7 @@ def test_BuildingAutomation_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Carpooling_RRS():
     zipfilename = str(solutiondir.joinpath('carpooling', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1012,6 +1023,7 @@ def test_Carpooling_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Cars_RRS():
     zipfilename = str(solutiondir.joinpath('cars', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1021,6 +1033,7 @@ def test_Cars_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Composting_RRS():
     zipfilename = str(solutiondir.joinpath('composting', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1036,6 +1049,7 @@ def test_Composting_RRS():
 #E  DataFrames differ:
 #E  Err [8][0] : '2.9834091228442275e-06' != 'nan'
 #E  Err [8][2] : '0.0' != '1.2918540451326751e-06'
+@pytest.mark.slow
 def test_ConcentratedSolar_RRS():
     zipfilename = str(solutiondir.joinpath('concentratedsolar', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1045,6 +1059,7 @@ def test_ConcentratedSolar_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_ConservationAgriculture_LAND():
     zipfilename = str(solutiondir.joinpath('conservationagriculture', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1054,6 +1069,7 @@ def test_ConservationAgriculture_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_CoolRoofs_RRS():
     zipfilename = str(solutiondir.joinpath('coolroofs', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1063,6 +1079,7 @@ def test_CoolRoofs_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_DistrictHeating_RRS():
     zipfilename = str(solutiondir.joinpath('districtheating', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1072,6 +1089,7 @@ def test_DistrictHeating_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_ElectricBikes_RRS():
     zipfilename = str(solutiondir.joinpath('electricbikes', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1081,6 +1099,7 @@ def test_ElectricBikes_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_ElectricVehicles_RRS():
     zipfilename = str(solutiondir.joinpath('electricvehicles', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1090,6 +1109,7 @@ def test_ElectricVehicles_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_FarmlandRestoration_LAND():
     zipfilename = str(solutiondir.joinpath('farmlandrestoration', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1099,6 +1119,7 @@ def test_FarmlandRestoration_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_ForestProtection_LAND():
     zipfilename = str(solutiondir.joinpath('forestprotection', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1108,6 +1129,7 @@ def test_ForestProtection_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Geothermal_RRS():
     zipfilename = str(solutiondir.joinpath('geothermal', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1117,6 +1139,7 @@ def test_Geothermal_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_GreenRoofs_RRS():
     zipfilename = str(solutiondir.joinpath('greenroofs', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1126,6 +1149,7 @@ def test_GreenRoofs_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_HeatPumps_RRS():
     zipfilename = str(solutiondir.joinpath('heatpumps', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1135,6 +1159,7 @@ def test_HeatPumps_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_HighSpeedRail_RRS():
     zipfilename = str(solutiondir.joinpath('highspeedrail', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1144,6 +1169,7 @@ def test_HighSpeedRail_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_ImprovedCookStoves_RRS():
     zipfilename = str(solutiondir.joinpath('improvedcookstoves', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1153,6 +1179,7 @@ def test_ImprovedCookStoves_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_IndigenousPeoplesLand_LAND():
     zipfilename = str(solutiondir.joinpath('indigenouspeoplesland', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1162,6 +1189,7 @@ def test_IndigenousPeoplesLand_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_ImprovedRice_LAND():
     zipfilename = str(solutiondir.joinpath('improvedrice', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1171,6 +1199,7 @@ def test_ImprovedRice_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_InstreamHydro_RRS():
     zipfilename = str(solutiondir.joinpath('instreamhydro', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1180,6 +1209,7 @@ def test_InstreamHydro_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Insulation_RRS():
     zipfilename = str(solutiondir.joinpath('insulation', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1189,6 +1219,7 @@ def test_Insulation_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_IrrigationEfficiency_LAND():
     zipfilename = str(solutiondir.joinpath('irrigationefficiency', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1198,6 +1229,7 @@ def test_IrrigationEfficiency_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_LandfillMethane_RRS():
     zipfilename = str(solutiondir.joinpath('landfillmethane', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1207,6 +1239,7 @@ def test_LandfillMethane_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_LEDCommercialLighting_RRS():
     zipfilename = str(solutiondir.joinpath('leds_commercial', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1216,6 +1249,7 @@ def test_LEDCommercialLighting_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_LEDResidentialLighting_RRS():
     zipfilename = str(solutiondir.joinpath('leds_residential', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1225,6 +1259,7 @@ def test_LEDResidentialLighting_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_ManagedGrazing_LAND():
     zipfilename = str(solutiondir.joinpath('managedgrazing', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1234,6 +1269,7 @@ def test_ManagedGrazing_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_MassTransit_RRS():
     zipfilename = str(solutiondir.joinpath('masstransit', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1243,6 +1279,7 @@ def test_MassTransit_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_MicroWind_RRS():
     zipfilename = str(solutiondir.joinpath('microwind', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1252,6 +1289,7 @@ def test_MicroWind_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_MultistrataAgroforestry_LAND():
     zipfilename = str(solutiondir.joinpath('multistrataagroforestry', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1261,6 +1299,7 @@ def test_MultistrataAgroforestry_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Nuclear_RRS():
     zipfilename = str(solutiondir.joinpath('nuclear', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1270,6 +1309,7 @@ def test_Nuclear_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_NutrientManagement_LAND():
     zipfilename = str(solutiondir.joinpath('nutrientmanagement', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1279,6 +1319,7 @@ def test_NutrientManagement_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_OffshoreWind_RRS():
     zipfilename = str(solutiondir.joinpath('offshorewind', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1288,6 +1329,7 @@ def test_OffshoreWind_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_OnshoreWind_RRS():
     zipfilename = str(solutiondir.joinpath('onshorewind', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1297,6 +1339,7 @@ def test_OnshoreWind_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Peatlands_LAND():
     zipfilename = str(solutiondir.joinpath('peatlands', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1306,6 +1349,7 @@ def test_Peatlands_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_PerennialBioenergy_LAND():
     zipfilename = str(solutiondir.joinpath('perennialbioenergy', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1315,6 +1359,7 @@ def test_PerennialBioenergy_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_RecycledPaper_RRS():
     zipfilename = str(solutiondir.joinpath('recycledpaper', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1324,6 +1369,7 @@ def test_RecycledPaper_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Refrigerants_RRS():
     zipfilename = str(solutiondir.joinpath('refrigerants', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1333,6 +1379,7 @@ def test_Refrigerants_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_RegenerativeAgriculture_LAND():
     zipfilename = str(solutiondir.joinpath('regenerativeagriculture', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1342,6 +1389,7 @@ def test_RegenerativeAgriculture_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_RiceIntensification_LAND():
     zipfilename = str(solutiondir.joinpath('riceintensification', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1351,6 +1399,7 @@ def test_RiceIntensification_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Ships_RRS():
     zipfilename = str(solutiondir.joinpath('ships', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1360,6 +1409,7 @@ def test_Ships_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Silvopasture_LAND():
     zipfilename = str(solutiondir.joinpath('silvopasture', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1370,6 +1420,7 @@ def test_Silvopasture_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_SmartGlass_RRS():
     zipfilename = str(solutiondir.joinpath('smartglass', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1379,6 +1430,7 @@ def test_SmartGlass_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_SmartThermostats_RRS():
     zipfilename = str(solutiondir.joinpath('smartthermostats', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1388,6 +1440,7 @@ def test_SmartThermostats_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_SolarHotWater_RRS():
     zipfilename = str(solutiondir.joinpath('solarhotwater', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1400,6 +1453,7 @@ def test_SolarHotWater_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_SolarRooftop_RRS():
     zipfilename = str(solutiondir.joinpath('solarpvroof', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1409,6 +1463,7 @@ def test_SolarRooftop_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_SolarPVUtility_RRS():
     zipfilename = str(solutiondir.joinpath('solarpvutil', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1418,6 +1473,7 @@ def test_SolarPVUtility_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Telepresence_RRS():
     zipfilename = str(solutiondir.joinpath('telepresence', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1427,6 +1483,7 @@ def test_Telepresence_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_TreeIntercropping_LAND():
     zipfilename = str(solutiondir.joinpath('treeintercropping', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1436,6 +1493,7 @@ def test_TreeIntercropping_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_TemperateForests_LAND():
     zipfilename = str(solutiondir.joinpath('temperateforests', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1455,6 +1513,7 @@ def test_TemperateForests_LAND():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Trains_RRS():
     zipfilename = str(solutiondir.joinpath('trains', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1464,6 +1523,7 @@ def test_Trains_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_TropicalForests_LAND():
     zipfilename = str(solutiondir.joinpath('tropicalforests', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1497,6 +1557,7 @@ def test_TropicalForests_LAND():
 #E  Err [3][1] : '15.464239719095678' != '8.329095464315026'
 #E  Err [3][3] : '52.292101397294076' != '51.52077106665038'
 #E  Err [3][7] : '67.75634111638975' != '59.84986653096539'
+@pytest.mark.slow
 def test_TropicalTreeStaples_LAND():
     zipfilename = str(solutiondir.joinpath('tropicaltreestaples', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1505,6 +1566,7 @@ def test_TropicalTreeStaples_LAND():
         verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
+@pytest.mark.slow
 def test_Trucks_RRS():
     zipfilename = str(solutiondir.joinpath('trucks', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1514,6 +1576,7 @@ def test_Trucks_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_WalkableCities_RRS():
     zipfilename = str(solutiondir.joinpath('walkablecities', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1523,6 +1586,7 @@ def test_WalkableCities_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_WaterDistribution_RRS():
     zipfilename = str(solutiondir.joinpath('waterdistribution', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1532,6 +1596,7 @@ def test_WaterDistribution_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_WaterEfficiency_RRS():
     zipfilename = str(solutiondir.joinpath('waterefficiency', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1541,6 +1606,7 @@ def test_WaterEfficiency_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_WaveAndTidal_RRS():
     zipfilename = str(solutiondir.joinpath('waveandtidal', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
@@ -1550,6 +1616,7 @@ def test_WaveAndTidal_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_WomenSmallholders_LAND():
     zipfilename = str(solutiondir.joinpath('womensmallholders', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
