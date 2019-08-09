@@ -15,7 +15,7 @@ pages:
   dependencies:
     - test
   script:
-    - mv coverage/ public/
+    - mv coverage/ public/coverage/
   artifacts:
     paths:
       - public

@@ -34,20 +34,20 @@ Then start the Jupyter Notebook:
 
 [Documentation of the Excel models](https://gitlab.com/codeearth/drawdown/blob/master/Documentation/RRS_Model_Framework_and_Guidelines_v1.1.pdf) has been written, as well as a [design doc](https://docs.google.com/document/d/18nUKV-qltsaSD8kZd5gHswQu82Ot9rg19KIU8_eOisY/view) of how we expect the new implementation to be completed. We refer to this development effort as a Remodel, of course.
 
-A model is the computation of three outputs from a large number of inputs. Each of the three outputs is a table with years as rows and regions as columns. The value of a cell in this table is scalar.
+A climate solution model is the computation of outputs from a large number of inputs. Each of the outputs is a table with years as rows and regions as columns, where the value of a cell in this table is scalar.
 
 The three outputs are:
 * CO2 equivalents per year per region
 * Cost of solution per year per region
 * Functional Units per year per region.
 
-The Functional Unit is a type which varies and might be different for every model. A functional unit is always a good that society needs. For example, it could be Terawatt hours of electricity or person-miles of travel.
+The Functional Unit is a type which varies and might be different for every model. A functional unit is always a good that society needs. For example, it could be Terawatt-hours of electricity or person-kilometers of travel.
 
-Every solution provides a certain number of functional units per year per region, depending on how the much the solution is adopted. For example, rooftop solar provides Terawatt hours of electricity, in proportion to the wattage capacity which is installed. Increased adoption provides increased functional units. It may also bring with it increased CO2 emissions, in a proportion depending on its nature. Rooftop solar produces fewer emissions that burning fossil fuel, for example. Each solution also has costs (potentially negative, or benefits) in proportion to its adoption.
+Every solution provides a certain number of functional units per year per region, depending on how the much the solution is adopted. For example, rooftop solar provides Terawatt-hours of electricity, in proportion to the capacity which is installed. Increased adoption provides increased functional units. It may also bring with it increased or decreased CO2 emissions, in a proportion depending on its nature. Rooftop solar produces fewer emissions that burning fossil fuel, for example. Each solution also has costs (potentially negative, or benefits) in proportion to its adoption.
 
-The input to a given model is various data such as costs per installed watt of rooftop solar and the expected adoption of the solution. Additionally, Solutions are typically organized into "low adoption", "medium adoption", and "high adoption" models. Many solutions may use the same model, such as electrical energy as a functional unit.
+The input to a given model is various data such as costs per installed watt of rooftop solar and the expected adoption of the solution. Additionally, Solutions are typically organized into "low adoption", "medium adoption", and "high adoption" scenarios.
 
-Each model and functional unit has a notion of a Total Available Market. There is no benefit to install more rooftop solar than the total market for electricity for the globe, for example. The prevents unrealistic optimism on a single solution, for example.
+Each model and functional unit has a notion of a Total Available Market. There is no benefit to install more rooftop solar than the total market for electricity, for example. The prevents unrealistic optimism on a single solution, for example.
 
 Reaching the drawdown point, where humanity ceases to add greenhouses gases to the atmosphere, will require many solutions to be adopted and to harmonize synergistically.
 
@@ -74,12 +74,15 @@ Tasks which do not fit into an ordered list of things to be completed:
     1. unit tests of each function
     2. a system test which starts Excel to compare the original, unmodified spreadsheet to the results from the new implementation
 
+   [Python test code coverage](https://codeearth.gitlab.io/drawdown/coverage/) reports are maintained as part of the CI/CD process.
+
 ---
 
 # License
-This program (excluding the Excel code) is part of the &lt;code&gt;/earth project. The python code for the model engine is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at https://gitlab.com/codeearth/drawdown. No part of this Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
+   This program (excluding the Excel code) is part of the &lt;code&gt;/earth project. The python code for the model engine is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at https://gitlab.com/codeearth/drawdown. No part of this Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
 
-Data supplied from Project Drawdown (mostly in the form of CSV files) is licensed under the [CC-BY-NC-2.0](https://creativecommons.org/licenses/by-nc/2.0/) license for non-commercial use. The code for the model can be used (under the terms of the AGPL) to process whatever data the user wishes under whatever license the data carries. The data supplied for the Project Drawdown solutions is CC-BY-NC-2.0.
+   Data supplied from Project Drawdown (mostly in the form of CSV files) is licensed under the [CC-BY-NC-2.0](https://creativecommons.org/licenses/by-nc/2.0/) license for non-commercial use. The code for the model can be used (under the terms of the AGPL) to process whatever data the user wishes under whatever license the data carries. The data supplied for the Project Drawdown solutions is CC-BY-NC-2.0.
+
 ---
 
 # Contribution
