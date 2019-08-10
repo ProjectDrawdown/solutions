@@ -20,6 +20,10 @@ def test_solutions(name, constructor, scenarios):
         if obj.name not in skip:
             assert len(obj.ac.incorrect_cached_values) == 0
 
+    # check default scenario
+    obj = constructor(scenario=None)
+    assert obj.scenario is not None
+
 
 def test_sane_number_of_solutions():
     assert len(list(solutions.keys())) >= 60
