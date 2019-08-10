@@ -3,6 +3,7 @@
 import xml.etree.ElementTree as ET
 
 import ui.modelmap
+from solution import bottomtrawling
 from solution import solarpvutil
 
 def test_render_model():
@@ -27,3 +28,11 @@ def test_width():
     xml = ui.modelmap.get_model_overview_svg(model=solarpvutil, width=200)
     tree = ET.fromstring(xml)
     assert int(tree.attrib['width']) == 200
+
+def test_ocean():
+    xml = ui.modelmap.get_model_overview_svg(model=bottomtrawling)
+    tree = ET.fromstring(xml)
+    # Limited Bottom Trawling does not use S-Curve, verify that S-Curve node is empty now.
+    node = tree.find(r'.//{http://www.w3.org/2000/svg}g[@id="sc"]')
+    assert node is not None
+    assert len(node) == 0
