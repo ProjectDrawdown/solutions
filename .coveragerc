@@ -2,6 +2,3 @@
 branch = True
 
 omit =
-	# tools are mostly tested using shell scripts, not pytest
-	tools/*
-	tests/test_excel_integration.py
