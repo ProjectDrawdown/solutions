@@ -117,6 +117,7 @@ if __name__ == "__main__":
     parser.add_argument('--solutiondir', default=None, required=True, help='Solution directory')
     args = parser.parse_args(sys.argv[1:])
     outputdirpath = pathlib.Path(args.solutiondir).joinpath('testdata')
+    outputdirpath.mkdir(parents=True, exist_ok=True)
 
     if args.excelfile is None:
         files = list(glob.glob(str(outputdirpath.joinpath('[!~]*.xlsm'))))
