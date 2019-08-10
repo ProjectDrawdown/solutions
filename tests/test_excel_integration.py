@@ -110,10 +110,8 @@ def get_pd_read_excel_args(r):
         return (usecols, skiprows, nrows)
 
 
-def verify_aez_data(obj, verify=None):
+def verify_aez_data(obj, verify):
     """Verified tables in AEZ Data."""
-    if verify is None:
-        verify = {}
     verify['AEZ Data'] = [
             ('A48:H53', obj.ae.get_land_distribution().reset_index().iloc[:6, :], None),
             ('A55:H58', obj.ae.get_land_distribution().reset_index().iloc[6:, :], None)
@@ -148,11 +146,8 @@ def _get_tam_trend_masks(obj):
     return (d2_mask, d3_mask, exp_mask)
 
 
-def verify_tam_data(obj, verify=None):
+def verify_tam_data(obj, verify):
     """Verified tables in TAM Data."""
-    if verify is None:
-        verify = {}
-
     (d2_mask, d3_mask, exp_mask) = _get_tam_trend_masks(obj=obj)
     verify['TAM Data'] = [
             ('W46:Y94', obj.tm.forecast_min_max_sd_global().reset_index(drop=True), None),
@@ -229,16 +224,13 @@ def verify_tam_data(obj, verify=None):
             ]
     return verify
 
-def verify_tam_data_eleven_sources(obj, verify=None):
+def verify_tam_data_eleven_sources(obj, verify):
     """Verified tables in TAM Data, with smaller source data area.
 
           Some solutions, first noticed with ImprovedCookStoves, have a smaller set of
           columns to hold data sources and this shifts all of the rest of the columns to
           the left. This test specifies the columns for this narrower layout.
     """
-    if verify is None:
-        verify = {}
-
     (d2_mask, d3_mask, exp_mask) = _get_tam_trend_masks(obj=obj)
     verify['TAM Data'] = [
             ('S46:U94', obj.tm.forecast_min_max_sd_global().reset_index(drop=True), None),
@@ -316,10 +308,8 @@ def verify_tam_data_eleven_sources(obj, verify=None):
     return verify
 
 
-def verify_adoption_data(obj, verify=None):
+def verify_adoption_data(obj, verify):
     """Verified tables in Adoption Data."""
-    if verify is None:
-        verify = {}
     verify['Adoption Data'] = [
             ('X46:Z94', obj.ad.adoption_min_max_sd_global().reset_index(drop=True), None),
             ('AB46:AD94', obj.ad.adoption_low_med_high_global().reset_index(drop=True), None),
@@ -395,14 +385,12 @@ def verify_adoption_data(obj, verify=None):
     return verify
 
 
-def verify_custom_adoption(obj, verify=None):
+def verify_custom_adoption(obj, verify):
         """Verified tables in Custom * Adoption.
-              Note: regional data is ignored as there are issues in the xls sheet that have
-              not been replicated. See documentation of issues here:
-              https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.kjrqk1o5e46m
-              """
-        if verify is None:
-            verify = {}
+           Note: regional data is ignored as there are issues in the xls sheet that have
+           not been replicated. See documentation of issues here:
+           https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.kjrqk1o5e46m
+        """
         verify['Custom PDS Adoption'] = [
                 ('A23:B71', obj.pds_ca.adoption_data_per_region()['World'].reset_index(), None)
         ]
@@ -410,15 +398,13 @@ def verify_custom_adoption(obj, verify=None):
         return verify
 
 
-def verify_adoption_data_eleven_sources(obj, verify=None):
+def verify_adoption_data_eleven_sources(obj, verify):
     """Verified tables in Adoption Data.
 
           Some solutions, first noticed with ImprovedCookStoves, have a smaller set of
           columns to hold data sources and this shifts all of the rest of the columns to
           the left. This test specifies the columns for this narrower layout.
     """
-    if verify is None:
-        verify = {}
     verify['Adoption Data'] = [
             ('S46:U94', obj.ad.adoption_min_max_sd_global().reset_index(drop=True), None),
             ('W46:Y94', obj.ad.adoption_low_med_high_global().reset_index(drop=True), None),
@@ -431,20 +417,16 @@ def verify_adoption_data_eleven_sources(obj, verify=None):
     return verify
 
 
-def verify_logistic_s_curve(obj, verify=None):
+def verify_logistic_s_curve(obj, verify):
     """Verified tables in S-Curve Adoption."""
-    if verify is None:
-        verify = {}
     verify['S-Curve Adoption'] = [
             ('A24:K70', obj.sc.logistic_adoption().reset_index(), None),
             ]
     return verify
 
 
-def verify_bass_diffusion_s_curve(obj, verify=None):
+def verify_bass_diffusion_s_curve(obj, verify):
     """Verified tables in S-Curve Adoption."""
-    if verify is None:
-        verify = {}
     verify['S-Curve Adoption'] = [
             ('A130:K176', obj.sc.bass_diffusion_adoption().reset_index(), None),
             ]
@@ -452,12 +434,8 @@ def verify_bass_diffusion_s_curve(obj, verify=None):
 
 
 
-def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=True,
-                soln_type='RRS'):
+def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, soln_type='RRS'):
     """Verified tables in Unit Adoption Calculations."""
-    if verify is None:
-        verify = {}
-
     if hasattr(obj, 'tm'):
         ref_tam_mask = obj.tm.ref_tam_per_region().reset_index().isna()
         verify['Unit Adoption Calculations'] = [
@@ -562,10 +540,8 @@ def verify_unit_adoption_calculations(obj, verify=None, include_regional_data=Tr
     return verify
 
 
-def verify_helper_tables(obj, verify=None, include_regional_data=True):
+def verify_helper_tables(obj, verify, include_regional_data=True):
     """Verified tables in Helper Tables."""
-    if verify is None:
-        verify = {}
     verify['Helper Tables'] = [
             ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None),
             ]
@@ -579,10 +555,8 @@ def verify_helper_tables(obj, verify=None, include_regional_data=True):
     return verify
 
 
-def verify_emissions_factors(obj, verify=None):
+def verify_emissions_factors(obj, verify):
     """Verified tables in Emissions Factors."""
-    if verify is None:
-        verify = {}
     verify['Emissions Factors'] = [
             ('A12:K57', obj.ef.conv_ref_grid_CO2eq_per_KWh().reset_index(), None),
             ('A67:K112', obj.ef.conv_ref_grid_CO2_per_KWh().reset_index(), None),
@@ -590,11 +564,8 @@ def verify_emissions_factors(obj, verify=None):
     return verify
 
 
-def verify_first_cost(obj, verify=None):
+def verify_first_cost(obj, verify):
     """Verified tables in First Cost."""
-    if verify is None:
-        verify = {}
-
     verify['First Cost'] = [
             ('C37:C82', obj.fc.soln_pds_install_cost_per_iunit().loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
             #('D37:D82', checked by 'Unit Adoption Calculations'!AH137
@@ -611,18 +582,15 @@ def verify_first_cost(obj, verify=None):
     return verify
 
 
-def verify_operating_cost(obj, verify=None):
+def verify_operating_cost(obj, verify):
     """Verified tables in Operating Cost."""
-    if verify is None:
-        verify = {}
-
     # This has been a pain point: the last year of each column in the annual_breakout has a tiny
     # remaining_lifetime which is the result of catastrophic substraction between the previous
     # values and therefore has only a few bits of precision. pytest.approx() checks for 6 digits,
     # and there aren't enough bits to even meet that requirement.
     #
-    # We mask off all cells where the value is less than one cent. We assert that being off by a penny at
-    # the end of the equipment lifetime is acceptable.
+    # We mask off all cells where the value is less than one cent. We assert that being off by
+    # a penny at  the end of the equipment lifetime is acceptable.
     s = obj.oc.soln_pds_annual_breakout().reset_index()
     soln_breakout_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
     s = obj.oc.conv_ref_annual_breakout().reset_index()
@@ -659,11 +627,8 @@ def verify_operating_cost(obj, verify=None):
     return verify
 
 
-def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True, is_rrs=True):
+def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True, is_rrs=True):
     """Verified tables in CO2 Calcs."""
-    if verify is None:
-        verify = {}
-
     if include_regional_data == False:
         regional_mask = obj.c2.co2_mmt_reduced().loc[2015:].reset_index()
         regional_mask.loc[:, :] = True
@@ -717,20 +682,16 @@ def verify_co2_calcs(obj, verify=None, shifted=False, include_regional_data=True
                 # All other tables are not implemented as they appear to be all 0
         ]
 
-def verify_ch4_calcs_rrs(obj, verify=None):
+def verify_ch4_calcs_rrs(obj, verify):
     """Verified tables in CH4 Calcs."""
-    if verify is None:
-        verify = {}
     verify['CH4 Calcs'] = [
             ('A11:K56', obj.c4.ch4_tons_reduced().loc[2015:, :].reset_index(), None),
             ('A65:AW110', obj.c4.ch4_ppb_calculator().loc[2015:, :].reset_index(), None),
             ]
     return verify
 
-def verify_ch4_calcs_land(obj, verify=None):
+def verify_ch4_calcs_land(obj, verify):
     """Verified tables in CH4 Calcs."""
-    if verify is None:
-        verify = {}
     verify['CH4 Calcs'] = [
             ('A13:B58', obj.c4.avoided_direct_emissions_ch4_land().loc[2015:, 'World'].reset_index(), None),
             ('A67:AW112', obj.c4.ch4_ppb_calculator().loc[2015:, :].reset_index(), None),
