@@ -2,10 +2,13 @@
 
 import pathlib
 import os.path
+import subprocess
 
 import pytest
 import xlrd
 from tools import solution_xls_extract as sx
+
+this_dir = pathlib.Path(__file__).parents[0]
 
 
 def test_convert_sr_float():
@@ -69,7 +72,15 @@ def test_get_filename_for_source():
         assert inferred == value
 
 
+@pytest.mark.slow
 def test_find_source_data_columns():
-    this_dir = pathlib.Path(__file__).parents[0]
     wb = xlrd.open_workbook(filename=os.path.join(this_dir, 'solution_xls_extract_RRS_test_A.xlsm'))
     assert sx.find_source_data_columns(wb=wb, sheet_name='Adoption Data', row=44) == 'B:R'
+
+
+@pytest.mark.slow
+def test_invoke_shell_test():
+    script = str(this_dir.joinpath('test_solution_xls_extract.sh'))
+    toolsdir = str(this_dir.parents[0])
+    rc = subprocess.run([script, toolsdir], capture_output=True, timeout=90)
+    assert rc.returncode == 0, rc.stdout

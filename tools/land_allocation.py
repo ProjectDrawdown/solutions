@@ -10,6 +10,23 @@ pd.set_option('display.expand_frame_repr', False)
 datadir = pathlib.Path(__file__).parents[1].joinpath('data')
 
 
+def get_full_soln_name(soln_name):
+    """ Returns full name of solution when given the module name.
+        e.g. 'tropicalforests'  -->  'Tropical Forests' """
+    solns_csv = pathlib.Path(__file__).parents[1].joinpath('data', 'overview', 'solutions.csv')
+    # remove leading spaces
+    solns_df = pd.read_csv(solns_csv).apply(lambda x: x.str.strip() if x.dtype == 'object' else x)
+    # there are some exceptions
+    exceptions = {'riceintensification': 'SRI', 'indigenouspeoplesland': 'IP Forest Management',
+                  'peatlands': 'Peatland Protection', 'improvedrice': 'Improved Rice',
+                  'tropicalforests': 'Tropical Forest Restoration', 'perennialbioenergy': 'Perennial Bioenergy Crops',
+                  'tropicaltreestaples': 'Tropical Tree Staples'}
+    if soln_name in exceptions.keys():
+        return exceptions[soln_name]
+    else:
+        return solns_df[solns_df[' DirName'] == soln_name]['Solution'].values[0]
+
+
 def get_tla_regime_and_region():
     """ Returns total land area df (rows = regions, columns = regimes) """
     total_land_dict = {}
