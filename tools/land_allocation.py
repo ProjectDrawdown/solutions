@@ -2,9 +2,10 @@ import os
 import pathlib
 import pandas as pd
 
+import matplotlib.pyplot as plt
 from model.aez import AEZ
 from model.dd import THERMAL_MOISTURE_REGIMES, MAIN_REGIONS, AEZ_LAND_COVER_MAP
-from tools.util import to_filename, get_full_soln_name
+from tools.util import to_filename
 
 pd.set_option('display.expand_frame_repr', False)
 datadir = pathlib.Path(__file__).parents[1].joinpath('data')
@@ -362,7 +363,6 @@ def plot_tla_remaining(alloc_name, reg=None):
         alloc_name: dirname of ranked allocation run (e.g. initial_abatement_cost_run)
         reg: optional region name (e.g. 'OECD90')
     """
-    import matplotlib.pyplot as plt
     csv_path = datadir.joinpath('land', 'allocation', 'ranked', alloc_name, 'tla_remaining')
     reg_tla_remaining = {r: pd.read_csv(
         csv_path.joinpath(f'{to_filename(r)}_tla_remaining.csv'), index_col=0) for r in ['World'] + MAIN_REGIONS}
@@ -393,7 +393,6 @@ def plot_tla_remaining(alloc_name, reg=None):
 
     fig.suptitle(f'Allocation results for {reg}', fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
-    plt.show()
 
 
 def plot_solution_allocation(soln_name, alloc_name):
@@ -404,7 +403,6 @@ def plot_solution_allocation(soln_name, alloc_name):
         soln_name: Solution dirname (e.g. 'tropicalforests')
         alloc_name: dirname of ranked allocation run (e.g. initial_abatement_cost_run)
     """
-    import matplotlib.pyplot as plt
     fullname = get_full_soln_name(soln_name)
     orig_assigned_land = AEZ(fullname).soln_land_alloc_df
 
@@ -445,7 +443,6 @@ def plot_solution_allocation(soln_name, alloc_name):
 
     fig.suptitle(f'Land allocation breakdown for {fullname}', fontsize=20)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
-    plt.show()
 
 
 def plot_alloc(df, ax=None, title=None, regimes_subset=None, y_subset=None, xlims=None):
@@ -459,7 +456,6 @@ def plot_alloc(df, ax=None, title=None, regimes_subset=None, y_subset=None, xlim
         y_subset: subset of AEZs or regions (depends on input df) to include in plot (list of strings)
         xlims: limits of x-axis (tuple)
     """
-    import matplotlib.pyplot as plt
     if ax is None:
         fig, (ax) = plt.subplots(1, 1, figsize=(18, 9))
     if regimes_subset is None:
@@ -483,5 +479,6 @@ if __name__ == '__main__':
     # for s in ['riceintensification', 'forestprotection', 'indigenouspeoplesland', 'peatlands']:
     s = 'peatlands'
     # s = 'improvedrice'
-    # plot_solution_allocation(s, 'matching_tla')
-    # plot_tla_remaining('matching_tla')
+    plot_solution_allocation(s, 'matching_tla')
+    plot_tla_remaining('matching_tla')
+    plt.show()
