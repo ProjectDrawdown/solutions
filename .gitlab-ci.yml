@@ -15,6 +15,7 @@ pages:
   dependencies:
     - test
   script:
+    - mkdir -p public
     - mv coverage/ public/coverage/
   artifacts:
     paths:
