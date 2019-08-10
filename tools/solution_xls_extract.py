@@ -410,40 +410,6 @@ def get_land_scenarios(wb, solution_category):
 
 
 
-def oneline(f, s, names, prefix='', suffix=None):
-    """Format a set of outputs onto a single line.
-       Arguments:
-         f: file-like object to write output to
-         s: a dictionary loaded with values for the scenario we are processing.
-         prefix: string to prepend to each line (typically, some number of spaces)
-         suffix: string to append to the end of the line (typically, a newline)
-
-       This routine *removes* the dict elements in names from s before returning.
-       The intent is that each call to oneline() both outputs a line of text and
-       consumes the entries from s, so that at the end we can check if any
-       unconsumed entries remain.
-    """
-    if not all(n in s for n in names):
-        return
-    f.write(prefix)
-    for n in names:
-        if n == 'vmas':
-            f.write(n + "=" + s[n] + ", ")
-        elif isinstance(s[n], ac.SOLUTION_CATEGORY):
-            f.write(n + "=" + str(s[n]) + ", ")
-        elif isinstance(s[n], str):
-            f.write(str(n) + "='" + str(s[n]) + "', ")
-        elif isinstance(s[n], np.float) and np.isnan(s[n]):
-            f.write(str(n) + "=np.nan, ")
-        else:
-            f.write(str(n) + "=" + str(s[n]) + ", ")
-        del s[n]
-    f.write('\n')
-    if suffix:
-        f.write(str(suffix))
-
-
-
 def json_dumps_default(obj):
     """Default function for json.dumps."""
     if isinstance(obj, np.integer):
