@@ -1,11 +1,13 @@
 """ Reads 'Land Allocation - Max TLA' or 'Ocean Allocation - Max TLA'  sheet """
 
-import xlrd
+import argparse
 import pathlib
+import sys
+
+import model.dd
 import pandas as pd
-import os
-from model.dd import THERMAL_DYNAMICAL_REGIMES, THERMAL_MOISTURE_REGIMES
-from tools.util import cell_to_offsets, convert_float, to_filename
+import tools.util
+import xlrd
 
 LAND_XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'Land Allocation - Max TLA.xlsx')
 LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocation')
@@ -16,24 +18,35 @@ pd.set_option('display.expand_frame_repr', False)
 
 class AllocationReader:
 
-    def __init__(self, key='land'):
-        f = LAND_XLS_PATH if key == 'land' else OCEAN_XLS_PATH
-        wb = xlrd.open_workbook(filename=f)
-        sheetname = 'Land Allocation - Max TLA' if key == 'land' else 'Ocean Allocation - Max TOA'
-        self.sheet = wb.sheet_by_name(sheetname)
+    def __init__(self, key='land', outputdir=None):
+        if key == 'land':
+            f = LAND_XLS_PATH
+            self.regimes = model.dd.THERMAL_MOISTURE_REGIMES
+            sheetname = 'Land Allocation - Max TLA'
+        else:
+            f = OCEAN_XLS_PATH
+            self.regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
+            sheetname = 'Ocean Allocation - Max TOA'
         self.key = key
+
+        wb = xlrd.open_workbook(filename=f)
+        self.sheet = wb.sheet_by_name(sheetname)
         if key == 'land':
             self.first_cells = [
-                cell_to_offsets('D18'),  # forests
-                cell_to_offsets('AU18'),  # grasslands
-                cell_to_offsets('CL18'),  # irrigated croplands
-                cell_to_offsets('EC18')  # rainfed croplands
+                tools.util.cell_to_offsets('D18'),  # forests
+                tools.util.cell_to_offsets('AU18'),  # grasslands
+                tools.util.cell_to_offsets('CL18'),  # irrigated croplands
+                tools.util.cell_to_offsets('EC18')  # rainfed croplands
             ]
         else:
-            self.first_cells = [cell_to_offsets('D18')]
-        self.regimes = THERMAL_MOISTURE_REGIMES if key == 'land' else THERMAL_DYNAMICAL_REGIMES
+            self.first_cells = [tools.util.cell_to_offsets('D18')]
         self.df_dict = None
         self._make_df_template()
+
+        if outputdir is None:
+            outputdir = LAND_CSV_PATH if key == 'land' else OCEAN_CSV_PATH
+        self.outputdir = pathlib.Path(outputdir)
+
 
     def read_allocation_xls(self):
         """
@@ -63,7 +76,7 @@ class AllocationReader:
     def get_single_adoption_df(self, row1, col1):
         """
         Reads an adoption table from the spreadsheet when given the first cell.
-        e.g. get_single_adoption_df(*cell_to_offsets('D18')) would give the
+        e.g. get_single_adoption_df(*tools.util.cell_to_offsets('D18')) would give the
         table associated with cell D18 (Tropical-Humid, AEZ1).
         """
 
@@ -73,16 +86,14 @@ class AllocationReader:
         for i in range(5):
             col = []
             for j in range(25):
-                col.append(convert_float(self.sheet.cell_value(row1 + j, col1 + i)))
+                col.append(tools.util.convert_float(self.sheet.cell_value(row1 + j, col1 + i)))
             df[self.columns[i]] = col
         return df
 
     def make_csvs(self):
         """ Makes csv versions of tables and stores in data/land/allocation """
-
-        path = LAND_CSV_PATH if self.key == 'land' else OCEAN_CSV_PATH
         # Sanity check
-        if os.listdir(path):
+        if list(self.outputdir.glob('*')):
             ans = input('Overwrite existing csv files? y or n')
             if ans == 'n':
                 return
@@ -96,10 +107,10 @@ class AllocationReader:
 
         # write CSVs
         for regime in self.regimes:
-            filename = to_filename(regime)
-            os.mkdir(path.joinpath(filename))
+            filename = tools.util.to_filename(regime)
+            self.outputdir.joinpath(filename).mkdir(parents=True, exist_ok=True)
             for zone, df in self.df_dict[regime].items():
-                df.to_csv(path.joinpath(filename, to_filename(zone) + '.csv'))
+                df.to_csv(self.outputdir.joinpath(filename, tools.util.to_filename(zone) + '.csv'))
 
     def _make_df_template(self):
         """ Makes template of adoption table to feed data into """
@@ -114,6 +125,20 @@ class AllocationReader:
 
 
 if __name__ == '__main__':
-    r = AllocationReader(key='ocean')
+    parser = argparse.ArgumentParser(
+        description='Extract Land/Ocean allocation from Excel..')
+    parser.add_argument('--key', default='land', help='"land" or "ocean"')
+    parser.add_argument('--outputdir', help='Directory to write generated CSV files to')
+    args = parser.parse_args(sys.argv[1:])
+
+    if args.outputdir is None:
+        if args.key == 'land':
+            args.outputdir = LAND_CSV_PATH
+        else:
+            args.outputdir = OCEAN_CSV_PATH
+    else:
+        args.outputdir = pathlib.Path(args.outputdir)
+
+    r = AllocationReader(key=args.key, outputdir=args.outputdir)
     r.read_allocation_xls()
     r.make_csvs()
