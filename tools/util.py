@@ -47,23 +47,6 @@ def to_filename(name):
     return re.sub(' +', '_', re.sub('[^a-zA-Z0-9' '\n]', ' ', name)).strip('_')
 
 
-def get_full_soln_name(soln_name):
-    """ Returns full name of solution when given the module name.
-        e.g. 'tropicalforests'  -->  'Tropical Forests' """
-    solns_csv = pathlib.Path(__file__).parents[1].joinpath('data', 'overview', 'solutions.csv')
-    # remove leading spaces
-    solns_df = pd.read_csv(solns_csv).apply(lambda x: x.str.strip() if x.dtype == 'object' else x)
-    # there are some exceptions
-    exceptions = {'riceintensification': 'SRI', 'indigenouspeoplesland': 'IP Forest Management',
-                  'peatlands': 'Peatland Protection', 'improvedrice': 'Improved Rice',
-                  'tropicalforests': 'Tropical Forest Restoration', 'perennialbioenergy': 'Perennial Bioenergy Crops',
-                  'tropicaltreestaples': 'Tropical Tree Staples'}
-    if soln_name in exceptions.keys():
-        return exceptions[soln_name]
-    else:
-        return solns_df[solns_df[' DirName'] == soln_name]['Solution'].values[0]
-
-
 def pretty_print_table(df):
     """ Prints a nice-looking DataFrame """
     from tabulate import tabulate
