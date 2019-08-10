@@ -5,6 +5,7 @@ import solution.factory
 
 solutions = solution.factory.all_solutions_scenarios()
 
+@pytest.mark.slow
 @pytest.mark.parametrize("name,constructor,scenarios",
     [(name,) + solutions[name] for name in solutions.keys()],
     ids=list(solutions.keys())

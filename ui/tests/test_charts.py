@@ -1,5 +1,7 @@
+import pytest
 import ui.charts
 
+@pytest.mark.slow
 def test_JupyterUI():
     j = ui.charts.JupyterUI()
     # just checking if we get an exception for any reason

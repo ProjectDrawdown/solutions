@@ -72,10 +72,13 @@ def test_get_filename_for_source():
         assert inferred == value
 
 
+@pytest.mark.slow
 def test_find_source_data_columns():
     wb = xlrd.open_workbook(filename=os.path.join(this_dir, 'solution_xls_extract_RRS_test_A.xlsm'))
     assert sx.find_source_data_columns(wb=wb, sheet_name='Adoption Data', row=44) == 'B:R'
 
+
+@pytest.mark.slow
 def test_invoke_shell_test():
     script = str(this_dir.joinpath('test_solution_xls_extract.sh'))
     toolsdir = str(this_dir.parents[0])
