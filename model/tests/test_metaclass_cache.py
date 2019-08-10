@@ -3,6 +3,7 @@
 import pandas as pd
 from model import metaclass_cache
 
+import pytest
 
 
 # test_tam.py also exercises metaclass_cache.
@@ -17,3 +18,8 @@ def test_subclass():
     """Verify that nothing blows up."""
     df = pd.DataFrame(0, index=[1, 2, 3], columns=['A', 'B', 'C'])
     _ = MemoizedClass(df=df, number=3)
+    _ = MemoizedClass(df, 3)
+
+def test_unhashable():
+    with pytest.raises(TypeError):
+        _ = MemoizedClass(df=[dict()], number=0)
