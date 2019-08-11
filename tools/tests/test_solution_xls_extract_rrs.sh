@@ -45,30 +45,24 @@ if [ $? -ne 0 ]; then
 fi
 rm -rf ${tmpdir}
 
+
 tmpdir=$(mktemp -d soln_xls.XXXXXX)
-PYTHONPATH=.:${PYTHONPATH} ${toolsdir}/solution_xls_extract.py --excelfile=${toolsdir}/tests/solution_xls_extract_LAND_test_A.xlsm --outputdir=${tmpdir}
+PYTHONPATH=.:${PYTHONPATH} ${toolsdir}/solution_xls_extract.py --excelfile=${toolsdir}/tests/solution_xls_extract_RRS_test_B.xlsm --outputdir=${tmpdir}
 output=$(cat ${tmpdir}/__init__.py)
 ac_files=$(cat ${tmpdir}/ac/*)
 
 # Check infer class name
 require "$output" "class Scenario" && \
-# Check scenario parsing
-require "${output}${ac_files}" "PDS-84p2050-Plausible-PDScustom-low-Bookedition1" && \
-# Check Solution name extraction
-require "$output" "name = 'Afforestation'" && \
-# Check Helper Tables extraction
-require "$output" "helpertables.HelperTables" && \
-# Check First Cost extraction
-require "$output" "ref_learning_increase_mult=2, conv_learning_increase_mult=2," && \
-require "$output" "fc_convert_iunit_factor=land.MHA_TO_HA" && \
-# Check Adoption Data extraction
-require "$output" "Fully Customized PDS" && \
-require "$output" "ca_pds_data_sources = [" && \
-# Check TLA extraction
-require "$output" "tla.tla_per_region(self.ae.get_land_distribution())" && \
+# Check S-Curve was handled
+require "${output}${ac_files}" "S-Curve" && \
+require "${output}${ac_files}" "self.sc.logistic_adoption" && \
 true
 
+if [ $? -ne 0 ]; then
+    rc=1
+fi
 rm -rf ${tmpdir}
+
 
 trap 'kill $(jobs -pr) >/dev/null 2>&1' SIGINT SIGTERM EXIT
 

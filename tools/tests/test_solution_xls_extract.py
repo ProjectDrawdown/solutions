@@ -79,8 +79,15 @@ def test_find_source_data_columns():
 
 
 @pytest.mark.slow
-def test_invoke_shell_test():
-    script = str(this_dir.joinpath('test_solution_xls_extract.sh'))
+def test_invoke_land_test():
+    script = str(this_dir.joinpath('test_solution_xls_extract_land.sh'))
     toolsdir = str(this_dir.parents[0])
-    rc = subprocess.run([script, toolsdir], capture_output=True, timeout=90)
+    rc = subprocess.run([script, toolsdir], capture_output=True, timeout=120)
+    assert rc.returncode == 0, rc.stdout
+
+@pytest.mark.slow
+def test_invoke_rrs_test():
+    script = str(this_dir.joinpath('test_solution_xls_extract_rrs.sh'))
+    toolsdir = str(this_dir.parents[0])
+    rc = subprocess.run([script, toolsdir], capture_output=True, timeout=120)
     assert rc.returncode == 0, rc.stdout
