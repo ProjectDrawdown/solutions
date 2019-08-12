@@ -306,3 +306,7 @@ Jul 22 - Jul 26, 2019
 Jul 29 - Aug 2, 2019
 + add pytest coverage metric
 
+Aug 5 - Aug 9, 2019
++ rewrite test_excel_integration to pre-process excel, can now run in CI/CD.
++ mark more tests slow, only run with "make alltest" and in CI/CD
++ export code coverage metrics in https://codeearth.gitlab.io/drawdown/coverage/
