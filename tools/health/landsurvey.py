@@ -6,7 +6,9 @@ import pandas as pd
 import xarray as xr
 
 import solution.factory
-from model.aez import AEZ
+import model.aez
+import model.dd
+import tools.util
 
 pd.set_option('display.expand_frame_repr', False)
 datadir = pathlib.Path(__file__).parents[2].joinpath('data')
@@ -17,52 +19,7 @@ land_soln_names = [x.strip() for x in land_soln_names if x.strip() not in ['bioc
 land_solutions_scenarios = {k: x for k, x in solution.factory.all_solutions_scenarios().items() if k in land_soln_names}
 
 
-def adoption_basis():
-    """ Which solutions use which adoption basis """
-    pds_adoption_basis_counts = {
-        'Linear': set(),
-        'Existing Adoption Prognostications': set(),
-        'Bass Diffusion S-Curve': set(),
-        'Logistic S-Curve': set(),
-        'Fully Customized PDS': set(),
-        'Customized S-Curve Adoption': set()}
-
-    for name in land_solutions_scenarios.keys():
-        m = importlib.import_module('solution.'+name)
-        for scenario in m.scenarios.values():
-            pds_adoption_basis_counts[scenario.soln_pds_adoption_basis].add(name)
-            assert scenario.seq_rate_global is not None, '{}'.format(name)
-
-    return pds_adoption_basis_counts
-
-
-def get_scenario_variables():
-    """ See which variables change between scenarios"""
-    vars_per_soln = {}
-    total_var_dict = {}
-    for name in land_solutions_scenarios.keys():
-        m = importlib.import_module('solution.'+name)
-        scenarios = list(m.scenarios.values())
-        var_dict = {}
-        for scenario in scenarios:
-            for k, v in vars(scenario).items():
-                if k in [None, 'vmas'] or type(v) not in [float, int, str]:
-                    continue
-                if k not in var_dict:
-                    var_dict[k] = {v}
-                else:
-                    var_dict[k].add(v)
-        vars_per_soln[name] = [var for var, vals in var_dict.items() if len(vals) > 1]
-    for soln, var_list in vars_per_soln.items():
-        for v in var_list:
-            if v not in total_var_dict:
-                total_var_dict[v] = [soln]
-            else:
-                total_var_dict[v].append(soln)
-    return vars_per_soln, total_var_dict
-
-
-def land_alloc_sum(solns=None, save_csv=False):
+def land_alloc_sum(solns=None, outfile=None):
     """
     Sums land allocations for each TMR/AEZ type. Prints df of remaining %s.
     Args:
@@ -87,12 +44,28 @@ def land_alloc_sum(solns=None, save_csv=False):
     df[df < 0] = 0
     pd.options.display.float_format = '{:.1f}'.format
     print(df)
-    if save_csv:
-        df.to_csv(datadir.joinpath('land', 'allocation', 'perc_land_remaining_after_allocation.csv'))
+    if outfile is not None:
+        df.to_csv(outfile)
     return df
 
 
-def full_survey():
+def get_tla_per_regime():
+    """ Total land area per regime (Mha) """
+    total_land_dict = {}
+    for tmr in model.dd.THERMAL_MOISTURE_REGIMES:
+        df = pd.read_csv(datadir.joinpath('land', 'world', tools.util.to_filename(tmr) + '.csv'),
+                index_col=0).iloc[:5, 0] / 10000
+        total_land_dict[tmr] = df
+
+    return total_land_dict
+
+
+def get_total_world_area():
+    """ All land area considered for DD solutions (Mha) """
+    return sum([x.sum() for x in get_tla_per_regime().values()])
+
+
+def full_survey(outfile):
     """
     Runs all land solutions and extracts data to csv.
     Looks at 'High' (most aggressive) adoption scenario.
@@ -156,7 +129,7 @@ def full_survey():
         results.at[name, 'ca scen world exceeds regions count'] = alloc_report.loc[
                                                                   :, 'World exceeds regions'].fillna(False).sum()
 
-    results.to_csv(datadir.joinpath('health', 'landsurvey.csv'))
+    results.to_csv(outfile)
     return results
 
 
@@ -165,7 +138,7 @@ def aez_survey():
     for name, (constructor, scenarios) in land_solutions_scenarios.items():
         print('processing: {}'.format(name))
         fullname = constructor().name
-        ae = AEZ(solution_name=fullname, ignore_allocation=False)
+        ae = model.aez.AEZ(solution_name=fullname, ignore_allocation=False)
         with_applicable_zones = ae.soln_land_dist_df
         ae.applicable_zones = ae.soln_land_alloc_df.columns.values  # all zones
         ae._populate_solution_land_distribution()
@@ -188,7 +161,7 @@ def tla_with_no_regional_allocation(soln):
 
     """
     world_alloc = soln.ae.get_land_distribution().at['Global', 'All']
-    max_tla = AEZ(soln.name, ignore_allocation=True).get_land_distribution()
+    max_tla = model.aez.AEZ(soln.name, ignore_allocation=True).get_land_distribution()
     return max_tla.clip(upper=world_alloc)
 
 
@@ -211,10 +184,8 @@ def avg_abatement_cost(soln):
 
 
 if __name__ == '__main__':
-    # res = adoption_basis()
-    # res = get_scenario_variables()
-    # res = full_survey()
+    res = full_survey(datadir.joinpath('health', 'landsurvey.csv'))
     # aez_survey()
-    res = land_alloc_sum(save_csv=True)
-    # res = survey_regional_limits()
+    res = land_alloc_sum(outfile=datadir.joinpath('land', 'allocation',
+        'perc_land_remaining_after_allocation.csv'))
 
