@@ -17,16 +17,13 @@ def test_plots():
 def test_ranked_land_allocation():
     tmpdir = tempfile.TemporaryDirectory()
     path = pathlib.Path(tmpdir.name).joinpath('land/world')
-    path = pathlib.Path('/tmp/allocationtest').joinpath('land/world')
     path.mkdir(parents=True, exist_ok=False)
     r = tools.world_data_xls_extract.WorldDataReader(key='land', outputdir=str(path))
     r.read_world_data_xls()
     r.make_csvs()
     tools.land_allocation.datadir = pathlib.Path(tmpdir.name)
-    tools.land_allocation.datadir = pathlib.Path('/tmp/allocationtest')
     tools.land_allocation.datadir.joinpath('land/allocation/ranked').mkdir(parents=True)
     tools.land_allocation.ranked_land_allocation(csv_dirname='csv')
     rankedpath = os.path.join(tmpdir.name, 'land', 'allocation', 'ranked', 'csv')
-    rankedpath = os.path.join('/tmp', 'allocationtest', 'land', 'allocation', 'ranked', 'csv')
     assert os.path.exists(os.path.join(rankedpath, 'solution_order.csv'))
     assert len(list(os.listdir(rankedpath))) >= 2
