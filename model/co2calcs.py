@@ -36,13 +36,17 @@ class CO2Calcs:
       """
 
     def __init__(self, ac, soln_net_annual_funits_adopted=None, ch4_ppb_calculator=None,
-                 soln_pds_net_grid_electricity_units_saved=None, soln_pds_net_grid_electricity_units_used=None,
+                 soln_pds_net_grid_electricity_units_saved=None,
+                 soln_pds_net_grid_electricity_units_used=None,
                  soln_pds_direct_co2eq_emissions_saved=None,
-                 soln_pds_direct_co2_emissions_saved=None, soln_pds_direct_ch4_co2_emissions_saved=None,
-                 soln_pds_direct_n2o_co2_emissions_saved=None, soln_pds_new_iunits_reqd=None,
-                 soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None, conv_ref_grid_CO2_per_KWh=None,
-                 conv_ref_grid_CO2eq_per_KWh=None, fuel_in_liters=None, annual_land_area_harvested=None,
-                 regime_distribution=None, tot_red_in_deg_land=None, pds_protected_deg_land=None,
+                 soln_pds_direct_co2_emissions_saved=None,
+                 soln_pds_direct_ch4_co2_emissions_saved=None,
+                 soln_pds_direct_n2o_co2_emissions_saved=None,
+                 soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None,
+                 conv_ref_new_iunits=None, conv_ref_grid_CO2_per_KWh=None,
+                 conv_ref_grid_CO2eq_per_KWh=None, fuel_in_liters=None,
+                 annual_land_area_harvested=None, regime_distribution=None,
+                 tot_red_in_deg_land=None, pds_protected_deg_land=None,
                  ref_protected_deg_land=None):
         self.ac = ac
         self.ch4_ppb_calculator = ch4_ppb_calculator
@@ -80,8 +84,9 @@ class CO2Calcs:
            intensity values (by year) from the AMPERE 3 MESSAGE Base model used in the IPCC 5th
            Assessment Report WG3.
 
-           CO2 MMT Reduced = (Grid Emissions Reduced + Grid Emissions Replaced - Grid Emissions by Solution)
-             + Fuel Emissions Avoided + Direct Emissions Reduced - Net Indirect Emissions
+           CO2 MMT Reduced = (Grid Emissions Reduced + Grid Emissions Replaced - 
+             Grid Emissions by Solution) + Fuel Emissions Avoided + Direct Emissions Reduced -
+             Net Indirect Emissions
            SolarPVUtil 'CO2 Calcs'!A9:K55
         """
         co2_reduced_grid_emissions = self.co2_reduced_grid_emissions()
@@ -117,7 +122,8 @@ class CO2Calcs:
         """
         s = self.ac.report_start_year
         e = self.ac.report_end_year
-        if self.ac.solution_category != SOLUTION_CATEGORY.LAND and self.ac.solution_category != SOLUTION_CATEGORY.OCEAN:
+        if (self.ac.solution_category != SOLUTION_CATEGORY.LAND and
+                self.ac.solution_category != SOLUTION_CATEGORY.OCEAN):
             # RRS
             co2eq_reduced_grid_emissions = self.co2eq_reduced_grid_emissions()
             m = pd.DataFrame(0.0, columns=co2eq_reduced_grid_emissions.columns.copy(),
@@ -131,10 +137,14 @@ class CO2Calcs:
             m = m.sub(self.co2eq_net_indirect_emissions().loc[s:e], fill_value=0)
         else:
             # LAND/OCEAN
-            regions = REGIONS if self.ac.solution_category == SOLUTION_CATEGORY.LAND else OCEAN_REGIONS
+            if self.ac.solution_category == SOLUTION_CATEGORY.LAND:
+                regions = REGIONS
+            else:
+                regions = OCEAN_REGIONS
             index = pd.Index(list(range(2015, 2061)), name='Year')
             m = pd.DataFrame(0., columns=regions, index=index, dtype=np.float64)
-            if self.soln_pds_direct_co2eq_emissions_saved is not None or self.soln_pds_direct_co2_emissions_saved is not None:
+            if (self.soln_pds_direct_co2eq_emissions_saved is not None or
+                    self.soln_pds_direct_co2_emissions_saved is not None):
                 if self.ac.emissions_use_agg_co2eq is None or self.ac.emissions_use_agg_co2eq:
                     m = m.add(self.soln_pds_direct_co2eq_emissions_saved.loc[s:e], fill_value=0)
                 else:
@@ -164,8 +174,7 @@ class CO2Calcs:
         elif self.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
             regimes = THERMAL_DYNAMICAL_REGIMES
         else:
-            raise ValueError(
-                'Sequestration calculation not valid for solution category: {}'.format(self.ac.solution_category))
+            raise ValueError(f'Sequestration calc not valid for: {self.ac.solution_category}')
 
         cols = ['All'] + regimes
         index = pd.Index(list(range(2015, 2061)), name='Year')
@@ -176,20 +185,22 @@ class CO2Calcs:
             # regrowth calculation
             if self.ac.delay_regrowth_1yr:
                 delayed_index = pd.Index(list(range(2015, 2062)), name='Year')
-                undeg_land = self.tot_red_in_deg_land.reset_index(drop=True).set_index(delayed_index)
+                undeg_land = self.tot_red_in_deg_land.reset_index(drop=True).set_index(
+                        delayed_index)
                 pds_deg_land = self.pds_protected_deg_land.reset_index(drop=True).set_index(
-                    delayed_index)
+                        delayed_index)
                 ref_deg_land = self.ref_protected_deg_land.reset_index(drop=True).set_index(
-                    delayed_index)
+                        delayed_index)
             else:
                 undeg_land = self.tot_red_in_deg_land
                 pds_deg_land = self.pds_protected_deg_land
                 ref_deg_land = self.ref_protected_deg_land
 
-            # The xls uses tables of mature and new growth seq rates across thermal moisture regimes. However, it seems
-            # like this was never fully implemented so we assume global seq rate is used for mature growth and new growth
-            # is mature growth multiplied by the new growth multiplier set in advanced controls. No functionality for
-            # specifying regime-specific seq rates has been implemented.
+            # The xls uses tables of mature and new growth seq rates across thermal moisture
+            # regimes. However, it seems like this was never fully implemented so we assume global
+            # seq rate is used for mature growth and new growth is mature growth multiplied by the
+            # new growth multiplier set in advanced controls. No functionality for specifying
+            # regime-specific seq rates has been implemented.
             if self.ac.include_unprotected_land_in_regrowth_calcs:
                 undeg_seq_rate = self.ac.seq_rate_global * (1 - self.ac.global_multi_for_regrowth)
                 deg_seq_rate = self.ac.seq_rate_global * (self.ac.global_multi_for_regrowth - 1)
@@ -218,8 +229,8 @@ class CO2Calcs:
 
         if set_regions_from_distribution:
             for reg in regimes:
-                df[reg] = df['All'] * self.regime_distribution.loc['Global', reg] / self.regime_distribution.loc[
-                    'Global', 'All']
+                df[reg] = (df['All'] * self.regime_distribution.loc['Global', reg] /
+                        self.regime_distribution.loc[ 'Global', 'All'])
 
         df.name = 'co2_sequestered_global'
         return df
@@ -246,7 +257,8 @@ class CO2Calcs:
         else:
             co2_vals = self.co2_mmt_reduced()['World']
 
-        if self.ac.solution_category == SOLUTION_CATEGORY.LAND or self.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
+        if (self.ac.solution_category == SOLUTION_CATEGORY.LAND or
+                self.ac.solution_category == SOLUTION_CATEGORY.OCEAN):
             co2_vals = self.co2_sequestered_global()['All'] + self.co2eq_mmt_reduced()['World']
             assert self.ac.emissions_use_co2eq, 'Land/ocean models must use CO2 eq'
 
@@ -258,10 +270,11 @@ class CO2Calcs:
         first_year = ppm_calculator.first_valid_index()
         last_year = ppm_calculator.last_valid_index()
         for year in ppm_calculator.index:
-            if year < self.ac.report_start_year and self.ac.solution_category != SOLUTION_CATEGORY.LAND:
+            if (year < self.ac.report_start_year and
+                    self.ac.solution_category != SOLUTION_CATEGORY.LAND):
                 # On RRS xls models this skips the calc but on LAND the calc is done anyway
-                # Note that this affects the values for all years and should probably NOT be skipped
-                # (i.e. LAND is the correct implementation)
+                # Note that this affects the values for all years and should probably NOT be
+                # skipped (i.e. LAND is the correct implementation)
                 # see: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
                 continue
             b = co2_vals[year]
@@ -287,9 +300,9 @@ class CO2Calcs:
            LAND: Improved Rice 'CO2 Calcs'!A224:H270
         """
         co2_ppm_calculator = self.co2_ppm_calculator()
-        ppm_calculator = pd.DataFrame(0,
-                                      columns=["CO2-eq PPM", "CO2 PPM", "CH4 PPB", "CO2 RF", "CH4 RF"],
-                                      index=co2_ppm_calculator.index.copy(), dtype=np.float64)
+        ppm_calculator = pd.DataFrame(
+                0, columns=["CO2-eq PPM", "CO2 PPM", "CH4 PPB", "CO2 RF", "CH4 RF"],
+                index=co2_ppm_calculator.index.copy(), dtype=np.float64)
         ppm_calculator.index = ppm_calculator.index.astype(int)
         ppm_calculator["CO2 PPM"] = co2_ppm_calculator["PPM"]
         ppm_calculator["CO2 RF"] = ppm_calculator["CO2 PPM"].apply(co2_rf)
@@ -452,11 +465,13 @@ class CO2Calcs:
 
     @lru_cache()
     def direct_emissions_from_harvesting(self):
-        """Net Land Units [Mha]* (Carbon Sequestration Rate [t C/ha/yr] * Years of Sequestration [yr]-
-           Carbon Stored even After Harvesting/Clearing [t C/ha]) * (CO2 per C)
+        """Net Land Units [Mha]* (Carbon Sequestration Rate [t C/ha/yr] *
+           Years of Sequestration [yr] - Carbon Stored even After Harvesting/Clearing [t C/ha]) *
+           (CO2 per C)
            Afforestation 'CO2 Calcs'!CU365:DD411"""
-        return self.annual_land_area_harvested * (self.ac.seq_rate_global * self.ac.harvest_frequency -
-                                                  self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
+        return self.annual_land_area_harvested * (
+                self.ac.seq_rate_global * self.ac.harvest_frequency -
+                self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
 
 
 
@@ -483,16 +498,10 @@ def ch4_rf(x):
     old_M = original_ch4
     new_M = original_ch4 + x
     N = original_n2o
-    return indirect_ch4_forcing_scalar * 0.036 * (new_M ** 0.5 - old_M ** 0.5) - f(new_M, N) + f(old_M,
-                                                                                                 N)
-
+    return (indirect_ch4_forcing_scalar * 0.036 * (new_M ** 0.5 - old_M ** 0.5) -
+            f(new_M, N) + f(old_M, N))
 
 
 def co2eq_ppm(x):
     original_co2 = 400
     return (original_co2 * math.exp(x / 5.35)) - original_co2
-
-
-if __name__ == '__main__':
-    # debug use only
-    pass

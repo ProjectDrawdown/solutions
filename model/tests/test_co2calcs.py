@@ -16,45 +16,39 @@ def test_co2_mmt_reduced_allfields():
     # the real data from the SolarPVUtil solution has many fields as zero. Test them all.
     # Most of the values here are nonsensical for the real world, designed to ensure that
     # every factor influencing co2_mmt_reduced is non-zero.
-    soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[11.0, 11.0], [11.0, 11.0], [11.0, 11.0]],
-                                                             columns=["A", "B"],
-                                                             index=[2020, 2021, 2022])
-    soln_pds_net_grid_electricity_units_used = pd.DataFrame([[7.0, 7.0], [7.0, 7.0], [7.0, 7.0]],
-                                                            columns=["A", "B"],
-                                                            index=[2020, 2021, 2022])
+    soln_pds_net_grid_electricity_units_saved = pd.DataFrame(
+            [[11.0, 11.0], [11.0, 11.0], [11.0, 11.0]], columns=["A", "B"],
+            index=[2020, 2021, 2022])
+    soln_pds_net_grid_electricity_units_used = pd.DataFrame(
+            [[7.0, 7.0], [7.0, 7.0], [7.0, 7.0]], columns=["A", "B"],
+            index=[2020, 2021, 2022])
     emissions_saved = pd.DataFrame([
-        [5000000.0, 5000000.0], [5000000.0, 5000000.0], [5000000.0, 5000000.0]],
-        columns=["A", "B"], index=[2020, 2021, 2022])
+            [5000000.0, 5000000.0], [5000000.0, 5000000.0], [5000000.0, 5000000.0]],
+            columns=["A", "B"], index=[2020, 2021, 2022])
     soln_net_annual_funits_adopted = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-                                                  columns=["A", "B"], index=[2020, 2021, 2022])
+            columns=["A", "B"], index=[2020, 2021, 2022])
     conv_ref_grid_CO2_per_KWh = pd.DataFrame([[2020, 1.0, 1.0], [2021, 1.0, 1.0], [2022, 1.0, 1.0]],
-                                             columns=["Year", "A", "B"]).set_index('Year')
+            columns=["Year", "A", "B"]).set_index('Year')
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-                                            solution_category="REPLACEMENT", conv_fuel_consumed_per_funit=1.0,
-
-                                            conv_fuel_emissions_factor=4000000.0, soln_fuel_emissions_factor=0.0,
-
-                                            soln_fuel_efficiency_factor=0.00,
-                                            soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
-
-                                            conv_indirect_co2_is_iunits=False)
+            solution_category="REPLACEMENT", conv_fuel_consumed_per_funit=1.0,
+            conv_fuel_emissions_factor=4000000.0, soln_fuel_emissions_factor=0.0,
+            soln_fuel_efficiency_factor=0.00,
+            soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
+            conv_indirect_co2_is_iunits=False)
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-
-                           soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-
-                           soln_pds_direct_co2_emissions_saved=emissions_saved,
-                           soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
-                           soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-
-                           conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
-                           conv_ref_grid_CO2eq_per_KWh=None,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
+            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+            soln_pds_direct_co2_emissions_saved=emissions_saved,
+            soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
+            soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
+            conv_ref_grid_CO2eq_per_KWh=None,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
     result = c2.co2_mmt_reduced()
     expected = pd.DataFrame([[23.0, 23.0], [23.0, 23.0], [23.0, 23.0]],
-                            columns=["A", "B"], index=[2020, 2021, 2022])
+            columns=["A", "B"], index=[2020, 2021, 2022])
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
@@ -62,48 +56,46 @@ def test_co2eq_mmt_reduced_allfields():
     # the real data from the SolarPVUtil solution has many fields as zero. Test them all.
     # Most of the values here are nonsensical for the real world, designed to ensure that
     # every factor influencing co2_mmt_reduced is non-zero.
-    soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[11.0, 11.0], [11.0, 11.0], [11.0, 11.0]],
-
-                                                             columns=["A", "B"],
-                                                             index=[2020, 2021, 2022])
+    soln_pds_net_grid_electricity_units_saved = pd.DataFrame(
+            [[11.0, 11.0], [11.0, 11.0], [11.0, 11.0]], columns=["A", "B"],
+            index=[2020, 2021, 2022])
     soln_pds_net_grid_electricity_units_used = pd.DataFrame([[7.0, 7.0], [7.0, 7.0], [7.0, 7.0]],
-                                                            columns=["A", "B"],
-                                                            index=[2020, 2021, 2022])
+            columns=["A", "B"], index=[2020, 2021, 2022])
     emissions_saved = pd.DataFrame([
-        [5000000.0, 5000000.0], [5000000.0, 5000000.0], [5000000.0, 5000000.0]],
-        columns=["A", "B"], index=[2020, 2021, 2022])
+            [5000000.0, 5000000.0], [5000000.0, 5000000.0], [5000000.0, 5000000.0]],
+            columns=["A", "B"], index=[2020, 2021, 2022])
     soln_net_annual_funits_adopted = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-                                                  columns=["A", "B"], index=[2020, 2021, 2022])
-    conv_ref_grid_CO2eq_per_KWh = pd.DataFrame([[2020, 1.0, 1.0], [2021, 1.0, 1.0], [2022, 1.0, 1.0]],
-
-                                               columns=["Year", "A", "B"]).set_index('Year')
+            columns=["A", "B"], index=[2020, 2021, 2022])
+    conv_ref_grid_CO2eq_per_KWh = pd.DataFrame(
+            [[2020, 1.0, 1.0], [2021, 1.0, 1.0], [2022, 1.0, 1.0]],
+            columns=["Year", "A", "B"]).set_index('Year')
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-                                            solution_category="REPLACEMENT", conv_fuel_consumed_per_funit=1.0,
-                                            conv_fuel_emissions_factor=4000000.0, soln_fuel_emissions_factor=0.0,
-                                            soln_fuel_efficiency_factor=0.00,
-                                            soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
-                                            conv_indirect_co2_is_iunits=False)
+            solution_category="REPLACEMENT", conv_fuel_consumed_per_funit=1.0,
+            conv_fuel_emissions_factor=4000000.0, soln_fuel_emissions_factor=0.0,
+            soln_fuel_efficiency_factor=0.00,
+            soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
+            conv_indirect_co2_is_iunits=False)
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-                           soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-                           soln_pds_direct_co2_emissions_saved=emissions_saved,
-                           soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
-                           soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=None,
-                           conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
+            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+            soln_pds_direct_co2_emissions_saved=emissions_saved,
+            soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
+            soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=None,
+            conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
     result = c2.co2eq_mmt_reduced()
     expected = pd.DataFrame([[23.0, 23.0], [23.0, 23.0], [23.0, 23.0]],
-                            columns=["A", "B"], index=[2020, 2021, 2022])
+            columns=["A", "B"], index=[2020, 2021, 2022])
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_co2eq_mmt_reduced_land():
     avoided_em = pd.read_csv(datadir.joinpath('fp_des_co2eq.csv'), index_col=0)
-    ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050, solution_category='LAND',
-                                            emissions_use_agg_co2eq=True)
+    ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
+            solution_category='LAND', emissions_use_agg_co2eq=True)
     c2 = co2calcs.CO2Calcs(ac=ac, soln_pds_direct_co2eq_emissions_saved=avoided_em)
     expected = pd.read_csv(datadir.joinpath('fp_co2eq_mmt_red.csv'), index_col=0)
     pd.testing.assert_frame_equal(c2.co2eq_mmt_reduced().loc[:, ['World']], expected.loc[:, ['World']])
@@ -114,10 +106,10 @@ def test_co2eq_mmt_reduced_land_not_aggregate():
     avoided_n2o = pd.read_csv(datadir.joinpath('pl_n2o_avoided.csv'), index_col=0)
     avoided_ch4 = pd.read_csv(datadir.joinpath('pl_ch4_avoided.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050, solution_category='LAND',
-                                            emissions_use_agg_co2eq=False)
+            emissions_use_agg_co2eq=False)
     c2 = co2calcs.CO2Calcs(ac=ac, soln_pds_direct_co2_emissions_saved=avoided_co2,
-                           soln_pds_direct_n2o_co2_emissions_saved=avoided_n2o,
-                           soln_pds_direct_ch4_co2_emissions_saved=avoided_ch4)
+            soln_pds_direct_n2o_co2_emissions_saved=avoided_n2o,
+            soln_pds_direct_ch4_co2_emissions_saved=avoided_ch4)
     expected = pd.read_csv(datadir.joinpath('pl_co2eq_mmt_reduced.csv'), index_col=0)
     pd.testing.assert_frame_equal(c2.co2eq_mmt_reduced().loc[:, ['World']], expected.loc[:, ['World']])
 
@@ -125,55 +117,52 @@ def test_co2eq_mmt_reduced_land_not_aggregate():
 def test_co2eq_mmt_reduced_land_with_electricity():
     avoided_em = pd.read_csv(datadir.joinpath('fp_des_co2eq.csv'), index_col=0)
     conv_ref_grid_CO2eq_per_KWh = pd.DataFrame(2.0, index=list(range(2014, 2061)),
-                                               columns=['World'])
+            columns=['World'])
     soln_pds_net_grid_electricity_units_used = pd.DataFrame(3.0, index=list(range(2014, 2061)),
-                                                            columns=['World'])
+            columns=['World'])
     soln_pds_net_grid_electricity_units_saved = pd.DataFrame(5.0, index=list(range(2014, 2061)),
-                                                             columns=['World'])
+            columns=['World'])
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-                                            solution_category='LAND')
+            solution_category='LAND')
     c2 = co2calcs.CO2Calcs(ac=ac, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
-                           soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-                           soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved)
+            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved)
     expected = pd.Series(0.0, index=list(range(2014, 2061)))
     expected.loc[2020:2050] = 4.0
     result = c2.co2eq_mmt_reduced()
     pd.testing.assert_series_equal(result.loc[2015:, 'World'], expected.loc[2015:],
-                                   check_names=False, check_exact=False)
+            check_names=False, check_exact=False)
 
 
 def test_co2_ppm_calculator():
     soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-                                                             columns=["World", "B"],
-                                                             index=[2020, 2021, 2022])
+            columns=["World", "B"], index=[2020, 2021, 2022])
     soln_pds_net_grid_electricity_units_used = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-                                                            columns=["World", "B"],
-                                                            index=[2020, 2021, 2022])
+            columns=["World", "B"], index=[2020, 2021, 2022])
     emissions_saved = pd.DataFrame([
-        [1000000.0, 1000000.0], [1000000.0, 1000000.0], [1000000.0, 1000000.0]],
-        columns=["World", "B"], index=[2020, 2021, 2022])
+            [1000000.0, 1000000.0], [1000000.0, 1000000.0], [1000000.0, 1000000.0]],
+            columns=["World", "B"], index=[2020, 2021, 2022])
     soln_net_annual_funits_adopted = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-                                                  columns=["World", "B"], index=[2020, 2021, 2022])
+            columns=["World", "B"], index=[2020, 2021, 2022])
     conv_ref_grid_CO2_per_KWh = pd.DataFrame([[2020, 1.0, 1.0], [2021, 1.0, 1.0], [2022, 1.0, 1.0]],
-                                             columns=["Year", "World", "B"]).set_index('Year')
+            columns=["Year", "World", "B"]).set_index('Year')
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-                                            soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
-
-                                            conv_indirect_co2_is_iunits=False)
+            soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
+            conv_indirect_co2_is_iunits=False)
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-                           soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-                           soln_pds_direct_co2_emissions_saved=emissions_saved,
-                           soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
-                           soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
-                           conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
+            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+            soln_pds_direct_co2_emissions_saved=emissions_saved,
+            soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
+            soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
+            conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
     result = c2.co2_ppm_calculator()
     expected = pd.DataFrame(co2_ppm_calculator_list[1:],
-                            columns=co2_ppm_calculator_list[0]).set_index('Year')
+            columns=co2_ppm_calculator_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
@@ -182,9 +171,11 @@ def test_co2_ppm_calculator_land():
     funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
     land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(
-        seq_rate_global=4.150868085, solution_category=SOLUTION_CATEGORY.LAND, emissions_use_co2eq=True,
-        soln_indirect_co2_per_iunit=0.0, conv_indirect_co2_per_unit=0.0)
-    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, regime_distribution=land_dist)
+            seq_rate_global=4.150868085, solution_category=SOLUTION_CATEGORY.LAND,
+            emissions_use_co2eq=True, soln_indirect_co2_per_iunit=0.0,
+            conv_indirect_co2_per_unit=0.0)
+    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits,
+            regime_distribution=land_dist)
     result = c2.co2_ppm_calculator()
     assert result.at[2059, 'PPM'] == pytest.approx(6.79894469686587)
     assert result.at[2060, 'PPM'] == pytest.approx(6.98450283426954)
@@ -195,7 +186,7 @@ def test_co2_ppm_calculator_land_with_avoided_emissions():
     co2eq_mmt_red = pd.read_csv(datadir.joinpath('fp_co2eq_mmt_red.csv'), index_col=0)
     co2_seq_global = pd.read_csv(datadir.joinpath('fp_co2_seq_global.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND,
-                                            emissions_use_co2eq=True)
+            emissions_use_co2eq=True)
     expected = pd.read_csv(datadir.joinpath('fp_co2_ppm_calc.csv'), index_col=0).fillna(0.)
     with mock.patch.object(co2calcs.CO2Calcs, 'co2eq_mmt_reduced', new=lambda x: co2eq_mmt_red):
         with mock.patch.object(co2calcs.CO2Calcs, 'co2_sequestered_global',
@@ -208,38 +199,35 @@ def test_co2_ppm_calculator_land_with_avoided_emissions():
 
 def test_co2eq_ppm_calculator():
     soln_pds_net_grid_electricity_units_saved = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-                                                             columns=["World", "B"],
-                                                             index=[2020, 2021, 2022])
+            columns=["World", "B"], index=[2020, 2021, 2022])
     soln_pds_net_grid_electricity_units_used = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-                                                            columns=["World", "B"],
-                                                            index=[2020, 2021, 2022])
+            columns=["World", "B"], index=[2020, 2021, 2022])
     emissions_saved = pd.DataFrame([
-        [1000000.0, 1000000.0], [1000000.0, 1000000.0], [1000000.0, 1000000.0]],
-        columns=["World", "B"], index=[2020, 2021, 2022])
+            [1000000.0, 1000000.0], [1000000.0, 1000000.0], [1000000.0, 1000000.0]],
+            columns=["World", "B"], index=[2020, 2021, 2022])
     soln_net_annual_funits_adopted = pd.DataFrame([[1.0, 1.0], [1.0, 1.0], [1.0, 1.0]],
-                                                  columns=["World", "B"], index=[2020, 2021, 2022])
+            columns=["World", "B"], index=[2020, 2021, 2022])
     conv_ref_grid_CO2_per_KWh = pd.DataFrame([[2020, 1.0, 1.0], [2021, 1.0, 1.0], [2022, 1.0, 1.0]],
-                                             columns=["Year", "World", "B"]).set_index('Year')
+            columns=["Year", "World", "B"]).set_index('Year')
     # SolarPVUtil lacks a CH4 Calcs tab, so we craft up some data for the test.
     ch4_ppb_calculator = pd.DataFrame([[2020, 1.0], [2021, 1.0], [2022, 1.0]],
-                                      columns=["Year", "PPB"]).set_index('Year')
+            columns=["Year", "PPB"]).set_index('Year')
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
-                                            soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
-
-                                            conv_indirect_co2_is_iunits=False)
+            soln_indirect_co2_per_iunit=2000000.0, conv_indirect_co2_per_unit=1000000.0,
+            conv_indirect_co2_is_iunits=False)
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=ch4_ppb_calculator,
-                           soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-                           soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-                           soln_pds_direct_co2_emissions_saved=emissions_saved,
-                           soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
-                           soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
-                           conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
+            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+            soln_pds_direct_co2_emissions_saved=emissions_saved,
+            soln_pds_direct_ch4_co2_emissions_saved=emissions_saved,
+            soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
+            conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
     expected = pd.DataFrame(co2eq_ppm_calculator_list[1:],
-                            columns=co2eq_ppm_calculator_list[0]).set_index('Year')
+            columns=co2eq_ppm_calculator_list[0]).set_index('Year')
     result = c2.co2eq_ppm_calculator()
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
@@ -247,162 +235,159 @@ def test_co2eq_ppm_calculator():
 def test_co2_reduced_grid_emissions():
     ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050)
     soln_pds_net_grid_electricity_units_saved = pd.DataFrame([
-        [2015, 1.0, 2.0, 3.0], [2016, 2.0, 3.0, 4.0], [2017, 3.0, 4.0, 5.0]],
-        columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
+            [2015, 1.0, 2.0, 3.0], [2016, 2.0, 3.0, 4.0], [2017, 3.0, 4.0, 5.0]],
+            columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
     conv_ref_grid_CO2_per_KWh = pd.DataFrame([
-        [2015, 0.5, 0.4, 0.7], [2016, 0.5, 0.4, 0.7], [2017, 0.5, 0.4, 0.7]],
-        columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
+            [2015, 0.5, 0.4, 0.7], [2016, 0.5, 0.4, 0.7], [2017, 0.5, 0.4, 0.7]],
+            columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
     c2 = co2calcs.CO2Calcs(ac=ac,
-                           ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-                           soln_pds_net_grid_electricity_units_used=None,
-                           soln_pds_direct_co2_emissions_saved=None,
-                           soln_pds_direct_ch4_co2_emissions_saved=None,
-                           soln_pds_direct_n2o_co2_emissions_saved=None,
-                           soln_pds_new_iunits_reqd=None,
-                           soln_ref_new_iunits_reqd=None,
-                           conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
-                           conv_ref_grid_CO2eq_per_KWh=None,
-                           soln_net_annual_funits_adopted=None,
-                           fuel_in_liters=False)
+            ch4_ppb_calculator=None,
+            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
+            soln_pds_net_grid_electricity_units_used=None,
+            soln_pds_direct_co2_emissions_saved=None,
+            soln_pds_direct_ch4_co2_emissions_saved=None,
+            soln_pds_direct_n2o_co2_emissions_saved=None,
+            soln_pds_new_iunits_reqd=None,
+            soln_ref_new_iunits_reqd=None,
+            conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
+            conv_ref_grid_CO2eq_per_KWh=None,
+            soln_net_annual_funits_adopted=None,
+            fuel_in_liters=False)
     result = c2.co2_reduced_grid_emissions()
     expected = pd.DataFrame([
-        [2015, 0.5, 0.8, 2.1], [2016, 1.0, 1.2, 2.8], [2017, 1.5, 1.6, 3.5]],
-        columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
+            [2015, 0.5, 0.8, 2.1], [2016, 1.0, 1.2, 2.8], [2017, 1.5, 1.6, 3.5]],
+            columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
     pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
 
 
 def test_co2_replaced_grid_emissions():
     ac = advanced_controls.AdvancedControls(solution_category="REPLACEMENT")
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     conv_ref_grid_CO2_per_KWh = pd.DataFrame(conv_ref_grid_CO2_per_KWh_list[1:],
-                                             columns=conv_ref_grid_CO2_per_KWh_list[0]).set_index(
-        'Year')
+            columns=conv_ref_grid_CO2_per_KWh_list[0]).set_index('Year')
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=None,
-                           soln_pds_net_grid_electricity_units_used=None,
-                           soln_pds_direct_co2_emissions_saved=None,
-                           soln_pds_direct_ch4_co2_emissions_saved=None,
-                           soln_pds_direct_n2o_co2_emissions_saved=None,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=None,
+            soln_pds_net_grid_electricity_units_used=None,
+            soln_pds_direct_co2_emissions_saved=None,
+            soln_pds_direct_ch4_co2_emissions_saved=None,
+            soln_pds_direct_n2o_co2_emissions_saved=None,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
     result = c2.co2_replaced_grid_emissions()
     expected = pd.DataFrame(co2_replaced_grid_emissions_list[1:],
-                            columns=co2_replaced_grid_emissions_list[0]).set_index('Year')
+            columns=co2_replaced_grid_emissions_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
 
 
 def test_co2_replaced_grid_emissions_not_replacement():
     ac = advanced_controls.AdvancedControls(solution_category="REDUCTION")
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     conv_ref_grid_CO2_per_KWh = pd.DataFrame(conv_ref_grid_CO2_per_KWh_list[1:],
-                                             columns=conv_ref_grid_CO2_per_KWh_list[0]).set_index(
-        'Year')
+            columns=conv_ref_grid_CO2_per_KWh_list[0]).set_index('Year')
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=None,
-                           soln_pds_net_grid_electricity_units_used=None,
-                           soln_pds_direct_co2_emissions_saved=None,
-                           soln_pds_direct_ch4_co2_emissions_saved=None,
-                           soln_pds_direct_n2o_co2_emissions_saved=None,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=None,
+            soln_pds_net_grid_electricity_units_used=None,
+            soln_pds_direct_co2_emissions_saved=None,
+            soln_pds_direct_ch4_co2_emissions_saved=None,
+            soln_pds_direct_n2o_co2_emissions_saved=None,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
     result = c2.co2_replaced_grid_emissions()
     expected = pd.DataFrame(0, index=soln_net_annual_funits_adopted.index.copy(),
-                            columns=soln_net_annual_funits_adopted.columns.copy(), dtype=np.float64)
+            columns=soln_net_annual_funits_adopted.columns.copy(), dtype=np.float64)
     pd.testing.assert_frame_equal(result, expected)
 
 
 def test_co2_increased_grid_usage_emissions():
-    soln_pds_net_grid_electricity_units_used = pd.DataFrame([[2014, 2.0, 2.0, 2.0],
-                                                             [2015, 2.0, 2.0, 2.0], [2016, 2.0, 2.0, 2.0]],
-                                                            columns=["Year", "A", "B", "C"]).set_index("Year")
-    conv_ref_grid_CO2_per_KWh = pd.DataFrame([[2014, 3.0, 3.0, 3.0],
-                                              [2015, 3.0, 3.0, 3.0], [2016, 3.0, 3.0, 3.0]],
-                                             columns=["Year", "A", "B", "C"]).set_index("Year")
+    soln_pds_net_grid_electricity_units_used = pd.DataFrame(
+            [[2014, 2.0, 2.0, 2.0], [2015, 2.0, 2.0, 2.0], [2016, 2.0, 2.0, 2.0]],
+            columns=["Year", "A", "B", "C"]).set_index("Year")
+    conv_ref_grid_CO2_per_KWh = pd.DataFrame(
+            [[2014, 3.0, 3.0, 3.0], [2015, 3.0, 3.0, 3.0], [2016, 3.0, 3.0, 3.0]],
+            columns=["Year", "A", "B", "C"]).set_index("Year")
     c2 = co2calcs.CO2Calcs(ac=None, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=None,
-                           soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
-                           soln_pds_direct_co2_emissions_saved=None,
-                           soln_pds_direct_ch4_co2_emissions_saved=None,
-                           soln_pds_direct_n2o_co2_emissions_saved=None,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
-                           soln_net_annual_funits_adopted=None, fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=None,
+            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+            soln_pds_direct_co2_emissions_saved=None,
+            soln_pds_direct_ch4_co2_emissions_saved=None,
+            soln_pds_direct_n2o_co2_emissions_saved=None,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh, conv_ref_grid_CO2eq_per_KWh=None,
+            soln_net_annual_funits_adopted=None, fuel_in_liters=False)
     result = c2.co2_increased_grid_usage_emissions()
     expected = pd.DataFrame([[2014, 6.0, 6.0, 6.0], [2015, 6.0, 6.0, 6.0], [2016, 6.0, 6.0, 6.0]],
-                            columns=["Year", "A", "B", "C"]).set_index("Year")
+            columns=["Year", "A", "B", "C"]).set_index("Year")
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_co2eq_replaced_grid_emissions():
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
+            columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     conv_ref_grid_CO2eq_per_KWh = pd.DataFrame(conv_ref_grid_CO2eq_per_KWh_list[1:],
-                                               columns=conv_ref_grid_CO2eq_per_KWh_list[0]).set_index('Year')
+            columns=conv_ref_grid_CO2eq_per_KWh_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(solution_category="REPLACEMENT")
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=None,
-                           soln_pds_net_grid_electricity_units_used=None,
-                           soln_pds_direct_co2_emissions_saved=None,
-                           soln_pds_direct_ch4_co2_emissions_saved=None,
-                           soln_pds_direct_n2o_co2_emissions_saved=None,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=None,
+            soln_pds_net_grid_electricity_units_used=None,
+            soln_pds_direct_co2_emissions_saved=None,
+            soln_pds_direct_ch4_co2_emissions_saved=None,
+            soln_pds_direct_n2o_co2_emissions_saved=None,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
     result = c2.co2eq_replaced_grid_emissions()
     expected = pd.DataFrame(co2eq_replaced_grid_emissions_list[1:],
-                            columns=co2eq_replaced_grid_emissions_list[0]).set_index('Year')
+            columns=co2eq_replaced_grid_emissions_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result.loc[2015:], expected, check_exact=False)
 
 
 def test_co2eq_replaced_grid_emissions_not_replacement():
     soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
+            columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     conv_ref_grid_CO2eq_per_KWh = pd.DataFrame(conv_ref_grid_CO2eq_per_KWh_list[1:],
-                                               columns=conv_ref_grid_CO2eq_per_KWh_list[0]).set_index('Year')
+            columns=conv_ref_grid_CO2eq_per_KWh_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(solution_category="REDUCTION")
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=None,
-                           soln_pds_net_grid_electricity_units_used=None,
-                           soln_pds_direct_co2_emissions_saved=None,
-                           soln_pds_direct_ch4_co2_emissions_saved=None,
-                           soln_pds_direct_n2o_co2_emissions_saved=None,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=None,
+            soln_pds_net_grid_electricity_units_used=None,
+            soln_pds_direct_co2_emissions_saved=None,
+            soln_pds_direct_ch4_co2_emissions_saved=None,
+            soln_pds_direct_n2o_co2_emissions_saved=None,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
     result = c2.co2eq_replaced_grid_emissions()
     expected = pd.DataFrame(0, index=soln_net_annual_funits_adopted.index.copy(),
-                            columns=soln_net_annual_funits_adopted.columns.copy(), dtype=np.float64)
+            columns=soln_net_annual_funits_adopted.columns.copy(), dtype=np.float64)
     pd.testing.assert_frame_equal(result, expected)
 
 
 def test_co2eq_reduced_grid_emissions():
     soln_pds_net_grid_electricity_units_saved = pd.DataFrame([
-        [2015, 1.0, 2.0, 3.0], [2016, 2.0, 3.0, 4.0], [2017, 3.0, 4.0, 5.0]],
-        columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
+            [2015, 1.0, 2.0, 3.0], [2016, 2.0, 3.0, 4.0], [2017, 3.0, 4.0, 5.0]],
+            columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
     conv_ref_grid_CO2eq_per_KWh = pd.DataFrame([
-        [2015, 0.5, 0.4, 0.7], [2016, 0.5, 0.4, 0.7], [2017, 0.5, 0.4, 0.7]],
-        columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
-    c2 = co2calcs.CO2Calcs(ac=None, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
-                           soln_pds_net_grid_electricity_units_used=None,
-                           soln_pds_direct_co2_emissions_saved=None,
-                           soln_pds_direct_ch4_co2_emissions_saved=None,
-                           soln_pds_direct_n2o_co2_emissions_saved=None,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
-                           soln_net_annual_funits_adopted=None, fuel_in_liters=False)
+            [2015, 0.5, 0.4, 0.7], [2016, 0.5, 0.4, 0.7], [2017, 0.5, 0.4, 0.7]],
+            columns=["Year", "World", "OECD90", "Eastern Europe"]).set_index('Year')
+    c2 = co2calcs.CO2Calcs(
+            ac=None, ch4_ppb_calculator=None,
+            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
+            soln_pds_net_grid_electricity_units_used=None,
+            soln_pds_direct_co2_emissions_saved=None,
+            soln_pds_direct_ch4_co2_emissions_saved=None,
+            soln_pds_direct_n2o_co2_emissions_saved=None,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
+            soln_net_annual_funits_adopted=None, fuel_in_liters=False)
     result = c2.co2eq_reduced_grid_emissions()
     expected = pd.DataFrame([
         [2015, 0.5, 0.8, 2.1], [2016, 1.0, 1.2, 2.8], [2017, 1.5, 1.6, 3.5]],
@@ -411,47 +396,49 @@ def test_co2eq_reduced_grid_emissions():
 
 
 def test_co2eq_reduced_fuel_emissions():
-    soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
+    soln_net_annual_funits_adopted = pd.DataFrame(
+            soln_net_annual_funits_adopted_list[1:],
+            columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(
-        conv_fuel_consumed_per_funit=100.0,
-        conv_fuel_emissions_factor=140.0,
-        soln_fuel_emissions_factor=10.0,
-        soln_fuel_efficiency_factor=0.03)
+            conv_fuel_consumed_per_funit=100.0,
+            conv_fuel_emissions_factor=140.0,
+            soln_fuel_emissions_factor=10.0,
+            soln_fuel_efficiency_factor=0.03)
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=None,
-                           soln_pds_net_grid_electricity_units_used=None,
-                           soln_pds_direct_co2_emissions_saved=None,
-                           soln_pds_direct_ch4_co2_emissions_saved=None,
-                           soln_pds_direct_n2o_co2_emissions_saved=None,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=False)
+            soln_pds_net_grid_electricity_units_saved=None,
+            soln_pds_net_grid_electricity_units_used=None,
+            soln_pds_direct_co2_emissions_saved=None,
+            soln_pds_direct_ch4_co2_emissions_saved=None,
+            soln_pds_direct_n2o_co2_emissions_saved=None,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
     result = c2.co2eq_reduced_fuel_emissions()
     expected = pd.DataFrame(co2eq_reduced_fuel_emissions_list[1:],
-                            columns=co2eq_reduced_fuel_emissions_list[0]).set_index('Year')
+            columns=co2eq_reduced_fuel_emissions_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result.loc[2015:], expected)
 
 
 def test_co2eq_reduced_fuel_emissions_liters():
-    soln_net_annual_funits_adopted = pd.DataFrame(soln_net_annual_funits_adopted_list[1:],
-                                                  columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
+    soln_net_annual_funits_adopted = pd.DataFrame(
+            soln_net_annual_funits_adopted_list[1:],
+            columns=soln_net_annual_funits_adopted_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(
-        conv_fuel_consumed_per_funit=100.0,
-        conv_fuel_emissions_factor=140.0,
-        soln_fuel_emissions_factor=10.0,
-        soln_fuel_efficiency_factor=0.03)
+            conv_fuel_consumed_per_funit=100.0,
+            conv_fuel_emissions_factor=140.0,
+            soln_fuel_emissions_factor=10.0,
+            soln_fuel_efficiency_factor=0.03)
     c2 = co2calcs.CO2Calcs(ac=ac, ch4_ppb_calculator=None,
-                           soln_pds_net_grid_electricity_units_saved=None,
-                           soln_pds_net_grid_electricity_units_used=None,
-                           soln_pds_direct_co2_emissions_saved=None,
-                           soln_pds_direct_ch4_co2_emissions_saved=None,
-                           soln_pds_direct_n2o_co2_emissions_saved=None,
-                           soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-                           conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
-                           soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                           fuel_in_liters=True)
+            soln_pds_net_grid_electricity_units_saved=None,
+            soln_pds_net_grid_electricity_units_used=None,
+            soln_pds_direct_co2_emissions_saved=None,
+            soln_pds_direct_ch4_co2_emissions_saved=None,
+            soln_pds_direct_n2o_co2_emissions_saved=None,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=None, conv_ref_grid_CO2eq_per_KWh=None,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=True)
     with pytest.raises(NotImplementedError):
         _ = c2.co2eq_reduced_fuel_emissions()
 
@@ -1302,170 +1289,6 @@ co2eq_reduced_fuel_emissions_list = [
      -0.46534608118, -0.22450553191, -1.00612142294, -0.22460974021],
     [2060, 125.53526534624, -1.35021359045, -0.00750660813, -0.92592366214, -0.10144748421, -0.65033726558,
      -0.47135181508, -0.22869875787, -1.01247534635, -0.22580075245]]
-
-# "CO2 Calcs"!A64:K110
-co2eq_mmt_reduced_list = [
-    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America",
-     "China", "India", "EU", "USA"],
-    [2015, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2016, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2017, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2019, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2020, 281.53832246658, -33.06503281241, -0.25150522783, -11.68639706732, -0.59179726531, -10.20752635460,
-     -8.90141066296, -3.52672232084, -19.00172901916, -8.62695533687],
-    [2021, 449.75302880009, -33.32630238756, -0.25516429556, -12.14665088812, -0.62529629666, -10.61398959562,
-     -9.13271446631, -3.76927458751, -19.16094384147, -8.68462706015],
-    [2022, 543.99457351336, -33.58757196270, -0.25882336328, -12.60690470892, -0.65879532802, -11.02045283665,
-     -9.36401826967, -4.01182685419, -19.32015866377, -8.74229878343],
-    [2023, 644.19299936156, -33.84884153784, -0.26248243100, -13.06715852972, -0.69229435937, -11.42691607767,
-     -9.59532207302, -4.25437912087, -19.47937348607, -8.79997050671],
-    [2024, 749.94265807256, -34.11011111298, -0.26614149873, -13.52741235053, -0.72579339072, -11.83337931869,
-     -9.82662587637, -4.49693138755, -19.63858830837, -8.85764222999],
-    [2025, 778.05397432700, -34.37138068813, -0.26980056645, -13.98766617133, -0.75929242207, -12.23984255971,
-     -10.05792967972, -4.73948365423, -19.79780313067, -8.91531395327],
-    [2026, 976.48562402800, -34.63265026327, -0.27345963417, -14.44791999213, -0.79279145342, -12.64630580073,
-     -10.28923348307, -4.98203592091, -19.95701795297, -8.97298567655],
-    [2027, 1096.48073948873, -34.89391983841, -0.27711870190, -14.90817381293, -0.82629048477, -13.05276904176,
-     -10.52053728643, -5.22458818759, -20.11623277527, -9.03065739983],
-    [2028, 1220.43106935991, -35.15518941356, -0.28077776962, -15.36842763373, -0.85978951613, -13.45923228278,
-     -10.75184108978, -5.46714045427, -20.27544759757, -9.08832912311],
-    [2029, 1347.94504340568, -35.41645898870, -0.28443683734, -15.82868145454, -0.89328854748, -13.86569552380,
-     -10.98314489313, -5.70969272095, -20.43466241987, -9.14600084639],
-    [2030, 1540.07292857969, -35.67772856384, -0.28809590507, -16.28893527534, -0.92678757883, -14.27215876482,
-     -11.21444869648, -5.95224498763, -20.59387724217, -9.20367256967],
-    [2031, 1612.11311579793, -35.93899813899, -0.29175497279, -16.74918909614, -0.96028661018, -14.67862200585,
-     -11.44575249984, -6.19479725431, -20.75309206447, -9.26134429295],
-    [2032, 1747.99952390596, -36.20026771413, -0.29541404051, -17.20944291694, -0.99378564153, -15.08508524687,
-     -11.67705630319, -6.43734952099, -20.91230688678, -9.31901601623],
-    [2033, 1885.91414757526, -36.46153728927, -0.29907310824, -17.66969673775, -1.02728467289, -15.49154848789,
-     -11.90836010654, -6.67990178767, -21.07152170908, -9.37668773951],
-    [2034, 2025.48072762716, -36.72280686442, -0.30273217596, -18.12995055855, -1.06078370424, -15.89801172891,
-     -12.13966390989, -6.92245405435, -21.23073653138, -9.43435946279],
-    [2035, 2166.11978086154, -36.98407643956, -0.30639124368, -18.59020437935, -1.09428273559, -16.30447496993,
-     -12.37096771324, -7.16500632102, -21.38995135368, -9.49203118607],
-    [2036, 2308.07971276209, -37.24534601470, -0.31005031141, -19.05045820015, -1.12778176694, -16.71093821096,
-     -12.60227151660, -7.40755858770, -21.54916617598, -9.54970290935],
-    [2037, 2450.37448649780, -37.50661558984, -0.31370937913, -19.51071202095, -1.16128079829, -17.11740145198,
-     -12.83357531995, -7.65011085438, -21.70838099828, -9.60737463263],
-    [2038, 2592.84569174435, -37.76788516499, -0.31736844685, -19.97096584176, -1.19477982964, -17.52386469300,
-     -13.06487912330, -7.89266312106, -21.86759582058, -9.66504635591],
-    [2039, 2735.13139635127, -38.02915474013, -0.32102751458, -20.43121966256, -1.22827886100, -17.93032793402,
-     -13.29618292665, -8.13521538774, -22.02681064288, -9.72271807919],
-    [2040, 2897.77259030755, -38.29042431527, -0.32468658230, -20.89147348336, -1.26177789235, -18.33679117505,
-     -13.52748673001, -8.37776765442, -22.18602546518, -9.78038980247],
-    [2041, 3017.71177239437, -38.55169389042, -0.32834565002, -21.35172730416, -1.29527692370, -18.74325441607,
-     -13.75879053336, -8.62031992110, -22.34524028748, -9.83806152575],
-    [2042, 3157.29555186691, -38.81296346556, -0.33200471775, -21.81198112496, -1.32877595505, -19.14971765709,
-     -13.99009433671, -8.86287218778, -22.50445510979, -9.89573324903],
-    [2043, 3295.27185423621, -39.07423304070, -0.33566378547, -22.27223494577, -1.36227498640, -19.55618089811,
-     -14.22139814006, -9.10542445446, -22.66366993209, -9.95340497231],
-    [2044, 3431.29116909046, -39.33550261585, -0.33932285319, -22.73248876657, -1.39577401776, -19.96264413913,
-     -14.45270194341, -9.34797672114, -22.82288475439, -10.01107669559],
-    [2045, 3564.21162661837, -39.59677219099, -0.34298192092, -23.19274258737, -1.42927304911, -20.36910738016,
-     -14.68400574677, -9.59052898782, -22.98209957669, -10.06874841887],
-    [2046, 3696.07145691736, -39.85804176613, -0.34664098864, -23.65299640817, -1.46277208046, -20.77557062118,
-     -14.91530955012, -9.83308125450, -23.14131439899, -10.12642014215],
-    [2047, 3824.14370047022, -40.11931134127, -0.35030005636, -24.11325022898, -1.49627111181, -21.18203386220,
-     -15.14661335347, -10.07563352118, -23.30052922129, -10.18409186543],
-    [2048, 3948.88131093746, -40.38058091642, -0.35395912408, -24.57350404978, -1.52977014316, -21.58849710322,
-     -15.37791715682, -10.31818578785, -23.45974404359, -10.24176358871],
-    [2049, 4069.94442311025, -40.64185049156, -0.35761819181, -25.03375787058, -1.56326917451, -21.99496034425,
-     -15.60922096017, -10.56073805453, -23.61895886589, -10.29943531199],
-    [2050, 4183.09215400771, -40.90312006670, -0.36127725953, -25.49401169138, -1.59676820587, -22.40142358527,
-     -15.84052476353, -10.80329032121, -23.77817368819, -10.35710703527],
-    [2051, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2052, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2053, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2054, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2055, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2056, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2057, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2058, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2059, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2060, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
-
-# "CO2 Calcs"!A9:K55
-co2_mmt_reduced_list = [
-    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America",
-     "China", "India", "EU", "USA"],
-    [2015, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2016, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2017, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2019, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2020, 231.82963042573, -28.18786267921, -0.22791752837, -9.69687524586, -0.36104780552, -8.80504440498,
-     -7.81529314892, -3.23310188969, -15.29960113436, -7.66288545301],
-    [2021, 371.87667524657, -28.41059437732, -0.23123342633, -10.07877429105, -0.38148512834, -9.15566087775,
-     -8.01837410969, -3.45546024978, -15.42779595671, -7.71411231024],
-    [2022, 450.17417765496, -28.63332607543, -0.23454932429, -10.46067333624, -0.40192245116, -9.50627735053,
-     -8.22145507047, -3.67781860986, -15.55599077906, -7.76533916747],
-    [2023, 533.56773563469, -28.85605777355, -0.23786522225, -10.84257238143, -0.42235977398, -9.85689382330,
-     -8.42453603124, -3.90017696995, -15.68418560140, -7.81656602470],
-    [2024, 621.74413084048, -29.07878947166, -0.24118112021, -11.22447142663, -0.44279709681, -10.20751029607,
-     -8.62761699201, -4.12253533004, -15.81238042375, -7.86779288193],
-    [2025, 645.82703333500, -29.30152116977, -0.24449701817, -11.60637047182, -0.46323441963, -10.55812676885,
-     -8.83069795278, -4.34489369013, -15.94057524609, -7.91901973916],
-    [2026, 811.19255954899, -29.52425286788, -0.24781291613, -11.98826951701, -0.48367174245, -10.90874324162,
-     -9.03377891355, -4.56725205022, -16.06877006844, -7.97024659639],
-    [2027, 911.83815636112, -29.74698456599, -0.25112881409, -12.37016856220, -0.50410906527, -11.25935971439,
-     -9.23685987432, -4.78961041031, -16.19696489079, -8.02147345362],
-    [2028, 1016.01371701809, -29.96971626410, -0.25444471205, -12.75206760739, -0.52454638810, -11.60997618717,
-     -9.43994083510, -5.01196877040, -16.32515971313, -8.07270031085],
-    [2029, 1123.40602317462, -30.19244796221, -0.25776061001, -13.13396665259, -0.54498371092, -11.96059265994,
-     -9.64302179587, -5.23432713048, -16.45335453548, -8.12392716808],
-    [2030, 1286.54814902244, -30.41517966032, -0.26107650796, -13.51586569778, -0.56542103374, -12.31120913272,
-     -9.84610275664, -5.45668549057, -16.58154935783, -8.17515402531],
-    [2031, 1346.58799860510, -30.63791135843, -0.26439240592, -13.89776474297, -0.58585835656, -12.66182560549,
-     -10.04918371741, -5.67904385066, -16.70974418017, -8.22638088254],
-    [2032, 1461.75123118846, -30.86064305654, -0.26770830388, -14.27966378816, -0.60629567939, -13.01244207826,
-     -10.25226467818, -5.90140221075, -16.83793900252, -8.27760773977],
-    [2033, 1578.87833589017, -31.08337475465, -0.27102420184, -14.66156283336, -0.62673300221, -13.36305855104,
-     -10.45534563895, -6.12376057084, -16.96613382486, -8.32883459700],
-    [2034, 1697.65609436493, -31.30610645276, -0.27434009980, -15.04346187855, -0.64717032503, -13.71367502381,
-     -10.65842659973, -6.34611893093, -17.09432864721, -8.38006145423],
-    [2035, 1817.77128826743, -31.52883815087, -0.27765599776, -15.42536092374, -0.66760764785, -14.06429149658,
-     -10.86150756050, -6.56847729101, -17.22252346956, -8.43128831146],
-    [2036, 1938.91069925237, -31.75156984898, -0.28097189572, -15.80725996893, -0.68804497068, -14.41490796936,
-     -11.06458852127, -6.79083565110, -17.35071829190, -8.48251516870],
-    [2037, 2060.76110897447, -31.97430154709, -0.28428779368, -16.18915901413, -0.70848229350, -14.76552444213,
-     -11.26766948204, -7.01319401119, -17.47891311425, -8.53374202593],
-    [2038, 2183.00929908840, -32.19703324520, -0.28760369164, -16.57105805932, -0.72891961632, -15.11614091490,
-     -11.47075044281, -7.23555237128, -17.60710793660, -8.58496888316],
-    [2039, 2305.34205124888, -32.41976494331, -0.29091958959, -16.95295710451, -0.74935693914, -15.46675738768,
-     -11.67383140359, -7.45791073137, -17.73530275894, -8.63619574039],
-    [2040, 2448.81855997400, -32.64249664142, -0.29423548755, -17.33485614970, -0.76979426196, -15.81737386045,
-     -11.87691236436, -7.68026909146, -17.86349758129, -8.68742259762],
-    [2041, 2549.00836832827, -32.86522833953, -0.29755138551, -17.71675519489, -0.79023158479, -16.16799033322,
-     -12.07999332513, -7.90262745155, -17.99169240363, -8.73864945485],
-    [2042, 2669.71549655658, -33.08796003764, -0.30086728347, -18.09865424009, -0.81066890761, -16.51860680600,
-     -12.28307428590, -8.12498581163, -18.11988722598, -8.78987631208],
-    [2043, 2789.25431345024, -33.31069173576, -0.30418318143, -18.48055328528, -0.83110623043, -16.86922327877,
-     -12.48615524667, -8.34734417172, -18.24808204833, -8.84110316931],
-    [2044, 2907.31160066394, -33.53342343387, -0.30749907939, -18.86245233047, -0.85154355325, -17.21983975154,
-     -12.68923620744, -8.56970253181, -18.37627687067, -8.89233002654],
-    [2045, 3023.57413985238, -33.75615513198, -0.31081497735, -19.24435137566, -0.87198087608, -17.57045622432,
-     -12.89231716822, -8.79206089190, -18.50447169302, -8.94355688377],
-    [2046, 3137.72871267026, -33.97888683009, -0.31413087531, -19.62625042086, -0.89241819890, -17.92107269709,
-     -13.09539812899, -9.01441925199, -18.63266651537, -8.99478374100],
-    [2047, 3249.46210077229, -34.20161852820, -0.31744677327, -20.00814946605, -0.91285552172, -18.27168916986,
-     -13.29847908976, -9.23677761208, -18.76086133771, -9.04601059823],
-    [2048, 3358.46108581316, -34.42435022631, -0.32076267122, -20.39004851124, -0.93329284454, -18.62230564264,
-     -13.50156005053, -9.45913597217, -18.88905616006, -9.09723745546],
-    [2049, 3464.41244944757, -34.64708192442, -0.32407856918, -20.77194755643, -0.95373016737, -18.97292211541,
-     -13.70464101130, -9.68149433225, -19.01725098240, -9.14846431269],
-    [2050, 3555.96187032156, -34.86981362253, -0.32739446714, -21.15384660163, -0.97416749019, -19.32353858819,
-     -13.90772197207, -9.90385269234, -19.14544580475, -9.19969116992],
-    [2051, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2052, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2053, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2054, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2055, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2056, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2057, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2058, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2059, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2060, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
 # Not from spreadsheet, crafted up data for test case
 co2_ppm_calculator_list = [
