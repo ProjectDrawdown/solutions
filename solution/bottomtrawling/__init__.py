@@ -12,6 +12,7 @@ from model import ch4calcs
 from model import co2calcs
 from model import customadoption
 from model import emissionsfactors
+from model import faircalcs
 from model import firstcost
 from model import helpertables
 from model import operatingcost
@@ -186,3 +187,5 @@ class Scenario:
             conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
             regime_distribution=self.de.get_ocean_distribution())
+
+        self.fr = faircalcs.FaIRcalcs(co2eq_mmt_reduced=self.c2.co2eq_mmt_reduced()["World"])

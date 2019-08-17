@@ -15,6 +15,7 @@ from model import co2calcs
 from model import customadoption
 from model import dd
 from model import emissionsfactors
+from model import faircalcs
 from model import firstcost
 from model import helpertables
 from model import operatingcost
@@ -170,3 +171,4 @@ class Scenario:
         annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
         regime_distribution=self.ae.get_land_distribution())
 
+    self.fr = faircalcs.FaIRcalcs(co2eq_mmt_reduced=self.c2.co2eq_mmt_reduced()["World"])
