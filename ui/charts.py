@@ -1526,15 +1526,16 @@ class JupyterUI:
                 co2_red = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World']
                 co2_seq = s.c2.co2_sequestered_global().loc[2020:2050, 'All']
                 df = pd.concat([co2_red, co2_seq, co2_red + co2_seq], axis=1)
-                df.columns = ['CO2-eq emissions reduced', 'CO2 sequestered', 'Total atmospheric CO2-eq reduction']
+                df.columns = ['CO2eq emissions<br/>reduced', 'CO2<br/>sequestered', 'Total']
             else:
                 df = pd.concat([s.c2.co2_mmt_reduced().loc[2020:2050, 'World'],
                                 s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World']], axis=1)
-                df.columns = ['CO2', 'CO2-eq']
+                df.columns = ['CO2 emissions<br/>reduced', 'CO2eq emissions<br/>reduced']
             c2_table = ipywidgets.Output()
             with c2_table:
                 IPython.display.display(IPython.display.HTML(df
                     .style.format('{:.02f}').set_table_styles(dataframe_css_styles).render()))
+
             c2_model = ipywidgets.Output()
             with c2_model:
                 IPython.display.display(IPython.display.SVG(
