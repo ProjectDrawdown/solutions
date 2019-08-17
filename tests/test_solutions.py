@@ -25,9 +25,6 @@ def test_solutions(name, constructor, scenarios):
     obj = constructor(scenario=None)
     assert obj.scenario is not None
 
-    (C, _, _) = obj.fr.CFT()
-    assert len(C) > 0
-
 
 def test_sane_number_of_solutions():
     assert len(list(solutions.keys())) >= 60
