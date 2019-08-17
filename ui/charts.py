@@ -1526,7 +1526,7 @@ class JupyterUI:
                 co2_red = s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World']
                 co2_seq = s.c2.co2_sequestered_global().loc[2020:2050, 'All']
                 df = pd.concat([co2_red, co2_seq, co2_red + co2_seq], axis=1)
-                df.columns = ['CO2eq emissions<br/>reduced', 'CO2<br/>sequestered', 'Total']
+                df.columns = ['CO2eq<br/>emissions<br/>reduced', 'CO2<br/>sequestered', 'Total']
             else:
                 df = pd.concat([s.c2.co2_mmt_reduced().loc[2020:2050, 'World'],
                                 s.c2.co2eq_mmt_reduced().loc[2020:2050, 'World']], axis=1)
@@ -1543,20 +1543,20 @@ class JupyterUI:
                         highlights=['c2'], width=350)))
 
             # FaIR results
-            (Cb, Fb, Tb) = s.fr.CFT_baseline()
-            (C, F, T) = s.fr.CFT()
+            (Cb, Fb, Tb) = s.c2.FaIR_CFT_baseline()
+            (C, F, T) = s.c2.FaIR_CFT()
             df_C = pd.DataFrame()
-            df_C[s.fr.baseline_name] = Cb
+            df_C[s.c2.baseline_name] = Cb
             df_C['Drawdown'] = C
             df_C.index.name = 'Year'
 
             df_F = pd.DataFrame()
-            df_F[s.fr.baseline_name] = Fb
+            df_F[s.c2.baseline_name] = Fb
             df_F['Drawdown'] = F
             df_F.index.name = 'Year'
 
             df_T = pd.DataFrame()
-            df_T[s.fr.baseline_name] = Tb
+            df_T[s.c2.baseline_name] = Tb
             df_T['Drawdown'] = T
             df_T.index.name = 'Year'
 
