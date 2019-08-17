@@ -64,15 +64,18 @@ class FaIRcalcs:
 
     def __init__(self, co2eq_mmt_reduced, baseline=None):
         self.co2eq_mmt_reduced = co2eq_mmt_reduced
-        self.baseline_name = baseline
         if baseline == 'RCP26' or baseline == 'RCP3':  # 'RCP3' refers to RCP3PD, which is RCP26.
             self.baseline = fair.RCPs.rcp26.Emissions
+            self.baseline_name = 'RCP2.6'
         elif baseline == 'RCP45' or baseline is None:
             self.baseline = fair.RCPs.rcp45.Emissions
+            self.baseline_name = 'RCP4.5'
         elif baseline == 'RCP6' or baseline == 'RCP60':
             self.baseline = fair.RCPs.rcp60.Emissions
+            self.baseline_name = 'RCP6.0'
         elif baseline == 'RCP85':
             self.baseline = fair.RCPs.rcp85.Emissions
+            self.baseline_name = 'RCP8.5'
         else:
             raise ValueError(f'Unknown baseline: {baseline}')
 
@@ -107,7 +110,17 @@ class FaIRcalcs:
              T: Change in temperature since pre-industrial time in Kelvin
         """
         emissions = self.baseline.emissions[:, CO2_FOSSIL] + self.baseline.emissions[:, CO2_LAND]
-        return fair.forward.fair_scm(emissions=emissions, useMultigas=False)
+        (C, F, T) = fair.forward.fair_scm(emissions=emissions, useMultigas=False)
+        df_C = pd.Series(C, index=self.baseline.year)
+        df_C.index = df_C.index.astype(int)
+        df_C.name = 'C'
+        df_F = pd.Series(F, index=self.baseline.year)
+        df_F.index = df_F.index.astype(int)
+        df_C.name = 'F'
+        df_T = pd.Series(T, index=self.baseline.year)
+        df_T.index = df_T.index.astype(int)
+        df_C.name = 'T'
+        return (df_C, df_F, df_T)
 
 
     @lru_cache()
@@ -124,6 +137,16 @@ class FaIRcalcs:
         """
         (first_year_idx, last_year_idx) = self._baseline_indexes()
         emissions = self.baseline.emissions[:, CO2_FOSSIL] + self.baseline.emissions[:, CO2_LAND]
-        gtons = self.co2eq_mmt_reduced.cumsum().values / 1000.0
+        gtons = self.co2eq_mmt_reduced.values / 1000.0
         emissions[first_year_idx:last_year_idx+1] -= gtons
-        return fair.forward.fair_scm(emissions=emissions, useMultigas=False)
+        (C, F, T) = fair.forward.fair_scm(emissions=emissions, useMultigas=False)
+        df_C = pd.Series(C, index=self.baseline.year)
+        df_C.index = df_C.index.astype(int)
+        df_C.name = 'C'
+        df_F = pd.Series(F, index=self.baseline.year)
+        df_F.index = df_F.index.astype(int)
+        df_F.name = 'F'
+        df_T = pd.Series(T, index=self.baseline.year)
+        df_T.index = df_T.index.astype(int)
+        df_T.name = 'T'
+        return (df_C, df_F, df_T)

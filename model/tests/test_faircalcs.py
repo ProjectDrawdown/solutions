@@ -1,4 +1,12 @@
-"""Tests for co2calc.py."""
+"""Tests for faircalc.py.
+
+Finite Amplitude Impulse Response (FaIR) Calcs module.
+
+Computes impacts of CO2 + CH4 + N2O (et al) emissions using
+https://fair.readthedocs.io/en/latest/examples.html
+"""
+
+
 
 import numpy as np
 import pandas as pd
