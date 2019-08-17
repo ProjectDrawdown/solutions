@@ -3,6 +3,7 @@ import pathlib
 import tempfile
 
 import matplotlib.pyplot as plt
+import pytest
 import tools.land_allocation
 import tools.world_data_xls_extract
 
@@ -14,6 +15,7 @@ def test_plots():
     plt.savefig(path)
     assert os.path.exists(path)
 
+@pytest.mark.slow
 def test_ranked_land_allocation():
     tmpdir = tempfile.TemporaryDirectory()
     path = pathlib.Path(tmpdir.name).joinpath('land/world')
