@@ -174,7 +174,7 @@ class CO2Calcs:
         elif self.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
             regimes = THERMAL_DYNAMICAL_REGIMES
         else:
-            raise ValueError(f'Sequestration calc not valid for: {self.ac.solution_category}')
+            return None
 
         cols = ['All'] + regimes
         index = pd.Index(list(range(2015, 2061)), name='Year')

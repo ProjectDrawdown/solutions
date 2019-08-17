@@ -603,11 +603,10 @@ def test_co2_sequestered_global_simple_with_regime_seq():
     assert result.loc[2055, 'Tropical-Semi-Arid'] == pytest.approx(70.32984072182640)
 
 
-def test_co2_sequestered_global_raises():
+def test_co2_sequestered_global_replacement():
     ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.REPLACEMENT)
     c2 = co2calcs.CO2Calcs(ac=ac)
-    with pytest.raises(ValueError):
-        c2.co2_sequestered_global()
+    assert c2.co2_sequestered_global() is None
 
 
 # 'Unit Adoption'!B251:L298
