@@ -62,8 +62,9 @@ class FaIRcalcs:
           baseline: string name of the RCP baseline case to use like 'RCP60' or 'RCP85'.
       """
 
-    def __init__(self, co2eq_mmt_reduced, baseline=None):
+    def __init__(self, co2eq_mmt_reduced=None, co2_sequestered_global=None, baseline=None):
         self.co2eq_mmt_reduced = co2eq_mmt_reduced
+        self.co2_sequestered_global = co2_sequestered_global
         if baseline == 'RCP26' or baseline == 'RCP3':  # 'RCP3' refers to RCP3PD, which is RCP26.
             self.baseline = fair.RCPs.rcp26.Emissions
             self.baseline_name = 'RCP2.6'
@@ -80,10 +81,9 @@ class FaIRcalcs:
             raise ValueError(f'Unknown baseline: {baseline}')
 
 
-    @lru_cache()
-    def _baseline_indexes(self):
-        first_year = list(self.co2eq_mmt_reduced.index)[0]
-        last_year = list(self.co2eq_mmt_reduced.index)[-1]
+    def _baseline_indexes(self, df):
+        first_year = list(df.index)[0]
+        last_year = list(df.index)[-1]
         first_year_idx = last_year_idx = -1
         for (index, year) in enumerate(self.baseline.year):
             if year == first_year:
@@ -135,10 +135,16 @@ class FaIRcalcs:
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        (first_year_idx, last_year_idx) = self._baseline_indexes()
         emissions = self.baseline.emissions[:, CO2_FOSSIL] + self.baseline.emissions[:, CO2_LAND]
-        gtons = self.co2eq_mmt_reduced.values / 1000.0
-        emissions[first_year_idx:last_year_idx+1] -= gtons
+        if self.co2eq_mmt_reduced is not None:
+            (first_year_idx, last_year_idx) = self._baseline_indexes(self.co2eq_mmt_reduced)
+            gtons = self.co2eq_mmt_reduced.values / 1000.0
+            emissions[first_year_idx:last_year_idx+1] -= gtons
+        if self.co2_sequestered_global is not None:
+            (first_year_idx, last_year_idx) = self._baseline_indexes(self.co2_sequestered_global)
+            gtons = self.co2_sequestered_global.values / 1000.0
+            emissions[first_year_idx:last_year_idx+1] -= gtons
+
         (C, F, T) = fair.forward.fair_scm(emissions=emissions, useMultigas=False)
         df_C = pd.Series(C, index=self.baseline.year)
         df_C.index = df_C.index.astype(int)
