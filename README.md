@@ -23,6 +23,7 @@ $ conda activate drawdown
 (drawdown) $ conda install -c conda-forge ipyvolume pillow qgrid
 (drawdown) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (drawdown) $ jupyter labextension install bqplot ipyvolume jupyter-threejs qgrid
+(drawdown) $ pip install fair
 ```
 
 Then start the Jupyter Notebook:
