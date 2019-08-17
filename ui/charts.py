@@ -1513,11 +1513,11 @@ class JupyterUI:
         return tam_data
 
 
-    def get_co2_calcs_tab(self, solutions):
-        """Return CO2 Calcs panel.
+    def get_emissions_tab(self, solutions):
+        """Return Emissions panel.
 
            Arguments:
-           solutions: a list of solution objects to be processed.
+             solutions: a list of solution objects to be processed.
         """
         children = []
         for s in solutions:
@@ -1535,29 +1535,76 @@ class JupyterUI:
             with c2_table:
                 IPython.display.display(IPython.display.HTML(df
                     .style.format('{:.02f}').set_table_styles(dataframe_css_styles).render()))
-            c2_chart = ipywidgets.Output()
-            with c2_chart:
-                melted_df = df.reset_index().melt('Year', value_name='mmt', var_name='column')
-                chart = alt.Chart(melted_df, width=300).mark_line().encode(
-                    y='mmt',
-                    x='Year:O',
-                    color=alt.Color('column'),
-                    tooltip=['column', 'mmt', 'Year'],
-                ).properties(
-                    title='Cumulative Atmospheric CO2-eq Reduction (MMt)'
-                ).interactive()
-                IPython.display.display(chart)
             c2_model = ipywidgets.Output()
             with c2_model:
                 IPython.display.display(IPython.display.SVG(
                     data=ui.modelmap.get_model_overview_svg(model=sys.modules[s.__module__],
                         highlights=['c2'], width=350)))
-            children.append(ipywidgets.HBox([c2_table, ipywidgets.VBox([c2_model, c2_chart])]))
 
-        co2_calcs = ipywidgets.Accordion(children=children)
+            # FaIR results
+            (Cb, Fb, Tb) = s.fr.CFT_baseline()
+            (C, F, T) = s.fr.CFT()
+            df_C = pd.DataFrame()
+            df_C[s.fr.baseline_name] = Cb
+            df_C['Drawdown'] = C
+            df_C.index.name = 'Year'
+
+            df_F = pd.DataFrame()
+            df_F[s.fr.baseline_name] = Fb
+            df_F['Drawdown'] = F
+            df_F.index.name = 'Year'
+
+            df_T = pd.DataFrame()
+            df_T[s.fr.baseline_name] = Tb
+            df_T['Drawdown'] = T
+            df_T.index.name = 'Year'
+
+            df = df_C.reset_index().melt('Year', value_name='ppm', var_name='C')
+            chart_C = ipywidgets.Output()
+            with chart_C:
+                chart = alt.Chart(df, width=300).mark_line().encode(
+                    y='ppm',
+                    x='Year:O',
+                    color=alt.Color('C', legend=alt.Legend(orient='top-left', title=None)),
+                    tooltip=['C', alt.Tooltip('ppm:Q', format='.2f'), 'Year'],
+                ).properties(
+                    title=u'CO\u2082 Concentration (PPM)'
+                ).interactive()
+                IPython.display.display(chart)
+
+            df = df_F.reset_index().melt('Year', value_name='forcing', var_name='F')
+            chart_F = ipywidgets.Output()
+            with chart_F:
+                chart = alt.Chart(df, width=300).mark_line().encode(
+                    y='forcing',
+                    x='Year:O',
+                    color=alt.Color('F', legend=alt.Legend(orient='top-left', title=None)),
+                    tooltip=['F', alt.Tooltip('forcing:Q', format='.2f'), 'Year'],
+                ).properties(
+                    title=u'Radiative Forcing (Watts * m\u00b2)'
+                ).interactive()
+                IPython.display.display(chart)
+
+            df = df_T.reset_index().melt('Year', value_name='degrees', var_name='T')
+            chart_T = ipywidgets.Output()
+            with chart_T:
+                chart = alt.Chart(df, width=300).mark_line().encode(
+                    y='degrees',
+                    x='Year:O',
+                    color=alt.Color('T', legend=alt.Legend(orient='top-left', title=None)),
+                    tooltip=['T', alt.Tooltip('degrees:Q', format='.2f'), 'Year'],
+                ).properties(
+                    title=u'Temperature (degrees C)'
+                ).interactive()
+                IPython.display.display(chart)
+
+            children.append(ipywidgets.HBox([c2_table,
+                ipywidgets.VBox([c2_model, chart_C, chart_F, chart_T])]))
+
+        emissions = ipywidgets.Accordion(children=children)
         for i, s in enumerate(solutions):
-            co2_calcs.set_title(i, fullname(s))
-        return co2_calcs
+            emissions.set_title(i, fullname(s))
+        return emissions
 
 
     def get_aez_data_tab(self, solutions):
@@ -1679,7 +1726,7 @@ class JupyterUI:
         progressbar.value += increment
         tam_data = self.get_tam_data_tab(solutions.values())
         progressbar.value += increment
-        co2_calcs = self.get_co2_calcs_tab(solutions.values())
+        emissions = self.get_emissions_tab(solutions.values())
         progressbar.value += increment
         aez_data = self.get_aez_data_tab(solutions.values())
         progressbar.value += increment
@@ -1699,8 +1746,8 @@ class JupyterUI:
         if dez_data:
             children.append(dez_data)
             titles.append('DEZ Data')
-        children.extend([first_cost, operating_cost, co2_calcs])
-        titles.extend(["First Cost", "Operating Cost", "CO2"])
+        children.extend([first_cost, operating_cost, emissions])
+        titles.extend(["First Cost", "Operating Cost", "Emissions"])
 
         tabs = self.ui_elements['tabs']
         tabs.children = children

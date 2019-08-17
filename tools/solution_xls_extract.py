@@ -1085,7 +1085,7 @@ def write_oc(f, wb, is_land=False):
 
 
 
-def write_c2_c4(f, is_rrs=True, is_protect=False, has_harvest=False):
+def write_c2_c4_fr(f, is_rrs=True, is_protect=False, has_harvest=False):
     """Write out the CO2 Calcs and CH4 Calcs modules for this solution class."""
     f.write("    self.c4 = ch4calcs.CH4Calcs(ac=self.ac,\n")
     if not is_rrs:
@@ -1134,6 +1134,8 @@ def write_c2_c4(f, is_rrs=True, is_protect=False, has_harvest=False):
             f.write(
                 "        annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),\n")
         f.write("        regime_distribution=self.ae.get_land_distribution())\n")
+    f.write("\n")
+    f.write("    self.fr = faircalcs.FaIRcalcs(co2eq_mmt_reduced=self.c2.co2eq_mmt_reduced())\n")
     f.write("\n")
 
 
@@ -1453,6 +1455,7 @@ def output_solution_python_file(outputdir, xl_filename):
     f.write('from model import customadoption\n')
     f.write('from model import dd\n')
     f.write('from model import emissionsfactors\n')
+    f.write('from model import faircalcs\n')
     f.write('from model import firstcost\n')
     f.write('from model import helpertables\n')
     f.write('from model import operatingcost\n')
@@ -1612,7 +1615,7 @@ def output_solution_python_file(outputdir, xl_filename):
     write_fc(f=f, wb=wb)
     write_oc(f=f, wb=wb, is_land=is_land)
 
-    write_c2_c4(f=f, is_rrs=is_rrs, is_protect=is_protect, has_harvest=has_harvest)
+    write_c2_c4_fr(f=f, is_rrs=is_rrs, is_protect=is_protect, has_harvest=has_harvest)
 
     if is_rrs:
         f.write(
