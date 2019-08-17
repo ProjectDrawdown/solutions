@@ -1,15 +1,25 @@
 """Tests for co2calc.py."""
 
+import pathlib
+from unittest import mock
+
 import numpy as np
 import pandas as pd
-import pathlib
 import pytest
-from unittest import mock
 from model import advanced_controls
 from model.advanced_controls import SOLUTION_CATEGORY
 from model import co2calcs
 
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
+
+
+def assert_series_not_equal(*args, **kwargs):
+    try:
+        pd.testing.assert_series_equal(*args, **kwargs)
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError
 
 
 def test_co2_mmt_reduced_allfields():
@@ -43,7 +53,7 @@ def test_co2_mmt_reduced_allfields():
             soln_pds_direct_n2o_co2_emissions_saved=emissions_saved,
             soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
             conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2_per_KWh,
-            conv_ref_grid_CO2eq_per_KWh=None,
+            conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2_per_KWh,
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
             fuel_in_liters=False)
     result = c2.co2_mmt_reduced()
@@ -55,7 +65,7 @@ def test_co2_mmt_reduced_allfields():
 def test_co2eq_mmt_reduced_allfields():
     # the real data from the SolarPVUtil solution has many fields as zero. Test them all.
     # Most of the values here are nonsensical for the real world, designed to ensure that
-    # every factor influencing co2_mmt_reduced is non-zero.
+    # every factor influencing co2eq_mmt_reduced is non-zero.
     soln_pds_net_grid_electricity_units_saved = pd.DataFrame(
             [[11.0, 11.0], [11.0, 11.0], [11.0, 11.0]], columns=["A", "B"],
             index=[2020, 2021, 2022])
@@ -603,11 +613,84 @@ def test_co2_sequestered_global_simple_with_regime_seq():
     assert result.loc[2055, 'Tropical-Semi-Arid'] == pytest.approx(70.32984072182640)
 
 
-def test_co2_sequestered_global_raises():
+def test_co2_sequestered_global_replacement():
     ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.REPLACEMENT)
     c2 = co2calcs.CO2Calcs(ac=ac)
-    with pytest.raises(ValueError):
-        c2.co2_sequestered_global()
+    assert c2.co2_sequestered_global() is None
+
+
+def _get_c2_for_FaIR():
+    ac = advanced_controls.AdvancedControls(report_start_year=2020, report_end_year=2050,
+            soln_indirect_co2_per_iunit=1.0, conv_indirect_co2_per_unit=2.0)
+    soln_net_annual_funits_adopted = pd.DataFrame(
+            [[2025, 1000.0, 2000.0, 3000.0], [2026, 2000.0, 3000.0, 4000.0],
+            [2027, 3000.0, 4000.0, 5000.0]],
+            columns=["Year", "World", "A", "B"]).set_index('Year')
+    soln_pds_net_grid_electricity_units_saved = pd.DataFrame([
+            [2025, 1.0, 2.0, 3.0], [2026, 2.0, 3.0, 4.0], [2027, 3.0, 4.0, 5.0]],
+            columns=["Year", "World", "A", "B"]).set_index('Year')
+    conv_ref_grid_CO2eq_per_KWh = pd.DataFrame([
+            [2025, 0.5, 0.4, 0.7], [2026, 0.5, 0.4, 0.7], [2027, 0.5, 0.4, 0.7]],
+            columns=["Year", "World", "A", "B"]).set_index('Year')
+    soln_pds_net_grid_electricity_units_used = pd.DataFrame([[2025, 2.0, 2.0, 2.0],
+            [2026, 2.0, 2.0, 2.0], [2027, 2.0, 2.0, 2.0]],
+            columns=["Year", "World", "A", "B"]).set_index("Year")
+    soln_pds_direct_emissions_saved = pd.DataFrame(
+            [[2025, 1000000.0, 1100000.0, 1200000.0], [2026, 1000001.0, 1100001.0, 1200001.0],
+            [2027, 1000002.0, 1100002.0, 1200002.0]],
+            columns=["Year", "World", "A", "B"]).set_index("Year")
+    return co2calcs.CO2Calcs(
+            ac=ac, ch4_ppb_calculator=None,
+            soln_pds_net_grid_electricity_units_saved=soln_pds_net_grid_electricity_units_saved,
+            soln_pds_net_grid_electricity_units_used=soln_pds_net_grid_electricity_units_used,
+            soln_pds_direct_co2_emissions_saved=soln_pds_direct_emissions_saved,
+            soln_pds_direct_ch4_co2_emissions_saved=soln_pds_direct_emissions_saved,
+            soln_pds_direct_n2o_co2_emissions_saved=soln_pds_direct_emissions_saved,
+            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
+            conv_ref_grid_CO2_per_KWh=conv_ref_grid_CO2eq_per_KWh,
+            conv_ref_grid_CO2eq_per_KWh=conv_ref_grid_CO2eq_per_KWh,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
+
+
+def test_fair():
+    c2 = _get_c2_for_FaIR()
+    C,F,T = c2.FaIR_CFT()
+    # we deliberately do not test the values; that is a job for libFaIR's unit tests.
+    # we check that the result is rational. It should be changes since pre-industrial time, which
+    # should be 1780 - present. Assert it is at least 230 years.
+    assert len(C) > 230
+    assert len(F) > 230
+    assert len(T) > 230
+
+
+def test_fair_co2_sequestered_global():
+    c2 = _get_c2_for_FaIR()
+    C,F,T = c2.FaIR_CFT()
+
+    ac = advanced_controls.AdvancedControls(
+            seq_rate_global=0.596666666666667, delay_regrowth_1yr=True,
+            include_unprotected_land_in_regrowth_calcs=False,
+            global_multi_for_regrowth=1., solution_category=SOLUTION_CATEGORY.LAND)
+    land_dist = pd.read_csv(datadir.joinpath('fp_land_dist.csv'), index_col=0)
+    total_ridl = pd.read_csv(datadir.joinpath('fp_cumu_ridl.csv'), index_col=0)
+    pds_pdl = pd.read_csv(datadir.joinpath('fp_pds_deg_protected_land.csv'), index_col=0)
+    ref_pdl = pd.read_csv(datadir.joinpath('fp_ref_deg_protected_land.csv'), index_col=0)
+    c2 = co2calcs.CO2Calcs(ac=ac, tot_red_in_deg_land=total_ridl, pds_protected_deg_land=pds_pdl,
+            ref_protected_deg_land=ref_pdl, regime_distribution=land_dist)
+    C1,F1,T1 = c2.FaIR_CFT()
+    assert_series_not_equal(C, C1)
+    assert_series_not_equal(F, F1)
+    assert_series_not_equal(T, T1)
+
+
+def test_fair_baseline():
+    c2 = co2calcs.CO2Calcs(ac=None)
+    C,F,T = c2.FaIR_CFT_baseline()
+    # We do not have asserts about values from the RCP, just assert that there is something there.
+    assert len(C) > 230
+    assert len(F) > 230
+    assert len(T) > 230
 
 
 # 'Unit Adoption'!B251:L298

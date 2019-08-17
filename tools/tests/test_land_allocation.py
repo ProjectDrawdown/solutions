@@ -7,6 +7,7 @@ import pytest
 import tools.land_allocation
 import tools.world_data_xls_extract
 
+@pytest.mark.slow
 def test_plots():
     tools.land_allocation.plot_solution_allocation('peatlands', 'matching_tla')
     tools.land_allocation.plot_tla_remaining('matching_tla')
