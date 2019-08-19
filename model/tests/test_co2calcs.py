@@ -13,9 +13,9 @@ from model import co2calcs
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
 
-def assert_series_not_equal(*args, **kwargs):
+def assert_frame_not_equal(*args, **kwargs):
     try:
-        pd.testing.assert_series_equal(*args, **kwargs)
+        pd.testing.assert_frame_equal(*args, **kwargs)
     except AssertionError:
         pass
     else:
@@ -655,18 +655,19 @@ def _get_c2_for_FaIR():
 
 def test_fair():
     c2 = _get_c2_for_FaIR()
-    C,F,T = c2.FaIR_CFT()
+    CFT = c2.FaIR_CFT()
     # we deliberately do not test the values; that is a job for libFaIR's unit tests.
     # we check that the result is rational. It should be changes since pre-industrial time, which
     # should be 1780 - present. Assert it is at least 230 years.
-    assert len(C) > 230
-    assert len(F) > 230
-    assert len(T) > 230
+    assert len(CFT.index) > 40
+    assert 'C' in CFT.columns
+    assert 'F' in CFT.columns
+    assert 'T' in CFT.columns
 
 
 def test_fair_co2_sequestered_global():
     c2 = _get_c2_for_FaIR()
-    C,F,T = c2.FaIR_CFT()
+    CFT = c2.FaIR_CFT()
 
     ac = advanced_controls.AdvancedControls(
             seq_rate_global=0.596666666666667, delay_regrowth_1yr=True,
@@ -678,19 +679,29 @@ def test_fair_co2_sequestered_global():
     ref_pdl = pd.read_csv(datadir.joinpath('fp_ref_deg_protected_land.csv'), index_col=0)
     c2 = co2calcs.CO2Calcs(ac=ac, tot_red_in_deg_land=total_ridl, pds_protected_deg_land=pds_pdl,
             ref_protected_deg_land=ref_pdl, regime_distribution=land_dist)
-    C1,F1,T1 = c2.FaIR_CFT()
-    assert_series_not_equal(C, C1)
-    assert_series_not_equal(F, F1)
-    assert_series_not_equal(T, T1)
+    CFT1 = c2.FaIR_CFT()
+    assert_frame_not_equal(CFT, CFT1)
 
 
 def test_fair_baseline():
     c2 = co2calcs.CO2Calcs(ac=None)
-    C,F,T = c2.FaIR_CFT_baseline()
-    # We do not have asserts about values from the RCP, just assert that there is something there.
-    assert len(C) > 230
-    assert len(F) > 230
-    assert len(T) > 230
+    CFT = c2.FaIR_CFT_baseline()
+    # We do not have asserts about values from the baseline,
+    # just assert that there is something there.
+    assert len(CFT.index) > 40
+    assert 'C' in CFT.columns
+    assert 'F' in CFT.columns
+    assert 'T' in CFT.columns
+
+
+def test_fair_RCP45():
+    c2 = co2calcs.CO2Calcs(ac=None)
+    CFT = c2.FaIR_CFT_RCP45()
+    # RCP cases have data going back to 18th century
+    assert len(CFT.index) > 230
+    assert 'C' in CFT.columns
+    assert 'F' in CFT.columns
+    assert 'T' in CFT.columns
 
 
 # 'Unit Adoption'!B251:L298
