@@ -5,12 +5,18 @@ Computes reductions in CO2-equivalent emissions.
 
 from functools import lru_cache
 import math
+import pathlib
 
 import fair
 import numpy as np
 import pandas as pd
 from model.advanced_controls import SOLUTION_CATEGORY
 from model.dd import THERMAL_MOISTURE_REGIMES, THERMAL_DYNAMICAL_REGIMES, REGIONS, OCEAN_REGIONS
+
+
+topdir = pathlib.Path(__file__).parents[1]
+baselineCO2_path = topdir.joinpath('data', 'baselineCO2.csv')
+
 
 C_TO_CO2EQ = 3.666
 # Note: a different value of 3.64 is sometimes used for certain results in Excel
@@ -93,7 +99,7 @@ class CO2Calcs:
                  conv_ref_grid_CO2eq_per_KWh=None, fuel_in_liters=None,
                  annual_land_area_harvested=None, regime_distribution=None,
                  tot_red_in_deg_land=None, pds_protected_deg_land=None,
-                 ref_protected_deg_land=None, baseline=None):
+                 ref_protected_deg_land=None):
         self.ac = ac
         self.ch4_ppb_calculator = ch4_ppb_calculator
         self.soln_pds_net_grid_electricity_units_saved = soln_pds_net_grid_electricity_units_saved
@@ -117,21 +123,8 @@ class CO2Calcs:
         self.pds_protected_deg_land = pds_protected_deg_land  # protection models
         self.ref_protected_deg_land = ref_protected_deg_land  # protection models
 
-        # baseline source for FaIR
-        if baseline == 'RCP26' or baseline == 'RCP3':  # 'RCP3' refers to RCP3PD, which is RCP26.
-            self.baseline = fair.RCPs.rcp26.Emissions
-            self.baseline_name = 'RCP2.6'
-        elif baseline == 'RCP45' or baseline is None:
-            self.baseline = fair.RCPs.rcp45.Emissions
-            self.baseline_name = 'RCP4.5'
-        elif baseline == 'RCP6' or baseline == 'RCP60':
-            self.baseline = fair.RCPs.rcp60.Emissions
-            self.baseline_name = 'RCP6.0'
-        elif baseline == 'RCP85':
-            self.baseline = fair.RCPs.rcp85.Emissions
-            self.baseline_name = 'RCP8.5'
-        else:
-            raise ValueError(f'Unknown baseline: {baseline}')
+        self.baseline = pd.read_csv(str(baselineCO2_path), header=0, index_col=0,
+                skipinitialspace=True, skip_blank_lines=True, comment='#', squeeze=True)
 
 
     @lru_cache()
@@ -147,7 +140,7 @@ class CO2Calcs:
            intensity values (by year) from the AMPERE 3 MESSAGE Base model used in the IPCC 5th
            Assessment Report WG3.
 
-           CO2 MMT Reduced = (Grid Emissions Reduced + Grid Emissions Replaced - 
+           CO2 MMT Reduced = (Grid Emissions Reduced + Grid Emissions Replaced -
              Grid Emissions by Solution) + Fuel Emissions Avoided + Direct Emissions Reduced -
              Net Indirect Emissions
            SolarPVUtil 'CO2 Calcs'!A9:K55
@@ -536,83 +529,70 @@ class CO2Calcs:
                 self.ac.seq_rate_global * self.ac.harvest_frequency -
                 self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
 
-    def _baseline_indexes(self, df):
-        first_year = list(df.index)[0]
-        last_year = list(df.index)[-1]
-        first_year_idx = last_year_idx = -1
-        for (index, year) in enumerate(self.baseline.year):
-            if year == first_year:
-                first_year_idx = index
-            if year == last_year:
-                last_year_idx = index
-        if first_year_idx == -1:
-            raise ValueError(f'Year={first_year} is not in baseline model {self.baseline_name}')
-        if last_year_idx == -1:
-            raise ValueError(f'Year={last_year} is not in baseline model {self.baseline_name}')
-        return (first_year_idx, last_year_idx)
-
 
     @lru_cache()
     def FaIR_CFT_baseline(self):
-        """Return FaIR results for the baseline case (typically an RCP case).
-        
+        """Return FaIR results for the baseline case.
+
            Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
            https://github.com/OMS-NetZero/FAIR
 
-           Returns (C, F, T):
-             C: CO2 concentration in ppm for the World. 
+           Returns DataFrame containing columns C, F, T:
+             C: CO2 concentration in ppm for the World.
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        emissions = self.baseline.emissions[:, CO2_FOSSIL] + self.baseline.emissions[:, CO2_LAND]
-        (C, F, T) = fair.forward.fair_scm(emissions=emissions, useMultigas=False)
-        df_C = pd.Series(C, index=self.baseline.year)
-        df_C.index = df_C.index.astype(int)
-        df_C.name = 'C'
-        df_F = pd.Series(F, index=self.baseline.year)
-        df_F.index = df_F.index.astype(int)
-        df_C.name = 'F'
-        df_T = pd.Series(T, index=self.baseline.year)
-        df_T.index = df_T.index.astype(int)
-        df_C.name = 'T'
-        return (df_C, df_F, df_T)
+        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline.values, useMultigas=False)
+        result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index.values)
+        result.name = 'FaIR_CFT_baseline'
+        return result
 
 
     @lru_cache()
     def FaIR_CFT(self):
         """Return FaIR results for the baseline + Drawdown solution.
-        
+
            Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
            https://github.com/OMS-NetZero/FAIR
 
-           Returns (C, F, T):
-             C: CO2 concentration in ppm for the World. 
+           Returns DataFrame containing columns C, F, T:
+             C: CO2 concentration in ppm for the World.
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        emissions = self.baseline.emissions[:, CO2_FOSSIL] + self.baseline.emissions[:, CO2_LAND]
+        emissions = self.baseline.copy()
         co2eq_mmt_reduced = self.co2eq_mmt_reduced()
         if co2eq_mmt_reduced is not None:
-            (first_year_idx, last_year_idx) = self._baseline_indexes(co2eq_mmt_reduced)
-            gtons = co2eq_mmt_reduced['World'].values / 1000.0
-            emissions[first_year_idx:last_year_idx+1] -= gtons
+            gtons = co2eq_mmt_reduced['World'] / 1000.0
+            emissions = emissions.subtract(other=gtons, fill_value=0.0)
         co2_sequestered_global = self.co2_sequestered_global()
         if co2_sequestered_global is not None:
-            (first_year_idx, last_year_idx) = self._baseline_indexes(co2_sequestered_global)
-            gtons = co2_sequestered_global['All'].values / 1000.0
-            emissions[first_year_idx:last_year_idx+1] -= gtons
+            gtons = co2_sequestered_global['All'] / 1000.0
+            emissions = emissions.subtract(other=gtons, fill_value=0.0)
 
-        (C, F, T) = fair.forward.fair_scm(emissions=emissions, useMultigas=False)
-        df_C = pd.Series(C, index=self.baseline.year)
-        df_C.index = df_C.index.astype(int)
-        df_C.name = 'C'
-        df_F = pd.Series(F, index=self.baseline.year)
-        df_F.index = df_F.index.astype(int)
-        df_F.name = 'F'
-        df_T = pd.Series(T, index=self.baseline.year)
-        df_T.index = df_T.index.astype(int)
-        df_T.name = 'T'
-        return (df_C, df_F, df_T)
+        (C, F, T) = fair.forward.fair_scm(emissions=emissions.values, useMultigas=False)
+        result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index.values)
+        result.name = 'FaIR_CFT'
+        return result
+
+
+    @lru_cache()
+    def FaIR_CFT_RCP45(self):
+        """Return FaIR results for the RCP45 case.
+
+           Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
+           https://github.com/OMS-NetZero/FAIR
+
+           Returns DataFrame containing columns C, F, T:
+             C: CO2 concentration in ppm for the World.
+             F: Radiative forcing in watts per square meter
+             T: Change in temperature since pre-industrial time in Kelvin
+        """
+        (C, F, T) = fair.forward.fair_scm(emissions=fair.RCPs.rcp45.Emissions.emissions)
+        result = pd.DataFrame({'C': C[:,0], 'F': np.sum(F,axis=1), 'T': T},
+                index=fair.RCPs.rcp45.Emissions.year)
+        result.name = 'FaIR_CFT_RCP45'
+        return result
 
 
 # The following formulae come from the SolarPVUtil Excel implementation of 27Aug18.

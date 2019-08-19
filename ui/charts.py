@@ -1543,21 +1543,25 @@ class JupyterUI:
                         highlights=['c2'], width=350)))
 
             # FaIR results
-            (Cb, Fb, Tb) = s.c2.FaIR_CFT_baseline()
-            (C, F, T) = s.c2.FaIR_CFT()
+            CFTb = s.c2.FaIR_CFT_baseline()
+            CFT = s.c2.FaIR_CFT()
+            CFTr = s.c2.FaIR_CFT_RCP45()
             df_C = pd.DataFrame()
-            df_C[s.c2.baseline_name] = Cb
-            df_C['Drawdown'] = C
+            df_C['Baseline'] = CFTb['C']
+            df_C['Drawdown'] = CFT['C']
+            df_C['RCP4.5'] = CFTr['C']
             df_C.index.name = 'Year'
 
             df_F = pd.DataFrame()
-            df_F[s.c2.baseline_name] = Fb
-            df_F['Drawdown'] = F
+            df_F['Baseline'] = CFTb['F']
+            df_F['Drawdown'] = CFT['F']
+            df_F['RCP4.5'] = CFTr['F']
             df_F.index.name = 'Year'
 
             df_T = pd.DataFrame()
-            df_T[s.c2.baseline_name] = Tb
-            df_T['Drawdown'] = T
+            df_T['Baseline'] = CFTb['T']
+            df_T['Drawdown'] = CFT['T']
+            df_T['RCP4.5'] = CFTr['T']
             df_T.index.name = 'Year'
 
             df = df_C.reset_index().melt('Year', value_name='ppm', var_name='C')
