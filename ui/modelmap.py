@@ -1,10 +1,12 @@
 """Manipulates SVG of the model operation as an overview for the researcher."""
 
 import os.path
+import random
+import string
 import xml.etree.ElementTree as ET
 from model import advanced_controls
 
-def get_model_overview_svg(model, highlights=None, width=None):
+def get_model_overview_svg(model, highlights=None, width=None, prefix=None):
     """Return an SVG containing only the modules used in this solution."""
     is_land = is_ocean = False
     has_default_pds_ad = has_custom_pds_ad = has_s_curve_pds_ad = False
@@ -48,9 +50,13 @@ def get_model_overview_svg(model, highlights=None, width=None):
     if width is not None:
         resize(tree, width)
 
+    if prefix is not None:
+        randomize_ids(tree, prefix)
+
     # Jupyter Notebook display(SVG()) does not tolerate explicit namespaces on the SVG tags.
     # Jupyterlab does, but we support use of the Notebook for https://github.com/QuantStack/voila
     # Remove the ns0: namespace prefixes and emit a default namespace.
+    # We do this for Lab as well because it doesn't hurt and looks cleaner as XML.
     tree.getroot().attrib['xmlns'] = 'http://www.w3.org/2000/svg'
     s = ET.tostring(tree.getroot(), encoding='utf8', method='xml')
     return s.replace(b'ns0:', b'')
@@ -72,17 +78,19 @@ def delete_module(tree, name):
             for child in list(edge):
                 edge.remove(child)
 
+
 def node_color_fill(tree, name):
     """Color one node in the tree.
 
-    Note that a list of modules is passed in, some of which may not exist in
-    this specific solution because the code passing in the highlights is generic.
-    It is not an error for name to not exist.
+       Note that a list of modules is passed in, some of which may not exist in
+       this specific solution because the code passing in the highlights is generic.
+       It is not an error for name to not exist.
     """
     node = tree.find(r'.//{http://www.w3.org/2000/svg}g[@id="' + name + '"]')
     if node is not None and len(node) >= 1:
         rect = node[1]
         rect.attrib['fill'] = '#3D9970'
+
 
 def resize(tree, width):
     """Adjust the viewPort to fit a new width."""
@@ -93,3 +101,21 @@ def resize(tree, width):
     new_height = old_height * ratio
     svg.attrib['width'] = str(width)
     svg.attrib['height'] = str(new_height)
+
+
+def randomize_ids(tree, prefix):
+    """Attach random text to id fields.
+
+       Work around https://github.com/ipython/ipython/issues/1866 in Jupyter Notebook
+       by prepending a random slug to the id fields within the SVG.
+    """
+    for elem in tree.getroot().iter():
+        if 'id' in elem.attrib:
+            orig = elem.attrib['id']
+            elem.attrib['id'] = prefix + '_' + orig
+        for tag in ['filter', 'marker-end', 'marker-start']:
+            if tag not in elem.attrib:
+                continue
+            orig = elem.attrib[tag]
+            if 'url(#' in orig:
+                elem.attrib[tag] = orig.replace('url(#', f'url(#{prefix}_')

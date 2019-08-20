@@ -119,16 +119,15 @@ class JupyterUI:
         pd.set_option('display.max_columns', 200)
         pd.set_option('display.max_rows', 200)
         self.is_jupyterlab = is_jupyterlab
-        if not self.is_jupyterlab:
+        self.is_jupyternb = not is_jupyterlab
+        if self.is_jupyternb:
             alt.renderers.enable('notebook')
             self.vega_widget = importlib.import_module('vega.widget')
         qgrid.on(names=['cell_edited', 'row_added', 'row_removed'], handler=vma_qgrid_modified)
-        all_solutions = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'),
-                                            index_col=False, skipinitialspace=True, header=0,
-                                            skip_blank_lines=True, comment='#')
-        soln_results = pd.read_csv(os.path.join('data', 'overview', 'soln_results.csv'),
-                                            index_col=False, skipinitialspace=True, header=0,
-                                            skip_blank_lines=True, comment='#')
+        all_solutions = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'), header=0,
+                index_col=False, skipinitialspace=True, skip_blank_lines=True, comment='#')
+        soln_results = pd.read_csv(os.path.join('data', 'overview', 'soln_results.csv'), header=0,
+                index_col=False, skipinitialspace=True, skip_blank_lines=True, comment='#')
         all_solutions = all_solutions.merge(soln_results, on='Solution', how='left')
         sectors = all_solutions.pivot_table(index='Sector', aggfunc=sum)
         all_solutions['SectorCO2eq'] = all_solutions.apply(
@@ -1075,7 +1074,7 @@ class JupyterUI:
             modelmap = ipywidgets.Output()
             with modelmap:
                 IPython.display.display(IPython.display.SVG(
-                    data=ui.modelmap.get_model_overview_svg(model=c)))
+                    data=ui.modelmap.get_model_overview_svg(model=c, prefix='model')))
             editor = self.get_scenario_editor_for_solution(soln_mod=c)
             divider = ipywidgets.HTML(value='<br/><hr/><br/>')
             children.append(ipywidgets.VBox(children=[modelmap, divider, editor]))
@@ -1225,7 +1224,7 @@ class JupyterUI:
             fc_model = ipywidgets.Output()
             with fc_model:
                 IPython.display.display(IPython.display.SVG(data=ui.modelmap.get_model_overview_svg(
-                    model=sys.modules[s.__module__], highlights=['fc'], width=350)))
+                    model=sys.modules[s.__module__], highlights=['fc'], width=350, prefix='fc')))
             fc_chart = ipywidgets.Output()
             with fc_chart:
                 melted_df = df.reset_index().melt('Year', value_name='cost', var_name='column')
@@ -1269,8 +1268,8 @@ class JupyterUI:
             oc_model = ipywidgets.Output()
             with oc_model:
                 IPython.display.display(IPython.display.SVG(
-                    data=ui.modelmap.get_model_overview_svg(
-                        model=sys.modules[s.__module__], highlights=['oc'], width=350)))
+                    data=ui.modelmap.get_model_overview_svg(model=sys.modules[s.__module__],
+                        highlights=['oc'], width=350, prefix='oc')))
             oc_chart = ipywidgets.Output()
             with oc_chart:
                 melted_df = df.reset_index().melt('Year', value_name='cost', var_name='column')
@@ -1313,7 +1312,7 @@ class JupyterUI:
             ad_model = ipywidgets.Output()
             with ad_model:
                 IPython.display.display(IPython.display.SVG(data=ui.modelmap.get_model_overview_svg(
-                    model=sys.modules[s.__module__],
+                    model=sys.modules[s.__module__], prefix='ad',
                     highlights=['ad', 'capds', 'caref', 'sc', 'ht'], width=350)))
 
             ad_chart = ipywidgets.Output()
@@ -1443,7 +1442,7 @@ class JupyterUI:
             with tm_model:
                 IPython.display.display(IPython.display.SVG(
                     data=ui.modelmap.get_model_overview_svg(model=sys.modules[s.__module__],
-                        highlights=['tm'], width=250)))
+                        highlights=['tm'], width=250, prefix='tm')))
 
             tm_geo_pds = ipywidgets.Output()
             with tm_geo_pds:
@@ -1540,7 +1539,7 @@ class JupyterUI:
             with c2_model:
                 IPython.display.display(IPython.display.SVG(
                     data=ui.modelmap.get_model_overview_svg(model=sys.modules[s.__module__],
-                        highlights=['c2'], width=350)))
+                        highlights=['c2'], width=350, prefix='em')))
 
             # FaIR results
             CFTb = s.c2.FaIR_CFT_baseline()
@@ -1630,8 +1629,8 @@ class JupyterUI:
             ae_model = ipywidgets.Output()
             with ae_model:
                 IPython.display.display(IPython.display.SVG(
-                    data=ui.modelmap.get_model_overview_svg(
-                        model=sys.modules[s.__module__], highlights=['ae'], width=350)))
+                    data=ui.modelmap.get_model_overview_svg(model=sys.modules[s.__module__],
+                        highlights=['ae'], width=350, prefix='aez')))
             children.append(ipywidgets.HBox([ae_table, ae_model]))
 
         if children:
@@ -1661,8 +1660,8 @@ class JupyterUI:
             de_model = ipywidgets.Output()
             with de_model:
                 IPython.display.display(IPython.display.SVG(
-                    data=ui.modelmap.get_model_overview_svg(
-                        model=sys.modules[s.__module__], highlights=['de'], width=350)))
+                    data=ui.modelmap.get_model_overview_svg(model=sys.modules[s.__module__],
+                        highlights=['de'], width=350, prefix='dez')))
             children.append(ipywidgets.HBox([de_table, de_model]))
 
         if children:
