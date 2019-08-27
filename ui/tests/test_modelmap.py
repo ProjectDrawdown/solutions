@@ -36,3 +36,10 @@ def test_ocean():
     node = tree.find(r'.//{http://www.w3.org/2000/svg}g[@id="sc"]')
     assert node is not None
     assert len(node) == 0
+
+def test_randomize_ids():
+    xml = ui.modelmap.get_model_overview_svg(model=solarpvutil, prefix='test')
+    tree = ET.fromstring(xml)
+    # The node id should have been randomized now, not "sc"
+    node = tree.find(r'.//{http://www.w3.org/2000/svg}g[@id="sc"]')
+    assert node is None
