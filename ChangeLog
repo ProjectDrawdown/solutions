@@ -310,3 +310,12 @@ Aug 5 - Aug 9, 2019
 + rewrite test_excel_integration to pre-process excel, can now run in CI/CD.
 + mark more tests slow, only run with "make alltest" and in CI/CD
 + export code coverage metrics in https://codeearth.gitlab.io/drawdown/coverage/
+
+Aug 12 - Aug 16, 2019
++ speed "make test" by marking more tests slow, add "make alltests" to run them.
++ add tests to areas identified by coverage report: tools, ocean model SVG,
+
+Aug 19 - Aug 23, 2019
++ implement [FaIR](https://github.com/OMS-NetZero/FAIR) support in CO2Calcs.
++ add a Play the Whole Field animation, showing how achieving drawdown
+  requires more than just decarbonizing electricity generation.
