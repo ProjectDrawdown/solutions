@@ -121,7 +121,8 @@ class JupyterUI:
         self.is_jupyterlab = is_jupyterlab
         self.is_jupyternb = not is_jupyterlab
         if self.is_jupyternb:
-            alt.renderers.enable('notebook')
+            # Voila does not work with the 'notebook' renderer, does work with 'kaggle'
+            alt.renderers.enable('kaggle')
             self.vega_widget = importlib.import_module('vega.widget')
         qgrid.on(names=['cell_edited', 'row_added', 'row_removed'], handler=vma_qgrid_modified)
         all_solutions = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'), header=0,
