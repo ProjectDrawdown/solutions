@@ -119,8 +119,7 @@ class JupyterUI:
         pd.set_option('display.max_columns', 200)
         pd.set_option('display.max_rows', 200)
         self.is_jupyterlab = is_jupyterlab
-        self.is_jupyternb = not is_jupyterlab
-        if self.is_jupyternb:
+        if not self.is_jupyterlab:
             # Voila does not work with the 'notebook' renderer, does work with 'kaggle'
             alt.renderers.enable('kaggle')
             self.vega_widget = importlib.import_module('vega.widget')
