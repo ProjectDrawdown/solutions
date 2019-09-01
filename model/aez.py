@@ -119,4 +119,6 @@ class AEZ:
                     soln_df.at[reg, tmr] = df.loc[reg, self.applicable_zones].sum()
 
         soln_df['All'] = soln_df.sum(axis=1)
+        soln_df.name = 'land_distribution'
+        soln_df.index.name = 'Region'
         self.soln_land_dist_df = soln_df
