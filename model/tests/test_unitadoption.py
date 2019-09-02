@@ -2,14 +2,13 @@
 
 import pathlib
 import numpy as np
-import pandas as pd  # by Owen Barton
+import pandas as pd
 import pytest
 from unittest import mock
 from model import advanced_controls
 from model import unitadoption
 from model.advanced_controls import SOLUTION_CATEGORY
 
-# by Owen Barton
 
 this_dir = pathlib.Path(__file__)
 ref_tam_per_region_filename = this_dir.parents[0].joinpath('data', 'ref_tam_per_region.csv')
@@ -20,7 +19,6 @@ pds_tam_per_region = pd.read_csv(pds_tam_per_region_filename, header=0, index_co
                                  skipinitialspace=True, comment='#')
 
 
-# by Owen Barton
 def test_ref_population():
     ua = unitadoption.UnitAdoption(ac=None,
                                    ref_total_adoption_units=None, pds_total_adoption_units=None,
