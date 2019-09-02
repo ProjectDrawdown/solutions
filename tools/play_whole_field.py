@@ -52,7 +52,7 @@ def init():
         sector_members = list(set(column_names).intersection(set(mmt.columns)))
         sector_gt.loc[:, sector] = mmt.loc[:, sector_members].sum(axis=1) / 1000.0
 
-    remaining = total.copy()
+    remaining = total['Gtons'].copy()
     sectors = sector_gt.sort_values(axis='columns', by=2050, ascending=False).columns
     for sector in sectors:
         remaining = remaining.subtract(other=sector_gt[sector], fill_value=0.0)
@@ -63,7 +63,7 @@ def init():
     fig = plt.figure()
     ax = fig.add_subplot()
     ax.set_ylabel('Temperature anomaly (K)');
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False)
+    _,_,T = fair.forward.fair_scm(emissions=total['Gtons'].values, useMultigas=False)
     df_T = pd.Series(T, index=total.index.copy())
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
             color='black', label='Baseline')
@@ -86,7 +86,7 @@ def animate(frame, ax):
         end = 2020 + offset
         line.set_data(df_T.loc[2020:end].index.values, df_T.loc[2020:end].values)
         if sector_num == 0:
-            _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False)
+            _,_,T = fair.forward.fair_scm(emissions=total['Gtons'].values, useMultigas=False)
             prev = pd.Series(T, index=total.index.copy())
         else:
             (_, prev) = emissions[sector_num - 1]

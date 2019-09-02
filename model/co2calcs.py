@@ -542,7 +542,8 @@ class CO2Calcs:
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline.values, useMultigas=False)
+        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline['Gtons'].values,
+                useMultigas=False)
         result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index.values)
         result.name = 'FaIR_CFT_baseline'
         return result
@@ -560,7 +561,7 @@ class CO2Calcs:
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        emissions = self.baseline.copy()
+        emissions = self.baseline['Gtons'].copy()
         co2eq_mmt_reduced = self.co2eq_mmt_reduced()
         if co2eq_mmt_reduced is not None:
             gtons = co2eq_mmt_reduced['World'] / 1000.0
