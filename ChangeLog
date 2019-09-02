@@ -319,3 +319,9 @@ Aug 19 - Aug 23, 2019
 + implement [FaIR](https://github.com/OMS-NetZero/FAIR) support in CO2Calcs.
 + add a Play the Whole Field animation, showing how achieving drawdown
   requires more than just decarbonizing electricity generation.
+
+Aug 26 - Aug 30, 2019
++ Jupyter Notebook + Voila support
+  work around [SVG issues in Notebook](https://github.com/ipython/ipython/issues/1866)
+  switch solutions.geekhold.com over to use Voila.
+
