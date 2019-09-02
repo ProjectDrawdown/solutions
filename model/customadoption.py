@@ -53,16 +53,65 @@ class CustomAdoption:
         self.scenarios = {}
         for d in data_sources:
             name = d.get('name', 'noname')
-            filename = d.get('filename', 'no_such_file')
             include = d.get('include', True)
-            df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-                             skip_blank_lines=True, comment='#', dtype=np.float64)
-            df.index = df.index.astype(int)
-            df.index.name = 'Year'
-            assert list(df.columns) == REGIONS
-            assert list(df.index) == YEARS
+            filename = d.get('filename', None)
+            datapoints = d.get('datapoints', None)
+            assert not (filename and datapoints)  # one or the other, not both
+            if filename is not None:
+                df = self._read_csv(filename)
+            if datapoints is not None:
+                df = self._linear_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
             self.scenarios[name] = {'df': df, 'include': include}
         self.soln_adoption_custom_name = soln_adoption_custom_name
+
+
+    def _read_csv(self, filename):
+        """Read in a CSV file from filename."""
+        df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
+                         skip_blank_lines=True, comment='#', dtype=np.float64)
+        df.index = df.index.astype(int)
+        df.index.name = 'Year'
+        assert list(df.columns) == REGIONS
+        assert list(df.index) == YEARS
+        return df
+
+
+    def _linear_forecast(self, datapoints, start_year, end_year):
+        """Interpolates a line between datapoints, and fills in a dataframe.
+           datapoints: a Pandas DataFrame with 2+ rows of adoption data, indexed by year.
+             The columns are expected to be regions like 'World', 'EU', 'India', etc.
+             The year+adoption data provide the X,Y coordinates for a line to interpolate.
+           end_year: year the trend should extend to, usually past the last datapoint
+        """
+        df = pd.DataFrame(columns=datapoints.columns, dtype='float')
+        for col in df.columns:
+            for i in range(datapoints.index.size - 1):
+                year1 = datapoints.index[i]
+                year2 = datapoints.index[i+1]
+                adopt1 = datapoints.loc[year1, col]
+                adopt2 = datapoints.loc[year2, col]
+                for year in range(year1, year2 + 1):
+                    fract_year = (float(year) - float(year1)) / (float(year2) - float(year1))
+                    fract_adopt = fract_year * (float(adopt2) - float(adopt1))
+                    df.loc[year, col] = adopt1 + fract_adopt
+
+        last_year = df.index[-1]
+        for year in range(last_year + 1, end_year + 1):
+            df.loc[year] = df.loc[last_year]
+
+        first_year = df.index[0]
+        year0 = datapoints.index[0]
+        year1 = datapoints.index[1]
+        adopt0 = datapoints.iloc[0]
+        adopt_per_year = (datapoints.iloc[1] - adopt0) / float(year1 - year0)
+        for year in range(first_year - 1, start_year - 1, -1):
+            num_year = float(year0) - float(year)
+            df.loc[year] = adopt0 - (num_year * adopt_per_year)
+
+        df.index = df.index.astype(int)
+        df.index.name = 'Year'
+        return df.sort_index()
+
 
     def _avg_high_low(self):
         """ Returns DataFrames of average, high and low scenarios. """
