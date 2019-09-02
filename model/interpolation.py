@@ -14,17 +14,16 @@ import numpy as np
 import pandas as pd
 
 
-
 def linear_trend(data):
     """Linear trend model.
        Provides implementation for 'Adoption Data'!BY50:CA96 & 'TAM Data' columns BX:BZ
        Arguments: data is a pd.Series used to provide the x+y for curve fitting.
     """
-    result = pd.DataFrame(np.nan, index=np.arange(2014, 2061), columns=['x', 'constant', 'adoption'],
-
-                          dtype=np.float64)
+    result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
+            columns=['x', 'constant', 'adoption'], dtype=np.float64)
     result.index.name = 'Year'
-    if data.dropna().empty: return result
+    if data.dropna().empty:
+        return result
     y = data.dropna().values
     x = data.dropna().index - 2014
     if x.size == 0 or y.size == 0: return result
@@ -36,14 +35,13 @@ def linear_trend(data):
     return result
 
 
-
 def poly_degree2_trend(data):
     """2nd degree polynomial trend model.
        Provides implementation for 'Adoption Data'!CF50:CI96 & 'TAM Data' columns CE:CH
        Arguments: data is a pd.Series used to provide the x+y for curve fitting.
     """
     result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
-                          columns=['x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
+            columns=['x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
     result.index.name = 'Year'
     if data.dropna().empty: return result
     y = data.dropna().values
@@ -58,14 +56,13 @@ def poly_degree2_trend(data):
     return result
 
 
-
 def poly_degree3_trend(data):
     """3rd degree polynomial trend model.
        Provides implementation for 'Adoption Data'!CN50:CR96 & 'TAM Data' columns CM:CQ
        Arguments: data is a pd.Series used to provide the x+y for curve fitting.
     """
     result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
-                          columns=['x^3', 'x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
+            columns=['x^3', 'x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
     result.index.name = 'Year'
     if data.dropna().empty: return result
     y = data.dropna().values
@@ -81,14 +78,13 @@ def poly_degree3_trend(data):
     return result
 
 
-
 def exponential_trend(data):
     """exponential trend model.
        Provides implementation for 'Adoption Data'!CW50:CY96 & 'TAM Data' columns CV:CX
        Arguments: data is a pd.Series used to provide the x+y for curve fitting.
     """
     result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
-                          columns=['coeff', 'e^x', 'adoption'], dtype=np.float64)
+            columns=['coeff', 'e^x', 'adoption'], dtype=np.float64)
     result.index.name = 'Year'
     if data.dropna().empty: return result
     y = np.log(data.dropna().values)
@@ -102,19 +98,17 @@ def exponential_trend(data):
     return result
 
 
-
 def single_trend(data):
     """Single source model.
        Returns the data from the single source, packaged into a DataFrame compatible
        with the other trend algorithms.
     """
     result = pd.DataFrame(0, index=np.arange(2014, 2061),
-                          columns=['constant', 'adoption'], dtype=np.float64)
+            columns=['constant', 'adoption'], dtype=np.float64)
     result.index.name = 'Year'
     result.loc[:, 'constant'] = data.dropna()
     result.loc[:, 'adoption'] = data.dropna()
     return result
-
 
 
 def trend_algorithm(data, trend):
@@ -130,7 +124,6 @@ def trend_algorithm(data, trend):
     if t == "single" or t == "single source":
         return single_trend(data)
     raise ValueError('invalid trend algorithm: ' + str(trend))
-
 
 
 def matching_data_sources(data_sources, name, groups_only):
@@ -168,7 +161,6 @@ def matching_data_sources(data_sources, name, groups_only):
     if name in all_sources:
         return [name]
     return None
-
 
 
 def is_group_name(data_sources, name):
