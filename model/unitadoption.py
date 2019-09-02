@@ -3,14 +3,12 @@
 from functools import lru_cache
 import os.path
 import pathlib
-import pandas as pd  # by Owen Barton
+import pandas as pd
 from model import emissionsfactors
 from model.dd import REGIONS, OCEAN_REGIONS
 from model.advanced_controls import SOLUTION_CATEGORY
 
-# by Owen Barton
-# by Owen Barton
-class UnitAdoption:  # by Owen Barton
+class UnitAdoption:
     """Implementation for the Unit Adoption module.
 
        Arguments:
