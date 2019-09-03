@@ -81,6 +81,7 @@ class CustomAdoption:
            datapoints: a Pandas DataFrame with 2+ rows of adoption data, indexed by year.
              The columns are expected to be regions like 'World', 'EU', 'India', etc.
              The year+adoption data provide the X,Y coordinates for a line to interpolate.
+           start_year: year the trend should begin, sometimes earlier than the first datapoint
            end_year: year the trend should extend to, usually past the last datapoint
         """
         df = pd.DataFrame(columns=datapoints.columns, dtype='float')
@@ -96,17 +97,25 @@ class CustomAdoption:
                     df.loc[year, col] = adopt1 + fract_adopt
 
         last_year = df.index[-1]
+        year0 = datapoints.index[-2]
+        year1 = datapoints.index[-1]
+        adopt0 = datapoints.iloc[-2]
+        adopt1 = datapoints.iloc[-1]
+        adopt_per_year = (adopt1 - adopt0) / float(year1 - year0)
         for year in range(last_year + 1, end_year + 1):
-            df.loc[year] = df.loc[last_year]
+            df.loc[year] = adopt1 + (float(year - year1) * adopt_per_year)
 
         first_year = df.index[0]
         year0 = datapoints.index[0]
         year1 = datapoints.index[1]
         adopt0 = datapoints.iloc[0]
-        adopt_per_year = (datapoints.iloc[1] - adopt0) / float(year1 - year0)
+        adopt1 = datapoints.iloc[1]
+        adopt_per_year = (adopt1 - adopt0) / float(year1 - year0)
         for year in range(first_year - 1, start_year - 1, -1):
-            num_year = float(year0) - float(year)
-            df.loc[year] = adopt0 - (num_year * adopt_per_year)
+            df.loc[year] = adopt0 - (float(year0 - year) * adopt_per_year)
+
+        if self.total_adoption_limit is not None:
+            df = df.combine(self.total_adoption_limit, np.fmin)
 
         df.index = df.index.astype(int)
         df.index.name = 'Year'

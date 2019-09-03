@@ -149,20 +149,21 @@ def test_report():
     assert list(report.iloc[1, :].values) == [False, False, nan, nan]
 
 
-def test_datapoints():
+def test_datapoints_limit():
     # Datapoints from Tropical Tree Staples.
     adoption_2014 = 25.42446198181150
-    total_tla = 169.373472124130
+    tla_lim = 169.373472124130
     datapoints = pd.DataFrame([
         [2014, adoption_2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        [2030, 0.7 * total_tla, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        [2050, 1.0 * total_tla, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+        [2030, 0.7 * tla_lim, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2050, 1.0 * tla_lim, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
         columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
                  "Middle East and Africa", "Latin America", "China", "India",
-                 "EU", "USA"]).set_index("Year") 
+                 "EU", "USA"]).set_index("Year")
     data_sources = [{'name': 'datapoints scenario', 'datapoints': datapoints, 'include': True}]
+    limit = pd.DataFrame(tla_lim, index=range(2012, 2061), columns=datapoints.columns)
     ca = customadoption.CustomAdoption(data_sources=data_sources,
-            soln_adoption_custom_name='datapoints scenario')
+            soln_adoption_custom_name='datapoints scenario', total_adoption_limit=limit)
     # Tropical Tree Staples "Custom PDS Adoption"!A294:K343
     expected_list = [
         ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
@@ -222,3 +223,18 @@ def test_datapoints():
     expected.index = expected.index.astype(int)
     result = ca.scenarios['datapoints scenario']['df']
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+
+def test_datapoints_nolimit():
+    datapoints = pd.DataFrame([
+        [2020, 20.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2050, 50.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+        columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+                 "Middle East and Africa", "Latin America"]).set_index("Year")
+    data_sources = [{'name': 'datapoints scenario', 'datapoints': datapoints, 'include': True}]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='datapoints scenario')
+    result = ca.scenarios['datapoints scenario']['df']
+    assert result.loc[2040, 'World'] == pytest.approx(40)
+    assert result.loc[2050, 'World'] == pytest.approx(50)
+    assert result.loc[2060, 'World'] == pytest.approx(60)
