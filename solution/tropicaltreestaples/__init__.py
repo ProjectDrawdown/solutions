@@ -63,17 +63,42 @@ class Scenario:
     self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(), custom_world_values=custom_world_vals)
 
     # Custom PDS Data
+    ca_pds_columns = ['Year', 'World'] + dd.MAIN_REGIONS
     ca_pds_data_sources = [
       {'name': 'Average growth, linear trend', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Average_growth_linear_trend.csv')},
+          'datapoints': pd.DataFrame([
+              [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
+              [2050, self.tla_per_region.loc[2050, 'World'] * 0.6179095040166380,
+                  0.0, 0.0, 0.0, 0.0, 0.0],
+              ], columns=ca_pds_columns).set_index('Year')
+          },
       {'name': 'Medium growth, linear trend', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Medium_growth_linear_trend.csv')},
+          'datapoints': pd.DataFrame([
+              [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
+              [2050, self.tla_per_region.loc[2050, 'World'] * 0.648804979217470,
+                  0.0, 0.0, 0.0, 0.0, 0.0],
+              ], columns=ca_pds_columns).set_index('Year')
+          },
       {'name': 'Low growth linear trend', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Low_growth_linear_trend.csv')},
+          'datapoints': pd.DataFrame([
+              [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
+              [2050, self.tla_per_region.loc[2050, 'World'] * 0.55, 0.0, 0.0, 0.0, 0.0, 0.0],
+              ], columns=ca_pds_columns).set_index('Year')
+          },
       {'name': 'Low early growth, linear trend', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Low_early_growth_linear_trend.csv')},
+          'datapoints': pd.DataFrame([
+              [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
+              [2030, self.tla_per_region.loc[2030, 'World'] * 0.6, 0.0, 0.0, 0.0, 0.0, 0.0],
+              [2050, self.tla_per_region.loc[2050, 'World'] * 0.6, 0.0, 0.0, 0.0, 0.0, 0.0],
+              ], columns=ca_pds_columns).set_index('Year')
+          },
       {'name': 'Max early growth, linear trend', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Max_early_growth_linear_trend.csv')},
+          'datapoints': pd.DataFrame([
+              [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
+              [2030, self.tla_per_region.loc[2030, 'World'] * 0.7, 0.0, 0.0, 0.0, 0.0, 0.0],
+              [2050, self.tla_per_region.loc[2050, 'World'] * 1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+              ], columns=ca_pds_columns).set_index('Year')
+          },
     ]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,

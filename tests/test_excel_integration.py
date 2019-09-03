@@ -1407,7 +1407,7 @@ def test_SolarHotWater_RRS():
     zip_f = zipfile.ZipFile(file=zipfilename)
     # Need to figure out how to handle 'Aggressive, High Growth, early' source in
     # PDS CustomAdoption, which varies according to data coming from UnitAdoption.
-    # The checked-in CSV file isa snapshot of the first scenario values.
+    # The checked-in CSV file is a snapshot of the first scenario values.
     for scenario in ['PDS1-25p2050-Low of Custom Scen. (Book Ed.1)']:
         obj = solarhotwater.Scenario(scenario=scenario)
         verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
@@ -1491,33 +1491,19 @@ def test_TropicalForests_LAND():
     for scenario, ac in tropicalforests.scenarios.items():
         if not ac.use_custom_tla:
             # Tropical Forests has a custom TLA very similar to the allocated TLA. Some of the
-            # custom adoption data arbitrarily links to the value for World TLA in Advanced Controls,
-            # causing them to vary very slightly if 'Use Customized TLA' is switched on. The saved
-            # CSV files for Custom PDS Adoption are a snapshot of the avg book version scenario,
-            # which uses custom TLA. Thus, we only test scenarios which also use custom TLA. We
-            # will figure out how to deal with linked custom adoption values later, although in the
-            # case of this solution the values do not change a significant amount anyway (it is
-            # questionable whether there is a good reason for having a custom TLA in the first place).
+            # custom adoption data arbitrarily links to the value for World TLA in Advanced
+            # Controls, causing them to vary very slightly if 'Use Customized TLA' is switched on.
+            # The saved CSV files for Custom PDS Adoption are a snapshot of the avg book version
+            # scenario, which uses custom TLA. Thus, we only test scenarios which also use custom
+            # TLA. We will figure out how to deal with linked custom adoption values later,
+            # although in the case of this solution the values do not change a significant amount
+            # anyway (it is questionable whether there is a good reason for having a custom TLA
+            # in the first place).
             continue
         obj = tropicalforests.Scenario(scenario=scenario)
         verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
-@pytest.mark.skip(reason='not working yet')
-#E  AssertionError: Solution: Tropical Tree Staples Scenario: \
-#        PDS-68p2050-Drawdown-PDScustom-avg-Bookedition1 AEZ Data A48:H53
-#E  DataFrames differ:
-#E  Err [0][1] : '0.7741767271389345' != '0.6403723426998094'
-#E  Err [0][3] : '47.486010369393426' != '46.75147627014513'
-#E  Err [0][7] : '48.26018709653236' != '47.39184861284495'
-#E  Err [1][3] : '19.427374069559573' != '18.710751455339448'
-#E  Err [1][7] : '19.427374069559573' != '18.710751455339448'
-#E  Err [2][1] : '14.588253243431556' != '5.598240017676885'
-#E  Err [2][3] : '18.377241461720473' != '17.698427206190168'
-#E  Err [2][7] : '32.965494705152025' != '23.29666722386705'
-#E  Err [3][1] : '15.464239719095678' != '8.329095464315026'
-#E  Err [3][3] : '52.292101397294076' != '51.52077106665038'
-#E  Err [3][7] : '67.75634111638975' != '59.84986653096539'
 @pytest.mark.slow
 def test_TropicalTreeStaples_LAND():
     zipfilename = str(solutiondir.joinpath('tropicaltreestaples', 'testdata', 'expected.zip'))
