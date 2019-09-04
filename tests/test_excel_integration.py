@@ -24,6 +24,7 @@ from solution import bikeinfrastructure
 from solution import bamboo
 from solution import biochar
 from solution import biogas
+from solution import biogas_small
 from solution import biomass
 from solution import bioplastic
 from solution import buildingautomation
@@ -119,28 +120,28 @@ def verify_aez_data(obj, verify):
     return verify
 
 
-def _get_tam_trend_masks(obj):
-    """If the TAM data being analyzed is very close to linear, then the 2nd/3rd order polynomial
-          and exponential curve fits degenerate to where only the x^1 and constant terms matter and
-          the higher order terms do not.
+def _get_interpolation_trend_masks(func):
+    """If the TAM/Adoption data being analyzed is very close to linear, then the 2nd/3rd order
+       polynomial and exponential curve fits degenerate to where only the x^1 and constant terms
+       matter and the higher order terms do not.
     
-          For example in biochar, Excel and Python both come up with {x}=1.57e+07 & const=1.049e+09
-          For degree2, Python comes up with -1.15e-09 while Excel decides it is -1.32e-09, but
-          it doesn't matter because they are 16 orders of magnitude less than the {x} term.
+       For example in biochar, Excel and Python both come up with {x}=1.57e+07 & const=1.049e+09
+       For degree2, Python comes up with -1.15e-09 while Excel decides it is -1.32e-09, but
+       it doesn't matter because they are 16 orders of magnitude less than the {x} term.
     
-          If the TAM Data is very close to linear, skip comparing the higher order curve fits.
+       If the data is very close to linear, skip comparing the higher order curve fits.
     """
-    degree2 = obj.tm.forecast_trend_global(trend='Degree2')
+    degree2 = func(trend='Degree2')
     d2_mask = d3_mask = exp_mask = None
     if abs(degree2.loc[2015, 'x'] / degree2.loc[2015, 'x^2']) > 1e12:
         d2_mask = degree2.reset_index(drop=True).copy(deep=True)
         d2_mask.loc[:, :] = False
         d2_mask['x^2'] = True
-        d3_mask = obj.tm.forecast_trend_global(trend='Degree3').reset_index(drop=True).copy(deep=True)
+        d3_mask = func(trend='Degree3').reset_index(drop=True).copy(deep=True)
         d3_mask.loc[:, :] = False
         d3_mask['x^2'] = True
         d3_mask['x^3'] = True
-        exp_mask = obj.tm.forecast_trend_global(trend='Exponential').reset_index(drop=True).copy(deep=True)
+        exp_mask = func(trend='Exponential').reset_index(drop=True).copy(deep=True)
         exp_mask.loc[:, :] = False
         exp_mask['e^x'] = True
     return (d2_mask, d3_mask, exp_mask)
@@ -148,7 +149,7 @@ def _get_tam_trend_masks(obj):
 
 def verify_tam_data(obj, verify):
     """Verified tables in TAM Data."""
-    (d2_mask, d3_mask, exp_mask) = _get_tam_trend_masks(obj=obj)
+    (d2_mask, d3_mask, exp_mask) = _get_interpolation_trend_masks(func=obj.tm.forecast_trend_global)
     verify['TAM Data'] = [
             ('W46:Y94', obj.tm.forecast_min_max_sd_global().reset_index(drop=True), None),
             ('AA46:AC94', obj.tm.forecast_low_med_high_global().reset_index(drop=True), None),
@@ -231,7 +232,7 @@ def verify_tam_data_eleven_sources(obj, verify):
           columns to hold data sources and this shifts all of the rest of the columns to
           the left. This test specifies the columns for this narrower layout.
     """
-    (d2_mask, d3_mask, exp_mask) = _get_tam_trend_masks(obj=obj)
+    (d2_mask, d3_mask, exp_mask) = _get_interpolation_trend_masks(func=obj.tm.forecast_trend_global)
     verify['TAM Data'] = [
             ('S46:U94', obj.tm.forecast_min_max_sd_global().reset_index(drop=True), None),
             ('W46:Y94', obj.tm.forecast_low_med_high_global().reset_index(drop=True), None),
@@ -310,13 +311,14 @@ def verify_tam_data_eleven_sources(obj, verify):
 
 def verify_adoption_data(obj, verify):
     """Verified tables in Adoption Data."""
+    (d2_mask, d3_mask, exp_mask) = _get_interpolation_trend_masks(func=obj.ad.adoption_trend_global)
     verify['Adoption Data'] = [
             ('X46:Z94', obj.ad.adoption_min_max_sd_global().reset_index(drop=True), None),
             ('AB46:AD94', obj.ad.adoption_low_med_high_global().reset_index(drop=True), None),
             ('BY50:CA96', obj.ad.adoption_trend_global(trend='Linear').reset_index(drop=True), None),
-            ('CF50:CI96', obj.ad.adoption_trend_global(trend='Degree2').reset_index(drop=True), None),
-            ('CN50:CR96', obj.ad.adoption_trend_global(trend='Degree3').reset_index(drop=True), None),
-            ('CW50:CY96', obj.ad.adoption_trend_global(trend='Exponential').reset_index(drop=True), None),
+            ('CF50:CI96', obj.ad.adoption_trend_global(trend='Degree2').reset_index(drop=True), d2_mask),
+            ('CN50:CR96', obj.ad.adoption_trend_global(trend='Degree3').reset_index(drop=True), d3_mask),
+            ('CW50:CY96', obj.ad.adoption_trend_global(trend='Exponential').reset_index(drop=True), exp_mask),
             #('EA45:EB91', obj.ad.adoption_trend_global().reset_index().loc[:, ['Year', 'adoption']], None),
             ('X106:Z154', obj.ad.adoption_min_max_sd_oecd90().reset_index(drop=True), None),
             ('AB106:AD154', obj.ad.adoption_low_med_high_oecd90().reset_index(drop=True), None),
@@ -405,14 +407,78 @@ def verify_adoption_data_eleven_sources(obj, verify):
           columns to hold data sources and this shifts all of the rest of the columns to
           the left. This test specifies the columns for this narrower layout.
     """
+    (d2_mask, d3_mask, exp_mask) = _get_interpolation_trend_masks(func=obj.ad.adoption_trend_global)
     verify['Adoption Data'] = [
             ('S46:U94', obj.ad.adoption_min_max_sd_global().reset_index(drop=True), None),
             ('W46:Y94', obj.ad.adoption_low_med_high_global().reset_index(drop=True), None),
             ('BT50:BV96', obj.ad.adoption_trend_global(trend='Linear').reset_index(drop=True), None),
-            ('CA50:CD96', obj.ad.adoption_trend_global(trend='Degree2').reset_index(drop=True), None),
-            ('CI50:CM96', obj.ad.adoption_trend_global(trend='Degree3').reset_index(drop=True), None),
-            ('CR50:CT96', obj.ad.adoption_trend_global(trend='Exponential').reset_index(drop=True), None),
+            ('CA50:CD96', obj.ad.adoption_trend_global(trend='Degree2').reset_index(drop=True), d2_mask),
+            ('CI50:CM96', obj.ad.adoption_trend_global(trend='Degree3').reset_index(drop=True), d3_mask),
+            ('CR50:CT96', obj.ad.adoption_trend_global(trend='Exponential').reset_index(drop=True), exp_mask),
             #('DV45:DW91', obj.ad.adoption_trend_global().reset_index().loc[:, ['Year', 'adoption']], None),
+            ('S106:U154', obj.ad.adoption_min_max_sd_oecd90().reset_index(drop=True), None),
+            ('W106:Y154', obj.ad.adoption_low_med_high_oecd90().reset_index(drop=True), None),
+            ('BT110:BV156', obj.ad.adoption_trend_oecd90(trend='Linear').reset_index(drop=True), None),
+            ('CA110:CD156', obj.ad.adoption_trend_oecd90(trend='Degree2').reset_index(drop=True), None),
+            ('CI110:CM156', obj.ad.adoption_trend_oecd90(trend='Degree3').reset_index(drop=True), None),
+            ('CR110:CT156', obj.ad.adoption_trend_oecd90(trend='Exponential').reset_index(drop=True), None),
+            #('EA105:EB151', obj.ad.adoption_trend_oecd90().reset_index().loc[:, ['Year', 'adoption']], None),
+            ('S170:U218', obj.ad.adoption_min_max_sd_eastern_europe().reset_index(drop=True), None),
+            ('W170:Y218', obj.ad.adoption_low_med_high_eastern_europe().reset_index(drop=True), None),
+            ('BT174:BV220', obj.ad.adoption_trend_eastern_europe(trend='Linear').reset_index(drop=True), None),
+            ('CA174:CD220', obj.ad.adoption_trend_eastern_europe(trend='Degree2').reset_index(drop=True), None),
+            ('CI174:CM220', obj.ad.adoption_trend_eastern_europe(trend='Degree3').reset_index(drop=True), None),
+            ('CR174:CT220', obj.ad.adoption_trend_eastern_europe(trend='Exponential').reset_index(drop=True), None),
+            #('EA169:EB217', obj.ad.adoption_trend_eastern_europe().reset_index().loc[:, ['Year', 'adoption']], None),
+            ('S233:U281', obj.ad.adoption_min_max_sd_asia_sans_japan().reset_index(drop=True), None),
+            ('W233:Y281', obj.ad.adoption_low_med_high_asia_sans_japan().reset_index(drop=True), None),
+            ('BT237:BV283', obj.ad.adoption_trend_asia_sans_japan(trend='Linear').reset_index(drop=True), None),
+            ('CA237:CD283', obj.ad.adoption_trend_asia_sans_japan(trend='Degree2').reset_index(drop=True), None),
+            ('CI237:CM283', obj.ad.adoption_trend_asia_sans_japan(trend='Degree3').reset_index(drop=True), None),
+            ('CR237:CT283', obj.ad.adoption_trend_asia_sans_japan(trend='Exponential').reset_index(drop=True), None),
+            #('EA232:EB278', obj.ad.adoption_trend_asia_sans_japan().reset_index().loc[:, ['Year', 'adoption']], None),
+            ('S296:U344', obj.ad.adoption_min_max_sd_middle_east_and_africa().reset_index(drop=True), None),
+            ('W296:Y344', obj.ad.adoption_low_med_high_middle_east_and_africa().reset_index(drop=True), None),
+            ('BT300:BV346', obj.ad.adoption_trend_middle_east_and_africa(trend='Linear').reset_index(drop=True), None),
+            ('CA300:CD346', obj.ad.adoption_trend_middle_east_and_africa(trend='Degree2').reset_index(drop=True), None),
+            ('CI300:CM346', obj.ad.adoption_trend_middle_east_and_africa(trend='Degree3').reset_index(drop=True), None),
+            ('CR300:CT346', obj.ad.adoption_trend_middle_east_and_africa(trend='Exponential').reset_index(drop=True), None),
+            #('EA295:EB341', obj.ad.adoption_trend_middle_east_and_africa().reset_index().loc[:, ['Year', 'adoption']], None),
+            ('S359:U407', obj.ad.adoption_min_max_sd_latin_america().reset_index(drop=True), None),
+            ('W359:Y407', obj.ad.adoption_low_med_high_latin_america().reset_index(drop=True), None),
+            ('BT363:BV409', obj.ad.adoption_trend_latin_america(trend='Linear').reset_index(drop=True), None),
+            ('CA363:CD409', obj.ad.adoption_trend_latin_america(trend='Degree2').reset_index(drop=True), None),
+            ('CI363:CM409', obj.ad.adoption_trend_latin_america(trend='Degree3').reset_index(drop=True), None),
+            ('CR363:CT409', obj.ad.adoption_trend_latin_america(trend='Exponential').reset_index(drop=True), None),
+            #('EA358:EB404', obj.ad.adoption_trend_latin_america().reset_index().loc[:, ['Year', 'adoption']], None),
+            ('S422:U470', obj.ad.adoption_min_max_sd_china().reset_index(drop=True), None),
+            ('W422:Y470', obj.ad.adoption_low_med_high_china().reset_index(drop=True), None),
+            ('BT426:BV472', obj.ad.adoption_trend_china(trend='Linear').reset_index(drop=True), None),
+            ('CA426:CD472', obj.ad.adoption_trend_china(trend='Degree2').reset_index(drop=True), None),
+            ('CI426:CM472', obj.ad.adoption_trend_china(trend='Degree3').reset_index(drop=True), None),
+            ('CR426:CT472', obj.ad.adoption_trend_china(trend='Exponential').reset_index(drop=True), None),
+            #('EA421:EB467', obj.ad.adoption_trend_china().reset_index().loc[:, ['Year', 'adoption']], None),
+            ('S486:U534', obj.ad.adoption_min_max_sd_india().reset_index(drop=True), None),
+            ('W486:Y534', obj.ad.adoption_low_med_high_india().reset_index(drop=True), None),
+            ('BT490:BV536', obj.ad.adoption_trend_india(trend='Linear').reset_index(drop=True), None),
+            ('CA490:CD536', obj.ad.adoption_trend_india(trend='Degree2').reset_index(drop=True), None),
+            ('CI490:CM536', obj.ad.adoption_trend_india(trend='Degree3').reset_index(drop=True), None),
+            ('CR490:CT536', obj.ad.adoption_trend_india(trend='Exponential').reset_index(drop=True), None),
+            #('EA485:EB531', obj.ad.adoption_trend_india().reset_index().loc[:, ['Year', 'adoption']], None),
+            ('S550:U598', obj.ad.adoption_min_max_sd_eu().reset_index(drop=True), None),
+            ('W550:Y598', obj.ad.adoption_low_med_high_eu().reset_index(drop=True), None),
+            ('BT554:BV600', obj.ad.adoption_trend_eu(trend='Linear').reset_index(drop=True), None),
+            ('CA554:CD600', obj.ad.adoption_trend_eu(trend='Degree2').reset_index(drop=True), None),
+            ('CI554:CM600', obj.ad.adoption_trend_eu(trend='Degree3').reset_index(drop=True), None),
+            ('CR554:CT600', obj.ad.adoption_trend_eu(trend='Exponential').reset_index(drop=True), None),
+            #('EA549:EB595', obj.ad.adoption_trend_eu().reset_index().loc[:, ['Year', 'adoption']], None),
+            ('S615:U663', obj.ad.adoption_min_max_sd_usa().reset_index(drop=True), None),
+            ('W615:Y663', obj.ad.adoption_low_med_high_usa().reset_index(drop=True), None),
+            ('BT619:BV665', obj.ad.adoption_trend_usa(trend='Linear').reset_index(drop=True), None),
+            ('CA619:CD665', obj.ad.adoption_trend_usa(trend='Degree2').reset_index(drop=True), None),
+            ('CI619:CM665', obj.ad.adoption_trend_usa(trend='Degree3').reset_index(drop=True), None),
+            ('CR619:CT665', obj.ad.adoption_trend_usa(trend='Exponential').reset_index(drop=True), None),
+            #('EA614:EB660', obj.ad.adoption_trend_usa().reset_index().loc[:, ['Year', 'adoption']], None),
             ]
     return verify
 
@@ -745,7 +811,6 @@ def RRS_solution_verify_list(obj, zip_f):
     include_regional_data = not is_custom_ad_with_no_regional_data(obj)
 
     cell = excel_read_cell_any_scenario(zip_f=zip_f, sheetname='TAM Data', cell='N45')
-    print(f'TAM Data:N45 = {cell}')
     if cell == 'Functional Unit':
         verify_tam_data_eleven_sources(obj, verify)
     else:
@@ -940,6 +1005,17 @@ def test_Biogas_RRS():
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in biogas.scenarios.keys():
         obj = biogas.Scenario(scenario=scenario)
+        verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+
+
+def test_Biogas_Small_RRS():
+    zipfilename = str(solutiondir.joinpath('biogas_small', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for scenario in biogas_small.scenarios.keys():
+        obj = biogas_small.Scenario(scenario=scenario)
+        print(str(obj.ad.adoption_trend_global(trend='Degree2')))
+        print(str(obj.ad.adoption_trend_global(trend='Degree3')))
         verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 

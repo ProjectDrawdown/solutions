@@ -1,0 +1,3 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Calculated by Jai Kumar Gaurav, see Sheet Small-biogas-AD",Small-biogas-AD'!A1,World,,,2016,,,TWh(therms)/yr,,TWh (therms)/Biogas plant/year,,,
+Calculated based on average m3 from household biogas installation China and India,,Asia (Sans Japan),China and India,,2016,,,TWh(therms)/yr,,TWh (therms)/Biogas plant/year,,,

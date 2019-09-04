@@ -1,0 +1,7 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+The World Bank (2011) - total kg of solid fuel,http://cleancookstoves.org/resources_files/household-cookstoves.pdf,World,,,2011,,,USD/total solid fuel used per year per stove ,0.0,US2014$/kWh therm,0.11468816918223732,Firewood,
+The World Bank (2011) - per stove,http://cleancookstoves.org/resources_files/household-cookstoves.pdf,World,,,2011,,,US$2011/stove/year,0.0,US2014$/kWh therm,0.11468816918223732,Firewood,
+Sustain Tech (2015),http://www.sustaintech.in/the_social.html,Asia (Sans Japan),India,,2012,,,US$2012/stove/year,0.0,US2014$/kWh therm,0.11468816918223732,Firewood,
+Jeuland (2012),e30338. doi:10.1371/journal.pone.0030338,World,,1  - Peer Reviewed,2012,,,US$2012/stove/year,0.0,US2014$/kWh therm,0.11468816918223732,Firewood,
+Jeuland (2014),http://sites.nicholasinstitute.duke.edu/environmentaleconomics/files/2014/07/WP-EE-14-07.pdf,Asia (Sans Japan),India,,2012,,,US$2012/stove per year,0.0,US2014$/kWh therm,0.11468816918223732,Firewood,
+Grieshop (2011),10.1016/j.enpol.2011.03.024,Asia (Sans Japan),India,1  - Peer Reviewed,2011,,,ton/stove/year,0.0,US2014$/kWh therm,0.03246620431933996,Kerosene,

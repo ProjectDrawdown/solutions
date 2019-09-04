@@ -1,0 +1,7 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"The World Bank, 2011",http://cleancookstoves.org/resources_files/household-cookstoves.pdf,World,,2 - Public Sector/ Multilateral Agency,2011,,,Years,0.0,TWh (therms)/Biogas plant,0.11468816918223732,Firewood,
+"CARE, Denmark, 2009",http://www.care.org/sites/default/files/documents/CC-2009-GHA-Cookstoves_Ghana.pdf,World,,,2009,,,Years,0.0,TWh (therms)/Biogas plant,0.11468816918223732,Firewood,
+"The Glacier Trust, UK, 2012",http://static1.1.sqspcdn.com/static/f/557676/21772951/1359420847167/Forest+Conservation+and+Improved+Cooking+Stoves+project+Middle+Mountains+Nepal+Report+updated+Jan+2013.pdf?token=VNVfBepofKC%2BmnsUcq6uDxgzFBE%3D,World,,,2012,,,Years,0.0,TWh (therms)/Biogas plant,0.11468816918223732,Firewood,
+SEI (2012),https://www.sei-international.org/mediamanager/documents/Publications/Atmospheric/sei-wp-2012-03-cookstoves.pdf,World,,,2012,,,Years,0.0,TWh (therms)/Biogas plant,0.11468816918223732,Firewood,
+Mainali (2012),http://dx.doi.org/10.1063/1.4730416,Asia (Sans Japan),China,1  - Peer Reviewed,2005,,,Years,0.0,TWh (therms)/Biogas plant,0.11468816918223732,Firewood,
+Jeuland (2012),e30338. doi:10.1371/journal.pone.0030338,World,,1  - Peer Reviewed,2012,,,Years,0.0,TWh (therms)/Biogas plant,0.22868008468818246,Coal,

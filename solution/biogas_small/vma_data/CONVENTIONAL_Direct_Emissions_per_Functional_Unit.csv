@@ -1,0 +1,5 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Habib et al (2004),,Asia (Sans Japan),India,,2004,,,g/kg,0.0,t CO2-eq/TWh (therms),0.14336021147779665,Firewood,
+Venkataraman (2010),http://ehsdiv.sph.berkeley.edu/krsmith/publications/2010/ESD_60final_3.pdf,Asia (Sans Japan),India,1  - Peer Reviewed,2010,,,g/11 MJ,0.0,t CO2-eq/TWh (therms),0.14336021147779665,Firewood,
+Venkataraman (2010) - crop residue,http://ehsdiv.sph.berkeley.edu/krsmith/publications/2010/ESD_60final_3.pdf,Asia (Sans Japan),India,1  - Peer Reviewed,2010,,,g/11 MJ,0.0,t CO2-eq/TWh (therms),0.14336021147779665,Firewood,
+Preble (2010),,Middle East and Africa,Darfur,,2010,,,g/kg,0.0,t CO2-eq/TWh (therms),0.14336021147779665,Firewood,
