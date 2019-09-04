@@ -833,7 +833,7 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None):
             if isinstance(act, str) and isinstance(exp, str):
                 matches = (act == exp)
             elif pd.isna(act) or act == '' or act is None or act == 0 or act == pytest.approx(0.0):
-                matches = pd.isna(exp) or exp == '' or exp is None or exp == 0 or exp == pytest.approx(0.0)
+                matches = pd.isna(exp) or exp == '' or exp is None or exp == 0 or exp == pytest.approx(0.0, abs=1e-10)
             elif np.isinf(act):
                 matches = pd.isna(exp) or np.isinf(exp)  # Excel #DIV/0! turns into NaN.
             else:
@@ -1459,16 +1459,6 @@ def test_TemperateForests_LAND():
     zipfilename = str(solutiondir.joinpath('temperateforests', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario, ac in temperateforests.scenarios.items():
-        if not ac.use_custom_tla:
-            # Temperate Forests has a custom TLA very similar to the allocated TLA. Some of the
-            # custom adoption data arbitrarily links to the value for World TLA in Advanced Controls,
-            # causing them to vary very slightly if 'Use Customized TLA' is switched on. The saved
-            # CSV files for Custom PDS Adoption are a snapshot of the avg book version scenario,
-            # which uses custom TLA. Thus, we only test scenarios which also use custom TLA. We
-            # will figure out how to deal with linked custom adoption values later, although in the
-            # case of this solution the values do not change a significant amount anyway (it is
-            # questionable whether there is a good reason for having a custom TLA in the first place).
-            continue
         obj = temperateforests.Scenario(scenario=scenario)
         verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
@@ -1489,17 +1479,6 @@ def test_TropicalForests_LAND():
     zipfilename = str(solutiondir.joinpath('tropicalforests', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario, ac in tropicalforests.scenarios.items():
-        if not ac.use_custom_tla:
-            # Tropical Forests has a custom TLA very similar to the allocated TLA. Some of the
-            # custom adoption data arbitrarily links to the value for World TLA in Advanced
-            # Controls, causing them to vary very slightly if 'Use Customized TLA' is switched on.
-            # The saved CSV files for Custom PDS Adoption are a snapshot of the avg book version
-            # scenario, which uses custom TLA. Thus, we only test scenarios which also use custom
-            # TLA. We will figure out how to deal with linked custom adoption values later,
-            # although in the case of this solution the values do not change a significant amount
-            # anyway (it is questionable whether there is a good reason for having a custom TLA
-            # in the first place).
-            continue
         obj = tropicalforests.Scenario(scenario=scenario)
         verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)

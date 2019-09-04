@@ -63,26 +63,268 @@ class Scenario:
     self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(), custom_world_values=custom_world_vals)
 
     # Custom PDS Data
-    ca_pds_data_sources = [
-      {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, NYDF/2030 (Charlotte Wheeler, 2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_NYDF2030_Charlotte_Wheeler_2016.csv')},
-      {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, WRI/2030 (Charlotte Wheeler, 2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_OptimisticAchieve_Commitment_in_15_years_w_100_intact_WRI2030_Charlotte_Wheeler_2016.csv')},
-      {'name': 'Conservative-Achieve Commitment in 15 years w/ 32.8% intact, WRI/2030 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_WRI2030_Charlotte_Wheeler2016.csv')},
-      {'name': 'Conservative-Achieve Commitment in 15 years w/ 32.8% intact with continued growth post-2030, WRI/2030 and beyond (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_15_years_w_32_8_intact_with_continued_growth_post2030__5a53995a.csv')},
-      {'name': 'Conservative-Achieve Commitment in 30 years w/ 100% intact, WRI/2045 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_100_intact_WRI2045_Charlotte_Wheeler2016.csv')},
-      {'name': 'Conservative-Achieve Commitment in 30 years w/ 32.8% intact, WRI/2045 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_WRI2045_Charlotte_Wheeler2016.csv')},
-      {'name': 'Conservative-Achieve Commitment in 30 years w/ 32.8% intact with continued growth, WRI/2045 (Charlotte Wheeler,2016)', 'include': True,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_30_years_w_32_8_intact_with_continued_growth_WRI2045_C_bcd9d435.csv')},
-      {'name': 'Conservative-Achieve Commitment in 45 years w/ 100% intact, WRI/2060 (Charlotte Wheeler,2016)', 'include': False,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_100_intact_WRI2060_Charlotte_Wheeler2016.csv')},
-      {'name': 'Conservative-Achieve Commitment in 45 years w/ 32.8% intact, WRI/2060 (Charlotte Wheeler,2016)', 'include': False,
-          'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeAchieve_Commitment_in_45_years_w_32_8_intact_WRI2060_Charlotte_Wheeler2016.csv')},
-    ]
+    ca_pds_columns = ['Year'] + dd.REGIONS
+    commit_13_dec_2016 = 136.32    # commitment to reforestation made Dec 13, 2016.
+    commit_13_dec_2016_tmr = 0.93  # % commitment that are projects in tropical TMR (based on country level commitments)
+    commit_13_dec_2016_mha = commit_13_dec_2016 * commit_13_dec_2016_tmr  # Mha of current commitments in tropical TMR
+    intact_13_dec_2016 = 0.328     # % commitment in tropical TMR available are for intact forest
+    #                                restoration (based on country level commitments)
+    max_land_bonn = 350.0  # Max land Expected total land commited under Bonn Challenge and NY Declaration
+    max_land_wri = self.tla_per_region.loc[2050, 'World']  # Total degraded land suitable for
+    #                                restoration, considered to be in tropical TMRs by WRI
+
+    commit_1_mha_new = max_land_bonn - commit_13_dec_2016  # Mha of total degraded land available for
+    #         new commitments in tropical TMR + additional degraded land available from the Forest
+    #         Protection solution, for which exact area has to be estimated.
+    final_adoption_1 = (commit_13_dec_2016_mha * intact_13_dec_2016) + (commit_1_mha_new * 1.0)
+    data_source_1 = {
+            'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, NYDF/2030 (Charlotte Wheeler, 2016)',
+            'include': True,
+            # The adoption scenarios are calculated using the linear trendline based on
+            #   (i) current restoration commitments to date (as taken on 13/12/2016 from Bonn
+            #       Challenge website);
+            #  (ii) potential future commitments for intact forest restoration in tropics {32.80%
+            #       (based on current commitments) or 100% (projected)};
+            # (iii) the proportion of committed land restored to intact forest {304 million
+            #       hectares (based on WRI calculation) or 350 million hectares (based on New York
+            #       Declaration)}; and
+            #  (iv) the year commitments are realized (2030, 2045 or 2060).
+            # The current restoration commitments is fixed in all custom scenarios, while the rest
+            # variables changes from scenario to scenario.This scenario projects the future adoption
+            # of the solution considering, (1) 100% intact forest restoration, (2) 350 million
+            # hectare land availability for future restoration of tropical forests, and
+            # (3) the commitments will be realized by the year 2030.
+            'datapoints': pd.DataFrame([
+                [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2030, final_adoption_1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2031, final_adoption_1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                ], columns=ca_pds_columns).set_index('Year')
+    }
+
+    commit_2_mha_new = max_land_wri - (commit_13_dec_2016 * commit_13_dec_2016_tmr)
+    final_adoption_2 = (commit_13_dec_2016_mha * intact_13_dec_2016) + (commit_2_mha_new * 1.0)
+    data_source_2 = {
+            'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, WRI/2030 (Charlotte Wheeler, 2016)',
+            'include': True,
+            # The adoption scenarios are calculated using the linear trendline based on
+            #   (i) current restoration commitments to date (as taken on 13/12/2016 from Bonn
+            #       Challenge website);
+            #  (ii) potential future commitments for intact forest restoration in tropics {32.80%
+            #       (based on current commitments) or 100% (projected)};
+            # (iii) the proportion of committed land restored to intact forest {304 million hectares
+            #       (based on WRI calculation) or 350 million hectares (based on New York
+            #       Declaration)}; and
+            #  (iv) the year commitments are realized (2030, 2045 or 2060).
+            # The current restoration commitments is fixed in all custom scenarios, while the rest
+            # variables changes from scenario to scenario.This scenario projects the future adoption
+            # of the solution considering, (1) 100% intact forest restoration, (2) 304 million
+            # hectare land availability for future restoration of tropical forests, and (3) the
+            # commitments will be realized by the year 2030.
+            'datapoints': pd.DataFrame([
+                [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2030, final_adoption_2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2031, final_adoption_2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                ], columns=ca_pds_columns).set_index('Year')
+    }
+
+    future_3_tmr = 0.328  # % of future commitments in tropical thermal moisture regime available are for intact forest restoration
+    final_adoption_3 = ((commit_13_dec_2016_mha * intact_13_dec_2016) +
+                    ((max_land_wri - commit_13_dec_2016_mha) * future_3_tmr))
+    data_source_3 = {
+            'name': 'Conservative-Achieve Commitment in 15 years w/ 32.8% intact, WRI/2030 (Charlotte Wheeler,2016)',
+            'include': True,
+            # The adoption scenarios are calculated using the linear trendline based on
+            #   (i) current restoration commitments to date (as taken on 13/12/2016 from Bonn
+            #       Challenge website);
+            #  (ii) potential future commitments for intact forest restoration in tropics {32.80%
+            #       (based on current commitments) or 100% (projected)};
+            # (iii) the proportion of committed land restored to intact forest {304 million hectares
+            #       (based on WRI calculation) or 350 million hectares (based on New York
+            #       Declaration)}; and
+            #  (iv) the year commitments are realized (2030, 2045 or 2060).
+            # The current restoration commitments is fixed in all custom scenarios, while the rest
+            # variables changes from scenario to scenario.This scenario projects the future
+            # adoption of the solution considering, (1) 32.8% intact forest restoration,
+            # (2) 304 million hectare land availability for future restoration of tropical forests,
+            # and (3) the commitments will be realized by the year 2030.
+            'datapoints': pd.DataFrame([
+                [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2030, final_adoption_3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2031, final_adoption_3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                ], columns=ca_pds_columns).set_index('Year')
+    }
+
+    future_4_tmr = 0.328  # % of future commitments in tropical thermal moisture regime available are for intact forest restoration
+    final_adoption_4 = ((commit_13_dec_2016_mha * intact_13_dec_2016) +
+                    ((max_land_wri - commit_13_dec_2016_mha) * future_4_tmr))
+    data_source_4 = {
+            'name': 'Conservative-Achieve Commitment in 15 years w/ 32.8% intact with continued growth post-2030, WRI/2030 and beyond (Charlotte Wheeler,2016)',
+            'include': True,
+            # The adoption scenarios are calculated using the linear trendline based on
+            #   (i) current restoration commitments to date (as taken on 13/12/2016 from Bonn
+            #       Challenge website);
+            #  (ii) potential future commitments for intact forest restoration in tropics {32.80%
+            #       (based on current commitments) or 100% (projected)};
+            # (iii) the proportion of committed land restored to intact forest {304 million hectares
+            #       (based on WRI calculation) or 350 million hectares (based on New York
+            #       Declaration)}; and
+            #  (iv) the year commitments are realized (2030, 2045 or 2060).
+            # The current restoration commitments is fixed in all custom scenarios, while the rest
+            # variables changes from scenario to scenario.This scenario projects the future
+            # adoption of the solution considering, (1) 32.8% intact forest restoration,
+            # (2) 304 million hectare land availability for future restoration of tropical forests,
+            # and (3) the commitments will be realized by the year 2030.
+            #
+            # This is scenario 3, except, it is also assumed that the adoption of the solution
+            # will continue post 2030 as well.
+            'datapoints': pd.DataFrame([
+                [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2030, final_adoption_4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                ], columns=ca_pds_columns).set_index('Year')
+    }
+
+    future_5_tmr = 1.0  # % of future commitments in tropical thermal moisture regime available are for intact forest restoration
+    final_adoption_5 = ((commit_13_dec_2016_mha * intact_13_dec_2016) +
+                    ((max_land_wri - commit_13_dec_2016_mha) * future_5_tmr))
+    data_source_5 = {
+            'name': 'Conservative-Achieve Commitment in 30 years w/ 100% intact, WRI/2045 (Charlotte Wheeler,2016)',
+            'include': True,
+            # The adoption scenarios are calculated using the linear trendline based on
+            #   (i) current restoration commitments to date (as taken on 13/12/2016 from Bonn
+            #       Challenge website);
+            #  (ii) potential future commitments for intact forest restoration in tropics {32.80%
+            #       (based on current commitments) or 100% (projected)};
+            # (iii) the proportion of committed land restored to intact forest {304 million hectares
+            #       (based on WRI calculation) or 350 million hectares (based on New York
+            #       Declaration)}; and
+            #  (iv) the year commitments are realized (2030, 2045 or 2060).
+            # The current restoration commitments is fixed in all custom scenarios, while the rest
+            # variables changes from scenario to scenario.This scenario projects the future
+            # adoption of the solution considering, (1) 100% intact forest restoration,
+            # (2) 304 million hectare land availability for future restoration of tropical forests,
+            # and (3) the commitments will be realized by the year 2045.
+            'datapoints': pd.DataFrame([
+                [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2045, final_adoption_5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2046, final_adoption_5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                ], columns=ca_pds_columns).set_index('Year')
+    }
+
+    future_6_tmr = 0.328  # % of future commitments in tropical thermal moisture regime available are for intact forest restoration
+    final_adoption_6 = ((commit_13_dec_2016_mha * intact_13_dec_2016) +
+                    ((max_land_wri - commit_13_dec_2016_mha) * future_6_tmr))
+    data_source_6 = {
+            'name': 'Conservative-Achieve Commitment in 30 years w/ 32.8% intact, WRI/2045 (Charlotte Wheeler,2016)',
+            'include': True,
+            # The adoption scenarios are calculated using the linear trendline based on
+            #   (i) current restoration commitments to date (as taken on 13/12/2016 from Bonn
+            #       Challenge website);
+            #  (ii) potential future commitments for intact forest restoration in tropics {32.80%
+            #       (based on current commitments) or 100% (projected)};
+            # (iii) the proportion of committed land restored to intact forest {304 million hectares
+            #       (based on WRI calculation) or 350 million hectares (based on New York
+            #       Declaration)}; and
+            #  (iv) the year commitments are realized (2030, 2045 or 2060).
+            # The current restoration commitments is fixed in all custom scenarios, while the rest
+            # variables changes from scenario to scenario.This scenario projects the future
+            # adoption of the solution considering, (1) 32.8% intact forest restoration,
+            # (2) 304 million hectare land availability for future restoration of tropical forests,
+            # and (3) the commitments will be realized by the year 2045.
+            'datapoints': pd.DataFrame([
+                [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2045, final_adoption_6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2046, final_adoption_6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                ], columns=ca_pds_columns).set_index('Year')
+    }
+
+    future_7_tmr = 0.328  # % of future commitments in tropical thermal moisture regime available are for intact forest restoration
+    final_adoption_7 = ((commit_13_dec_2016_mha * intact_13_dec_2016) +
+                    ((max_land_wri - commit_13_dec_2016_mha) * future_7_tmr))
+    data_source_7 = {
+            'name': 'Conservative-Achieve Commitment in 30 years w/ 32.8% intact with continued growth, WRI/2045 (Charlotte Wheeler,2016)',
+            'include': True,
+            # The adoption scenarios are calculated using the linear trendline based on
+            #   (i) current restoration commitments to date (as taken on 13/12/2016 from Bonn
+            #       Challenge website);
+            #  (ii) potential future commitments for intact forest restoration in tropics {32.80%
+            #       (based on current commitments) or 100% (projected)};
+            # (iii) the proportion of committed land restored to intact forest {304 million hectares
+            #       (based on WRI calculation) or 350 million hectares (based on New York
+            #       Declaration)}; and
+            #  (iv) the year commitments are realized (2030, 2045 or 2060).
+            # The current restoration commitments is fixed in all custom scenarios, while the rest
+            # variables changes from scenario to scenario. This scenario projects the future
+            # adoption of the solution considering, (1) 32.8% intact forest restoration,
+            # (2) 304 million hectare land availability for future restoration of tropical forests,
+            # and (3) the commitments will be realized by the year 2045.
+            #
+            # This is scenario 6, except, it is also assumed that the adoption of the solution
+            # will continue post 2045 as well.
+            'datapoints': pd.DataFrame([
+                [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2045, final_adoption_7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                ], columns=ca_pds_columns).set_index('Year')
+    }
+
+    future_8_tmr = 1.0  # % of future commitments in tropical thermal moisture regime available are for intact forest restoration
+    final_adoption_8 = ((commit_13_dec_2016_mha * intact_13_dec_2016) +
+                    ((max_land_wri - commit_13_dec_2016_mha) * future_8_tmr))
+    data_source_8 = {
+            'name': 'Conservative-Achieve Commitment in 45 years w/ 100% intact, WRI/2060 (Charlotte Wheeler,2016)',
+            'include': False,
+            # The adoption scenarios are calculated using the linear trendline based on
+            #   (i) current restoration commitments to date (as taken on 13/12/2016 from Bonn
+            #       Challenge website);
+            #  (ii) potential future commitments for intact forest restoration in tropics {32.80%
+            #       (based on current commitments) or 100% (projected)};
+            # (iii) the proportion of committed land restored to intact forest {304 million hectares
+            #       (based on WRI calculation) or 350 million hectares (based on New York
+            #       Declaration)}; and
+            #  (iv) the year commitments are realized (2030, 2045 or 2060).
+            # The current restoration commitments is fixed in all custom scenarios, while the rest
+            # variables changes from scenario to scenario.
+            #
+            # This scenario projects the future adoption of the solution considering,
+            # (1) 100% intact forest restoration, (2) 304 million hectare land availability
+            # for future restoration of tropical forests, and (3) the commitments will be
+            # realized by the year 2060. 
+            'datapoints': pd.DataFrame([
+                [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2060, final_adoption_8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                ], columns=ca_pds_columns).set_index('Year')
+    }
+
+
+    future_9_tmr = 0.328  # % of future commitments in tropical thermal moisture regime available are for intact forest restoration
+    final_adoption_9 = ((commit_13_dec_2016_mha * intact_13_dec_2016) +
+                    ((max_land_wri - commit_13_dec_2016_mha) * future_9_tmr))
+    data_source_9 = {
+            'name': 'Conservative-Achieve Commitment in 45 years w/ 32.8% intact, WRI/2060 (Charlotte Wheeler,2016)',
+            'include': False,
+            # The adoption scenarios are calculated using the linear trendline based on
+            #   (i) current restoration commitments to date (as taken on 13/12/2016 from Bonn
+            #       Challenge website);
+            #  (ii) potential future commitments for intact forest restoration in tropics {32.80%
+            #       (based on current commitments) or 100% (projected)};
+            # (iii) the proportion of committed land restored to intact forest {304 million hectares
+            #       (based on WRI calculation) or 350 million hectares (based on New York
+            #       Declaration)}; and
+            #  (iv) the year commitments are realized (2030, 2045 or 2060).
+            # The current restoration commitments is fixed in all custom scenarios, while the rest
+            # variables changes from scenario to scenario.
+            #
+            # This scenario projects the future adoption of the solution considering,
+            # (1) 32.8% intact forest restoration, (2) 304 million hectare land availability
+            # for future restoration of tropical forests, and (3) the commitments will be realized
+            # by the year 2060. 
+            'datapoints': pd.DataFrame([
+                [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2060, final_adoption_9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                ], columns=ca_pds_columns).set_index('Year')
+    }
+
+    ca_pds_data_sources = [data_source_1, data_source_2, data_source_3, data_source_4,
+            data_source_5, data_source_6, data_source_7, data_source_8, data_source_9]
     self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
         soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
         high_sd_mult=1.0, low_sd_mult=1.0,

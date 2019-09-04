@@ -238,3 +238,16 @@ def test_datapoints_nolimit():
     assert result.loc[2040, 'World'] == pytest.approx(40)
     assert result.loc[2050, 'World'] == pytest.approx(50)
     assert result.loc[2060, 'World'] == pytest.approx(60)
+
+
+def test_datapoints_no_negative():
+    datapoints = pd.DataFrame([
+        [2020, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2021, 100.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+        columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+                 "Middle East and Africa", "Latin America"]).set_index("Year")
+    data_sources = [{'name': 'datapoints scenario', 'datapoints': datapoints, 'include': True}]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='datapoints scenario')
+    result = ca.scenarios['datapoints scenario']['df']
+    assert result.loc[2015, 'World'] == pytest.approx(0.0)  # i.e. not negative.

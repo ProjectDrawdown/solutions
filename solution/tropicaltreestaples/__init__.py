@@ -66,6 +66,11 @@ class Scenario:
     ca_pds_columns = ['Year', 'World'] + dd.MAIN_REGIONS
     ca_pds_data_sources = [
       {'name': 'Average growth, linear trend', 'include': True,
+          # This scenario is built on the historical (1962-2012) average global growth rate of
+          # tropical staple crops. The historical data available for each decade was interpolated
+          # based on the best curve fit and the interpolated data were then used in the
+          # AdoptionData. The calculation uses the 2050 adopted value and calculates the
+          # percentage with reference to the TLA, which is used to build this adoption scenario. 
           'datapoints': pd.DataFrame([
               [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
               [2050, self.tla_per_region.loc[2050, 'World'] * 0.6179095040166380,
@@ -73,6 +78,12 @@ class Scenario:
               ], columns=ca_pds_columns).set_index('Year')
           },
       {'name': 'Medium growth, linear trend', 'include': True,
+          # This scenario is built on the historical (1962-2012) average global growth rate of
+          # tropical staple crops. The historical data available for each decade was interpolated
+          # based on the best curve fit and the interpolated data were then used in the
+          # AdoptionData. This scenario presents the result assuming a 5% increase on the
+          # historical growth rate. The calculation uses the 2050 adopted value and calculates
+          # the percentage with reference to the TLA, which is used to build this adoption scenario.
           'datapoints': pd.DataFrame([
               [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
               [2050, self.tla_per_region.loc[2050, 'World'] * 0.648804979217470,
@@ -80,12 +91,17 @@ class Scenario:
               ], columns=ca_pds_columns).set_index('Year')
           },
       {'name': 'Low growth linear trend', 'include': True,
+          # It is assumed that the adoption of tropical tree staples will reach 55% of its
+          # TLA by 2050.
           'datapoints': pd.DataFrame([
               [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
               [2050, self.tla_per_region.loc[2050, 'World'] * 0.55, 0.0, 0.0, 0.0, 0.0, 0.0],
               ], columns=ca_pds_columns).set_index('Year')
           },
       {'name': 'Low early growth, linear trend', 'include': True,
+          # This scenario assumes 60% adoption of the solution by 2030 and remains same until 2050.
+          # The early adoption of the solution was considered because of the higher carbon and
+          # financial impact of the solution and lower land availability.
           'datapoints': pd.DataFrame([
               [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
               [2030, self.tla_per_region.loc[2030, 'World'] * 0.6, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -93,6 +109,10 @@ class Scenario:
               ], columns=ca_pds_columns).set_index('Year')
           },
       {'name': 'Max early growth, linear trend', 'include': True,
+          # This scenario assumes 100% adoption of the solution by 2050 with the assumption that
+          # 70% of that adoption will be acheived by 2030. The early adoption of the solution was
+          # considered because of the higher carbon and financial impact of the solution and lower
+          # land availability.
           'datapoints': pd.DataFrame([
               [2014, 25.42446198181150, 0.0, 0.0, 0.0, 0.0, 0.0],
               [2030, self.tla_per_region.loc[2030, 'World'] * 0.7, 0.0, 0.0, 0.0, 0.0, 0.0],

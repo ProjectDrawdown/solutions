@@ -112,7 +112,7 @@ class CustomAdoption:
         adopt1 = datapoints.iloc[1]
         adopt_per_year = (adopt1 - adopt0) / float(year1 - year0)
         for year in range(first_year - 1, start_year - 1, -1):
-            df.loc[year] = adopt0 - (float(year0 - year) * adopt_per_year)
+            df.loc[year] = (adopt0 - (float(year0 - year) * adopt_per_year)).clip(lower=0.0)
 
         if self.total_adoption_limit is not None:
             df = df.combine(self.total_adoption_limit, np.fmin)
