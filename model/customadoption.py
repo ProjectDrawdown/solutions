@@ -18,7 +18,7 @@ def generate_df_template():
     return df
 
 
-class CustomAdoption:
+class CustomAdoption(object, metaclass=metaclass_cache.MetaclassCache):
     """
     Equivalent to Custom PDS and REF Adoption sheets in xls. Allows user to input custom adoption
     scenarios. The data can be raw or generated from a script within the solution directory.

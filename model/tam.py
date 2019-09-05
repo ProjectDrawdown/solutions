@@ -5,13 +5,14 @@ import os.path
 import pathlib
 
 from model import interpolation
+from model import metaclass_cache
 import numpy as np
 import pandas as pd
 
 
 
 
-class TAM:
+class TAM(object, metaclass=metaclass_cache.MetaclassCache):
     """Total Addressable Market module."""
 
 
@@ -267,7 +268,7 @@ class TAM:
             data_sources.update({'RegionalSum': {'RegionalSum': ''}})
         else:
             forecast = self.forecast_data_global()
-        result = self._min_max_sd(forecast=forecast,
+        result = self._min_max_sd(forecast=forecast.copy(),
                                   tamconfig=self.tamconfig['World'], data_sources=data_sources)
         result.name = 'forecast_min_max_sd_global'
         return result

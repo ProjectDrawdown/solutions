@@ -794,7 +794,7 @@ def test_mean_ignores_zeros():
     tamconfig_mod = g_tamconfig.copy()
     tamconfig_mod.loc['source_until_2014', 'World'] = 'zero'
     tamconfig_mod.loc['source_after_2014', 'World'] = 'zero'
-    tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=data_sources,
+    tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
     result = tm.forecast_low_med_high_global()
     assert all(result.loc[:, 'Medium'] == 0.0)
