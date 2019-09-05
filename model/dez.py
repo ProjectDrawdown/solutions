@@ -10,25 +10,26 @@ values are fixed across all solutions but if they do need updating the xls sheet
 can be updated by running the relevant script in the 'tools' directory.
 """
 
-import pandas as pd
 import pathlib
-from model.dd import THERMAL_DYNAMICAL_REGIMES, OCEAN_REGIONS
-from tools.util import to_filename
+import re
+
+import pandas as pd
+import model.dd
+from model import metaclass_cache
 
 OCEAN_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean')
-pd.set_option('display.expand_frame_repr', False)
 
 
-class DEZ:
+class DEZ(object, metaclass=metaclass_cache.MetaclassCache):
     """ DEZ Data module """
 
     def __init__(self, solution_name):
         self.solution_name = solution_name
-        self.regimes = THERMAL_DYNAMICAL_REGIMES
+        self.regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
 
         # AEZ data has a slightly different format for regions than the rest of the model.
         # This is in line with the xls version but should be changed later to keep regions consistent
-        self.regions = OCEAN_REGIONS[1:7] + ['Global'] + OCEAN_REGIONS[7:]
+        self.regions = model.dd.OCEAN_REGIONS[1:7] + ['Global'] + model.dd.OCEAN_REGIONS[7:]
 
         self._populate_solution_ocean_allocation()
         self._get_applicable_zones()
@@ -39,6 +40,10 @@ class DEZ:
         """ Returns relevant ocean data for Unit Adoption module"""
         return self.soln_ocean_dist_df
 
+    def _to_filename(self, name):
+        """Removes special characters and separates words with single underscores"""
+        return re.sub(' +', '_', re.sub('[^a-zA-Z0-9' '\n]', ' ', name)).strip('_')
+
     def _populate_solution_ocean_allocation(self):
         """
         'DEZ Data'!A63:AD70
@@ -47,9 +52,9 @@ class DEZ:
         df = pd.read_csv(OCEAN_CSV_PATH.joinpath('dez', 'solution_oa_template.csv'), index_col=0)
         df = df.fillna(0)
         for tdr in self.regimes:
-            tdr_path = OCEAN_CSV_PATH.joinpath('allocation', to_filename(tdr))
+            tdr_path = OCEAN_CSV_PATH.joinpath('allocation', self._to_filename(tdr))
             for col in df:
-                dez_path = tdr_path.joinpath(to_filename(col) + '.csv')
+                dez_path = tdr_path.joinpath(self._to_filename(col) + '.csv')
                 oa_df = pd.read_csv(dez_path, index_col=0)
                 total_perc_allocated = oa_df.loc[self.solution_name]['Total % allocated']
                 if total_perc_allocated > 0:
@@ -63,8 +68,8 @@ class DEZ:
 
         NOTE: this matrix is in development and WILL change. Make sure to update accordingly.
         """
-        row = pd.read_csv(
-            OCEAN_CSV_PATH.joinpath('dez', 'solution_dez_matrix.csv'), index_col=0).loc[self.solution_name]
+        row = pd.read_csv(OCEAN_CSV_PATH.joinpath('dez', 'solution_dez_matrix.csv'),
+                index_col=0).loc[self.solution_name]
         self.applicable_zones = row[row].index.tolist()
 
     def _populate_world_ocean_allocation(self):
@@ -75,8 +80,8 @@ class DEZ:
         """
         self.world_ocean_alloc_dict = {}
         for tdr in self.regimes:
-            df = pd.read_csv(OCEAN_CSV_PATH.joinpath('world', to_filename(tdr) + '.csv'), index_col=0).drop(
-                'Total Area (Mha)', 1)
+            df = pd.read_csv(OCEAN_CSV_PATH.joinpath('world', self._to_filename(tdr) + '.csv'),
+                    index_col=0).drop('Total Area (Mha)', 1)
             self.world_ocean_alloc_dict[tdr] = df.mul(self.soln_ocean_alloc_df.loc[tdr], axis=1)
 
     def _populate_solution_ocean_distribution(self):

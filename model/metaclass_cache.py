@@ -8,13 +8,11 @@ the cache, all solutions benefit.
 """
 
 import pandas as pd
-
-
+import json
 
 
 class MetaclassCache(type):
     cache = {}
-
 
     def hash_item(self, item):
         if isinstance(item, pd.DataFrame) or isinstance(item, pd.Series):
@@ -23,6 +21,17 @@ class MetaclassCache(type):
             return hash(item)
         except TypeError:
             pass
+
+        try:
+            return hash(json.dumps(item, separators=(',', ':')))
+        except TypeError:
+            pass
+
+        try:
+            return(hash(str(item)))
+        except TypeError:
+            pass
+
         try:
             return hash(tuple(item))
         except TypeError as e:
@@ -30,13 +39,12 @@ class MetaclassCache(type):
 
 
     def __call__(self, *args, **kwargs):
-        key = 0x811c9dc5
-        key = key ^ self.hash_item(self)
+        key = self.hash_item(self)
         for arg in args:
-            key = key ^ self.hash_item(arg)
+            key = (key << 64) ^ self.hash_item(arg)
         for arg in sorted(kwargs.keys()):
-            key = key ^ self.hash_item(arg)
-            key = key ^ self.hash_item(kwargs[arg])
+            key = (key << 64) ^ self.hash_item(arg)
+            key = (key << 64) ^ self.hash_item(kwargs[arg])
         try:
             return self.cache[key]
         except KeyError:

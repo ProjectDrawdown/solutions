@@ -1,0 +1,212 @@
+{
+    "name": "PDS1-2p2050_Asian Adoption (Book Ed.1)",
+    "solution_category": "not_applicable",
+    "vmas": "VMAs",
+    "description": "This scenario sees the growth of all relevant regions (Asia (sans Japan), Middle East and Africa and Latin America) growing to the same % of the TAM as Asia as a whole. The growth is linear. This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 2.0487610390567785,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 2.8590323160579116e-06,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 1.6784148689795303e-06,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 0.04585661610721741,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_cost_per_funit": 0.0,
+    "pds_2014_cost": {
+        "value": 709.9487,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 709.9487,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 4.179935930625e-05,
+        "statistic": ""
+    },
+    "soln_avg_annual_use": {
+        "value": 2.572268265e-06,
+        "statistic": ""
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 0.025332829381989334,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_cost_per_funit": 0.0,
+    "npv_discount_rate": 0.04,
+    "conv_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 21500.0,
+        "statistic": ""
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 108.0,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 108.0,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 440759.1384109679,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 123549.5259985871,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "Baseline Cases",
+    "pds_source_post_2014": "Baseline Cases",
+    "pds_base_adoption": [
+        [
+            "World",
+            86.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            25.04194984517459
+        ],
+        [
+            "Middle East and Africa",
+            5.337266131329677
+        ],
+        [
+            "Latin America",
+            36.925127117549664
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": [
+        [
+            "World",
+            0.0
+        ],
+        [
+            "OECD90",
+            0.0
+        ],
+        [
+            "Eastern Europe",
+            0.0
+        ],
+        [
+            "Asia (Sans Japan)",
+            0.0
+        ],
+        [
+            "Middle East and Africa",
+            0.0
+        ],
+        [
+            "Latin America",
+            0.0
+        ],
+        [
+            "China",
+            0.0
+        ],
+        [
+            "India",
+            0.0
+        ],
+        [
+            "EU",
+            0.0
+        ],
+        [
+            "USA",
+            0.0
+        ]
+    ],
+    "soln_pds_adoption_prognostication_source": "Project Drawdown Assumption of all Regions Growing to Asias Current Percent Adoption",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "Medium",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Drawdown Book Edition 1 REF Scenario",
+    "soln_ref_adoption_regional_data": false
+}
