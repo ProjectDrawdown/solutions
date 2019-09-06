@@ -1,0 +1,10 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Nakata et al 2011 low estimate,,World,,1  - Peer Reviewed,2011,,0.13,%,,,,,
+Nakata et al 2011 high estimate,,World,,1  - Peer Reviewed,2011,,0.24,%,,,,,
+"Danish Energy Agency,2012, low estimate",,EU,Denmark,2 - Public Sector/ Multilateral Agency,2012,,0.2,%,,,,likely for CHP but unspecified in the source.,
+"Danish Energy Agency,2012 high estimate",,EU,Denmark,2 - Public Sector/ Multilateral Agency,2012,,0.25,%,,,,likely for CHP but unspecified in the source.,
+"World Energy Council 2013, low estimate electrical only",,OECD90,,2 - Public Sector/ Multilateral Agency,2013,,0.25,%,,,,,
+"World Energy Council 2013, high estimate electrical only",,OECD90,,2 - Public Sector/ Multilateral Agency,2013,,0.35,%,,,,,
+"World Energy Council 2013, low estimate CHP",,OECD90,,2 - Public Sector/ Multilateral Agency,2013,,0.2,%,,,,CHP,
+"World Energy Council 2013, high estimate CHP",,OECD90,,2 - Public Sector/ Multilateral Agency,2013,,0.25,%,,,,CHP,
+"Funk et al,2013",,USA,,1  - Peer Reviewed,2013,,0.26,%,,,,This really isn't clear if this is the efficiency of the steam turbine or the efficiency of the WTE system as a whole. For this analysis we assume it's for the WTE system as a whole,

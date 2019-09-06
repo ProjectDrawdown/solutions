@@ -1,0 +1,2 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Global : IPCC WG3 AR5, Natural Gas  (Table A.III.2)",https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_annex-iii.pdf,World,,1  - Peer Reviewed,2014,,1.6,g-CO2eq/kWh,1600.0,t CO2-eq/ TWh,,Assuming the same figure as a natural gas powerplant,

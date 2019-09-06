@@ -1,0 +1,9 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Funk et. Al, 2013",,World,,1  - Peer Reviewed,2014,,0.91,Capacity factor (%),7971.6,TWh/TW/year,,,
+"EnergyNet.DK, 2012",http://energinet.dk/SiteCollectionDocuments/Danske%20dokumenter/Forskning/Technology_data_for_energy_plants.pdf,EU,Denmark,2 - Public Sector/ Multilateral Agency,2012,,0.9323076923076923,Capacity factor (%),8167.015384615384,TWh/TW/year,,,
+"World Energy Council, 2008",,OECD90,,2 - Public Sector/ Multilateral Agency,2013,,0.8,Capacity factor (%),7008.0,TWh/TW/year,,,
+US Energy Information Administration,,OECD90,US,2 - Public Sector/ Multilateral Agency,2014,,0.7,Capacity factor (%),6131.999999999999,TWh/TW/year,,,
+"US EPA and RTI International, 2006",,OECD90,,2 - Public Sector/ Multilateral Agency,2006,,0.91,Capacity factor (%),7971.6,TWh/TW/year,,,
+Schneider et al (2010),,EU,Croatia,1  - Peer Reviewed,2010,,0.856,Capacity factor (%),7498.5599999999995,TWh/TW/year,,,
+"IRENA, 2016",,World,,2 - Public Sector/ Multilateral Agency,2014,,0.518,Capacity factor (%),4537.68,TWh/TW/year,,,
+"IRENA, 2016",,Asia (sans Japan),,2 - Public Sector/ Multilateral Agency,2014,,0.504,Capacity factor (%),4415.04,TWh/TW/year,,,

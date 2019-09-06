@@ -1,0 +1,4 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"IPCC Emissions Calculation, Default Values, 2006",See Emissions Factors sheet,World,,1  - Peer Reviewed,2006,,1331654.0,tCO2-eq/TWh,,t CO2-eq/TWh,,,
+"IPCC Emissions Calculation, High Values 2006",See Emissions Factors sheet,World,,1  - Peer Reviewed,2006,,1717502.0,tCO2-eq/TWh,,t CO2-eq/TWh,,,
+"IPCC Emissions Calculation, Low Values, 2006",See Emissions Factors sheet,World,,1  - Peer Reviewed,2006,,1075874.0,tCO2-eq/TWh,,t CO2-eq/TWh,,,
