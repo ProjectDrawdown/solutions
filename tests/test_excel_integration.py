@@ -81,6 +81,7 @@ from solution import trucks
 from solution import tropicalforests
 from solution import tropicaltreestaples
 from solution import walkablecities
+from solution import wastetoenergy
 from solution import waterdistribution
 from solution import waterefficiency
 from solution import waveandtidal
@@ -1584,6 +1585,16 @@ def test_WalkableCities_RRS():
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in walkablecities.scenarios.keys():
         obj = walkablecities.Scenario(scenario=scenario)
+        verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+
+
+@pytest.mark.slow
+def test_WasteToEnergy_RRS():
+    zipfilename = str(solutiondir.joinpath('wastetoenergy', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for scenario in wastetoenergy.scenarios.keys():
+        obj = wastetoenergy.Scenario(scenario=scenario)
         verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 

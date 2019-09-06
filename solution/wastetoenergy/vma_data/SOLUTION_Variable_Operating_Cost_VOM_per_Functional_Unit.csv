@@ -1,0 +1,6 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Ragnauth et al (2013), EPA Report",,World,,2 - Public Sector/ Multilateral Agency,2013,,41.0,US$2013/ton,0.06764017779823808,US$2014/kWh,,,
+"EnergyNet.DK, 2012",http://energinet.dk/SiteCollectionDocuments/Danske%20dokumenter/Forskning/Technology_data_for_energy_plants.pdf,EU,Denmark,2 - Public Sector/ Multilateral Agency,2012,,53.0,Euros2011/ton,0.12296823544860906,US$2014/kWh,,"Conversion rate used €/$ - 1,392705",
+Schneider et al (2010) low estimate,,EU,Croatia,2 - Public Sector/ Multilateral Agency,2010,,64.27,Euros2010/ton,0.1504016991492704,US$2014/kWh,,"Conversion rate used €/$ - 1,327386",
+Schneider et al (2010) high estimate,,EU,Croatia,2 - Public Sector/ Multilateral Agency,2010,,53.52,Euros2010/ton,0.1252450433867894,US$2014/kWh,,"Conversion rate used €/$ - 1,327386",
+US EIA (2013) updated cost estimate,,USA,,2 - Public Sector/ Multilateral Agency,2013,,0.05784747252747253,US$2013/kWh,0.05900442197802198,US$2014/kWh,,Calculated from fixed cost and variable cost numbers given from a 50MW system,

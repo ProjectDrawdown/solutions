@@ -650,22 +650,16 @@ def normalize_source_name(sourcename):
         'Based on: Greenpeace Reference Scenario': 'Based on: Greenpeace 2015 Reference',
         'Conservative: Based on- Greenpeace 2015 Reference': 'Based on: Greenpeace 2015 Reference',
         '100% REN: Based on- Greenpeace Advanced [R]evolution': 'Based on: Greenpeace 2015 Advanced Revolution',
-
         'Drawdown TAM: Baseline Cases': 'Baseline Cases',
         'Drawdown TAM: Conservative Cases': 'Conservative Cases',
         'Drawdown TAM: Ambitious Cases': 'Ambitious Cases',
         'Drawdown TAM: Maximum Cases': 'Maximum Cases',
         'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)': 'Drawdown Projections based on adjusted IEA data (ETP 2012) on projected growth in each year, and recent sales Data (IEA - ETP 2016)',
-        'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario':
-        'ITDP/UC Davis 2014 Global High Shift Baseline',
-        'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario':
-        'ITDP/UC Davis 2014 Global High Shift HighShift',
-        'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Static % of Organic Waste':
-        'What a Waste Solid Waste Management Static',
-        'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic % of Organic Waste':
-        'What a Waste Solid Waste Management Dynamic',
-        'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic Organic Fraction by Un Mediam Variant':
-        'What a Waste Solid Waste Management Dynamic Organic Fraction',
+        'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario': 'ITDP/UC Davis 2014 Global High Shift Baseline',
+        'ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario': 'ITDP/UC Davis 2014 Global High Shift HighShift',
+        'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Static % of Organic Waste': 'What a Waste Solid Waste Management Static',
+        'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic % of Organic Waste': 'What a Waste Solid Waste Management Dynamic',
+        'What a Waste: A Global Review of Solid Waste Management (Hoornweg, 2012) - Dynamic Organic Fraction by Un Mediam Variant': 'What a Waste Solid Waste Management Dynamic Organic Fraction',
         'IPCC, 2006 - Calculated': 'IPCC, 2006 Calculated',
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Highest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Highest Ranges',
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Middle Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges',
@@ -677,58 +671,63 @@ def normalize_source_name(sourcename):
     if re.search('\[Source \d+', sourcename):
         return None
 
+    # handle duplicate column names where xlrd appends an integer.
+    suffix = ''
+    r = re.search('(\\.\d)$', sourcename)
+    if r is not None:
+        suffix = r.group()
+
     name = re.sub(r"[\[\]]", "", sourcename.upper())  # [R]evolution to REVOLUTION
     if 'UN CES' in name and 'ITU' in name and 'AMPERE' in name:
-        if 'BASELINE' in name: return 'Based on: CES ITU AMPERE Baseline'
-        if '550' in name: return 'Based on: CES ITU AMPERE 550'
-        if '450' in name: return 'Based on: CES ITU AMPERE 450'
+        if 'BASELINE' in name: return 'Based on: CES ITU AMPERE Baseline' + suffix
+        if '550' in name: return 'Based on: CES ITU AMPERE 550' + suffix
+        if '450' in name: return 'Based on: CES ITU AMPERE 450' + suffix
         raise ValueError('Unknown UN CES ITU AMPERE source: ' + sourcename)
     if 'IEA' in name and 'ETP' in name:
-        if '2014' in name and '2DS' in name: return 'Based on: IEA ETP 2014 2DS'
-        if '2014' in name and '4DS' in name: return 'Based on: IEA ETP 2014 4DS'
-        if '2014' in name and '6DS' in name: return 'Based on: IEA ETP 2014 6DS'
-        if '2016' in name and '6DS' in name: return 'Based on: IEA ETP 2016 6DS'
-        if '2016' in name and '4DS' in name: return 'Based on: IEA ETP 2016 4DS'
+        if '2014' in name and '2DS' in name: return 'Based on: IEA ETP 2014 2DS' + suffix
+        if '2014' in name and '4DS' in name: return 'Based on: IEA ETP 2014 4DS' + suffix
+        if '2014' in name and '6DS' in name: return 'Based on: IEA ETP 2014 6DS' + suffix
+        if '2016' in name and '6DS' in name: return 'Based on: IEA ETP 2016 6DS' + suffix
+        if '2016' in name and '4DS' in name: return 'Based on: IEA ETP 2016 4DS' + suffix
         if '2016' in name and '2DS' in name and 'OPT2-PERENNIALS' in name:
-            return 'Based on: IEA ETP 2016 2DS with OPT2 perennials'
-        if '2016' in name and '2DS' in name: return 'Based on: IEA ETP 2016 2DS'
-        if '2017' in name and 'REF' in name: return 'Based on: IEA ETP 2017 Ref Tech'
-        if '2017' in name and 'B2DS' in name: return 'Based on: IEA ETP 2017 B2DS'
-        if '2017' in name and '2DS' in name: return 'Based on: IEA ETP 2017 2DS'
-        if '2017' in name and '4DS' in name: return 'Based on: IEA ETP 2017 4DS'
-        if '2017' in name and '6DS' in name: return 'Based on: IEA ETP 2017 6DS'
+            return 'Based on: IEA ETP 2016 2DS with OPT2 perennials' + suffix
+        if '2016' in name and '2DS' in name: return 'Based on: IEA ETP 2016 2DS' + suffix
+        if '2016' in name and 'ANNEX' in name: return 'Based on: IEA ETP 2016 Annex' + suffix
+        if '2017' in name and 'REF' in name: return 'Based on: IEA ETP 2017 Ref Tech' + suffix
+        if '2017' in name and 'B2DS' in name: return 'Based on: IEA ETP 2017 B2DS' + suffix
+        if '2017' in name and '2DS' in name: return 'Based on: IEA ETP 2017 2DS' + suffix
+        if '2017' in name and '4DS' in name: return 'Based on: IEA ETP 2017 4DS' + suffix
+        if '2017' in name and '6DS' in name: return 'Based on: IEA ETP 2017 6DS' + suffix
         raise ValueError('Unknown IEA ETP source: ' + sourcename)
     if 'AMPERE' in name and 'MESSAGE' in name:
-        if '450' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO 450'
-        if '550' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO 550'
-        if 'REF' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO Reference'
+        if '450' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO 450' + suffix
+        if '550' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO 550' + suffix
+        if 'REF' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO Reference' + suffix
         raise ValueError('Unknown AMPERE MESSAGE-MACRO source: ' + sourcename)
     if 'AMPERE' in name and 'IMAGE' in name:
-        if '450' in name: return 'Based on: AMPERE 2014 IMAGE TIMER 450'
-        if '550' in name: return 'Based on: AMPERE 2014 IMAGE TIMER 550'
-        if 'REF' in name: return 'Based on: AMPERE 2014 IMAGE TIMER Reference'
+        if '450' in name: return 'Based on: AMPERE 2014 IMAGE TIMER 450' + suffix
+        if '550' in name: return 'Based on: AMPERE 2014 IMAGE TIMER 550' + suffix
+        if 'REF' in name: return 'Based on: AMPERE 2014 IMAGE TIMER Reference' + suffix
         raise ValueError('Unknown AMPERE IMAGE-TIMER source: ' + sourcename)
     if 'AMPERE' in name and 'GEM' in name and 'E3' in name:
-        if '450' in name: return 'Based on: AMPERE 2014 GEM E3 450'
-        if '550' in name: return 'Based on: AMPERE 2014 GEM E3 550'
-        if 'REF' in name: return 'Based on: AMPERE 2014 GEM E3 Reference'
+        if '450' in name: return 'Based on: AMPERE 2014 GEM E3 450' + suffix
+        if '550' in name: return 'Based on: AMPERE 2014 GEM E3 550' + suffix
+        if 'REF' in name: return 'Based on: AMPERE 2014 GEM E3 Reference' + suffix
         raise ValueError('Unknown AMPERE GEM E3 source: ' + sourcename)
     if 'GREENPEACE' in name and 'ENERGY' in name:
         if 'ADVANCED' in name and 'DRAWDOWN-PERENNIALS' in name:
-            return 'Based on: Greenpeace 2015 Advanced Revolution with Drawdown perennials'
-        if 'ADVANCED' in name: return 'Based on: Greenpeace 2015 Advanced Revolution'
+            return 'Based on: Greenpeace 2015 Advanced Revolution with Drawdown perennials' + suffix
+        if 'ADVANCED' in name: return 'Based on: Greenpeace 2015 Advanced Revolution' + suffix
         if 'REVOLUTION' in name and 'DRAWDOWN-PERENNIALS' in name:
-            return 'Based on: Greenpeace 2015 Energy Revolution with Drawdown perennials'
-        if 'REVOLUTION' in name: return 'Based on: Greenpeace 2015 Energy Revolution'
-        if 'REFERENCE' in name: return 'Based on: Greenpeace 2015 Reference'
+            return 'Based on: Greenpeace 2015 Energy Revolution with Drawdown perennials' + suffix
+        if 'REVOLUTION' in name: return 'Based on: Greenpeace 2015 Energy Revolution' + suffix
+        if 'REFERENCE' in name: return 'Based on: Greenpeace 2015 Reference' + suffix
         raise ValueError('Unknown Greenpeace Energy source: ' + sourcename)
     if 'GREENPEACE' in name and 'THERMAL' in name:
-        if 'MODERATE' in name: return 'Based on: Greenpeace 2016 Solar Thermal Moderate'
-        if 'ADVANCED' in name: return 'Based on: Greenpeace 2016 Solar Thermal Advanced'
+        if 'MODERATE' in name: return 'Based on: Greenpeace 2016 Solar Thermal Moderate' + suffix
+        if 'ADVANCED' in name: return 'Based on: Greenpeace 2016 Solar Thermal Advanced' + suffix
         raise ValueError('Unknown Greenpeace Solar Thermal source: ' + sourcename)
     return normalized
-
-
 
 
 def normalize_case_name(name):

@@ -1,0 +1,5 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Funk et. Al, 2013",,World,,1  - Peer Reviewed,2014,,30.0,Years,158510.20402184856,TWh/TW,,,
+"EnergyNet.DK, 2012",http://energinet.dk/SiteCollectionDocuments/Danske%20dokumenter/Forskning/Technology_data_for_energy_plants.pdf,EU,Denmark,2 - Public Sector/ Multilateral Agency,2012,,20.0,Years,105673.46934789905,TWh/TW,,,
+"Ragnauth et al (2013), EPA Report",,EU,UK,2 - Public Sector/ Multilateral Agency,2013,,20.0,Years,105673.46934789905,TWh/TW,,,
+Schneider et al (2010),,EU,Croatia,1  - Peer Reviewed,2010,,25.0,Years,132091.8366848738,TWh/TW,,,
