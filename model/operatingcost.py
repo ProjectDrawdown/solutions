@@ -3,13 +3,9 @@
 from functools import lru_cache
 import math
 
+import model.dd as dd
 import numpy as np
 import pandas as pd
-
-
-CORE_START_YEAR = 2015
-CORE_END_YEAR = 2060
-
 
 
 class OperatingCost:
@@ -171,7 +167,7 @@ class OperatingCost:
     @lru_cache()
     def soln_pds_annual_breakout_core(self):
         """Returns soln_pds_annual_breakout for CORE_START_YEAR:CORE_END_YEAR"""
-        return self.soln_pds_annual_breakout().loc[CORE_START_YEAR:CORE_END_YEAR]
+        return self.soln_pds_annual_breakout().loc[dd.CORE_START_YEAR:dd.CORE_END_YEAR]
 
 
     @lru_cache()
@@ -208,7 +204,7 @@ class OperatingCost:
     @lru_cache()
     def conv_ref_annual_breakout_core(self):
         """Returns conv_ref_annual_breakout for CORE_START_YEAR:CORE_END_YEAR"""
-        return self.conv_ref_annual_breakout().loc[CORE_START_YEAR:CORE_END_YEAR]
+        return self.conv_ref_annual_breakout().loc[dd.CORE_START_YEAR:dd.CORE_END_YEAR]
 
 
     def _annual_breakout(self, new_funits_per_year, new_annual_iunits_reqd,
@@ -219,9 +215,9 @@ class OperatingCost:
            SolarPVUtil 'Operating Cost'!B262:AV386 for soln_pds
            SolarPVUtil 'Operating Cost'!B399:AV523 for conv_ref
         """
-        first_year = CORE_START_YEAR
+        first_year = dd.CORE_START_YEAR
         last_year = self.ac.report_end_year
-        last_column = CORE_END_YEAR
+        last_column = dd.CORE_END_YEAR
         last_row = 2139
         breakout = pd.DataFrame(0, index=np.arange(first_year, last_row + 1),
                                 columns=np.arange(first_year, last_column + 1), dtype='float')
@@ -323,8 +319,9 @@ class OperatingCost:
                appropriately in each case).
            SolarPVUtil 'Operating Cost'!I126:I250
         """
-        first_year = CORE_START_YEAR
-        last_year = max(CORE_END_YEAR, CORE_START_YEAR + self.ac.soln_lifetime_replacement_rounded)
+        first_year = dd.CORE_START_YEAR
+        last_year = max(dd.CORE_END_YEAR,
+                dd.CORE_START_YEAR + self.ac.soln_lifetime_replacement_rounded)
         last_row = 2139
         result = pd.Series(0, index=np.arange(first_year, last_row + 1), dtype='float')
         result.index.name = 'Year'
@@ -347,8 +344,8 @@ class OperatingCost:
                 # lifetime and output of a solution iunit.
                 soln_first_cost = (self.ac.soln_lifetime_replacement - (year - first_year) + 0)
                 soln_first_cost /= self.ac.conv_lifetime_replacement
-                cost_year = min(CORE_END_YEAR,
-                                year + (self.single_iunit_purchase_year - CORE_START_YEAR))
+                cost_year = min(dd.CORE_END_YEAR,
+                                year + (self.single_iunit_purchase_year - dd.CORE_START_YEAR))
                 cost += (self.conv_ref_install_cost_per_iunit[cost_year] * conv_usage_mult *
                          min(1, soln_first_cost))
 
@@ -422,8 +419,9 @@ class OperatingCost:
         """
            SolarPVUtil 'Operating Cost'!M126:M250
         """
-        first_year = CORE_START_YEAR
-        last_year = max(CORE_END_YEAR, CORE_START_YEAR + self.ac.soln_lifetime_replacement_rounded)
+        first_year = dd.CORE_START_YEAR
+        last_year = max(dd.CORE_END_YEAR,
+                dd.CORE_START_YEAR + self.ac.soln_lifetime_replacement_rounded)
         last_row = 2139
         result = pd.Series(0, index=np.arange(first_year, last_row + 1), dtype='float')
         result.index.name = 'Year'

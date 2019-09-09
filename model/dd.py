@@ -39,3 +39,8 @@ THERMAL_DYNAMICAL_REGIMES = ['Shallow', 'Slopes', 'Ice', 'Deserts', 'Blooms', 'E
 rgn_cat_dtype = pandas.api.types.CategoricalDtype(categories=OCEAN_REGIONS + [''], ordered=True)
 tmr_cat_dtype = pandas.api.types.CategoricalDtype(categories=THERMAL_MOISTURE_REGIMES + [''], ordered=True)
 tdr_cat_dtype = pandas.api.types.CategoricalDtype(categories=THERMAL_DYNAMICAL_REGIMES + [''], ordered=True)
+
+
+# time ranges
+CORE_START_YEAR = 2015
+CORE_END_YEAR = 2060
