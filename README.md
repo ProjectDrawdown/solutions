@@ -37,7 +37,7 @@ Then start the Jupyter Notebook:
 
 ### Core model complete
 
-At this point in development the core model for computing adoption, costs, and benefits is substantially complete and fully handles 68 of the 79 total solutions models developed by the project. The remaining solutions are believed to be feasible, but are being pursued at a lower priority. Work from this point is focussing on several areas described below.
+At this point in development the core model for computing adoption, costs, and benefits is substantially complete and fully handles 70 of the 79 total solutions models developed by the project. The remaining solutions are believed to be feasible, but are being pursued at a lower priority. Work from this point is focussing on several areas described below.
 
 ### User Interface
 The ultimate goal of this project is to produce a compelling, browser-delivered GUI. There are at least three mostly distinct audiences:

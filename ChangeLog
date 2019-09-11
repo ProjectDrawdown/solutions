@@ -325,3 +325,7 @@ Aug 26 - Aug 30, 2019
   work around [SVG issues in Notebook](https://github.com/ipython/ipython/issues/1866)
   switch solutions.geekhold.com over to use Voila.
 
+Sep 2 - Sep 6, 2019
++ Add Waste to Energy and Small Methane Biodigester solutions.
++ Fix metaclass_cache hashing, resolved TAM failure in test_excel_integration.py
++ fix CustomTLA support, and test all {temperate,tropical}forests scenarios.
