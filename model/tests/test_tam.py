@@ -80,10 +80,18 @@ g_tam_pds_data_sources = {
 }
 
 
-def test_forecast_data_global():
+def test_name_to_ident():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_global()
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    assert tm._name_to_identifier("Middle East and Africa") == "middle_east_and_africa"
+    assert tm._name_to_identifier("Asia (Sans Japan)") == "asia_sans_japan"
+    assert tm._name_to_identifier("USA") == "usa"
+
+
+def test_forecast_data_world():
+    tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    forecast = tm.forecast_data('World')
     b = 'Baseline: Based on- AMPERE GEM E3 Reference'
     c = 'Conservative: Based on- IEA ETP 2016 4DS'
     assert forecast.loc[2035, b] == pytest.approx(42376.85610878600)
@@ -92,22 +100,22 @@ def test_forecast_data_global():
 
 def test_forecast_min_max_sd_global():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_min_max_sd_global()
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_min_max_sd('World')
     expected = pd.DataFrame(forecast_min_max_sd_global_list[1:],
-                            columns=forecast_min_max_sd_global_list[0],
-                            index=list(range(2012, 2061)), dtype=np.float64)
+            columns=forecast_min_max_sd_global_list[0],
+            index=list(range(2012, 2061)), dtype=np.float64)
     expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_forecast_low_med_high_global():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_low_med_high_global()
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_low_med_high('World')
     expected = pd.DataFrame(forecast_low_med_high_global_list[1:],
-                            columns=forecast_low_med_high_global_list[0],
-                            index=list(range(2012, 2061)), dtype=np.float64)
+            columns=forecast_low_med_high_global_list[0],
+            index=list(range(2012, 2061)), dtype=np.float64)
     expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
@@ -119,85 +127,85 @@ def test_forecast_low_med_high_global_larger_sd():
     tamconfig_mod.loc['low_sd_mult', 'World'] = 2.0
     tamconfig_mod.loc['high_sd_mult', 'World'] = 3.0
     tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_low_med_high_global()
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_low_med_high('World')
     expected = pd.DataFrame(forecast_low_med_high_global_larger_list[1:],
-                            columns=forecast_low_med_high_global_larger_list[0],
-                            index=list(range(2012, 2061)), dtype=np.float64)
+            columns=forecast_low_med_high_global_larger_list[0],
+            index=list(range(2012, 2061)), dtype=np.float64)
     expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_linear_trend_global():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_trend_global(trend='Linear')
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_trend(region='World', trend='Linear')
     expected = pd.DataFrame(linear_trend_global_list[1:],
-                            columns=linear_trend_global_list[0]).set_index('Year')
+            columns=linear_trend_global_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_poly_degree2_trend_global():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_trend_global(trend='Degree2')
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_trend(region='World', trend='Degree2')
     expected = pd.DataFrame(poly_degree2_trend_global_list[1:],
-                            columns=poly_degree2_trend_global_list[0]).set_index('Year')
+            columns=poly_degree2_trend_global_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_poly_degree3_trend_global():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_trend_global(trend='Degree3')
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_trend(region='World', trend='Degree3')
     expected = pd.DataFrame(poly_degree3_trend_global_list[1:],
-                            columns=poly_degree3_trend_global_list[0]).set_index('Year')
+            columns=poly_degree3_trend_global_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_exponential_trend_global():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_trend_global(trend='Exponential')
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_trend(region='World', trend='Exponential')
     expected = pd.DataFrame(exponential_trend_global_list[1:],
-                            columns=exponential_trend_global_list[0]).set_index('Year')
+            columns=exponential_trend_global_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_forecast_pds_global():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_pds_global()
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    forecast = tm.forecast_data('PDS World')
     a1 = 'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario'
     a2 = 'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario'
     a3 = 'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario'
     assert forecast.loc[2042, a1] == pytest.approx(45246.48136814450)
     assert forecast.loc[2051, a2] == pytest.approx(55322.78112482230)
     assert forecast.loc[2033, a3] == pytest.approx(35773.38262874340)
-    mms = tm.forecast_min_max_sd_pds_global()
+    mms = tm.forecast_min_max_sd('PDS World')
     assert mms.loc[2059, 'Min'] == pytest.approx(59333.209869)
     assert mms.loc[2059, 'Max'] == pytest.approx(64314.774793)
     assert mms.loc[2059, 'S.D'] == pytest.approx(2124.802624)
-    lmh = tm.forecast_low_med_high_pds_global()
+    lmh = tm.forecast_low_med_high('PDS World')
     assert lmh.loc[2059, 'Low'] == pytest.approx(58393.607060)
     assert lmh.loc[2059, 'Medium'] == pytest.approx(60518.409684)
     assert lmh.loc[2059, 'High'] == pytest.approx(62643.212309)
-    g = tm.forecast_trend_pds_global(trend='Linear')
+    g = tm.forecast_trend(region='PDS World', trend='Linear')
     assert g.loc[2059, 'x'] == pytest.approx(36950.208038)
     assert g.loc[2059, 'constant'] == pytest.approx(21761.687416)
     assert g.loc[2059, 'adoption'] == pytest.approx(58711.895454)
-    g = tm.forecast_trend_pds_global(trend='Degree2')
+    g = tm.forecast_trend(region='PDS World', trend='Degree2')
     assert g.loc[2059, 'x^2'] == pytest.approx(11846.635815)
     assert g.loc[2059, 'x'] == pytest.approx(25366.830796)
     assert g.loc[2059, 'constant'] == pytest.approx(23423.141525)
     assert g.loc[2059, 'adoption'] == pytest.approx(60636.608137)
-    g = tm.forecast_trend_pds_global(trend='Degree3')
+    g = tm.forecast_trend(region='PDS World', trend='Degree3')
     assert g.loc[2059, 'x^3'] == pytest.approx(-2167.493576)
     assert g.loc[2059, 'x^2'] == pytest.approx(15025.626393)
     assert g.loc[2059, 'x'] == pytest.approx(24197.775743)
     assert g.loc[2059, 'constant'] == pytest.approx(23488.134222)
     assert g.loc[2059, 'adoption'] == pytest.approx(60544.042781)
-    g = tm.forecast_trend_pds_global(trend='Exponential')
+    g = tm.forecast_trend(region='PDS World', trend='Exponential')
     assert g.loc[2059, 'coeff'] == pytest.approx(23885.595768)
     assert g.loc[2059, 'e^x'] == pytest.approx(2.598937)
     assert g.loc[2059, 'adoption'] == pytest.approx(62077.150109)
@@ -215,113 +223,113 @@ def test_forecast_pds_global_sources_for_pds():
         },
     }
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=pds_data_sources)
-    lmh_reg = tm.forecast_low_med_high_global()
-    lmh_pds = tm.forecast_low_med_high_pds_global()
+            tam_pds_data_sources=pds_data_sources)
+    lmh_reg = tm.forecast_low_med_high('World')
+    lmh_pds = tm.forecast_low_med_high('PDS World')
     assert lmh_reg.loc[:2014].equals(lmh_pds.loc[:2014])
     assert not lmh_reg.loc[2015:].equals(lmh_pds.loc[2015:])
 
 
 def test_forecast_data_oecd90():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_oecd90()
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    forecast = tm.forecast_data('OECD90')
     b = 'Baseline: Based on- AMPERE IMAGE/TIMER Reference'
     c = 'Conservative: Based on- AMPERE MESSAGE-MACRO 550'
     assert forecast.loc[2055, b] == pytest.approx(14020.47895815650)
     assert forecast.loc[2017, c] == pytest.approx(8726.22744026733)
 
 
-def test_forecast_min_max_sd_oecd90():
+def test_forecast_min_max_sd():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_min_max_sd_oecd90()
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_min_max_sd('OECD90')
     expected = pd.DataFrame(forecast_min_max_sd_oecd90_list[1:],
-                            columns=forecast_min_max_sd_oecd90_list[0],
-                            index=list(range(2012, 2061)), dtype=np.float64)
+            columns=forecast_min_max_sd_oecd90_list[0],
+            index=list(range(2012, 2061)), dtype=np.float64)
     expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_forecast_low_med_high_oecd90():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_low_med_high_oecd90()
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_low_med_high('OECD90')
     expected = pd.DataFrame(forecast_low_med_high_oecd90_list[1:],
-                            columns=forecast_low_med_high_oecd90_list[0],
-                            index=list(range(2012, 2061)), dtype=np.float64)
+            columns=forecast_low_med_high_oecd90_list[0],
+            index=list(range(2012, 2061)), dtype=np.float64)
     expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_linear_trend_oecd90():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_trend_oecd90(trend='Linear')
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_trend(region='OECD90', trend='Linear')
     expected = pd.DataFrame(linear_trend_oecd90_list[1:],
-                            columns=linear_trend_oecd90_list[0]).set_index('Year')
+            columns=linear_trend_oecd90_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_poly_degree2_trend_oecd90():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_trend_oecd90(trend='Degree2')
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_trend(region='OECD90', trend='Degree2')
     expected = pd.DataFrame(poly_degree2_trend_oecd90_list[1:],
-                            columns=poly_degree2_trend_oecd90_list[0]).set_index('Year')
+            columns=poly_degree2_trend_oecd90_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_poly_degree3_trend_oecd90():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_trend_oecd90(trend='Degree3')
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_trend(region='OECD90', trend='Degree3')
     expected = pd.DataFrame(poly_degree3_trend_oecd90_list[1:],
-                            columns=poly_degree3_trend_oecd90_list[0]).set_index('Year')
+            columns=poly_degree3_trend_oecd90_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_exponential_trend_oecd90():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_trend_oecd90(trend='Exponential')
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_trend(region='OECD90', trend='Exponential')
     expected = pd.DataFrame(exponential_trend_oecd90_list[1:],
-                            columns=exponential_trend_oecd90_list[0]).set_index('Year')
+            columns=exponential_trend_oecd90_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_forecast_eastern_europe():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
-                 tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_eastern_europe()
+            tam_pds_data_sources=g_tam_pds_data_sources)
+    forecast = tm.forecast_data('Eastern Europe')
     a = 'Ambitious: Based on- IEA ETP 2016 2DS'
     r = '100% REN: Based on- Greenpeace Advanced [R]evolution'
     assert forecast.loc[2042, a] == pytest.approx(2927.94072286268)
     assert forecast.loc[2057, r] == pytest.approx(6343.70260870481)
-    mms = tm.forecast_min_max_sd_eastern_europe()
+    mms = tm.forecast_min_max_sd('Eastern Europe')
     assert mms.loc[2058, 'Min'] == pytest.approx(2279.12247278109)
     assert mms.loc[2058, 'Max'] == pytest.approx(6474.49116739791)
     assert mms.loc[2058, 'S.D'] == pytest.approx(1011.24848709329)
-    lmh = tm.forecast_low_med_high_eastern_europe()
+    lmh = tm.forecast_low_med_high('Eastern Europe')
     assert lmh.loc[2058, 'Low'] == pytest.approx(2398.68749518803)
     assert lmh.loc[2058, 'Medium'] == pytest.approx(3409.93598228133)
     assert lmh.loc[2058, 'High'] == pytest.approx(4421.18446937462)
-    g = tm.forecast_trend_eastern_europe(trend='Linear')
+    g = tm.forecast_trend(region='Eastern Europe', trend='Linear')
     assert g.loc[2058, 'x'] == pytest.approx(1429.283338)
     assert g.loc[2058, 'constant'] == pytest.approx(1994.414541)
     assert g.loc[2058, 'adoption'] == pytest.approx(3423.697879)
-    g = tm.forecast_trend_eastern_europe(trend='Degree2')
+    g = tm.forecast_trend(region='Eastern Europe', trend='Degree2')
     assert g.loc[2059, 'x^2'] == pytest.approx(46.93646162)
     assert g.loc[2059, 'x'] == pytest.approx(1415.873621)
     assert g.loc[2059, 'constant'] == pytest.approx(2000.997235)
     assert g.loc[2059, 'adoption'] == pytest.approx(3463.807317)
-    g = tm.forecast_trend_eastern_europe(trend='Degree3')
+    g = tm.forecast_trend(region='Eastern Europe', trend='Degree3')
     assert g.loc[2059, 'x^3'] == pytest.approx(-726.6284846)
     assert g.loc[2059, 'x^2'] == pytest.approx(1112.658239)
     assert g.loc[2059, 'x'] == pytest.approx(1023.960717)
     assert g.loc[2059, 'constant'] == pytest.approx(2022.785324)
     assert g.loc[2059, 'adoption'] == pytest.approx(3432.775796)
-    g = tm.forecast_trend_eastern_europe(trend='Exponential')
+    g = tm.forecast_trend(region='Eastern Europe', trend='Exponential')
     assert g.loc[2059, 'coeff'] == pytest.approx(2042.049049)
     assert g.loc[2059, 'e^x'] == pytest.approx(1.729822342)
     assert g.loc[2059, 'adoption'] == pytest.approx(3532.382068)
@@ -330,35 +338,35 @@ def test_forecast_eastern_europe():
 def test_forecast_asia_sans_japan():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_asia_sans_japan()
+    forecast = tm.forecast_data('Asia (Sans Japan)')
     a = 'Ambitious: Based on- AMPERE GEM E3 450'
     c = 'Conservative: Based on- AMPERE IMAGE/TIMER 550'
     assert forecast.loc[2023, a] == pytest.approx(10323.82192491980)
     assert forecast.loc[2036, c] == pytest.approx(20066.37665215520)
-    mms = tm.forecast_min_max_sd_asia_sans_japan()
+    mms = tm.forecast_min_max_sd('Asia (Sans Japan)')
     assert mms.loc[2059, 'Min'] == pytest.approx(17542.17373865530)
     assert mms.loc[2059, 'Max'] == pytest.approx(50261.65772674950)
     assert mms.loc[2059, 'S.D'] == pytest.approx(7415.12447040017)
-    lmh = tm.forecast_low_med_high_asia_sans_japan()
+    lmh = tm.forecast_low_med_high('Asia (Sans Japan)')
     assert lmh.loc[2059, 'Low'] == pytest.approx(20049.96285147210)
     assert lmh.loc[2059, 'Medium'] == pytest.approx(27465.08732187230)
     assert lmh.loc[2059, 'High'] == pytest.approx(34880.21179227250)
-    g = tm.forecast_trend_asia_sans_japan(trend='Linear')
+    g = tm.forecast_trend(region='Asia (Sans Japan)', trend='Linear')
     assert g.loc[2059, 'x'] == pytest.approx(18932.02616)
     assert g.loc[2059, 'constant'] == pytest.approx(8057.07299)
     assert g.loc[2059, 'adoption'] == pytest.approx(26989.09915)
-    g = tm.forecast_trend_asia_sans_japan(trend='Degree2')
+    g = tm.forecast_trend(region='Asia (Sans Japan)', trend='Degree2')
     assert g.loc[2059, 'x^2'] == pytest.approx(1281.362129)
     assert g.loc[2059, 'x'] == pytest.approx(17679.13874)
     assert g.loc[2059, 'constant'] == pytest.approx(8236.780074)
     assert g.loc[2059, 'adoption'] == pytest.approx(27197.28095)
-    g = tm.forecast_trend_asia_sans_japan(trend='Degree3')
+    g = tm.forecast_trend(region='Asia (Sans Japan)', trend='Degree3')
     assert g.loc[2059, 'x^3'] == pytest.approx(6036.211651)
     assert g.loc[2059, 'x^2'] == pytest.approx(-7571.748292)
     assert g.loc[2059, 'x'] == pytest.approx(20934.81794)
     assert g.loc[2059, 'constant'] == pytest.approx(8055.78315)
     assert g.loc[2059, 'adoption'] == pytest.approx(27455.06445)
-    g = tm.forecast_trend_asia_sans_japan(trend='Exponential')
+    g = tm.forecast_trend(region='Asia (Sans Japan)', trend='Exponential')
     assert g.loc[2059, 'coeff'] == pytest.approx(9099.62857)
     assert g.loc[2059, 'e^x'] == pytest.approx(3.255584043)
     assert g.loc[2059, 'adoption'] == pytest.approx(29624.60557)
@@ -367,35 +375,35 @@ def test_forecast_asia_sans_japan():
 def test_forecast_data_middle_east_and_africa():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_middle_east_and_africa()
+    forecast = tm.forecast_data('Middle East and Africa')
     b = 'Baseline: Based on- AMPERE GEM E3 Reference'
     c = 'Conservative: Based on- IEA ETP 2016 4DS'
     assert forecast.loc[2025, b] == pytest.approx(2941.25626326821)
     assert forecast.loc[2039, c] == pytest.approx(3256.84007251502)
-    mms = tm.forecast_min_max_sd_middle_east_and_africa()
+    mms = tm.forecast_min_max_sd('Middle East and Africa')
     assert mms.loc[2059, 'Min'] == pytest.approx(4515.07017474535)
     assert mms.loc[2059, 'Max'] == pytest.approx(16298.73629843550)
     assert mms.loc[2059, 'S.D'] == pytest.approx(3267.94694771890)
-    lmh = tm.forecast_low_med_high_middle_east_and_africa()
+    lmh = tm.forecast_low_med_high('Middle East and Africa')
     assert lmh.loc[2059, 'Low'] == pytest.approx(6496.32796179609)
     assert lmh.loc[2059, 'Medium'] == pytest.approx(9764.27490951500)
     assert lmh.loc[2059, 'High'] == pytest.approx(13032.22185723390)
-    g = tm.forecast_trend_middle_east_and_africa(trend='Linear')
+    g = tm.forecast_trend(region='Middle East and Africa', trend='Linear')
     assert g.loc[2059, 'x'] == pytest.approx(7768.523146)
     assert g.loc[2059, 'constant'] == pytest.approx(991.9502853)
     assert g.loc[2059, 'adoption'] == pytest.approx(8760.473431)
-    g = tm.forecast_trend_middle_east_and_africa(trend='Degree2')
+    g = tm.forecast_trend(region='Middle East and Africa', trend='Degree2')
     assert g.loc[2059, 'x^2'] == pytest.approx(5727.415137)
     assert g.loc[2059, 'x'] == pytest.approx(2168.3839)
     assert g.loc[2059, 'constant'] == pytest.approx(1795.202581)
     assert g.loc[2059, 'adoption'] == pytest.approx(9691.001619)
-    g = tm.forecast_trend_middle_east_and_africa(trend='Degree3')
+    g = tm.forecast_trend(region='Middle East and Africa', trend='Degree3')
     assert g.loc[2059, 'x^3'] == pytest.approx(1751.627974)
     assert g.loc[2059, 'x^2'] == pytest.approx(3158.360776)
     assert g.loc[2059, 'x'] == pytest.approx(3113.138504)
     assert g.loc[2059, 'constant'] == pytest.approx(1742.679692)
     assert g.loc[2059, 'adoption'] == pytest.approx(9765.806946)
-    g = tm.forecast_trend_middle_east_and_africa(trend='Exponential')
+    g = tm.forecast_trend(region='Middle East and Africa', trend='Exponential')
     assert g.loc[2059, 'coeff'] == pytest.approx(1774.581583)
     assert g.loc[2059, 'e^x'] == pytest.approx(5.686390659)
     assert g.loc[2059, 'adoption'] == pytest.approx(10090.96414)
@@ -404,35 +412,35 @@ def test_forecast_data_middle_east_and_africa():
 def test_forecast_data_latin_america():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_latin_america()
+    forecast = tm.forecast_data('Latin America')
     b = 'Baseline: Based on- AMPERE MESSAGE-MACRO Reference'
     r = '100% REN: Based on- Greenpeace Advanced [R]evolution'
     assert forecast.loc[2030, b] == pytest.approx(1998.52284327955)
     assert forecast.loc[2020, r] == pytest.approx(1868.90034084118)
-    mms = tm.forecast_min_max_sd_latin_america()
+    mms = tm.forecast_min_max_sd('Latin America')
     assert mms.loc[2059, 'Min'] == pytest.approx(3798.01292479911)
     assert mms.loc[2059, 'Max'] == pytest.approx(9161.87887718101)
     assert mms.loc[2059, 'S.D'] == pytest.approx(1659.34938189940)
-    lmh = tm.forecast_low_med_high_latin_america()
+    lmh = tm.forecast_low_med_high('Latin America')
     assert lmh.loc[2059, 'Low'] == pytest.approx(4290.05987598504)
     assert lmh.loc[2059, 'Medium'] == pytest.approx(5949.40925788444)
     assert lmh.loc[2059, 'High'] == pytest.approx(7608.75863978384)
-    g = tm.forecast_trend_latin_america(trend='Linear')
+    g = tm.forecast_trend(region='Latin America', trend='Linear')
     assert g.loc[2059, 'x'] == pytest.approx(4280.327138)
     assert g.loc[2059, 'constant'] == pytest.approx(1411.989083)
     assert g.loc[2059, 'adoption'] == pytest.approx(5692.316221)
-    g = tm.forecast_trend_latin_america(trend='Degree2')
+    g = tm.forecast_trend(region='Latin America', trend='Degree2')
     assert g.loc[2059, 'x^2'] == pytest.approx(1766.932238)
     assert g.loc[2059, 'x'] == pytest.approx(2552.660061)
     assert g.loc[2059, 'constant'] == pytest.approx(1659.795876)
     assert g.loc[2059, 'adoption'] == pytest.approx(5979.388175)
-    g = tm.forecast_trend_latin_america(trend='Degree3')
+    g = tm.forecast_trend(region='Latin America', trend='Degree3')
     assert g.loc[2059, 'x^3'] == pytest.approx(-640.1704011)
     assert g.loc[2059, 'x^2'] == pytest.approx(2705.848826)
     assert g.loc[2059, 'x'] == pytest.approx(2207.379018)
     assert g.loc[2059, 'constant'] == pytest.approx(1678.991504)
     assert g.loc[2059, 'adoption'] == pytest.approx(5952.048947)
-    g = tm.forecast_trend_latin_america(trend='Exponential')
+    g = tm.forecast_trend(region='Latin America', trend='Exponential')
     assert g.loc[2059, 'coeff'] == pytest.approx(1726.879709)
     assert g.loc[2059, 'e^x'] == pytest.approx(3.61818691)
     assert g.loc[2059, 'adoption'] == pytest.approx(6248.173559)
@@ -441,35 +449,35 @@ def test_forecast_data_latin_america():
 def test_forecast_data_china():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_china()
+    forecast = tm.forecast_data('China')
     b = 'Baseline: Based on- AMPERE MESSAGE-MACRO Reference'
     c = 'Conservative: Based on- Greenpeace 2015 Reference'
     assert forecast.loc[2033, b] == pytest.approx(8186.59833863144)
     assert forecast.loc[2022, c] == pytest.approx(8050.21112508448)
-    mms = tm.forecast_min_max_sd_china()
+    mms = tm.forecast_min_max_sd('China')
     assert mms.loc[2059, 'Min'] == pytest.approx(7781.53428961777)
     assert mms.loc[2059, 'Max'] == pytest.approx(17725.83054370450)
     assert mms.loc[2059, 'S.D'] == pytest.approx(2400.82849891615)
-    lmh = tm.forecast_low_med_high_china()
+    lmh = tm.forecast_low_med_high('China')
     assert lmh.loc[2059, 'Low'] == pytest.approx(9383.47970362397)
     assert lmh.loc[2059, 'Medium'] == pytest.approx(11784.30820254010)
     assert lmh.loc[2059, 'High'] == pytest.approx(14185.13670145630)
-    g = tm.forecast_trend_china(trend='Linear')
+    g = tm.forecast_trend(region='China', trend='Linear')
     assert g.loc[2059, 'x'] == pytest.approx(6294.735859)
     assert g.loc[2059, 'constant'] == pytest.approx(6156.342065)
     assert g.loc[2059, 'adoption'] == pytest.approx(12451.07792)
-    g = tm.forecast_trend_china(trend='Degree2')
+    g = tm.forecast_trend(region='China', trend='Degree2')
     assert g.loc[2059, 'x^2'] == pytest.approx(-5367.764503)
     assert g.loc[2059, 'x'] == pytest.approx(11543.21671)
     assert g.loc[2059, 'constant'] == pytest.approx(5403.529661)
     assert g.loc[2059, 'adoption'] == pytest.approx(11578.98186)
-    g = tm.forecast_trend_china(trend='Degree3')
+    g = tm.forecast_trend(region='China', trend='Degree3')
     assert g.loc[2059, 'x^3'] == pytest.approx(4271.33179)
     assert g.loc[2059, 'x^2'] == pytest.approx(-11632.38446)
     assert g.loc[2059, 'x'] == pytest.approx(13846.99378)
     assert g.loc[2059, 'constant'] == pytest.approx(5275.452986)
     assert g.loc[2059, 'adoption'] == pytest.approx(11761.3941)
-    g = tm.forecast_trend_china(trend='Exponential')
+    g = tm.forecast_trend(region='China', trend='Exponential')
     assert g.loc[2059, 'coeff'] == pytest.approx(6234.955122)
     assert g.loc[2059, 'e^x'] == pytest.approx(2.106099615)
     assert g.loc[2059, 'adoption'] == pytest.approx(13131.43658)
@@ -478,72 +486,72 @@ def test_forecast_data_china():
 def test_forecast_data_india():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_india()
+    forecast = tm.forecast_data('India')
     a = 'Ambitious: Based on- AMPERE IMAGE/TIMER 450'
     c = 'Conservative: Based on- AMPERE IMAGE/TIMER 550'
     assert forecast.loc[2052, a] == pytest.approx(8646.89896000091)
     assert forecast.loc[2021, c] == pytest.approx(1872.35548547804)
-    mms = tm.forecast_min_max_sd_india()
+    mms = tm.forecast_min_max_sd('India')
     assert mms.loc[2059, 'Min'] == pytest.approx(6273.80577690134)
     assert mms.loc[2059, 'Max'] == pytest.approx(11850.25398790180)
     assert mms.loc[2059, 'S.D'] == pytest.approx(1823.74460934643)
-    lmh = tm.forecast_low_med_high_india()
+    lmh = tm.forecast_low_med_high('India')
     assert lmh.loc[2059, 'Low'] == pytest.approx(7038.27156853212)
     assert lmh.loc[2059, 'Medium'] == pytest.approx(8862.01617787855)
     assert lmh.loc[2059, 'High'] == pytest.approx(10685.76078722500)
-    g = tm.forecast_trend_india(trend='Linear')
+    g = tm.forecast_trend(region='India', trend='Linear')
     assert g.loc[2059, 'x'] == pytest.approx(7530.702406)
     assert g.loc[2059, 'constant'] == pytest.approx(874.8077542)
     assert g.loc[2059, 'adoption'] == pytest.approx(8405.51016)
-    g = tm.forecast_trend_india(trend='Degree2')
+    g = tm.forecast_trend(region='India', trend='Degree2')
     assert g.loc[2059, 'x^2'] == pytest.approx(2970.018189)
     assert g.loc[2059, 'x'] == pytest.approx(4626.684621)
     assert g.loc[2059, 'constant'] == pytest.approx(1291.343639)
     assert g.loc[2059, 'adoption'] == pytest.approx(8888.046449)
-    g = tm.forecast_trend_india(trend='Degree3')
+    g = tm.forecast_trend(region='India', trend='Degree3')
     assert g.loc[2059, 'x^3'] == pytest.approx(-648.3590152)
     assert g.loc[2059, 'x^2'] == pytest.approx(3920.944745)
     assert g.loc[2059, 'x'] == pytest.approx(4276.986984)
     assert g.loc[2059, 'constant'] == pytest.approx(1310.784804)
     assert g.loc[2059, 'adoption'] == pytest.approx(8860.357517)
-    g = tm.forecast_trend_india(trend='Exponential')
+    g = tm.forecast_trend(region='India', trend='Exponential')
     assert g.loc[2059, 'coeff'] == pytest.approx(1535.612932)
     assert g.loc[2059, 'e^x'] == pytest.approx(6.636618577)
     assert g.loc[2059, 'adoption'] == pytest.approx(10191.27731)
 
 
-def test_forecast_data_eu():
+def test_forecast_data():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_eu()
+    forecast = tm.forecast_data('EU')
     c = 'Conservative: Based on- Greenpeace 2015 Reference'
     r = '100% REN: Based on- Greenpeace Advanced [R]evolution'
     assert forecast.loc[2012, c] == pytest.approx(3190.07731699797)
     assert forecast.loc[2013, r] == pytest.approx(3191.42718894118)
-    mms = tm.forecast_min_max_sd_eu()
+    mms = tm.forecast_min_max_sd('EU')
     assert mms.loc[2059, 'Min'] == pytest.approx(3386.28995933476)
     assert mms.loc[2059, 'Max'] == pytest.approx(7192.44913678081)
     assert mms.loc[2059, 'S.D'] == pytest.approx(1239.46103064195)
-    lmh = tm.forecast_low_med_high_eu()
+    lmh = tm.forecast_low_med_high('EU')
     assert lmh.loc[2059, 'Low'] == pytest.approx(3771.28270511443)
     assert lmh.loc[2059, 'Medium'] == pytest.approx(5010.74373575638)
     assert lmh.loc[2059, 'High'] == pytest.approx(6250.20476639833)
-    g = tm.forecast_trend_eu(trend='Linear')
+    g = tm.forecast_trend(region='EU', trend='Linear')
     assert g.loc[2059, 'x'] == pytest.approx(1526.531345)
     assert g.loc[2059, 'constant'] == pytest.approx(3254.952937)
     assert g.loc[2059, 'adoption'] == pytest.approx(4781.484282)
-    g = tm.forecast_trend_eu(trend='Degree2')
+    g = tm.forecast_trend(region='EU', trend='Degree2')
     assert g.loc[2059, 'x^2'] == pytest.approx(1089.717815)
     assert g.loc[2059, 'x'] == pytest.approx(461.0294813)
     assert g.loc[2059, 'constant'] == pytest.approx(3407.782497)
     assert g.loc[2059, 'adoption'] == pytest.approx(4958.529793)
-    g = tm.forecast_trend_eu(trend='Degree3')
+    g = tm.forecast_trend(region='EU', trend='Degree3')
     assert g.loc[2059, 'x^3'] == pytest.approx(838.2518554)
     assert g.loc[2059, 'x^2'] == pytest.approx(-139.7182397)
     assert g.loc[2059, 'x'] == pytest.approx(913.1473462)
     assert g.loc[2059, 'constant'] == pytest.approx(3382.64736)
     assert g.loc[2059, 'adoption'] == pytest.approx(4994.328322)
-    g = tm.forecast_trend_eu(trend='Exponential')
+    g = tm.forecast_trend(region='EU', trend='Exponential')
     assert g.loc[2059, 'coeff'] == pytest.approx(3304.393389)
     assert g.loc[2059, 'e^x'] == pytest.approx(1.457225648)
     assert g.loc[2059, 'adoption'] == pytest.approx(4815.246799)
@@ -552,35 +560,35 @@ def test_forecast_data_eu():
 def test_forecast_data_usa():
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=g_tam_ref_data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    forecast = tm.forecast_data_usa()
+    forecast = tm.forecast_data('USA')
     a = 'Ambitious: Based on- AMPERE IMAGE/TIMER 450'
     c = 'Conservative: Based on- Greenpeace 2015 Reference'
     assert forecast.loc[2034, a] == pytest.approx(4755.17137407516)
     assert forecast.loc[2053, c] == pytest.approx(6679.10400295062)
-    mms = tm.forecast_min_max_sd_usa()
+    mms = tm.forecast_min_max_sd('USA')
     assert mms.loc[2059, 'Min'] == pytest.approx(4312.47901236326)
     assert mms.loc[2059, 'Max'] == pytest.approx(7097.61078977188)
     assert mms.loc[2059, 'S.D'] == pytest.approx(882.94331416551)
-    lmh = tm.forecast_low_med_high_usa()
+    lmh = tm.forecast_low_med_high('USA')
     assert lmh.loc[2059, 'Low'] == pytest.approx(4754.30883599549)
     assert lmh.loc[2059, 'Medium'] == pytest.approx(5637.25215016100)
     assert lmh.loc[2059, 'High'] == pytest.approx(6520.19546432651)
-    g = tm.forecast_trend_usa(trend='Linear')
+    g = tm.forecast_trend(region='USA', trend='Linear')
     assert g.loc[2059, 'x'] == pytest.approx(1477.300587)
     assert g.loc[2059, 'constant'] == pytest.approx(4069.202924)
     assert g.loc[2059, 'adoption'] == pytest.approx(5546.503511)
-    g = tm.forecast_trend_usa(trend='Degree2')
+    g = tm.forecast_trend(region='USA', trend='Degree2')
     assert g.loc[2059, 'x^2'] == pytest.approx(916.3405659)
     assert g.loc[2059, 'x'] == pytest.approx(581.3231445)
     assert g.loc[2059, 'constant'] == pytest.approx(4197.716861)
     assert g.loc[2059, 'adoption'] == pytest.approx(5695.380571)
-    g = tm.forecast_trend_usa(trend='Degree3')
+    g = tm.forecast_trend(region='USA', trend='Degree3')
     assert g.loc[2059, 'x^3'] == pytest.approx(-1446.69936)
     assert g.loc[2059, 'x^2'] == pytest.approx(3038.166295)
     assert g.loc[2059, 'x'] == pytest.approx(-198.9657649)
     assert g.loc[2059, 'constant'] == pytest.approx(4241.096409)
     assert g.loc[2059, 'adoption'] == pytest.approx(5633.597578)
-    g = tm.forecast_trend_usa(trend='Exponential')
+    g = tm.forecast_trend(region='USA', trend='Exponential')
     assert g.loc[2059, 'coeff'] == pytest.approx(4106.634669)
     assert g.loc[2059, 'e^x'] == pytest.approx(1.357549289)
     assert g.loc[2059, 'adoption'] == pytest.approx(5574.958973)
@@ -591,9 +599,9 @@ def test_forecast_empty_data():
                        'Conservative Cases': {}}
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=no_data_sources,
                  tam_pds_data_sources=no_data_sources)
-    result = tm.forecast_min_max_sd_global()
+    result = tm.forecast_min_max_sd('World')
     assert all(result.isna())
-    result = tm.forecast_low_med_high_global()
+    result = tm.forecast_low_med_high('World')
     assert all(result.isna())
 
 
@@ -728,11 +736,11 @@ def test_NaN_TAM_2012_data():
     tamconfig_mod.loc['source_after_2014', 'World'] = 'SolarHotWater4'
     tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_trend_global(trend='Linear')
+    result = tm.forecast_trend(region='World', trend='Linear')
     expected = pd.DataFrame(linear_trend_solarhotwater_list[1:],
                             columns=linear_trend_solarhotwater_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
-    result = tm.forecast_min_max_sd_global()
+    result = tm.forecast_min_max_sd('World')
     assert all(pd.isna(result.loc[2012, :]))
 
 
@@ -748,7 +756,7 @@ def test_mean_ignores_zeros():
     }
     tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_low_med_high_global()
+    result = tm.forecast_low_med_high('World')
     assert all(result.loc[:, 'Medium'] == 1.0)
     # The Excel code to SUM()/COUNTIF(">0") is only used when processing multiple sources
     # like 'ALL SOURCES' or 'Ambitious Cases', not when an individual source is chosen.
@@ -763,7 +771,7 @@ def test_mean_ignores_zeros():
     tamconfig_mod.loc['source_after_2014', 'World'] = 'zero'
     tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_low_med_high_global()
+    result = tm.forecast_low_med_high('World')
     assert all(result.loc[:, 'Medium'] == 0.0)
 
 
@@ -792,7 +800,7 @@ def test_nonexistent_source_is_NaN():
     tamconfig_mod.loc['source_after_2014', :] = 'NoSuchSource'
     tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
                  tam_pds_data_sources=g_tam_pds_data_sources)
-    result = tm.forecast_min_max_sd_global()
+    result = tm.forecast_min_max_sd('World')
     assert all(pd.isna(result.loc[:, :]))
 
 
@@ -801,13 +809,13 @@ def test_global_with_regional_included():
     tamconfig_mod.loc['source_until_2014', :] = 'ALL SOURCES'
     tamconfig_mod.loc['source_after_2014', :] = 'ALL SOURCES'
     tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
-            tam_pds_data_sources=g_tam_pds_data_sources, world_includes_regional=True)
-    result = tm.forecast_min_max_sd_global()
+            tam_pds_data_sources=g_tam_pds_data_sources, main_includes_regional=True)
+    result = tm.forecast_min_max_sd('World')
     expected = pd.DataFrame(forecast_min_max_sd_global_with_regional_list[1:],
             columns=forecast_min_max_sd_global_with_regional_list[0]).set_index('Year')
     expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
-    result = tm.forecast_low_med_high_global()
+    result = tm.forecast_low_med_high('World')
     expected = pd.DataFrame(forecast_low_med_high_global_with_regional_list[1:],
             columns=forecast_low_med_high_global_with_regional_list[0]).set_index('Year')
     expected.index.name = 'Year'
@@ -818,8 +826,8 @@ def test_global_with_regional_included():
     tamconfig_mod.loc['source_until_2014', 'World'] = 'Baseline Cases'
     tamconfig_mod.loc['source_after_2014', 'World'] = 'Baseline Cases'
     tm = tam.TAM(tamconfig=tamconfig_mod, tam_ref_data_sources=g_tam_ref_data_sources,
-            tam_pds_data_sources=g_tam_pds_data_sources, world_includes_regional=True)
-    result = tm.forecast_min_max_sd_global()
+            tam_pds_data_sources=g_tam_pds_data_sources, main_includes_regional=True)
+    result = tm.forecast_min_max_sd('World')
     expected = pd.DataFrame(forecast_min_max_sd_global_with_regional_list[1:],
             columns=forecast_min_max_sd_global_with_regional_list[0]).set_index('Year')
     expected.index.name = 'Year'
@@ -827,7 +835,7 @@ def test_global_with_regional_included():
     # and Max still match is sufficient.
     pd.testing.assert_frame_equal(result.loc[:, ['Min', 'Max']], expected.loc[:, ['Min', 'Max']],
             check_exact=False)
-    result = tm.forecast_low_med_high_global()
+    result = tm.forecast_low_med_high('World')
     expected = pd.DataFrame(forecast_low_med_high_global_list[1:],
             columns=forecast_low_med_high_global_list[0],
             index=list(range(2012, 2061)), dtype=np.float64)
