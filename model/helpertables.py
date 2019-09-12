@@ -7,7 +7,7 @@ from interpolation.py, or use a simple linear fit implemented here.
 """
 from functools import lru_cache
 import pandas as pd
-from model.dd import MAIN_REGIONS
+import model.dd as dd
 
 
 class HelperTables:
@@ -64,7 +64,7 @@ class HelperTables:
             adoption = self.ref_adoption_data_per_region.loc[2014:, :].copy(deep=True)
         else:
             first_year = self.ref_datapoints.first_valid_index()
-            last_year = 2060
+            last_year = dd.CORE_END_YEAR
             adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints)
 
         # cannot exceed tam or tla
@@ -73,7 +73,7 @@ class HelperTables:
                 adoption[col] = adoption[col].combine(self.ref_adoption_limits[col].fillna(0.0), min)
 
         if self.ac.soln_ref_adoption_regional_data:
-            adoption.loc[:, 'World'] = adoption[MAIN_REGIONS].sum(axis=1)
+            adoption.loc[:, 'World'] = adoption[dd.MAIN_REGIONS].sum(axis=1)
             if self.ref_adoption_limits is not None:
                 adoption['World'] = adoption['World'].combine(
                     self.ref_adoption_limits['World'].fillna(0.0), min)
@@ -131,7 +131,7 @@ class HelperTables:
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
             adoption = self.pds_adoption_data_per_region.loc[first_year:, :].copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Linear':
-            last_year = 2060
+            last_year = dd.CORE_END_YEAR
             adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints)
         elif 'S-Curve' in self.ac.soln_pds_adoption_basis:
             adoption = self.pds_adoption_trend_per_region.copy(deep=True)
@@ -150,7 +150,7 @@ class HelperTables:
                 adoption[col] = adoption[col].combine(self.pds_adoption_limits[col].fillna(0.0), min)
 
         if self.ac.soln_pds_adoption_regional_data:
-            adoption.loc[:, 'World'] = adoption.loc[:, MAIN_REGIONS].sum(axis=1)
+            adoption.loc[:, 'World'] = adoption.loc[:, dd.MAIN_REGIONS].sum(axis=1)
             if self.pds_adoption_limits is not None:
                 for col in adoption.columns:
                     adoption['World'] = adoption['World'].combine(

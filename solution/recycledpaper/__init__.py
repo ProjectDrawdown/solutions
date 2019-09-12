@@ -137,7 +137,7 @@ class Scenario:
       },
     }
     self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      world_includes_regional=True,
+      main_includes_regional=True,
       tam_pds_data_sources=tam_ref_data_sources)
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()

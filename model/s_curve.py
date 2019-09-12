@@ -1,10 +1,9 @@
+"""Sigmoid Curve adoption implementation."""
 import math
 import numpy as np
 import pandas as pd
 
-
-CORE_END_YEAR = 2060
-
+import model.dd as dd
 
 
 class SCurve:
@@ -17,8 +16,7 @@ class SCurve:
              'base_adoption', 'pds_tam_2050',
              (needed for Bass Diffusion model): 'M', 'P', 'Q'
             and rows for each region:
-             'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-             'Latin America', 'China', 'India', 'EU', 'USA'
+             'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', etc
         """
         self.transition_period = transition_period
         self.sconfig = sconfig
@@ -44,7 +42,7 @@ class SCurve:
           pds_tam_2050 (float): total addressible market in 2050.
         """
         result = pd.DataFrame(dtype=np.float64)
-        for year in range(base_year, CORE_END_YEAR + 1):
+        for year in range(base_year, dd.CORE_END_YEAR + 1):
             # the First Half function from Building Automation Systems "S Curve"!AH24:
             # =(((1-AH$18)/(1+EXP(-((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))
             #     *($AG24-(LN(1/AH$18-1)/((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))+AH$17))))
@@ -154,7 +152,7 @@ class SCurve:
             Q = self.sconfig.loc[region, 'imitation']
             base_year = self.sconfig.loc[region, 'base_year']
             result.loc[base_year, region] = prev = self.sconfig.loc[region, 'base_adoption']
-            for year in range(base_year + 1, CORE_END_YEAR + 1):
+            for year in range(base_year + 1, dd.CORE_END_YEAR + 1):
                 b = prev + (P + (Q * prev / M)) * (M - prev)
                 result.loc[year, region] = b
                 prev = b

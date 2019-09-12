@@ -612,7 +612,7 @@ def write_tam(f, wb, outputdir):
     regional = convert_bool(tm_tab.cell(28, 1).value) and convert_bool(tm_tab.cell(29, 1).value)
     f.write("    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=" + arg_ref + ",\n")
     if regional:
-        f.write("      world_includes_regional=True,\n")
+        f.write("      main_includes_regional=True,\n")
     f.write("      tam_pds_data_sources=" + arg_pds + ")\n")
     f.write("    ref_tam_per_region=self.tm.ref_tam_per_region()\n")
     f.write("    pds_tam_per_region=self.tm.pds_tam_per_region()\n")
