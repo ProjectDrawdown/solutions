@@ -271,7 +271,7 @@ class Scenario:
       },
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-        world_includes_regional=True,
+        main_includes_regional=True,
         adconfig=adconfig)
 
     # Custom PDS Data
