@@ -61,7 +61,8 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
             df_per_region[region] = df
         for (groupname, group) in self.tam_ref_data_sources.items():
             for (name, value) in group.items():
-                if isinstance(value, str) or isinstance(value, pathlib.Path):
+                if (isinstance(value, str) or isinstance(value, pathlib.Path) or
+                        isinstance(value, pathlib.PurePath)):
                     sources = {name: value}
                 else:
                     sources = value
@@ -246,7 +247,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
           EU: SolarPVUtil 'TAM Data'!V607:Y656
           US: SolarPVUtil 'TAM Data'!V672:Y721
         """
-        main_region = list(self._forecast_data.keys())[0]  # first columns, ex: 'World'
+        main_region = dd.REGIONS[0]
         if main_region in region and 'PDS' in region:
             data_sources = self._get_data_sources(data_sources=self.tam_pds_data_sources,
                     region=main_region)
@@ -313,7 +314,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
           EU: SolarPVUtil 'TAM Data'!AA607:AC656
           US: SolarPVUtil 'TAM Data'!AA672:AC721
         """
-        main_region = list(self._forecast_data.keys())[0]  # first columns, ex: 'World'
+        main_region = dd.REGIONS[0]
         data_sources = self._get_data_sources(data_sources=self.tam_ref_data_sources, region=region)
 
         if main_region in region and 'PDS' in region:
@@ -383,7 +384,7 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
            Linear: SolarPVUtil 'TAM Data'!BX677:BZ723     Degree2: SolarPVUtil 'TAM Data'!CE677:CH723
            Degree3: SolarPVUtil 'TAM Data'!CM677:CQ723    Exponential: SolarPVUtil 'TAM Data'!CV677:CX723
         """
-        main_region = list(self._forecast_data.keys())[0]  # first columns, ex: 'World'
+        main_region = dd.REGIONS[0]
         if main_region in region and 'PDS' in region:
             data_sources = self._get_data_sources(
                     data_sources=self.tam_pds_data_sources, region=region)
