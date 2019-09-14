@@ -816,7 +816,7 @@ def write_ad(f, wb, outputdir):
     f.write("    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,\n")
     regional = convert_bool(a.cell(29, 1).value) and convert_bool(a.cell(30, 1).value)
     if regional:
-        f.write("        world_includes_regional=True,\n")
+        f.write("        main_includes_regional=True,\n")
     f.write("        adconfig=adconfig)\n")
     f.write("\n")
 
