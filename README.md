@@ -48,12 +48,12 @@ The ultimate goal of this project is to produce a compelling, browser-delivered 
 UI work has focussed on the first point about the audience of researchers. This need is expected to be met using [Jupyter Notebook](https://jupyter.org), eventually hosted via an instance of [JupyterHub](https://jupyter.org/hub).
 
 ### Automated testing
-One other goal for the project is to build a model implementation with good coverage by automated tests. There is a [YouTube video which demonstrates the different layers of tests](https://youtu.be/ipZrQWuMU3w) and another which [focuses on the Excel-based system test specifically](https://youtu.be/HLL7HrFcmjc).
+One other goal for the project is to build a model implementation with good coverage by automated tests. There is a [YouTube video which describes the different layers of tests](https://youtu.be/K6P56qUkCrw).
 
 Tests exist at several layers:
 1. unit tests of each function
 1. integration tests which compose modules to test an entire solution
-1. a system test which starts Excel to compare the original, unmodified spreadsheet to the results from the new implementation
+1. a system test which compares the original spreadsheet to the results from the new implementation
 
 [Python test code coverage](https://codeearth.gitlab.io/drawdown/coverage/) reports are maintained as part of the CI/CD process.
 
@@ -97,7 +97,7 @@ Contributors to the project should submit to the project using the Developer Cer
 
 ## Acknowledgements
 
-Many thanks to the contributors of the &lt;code&gt;earth hackathon held at the Internet Archive on Sept. 5, 6, and 7 of 2018 which began this project. They are: Owen Barton, Denton Gentry, Greg Elin, Marc Jones, Henry Poole, Robert L. Read, Stephanie Liu and Richard Stallman, in addition to Project Drawdown scientists and volunteers, Ryan Allard, Catherine Foster, Chad Frischmann, and Nick Peters.
+Many thanks to the contributors of the &lt;code&gt;earth hackathon held at the Internet Archive on Sept. 5, 6, and 7 of 2018 which began this project. They are: Owen Barton, Robert L. Read, Denton Gentry, Henry Poole, Greg Elin, Marc Jones, and Stephanie Liu, in addition to Project Drawdown scientists and volunteers, Ryan Allard, Catherine Foster, Chad Frischmann, Kevin Bayuk, and Nick Peters.
 
 Huge thanks to Beni Bienz of The Climate Foundation for his work in implementing a substantial portion of the system.
 
