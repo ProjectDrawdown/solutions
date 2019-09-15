@@ -329,3 +329,7 @@ Sep 2 - Sep 6, 2019
 + Add Waste to Energy and Small Methane Biodigester solutions.
 + Fix metaclass_cache hashing, resolved TAM failure in test_excel_integration.py
 + fix CustomTLA support, and test all {temperate,tropical}forests scenarios.
+
+Sep 9 - Sep 13, 2019
++ remove knowledge of the regions from model/tam.py
+
