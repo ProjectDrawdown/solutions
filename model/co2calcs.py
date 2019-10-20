@@ -542,7 +542,7 @@ class CO2Calcs:
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline['Gtons'].values,
+        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline['GtonsC'].values,
                 useMultigas=False)
         result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index.values)
         result.name = 'FaIR_CFT_baseline'
@@ -561,15 +561,15 @@ class CO2Calcs:
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        emissions = self.baseline['Gtons'].copy()
+        emissions = self.baseline['GtonsC'].copy()
         co2eq_mmt_reduced = self.co2eq_mmt_reduced()
         if co2eq_mmt_reduced is not None:
-            gtons = co2eq_mmt_reduced['World'] / 1000.0
-            emissions = emissions.subtract(other=gtons, fill_value=0.0)
+            gtonsC = (co2eq_mmt_reduced['World'] / 1000.0) / C_TO_CO2EQ
+            emissions = emissions.subtract(other=gtonsC, fill_value=0.0)
         co2_sequestered_global = self.co2_sequestered_global()
         if co2_sequestered_global is not None:
-            gtons = co2_sequestered_global['All'] / 1000.0
-            emissions = emissions.subtract(other=gtons, fill_value=0.0)
+            gtonsC = (co2_sequestered_global['All'] / 1000.0) / C_TO_CO2EQ
+            emissions = emissions.subtract(other=gtonsC, fill_value=0.0)
 
         (C, F, T) = fair.forward.fair_scm(emissions=emissions.values, useMultigas=False)
         result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index.values)
