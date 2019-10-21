@@ -19,6 +19,7 @@ import ui.color
 topdir = pathlib.Path(__file__).parents[1]
 default_file = topdir.joinpath('data', 'images', 'play_the_whole_field.mp4')
 baselineCO2_path = topdir.joinpath('data', 'baselineCO2.csv')
+tcrecs = np.array([1.7, 3.2])  # GRL https://doi.org/10.1029/2019GL082442
 
 # Columns in FaIR Emissions.emissions
 YEAR      = 0
@@ -116,14 +117,14 @@ def init():
         for idx, year in enumerate(fair.RCPs.rcp45.Emissions.year):
             if int(year) in sector_gt.index:
                 remaining[idx, CO2_FOSSIL] -= sector_gt.loc[int(year), sector]
-        _,_,T = fair.forward.fair_scm(emissions=remaining, useMultigas=True)
+        _,_,T = fair.forward.fair_scm(emissions=remaining, useMultigas=True, r0=35, tcrecs=tcrecs)
         df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
         emissions.append((sector, df_T))
 
     fig = plt.figure()
     ax = fig.add_subplot()
     ax.set_ylabel('Temperature anomaly (K)');
-    _,_,T = fair.forward.fair_scm(emissions=total, useMultigas=True)
+    _,_,T = fair.forward.fair_scm(emissions=total, useMultigas=True, r0=35, tcrecs=tcrecs)
     df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
             color='black', label='Baseline')
@@ -146,7 +147,7 @@ def animate(frame, ax, total, lines, emissions):
         end = 2020 + offset
         line.set_data(df_T.loc[2020:end].index.values, df_T.loc[2020:end].values)
         if sector_num == 0:
-            _,_,T = fair.forward.fair_scm(emissions=total, useMultigas=True)
+            _,_,T = fair.forward.fair_scm(emissions=total, useMultigas=True, r0=35, tcrecs=tcrecs)
             prev = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
         else:
             (_, prev) = emissions[sector_num - 1]
