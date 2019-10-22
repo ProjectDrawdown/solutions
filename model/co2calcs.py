@@ -5,65 +5,18 @@ Computes reductions in CO2-equivalent emissions.
 
 from functools import lru_cache
 import math
-import pathlib
 
 import fair
 import numpy as np
 import pandas as pd
-from model.advanced_controls import SOLUTION_CATEGORY
-from model.dd import THERMAL_MOISTURE_REGIMES, THERMAL_DYNAMICAL_REGIMES, REGIONS, OCEAN_REGIONS
-
-
-topdir = pathlib.Path(__file__).parents[1]
-baselineCO2_path = topdir.joinpath('data', 'baselineCO2.csv')
+import model.advanced_controls as ac
+import model.dd
+import model.fairutil
 
 
 C_TO_CO2EQ = 3.666
 # Note: a different value of 3.64 is sometimes used for certain results in Excel
 # Here we will always use this value for consistency
-
-
-# Columns in FaIR Emissions.emissions
-YEAR      = 0
-CO2_FOSSIL= 1
-CO2_LAND  = 2
-CH4       = 3
-N2O       = 4
-SOX       = 5
-CO        = 6
-NMVOC     = 7
-NOX       = 8
-BC        = 9
-OC        = 10
-NH3       = 11
-CF4       = 12
-C2F6      = 13
-C6F14     = 14
-HFC23     = 15
-HFC32     = 16
-HFC43_10  = 17
-HFC125    = 18
-HFC134A   = 19
-HFC143A   = 20
-HFC227EA  = 21
-HFC245FA  = 22
-SF6       = 23
-CFC11     = 24
-CFC12     = 25
-CFC113    = 26
-CFC114    = 27
-CFC115    = 28
-CARB_TET  = 29
-MCF       = 30
-HCFC22    = 31
-HCFC141B  = 32
-HCFC142B  = 33
-HALON1211 = 34
-HALON1202 = 35
-HALON1301 = 36
-HALON2402 = 37
-CH3BR     = 38
-CH3CL     = 39
 
 
 class CO2Calcs:
@@ -123,8 +76,7 @@ class CO2Calcs:
         self.pds_protected_deg_land = pds_protected_deg_land  # protection models
         self.ref_protected_deg_land = ref_protected_deg_land  # protection models
 
-        self.baseline = pd.read_csv(str(baselineCO2_path), header=0, index_col=0,
-                skipinitialspace=True, skip_blank_lines=True, comment='#', squeeze=True)
+        self.baseline = model.fairutil.baseline_emissions()
 
 
     @lru_cache()
@@ -178,8 +130,8 @@ class CO2Calcs:
         """
         s = self.ac.report_start_year
         e = self.ac.report_end_year
-        if (self.ac.solution_category != SOLUTION_CATEGORY.LAND and
-                self.ac.solution_category != SOLUTION_CATEGORY.OCEAN):
+        if (self.ac.solution_category != ac.SOLUTION_CATEGORY.LAND and
+                self.ac.solution_category != ac.SOLUTION_CATEGORY.OCEAN):
             # RRS
             co2eq_reduced_grid_emissions = self.co2eq_reduced_grid_emissions()
             m = pd.DataFrame(0.0, columns=co2eq_reduced_grid_emissions.columns.copy(),
@@ -193,10 +145,10 @@ class CO2Calcs:
             m = m.sub(self.co2eq_net_indirect_emissions().loc[s:e], fill_value=0)
         else:
             # LAND/OCEAN
-            if self.ac.solution_category == SOLUTION_CATEGORY.LAND:
-                regions = REGIONS
+            if self.ac.solution_category == ac.SOLUTION_CATEGORY.LAND:
+                regions = model.dd.REGIONS
             else:
-                regions = OCEAN_REGIONS
+                regions = model.dd.OCEAN_REGIONS
             index = pd.Index(list(range(2015, 2061)), name='Year')
             m = pd.DataFrame(0., columns=regions, index=index, dtype=np.float64)
             if (self.soln_pds_direct_co2eq_emissions_saved is not None or
@@ -225,10 +177,10 @@ class CO2Calcs:
         Tropical Forests 'CO2 Calcs'!A119:G166 (Land models)
         """
 
-        if self.ac.solution_category == SOLUTION_CATEGORY.LAND:
-            regimes = THERMAL_MOISTURE_REGIMES
-        elif self.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
-            regimes = THERMAL_DYNAMICAL_REGIMES
+        if self.ac.solution_category == ac.SOLUTION_CATEGORY.LAND:
+            regimes = model.dd.THERMAL_MOISTURE_REGIMES
+        elif self.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN:
+            regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
         else:
             return None
 
@@ -313,8 +265,8 @@ class CO2Calcs:
         else:
             co2_vals = self.co2_mmt_reduced()['World']
 
-        if (self.ac.solution_category == SOLUTION_CATEGORY.LAND or
-                self.ac.solution_category == SOLUTION_CATEGORY.OCEAN):
+        if (self.ac.solution_category == ac.SOLUTION_CATEGORY.LAND or
+                self.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN):
             co2_vals = self.co2_sequestered_global()['All'] + self.co2eq_mmt_reduced()['World']
             assert self.ac.emissions_use_co2eq, 'Land/ocean models must use CO2 eq'
 
@@ -327,7 +279,7 @@ class CO2Calcs:
         last_year = ppm_calculator.last_valid_index()
         for year in ppm_calculator.index:
             if (year < self.ac.report_start_year and
-                    self.ac.solution_category != SOLUTION_CATEGORY.LAND):
+                    self.ac.solution_category != ac.SOLUTION_CATEGORY.LAND):
                 # On RRS xls models this skips the calc but on LAND the calc is done anyway
                 # Note that this affects the values for all years and should probably NOT be
                 # skipped (i.e. LAND is the correct implementation)
@@ -389,7 +341,7 @@ class CO2Calcs:
               EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
            SolarPVUtil 'CO2 Calcs'!R234:AB280
         """
-        if self.ac.solution_category == SOLUTION_CATEGORY.REPLACEMENT:
+        if self.ac.solution_category == ac.SOLUTION_CATEGORY.REPLACEMENT:
             return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2_per_KWh
         else:
             return self.soln_net_annual_funits_adopted * 0
@@ -433,7 +385,7 @@ class CO2Calcs:
            SolarPVUtil 'CO2 Calcs'!R288:AB334
            (Not present in Land solutions)
         """
-        if self.ac.solution_category == SOLUTION_CATEGORY.REPLACEMENT:
+        if self.ac.solution_category == ac.SOLUTION_CATEGORY.REPLACEMENT:
             return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2eq_per_KWh
         else:
             return self.soln_net_annual_funits_adopted * 0
@@ -542,9 +494,9 @@ class CO2Calcs:
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline['GtonsC'].values,
-                useMultigas=False)
-        result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index.values)
+        kwargs = model.fairutil.fair_scm_kwargs()
+        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline.values, useMultigas=True, **kwargs)
+        result = pd.DataFrame({'C': C[:, 0], 'F': F[:, 0], 'T': T}, index=self.baseline.index)
         result.name = 'FaIR_CFT_baseline'
         return result
 
@@ -561,18 +513,19 @@ class CO2Calcs:
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        emissions = self.baseline['GtonsC'].copy()
+        emissions = self.baseline.copy()
         co2eq_mmt_reduced = self.co2eq_mmt_reduced()
         if co2eq_mmt_reduced is not None:
             gtonsC = (co2eq_mmt_reduced['World'] / 1000.0) / C_TO_CO2EQ
-            emissions = emissions.subtract(other=gtonsC, fill_value=0.0)
+            emissions['FossilCO2'] = emissions['FossilCO2'].subtract(other=gtonsC, fill_value=0.0)
         co2_sequestered_global = self.co2_sequestered_global()
         if co2_sequestered_global is not None:
             gtonsC = (co2_sequestered_global['All'] / 1000.0) / C_TO_CO2EQ
-            emissions = emissions.subtract(other=gtonsC, fill_value=0.0)
+            emissions['OtherCO2'] = emissions['OtherCO2'].subtract(other=gtonsC, fill_value=0.0)
 
-        (C, F, T) = fair.forward.fair_scm(emissions=emissions.values, useMultigas=False)
-        result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index.values)
+        kwargs = model.fairutil.fair_scm_kwargs()
+        (C, F, T) = fair.forward.fair_scm(emissions=emissions.values, useMultigas=True, **kwargs)
+        result = pd.DataFrame({'C': C[:, 0] , 'F': F[:, 0], 'T': T}, index=emissions.index)
         result.name = 'FaIR_CFT'
         return result
 
@@ -589,11 +542,13 @@ class CO2Calcs:
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
         """
-        (C, F, T) = fair.forward.fair_scm(emissions=fair.RCPs.rcp45.Emissions.emissions)
-        result = pd.DataFrame({'C': C[:,0], 'F': np.sum(F,axis=1), 'T': T},
-                index=fair.RCPs.rcp45.Emissions.year)
+        kwargs = model.fairutil.fair_scm_kwargs()
+        (C, F, T) = fair.forward.fair_scm(emissions=fair.RCPs.rcp45.Emissions.emissions,
+                useMultigas=True, **kwargs)
+        result = pd.DataFrame({'C': C[:, 0], 'F': F[:, 0], 'T': T}, index=fair.RCPs.rcp45.Emissions.year)
         result.name = 'FaIR_CFT_RCP45'
         return result
+
 
 
 # The following formulae come from the SolarPVUtil Excel implementation of 27Aug18.

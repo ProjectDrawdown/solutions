@@ -1563,7 +1563,7 @@ class JupyterUI:
             df_T['RCP4.5'] = CFTr['T']
             df_T.index.name = 'Year'
 
-            df = df_C.reset_index().melt('Year', value_name='ppm', var_name='C')
+            df = df_C.loc[2005:2050, :].reset_index().melt('Year', value_name='ppm', var_name='C')
             chart_C = ipywidgets.Output()
             with chart_C:
                 chart = alt.Chart(df, width=300).mark_line().encode(
@@ -1576,7 +1576,7 @@ class JupyterUI:
                 ).interactive()
                 IPython.display.display(chart)
 
-            df = df_F.reset_index().melt('Year', value_name='forcing', var_name='F')
+            df = df_F.loc[2005:2050, :].reset_index().melt('Year', value_name='forcing', var_name='F')
             chart_F = ipywidgets.Output()
             with chart_F:
                 chart = alt.Chart(df, width=300).mark_line().encode(
@@ -1589,7 +1589,7 @@ class JupyterUI:
                 ).interactive()
                 IPython.display.display(chart)
 
-            df = df_T.reset_index().melt('Year', value_name='degrees', var_name='T')
+            df = df_T.loc[2005:2050, :].reset_index().melt('Year', value_name='degrees', var_name='T')
             chart_T = ipywidgets.Output()
             with chart_T:
                 chart = alt.Chart(df, width=300).mark_line().encode(

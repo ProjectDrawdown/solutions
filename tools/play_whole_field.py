@@ -1,8 +1,11 @@
+"""Generate animation of impact of the different Drawdown sectors, to show that all are needed."""
 import argparse
 import copy
 import os
 import pathlib
 import sys
+
+import model.fairutil
 
 import fair
 import fair.RCPs
@@ -18,54 +21,6 @@ import ui.color
 
 topdir = pathlib.Path(__file__).parents[1]
 default_file = topdir.joinpath('data', 'images', 'play_the_whole_field.mp4')
-baselineCO2_path = topdir.joinpath('data', 'baselineCO2.csv')
-tcrecs = np.array([1.7, 3.2])  # GRL https://doi.org/10.1029/2019GL082442
-
-# Columns in FaIR Emissions.emissions
-YEAR      = 0
-CO2_FOSSIL= 1
-CO2_LAND  = 2
-CH4       = 3
-N2O       = 4
-SOX       = 5
-CO        = 6
-NMVOC     = 7
-NOX       = 8
-BC        = 9
-OC        = 10
-NH3       = 11
-CF4       = 12
-C2F6      = 13
-C6F14     = 14
-HFC23     = 15
-HFC32     = 16
-HFC43_10  = 17
-HFC125    = 18
-HFC134A   = 19
-HFC143A   = 20
-HFC227EA  = 21
-HFC245FA  = 22
-SF6       = 23
-CFC11     = 24
-CFC12     = 25
-CFC113    = 26
-CFC114    = 27
-CFC115    = 28
-CARB_TET  = 29
-MCF       = 30
-HCFC22    = 31
-HCFC141B  = 32
-HCFC142B  = 33
-HALON1211 = 34
-HALON1202 = 35
-HALON1301 = 36
-HALON2402 = 37
-CH3BR     = 38
-CH3CL     = 39
-
-
-# TODO: https://github.com/OMS-NetZero/FAIR/issues/19 set r0=35
-# set TCR as Dr Forest recommends.
 
 
 def legend_no_duplicates(ax):
@@ -94,37 +49,22 @@ def init():
         sector_members = list(set(column_names).intersection(set(mmt.columns)))
         sector_gt.loc[:, sector] = (mmt.loc[:, sector_members].sum(axis=1) / 1000.0) / 3.664
 
-    # Baseline emissions in Gtons
-    total = fair.RCPs.rcp45.Emissions.emissions.copy()
-    ddCO2 = pd.read_csv(str(baselineCO2_path), header=0, index_col=0, skipinitialspace=True,
-            skip_blank_lines=True, comment='#', squeeze=True)
-    for idx, year in enumerate(fair.RCPs.rcp45.Emissions.year):
-        if year not in ddCO2.index:
-            continue
-        if not np.isnan(ddCO2.loc[year, 'Fossil-GtC']):
-            total[idx, CO2_FOSSIL] = ddCO2.loc[year, 'Fossil-GtC']
-        if not np.isnan(ddCO2.loc[year, 'LandUse-GtC']):
-            total[idx, CO2_LAND] = ddCO2.loc[year, 'LandUse-GtC']
-        if not np.isnan(ddCO2.loc[year, 'MtCH4']):
-            total[idx, CH4] = ddCO2.loc[year, 'MtCH4']
-        if not np.isnan(ddCO2.loc[year, 'MtN2O']):
-            total[idx, N2O] = ddCO2.loc[year, 'MtN2O']
-
-    emissions = []
+    total = model.fairutil.baseline_emissions()
     remaining = total.copy()
     sectors = sector_gt.sort_values(axis='columns', by=2050, ascending=False).columns
+    emissions = []
     for sector in sectors:
-        for idx, year in enumerate(fair.RCPs.rcp45.Emissions.year):
-            if int(year) in sector_gt.index:
-                remaining[idx, CO2_FOSSIL] -= sector_gt.loc[int(year), sector]
-        _,_,T = fair.forward.fair_scm(emissions=remaining, useMultigas=True, r0=35, tcrecs=tcrecs)
-        df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
+        remaining['FossilCO2'] = remaining['FossilCO2'].subtract(sector_gt[sector], fill_value=0.0)
+        _,_,T = fair.forward.fair_scm(emissions=remaining.values, useMultigas=True,
+                r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
+        df_T = pd.Series(T, index=remaining.index)
         emissions.append((sector, df_T))
 
     fig = plt.figure()
     ax = fig.add_subplot()
     ax.set_ylabel('Temperature anomaly (K)');
-    _,_,T = fair.forward.fair_scm(emissions=total, useMultigas=True, r0=35, tcrecs=tcrecs)
+    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True, r0=model.fairutil.r0,
+            tcrecs=model.fairutil.tcrecs)
     df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
             color='black', label='Baseline')
@@ -147,7 +87,8 @@ def animate(frame, ax, total, lines, emissions):
         end = 2020 + offset
         line.set_data(df_T.loc[2020:end].index.values, df_T.loc[2020:end].values)
         if sector_num == 0:
-            _,_,T = fair.forward.fair_scm(emissions=total, useMultigas=True, r0=35, tcrecs=tcrecs)
+            _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True,
+                    r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
             prev = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
         else:
             (_, prev) = emissions[sector_num - 1]
