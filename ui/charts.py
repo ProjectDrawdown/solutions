@@ -1541,8 +1541,69 @@ class JupyterUI:
                     data=ui.modelmap.get_model_overview_svg(model=sys.modules[s.__module__],
                         highlights=['c2'], width=350, prefix='em')))
 
+            # FaIR results
+            CFTb = s.c2.FaIR_CFT_baseline()
+            CFT = s.c2.FaIR_CFT()
+            CFTr = s.c2.FaIR_CFT_RCP45()
+            df_C = pd.DataFrame()
+            df_C['Baseline'] = CFTb['C']
+            df_C['Drawdown'] = CFT['C']
+            df_C['RCP4.5'] = CFTr['C']
+            df_C.index.name = 'Year'
+
+            df_F = pd.DataFrame()
+            df_F['Baseline'] = CFTb['F']
+            df_F['Drawdown'] = CFT['F']
+            df_F['RCP4.5'] = CFTr['F']
+            df_F.index.name = 'Year'
+
+            df_T = pd.DataFrame()
+            df_T['Baseline'] = CFTb['T']
+            df_T['Drawdown'] = CFT['T']
+            df_T['RCP4.5'] = CFTr['T']
+            df_T.index.name = 'Year'
+
+            df = df_C.loc[2005:2050, :].reset_index().melt('Year', value_name='ppm', var_name='C')
+            chart_C = ipywidgets.Output()
+            with chart_C:
+                chart = alt.Chart(df, width=300).mark_line().encode(
+                    y='ppm',
+                    x='Year:O',
+                    color=alt.Color('C', legend=alt.Legend(orient='top-left', title=None)),
+                    tooltip=['C', alt.Tooltip('ppm:Q', format='.2f'), 'Year'],
+                ).properties(
+                    title=u'CO\u2082 Concentration (PPM)'
+                ).interactive()
+                IPython.display.display(chart)
+
+            df = df_F.loc[2005:2050, :].reset_index().melt('Year', value_name='forcing', var_name='F')
+            chart_F = ipywidgets.Output()
+            with chart_F:
+                chart = alt.Chart(df, width=300).mark_line().encode(
+                    y='forcing',
+                    x='Year:O',
+                    color=alt.Color('F', legend=alt.Legend(orient='top-left', title=None)),
+                    tooltip=['F', alt.Tooltip('forcing:Q', format='.2f'), 'Year'],
+                ).properties(
+                    title=u'Radiative Forcing (Watts * m\u00b2)'
+                ).interactive()
+                IPython.display.display(chart)
+
+            df = df_T.loc[2005:2050, :].reset_index().melt('Year', value_name='degrees', var_name='T')
+            chart_T = ipywidgets.Output()
+            with chart_T:
+                chart = alt.Chart(df, width=300).mark_line().encode(
+                    y='degrees',
+                    x='Year:O',
+                    color=alt.Color('T', legend=alt.Legend(orient='top-left', title=None)),
+                    tooltip=['T', alt.Tooltip('degrees:Q', format='.2f'), 'Year'],
+                ).properties(
+                    title=u'Temperature (degrees C)'
+                ).interactive()
+                IPython.display.display(chart)
+
             children.append(ipywidgets.HBox([c2_table,
-                ipywidgets.VBox([c2_model])]))
+                ipywidgets.VBox([c2_model, chart_C, chart_F, chart_T])]))
 
         emissions = ipywidgets.Accordion(children=children)
         for i, s in enumerate(solutions):
