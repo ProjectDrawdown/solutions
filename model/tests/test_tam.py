@@ -719,6 +719,25 @@ def test_regional_data_source_lists():
     assert result.loc[2059, 'India'] == pytest.approx(8039.649164)
 
 
+def test_regional_data_source_confined_to_region():
+    data_sources = {
+        'Baseline Cases': {
+            'A': str(datadir.joinpath('tam_all_one.csv')),
+            'B': str(datadir.joinpath('tam_all_two.csv')),
+        },
+        'Region: OECD90': {
+            'Baseline Cases': {
+                'C': str(datadir.joinpath('tam_all_three.csv')),
+            },
+        },
+    }
+    tm = tam.TAM(tamconfig=g_tamconfig, tam_ref_data_sources=data_sources,
+                 tam_pds_data_sources=g_tam_pds_data_sources)
+    result = tm.forecast_min_max_sd(region='World')
+    # if 'C' is included in 'World' data, Max will be 3.0
+    assert result.loc[2050, 'Max'] == pytest.approx(2.0)
+ 
+
 def test_NaN_TAM_2012_data():
     # test data taken from Solar Hot Water heaters, which has no TAM data for 2012.
     data_sources = {
