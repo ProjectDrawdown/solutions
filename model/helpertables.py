@@ -66,6 +66,10 @@ class HelperTables:
             first_year = self.ref_datapoints.first_valid_index()
             last_year = dd.CORE_END_YEAR
             adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints)
+            if first_year > 2014:
+                funits = self.soln_pds_funits_adopted(suppress_override=True)
+                y = range(2014, first_year)
+                adoption = adoption.append(funits.loc[y]).sort_index()
 
         # cannot exceed tam or tla
         if self.ref_adoption_limits is not None:
@@ -79,10 +83,12 @@ class HelperTables:
                     self.ref_adoption_limits['World'].fillna(0.0), min)
 
         # Where we have data, use the actual data not the interpolation. Excel model does this
-        # even in Custom REF Adoption case.
+        # even in Custom REF Adoption case, unlike the top of this routine where we copy Custom
+        # adoption verbatim.
         # Note: this should be changed later. The jump between pds_datapoints
         # and the first row of custom adoption data causes anomalies in the regional results.
-        # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
+        # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.c2a7v8n653ax
+        print(f"before update: {adoption}")
         adoption.update(self.ref_datapoints.iloc[[0]])
 
         if not suppress_override and self.ac.ref_adoption_use_pds_years:

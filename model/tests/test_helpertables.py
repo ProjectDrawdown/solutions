@@ -76,6 +76,29 @@ def test_soln_ref_funits_adopted_tam_limit():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
+def test_soln_ref_funits_adopted_base_year_2018():
+    """Test when initial year is after 2014, auto-fallback to PDS."""
+    ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+            soln_pds_adoption_basis='Linear')
+    columns = ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]
+    ref_datapoints = pd.DataFrame([[2018, 2.0, 2.0, 2.0, 2.0], [2050, 2.0, 2.0, 2.0, 2.0]],
+        columns=columns).set_index("Year")
+    pds_datapoints = pd.DataFrame([[2014, 1.0, 1.0, 1.0, 1.0], [2050, 1.0, 1.0, 1.0, 1.0]],
+        columns=columns).set_index("Year")
+    ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints,
+                                   pds_datapoints=pds_datapoints,
+                                   ref_adoption_limits=ref_tam_per_region,
+                                   pds_adoption_limits=None,
+                                   pds_adoption_data_per_region=None,
+                                   pds_adoption_trend_per_region=None,
+                                   pds_adoption_is_single_source=False)
+    result = ht.soln_ref_funits_adopted()
+    expected1 = pd.DataFrame(1.0, columns=columns[1:], index=result.index.copy())
+    expected2 = pd.DataFrame(2.0, columns=columns[1:], index=result.index.copy())
+    pd.testing.assert_frame_equal(result.loc[2014:2017, :], expected1.loc[2014:2017, :])
+    pd.testing.assert_frame_equal(result.loc[2018:2050, :], expected2.loc[2018:2050, :])
+
+
 def test_soln_pds_funits_adopted_by_region_with_tam_limit_world():
     """Test when World adoption is limited by the Total Addressable Market."""
     ac = advanced_controls.AdvancedControls(soln_pds_adoption_regional_data=True,
