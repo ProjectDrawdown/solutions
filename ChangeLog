@@ -333,3 +333,14 @@ Sep 2 - Sep 6, 2019
 Sep 9 - Sep 13, 2019
 + remove knowledge of the regions from model/tam.py
 
+Sep 16 - Sep 21, 2019
++ Participated in Drawdown/Penn State Research to Action conference: https://drawdown.psu.edu/
+  See recording of session at
+  https://drawdown.psu.edu/event/workshop-1-drawdown-solution-model-sharing-current-state-co-designing-future-state
+
+Sep 24 - Nov 29, 2019
++ work during this time focussed on Land solutions, developing a new process
+  to determine the amount of land suitable for the different Drawdown
+  solutions by analyzing datasets from satellite imagery. This work was
+  carried out in https://github.com/DentonGentry/gloh2o-org-map-processing
+
