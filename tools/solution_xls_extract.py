@@ -20,6 +20,7 @@ import pathlib
 import re
 import sys
 import textwrap
+import unicodedata
 import warnings
 
 import xlrd
@@ -214,6 +215,7 @@ def get_rrs_scenarios(wb, solution_category):
 
             assert sr_tab.cell_value(row + 183, 1) == 'Existing PDS Prognostication Assumptions'
             adopt = normalize_source_name(str(sr_tab.cell_value(row + 184, 4)).strip())
+            adopt = normalize_case_name(adopt)
             if adopt: s['soln_pds_adoption_prognostication_source'] = adopt
             adopt = str(sr_tab.cell_value(row + 185, 4)).strip()
             if adopt: s['soln_pds_adoption_prognostication_trend'] = adopt
@@ -563,8 +565,11 @@ def write_tam(f, wb, outputdir):
     os.makedirs(tamoutputdir, exist_ok=True)
     ref_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
                                       outputdir=tamoutputdir, prefix='tam_')
-    if recursive_keys(ref_sources) == recursive_keys(rrs.tam_ref_data_sources):
-        arg_ref = 'rrs.tam_ref_data_sources'
+    if recursive_keys(ref_sources) == recursive_keys(rrs.energy_tam_1_ref_data_sources):
+        arg_ref = 'rrs.energy_tam_1_ref_data_sources'
+        abandon_files(ref_sources, outputdir=tamoutputdir)
+    elif recursive_keys(ref_sources) == recursive_keys(rrs.energy_tam_2_ref_data_sources):
+        arg_ref = 'rrs.energy_tam_2_ref_data_sources'
         abandon_files(ref_sources, outputdir=tamoutputdir)
     else:
         f.write("    tam_ref_data_sources = {\n")
@@ -585,11 +590,11 @@ def write_tam(f, wb, outputdir):
     tam_regions = {'World': 102}
     pds_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
                                       outputdir=tamoutputdir, prefix='tam_pds_')
-    if recursive_keys(pds_sources) == recursive_keys(rrs.tam_pds_data_sources):
-        arg_pds = 'rrs.tam_pds_data_sources'
+    if recursive_keys(pds_sources) == recursive_keys(rrs.energy_tam_1_pds_data_sources):
+        arg_pds = 'rrs.energy_tam_1_pds_data_sources'
         abandon_files(pds_sources, outputdir=tamoutputdir)
-    elif recursive_keys(pds_sources) == recursive_keys(rrs.tam_ref_data_sources):
-        arg_pds = 'rrs.tam_ref_data_sources'
+    elif recursive_keys(pds_sources) == recursive_keys(rrs.energy_tam_1_pds_data_sources):
+        arg_pds = 'rrs.energy_tam_1_pds_data_sources'
         abandon_files(pds_sources, outputdir=tamoutputdir)
     elif not pds_sources:
         arg_pds = 'tam_ref_data_sources'
@@ -664,6 +669,7 @@ def normalize_source_name(sourcename):
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Highest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Highest Ranges',
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Middle Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges',
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Lowest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges',
+        'Based on average of: LUT/EWG (2019) -100% RES; Ecofys (2018) - 1.5ºC and Greenpeace (2015) Advanced [R]evolution': 'Based on average of: LUT/EWG 2019 100% RES, Ecofys 2018 1.5C and Greenpeace 2015 Advanced Revolution',
     }
     normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
     if normalized in special_cases:
@@ -695,6 +701,7 @@ def normalize_source_name(sourcename):
         if '2016' in name and 'ANNEX' in name: return 'Based on: IEA ETP 2016 Annex' + suffix
         if '2017' in name and 'REF' in name: return 'Based on: IEA ETP 2017 Ref Tech' + suffix
         if '2017' in name and 'B2DS' in name: return 'Based on: IEA ETP 2017 B2DS' + suffix
+        if '2017' in name and 'BEYOND 2DS' in name: return 'Based on: IEA ETP 2017 B2DS' + suffix
         if '2017' in name and '2DS' in name: return 'Based on: IEA ETP 2017 2DS' + suffix
         if '2017' in name and '4DS' in name: return 'Based on: IEA ETP 2017 4DS' + suffix
         if '2017' in name and '6DS' in name: return 'Based on: IEA ETP 2017 6DS' + suffix
@@ -727,7 +734,7 @@ def normalize_source_name(sourcename):
         if 'MODERATE' in name: return 'Based on: Greenpeace 2016 Solar Thermal Moderate' + suffix
         if 'ADVANCED' in name: return 'Based on: Greenpeace 2016 Solar Thermal Advanced' + suffix
         raise ValueError('Unknown Greenpeace Solar Thermal source: ' + sourcename)
-    return normalized
+    return unicodedata.normalize('NFD', normalized)
 
 
 def normalize_case_name(name):
@@ -952,6 +959,8 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     f.write("    ht_ref_datapoints.loc[" + str(
         final_datapoint_year) + "] = ht_ref_adoption_final.fillna(0.0)\n")
 
+    initial_datapoint_year = int(h.cell_value(*cell_to_offsets('B85')))
+    final_datapoint_year = int(h.cell_value(*cell_to_offsets('B86')))
     tam_or_tla = 'pds_tam_per_region' if not is_land else 'self.tla_per_region'
     f.write("    ht_pds_adoption_initial = ht_ref_adoption_initial\n")
     f.write("    ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")

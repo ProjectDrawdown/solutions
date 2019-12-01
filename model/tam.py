@@ -60,6 +60,9 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
             df.name = 'forecast_data_' + self._name_to_identifier(region)
             df_per_region[region] = df
         for (groupname, group) in self.tam_ref_data_sources.items():
+            one_region = None
+            if groupname.startswith("Region: "):
+                one_region = groupname[len("Region: "):]
             for (name, value) in group.items():
                 if (isinstance(value, str) or isinstance(value, pathlib.Path) or
                         isinstance(value, pathlib.PurePath)):
@@ -69,7 +72,8 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
                 for name, filename in sources.items():
                     df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
                             skip_blank_lines=True, comment='#')
-                    for region in dd.REGIONS:
+                    regions = dd.REGIONS if one_region is None else [one_region]
+                    for region in regions:
                         df_per_region[region].loc[:, name] = df.loc[:, region]
         for (groupname, group) in self.tam_pds_data_sources.items():
             for (name, value) in group.items():
