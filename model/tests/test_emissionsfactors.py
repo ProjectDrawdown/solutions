@@ -6,8 +6,6 @@ import pandas as pd
 import pytest
 
 
-
-
 def test_CO2Equiv():
     c = ef.CO2Equiv(ef.CO2EQ_SOURCE.AR5_WITH_FEEDBACK)
     assert c.CH4multiplier == 34
@@ -20,7 +18,6 @@ def test_CO2Equiv():
     assert c.N2Omultiplier == 310
 
 
-
 def test_string_to_conversion_source():
     assert ef.string_to_conversion_source("AR5 with feedback") == ef.CO2EQ_SOURCE.AR5_WITH_FEEDBACK
     assert ef.string_to_conversion_source("AR4") == ef.CO2EQ_SOURCE.AR4
@@ -29,7 +26,6 @@ def test_string_to_conversion_source():
     assert ef.string_to_conversion_source("sar") == ef.CO2EQ_SOURCE.SAR
     with pytest.raises(ValueError):
         ef.string_to_conversion_source("invalid")
-
 
 
 def test_string_to_emissions_grid_source():
@@ -42,7 +38,6 @@ def test_string_to_emissions_grid_source():
         ef.string_to_conversion_source("invalid")
 
 
-
 def test_string_to_emissions_grid_range():
     assert ef.string_to_emissions_grid_range("MEAN") == ef.GRID_RANGE.MEAN
     assert ef.string_to_emissions_grid_range("MEan") == ef.GRID_RANGE.MEAN
@@ -53,11 +48,10 @@ def test_string_to_emissions_grid_range():
         ef.string_to_conversion_source("invalid")
 
 
-
 def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
     ac = advanced_controls.AdvancedControls(
             emissions_grid_source="ipcc_only", emissions_grid_range="mean")
-    eg = ef.ElectricityGenOnGrid(ac=ac)
+    eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=1)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2025, "OECD90"] == pytest.approx(0.454068989)
     assert table.loc[2020, 'World'] == pytest.approx(0.483415642)
@@ -88,6 +82,21 @@ def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
     assert table.loc[2020, 'World'] == pytest.approx(0.726403172)
 
 
+def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh_v2():
+    ac = advanced_controls.AdvancedControls(
+            emissions_grid_source="ipcc_only", emissions_grid_range="mean")
+    eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=2)
+    table = eg.conv_ref_grid_CO2eq_per_KWh()
+    assert table.loc[2033, 'World'] == pytest.approx(0.474310926)
+ 
+
+def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh_invalid_range():
+    with pytest.raises(ValueError):
+        ac = advanced_controls.AdvancedControls(
+                emissions_grid_source="ipcc_only", emissions_grid_range="nosuchrange")
+        eg = ef.ElectricityGenOnGrid(ac=ac)
+        _ = eg.conv_ref_grid_CO2eq_per_KWh()
+ 
 
 def test_conv_ref_grid_CO2_per_KWh():
     eg = ef.ElectricityGenOnGrid(ac=None)
