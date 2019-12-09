@@ -12,9 +12,10 @@ import model.dd as dd
 
 class HelperTables:
     """ Implementation for the Helper Tables module. """
-    def __init__(self, ac, pds_adoption_data_per_region, ref_datapoints, pds_datapoints, ref_adoption_limits=None,
-                 pds_adoption_limits=None, pds_adoption_trend_per_region=None,
-                 pds_adoption_is_single_source=False, ref_adoption_data_per_region=None):
+    def __init__(self, ac, pds_adoption_data_per_region, ref_datapoints, pds_datapoints,
+                 ref_adoption_limits=None, pds_adoption_limits=None,
+                 pds_adoption_trend_per_region=None, pds_adoption_is_single_source=False,
+                 ref_adoption_data_per_region=None, use_first_pds_datapoint=True):
         """
         HelperTables.
            Arguments:
@@ -37,6 +38,9 @@ class HelperTables:
                Europe, Latin America, etc). This input is optional, only used for solutions containing
                Custom REF Adoption data. If ref_adoption_data_per_region is None, helpertables will
                interpolate between the values in ref_datapoints.
+             use_first_pds_datapoint: Prior to the 2019 cohort updates to the solution models,
+               the first year in pds_datapoints was copied into the result overriding any curve
+               fitting. With the 2019 cohort, it is not.
         """
         self.ac = ac
         self.ref_datapoints = ref_datapoints
@@ -47,6 +51,7 @@ class HelperTables:
         self.pds_adoption_trend_per_region = pds_adoption_trend_per_region
         self.pds_adoption_is_single_source = pds_adoption_is_single_source
         self.ref_adoption_data_per_region = ref_adoption_data_per_region
+        self.use_first_pds_datapoint = use_first_pds_datapoint
 
     @lru_cache()
     def soln_ref_funits_adopted(self, suppress_override=False):
@@ -88,7 +93,6 @@ class HelperTables:
         # Note: this should be changed later. The jump between pds_datapoints
         # and the first row of custom adoption data causes anomalies in the regional results.
         # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.c2a7v8n653ax
-        print(f"before update: {adoption}")
         adoption.update(self.ref_datapoints.iloc[[0]])
 
         if not suppress_override and self.ac.ref_adoption_use_pds_years:
@@ -171,7 +175,8 @@ class HelperTables:
         # Note: this should be changed later. The jump between pds_datapoints
         # and the first row of custom adoption data causes anomalies in the regional results.
         # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
-        adoption.update(self.pds_datapoints.iloc[[0]])
+        if self.use_first_pds_datapoint:
+            adoption.update(self.pds_datapoints.iloc[[0]])
 
         adoption.name = "soln_pds_funits_adopted"
         adoption.index.name = "Year"

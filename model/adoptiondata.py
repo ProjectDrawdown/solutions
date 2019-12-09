@@ -293,7 +293,7 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
 
     def _set_adoption_one_region(self, result, region, adoption_trend, adoption_low_med_high):
         result[region] = adoption_trend.loc[:, 'adoption']
-        first_year = result.first_valid_index()
+        first_year = result.index[0]
         result.loc[first_year, region] = adoption_low_med_high.loc[first_year, 'Medium']
 
     @lru_cache()
@@ -316,5 +316,8 @@ class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
         """Return a dataframe of adoption trends, one column per region."""
         df = pd.DataFrame(columns=dd.REGIONS)
         for region in df.columns:
-            df[region] = self.adoption_trend(region=region)['adoption']
+            adoption_trend = self.adoption_trend(region=region)
+            adoption_low_med_high = self.adoption_low_med_high(region=region)
+            self._set_adoption_one_region(result=df, region=region, adoption_trend=adoption_trend,
+                    adoption_low_med_high=adoption_low_med_high)
         return df

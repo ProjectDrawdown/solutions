@@ -379,7 +379,7 @@ def test_adoption_data_per_region_missing_data():
          1.46979768467, 1.53662057960, 1.60795702194, 1.68402088340,
          1.76502603569, 1.85118635049, 1.94271569952],
         index=list(range(2014, 2061)), columns=['OECD90'])
-    pd.testing.assert_frame_equal(result[['OECD90']], expected,
+    pd.testing.assert_frame_equal(result[['OECD90']].loc[2015:], expected.loc[2015:],
             check_exact=False, check_names=False)
 
 
@@ -394,26 +394,12 @@ def test_adoption_trend_per_region():
             soln_pds_adoption_prognostication_growth='Medium')
     ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig)
     result = ad.adoption_trend_per_region()
-    pd.testing.assert_series_equal(result['World'],
-            ad.adoption_trend(region='World')['adoption'], check_names=False)
-    pd.testing.assert_series_equal(result['OECD90'],
-            ad.adoption_trend(region='OECD90')['adoption'], check_names=False)
-    pd.testing.assert_series_equal(result['Eastern Europe'],
-            ad.adoption_trend(region='Eastern Europe')['adoption'], check_names=False)
-    pd.testing.assert_series_equal(result['Asia (Sans Japan)'],
-            ad.adoption_trend(region='Asia (Sans Japan)')['adoption'], check_names=False)
-    pd.testing.assert_series_equal(result['Middle East and Africa'],
-            ad.adoption_trend(region='Middle East and Africa')['adoption'], check_names=False)
-    pd.testing.assert_series_equal(result['Latin America'],
-            ad.adoption_trend(region='Latin America')['adoption'], check_names=False)
-    pd.testing.assert_series_equal(result['China'],
-            ad.adoption_trend(region='China')['adoption'], check_names=False)
-    pd.testing.assert_series_equal(result['India'],
-            ad.adoption_trend(region='India')['adoption'], check_names=False)
-    pd.testing.assert_series_equal(result['EU'],
-            ad.adoption_trend(region='EU')['adoption'], check_names=False)
-    pd.testing.assert_series_equal(result['USA'],
-            ad.adoption_trend(region='USA')['adoption'], check_names=False)
+    for region in result.columns:
+        # the first year is overwritten by the 'Medium' result from low_med_high.
+        first_year = result.first_valid_index()
+        pd.testing.assert_series_equal(result.loc[first_year + 1:, region],
+                ad.adoption_trend(region=region).loc[first_year + 1:, 'adoption'],
+                check_names=False)
 
 
 def test_regional_data_sources():

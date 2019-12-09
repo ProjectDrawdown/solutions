@@ -950,9 +950,9 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     r = [xln(h, 20, n) for n in range(7, 12)]
     f.write("       " + ", ".join(r) + "],\n")
     f.write("       index=dd.REGIONS)\n")
-    f.write(
-        "    ht_ref_adoption_final = {0}.loc[{1}] * (ht_ref_adoption_initial / {0}.loc[{2}])\n".format(
-            tam_or_tla, final_datapoint_year, initial_datapoint_year))
+    # even when the final_datapoint_year is 2018, the TAM initial year is hard-coded to 2014
+    f.write(f"    ht_ref_adoption_final = {tam_or_tla}.loc[{final_datapoint_year}] * "
+        f"(ht_ref_adoption_initial / {tam_or_tla}.loc[2014])\n")
     f.write("    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
     f.write("    ht_ref_datapoints.loc[" + str(
         initial_datapoint_year) + "] = ht_ref_adoption_initial\n")
@@ -974,6 +974,10 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     f.write("    ht_pds_datapoints.loc[" + str(
         final_datapoint_year) + "] = ht_pds_adoption_final.fillna(0.0)\n")
 
+    first_pds_datapoint = int(h.cell_value(*cell_to_offsets('C85')))
+    first_pds_yearly_result = int(h.cell_value(*cell_to_offsets('C91')))
+    use_first_pds_datapoint = (first_pds_datapoint == first_pds_yearly_result)
+
     f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
     f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
     f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
@@ -985,6 +989,8 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
             "        ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,\n")
     if has_custom_ref_ad:
         f.write("        ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
+    if not use_first_pds_datapoint:
+        f.write("        use_first_pds_datapoint=False,\n")
     f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
     f.write("        pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
     f.write("\n")
