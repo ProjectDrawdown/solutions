@@ -7,13 +7,11 @@ and other factors relating to emissions and pollutants.
 from functools import lru_cache
 import enum
 import pandas as pd
-
+import model.dd as dd
 
 CO2EQ_SOURCE = enum.Enum('CO2EQ_SOURCE', 'AR5_WITH_FEEDBACK AR4 SAR')
 GRID_SOURCE = enum.Enum('GRID_SOURCE', 'META IPCC')
 GRID_RANGE = enum.Enum('GRID_RANGE', 'MEAN HIGH LOW')
-
-
 
 
 class CO2Equiv:
@@ -25,8 +23,6 @@ class CO2Equiv:
        AR4: as used in the IPCC 4th Assessment Report.
        SAR: as used in the IPCC Second Assessment Report.
     """
-
-
     def __init__(self, conversion_source=None):
         self.conversion_source = conversion_source if conversion_source else CO2EQ_SOURCE.AR5_WITH_FEEDBACK
         if self.conversion_source == CO2EQ_SOURCE.AR5_WITH_FEEDBACK:
@@ -40,8 +36,6 @@ class CO2Equiv:
             self.N2Omultiplier = 310
         else:
             raise ValueError("invalid conversion_source=" + str(self.conversion_source))
-
-
 
 
 def string_to_conversion_source(text):
@@ -59,8 +53,6 @@ def string_to_conversion_source(text):
         return CO2EQ_SOURCE.SAR
     else:
         raise ValueError("invalid conversion name=" + str(text))
-
-
 
 
 def string_to_emissions_grid_source(text):
@@ -82,8 +74,6 @@ def string_to_emissions_grid_source(text):
         raise ValueError("invalid grid source name=" + str(text))
 
 
-
-
 def string_to_emissions_grid_range(text):
     """Convert the text strings passed from the Excel implementation of the models
        to the enumerated type defined in this module.
@@ -101,12 +91,10 @@ def string_to_emissions_grid_range(text):
         raise ValueError("invalid grid range name=" + str(text))
 
 
-
-
 class ElectricityGenOnGrid:
-    def __init__(self, ac):
+    def __init__(self, ac, grid_emissions_version=1):
         self.ac = ac
-
+        self.grid_emissions_version = grid_emissions_version
 
     @lru_cache()
     def conv_ref_grid_CO2eq_per_KWh(self):
@@ -118,24 +106,24 @@ class ElectricityGenOnGrid:
         """
         result = pd.DataFrame(index=list(range(2015, 2061)),
                               columns=["World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
-                                       "Middle East and Africa", "Latin America", "China", "India", "EU",
-                                       "USA"])
+                                       "Middle East and Africa", "Latin America", "China", "India",
+                                       "EU", "USA"])
         result.index.name = "Year"
-
         if self.ac.emissions_grid_source == GRID_SOURCE.IPCC:
-            if self.ac.emissions_grid_range == GRID_RANGE.HIGH:
-                result.loc[:, "World"] = _world_ipcc.loc[:, "high"].values
-            elif self.ac.emissions_grid_range == GRID_RANGE.LOW:
-                result.loc[:, "World"] = _world_ipcc.loc[:, "low"].values
-            else:
-                result.loc[:, "World"] = _world_ipcc.loc[:, "median"].values
+            grid = _world_ipcc
+        elif self.ac.emissions_grid_source == GRID_SOURCE.META and self.grid_emissions_version == 1:
+            grid = _world_meta_1
+        elif self.ac.emissions_grid_source == GRID_SOURCE.META and self.grid_emissions_version == 2:
+            grid = _world_meta_2
+
+        if self.ac.emissions_grid_range == GRID_RANGE.HIGH:
+            result.loc[:, "World"] = grid.loc[:, "high"].values
+        elif self.ac.emissions_grid_range == GRID_RANGE.LOW:
+            result.loc[:, "World"] = grid.loc[:, "low"].values
+        elif self.ac.emissions_grid_range == GRID_RANGE.MEAN:
+            result.loc[:, "World"] = grid.loc[:, "medium"].values
         else:
-            if self.ac.emissions_grid_range == GRID_RANGE.HIGH:
-                result.loc[:, "World"] = _world_meta.loc[:, "high"].values
-            elif self.ac.emissions_grid_range == GRID_RANGE.LOW:
-                result.loc[:, "World"] = _world_meta.loc[:, "low"].values
-            else:
-                result.loc[:, "World"] = _world_meta.loc[:, "mean"].values
+            raise ValueError(f"Invalid ac.emissions_grid_range {ac.emissions_grid_range}")
 
         # Generation mixes from the AMPERE/MESSAGE WG3 BAU scenario, direct and
         # indirect emission factors by fuel from the IPCC WG3 Annex III Table A.III.2
@@ -160,8 +148,8 @@ class ElectricityGenOnGrid:
         """
         result = pd.DataFrame(index=list(range(2015, 2061)),
                               columns=["World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
-                                       "Middle East and Africa", "Latin America", "China", "India", "EU",
-                                       "USA"])
+                                       "Middle East and Africa", "Latin America", "China", "India",
+                                       "EU", "USA"])
         result.index.name = "Year"
         result.loc[:, "World"] = 0.484512031078339
         result.loc[:, "OECD90"] = 0.392126590013504
@@ -176,10 +164,8 @@ class ElectricityGenOnGrid:
         return result
 
 
-
-
 # "Emissions Factors"!A290:D336
-_world_meta = pd.DataFrame([
+_world_meta_1 = pd.DataFrame([
     [2015, 0.580491641, 0.726805942, 0.444419682], [2016, 0.580381730, 0.726494196, 0.444511607],
     [2017, 0.580191808, 0.726117383, 0.444508574], [2018, 0.579932742, 0.725684840, 0.444422987],
     [2019, 0.579613986, 0.725204693, 0.444265621], [2020, 0.581083120, 0.726403172, 0.446005409],
@@ -203,7 +189,7 @@ _world_meta = pd.DataFrame([
     [2055, 0.560917031, 0.703992021, 0.428084382], [2056, 0.560611819, 0.703651663, 0.427814318],
     [2057, 0.560332776, 0.703337903, 0.427569991], [2058, 0.560081211, 0.703051332, 0.427353431],
     [2059, 0.559858464, 0.702793863, 0.427165406], [2060, 0.559324305, 0.702254712, 0.426636240]],
-    columns=['Year', 'mean', 'high', 'low'])
+    columns=['Year', 'medium', 'high', 'low'])
 
 # "Emissions Factors"!F290:I336
 _world_ipcc = pd.DataFrame([
@@ -230,6 +216,30 @@ _world_ipcc = pd.DataFrame([
     [2055, 0.463546558, 0.932020796, 0.401594807], [2056, 0.463244299, 0.931712734, 0.401369308],
     [2057, 0.462964542, 0.931424470, 0.401164041], [2058, 0.462707434, 0.931155097, 0.400980276],
     [2059, 0.462474856, 0.930907038, 0.400818857], [2060, 0.462020537, 0.930512637, 0.400404559]],
-    columns=['Year', 'median', 'high', 'low'])
+    columns=['Year', 'medium', 'high', 'low'])
 
-
+_world_meta_2 = pd.DataFrame([
+    [2015, 0.617381628, 0.830817877, 0.4465118],   [2016, 0.613053712, 0.824698902, 0.4434044],
+    [2017, 0.605559021, 0.815532512, 0.437490678], [2018, 0.599823764, 0.807926586, 0.433230013],
+    [2019, 0.596692109, 0.80473928, 0.430557603],  [2020, 0.592956465, 0.800948725, 0.427367829],
+    [2021, 0.58939421, 0.797332726, 0.424325795],  [2022, 0.585889941, 0.793768753, 0.421330025],
+    [2023, 0.582469966, 0.790285796, 0.418404234], [2024, 0.579126508, 0.786876311, 0.415541914],
+    [2025, 0.576180724, 0.783861514, 0.413017979], [2026, 0.572640473, 0.780249945, 0.409983709],
+    [2027, 0.569484654, 0.777020209, 0.407276741], [2028, 0.566378788, 0.773838162, 0.404611016],
+    [2029, 0.563317175, 0.770698265, 0.401981762], [2030, 0.560425096, 0.767721988, 0.399494869],
+    [2031, 0.55730544, 0.764524237, 0.39681485],   [2032, 0.554345365, 0.761480425, 0.394268853],
+    [2033, 0.551409592, 0.758459352, 0.391742609], [2034, 0.548493724, 0.755456735, 0.389232433],
+    [2035, 0.545513743, 0.752388223, 0.386667023], [2036, 0.542688056, 0.749472893, 0.384232942],
+    [2037, 0.539794403, 0.746488189, 0.381740162], [2038, 0.536903541, 0.743505158, 0.379249135],
+    [2039, 0.533998347, 0.740506169, 0.376746167], [2040, 0.530880184, 0.73729726, 0.37406198],
+    [2041, 0.528185055, 0.734503069, 0.371735292], [2042, 0.525268472, 0.73149053, 0.369220362],
+    [2043, 0.522337859, 0.728463206, 0.366693034], [2044, 0.519390128, 0.725418073, 0.364150712],
+    [2045, 0.516316183, 0.722243545, 0.361499333], [2046, 0.513431317, 0.719262607, 0.359010977],
+    [2047, 0.510414389, 0.71614653, 0.356408636],  [2048, 0.50736863, 0.713001142, 0.353781429],
+    [2049, 0.504753472, 0.710301062, 0.351527883], [2050, 0.503017663, 0.708521538, 0.350044212],
+    [2051, 0.501095098, 0.706565614, 0.348398365], [2052, 0.499244741, 0.704680634, 0.346813938],
+    [2053, 0.49735561, 0.702758452, 0.345196826],  [2054, 0.495425752, 0.700797181, 0.343545391],
+    [2055, 0.493412239, 0.698750531, 0.341821792], [2056, 0.491436597, 0.696750365, 0.34013346],
+    [2057, 0.489373931, 0.694661571, 0.33837014],  [2058, 0.487263794, 0.692527181, 0.336566839],
+    [2059, 0.485104746, 0.690345812, 0.334722353], [2060, 0.483057065, 0.688260792, 0.332967909]],
+    columns=['Year', 'medium', 'high', 'low'])
