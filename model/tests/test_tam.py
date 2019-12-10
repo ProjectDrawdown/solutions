@@ -71,11 +71,11 @@ g_tam_ref_data_sources = {
 g_tam_pds_data_sources = {
     'Ambitious Cases': {
         'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario': str(basedir.joinpath(
-            'data', 'energy', 'PDS_plausible_scenario.csv')),
+            'data', 'energy', 'PDS_plausible_scenario_1.csv')),
         'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario': str(basedir.joinpath(
-            'data', 'energy', 'PDS_drawdown_scenario.csv')),
+            'data', 'energy', 'PDS_drawdown_scenario_1.csv')),
         'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario': str(basedir.joinpath(
-            'data', 'energy', 'PDS_optimum_scenario.csv')),
+            'data', 'energy', 'PDS_optimum_scenario_1.csv')),
     },
 }
 

@@ -26,6 +26,7 @@ import warnings
 import xlrd
 import numpy as np
 import pandas as pd
+import pytest
 from solution import rrs
 
 from tools.util import convert_bool, cell_to_offsets
@@ -591,10 +592,14 @@ def write_tam(f, wb, outputdir):
     pds_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
                                       outputdir=tamoutputdir, prefix='tam_pds_')
     if recursive_keys(pds_sources) == recursive_keys(rrs.energy_tam_1_pds_data_sources):
-        arg_pds = 'rrs.energy_tam_1_pds_data_sources'
-        abandon_files(pds_sources, outputdir=tamoutputdir)
-    elif recursive_keys(pds_sources) == recursive_keys(rrs.energy_tam_1_pds_data_sources):
-        arg_pds = 'rrs.energy_tam_1_pds_data_sources'
+        # the source names are the same for energy_tam_1 & 2, distinguish them here.
+        plausible_2060 = float(tm_tab.cell_value(*cell_to_offsets('L152')))
+        if plausible_2060 == pytest.approx(53602.8192536583):
+            arg_pds = 'rrs.energy_tam_2_pds_data_sources'
+        elif plausible_2060 == pytest.approx(60153.728317538):
+            arg_pds = 'rrs.energy_tam_1_pds_data_sources'
+        else:
+            raise ValueError(f"Unknown Energy TAM, Plausible World 2060 = {plausible_2060}")
         abandon_files(pds_sources, outputdir=tamoutputdir)
     elif not pds_sources:
         arg_pds = 'tam_ref_data_sources'
@@ -996,7 +1001,16 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     f.write("\n")
 
 
-
+def write_ef(f, wb):
+    """Write out the Emissions Factors module for this solution class."""
+    ef_tab = wb.sheet_by_name('Emissions Factors')
+    grid_factor_2015 = float(ef_tab.cell_value(*cell_to_offsets('B291')))
+    if grid_factor_2015 == pytest.approx(0.617381627523255):
+        f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=2)\n")
+    else:
+        f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
+    f.write("\n")
+ 
 
 def write_ua(f, wb, is_rrs=True):
     """Write out the Unit Adoption module for this solution class."""
@@ -1620,8 +1634,7 @@ def output_solution_python_file(outputdir, xl_filename):
 
     write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad, is_land=is_land)
 
-    f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
-    f.write("\n")
+    write_ef(f=f, wb=wb)
     write_ua(f=f, wb=wb, is_rrs=is_rrs)
     write_fc(f=f, wb=wb)
     write_oc(f=f, wb=wb, is_land=is_land)

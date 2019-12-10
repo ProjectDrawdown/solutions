@@ -54,11 +54,11 @@ energy_tam_1_ref_data_sources = {
 energy_tam_1_pds_data_sources = {
     'Ambitious Cases': {
       'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario': str(parentdir.joinpath(
-        'data', 'energy', 'PDS_plausible_scenario.csv')),
+        'data', 'energy', 'PDS_plausible_scenario_1.csv')),
       'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario': str(parentdir.joinpath(
-        'data', 'energy', 'PDS_drawdown_scenario.csv')),
+        'data', 'energy', 'PDS_drawdown_scenario_1.csv')),
       'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario': str(parentdir.joinpath(
-        'data', 'energy', 'PDS_optimum_scenario.csv')),
+        'data', 'energy', 'PDS_optimum_scenario_1.csv')),
       },
 }
 energy_tam_2_ref_data_sources = {
@@ -308,6 +308,16 @@ energy_tam_2_ref_data_sources = {
         'Based on: Greenpeace 2015 Advanced Revolution': parentdir.joinpath('data', 'energy', 'tam_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
       },
     },
+}
+energy_tam_2_pds_data_sources = {
+    'Ambitious Cases': {
+      'Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario': str(parentdir.joinpath(
+        'data', 'energy', 'PDS_plausible_scenario_2.csv')),
+      'Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario': str(parentdir.joinpath(
+        'data', 'energy', 'PDS_drawdown_scenario_2.csv')),
+      'Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario': str(parentdir.joinpath(
+        'data', 'energy', 'PDS_optimum_scenario_2.csv')),
+      },
 }
 
 
