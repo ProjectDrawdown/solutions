@@ -1015,6 +1015,7 @@ def test_Biogas_RRS():
         check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
+@pytest.mark.slow
 def test_Biogas_Small_RRS():
     zipfilename = str(solutiondir.joinpath('biogas_small', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
