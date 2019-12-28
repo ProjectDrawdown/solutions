@@ -4,7 +4,10 @@ import copy
 import pathlib
 
 import fair
-import fair.RCPs
+import fair.RCPs.rcp26
+import fair.RCPs.rcp45
+import fair.RCPs.rcp60
+import fair.RCPs.rcp85
 import numpy as np
 import pandas as pd
 
