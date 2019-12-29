@@ -833,6 +833,7 @@ class AdvancedControls:
             raise ValueError(
                 'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for conventional')
 
+
     def _substitute_vma(self, val, vma_titles):
         """
         If val is 'mean', 'high' or 'low', returns the corresponding statistic from the VMA object in
@@ -845,8 +846,8 @@ class AdvancedControls:
                 - a number
                 - a string ('mean', 'high' or 'low') or ('mean per region', 'high per region' or 'low per region')
                 - a dict containing a 'value' key
-          vma_titles: list of titles of VMA tables to check (can be found in vma_info.csv in the
-             soln dir). The first one which exists will be used.
+          vma_titles: list of titles of VMA tables to check. The first one which exists
+            will be used.
         """
         raw_val_from_excel = None  # the raw value from the scenario record tab
         return_regional_series = False
@@ -867,7 +868,8 @@ class AdvancedControls:
             return val
 
         for vma_title in vma_titles:
-            if self.vmas.get(vma_title, None):
+            v = self.vmas.get(vma_title, None)
+            if v and v.has_data:
                 break
         else:
             raise KeyError(f'"{vma_titles}" must be included in vmas to calculate mean/high/low.'

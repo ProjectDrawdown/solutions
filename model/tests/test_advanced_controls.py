@@ -42,6 +42,7 @@ def test_electricity_factors():
     conv_annual_energy_used = 2.117
 
     class fakeVMA:
+        has_data = True
         def avg_high_low(self, key):
             return (0.0, 0.0, 0.0)
 
@@ -187,6 +188,7 @@ def test_has_var_costs():
 
 def test_substitute_vma():
     class fakeVMA:
+        has_data = True
         def avg_high_low(self, key):
             if key == 'mean': return 'mean value'
             if key == 'high': return 'high value'
@@ -203,6 +205,7 @@ def test_substitute_vma_passthru_value():
     assert ac.seq_rate_global == 4.3
 
     class fakeVMA:
+        has_data = True
         def avg_high_low(self, key):
             return (0.0, 0.0, 0.0)
 
@@ -220,6 +223,7 @@ def test_substitute_vma_raises():
 
 def test_substitute_vma_handles_raw_value_discrepancy():
     class fakeVMA:
+        has_data = True
         def avg_high_low(self, key):
             if key == 'mean': return 1.2
             if key == 'high': return 1.4
@@ -238,6 +242,7 @@ def test_substitute_vma_regional_statistics():
             'EU': 0, 'USA': 0}
 
     class fakeVMA:
+        has_data = True
         def avg_high_low(self, key, region=None):
             if key == 'mean': return vals[region]
             return (None, None, None)
@@ -247,6 +252,27 @@ def test_substitute_vma_regional_statistics():
     ac = advanced_controls.AdvancedControls(vmas=vmas, pds_2014_cost='mean per region')
     expected = pd.Series(data=vals, name='regional values')
     pd.testing.assert_series_equal(expected, ac.pds_2014_cost)
+
+
+def test_substitute_vma_not_has_data():
+    class fakeVMA:
+        def __init__(self):
+            self.has_data = False
+        def avg_high_low(self, key):
+            v = (1, 2, 3)
+            if key == 'mean': return v[0]
+            if key == 'high': return v[1]
+            if key == 'low': return v[2]
+            return v
+
+    v = fakeVMA()
+    vmas = {'Sequestration Rates': v}
+    with pytest.raises(KeyError):
+        _ = advanced_controls.AdvancedControls(vmas=vmas, seq_rate_global='mean')
+
+    v.has_data = True
+    ac = advanced_controls.AdvancedControls(vmas=vmas, seq_rate_global='mean')
+    assert ac.seq_rate_global == 1
 
 
 def test_yield_coeff():

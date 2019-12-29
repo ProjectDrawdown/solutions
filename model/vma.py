@@ -3,7 +3,6 @@
 import math
 import numpy as np
 import pandas as pd
-from model.dd import COUNTRY_REGION_MAP, SPECIAL_COUNTRIES, MAIN_REGIONS
 import model.dd
 
 
@@ -18,7 +17,7 @@ def generate_vma_dict(path_to_vma_data):
       path_to_vma_data: path to 'vma_data' dir (pathlib object)
 
     Returns:
-      dict for input to AdvancedControls() 'vnas' attribute
+      dict for input to AdvancedControls() 'vmas' attribute
     """
     vma_info_df = pd.read_csv(path_to_vma_data.joinpath('VMA_info.csv'), index_col=0)
     vma_dict = {}
@@ -32,8 +31,8 @@ def generate_vma_dict(path_to_vma_data):
             if not pd.isna(fixed_mean) and not pd.isna(fixed_high) and not pd.isna(fixed_low):
                 fixed_summary = (fixed_mean, fixed_high, fixed_low)
             vma_dict[row['Title on xls']] = VMA(path_to_vma_data.joinpath(row['Filename'] + '.csv'),
-                                                use_weight=use_weight,
-                                                fixed_summary=fixed_summary)
+                                                use_weight=use_weight, fixed_summary=fixed_summary,
+                                                has_data=True)
     return vma_dict
 
 
@@ -58,10 +57,12 @@ class VMA:
          postprocess: function to pass (mean, high, low) to before returning.
          fixed_summary: if present, should be a tuple to use for (mean, high, low) instead
            of calculating those values
+         has_data: whether this VMA is active
     """
 
     def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3,
-            stat_correction=None, use_weight=False, postprocess=None, fixed_summary=None):
+            stat_correction=None, use_weight=False, postprocess=None, fixed_summary=None,
+            has_data=None):
         self.filename = filename
         self.low_sd = low_sd
         self.high_sd = high_sd
@@ -75,7 +76,11 @@ class VMA:
             self.stat_correction = stat_correction
         self.postprocess = postprocess
         self.fixed_summary = fixed_summary
-        self._read_csv(filename=self.filename)
+        self.has_data = has_data
+        if filename:
+            self._read_csv(filename=self.filename)
+        else:
+            self.has_data = False
 
     def _read_csv(self, filename):
         df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
@@ -100,12 +105,13 @@ class VMA:
         region = df['World / Drawdown Region']
         region.name = 'Region'
         main_region = normalized_region.copy()
-        for k, v in COUNTRY_REGION_MAP.items():
+        for k, v in model.dd.COUNTRY_REGION_MAP.items():
             main_region.replace(k, v, inplace=True)
         main_region.name = 'Main Region'
         self.df = pd.concat([value, units, raw, weight, exclude, region, main_region], axis=1)
         if 'Thermal-Moisture Regime' in df.columns:
-            df['Thermal-Moisture Regime'] = df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
+            dft = df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
+            df['Thermal-Moisture Regime'] = dft
             self.df['TMR'] = df['Thermal-Moisture Regime'].fillna('')
         self.df['Value'].fillna(self.df['Raw'], inplace=True)
 
@@ -148,10 +154,10 @@ class VMA:
         df = df.loc[df['Exclude?'] == False]
         if regime:
             df = df.loc[df['TMR'] == regime]
-        if region in SPECIAL_COUNTRIES:
+        if region in model.dd.SPECIAL_COUNTRIES:
             df = df.loc[df['Region'] == region]
-        elif region in MAIN_REGIONS:
-            # we include the values for special countries in their corresponding main regions' statistics
+        elif region in model.dd.MAIN_REGIONS:
+            # include values for special countries in their corresponding main regions' statistics
             df = df.loc[df['Main Region'] == region]
 
         if self.use_weight:
