@@ -9,7 +9,6 @@ import functools
 import os.path
 import pathlib
 import re
-import shutil
 import sys
 import time
 import tempfile
@@ -18,75 +17,6 @@ import pandas as pd
 import pytest
 import zipfile
 
-from solution import afforestation
-from solution import airplanes
-from solution import altcement
-from solution import bikeinfrastructure
-from solution import bamboo
-from solution import biochar
-from solution import biogas
-from solution import biogas_small
-from solution import biomass
-from solution import bioplastic
-from solution import buildingautomation
-from solution import carpooling
-from solution import cars
-from solution import composting
-from solution import concentratedsolar
-from solution import conservationagriculture
-from solution import coolroofs
-from solution import districtheating
-from solution import electricbikes
-from solution import electricvehicles
-from solution import farmlandrestoration
-from solution import forestprotection
-from solution import geothermal
-from solution import greenroofs
-from solution import heatpumps
-from solution import highspeedrail
-from solution import improvedcookstoves
-from solution import improvedrice
-from solution import indigenouspeoplesland
-from solution import instreamhydro
-from solution import insulation
-from solution import irrigationefficiency
-from solution import landfillmethane
-from solution import leds_commercial
-from solution import leds_residential
-from solution import managedgrazing
-from solution import masstransit
-from solution import microwind
-from solution import multistrataagroforestry
-from solution import nuclear
-from solution import nutrientmanagement
-from solution import offshorewind
-from solution import onshorewind
-from solution import peatlands
-from solution import perennialbioenergy
-from solution import recycledpaper
-from solution import refrigerants
-from solution import regenerativeagriculture
-from solution import riceintensification
-from solution import ships
-from solution import silvopasture
-from solution import smartglass
-from solution import smartthermostats
-from solution import solarhotwater
-from solution import solarpvutil
-from solution import solarpvroof
-from solution import temperateforests
-from solution import telepresence
-from solution import treeintercropping
-from solution import trains
-from solution import trucks
-from solution import tropicalforests
-from solution import tropicaltreestaples
-from solution import walkablecities
-from solution import wastetoenergy
-from solution import waterdistribution
-from solution import waterefficiency
-from solution import waveandtidal
-from solution import womensmallholders
 
 solutiondir = pathlib.Path(__file__).parents[1].joinpath('solution')
 
@@ -947,6 +877,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
 
 @pytest.mark.slow
 def test_Afforestation_LAND():
+    from solution import afforestation
     zipfilename = str(solutiondir.joinpath('afforestation', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in afforestation.scenarios.keys():
@@ -956,17 +887,8 @@ def test_Afforestation_LAND():
 
 
 @pytest.mark.slow
-def test_AltCement_RRS():
-    zipfilename = str(solutiondir.joinpath('altcement', 'testdata', 'expected.zip'))
-    zip_f = zipfile.ZipFile(file=zipfilename)
-    for scenario in altcement.scenarios.keys():
-        obj = altcement.Scenario(scenario=scenario)
-        verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
-        check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
-
-
-@pytest.mark.slow
 def test_Airplanes_RRS():
+    from solution import airplanes
     zipfilename = str(solutiondir.joinpath('airplanes', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in airplanes.scenarios.keys():
@@ -976,7 +898,19 @@ def test_Airplanes_RRS():
 
 
 @pytest.mark.slow
+def test_AltCement_RRS():
+    from solution import altcement
+    zipfilename = str(solutiondir.joinpath('altcement', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for scenario in altcement.scenarios.keys():
+        obj = altcement.Scenario(scenario=scenario)
+        verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+
+
+@pytest.mark.slow
 def test_BikeInfrastructure_RRS():
+    from solution import bikeinfrastructure
     zipfilename = str(solutiondir.joinpath('bikeinfrastructure', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in bikeinfrastructure.scenarios.keys():
@@ -987,6 +921,7 @@ def test_BikeInfrastructure_RRS():
 
 @pytest.mark.slow
 def test_Bamboo_LAND():
+    from solution import bamboo
     zipfilename = str(solutiondir.joinpath('bamboo', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in bamboo.scenarios.keys():
@@ -997,6 +932,7 @@ def test_Bamboo_LAND():
 
 @pytest.mark.slow
 def test_Biochar_RRS():
+    from solution import biochar
     zipfilename = str(solutiondir.joinpath('biochar', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in biochar.scenarios.keys():
@@ -1007,6 +943,7 @@ def test_Biochar_RRS():
 
 @pytest.mark.slow
 def test_Biogas_RRS():
+    from solution import biogas
     zipfilename = str(solutiondir.joinpath('biogas', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in biogas.scenarios.keys():
@@ -1017,6 +954,7 @@ def test_Biogas_RRS():
 
 @pytest.mark.slow
 def test_Biogas_Small_RRS():
+    from solution import biogas_small
     zipfilename = str(solutiondir.joinpath('biogas_small', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in biogas_small.scenarios.keys():
@@ -1027,6 +965,7 @@ def test_Biogas_Small_RRS():
 
 @pytest.mark.slow
 def test_Biomass_RRS():
+    from solution import biomass
     zipfilename = str(solutiondir.joinpath('biomass', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in biomass.scenarios.keys():
@@ -1037,6 +976,7 @@ def test_Biomass_RRS():
 
 @pytest.mark.slow
 def test_Bioplastic_RRS():
+    from solution import bioplastic
     zipfilename = str(solutiondir.joinpath('bioplastic', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in ['PDS1-33p2050-Feedstock Limit-385MMT (Book Ed.1)']:
@@ -1047,6 +987,7 @@ def test_Bioplastic_RRS():
 
 @pytest.mark.slow
 def test_BuildingAutomation_RRS():
+    from solution import buildingautomation
     zipfilename = str(solutiondir.joinpath('buildingautomation', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in buildingautomation.scenarios.keys():
@@ -1057,6 +998,7 @@ def test_BuildingAutomation_RRS():
 
 @pytest.mark.slow
 def test_Carpooling_RRS():
+    from solution import carpooling
     zipfilename = str(solutiondir.joinpath('carpooling', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in carpooling.scenarios.keys():
@@ -1067,6 +1009,7 @@ def test_Carpooling_RRS():
 
 @pytest.mark.slow
 def test_Cars_RRS():
+    from solution import cars
     zipfilename = str(solutiondir.joinpath('cars', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in cars.scenarios.keys():
@@ -1077,6 +1020,7 @@ def test_Cars_RRS():
 
 @pytest.mark.slow
 def test_Composting_RRS():
+    from solution import composting
     zipfilename = str(solutiondir.joinpath('composting', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in composting.scenarios.keys():
@@ -1093,6 +1037,7 @@ def test_Composting_RRS():
 #E  Err [8][2] : '0.0' != '1.2918540451326751e-06'
 @pytest.mark.slow
 def test_ConcentratedSolar_RRS():
+    from solution import concentratedsolar
     zipfilename = str(solutiondir.joinpath('concentratedsolar', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in concentratedsolar.scenarios.keys():
@@ -1103,6 +1048,7 @@ def test_ConcentratedSolar_RRS():
 
 @pytest.mark.slow
 def test_ConservationAgriculture_LAND():
+    from solution import conservationagriculture
     zipfilename = str(solutiondir.joinpath('conservationagriculture', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in conservationagriculture.scenarios.keys():
@@ -1113,6 +1059,7 @@ def test_ConservationAgriculture_LAND():
 
 @pytest.mark.slow
 def test_CoolRoofs_RRS():
+    from solution import coolroofs
     zipfilename = str(solutiondir.joinpath('coolroofs', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in coolroofs.scenarios.keys():
@@ -1123,6 +1070,7 @@ def test_CoolRoofs_RRS():
 
 @pytest.mark.slow
 def test_DistrictHeating_RRS():
+    from solution import districtheating
     zipfilename = str(solutiondir.joinpath('districtheating', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in districtheating.scenarios.keys():
@@ -1133,6 +1081,7 @@ def test_DistrictHeating_RRS():
 
 @pytest.mark.slow
 def test_ElectricBikes_RRS():
+    from solution import electricbikes
     zipfilename = str(solutiondir.joinpath('electricbikes', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in electricbikes.scenarios.keys():
@@ -1143,6 +1092,7 @@ def test_ElectricBikes_RRS():
 
 @pytest.mark.slow
 def test_ElectricVehicles_RRS():
+    from solution import electricvehicles
     zipfilename = str(solutiondir.joinpath('electricvehicles', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in electricvehicles.scenarios.keys():
@@ -1153,6 +1103,7 @@ def test_ElectricVehicles_RRS():
 
 @pytest.mark.slow
 def test_FarmlandRestoration_LAND():
+    from solution import farmlandrestoration
     zipfilename = str(solutiondir.joinpath('farmlandrestoration', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in farmlandrestoration.scenarios.keys():
@@ -1163,6 +1114,7 @@ def test_FarmlandRestoration_LAND():
 
 @pytest.mark.slow
 def test_ForestProtection_LAND():
+    from solution import forestprotection
     zipfilename = str(solutiondir.joinpath('forestprotection', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in forestprotection.scenarios.keys():
@@ -1173,6 +1125,7 @@ def test_ForestProtection_LAND():
 
 @pytest.mark.slow
 def test_Geothermal_RRS():
+    from solution import geothermal
     zipfilename = str(solutiondir.joinpath('geothermal', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in geothermal.scenarios.keys():
@@ -1183,6 +1136,7 @@ def test_Geothermal_RRS():
 
 @pytest.mark.slow
 def test_GreenRoofs_RRS():
+    from solution import greenroofs
     zipfilename = str(solutiondir.joinpath('greenroofs', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in greenroofs.scenarios.keys():
@@ -1193,6 +1147,7 @@ def test_GreenRoofs_RRS():
 
 @pytest.mark.slow
 def test_HeatPumps_RRS():
+    from solution import heatpumps
     zipfilename = str(solutiondir.joinpath('heatpumps', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in heatpumps.scenarios.keys():
@@ -1203,6 +1158,7 @@ def test_HeatPumps_RRS():
 
 @pytest.mark.slow
 def test_HighSpeedRail_RRS():
+    from solution import highspeedrail
     zipfilename = str(solutiondir.joinpath('highspeedrail', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in highspeedrail.scenarios.keys():
@@ -1213,6 +1169,7 @@ def test_HighSpeedRail_RRS():
 
 @pytest.mark.slow
 def test_ImprovedCookStoves_RRS():
+    from solution import improvedcookstoves
     zipfilename = str(solutiondir.joinpath('improvedcookstoves', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in improvedcookstoves.scenarios.keys():
@@ -1222,17 +1179,8 @@ def test_ImprovedCookStoves_RRS():
 
 
 @pytest.mark.slow
-def test_IndigenousPeoplesLand_LAND():
-    zipfilename = str(solutiondir.joinpath('indigenouspeoplesland', 'testdata', 'expected.zip'))
-    zip_f = zipfile.ZipFile(file=zipfilename)
-    for scenario in indigenouspeoplesland.scenarios.keys():
-        obj = indigenouspeoplesland.Scenario(scenario=scenario)
-        verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
-        check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
-
-
-@pytest.mark.slow
 def test_ImprovedRice_LAND():
+    from solution import improvedrice
     zipfilename = str(solutiondir.joinpath('improvedrice', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in improvedrice.scenarios.keys():
@@ -1242,7 +1190,19 @@ def test_ImprovedRice_LAND():
 
 
 @pytest.mark.slow
+def test_IndigenousPeoplesLand_LAND():
+    from solution import indigenouspeoplesland
+    zipfilename = str(solutiondir.joinpath('indigenouspeoplesland', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for scenario in indigenouspeoplesland.scenarios.keys():
+        obj = indigenouspeoplesland.Scenario(scenario=scenario)
+        verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+
+
+@pytest.mark.slow
 def test_InstreamHydro_RRS():
+    from solution import instreamhydro
     zipfilename = str(solutiondir.joinpath('instreamhydro', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in instreamhydro.scenarios.keys():
@@ -1253,6 +1213,7 @@ def test_InstreamHydro_RRS():
 
 @pytest.mark.slow
 def test_Insulation_RRS():
+    from solution import insulation
     zipfilename = str(solutiondir.joinpath('insulation', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in insulation.scenarios.keys():
@@ -1263,6 +1224,7 @@ def test_Insulation_RRS():
 
 @pytest.mark.slow
 def test_IrrigationEfficiency_LAND():
+    from solution import irrigationefficiency
     zipfilename = str(solutiondir.joinpath('irrigationefficiency', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in irrigationefficiency.scenarios.keys():
@@ -1273,6 +1235,7 @@ def test_IrrigationEfficiency_LAND():
 
 @pytest.mark.slow
 def test_LandfillMethane_RRS():
+    from solution import landfillmethane
     zipfilename = str(solutiondir.joinpath('landfillmethane', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in landfillmethane.scenarios.keys():
@@ -1283,6 +1246,7 @@ def test_LandfillMethane_RRS():
 
 @pytest.mark.slow
 def test_LEDCommercialLighting_RRS():
+    from solution import leds_commercial
     zipfilename = str(solutiondir.joinpath('leds_commercial', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in leds_commercial.scenarios.keys():
@@ -1293,6 +1257,7 @@ def test_LEDCommercialLighting_RRS():
 
 @pytest.mark.slow
 def test_LEDResidentialLighting_RRS():
+    from solution import leds_residential
     zipfilename = str(solutiondir.joinpath('leds_residential', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in leds_residential.scenarios.keys():
@@ -1303,6 +1268,7 @@ def test_LEDResidentialLighting_RRS():
 
 @pytest.mark.slow
 def test_ManagedGrazing_LAND():
+    from solution import managedgrazing
     zipfilename = str(solutiondir.joinpath('managedgrazing', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in managedgrazing.scenarios.keys():
@@ -1313,6 +1279,7 @@ def test_ManagedGrazing_LAND():
 
 @pytest.mark.slow
 def test_MassTransit_RRS():
+    from solution import masstransit
     zipfilename = str(solutiondir.joinpath('masstransit', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in masstransit.scenarios.keys():
@@ -1323,6 +1290,7 @@ def test_MassTransit_RRS():
 
 @pytest.mark.slow
 def test_MicroWind_RRS():
+    from solution import microwind
     zipfilename = str(solutiondir.joinpath('microwind', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in microwind.scenarios.keys():
@@ -1333,6 +1301,7 @@ def test_MicroWind_RRS():
 
 @pytest.mark.slow
 def test_MultistrataAgroforestry_LAND():
+    from solution import multistrataagroforestry
     zipfilename = str(solutiondir.joinpath('multistrataagroforestry', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in multistrataagroforestry.scenarios.keys():
@@ -1343,6 +1312,7 @@ def test_MultistrataAgroforestry_LAND():
 
 @pytest.mark.slow
 def test_Nuclear_RRS():
+    from solution import nuclear
     zipfilename = str(solutiondir.joinpath('nuclear', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in nuclear.scenarios.keys():
@@ -1353,6 +1323,7 @@ def test_Nuclear_RRS():
 
 @pytest.mark.slow
 def test_NutrientManagement_LAND():
+    from solution import nutrientmanagement
     zipfilename = str(solutiondir.joinpath('nutrientmanagement', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in nutrientmanagement.scenarios.keys():
@@ -1363,6 +1334,7 @@ def test_NutrientManagement_LAND():
 
 @pytest.mark.slow
 def test_OffshoreWind_RRS():
+    from solution import offshorewind
     zipfilename = str(solutiondir.joinpath('offshorewind', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in offshorewind.scenarios.keys():
@@ -1373,6 +1345,7 @@ def test_OffshoreWind_RRS():
 
 @pytest.mark.slow
 def test_OnshoreWind_RRS():
+    from solution import onshorewind
     zipfilename = str(solutiondir.joinpath('onshorewind', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in onshorewind.scenarios.keys():
@@ -1383,6 +1356,7 @@ def test_OnshoreWind_RRS():
 
 @pytest.mark.slow
 def test_Peatlands_LAND():
+    from solution import peatlands
     zipfilename = str(solutiondir.joinpath('peatlands', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in peatlands.scenarios.keys():
@@ -1393,6 +1367,7 @@ def test_Peatlands_LAND():
 
 @pytest.mark.slow
 def test_PerennialBioenergy_LAND():
+    from solution import perennialbioenergy
     zipfilename = str(solutiondir.joinpath('perennialbioenergy', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in perennialbioenergy.scenarios.keys():
@@ -1403,6 +1378,7 @@ def test_PerennialBioenergy_LAND():
 
 @pytest.mark.slow
 def test_RecycledPaper_RRS():
+    from solution import recycledpaper
     zipfilename = str(solutiondir.joinpath('recycledpaper', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in recycledpaper.scenarios.keys():
@@ -1413,6 +1389,7 @@ def test_RecycledPaper_RRS():
 
 @pytest.mark.slow
 def test_Refrigerants_RRS():
+    from solution import refrigerants
     zipfilename = str(solutiondir.joinpath('refrigerants', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in refrigerants.scenarios.keys():
@@ -1423,6 +1400,7 @@ def test_Refrigerants_RRS():
 
 @pytest.mark.slow
 def test_RegenerativeAgriculture_LAND():
+    from solution import regenerativeagriculture
     zipfilename = str(solutiondir.joinpath('regenerativeagriculture', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in regenerativeagriculture.scenarios.keys():
@@ -1433,6 +1411,7 @@ def test_RegenerativeAgriculture_LAND():
 
 @pytest.mark.slow
 def test_RiceIntensification_LAND():
+    from solution import riceintensification
     zipfilename = str(solutiondir.joinpath('riceintensification', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in riceintensification.scenarios.keys():
@@ -1443,6 +1422,7 @@ def test_RiceIntensification_LAND():
 
 @pytest.mark.slow
 def test_Ships_RRS():
+    from solution import ships
     zipfilename = str(solutiondir.joinpath('ships', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in ships.scenarios.keys():
@@ -1453,6 +1433,7 @@ def test_Ships_RRS():
 
 @pytest.mark.slow
 def test_Silvopasture_LAND():
+    from solution import silvopasture
     zipfilename = str(solutiondir.joinpath('silvopasture', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in silvopasture.scenarios.keys():
@@ -1464,6 +1445,7 @@ def test_Silvopasture_LAND():
 
 @pytest.mark.slow
 def test_SmartGlass_RRS():
+    from solution import smartglass
     zipfilename = str(solutiondir.joinpath('smartglass', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in smartglass.scenarios.keys():
@@ -1474,6 +1456,7 @@ def test_SmartGlass_RRS():
 
 @pytest.mark.slow
 def test_SmartThermostats_RRS():
+    from solution import smartthermostats
     zipfilename = str(solutiondir.joinpath('smartthermostats', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in smartthermostats.scenarios.keys():
@@ -1484,6 +1467,7 @@ def test_SmartThermostats_RRS():
 
 @pytest.mark.slow
 def test_SolarHotWater_RRS():
+    from solution import solarhotwater
     zipfilename = str(solutiondir.joinpath('solarhotwater', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     # Need to figure out how to handle 'Aggressive, High Growth, early' source in
@@ -1497,6 +1481,7 @@ def test_SolarHotWater_RRS():
 
 @pytest.mark.slow
 def test_SolarRooftop_RRS():
+    from solution import solarpvroof
     zipfilename = str(solutiondir.joinpath('solarpvroof', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in solarpvroof.scenarios.keys():
@@ -1507,6 +1492,7 @@ def test_SolarRooftop_RRS():
 
 @pytest.mark.slow
 def test_SolarPVUtility_RRS():
+    from solution import solarpvutil
     zipfilename = str(solutiondir.joinpath('solarpvutil', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in solarpvutil.scenarios.keys():
@@ -1517,6 +1503,7 @@ def test_SolarPVUtility_RRS():
 
 @pytest.mark.slow
 def test_Telepresence_RRS():
+    from solution import telepresence
     zipfilename = str(solutiondir.joinpath('telepresence', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in telepresence.scenarios.keys():
@@ -1526,17 +1513,8 @@ def test_Telepresence_RRS():
 
 
 @pytest.mark.slow
-def test_TreeIntercropping_LAND():
-    zipfilename = str(solutiondir.joinpath('treeintercropping', 'testdata', 'expected.zip'))
-    zip_f = zipfile.ZipFile(file=zipfilename)
-    for scenario in treeintercropping.scenarios.keys():
-        obj = treeintercropping.Scenario(scenario=scenario)
-        verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
-        check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
-
-
-@pytest.mark.slow
 def test_TemperateForests_LAND():
+    from solution import temperateforests
     zipfilename = str(solutiondir.joinpath('temperateforests', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario, ac in temperateforests.scenarios.items():
@@ -1546,7 +1524,19 @@ def test_TemperateForests_LAND():
 
 
 @pytest.mark.slow
+def test_TreeIntercropping_LAND():
+    from solution import treeintercropping
+    zipfilename = str(solutiondir.joinpath('treeintercropping', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for scenario in treeintercropping.scenarios.keys():
+        obj = treeintercropping.Scenario(scenario=scenario)
+        verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+
+
+@pytest.mark.slow
 def test_Trains_RRS():
+    from solution import trains
     zipfilename = str(solutiondir.joinpath('trains', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in trains.scenarios.keys():
@@ -1557,6 +1547,7 @@ def test_Trains_RRS():
 
 @pytest.mark.slow
 def test_TropicalForests_LAND():
+    from solution import tropicalforests
     zipfilename = str(solutiondir.joinpath('tropicalforests', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario, ac in tropicalforests.scenarios.items():
@@ -1566,6 +1557,7 @@ def test_TropicalForests_LAND():
 
 @pytest.mark.slow
 def test_TropicalTreeStaples_LAND():
+    from solution import tropicaltreestaples
     zipfilename = str(solutiondir.joinpath('tropicaltreestaples', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in tropicaltreestaples.scenarios.keys():
@@ -1575,6 +1567,7 @@ def test_TropicalTreeStaples_LAND():
 
 @pytest.mark.slow
 def test_Trucks_RRS():
+    from solution import trucks
     zipfilename = str(solutiondir.joinpath('trucks', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in trucks.scenarios.keys():
@@ -1585,6 +1578,7 @@ def test_Trucks_RRS():
 
 @pytest.mark.slow
 def test_WalkableCities_RRS():
+    from solution import walkablecities
     zipfilename = str(solutiondir.joinpath('walkablecities', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in walkablecities.scenarios.keys():
@@ -1595,6 +1589,7 @@ def test_WalkableCities_RRS():
 
 @pytest.mark.slow
 def test_WasteToEnergy_RRS():
+    from solution import wastetoenergy
     zipfilename = str(solutiondir.joinpath('wastetoenergy', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in wastetoenergy.scenarios.keys():
@@ -1605,6 +1600,7 @@ def test_WasteToEnergy_RRS():
 
 @pytest.mark.slow
 def test_WaterDistribution_RRS():
+    from solution import waterdistribution
     zipfilename = str(solutiondir.joinpath('waterdistribution', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in waterdistribution.scenarios.keys():
@@ -1615,6 +1611,7 @@ def test_WaterDistribution_RRS():
 
 @pytest.mark.slow
 def test_WaterEfficiency_RRS():
+    from solution import waterefficiency
     zipfilename = str(solutiondir.joinpath('waterefficiency', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in waterefficiency.scenarios.keys():
@@ -1625,6 +1622,7 @@ def test_WaterEfficiency_RRS():
 
 @pytest.mark.slow
 def test_WaveAndTidal_RRS():
+    from solution import waveandtidal
     zipfilename = str(solutiondir.joinpath('waveandtidal', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in waveandtidal.scenarios.keys():
@@ -1635,6 +1633,7 @@ def test_WaveAndTidal_RRS():
 
 @pytest.mark.slow
 def test_WomenSmallholders_LAND():
+    from solution import womensmallholders
     zipfilename = str(solutiondir.joinpath('womensmallholders', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
     for scenario in womensmallholders.scenarios.keys():
