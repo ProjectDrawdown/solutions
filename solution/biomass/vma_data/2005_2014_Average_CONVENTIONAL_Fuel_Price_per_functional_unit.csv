@@ -1,4 +1,0 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-PD Common Fuel Data-COAL,,World,,,2016,,,US$2014/short ton,0.0,$US2014/kWh,0.3869914976735052,see explanation for weighting methodology,
-PD Common Fuel Data-NG,,World,,,2016,,,US$2014/millionBTU,0.0,$US2014/kWh,0.2187748175594088,see explanation for weighting methodology,
-"PD Common Fuel Data-Coal/Oil/Gas, based on IEA (2016), Third Quarter",,World,,,2016,,,US$2014/kWh,,$US2014/kWh,0.6531313071553646,see explanation for weighting methodology,

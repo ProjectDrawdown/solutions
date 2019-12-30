@@ -1,30 +1,17 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,1.85,2.885615758860399,0.8143842411396012
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,True,39.3510612050925,58.652453895764936,20.049668514420066
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,225.9430153073019,284.7553208503949,167.13070976420886
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,True,23.75,41.33905909933786,6.1609409006621405
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,10.0,10.0,10.0
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,False,False,,,
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,False,False,,,
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,False,738936667.283452,738936667.283452,738936667.283452
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,660411322.8072591,660411322.8072591,660411322.8072591
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,CONVENTIONAL_Total_Energy_Used_per_Functional_Unit,CONVENTIONAL Total Energy Used per Functional Unit,True,False,2.3240931447627027,2.3240931447627027,2.3240931447627027
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,True,False,0.1685,0.19182916629457641,0.1451708337054236
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,True,23658.76830368019,31447.72971208967,15869.80689527071
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,True,False,0.15785714285714286,0.21516939178833577,0.10054489392594995
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,Residential_Electricity_Price,Residential Electricity Price,True,False,139800000.0,139800000.0,139800000.0
-24,Residential_Fuel_Price_for_Natural_Gas,Residential Fuel Price for Natural Gas,True,False,17500.000014,17500.000014,17500.000014
-25,Learning_Rates_for_Air_Conditioners,Learning Rates for Air Conditioners,True,False,0.13,0.17966554808583785,0.08033445191416218
-26,Energy_Consumed_for_Space_Heating_per_Functional_Unit_CONVENTIONAL,Energy Consumed for Space Heating per Functional Unit - CONVENTIONAL,True,True,1.835720798239715,3.987146049624224,0.034531616789697364
-27,Electricty_Consumed_for_Space_Cooling_per_Functional_Unit_CONVENTIONAL,Electricty Consumed for Space Cooling per Functional Unit - CONVENTIONAL,True,True,0.4883723465229877,1.2293033711486818,0.047296930223382355
-28,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-29,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,1.85,2.885615758860399,0.8143842411396012
+2,CONVENTIONAL First Cost per Implementation Unit,39.3510612050925,58.652453895764936,20.049668514420066
+3,SOLUTION First Cost per Implementation Unit,225.9430153073019,284.7553208503949,167.13070976420886
+4,CONVENTIONAL Lifetime Capacity,23.75,41.33905909933786,6.1609409006621405
+5,SOLUTION Lifetime Capacity,10.0,10.0,10.0
+8,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,738936667.283452,738936667.283452,738936667.283452
+9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,660411322.8072591,660411322.8072591,660411322.8072591
+12,CONVENTIONAL Total Energy Used per Functional Unit,2.3240931447627027,2.3240931447627027,2.3240931447627027
+13,SOLUTION Energy Efficiency Factor,0.1685,0.19182916629457641,0.1451708337054236
+15,CONVENTIONAL Fuel Consumed per Functional Unit,23658.76830368019,31447.72971208967,15869.80689527071
+16,SOLUTION Fuel Efficiency Factor,0.15785714285714286,0.21516939178833577,0.10054489392594995
+23,Residential Electricity Price,139800000.0,139800000.0,139800000.0
+24,Residential Fuel Price for Natural Gas,17500.000014,17500.000014,17500.000014
+25,Learning Rates for Air Conditioners,0.13,0.17966554808583785,0.08033445191416218
+26,Energy Consumed for Space Heating per Functional Unit - CONVENTIONAL,1.835720798239715,3.987146049624224,0.034531616789697364
+27,Electricty Consumed for Space Cooling per Functional Unit - CONVENTIONAL,0.4883723465229877,1.2293033711486818,0.047296930223382355

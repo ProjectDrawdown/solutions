@@ -1,34 +1,21 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,619.5288086319412,1233.9671773617983,5.090439902083858
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,False,1.2321684543593556,1.2321684543593556,1.2321684543593556
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,False,False,,,
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,False,1.4162003604e-08,1.4162003604e-08,1.4162003604e-08
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,1.6209874133333332e-09,2.2434853391658756e-09,9.984894875007908e-10
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,False,1.4162003604e-08,1.4162003604e-08,1.4162003604e-08
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,1.6209874133333332e-09,2.2434853391658756e-09,9.984894875007908e-10
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,False,11732406.139444258,16320830.626679692,7143981.652208824
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),True,False,1.5973752970573485,2.087858897344097,1.1068916967705997
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,CONVENTIONAL_Total_Energy_Used_per_Functional_Unit,CONVENTIONAL Total Energy Used per Functional Unit,False,False,,,
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,False,52941803.479383595,63320590.44440062,42563016.51436657
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,True,False,100.0,100.0,100.0
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,True,False,30976.73458017209,49074.250551384204,12879.218608959975
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-25,Normal_Car_Occupancy,Normal Car Occupancy,True,False,1.573555956,1.573555956,1.573555956
-26,Threshold_City_Density_for_Marked_Increase_in_Walking,Threshold City Density for Marked Increase in Walking,True,False,3085.3333333333335,3297.9571534685406,2872.7095131981264
-27,Walking_Mode_Share_of_Dense_Cities,Walking Mode Share of Dense Cities,True,False,0.0675,0.07,0.065
-28,Walking_Mode_Share_of_non_dense_Cities,Walking Mode Share of non-dense Cities,True,False,0.024,0.028,0.02
-29,ICE_Car_Lifetime,ICE Car Lifetime,True,False,0.0003124611069072858,0.0003901972103767135,0.0002347250034378581
-30,Discount_Rates_Households,Discount Rates - Households,True,False,0.04,0.04999999999999999,0.030000000000000013
-31,Car_Depreciation_First_Costs,Car Depreciation (First) Costs,True,True,1.2376792203017979,1.5608217988294057,0.91453664177419
-32,Car_Insurance_Costs,Car Insurance Costs,True,False,0.35969607675555043,0.5270370985146916,0.19235505499640923
-33,Annual_Rate_of_Urban_Density_Decline,Annual Rate of Urban Density Decline,True,False,7.0,7.0,7.0
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,619.5288086319412,1233.9671773617983,5.090439902083858
+2,CONVENTIONAL First Cost per Implementation Unit,1.2321684543593556,1.2321684543593556,1.2321684543593556
+4,CONVENTIONAL Lifetime Capacity,1.4162003604e-08,1.4162003604e-08,1.4162003604e-08
+5,SOLUTION Lifetime Capacity,1.6209874133333332e-09,2.2434853391658756e-09,9.984894875007908e-10
+6,CONVENTIONAL Average Annual Use,1.4162003604e-08,1.4162003604e-08,1.4162003604e-08
+7,SOLUTION Average Annual Use,1.6209874133333332e-09,2.2434853391658756e-09,9.984894875007908e-10
+8,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,11732406.139444258,16320830.626679692,7143981.652208824
+10,CONVENTIONAL Fixed Operating Cost (FOM),1.5973752970573485,2.087858897344097,1.1068916967705997
+15,CONVENTIONAL Fuel Consumed per Functional Unit,52941803.479383595,63320590.44440062,42563016.51436657
+16,SOLUTION Fuel Efficiency Factor,100.0,100.0,100.0
+19,CONVENTIONAL Indirect CO2 Emissions per Unit,30976.73458017209,49074.250551384204,12879.218608959975
+25,Normal Car Occupancy,1.573555956,1.573555956,1.573555956
+26,Threshold City Density for Marked Increase in Walking,3085.3333333333335,3297.9571534685406,2872.7095131981264
+27,Walking Mode Share of Dense Cities,0.0675,0.07,0.065
+28,Walking Mode Share of non-dense Cities,0.024,0.028,0.02
+29,ICE Car Lifetime,0.0003124611069072858,0.0003901972103767135,0.0002347250034378581
+30,Discount Rates - Households,0.04,0.04999999999999999,0.030000000000000013
+31,Car Depreciation (First) Costs,1.2376792203017979,1.5608217988294057,0.91453664177419
+32,Car Insurance Costs,0.35969607675555043,0.5270370985146916,0.19235505499640923
+33,Annual Rate of Urban Density Decline,7.0,7.0,7.0

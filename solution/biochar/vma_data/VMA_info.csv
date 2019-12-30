@@ -1,32 +1,16 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,7457.0,7457.0,7457.0
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,21639272.727272723,44005816.44405451,-727270.989509061
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,False,False,,,
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,410116.3636363636,410116.3636363636,410116.3636363636
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,False,False,,,
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,20505.81818181818,46121.01751140012,-5109.381147763754
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,193.9207142857143,328.63462323269533,59.20680533873326
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,False,False,,,
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,False,False,,,
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,True,False,-0.9583317307692307,-0.7049036389816374,-1.211759822556824
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,Biochar_retail_price_US_tons,Biochar retail price (US$/tons),True,False,3025.96,5155.453764818296,896.4662351817042
-24,Biochar_wholesale_price_US_tons,Biochar wholesale price (US$/tons),True,False,2057.6923076923076,4127.211589837704,-11.826974453088951
-25,Net_Biochar_Production_per_Biochar_Facility,Net Biochar Production per Biochar Facility,True,False,17797.058823529413,39243.58585618489,-3649.4682091260656
-26,SOLUTION_Net_Profit_Margin,SOLUTION Net Profit Margin,True,False,423.386978021978,558.100886968959,288.673069074997
-27,Biochar_potential_based_on_biomass_availability_by_type_crop_residues,Biochar potential based on biomass availability by type (crop residues),True,False,65800000.0,106025073.80353701,25574926.19646299
-28,Biochar_potential_based_on_biomass_availability_by_type_biomass_crops,Biochar potential based on biomass availability by type (biomass crops),True,False,216562500.0,275503346.9357202,157621653.0642798
-29,Biochar_potential_based_on_biomass_availability_by_type_other_residues,Biochar potential based on biomass availability by type (other residues),True,False,55825000.0,93975799.16020763,17674200.83979238
-30,Carbon_content_in_biomass,Carbon content in biomass (%),True,False,0.48124999999999996,0.5448537538200384,0.4176462461799615
-31,Estimated_Fraction_of_Input_Biochar_that_is_output_to_be_Sold,Estimated Fraction of Input Biochar that is output to be Sold,True,False,0.3,0.3,0.3
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,7457.0,7457.0,7457.0
+3,SOLUTION First Cost per Implementation Unit,21639272.727272723,44005816.44405451,-727270.989509061
+5,SOLUTION Lifetime Capacity,410116.3636363636,410116.3636363636,410116.3636363636
+7,SOLUTION Average Annual Use,20505.81818181818,46121.01751140012,-5109.381147763754
+9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,193.9207142857143,328.63462323269533,59.20680533873326
+18,SOLUTION Direct Emissions per Functional Unit,-0.9583317307692307,-0.7049036389816374,-1.211759822556824
+23,Biochar retail price (US$/tons),3025.96,5155.453764818296,896.4662351817042
+24,Biochar wholesale price (US$/tons),2057.6923076923076,4127.211589837704,-11.826974453088951
+25,Net Biochar Production per Biochar Facility,17797.058823529413,39243.58585618489,-3649.4682091260656
+26,SOLUTION Net Profit Margin,423.386978021978,558.100886968959,288.673069074997
+27,Biochar potential based on biomass availability by type (crop residues),65800000.0,106025073.80353701,25574926.19646299
+28,Biochar potential based on biomass availability by type (biomass crops),216562500.0,275503346.9357202,157621653.0642798
+29,Biochar potential based on biomass availability by type (other residues),55825000.0,93975799.16020763,17674200.83979238
+30,Carbon content in biomass (%),0.48124999999999996,0.5448537538200384,0.4176462461799615
+31,Estimated Fraction of Input Biochar that is output to be Sold,0.3,0.3,0.3

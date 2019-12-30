@@ -1,29 +1,18 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,2.0,2.0,2.0
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,True,149.36295857525025,269.90627453379835,28.81964261670214
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,1904.0844006533334,2627.1299660958957,1181.0388352107711
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,False,46813.62250000001,61296.168101639625,32331.0768983604
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,135254.4,156340.88436890315,114167.91563109682
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,True,2450.975,3467.775733100312,1434.1742668996874
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,5635.599999999999,8502.260831001813,2768.9391689981862
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,False,0.099621569854372,0.11437101091208568,0.08487212879665834
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,0.0057297978103500015,0.010704762912000003,0.0007548327087000001
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),True,True,118.4657142857143,244.04397928289904,2.4042857142857144
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),True,False,31.83071628,31.83071628,31.83071628
-12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,True,False,0.29081503743400844,0.29081503743400844,0.29081503743400844
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,False,2553.0658631951173,2553.0658631951173,2553.0658631951173
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,False,False,,,
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-25,TAM_Share_for_Space_Heating,TAM Share for Space Heating,True,False,0.8220252783470526,0.8787647039256181,0.7652858527684872
-26,First_Costs_of_Exchange_Heaters_for_Households,First Costs of Exchange Heaters for Households,True,False,343.699393287,343.699393287,343.699393287
-27,Fixed_Costs_of_Exchange_Heaters,Fixed Costs of Exchange Heaters,True,False,13.0361251674,13.0361251674,13.0361251674
-28,Learning_Rate,Learning Rate,True,False,0.08766666666666667,0.11767592449746875,0.05765740883586459
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,2.0,2.0,2.0
+2,CONVENTIONAL First Cost per Implementation Unit,149.36295857525025,269.90627453379835,28.81964261670214
+3,SOLUTION First Cost per Implementation Unit,1904.0844006533334,2627.1299660958957,1181.0388352107711
+4,CONVENTIONAL Lifetime Capacity,46813.62250000001,61296.168101639625,32331.0768983604
+5,SOLUTION Lifetime Capacity,135254.4,156340.88436890315,114167.91563109682
+6,CONVENTIONAL Average Annual Use,2450.975,3467.775733100312,1434.1742668996874
+7,SOLUTION Average Annual Use,5635.599999999999,8502.260831001813,2768.9391689981862
+8,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,0.099621569854372,0.11437101091208568,0.08487212879665834
+9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,0.0057297978103500015,0.010704762912000003,0.0007548327087000001
+10,CONVENTIONAL Fixed Operating Cost (FOM),118.4657142857143,244.04397928289904,2.4042857142857144
+11,SOLUTION Fixed Operating Cost (FOM),31.83071628,31.83071628,31.83071628
+12,CONVENTIONAL Total Energy Used per Functional Unit,0.29081503743400844,0.29081503743400844,0.29081503743400844
+15,CONVENTIONAL Fuel Consumed per Functional Unit,2553.0658631951173,2553.0658631951173,2553.0658631951173
+25,TAM Share for Space Heating,0.8220252783470526,0.8787647039256181,0.7652858527684872
+26,First Costs of Exchange Heaters for Households,343.699393287,343.699393287,343.699393287
+27,Fixed Costs of Exchange Heaters,13.0361251674,13.0361251674,13.0361251674
+28,Learning Rate,0.08766666666666667,0.11767592449746875,0.05765740883586459

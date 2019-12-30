@@ -23,9 +23,96 @@ from model import vma
 from model import tam
 from solution import rrs
 
-DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+VMAs = {
+  'Current Adoption': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
+      use_weight=False),
+  'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION First Cost per Implementation Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
+      use_weight=False),
+  'CONVENTIONAL Lifetime Capacity': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
+      use_weight=False),
+  'SOLUTION Lifetime Capacity': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
+      use_weight=False),
+  'CONVENTIONAL Average Annual Use': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
+      use_weight=False),
+  'SOLUTION Average Annual Use': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
+      use_weight=False),
+  'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
+      use_weight=True),
+  'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
+      use_weight=False),
+  'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv"),
+      use_weight=True),
+  'SOLUTION Energy Efficiency Factor': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Energy_Efficiency_Factor.csv"),
+      use_weight=False),
+  'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Fuel Efficiency Factor': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CH4-CO2eq Tons Reduced': vma.VMA(
+      filename=None, use_weight=False),
+  'N2O-CO2eq Tons Reduced': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Revenue per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Revenue per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'Per Capita Water Production by Utilities': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Per_Capita_Water_Production_by_Utilities.csv"),
+      use_weight=True),
+  '% Water distributed using Gravity': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Water_distributed_using_Gravity.csv"),
+      use_weight=False),
+  '% Urban population served with piped water': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Urban_population_served_with_piped_water.csv"),
+      use_weight=True),
+  '% Rural population served with piped water': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Rural_population_served_with_piped_water.csv"),
+      use_weight=True),
+  '% of Electricity based pumping using SURFACE source of water': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "of_Electricity_based_pumping_using_SURFACE_source_of_water.csv"),
+      use_weight=False),
+  '% of Electricity based pumping using GROUND source of water (or from lower altitudes)': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "of_Electricity_based_pumping_using_GROUND_source_of_water_or_from_lower_altitudes.csv"),
+      use_weight=False),
+  '% of Electricity based pumping using  DESALINATION(or energy intensive methods)': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "of_Electricity_based_pumping_using_DESALINATION_or_energy_intensive_methods.csv"),
+      use_weight=False),
+  'Non Revenue Water': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Non_Revenue_Water.csv"),
+      use_weight=False),
+  'Real Losses Saved from Solution': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Real_Losses_Saved_from_Solution.csv"),
+      use_weight=False),
+}
+vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
 
 units = {
   "implementation unit": "Million m3 Produced with Pressure Management and Active Leak Control",

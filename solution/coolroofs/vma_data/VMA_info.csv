@@ -1,27 +1,16 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,1077919760.7577658,1077919760.7577658,1077919760.7577658
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,False,56.438506874999995,88.98436215013314,23.892651599866845
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,59.62842109925933,73.67954054951205,45.5773016490066
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,False,18.5,20.0,17.0
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,20.0,20.0,20.0
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,False,False,,,
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,False,False,,,
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,13.539589485263935,14.250028227736665,12.829150742791205
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),True,False,0.43906285,0.6781256999999999,0.2000000000000001
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),True,False,0.20000000000000004,0.20000000000000007,0.2
-12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,True,False,5.912502791710008e-08,9.243266985793477e-08,2.5817385976265385e-08
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,True,False,0.08991501307491155,0.17909578449001715,0.0007342416598059565
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,False,0.0006623771951448245,0.0017824941603528186,0.00013859999999999998
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,True,False,0.0,0.0,0.0
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,True,False,0.004583333333333333,0.005515028323958246,0.003651638342708421
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-25,Global_Average_Number_of_Floors_Commercial_Buildings,Global Average Number of Floors Commercial Buildings,True,False,3.3772772277227725,3.544554455445545,3.21
-26,Global_Average_Number_of_Floors_Residential_Buildings,Global Average Number of Floors Residential Buildings,True,False,8.0,8.0,8.0
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,1077919760.7577658,1077919760.7577658,1077919760.7577658
+2,CONVENTIONAL First Cost per Implementation Unit,56.438506874999995,88.98436215013314,23.892651599866845
+3,SOLUTION First Cost per Implementation Unit,59.62842109925933,73.67954054951205,45.5773016490066
+4,CONVENTIONAL Lifetime Capacity,18.5,20.0,17.0
+5,SOLUTION Lifetime Capacity,20.0,20.0,20.0
+9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,13.539589485263935,14.250028227736665,12.829150742791205
+10,CONVENTIONAL Fixed Operating Cost (FOM),0.43906285,0.6781256999999999,0.2000000000000001
+11,SOLUTION Fixed Operating Cost (FOM),0.20000000000000004,0.20000000000000007,0.2
+12,CONVENTIONAL Total Energy Used per Functional Unit,5.912502791710008e-08,9.243266985793477e-08,2.5817385976265385e-08
+13,SOLUTION Energy Efficiency Factor,0.08991501307491155,0.17909578449001715,0.0007342416598059565
+15,CONVENTIONAL Fuel Consumed per Functional Unit,0.0006623771951448245,0.0017824941603528186,0.00013859999999999998
+16,SOLUTION Fuel Efficiency Factor,0.0,0.0,0.0
+17,CONVENTIONAL Direct Emissions per Functional Unit,0.004583333333333333,0.005515028323958246,0.003651638342708421
+25,Global Average Number of Floors Commercial Buildings,3.3772772277227725,3.544554455445545,3.21
+26,Global Average Number of Floors Residential Buildings,8.0,8.0,8.0

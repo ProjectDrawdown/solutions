@@ -1,27 +1,10 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,1.645,1.67,1.62
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,False,1890060000.0,2159129683.1677613,1620990316.8322387
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,2510659428.571429,3839577390.722469,1181741466.4203887
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,False,False,,,
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,False,False,,,
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,False,1.0,1.0,1.0
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,1.0,1.0,1.0
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,False,False,,,
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,False,False,,,
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,True,False,2449285.714285714,3102797.8115145946,1795773.6170568336
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,True,False,1383812.5960061445,3360449.5913794423,-592824.3993671534
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-25,Life_cycle_difference_in_GHG_per_kg_of_polymer_for_biopolymers_compared_to_traditional_polymers_kg_CO2_eq_kg,Life cycle difference in GHG per kg of polymer for biopolymers compared to traditional polymers (kg CO2 eq/kg),True,False,-1795555.5555555555,-626889.5438509367,-2964221.567260174
-26,Feedstock_MMT_Bioplastic_Constraint,Feedstock:MMT Bioplastic Constraint,True,False,452.5,636.0926196773715,268.90738032262846
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,1.645,1.67,1.62
+2,CONVENTIONAL First Cost per Implementation Unit,1890060000.0,2159129683.1677613,1620990316.8322387
+3,SOLUTION First Cost per Implementation Unit,2510659428.571429,3839577390.722469,1181741466.4203887
+6,CONVENTIONAL Average Annual Use,1.0,1.0,1.0
+7,SOLUTION Average Annual Use,1.0,1.0,1.0
+17,CONVENTIONAL Direct Emissions per Functional Unit,2449285.714285714,3102797.8115145946,1795773.6170568336
+18,SOLUTION Direct Emissions per Functional Unit,1383812.5960061445,3360449.5913794423,-592824.3993671534
+25,Life cycle difference in GHG per kg of polymer for biopolymers compared to traditional polymers (kg CO2 eq/kg),-1795555.5555555555,-626889.5438509367,-2964221.567260174
+26,Feedstock:MMT Bioplastic Constraint,452.5,636.0926196773715,268.90738032262846

@@ -1,27 +1,12 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,0.018875000000000003,0.04440452947079128,-0.00665452947079127
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,1298.7653261653952,2329.7462185194763,267.7844338113139
-4,CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum,CONVENTIONAL Operating Cost per Functional Unit per Annum,False,False,,,
-5,SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum,SOLUTION Operating Cost per Functional Unit per Annum,True,False,562.358384723618,844.9803294449654,279.73644000227057
-6,CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum,CONVENTIONAL Net Profit Margin per Functional Unit per Annum,False,False,,,
-7,SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum,SOLUTION Net Profit Margin per Functional Unit per Annum,True,False,313.31297636029984,469.48394581406603,157.14200690653365
-8,Yield_from_CONVENTIONAL_Practice,Yield from CONVENTIONAL Practice,False,False,,,
-9,Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION,Yield Gain (% Increase from CONVENTIONAL to SOLUTION),False,False,,,
-10,Electricty_Consumed_per_CONVENTIONAL_Functional_Unit,Electricty Consumed per CONVENTIONAL Functional Unit,False,False,,,
-11,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-12,Total_Energy_Used_per_SOLUTION_functional_unit,Total Energy Used per SOLUTION functional unit,True,False,10.75,11.57915619758885,9.92084380241115
-13,Fuel_Consumed_per_CONVENTIONAL_Functional_Unit,Fuel Consumed per CONVENTIONAL Functional Unit,False,False,,,
-14,Fuel_Reduction_Factor_SOLUTION,Fuel Reduction Factor SOLUTION,False,False,,,
-15,t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit,t CO2-eq (Aggregate emissions) Reduced per Land Unit,True,False,0.4773666666666667,0.959445435011518,-0.004712101678184644
-16,t_CO2_Reduced_per_Land_Unit,t CO2 Reduced per Land Unit,False,False,,,
-17,t_N2O_CO2_eq_Reduced_per_Land_Unit,t N2O-CO2-eq Reduced per Land Unit,False,False,,,
-18,t_CH4_CO2_eq_Reduced_per_Land_Unit,t CH4-CO2-eq Reduced per Land Unit,False,False,,,
-19,Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE,Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE,False,False,,,
-20,Indirect_CO2_Emissions_per_SOLUTION_Implementation_Unit,Indirect CO2 Emissions per SOLUTION Implementation Unit,False,False,,,
-21,Sequestration_Rates,Sequestration Rates,True,False,1.183125,2.230674036740047,0.13557596325995314
-22,Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing,Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing,True,False,8.674672500000002,8.674672500000002,8.674672500000002
-23,Disturbance_Rate,Disturbance Rate,False,False,,,
-24,Rotational_length_years,Rotational length (years),True,False,20.333333333333332,26.831196229872642,13.835470436794022
-25,Carbon_content_in_biomass,Carbon content in biomass (%),True,False,0.49006250000000007,0.5134911650014464,0.46663383499855365
-26,Future_adoption,Future adoption (%),True,False,0.5913709932318543,1.2673995696408589,-0.08465758317715033
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,0.018875000000000003,0.04440452947079128,-0.00665452947079127
+3,SOLUTION First Cost per Implementation Unit,1298.7653261653952,2329.7462185194763,267.7844338113139
+5,SOLUTION Operating Cost per Functional Unit per Annum,562.358384723618,844.9803294449654,279.73644000227057
+7,SOLUTION Net Profit Margin per Functional Unit per Annum,313.31297636029984,469.48394581406603,157.14200690653365
+12,Total Energy Used per SOLUTION functional unit,10.75,11.57915619758885,9.92084380241115
+15,t CO2-eq (Aggregate emissions) Reduced per Land Unit,0.4773666666666667,0.959445435011518,-0.004712101678184644
+21,Sequestration Rates,1.183125,2.230674036740047,0.13557596325995314
+22,Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing,8.674672500000002,8.674672500000002,8.674672500000002
+24,Rotational length (years),20.333333333333332,26.831196229872642,13.835470436794022
+25,Carbon content in biomass (%),0.49006250000000007,0.5134911650014464,0.46663383499855365
+26,Future adoption (%),0.5913709932318543,1.2673995696408589,-0.08465758317715033

@@ -1,29 +1,13 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,304732.4618119783,479730.5498567684,129734.37376718823
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,49701.61706839143,70820.35247083424,28582.881665948622
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,False,11.272348820767084,17.92834924612747,4.616348395406697
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,11.272348820767084,17.92834924612747,4.616348395406697
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,False,0.814618720197838,1.4694329876591934,0.15980445273648247
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,0.814618720197838,1.4694329876591934,0.15980445273648247
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,CONVENTIONAL_Total_Energy_Used_per_Functional_Unit,CONVENTIONAL Total Energy Used per Functional Unit,False,False,,,
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,False,37954.453285917254,42800.07066433677,33108.83590749774
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,True,False,0.3923333333333334,0.5146126129444847,0.27005405372218216
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,Average_Utilization_Rate_by_Weight,Average Utilization Rate (by Weight),True,False,0.43999999999999995,0.6745918441321722,0.20540815586782768
-24,Average_Long_Haul_Truck_Capacity,Average Long Haul Truck Capacity,True,False,21.97554351200568,25.489676712515838,18.46141031149552
-25,Average_Truck_Lifetime,Average Truck Lifetime,True,False,11.249,16.094493679698694,6.403506320301307
-26,Discount_Rate_Commercial_Industry,Discount Rate: Commercial / Industry,True,False,0.09219999999999999,0.1231735370921695,0.06122646290783049
-27,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-28,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,304732.4618119783,479730.5498567684,129734.37376718823
+3,SOLUTION First Cost per Implementation Unit,49701.61706839143,70820.35247083424,28582.881665948622
+4,CONVENTIONAL Lifetime Capacity,11.272348820767084,17.92834924612747,4.616348395406697
+5,SOLUTION Lifetime Capacity,11.272348820767084,17.92834924612747,4.616348395406697
+6,CONVENTIONAL Average Annual Use,0.814618720197838,1.4694329876591934,0.15980445273648247
+7,SOLUTION Average Annual Use,0.814618720197838,1.4694329876591934,0.15980445273648247
+15,CONVENTIONAL Fuel Consumed per Functional Unit,37954.453285917254,42800.07066433677,33108.83590749774
+16,SOLUTION Fuel Efficiency Factor,0.3923333333333334,0.5146126129444847,0.27005405372218216
+23,Average Utilization Rate (by Weight),0.43999999999999995,0.6745918441321722,0.20540815586782768
+24,Average Long Haul Truck Capacity,21.97554351200568,25.489676712515838,18.46141031149552
+25,Average Truck Lifetime,11.249,16.094493679698694,6.403506320301307
+26,Discount Rate: Commercial / Industry,0.09219999999999999,0.1231735370921695,0.06122646290783049
