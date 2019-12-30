@@ -292,3 +292,7 @@ def test_categorical_validation():
     assert v.df.loc[2, 'TMR'] == ''
     assert pd.isna(v.source_data.loc[0, 'World / Drawdown Region'])
     assert pd.isna(v.source_data.loc[2, 'Thermal-Moisture Regime'])
+
+def test_no_filename():
+    v = vma.VMA(filename=None)
+    assert not v.has_data

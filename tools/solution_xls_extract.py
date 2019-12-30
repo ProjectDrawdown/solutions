@@ -1367,9 +1367,10 @@ def extract_custom_tla(wb, outputdir):
         df.to_csv(os.path.join(outputdir, 'custom_tla_data.csv'), index=True, header=True)
 
 
-def extract_vmas(wb, outputdir):
+def extract_vmas(f, wb, outputdir):
     """Extract VMAs from an Excel file.
        Arguments:
+         f: output __init__.py file
          wb: Excel workbook as returned by xlrd.
          outputdir: directory where output files are written
     """
@@ -1377,9 +1378,24 @@ def extract_vmas(wb, outputdir):
     if not os.path.exists(vma_dir_path):
         os.mkdir(vma_dir_path)
     vma_r = VMAReader(wb)
-    vma_r.read_xls(csv_path=vma_dir_path)
     if 'Variable Meta-analysis-DD' in wb.sheet_names():
-        vma_r.read_xls(csv_path=vma_dir_path, alt_vma=True)
+        vmas = vma_r.read_xls(csv_path=vma_dir_path, alt_vma=True)
+    else:
+        vmas = vma_r.read_xls(csv_path=vma_dir_path)
+    f.write("VMAs = {\n")
+    for _, row in vmas.iterrows():
+        f.write(f"  '{row['Title on xls']}': vma.VMA(")
+        filename = row['Filename']
+        if not filename:
+            f.write(f"      filename=None, use_weight={row['Use weight?']}, has_data={row['Has data?']}),\n")
+        else:
+            if isinstance(filename, str):
+                path = f'THISDIR.joinpath("vma_data", "{filename}")'
+            else:
+                path = f'DATADIR.joinpath(*{filename})'
+            f.write(f"      filename={path},\n")
+            f.write(f"      use_weight={row['Use weight?']}, has_data={row['Has data?']}),\n")
+    f.write("}\n")
 
 
 def lookup_unit(tab, row, col):
@@ -1506,10 +1522,9 @@ def output_solution_python_file(outputdir, xl_filename):
     else:
         scenarios = {}
 
-    f.write("DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))\n")
+    f.write("DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')\n")
     f.write("THISDIR = pathlib.Path(__file__).parents[0]\n")
-    extract_vmas(wb=wb, outputdir=outputdir)
-    f.write("VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))\n\n")
+    extract_vmas(f=f, wb=wb, outputdir=outputdir)
     if is_rrs:
         write_units_rrs(f=f, wb=wb)
     if is_land:

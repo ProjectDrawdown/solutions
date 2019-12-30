@@ -1,9 +1,0 @@
-# This variable is used in the model to separate aggregated solar PV adoption
-# data for adoption prognostications that combined both utiulity and rooftop
-# PV and is na important assumption for this model.
-#
-# SolarPVUtility VMA #29
-Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-GTM Research 2014, http://www.seia.org/research-resources/solar-market-insight-report-2014-q4, USA, , , 2014, , 63.0%, %
-IEA Technology Roadmap 2014, http://www.iea.org/publications/freepublications/publication/TechnologyRoadmapSolarPhotovoltaicEnergy_2014edition.pdf, World, , , 2014, , 50.0%, %
-"US DOE, SunShot Vision Study, 2012, Ch. 3 (p. 43)", http://energy.gov/sites/prod/files/2014/01/f7/47927_chapter3_0.pdf, USA, , , 2012, , 66.6666666666667%, %

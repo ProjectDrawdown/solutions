@@ -39,34 +39,28 @@ def test_single_table_use_weight():
 def test_read_xls_num_dfs():
     """ Check we produce the right amount of tables + discard empty ones """
     vma_r = tools.vma_xls_extract.VMAReader(wb)
-    df_dict = vma_r.read_xls()
-    assert len(df_dict) == 24
-    num_empty_tables = len([x for (x, _, _) in df_dict.values() if x is None])
-    assert num_empty_tables == 13
+    vma_df = vma_r.read_xls()
+    assert len(vma_df) == 24
+    non_empty_tables = len(vma_df.loc[(vma_df['Filename'] != '')])
+    assert non_empty_tables == 11
 
 
 def test_read_xls():
     """ Check some specifc values from Silvopasture """
     vma_r = tools.vma_xls_extract.VMAReader(wb)
-    df_dict = vma_r.read_xls()
-    table = df_dict['SOLUTION Net Profit Margin per Functional Unit per Annum'][0]
-    assert table.at[5, 'Raw Data Input'] == 416
-    table = df_dict['Sequestration Rates'][0]
-    assert len(table) == 28
-    (table, exclude, summary) = df_dict['SOLUTION Energy Efficiency Factor']
-    assert table is None
-    assert exclude == False
-    assert len(summary) == 3
-    assert pd.isna(summary[0])
-    assert pd.isna(summary[1])
-    assert pd.isna(summary[2])
+    vma_df = vma_r.read_xls()
+    unique = vma_df['Title on xls'].unique()
+    assert 'SOLUTION Net Profit Margin per Functional Unit per Annum' in unique
+    assert 'Sequestration Rates' in unique
+    assert 'SOLUTION Energy Efficiency Factor' in unique
 
 
 def test_read_xls_additional_var():
     """ Check the additional var from Silvopasture """
     vma_r = tools.vma_xls_extract.VMAReader(wb)
-    df_dict = vma_r.read_xls()
-    assert 'Percent silvopasture area to the total grassland area (including potential)' in df_dict
+    vma_df = vma_r.read_xls()
+    s = 'Percent silvopasture area to the total grassland area (including potential)'
+    assert s in vma_df['Title on xls'].unique()
 
 
 def test_normalize_col_name():
@@ -80,8 +74,5 @@ def test_normalize_col_name():
 def test_rrs():
     wb = xlrd.open_workbook(thisdir.joinpath('solarpvutil_vma.xlsm'))
     vma_r = tools.vma_xls_extract.VMAReader(wb)
-    df_dict = vma_r.read_xls(alt_vma=True)
-    table = df_dict['Current Adoption'][0]
-    assert table.at[0, 'SOURCE ID: Author/Org, Date, Info'] == 'IRENA (2016)_Historical data for solar PV'
-    assert table.at[0, 'Assumptions'] == 'Assuming that PV utility represents around 60% of total Solar PV'
-    assert table.at[0, 'Exclude Data?'] == True
+    vma_df = vma_r.read_xls(alt_vma=True)
+    assert vma_df.loc[1, 'Title on xls'] == 'Current Adoption'

@@ -9,20 +9,20 @@
    output.
 """
 
+import collections
 import os
 import pathlib
+import warnings
+
 import numpy as np
 import pandas as pd
-import warnings
-from numpy import nan
-from collections import OrderedDict
-from tools.util import cell_to_offsets, empty_to_nan, to_filename, convert_bool
+import tools.util
 
 CSV_TEMPLATE_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'VMA', 'vma_template.csv')
+DATA_DIR_PATH = pathlib.Path(__file__).parents[1].joinpath('data')
 pd.set_option('display.expand_frame_repr', False)
 
-# A few VMA columns are only present in some solutions, like data which is
-# specific to Land or Ocean solutions.
+# A few VMA columns are only present in some solutions, for example specific to Land or Ocean solns.
 optional_columns = ['Thermal-Moisture Regime', 'Crop',
         'Closest Matching Standard Crop (by Revenue/ha)',]
 
@@ -54,7 +54,7 @@ COLUMN_DTYPE_MAP = {
     'Source Validation Code': lambda x: x,
     'Year / Date': lambda x: convert_year(x),
     'License Code': lambda x: x,
-    'Raw Data Input': lambda x: float(x) if x is not nan else x,
+    'Raw Data Input': lambda x: float(x) if x is not np.nan else x,
     'Original Units': lambda x: x,
     'Conversion calculation': lambda x: convert_conversion_calculation(x),
     'Common Units': lambda x: x,
@@ -62,7 +62,7 @@ COLUMN_DTYPE_MAP = {
     'Assumptions': lambda x: x,
     'Closest Matching Standard Crop (by Revenue/ha)': lambda x: x,
     'Crop': lambda x: x,
-    'Exclude Data?': lambda x: convert_bool(x) if x is not nan else x,
+    'Exclude Data?': lambda x: tools.util.convert_bool(x) if x is not np.nan else x,
 }
 
 
@@ -73,9 +73,17 @@ def make_vma_df_template():
     input to the VMA python class. A researcher can thus use this function to create
     a new VMA table in python to populate with data if they want.
     """
-    df = pd.read_csv(CSV_TEMPLATE_PATH, index_col=False, skipinitialspace=True, skip_blank_lines=True,
-                     comment='#')
+    df = pd.read_csv(CSV_TEMPLATE_PATH, index_col=False, skipinitialspace=True,
+            skip_blank_lines=True, comment='#', dtype="object")
     return df
+
+
+def df_approx(df1, df2):
+    try:
+        pd.testing.assert_frame_equal(df1.astype(str), df2.astype(str), check_exact=False)
+        return True
+    except:
+        return False
 
 
 class VMAReader:
@@ -85,6 +93,24 @@ class VMAReader:
         """
         self.wb = wb
         self.df_template = make_vma_df_template()
+        self.data_csvs = self.read_data_csvs()
+
+
+    def read_data_csvs(self):
+        data_csvs = {}
+        for filename in DATA_DIR_PATH.rglob('*.csv'):
+            relpath = filename.relative_to(DATA_DIR_PATH).parts
+            data_csvs[relpath] = pd.read_csv(filename, skipinitialspace=True,
+                    skip_blank_lines=True, comment='#', dtype="object")
+        return data_csvs
+
+
+    def find_data_csv(self, df):
+        for filename, data_df in self.data_csvs.items():
+            if df_approx(df, data_df):
+                return filename
+        return None
+
 
     def read_xls(self, csv_path=None, alt_vma=False):
         """
@@ -103,39 +129,53 @@ class VMAReader:
             fixed_summary = False
 
         self._find_tables(sheetname=sheetname)
-        df_dict = OrderedDict()
+        df_dict = collections.OrderedDict()
         for title, location in self.table_locations.items():
             df, use_weight, summary = self.read_single_table(source_id_cell=location,
                                                              sheetname=sheetname,
                                                              fixed_summary=fixed_summary)
             if df.empty:  # in line with our policy of setting empty tables to None
-                df_dict[title] = (None, False, (nan, nan, nan))
+                df_dict[title] = (None, False, (np.nan, np.nan, np.nan))
             else:
                 df_dict[title] = (df, use_weight, summary)
 
-        if csv_path is not None:
-            idx = pd.Index(data=list(range(1, len(df_dict) + 1)), name='VMA number')
-            info_df = pd.DataFrame(columns=['Filename', 'Title on xls', 'Has data?', 'Use weight?',
-                                            'Fixed Mean', 'Fixed High', 'Fixed Low'], index=idx)
-            i = 1
-            for title, values in df_dict.items():
-                table = values[0]
-                use_weight = values[1]
-                (average, high, low) = values[2]
-                path_friendly_title = to_filename(title)
-                row = {'Filename': path_friendly_title, 'Title on xls': title,
-                       'Has data?': False if table is None else True,
-                       'Use weight?': use_weight,
-                       'Fixed Mean': average, 'Fixed High': high, 'Fixed Low': low}
+        idx = pd.Index(data=list(range(1, len(df_dict) + 1)), name='VMA number')
+        vma_df = pd.DataFrame(columns=['Filename', 'Title on xls', 'Has data?', 'Use weight?'],
+                index=idx)
+        info_df = pd.DataFrame(columns=['Title on xls', 'Fixed Mean', 'Fixed High', 'Fixed Low'])
+        info_df.index.name = 'VMA number'
+        i = 1
+        for title, values in df_dict.items():
+            table = values[0]
+            use_weight = values[1]
+            (average, high, low) = values[2]
+            path_friendly_title = ''
+            if table is not None:
+                for col in optional_columns:
+                    if table.loc[:, col].isnull().all():
+                        table.drop(labels=col, axis='columns', inplace=True)
+                existing = self.find_data_csv(table)
+                if existing is None:
+                    path_friendly_title = tools.util.to_filename(title) + '.csv'
+                    if csv_path is not None:
+                        table.to_csv(os.path.join(csv_path, path_friendly_title), index=False)
+                else:
+                    # This CSV already exists in the data directory because multiple solutions
+                    # use it. Reference the common file in all of those solutions.
+                    path_friendly_title = existing
+            row = {'Filename': path_friendly_title, 'Title on xls': title,
+                   'Has data?': False if table is None else True,
+                   'Use weight?': use_weight}
+            vma_df.loc[i, :] = row
+            if not pd.isna(average) or not pd.isna(high) or not pd.isna(low):
+                row = {'Title on xls': title, 'Fixed Mean': average, 'Fixed High': high,
+                        'Fixed Low': low}
                 info_df.loc[i, :] = row
-                i += 1
-                if table is not None:
-                    for col in optional_columns:
-                        if table.loc[:, col].isnull().all():
-                            table.drop(labels=col, axis='columns', inplace=True)
-                    table.to_csv(os.path.join(csv_path, path_friendly_title + '.csv'), index=False)
+            i += 1
+        if csv_path is not None:
             info_df.to_csv(os.path.join(csv_path, 'VMA_info.csv'))
-        return df_dict
+        return vma_df
+
 
     def normalize_col_name(self, name):
         """Substitute well-known names for variants seen in some solutions."""
@@ -147,7 +187,8 @@ class VMAReader:
             'Conedition calculation': 'Conversion calculation',
             # Airplanes removed Geographic Location from one of the VMAs.
             'Specific': 'Specific Geographic Location',
-            'Closest Matching Crop (by Revenue/ha)': 'Closest Matching Standard Crop (by Revenue/ha)',
+            'Closest Matching Crop (by Revenue/ha)':
+                'Closest Matching Standard Crop (by Revenue/ha)',
         }
         return known_aliases.get(name, name)
 
@@ -164,7 +205,7 @@ class VMAReader:
         sheet = self.wb.sheet_by_name(sheetname)
         df = self.df_template.copy(deep=True)
         if isinstance(source_id_cell, str):  # for convenience + testing
-            row1, col1 = cell_to_offsets(source_id_cell)
+            row1, col1 = tools.util.cell_to_offsets(source_id_cell)
         else:  # for use with read_xls
             row1, col1 = source_id_cell
 
@@ -200,31 +241,31 @@ class VMAReader:
                 col_name = col_names[idx]
                 cell_val = sheet.cell_value(row1 + 1 + r, col1 + c)  # get raw val
                 if cell_val == '**Add calc above':
-                    done = True  # this is the edge case where the table is filled with no extra rows
+                    done = True  # edge case where the table is filled with no extra rows
                     break
-                cell_val = COLUMN_DTYPE_MAP[col_name](empty_to_nan(cell_val))  # conversions
+                cell_val = COLUMN_DTYPE_MAP[col_name](tools.util.empty_to_nan(cell_val))  # conversions
                 new_row[col_name] = cell_val
                 idx += 1
             if done or all(
                 pd.isna(v) for k, v in new_row.items() if k not in ['Common Units', 'Weight']):
                 last_row = r
-                break  # assume an empty row (except for Common Units) indicates no more sources to copy
+                break  # assume an empty row (except for Common Units) indicates no more sources
             else:
                 df = df.append(new_row, ignore_index=True)
         else:
-            raise Exception(
-                'No blank row detected in table. Either there are {}+ VMAs in table, the table has been misused '
-                'or there is some error in the code. Cell: {}'.format(max_sources, source_id_cell))
+            raise Exception(f"No blank row detected in table. Either there are {max_sources} " +
+                    f"VMAs in table, the table is overfull, or there is some error in the code. "
+                    f"Cell: {source_id_cell}")
         if (df['Weight'] == 0).all():
-            # Sometimes all weights are set to 0 instead of blank. In this case we want them to be NaN.
-            df['Weight'] = df['Weight'].replace(0, nan)
+            # Sometimes all weights are set to 0 instead of blank. Change them to be NaN.
+            df['Weight'] = df['Weight'].replace(0, np.nan)
 
         for r in range(last_row, last_row + 50):  # look past last row
             if sheet.cell_value(row1 + r, 17) == 'Use weight?':
-                use_weight = convert_bool(sheet.cell_value(row1 + r + 1, 17))
+                use_weight = tools.util.convert_bool(sheet.cell_value(row1 + r + 1, 17))
                 break
             if sheet.cell_value(row1 + r, 18) == 'Use weight?':
-                use_weight = convert_bool(sheet.cell_value(row1 + r + 1, 18))
+                use_weight = tools.util.convert_bool(sheet.cell_value(row1 + r + 1, 18))
                 break
         else:
             raise ValueError("No 'Use weight?' cell found")
@@ -247,7 +288,7 @@ class VMAReader:
             else:
                 raise ValueError(f"No 'Average' cell found for {source_id_cell}")
         else:
-            average = high = low = nan
+            average = high = low = np.nan
 
         return df, use_weight, (average, high, low)
 
@@ -304,7 +345,7 @@ class VMAReader:
             'Average Annual Use - CONVENTIONAL': 'CONVENTIONAL Average Annual Use',
         }
 
-        table_locations = OrderedDict()
+        table_locations = collections.OrderedDict()
         sheet = self.wb.sheet_by_name(sheetname)
         row, col = 40, 2
         for table_num in range(1, 36):
@@ -312,9 +353,8 @@ class VMAReader:
             for rows_to_next_table in range(200):
                 title_from_cell = str(sheet.cell_value(row + rows_to_next_table, col)).strip()
                 title_from_cell = normalize_vma_names.get(title_from_cell, title_from_cell)
-                # print(title_from_cell)
                 if title_from_cell.startswith('VARIABLE'):
-                    # if the table has a generic VARIABLE title we assume there are no more variables to record
+                    # if the table has a generic VARIABLE title assume no more variables to record
                     self.table_locations = table_locations
                     return  # search for tables ends here
                 elif not title_from_cell:
@@ -326,9 +366,10 @@ class VMAReader:
                 table_num_on_sheet = sheet.cell_value(row + rows_to_next_table, col - 2)
                 VMA_heading_check = False
                 for offset in [1, 2, 3]:
-                    if str(sheet.cell_value(row + rows_to_next_table + offset, col - 2)) == 'Number':
+                    cell_value = str(sheet.cell_value(row + rows_to_next_table + offset, col - 2))
+                    if cell_value == 'Number':
                         VMA_heading_check = True
-                if table_num_on_sheet == table_num and VMA_heading_check:  # i.e. if title cell of table
+                if table_num_on_sheet == table_num and VMA_heading_check:  # if title cell of table
                     for space_after_title in range(10):
                         offset = rows_to_next_table + space_after_title
                         if sheet.cell_value(row + offset,
@@ -336,7 +377,6 @@ class VMAReader:
                             table_locations[title_from_cell] = (row + offset, col)
                             row += offset
                             found = True
-                            # print('----------------------------FOUND {}'.format(title_from_cell))
                             break
                     else:
                         raise Exception('Cannot find SOURCE ID cell for {}'.format(title_from_cell))
