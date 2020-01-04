@@ -36,6 +36,26 @@ def generate_vma_dict(path_to_vma_data):
     return vma_dict
 
 
+def populate_fixed_summaries(vma_dict, filename):
+    """
+    Convenience function for use by solution classes.
+    Args:
+      vma_dict: dict indexed by VMA Title
+      filename: VMA_info CSV file with fixed summary data for Mean, High, Low
+    """
+    vma_info_df = pd.read_csv(filename, index_col=0)
+    for _, row in vma_info_df.iterrows():
+        title = row['Title on xls']
+        fixed_mean = row.get('Fixed Mean', np.nan)
+        fixed_high = row.get('Fixed High', np.nan)
+        fixed_low = row.get('Fixed Low', np.nan)
+        fixed_summary = None
+        if not pd.isna(fixed_mean) and not pd.isna(fixed_high) and not pd.isna(fixed_low):
+            fixed_summary = (fixed_mean, fixed_high, fixed_low)
+        if fixed_summary is not None:
+            vma_dict[title].fixed_summary = fixed_summary
+
+
 def convert_percentages(val):
     """pd.apply() functions to convert percentages"""
     if isinstance(val, str) and val.endswith('%'):

@@ -183,6 +183,18 @@ def test_fixed_summary():
     assert (avg, high, low) == (2.0, 3.0, 1.0)
 
 
+def test_populate_fixed_summary():
+    VMAs = {
+      'Testing Fixed Summary': vma.VMA(
+          filename=datadir.joinpath("vma1_silvopasture.csv"),
+          use_weight=False, has_data=True),
+      }
+    vma.populate_fixed_summaries(vma_dict=VMAs, filename=datadir.joinpath('VMA_info_w_summary.csv'))
+    v = VMAs['Testing Fixed Summary']
+    (avg, high, low) = v.avg_high_low()
+    assert (avg, high, low) == (2.0, 3.0, 1.0)
+
+
 def test_avg_high_low_by_regime():
     f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 0.4, Mha,, 1.0, False, Temperate/Boreal-Humid
