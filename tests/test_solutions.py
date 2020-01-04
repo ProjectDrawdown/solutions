@@ -19,7 +19,7 @@ def test_solutions(name, constructor, scenarios):
         # a few solutions currently fail and are skipped while we investigate.
         skip = ['Car Fuel Efficiency', 'Electric Vehicles', 'Insulation']
         if obj.name not in skip:
-            assert len(obj.ac.incorrect_cached_values) == 0
+            assert len(obj.ac.incorrect_cached_values) == 0, str(obj.ac.incorrect_cached_values)
 
     # check default scenario
     obj = constructor(scenario=None)
