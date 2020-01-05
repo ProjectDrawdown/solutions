@@ -9,35 +9,6 @@ import model.dd
 VMA_columns = ['Value', 'Units', 'Raw', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
 
 
-def generate_vma_dict(path_to_vma_data):
-    """
-    Convenience function for use by solution classes.
-    Reads 'VMA_info.csv' file in solution's 'vma_data' dir. Generates dict of VMAs where data
-    exists for input into AdvancedControls object.
-    NOTE: this will set input args of each VMA object to default values. If any VMA objects
-    need non-default args, they must be generated manually and inserted into the dict.
-    Args:
-      path_to_vma_data: path to 'vma_data' dir (pathlib object)
-
-    Returns:
-      dict for input to AdvancedControls() 'vmas' attribute
-    """
-    vma_info_df = pd.read_csv(path_to_vma_data.joinpath('VMA_info.csv'), index_col=0)
-    vma_dict = {}
-    for _, row in vma_info_df.iterrows():
-        if row['Has data?']:
-            use_weight = row.get('Use weight?', False)
-            fixed_mean = row.get('Fixed Mean', np.nan)
-            fixed_high = row.get('Fixed High', np.nan)
-            fixed_low = row.get('Fixed Low', np.nan)
-            fixed_summary = None
-            if not pd.isna(fixed_mean) and not pd.isna(fixed_high) and not pd.isna(fixed_low):
-                fixed_summary = (fixed_mean, fixed_high, fixed_low)
-            vma_dict[row['Title on xls']] = VMA(path_to_vma_data.joinpath(row['Filename'] + '.csv'),
-                                                use_weight=use_weight, fixed_summary=fixed_summary)
-    return vma_dict
-
-
 def populate_fixed_summaries(vma_dict, filename):
     """
     Convenience function for use by solution classes.

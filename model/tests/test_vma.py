@@ -159,19 +159,6 @@ def test_avg_high_low_exclude():
     assert v.avg_high_low()[0] == pytest.approx(4.64561688311688)
 
 
-def test_generate_vma_dict():
-    vma_dict = vma.generate_vma_dict(datadir)
-    assert len(vma_dict) == 2
-    assert 'Current Adoption' in vma_dict
-
-
-def test_fixed_summary():
-    vma_dict = vma.generate_vma_dict(datadir)
-    v = vma_dict['Testing Fixed Summary']
-    (avg, high, low) = v.avg_high_low()
-    assert (avg, high, low) == (2.0, 3.0, 1.0)
-
-
 def test_populate_fixed_summary():
     VMAs = {
       'Testing Fixed Summary': vma.VMA(
