@@ -1387,14 +1387,14 @@ def extract_vmas(f, wb, outputdir):
         f.write(f"  '{row['Title on xls']}': vma.VMA(\n")
         filename = row['Filename']
         if not filename:
-            f.write(f"      filename=None, use_weight={row['Use weight?']}, has_data={row['Has data?']}),\n")
+            f.write(f"      filename=None, use_weight={row['Use weight?']}),\n")
         else:
             if isinstance(filename, str):
                 path = f'THISDIR.joinpath("vma_data", "{filename}")'
             else:
                 path = f'DATADIR.joinpath(*{filename})'
             f.write(f"      filename={path},\n")
-            f.write(f"      use_weight={row['Use weight?']}, has_data={row['Has data?']}),\n")
+            f.write(f"      use_weight={row['Use weight?']}),\n")
     f.write("}\n")
     f.write("vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))\n\n")
 

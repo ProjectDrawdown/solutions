@@ -142,17 +142,6 @@ def test_missing_columns():
     assert result == pytest.approx(expected)
 
 
-def test_inverse():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-      A, 43%, %, 
-      """)
-    postprocess = lambda x, y, z: (1.0 - x, 1.0 - y, 1.0 - z)
-    v = vma.VMA(filename=f, postprocess=postprocess)
-    result = v.avg_high_low()
-    expected = (0.57, 0.57, 0.57)
-    assert result == pytest.approx(expected)
-
-
 def test_avg_high_low_key():
     f = datadir.joinpath('vma1_silvopasture.csv')
     v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
@@ -187,7 +176,7 @@ def test_populate_fixed_summary():
     VMAs = {
       'Testing Fixed Summary': vma.VMA(
           filename=datadir.joinpath("vma1_silvopasture.csv"),
-          use_weight=False, has_data=True),
+          use_weight=False),
       }
     vma.populate_fixed_summaries(vma_dict=VMAs, filename=datadir.joinpath('VMA_info_w_summary.csv'))
     v = VMAs['Testing Fixed Summary']
@@ -307,4 +296,8 @@ def test_categorical_validation():
 
 def test_no_filename():
     v = vma.VMA(filename=None)
-    assert not v.has_data
+    assert v.df.empty
+    (mean, high, low) = v.avg_high_low()
+    assert pd.isna(mean)
+    assert pd.isna(high)
+    assert pd.isna(low)

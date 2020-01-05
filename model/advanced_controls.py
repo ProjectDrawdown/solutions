@@ -869,7 +869,7 @@ class AdvancedControls:
 
         for vma_title in vma_titles:
             v = self.vmas.get(vma_title, None)
-            if v and v.has_data:
+            if v and not pd.isna(v.avg_high_low(key='mean')):
                 break
         else:
             raise KeyError(f'"{vma_titles}" must be included in vmas to calculate mean/high/low.'
