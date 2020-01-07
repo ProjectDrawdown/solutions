@@ -23,9 +23,94 @@ from model import vma
 from model import tam
 from solution import rrs
 
-DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+VMAs = {
+  'Current Adoption': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
+      use_weight=False),
+  'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION First Cost per Implementation Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
+      use_weight=True),
+  'CONVENTIONAL Lifetime Capacity': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
+      use_weight=False),
+  'SOLUTION Lifetime Capacity': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
+      use_weight=False),
+  'CONVENTIONAL Average Annual Use': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
+      use_weight=True),
+  'SOLUTION Average Annual Use': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
+      use_weight=True),
+  'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Energy Efficiency Factor': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"),
+      use_weight=False),
+  'SOLUTION Fuel Efficiency Factor': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Fuel_Efficiency_Factor.csv"),
+      use_weight=False),
+  'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CH4-CO2eq Tons Reduced': vma.VMA(
+      filename=None, use_weight=False),
+  'N2O-CO2eq Tons Reduced': vma.VMA(
+      filename=None, use_weight=False),
+  'Average Seat Capacity - Single Aisle': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Average_Seat_Capacity_Single_Aisle.csv"),
+      use_weight=False),
+  'Average Stage Length Flown of Total Operating Fleet in the world (Distances traveled from takeoff to landing)': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Average_Stage_Length_Flown_of_Total_Operating_Fleet_in_the_world_Distances_traveled_from_takeoff_to_landing.csv"),
+      use_weight=False),
+  'Average fleet-wide working hours per day': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Average_fleet_wide_working_hours_per_day.csv"),
+      use_weight=False),
+  'Average time (hrs) between consecutive flights)': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Average_time_hrs_between_consecutive_flights.csv"),
+      use_weight=False),
+  'Average Cruise Speed - Single Aisle': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Average_Cruise_Speed_Single_Aisle.csv"),
+      use_weight=False),
+  'Solution Load Factor': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Solution_Load_Factor.csv"),
+      use_weight=False),
+  'Discount Rate - Commercial': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Discount_Rate_Commercial.csv"),
+      use_weight=False),
+  'CONVENTIONAL Revenue per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Revenue per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'Average Seat Capacity - Twin Aisle': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Average_Seat_Capacity_Twin_Aisle.csv"),
+      use_weight=False),
+  'Average Cruise Speed - Twin Aisle': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Average_Cruise_Speed_Twin_Aisle.csv"),
+      use_weight=False),
+}
+vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
 
 units = {
   "implementation unit": "Aircraft",

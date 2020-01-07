@@ -5,6 +5,7 @@ import os
 import pathlib
 import tempfile
 
+import numpy as np
 import pandas as pd
 import pytest
 from numpy import nan
@@ -42,7 +43,7 @@ def test_electricity_factors():
     conv_annual_energy_used = 2.117
 
     class fakeVMA:
-        has_data = True
+        df = pd.DataFrame()
         def avg_high_low(self, key):
             return (0.0, 0.0, 0.0)
 
@@ -188,7 +189,7 @@ def test_has_var_costs():
 
 def test_substitute_vma():
     class fakeVMA:
-        has_data = True
+        df = pd.DataFrame(0, index=[0, 1], columns=vma.VMA_columns)
         def avg_high_low(self, key):
             if key == 'mean': return 'mean value'
             if key == 'high': return 'high value'
@@ -205,7 +206,7 @@ def test_substitute_vma_passthru_value():
     assert ac.seq_rate_global == 4.3
 
     class fakeVMA:
-        has_data = True
+        df = pd.DataFrame()
         def avg_high_low(self, key):
             return (0.0, 0.0, 0.0)
 
@@ -223,7 +224,7 @@ def test_substitute_vma_raises():
 
 def test_substitute_vma_handles_raw_value_discrepancy():
     class fakeVMA:
-        has_data = True
+        df = pd.DataFrame(0, index=[0, 1], columns=vma.VMA_columns)
         def avg_high_low(self, key):
             if key == 'mean': return 1.2
             if key == 'high': return 1.4
@@ -242,9 +243,9 @@ def test_substitute_vma_regional_statistics():
             'EU': 0, 'USA': 0}
 
     class fakeVMA:
-        has_data = True
+        df = pd.DataFrame(0, index=[0, 1], columns=vma.VMA_columns)
         def avg_high_low(self, key, region=None):
-            if key == 'mean': return vals[region]
+            if region and key == 'mean': return vals[region]
             return (None, None, None)
 
     vmas = {'SOLUTION First Cost per Implementation Unit': fakeVMA()}
@@ -257,20 +258,21 @@ def test_substitute_vma_regional_statistics():
 def test_substitute_vma_not_has_data():
     class fakeVMA:
         def __init__(self):
-            self.has_data = False
+            self.v = (np.nan, np.nan, np.nan)
+
         def avg_high_low(self, key):
-            v = (1, 2, 3)
-            if key == 'mean': return v[0]
-            if key == 'high': return v[1]
-            if key == 'low': return v[2]
+            if key == 'mean': return self.v[0]
+            if key == 'high': return self.v[1]
+            if key == 'low': return self.v[2]
             return v
 
     v = fakeVMA()
+    v.df = pd.DataFrame(0, index=[0, 1], columns=vma.VMA_columns)
     vmas = {'Sequestration Rates': v}
     with pytest.raises(KeyError):
         _ = advanced_controls.AdvancedControls(vmas=vmas, seq_rate_global='mean')
 
-    v.has_data = True
+    v.v = (1, 2, 3)
     ac = advanced_controls.AdvancedControls(vmas=vmas, seq_rate_global='mean')
     assert ac.seq_rate_global == 1
 

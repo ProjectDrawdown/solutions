@@ -26,7 +26,6 @@ from solution import land
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
-# VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
 
 scenarios = {
     'default': advanced_controls.AdvancedControls(

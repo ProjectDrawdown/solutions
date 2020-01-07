@@ -1,30 +1,19 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,43.035160579474606,85.97100469772252,0.09931646122669946
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,True,2.2327820362894992,5.00749558838112,0.0
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,709.9486666666666,1016.6474602664388,403.24987306689434
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,True,3.3553728472605507e-06,6.304491638148458e-06,4.062540563726437e-07
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,4.179935930625e-05,5.246342017517934e-05,3.113529843732066e-05
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,True,1.6784148689795301e-06,2.2256128115758125e-06,1.1312169263832477e-06
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,2.572268265e-06,3.6752939999999996e-06,1.46924253e-06
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,True,0.04742293027961719,0.0756474039276142,0.019198456631620186
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,0.017401596069386936,0.024169147228164135,0.010634044910609734
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,CONVENTIONAL_Total_Energy_Used_per_Functional_Unit,CONVENTIONAL Total Energy Used per Functional Unit,False,False,,,
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,True,29924.777902825932,41706.141109106204,18143.41469654566
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,False,False,,,
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,True,True,584099.9995327201,756458.8111800156,411741.1878854246
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,True,False,123549.5259985871,196559.99984275203,50539.052154422156
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,True,False,18.050541516245488,18.050541516245488,18.050541516245488
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-25,tCO2_yr_per_digester,tCO2/yr per digester,True,False,2.0250000000000004,2.631733054975579,1.4182669450244219
-26,Black_carbon_GWP,Black carbon GWP,True,False,660.0,821.9670748434179,498.0329251565821
-27,t_CO2_eq_per_Metric_ton_of_fuel,t CO2 eq per Metric ton of fuel,True,True,1.511859461135938,2.4396906525859947,0.5840282696858811
-28,Average_Household_Biodigester_Production_per_year,Average Household Biodigester Production per year,True,False,630.0,880.0,380.0
-29,Kerosene_Heating_Oil_Spot_Price,Kerosene (Heating Oil) Spot Price,True,False,0.2635739550030116,0.2635739550030116,0.2635739550030116
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,43.035160579474606,85.97100469772252,0.09931646122669946
+2,CONVENTIONAL First Cost per Implementation Unit,2.2327820362894992,5.00749558838112,0.0
+3,SOLUTION First Cost per Implementation Unit,709.9486666666666,1016.6474602664388,403.24987306689434
+4,CONVENTIONAL Lifetime Capacity,3.3553728472605507e-06,6.304491638148458e-06,4.062540563726437e-07
+5,SOLUTION Lifetime Capacity,4.179935930625e-05,5.246342017517934e-05,3.113529843732066e-05
+6,CONVENTIONAL Average Annual Use,1.6784148689795301e-06,2.2256128115758125e-06,1.1312169263832477e-06
+7,SOLUTION Average Annual Use,2.572268265e-06,3.6752939999999996e-06,1.46924253e-06
+8,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,0.04742293027961719,0.0756474039276142,0.019198456631620186
+9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,0.017401596069386936,0.024169147228164135,0.010634044910609734
+15,CONVENTIONAL Fuel Consumed per Functional Unit,29924.777902825932,41706.141109106204,18143.41469654566
+17,CONVENTIONAL Direct Emissions per Functional Unit,584099.9995327201,756458.8111800156,411741.1878854246
+18,SOLUTION Direct Emissions per Functional Unit,123549.5259985871,196559.99984275203,50539.052154422156
+21,CH4-CO2eq Tons Reduced,18.050541516245488,18.050541516245488,18.050541516245488
+25,tCO2/yr per digester,2.0250000000000004,2.631733054975579,1.4182669450244219
+26,Black carbon GWP,660.0,821.9670748434179,498.0329251565821
+27,t CO2 eq per Metric ton of fuel,1.511859461135938,2.4396906525859947,0.5840282696858811
+28,Average Household Biodigester Production per year,630.0,880.0,380.0
+29,Kerosene (Heating Oil) Spot Price,0.2635739550030116,0.2635739550030116,0.2635739550030116

@@ -1,34 +1,24 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,501.09444854406854,553.7272322399999,448.46166484813716
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,True,3983375.7466606316,4005410.828073221,3961340.6652480424
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,True,327204.30051643995,1119801.6978678186,4065.0998400000008
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,True,0.165285578945327,0.2667484001470297,0.06382275774362425
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,True,0.019568952480010518,0.03330931508010683,0.005828589879914208
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,False,0.009300303712680364,0.009300303712680364,0.009300303712680364
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,0.008027999412826559,0.008933172994330872,0.007122825831322245
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,True,41152748.603397906,42015343.56248977,40290153.64430604
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,True,False,0.004239652217925736,0.004239652217925736,0.004239652217925736
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,True,False,0.011835641756895237,0.011835641756895237,0.011835641756895237
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,False,34734831.72341607,34734831.72341607,34734831.72341607
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,True,False,1.0,1.0,1.0
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,True,True,20869.628212017076,33578.531621634655,8160.724802399502
-20,Indirect_CO2_Emissions_per_SOLUTION_Unit_Select_on_Advanced_Controls,Indirect CO2 Emissions per SOLUTION Unit (Select on Advanced Controls),True,True,8777.772983972376,12276.964474955166,5278.581492989586
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-25,Average_Car_Occupancy,Average Car Occupancy,True,False,1.57,1.57,1.57
-26,Average_Car_Lifetime,Average Car Lifetime,True,False,311755.0004967467,389315.4342275199,234194.56676597343
-27,Discount_Rates_Households,Discount Rates - Households,True,False,0.04,0.04999999999999999,0.030000000000000013
-28,Average_Annual_Passenger_km_per_Car,Average Annual Passenger-km per Car,True,False,24751.05,24751.05,24751.05
-29,First_Cost_of_ICE_Car,First Cost of ICE Car,True,True,27301.838757440706,34446.2976378079,20157.379877073516
-30,Average_Bike_Pass_km_per_Year,Average Bike Pass-km per Year,True,False,3276.0,3276.0,3276.0
-31,E_bike_Battery_Size,E-bike Battery Size,True,True,349.25999999999993,543.3727776025355,155.1472223974644
-32,E_bike_Work_Rate,E-bike Work Rate,True,False,12.42742384474,12.42742384474,12.42742384474
-33,Percentage_of_E_bike_Rides_with_2_Riders,Percentage of E-bike Rides with 2 Riders,True,False,0.05,0.05,0.05
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,501.09444854406854,553.7272322399999,448.46166484813716
+2,CONVENTIONAL First Cost per Implementation Unit,3983375.7466606316,4005410.828073221,3961340.6652480424
+3,SOLUTION First Cost per Implementation Unit,327204.30051643995,1119801.6978678186,4065.0998400000008
+4,CONVENTIONAL Lifetime Capacity,0.165285578945327,0.2667484001470297,0.06382275774362425
+5,SOLUTION Lifetime Capacity,0.019568952480010518,0.03330931508010683,0.005828589879914208
+6,CONVENTIONAL Average Annual Use,0.009300303712680364,0.009300303712680364,0.009300303712680364
+7,SOLUTION Average Annual Use,0.008027999412826559,0.008933172994330872,0.007122825831322245
+8,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,41152748.603397906,42015343.56248977,40290153.64430604
+12,CONVENTIONAL Total Energy Used per Functional Unit,0.004239652217925736,0.004239652217925736,0.004239652217925736
+14,SOLUTION Total Energy Used per Functional Unit,0.011835641756895237,0.011835641756895237,0.011835641756895237
+15,CONVENTIONAL Fuel Consumed per Functional Unit,34734831.72341607,34734831.72341607,34734831.72341607
+16,SOLUTION Fuel Efficiency Factor,1.0,1.0,1.0
+19,CONVENTIONAL Indirect CO2 Emissions per Unit,20869.628212017076,33578.531621634655,8160.724802399502
+20,Indirect CO2 Emissions per SOLUTION Unit (Select on Advanced Controls),8777.772983972376,12276.964474955166,5278.581492989586
+25,Average Car Occupancy,1.57,1.57,1.57
+26,Average Car Lifetime,311755.0004967467,389315.4342275199,234194.56676597343
+27,Discount Rates - Households,0.04,0.04999999999999999,0.030000000000000013
+28,Average Annual Passenger-km per Car,24751.05,24751.05,24751.05
+29,First Cost of ICE Car,27301.838757440706,34446.2976378079,20157.379877073516
+30,Average Bike Pass-km per Year,3276.0,3276.0,3276.0
+31,E-bike Battery Size,349.25999999999993,543.3727776025355,155.1472223974644
+32,E-bike Work Rate,12.42742384474,12.42742384474,12.42742384474
+33,Percentage of E-bike Rides with 2 Riders,0.05,0.05,0.05

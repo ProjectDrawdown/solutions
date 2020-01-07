@@ -26,51 +26,80 @@ from solution import rrs
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
 VMAs = {
-  'Current Adoption': vma.VMA(      filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-      use_weight=False, has_data=True),
-  'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(      filename=DATADIR.joinpath(*('energy', 'vma_CONVENTIONAL_First_Cost_per_Implementation_Unit_1.csv')),
-      use_weight=True, has_data=True),
-  'SOLUTION First Cost per Implementation Unit': vma.VMA(      filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
-      use_weight=False, has_data=True),
-  'CONVENTIONAL Lifetime Capacity': vma.VMA(      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
-      use_weight=True, has_data=True),
-  'SOLUTION Lifetime Capacity': vma.VMA(      filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
-      use_weight=False, has_data=True),
-  'CONVENTIONAL Average Annual Use': vma.VMA(      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
-      use_weight=True, has_data=True),
-  'SOLUTION Average Annual Use': vma.VMA(      filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
-      use_weight=False, has_data=True),
-  'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(      filename=DATADIR.joinpath(*('energy', 'vma_CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit_1.csv')),
-      use_weight=True, has_data=True),
-  'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(      filename=THISDIR.joinpath("vma_data", "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
-      use_weight=False, has_data=True),
-  'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(      filename=DATADIR.joinpath(*('energy', 'vma_CONVENTIONAL_Fixed_Operating_Cost_FOM_1.csv')),
-      use_weight=True, has_data=True),
-  'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(      filename=THISDIR.joinpath("vma_data", "SOLUTION_Fixed_Operating_Cost_FOM.csv"),
-      use_weight=False, has_data=True),
-  'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  'SOLUTION Energy Efficiency Factor': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  'Total Energy Used per SOLUTION functional unit': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  'Fuel Consumed per CONVENTIONAL Functional Unit': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  'SOLUTION Fuel Efficiency Factor': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  'SOLUTION Direct Emissions per Functional Unit': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(      filename=THISDIR.joinpath("vma_data", "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv"),
-      use_weight=False, has_data=True),
-  'CH4-CO2eq Tons Reduced': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  'N2O-CO2eq Tons Reduced': vma.VMA(      filename=None, use_weight=False, has_data=False),
-  '2005-2014 Average CONVENTIONAL Fuel Price per functional unit': vma.VMA(      filename=THISDIR.joinpath("vma_data", "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit.csv"),
-      use_weight=True, has_data=True),
-  'Weighted Average CONVENTIONAL Plant Efficiency': vma.VMA(      filename=DATADIR.joinpath(*('energy', 'vma_Weighted_Average_CONVENTIONAL_Plant_Efficiency_1.csv')),
-      use_weight=True, has_data=True),
-  'Coal Plant Efficiency': vma.VMA(      filename=DATADIR.joinpath(*('energy', 'vma_Coal_Plant_Efficiency_1.csv')),
-      use_weight=False, has_data=True),
-  'Natural Gas Plant Efficiency': vma.VMA(      filename=DATADIR.joinpath(*('energy', 'vma_Natural_Gas_Plant_Efficiency_1.csv')),
-      use_weight=False, has_data=True),
-  'Oil Plant Efficiency': vma.VMA(      filename=DATADIR.joinpath(*('energy', 'vma_Oil_Plant_Efficiency_1.csv')),
-      use_weight=False, has_data=True),
+  'Current Adoption': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
+      use_weight=False),
+  'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
+      filename=DATADIR.joinpath(*('energy', 'vma_CONVENTIONAL_First_Cost_per_Implementation_Unit_1.csv')),
+      use_weight=True),
+  'SOLUTION First Cost per Implementation Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
+      use_weight=False),
+  'CONVENTIONAL Lifetime Capacity': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
+      use_weight=True),
+  'SOLUTION Lifetime Capacity': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
+      use_weight=False),
+  'CONVENTIONAL Average Annual Use': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
+      use_weight=True),
+  'SOLUTION Average Annual Use': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
+      use_weight=False),
+  'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
+      filename=DATADIR.joinpath(*('energy', 'vma_CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit_1.csv')),
+      use_weight=True),
+  'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
+      use_weight=False),
+  'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
+      filename=DATADIR.joinpath(*('energy', 'vma_CONVENTIONAL_Fixed_Operating_Cost_FOM_1.csv')),
+      use_weight=True),
+  'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Fixed_Operating_Cost_FOM.csv"),
+      use_weight=False),
+  'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Energy Efficiency Factor': vma.VMA(
+      filename=None, use_weight=False),
+  'Total Energy Used per SOLUTION functional unit': vma.VMA(
+      filename=None, use_weight=False),
+  'Fuel Consumed per CONVENTIONAL Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Fuel Efficiency Factor': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv"),
+      use_weight=False),
+  'CH4-CO2eq Tons Reduced': vma.VMA(
+      filename=None, use_weight=False),
+  'N2O-CO2eq Tons Reduced': vma.VMA(
+      filename=None, use_weight=False),
+  '2005-2014 Average CONVENTIONAL Fuel Price per functional unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit.csv"),
+      use_weight=True),
+  'Weighted Average CONVENTIONAL Plant Efficiency': vma.VMA(
+      filename=DATADIR.joinpath(*('energy', 'vma_Weighted_Average_CONVENTIONAL_Plant_Efficiency_1.csv')),
+      use_weight=True),
+  'Coal Plant Efficiency': vma.VMA(
+      filename=DATADIR.joinpath(*('energy', 'vma_Coal_Plant_Efficiency_1.csv')),
+      use_weight=False),
+  'Natural Gas Plant Efficiency': vma.VMA(
+      filename=DATADIR.joinpath(*('energy', 'vma_Natural_Gas_Plant_Efficiency_1.csv')),
+      use_weight=False),
+  'Oil Plant Efficiency': vma.VMA(
+      filename=DATADIR.joinpath(*('energy', 'vma_Oil_Plant_Efficiency_1.csv')),
+      use_weight=False),
 }
+vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+
 units = {
   "implementation unit": "TW",
   "functional unit": "TWh",

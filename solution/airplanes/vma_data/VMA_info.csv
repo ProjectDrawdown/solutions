@@ -1,34 +1,18 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,490.5239834755743,490.5239834755743,490.5239834755743
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,True,18028435.066958193,33656843.171043545,2400026.9628728367
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,False,10.500501677840942,11.191723746004946,9.809279609676938
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,10.500501677840942,11.191723746004946,9.809279609676938
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,True,0.39109939299118024,0.751247373336775,0.03095141264558543
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,True,0.39109939299118024,0.751247373336775,0.03095141264558543
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,False,64340127.99612951,71471535.78652185,57208720.20573718
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,True,False,0.14916666666666664,0.16610200119408464,0.13223133213924865
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,Average_Seat_Capacity_Single_Aisle,Average Seat Capacity - Single Aisle,True,False,150.0,150.0,150.0
-24,Average_Stage_Length_Flown_of_Total_Operating_Fleet_in_the_world_Distances_traveled_from_takeoff_to_landing,Average Stage Length Flown of Total Operating Fleet in the world (Distances traveled from takeoff to landing),True,False,1791.0215714285714,2253.0923006378116,1328.9508422193312
-25,Average_fleet_wide_working_hours_per_day,Average fleet-wide working hours per day,True,False,12.5,12.5,12.5
-26,Average_time_hrs_between_consecutive_flights,Average time (hrs) between consecutive flights),True,False,1.5,1.5,1.5
-27,Average_Cruise_Speed_Single_Aisle,Average Cruise Speed - Single Aisle,True,False,822.0,822.0,822.0
-28,Solution_Load_Factor,Solution Load Factor,True,False,0.7827333333333334,0.8438872012041031,0.7215794654625637
-29,Discount_Rate_Commercial,Discount Rate - Commercial,True,False,0.09219999999999999,0.1231735370921695,0.06122646290783049
-30,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-31,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-32,Average_Seat_Capacity_Twin_Aisle,Average Seat Capacity - Twin Aisle,True,False,325.0,325.0,325.0
-33,Average_Cruise_Speed_Twin_Aisle,Average Cruise Speed - Twin Aisle,True,False,950.0,950.0,950.0
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,490.5239834755743,490.5239834755743,490.5239834755743
+3,SOLUTION First Cost per Implementation Unit,18028435.066958193,33656843.171043545,2400026.9628728367
+4,CONVENTIONAL Lifetime Capacity,10.500501677840942,11.191723746004946,9.809279609676938
+5,SOLUTION Lifetime Capacity,10.500501677840942,11.191723746004946,9.809279609676938
+6,CONVENTIONAL Average Annual Use,0.39109939299118024,0.751247373336775,0.03095141264558543
+7,SOLUTION Average Annual Use,0.39109939299118024,0.751247373336775,0.03095141264558543
+15,CONVENTIONAL Fuel Consumed per Functional Unit,64340127.99612951,71471535.78652185,57208720.20573718
+16,SOLUTION Fuel Efficiency Factor,0.14916666666666664,0.16610200119408464,0.13223133213924865
+23,Average Seat Capacity - Single Aisle,150.0,150.0,150.0
+24,Average Stage Length Flown of Total Operating Fleet in the world (Distances traveled from takeoff to landing),1791.0215714285714,2253.0923006378116,1328.9508422193312
+25,Average fleet-wide working hours per day,12.5,12.5,12.5
+26,Average time (hrs) between consecutive flights),1.5,1.5,1.5
+27,Average Cruise Speed - Single Aisle,822.0,822.0,822.0
+28,Solution Load Factor,0.7827333333333334,0.8438872012041031,0.7215794654625637
+29,Discount Rate - Commercial,0.09219999999999999,0.1231735370921695,0.06122646290783049
+32,Average Seat Capacity - Twin Aisle,325.0,325.0,325.0
+33,Average Cruise Speed - Twin Aisle,950.0,950.0,950.0

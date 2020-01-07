@@ -1,32 +1,13 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,1.60520492362198,3.315811220688096,-0.1054013734441357
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,False,295187860.62091506,649955828.3813355,41176470.5882353
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,850715054.5454545,1475798389.3668225,225631719.72408652
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,False,88.0,88.0,88.0
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,88.0,88.0,88.0
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,False,False,,,
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,False,False,,,
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,False,False,,,
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,CONVENTIONAL_Total_Energy_Used_per_Functional_Unit,CONVENTIONAL Total Energy Used per Functional Unit,False,False,,,
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,False,False,,,
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,False,False,,,
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,Commercial_Window_to_Floor_Area_Ratio,Commercial Window to Floor Area Ratio,True,False,0.155,0.20623475382979797,0.10376524617020202
-24,Energy_Efficiency_of_Cooling_with_Smart_Glass,Energy Efficiency of Cooling with Smart Glass,True,False,0.22666666666666668,0.3323653999713862,0.12096793336194717
-25,Energy_Efficiency_of_Lighting_with_Smart_Glass,Energy Efficiency of Lighting with Smart Glass,True,False,0.3514285714285714,0.5493050532065137,0.1535520896506292
-26,Average_Energy_for_Commercial_Cooling_per_Floor_Area,Average Energy for Commercial Cooling per Floor Area,True,False,0.02435528604600556,0.025833359999999996,0.022877212092011125
-27,Average_Energy_for_Commercial_Lighting_per_Floor_Area,Average Energy for Commercial Lighting per Floor Area,True,False,0.051082951120197055,0.07319451999999999,0.028971382240394132
-28,Learning_Rate_for_Similar_Technology_A_C_units,Learning Rate for Similar Technology (A/C units),True,False,0.13,0.17966554808583785,0.08033445191416218
-29,Discount_Rate_Commercial,Discount Rate - Commercial,True,False,0.09219999999999999,0.1231735370921695,0.06122646290783049
-30,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-31,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,1.60520492362198,3.315811220688096,-0.1054013734441357
+2,CONVENTIONAL First Cost per Implementation Unit,295187860.62091506,649955828.3813355,41176470.5882353
+3,SOLUTION First Cost per Implementation Unit,850715054.5454545,1475798389.3668225,225631719.72408652
+4,CONVENTIONAL Lifetime Capacity,88.0,88.0,88.0
+5,SOLUTION Lifetime Capacity,88.0,88.0,88.0
+23,Commercial Window to Floor Area Ratio,0.155,0.20623475382979797,0.10376524617020202
+24,Energy Efficiency of Cooling with Smart Glass,0.22666666666666668,0.3323653999713862,0.12096793336194717
+25,Energy Efficiency of Lighting with Smart Glass,0.3514285714285714,0.5493050532065137,0.1535520896506292
+26,Average Energy for Commercial Cooling per Floor Area,0.02435528604600556,0.025833359999999996,0.022877212092011125
+27,Average Energy for Commercial Lighting per Floor Area,0.051082951120197055,0.07319451999999999,0.028971382240394132
+28,Learning Rate for Similar Technology (A/C units),0.13,0.17966554808583785,0.08033445191416218
+29,Discount Rate - Commercial,0.09219999999999999,0.1231735370921695,0.06122646290783049

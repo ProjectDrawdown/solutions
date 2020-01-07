@@ -1,4 +1,0 @@
-Source ID, Link, Region, Specific Geographic Location, Source Validation Code, Year, License Code, Raw Data Input, Original Units, Weight
-From coal_plant_efficiency_vma variable, , World, , , Various, , 37.1577551412647%, %, @energy_mix_coal@
-From natural_gas_plant_efficiency_vma variable, , World, , , Various, , 48.2936717783726%, %, @energy_mix_natural_gas@
-From oil_plant_efficiency_vma variable, , OECD90, Japan, , 2005, , 39%, %, @energy_mix_oil@

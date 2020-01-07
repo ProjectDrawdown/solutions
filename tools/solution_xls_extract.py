@@ -739,7 +739,7 @@ def normalize_source_name(sourcename):
         if 'MODERATE' in name: return 'Based on: Greenpeace 2016 Solar Thermal Moderate' + suffix
         if 'ADVANCED' in name: return 'Based on: Greenpeace 2016 Solar Thermal Advanced' + suffix
         raise ValueError('Unknown Greenpeace Solar Thermal source: ' + sourcename)
-    return unicodedata.normalize('NFD', normalized)
+    return unicodedata.normalize('NFC', normalized)
 
 
 def normalize_case_name(name):
@@ -1384,18 +1384,19 @@ def extract_vmas(f, wb, outputdir):
         vmas = vma_r.read_xls(csv_path=vma_dir_path)
     f.write("VMAs = {\n")
     for _, row in vmas.iterrows():
-        f.write(f"  '{row['Title on xls']}': vma.VMA(")
+        f.write(f"  '{row['Title on xls']}': vma.VMA(\n")
         filename = row['Filename']
         if not filename:
-            f.write(f"      filename=None, use_weight={row['Use weight?']}, has_data={row['Has data?']}),\n")
+            f.write(f"      filename=None, use_weight={row['Use weight?']}),\n")
         else:
             if isinstance(filename, str):
                 path = f'THISDIR.joinpath("vma_data", "{filename}")'
             else:
                 path = f'DATADIR.joinpath(*{filename})'
             f.write(f"      filename={path},\n")
-            f.write(f"      use_weight={row['Use weight?']}, has_data={row['Has data?']}),\n")
+            f.write(f"      use_weight={row['Use weight?']}),\n")
     f.write("}\n")
+    f.write("vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))\n\n")
 
 
 def lookup_unit(tab, row, col):

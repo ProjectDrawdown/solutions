@@ -1,31 +1,21 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,198505316569.0341,198505316569.0341,198505316569.0341
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,False,1e-35,1e-35,1e-35
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,True,2503.289213076928,9792.717599767031,762.64
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,False,3922.8,3922.8,3922.8
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,69215.62156535001,69215.62156535001,69215.62156535001
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,True,3922.8,10042.950612525807,1407.2
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,True,17303.905391337506,30924.555042568405,3683.255740106608
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,True,0.2512815834811869,0.42307770185873295,0.07948546510364088
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,0.018158327933267257,0.018158327933267257,0.018158327933267257
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,CONVENTIONAL_Total_Energy_Used_per_Functional_Unit,CONVENTIONAL Total Energy Used per Functional Unit,False,False,,,
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,True,True,1.4116754974075279e-11,2.1383643787776724e-11,6.849866160373832e-12
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,False,0.06434012799612952,0.07147153578652188,0.05720872020573716
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,True,False,1.0,1.0,1.0
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,True,True,7.299750000000001e-05,0.0001788820864535415,4.2900000000000004e-06
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,True,True,5.6863545770659375e-06,9.004895995320707e-06,2.367813158811168e-06
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,Total_Number_of_Air_Business_Trips_Annually,Total Number of Air Business Trips Annually,True,False,570777759.405967,570777759.405967,570777759.405967
-24,Share_of_Business_Travel,Share of Business Travel,True,False,0.32287532965715654,0.4060000000000001,0.239750659314313
-25,Bandwidth_Cost,Bandwidth Cost,True,True,29.296798250530255,36.051444016149574,22.542152484910936
-26,Annual_Maintenance_Cost,Annual Maintenance Cost,True,True,284.91319037160747,638.6050651212001,103.62294794940846
-27,Global_Adoption_by_2050,Global Adoption by 2050,True,False,0.16,0.2619803902718557,0.05801960972814431
-28,Discount_Rates_Commercial,Discount Rates - Commercial,True,False,0.09219999999999999,0.1231735370921695,0.06122646290783049
-29,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-30,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,198505316569.0341,198505316569.0341,198505316569.0341
+2,CONVENTIONAL First Cost per Implementation Unit,1e-35,1e-35,1e-35
+3,SOLUTION First Cost per Implementation Unit,2503.289213076928,9792.717599767031,762.64
+4,CONVENTIONAL Lifetime Capacity,3922.8,3922.8,3922.8
+5,SOLUTION Lifetime Capacity,69215.62156535001,69215.62156535001,69215.62156535001
+6,CONVENTIONAL Average Annual Use,3922.8,10042.950612525807,1407.2
+7,SOLUTION Average Annual Use,17303.905391337506,30924.555042568405,3683.255740106608
+8,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,0.2512815834811869,0.42307770185873295,0.07948546510364088
+9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,0.018158327933267257,0.018158327933267257,0.018158327933267257
+14,SOLUTION Total Energy Used per Functional Unit,1.4116754974075279e-11,2.1383643787776724e-11,6.849866160373832e-12
+15,CONVENTIONAL Fuel Consumed per Functional Unit,0.06434012799612952,0.07147153578652188,0.05720872020573716
+16,SOLUTION Fuel Efficiency Factor,1.0,1.0,1.0
+19,CONVENTIONAL Indirect CO2 Emissions per Unit,7.299750000000001e-05,0.0001788820864535415,4.2900000000000004e-06
+20,SOLUTION Indirect CO2 Emissions per Unit,5.6863545770659375e-06,9.004895995320707e-06,2.367813158811168e-06
+23,Total Number of Air Business Trips Annually,570777759.405967,570777759.405967,570777759.405967
+24,Share of Business Travel,0.32287532965715654,0.4060000000000001,0.239750659314313
+25,Bandwidth Cost,29.296798250530255,36.051444016149574,22.542152484910936
+26,Annual Maintenance Cost,284.91319037160747,638.6050651212001,103.62294794940846
+27,Global Adoption by 2050,0.16,0.2619803902718557,0.05801960972814431
+28,Discount Rates - Commercial,0.09219999999999999,0.1231735370921695,0.06122646290783049

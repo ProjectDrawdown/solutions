@@ -1,36 +1,25 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,0.21126543371830106,0.43731117773651473,-0.014780310299912586
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,True,True,4.695343157987457,10.709616640974863,0.013234175249711874
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,19.47968745713601,37.21036660214932,1.9326502196913482
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,True,7058.394160583942,14624.185301533467,191.16788321167886
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,50000.0,50000.0,50000.0
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,False,1000.0,1000.0,1000.0
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,1000.0,1000.0,1000.0
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,True,0.0051813527773320895,0.008889024227952763,0.0014736813267114167
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,0.0019107061503416854,0.0019107061503416854,0.0019107061503416854
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,True,True,39.48102556780074,67.61380487744131,11.348246258160174
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,True,False,13.966416257867207,18.285753963611885,9.64707855212253
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,False,False,,,
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,False,False,,,
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,True,True,633629.7441857421,1751445.2916220156,391.2408759124088
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,True,False,588343.040378007,743623.0707572228,433063.00999879115
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-25,Future_estimates_of_First_cost_LED,Future estimates of First cost - LED,True,False,7683062988095.237,10282205755673.031,5083920220517.443
-26,LED_Lamp_Efficacy,LED Lamp Efficacy,True,False,73.16666666666667,95.14329566708942,51.190037666243924
-27,Luminous_Flux_Incandescent_Lamp,Luminous Flux - Incandescent Lamp,True,False,513.0,513.0,513.0
-28,Luminous_Flux_Halogen_Lamp,Luminous Flux - Halogen Lamp,True,False,450.4,483.028821615253,417.771178384747
-29,Luminous_Flux_LFL_Linear_Fluorescent,Luminous Flux - LFL (Linear Fluorescent),True,False,2111.4,2654.1889460923094,1568.6110539076906
-30,Luminous_Flux_CFL_Compact_Fluorescent,Luminous Flux - CFL (Compact Fluorescent),True,False,522.5,522.5,522.5
-31,Luminous_Efficacy_Incandescent_Lamp,Luminous Efficacy - Incandescent Lamp,True,False,13.5,16.74037034920393,10.25962965079607
-32,Luminous_Efficacy_Halogen_Lamp,Luminous Efficacy - Halogen Lamp,True,False,21.527777777777775,27.746340689846612,15.309214865708938
-33,Luminous_Efficacy_LFL_Linear_Fluorescent,Luminous Efficacy - LFL (Linear Fluorescent),True,False,80.388,95.14341175298067,65.63258824701934
-34,Luminous_Efficacy_CFL_Compact_Fluorescent,Luminous Efficacy - CFL (Compact Fluorescent),True,False,60.9375,67.13446246156131,54.74053753843869
-35,LED_Luminous_Flux,LED Luminous Flux,True,False,600.0,600.0,600.0
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,0.21126543371830106,0.43731117773651473,-0.014780310299912586
+2,CONVENTIONAL First Cost per Implementation Unit,4.695343157987457,10.709616640974863,0.013234175249711874
+3,SOLUTION First Cost per Implementation Unit,19.47968745713601,37.21036660214932,1.9326502196913482
+4,CONVENTIONAL Lifetime Capacity,7058.394160583942,14624.185301533467,191.16788321167886
+5,SOLUTION Lifetime Capacity,50000.0,50000.0,50000.0
+6,CONVENTIONAL Average Annual Use,1000.0,1000.0,1000.0
+7,SOLUTION Average Annual Use,1000.0,1000.0,1000.0
+8,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,0.0051813527773320895,0.008889024227952763,0.0014736813267114167
+9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,0.0019107061503416854,0.0019107061503416854,0.0019107061503416854
+12,CONVENTIONAL Total Energy Used per Functional Unit,39.48102556780074,67.61380487744131,11.348246258160174
+14,SOLUTION Total Energy Used per Functional Unit,13.966416257867207,18.285753963611885,9.64707855212253
+19,CONVENTIONAL Indirect CO2 Emissions per Unit,633629.7441857421,1751445.2916220156,391.2408759124088
+20,SOLUTION Indirect CO2 Emissions per Unit,588343.040378007,743623.0707572228,433063.00999879115
+25,Future estimates of First cost - LED,7683062988095.237,10282205755673.031,5083920220517.443
+26,LED Lamp Efficacy,73.16666666666667,95.14329566708942,51.190037666243924
+27,Luminous Flux - Incandescent Lamp,513.0,513.0,513.0
+28,Luminous Flux - Halogen Lamp,450.4,483.028821615253,417.771178384747
+29,Luminous Flux - LFL (Linear Fluorescent),2111.4,2654.1889460923094,1568.6110539076906
+30,Luminous Flux - CFL (Compact Fluorescent),522.5,522.5,522.5
+31,Luminous Efficacy - Incandescent Lamp,13.5,16.74037034920393,10.25962965079607
+32,Luminous Efficacy - Halogen Lamp,21.527777777777775,27.746340689846612,15.309214865708938
+33,Luminous Efficacy - LFL (Linear Fluorescent),80.388,95.14341175298067,65.63258824701934
+34,Luminous Efficacy - CFL (Compact Fluorescent),60.9375,67.13446246156131,54.74053753843869
+35,LED Luminous Flux,600.0,600.0,600.0

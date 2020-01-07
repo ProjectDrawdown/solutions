@@ -24,9 +24,80 @@ from model import vma
 from model import tla
 from solution import land
 
-DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+VMAs = {
+  'Current Adoption': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
+      use_weight=False),
+  'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION First Cost per Implementation Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Operating Cost per Functional Unit per Annum': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
+      filename=None, use_weight=False),
+  'Yield from CONVENTIONAL Practice': vma.VMA(
+      filename=None, use_weight=False),
+  'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)': vma.VMA(
+      filename=None, use_weight=False),
+  'Average Electricty Used DEGRADED LAND': vma.VMA(
+      filename=None, use_weight=False),
+  'Energy Efficiency Factor UNDEGRADED LAND': vma.VMA(
+      filename=None, use_weight=False),
+  'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND': vma.VMA(
+      filename=None, use_weight=False),
+  'Fuel Consumed on DEGRADED Land': vma.VMA(
+      filename=None, use_weight=False),
+  'Fuel Reduction Factor for UNDEGRADED Land': vma.VMA(
+      filename=None, use_weight=False),
+  't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
+      filename=None, use_weight=False),
+  't CO2 Reduced per Land Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "t_CO2_Reduced_per_Land_Unit.csv"),
+      use_weight=False),
+  't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "t_N2O_CO2_eq_Reduced_per_Land_Unit.csv"),
+      use_weight=False),
+  't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "t_CH4_CO2_eq_Reduced_per_Land_Unit.csv"),
+      use_weight=False),
+  'Indirect CO2-eq Emissions DEGRADED LAND': vma.VMA(
+      filename=None, use_weight=False),
+  'Indirect CO2-eq Emissions UNDEGRADED LAND': vma.VMA(
+      filename=None, use_weight=False),
+  'Sequestration Rates': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Sequestration_Rates.csv"),
+      use_weight=False),
+  'Growth Rate of Land Degradation': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Growth_Rate_of_Land_Degradation.csv"),
+      use_weight=True),
+  'Disturbance Rate': vma.VMA(
+      filename=None, use_weight=False),
+  't C storage in Protected Landtype': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "t_C_storage_in_Protected_Landtype.csv"),
+      use_weight=False),
+  'Global Multipler for Regrowth': vma.VMA(
+      filename=None, use_weight=False),
+  'Tropical Multipler for Regrowth': vma.VMA(
+      filename=None, use_weight=False),
+  'Temperate Multiplier for Regrowth': vma.VMA(
+      filename=None, use_weight=False),
+  'Peatland area in 1990': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Peatland_area_in_1990.csv"),
+      use_weight=False),
+  'Peatland area in 2008': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Peatland_area_in_2008.csv"),
+      use_weight=False),
+  'Degraded Peatland Area in 1990': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Degraded_Peatland_Area_in_1990.csv"),
+      use_weight=False),
+  'Degraded Peatland Area in 2008': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Degraded_Peatland_Area_in_2008.csv"),
+      use_weight=False),
+}
+vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
 
 units = {
   "implementation unit": None,

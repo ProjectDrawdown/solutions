@@ -1,34 +1,20 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,65804.46751879482,65804.46751879482,65804.46751879482
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,True,False,33402.87862552218,66026.36831745532,779.3889335890417
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,False,15.0,15.0,15.0
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,15.0,15.0,15.0
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,False,1.0,1.0,1.0
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,1.0,1.0,1.0
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,True,444783.27878216875,951420.0970788111,0.0
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,420374.98425700323,420374.98425700323,420374.98425700323
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,CONVENTIONAL_Total_Energy_Used_per_Functional_Unit,CONVENTIONAL Total Energy Used per Functional Unit,True,True,0.0012702321631971134,0.0028512613513828025,3.7037037037037033e-06
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,True,False,0.2346289526111111,0.3960169866343627,0.07324091858785953
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,False,False,,,
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,False,False,,,
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-25,Per_Capita_Water_Production_by_Utilities,Per Capita Water Production by Utilities,True,True,8.188205231562387e-05,8.188205231562387e-05,8.188205231562387e-05
-26,Water_distributed_using_Gravity,% Water distributed using Gravity,True,False,0.09917355371900827,0.09917355371900827,0.09917355371900827
-27,Urban_population_served_with_piped_water,% Urban population served with piped water,True,True,0.781,0.781,0.781
-28,Rural_population_served_with_piped_water,% Rural population served with piped water,True,True,0.301,0.301,0.301
-29,of_Electricity_based_pumping_using_SURFACE_source_of_water,% of Electricity based pumping using SURFACE source of water,True,False,0.5925925925925926,0.5925925925925926,0.5925925925925926
-30,of_Electricity_based_pumping_using_GROUND_source_of_water_or_from_lower_altitudes,% of Electricity based pumping using GROUND source of water (or from lower altitudes),True,False,0.3888888888888889,0.3888888888888889,0.3888888888888889
-31,of_Electricity_based_pumping_using_DESALINATION_or_energy_intensive_methods,% of Electricity based pumping using  DESALINATION(or energy intensive methods),True,False,0.018518518518518517,0.018518518518518517,0.018518518518518517
-32,Non_Revenue_Water,Non Revenue Water,True,False,0.3570542136008428,0.3570542136008428,0.3570542136008428
-33,Real_Losses_Saved_from_Solution,Real Losses Saved from Solution,True,False,0.5218167273387584,0.760324367255518,0.2833090874219988
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,65804.46751879482,65804.46751879482,65804.46751879482
+3,SOLUTION First Cost per Implementation Unit,33402.87862552218,66026.36831745532,779.3889335890417
+4,CONVENTIONAL Lifetime Capacity,15.0,15.0,15.0
+5,SOLUTION Lifetime Capacity,15.0,15.0,15.0
+6,CONVENTIONAL Average Annual Use,1.0,1.0,1.0
+7,SOLUTION Average Annual Use,1.0,1.0,1.0
+8,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,444783.27878216875,951420.0970788111,0.0
+9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,420374.98425700323,420374.98425700323,420374.98425700323
+12,CONVENTIONAL Total Energy Used per Functional Unit,0.0012702321631971134,0.0028512613513828025,3.7037037037037033e-06
+13,SOLUTION Energy Efficiency Factor,0.2346289526111111,0.3960169866343627,0.07324091858785953
+25,Per Capita Water Production by Utilities,8.188205231562387e-05,8.188205231562387e-05,8.188205231562387e-05
+26,% Water distributed using Gravity,0.09917355371900827,0.09917355371900827,0.09917355371900827
+27,% Urban population served with piped water,0.781,0.781,0.781
+28,% Rural population served with piped water,0.301,0.301,0.301
+29,% of Electricity based pumping using SURFACE source of water,0.5925925925925926,0.5925925925925926,0.5925925925925926
+30,% of Electricity based pumping using GROUND source of water (or from lower altitudes),0.3888888888888889,0.3888888888888889,0.3888888888888889
+31,% of Electricity based pumping using  DESALINATION(or energy intensive methods),0.018518518518518517,0.018518518518518517,0.018518518518518517
+32,Non Revenue Water,0.3570542136008428,0.3570542136008428,0.3570542136008428
+33,Real Losses Saved from Solution,0.5218167273387584,0.760324367255518,0.2833090874219988

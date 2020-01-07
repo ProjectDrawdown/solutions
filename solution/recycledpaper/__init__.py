@@ -23,9 +23,76 @@ from model import vma
 from model import tam
 from solution import rrs
 
-DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+VMAs = {
+  'Current Adoption': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
+      use_weight=False),
+  'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"),
+      use_weight=True),
+  'SOLUTION First Cost per Implementation Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
+      use_weight=True),
+  'CONVENTIONAL Lifetime Capacity': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
+      use_weight=False),
+  'SOLUTION Lifetime Capacity': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
+      use_weight=False),
+  'CONVENTIONAL Average Annual Use': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
+      use_weight=False),
+  'SOLUTION Average Annual Use': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
+      use_weight=False),
+  'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Energy Efficiency Factor': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Fuel Efficiency Factor': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv"),
+      use_weight=True),
+  'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Direct_Emissions_per_Functional_Unit.csv"),
+      use_weight=True),
+  'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv"),
+      use_weight=False),
+  'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv"),
+      use_weight=False),
+  'CH4-CO2eq Tons Reduced': vma.VMA(
+      filename=None, use_weight=False),
+  'N2O-CO2eq Tons Reduced': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Revenue per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Revenue per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'Indirect CO2 Emissions per CONVENTIONAL - Transport and Retail': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Indirect_CO2_Emissions_per_CONVENTIONAL_Transport_and_Retail.csv"),
+      use_weight=False),
+  'Indirect CO2 Emissions per SOLUTION - Transport and Retail': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Indirect_CO2_Emissions_per_SOLUTION_Transport_and_Retail.csv"),
+      use_weight=False),
+}
+vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
 
 units = {
   "implementation unit": "Million Metric Tonnes of Recycled Paper Produced",

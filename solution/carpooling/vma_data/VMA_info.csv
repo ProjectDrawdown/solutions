@@ -1,32 +1,17 @@
-VMA number,Filename,Title on xls,Has data?,Use weight?,Fixed Mean,Fixed High,Fixed Low
-1,Current_Adoption,Current Adoption,True,False,134986978787.70717,138395733632.55026,131578223942.86407
-2,CONVENTIONAL_First_Cost_per_Implementation_Unit,CONVENTIONAL First Cost per Implementation Unit,False,False,,,
-3,SOLUTION_First_Cost_per_Implementation_Unit,SOLUTION First Cost per Implementation Unit,False,False,,,
-4,CONVENTIONAL_Lifetime_Capacity,CONVENTIONAL Lifetime Capacity,True,False,18.156082559999998,18.156082559999998,18.156082559999998
-5,SOLUTION_Lifetime_Capacity,SOLUTION Lifetime Capacity,True,False,41.9405507136,41.9405507136,41.9405507136
-6,CONVENTIONAL_Average_Annual_Use,CONVENTIONAL Average Annual Use,True,False,18.156082559999998,18.156082559999998,18.156082559999998
-7,SOLUTION_Average_Annual_Use,SOLUTION Average Annual Use,True,False,41.9405507136,41.9405507136,41.9405507136
-8,CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,True,False,0.026439498120628405,0.038135192130050344,0.014743804111206469
-9,SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit,SOLUTION Variable Operating Cost (VOM) per Functional Unit,True,False,0.010437363715801258,0.015726693834590494,0.005148033597012025
-10,CONVENTIONAL_Fixed_Operating_Cost_FOM,CONVENTIONAL Fixed Operating Cost (FOM),False,False,,,
-11,SOLUTION_Fixed_Operating_Cost_FOM,SOLUTION Fixed Operating Cost (FOM),False,False,,,
-12,Electricty_Consumed_per_Functional_Unit_CONVENTIONAL,Electricty Consumed per Functional Unit - CONVENTIONAL,False,False,,,
-13,SOLUTION_Energy_Efficiency_Factor,SOLUTION Energy Efficiency Factor,False,False,,,
-14,SOLUTION_Total_Energy_Used_per_Functional_Unit,SOLUTION Total Energy Used per Functional Unit,False,False,,,
-15,CONVENTIONAL_Fuel_Consumed_per_Functional_Unit,CONVENTIONAL Fuel Consumed per Functional Unit,True,False,0.08330689018636556,0.09963849223122345,0.06697528814150766
-16,SOLUTION_Fuel_Efficiency_Factor,SOLUTION Fuel Efficiency Factor,True,False,0.5670995670995671,0.5670995670995671,0.5670995670995671
-17,CONVENTIONAL_Direct_Emissions_per_Functional_Unit,CONVENTIONAL Direct Emissions per Functional Unit,False,False,,,
-18,SOLUTION_Direct_Emissions_per_Functional_Unit,SOLUTION Direct Emissions per Functional Unit,False,False,,,
-19,CONVENTIONAL_Indirect_CO2_Emissions_per_Unit,CONVENTIONAL Indirect CO2 Emissions per Unit,False,False,,,
-20,SOLUTION_Indirect_CO2_Emissions_per_Unit,SOLUTION Indirect CO2 Emissions per Unit,False,False,,,
-21,CH4_CO2eq_Tons_Reduced,CH4-CO2eq Tons Reduced,False,False,,,
-22,N2O_CO2eq_Tons_Reduced,N2O-CO2eq Tons Reduced,False,False,,,
-23,CONVENTIONAL_Revenue_per_Functional_Unit,CONVENTIONAL Revenue per Functional Unit,False,False,,,
-24,SOLUTION_Revenue_per_Functional_Unit,SOLUTION Revenue per Functional Unit,False,False,,,
-25,Annual_Commuting_Days,Annual Commuting Days,True,False,250.0,250.0,250.0
-26,Average_Carpool_Occupancy,Average Carpool Occupancy,True,False,2.31,2.31,2.31
-27,Average_One_way_North_American_Commuting_Travel_Distance,Average One-way North American Commuting Travel Distance,True,False,18.156082559999998,21.95245383971865,14.359711280281346
-28,Current_Labor_Force,Current Labor Force,True,False,178250000.0,178250000.0,178250000.0
-29,Commuting_by_Car_Mode_Share,Commuting by Car Mode Share,True,False,0.86,0.86,0.86
-30,Car_Lifetime,Car Lifetime,True,False,198570.06401066668,247971.61415765597,149168.5138636774
-31,Discount_Rates_Households,Discount Rates - Households,True,False,0.04,0.04999999999999999,0.030000000000000013
+VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
+1,Current Adoption,134986978787.70717,138395733632.55026,131578223942.86407
+4,CONVENTIONAL Lifetime Capacity,18.156082559999998,18.156082559999998,18.156082559999998
+5,SOLUTION Lifetime Capacity,41.9405507136,41.9405507136,41.9405507136
+6,CONVENTIONAL Average Annual Use,18.156082559999998,18.156082559999998,18.156082559999998
+7,SOLUTION Average Annual Use,41.9405507136,41.9405507136,41.9405507136
+8,CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit,0.026439498120628405,0.038135192130050344,0.014743804111206469
+9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,0.010437363715801258,0.015726693834590494,0.005148033597012025
+15,CONVENTIONAL Fuel Consumed per Functional Unit,0.08330689018636556,0.09963849223122345,0.06697528814150766
+16,SOLUTION Fuel Efficiency Factor,0.5670995670995671,0.5670995670995671,0.5670995670995671
+25,Annual Commuting Days,250.0,250.0,250.0
+26,Average Carpool Occupancy,2.31,2.31,2.31
+27,Average One-way North American Commuting Travel Distance,18.156082559999998,21.95245383971865,14.359711280281346
+28,Current Labor Force,178250000.0,178250000.0,178250000.0
+29,Commuting by Car Mode Share,0.86,0.86,0.86
+30,Car Lifetime,198570.06401066668,247971.61415765597,149168.5138636774
+31,Discount Rates - Households,0.04,0.04999999999999999,0.030000000000000013

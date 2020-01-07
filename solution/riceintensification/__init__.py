@@ -24,9 +24,69 @@ from model import vma
 from model import tla
 from solution import land
 
-DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
+DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = vma.generate_vma_dict(THISDIR.joinpath('vma_data'))
+VMAs = {
+  'Current Adoption': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
+      use_weight=False),
+  'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION First Cost per Implementation Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Operating Cost per Functional Unit per Annum': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv"),
+      use_weight=True),
+  'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv"),
+      use_weight=True),
+  'CONVENTIONAL Net Profit Margin per Functional Unit per Annum': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
+      use_weight=True),
+  'SOLUTION Net Profit Margin per Functional Unit per Annum': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
+      use_weight=True),
+  'Yield from CONVENTIONAL Practice': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Yield_from_CONVENTIONAL_Practice.csv"),
+      use_weight=True),
+  'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION.csv"),
+      use_weight=False),
+  'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Energy Efficiency Factor': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
+      filename=None, use_weight=False),
+  'SOLUTION Fuel Efficiency Factor': vma.VMA(
+      filename=None, use_weight=False),
+  't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv"),
+      use_weight=False),
+  't CO2 Reduced per Land Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "t_CO2_Reduced_per_Land_Unit.csv"),
+      use_weight=False),
+  't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "t_N2O_CO2_eq_Reduced_per_Land_Unit.csv"),
+      use_weight=False),
+  't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "t_CH4_CO2_eq_Reduced_per_Land_Unit.csv"),
+      use_weight=False),
+  'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE': vma.VMA(
+      filename=None, use_weight=False),
+  'Indirect CO2 Emissions per  Implementation Unit - SOLUTION': vma.VMA(
+      filename=None, use_weight=False),
+  'Sequestration Rates': vma.VMA(
+      filename=THISDIR.joinpath("vma_data", "Sequestration_Rates.csv"),
+      use_weight=False),
+  'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing': vma.VMA(
+      filename=None, use_weight=False),
+  'Disturbance Rate': vma.VMA(
+      filename=None, use_weight=False),
+}
+vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
 
 units = {
   "implementation unit": None,
