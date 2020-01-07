@@ -355,3 +355,8 @@ Dec 16 - Dec 20, 2019
 
 Dec 23 - Dec 27, 2019
 + finish work on FaIR results for emissions data from Excel models
+
+Dec 30, 2019 - Jan 3, 2020
++ Implement framework support to share more data files between solutions,
+  particularly VMA data. All solutions will need to be re-generated from
+  Excel to do this.
