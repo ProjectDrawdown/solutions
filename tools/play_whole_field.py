@@ -40,21 +40,22 @@ def init():
         m = obj.c2.co2eq_mmt_reduced()
         mmt[name] = m['World']
 
-    sector_gt = pd.DataFrame()
+    sector_gtons = pd.DataFrame()
     everything = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'),
         index_col=False, skipinitialspace=True, header=0, skip_blank_lines=True, comment='#')
 
     for sector in everything.Sector.unique():
         column_names = everything.loc[everything['Sector'] == sector, 'DirName'].dropna()
         sector_members = list(set(column_names).intersection(set(mmt.columns)))
-        sector_gt.loc[:, sector] = (mmt.loc[:, sector_members].sum(axis=1) / 1000.0) / 3.664
+        sector_gtons.loc[:, sector] = (mmt.loc[:, sector_members].sum(axis=1) / 1000.0) / 3.664
 
     total = model.fairutil.baseline_emissions()
     remaining = total.copy()
-    sectors = sector_gt.sort_values(axis='columns', by=2050, ascending=False).columns
+    sectors = sector_gtons.sort_values(axis='columns', by=2050, ascending=False).columns
     emissions = []
     for sector in sectors:
-        remaining['FossilCO2'] = remaining['FossilCO2'].subtract(sector_gt[sector], fill_value=0.0)
+        remaining['FossilCO2'] = remaining['FossilCO2'].subtract(sector_gtons[sector],
+                fill_value=0.0)
         _,_,T = fair.forward.fair_scm(emissions=remaining.values, useMultigas=True,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
         df_T = pd.Series(T, index=remaining.index)

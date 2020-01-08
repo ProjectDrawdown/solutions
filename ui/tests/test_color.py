@@ -12,6 +12,7 @@ def test_rgb_to_hex():
 
 def test_get_sector_color():
     assert ui.color.get_sector_color('Electricity Generation') == 'Peru'
+    assert ui.color.get_sector_color('Electricity') == 'Peru'
     assert ui.color.get_sector_color('No Such Sector') == 'Beige'
 
 def test_get_region_color():

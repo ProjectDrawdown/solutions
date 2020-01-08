@@ -48,6 +48,13 @@ true
 if [ $? -ne 0 ]; then
     rc=1
 fi
+
+if [[ ! -f excel_fair_results_test_PDS1.mp4 || \
+      ! -f excel_fair_results_test_PDS2.mp4 || \
+      ! -f excel_fair_results_test_PDS3.mp4 ]]; then
+    rc=1
+fi
+
 rm -rf ${tmpdir}
 
 trap 'kill $(jobs -pr) >/dev/null 2>&1' SIGINT SIGTERM EXIT
