@@ -91,7 +91,8 @@ def animate(frame, ax, total, lines, emissions):
     (sector, df_T) = emissions[sector_num]
     color = ui.color.get_sector_color(sector)
     if offset == 0:
-        line, = ax.plot([], [], color=color, label=sector)
+        zorder = 40 - sector_num
+        line, = ax.plot([], [], color=color, label=sector, zorder=zorder)
         lines[sector] = line
         legend_no_duplicates(ax)
     else:
@@ -134,7 +135,7 @@ def produce_animation(solutions, sectors, filename):
             tcrecs=model.fairutil.tcrecs)
     df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
-            color='black', label='Baseline')
+            color='black', label='Baseline', zorder=50)
     legend_no_duplicates(ax)
 
     ffmpeg = matplotlib.animation.writers['ffmpeg']
