@@ -6,8 +6,9 @@ import sys
 import fair
 import fair.RCPs
 import matplotlib
-import matplotlib.pyplot as plt
 import matplotlib.animation
+import matplotlib.pyplot as plt
+import matplotlib.style
 import model.fairutil
 import numpy as np
 import tempfile
@@ -167,4 +168,5 @@ if __name__ == "__main__":
             default='CORE-Global_GHG_Accounting_12-1-2019.xlsm')
     args = parser.parse_args(sys.argv[1:])
 
+    matplotlib.style.use('ggplot')
     process_ghgs(filename=args.excelfile)

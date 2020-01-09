@@ -10,8 +10,9 @@ import model.fairutil
 import fair
 import fair.RCPs
 import matplotlib
-import matplotlib.pyplot as plt
 import matplotlib.animation
+import matplotlib.pyplot as plt
+import matplotlib.style
 import numpy as np
 import tempfile
 import pandas as pd
@@ -116,7 +117,7 @@ if __name__ == '__main__':
     ffmpeg = matplotlib.animation.writers['ffmpeg']
     writer = ffmpeg(fps=15, bitrate=-1,
             metadata={'title':'Play the Whole Field', 'subject':'Climate Change Solutions',
-                'copyright':'Copyright 2019 Project Drawdown'},
+                'copyright':'Copyright 2020 Project Drawdown'},
             extra_args=['-tune', 'animation'],)
-
+    matplotlib.style.use('ggplot')
     main(filename=args.filename, writer=writer)
