@@ -46,7 +46,7 @@ def process_scenario(filename, scenario):
         prev_sector = sector
 
     total = model.fairutil.baseline_emissions()
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True,
+    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     baseline_T = pd.Series(T, index=total.index)
     impacts = pd.DataFrame(index=range(1850, 2101), columns=solution_names)
@@ -54,21 +54,20 @@ def process_scenario(filename, scenario):
     for solution, emissions in solutions.iteritems():
         total = model.fairutil.baseline_emissions()
         emissions.loc[2061:2100] = emissions.loc[2060]
-        total['FossilCO2'] = total['FossilCO2'].subtract(emissions.fillna(0.0), fill_value=0.0)
-        _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True,
+        total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
+        _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
         df_T = pd.Series(T, index=total.index)
         impacts[solution] = df_T - baseline_T
 
     total = model.fairutil.baseline_emissions()
     emissions = solutions.sum(axis=1)
-    baseline_total = total['FossilCO2'] + total['OtherCO2']
     output_solutions = solutions.copy()
-    output_solutions.insert(loc=len(output_solutions.columns), column="Baseline", value=baseline_total)
+    output_solutions.insert(loc=len(output_solutions.columns), column="Baseline", value=total)
     output_solutions.insert(loc=len(output_solutions.columns), column="Total", value=emissions)
     impacts.insert(loc=len(impacts.columns), column="Baseline", value=baseline_T)
-    total['FossilCO2'] = total['FossilCO2'].subtract(emissions.fillna(0.0), fill_value=0.0)
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True,
+    total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
+    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     df_T = pd.Series(T, index=total.index)
     impacts.insert(loc=len(impacts.columns), column="Total", value=df_T.copy())
@@ -103,7 +102,7 @@ def animate(frame, ax, total, lines, emissions):
         end = 2020 + offset
         line.set_data(df_T.loc[2020:end].index.values, df_T.loc[2020:end].values)
         if sector_num == 0:
-            _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True,
+            _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                     r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
             prev = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
         else:
@@ -122,17 +121,16 @@ def produce_animation(solutions, sectors, filename):
     sectors = sector_gtons.sort_values(axis='columns', by=2050, ascending=False).columns
     emissions = []
     for sector in sectors:
-        remaining['FossilCO2'] = remaining['FossilCO2'].subtract(sector_gtons[sector],
-                fill_value=0.0)
-        _,_,T = fair.forward.fair_scm(emissions=remaining.values, useMultigas=True,
+        remaining = remaining.subtract(sector_gtons[sector], fill_value=0.0)
+        _,_,T = fair.forward.fair_scm(emissions=remaining.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
         df_T = pd.Series(T, index=remaining.index)
         emissions.append((sector, df_T))
 
     fig = plt.figure()
     ax = fig.add_subplot()
-    ax.set_ylabel('Temperature anomaly (K)');
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True, r0=model.fairutil.r0,
+    ax.set_ylabel(u'°C');
+    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False, r0=model.fairutil.r0,
             tcrecs=model.fairutil.tcrecs)
     df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,

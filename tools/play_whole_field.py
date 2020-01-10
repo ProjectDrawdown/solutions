@@ -55,17 +55,16 @@ def init():
     sectors = sector_gtons.sort_values(axis='columns', by=2050, ascending=False).columns
     emissions = []
     for sector in sectors:
-        remaining['FossilCO2'] = remaining['FossilCO2'].subtract(sector_gtons[sector],
-                fill_value=0.0)
-        _,_,T = fair.forward.fair_scm(emissions=remaining.values, useMultigas=True,
+        remaining = remaining.subtract(sector_gtons[sector], fill_value=0.0)
+        _,_,T = fair.forward.fair_scm(emissions=remaining.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
         df_T = pd.Series(T, index=remaining.index)
         emissions.append((sector, df_T))
 
     fig = plt.figure()
     ax = fig.add_subplot()
-    ax.set_ylabel('Temperature anomaly (K)');
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True, r0=model.fairutil.r0,
+    ax.set_ylabel(u'°C');
+    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False, r0=model.fairutil.r0,
             tcrecs=model.fairutil.tcrecs)
     df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
@@ -90,7 +89,7 @@ def animate(frame, ax, total, lines, emissions):
         end = 2020 + offset
         line.set_data(df_T.loc[2020:end].index.values, df_T.loc[2020:end].values)
         if sector_num == 0:
-            _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True,
+            _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                     r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
             prev = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
         else:
