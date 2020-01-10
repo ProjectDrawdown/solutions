@@ -24,7 +24,7 @@ def process_scenario(filename, scenario):
     years = raw.index[11:]
     solution_names = sorted(list(set(raw.iloc[5, 3:].dropna())))
 
-    solutions = pd.DataFrame(0, index=range(1850, 2101), columns=solution_names)
+    solutions = pd.DataFrame(0, index=range(1850, 2061), columns=solution_names)
     solutions.index.name = 'Year'
     sectors = {}
     prev_solution = None
@@ -49,33 +49,27 @@ def process_scenario(filename, scenario):
     _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     baseline_T = pd.Series(T, index=total.index)
-    impacts = pd.DataFrame(index=range(1850, 2101), columns=solution_names)
-    impacts.index.name = 'Year'
+    temperature = pd.DataFrame(index=range(1850, 2061), columns=solution_names)
+    temperature.index.name = 'Year'
     for solution, emissions in solutions.iteritems():
         total = model.fairutil.baseline_emissions()
-        emissions.loc[2061:2100] = emissions.loc[2060]
         total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
         _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
         df_T = pd.Series(T, index=total.index)
-        impacts[solution] = df_T - baseline_T
+        temperature[solution] = df_T - baseline_T
 
     total = model.fairutil.baseline_emissions()
     emissions = solutions.sum(axis=1)
-    output_solutions = solutions.copy()
-    output_solutions.insert(loc=len(output_solutions.columns), column="Baseline", value=total)
-    output_solutions.insert(loc=len(output_solutions.columns), column="Total", value=emissions)
-    impacts.insert(loc=len(impacts.columns), column="Baseline", value=baseline_T)
+    temperature.insert(loc=len(temperature.columns), column="Baseline", value=baseline_T)
     total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
     _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     df_T = pd.Series(T, index=total.index)
-    impacts.insert(loc=len(impacts.columns), column="Total", value=df_T.copy())
+    temperature.insert(loc=len(temperature.columns), column="Total", value=df_T.copy())
 
-    outfile = os.path.splitext(os.path.basename(filename))[0] + '_Totals_' + scenario + '.csv'
-    output_solutions.to_csv(outfile, float_format='%.3f')
-    outfile = os.path.splitext(os.path.basename(filename))[0] + '_FaIR_' + scenario + '.csv'
-    impacts.to_csv(outfile, float_format='%.3f')
+    outfile = os.path.splitext(os.path.basename(filename))[0] + '_Temperature_' + scenario + '.csv'
+    temperature.to_csv(outfile, float_format='%.3f')
 
     return (solutions, sectors)
 
