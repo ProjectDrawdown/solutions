@@ -17,7 +17,7 @@ import solution.factory
 import ui.color
 
 
-def process_scenario(filename, scenario):
+def process_scenario(filename, outdir, scenario):
     sheet_name = 'Gtperyr_' + scenario
     raw = pd.read_excel(io=filename, sheet_name=sheet_name, header=None, index_col=0,
             dtype=object, skiprows=0, nrows=52, usecols='A:EF')
@@ -69,7 +69,7 @@ def process_scenario(filename, scenario):
     temperature.insert(loc=len(temperature.columns), column="Total", value=df_T.copy())
 
     outfile = os.path.splitext(os.path.basename(filename))[0] + '_Temperature_' + scenario + '.csv'
-    temperature.to_csv(outfile, float_format='%.3f')
+    temperature.to_csv(os.path.join(outdir, outfile), float_format='%.3f')
 
     return (solutions, sectors)
 
@@ -105,7 +105,7 @@ def animate(frame, ax, total, lines, emissions):
                 y2=df_T.loc[2020:end].values, color=color)
 
 
-def produce_animation(solutions, sectors, filename):
+def produce_animation(solutions, sectors, filename, writer):
     sector_gtons = pd.DataFrame()
     for sector, solution_list in sectors.items():
         sector_gtons.loc[:, sector] = solutions.loc[:, solution_list].sum(axis=1)
@@ -131,12 +131,6 @@ def produce_animation(solutions, sectors, filename):
             color='black', label='Baseline', zorder=50)
     legend_no_duplicates(ax)
 
-    ffmpeg = matplotlib.animation.writers['ffmpeg']
-    writer = ffmpeg(fps=15, bitrate=-1,
-            metadata={'title':'Play the Whole Field', 'subject':'Climate Change Solutions',
-                'copyright':'Copyright 2020 Project Drawdown'},
-            extra_args=['-tune', 'animation'],)
-
     lines = {}
     frames = len(emissions) * 50
     anim = matplotlib.animation.FuncAnimation(fig=fig, func=animate, interval=10, frames=frames,
@@ -144,13 +138,23 @@ def produce_animation(solutions, sectors, filename):
     anim.save(filename, writer=writer)
 
 
-def process_ghgs(filename):
+def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
+    matplotlib.style.use('ggplot')
     for scenario in ['PDS1', 'PDS2', 'PDS3']:
         print(f"{scenario} CSV")
-        (solutions, sectors) = process_scenario(filename=filename, scenario=scenario)
-        print(f"{scenario} animation")
-        animfile = os.path.splitext(os.path.basename(filename))[0] + '_' + scenario + '.mp4'
-        produce_animation(solutions=solutions, sectors=sectors, filename=animfile)
+        (solutions, sectors) = process_scenario(filename=excelfile, outdir=outdir,
+                scenario=scenario)
+        if writer is None:
+            ffmpeg = matplotlib.animation.writers['ffmpeg']
+            writer = ffmpeg(fps=15, bitrate=-1,
+                    metadata={'title':'Play the Whole Field', 'subject':'Climate Change Solutions',
+                        'copyright':'Copyright 2020 Project Drawdown'},
+                    extra_args=['-tune', 'animation'],)
+        if writer:
+            print(f"{scenario} animation")
+            mp4 = os.path.splitext(os.path.basename(excelfile))[0] + '_' + scenario + ext
+            produce_animation(solutions=solutions, sectors=sectors,
+                    filename=os.path.join(outdir, mp4), writer=writer)
 
 
 if __name__ == "__main__":
@@ -158,7 +162,8 @@ if __name__ == "__main__":
         description='Produce FaIR results from Drawdown emissions data.')
     parser.add_argument('--excelfile', help='Excel filename to process',
             default='CORE-Global_GHG_Accounting_12-1-2019.xlsm')
+    parser.add_argument('--outdir', help='output directory', default='.')
+
     args = parser.parse_args(sys.argv[1:])
 
-    matplotlib.style.use('ggplot')
-    process_ghgs(filename=args.excelfile)
+    process_ghgs(filename=args.excelfile, outdir=args.outdir)
