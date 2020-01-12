@@ -70,8 +70,8 @@ def baseline_emissions():
     """Return emissions to use as a baseline for Drawdown solutions."""
     rcp = pd.DataFrame(fair.RCPs.rcp45.Emissions.emissions.copy(), columns=ghg.keys(),
             index=fair.RCPs.rcp45.Emissions.year)
-    baseline = (rcp['FossilCO2']  + rcp['OtherCO2'] + (rcp['CH4'] * CH4_MULT / 1000.0) +
-            (rcp['N2O'] * N2O_MULT / 1000.0))
+    baseline = (rcp['FossilCO2']  + rcp['OtherCO2'] +
+            ((rcp['CH4'] * CH4_MULT / 1000.0) + (rcp['N2O'] * N2O_MULT / 1000.0)) / CO2_MULT)
     baseline.index = baseline.index.astype(int)
     baseline.index.name = 'Year'
     ddCO2 = pd.read_csv(str(baselineCO2_path), header=0, index_col=0, skipinitialspace=True,
