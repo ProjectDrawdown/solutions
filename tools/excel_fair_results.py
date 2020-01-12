@@ -75,8 +75,10 @@ def process_scenario(filename, outdir, scenario):
     df_C = pd.Series(C, index=total.index.copy())
     df_T = pd.Series(T, index=total.index.copy())
     concentration["Drawdown (ppm)"] = df_C
-    temperature.insert(loc=0, column="Total", value=df_T.copy())
-    temperature.insert(loc=0, column="Baseline", value=baseline_T)
+    preindustrial = baseline_T.loc[1850:1900].mean()
+    print(f"Pre-industrial temperature {preindustrial:.3f}C relative to {baseline_T.index[0]}")
+    temperature.insert(loc=0, column="Total", value=(df_T.copy() - preindustrial))
+    temperature.insert(loc=0, column="Baseline", value=(baseline_T - preindustrial))
 
     outfile = os.path.splitext(os.path.basename(filename))[0] + '_Temperature_' + scenario + '.csv'
     temperature.to_csv(os.path.join(outdir, outfile), float_format='%.3f')
