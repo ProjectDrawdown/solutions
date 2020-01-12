@@ -20,8 +20,15 @@ def test_animation_file(tmpdir):
     for pds in range(1, 4):
         outfile = tmpdir.join(f"excel_fair_results_test_PDS{pds}.gif")
         assert outfile.size() > 1024
+
         outfile = tmpdir.join(f"excel_fair_results_test_Temperature_PDS{pds}.csv")
         assert outfile.size() > 1024
         contents = outfile.open().read()
         assert "Baseline" in contents
+        assert "2020" in contents
+
+        outfile = tmpdir.join(f"excel_fair_results_test_Concentration_PDS{pds}.csv")
+        assert outfile.size() > 1024
+        contents = outfile.open().read()
+        assert "Total" in contents
         assert "2020" in contents

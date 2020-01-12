@@ -46,30 +46,39 @@ def process_scenario(filename, outdir, scenario):
         prev_sector = sector
 
     total = model.fairutil.baseline_emissions()
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
+    C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     baseline_T = pd.Series(T, index=total.index)
+    baseline_C = pd.Series(C, index=total.index)
     temperature = pd.DataFrame(index=range(1850, 2061), columns=solution_names)
     temperature.index.name = 'Year'
+    concentration = pd.DataFrame(index=range(1850, 2061), columns=solution_names)
+    concentration.index.name = 'Year'
     for solution, emissions in solutions.iteritems():
         total = model.fairutil.baseline_emissions()
         total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
-        _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
+        C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
         df_T = pd.Series(T, index=total.index)
+        df_C = pd.Series(C, index=total.index)
         temperature[solution] = df_T - baseline_T
+        concentration[solution] = df_C - baseline_C
 
     total = model.fairutil.baseline_emissions()
     emissions = solutions.sum(axis=1)
     temperature.insert(loc=len(temperature.columns), column="Baseline", value=baseline_T)
     total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
+    C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     df_T = pd.Series(T, index=total.index)
+    df_C = pd.Series(C, index=total.index)
     temperature.insert(loc=len(temperature.columns), column="Total", value=df_T.copy())
+    concentration.insert(loc=len(concentration.columns), column="Total", value=df_C.copy())
 
     outfile = os.path.splitext(os.path.basename(filename))[0] + '_Temperature_' + scenario + '.csv'
     temperature.to_csv(os.path.join(outdir, outfile), float_format='%.3f')
+    outfile = os.path.splitext(os.path.basename(filename))[0] + '_Concentration_' + scenario + '.csv'
+    concentration.to_csv(os.path.join(outdir, outfile), float_format='%.3f')
 
     return (solutions, sectors)
 
@@ -166,4 +175,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args(sys.argv[1:])
 
-    process_ghgs(filename=args.excelfile, outdir=args.outdir)
+    process_ghgs(excelfile=args.excelfile, outdir=args.outdir)
