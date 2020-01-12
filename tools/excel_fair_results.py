@@ -50,32 +50,33 @@ def process_scenario(filename, outdir, scenario):
     total = model.fairutil.baseline_emissions()
     C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-    baseline_T = pd.Series(T, index=total.index)
-    baseline_C = pd.Series(C, index=total.index)
+    baseline_C = pd.Series(C, index=total.index.copy())
+    baseline_T = pd.Series(T, index=total.index.copy())
     temperature = pd.DataFrame(index=g_years, columns=solution_names)
     temperature.index.name = 'Year'
-    concentration = pd.DataFrame(index=g_years, columns=solution_names)
-    concentration.index.name = 'Year'
     for solution, emissions in solutions.iteritems():
         total = model.fairutil.baseline_emissions()
         total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
-        C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
+        _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-        df_T = pd.Series(T, index=total.index)
-        df_C = pd.Series(C, index=total.index)
+        df_T = pd.Series(T, index=total.index.copy())
         temperature[solution] = df_T - baseline_T
-        concentration[solution] = df_C - baseline_C
 
+    concentration = pd.DataFrame(index=g_years,
+            columns=["Emissions (GtC)", "Baseline (ppm)", "Drawdown (ppm)"])
+    concentration.index.name = 'Year'
+    concentration["Emissions (GtC)"] = model.fairutil.baseline_emissions()
+    concentration["Baseline (ppm)"] = baseline_C
     total = model.fairutil.baseline_emissions()
     emissions = solutions.sum(axis=1)
-    temperature.insert(loc=len(temperature.columns), column="Baseline", value=baseline_T)
     total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
     C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-    df_T = pd.Series(T, index=total.index)
-    df_C = pd.Series(C, index=total.index)
-    temperature.insert(loc=len(temperature.columns), column="Total", value=df_T.copy())
-    concentration.insert(loc=len(concentration.columns), column="Total", value=df_C.copy())
+    df_C = pd.Series(C, index=total.index.copy())
+    df_T = pd.Series(T, index=total.index.copy())
+    concentration["Drawdown (ppm)"] = df_C
+    temperature.insert(loc=0, column="Total", value=df_T.copy())
+    temperature.insert(loc=0, column="Baseline", value=baseline_T)
 
     outfile = os.path.splitext(os.path.basename(filename))[0] + '_Temperature_' + scenario + '.csv'
     temperature.to_csv(os.path.join(outdir, outfile), float_format='%.3f')

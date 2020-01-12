@@ -25,10 +25,13 @@ def test_animation_file(tmpdir):
         assert outfile.size() > 1024
         contents = outfile.open().read()
         assert "Baseline" in contents
+        assert "Total" in contents
         assert "2020" in contents
 
         outfile = tmpdir.join(f"excel_fair_results_test_Concentration_PDS{pds}.csv")
         assert outfile.size() > 1024
         contents = outfile.open().read()
-        assert "Total" in contents
+        assert "Emissions (GtC)" in contents
+        assert "Baseline (ppm)" in contents
+        assert "Drawdown (ppm)" in contents
         assert "2020" in contents
