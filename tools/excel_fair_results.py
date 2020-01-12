@@ -4,7 +4,6 @@ import pathlib
 import sys
 
 import fair
-import fair.RCPs
 import matplotlib
 import matplotlib.animation
 import matplotlib.pyplot as plt
@@ -17,6 +16,9 @@ import solution.factory
 import ui.color
 
 
+g_years = range(1850, 2061)
+
+
 def process_scenario(filename, outdir, scenario):
     sheet_name = 'Gtperyr_' + scenario
     raw = pd.read_excel(io=filename, sheet_name=sheet_name, header=None, index_col=0,
@@ -24,7 +26,7 @@ def process_scenario(filename, outdir, scenario):
     years = raw.index[11:]
     solution_names = sorted(list(set(raw.iloc[5, 3:].dropna())))
 
-    solutions = pd.DataFrame(0, index=range(1850, 2061), columns=solution_names)
+    solutions = pd.DataFrame(0, index=g_years, columns=solution_names)
     solutions.index.name = 'Year'
     sectors = {}
     prev_solution = None
@@ -50,9 +52,9 @@ def process_scenario(filename, outdir, scenario):
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     baseline_T = pd.Series(T, index=total.index)
     baseline_C = pd.Series(C, index=total.index)
-    temperature = pd.DataFrame(index=range(1850, 2061), columns=solution_names)
+    temperature = pd.DataFrame(index=g_years, columns=solution_names)
     temperature.index.name = 'Year'
-    concentration = pd.DataFrame(index=range(1850, 2061), columns=solution_names)
+    concentration = pd.DataFrame(index=g_years, columns=solution_names)
     concentration.index.name = 'Year'
     for solution, emissions in solutions.iteritems():
         total = model.fairutil.baseline_emissions()
@@ -107,7 +109,7 @@ def animate(frame, ax, total, lines, emissions):
         if sector_num == 0:
             _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                     r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-            prev = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
+            prev = pd.Series(T, index=total.index)
         else:
             (_, prev) = emissions[sector_num - 1]
         ax.fill_between(x=df_T.loc[2020:end].index.values, y1=prev.loc[2020:end].values,
@@ -135,7 +137,7 @@ def produce_animation(solutions, sectors, filename, writer):
     ax.set_ylabel(u'°C');
     _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False, r0=model.fairutil.r0,
             tcrecs=model.fairutil.tcrecs)
-    df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
+    df_T = pd.Series(T, index=total.index)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
             color='black', label='Baseline', zorder=50)
     legend_no_duplicates(ax)
