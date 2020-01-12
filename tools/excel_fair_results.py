@@ -4,7 +4,6 @@ import pathlib
 import sys
 
 import fair
-import fair.RCPs
 import matplotlib
 import matplotlib.animation
 import matplotlib.pyplot as plt
@@ -17,6 +16,9 @@ import solution.factory
 import ui.color
 
 
+g_years = range(1850, 2061)
+
+
 def process_scenario(filename, outdir, scenario):
     sheet_name = 'Gtperyr_' + scenario
     raw = pd.read_excel(io=filename, sheet_name=sheet_name, header=None, index_col=0,
@@ -24,7 +26,7 @@ def process_scenario(filename, outdir, scenario):
     years = raw.index[11:]
     solution_names = sorted(list(set(raw.iloc[5, 3:].dropna())))
 
-    solutions = pd.DataFrame(0, index=range(1850, 2061), columns=solution_names)
+    solutions = pd.DataFrame(0, index=g_years, columns=solution_names)
     solutions.index.name = 'Year'
     sectors = {}
     prev_solution = None
@@ -46,30 +48,42 @@ def process_scenario(filename, outdir, scenario):
         prev_sector = sector
 
     total = model.fairutil.baseline_emissions()
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
+    C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-    baseline_T = pd.Series(T, index=total.index)
-    temperature = pd.DataFrame(index=range(1850, 2061), columns=solution_names)
+    baseline_C = pd.Series(C, index=total.index.copy())
+    baseline_T = pd.Series(T, index=total.index.copy())
+    temperature = pd.DataFrame(index=g_years, columns=solution_names)
     temperature.index.name = 'Year'
     for solution, emissions in solutions.iteritems():
         total = model.fairutil.baseline_emissions()
         total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
         _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-        df_T = pd.Series(T, index=total.index)
+        df_T = pd.Series(T, index=total.index.copy())
         temperature[solution] = df_T - baseline_T
 
+    concentration = pd.DataFrame(index=g_years,
+            columns=["Emissions (GtC)", "Baseline (ppm)", "Drawdown (ppm)"])
+    concentration.index.name = 'Year'
+    concentration["Emissions (GtC)"] = model.fairutil.baseline_emissions()
+    concentration["Baseline (ppm)"] = baseline_C
     total = model.fairutil.baseline_emissions()
     emissions = solutions.sum(axis=1)
-    temperature.insert(loc=len(temperature.columns), column="Baseline", value=baseline_T)
     total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
+    C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-    df_T = pd.Series(T, index=total.index)
-    temperature.insert(loc=len(temperature.columns), column="Total", value=df_T.copy())
+    df_C = pd.Series(C, index=total.index.copy())
+    df_T = pd.Series(T, index=total.index.copy())
+    concentration["Drawdown (ppm)"] = df_C
+    preindustrial = baseline_T.loc[1850:1900].mean()
+    print(f"Pre-industrial temperature {preindustrial:.3f}C relative to {baseline_T.index[0]}")
+    temperature.insert(loc=0, column="Total", value=(df_T.copy() - preindustrial))
+    temperature.insert(loc=0, column="Baseline", value=(baseline_T - preindustrial))
 
     outfile = os.path.splitext(os.path.basename(filename))[0] + '_Temperature_' + scenario + '.csv'
     temperature.to_csv(os.path.join(outdir, outfile), float_format='%.3f')
+    outfile = os.path.splitext(os.path.basename(filename))[0] + '_Concentration_' + scenario + '.csv'
+    concentration.to_csv(os.path.join(outdir, outfile), float_format='%.3f')
 
     return (solutions, sectors)
 
@@ -98,7 +112,7 @@ def animate(frame, ax, total, lines, emissions):
         if sector_num == 0:
             _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                     r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-            prev = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
+            prev = pd.Series(T, index=total.index)
         else:
             (_, prev) = emissions[sector_num - 1]
         ax.fill_between(x=df_T.loc[2020:end].index.values, y1=prev.loc[2020:end].values,
@@ -126,7 +140,7 @@ def produce_animation(solutions, sectors, filename, writer):
     ax.set_ylabel(u'°C');
     _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False, r0=model.fairutil.r0,
             tcrecs=model.fairutil.tcrecs)
-    df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
+    df_T = pd.Series(T, index=total.index)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
             color='black', label='Baseline', zorder=50)
     legend_no_duplicates(ax)
@@ -166,4 +180,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args(sys.argv[1:])
 
-    process_ghgs(filename=args.excelfile, outdir=args.outdir)
+    process_ghgs(excelfile=args.excelfile, outdir=args.outdir)
