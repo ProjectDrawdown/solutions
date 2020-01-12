@@ -17,8 +17,11 @@ baselineCO2_path = topdir.joinpath('data', 'baselineCO2.csv')
 tcrecs = np.array([1.7, 3.2])  # GRL https://doi.org/10.1029/2019GL082442
 r0 = 35  # https://github.com/OMS-NetZero/FAIR/issues/19
 
+# AR5 w/ feedback
+CO2_MULT = 3.664
+CH4_MULT = 34
+N2O_MULT = 298
 
-# Columns in FaIR Emissions.emissions
 ghg = {
     "Year": 0,
     "FossilCO2": 1,
@@ -65,15 +68,16 @@ ghg = {
 
 def baseline_emissions():
     """Return emissions to use as a baseline for Drawdown solutions."""
-    baseline = pd.DataFrame(fair.RCPs.rcp45.Emissions.emissions.copy(), columns=ghg.keys(),
+    rcp = pd.DataFrame(fair.RCPs.rcp45.Emissions.emissions.copy(), columns=ghg.keys(),
             index=fair.RCPs.rcp45.Emissions.year)
+    baseline = (rcp['FossilCO2']  + rcp['OtherCO2'] + (rcp['CH4'] * CH4_MULT / 1000.0) +
+            (rcp['N2O'] * N2O_MULT / 1000.0))
     baseline.index = baseline.index.astype(int)
+    baseline.index.name = 'Year'
     ddCO2 = pd.read_csv(str(baselineCO2_path), header=0, index_col=0, skipinitialspace=True,
             skip_blank_lines=True, comment='#', squeeze=True)
     ddCO2.index = ddCO2.index.astype(int)
-    ddCO2.rename(columns={'Fossil-GtC': 'FossilCO2', 'LandUse-GtC': 'OtherCO2',
-        'MtCH4': 'CH4', 'MtN2O': 'N2O'}, inplace=True)
-    baseline.update(ddCO2)
+    baseline.update(ddCO2 / CO2_MULT)
     return baseline
 
 

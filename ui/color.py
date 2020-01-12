@@ -5,12 +5,19 @@
 sector_colormap = {
     'Materials': 'RebeccaPurple',
     'Electricity Generation': 'Peru',
-    'Food': 'FireBrick',
+    'Electricity': 'Peru',
+    'Food': 'PeachPuff',
+    'Agriculture': 'FireBrick',
     'Land Use': 'Green',
+    'Land': 'Green',
     'Women and Girls': 'DarkGoldenRod',
+    'Population': 'DarkGoldenRod',
     'Transport': 'Teal',
+    'Transportation': 'Teal',
     'Buildings and Cities': 'SteelBlue',
+    'Buildings': 'SteelBlue',
     'Oceans': 'Aquamarine',
+    'Waste': 'Sienna',
 }
 
 

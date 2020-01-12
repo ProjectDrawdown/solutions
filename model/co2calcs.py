@@ -495,8 +495,8 @@ class CO2Calcs:
              T: Change in temperature since pre-industrial time in Kelvin
         """
         kwargs = model.fairutil.fair_scm_kwargs()
-        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline.values, useMultigas=True, **kwargs)
-        result = pd.DataFrame({'C': C[:, 0], 'F': F[:, 0], 'T': T}, index=self.baseline.index)
+        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline.values, useMultigas=False, **kwargs)
+        result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index)
         result.name = 'FaIR_CFT_baseline'
         return result
 
@@ -517,15 +517,15 @@ class CO2Calcs:
         co2eq_mmt_reduced = self.co2eq_mmt_reduced()
         if co2eq_mmt_reduced is not None:
             gtonsC = (co2eq_mmt_reduced['World'] / 1000.0) / C_TO_CO2EQ
-            emissions['FossilCO2'] = emissions['FossilCO2'].subtract(other=gtonsC, fill_value=0.0)
+            emissions = emissions.subtract(other=gtonsC, fill_value=0.0)
         co2_sequestered_global = self.co2_sequestered_global()
         if co2_sequestered_global is not None:
             gtonsC = (co2_sequestered_global['All'] / 1000.0) / C_TO_CO2EQ
-            emissions['OtherCO2'] = emissions['OtherCO2'].subtract(other=gtonsC, fill_value=0.0)
+            emissions = emissions.subtract(other=gtonsC, fill_value=0.0)
 
         kwargs = model.fairutil.fair_scm_kwargs()
-        (C, F, T) = fair.forward.fair_scm(emissions=emissions.values, useMultigas=True, **kwargs)
-        result = pd.DataFrame({'C': C[:, 0] , 'F': F[:, 0], 'T': T}, index=emissions.index)
+        (C, F, T) = fair.forward.fair_scm(emissions=emissions.values, useMultigas=False, **kwargs)
+        result = pd.DataFrame({'C': C , 'F': F, 'T': T}, index=emissions.index)
         result.name = 'FaIR_CFT'
         return result
 
@@ -543,9 +543,9 @@ class CO2Calcs:
              T: Change in temperature since pre-industrial time in Kelvin
         """
         kwargs = model.fairutil.fair_scm_kwargs()
-        (C, F, T) = fair.forward.fair_scm(emissions=fair.RCPs.rcp45.Emissions.emissions,
-                useMultigas=True, **kwargs)
-        result = pd.DataFrame({'C': C[:, 0], 'F': F[:, 0], 'T': T}, index=fair.RCPs.rcp45.Emissions.year)
+        (C, F, T) = fair.forward.fair_scm(emissions=fair.RCPs.rcp45.Emissions.emissions[:, 0],
+                useMultigas=False, **kwargs)
+        result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=fair.RCPs.rcp45.Emissions.year)
         result.name = 'FaIR_CFT_RCP45'
         return result
 

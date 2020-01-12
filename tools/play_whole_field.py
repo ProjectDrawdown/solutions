@@ -10,8 +10,9 @@ import model.fairutil
 import fair
 import fair.RCPs
 import matplotlib
-import matplotlib.pyplot as plt
 import matplotlib.animation
+import matplotlib.pyplot as plt
+import matplotlib.style
 import numpy as np
 import tempfile
 import pandas as pd
@@ -40,34 +41,34 @@ def init():
         m = obj.c2.co2eq_mmt_reduced()
         mmt[name] = m['World']
 
-    sector_gt = pd.DataFrame()
+    sector_gtons = pd.DataFrame()
     everything = pd.read_csv(os.path.join('data', 'overview', 'solutions.csv'),
         index_col=False, skipinitialspace=True, header=0, skip_blank_lines=True, comment='#')
 
     for sector in everything.Sector.unique():
         column_names = everything.loc[everything['Sector'] == sector, 'DirName'].dropna()
         sector_members = list(set(column_names).intersection(set(mmt.columns)))
-        sector_gt.loc[:, sector] = (mmt.loc[:, sector_members].sum(axis=1) / 1000.0) / 3.664
+        sector_gtons.loc[:, sector] = (mmt.loc[:, sector_members].sum(axis=1) / 1000.0) / 3.664
 
     total = model.fairutil.baseline_emissions()
     remaining = total.copy()
-    sectors = sector_gt.sort_values(axis='columns', by=2050, ascending=False).columns
+    sectors = sector_gtons.sort_values(axis='columns', by=2050, ascending=False).columns
     emissions = []
     for sector in sectors:
-        remaining['FossilCO2'] = remaining['FossilCO2'].subtract(sector_gt[sector], fill_value=0.0)
-        _,_,T = fair.forward.fair_scm(emissions=remaining.values, useMultigas=True,
+        remaining = remaining.subtract(sector_gtons[sector], fill_value=0.0)
+        _,_,T = fair.forward.fair_scm(emissions=remaining.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
         df_T = pd.Series(T, index=remaining.index)
         emissions.append((sector, df_T))
 
     fig = plt.figure()
     ax = fig.add_subplot()
-    ax.set_ylabel('Temperature anomaly (K)');
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True, r0=model.fairutil.r0,
+    ax.set_ylabel(u'°C');
+    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False, r0=model.fairutil.r0,
             tcrecs=model.fairutil.tcrecs)
     df_T = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
-            color='black', label='Baseline')
+            color='black', label='Baseline', zorder=50)
     legend_no_duplicates(ax)
     return (fig, ax, total, emissions)
 
@@ -77,7 +78,8 @@ def animate(frame, ax, total, lines, emissions):
     (sector, df_T) = emissions[sector_num]
     color = ui.color.get_sector_color(sector)
     if offset == 0:
-        line, = ax.plot([], [], color=color, label=sector)
+        zorder = 40 - sector_num
+        line, = ax.plot([], [], color=color, label=sector, zorder=zorder)
         lines[sector] = line
         legend_no_duplicates(ax)
     else:
@@ -87,7 +89,7 @@ def animate(frame, ax, total, lines, emissions):
         end = 2020 + offset
         line.set_data(df_T.loc[2020:end].index.values, df_T.loc[2020:end].values)
         if sector_num == 0:
-            _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=True,
+            _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                     r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
             prev = pd.Series(T, index=fair.RCPs.rcp45.Emissions.year)
         else:
@@ -114,7 +116,7 @@ if __name__ == '__main__':
     ffmpeg = matplotlib.animation.writers['ffmpeg']
     writer = ffmpeg(fps=15, bitrate=-1,
             metadata={'title':'Play the Whole Field', 'subject':'Climate Change Solutions',
-                'copyright':'Copyright 2019 Project Drawdown'},
+                'copyright':'Copyright 2020 Project Drawdown'},
             extra_args=['-tune', 'animation'],)
-
+    matplotlib.style.use('ggplot')
     main(filename=args.filename, writer=writer)

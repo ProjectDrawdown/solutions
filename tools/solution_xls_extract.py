@@ -679,12 +679,12 @@ def normalize_source_name(sourcename):
     normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
     if normalized in special_cases:
         return special_cases[normalized]
-    if re.search('\[Source \d+', sourcename):
+    if re.search(r'\[Source \d+', sourcename):
         return None
 
     # handle duplicate column names where xlrd appends an integer.
     suffix = ''
-    r = re.search('(\\.\d)$', sourcename)
+    r = re.search(r'(\\.\d)$', sourcename)
     if r is not None:
         suffix = r.group()
 
@@ -1560,7 +1560,7 @@ def output_solution_python_file(outputdir, xl_filename):
     p = pathlib.Path(f'{outputdir}/ac')
     p.mkdir(parents=False, exist_ok=True)
     for name, s in scenarios.items():
-        fname = p.joinpath(re.sub("['\"\n()\\/\.]", "", name).replace(' ', '_').strip() + '.json')
+        fname = p.joinpath(re.sub(r"['\"\n()\\/\.]", "", name).replace(' ', '_').strip() + '.json')
         write_scenario(filename=fname, s=s)
     f.write("scenarios = ac.load_scenarios_from_json("
         "directory=THISDIR.joinpath('ac'), vmas=VMAs)\n")
