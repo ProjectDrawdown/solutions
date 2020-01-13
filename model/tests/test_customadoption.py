@@ -221,6 +221,7 @@ def test_datapoints_limit():
     expected = pd.DataFrame(expected_list[1:], columns=expected_list[0],
             dtype='float').set_index("Year")
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     result = ca.scenarios['datapoints scenario']['df']
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
