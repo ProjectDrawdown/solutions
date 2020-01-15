@@ -590,6 +590,7 @@ def test_co2_sequestered_global_regrowth():
     result = c2.co2_sequestered_global().drop(columns=['Global Arctic'])
     expected = pd.read_csv(datadir.joinpath('fp_co2_seq_global.csv'), index_col=0, dtype=np.float64)
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected)
 
 

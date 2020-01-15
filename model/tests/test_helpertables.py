@@ -488,6 +488,7 @@ def test_soln_pds_funits_adopted_s_curve():
                                    pds_adoption_is_single_source=False)
     expected = pds_adoption_trend_per_region.copy(deep=True)
     expected.name = 'soln_ref_funits_adopted'
+    expected.index.name = 'Year'
     result = ht.soln_pds_funits_adopted()
     pd.testing.assert_frame_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
     # ensure that pds_adoption_is_single_source has no effect on S-Curve interpolation.

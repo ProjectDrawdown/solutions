@@ -139,6 +139,7 @@ def test_adoption_min_max_sd():
             columns=adoption_min_max_sd_global_list[0],
             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
@@ -151,6 +152,7 @@ def test_adoption_min_max_sd_global_ambitious():
             columns=adoption_min_max_sd_global_ambitious_list[0],
             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
@@ -163,6 +165,7 @@ def test_adoption_low_med_high():
             columns=adoption_low_med_high_global_list[0],
             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
@@ -174,6 +177,7 @@ def test_adoption_low_med_high_global_all_sources():
             columns=adoption_low_med_high_global_all_sources_list[0],
             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
@@ -225,24 +229,28 @@ def test_adoption_trend_global():
     expected = pd.DataFrame(linear_trend_global_list[1:],
             columns=linear_trend_global_list[0], dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     result = ad.adoption_trend(region='World', trend='Degree2')
     expected = pd.DataFrame(poly_degree2_trend_global_list[1:],
             columns=poly_degree2_trend_global_list[0], dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     result = ad.adoption_trend(region='World', trend='Degree3')
     expected = pd.DataFrame(poly_degree3_trend_global_list[1:],
             columns=poly_degree3_trend_global_list[0], dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     result = ad.adoption_trend(region='World', trend='Exponential')
     expected = pd.DataFrame(exponential_trend_global_list[1:],
             columns=exponential_trend_global_list[0], dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     adconfig_mod = g_adconfig.copy()
@@ -252,6 +260,7 @@ def test_adoption_trend_global():
     expected = pd.DataFrame(exponential_trend_global_list[1:],
             columns=exponential_trend_global_list[0], dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 

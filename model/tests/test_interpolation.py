@@ -16,6 +16,7 @@ def test_linear_trend():
     expected = pd.DataFrame(linear_trend_list[1:], columns=linear_trend_list[0],
                             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='linear')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
@@ -30,6 +31,7 @@ def test_linear_trend_with_NaN_data():
     expected = pd.DataFrame(linear_with_NaN_trend_list[1:], columns=linear_with_NaN_trend_list[0],
                             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='linear')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
@@ -44,6 +46,7 @@ def test_poly_degree2_trend():
     expected = pd.DataFrame(poly_degree2_trend_list[1:], columns=poly_degree2_trend_list[0],
                             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='degree2')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
@@ -60,6 +63,7 @@ def test_poly_degree3_trend():
     expected = pd.DataFrame(poly_degree3_trend_list[1:], columns=poly_degree3_trend_list[0],
                             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='degree3')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
@@ -76,6 +80,7 @@ def test_exponential_trend():
     expected = pd.DataFrame(exponential_trend_list[1:], columns=exponential_trend_list[0],
                             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='exponential')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
@@ -108,6 +113,7 @@ def test_missing_data():
                             columns=linear_missing_data_trend_list[0],
                             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     result = itrp.poly_degree2_trend(adoption_low_med_high.loc[:, 'Medium'])
@@ -115,6 +121,7 @@ def test_missing_data():
                             columns=poly_degree2_missing_data_trend_list[0],
                             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     result = itrp.poly_degree3_trend(adoption_low_med_high.loc[:, 'Medium'])
@@ -122,6 +129,7 @@ def test_missing_data():
                             columns=poly_degree3_missing_data_trend_list[0],
                             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     result = itrp.exponential_trend(adoption_low_med_high.loc[:, 'Medium'])
@@ -129,6 +137,7 @@ def test_missing_data():
                             columns=exponential_missing_data_trend_list[0],
                             dtype=np.float64).set_index('Year')
     expected.index = expected.index.astype(int)
+    expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
