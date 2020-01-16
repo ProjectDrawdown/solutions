@@ -360,3 +360,7 @@ Dec 30, 2019 - Jan 3, 2020
 + Implement framework support to share more data files between solutions,
   particularly VMA data. All solutions will need to be re-generated from
   Excel to do this.
+
+Jan 6, 2020 - Jan 10, 2020
++ re-generate all solutions
+  VMA definitions moved inline into __init__.py.
