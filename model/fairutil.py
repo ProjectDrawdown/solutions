@@ -17,10 +17,10 @@ baselineCO2_path = topdir.joinpath('data', 'baselineCO2.csv')
 tcrecs = np.array([1.7, 3.2])  # GRL https://doi.org/10.1029/2019GL082442
 r0 = 35  # https://github.com/OMS-NetZero/FAIR/issues/19
 
-# AR5 w/ feedback
+# AR5 without climate-carbon feedback
 CO2_MULT = 3.664
-CH4_MULT = 34
-N2O_MULT = 298
+CH4_MULT = 28
+N2O_MULT = 265
 
 ghg = {
     "Year": 0,
