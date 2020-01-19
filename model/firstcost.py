@@ -69,8 +69,13 @@ class FirstCost:
         parameter_b = log_learning_rate / log_learning_mult
 
         regions = REGIONS if self.calc_per_region else ['World']
-
-        p = (1 / self.soln_pds_tot_iunits_reqd.loc[2015, regions].replace(0, 1)) ** parameter_b
+        if 2015 in self.soln_pds_tot_iunits_reqd.index:
+            base_year_iunits_reqd = self.soln_pds_tot_iunits_reqd.loc[2015, regions]
+        elif 2018 in self.soln_pds_tot_iunits_reqd.index:
+            base_year_iunits_reqd = self.soln_pds_tot_iunits_reqd.loc[2018, regions]
+        else:
+            raise ValueError('No base year found in soln_pds_tot_iunits_reqd')
+        p = (1 / base_year_iunits_reqd.replace(0, 1)) ** parameter_b
         first_unit_cost = fill_missing_regions_from_world(self.ac.pds_2014_cost) * p
 
         iunits = self.soln_pds_tot_iunits_reqd.loc[:, regions]
@@ -152,9 +157,15 @@ class FirstCost:
         log_learning_rate = math.log10(self.ac.soln_first_cost_learning_rate)
         log_learning_mult = math.log10(self.ref_learning_increase_mult)
         parameter_b = log_learning_rate / log_learning_mult
-        regions = REGIONS if self.calc_per_region else ['World']
 
-        p = (1 / self.soln_ref_tot_iunits_reqd.loc[2015, regions].replace(0, 1)) ** parameter_b
+        regions = REGIONS if self.calc_per_region else ['World']
+        if 2015 in self.soln_ref_tot_iunits_reqd.index:
+            base_year_iunits_reqd = self.soln_ref_tot_iunits_reqd.loc[2015, regions]
+        elif 2018 in self.soln_ref_tot_iunits_reqd.index:
+            base_year_iunits_reqd = self.soln_ref_tot_iunits_reqd.loc[2018, regions]
+        else:
+            raise ValueError('No base year found in soln_ref_tot_iunits_reqd')
+        p = (1 / base_year_iunits_reqd.replace(0, 1)) ** parameter_b
         first_unit_cost = fill_missing_regions_from_world(self.ac.ref_2014_cost) * p
 
         iunits = self.soln_ref_tot_iunits_reqd.loc[:, regions]
