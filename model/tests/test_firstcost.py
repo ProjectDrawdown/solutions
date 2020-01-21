@@ -188,26 +188,6 @@ def test_conv_ref_install_cost_per_iunit_no_conversion_factor():
     pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
 
-def test_conv_ref_install_cost_per_iunit_with_regions():
-    """ Vals from silvopasture oct 2018 with some modified data to test more functionality """
-    conv_fc_regional_vals = {'World': 462.453006, 'OECD90': 339.770200, 'Eastern Europe': 100,
-            'Asia (Sans Japan)': np.nan, 'Middle East and Africa': np.nan,
-            'Latin America': 489.715852, 'China': np.nan, 'India': np.nan, 'EU': np.nan,
-            'USA': 339.770200}
-    ac = advanced_controls.AdvancedControls(conv_first_cost_efficiency_rate=0.1,
-            conv_2014_cost=pd.Series(data=conv_fc_regional_vals, name='regional values'))
-    tot_iunits = pd.read_csv(datadir.joinpath('sp_conv_tot_iunits.csv'), index_col=0)
-    tot_iunits['Eastern Europe'] = np.arange(100, 147)
-    tot_iunits.loc[2050, 'Eastern Europe'] = 0  # check the increasing cost gets corrected
-    fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-            conv_learning_increase_mult=2, soln_pds_tot_iunits_reqd=None,
-            calc_per_region=True, soln_ref_tot_iunits_reqd=None, conv_ref_tot_iunits=tot_iunits,
-            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-            fc_convert_iunit_factor=1000000)
-    expected = pd.read_csv(datadir.joinpath('sp_cricwr.csv'), index_col=0)
-    pd.testing.assert_frame_equal(fc.conv_ref_install_cost_per_iunit(), expected)
-
-
 def test_soln_pds_install_cost_per_iunit_not_less_conv():
     """Test PDS install cost per unit
        Values taken from SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18
@@ -239,29 +219,6 @@ def test_soln_pds_install_cost_per_iunit_not_less_conv():
     pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
 
-def test_soln_pds_install_cost_per_iunit_with_regions():
-    """ Vals from silvopasture oct 2018 with some modified data to test more functionality """
-    pds_fc_regional_vals = {
-            'World': 462.453006, 'OECD90': 339.770200, 'Eastern Europe': 100,
-            'Asia (Sans Japan)': np.nan, 'Middle East and Africa': np.nan,
-            'Latin America': 489.715852, 'China': np.nan, 'India': np.nan, 'EU': np.nan,
-            'USA': 339.770200}
-    ac = advanced_controls.AdvancedControls(soln_first_cost_efficiency_rate=0.1,
-            soln_first_cost_below_conv=True,
-            pds_2014_cost=pd.Series(data=pds_fc_regional_vals, name='regional values'))
-    tot_iunits = pd.read_csv(datadir.joinpath('sp_conv_tot_iunits.csv'), index_col=0)  # use same data as conb for test
-    tot_iunits['Eastern Europe'] = np.arange(100, 147)
-    tot_iunits.loc[2050, 'Eastern Europe'] = 1  # check the increasing cost gets corrected
-    fc = firstcost.FirstCost(ac=ac,
-            pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-            conv_learning_increase_mult=2, soln_pds_tot_iunits_reqd=tot_iunits,
-            calc_per_region=True, soln_ref_tot_iunits_reqd=None, conv_ref_tot_iunits=None,
-            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-            fc_convert_iunit_factor=1000000)
-    expected = pd.read_csv(datadir.joinpath('sp_spicwr.csv'), index_col=0)
-    pd.testing.assert_frame_equal(fc.soln_pds_install_cost_per_iunit(), expected)
-
-
 def test_soln_ref_install_cost_per_iunit():
     """Test PDS install cost per unit
 
@@ -291,28 +248,6 @@ def test_soln_ref_install_cost_per_iunit():
     expected.name = "soln_ref_install_cost_per_iunit"
     result = fc.soln_ref_install_cost_per_iunit()
     pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
-
-
-def test_soln_ref_install_cost_per_iunit_with_regions():
-    """ Vals from silvopasture oct 2018 with some modified data to test more functionality """
-    ref_fc_regional_vals = {
-            'World': 462.453006, 'OECD90': 339.770200, 'Eastern Europe': 100,
-            'Asia (Sans Japan)': np.nan, 'Middle East and Africa': np.nan,
-            'Latin America': 489.715852, 'China': np.nan, 'India': np.nan, 'EU': np.nan,
-            'USA': 339.770200}
-    ac = advanced_controls.AdvancedControls(soln_first_cost_efficiency_rate=0.1,
-            soln_first_cost_below_conv=True,
-            ref_2014_cost=pd.Series(data=ref_fc_regional_vals, name='regional values'))
-    tot_iunits = pd.read_csv(datadir.joinpath('sp_conv_tot_iunits.csv'), index_col=0)  # use same data as conb for test
-    tot_iunits['Eastern Europe'] = np.arange(100, 147)
-    tot_iunits.loc[2050, 'Eastern Europe'] = 0  # check the increasing cost gets corrected
-    fc = firstcost.FirstCost(ac=ac, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-            conv_learning_increase_mult=2, soln_pds_tot_iunits_reqd=None,
-            calc_per_region=True, soln_ref_tot_iunits_reqd=tot_iunits, conv_ref_tot_iunits=None,
-            soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-            fc_convert_iunit_factor=1000000)
-    expected = pd.read_csv(datadir.joinpath('sp_sricwr.csv'), index_col=0)
-    pd.testing.assert_frame_equal(fc.soln_ref_install_cost_per_iunit(), expected)
 
 
 def test_install_cost_per_iunit_param_b_is_zero():
@@ -411,22 +346,6 @@ def test_soln_pds_annual_world_first_cost():
     pd.testing.assert_series_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
 
 
-def test_soln_pds_annual_world_first_cost_with_regions():
-    df = pd.DataFrame([['should ignore', 2, 1, 0, 0, 0] + ['should ignore'] * 4,
-            ['should ignore', 2, 2, 0, 0, 0] + ['should ignore'] * 4], columns=REGIONS)
-    with mock.patch.object(firstcost.FirstCost, 'soln_pds_install_cost_per_iunit', new=lambda x: df):
-        iunts = pd.DataFrame([['should ignore', 1, 3, 0, 0, 0] + ['should ignore'] * 4,
-                              ['should ignore', 1, 2, 0, 0, 0] + ['should ignore'] * 4], columns=REGIONS)
-        fc = firstcost.FirstCost(ac=None, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-                                 conv_learning_increase_mult=2, soln_pds_tot_iunits_reqd=None,
-                                 calc_per_region=True, soln_ref_tot_iunits_reqd=None, conv_ref_tot_iunits=None,
-                                 soln_pds_new_iunits_reqd=iunts, soln_ref_new_iunits_reqd=None,
-                                 conv_ref_new_iunits=None,
-                                 fc_convert_iunit_factor=1000000)
-        expected = pd.Series([5, 6], name='soln_pds_annual_world_first_cost')
-        pd.testing.assert_series_equal(expected, fc.soln_pds_annual_world_first_cost())
-
-
 def test_soln_pds_cumulative_install():
     ac = advanced_controls.AdvancedControls(
             pds_2014_cost=1444.93954421485,
@@ -485,22 +404,6 @@ def test_soln_ref_annual_world_first_cost():
     pd.testing.assert_series_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
 
 
-def test_soln_ref_annual_world_first_cost_with_regions():
-    df = pd.DataFrame([['should ignore', 2, 1, 0, 0, 0] + ['should ignore'] * 4,
-                       ['should ignore', 2, 2, 0, 0, 0] + ['should ignore'] * 4], columns=REGIONS)
-    with mock.patch.object(firstcost.FirstCost, 'soln_ref_install_cost_per_iunit', new=lambda x: df):
-        iunts = pd.DataFrame([['should ignore', 1, 3, 0, 0, 0] + ['should ignore'] * 4,
-                              ['should ignore', 1, 2, 0, 0, 0] + ['should ignore'] * 4], columns=REGIONS)
-        fc = firstcost.FirstCost(ac=None, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-                                 conv_learning_increase_mult=2, soln_pds_tot_iunits_reqd=None,
-                                 calc_per_region=True, soln_ref_tot_iunits_reqd=None, conv_ref_tot_iunits=None,
-                                 soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=iunts,
-                                 conv_ref_new_iunits=None,
-                                 fc_convert_iunit_factor=1000000)
-        expected = pd.Series([5, 6], name='soln_ref_annual_world_first_cost')
-        pd.testing.assert_series_equal(expected, fc.soln_ref_annual_world_first_cost())
-
-
 def test_conv_ref_annual_world_first_cost():
     ac = advanced_controls.AdvancedControls(
             pds_2014_cost=1444.93954421485,
@@ -552,22 +455,6 @@ def test_conv_ref_annual_world_first_cost_tot_iunits():
     expected.name = "conv_ref_annual_world_first_cost"
     result = fc.conv_ref_annual_world_first_cost()
     pd.testing.assert_series_equal(result.loc[2015:], expected.loc[2015:], check_exact=False)
-
-
-def test_conv_ref_annual_world_first_cost_with_regions():
-    df = pd.DataFrame([['should ignore', 2, 1, 0, 0, 0] + ['should ignore'] * 4,
-                       ['should ignore', 2, 2, 0, 0, 0] + ['should ignore'] * 4], columns=REGIONS)
-    with mock.patch.object(firstcost.FirstCost, 'conv_ref_install_cost_per_iunit', new=lambda x: df):
-        iunts = pd.DataFrame([['should ignore', 1, 3, 0, 0, 0] + ['should ignore'] * 4,
-                              ['should ignore', 1, 2, 0, 0, 0] + ['should ignore'] * 4], columns=REGIONS)
-        fc = firstcost.FirstCost(ac=None, pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-                                 conv_learning_increase_mult=2, soln_pds_tot_iunits_reqd=None,
-                                 calc_per_region=True, soln_ref_tot_iunits_reqd=None, conv_ref_tot_iunits=None,
-                                 soln_pds_new_iunits_reqd=None, soln_ref_new_iunits_reqd=None,
-                                 conv_ref_new_iunits=iunts,
-                                 fc_convert_iunit_factor=1000000, conv_ref_first_cost_uses_tot_units=False)
-        expected = pd.Series([5, 6], name='conv_ref_annual_world_first_cost')
-        pd.testing.assert_series_equal(expected, fc.conv_ref_annual_world_first_cost())
 
 
 def test_ref_cumulative_install():
