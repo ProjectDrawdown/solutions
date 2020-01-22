@@ -94,7 +94,7 @@ def legend_no_duplicates(ax):
     ax.legend(*zip(*unique), loc='upper left', frameon=False)
 
 
-def animate(frame, ax, total, lines, emissions):
+def animate(frame, ax, start, lines, emissions):
     (sector_num, offset) = divmod(frame, 50)
     (sector, df_T) = emissions[sector_num]
     color = ui.color.get_sector_color(sector)
@@ -110,9 +110,9 @@ def animate(frame, ax, total, lines, emissions):
         end = 2020 + offset
         line.set_data(df_T.loc[2020:end].index.values, df_T.loc[2020:end].values)
         if sector_num == 0:
-            _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
+            _,_,T = fair.forward.fair_scm(emissions=start.values, useMultigas=False,
                     r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-            prev = pd.Series(T, index=total.index)
+            prev = pd.Series(T, index=start.index)
         else:
             (_, prev) = emissions[sector_num - 1]
         ax.fill_between(x=df_T.loc[2020:end].index.values, y1=prev.loc[2020:end].values,
@@ -124,23 +124,30 @@ def produce_animation(solutions, sectors, filename, writer):
     for sector, solution_list in sectors.items():
         sector_gtons.loc[:, sector] = solutions.loc[:, solution_list].sum(axis=1)
 
-    total = model.fairutil.baseline_emissions()
-    remaining = total.copy()
+    start = model.fairutil.baseline_emissions()
+    _,_,start_T = fair.forward.fair_scm(emissions=start.values, useMultigas=False,
+            r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
+    end = start.subtract(sector_gtons.sum(axis=1), fill_value=0.0)
+    _,_,end_T = fair.forward.fair_scm(emissions=end.values, useMultigas=False,
+            r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
+    total_reduction_T = (start_T - end_T)[85:296]
+    reduction_T = np.zeros(total_reduction_T.shape)
     sectors = sector_gtons.sort_values(axis='columns', by=2050, ascending=False).columns
     emissions = []
     for sector in sectors:
-        remaining = remaining.subtract(sector_gtons[sector], fill_value=0.0)
-        _,_,T = fair.forward.fair_scm(emissions=remaining.values, useMultigas=False,
-                r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-        df_T = pd.Series(T, index=remaining.index)
+        fraction = sector_gtons[sector] / sector_gtons.sum(axis=1)
+        print(f"{sector}: {fraction[181:]}")
+        reduction_T += total_reduction_T * fraction.fillna(0.0).values
+        temperatures = start_T[85:296] - reduction_T
+        df_T = pd.Series(temperatures, index=range(1850, 2061))
         emissions.append((sector, df_T))
 
     fig = plt.figure()
     ax = fig.add_subplot()
     ax.set_ylabel(u'°C');
-    _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False, r0=model.fairutil.r0,
+    _,_,T = fair.forward.fair_scm(emissions=start.values, useMultigas=False, r0=model.fairutil.r0,
             tcrecs=model.fairutil.tcrecs)
-    df_T = pd.Series(T, index=total.index)
+    df_T = pd.Series(T, index=start.index)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
             color='black', label='Baseline', zorder=50)
     legend_no_duplicates(ax)
@@ -148,7 +155,7 @@ def produce_animation(solutions, sectors, filename, writer):
     lines = {}
     frames = len(emissions) * 50
     anim = matplotlib.animation.FuncAnimation(fig=fig, func=animate, interval=10, frames=frames,
-            fargs=(ax, total, lines, emissions), repeat=False)
+            fargs=(ax, start, lines, emissions), repeat=False)
     anim.save(filename, writer=writer)
 
 
