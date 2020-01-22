@@ -361,6 +361,10 @@ Dec 30, 2019 - Jan 3, 2020
   particularly VMA data. All solutions will need to be re-generated from
   Excel to do this.
 
-Jan 6, 2020 - Jan 10, 2020
+Jan 6 - Jan 10, 2020
 + re-generate all solutions
   VMA definitions moved inline into __init__.py.
+
+Jan 13 - Jan 17, 2020
++ implement a play_the_whole_field animation from Excel emissions data.
++ begin fixing deprecated features for Pandas 1.0rc support.
