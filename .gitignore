@@ -4,5 +4,7 @@ venv
 __pycache__
 *.pyc
 *.pyo
+*.icloud
 .DS_Store
 .coverage
+.ipynb_checkpoints
