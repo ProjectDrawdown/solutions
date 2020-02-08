@@ -3,6 +3,8 @@
 
 This repository is an in-progress rewrite of the Project Drawdown model engine. This is intended to be a replacement for the series of interconnected Excel spreadsheets currently used by the project to do climate solution modeling. The intention is to create an implementation which will allow us to broaden the use of the climate solution models to policymakers, business leaders, and other decisionmakers and interested parties.
 
+The codebase has some momentum already, has been continuously developed since September of 2018, and implements a substantial portion of the desired functionality. Planned deliverables and current status are listed below. We have also [recorded a video of the goals](https://youtu.be/ZwJFEDVZAfs), which allows demonstration where prototypes exist.
+
 ---
 
 ## Background
@@ -20,7 +22,7 @@ This repository is an in-progress rewrite of the Project Drawdown model engine. 
 ---
 
 ## Overview of the Project
-The codebase has some momentum already, has been continuously developed since September of 2018, and implements a substantial portion of the desired functionality. Planned deliverables and current status are listed below. We have also [recorded a video of the goals](https://youtu.be/ZwJFEDVZAfs), which allows demonstration where prototypes exist.
+Planned efforts include:
 
 + **Combined Model Implementation**  
 Having copies of the underlying model in ~80 Excel files is no longer tenable, the level of toil involved in making substantial changes to the model is prohibitive. The project intends to deliver a single implementation in Python which can model the current ~80 solutions developed by Project Drawdown and allow easier development of more solution models in the future.
