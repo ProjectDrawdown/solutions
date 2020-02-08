@@ -1,5 +1,5 @@
 # Project Drawdown Model Engine
-[Project Drawdown](https://www.drawdown.org/) is the most comprehensive plan yet published for how to solve Global Warming. Project Drawdown entered the climate conversation with the [publication of the 2017 book](https://www.amazon.com/Drawdown-Comprehensive-Proposed-Reverse-Warming-ebook/dp/B01KGZVNT0/), and continues its mission to inspire and communicate solutions.
+[Project Drawdown](https://www.drawdown.org/) is the most comprehensive plan yet published for how to solve Global Warming. Project Drawdown entered the climate conversation with the [publication of the 2017 book](https://www.drawdown.org/the-book), and continues its mission to inspire and communicate solutions.
 
 This repository is an in-progress rewrite of the Project Drawdown model engine. This is intended to be a replacement for the series of interconnected Excel spreadsheets currently used by the project to do climate solution modeling. The intention is to create an implementation which will allow us to broaden the use of the climate solution models to policymakers, business leaders, and other decisionmakers and interested parties.
 
@@ -63,15 +63,14 @@ You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Gi
 Get a copy of this source code:
 
 ```sh
-git clone https://github.com/ProjectDrawdown/solutions.git
-cd solutions
+$ git clone https://github.com/ProjectDrawdown/solutions.git
+$ cd solutions
 ```
 
 We recommend using pipenv for a virtual environment:
 
 ```sh
 $ pipenv shell
-$  . /Users/dgentry/.local/share/virtualenvs/solutions-4QOqvuZn/bin/activate
 (solutions) $
 ```
 
