@@ -21,7 +21,8 @@ Already know what you're looking for in this guide? Jump to the following sectio
 
 The current list of issue labels are [here][link_labels] and include:
 
-* [![Bugs](https://img.shields.io/badge/-bugs-fc2929.svg)][link_bugs] *These issues point to problems in the project.*
+* [![Bugs](https://img.shields.io/badge/-bugs-fc2929.svg)][link_bugs]  
+    *These issues point to problems in the project.*
 
     If you find new a bug, please provide as much information as possible to recreate the error.
 
@@ -37,66 +38,54 @@ The current list of issue labels are [here][link_labels] and include:
 We appreciate all contributions to Drawdown Solutions, but those most easily accepted will follow a workflow
 similar to the following:
 
-**1. Comment on an existing issue or open a new issue referencing your addition.**
+1. **Comment on an existing issue or open a new issue referencing your addition.**  
 
-This allows other members of the development team to confirm that you aren't overlapping with
-work that's currently underway and that everyone is on the same page with the goal of the work
-you're going to carry out.
+    This allows other members of the development team to confirm that you aren't overlapping with work that's currently underway and that everyone is on the same page with the goal of the work you're going to carry out.  
+  
+    [This blog][link_pushpullblog] is a nice explanation of why putting this work in up front is so useful to everyone involved.  
+  
+    Discussing the change first is especially important for substantive changes to be made in the model directory. The Drawdown methodology has been published and undergone substantial peer review. Changes to the model have to be vetted, and ensure that they fit within the reviewed methodology.  
 
-[This blog][link_pushpullblog] is a nice explanation of why putting this work in up front is so
-useful to everyone involved.
+1. **[Fork][link_fork] the [Drawdown Solutions repository][link_ddsolutions] to your profile.**  
 
-Discussing the change first is especially important for substantive changes made in the model
-directory. The Drawdown methodology has been published and undergone substantial peer review. Changes
-to the model have to be vetted, and ensure that they fit within the reviewed methodology.
+    This is now your own unique copy of the codebase. Changes here won't affect anyone else's work, so it's a safe space to explore edits to the code.  
+  
+    Make sure to keep your fork up to date with the original repository. One way to do this is to [configure a new remote named "upstream"](https://help.github.com/articles/configuring-a-remote-for-a-fork/) and to [sync your fork with the upstream repository][link_updateupstreamwiki].  
 
-**2. [Fork][link_fork] the [Drawdown Solutions repository][link_ddsolutions] to your profile.**
+1. **Make the changes you've discussed.**  
 
-This is now your own unique copy of the codebase.
-Changes here won't affect anyone else's work, so it's a safe space to explore edits to the code!
+    When you are working on your changes, test frequently to ensure you are not breaking the existing code. The project uses pytest, and "make test" will invoke pytest with appropriate options. There is a [YouTube video describing the different levels of testing](https://www.youtube.com/watch?v=K6P56qUkCrw).  
 
-Make sure to keep your fork up to date with the original repository.
-One way to do this is to [configure a new remote named "upstream"](https://help.github.com/articles/configuring-a-remote-for-a-fork/)
- and to [sync your fork with the upstream repository][link_updateupstreamwiki].
+    It's a good practice to create [a new branch](https://help.github.com/articles/about-branches/) of the repository for a new set of changes.  
 
-**3. Make the changes you've discussed.**
+1. **Submit a [pull request][link_pullrequest].**  
 
-When you are working on your changes, test frequently to ensure you are not breaking the existing code.
-The project uses pytest, and "make test" will invoke pytest with appropriate options. There is a
-[YouTube video describing the different levels of testing](https://www.youtube.com/watch?v=K6P56qUkCrw).
+    A new pull request for your changes should be created from your fork of the repository.  
+  
+    Pull requests should be submitted early and often (please don't mix too many unrelated changes within one PR)! If your pull request is not yet ready to be merged, please also include the **[WIP]** prefix (you can remove it once your PR is ready to be merged). This tells the development team that your pull request is a "work-in-progress", and that you plan to continue working on it.  
 
-It's a good practice to create [a new branch](https://help.github.com/articles/about-branches/)
-of the repository for a new set of changes.
+    Review and discussion on new code can begin well before the work is complete, and the more discussion the better. The development team may prefer a different path than you've outlined, so it's better to discuss it and get approval at the early stage of your work.  
 
-**4. Submit a [pull request][link_pullrequest].**
-
-A new pull request for your changes should be created from your fork of the repository.
-
-Pull requests should be submitted early and often (please don't mix too many unrelated changes within one PR)!
-If your pull request is not yet ready to be merged, please also include the **[WIP]** prefix (you can remove
-it once your PR is ready to be merged). This tells the development team that your pull request is a
-"work-in-progress", and that you plan to continue working on it.
-
-Review and discussion on new code can begin well before the work is complete, and the more discussion the better!
-The development team may prefer a different path than you've outlined, so it's better to discuss it and get
-approval at the early stage of your work.
-
-One your PR is ready a member of the development team will review your changes to confirm that they can be
-merged into the main codebase.
+    Once your PR is ready a member of the development team will review your changes to confirm that they can be merged into the main codebase.
 
 ## Notes for New Code
 
 #### Testing
-New code should be tested, whenever feasible.
-Bug fixes should include an example that exposes the issue.
-Any new features should have tests that show at least a minimal example.
+New code should be tested. Test coverage is a key deliverable of this project, we want the codebase to be
+amenable to extensions by the annual cohort of researchers and good coverage is essential to that.
+
+[![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions)
+
+Bug fixes must include an example that exposes the issue.
+New features should have tests that exercise its functionality. There is a [YouTube video describing the layers of testing](https://www.youtube.com/watch?v=K6P56qUkCrw0).
 If you're not sure what this means for your code, please ask in your pull request.
 
 ## Recognizing contributions
 
 We welcome and recognize all contributions from documentation to testing to code development.
 
-You can see a list of current contributors in our [zenodo file][link_zenodo].
+You can see a list of current contributors in our [zenodo file][link_zenodo], which we use to
+generate author lists [as described in this blog post](http://blog.chrisgorgolewski.org/2017/11/sharing-academic-credit-in-open-source.html).
 If you are new to the project, don't forget to add your name and affiliation there!
 
 ## Thank you!
