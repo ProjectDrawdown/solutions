@@ -73,6 +73,8 @@ We recommend using pipenv for a virtual environment:
 ```sh
 $ pipenv shell
 (solutions) $
+(solutions) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
+(solutions) $ jupyter labextension install bqplot ipyvolume jupyter-threejs qgrid
 ```
 
 Then start the Jupyter Notebook:
