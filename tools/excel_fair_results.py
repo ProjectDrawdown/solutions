@@ -286,7 +286,7 @@ def produce_animation(solutions, filename, writer):
     ax.set_ylabel(u'°C');
     df_T = pd.Series(start_T, index=start.index)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
-            color='black', label='Baseline', zorder=50)
+            label='Baseline', zorder=50)
     legend_no_duplicates(ax)
 
     lines = {}
@@ -297,7 +297,21 @@ def produce_animation(solutions, filename, writer):
 
 
 def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
-    matplotlib.style.use('ggplot')
+    plt.rcParams.update({
+        "lines.color": "white",
+        "patch.edgecolor": "white",
+        "text.color": "black",
+        "axes.facecolor": "black",
+        "axes.edgecolor": "lightgray",
+        "axes.labelcolor": "white",
+        "xtick.color": "white",
+        "ytick.color": "white",
+        "grid.color": "lightgray",
+        "text.color": "lightgray",
+        "figure.facecolor": "black",
+        "figure.edgecolor": "black",
+        "savefig.facecolor": "black",
+        "savefig.edgecolor": "black"})
     for scenario in ['PDS1', 'PDS2']:
         print(f"{scenario} CSV")
         solutions = process_scenario(filename=excelfile, outdir=outdir, scenario=scenario)
