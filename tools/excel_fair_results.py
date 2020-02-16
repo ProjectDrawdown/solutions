@@ -10,31 +10,202 @@ import matplotlib.style
 import model.fairutil
 import numpy as np
 import pandas as pd
-import ui.color
 
 
 g_years = range(1850, 2061)
+animation_sectors = {
+    'Electricity': 'Electricity',
+    'Smart Thermostats': 'Electricity',
+    'Building Automation Systems': 'Electricity',
+    'LED Lighting': 'Electricity',
+    'LED Lighting (commercial)': 'Electricity',
+    'LED Lighting (residential)': 'Electricity',
+    'Insulation': 'Electricity',
+    'Dynamic Glass': 'Electricity',
+    'High-Performance Glass': 'Electricity',
+    'High-Performance Glass (commercial)': 'Electricity',
+    'Green & Cool Roofs': 'Electricity',
+    'District Heating': 'Electricity',
+    'High-Efficiency Heat Pumps': 'Electricity',
+    'High-Efficient Heat Pumps': 'Electricity',
+    'Efficient Cooling Devices': 'Electricity',
+    'Solar Hot Water': 'Electricity',
+    'Low-Flow Fixtures': 'Electricity',
+    'Water Distribution Efficiency': 'Electricity',
+    'Building Retrofitting': 'Electricity',
+    'Net-Zero Buildings': 'Electricity',
+    'Concentrated Solar Power': 'Electricity',
+    'Distributed Solar Photovoltaics': 'Electricity',
+    'Utility-Scale Solar Photovoltaics': 'Electricity',
+    'Utility-scale Solar Photovoltaics': 'Electricity',
+    'Micro WInd Turbines': 'Electricity',
+    'Micro Wind Turbines': 'Electricity',
+    'Onshore Wind Turbines': 'Electricity',
+    'Offshore WInd Turbines': 'Electricity',
+    'Offshore Wind Turbines': 'Electricity',
+    'Geothermal Power': 'Electricity',
+    'Small Hydropower': 'Electricity',
+    'Ocean Power': 'Electricity',
+    'Biomass Power': 'Electricity',
+    'Nuclear Power': 'Electricity',
+    'Waste-to-Energy': 'Electricity',
+    'Waste to Energy': 'Electricity',
+    'Landfill Methane Capture': 'Electricity',
+    'Methane Digesters': 'Electricity',
+    'Large Methane Digesters': 'Electricity',
+    'Grid Flexibility': 'Electricity',
+    'Microgrids': 'Electricity',
+    'Distributed Energy Storage': 'Electricity',
+    'Utility-Scale Energy Storage': 'Electricity',
+    'Plant-Rich Diets':  'Food, Agriculture, Land Use',
+    'Plant-Rich Diet':  'Food, Agriculture, Land Use',
+    'Reduced Food Waste':  'Food, Agriculture, Land Use',
+    'Macro Algal Farming':  'Food, Agriculture, Land Use',
+    'Avoided Land Conversion':  'Food, Agriculture, Land Use',
+    'Avoided Land Use Conversion':  'Food, Agriculture, Land Use',
+    'Forest Protection':  'Food, Agriculture, Land Use',
+    "Indigenous Peoples' Forest Tenure":  'Food, Agriculture, Land Use',
+    'Sustainable Forestry':  'Food, Agriculture, Land Use',
+    'Grassland Protection':  'Food, Agriculture, Land Use',
+    'Peatland Protection':  'Food, Agriculture, Land Use',
+    'Peatland Protection & Rewetting': 'Food, Agriculture, Land Use',
+    'Coastal Wetland Protection':  'Food, Agriculture, Land Use',
+    'Sustainable Intensification for Smallholders':  'Food, Agriculture, Land Use',
+    'Conservation Agriculture':  'Food, Agriculture, Land Use',
+    'Regenerative Annual Cropping':  'Food, Agriculture, Land Use',
+    'Improved Livestock Feeds':  'Food, Agriculture, Land Use',
+    'Nutrient Management':  'Food, Agriculture, Land Use',
+    'Farm Irrigation Efficiency':  'Food, Agriculture, Land Use',
+    'Improved Rice Production':  'Food, Agriculture, Land Use',
+    'System of Rice Intensification':  'Food, Agriculture, Land Use',
+    'System of Rice Instensification':  'Food, Agriculture, Land Use',
+    'TBD': 'Industry',
+    'Alternative Cement': 'Industry',
+    'Alternative Concrete': 'Industry',
+    'Alternative Cements': 'Industry',
+    'Bioplastics': 'Industry',
+    'Refrigerant Management': 'Industry',
+    'Alternative Refrigerants': 'Industry',
+    'Composting': 'Industry',
+    'Recycling': 'Industry',
+    'Recycled Paper': 'Industry',
+    'Waste-to-Energy': 'Industry',
+    'Landfill Methane Capture': 'Industry',
+    'Methane Digesters': 'Industry',
+    'Hybrid Cars': 'Transportation',
+    'Efficient Trucks': 'Transportation',
+    'Efficient Aviation': 'Transportation',
+    'Efficient Ocean Shipping': 'Transportation',
+    'Walkable Cities': 'Transportation',
+    'Bicycle Infrastructure': 'Transportation',
+    'Bike Infrastructure': 'Transportation',
+    'Electric Bicycles': 'Transportation',
+    'Carpooling': 'Transportation',
+    'Public Transit': 'Transportation',
+    'High-Speed Rail': 'Transportation',
+    'Telepresence': 'Transportation',
+    'Electric Cars': 'Transportation',
+    'Electric Trains': 'Transportation',
+    'Smart Thermostats': 'Buildings',
+    'Building Automation Systems': 'Buildings',
+    'Insulation': 'Buildings',
+    'Dynamic Glass': 'Buildings',
+    'High-Performance Glass': 'Buildings',
+    'Green & Cool Roofs': 'Buildings',
+    'Green & Cool Roofs ': 'Buildings',
+    'Green Roofs': 'Buildings',
+    'Cool Roofs': 'Buildings',
+    'Low-Flow Fixtures': 'Buildings',
+    'Building Retrofitting': 'Buildings',
+    'Net-Zero Buildings': 'Buildings',
+    'District Heating': 'Buildings',
+    'High-Efficiency Heat Pumps': 'Buildings',
+    'Solar Hot Water': 'Buildings',
+    'Biogas for Cooking': 'Buildings',
+    'Improved Clean Cookstoves': 'Buildings',
+    'Refrigerant Management': 'Buildings',
+    'Alternative Refrigerants': 'Buildings',
+    'N/A':  'Other',
+    'Plant-Rich Diets': 'Land Sinks',
+    'Reduced Food Waste': 'Land Sinks',
+    'Avoided Land Conversion': 'Land Sinks',
+    'Forest Protection': 'Land Sinks',
+    'Indigenous Peoples Forest Tenure': 'Land Sinks',
+    'Sustainable Forestry': 'Land Sinks',
+    'Temperate Forest Restoration': 'Land Sinks',
+    'Tropical Forest Restoration': 'Land Sinks',
+    'Peatland Protection': 'Land Sinks',
+    'Peatland Restoration': 'Land Sinks',
+    'Sustainable Intensification for Smallholders': 'Land Sinks',
+    'Conservation Agriculture': 'Land Sinks',
+    'Regenerative Annual Cropping': 'Land Sinks',
+    'Managed Grazing': 'Land Sinks',
+    'Silvopasture': 'Land Sinks',
+    'Multistrata Agroforestry': 'Land Sinks',
+    'Tree Intercropping': 'Land Sinks',
+    'Perennial Staple Crops': 'Land Sinks',
+    'Perennial Biomass Production': 'Land Sinks',
+    'Improved Rice Cultivation': 'Land Sinks',
+    'System of Rice Intensification': 'Land Sinks',
+    'Abandoned Farmland Restoration': 'Land Sinks',
+    'Tree Plantations (on Degraded Land)': 'Land Sinks',
+    'Tree Plantations on Degraded Land': 'Land Sinks',
+    'Bamboo Production': 'Land Sinks',
+    'Coastal Wetland Protection':  'Coastal & Ocean Sinks',
+    'Coastal Wetland Restoration':  'Coastal & Ocean Sinks',
+    'Coastal Wetlands Restoration': 'Coastal & Ocean Sinks',
+    'Marine Protected Areas':  'Coastal & Ocean Sinks',
+    'Kelp Forest Restoration':  'Coastal & Ocean Sinks',
+    'Macro Algal Farming':  'Coastal & Ocean Sinks',
+    'Marine Permaculture':  'Coastal & Ocean Sinks',
+    'Ocean Farming':  'Coastal & Ocean Sinks',
+    'Biochar Production':  'Engineered Sinks',
+    'Other coming attractions *':  'Engineered Sinks',
+    'Health & Education': 'Health & Education',
+    'Health and Education': 'Health & Education',
+    'Educating Girls': 'Health & Education',
+    'Family Planning': 'Health & Education',
+}
+
+colors = {
+    'Electricity': 'coral',
+    'Food, Agriculture, Land Use': 'darkgreen',
+    'Industry': 'mediumorchid',
+    'Transportation': 'lightseagreen',
+    'Buildings': 'steelblue',
+    'Land Sinks': 'lawngreen',
+    'Coastal & Ocean Sinks': 'powderblue',
+    'Engineered Sinks': 'silver',
+    'Health & Education': 'crimson',
+}
+
+
+def baseline(solutions):
+    return model.fairutil.baseline_emissions().add(solutions['Health and Education'], fill_value=0.0)
 
 
 def process_scenario(filename, outdir, scenario):
     sheet_name = 'Gtperyr_' + scenario
     raw = pd.read_excel(io=filename, sheet_name=sheet_name, header=None, index_col=0,
-            dtype=object, skiprows=0, nrows=52, usecols='A:EF')
-    years = raw.index[11:]
+            dtype=object, skiprows=0, nrows=52, usecols='A:IL')
     solution_names = sorted(list(set(raw.iloc[5, 3:].dropna())))
 
     solutions = pd.DataFrame(0, index=g_years, columns=solution_names)
     solutions.index.name = 'Year'
     sectors = {}
     prev_solution = None
-    prev_sector = None
     for (_, col) in raw.iloc[:, 3:].iteritems():
         numeric = pd.to_numeric(col.iloc[11:], errors='coerce').fillna(0.0)
         if np.count_nonzero(numeric.to_numpy()) == 0:
             continue
+        disposition = col.iloc[3]
+        if disposition not in ['Avoided', 'Sequestration', 'ELC', 'F+D', 'INDIRECT']:
+            continue
         mechanism = col.iloc[3] if not pd.isna(col.iloc[3]) else 'Avoided'
-        sector = col.iloc[4] if not pd.isna(col.iloc[4]) else prev_sector
         solution = col.iloc[5] if not pd.isna(col.iloc[5]) else prev_solution
+        if solution == 'Peatland Protection' or solution == 'Peatland Restoration':
+            continue
+        sector = animation_sectors[solution]
         if mechanism == 'Avoided':
             numeric.iloc[0] = 0.0
         numeric.name = solution
@@ -42,29 +213,21 @@ def process_scenario(filename, outdir, scenario):
         sector_list = sectors.get(sector, [])
         sectors[sector] = sector_list + [solution]
         prev_solution = solution
-        prev_sector = sector
 
-    total = model.fairutil.baseline_emissions()
+    total = baseline(solutions)
     C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     baseline_C = pd.Series(C, index=total.index.copy())
     baseline_T = pd.Series(T, index=total.index.copy())
-    temperature = pd.DataFrame(index=g_years, columns=solution_names)
+    temperature = pd.DataFrame(index=g_years, columns=["Baseline", "Drawdown"])
     temperature.index.name = 'Year'
-    for solution, emissions in solutions.iteritems():
-        total = model.fairutil.baseline_emissions()
-        total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
-        _,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
-                r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-        df_T = pd.Series(T, index=total.index.copy())
-        temperature[solution] = df_T - baseline_T
 
     concentration = pd.DataFrame(index=g_years,
             columns=["Emissions (GtC)", "Baseline (ppm)", "Drawdown (ppm)"])
     concentration.index.name = 'Year'
-    concentration["Emissions (GtC)"] = model.fairutil.baseline_emissions()
+    concentration["Emissions (GtC)"] = baseline(solutions)
     concentration["Baseline (ppm)"] = baseline_C
-    total = model.fairutil.baseline_emissions()
+    total = baseline(solutions)
     emissions = solutions.sum(axis=1)
     total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
     C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
@@ -74,8 +237,8 @@ def process_scenario(filename, outdir, scenario):
     concentration["Drawdown (ppm)"] = df_C
     preindustrial = baseline_T.loc[1850:1900].mean()
     print(f"Pre-industrial temperature {preindustrial:.3f}C relative to {baseline_T.index[0]}")
-    temperature.insert(loc=0, column="Total", value=(df_T.copy() - preindustrial))
-    temperature.insert(loc=0, column="Baseline", value=(baseline_T - preindustrial))
+    temperature["Drawdown"] = df_T.copy() - preindustrial
+    temperature["Baseline"] = baseline_T - preindustrial
 
     outfile = os.path.splitext(os.path.basename(filename))[0] + '_Temperature_' + scenario + '.csv'
     temperature.to_csv(os.path.join(outdir, outfile), float_format='%.3f')
@@ -91,10 +254,10 @@ def legend_no_duplicates(ax):
     ax.legend(*zip(*unique), loc='upper left', frameon=False)
 
 
-def animate(frame, ax, start, lines, emissions):
+def animate(frame, ax, start, lines, emissions, baseline_T):
     (sector_num, offset) = divmod(frame, 50)
     (sector, df_T) = emissions[sector_num]
-    color = ui.color.get_sector_color(sector)
+    color = colors[sector]
     if offset == 0:
         zorder = 40 - sector_num
         line, = ax.plot([], [], color=color, label=sector, zorder=zorder)
@@ -107,9 +270,7 @@ def animate(frame, ax, start, lines, emissions):
         end = 2020 + offset
         line.set_data(df_T.loc[2020:end].index.values, df_T.loc[2020:end].values)
         if sector_num == 0:
-            _,_,T = fair.forward.fair_scm(emissions=start.values, useMultigas=False,
-                    r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-            prev = pd.Series(T, index=start.index)
+            prev = baseline_T
         else:
             (_, prev) = emissions[sector_num - 1]
         ax.fill_between(x=df_T.loc[2020:end].index.values, y1=prev.loc[2020:end].values,
@@ -121,30 +282,32 @@ def produce_animation(solutions, sectors, filename, writer):
     for sector, solution_list in sectors.items():
         sector_gtons.loc[:, sector] = solutions.loc[:, solution_list].sum(axis=1)
 
-    start = model.fairutil.baseline_emissions()
+    start = baseline(solutions)
     _,_,start_T = fair.forward.fair_scm(emissions=start.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
+    baseline_T = pd.Series(start_T, index=start.index.copy())
+    preindustrial = baseline_T.loc[1850:1900].mean()
+    start_T = start_T - preindustrial
     end = start.subtract(sector_gtons.sum(axis=1), fill_value=0.0)
     _,_,end_T = fair.forward.fair_scm(emissions=end.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
-    total_reduction_T = (start_T - end_T)[85:296]
+    end_T = end_T - preindustrial
+    total_reduction_T = (start_T - end_T)[255:296]
     reduction_T = np.zeros(total_reduction_T.shape)
     sectors = sector_gtons.sort_values(axis='columns', by=2050, ascending=False).columns
     emissions = []
     for sector in sectors:
         fraction = sector_gtons[sector] / sector_gtons.sum(axis=1)
-        print(f"{sector}: {fraction[181:]}")
-        reduction_T += total_reduction_T * fraction.fillna(0.0).values
-        temperatures = start_T[85:296] - reduction_T
-        df_T = pd.Series(temperatures, index=range(1850, 2061))
+        reduction_T += total_reduction_T * fraction.loc[2020:2061].fillna(0.0).values
+        temperatures = start_T[255:296] - reduction_T
+        df_T = pd.Series(temperatures, index=range(2020, 2061))
+        print(f"{sector}: {df_T}")
         emissions.append((sector, df_T))
 
     fig = plt.figure()
     ax = fig.add_subplot()
     ax.set_ylabel(u'°C');
-    _,_,T = fair.forward.fair_scm(emissions=start.values, useMultigas=False, r0=model.fairutil.r0,
-            tcrecs=model.fairutil.tcrecs)
-    df_T = pd.Series(T, index=start.index)
+    df_T = pd.Series(start_T, index=start.index)
     ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
             color='black', label='Baseline', zorder=50)
     legend_no_duplicates(ax)
@@ -152,13 +315,13 @@ def produce_animation(solutions, sectors, filename, writer):
     lines = {}
     frames = len(emissions) * 50
     anim = matplotlib.animation.FuncAnimation(fig=fig, func=animate, interval=10, frames=frames,
-            fargs=(ax, start, lines, emissions), repeat=False)
+            fargs=(ax, start, lines, emissions, baseline_T - preindustrial), repeat=False)
     anim.save(filename, writer=writer)
 
 
 def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
     matplotlib.style.use('ggplot')
-    for scenario in ['PDS1', 'PDS2', 'PDS3']:
+    for scenario in ['PDS1', 'PDS2']:
         print(f"{scenario} CSV")
         (solutions, sectors) = process_scenario(filename=excelfile, outdir=outdir,
                 scenario=scenario)
@@ -179,7 +342,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Produce FaIR results from Drawdown emissions data.')
     parser.add_argument('--excelfile', help='Excel filename to process',
-            default='CORE-Global_GHG_Accounting_12-1-2019.xlsm')
+            default='CORE-Global_GHG_Accounting_2-1-2020_FINAL.xlsm')
     parser.add_argument('--outdir', help='output directory', default='.')
 
     args = parser.parse_args(sys.argv[1:])
