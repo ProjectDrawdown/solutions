@@ -240,10 +240,10 @@ def get_rrs_scenarios(wb, solution_category):
             assert sr_tab.cell_value(row + 217, 1) == 'Adoption Adjustment'
             adjust = sr_tab.cell_value(row + 218, 4)
             if adjust and adjust != "(none)":
-                s['pds_adoption_use_ref_years'] = [int(x) for x in adjust.split(',') if x is not '']
+                s['pds_adoption_use_ref_years'] = [int(x) for x in adjust.split(',') if x != '']
             adjust = sr_tab.cell_value(row + 219, 4)
             if adjust and adjust != "(none)":
-                s['ref_adoption_use_pds_years'] = [int(x) for x in adjust.split(',') if x is not '']
+                s['ref_adoption_use_pds_years'] = [int(x) for x in adjust.split(',') if x != '']
 
             row += 202
             scenarios[scenario_name] = s
@@ -310,10 +310,10 @@ def get_land_scenarios(wb, solution_category):
             assert sr_tab.cell_value(row + 286, 1) == 'Adoption Adjustment'
             adjust = sr_tab.cell_value(row + 287, 4)
             if adjust and adjust != "(none)":
-                s['pds_adoption_use_ref_years'] = [int(x) for x in adjust.split(',') if x is not '']
+                s['pds_adoption_use_ref_years'] = [int(x) for x in adjust.split(',') if x != '']
             adjust = sr_tab.cell_value(row + 288, 4)
             if adjust and adjust != "(none)":
-                s['ref_adoption_use_pds_years'] = [int(x) for x in adjust.split(',') if x is not '']
+                s['ref_adoption_use_pds_years'] = [int(x) for x in adjust.split(',') if x != '']
             # TODO: handle soln_pds_adoption_prognostication_source
 
             assert sr_tab.cell_value(row + 54, 1) == 'Conventional'
