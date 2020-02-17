@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0a6b423ecb3888e4f288908fc243e05d353d636ac035ff82b4ce704ddeddbfcb"
+            "sha256": "2bfa2e5bf5d32a660a0f9651a6b0cd3f0773cb95e1d5b222d3efdc5f2b364927"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -232,10 +232,10 @@
         },
         "json5": {
             "hashes": [
-                "sha256:62a7a36f5f9806108d39bfc59d4458e2a083762a2fc15fd3c7828c72502fd702",
-                "sha256:f2dd81b3de344143144532804171ff8e7da93cd57af6b56d4d4afa859f8c77ff"
+                "sha256:36ae138e79ae2f10b93bfde61bef7441a796edfd1d1cb4feeb8ed55836fd087e",
+                "sha256:ddbf6b06f674edf53c40c1861df767a2fc5fe37651d643317849461be14823b7"
             ],
-            "version": "==0.9.0"
+            "version": "==0.9.1"
         },
         "jsonschema": {
             "hashes": [
@@ -254,10 +254,10 @@
         },
         "jupyter-core": {
             "hashes": [
-                "sha256:464769f7387d7a62a2403d067f1ddc616655b7f77f5d810c0dd62cb54bfd0fb9",
-                "sha256:a183e0ec2e8f6adddf62b0a3fc6a2237e3e0056d381e536d3e7c7ecc3067e244"
+                "sha256:185dfe42800585ca860aa47b5fe0211ee2c33246576d2d664b0b0b8d22aacf3a",
+                "sha256:e91785b8bd7f752711c0c20e5ec6ba0d42178d6321a61396082c55818991caee"
             ],
-            "version": "==4.6.1"
+            "version": "==4.6.2"
         },
         "jupyterlab": {
             "hashes": [
@@ -435,6 +435,14 @@
             ],
             "index": "pypi",
             "version": "==1.18.1"
+        },
+        "numpy-financial": {
+            "hashes": [
+                "sha256:bae534b357516f12258862d1f0181d911032d0467f215bfcd1c264b4da579047",
+                "sha256:f84341bc62b2485d5604a73d5fac7e91975b4b9cd5f4a5a9cf608902ea00cb40"
+            ],
+            "index": "pypi",
+            "version": "==1.0.0"
         },
         "packaging": {
             "hashes": [
@@ -812,10 +820,10 @@
         },
         "xlwings": {
             "hashes": [
-                "sha256:0aabb5a5e372e76bb06f49b4f16935082c9e0a72b7d1938dc523488c12861650"
+                "sha256:c441187bf11b9e53ecce282d9db95a95720026820fb4d468c5d548e430a33b8c"
             ],
             "index": "pypi",
-            "version": "==0.17.1"
+            "version": "==0.18.0"
         }
     },
     "develop": {}

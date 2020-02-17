@@ -7,6 +7,7 @@ jsonschema>=3.0.1
 jupyterlab>=1.0.1
 matplotlib>=3.1.1
 numpy>=1.16.4
+numpy-financial>=1.0.0
 pandas>=0.25.0rc0,<1.0
 pillow>=6.0.0
 pytest>=5.0.0

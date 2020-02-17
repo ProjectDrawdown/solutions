@@ -5,6 +5,7 @@ import math
 
 import model.dd as dd
 import numpy as np
+import numpy_financial
 import pandas as pd
 
 
@@ -302,7 +303,7 @@ class OperatingCost:
         net_cash_flow = self.soln_net_cash_flow()
         for n in range(len(net_cash_flow.index)):
             l = [0] * (n + 1) + [net_cash_flow.iloc[n]]
-            npv.append(np.npv(rate=self.ac.npv_discount_rate, values=l))
+            npv.append(numpy_financial.npv(rate=self.ac.npv_discount_rate, values=l))
         result = pd.Series(npv, index=net_cash_flow.index)
         result.name = 'soln_net_present_value'
         return result
@@ -385,7 +386,7 @@ class OperatingCost:
         offset = self.single_iunit_purchase_year - svcsic.first_valid_index() + 1
         for n in range(len(svcsic.index)):
             l = [0] * (n + offset) + [svcsic.iloc[n]]
-            npv.append(np.npv(rate=self.ac.npv_discount_rate, values=l))
+            npv.append(numpy_financial.npv(rate=self.ac.npv_discount_rate, values=l))
         result = pd.Series(npv, index=svcsic.index.copy())
         result.name = 'soln_vs_conv_single_iunit_npv'
         return result
@@ -473,7 +474,7 @@ class OperatingCost:
         offset = self.single_iunit_purchase_year - sosic.first_valid_index() + 1
         for n in range(len(sosic.index)):
             l = [0] * (n + offset) + [sosic.iloc[n]]
-            npv.append(np.npv(rate=self.ac.npv_discount_rate, values=l))
+            npv.append(numpy_financial.npv(rate=self.ac.npv_discount_rate, values=l))
         result = pd.Series(npv, index=sosic.index.copy())
         result.name = 'soln_only_single_iunit_npv'
         return result
