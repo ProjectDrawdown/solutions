@@ -240,7 +240,7 @@ def animate(frame, ax, start, lines, emissions, baseline_T):
     else:
         line = lines[sector]
 
-    if offset <= 30:
+    if offset <= 40:
         end = 2020 + offset
         line.set_data(df_T.loc[2020:end].index.values, df_T.loc[2020:end].values)
         if sector_num == 0:
@@ -285,7 +285,7 @@ def produce_animation(solutions, filename, writer):
     ax = fig.add_subplot()
     ax.set_ylabel(u'°C');
     df_T = pd.Series(start_T, index=start.index)
-    ax.plot(df_T.loc[2005:2050].index.values, df_T.loc[2005:2050].values,
+    ax.plot(df_T.loc[2005:2060].index.values, df_T.loc[2005:2060].values,
             label='Baseline', zorder=50)
     legend_no_duplicates(ax)
 
