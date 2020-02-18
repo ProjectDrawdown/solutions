@@ -25,16 +25,15 @@ def test_soln_ref_funits_adopted():
         [2050, 272.41409799109, 97.40188603589, 0.52311962553, 60.19386560477, 6.43555351544,
          42.24551570326, 31.56519386433, 14.33357622563, 72.82702319498, 16.41524405748]],
         columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
-                 "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index(
-        "Year")
+                 "Middle East and Africa", "Latin America", "China", "India", "EU",
+                 "USA"]).set_index("Year")
     ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints, pds_datapoints=None,
-                                   ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=None,
-                                   pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
-
-                                   pds_adoption_is_single_source=False)
+            ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=None,
+            pds_adoption_data_per_region=None, pds_adoption_trend_per_region=None,
+            pds_adoption_is_single_source=False)
     result = ht.soln_ref_funits_adopted()
     expected = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-                            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
+            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
     expected.name = 'soln_ref_funits_adopted'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
@@ -371,13 +370,14 @@ def test_soln_pds_funits_custom_pds():
     custom_scen = pd.read_csv(datadir.joinpath('ca_scenario_1_trr.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(soln_pds_adoption_basis='Fully Customized PDS')
     ht_ref_datapoints = pd.DataFrame([[2014] + [0] * 10, [2050] + [0] * 10],
-                                     columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                                              'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
-                                              'USA']).set_index('Year')
+            columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
+                'USA']).set_index('Year')
     ht_pds_datapoints = ht_ref_datapoints
-    ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen, ref_datapoints=ht_ref_datapoints,
-                                   pds_datapoints=ht_pds_datapoints)
-    pd.testing.assert_frame_equal(ht.soln_pds_funits_adopted().iloc[1:, :], custom_scen.iloc[3:, :])
+    ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen,
+            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints)
+    pd.testing.assert_frame_equal(ht.soln_pds_funits_adopted().iloc[1:, :],
+            custom_scen.iloc[3:, :])
     assert sum(ht.soln_pds_funits_adopted().loc[2014]) == 0
 
 
@@ -386,21 +386,21 @@ def test_soln_pds_funits_custom_pds_tam_limit():
     custom_scen = pd.read_csv(datadir.joinpath('ca_scenario_1_trr.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(soln_pds_adoption_basis='Fully Customized PDS')
     ht_ref_datapoints = pd.DataFrame([[2014] + [0] * 10, [2050] + [0] * 10],
-                                     columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                                              'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
-                                              'USA']).set_index('Year')
+            columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
+                'USA']).set_index('Year')
     ht_pds_datapoints = ht_ref_datapoints
     pds_tam_per_region_limit_seven = pd.DataFrame(ref_tam_per_region_limit_seven_list[1:],
-                                                  columns=ref_tam_per_region_limit_seven_list[0]).set_index('Year')
+            columns=ref_tam_per_region_limit_seven_list[0]).set_index('Year')
     pds_tam_per_region_limit_seven.name = 'pds_tam_per_region'
-    ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen, ref_datapoints=ht_ref_datapoints,
-                                   pds_datapoints=ht_pds_datapoints,
-                                   pds_adoption_limits=pds_tam_per_region_limit_seven)
+    ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen,
+            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+            pds_adoption_limits=pds_tam_per_region_limit_seven)
     expected = pds_tam_per_region_limit_seven
     expected.name = 'soln_pds_funits_adopted'
     result = ht.soln_pds_funits_adopted()
     pd.testing.assert_series_equal(result.loc[2015:, 'World'], expected.loc[2015:, 'World'],
-                                   check_exact=False)
+            check_exact=False)
 
 
 def test_soln_pds_funits_adopted_linear_interpolation():
@@ -573,6 +573,25 @@ def test_soln_ref_funits_adopted_regional_sums_buildingautomation():
                             columns=soln_ref_funits_adopted_buildingautomation_list[0]).set_index('Year')
     expected.name = 'soln_ref_funits_adopted'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+
+def test_soln_use_first_pds_datapoint():
+    datadir = pathlib.Path(__file__).parents[0].joinpath('data')
+    custom_scen = pd.read_csv(datadir.joinpath('ca_scenario_1_trr.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(soln_pds_adoption_basis='Fully Customized PDS')
+    ht_ref_datapoints = pd.DataFrame([[2014] + [1000] * 10, [2050] + [0] * 10],
+            columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
+                'USA']).set_index('Year')
+    ht_pds_datapoints = ht_ref_datapoints
+    ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen,
+            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+            use_first_pds_datapoint=True)
+    assert int(ht.soln_pds_funits_adopted().loc[2014, 'World']) == 1000
+    ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen,
+            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+            use_first_pds_datapoint=False)
+    assert int(ht.soln_pds_funits_adopted().loc[2014, 'World']) != 1000
 
 
 soln_ref_funits_adopted_list = [

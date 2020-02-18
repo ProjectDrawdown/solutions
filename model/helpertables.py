@@ -137,6 +137,7 @@ class HelperTables:
 
            SolarPVUtil 'Helper Tables'!B90:L137
         """
+        main_region = dd.REGIONS[0]
         first_year = self.pds_datapoints.first_valid_index()
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
             adoption = self.pds_adoption_data_per_region.loc[first_year:, :].copy(deep=True)
@@ -150,7 +151,7 @@ class HelperTables:
             if self.pds_adoption_is_single_source:
                 # The World region can specify a single source (all the sub-regions use
                 # ALL SOURCES). If it does, use that one source without curve fitting.
-                adoption['World'] = self.pds_adoption_data_per_region.loc[first_year:, 'World']
+                adoption[main_region] = self.pds_adoption_data_per_region.loc[first_year:, main_region]
         elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
             raise NotImplementedError('Custom S-Curve support not implemented')
 
@@ -160,15 +161,15 @@ class HelperTables:
                 adoption[col] = adoption[col].combine(self.pds_adoption_limits[col].fillna(0.0), min)
 
         if self.ac.soln_pds_adoption_regional_data:
-            adoption.loc[:, 'World'] = adoption.loc[:, dd.MAIN_REGIONS].sum(axis=1)
+            adoption.loc[:, main_region] = adoption.loc[:, dd.MAIN_REGIONS].sum(axis=1)
             if self.pds_adoption_limits is not None:
                 for col in adoption.columns:
-                    adoption['World'] = adoption['World'].combine(
-                        self.pds_adoption_limits['World'].fillna(0.0), min)
+                    adoption[main_region] = adoption[main_region].combine(
+                        self.pds_adoption_limits[main_region].fillna(0.0), min)
 
         if not suppress_override and self.ac.pds_adoption_use_ref_years:
             y = self.ac.pds_adoption_use_ref_years
-            adoption.update(self.soln_ref_funits_adopted(suppress_override=True).loc[y, 'World'])
+            adoption.update(self.soln_ref_funits_adopted(suppress_override=True).loc[y, main_region])
 
         # Where we have actual data, use the actual data not the interpolation. Excel model does
         # this in all cases, even Custom PDS Adoption.
