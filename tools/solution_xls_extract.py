@@ -153,17 +153,18 @@ def get_rrs_scenarios(wb, solution_category):
             s['ref_source_post_2014'] = normalize_source_name(str(sr_tab.cell_value(row + 136, 7)))
             s['pds_source_post_2014'] = normalize_source_name(str(sr_tab.cell_value(row + 136, 10)))
 
-            s['pds_base_adoption'] = [
-                ('World', convert_sr_float(sr_tab.cell_value(row + 151, 4))),
-                ('OECD90', convert_sr_float(sr_tab.cell_value(row + 152, 4))),
-                ('Eastern Europe', convert_sr_float(sr_tab.cell_value(row + 153, 4))),
-                ('Asia (Sans Japan)', convert_sr_float(sr_tab.cell_value(row + 154, 4))),
-                ('Middle East and Africa', convert_sr_float(sr_tab.cell_value(row + 155, 4))),
-                ('Latin America', convert_sr_float(sr_tab.cell_value(row + 156, 4))),
-                ('China', convert_sr_float(sr_tab.cell_value(row + 157, 4))),
-                ('India', convert_sr_float(sr_tab.cell_value(row + 158, 4))),
-                ('EU', convert_sr_float(sr_tab.cell_value(row + 159, 4))),
-                ('USA', convert_sr_float(sr_tab.cell_value(row + 160, 4)))]
+            s['ref_base_adoption'] = {
+                'World': convert_sr_float(sr_tab.cell_value(row + 151, 4)),
+                'OECD90': convert_sr_float(sr_tab.cell_value(row + 152, 4)),
+                'Eastern Europe': convert_sr_float(sr_tab.cell_value(row + 153, 4)),
+                'Asia (Sans Japan)': convert_sr_float(sr_tab.cell_value(row + 154, 4)),
+                'Middle East and Africa': convert_sr_float(sr_tab.cell_value(row + 155, 4)),
+                'Latin America': convert_sr_float(sr_tab.cell_value(row + 156, 4)),
+                'China': convert_sr_float(sr_tab.cell_value(row + 157, 4)),
+                'India': convert_sr_float(sr_tab.cell_value(row + 158, 4)),
+                'EU': convert_sr_float(sr_tab.cell_value(row + 159, 4)),
+                'USA': convert_sr_float(sr_tab.cell_value(row + 160, 4)),
+            }
 
             assert sr_tab.cell_value(row + 163, 1) == 'PDS ADOPTION SCENARIO INPUTS'
             s['soln_pds_adoption_basis'] = str(sr_tab.cell_value(row + 164, 4)).strip()
@@ -909,10 +910,10 @@ def write_s_curve_ad(f, wb):
     f.write("      ['India', " + xli(s, 16, 8) + ", " + xli(s, 19, 8) + "],\n")
     f.write("      ['EU', " + xli(s, 16, 9) + ", " + xli(s, 19, 9) + "],\n")
     f.write("      ['USA', " + xli(s, 16, 10) + ", " + xli(s, 19, 10) + "]]\n")
-    f.write(
-        "    sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0], dtype=np.object).set_index('region')\n")
+    f.write("    sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0], dtype=np.object).set_index('region')\n")
     f.write("    sconfig['pds_tam_2050'] = pds_tam_per_region.loc[[2050]].T\n")
-    f.write("    sc_regions, sc_percentages = zip(*self.ac.pds_base_adoption)\n")
+    f.write("    sc_regions = list(self.ac.ref_base_adoption.keys())\n")
+    f.write("    sc_percentages = list(self.ac.ref_base_adoption.values())\n")
     f.write(
         "    sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
     f.write(
@@ -949,12 +950,8 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     final_datapoint_year = int(h.cell_value(*cell_to_offsets('B22')))
 
     tam_or_tla = 'ref_tam_per_region' if not is_land else 'self.tla_per_region'
-    f.write("    ht_ref_adoption_initial = pd.Series(\n")
-    r = [xln(h, 20, n) for n in range(2, 7)]
-    f.write("      [" + ", ".join(r) + ",\n")
-    r = [xln(h, 20, n) for n in range(7, 12)]
-    f.write("       " + ", ".join(r) + "],\n")
-    f.write("       index=dd.REGIONS)\n")
+    f.write("    ht_ref_adoption_initial = pd.Series(list(self.ac.ref_base_adoption.values()), "
+        "index=dd.REGIONS)\n")
     # even when the final_datapoint_year is 2018, the TAM initial year is hard-coded to 2014
     f.write(f"    ht_ref_adoption_final = {tam_or_tla}.loc[{final_datapoint_year}] * "
         f"(ht_ref_adoption_initial / {tam_or_tla}.loc[2014])\n")
