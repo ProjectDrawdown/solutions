@@ -65,7 +65,7 @@ animation_sectors = {
     'Plant-Rich Diets': [ 'Food, Agriculture, Land Use', 'Land Sinks'],
     'Plant-Rich Diet': [ 'Food, Agriculture, Land Use', 'Land Sinks'],
     'Reduced Food Waste': [ 'Food, Agriculture, Land Use', 'Land Sinks'],
-    'Macro Algal Farming': [ 'Food, Agriculture, Land Use', 'Coastal & Ocean Sinks'],
+    'Macro Algal Farming': [ 'Food, Agriculture, Land Use', 'Ocean Sinks'],
     'Avoided Land Conversion': [ 'Food, Agriculture, Land Use', 'Land Sinks'],
     'Avoided Land Use Conversion': [ 'Food, Agriculture, Land Use', 'Land Sinks'],
     'Forest Protection': ['Food, Agriculture, Land Use', 'Land Sinks'],
@@ -75,10 +75,10 @@ animation_sectors = {
     'Peatland Protection': ['Food, Agriculture, Land Use', 'Land Sinks'],
     'Peatland Protection & Rewetting': ['Food, Agriculture, Land Use', 'Land Sinks'],
     'Peatland Restoration': ['Food, Agriculture, Land Use', 'Land Sinks'],
-    'Coastal Wetland Protection': ['Food, Agriculture, Land Use', 'Coastal & Ocean Sinks'],
-    'Coastal Wetland Protection': ['Food, Agriculture, Land Use', 'Coastal & Ocean Sinks'],
-    'Coastal Wetland Restoration': ['Food, Agriculture, Land Use', 'Coastal & Ocean Sinks'],
-    'Coastal Wetlands Restoration': ['Food, Agriculture, Land Use', 'Coastal & Ocean Sinks'],
+    'Coastal Wetland Protection': ['Food, Agriculture, Land Use', 'Ocean Sinks'],
+    'Coastal Wetland Protection': ['Food, Agriculture, Land Use', 'Ocean Sinks'],
+    'Coastal Wetland Restoration': ['Food, Agriculture, Land Use', 'Ocean Sinks'],
+    'Coastal Wetlands Restoration': ['Food, Agriculture, Land Use', 'Ocean Sinks'],
     'Sustainable Intensification for Smallholders': ['Food, Agriculture, Land Use', 'Land Sinks'],
     'Conservation Agriculture': [ 'Food, Agriculture, Land Use', 'Land Sinks'],
     'Regenerative Annual Cropping': [ 'Food, Agriculture, Land Use', 'Land Sinks'],
@@ -131,10 +131,10 @@ animation_sectors = {
     'Tree Plantations (on Degraded Land)': ['Land Sinks'],
     'Tree Plantations on Degraded Land': ['Land Sinks'],
     'Bamboo Production': ['Land Sinks'],
-    'Marine Protected Areas': [ 'Coastal & Ocean Sinks'],
-    'Kelp Forest Restoration': [ 'Coastal & Ocean Sinks'],
-    'Marine Permaculture': [ 'Coastal & Ocean Sinks'],
-    'Ocean Farming': [ 'Coastal & Ocean Sinks'],
+    'Marine Protected Areas': [ 'Ocean Sinks'],
+    'Kelp Forest Restoration': [ 'Ocean Sinks'],
+    'Marine Permaculture': [ 'Ocean Sinks'],
+    'Ocean Farming': [ 'Ocean Sinks'],
     'Biochar Production': [ 'Engineered Sinks'],
     'Other coming attractions *': [ 'Engineered Sinks'],
     'Health & Education': ['Health & Education'],
@@ -144,15 +144,15 @@ animation_sectors = {
 }
 
 colors = {
-    'Electricity': 'coral',
-    'Food, Agriculture, Land Use': 'darkgreen',
-    'Industry': 'mediumorchid',
-    'Transportation': 'lightseagreen',
-    'Buildings': 'steelblue',
-    'Land Sinks': 'lawngreen',
-    'Coastal & Ocean Sinks': 'powderblue',
-    'Engineered Sinks': 'silver',
-    'Health & Education': 'crimson',
+    'Electricity': '#FD6317',
+    'Food, Agriculture, Land Use': '#659D2A',
+    'Industry': '#5A89D7',
+    'Transportation': '#17A1A6',
+    'Buildings': '#B26EB9',
+    'Land Sinks': '#C38813',
+    'Ocean Sinks': '#177EA1',
+    'Engineered Sinks': '#A19378',
+    'Health & Education': '#C98467',
 }
 
 
@@ -202,7 +202,6 @@ def process_scenario(filename, outdir, scenario):
     total = baseline(solutions)
     emissions = solutions.sum(axis=1)
     #emissions = raw.iloc[11:, 0:2].sum(axis=1) / 3.664
-    #print(emissions.loc[2020:] * 3.664)
     total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
     C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
                 r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
@@ -274,7 +273,7 @@ def produce_animation(solutions, filename, writer):
     reduction_T = np.zeros(total_reduction_T.shape)
     sectors = sector_gtons.sort_values(axis='columns', by=2050, ascending=False).columns
     emissions = []
-    for sector in sectors:
+    for sector in colors.keys():
         fraction = sector_gtons[sector] / sector_gtons.sum(axis=1)
         reduction_T += total_reduction_T * fraction.loc[2020:2061].fillna(0.0).values
         temperatures = start_T[255:296] - reduction_T
