@@ -32,6 +32,8 @@ def test_get_filename_for_source():
         "Based on: IEA ETP 2016 - 4DS": 'ad_based_on_IEA_ETP_2016_4DS.csv',
         "Based on: IEA ETP 2016 2DS": 'ad_based_on_IEA_ETP_2016_2DS.csv',
         "Based on: IEA ETP 2016 - 2DS": 'ad_based_on_IEA_ETP_2016_2DS.csv',
+        "Based on: IEA ETP 2016 2DS with OPT2-PERENNIALS":
+            "ad_based_on_IEA_ETP_2016_2DS_with_OPT2_perennials.csv",
         "Based on: AMPERE (2014) IMAGE Refpol": 'ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv',
         "Based on: AMPERE IMAGE REFpol": 'ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv',
         "Based on: AMPERE (2014) MESSAGE REFPol":
@@ -66,6 +68,9 @@ def test_get_filename_for_source():
             'ad_based_on_Greenpeace_2016_Solar_Thermal_Moderate.csv',
         "Based on: Greenpeace Solar Thermal Elc Global Outlook 2016 (Advanced Scenario)":
             'ad_based_on_Greenpeace_2016_Solar_Thermal_Advanced.csv',
+        'Based on: UN CES ITU AMPERE BASELINE': 'ad_based_on_CES_ITU_AMPERE_Baseline.csv',
+        'Based on: UN CES ITU AMPERE 550': 'ad_based_on_CES_ITU_AMPERE_550.csv',
+        'Based on: UN CES ITU AMPERE 450': 'ad_based_on_CES_ITU_AMPERE_450.csv',
     }
     for key, value in expected.items():
         inferred = sx.get_filename_for_source(sx.normalize_source_name(key), prefix="ad_")
