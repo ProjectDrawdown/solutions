@@ -1,10 +1,10 @@
 default: test
 
 test:
-	tox
+	pytest -v -m "not slow" --strict-markers -W ignore::DeprecationWarning
 
 alltest:
-	tox -e all
+	pytest -v --cov=. --cov-report term-missing --strict-markers -W ignore::DeprecationWarning
 
 alltests: alltest
 
