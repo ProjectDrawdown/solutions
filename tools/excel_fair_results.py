@@ -319,7 +319,8 @@ def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
             writer = ffmpeg(fps=15, bitrate=-1,
                     metadata={'title':'Play the Whole Field', 'subject':'Climate Change Solutions',
                         'copyright':'Copyright 2020 Project Drawdown'},
-                    extra_args=['-tune', 'animation'],)
+                    extra_args=['-tune', 'film', '-preset', 'slower', '-crf', '19',
+                        '-movflags', '+faststart'],)
         if writer:
             print(f"{scenario} animation")
             mp4 = os.path.splitext(os.path.basename(excelfile))[0] + '_' + scenario + ext
