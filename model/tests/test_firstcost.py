@@ -107,31 +107,6 @@ def test_soln_pds_install_cost_per_iunit_with_zero():
     pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
 
-def test_soln_pds_install_cost_per_iunit_start_2018():
-    """Test PDS install cost per unit
-       Values taken from SolarPVUtility_RRS_ELECGEN_v1.1d_27Aug18
-    """
-    ac = advanced_controls.AdvancedControls(
-            pds_2014_cost=1444.93954421485,
-            ref_2014_cost=1444.93954421485,
-            conv_2014_cost=2010.03170851964,
-            soln_first_cost_efficiency_rate=0.196222222222222,
-            soln_first_cost_below_conv=True,
-            conv_first_cost_efficiency_rate=0.02)
-    soln_pds_tot_iunits_reqd = pd.DataFrame(
-            soln_pds_tot_iunits_reqd_list[4:],  # only 2018 and beyond
-            columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
-    fc = firstcost.FirstCost(ac=ac,
-            pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-            conv_learning_increase_mult=2, soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
-            soln_ref_tot_iunits_reqd=None, conv_ref_tot_iunits=None, soln_pds_new_iunits_reqd=None,
-            soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None,
-            fc_convert_iunit_factor=1000000000.0)
-    result = fc.soln_pds_install_cost_per_iunit()
-    assert 2015 not in result.index
-    assert 2018 in result.index
-
-
 def test_conv_ref_install_cost_per_iunit():
     """Test conventional install cost per unit
 

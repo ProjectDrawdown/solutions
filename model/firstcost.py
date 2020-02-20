@@ -66,12 +66,7 @@ class FirstCost:
         parameter_b = log_learning_rate / log_learning_mult
 
         main_region = model.dd.REGIONS[0]
-        if 2015 in self.soln_pds_tot_iunits_reqd.index:
-            base_year_iunits_reqd = self.soln_pds_tot_iunits_reqd.loc[2015, main_region]
-        elif 2018 in self.soln_pds_tot_iunits_reqd.index:
-            base_year_iunits_reqd = self.soln_pds_tot_iunits_reqd.loc[2018, main_region]
-        else:
-            raise ValueError('No base year found in soln_pds_tot_iunits_reqd')
+        base_year_iunits_reqd = self.soln_pds_tot_iunits_reqd.loc[2015, main_region]
         if base_year_iunits_reqd == 0:
             first_unit_cost = self.ac.pds_2014_cost
         else:
@@ -107,14 +102,9 @@ class FirstCost:
         parameter_b = log_learning_rate / log_learning_mult
         main_region = model.dd.REGIONS[0]
 
-        if 2014 in self.conv_ref_tot_iunits.index:
-            # Excel implementation referenced the cell for 2014, not 2015, so we
-            # do the same here. Normally, we base calculations from 2015.
-            base_year_iunits_reqd = self.conv_ref_tot_iunits.loc[2014, main_region]
-        elif 2018 in self.conv_ref_tot_iunits.index:
-            base_year_iunits_reqd = self.conv_ref_tot_iunits.loc[2018, main_region]
-        else:
-            raise ValueError('No base year found in conv_ref_tot_iunits')
+        # Excel implementation referenced the cell for 2014, not 2015, so we
+        # do the same here. Normally, we base calculations from 2015.
+        base_year_iunits_reqd = self.conv_ref_tot_iunits.loc[2014, main_region]
         if base_year_iunits_reqd == 0:
             first_unit_cost = self.ac.conv_2014_cost
         else:
@@ -153,12 +143,7 @@ class FirstCost:
         parameter_b = log_learning_rate / log_learning_mult
 
         main_region = model.dd.REGIONS[0]
-        if 2015 in self.soln_ref_tot_iunits_reqd.index:
-            base_year_iunits_reqd = self.soln_ref_tot_iunits_reqd.loc[2015, main_region]
-        elif 2018 in self.soln_ref_tot_iunits_reqd.index:
-            base_year_iunits_reqd = self.soln_ref_tot_iunits_reqd.loc[2018, main_region]
-        else:
-            raise ValueError('No base year found in soln_ref_tot_iunits_reqd')
+        base_year_iunits_reqd = self.soln_ref_tot_iunits_reqd.loc[2015, main_region]
         if base_year_iunits_reqd == 0:
             first_unit_cost = self.ac.ref_2014_cost
         else:
