@@ -116,4 +116,4 @@ itself based on contributing guidelines from the [STEMMRoleModels][link_stemmrol
 [link_cloning]: https://help.github.com/articles/cloning-a-repository/
 [link_stemmrolemodels]: https://github.com/KirstieJane/STEMMRoleModels
 [link_nipype]: https://github.com/nipy/nipype
-[link_zenodo]: https://github.com/ProjectDrawdown/blob/master/.zenodo.json
+[link_zenodo]: https://github.com/ProjectDrawdown/solutions/blob/master/.zenodo.json
