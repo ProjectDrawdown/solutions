@@ -24,35 +24,35 @@ The codebase has some momentum already, has been continuously developed since Se
 ## Overview of the Project
 Planned efforts include:
 
-+ **Combined Model Implementation**  
++ **Combined Model Implementation**
 Having copies of the underlying model in ~80 Excel files is no longer tenable, the level of toil involved in making substantial changes to the model is prohibitive. The project intends to deliver a single implementation in Python which can model the current ~80 solutions developed by Project Drawdown and allow easier development of more solution models in the future.
-Current status:  
+Current status:
     + Python currently implements 70 out of the 80 Excel solution models of the 2019 version. The design doc for this effort was: [Drawdown Software Remodeling: backend models](https://docs.google.com/document/d/1X9X-61CG26m0XTUmqKeGJwU-HinPELD9HwBO064b5dA/edit) (now considered complete).
     + The remaining 10 of the 80 are solutions which differ more extensively from the rest, like Food Waste and Family Planning. Python implementations of the remaining 10 solutions have not been started. There is nothing blocking effort on these, just lack of cycles.
     + Updates to the Python code to support the 2020 versions of the 70 solutions has begun, and several solutions from the 2020 Excel update are working.
-    + Automated testing is a key goal of the Python effort, to enable future work on the model to proceed with confidence. To ensure the new implementation faithfully reproduces the original, there is a test which runs the Excel any Python models for a given solution and checks that their results match within a floating point margin of error at every step of the model calculation. There is a [YouTube video describing the levels](https://www.youtube.com/watch?v=K6P56qUkCrw) of automated testing.  
+    + Automated testing is a key goal of the Python effort, to enable future work on the model to proceed with confidence. To ensure the new implementation faithfully reproduces the original, there is a test which runs the Excel any Python models for a given solution and checks that their results match within a floating point margin of error at every step of the model calculation. There is a [YouTube video describing the levels](https://www.youtube.com/watch?v=K6P56qUkCrw) of automated testing.
     [![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions)
 
-+ **UI aimed at researchers**  
-We need a user interface aimed at individual solutions or a small handful of solutions, primarily for use by researchers looking to work with the model but additionally potentially of use to decisionmakers and policymakers in specific topics.  
-Current status:  
++ **UI aimed at researchers**
+We need a user interface aimed at individual solutions or a small handful of solutions, primarily for use by researchers looking to work with the model but additionally potentially of use to decisionmakers and policymakers in specific topics.
+Current status:
     + There is a Jupyter UI to examine individual solutions, with a hosted instance running at https://solutions.geekhold.com/. There is a [video demonstrating its use](https://www.youtube.com/watch?v=MMrQwObdEZ4).
     + [Issue #13, "UI for Researcher use"](https://github.com/ProjectDrawdown/solutions/issues/13) tracks details.
 
-+ **Solution Integration**  
- The individual solutions are modelled, but have to take the other solutions into account to produce final results. For example the set of energy solutions cannot add up to more than the total global demand for energy, and the land solutions cannot use more than the available land area of the planet. With the Excel models this is a manually intensive process. After a cohort of researchers finishes their work on the individual solutions, the senior researchers then spend several months combining, rationalizing, and finalizing the results.  
-   
-   The set of things to be done is varied:  
-   
++ **Solution Integration**
+ The individual solutions are modelled, but have to take the other solutions into account to produce final results. For example the set of energy solutions cannot add up to more than the total global demand for energy, and the land solutions cannot use more than the available land area of the planet. With the Excel models this is a manually intensive process. After a cohort of researchers finishes their work on the individual solutions, the senior researchers then spend several months combining, rationalizing, and finalizing the results.
+
+   The set of things to be done is varied:
+
     + the sum of all Energy solutions must add up to the world demand for energy
     + the transportation solutions must be rationalized, though not the same way as energy as transport demand is somewhat elastic
     + some solutions provide feedstock for subsequent solutions, like biochar which needs wood scrap
     + World land area is allocated to the different land use solutions
     + Etc
-   
-   Much of this can be automated, by being able to run all of the solutions and incorporate a control loop with some simple rules for arbitrating between solutions. This effort has not been started, but could begin at any time. The ~70 completed Python solutions are believed to be sufficient to start such an effort.  
 
-+ **UI aimed at broader audiences**  
+   Much of this can be automated, by being able to run all of the solutions and incorporate a control loop with some simple rules for arbitrating between solutions. This effort has not been started, but could begin at any time. The ~70 completed Python solutions are believed to be sufficient to start such an effort.
+
++ **UI aimed at broader audiences**
 We need better ways for people to explore the overall set of climate solutions and Drawdown results. This would be aimed at the complete set of solutions, or possibly to focus on an individual sector like Energy or Transportation. We also need ways to produce graphs, collateral for talks, and other presentable materials to further the mission of solutions for climate change. [Issue #12, "UI for multiple solutions"](https://github.com/ProjectDrawdown/solutions/issues/12) tracks details.
 
 ---
@@ -66,6 +66,11 @@ Get a copy of this source code:
 ```sh
 $ git clone https://github.com/ProjectDrawdown/solutions.git
 $ cd solutions
+```
+
+To run tests locally pip-install `tox` and run it:
+```
+tox
 ```
 
 We recommend using pipenv for a virtual environment:
