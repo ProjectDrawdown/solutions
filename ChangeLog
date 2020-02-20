@@ -368,3 +368,20 @@ Jan 6 - Jan 10, 2020
 Jan 13 - Jan 17, 2020
 + implement a play_the_whole_field animation from Excel emissions data.
 + begin fixing deprecated features for Pandas 1.0rc support.
+
+Jan 20 - Jan 24, 2020
++ work on FaIR from Excel results, tools/excel_fair_results.py
+
+Jan 27 - Jan 31, 2020
++ more work on FaIR from Excel results, tools/excel_fair_results.py
++ sort out git lfs migrate, to remove large Excel files from git object blob
+
+Feb 3 - Feb 7, 2020
++ push project to https://github.com/ProjectDrawdown/solutions and work on CI
+  issues
++ previous Jupyterhub server ate itself, set up a new GCP VM and install
+  Jupyterhub
++ update project explanation videos for github location
+
+Feb 10 - Feb 14, 2020
++ write CODE_OF_CONDUCT.md, CONTRIBUTING.md, zenodo support at github site
