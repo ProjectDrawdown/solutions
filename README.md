@@ -72,6 +72,7 @@ To run tests locally pip-install `tox` and run it:
 ```
 tox
 ```
+`make` does the same thing.
 
 We recommend using pipenv for a virtual environment:
 
