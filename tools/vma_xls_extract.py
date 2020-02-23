@@ -12,7 +12,6 @@
 import collections
 import os
 import pathlib
-import warnings
 
 import numpy as np
 import pandas as pd
@@ -362,7 +361,7 @@ class VMAReader:
 
                 # Rather than recording titles we will check for vma number. We need to validate
                 # that this really is a Title, as VMAs are also numbered. We check that two rows
-                # down is "Number", the heading for the numbered VMAs. 
+                # down is "Number", the heading for the numbered VMAs.
                 table_num_on_sheet = sheet.cell_value(row + rows_to_next_table, col - 2)
                 VMA_heading_check = False
                 for offset in [1, 2, 3]:

@@ -3,10 +3,8 @@
 import numpy as np
 import pandas as pd
 import pathlib
-from unittest import mock
 from model import advanced_controls
 from model import firstcost
-from model.dd import REGIONS
 
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 pd.set_option('display.expand_frame_repr', False)

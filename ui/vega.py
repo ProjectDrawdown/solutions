@@ -1,6 +1,5 @@
 """Functions to support the Drawdown models in Jupyter notebooks."""
 
-import pandas as pd
 import ui.color
 
 def solution_treemap(solutions, width, height):

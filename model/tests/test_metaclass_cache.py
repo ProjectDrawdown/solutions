@@ -1,14 +1,11 @@
 """Tests for metaclass_cache.py"""
 
 import pandas as pd
-from model import metaclass_cache
-
-import pytest
-
+from model.metaclass_cache import MetaclassCache
 
 # test_tam.py also exercises metaclass_cache.
 
-class MemoizedClass(object, metaclass=metaclass_cache.MetaclassCache):
+class MemoizedClass(object, metaclass=MetaclassCache):
     def __init__(self, df, number, number2):
         pass
 

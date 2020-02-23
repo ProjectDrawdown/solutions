@@ -147,7 +147,7 @@ class Scenario:
             # (4) The year commitments are realised (2030, 2045 or 2060).
             # In this scenario, NYDF prediction for max area available for temperate forest
             # restoration, 100% new commitment for intact forest and year 2030 was considered
-            # when the commitments will be realized. 
+            # when the commitments will be realized.
             'datapoints': pd.DataFrame([
                 [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 [2030, final_adoption_1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -241,7 +241,7 @@ class Scenario:
             # (4) The year commitments are realised (2030, 2045 or 2060).
             # In this scenario, WRI prediction for max area available for temperate forest
             # restoration, 100% new commitment for intact forest and year 2045 was considered
-            # when the commitments will be realized. 
+            # when the commitments will be realized.
             'datapoints': pd.DataFrame([
                 [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 [2045, final_adoption_5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -312,7 +312,7 @@ class Scenario:
             # (4) The year commitments are realised (2030, 2045 or 2060).
             # In this scenario, WRI prediction for max area available for temperate forest
             # restoration, 100% new commitment for intact forest and year 2060 was considered
-            # when the commitments will be realized. 
+            # when the commitments will be realized.
             'datapoints': pd.DataFrame([
                 [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 [2060, final_adoption_8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -324,7 +324,8 @@ class Scenario:
     commit_9_mha_new = max_land_wri - (commit_13_dec_2016 * commit_13_dec_2016_tmr)
     #         new commitments in temperate TMR + additional degraded land available from the Forest
     #         Protection solution, for which exact area has to be estimated.
-    final_adoption_9 = (commit_13_dec_2016_mha * intact_13_dec_2016) + (commit_9_mha_new * future_9_tmr)
+    # unused variable final_adoption_9
+    # final_adoption_9 = (commit_13_dec_2016_mha * intact_13_dec_2016) + (commit_9_mha_new * future_9_tmr)
     data_source_9 = {
             'name': 'Conservative-Achieve Commitment in 45 years w/ 44.2% intact (Charlotte Wheeler,2016)',
             'include': False,
@@ -438,4 +439,3 @@ class Scenario:
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
         annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
         regime_distribution=self.ae.get_land_distribution())
-

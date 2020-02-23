@@ -5,13 +5,13 @@ import pathlib
 import re
 
 from model import interpolation
-from model import metaclass_cache
-import model.dd as dd
+from model import dd
+from model.metaclass_cache import MetaclassCache
 import numpy as np
 import pandas as pd
 
 
-class AdoptionData(object, metaclass=metaclass_cache.MetaclassCache):
+class AdoptionData(object, metaclass=MetaclassCache):
     """Implements Adoption Data module."""
 
     def __init__(self, ac, data_sources, adconfig, main_includes_regional=None):

@@ -7,7 +7,6 @@ and other factors relating to emissions and pollutants.
 from functools import lru_cache
 import enum
 import pandas as pd
-import model.dd as dd
 
 CO2EQ_SOURCE = enum.Enum('CO2EQ_SOURCE', 'AR5_WITH_FEEDBACK AR4 SAR')
 GRID_SOURCE = enum.Enum('GRID_SOURCE', 'META IPCC')

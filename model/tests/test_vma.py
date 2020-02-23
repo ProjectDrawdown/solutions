@@ -1,13 +1,12 @@
 """Tests for vma.py."""
 
+import pytest
 import io
 import pathlib
 import tempfile
 
 from model import vma
-import numpy as np
 import pandas as pd
-import pytest
 
 
 basedir = pathlib.Path(__file__).parents[2]
@@ -34,23 +33,23 @@ def test_source_data():
 
 def test_invalid_discards():
     s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-        a, 10000, , 
-        b, 10000, , 
-        c, 10000, , 
-        d, 10000, , 
-        e, 10000, , 
-        f, 10000, , 
-        g, 10000, , 
-        h, 10000, , 
-        i, 10000, , 
-        j, 10000, , 
-        k, 10000, , 
-        l, 10000, , 
-        m, 10000, , 
-        n, 10000, , 
-        o, 10000, , 
-        p, 10000000000, , 
-        q, 1, , 
+        a, 10000, ,
+        b, 10000, ,
+        c, 10000, ,
+        d, 10000, ,
+        e, 10000, ,
+        f, 10000, ,
+        g, 10000, ,
+        h, 10000, ,
+        i, 10000, ,
+        j, 10000, ,
+        k, 10000, ,
+        l, 10000, ,
+        m, 10000, ,
+        n, 10000, ,
+        o, 10000, ,
+        p, 10000000000, ,
+        q, 1, ,
     """
     f = io.StringIO(s)
     v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
@@ -124,7 +123,7 @@ def test_excluded_data_weights_are_incorrect():
 
 def test_single_study():
     f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-      A, 39%, %, 
+      A, 39%, %,
       """)
     v = vma.VMA(filename=f)
     result = v.avg_high_low()

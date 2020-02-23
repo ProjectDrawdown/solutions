@@ -1,8 +1,6 @@
 """Manipulates SVG of the model operation as an overview for the researcher."""
 
 import os.path
-import random
-import string
 import xml.etree.ElementTree as ET
 from model import advanced_controls
 

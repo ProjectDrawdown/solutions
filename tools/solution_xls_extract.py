@@ -19,7 +19,6 @@ import os.path
 import pathlib
 import re
 import sys
-import textwrap
 import unicodedata
 import warnings
 
@@ -1007,7 +1006,7 @@ def write_ef(f, wb):
     else:
         f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
     f.write("\n")
- 
+
 
 def write_ua(f, wb, is_rrs=True):
     """Write out the Unit Adoption module for this solution class."""
@@ -1675,7 +1674,7 @@ def link_vma(tab, row, col):
       tab: the Sheet object to use
       row: numeric row number to look at
       col: numeric column number to look at
-  
+
     Returns:
       'mean', 'high' or 'low' or raw value if no formula in cell
     """
