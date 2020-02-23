@@ -11,7 +11,6 @@ import typing
 
 import pandas as pd
 import pytest
-from warnings import warn
 from model import emissionsfactors as ef
 from model import excel_math
 from model.dd import REGIONS, MAIN_REGIONS
@@ -423,7 +422,7 @@ class AdvancedControls:
             "the SOLUTION.  In most cases this will be expressed as a cost per 'some unit of "
             "installation size' E.g., $10,000 per kw. In terms of transportation, this can be "
             "considered the total insurance, and maintenance cost per car.\n\n"
-            
+
             "Purchase costs can be amortized here or included as a first cost, but not both."),
         'excelref': 'SolarPVUtil "Advanced Controls"!I128; Silvopasture "Advanced Controls"!C92',
         })
@@ -469,7 +468,7 @@ class AdvancedControls:
     # npv_discount_rate: discount rate for Net Present Value calculations.
     #   SolarPVUtil "Advanced Controls"!B141
     npv_discount_rate: float = None
-  
+
     # emissions_use_co2eq: whether to use CO2-equivalent for ppm calculations.
     #   SolarPVUtil "Advanced Controls"!B189
     # emissions_grid_source: "IPCC Only" or "Meta Analysis" of multiple studies.

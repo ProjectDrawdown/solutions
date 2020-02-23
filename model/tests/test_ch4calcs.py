@@ -1,7 +1,6 @@
 """Tests for ch4calc.py."""
 
 import pandas as pd
-import pytest
 from model import advanced_controls
 from model import ch4calcs
 

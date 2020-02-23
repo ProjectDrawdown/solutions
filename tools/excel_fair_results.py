@@ -1,6 +1,5 @@
 import argparse
 import os.path
-import pathlib
 import sys
 
 import fair
@@ -10,9 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.style
 import model.fairutil
 import numpy as np
-import tempfile
 import pandas as pd
-import solution.factory
 import ui.color
 
 

@@ -14,22 +14,22 @@ import pathlib
 import re
 
 import pandas as pd
-import model.dd
-from model import metaclass_cache
+from model import dd
+from model.metaclass_cache import MetaclassCache
 
 OCEAN_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean')
 
 
-class DEZ(object, metaclass=metaclass_cache.MetaclassCache):
+class DEZ(object, metaclass=MetaclassCache):
     """ DEZ Data module """
 
     def __init__(self, solution_name):
         self.solution_name = solution_name
-        self.regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
+        self.regimes = dd.THERMAL_DYNAMICAL_REGIMES
 
         # AEZ data has a slightly different format for regions than the rest of the model.
         # This is in line with the xls version but should be changed later to keep regions consistent
-        self.regions = model.dd.OCEAN_REGIONS[1:7] + ['Global'] + model.dd.OCEAN_REGIONS[7:]
+        self.regions = dd.OCEAN_REGIONS[1:7] + ['Global'] + dd.OCEAN_REGIONS[7:]
 
         self._populate_solution_ocean_allocation()
         self._get_applicable_zones()

@@ -1,7 +1,7 @@
 """ Custom PDS/REF Adoption module """
 
 from functools import lru_cache
-from model import metaclass_cache
+from model.metaclass_cache import MetaclassCache
 from model.dd import REGIONS, MAIN_REGIONS
 import pandas as pd
 import numpy as np
@@ -18,7 +18,7 @@ def generate_df_template():
     return df
 
 
-class CustomAdoption(object, metaclass=metaclass_cache.MetaclassCache):
+class CustomAdoption(object, metaclass=MetaclassCache):
     """
     Equivalent to Custom PDS and REF Adoption sheets in xls. Allows user to input custom adoption
     scenarios. The data can be raw or generated from a script within the solution directory.
@@ -148,7 +148,7 @@ class CustomAdoption(object, metaclass=metaclass_cache.MetaclassCache):
             high_df.loc[idx:, :] = high_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
             low_df.loc[idx:, :] = low_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
         return avg_df, high_df, low_df
-    
+
     def _adjust_main_regions(self, regional_df):
         """
         For various reasons, the sum of the main region values can diverge from their corresponding

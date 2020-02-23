@@ -3,9 +3,6 @@
 """
 
 import pathlib
-import pandas as pd
-from model import vma
-
 
 TERAWATT_TO_KILOWATT = 10**9
 

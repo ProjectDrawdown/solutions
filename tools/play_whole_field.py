@@ -1,6 +1,5 @@
 """Generate animation of impact of the different Drawdown sectors, to show that all are needed."""
 import argparse
-import copy
 import os
 import pathlib
 import sys
@@ -13,8 +12,6 @@ import matplotlib
 import matplotlib.animation
 import matplotlib.pyplot as plt
 import matplotlib.style
-import numpy as np
-import tempfile
 import pandas as pd
 import solution.factory
 import ui.color

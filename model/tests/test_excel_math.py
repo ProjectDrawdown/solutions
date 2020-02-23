@@ -1,6 +1,5 @@
 """Test excel_math.py."""
 
-import pytest
 from model import excel_math
 
 
