@@ -1,3 +1,6 @@
+![status](https://github.com/ProjectDrawdown/solutions/workflows/Drawdown%20Solutions%20Python%20application/badge.svg)
+[![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions)
+
 # Project Drawdown Model Engine
 [Project Drawdown](https://www.drawdown.org/) is the most comprehensive plan yet published for how to solve Global Warming. Project Drawdown entered the climate conversation with the [publication of the 2017 book](https://www.drawdown.org/the-book), and continues its mission to inspire and communicate solutions.
 
@@ -31,7 +34,6 @@ Current status:
     + The remaining 10 of the 80 are solutions which differ more extensively from the rest, like Food Waste and Family Planning. Python implementations of the remaining 10 solutions have not been started. There is nothing blocking effort on these, just lack of cycles.
     + Updates to the Python code to support the 2020 versions of the 70 solutions has begun, and several solutions from the 2020 Excel update are working.
     + Automated testing is a key goal of the Python effort, to enable future work on the model to proceed with confidence. To ensure the new implementation faithfully reproduces the original, there is a test which runs the Excel any Python models for a given solution and checks that their results match within a floating point margin of error at every step of the model calculation. There is a [YouTube video describing the levels](https://www.youtube.com/watch?v=K6P56qUkCrw) of automated testing.  
-    [![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions)
 
 + **UI aimed at researchers**  
 We need a user interface aimed at individual solutions or a small handful of solutions, primarily for use by researchers looking to work with the model but additionally potentially of use to decisionmakers and policymakers in specific topics.  
