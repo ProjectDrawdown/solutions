@@ -516,48 +516,46 @@ def write_tam(f, wb, outputdir):
          outputdir: name of directory to write CSV files to.
     """
     tm_tab = wb.sheet_by_name('TAM Data')
-    f.write("    tamconfig_list = [\n")
-    f.write(
-        "      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
-    f.write("       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
-    f.write("      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,\n")
-    f.write("       " + xls(tm_tab, 15, 21) + ", " + xls(tm_tab, 18, 21) + ", " + xls(tm_tab, 21,
-                                                                                      21) + ", ")
+    f.write("        tamconfig_list = [\n")
+    f.write("            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
+    f.write("                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
+    f.write("            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,\n")
+    f.write("                " + xls(tm_tab, 15, 21) + ", " + xls(tm_tab, 18, 21) + ", " + 
+            xls(tm_tab, 21, 21) + ", ")
     f.write(xls(tm_tab, 24, 21) + ", " + xls(tm_tab, 27, 21) + ", " + xls(tm_tab, 30, 21) + ",\n")
-    f.write("       " + xls(tm_tab, 33, 21) + ", " + xls(tm_tab, 36, 21) + ", " + xls(tm_tab, 39,
-                                                                                      21) + "],\n")
-    f.write(
-        "      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,\n")
-    f.write("       " + xls(tm_tab, 15, 21) + ", " + xls(tm_tab, 18, 21) + ", " + xls(tm_tab, 21,
-                                                                                      21) + ", ")
+    f.write("                " + xls(tm_tab, 33, 21) + ", " + xls(tm_tab, 36, 21) + ", " +
+            xls(tm_tab, 39, 21) + "],\n")
+    f.write("            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,\n")
+    f.write("                " + xls(tm_tab, 15, 21) + ", " + xls(tm_tab, 18, 21) + ", " +
+            xls(tm_tab, 21, 21) + ", ")
     f.write(xls(tm_tab, 24, 21) + ", " + xls(tm_tab, 27, 21) + ", " + xls(tm_tab, 30, 21) + ",\n")
-    f.write("       " + xls(tm_tab, 33, 21) + ", " + xls(tm_tab, 36, 21) + ", " + xls(tm_tab, 39,
-                                                                                      21) + "],\n")
+    f.write("                " + xls(tm_tab, 33, 21) + ", " + xls(tm_tab, 36, 21) + ", " +
+            xls(tm_tab, 39, 21) + "],\n")
     # One might assume PDS_World for trend and growth would use self.ac.soln_pds_adoption_prognostication_*,
     # but that is not what the TAM Data in Excel does. EA104 references B19 and C19, the World trend and growth.
-    f.write("      ['trend', " + xls(tm_tab, 18, 1) + ", " + xls(tm_tab, 18, 1) + ",\n")
-    f.write("       " + xls(tm_tab, 16, 11) + ", " + xls(tm_tab, 19, 11) + ", " + xls(tm_tab, 22,
-                                                                                      11) + ", ")
+    f.write("            ['trend', " + xls(tm_tab, 18, 1) + ", " + xls(tm_tab, 18, 1) + ",\n")
+    f.write("                " + xls(tm_tab, 16, 11) + ", " + xls(tm_tab, 19, 11) + ", " +
+            xls(tm_tab, 22, 11) + ", ")
     f.write(xls(tm_tab, 25, 11) + ", " + xls(tm_tab, 28, 11) + ", " + xls(tm_tab, 31, 11) + ",\n")
-    f.write("       " + xls(tm_tab, 34, 11) + ", " + xls(tm_tab, 37, 11) + ", " + xls(tm_tab, 40,
-                                                                                      11) + "],\n")
-    f.write("      ['growth', " + xls(tm_tab, 18, 2) + ", " + xls(tm_tab, 18, 2) + ", " + xls(tm_tab, 16,
-                                                                                              12) + ", ")
+    f.write("                " + xls(tm_tab, 34, 11) + ", " + xls(tm_tab, 37, 11) + ", " +
+            xls(tm_tab, 40, 11) + "],\n")
+    f.write("            ['growth', " + xls(tm_tab, 18, 2) + ", " + xls(tm_tab, 18, 2) + ", " +
+            xls(tm_tab, 16, 12) + ", ")
     f.write(xls(tm_tab, 19, 12) + ",\n")
-    f.write("       " + xls(tm_tab, 22, 12) + ", " + xls(tm_tab, 25, 12) + ", " + xls(tm_tab, 28,
-                                                                                      12) + ", ")
+    f.write("                " + xls(tm_tab, 22, 12) + ", " + xls(tm_tab, 25, 12) + ", " +
+            xls(tm_tab, 28, 12) + ", ")
     f.write(xls(tm_tab, 31, 12) + ", " + xls(tm_tab, 34, 12) + ", " + xls(tm_tab, 37, 12) + ", ")
     f.write(xls(tm_tab, 40, 12) + "],\n")
-    f.write("      ['low_sd_mult', " + xln(tm_tab, 24, 1) + ", " + xln(tm_tab, 24, 1) + ", ")
+    f.write("            ['low_sd_mult', " + xln(tm_tab, 24, 1) + ", " + xln(tm_tab, 24, 1) + ", ")
     f.write(xln(tm_tab, 16, 16) + ", " + xln(tm_tab, 19, 16) + ", " + xln(tm_tab, 22, 16) + ", ")
     f.write(xln(tm_tab, 25, 16) + ", " + xln(tm_tab, 28, 16) + ", " + xln(tm_tab, 31, 16) + ", ")
     f.write(xln(tm_tab, 34, 16) + ", " + xln(tm_tab, 37, 16) + ", " + xln(tm_tab, 40, 16) + "],\n")
-    f.write("      ['high_sd_mult', " + xln(tm_tab, 23, 1) + ", " + xln(tm_tab, 23, 1) + ", ")
+    f.write("            ['high_sd_mult', " + xln(tm_tab, 23, 1) + ", " + xln(tm_tab, 23, 1) + ", ")
     f.write(xln(tm_tab, 15, 16) + ", " + xln(tm_tab, 18, 16) + ", " + xln(tm_tab, 21, 16) + ", ")
     f.write(xln(tm_tab, 24, 16) + ", " + xln(tm_tab, 27, 16) + ", " + xln(tm_tab, 30, 16) + ", ")
     f.write(xln(tm_tab, 33, 16) + ", " + xln(tm_tab, 36, 16) + ", " + xln(tm_tab, 39, 16) + "]]\n")
-    f.write(
-        "    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')\n")
+    f.write("        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0],\n")
+    f.write("            dtype=np.object).set_index('param')\n")
 
     tam_regions = {'World': 44, 'OECD90': 162, 'Eastern Europe': 226,
                    'Asia (Sans Japan)': 289, 'Middle East and Africa': 352, 'Latin America': 415,
@@ -573,19 +571,21 @@ def write_tam(f, wb, outputdir):
         arg_ref = 'rrs.energy_tam_2_ref_data_sources'
         abandon_files(ref_sources, outputdir=tamoutputdir)
     else:
-        f.write("    tam_ref_data_sources = {\n")
+        f.write("        tam_ref_data_sources = {\n")
         for region, cases in ref_sources.items():
-            f.write("      '" + region + "': {\n")
+            f.write("              '" + region + "': {\n")
             for (case, sources) in cases.items():
                 if isinstance(sources, str):
-                    f.write("          '" + case + "': THISDIR.joinpath('tam', '" + sources + "'),\n")
+                    f.write("                  '" + case + "': THISDIR.joinpath('tam', '" +
+                            sources + "'),\n")
                 else:
-                    f.write("        '" + case + "': {\n")
+                    f.write("                  '" + case + "': {\n")
                     for (source, filename) in sources.items():
-                        f.write("          '" + source + "': THISDIR.joinpath('tam', '" + filename + "'),\n")
-                    f.write("        },\n")
-            f.write("      },\n")
-        f.write("    }\n")
+                        f.write("                  '" + source + "': THISDIR.joinpath('tam', '" +
+                                filename + "'),\n")
+                    f.write("              },\n")
+            f.write("            },\n")
+        f.write("        }\n")
         arg_ref = 'tam_ref_data_sources'
 
     tam_regions = {'World': 102}
@@ -604,28 +604,30 @@ def write_tam(f, wb, outputdir):
     elif not pds_sources:
         arg_pds = 'tam_ref_data_sources'
     else:
-        f.write("    tam_pds_data_sources = {\n")
+        f.write("        tam_pds_data_sources = {\n")
         for region, cases in pds_sources.items():
-            f.write("      '" + region + "': {\n")
+            f.write("            '" + region + "': {\n")
             for (case, sources) in cases.items():
                 if isinstance(sources, str):
-                    f.write("          '" + case + "': THISDIR.joinpath('tam', '" + sources + "'),\n")
+                    f.write("                    '" + case + "': THISDIR.joinpath('tam', '" + 
+                            sources + "'),\n")
                 else:
-                    f.write("        '" + case + "': {\n")
+                    f.write("                    '" + case + "': {\n")
                     for (source, filename) in sources.items():
-                        f.write("          '" + source + "': THISDIR.joinpath('tam', '" + filename + "'),\n")
-                    f.write("        },\n")
-            f.write("      },\n")
-        f.write("    }\n")
+                        f.write("                      '" + source + "': THISDIR.joinpath('tam', '"
+                                + filename + "'),\n")
+                    f.write("              },\n")
+            f.write("            },\n")
+        f.write("        }\n")
         arg_pds = 'tam_pds_data_sources'
 
     regional = convert_bool(tm_tab.cell(28, 1).value) and convert_bool(tm_tab.cell(29, 1).value)
-    f.write("    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=" + arg_ref + ",\n")
+    f.write("        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=" + arg_ref + ",\n")
     if regional:
-        f.write("      main_includes_regional=True,\n")
-    f.write("      tam_pds_data_sources=" + arg_pds + ")\n")
-    f.write("    ref_tam_per_region=self.tm.ref_tam_per_region()\n")
-    f.write("    pds_tam_per_region=self.tm.pds_tam_per_region()\n")
+        f.write("            main_includes_regional=True,\n")
+    f.write("            tam_pds_data_sources=" + arg_pds + ")\n")
+    f.write("        ref_tam_per_region=self.tm.ref_tam_per_region()\n")
+    f.write("        pds_tam_per_region=self.tm.pds_tam_per_region()\n")
     f.write("\n")
 
 
@@ -779,60 +781,57 @@ def write_ad(f, wb, outputdir):
          outputdir: name of directory to write CSV files to.
     """
     a = wb.sheet_by_name('Adoption Data')
-    f.write("    adconfig_list = [\n")
-    f.write("      ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
-    f.write("       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
-    f.write("      ['trend', self.ac.soln_pds_adoption_prognostication_trend, ")
+    f.write("        adconfig_list = [\n")
+    f.write("            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
+    f.write("             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
+    f.write("            ['trend', self.ac.soln_pds_adoption_prognostication_trend, ")
     f.write(xls(a, 16, 11) + ",\n")
-    f.write("       " + xls(a, 19, 11) + ", " + xls(a, 22, 11) + ", ")
+    f.write("             " + xls(a, 19, 11) + ", " + xls(a, 22, 11) + ", ")
     f.write(xls(a, 25, 11) + ", " + xls(a, 28, 11) + ", ")
     f.write(xls(a, 31, 11) + ",\n")
-    f.write("       " + xls(a, 34, 11) + ", " + xls(a, 37, 11) + ", ")
+    f.write("             " + xls(a, 34, 11) + ", " + xls(a, 37, 11) + ", ")
     f.write(xls(a, 40, 11) + "],\n")
-    f.write("      ['growth', self.ac.soln_pds_adoption_prognostication_growth, ")
+    f.write("            ['growth', self.ac.soln_pds_adoption_prognostication_growth, ")
     f.write(xls(a, 16, 12) + ",\n")
-    f.write("       " + xls(a, 19, 12) + ", " + xls(a, 22, 12) + ", " + xls(a, 25, 12) + ", ")
+    f.write("             " + xls(a, 19, 12) + ", " + xls(a, 22, 12) + ", " + xls(a, 25, 12) + ", ")
     f.write(xls(a, 28, 12) + ", " + xls(a, 31, 12) + ",\n")
-    f.write("       " + xls(a, 34, 12) + ", " + xls(a, 37, 12) + ", " + xls(a, 40, 12) + "],\n")
-    f.write("      ['low_sd_mult', " + xln(a, 24, 1) + ", " + xln(a, 16, 16) + ", ")
+    f.write("             " + xls(a, 34, 12) + ", " + xls(a, 37, 12) + ", " + xls(a, 40, 12) + "],\n")
+    f.write("            ['low_sd_mult', " + xln(a, 24, 1) + ", " + xln(a, 16, 16) + ", ")
     f.write(xln(a, 19, 16) + ", " + xln(a, 22, 16) + ", " + xln(a, 25, 16) + ", ")
     f.write(xln(a, 28, 16) + ", " + xln(a, 31, 16) + ", " + xln(a, 34, 16) + ", ")
     f.write(xln(a, 37, 16) + ", " + xln(a, 40, 16) + "],\n")
-    f.write("      ['high_sd_mult', " + xln(a, 23, 1) + ", " + xln(a, 15, 16) + ", ")
+    f.write("            ['high_sd_mult', " + xln(a, 23, 1) + ", " + xln(a, 15, 16) + ", ")
     f.write(xln(a, 18, 16) + ", " + xln(a, 21, 16) + ", " + xln(a, 24, 16) + ", ")
     f.write(xln(a, 27, 16) + ", " + xln(a, 30, 16) + ", " + xln(a, 33, 16) + ", ")
     f.write(xln(a, 36, 16) + ", " + xln(a, 39, 16) + "]]\n")
-    f.write(
-        "    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')\n")
+    f.write("        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],\n")
+    f.write("            dtype=np.object).set_index('param')\n")
     ad_regions = {'World': 44, 'OECD90': 104, 'Eastern Europe': 168, 'Asia (Sans Japan)': 231,
-                  'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484, 'EU': 548,
-
-                  'USA': 613}
+                  'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484,
+                  'EU': 548, 'USA': 613}
     ad_outputdir = os.path.join(outputdir, 'ad')
     os.makedirs(ad_outputdir, exist_ok=True)
     sources = extract_source_data(wb=wb, sheet_name='Adoption Data', regions=ad_regions,
-                                  outputdir=ad_outputdir, prefix='ad_')
-    f.write("    ad_data_sources = {\n")
+            outputdir=ad_outputdir, prefix='ad_')
+    f.write("        ad_data_sources = {\n")
     for region, cases in sources.items():
-        f.write("      '" + region + "': {\n")
+        f.write("            '" + region + "': {\n")
         for (case, sources) in cases.items():
             if isinstance(sources, str):
-                f.write("          '" + case + "': THISDIR.joinpath('ad', '" + sources + "'),\n")
+                f.write("                '" + case + "': THISDIR.joinpath('ad', '" + sources + "'),\n")
             else:
-                f.write("        '" + case + "': {\n")
+                f.write("                '" + case + "': {\n")
                 for (source, filename) in sources.items():
-                    f.write("          '" + source + "': THISDIR.joinpath('ad', '" + filename + "'),\n")
-                f.write("        },\n")
-        f.write("      },\n")
-    f.write("    }\n")
-    f.write("    self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,\n")
+                    f.write("                  '" + source + "': THISDIR.joinpath('ad', '" + filename + "'),\n")
+                f.write("              },\n")
+        f.write("            },\n")
+    f.write("        }\n")
+    f.write("        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,\n")
     regional = convert_bool(a.cell(29, 1).value) and convert_bool(a.cell(30, 1).value)
     if regional:
-        f.write("        main_includes_regional=True,\n")
-    f.write("        adconfig=adconfig)\n")
+        f.write("            main_includes_regional=True,\n")
+    f.write("            adconfig=adconfig)\n")
     f.write("\n")
-
-
 
 
 def write_custom_ad(case, f, wb, outputdir, is_land):
@@ -844,50 +843,42 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
          outputdir: name of directory to write CSV files to.
          is_land: boolean of whether this is a Land solution
     """
-    f.write("    # Custom {} Data\n".format(case))
+    f.write(f"        # Custom {case} Data\n")
     if outputdir is None:
-        f.write("    # no output dir specified for custom {} adoption\n\n".format(case))
+        f.write(f"        # no output dir specified for custom {case} adoption\n\n")
         return
     assert case == 'REF' or case == 'PDS', 'write_custom_ad case must be PDS or REF: ' + str(case)
 
-    ca_dir_path = os.path.join(outputdir, 'ca_{}_data'.format(case.lower()))
+    ca_dir_path = os.path.join(outputdir, f'ca_{case.lower()}_data')
     if not os.path.exists(ca_dir_path):
         os.mkdir(ca_dir_path)
     scenarios, multipliers = extract_custom_adoption(wb=wb, outputdir=ca_dir_path,
-                                                     sheet_name='Custom {} Adoption'.format(case),
-                                                     prefix='custom_{}_ad_'.format(case.lower()))
-    f.write("    ca_{}_data_sources = [\n".format(case.lower()))
+                                                     sheet_name=f'Custom {case} Adoption',
+                                                     prefix=f'custom_{case.lower()}_ad_')
+    f.write(f"        ca_{case.lower()}_data_sources = [\n")
 
     for s in scenarios:
-        f.write(
-            "      {'name': '" + s['name'].strip() + "', 'include': " + str(s['include']) + ",\n")
-        f.write("          'filename': THISDIR.joinpath({})}},\n".format(
-            "'ca_{}_data', '{}'".format(case.lower(), s['filename'])))
-    f.write("    ]\n")
+        f.write("            {'name': '" + s['name'].strip() + "', 'include': " + str(s['include']) + ",\n")
+        f.write(f"                'filename': THISDIR.joinpath('ca_{case.lower()}_data', '{s['filename']}')}},\n")
+    f.write("        ]\n")
 
     if case == 'REF':
-        f.write(
-            "    self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,\n")
-        f.write("        soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,\n")
-        f.write("        high_sd_mult={}, low_sd_mult={},\n".format(multipliers['high'],
-                                                                    multipliers['low']))
+        f.write("        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,\n")
+        f.write("            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,\n")
+        f.write(f"            high_sd_mult={multipliers['high']}, low_sd_mult={multipliers['low']},\n")
         if is_land:
-            f.write("        total_adoption_limit=self.tla_per_region)\n")
+            f.write("            total_adoption_limit=self.tla_per_region)\n")
         else:
-            f.write("        total_adoption_limit=ref_tam_per_region)\n")
+            f.write("            total_adoption_limit=ref_tam_per_region)\n")
     if case == 'PDS':
-        f.write(
-            "    self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
-        f.write("        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
-        f.write("        high_sd_mult={}, low_sd_mult={},\n".format(multipliers['high'],
-                                                                    multipliers['low']))
+        f.write("        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
+        f.write("            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
+        f.write(f"            high_sd_mult={multipliers['high']}, low_sd_mult={multipliers['low']},\n")
         if is_land:
-            f.write("        total_adoption_limit=self.tla_per_region)\n")
+            f.write("            total_adoption_limit=self.tla_per_region)\n")
         else:
-            f.write("        total_adoption_limit=pds_tam_per_region)\n")
+            f.write("            total_adoption_limit=pds_tam_per_region)\n")
     f.write("\n")
-
-
 
 
 def write_s_curve_ad(f, wb):
@@ -898,41 +889,33 @@ def write_s_curve_ad(f, wb):
     """
     s = wb.sheet_by_name('S-Curve Adoption')
     u = wb.sheet_by_name('Unit Adoption Calculations')
-    f.write("    sconfig_list = [['region', 'base_year', 'last_year'],\n")
-    f.write("      ['World', " + xli(s, 16, 1) + ", " + xli(s, 19, 1) + "],\n")
-    f.write("      ['OECD90', " + xli(s, 16, 2) + ", " + xli(s, 19, 2) + "],\n")
-    f.write("      ['Eastern Europe', " + xli(s, 16, 3) + ", " + xli(s, 19, 3) + "],\n")
-    f.write("      ['Asia (Sans Japan)', " + xli(s, 16, 4) + ", " + xli(s, 19, 4) + "],\n")
-    f.write("      ['Middle East and Africa', " + xli(s, 16, 5) + ", " + xli(s, 19, 5) + "],\n")
-    f.write("      ['Latin America', " + xli(s, 16, 6) + ", " + xli(s, 19, 6) + "],\n")
-    f.write("      ['China', " + xli(s, 16, 7) + ", " + xli(s, 19, 7) + "],\n")
-    f.write("      ['India', " + xli(s, 16, 8) + ", " + xli(s, 19, 8) + "],\n")
-    f.write("      ['EU', " + xli(s, 16, 9) + ", " + xli(s, 19, 9) + "],\n")
-    f.write("      ['USA', " + xli(s, 16, 10) + ", " + xli(s, 19, 10) + "]]\n")
-    f.write("    sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0], dtype=np.object).set_index('region')\n")
-    f.write("    sconfig['pds_tam_2050'] = pds_tam_per_region.loc[[2050]].T\n")
-    f.write("    sc_regions = list(self.ac.ref_base_adoption.keys())\n")
-    f.write("    sc_percentages = list(self.ac.ref_base_adoption.values())\n")
-    f.write(
-        "    sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
-    f.write(
-        "    sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]\n")
-    f.write("    sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
-    f.write(
-        "    sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
-    f.write("    if self.ac.pds_adoption_s_curve_innovation is not None:\n")
-    f.write("      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_innovation)\n")
-    f.write(
-        "      sconfig['innovation'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
-    f.write("    if self.ac.pds_adoption_s_curve_imitation is not None:\n")
-    f.write("      sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_imitation)\n")
-    f.write(
-        "      sconfig['imitation'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
-    f.write(
-        "    self.sc = s_curve.SCurve(transition_period=" + xli(s, 14, 0) + ", sconfig=sconfig)\n")
+    f.write("        sconfig_list = [['region', 'base_year', 'last_year'],\n")
+    f.write("            ['World', " + xli(s, 16, 1) + ", " + xli(s, 19, 1) + "],\n")
+    f.write("            ['OECD90', " + xli(s, 16, 2) + ", " + xli(s, 19, 2) + "],\n")
+    f.write("            ['Eastern Europe', " + xli(s, 16, 3) + ", " + xli(s, 19, 3) + "],\n")
+    f.write("            ['Asia (Sans Japan)', " + xli(s, 16, 4) + ", " + xli(s, 19, 4) + "],\n")
+    f.write("            ['Middle East and Africa', " + xli(s, 16, 5) + ", " + xli(s, 19, 5) + "],\n")
+    f.write("            ['Latin America', " + xli(s, 16, 6) + ", " + xli(s, 19, 6) + "],\n")
+    f.write("            ['China', " + xli(s, 16, 7) + ", " + xli(s, 19, 7) + "],\n")
+    f.write("            ['India', " + xli(s, 16, 8) + ", " + xli(s, 19, 8) + "],\n")
+    f.write("            ['EU', " + xli(s, 16, 9) + ", " + xli(s, 19, 9) + "],\n")
+    f.write("            ['USA', " + xli(s, 16, 10) + ", " + xli(s, 19, 10) + "]]\n")
+    f.write("        sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0], dtype=np.object).set_index('region')\n")
+    f.write("        sconfig['pds_tam_2050'] = pds_tam_per_region.loc[[2050]].T\n")
+    f.write("        sc_regions = list(self.ac.ref_base_adoption.keys())\n")
+    f.write("        sc_percentages = list(self.ac.ref_base_adoption.values())\n")
+    f.write("        sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
+    f.write("        sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]\n")
+    f.write("        sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
+    f.write("        sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
+    f.write("        if self.ac.pds_adoption_s_curve_innovation is not None:\n")
+    f.write("          sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_innovation)\n")
+    f.write("          sconfig['innovation'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
+    f.write("        if self.ac.pds_adoption_s_curve_imitation is not None:\n")
+    f.write("          sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_imitation)\n")
+    f.write("          sconfig['imitation'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
+    f.write("        self.sc = s_curve.SCurve(transition_period=" + xli(s, 14, 0) + ", sconfig=sconfig)\n")
     f.write("\n")
-
-
 
 
 def write_ht(f, wb, has_custom_ref_ad, is_land):
@@ -949,51 +932,44 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     final_datapoint_year = int(h.cell_value(*cell_to_offsets('B22')))
 
     tam_or_tla = 'ref_tam_per_region' if not is_land else 'self.tla_per_region'
-    f.write("    ht_ref_adoption_initial = pd.Series(list(self.ac.ref_base_adoption.values()), "
-        "index=dd.REGIONS)\n")
+    f.write("        ht_ref_adoption_initial = pd.Series(list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)\n")
     # even when the final_datapoint_year is 2018, the TAM initial year is hard-coded to 2014
-    f.write(f"    ht_ref_adoption_final = {tam_or_tla}.loc[{final_datapoint_year}] * "
+    f.write(f"        ht_ref_adoption_final = {tam_or_tla}.loc[{final_datapoint_year}] * "
         f"(ht_ref_adoption_initial / {tam_or_tla}.loc[2014])\n")
-    f.write("    ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
-    f.write("    ht_ref_datapoints.loc[" + str(
-        initial_datapoint_year) + "] = ht_ref_adoption_initial\n")
-    f.write("    ht_ref_datapoints.loc[" + str(
-        final_datapoint_year) + "] = ht_ref_adoption_final.fillna(0.0)\n")
+    f.write("        ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
+    f.write("        ht_ref_datapoints.loc[" + str(initial_datapoint_year) +
+            "] = ht_ref_adoption_initial\n")
+    f.write("        ht_ref_datapoints.loc[" + str(final_datapoint_year) +
+            "] = ht_ref_adoption_final.fillna(0.0)\n")
 
     initial_datapoint_year = int(h.cell_value(*cell_to_offsets('B85')))
     final_datapoint_year = int(h.cell_value(*cell_to_offsets('B86')))
     tam_or_tla = 'pds_tam_per_region' if not is_land else 'self.tla_per_region'
-    f.write("    ht_pds_adoption_initial = ht_ref_adoption_initial\n")
-    f.write("    ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
-    f.write(
-        "    ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))\n")
-    f.write("    ht_pds_adoption_final = ht_pds_adoption_final_percentage * {}.loc[{}]\n".format(
-        tam_or_tla, final_datapoint_year))
-    f.write("    ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
-    f.write("    ht_pds_datapoints.loc[" + str(
-        initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
-    f.write("    ht_pds_datapoints.loc[" + str(
-        final_datapoint_year) + "] = ht_pds_adoption_final.fillna(0.0)\n")
+    f.write("        ht_pds_adoption_initial = ht_ref_adoption_initial\n")
+    f.write("        ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
+    f.write("        ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))\n")
+    f.write(f"        ht_pds_adoption_final = ht_pds_adoption_final_percentage * {tam_or_tla}.loc[{final_datapoint_year}]\n")
+    f.write("        ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
+    f.write("        ht_pds_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
+    f.write("        ht_pds_datapoints.loc[" + str(final_datapoint_year) + "] = ht_pds_adoption_final.fillna(0.0)\n")
 
     first_pds_datapoint = int(h.cell_value(*cell_to_offsets('C85')))
     first_pds_yearly_result = int(h.cell_value(*cell_to_offsets('C91')))
     use_first_pds_datapoint = (first_pds_datapoint == first_pds_yearly_result)
 
-    f.write("    self.ht = helpertables.HelperTables(ac=self.ac,\n")
-    f.write("        ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
-    f.write("        pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
+    f.write("        self.ht = helpertables.HelperTables(ac=self.ac,\n")
+    f.write("            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
+    f.write("            pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
     if not is_land:
-        f.write(
-            "        ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,\n")
+        f.write("            ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,\n")
     else:
-        f.write(
-            "        ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,\n")
+        f.write("            ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,\n")
     if has_custom_ref_ad:
-        f.write("        ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
+        f.write("            ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
     if not use_first_pds_datapoint:
-        f.write("        use_first_pds_datapoint=False,\n")
-    f.write("        pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
-    f.write("        pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
+        f.write("            use_first_pds_datapoint=False,\n")
+    f.write("            pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
+    f.write("            pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
     f.write("\n")
 
 
@@ -1002,9 +978,9 @@ def write_ef(f, wb):
     ef_tab = wb.sheet_by_name('Emissions Factors')
     grid_factor_2015 = float(ef_tab.cell_value(*cell_to_offsets('B291')))
     if grid_factor_2015 == pytest.approx(0.619753649484954):
-        f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=2)\n")
+        f.write("        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=2)\n")
     else:
-        f.write("    self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
+        f.write("        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
     f.write("\n")
 
 
@@ -1012,77 +988,68 @@ def write_ua(f, wb, is_rrs=True):
     """Write out the Unit Adoption module for this solution class."""
     ua_tab = wb.sheet_by_name('Unit Adoption Calculations')
     ac_tab = wb.sheet_by_name('Advanced Controls')
-    f.write("    self.ua = unitadoption.UnitAdoption(ac=self.ac,\n")
+    f.write("        self.ua = unitadoption.UnitAdoption(ac=self.ac,\n")
     if is_rrs:
-        f.write(
-            "        ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,\n")
+        f.write("            ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,\n")
     else:
-        f.write("        ref_total_adoption_units=self.tla_per_region, pds_total_adoption_units=self.tla_per_region,\n")
-        f.write("        electricity_unit_factor=1000000.0,\n")
-    f.write("        soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
-    f.write("        soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
+        f.write("            ref_total_adoption_units=self.tla_per_region, pds_total_adoption_units=self.tla_per_region,\n")
+        f.write("            electricity_unit_factor=1000000.0,\n")
+    f.write("            soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
+    f.write("            soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
     if 'Repeated First Cost to Maintaining Implementation Units' in ac_tab.cell(42, 0).value:
         repeated_cost_for_iunits = convert_bool(ac_tab.cell(42, 2).value)
-        f.write("        repeated_cost_for_iunits=" + str(repeated_cost_for_iunits) + ",\n")
+        f.write("            repeated_cost_for_iunits=" + str(repeated_cost_for_iunits) + ",\n")
     # If S135 == D135 (for all regions), then it must not be adding in 'Advanced Controls'!C62
     bug_cfunits_double_count = False
     for i in range(0, 9):
         if ua_tab.cell(134, 18 + i).value != ua_tab.cell(134, 3 + i).value:
             bug_cfunits_double_count = True
-    f.write("        bug_cfunits_double_count=" + str(bug_cfunits_double_count) + ")\n")
-    f.write("    soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()\n")
-    f.write("    soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()\n")
-    f.write("    conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()\n")
-    f.write("    soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()\n")
+    f.write("            bug_cfunits_double_count=" + str(bug_cfunits_double_count) + ")\n")
+    f.write("        soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()\n")
+    f.write("        soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()\n")
+    f.write("        conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()\n")
+    f.write("        soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()\n")
     f.write("\n")
-
-
 
 
 def write_fc(f, wb):
     """Code generate the First Code module for this solution class."""
     fc_tab = wb.sheet_by_name('First Cost')
-    f.write("    self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=" + xli(fc_tab, 24,
-                                                                                              2) + ",\n")
-    f.write("        ref_learning_increase_mult=" + xli(fc_tab, 24, 3)
-            + ", conv_learning_increase_mult=" + xli(fc_tab, 24, 4) + ",\n")
-    f.write("        soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,\n")
-    f.write("        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,\n")
-    f.write("        conv_ref_tot_iunits=conv_ref_tot_iunits,\n")
-    f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
-    f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
-    f.write("        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
+    f.write("        self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=" +
+            xli(fc_tab, 24, 2) + ",\n")
+    f.write("            ref_learning_increase_mult=" + xli(fc_tab, 24, 3) +
+            ", conv_learning_increase_mult=" + xli(fc_tab, 24, 4) + ",\n")
+    f.write("            soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,\n")
+    f.write("            soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,\n")
+    f.write("            conv_ref_tot_iunits=conv_ref_tot_iunits,\n")
+    f.write("            soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
+    f.write("            soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
+    f.write("            conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
     if fc_tab.cell(35, 15).value == 'Implementation Units Installed Each Yr (CONVENTIONAL-REF)':
-        f.write("        conv_ref_first_cost_uses_tot_units=True,\n")
+        f.write("            conv_ref_first_cost_uses_tot_units=True,\n")
     if fc_tab.cell(14, 5).value == 1000000000 and fc_tab.cell(14, 6).value == '$/kW TO $/TW':
-        f.write("        fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)\n")
+        f.write("            fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)\n")
     elif fc_tab.cell(15, 5).value == 1000000 and fc_tab.cell(17, 5).value == 'million hectare':
-
-        f.write("        fc_convert_iunit_factor=land.MHA_TO_HA)\n")
+        f.write("            fc_convert_iunit_factor=land.MHA_TO_HA)\n")
     else:
-        f.write("        fc_convert_iunit_factor=" + xln(fc_tab, 14, 5) + ")\n")
+        f.write("            fc_convert_iunit_factor=" + xln(fc_tab, 14, 5) + ")\n")
     f.write('\n')
-
-
 
 
 def write_oc(f, wb, is_land=False):
     """Code generate the Operating Code module for this solution class."""
     oc_tab = wb.sheet_by_name('Operating Cost')
-    f.write("    self.oc = operatingcost.OperatingCost(ac=self.ac,\n")
-    f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,\n")
-    f.write("        soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,\n")
-    f.write("        soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,\n")
-    f.write("        conv_ref_annual_tot_iunits=self.ua.conv_ref_annual_tot_iunits(),\n")
-    f.write(
-        "        soln_pds_annual_world_first_cost=self.fc.soln_pds_annual_world_first_cost(),\n")
-    f.write(
-        "        soln_ref_annual_world_first_cost=self.fc.soln_ref_annual_world_first_cost(),\n")
-    f.write(
-        "        conv_ref_annual_world_first_cost=self.fc.conv_ref_annual_world_first_cost(),\n")
-    f.write("        single_iunit_purchase_year=" + xli(oc_tab, 120, 8) + ",\n")
-    f.write("        soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),\n")
-    f.write("        conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),\n")
+    f.write("        self.oc = operatingcost.OperatingCost(ac=self.ac,\n")
+    f.write("            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,\n")
+    f.write("            soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,\n")
+    f.write("            soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,\n")
+    f.write("            conv_ref_annual_tot_iunits=self.ua.conv_ref_annual_tot_iunits(),\n")
+    f.write("            soln_pds_annual_world_first_cost=self.fc.soln_pds_annual_world_first_cost(),\n")
+    f.write("            soln_ref_annual_world_first_cost=self.fc.soln_ref_annual_world_first_cost(),\n")
+    f.write("            conv_ref_annual_world_first_cost=self.fc.conv_ref_annual_world_first_cost(),\n")
+    f.write("            single_iunit_purchase_year=" + xli(oc_tab, 120, 8) + ",\n")
+    f.write("            soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),\n")
+    f.write("            conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),\n")
 
     units = oc_tab.cell(12, 5).value
     is_energy_units = (units == '$/kW TO $/TW' or units == 'From US$2014 per kW to US$2014 per TW')
@@ -1100,64 +1067,48 @@ def write_oc(f, wb, is_land=False):
     # they differ (Heatpumps). operatingcost.py accomodates this, if passed a single number it will
     # use it for both factors.
     if conversion_factor_fom == conversion_factor_vom:
-        f.write("        conversion_factor=" + str(conversion_factor_fom) + ")\n")
+        f.write("            conversion_factor=" + str(conversion_factor_fom) + ")\n")
     else:
-        f.write("        conversion_factor=(" + str(conversion_factor_fom) + ", " +
+        f.write("            conversion_factor=(" + str(conversion_factor_fom) + ", " +
                 str(conversion_factor_vom) + "))\n")
     f.write('\n')
 
 
-
-
 def write_c2_c4(f, is_rrs=True, is_protect=False, has_harvest=False):
     """Write out the CO2 Calcs and CH4 Calcs modules for this solution class."""
-    f.write("    self.c4 = ch4calcs.CH4Calcs(ac=self.ac,\n")
+    f.write("        self.c4 = ch4calcs.CH4Calcs(ac=self.ac,\n")
     if not is_rrs:
-        f.write(
-            "        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),\n")
-    f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)\n\n")
-    f.write("    self.c2 = co2calcs.CO2Calcs(ac=self.ac,\n")
-    f.write("        ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),\n")
-    f.write(
-        "        soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),\n")
-    f.write(
-        "        soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),\n")
+        f.write("            soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),\n")
+    f.write("            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)\n\n")
+    f.write("        self.c2 = co2calcs.CO2Calcs(ac=self.ac,\n")
+    f.write("            ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),\n")
+    f.write("            soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),\n")
+    f.write("            soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),\n")
     if is_rrs:
-        f.write(
-            "        soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),\n")
-        f.write(
-            "        soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),\n")
-        f.write(
-            "        soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),\n")
+        f.write("            soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),\n")
+        f.write("            soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),\n")
+        f.write("            soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),\n")
     else:
-        f.write(
-            "        soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),\n")
-        f.write(
-            "        soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),\n")
-        f.write(
-            "        soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),\n")
-        f.write(
-            "        soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),\n")
-    f.write("        soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
-    f.write("        soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
-    f.write("        conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
-    f.write("        conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),\n")
-    f.write("        conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),\n")
-    f.write("        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,\n")
+        f.write("            soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),\n")
+        f.write("            soln_pds_direct_co2_emissions_saved=self.ua.direct_co2_emissions_saved_land(),\n")
+        f.write("            soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),\n")
+        f.write("            soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),\n")
+    f.write("            soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),\n")
+    f.write("            soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),\n")
+    f.write("            conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),\n")
+    f.write("            conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),\n")
+    f.write("            conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),\n")
+    f.write("            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,\n")
     if is_rrs:
-        f.write("        fuel_in_liters=False)\n")
+        f.write("            fuel_in_liters=False)\n")
     else:
         if is_protect:
-            f.write(
-                "        tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),\n")
-            f.write(
-                "        pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),\n")
-            f.write(
-                "        ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),\n")
+            f.write("            tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),\n")
+            f.write("            pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),\n")
+            f.write("            ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),\n")
         if has_harvest:
-            f.write(
-                "        annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),\n")
-        f.write("        regime_distribution=self.ae.get_land_distribution())\n")
+            f.write("            annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),\n")
+        f.write("            regime_distribution=self.ae.get_land_distribution())\n")
     f.write("\n")
 
 
@@ -1380,17 +1331,17 @@ def extract_vmas(f, wb, outputdir):
         vmas = vma_r.read_xls(csv_path=vma_dir_path)
     f.write("VMAs = {\n")
     for _, row in vmas.iterrows():
-        f.write(f"  '{row['Title on xls']}': vma.VMA(\n")
+        f.write(f"    '{row['Title on xls']}': vma.VMA(\n")
         filename = row['Filename']
         if not filename:
-            f.write(f"      filename=None, use_weight={row['Use weight?']}),\n")
+            f.write(f"        filename=None, use_weight={row['Use weight?']}),\n")
         else:
             if isinstance(filename, str):
                 path = f'THISDIR.joinpath("vma_data", "{filename}")'
             else:
                 path = f'DATADIR.joinpath(*{filename})'
-            f.write(f"      filename={path},\n")
-            f.write(f"      use_weight={row['Use weight?']}),\n")
+            f.write(f"        filename={path},\n")
+            f.write(f"        use_weight={row['Use weight?']}),\n")
     f.write("}\n")
     f.write("vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))\n\n")
 
@@ -1422,10 +1373,10 @@ def write_units_rrs(f, wb):
         col_d = sr_tab.cell_value(row, 3)
         col_e = sr_tab.cell_value(row, 4)
         if col_d == 'Name of Scenario:' and 'TEMPLATE' not in col_e:
-            f.write('  "implementation unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
-            f.write('  "functional unit": "' + lookup_unit(sr_tab, row + 7, 5) + '",\n')
-            f.write('  "first cost": "' + lookup_unit(sr_tab, row + 16, 5) + '",\n')
-            f.write('  "operating cost": "' + lookup_unit(sr_tab, row + 17, 5) + '",\n')
+            f.write('    "implementation unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
+            f.write('    "functional unit": "' + lookup_unit(sr_tab, row + 7, 5) + '",\n')
+            f.write('    "first cost": "' + lookup_unit(sr_tab, row + 16, 5) + '",\n')
+            f.write('    "operating cost": "' + lookup_unit(sr_tab, row + 17, 5) + '",\n')
             break
     f.write('}\n\n')
 
@@ -1438,10 +1389,10 @@ def write_units_land(f, wb):
         col_d = sr_tab.cell_value(row, 3)
         col_e = sr_tab.cell_value(row, 4)
         if col_d == 'Name of Scenario:' and 'TEMPLATE' not in col_e:
-            f.write('  "implementation unit": None,\n')
-            f.write('  "functional unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
-            f.write('  "first cost": "' + lookup_unit(sr_tab, row + 12, 5) + '",\n')
-            f.write('  "operating cost": "' + lookup_unit(sr_tab, row + 13, 5) + '",\n')
+            f.write('    "implementation unit": None,\n')
+            f.write('    "functional unit": "' + lookup_unit(sr_tab, row + 5, 5) + '",\n')
+            f.write('    "first cost": "' + lookup_unit(sr_tab, row + 12, 5) + '",\n')
+            f.write('    "operating cost": "' + lookup_unit(sr_tab, row + 13, 5) + '",\n')
             break
     f.write('}\n\n')
 
@@ -1563,35 +1514,33 @@ def output_solution_python_file(outputdir, xl_filename):
     f.write("\n\n")
 
     f.write("class Scenario:\n")
-    f.write("  name = name\n")
-    f.write("  units = units\n")
-    f.write("  vmas = VMAs\n")
-    f.write("  solution_category = solution_category\n")
+    f.write("    name = name\n")
+    f.write("    units = units\n")
+    f.write("    vmas = VMAs\n")
+    f.write("    solution_category = solution_category\n")
     f.write("\n")
-    f.write("  def __init__(self, scenario=None):\n")
-    f.write("    if scenario is None:\n")
-    f.write("      scenario = list(scenarios.keys())[0]\n")
-    f.write("    self.scenario = scenario\n")
-    f.write("    self.ac = scenarios[scenario]\n")
+    f.write("    def __init__(self, scenario=None):\n")
+    f.write("        if scenario is None:\n")
+    f.write("            scenario = list(scenarios.keys())[0]\n")
+    f.write("        self.scenario = scenario\n")
+    f.write("        self.ac = scenarios[scenario]\n")
     f.write("\n")
     if has_tam:
-        f.write("    # TAM\n")
+        f.write("        # TAM\n")
         write_tam(f=f, wb=wb, outputdir=outputdir)
     elif is_land:
-        f.write("    # TLA\n")
-        f.write("    self.ae = aez.AEZ(solution_name=self.name)\n")
+        f.write("        # TLA\n")
+        f.write("        self.ae = aez.AEZ(solution_name=self.name)\n")
         if use_custom_tla:
-            f.write("    if self.ac.use_custom_tla:\n")
-            f.write(
-                "      self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))\n")
-            f.write("      custom_world_vals = self.c_tla.get_world_values()\n")
-            f.write("    else:\n")
-            f.write("      custom_world_vals = None\n")
-            f.write("    self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(), ")
-            f.write("custom_world_values=custom_world_vals)\n\n")
+            f.write("        if self.ac.use_custom_tla:\n")
+            f.write("            self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))\n")
+            f.write("            custom_world_vals = self.c_tla.get_world_values()\n")
+            f.write("        else:\n")
+            f.write("            custom_world_vals = None\n")
+            f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(), \n")
+            f.write("            custom_world_values=custom_world_vals)\n\n")
         else:
-            f.write(
-                "    self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())\n\n")
+            f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())\n\n")
 
     if has_default_pds_ad or has_default_ref_ad:
         write_ad(f=f, wb=wb, outputdir=outputdir)
@@ -1603,45 +1552,44 @@ def output_solution_python_file(outputdir, xl_filename):
         write_s_curve_ad(f=f, wb=wb)
 
     if has_custom_ref_ad and has_default_ref_ad:
-        f.write("    if self.ac.soln_ref_adoption_basis == 'Custom':\n")
-        f.write("      ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
-        f.write("    else:\n")
-        f.write("      ref_adoption_data_per_region = None\n")
+        f.write("        if self.ac.soln_ref_adoption_basis == 'Custom':\n")
+        f.write("            ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
+        f.write("        else:\n")
+        f.write("            ref_adoption_data_per_region = None\n")
     elif has_custom_ref_ad:
-        f.write("    ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
+        f.write("        ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()\n")
     elif has_default_ref_ad:
-        f.write("    ref_adoption_data_per_region = None\n")
+        f.write("        ref_adoption_data_per_region = None\n")
     f.write("\n")
 
-    f.write("    if False:\n")
-    f.write("      # One may wonder why this is here. This file was code generated.\n")
-    f.write("      # This 'if False' allows subsequent conditions to all be elif.\n")
-    f.write("      pass\n")
+    f.write("        if False:\n")
+    f.write("            # One may wonder why this is here. This file was code generated.\n")
+    f.write("            # This 'if False' allows subsequent conditions to all be elif.\n")
+    f.write("            pass\n")
     if has_custom_pds_ad:
-        f.write("    elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':\n")
-        f.write("      pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
-        f.write("      pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
-        f.write("      pds_adoption_is_single_source = None\n")
+        f.write("        elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':\n")
+        f.write("            pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()\n")
+        f.write("            pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()\n")
+        f.write("            pds_adoption_is_single_source = None\n")
     if has_s_curve_pds_ad:
-        f.write("    elif self.ac.soln_pds_adoption_basis == 'Logistic S-Curve':\n")
-        f.write("      pds_adoption_data_per_region = None\n")
-        f.write("      pds_adoption_trend_per_region = self.sc.logistic_adoption()\n")
-        f.write("      pds_adoption_is_single_source = None\n")
-        f.write("    elif self.ac.soln_pds_adoption_basis == 'Bass Diffusion S-Curve':\n")
-        f.write("      pds_adoption_data_per_region = None\n")
-        f.write("      pds_adoption_trend_per_region = self.sc.bass_diffusion_adoption()\n")
-        f.write("      pds_adoption_is_single_source = None\n")
+        f.write("        elif self.ac.soln_pds_adoption_basis == 'Logistic S-Curve':\n")
+        f.write("            pds_adoption_data_per_region = None\n")
+        f.write("            pds_adoption_trend_per_region = self.sc.logistic_adoption()\n")
+        f.write("            pds_adoption_is_single_source = None\n")
+        f.write("        elif self.ac.soln_pds_adoption_basis == 'Bass Diffusion S-Curve':\n")
+        f.write("            pds_adoption_data_per_region = None\n")
+        f.write("            pds_adoption_trend_per_region = self.sc.bass_diffusion_adoption()\n")
+        f.write("            pds_adoption_is_single_source = None\n")
     if has_default_pds_ad or has_default_ref_ad:
-        f.write(
-            "    elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':\n")
-        f.write("      pds_adoption_data_per_region = self.ad.adoption_data_per_region()\n")
-        f.write("      pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()\n")
-        f.write("      pds_adoption_is_single_source = self.ad.adoption_is_single_source()\n")
+        f.write("        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':\n")
+        f.write("            pds_adoption_data_per_region = self.ad.adoption_data_per_region()\n")
+        f.write("            pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()\n")
+        f.write("            pds_adoption_is_single_source = self.ad.adoption_is_single_source()\n")
     if has_linear_pds_ad:
-        f.write("    elif self.ac.soln_pds_adoption_basis == 'Linear':\n")
-        f.write("      pds_adoption_data_per_region = None\n")
-        f.write("      pds_adoption_trend_per_region = None\n")
-        f.write("      pds_adoption_is_single_source = None\n")
+        f.write("        elif self.ac.soln_pds_adoption_basis == 'Linear':\n")
+        f.write("            pds_adoption_data_per_region = None\n")
+        f.write("            pds_adoption_trend_per_region = None\n")
+        f.write("            pds_adoption_is_single_source = None\n")
     f.write("\n")
 
     write_ht(f=f, wb=wb, has_custom_ref_ad=has_custom_ref_ad, is_land=is_land)
@@ -1654,10 +1602,9 @@ def output_solution_python_file(outputdir, xl_filename):
     write_c2_c4(f=f, is_rrs=is_rrs, is_protect=is_protect, has_harvest=has_harvest)
 
     if is_rrs:
-        f.write(
-            "    self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],\n")
-        f.write("        soln_avg_annual_use=self.ac.soln_avg_annual_use,\n")
-        f.write("        conv_avg_annual_use=self.ac.conv_avg_annual_use)\n")
+        f.write("        self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],\n")
+        f.write("            soln_avg_annual_use=self.ac.soln_avg_annual_use,\n")
+        f.write("            conv_avg_annual_use=self.ac.conv_avg_annual_use)\n")
         f.write("\n")
 
     f.close()
