@@ -25,6 +25,8 @@ xlrd = ">=1.2.0"
 Pillow = ">=6.0.0"
 xlwings = "*"
 numpy-financial = "*"
+voila = "*"
+vega = "*"
 
 [requires]
 python_version = "3.8"
