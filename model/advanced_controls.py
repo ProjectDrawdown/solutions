@@ -803,7 +803,7 @@ class AdvancedControls:
     def soln_lifetime_replacement_rounded(self):
         if self.soln_lifetime_capacity is not None:  # RRS
             # ROUND and decimal.quantize do not match Excel ROUND(), so we implemented one.
-            return excel_math.round(self.soln_lifetime_capacity / self.soln_avg_annual_use)
+            return excel_math.round_away(self.soln_lifetime_capacity / self.soln_avg_annual_use)
         elif self.soln_expected_lifetime is not None:  # LAND
             # LAND models input lifetime directly so I doubt we will come across rounding errors
             # i.e. expected_lifetime will probably be a whole number of years.
@@ -827,7 +827,7 @@ class AdvancedControls:
     def conv_lifetime_replacement_rounded(self):
         if self.conv_lifetime_capacity is not None:  # RRS
             # ROUND and decimal.quantize do not match Excel ROUND(), so we implemented one.
-            return excel_math.round(self.conv_lifetime_capacity / self.conv_avg_annual_use)
+            return excel_math.round_away(self.conv_lifetime_capacity / self.conv_avg_annual_use)
         elif self.conv_expected_lifetime is not None:  # LAND
             # LAND models input lifetime directly so I doubt we will come across rounding errors
             # i.e. expected_lifetime will probably be a whole number of years
