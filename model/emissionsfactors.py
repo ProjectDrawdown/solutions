@@ -122,7 +122,7 @@ class ElectricityGenOnGrid:
         elif self.ac.emissions_grid_range == GRID_RANGE.MEAN:
             result.loc[:, "World"] = grid.loc[:, "medium"].values
         else:
-            raise ValueError(f"Invalid ac.emissions_grid_range {ac.emissions_grid_range}")
+            raise ValueError(f"Invalid ac.emissions_grid_range {self.ac.emissions_grid_range}")
 
         # Generation mixes from the AMPERE/MESSAGE WG3 BAU scenario, direct and
         # indirect emission factors by fuel from the IPCC WG3 Annex III Table A.III.2
