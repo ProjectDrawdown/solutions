@@ -70,7 +70,7 @@ $ git clone https://github.com/ProjectDrawdown/solutions.git
 $ cd solutions
 ```
 
-We recommend using pipenv for a virtual environment:
+We recommend using [pipenv](https://github.com/pypa/pipenv) for a virtual environment:
 
 ```sh
 $ pipenv shell
