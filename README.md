@@ -61,7 +61,7 @@ We need better ways for people to explore the overall set of climate solutions a
 
 ## Getting started
 
-You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [git-lfs](https://git-lfs.github.com/), and [Python 3](https://docs.python.org/3/using/index.html) (>= 3.8) installed.
+You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [git-lfs](https://git-lfs.github.com/), and [Python 3](https://docs.python.org/3/using/index.html) (>= 3.8) installed. The jupyter labextensions require nodejs and npm.
 
 Get a copy of this source code:
 
