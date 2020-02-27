@@ -1,6 +1,12 @@
 name: Drawdown Solutions Python application
 
-on: [push]
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
 
 jobs:
   build:
@@ -27,3 +33,6 @@ jobs:
       with:
         token: ${{secrets.CODECOV_TOKEN}}
         file: ./coverage.xml
+      env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+      if: env.CODECOV_TOKEN != ''
