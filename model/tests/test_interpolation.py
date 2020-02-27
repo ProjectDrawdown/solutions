@@ -231,6 +231,32 @@ def test_all_and_empty_result():
                                              groups_only=False)) == sorted(g_all_data_sources)
 
 
+def test_pandas_1_0_support():
+    """
+    A (regression) test for github issue "Pandas 1.0 support #4".
+    https://github.com/ProjectDrawdown/solutions/issues/4
+    """
+    data_sources = {
+        'Baseline Cases': {
+            'A': 'tam_all_one.csv',
+            'B': 'tam_all_two.csv',
+        },
+        'Region: OECD90': {
+            'Baseline Cases': {
+                'C': 'tam_all_three.csv',
+            },
+        },
+    }
+
+    # If name is a group, return all data sources which are part of that group.
+    assert itrp.matching_data_sources(data_sources, "Baseline Cases", True) == ["A", "B"]
+
+    # If name is an individual case and groups_only=False, return it by itself.
+    assert itrp.matching_data_sources(data_sources, "ALL SOURCES", False) == ["A", "B", "C"]
+
+    # If groups_only=True and name is not a group, return all sources.
+    assert itrp.matching_data_sources(data_sources, "ALL SOURCES", True) == ["A", "B", "C"]
+
 
 def test_is_group_name():
     assert itrp.is_group_name(data_sources=g_data_sources, name='Ambitious Cases') == True
@@ -259,7 +285,6 @@ def test_is_group_name_improvedstoves():
     }
     assert itrp.is_group_name(data_sources=data_sources, name='Baseline Cases') == True
     assert itrp.is_group_name(data_sources=data_sources, name='The World Bank') == False
-
 
 
 
