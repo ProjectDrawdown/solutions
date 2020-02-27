@@ -45,8 +45,12 @@ def to_filename(name):
     return re.sub(' +', '_', re.sub('[^a-zA-Z0-9' '\n]', ' ', name)).strip('_')
 
 
-def pretty_print_table(df):
-    """ Prints a nice-looking DataFrame """
-    from tabulate import tabulate
-    print(tabulate(df, headers='keys', tablefmt='psql', stralign='center', numalign='center', disable_numparse=False,
-                   floatfmt='.3f'))
+# method not used anywhere in code
+# and imports an undocumented dependency
+# if you ever need it.. pls document the tabulate dependency properly
+
+# def pretty_print_table(df):
+#     """ Prints a nice-looking DataFrame """
+#     from tabulate import tabulate
+#     print(tabulate(df, headers='keys', tablefmt='psql', stralign='center', numalign='center', disable_numparse=False,
+#                    floatfmt='.3f'))
