@@ -74,7 +74,7 @@ We recommend using [pipenv](https://github.com/pypa/pipenv) for a virtual enviro
 
 ```sh
 $ pipenv shell
-(solutions) $
+(solutions) $ pip install -r requirements.txt
 (solutions) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (solutions) $ jupyter labextension install bqplot ipyvolume jupyter-threejs qgrid
 ```
