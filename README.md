@@ -84,6 +84,9 @@ target takes over an hour to finish.
 ```
 (solutions) $ make test
 (solutions) $ make alltests
+
+# to run a specific test, call tox directly:
+(solutions) $ tox -- tools/tests/test_vma_xls_extract.py::test_read_xls
 ```
 
 The main user interface is a Jupyter Notebook:
