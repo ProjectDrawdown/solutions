@@ -79,7 +79,7 @@ $ pipenv shell
 (solutions) $ jupyter labextension install bqplot ipyvolume jupyter-threejs qgrid
 ```
 
-To run tests one can use make. The test target runs in less than two minutes, the alltests
+Tests are based on [tox](https://tox.readthedocs.org/). To run tests one can use make. The test target runs in less than two minutes, the alltests
 target takes over an hour to finish.
 ```
 (solutions) $ make test
