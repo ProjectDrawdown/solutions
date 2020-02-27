@@ -61,7 +61,7 @@ We need better ways for people to explore the overall set of climate solutions a
 
 ## Getting started
 
-You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [git-lfs](https://git-lfs.github.com/), and [Python 3](https://docs.python.org/3/using/index.html) installed.
+You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [git-lfs](https://git-lfs.github.com/), and [Python 3](https://docs.python.org/3/using/index.html) (>= 3.8) installed. The jupyter labextensions require [nodejs](https://nodejs.org/) and [npm](https://www.npmjs.com/).
 
 Get a copy of this source code:
 
@@ -70,16 +70,16 @@ $ git clone https://github.com/ProjectDrawdown/solutions.git
 $ cd solutions
 ```
 
-We recommend using pipenv for a virtual environment:
+We recommend using [pipenv](https://github.com/pypa/pipenv) for a virtual environment:
 
 ```sh
 $ pipenv shell
-(solutions) $
+(solutions) $ pip install -r requirements.txt
 (solutions) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (solutions) $ jupyter labextension install bqplot ipyvolume jupyter-threejs qgrid
 ```
 
-To run tests one can use make. The test target runs in less than two minutes, the alltests
+Tests are based on [tox](https://tox.readthedocs.org/). To run tests one can use make. The test target runs in less than two minutes, the alltests
 target takes over an hour to finish.
 ```
 (solutions) $ make test
