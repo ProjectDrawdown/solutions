@@ -152,8 +152,20 @@ def matching_data_sources(data_sources, name, groups_only):
     if name in data_sources:
         return list(data_sources[name].keys())
     all_sources = []
-    for val in data_sources.values():
-        all_sources.extend(list(val.keys()))
+    for key in data_sources.keys():
+        sdict = data_sources[key]  # dict of potential sources
+        for k in sdict:
+            v = sdict[k]
+            if isinstance(v, str):
+                # value string -> key was a source name
+                all_sources.append(k)
+            if isinstance(v, dict):
+                # another sub-dict found -> recursion to handle
+                # deeper nesting?
+                for psource in v:  # check other potential source
+                    if isinstance(v[psource], str):
+                        # value string -> key was a source name
+                        all_sources.append(psource)
     if name.lower() == 'all sources':
         return all_sources
     if groups_only:  # specific group not found above, so return all
