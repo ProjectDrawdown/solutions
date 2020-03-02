@@ -34,7 +34,7 @@ def test_string_to_emissions_grid_source():
     assert ef.string_to_emissions_grid_source("IPCC_ONLY") == ef.GRID_SOURCE.IPCC
     assert ef.string_to_emissions_grid_source("ipcc only") == ef.GRID_SOURCE.IPCC
     with pytest.raises(ValueError):
-        ef.string_to_conversion_source("invalid")
+        ef.string_to_emissions_grid_source("invalid")
 
 
 def test_string_to_emissions_grid_range():
@@ -44,7 +44,7 @@ def test_string_to_emissions_grid_range():
     assert ef.string_to_emissions_grid_range("high") == ef.GRID_RANGE.HIGH
     assert ef.string_to_emissions_grid_range("LOW") == ef.GRID_RANGE.LOW
     with pytest.raises(ValueError):
-        ef.string_to_conversion_source("invalid")
+        ef.string_to_emissions_grid_range("invalid")
 
 
 def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
