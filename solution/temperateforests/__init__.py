@@ -324,8 +324,7 @@ class Scenario:
     commit_9_mha_new = max_land_wri - (commit_13_dec_2016 * commit_13_dec_2016_tmr)
     #         new commitments in temperate TMR + additional degraded land available from the Forest
     #         Protection solution, for which exact area has to be estimated.
-    # unused variable final_adoption_9
-    # final_adoption_9 = (commit_13_dec_2016_mha * intact_13_dec_2016) + (commit_9_mha_new * future_9_tmr)
+    final_adoption_9 = (commit_13_dec_2016_mha * intact_13_dec_2016) + (commit_9_mha_new * future_9_tmr)
     data_source_9 = {
             'name': 'Conservative-Achieve Commitment in 45 years w/ 44.2% intact (Charlotte Wheeler,2016)',
             'include': False,
@@ -336,7 +335,7 @@ class Scenario:
             # (4) The year commitments are realised (2030, 2045 or 2060).
             'datapoints': pd.DataFrame([
                 [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2060, final_adoption_8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [2060, final_adoption_9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 ], columns=ca_pds_columns).set_index('Year')
     }
 
