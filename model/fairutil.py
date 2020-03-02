@@ -1,6 +1,5 @@
 """Utilities and definitions for https://github.com/OMS-NetZero/FAIR"""
 
-import copy
 import pathlib
 
 import fair

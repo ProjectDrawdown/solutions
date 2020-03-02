@@ -7,7 +7,6 @@ and other factors relating to emissions and pollutants.
 from functools import lru_cache
 import enum
 import pandas as pd
-import model.dd as dd
 
 CO2EQ_SOURCE = enum.Enum('CO2EQ_SOURCE', 'AR5_WITH_FEEDBACK AR4 SAR')
 GRID_SOURCE = enum.Enum('GRID_SOURCE', 'META IPCC')
@@ -123,7 +122,7 @@ class ElectricityGenOnGrid:
         elif self.ac.emissions_grid_range == GRID_RANGE.MEAN:
             result.loc[:, "World"] = grid.loc[:, "medium"].values
         else:
-            raise ValueError(f"Invalid ac.emissions_grid_range {ac.emissions_grid_range}")
+            raise ValueError(f"Invalid ac.emissions_grid_range {self.ac.emissions_grid_range}")
 
         # Generation mixes from the AMPERE/MESSAGE WG3 BAU scenario, direct and
         # indirect emission factors by fuel from the IPCC WG3 Annex III Table A.III.2

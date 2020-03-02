@@ -14,13 +14,13 @@ import pathlib
 import re
 
 import pandas as pd
-import model.dd as dd
-from model import metaclass_cache
+from model import dd
+from model.metaclass_cache import MetaclassCache
 
 LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land')
 
 
-class AEZ(object, metaclass=metaclass_cache.MetaclassCache):
+class AEZ(object, metaclass=MetaclassCache):
     """AEZ Data module.
        Args:
          solution_name: <soln file>.name

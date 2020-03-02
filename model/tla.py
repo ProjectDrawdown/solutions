@@ -8,9 +8,8 @@ which can be used instead of Drawdown's allocations. Thus, this class is named C
 
 from functools import lru_cache
 import pandas as pd
-import warnings
-import model.dd
-from model import metaclass_cache
+from model import dd
+from model.metaclass_cache import MetaclassCache
 
 
 def tla_per_region(land_dist, custom_world_values=None):
@@ -25,7 +24,7 @@ def tla_per_region(land_dist, custom_world_values=None):
     Returns:
         df: DataFrame for use with UnitAdoption
     """
-    regions = model.dd.REGIONS
+    regions = dd.REGIONS
     index = pd.Index(data=list(range(2014, 2061)), name='Year')
     df = pd.DataFrame(index=index)
     for region in regions:
@@ -40,7 +39,7 @@ def tla_per_region(land_dist, custom_world_values=None):
     return df
 
 
-class CustomTLA(object, metaclass=metaclass_cache.MetaclassCache):
+class CustomTLA(object, metaclass=MetaclassCache):
     def __init__(self, filename):
         """
         Class for Custom TLA data

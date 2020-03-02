@@ -1,9 +1,8 @@
 """Tests for emissionsfactors.py."""
 
+import pytest
 from model import advanced_controls
 from model import emissionsfactors as ef
-import pandas as pd
-import pytest
 
 
 def test_CO2Equiv():
@@ -88,7 +87,7 @@ def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh_v2():
     eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=2)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2033, 'World'] == pytest.approx(0.474310926)
- 
+
 
 def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh_invalid_range():
     with pytest.raises(ValueError):
@@ -96,7 +95,7 @@ def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh_invalid_range():
                 emissions_grid_source="ipcc_only", emissions_grid_range="nosuchrange")
         eg = ef.ElectricityGenOnGrid(ac=ac)
         _ = eg.conv_ref_grid_CO2eq_per_KWh()
- 
+
 
 def test_conv_ref_grid_CO2_per_KWh():
     eg = ef.ElectricityGenOnGrid(ac=None)

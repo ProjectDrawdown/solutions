@@ -1,11 +1,9 @@
 """Tests for interpolation.py."""
 
+import pytest
 import numpy as np
 import pandas as pd
-import pytest
 from model import interpolation as itrp
-
-
 
 
 def test_linear_trend():

@@ -1,5 +1,3 @@
-import pathlib
-import pandas as pd
 import re
 from numpy import nan
 
@@ -45,10 +43,3 @@ def empty_to_nan(val):
 def to_filename(name):
     """ Removes special characters and separates words with single underscores"""
     return re.sub(' +', '_', re.sub('[^a-zA-Z0-9' '\n]', ' ', name)).strip('_')
-
-
-def pretty_print_table(df):
-    """ Prints a nice-looking DataFrame """
-    from tabulate import tabulate
-    print(tabulate(df, headers='keys', tablefmt='psql', stralign='center', numalign='center', disable_numparse=False,
-                   floatfmt='.3f'))

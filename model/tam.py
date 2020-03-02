@@ -1,18 +1,17 @@
 """Total Addressable Market module."""
 
 from functools import lru_cache
-import os.path
 import pathlib
 import re
 
 from model import dd
+from model.metaclass_cache import MetaclassCache
 from model import interpolation
-from model import metaclass_cache
 import numpy as np
 import pandas as pd
 
 
-class TAM(object, metaclass=metaclass_cache.MetaclassCache):
+class TAM(object, metaclass=MetaclassCache):
     """Total Addressable Market module."""
 
     def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources,
@@ -427,7 +426,6 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
         result.name = "ref_tam_per_region"
         return result
 
-
     @lru_cache()
     def pds_tam_per_region(self):
         """Compiles the PDS TAM for each of the major regions into a single dataframe.
@@ -446,8 +444,8 @@ class TAM(object, metaclass=metaclass_cache.MetaclassCache):
                 result[region] = self.forecast_trend(region_pds).loc[:, 'adoption']
                 lmh = self.forecast_low_med_high(region)
                 if result.dropna(axis=1, how='all').empty or lmh.dropna(axis=1, how='all').empty:
-                    result[region] = self.forecast_trend_global().loc[:, 'adoption']
-                    lmh = self.forecast_low_med_high_global()
+                    result[region] = self.forecast_trend(region='World', trend='Linear').loc[:, 'adoption']
+                    lmh = self.forecast_low_med_high(region='world')
                 growth = self.tamconfig.loc['growth', region_pds]
                 first_year = result.first_valid_index()
                 result.loc[first_year, region] = lmh.loc[first_year, 'Medium']

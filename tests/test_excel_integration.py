@@ -6,12 +6,8 @@ same reasons.
 """
 
 import functools
-import os.path
 import pathlib
 import re
-import sys
-import time
-import tempfile
 import numpy as np
 import pandas as pd
 import pytest
