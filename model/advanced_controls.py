@@ -886,6 +886,7 @@ class AdvancedControls:
         else:
             result = self.vmas[vma_title].avg_high_low(key=stat.lower())
         if raw_val_from_excel is not None and result != pytest.approx(raw_val_from_excel):
+            # pylint: disable=no-member
             self.incorrect_cached_values[vma_title] = (raw_val_from_excel, result)
             result = raw_val_from_excel
         return result

@@ -10,7 +10,6 @@ import time
 import tempfile
 import pandas as pd
 import xlrd
-import xlwings
 import zipfile
 
 
@@ -18,7 +17,7 @@ class ExcelAccessFailed(TimeoutError):
     """Raised if we timeout communicating with Microsoft Excel."""
     pass
 
-
+# pylint: disable=import-error
 if sys.platform == 'darwin':  # MacOS
     import appscript.reference
     ExcelTimeoutException = appscript.reference.CommandError
@@ -89,6 +88,11 @@ def extract_xls_scenario(workbook, zip_f, scenario, tmpdir):
 
 
 def extract_xls(excelfile, zipfilename, tmpdir):
+    if sys.platform == 'linux':
+        raise EnvironmentError('extract_xls requires xlwings which is only supported on Windows and macOS')
+
+    import xlwings
+
     (_, tmpfile) = tempfile.mkstemp(suffix='.xlsm', dir=tmpdir, prefix='intg_test_xls_extract_')
     shutil.copyfile(excelfile, tmpfile)
     scenarios = get_scenario_names(tmpfile)

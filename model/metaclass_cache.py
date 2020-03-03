@@ -10,8 +10,11 @@ the cache, all solutions benefit.
 import pandas as pd
 import json
 
+# pylint is confused by the __call__ syntax
+# pylint: disable=no-value-for-parameter
 
 class MetaclassCache(type):
+
     cache = {}
 
     def hash_item(self, item):
