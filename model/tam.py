@@ -443,9 +443,6 @@ class TAM(object, metaclass=MetaclassCache):
                 region_pds = 'PDS ' + region
                 result[region] = self.forecast_trend(region_pds).loc[:, 'adoption']
                 lmh = self.forecast_low_med_high(region)
-                if result.dropna(axis=1, how='all').empty or lmh.dropna(axis=1, how='all').empty:
-                    result[region] = self.forecast_trend(region='World', trend='Linear').loc[:, 'adoption']
-                    lmh = self.forecast_low_med_high(region='world')
                 growth = self.tamconfig.loc['growth', region_pds]
                 first_year = result.first_valid_index()
                 result.loc[first_year, region] = lmh.loc[first_year, 'Medium']
