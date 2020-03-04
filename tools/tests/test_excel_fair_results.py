@@ -1,8 +1,6 @@
 """Tests for excel_fair_results.py"""
 
-import os
 import pathlib
-import subprocess
 
 import matplotlib.animation
 import pytest

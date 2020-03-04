@@ -1,4 +1,3 @@
-import pytest
 from tools.util import cell_to_offsets
 
 

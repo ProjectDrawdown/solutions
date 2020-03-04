@@ -1,9 +1,7 @@
 """Survey all land solutions, outputting info about model health to CSV."""
 
-import importlib
 import pathlib
 import pandas as pd
-import xarray as xr
 
 import solution.factory
 import model.aez
@@ -188,4 +186,3 @@ if __name__ == '__main__':
     # aez_survey()
     res = land_alloc_sum(outfile=datadir.joinpath('land', 'allocation',
         'perc_land_remaining_after_allocation.csv'))
-
