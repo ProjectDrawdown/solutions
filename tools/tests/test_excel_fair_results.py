@@ -17,15 +17,16 @@ def test_animation_file(tmpdir):
     writer = matplotlib.animation.PillowWriter()
     filename = this_dir.joinpath('excel_fair_results_test.xlsx')
     efr.process_ghgs(excelfile=filename, outdir=str(tmpdir), writer=writer, ext='.gif')
-    for pds in range(1, 4):
+    for pds in range(1, 3):
         outfile = tmpdir.join(f"excel_fair_results_test_PDS{pds}.gif")
         assert outfile.size() > 1024
 
         outfile = tmpdir.join(f"excel_fair_results_test_Temperature_PDS{pds}.csv")
         assert outfile.size() > 1024
         contents = outfile.open().read()
+        assert "Year" in contents
         assert "Baseline" in contents
-        assert "Total" in contents
+        assert "Drawdown" in contents
         assert "2020" in contents
 
         outfile = tmpdir.join(f"excel_fair_results_test_Concentration_PDS{pds}.csv")
