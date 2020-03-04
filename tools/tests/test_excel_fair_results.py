@@ -11,6 +11,10 @@ import tools.excel_fair_results as efr
 this_dir = pathlib.Path(__file__).parents[0]
 
 
+def test_animation_sectors():
+    for solution, sectors in efr.animation_sectors.items():
+        assert len(sectors) >= 1
+
 @pytest.mark.slow
 def test_animation_file(tmpdir):
     # We use GIF and PIL here to not require CI/CD servers to install ffmpeg for mp4.
