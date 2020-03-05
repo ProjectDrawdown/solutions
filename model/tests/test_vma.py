@@ -235,7 +235,8 @@ def test_write_to_file():
     df = v.source_data.copy(deep=True)
     df.loc[0, 'Source ID'] = 'updated source ID'
     v.write_to_file(df)
-    assert 'updated source ID' in open(f.name).read()
+    with open(f.name) as fid:
+        assert 'updated source ID' in fid.read()
 
 def test_reload_from_file():
     f = tempfile.NamedTemporaryFile(mode='w')
