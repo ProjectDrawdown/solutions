@@ -317,7 +317,8 @@ def test_to_json():
         conv_lifetime_capacity=3.0, conv_avg_annual_use=4.0,
         jsfile=jsfile)
     ac.write_to_json_file()
-    js = json.load(open(jsfile))
+    with open(jsfile, 'r') as fid:
+        js = json.loads(fid.read())
     os.unlink(jsfile)
     assert js['soln_lifetime_capacity'] == 1.0
     assert js['soln_avg_annual_use'] == 2.0

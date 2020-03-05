@@ -182,7 +182,8 @@ class JupyterUI:
 
     def render_empty_overview(self):
         overview = self.ui_elements['overview']
-        imagedata = open('data/images/loading.gif', 'rb').read()
+        with open('data/images/loading.gif', 'rb') as fid:
+            imagedata = fid.read()
         overview.children = [ipywidgets.Image(value=imagedata, format='gif', width=220, height=19)]
 
 

@@ -12,7 +12,8 @@ datadir = pathlib.Path(__file__).parents[2].joinpath('data')
 
 
 def test_vega_json_schema():
-    schema = json.load(open(str(thisdir.joinpath('vega_v4.schema.json'))))
+    with open(str(thisdir.joinpath('vega_v4.schema.json'))) as fid:
+        schema = json.loads(fid.read())
     solutions = pd.read_csv(str(datadir.joinpath('overview', 'solutions.csv')),
         index_col=False, skipinitialspace=True, header=0, skip_blank_lines=True, comment='#')
     soln_results = pd.read_csv(str(datadir.joinpath('overview', 'soln_results.csv')),
