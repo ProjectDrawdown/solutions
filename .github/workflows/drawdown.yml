@@ -3,7 +3,7 @@ name: Drawdown Solutions Python application
 on:
   push:
     branches:
-    - master
+    - '**'
   pull_request:
     branches:
     - master
