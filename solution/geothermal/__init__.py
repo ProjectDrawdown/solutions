@@ -221,9 +221,10 @@ class Scenario:
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-            use_first_pds_datapoint=False,
+            use_first_pds_datapoint_main=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-            pds_adoption_is_single_source=pds_adoption_is_single_source)
+            pds_adoption_is_single_source=pds_adoption_is_single_source,
+            adoption_base_year=2018)
 
         self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=2)
 

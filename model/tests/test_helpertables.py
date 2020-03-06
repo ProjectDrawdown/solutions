@@ -243,7 +243,7 @@ def test_soln_ref_funits_adopted_custom_ref_adoption_base_year_2018():
                  "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
     ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints,
             pds_datapoints=pds_datapoints, ref_adoption_limits=ref_tam_per_region_insulation,
-            pds_adoption_data_per_region=None,
+            pds_adoption_data_per_region=None, adoption_base_year=2018,
             ref_adoption_data_per_region=ref_adoption_data_per_region)
     result = ht.soln_ref_funits_adopted()
     expected = pd.DataFrame(0.0, index=range(2014, 2018), columns=ref_datapoints.columns)
@@ -614,19 +614,22 @@ def test_soln_use_first_pds_datapoint():
     datadir = pathlib.Path(__file__).parents[0].joinpath('data')
     custom_scen = pd.read_csv(datadir.joinpath('ca_scenario_1_trr.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(soln_pds_adoption_basis='Fully Customized PDS')
+    regions = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
+            'Latin America', 'China', 'India', 'EU', 'USA']
     ht_ref_datapoints = pd.DataFrame([[2014] + [1000] * 10, [2050] + [0] * 10],
-            columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU',
-                'USA']).set_index('Year')
+            columns=['Year'] + regions).set_index('Year')
     ht_pds_datapoints = ht_ref_datapoints
     ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen,
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-            use_first_pds_datapoint=True)
-    assert int(ht.soln_pds_funits_adopted().loc[2014, 'World']) == 1000
+            use_first_pds_datapoint_main=True)
+    for region in regions:
+        assert int(ht.soln_pds_funits_adopted().loc[2014, region]) == 1000
     ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen,
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-            use_first_pds_datapoint=False)
-    assert int(ht.soln_pds_funits_adopted().loc[2014, 'World']) != 1000
+            use_first_pds_datapoint_main=False)
+    assert int(ht.soln_pds_funits_adopted().loc[2014, regions[0]]) != 1000
+    for region in regions[1:]:
+        assert int(ht.soln_pds_funits_adopted().loc[2014, region]) == 1000
 
 
 soln_ref_funits_adopted_list = [
