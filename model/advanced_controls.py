@@ -24,7 +24,6 @@ valid_ref_adoption_bases = {'Default', 'Custom', None}
 valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
 
-
 @dataclasses.dataclass(eq=True, frozen=True)
 class AdvancedControls:
     """Advanced Controls module, with settings impacting other modules."""
@@ -946,13 +945,14 @@ def load_scenarios_from_json(directory, vmas):
     """Load scenarios from JSON files in directory."""
     result = {}
     for filename in glob.glob(str(directory.joinpath('*.json'))):
-        j = json.load(open(filename))
-        js = j.copy()
-        js['vmas'] = vmas
-        js['js'] = j
-        js['jsfile'] = str(filename)
-        a = AdvancedControls(**js)
-        result[a.name] = a
+        with open(filename, 'r') as fid:
+            j = json.loads(fid.read())
+            js = j.copy()
+            js['vmas'] = vmas
+            js['js'] = j
+            js['jsfile'] = str(filename)
+            a = AdvancedControls(**js)
+            result[a.name] = a
     return result
 
 def get_vma_for_param(param):

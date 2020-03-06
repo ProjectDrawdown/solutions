@@ -76,7 +76,8 @@ def get_globe(topofile, df, size=None, key=None):
          size: in integer pixels
          key: string key to pass to ipyvolume, allows replacement of earlier charts
     """
-    topo = json.load(open(topofile))
+    with open(topofile, 'r') as fid:
+        topo = json.loads(fid.read())
     (width, height) = (size, size) if size is not None else (500, 500)
     ipv.pylab.clear()
     fig = ipv.figure(width=width, height=height, key=key, controls=True)
