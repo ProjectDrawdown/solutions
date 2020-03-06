@@ -19,3 +19,4 @@ vega>=3.0.2,<3.1
 voila>=0.1.20
 xarray>=0.12.3
 xlrd>=1.2.0
+# xlwings>=0.18.0 xlwings requires an installation of Excel and therefore only works on Windows and macOS
