@@ -71,10 +71,12 @@ class HelperTables:
             first_year = self.ref_datapoints.first_valid_index()
             last_year = dd.CORE_END_YEAR
             adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints)
-            if first_year > 2014:
-                funits = self.soln_pds_funits_adopted(suppress_override=True)
-                y = range(2014, first_year)
-                adoption = adoption.append(funits.loc[y]).sort_index()
+
+        first_year = self.ref_datapoints.first_valid_index()
+        if first_year > 2014:
+            funits = self.soln_pds_funits_adopted(suppress_override=True)
+            y = range(2014, first_year)
+            adoption = adoption.loc[first_year:].append(funits.loc[y]).sort_index()
 
         # cannot exceed tam or tla
         if self.ref_adoption_limits is not None:

@@ -221,6 +221,41 @@ def test_soln_ref_funits_adopted_custom_ref_adoption_tam_limit():
                                   check_exact=False)
 
 
+def test_soln_ref_funits_adopted_custom_ref_adoption_base_year_2018():
+    ac = advanced_controls.AdvancedControls(
+            soln_ref_adoption_regional_data=False, soln_ref_adoption_basis='Custom',
+            soln_pds_adoption_basis='Linear')
+    ref_datapoints = pd.DataFrame([
+        [2018, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+        [2050, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]],
+        columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+                 "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+    ref_adoption_data_per_region = pd.DataFrame(ref_adoption_data_per_region_insulation_list[1:],
+            columns=ref_adoption_data_per_region_insulation_list[0]).set_index('Year')
+    ref_adoption_data_per_region.name = 'ref_adoption_data_per_region'
+    ref_tam_per_region_insulation = pd.DataFrame(ref_tam_per_region_insulation_list[1:],
+            columns=ref_tam_per_region_insulation_list[0]).set_index('Year')
+    ref_tam_per_region_insulation.name = 'ref_tam_per_region'
+    pds_datapoints = pd.DataFrame([
+        [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+        columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+                 "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+    ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints,
+            pds_datapoints=pds_datapoints, ref_adoption_limits=ref_tam_per_region_insulation,
+            pds_adoption_data_per_region=None,
+            ref_adoption_data_per_region=ref_adoption_data_per_region)
+    result = ht.soln_ref_funits_adopted()
+    expected = pd.DataFrame(0.0, index=range(2014, 2018), columns=ref_datapoints.columns)
+    expected.name = 'soln_ref_funits_adopted'
+    expected.index.name = 'Year'
+    pd.testing.assert_frame_equal(result.loc[2014:2017], expected.loc[2014:2017], check_exact=False)
+    expected = ref_adoption_data_per_region.copy()
+    expected.loc[2018, :] = 1.0
+    expected.name = 'soln_ref_funits_adopted'
+    pd.testing.assert_frame_equal(result.loc[2018:], expected.loc[2018:], check_exact=False)
+
+
 def test_soln_ref_funits_adopted_regional_tam_limit_NaN():
     ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False)
     # Data from SolarHotWater "Helper Tables"!C21:L22 and "Unit Adoption Calculations"!A16:K63
