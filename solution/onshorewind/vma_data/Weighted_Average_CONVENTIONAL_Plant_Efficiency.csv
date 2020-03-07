@@ -1,0 +1,4 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"From ""Coal Plant Efficiency"" variable",,World,,,Various,,0.36697534187007497,%,,%,0.3927651909991376,see explanation for weighting methodology,
+"From ""Natural Gas Plant Efficiency variable",,World,,,Various,,0.4733587008768759,%,,%,0.22722085296507805,see explanation for weighting methodology,
+"From ""Oil Plant Efficiency variable""",,OECD90,Japan,,2005,,0.39,%,,%,0.034133616091552056,see explanation for weighting methodology,
