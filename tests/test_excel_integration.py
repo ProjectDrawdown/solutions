@@ -836,16 +836,16 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
 
 def verify_helper_tables(obj, verify, include_regional_data=True):
     """Verified tables in Helper Tables."""
-    verify['Helper Tables'] = [
-            ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None),
-            ]
-
+    verify['Helper Tables'] = []
     if include_regional_data:
         verify['Helper Tables'].append(
                 ('B91:L137', obj.ht.soln_pds_funits_adopted().reset_index(), None))
     else:
         verify['Helper Tables'].append(
                 ('B91:C137', obj.ht.soln_pds_funits_adopted().loc[:, 'World'].reset_index(), None))
+    verify['Helper Tables'].append(
+            ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None))
+
     return verify
 
 
