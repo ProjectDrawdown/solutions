@@ -117,48 +117,18 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario",
-    "pds_base_adoption": [
-        [
-            "World",
-            55.418723948374556
-        ],
-        [
-            "OECD90",
-            1.374902800958828
-        ],
-        [
-            "Eastern Europe",
-            0.049897295303677716
-        ],
-        [
-            "Asia (Sans Japan)",
-            4.292985516188078
-        ],
-        [
-            "Middle East and Africa",
-            0.41937969656046536
-        ],
-        [
-            "Latin America",
-            12.138577652661485
-        ],
-        [
-            "China",
-            4.6261055160089875
-        ],
-        [
-            "India",
-            3.3303919448438495
-        ],
-        [
-            "EU",
-            17.146488383747197
-        ],
-        [
-            "USA",
-            9.810373894058708
-        ]
-    ],
+    "ref_base_adoption": {
+        "World": 55.418723948374556,
+        "OECD90": 1.374902800958828,
+        "Eastern Europe": 0.049897295303677716,
+        "Asia (Sans Japan)": 4.292985516188078,
+        "Middle East and Africa": 0.41937969656046536,
+        "Latin America": 12.138577652661485,
+        "China": 4.6261055160089875,
+        "India": 3.3303919448438495,
+        "EU": 17.146488383747197,
+        "USA": 9.810373894058708
+    },
     "soln_pds_adoption_basis": "Existing Adoption Prognostications",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": [
