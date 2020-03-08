@@ -836,16 +836,16 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
 
 def verify_helper_tables(obj, verify, include_regional_data=True):
     """Verified tables in Helper Tables."""
-    verify['Helper Tables'] = [
-            ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None),
-            ]
-
+    verify['Helper Tables'] = []
     if include_regional_data:
         verify['Helper Tables'].append(
                 ('B91:L137', obj.ht.soln_pds_funits_adopted().reset_index(), None))
     else:
         verify['Helper Tables'].append(
                 ('B91:C137', obj.ht.soln_pds_funits_adopted().loc[:, 'World'].reset_index(), None))
+    verify['Helper Tables'].append(
+            ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None))
+
     return verify
 
 
@@ -1407,12 +1407,6 @@ def test_Composting_RRS():
             obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
 
-@pytest.mark.skip(reason='not working yet')
-# E  AssertionError: Solution: Concentrated Solar Power (CSP) Scenario: \
-#        PDS-8p2050-Drawdown (Book Ed.1) Adoption Data X359:Z407
-# E  DataFrames differ:
-# E  Err [8][0] : '2.9834091228442275e-06' != 'nan'
-# E  Err [8][2] : '0.0' != '1.2918540451326751e-06'
 @pytest.mark.slow
 def test_ConcentratedSolar_RRS():
     from solution import concentratedsolar

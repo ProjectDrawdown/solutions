@@ -928,6 +928,7 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
          is_land: True if LAND model
     """
     h = wb.sheet_by_name('Helper Tables')
+    a = wb.sheet_by_name('Advanced Controls')
     initial_datapoint_year = int(h.cell_value(*cell_to_offsets('B21')))
     final_datapoint_year = int(h.cell_value(*cell_to_offsets('B22')))
 
@@ -953,9 +954,13 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     f.write("        ht_pds_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
     f.write("        ht_pds_datapoints.loc[" + str(final_datapoint_year) + "] = ht_pds_adoption_final.fillna(0.0)\n")
 
-    first_pds_datapoint = int(h.cell_value(*cell_to_offsets('C85')))
-    first_pds_yearly_result = int(h.cell_value(*cell_to_offsets('C91')))
-    use_first_pds_datapoint = (first_pds_datapoint == first_pds_yearly_result)
+    first_world_pds_datapoint = int(h.cell_value(*cell_to_offsets('C85')))
+    first_world_pds_yearly_result = int(h.cell_value(*cell_to_offsets('C91')))
+    use_first_pds_datapoint_main = (first_world_pds_datapoint == first_world_pds_yearly_result)
+
+    adoption_base_year = None
+    if a.cell_value(*cell_to_offsets('D59')):
+        adoption_base_year = int(a.cell_value(*cell_to_offsets('D59')))
 
     f.write("        self.ht = helpertables.HelperTables(ac=self.ac,\n")
     f.write("            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
@@ -966,8 +971,9 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
         f.write("            ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,\n")
     if has_custom_ref_ad:
         f.write("            ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
-    if not use_first_pds_datapoint:
-        f.write("            use_first_pds_datapoint=False,\n")
+    f.write(f"            use_first_pds_datapoint_main={use_first_pds_datapoint_main},\n")
+    if adoption_base_year:
+        f.write(f"            adoption_base_year={adoption_base_year},\n")
     f.write("            pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
     f.write("            pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
     f.write("\n")

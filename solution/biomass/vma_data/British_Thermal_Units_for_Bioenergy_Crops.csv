@@ -1,0 +1,11 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Agricultural utilization research institute, 2012, Btu Miscanthus per pound",https://www.auri.org/assets/2012/08/MNRER-Biomass-Heating-Presentation-24-Jul-2012-2.pdf,USA,Minnesota,,,,8100.0,Btu/lb,17860500.0,Btu/t,,Refer table on page 13,
+"Agricultural utilization research institute, 2012, Btu Switchgrass per pound",https://www.auri.org/assets/2012/08/MNRER-Biomass-Heating-Presentation-24-Jul-2012-2.pdf,USA,Minnesota,,,,7994.0,Btu/lb,17626770.0,Btu/t,,Refer table on page 13,
+"Agricultural utilization research institute, 2012, Btu Switchgrass dry per pound",https://www.auri.org/assets/2012/08/MNRER-Biomass-Heating-Presentation-24-Jul-2012-2.pdf,USA,Minnesota,,,,7750.0,Btu/lb,17088750.0,Btu/t,,Refer table on page 13,
+"Agricultural utilization research institute, 2012, Btu other grasses per pound",https://www.auri.org/assets/2012/08/MNRER-Biomass-Heating-Presentation-24-Jul-2012-2.pdf,USA,Minnesota,,,,7901.0,Btu/lb,17421705.0,Btu/t,,Refer table on page 13,
+"Biomass Energy Data Book: Edition 1, Switchgrass Btu per pound",http://www.southcoastinventors.org/Appendicies.pdf,USA,Virginia,,,,7341.0,Btu/lb,16186905.0,Btu/t,,Refer table A2,
+"Biomass Energy Data Book: Edition 1, Baggase Btu per pound",http://www.southcoastinventors.org/Appendicies.pdf,USA,Virginia,,,,6065.0,Btu/lb,13373325.0,Btu/t,,Refer table A2,
+Aloterra Energy,http://bioenergy.psu.edu/shortcourses/2012Grass_Energy/MiscanthusForBiomassPyter2012.pdf,USA,,,,,7900.0,Btu/lb,17419500.0,Btu/t,,Refer page 5,
+"Simesack, Miscanthus Btu per pound, low range",http://renewables.morris.umn.edu/biomass/documents/Simacek-GrowingAlternativeEnergyCropsInWestCentralMinnesotaPresentation.pdf,USA,Minnesota,,,,7400.0,Btu/lb,16317000.0,Btu/t,,,
+"Simesack, Miscanthus Btu per pound, high range",http://renewables.morris.umn.edu/biomass/documents/Simacek-GrowingAlternativeEnergyCropsInWestCentralMinnesotaPresentation.pdf,USA,Minnesota,,,,8200.0,Btu/lb,18081000.0,Btu/t,,,
+"Agricultural Marketing Resource Centre, Switchgrass Btu per pound",https://www.agmrc.org/commodities-products/biomass/switchgrass,USA,Iowa,,,,7500.0,Btu/lb,16537500.0,Btu/t,,,
