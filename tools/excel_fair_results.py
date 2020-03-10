@@ -272,13 +272,16 @@ def produce_animation(solutions, filename, writer):
     total_reduction_T = (start_T - end_T)[255:296]
     reduction_T = np.zeros(total_reduction_T.shape)
     sectors = sector_gtons.sort_values(axis='columns', by=2050, ascending=False).columns
-    emissions = []
+    sectors_T = []
+    sectors_df_T = pd.DataFrame()
     for sector in colors.keys():
         fraction = sector_gtons[sector] / sector_gtons.sum(axis=1)
-        reduction_T += total_reduction_T * fraction.loc[2020:2061].fillna(0.0).values
+        this_reduction_T = total_reduction_T * fraction.loc[2020:2061].fillna(0.0).values
+        reduction_T += this_reduction_T
         temperatures = start_T[255:296] - reduction_T
         df_T = pd.Series(temperatures, index=range(2020, 2061))
-        emissions.append((sector, df_T))
+        sectors_T.append((sector, df_T))
+        sectors_df_T[sector] = pd.Series(this_reduction_T, index=range(2020, 2061))
 
     fig = plt.figure()
     ax = fig.add_subplot()
@@ -289,10 +292,12 @@ def produce_animation(solutions, filename, writer):
     legend_no_duplicates(ax)
 
     lines = {}
-    frames = len(emissions) * 50
+    frames = len(sectors_T) * 50
     anim = matplotlib.animation.FuncAnimation(fig=fig, func=animate, interval=10, frames=frames,
-            fargs=(ax, start, lines, emissions, baseline_T - preindustrial), repeat=False)
+            fargs=(ax, start, lines, sectors_T, baseline_T - preindustrial), repeat=False)
     anim.save(filename, writer=writer)
+
+    return sectors_df_T
 
 
 def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
@@ -323,8 +328,12 @@ def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
                         '-movflags', '+faststart'],)
         if writer:
             print(f"{scenario} animation")
-            mp4 = os.path.splitext(os.path.basename(excelfile))[0] + '_' + scenario + ext
-            produce_animation(solutions=solutions, filename=os.path.join(outdir, mp4), writer=writer)
+            base = os.path.splitext(os.path.basename(excelfile))[0]
+            mp4 = base + '_' + scenario + ext
+            sectors_T = produce_animation(solutions=solutions, filename=os.path.join(outdir, mp4),
+                    writer=writer)
+            csvfname = base + '_' + scenario + '_sector_temperature.csv'
+            sectors_T.to_csv(os.path.join(outdir, csvfname))
 
 
 if __name__ == "__main__":
