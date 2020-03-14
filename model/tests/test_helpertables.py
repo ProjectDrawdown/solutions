@@ -90,12 +90,15 @@ def test_soln_ref_funits_adopted_base_year_2018():
                                    pds_adoption_limits=None,
                                    pds_adoption_data_per_region=None,
                                    pds_adoption_trend_per_region=None,
-                                   pds_adoption_is_single_source=False)
+                                   pds_adoption_is_single_source=False,
+                                   adoption_base_year=2018)
     result = ht.soln_ref_funits_adopted()
-    expected1 = pd.DataFrame(1.0, columns=columns[1:], index=result.index.copy())
-    expected2 = pd.DataFrame(2.0, columns=columns[1:], index=result.index.copy())
-    pd.testing.assert_frame_equal(result.loc[2014:2017, :], expected1.loc[2014:2017, :])
-    pd.testing.assert_frame_equal(result.loc[2018:2050, :], expected2.loc[2018:2050, :])
+    exp1 = pd.DataFrame(1.0, columns=columns[1:], index=result.index.copy())
+    exp2 = pd.DataFrame(2.0, columns=columns[1:], index=result.index.copy())
+    pd.testing.assert_series_equal(result.loc[2014:2017, "World"], exp1.loc[2014:2017, "World"])
+    for region in columns[2:]:
+        pd.testing.assert_series_equal(result.loc[2014:2017, region], exp2.loc[2014:2017, region])
+    pd.testing.assert_frame_equal(result.loc[2018:2050, :], exp2.loc[2018:2050, :])
 
 
 def test_soln_pds_funits_adopted_by_region_with_tam_limit_world():
@@ -224,36 +227,31 @@ def test_soln_ref_funits_adopted_custom_ref_adoption_tam_limit():
 def test_soln_ref_funits_adopted_custom_ref_adoption_base_year_2018():
     ac = advanced_controls.AdvancedControls(
             soln_ref_adoption_regional_data=False, soln_ref_adoption_basis='Custom',
-            soln_pds_adoption_basis='Linear')
-    ref_datapoints = pd.DataFrame([
-        [2018, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-        [2050, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]],
-        columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
-                 "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
-    ref_adoption_data_per_region = pd.DataFrame(ref_adoption_data_per_region_insulation_list[1:],
-            columns=ref_adoption_data_per_region_insulation_list[0]).set_index('Year')
-    ref_adoption_data_per_region.name = 'ref_adoption_data_per_region'
-    ref_tam_per_region_insulation = pd.DataFrame(ref_tam_per_region_insulation_list[1:],
-            columns=ref_tam_per_region_insulation_list[0]).set_index('Year')
-    ref_tam_per_region_insulation.name = 'ref_tam_per_region'
-    pds_datapoints = pd.DataFrame([
-        [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        [2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
-        columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
-                 "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+            soln_pds_adoption_basis='Fully Customized PDS')
+    regions = ["World", "A", "B", "C"]
+    ref_datapoints = pd.DataFrame([[2018, 12.0, 12.0, 12.0, 12.0], [2050, 0.0, 0.0, 0.0, 0.0]],
+        columns=["Year"] + regions).set_index("Year")
+    ref_ad_per_region = pd.DataFrame(1.0, index=range(2014, 2061), columns=regions)
+    ref_ad_per_region.name = 'ref_adoption_data_per_region'
+    ref_ad_per_region.index.name = "Year"
+    ref_tam_per_region = pd.DataFrame(100.0, index=range(2014, 2061), columns=regions)
+    ref_tam_per_region.name = 'ref_tam_per_region'
+    pds_datapoints = pd.DataFrame([[2014, 13.0, 13.0, 13.0, 13.0], [2050, 0.0, 0.0, 0.0, 0.0]],
+        columns=["Year"] + regions).set_index("Year")
+    pds_ad_per_region = pd.DataFrame(2.0, index=range(2014, 2061), columns=regions)
+    pds_ad_per_region.name = 'pds_adoption_data_per_region'
+    pds_ad_per_region.index.name = "Year"
     ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints,
-            pds_datapoints=pds_datapoints, ref_adoption_limits=ref_tam_per_region_insulation,
-            pds_adoption_data_per_region=None, adoption_base_year=2018,
-            ref_adoption_data_per_region=ref_adoption_data_per_region)
+            pds_datapoints=pds_datapoints, ref_adoption_limits=ref_tam_per_region,
+            pds_adoption_data_per_region=pds_ad_per_region, adoption_base_year=2018,
+            ref_adoption_data_per_region=ref_ad_per_region)
     result = ht.soln_ref_funits_adopted()
-    expected = pd.DataFrame(0.0, index=range(2014, 2018), columns=ref_datapoints.columns)
-    expected.name = 'soln_ref_funits_adopted'
-    expected.index.name = 'Year'
-    pd.testing.assert_frame_equal(result.loc[2014:2017], expected.loc[2014:2017], check_exact=False)
-    expected = ref_adoption_data_per_region.copy()
-    expected.loc[2018, :] = 1.0
-    expected.name = 'soln_ref_funits_adopted'
-    pd.testing.assert_frame_equal(result.loc[2018:], expected.loc[2018:], check_exact=False)
+    expected = ref_ad_per_region.loc[2014:2017].copy()
+    expected.loc[:, 'World'] = pds_ad_per_region.loc[2014:2017, 'World']
+    expected.loc[2014, 'World'] = 13.0  # first pds_datapoint always copied into pds result
+    expected.loc[2014, ['A', 'B', 'C']] = 12.0
+    pd.testing.assert_frame_equal(result.loc[2014:2017], expected)
+    pd.testing.assert_frame_equal(result.loc[2018:], ref_ad_per_region.loc[2018:])
 
 
 def test_soln_ref_funits_adopted_regional_tam_limit_NaN():
