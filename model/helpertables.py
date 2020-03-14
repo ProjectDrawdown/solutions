@@ -76,7 +76,7 @@ class HelperTables:
         else:
             first_year = self.ref_datapoints.first_valid_index()
             last_year = dd.CORE_END_YEAR
-            adoption = self._linear_forecast(first_year, last_year, self.ref_datapoints)
+            adoption = self._linear_forecast(2014, last_year, self.ref_datapoints)
 
         # cannot exceed tam or tla
         if self.ref_adoption_limits is not None:
@@ -89,20 +89,25 @@ class HelperTables:
                 adoption['World'] = adoption['World'].combine(
                     self.ref_adoption_limits['World'].fillna(0.0), min)
 
-        # Where we have data, use the actual data not the interpolation. Excel model does this
-        # even in Custom REF Adoption case, unlike the top of this routine where we copy Custom
-        # adoption verbatim.
-        # Note: this should be changed later. The jump between pds_datapoints
-        # and the first row of custom adoption data causes anomalies in the regional results.
-        # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.c2a7v8n653ax
-        adoption.update(self.ref_datapoints.iloc[[0]])
-
         if self.adoption_base_year > 2014:
+            # The Drawdown 2020 models get REF data for the World region for 2014-2018 from PDS.
             funits = self.soln_pds_funits_adopted(suppress_override=True)
             main_region = list(adoption.columns)[0]
             for y in range(2014, self.adoption_base_year):
                 adoption.loc[y, main_region] = funits.loc[y, main_region]
             adoption = adoption.sort_index()
+            # The Drawdown 2020 models also still copy the first ref_datapoint (for 2018) into the
+            # first cell of the table which is 2014. We implement bug-for-bug compatibility here.
+            # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.i71c3bhbim59
+            adoption.iloc[0, 1:] = self.ref_datapoints.iloc[0, 1:]
+        else:
+            # Where we have data, use the actual data not the interpolation. Excel model does this
+            # even in Custom REF Adoption case, unlike the top of this routine where we copy Custom
+            # adoption verbatim.
+            # Note: this should be changed later. The jump between pds_datapoints
+            # and the first row of custom adoption data causes anomalies in the regional results.
+            # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.c2a7v8n653ax
+            adoption.update(self.ref_datapoints.iloc[[0]])
 
         if not suppress_override and self.ac.ref_adoption_use_pds_years:
             y = self.ac.ref_adoption_use_pds_years
