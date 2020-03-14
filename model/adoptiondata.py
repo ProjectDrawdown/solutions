@@ -69,14 +69,15 @@ class AdoptionData(object, metaclass=MetaclassCache):
         self._adoption_data = df_per_region
 
 
-    def _min_max_sd(self, adoption_data, source, data_sources):
+    def _min_max_sd(self, adoption_data, source, data_sources, region):
         """Return the min, max, and standard deviation for adoption data."""
         result = pd.DataFrame(index=adoption_data.index.copy(), columns=['Min', 'Max', 'S.D'])
         result.loc[:, 'Min'] = adoption_data.min(axis=1)
         result.loc[:, 'Max'] = adoption_data.max(axis=1)
 
-        columns = interpolation.matching_data_sources(data_sources=data_sources,
-                                                      name=source, groups_only=False)
+        region_key = None if region is None else f'Region: {region}'
+        columns = interpolation.matching_data_sources(data_sources=data_sources, name=source,
+                groups_only=False, region_key=region_key)
         if columns is None:
             result.loc[:, 'S.D'] = np.nan
         elif len(columns) > 1:
@@ -87,11 +88,12 @@ class AdoptionData(object, metaclass=MetaclassCache):
         return result
 
 
-    def _low_med_high(self, adoption_data, min_max_sd, adconfig, source, data_sources):
+    def _low_med_high(self, adoption_data, min_max_sd, adconfig, source, data_sources, region):
         """Return the selected data sources as Medium, and N stddev away as Low and High."""
         result = pd.DataFrame(index=adoption_data.index.copy(), columns=['Low', 'Medium', 'High'])
-        columns = interpolation.matching_data_sources(data_sources=data_sources,
-                                                      name=source, groups_only=False)
+        region_key = None if region is None else f'Region: {region}'
+        columns = interpolation.matching_data_sources(data_sources=data_sources, name=source,
+                groups_only=False, region_key=region_key)
         if columns is None:
             result.loc[:, 'Medium'] = np.nan
             result.loc[:, 'Low'] = np.nan
@@ -203,7 +205,8 @@ class AdoptionData(object, metaclass=MetaclassCache):
         else:
             adoption = self.adoption_data(region)
             source = "ALL SOURCES"
-        result = self._min_max_sd(adoption_data=adoption, source=source, data_sources=data_sources)
+        result = self._min_max_sd(adoption_data=adoption, source=source,
+                data_sources=data_sources, region=region)
         result.name = 'adoption_min_max_sd_' + self._name_to_identifier(region)
         return result
 
@@ -237,7 +240,7 @@ class AdoptionData(object, metaclass=MetaclassCache):
             source = "ALL SOURCES"
         result = self._low_med_high(adoption_data=adoption,
                 min_max_sd=self.adoption_min_max_sd(region), adconfig=self.adconfig[region],
-                source=source, data_sources=data_sources)
+                source=source, data_sources=data_sources, region=region)
         result.name = 'adoption_low_med_high_' + self._name_to_identifier(region)
         return result
 

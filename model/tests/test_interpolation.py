@@ -20,7 +20,6 @@ def test_linear_trend():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_linear_trend_with_NaN_data():
     adoption_low_med_high = pd.DataFrame(tam_low_med_high_NaN_years_list[1:],
                                          columns=tam_low_med_high_NaN_years_list[0], dtype=np.float64).set_index(
@@ -33,7 +32,6 @@ def test_linear_trend_with_NaN_data():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     result = itrp.trend_algorithm(data=adoption_low_med_high.loc[:, 'Medium'], trend='linear')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
-
 
 
 def test_poly_degree2_trend():
@@ -52,7 +50,6 @@ def test_poly_degree2_trend():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_poly_degree3_trend():
     adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:],
                                          columns=adoption_low_med_high_list[0], dtype=np.float64).set_index(
@@ -69,7 +66,6 @@ def test_poly_degree3_trend():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_exponential_trend():
     adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:],
                                          columns=adoption_low_med_high_list[0], dtype=np.float64).set_index(
@@ -84,11 +80,9 @@ def test_exponential_trend():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_invalid_trend():
     with pytest.raises(ValueError):
         _ = itrp.trend_algorithm(data=None, trend='invalid')
-
 
 
 def test_missing_data():
@@ -139,7 +133,6 @@ def test_missing_data():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-
 def test_nan_data():
     adoption_low_med_high = pd.DataFrame(adoption_low_med_high_list[1:],
                                          columns=adoption_low_med_high_list[0], dtype=np.float64).set_index(
@@ -155,7 +148,6 @@ def test_nan_data():
     assert result.isna().all(axis=None, skipna=False)
 
 
-
 def test_empty_data():
     adoption_low_med_high = pd.DataFrame(columns=['Low', 'Medium', 'High'])
     result = itrp.linear_trend(adoption_low_med_high.loc[:, 'Medium'])
@@ -166,8 +158,6 @@ def test_empty_data():
     assert result.isna().all(axis=None, skipna=False)
     result = itrp.exponential_trend(adoption_low_med_high.loc[:, 'Medium'])
     assert result.isna().all(axis=None, skipna=False)
-
-
 
 
 g_data_sources = {
@@ -185,7 +175,6 @@ g_data_sources = {
     },
 }
 g_all_data_sources = ['Ambitious 1', 'Ambitious 2', 'Baseline 1', 'Conservative 1']
-
 
 
 def test_matching_data_sources():
@@ -207,11 +196,30 @@ def test_matching_data_sources():
                                       name=None, groups_only=False) == None
 
 
-
 def test_matching_data_sources_no_such_group():
     assert itrp.matching_data_sources(data_sources=g_data_sources,
                                       name='no such group', groups_only=False) == None
 
+
+def test_matching_data_sources_regional():
+    data_sources = {
+        'Ambitious Cases': {'Source A': 'Filename A'},
+        'Baseline Cases': {'Source B': 'Filename B'},
+        'Conservative Cases': {'Source C': 'Filename C'},
+        'Region: OECD90': {
+            'Ambitious Cases': {'Source D': 'Filename D'},
+            'Baseline Cases': {'Source E': 'Filename E'},
+            'Conservative Cases': {'Source F': 'Filename F'},
+        }
+    }
+    assert sorted(itrp.matching_data_sources(data_sources=data_sources, name='ALL SOURCES',
+            groups_only=False, region_key=None)) == ['Source A', 'Source B', 'Source C']
+    assert sorted(itrp.matching_data_sources(data_sources=data_sources, name='ALL SOURCES',
+            groups_only=False, region_key="Region: OECD90")) == ['Source D', 'Source E', 'Source F']
+    assert sorted(itrp.matching_data_sources(data_sources=data_sources, name='Baseline Cases',
+            groups_only=False, region_key=None)) == ['Source B']
+    assert sorted(itrp.matching_data_sources(data_sources=data_sources, name='Baseline Cases',
+            groups_only=False, region_key="Region: OECD90")) == ['Source E']
 
 
 def test_groups_only():

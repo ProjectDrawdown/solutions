@@ -736,6 +736,8 @@ def test_regional_data_source_confined_to_region():
     result = tm.forecast_min_max_sd(region='World')
     # if 'C' is included in 'World' data, Max will be 3.0
     assert result.loc[2050, 'Max'] == pytest.approx(2.0)
+    result = tm.forecast_min_max_sd(region='OECD90')
+    assert result.loc[2050, 'Max'] == pytest.approx(3.0)
  
 
 def test_NaN_TAM_2012_data():
