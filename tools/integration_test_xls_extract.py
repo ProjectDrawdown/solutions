@@ -2,6 +2,7 @@
 
 import argparse
 import glob
+import os
 import os.path
 import pathlib
 import shutil
@@ -80,11 +81,13 @@ def extract_xls_scenario(workbook, zip_f, scenario, tmpdir):
         sheet = wb.sheet_by_name(sheet_name)
         df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name, header=None, index_col=None,
                 usecols=range(sheet.ncols + 1), skiprows=0, nrows=sheet.nrows)
-        (_, csvfile) = tempfile.mkstemp(dir=tmpdir)
-        df.to_csv(path_or_buf=csvfile, header=False, index=False, compression=None)
+        (csvfileno, csvname) = tempfile.mkstemp(dir=tmpdir)
+        with open(csvname, "w") as f:
+            df.to_csv(path_or_buf=f, header=False, index=False, compression=None)
         arcname = scenario + '/' + sheet_name
-        zip_f.write(filename=csvfile, arcname=arcname)
-        os.unlink(csvfile)
+        zip_f.write(filename=csvname, arcname=arcname)
+        os.unlink(csvname)
+        os.close(csvfileno)
 
 
 def extract_xls(excelfile, zipfilename, tmpdir):
