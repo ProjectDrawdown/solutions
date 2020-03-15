@@ -1156,7 +1156,8 @@ def find_ad_regions(wb):
                 continue
             if region.lower() not in str(tab.cell(row, 0).value).lower():
                 break
-        return candidate
+        else:
+            return candidate
     return ad_default
 
 
