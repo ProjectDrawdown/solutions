@@ -1715,6 +1715,10 @@ def test_MicroWind_RRS():
     for scenario in microwind.scenarios.keys():
         obj = microwind.Scenario(scenario=scenario)
         verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
+        # Drawdown 2020 version of MicroWind rearranged the entire Adoption Data tab. Since
+        # none of the regions actually has any data and the World region is adequately tested
+        # by later stages of the model, we just skip checking it.
+        del verify['Adoption Data']
         check_excel_against_object(
             obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
 
