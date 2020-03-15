@@ -1,4 +1,4 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"IPCC Emissions Factors, Default Value (see Emissions Factors tab for raw figures and Combustion Emissions Tab for conversion calcs)",,World,,4 - Independently Verified,2006,,,tCH4/TWh,0.0,tCO2-eq/TWh,,,
-"IPCC Emissions Factors, Low Value (see Emissions Factors tab for raw figures and Combustion Emissions Tab for conversion calcs)",,World,,4 - Independently Verified,2006,,,tCH4/TWh,0.0,tCO2-eq/TWh,,,
-"IPCC Emissions Factors, High Value (see Emissions Factors tab for raw figures and Combustion Emissions Tab for conversion calcs)",,World,,4 - Independently Verified,2006,,,tCH4/TWh,0.0,tCO2-eq/TWh,,,
+"IPCC Emissions Factors, Default Value (see Emissions Factors tab for raw figures and Combustion Emissions Tab for conversion calcs)",,World,,4 - Independently Verified,2006,,10.909090909090908,tCH4/TWh,-237.49801110097152,tCO2-eq/TWh,,,
+"IPCC Emissions Factors, Low Value (see Emissions Factors tab for raw figures and Combustion Emissions Tab for conversion calcs)",,World,,4 - Independently Verified,2006,,3.272727272727273,tCH4/TWh,-71.24940333029146,tCO2-eq/TWh,,,
+"IPCC Emissions Factors, High Value (see Emissions Factors tab for raw figures and Combustion Emissions Tab for conversion calcs)",,World,,4 - Independently Verified,2006,,32.72727272727273,tCH4/TWh,-712.4940333029147,tCO2-eq/TWh,,,

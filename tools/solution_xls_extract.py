@@ -806,9 +806,7 @@ def write_ad(f, wb, outputdir):
     f.write(xln(a, 36, 16) + ", " + xln(a, 39, 16) + "]]\n")
     f.write("        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],\n")
     f.write("            dtype=np.object).set_index('param')\n")
-    ad_regions = {'World': 44, 'OECD90': 104, 'Eastern Europe': 168, 'Asia (Sans Japan)': 231,
-                  'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484,
-                  'EU': 548, 'USA': 613}
+    ad_regions = find_ad_regions(wb=wb)
     ad_outputdir = os.path.join(outputdir, 'ad')
     os.makedirs(ad_outputdir, exist_ok=True)
     sources = extract_source_data(wb=wb, sheet_name='Adoption Data', regions=ad_regions,
@@ -1127,9 +1125,9 @@ def find_source_data_columns(wb, sheet_name, row):
        Returns:
          The string of Excel columns to use, like 'B:R'
     """
-    ad_tab = wb.sheet_by_name(sheet_name)
-    for col in range(2, ad_tab.ncols):
-        if ad_tab.cell(row, col).value == 'Functional Unit':
+    tab = wb.sheet_by_name(sheet_name)
+    for col in range(2, tab.ncols):
+        if tab.cell(row, col).value == 'Functional Unit':
             break
     return 'B:' + chr(ord('A') + col - 1)
 
@@ -1142,6 +1140,25 @@ def data_sources_equivalent_for_region(region, world):
             if region_filename != world_filename:
                 return False
     return True
+
+
+def find_ad_regions(wb):
+    ad_default = {'World': 44, 'OECD90': 104, 'Eastern Europe': 168, 'Asia (Sans Japan)': 231,
+                  'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484,
+                  'EU': 548, 'USA': 613}
+    ad_microwind = {'World': 44, 'OECD90': 296, 'Eastern Europe': 170, 'Asia (Sans Japan)': 233,
+                  'Middle East and Africa': 359, 'Latin America': 423, 'China': 487, 'India': 613,
+                  'EU': 107, 'USA': 552}
+    tab = wb.sheet_by_name("Adoption Data")
+    for candidate in [ad_microwind]:
+        for region, row in candidate.items():
+            if region == 'World':
+                continue
+            if region.lower() not in str(tab.cell(row, 0).value).lower():
+                break
+        else:
+            return candidate
+    return ad_default
 
 
 def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
