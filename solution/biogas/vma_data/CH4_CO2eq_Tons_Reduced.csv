@@ -1,2 +1,2 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-2006_Pehnt_Dynamic life cycle assessment (LCA) of renewable energy technologies	,https://www.sciencedirect.com/science/article/pii/S0960148105000662,World,,1  - Peer Reviewed,2006,,,mg/kWh,0.0,t CH4-CO2eq per TWh,,"Using a 100 years GWP = 28 (IPCC, 2014)",
+2006_Pehnt_Dynamic life cycle assessment (LCA) of renewable energy technologies	,https://www.sciencedirect.com/science/article/pii/S0960148105000662,World,,1  - Peer Reviewed,2006,,19763.0,mg/kWh,553364.0,t CH4-CO2eq per TWh,,"Using a 100 years GWP = 28 (IPCC, 2014)",
