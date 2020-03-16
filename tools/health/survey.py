@@ -1,13 +1,15 @@
 """Survey all solutions+scenarios, outputting info about model health to CSV.
 """
-import os.path
-import tempfile
 import numpy as np
 import pandas as pd
 import scipy.stats
+
 import solution.factory
 
-def scenario_survey(outfile):
+FILENAME_TO_WRITE_TO = 'data/health/survey.csv'
+
+
+def scenario_survey():
     results = pd.DataFrame(columns=['RegionalFractionTAM', 'RegionalFractionAdoption', 'Rvalue'])
     results.index.name = 'Solution'
     all_solutions_scenarios = solution.factory.all_solutions_scenarios()
@@ -38,11 +40,11 @@ def scenario_survey(outfile):
             y = s.ht.soln_pds_funits_adopted().loc[:, 'World'].values
             slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
             results.loc[name, 'Rvalue'] = r_value
-    outdata = results.to_csv(path_or_buf=outfile)
+    return results
+
 
 if __name__ == '__main__':
-    (_, outfile) = tempfile.mkstemp(prefix='survey_', suffix='.csv',
-                                    dir=os.path.join('data', 'health'))
-    scenario_survey(outfile)
+    # Write the results of the survey out
+    scenario_survey().to_csv(path_or_buf=FILENAME_TO_WRITE_TO)
     # print the file name on exit, allows the calling script to decide whether to check it in.
-    print(outfile)
+    print(FILENAME_TO_WRITE_TO)

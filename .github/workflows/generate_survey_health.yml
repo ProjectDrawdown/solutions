@@ -1,0 +1,46 @@
+name: Drawdown Solutions Python application
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+          lfs: true
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+    - name: Update health survey CSV
+      run: python tools/health/survey.py
+    - name: Update health land survey CSV
+      run: python tools/health/landsurvey.py --only-landsurvey
+    - uses: stefanzweifel/git-auto-commit-action@v4.1.1
+      with:
+        commit_message: Updating survey health files    
+        # Optional name of the branch the commit should be pushed to
+        # Required if Action is used in Workflow listening to the `pull_request` event
+        branch: ${{ github.head_ref }}
+        # Optional git params
+        commit_options: '--no-verify --signoff'
+    
+        # Optional glob pattern of files which should be added to the commit
+        file_pattern: tools/health/*
+    
+        # Optional local file path to the repository
+        repository: .
+    
+        # Optional commit user and author settings
+        commit_user_name: Health Survey Runner Bot
+        commit_user_email: bot@computer.edu
+        commit_author: Author <actions@github.com>

@@ -1,23 +1,27 @@
 """Survey all land solutions, outputting info about model health to CSV."""
-
+import argparse
 import pathlib
+import sys
+
 import pandas as pd
 
-import solution.factory
 import model.aez
 import model.dd
+import solution.factory
 import tools.util
 
 pd.set_option('display.expand_frame_repr', False)
-datadir = pathlib.Path(__file__).parents[2].joinpath('data')
-
-soln_df = pd.read_csv(datadir.joinpath('overview', 'solutions.csv'), index_col=0)
-land_soln_names = soln_df[soln_df[' Sector'].isin([' Food', ' Land Use'])].dropna()[' DirName'].values
-land_soln_names = [x.strip() for x in land_soln_names if x.strip() not in ['biochar', 'improvedcookstoves', 'composting']]
-land_solutions_scenarios = {k: x for k, x in solution.factory.all_solutions_scenarios().items() if k in land_soln_names}
+datadir = pathlib.Path('data')
 
 
-def land_alloc_sum(solns=None, outfile=None):
+def get_land_scenarios():
+    soln_df = pd.read_csv(datadir.joinpath('overview', 'solutions.csv'), index_col=0)
+    land_soln_names = soln_df[soln_df[' Sector'].isin([' Food', ' Land Use'])].dropna()[' DirName'].values
+    land_soln_names = [x.strip() for x in land_soln_names if x.strip() not in ['biochar', 'improvedcookstoves', 'composting']]
+    return {k: x for k, x in solution.factory.all_solutions_scenarios().items() if k in land_soln_names}
+
+
+def land_alloc_sum(land_solutions_scenarios, solns=None, outfile=None):
     """
     Sums land allocations for each TMR/AEZ type. Prints df of remaining %s.
     Args:
@@ -63,7 +67,7 @@ def get_total_world_area():
     return sum([x.sum() for x in get_tla_per_regime().values()])
 
 
-def full_survey(outfile):
+def full_survey(land_solutions_scenarios, outfile):
     """
     Runs all land solutions and extracts data to csv.
     Looks at 'High' (most aggressive) adoption scenario.
@@ -133,7 +137,7 @@ def full_survey(outfile):
 
 def aez_survey():
     """ Check whether applicability matrix is redundant when land is allocated to DD allocations """
-    for name, (constructor, scenarios) in land_solutions_scenarios.items():
+    for name, (constructor, scenarios) in get_land_scenarios().items():
         print('processing: {}'.format(name))
         fullname = constructor().name
         ae = model.aez.AEZ(solution_name=fullname, ignore_allocation=False)
@@ -182,7 +186,17 @@ def avg_abatement_cost(soln):
 
 
 if __name__ == '__main__':
-    res = full_survey(datadir.joinpath('health', 'landsurvey.csv'))
+    parser = argparse.ArgumentParser(
+        description='Do the land survey')
+    parser.add_argument('--only-landsurvey', action='store_true')
+
+    args = parser.parse_args(sys.argv[1:])
+
+    land_scenarios = get_land_scenarios()
+
+    full_survey(land_scenarios, datadir.joinpath('health', 'landsurvey.csv'))
     # aez_survey()
-    res = land_alloc_sum(outfile=datadir.joinpath('land', 'allocation',
-        'perc_land_remaining_after_allocation.csv'))
+
+    if not args.only_landsurvey:
+        land_alloc_sum(land_scenarios, outfile=datadir.joinpath('land', 'allocation',
+            'perc_land_remaining_after_allocation.csv'))
