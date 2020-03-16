@@ -1,10 +1,12 @@
 import os
 import pathlib
-import pandas as pd
 
 import matplotlib.pyplot as plt
+import pandas as pd
+
 from model.aez import AEZ
-from model.dd import THERMAL_MOISTURE_REGIMES, MAIN_REGIONS, AEZ_LAND_COVER_MAP
+from model.dd import AEZ_LAND_COVER_MAP, MAIN_REGIONS, THERMAL_MOISTURE_REGIMES
+from tools.health.landsurvey import get_land_scenarios
 from tools.util import to_filename
 
 pd.set_option('display.expand_frame_repr', False)
@@ -182,7 +184,7 @@ def ranked_land_allocation(csv_dirname=None):
         csv_dirname: directory to save solution allocations and TLA remaining (stored in data/land/allocation/ranked).
                      Will create if it doesn't exist.
     """
-    from tools.health.landsurvey import land_solutions_scenarios
+    land_solutions_scenarios = get_land_scenarios()
 
     # We first allocate any solutions with fixed allocation values for AEZ, regime and region. These
     # values would probably not be created from scratch, but adapted from a previous iteration of
