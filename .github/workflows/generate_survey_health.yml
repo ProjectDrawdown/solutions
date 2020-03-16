@@ -1,5 +1,4 @@
-name: Drawdown Solutions Python application
-
+name: Update survey health files
 on:
   push:
     branches:
