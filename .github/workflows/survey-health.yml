@@ -30,8 +30,6 @@ jobs:
         # Optional name of the branch the commit should be pushed to
         # Required if Action is used in Workflow listening to the `pull_request` event
         branch: ${{ github.head_ref }}
-        # Optional git params
-        commit_options: '--no-verify --signoff'
     
         # Optional glob pattern of files which should be added to the commit
         file_pattern: tools/health/*
