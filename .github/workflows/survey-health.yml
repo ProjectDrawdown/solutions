@@ -32,7 +32,7 @@ jobs:
         branch: ${{ github.head_ref }}
     
         # Optional glob pattern of files which should be added to the commit
-        file_pattern: tools/health/*
+        file_pattern: data/health/*
     
         # Optional local file path to the repository
         repository: .
