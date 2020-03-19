@@ -281,6 +281,19 @@ def get_land_scenarios(wb, solution_category):
             assert sr_tab.cell_value(row + 201, 3) == 'Custom TLA Used?:'
             s['use_custom_tla'] = convert_bool(sr_tab.cell_value(row + 201, 4))
 
+            s['ref_base_adoption'] = {
+                'World': convert_sr_float(sr_tab.cell_value(row + 218, 4)),
+                'OECD90': convert_sr_float(sr_tab.cell_value(row + 219, 4)),
+                'Eastern Europe': convert_sr_float(sr_tab.cell_value(row + 220, 4)),
+                'Asia (Sans Japan)': convert_sr_float(sr_tab.cell_value(row + 221, 4)),
+                'Middle East and Africa': convert_sr_float(sr_tab.cell_value(row + 222, 4)),
+                'Latin America': convert_sr_float(sr_tab.cell_value(row + 223, 4)),
+                'China': convert_sr_float(sr_tab.cell_value(row + 224, 4)),
+                'India': convert_sr_float(sr_tab.cell_value(row + 225, 4)),
+                'EU': convert_sr_float(sr_tab.cell_value(row + 226, 4)),
+                'USA': convert_sr_float(sr_tab.cell_value(row + 227, 4)),
+            }
+
             assert sr_tab.cell_value(row + 230, 1) == 'PDS ADOPTION SCENARIO INPUTS'
             adopt = str(sr_tab.cell_value(row + 231, 4)).strip()
             if adopt: s['soln_pds_adoption_basis'] = adopt
@@ -967,9 +980,13 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     first_world_pds_yearly_result = int(h.cell_value(*cell_to_offsets('C91')))
     use_first_pds_datapoint_main = (first_world_pds_datapoint == first_world_pds_yearly_result)
 
-    adoption_base_year = None
-    if a.cell_value(*cell_to_offsets('D59')):
+    try:
         adoption_base_year = int(a.cell_value(*cell_to_offsets('D59')))
+    except ValueError:
+        try:
+            adoption_base_year = int(a.cell_value(*cell_to_offsets('D57')))
+        except ValueError:
+            adoption_base_year = None
 
     copy_pds_to_ref = True
     for pds, ref in [('C91', 'C27'), ('C92', 'C28'), ('C93', 'C29'), ('C94', 'C30')]:
@@ -1460,8 +1477,13 @@ def output_solution_python_file(outputdir, xl_filename):
     wb = xlrd.open_workbook(filename=xl_filename)
     ac_tab = wb.sheet_by_name('Advanced Controls')
 
-    is_rrs = 'RRS' in xl_filename or 'TAM' in wb.sheet_names()
-    is_land = 'PDLAND' in xl_filename or 'L-Use' in xl_filename or 'AEZ Data' in wb.sheet_names()
+    if ('BIOSEQ' in xl_filename or 'PDLAND' in xl_filename or 'L-Use' in xl_filename or
+            'AEZ Data' in wb.sheet_names()):
+        is_rrs = False
+        is_land = True
+    elif 'RRS' in xl_filename or 'TAM' in wb.sheet_names():
+        is_rrs = True
+        is_land = False
     has_tam = is_rrs
 
     f = open(py_filename, 'w') if py_filename != '-' else sys.stdout
@@ -1577,7 +1599,7 @@ def output_solution_python_file(outputdir, xl_filename):
             f.write("            custom_world_vals = self.c_tla.get_world_values()\n")
             f.write("        else:\n")
             f.write("            custom_world_vals = None\n")
-            f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(), \n")
+            f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),\n")
             f.write("            custom_world_values=custom_world_vals)\n\n")
         else:
             f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())\n\n")
