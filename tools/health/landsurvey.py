@@ -11,7 +11,7 @@ import solution.factory
 import tools.util
 
 pd.set_option('display.expand_frame_repr', False)
-datadir = pathlib.Path('data')
+datadir = pathlib.Path(__file__).parents[2].joinpath('data')
 
 
 def get_land_scenarios():

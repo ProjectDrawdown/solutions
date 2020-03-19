@@ -1,12 +1,14 @@
 """Survey all solutions+scenarios, outputting info about model health to CSV.
 """
+import pathlib
+
 import numpy as np
 import pandas as pd
 import scipy.stats
 
 import solution.factory
 
-FILENAME_TO_WRITE_TO = 'data/health/survey.csv'
+FILENAME_TO_WRITE_TO = pathlib.Path('data/health/survey.csv')
 
 
 def scenario_survey():
@@ -44,7 +46,4 @@ def scenario_survey():
 
 
 if __name__ == '__main__':
-    # Write the results of the survey out
     scenario_survey().to_csv(path_or_buf=FILENAME_TO_WRITE_TO)
-    # print the file name on exit, allows the calling script to decide whether to check it in.
-    print(FILENAME_TO_WRITE_TO)
