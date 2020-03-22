@@ -31,6 +31,9 @@ jobs:
     - name: pylint
       run: |
         tox -e lint
+    - name: Jupyter Smoketest
+      run: |
+        tox -e smoke
     - name: Export to codecov.io
       uses: codecov/codecov-action@v1.0.2
       with:
