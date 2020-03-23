@@ -126,7 +126,7 @@ def trend_algorithm(data, trend):
     raise ValueError('invalid trend algorithm: ' + str(trend))
 
 
-def matching_data_sources(data_sources, name, groups_only):
+def matching_data_sources(data_sources, name, groups_only, region_key=None):
     """Return a list of data sources which match name.
        If name is a group, return all data sources which are part of that group.
        If name is an individual case and groups_only=False, return it by itself.
@@ -136,9 +136,12 @@ def matching_data_sources(data_sources, name, groups_only):
          data_sources: a dict() of group names which contain dicts of data source names.
            Used for Total Addressable Market and adoption calculations. For example:
            {
-             'Ambitious Cases': {'Study Name A': 'filename A', 'Study Name B': 'filename B', ...}
-             'Baseline Cases': {'Study Name C': 'filename C', 'Study Name D': 'filename D', ...}
-             'Conservative Cases': {'Study Name E': 'filename E', 'Study Name F': 'filename F', ...}
+             'Ambitious Cases': {'Study Name A': 'filename A', 'Study Name B': 'filename B', ...},
+             'Baseline Cases': {'Study Name C': 'filename C', 'Study Name D': 'filename D', ...},
+             'Conservative Cases': {'Study Name E': 'filename E', ...},
+             'Region: OECD90': {
+                 'Ambitious Cases': {'Study Name F': 'filename F', 'Study Name A': 'filename A'}
+             }
            }
          name: a name of an individual data source, or the name of a group
            like 'Ambitious Cases'
@@ -146,9 +149,22 @@ def matching_data_sources(data_sources, name, groups_only):
            This is typically useful for stddev calculations, which are never done
            (and are nonsensical) on an individual data source only on a single
            group or over all sources.
+         region_key: if present, will consider only a subset of the data_sources matching that
+           region.  The region_key argument is expected to match the key in data_sources
+           (i.e. pass in 'Region: OECD90' not just 'OECD90')
+           If a given region_key does not have an entry in data_sources, we continue on with the
+           sources in the top level of data_sources. This may seem odd but it really is what we
+           want, the common case is a single set of sources which have a column for each region.
+           Having a distinct set of sources for a given region is the uncommon case.
+           If region_key is None, we consider *only* the top level sources.
     """
     if name is None or pd.isna(name):
         return None
+    if region_key is not None and region_key in data_sources:
+        data_sources = data_sources[region_key]
+    else:
+        # only use top level sources
+        data_sources = {k:v for (k,v) in data_sources.items() if not k.startswith('Region:')}
     if name in data_sources:
         return list(data_sources[name].keys())
     all_sources = []

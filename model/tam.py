@@ -87,13 +87,15 @@ class TAM(object, metaclass=MetaclassCache):
         self._forecast_data = df_per_region
 
 
-    def _min_max_sd(self, forecast, tamconfig, data_sources):
+    def _min_max_sd(self, forecast, tamconfig, data_sources, region):
         """Return the min, max, and standard deviation for TAM data.
            Arguments:
              forecast: the TAM forecast dataframe for all sources.
              tamconfig: the row from self.tamconfig to use
              data_sources: dict of dicts of datasources, as described in tam_ref_data_sources in
                the constructor
+             region: the name of the region to match, like 'OECD90' or 'Latin America'. Can
+               be None, which will use the top level ('World') data_sources.
         """
         source_until_2014 = tamconfig['source_until_2014']
         source_after_2014 = tamconfig['source_after_2014']
@@ -105,21 +107,22 @@ class TAM(object, metaclass=MetaclassCache):
             # Some solutions provide no data sources for PDS
             result.loc[:, 'S.D'] = np.nan
         else:
+            region_key = None if region is None else f'Region: {region}'
             columns = interpolation.matching_data_sources(data_sources=data_sources,
-                    name=source_until_2014, groups_only=True)
+                    name=source_until_2014, groups_only=True, region_key=region_key)
             # Excel STDDEV.P is a whole population stddev, ddof=0
             m = forecast.loc[:2014, columns].dropna(axis='columns', how='all').std(axis=1, ddof=0)
             m.name = 'S.D'
             result.update(m)
             columns = interpolation.matching_data_sources(data_sources=data_sources,
-                    name=source_after_2014, groups_only=True)
+                    name=source_after_2014, groups_only=True, region_key=region_key)
             m = forecast.loc[2015:, columns].dropna(axis='columns', how='all').std(axis=1, ddof=0)
             m.name = 'S.D'
             result.update(m)
         return result
 
 
-    def _low_med_high(self, forecast, min_max_sd, tamconfig, data_sources):
+    def _low_med_high(self, forecast, min_max_sd, tamconfig, data_sources, region):
         """Return the selected data sources as Medium, and N stddev away as Low and High.
 
            Arguments:
@@ -128,6 +131,8 @@ class TAM(object, metaclass=MetaclassCache):
              tamconfig: the row from self.tamconfig to use
              data_sources: dict of dicts of datasources, as described in tam_ref_data_sources in
                the constructor
+             region: the name of the region to match, like 'OECD90' or 'Latin America'. Can
+               be None, which will use the top level ('World') data_sources.
         """
         result = pd.DataFrame(np.nan, index=forecast.index.copy(),
                               columns=['Low', 'Medium', 'High'])
@@ -137,8 +142,9 @@ class TAM(object, metaclass=MetaclassCache):
             result.loc[:, 'High'] = np.nan
             return result
 
+        region_key = None if region is None else f'Region: {region}'
         columns = interpolation.matching_data_sources(data_sources=data_sources,
-                name=tamconfig['source_until_2014'], groups_only=False)
+                name=tamconfig['source_until_2014'], groups_only=False, region_key=region_key)
         if columns and len(columns) > 1:
             # In Excel, the Mean computation is:
             # SUM($C521:$Q521)/COUNTIF($C521:$Q521,">0")
@@ -162,7 +168,7 @@ class TAM(object, metaclass=MetaclassCache):
             result.update(m)
 
         columns = interpolation.matching_data_sources(data_sources=data_sources,
-                name=tamconfig['source_after_2014'], groups_only=False)
+                name=tamconfig['source_after_2014'], groups_only=False, region_key=region_key)
         if columns and len(columns) > 1:
             # see comment above about Mean and this lambda function
             m = forecast.loc[2015:, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
@@ -268,7 +274,7 @@ class TAM(object, metaclass=MetaclassCache):
             forecast = self.forecast_data(region)
 
         result = self._min_max_sd(forecast=forecast, tamconfig=self.tamconfig[region],
-                data_sources=data_sources)
+                data_sources=data_sources, region=region)
         result.name = 'forecast_min_max_sd_' + self._name_to_identifier(region)
         return result
 
@@ -295,7 +301,7 @@ class TAM(object, metaclass=MetaclassCache):
         result_main = self.forecast_low_med_high(main_region).copy(deep=True)
         result_pds = self._low_med_high(forecast=self.forecast_data(pds_region),
                 min_max_sd=self.forecast_min_max_sd(pds_region),
-                tamconfig=self.tamconfig[pds_region], data_sources=data_sources)
+                tamconfig=self.tamconfig[pds_region], data_sources=data_sources, region=pds_region)
         result_2014 = result_main.loc[:2014].copy()
         result_2015 = result_main.loc[2015:].copy()
         result_2015.update(other=result_pds, overwrite=True)
@@ -338,7 +344,7 @@ class TAM(object, metaclass=MetaclassCache):
 
         result = self._low_med_high(forecast=forecast,
                 min_max_sd=self.forecast_min_max_sd(region=region),
-                tamconfig=self.tamconfig[region], data_sources=data_sources)
+                tamconfig=self.tamconfig[region], data_sources=data_sources, region=region)
         result.name = 'forecast_low_med_high_' + self._name_to_identifier(region)
         return result
 

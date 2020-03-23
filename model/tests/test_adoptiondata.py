@@ -439,6 +439,13 @@ def test_regional_data_sources():
     assert result.loc[2019, 'World'] == pytest.approx(15.0)
     assert result.loc[2019, 'OECD90'] == pytest.approx(10.0)
     assert result.loc[2019, 'Latin America'] == pytest.approx(15.0)
+    ac = advanced_controls.AdvancedControls(
+        soln_pds_adoption_prognostication_source='Baseline Cases',
+        soln_pds_adoption_prognostication_growth='Medium')
+    ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+    result = ad.adoption_trend_per_region()
+    assert result.loc[2019, 'World'] == pytest.approx(15.0)
+    assert result.loc[2019, 'OECD90'] == pytest.approx(10.0)
 
 
 # SolarPVUtil 'Adoption Data'!X46:Z94
