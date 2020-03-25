@@ -30,7 +30,7 @@ jobs:
         commit_message: Updating survey health files
         # Optional name of the branch the commit should be pushed to
         # Required if Action is used in Workflow listening to the `pull_request` event
-        branch: ${{ github.solution-survey-cron }}
+        branch: solution-survey-cron
 
         # Optional glob pattern of files which should be added to the commit
         file_pattern: data/health/*
@@ -41,3 +41,4 @@ jobs:
         # Optional commit user and author settings
         commit_user_name: Survey Health Cron Job
         commit_user_email: drawdownbot@decarbon.earth
+        commit_author: DrawdownBot <drawdownbot@decarbon.earth>
