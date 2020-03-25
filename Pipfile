@@ -29,6 +29,7 @@ numpy-financial = ">=1.0.0"
 voila = ">=0.1.20"
 vega = "<3.1"
 tox = "*"
+webdrivermanager = ">=0.8.0"
 
 [requires]
 python_version = "3.8"
