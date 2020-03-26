@@ -10,7 +10,6 @@ from model import interpolation
 import numpy as np
 import pandas as pd
 
-
 class TAM(object, metaclass=MetaclassCache):
     """Total Addressable Market module."""
 
@@ -48,6 +47,9 @@ class TAM(object, metaclass=MetaclassCache):
         x = re.sub(r"[()]", "", name.lower())
         return re.sub(r" ", "_", x)
 
+    def _is_path(self, value):
+        return (isinstance(value, str) or isinstance(value, pathlib.Path) or
+                isinstance(value, pathlib.PurePath))
 
     def _populate_forecast_data(self):
         """Read data files in self.tam_*_data_sources to populate forecast data."""
@@ -58,32 +60,27 @@ class TAM(object, metaclass=MetaclassCache):
             df = pd.DataFrame()
             df.name = 'forecast_data_' + self._name_to_identifier(region)
             df_per_region[region] = df
+
         for (groupname, group) in self.tam_ref_data_sources.items():
-            one_region = None
-            if groupname.startswith("Region: "):
-                one_region = groupname[len("Region: "):]
+            regions = dd.REGIONS if not groupname.startswith("Region: ") else [groupname.replace("Region: ", "")]
             for (name, value) in group.items():
-                if (isinstance(value, str) or isinstance(value, pathlib.Path) or
-                        isinstance(value, pathlib.PurePath)):
-                    sources = {name: value}
-                else:
-                    sources = value
+                sources = {name: value} if self._is_path(value) else value
+
                 for name, filename in sources.items():
-                    df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-                            skip_blank_lines=True, comment='#')
-                    regions = dd.REGIONS if one_region is None else [one_region]
+                    df = pd.read_csv(filename, header=0, index_col="Year", skipinitialspace=True,
+                            skip_blank_lines=True, comment='#', usecols=["Year"] + regions)
                     for region in regions:
-                        df_per_region[region].loc[:, name] = df.loc[:, region]
+                        df_per_region[region][name] = df[region]
+
         for (groupname, group) in self.tam_pds_data_sources.items():
             for (name, value) in group.items():
-                if isinstance(value, str) or isinstance(value, pathlib.Path):
-                    sources = {name: value}
-                else:
-                    sources = value
+                sources = {name: value} if self._is_path(value) else value
+
                 for name, filename in sources.items():
-                    df = pd.read_csv(filename, header=0, index_col=0, skipinitialspace=True,
-                            skip_blank_lines=True, comment='#')
-                    df_per_region[main_region_pds].loc[:, name] = df.loc[:, main_region]
+                    df = pd.read_csv(filename, header=0, index_col="Year", skipinitialspace=True,
+                            skip_blank_lines=True, comment='#', usecols=["Year", main_region])
+                    df_per_region[main_region_pds][name] = df[main_region]
+
         self._forecast_data = df_per_region
 
 
