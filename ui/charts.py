@@ -177,6 +177,7 @@ class JupyterUI:
         tabs = ipywidgets.Tab()
         tabs.children = [self.ui_elements['overview']]
         tabs.set_title(0, 'Overview')
+        tabs.add_class('web_ui_tab_bar')  # used for Web UI test XPath selector
         return tabs
 
 
@@ -263,11 +264,13 @@ class JupyterUI:
             c2eq = ipywidgets.HTML(f'{style}{row.CO2eq:.02f}</div>', layout=c2eq_layout)
             if row.DirName:
                 cbox = ipywidgets.Checkbox(value=False, layout=cbox_layout)
+                cbox.add_class('checkbox_' + row.DirName)  # used as a selector for UI tests
                 cbox.d = {'uiobj': self, 'name': 'checkbox:' + row.DirName}
                 cbox.observe(checkbox_observe, names='value')
                 checkboxes[row.DirName] = cbox
             else:
                 cbox = ipywidgets.Checkbox(value=False, disabled=True, layout=cbox_layout)
+                cbox.add_class('checkbox_' + row.DirName)  # used as a selector for UI tests
             cbox.style.description_width = '0px'
             children.append(ipywidgets.HBox([soln, sctr, c2eq, cbox], layout=cntr_layout))
             style = grey_row if style == white_row else white_row
