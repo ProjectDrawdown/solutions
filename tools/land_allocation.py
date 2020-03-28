@@ -335,7 +335,7 @@ def ranked_land_allocation(csv_dirname=None):
     print('-' * 200)
 
     if csv_dirname is not None:
-        ranked_allocation_csv_path = datadir.joinpath('land', 'allocation', 'ranked', csv_dirname)
+        ranked_allocation_csv_path = datadir.joinpath('land', 'allocation2018', 'ranked', csv_dirname)
         if not os.path.exists(ranked_allocation_csv_path):
             os.mkdir(ranked_allocation_csv_path)
         for name in solution_allocation_results:
@@ -365,7 +365,7 @@ def plot_tla_remaining(alloc_name, reg=None):
         alloc_name: dirname of ranked allocation run (e.g. initial_abatement_cost_run)
         reg: optional region name (e.g. 'OECD90')
     """
-    csv_path = datadir.joinpath('land', 'allocation', 'ranked', alloc_name, 'tla_remaining')
+    csv_path = datadir.joinpath('land', 'allocation2018', 'ranked', alloc_name, 'tla_remaining')
     reg_tla_remaining = {r: pd.read_csv(
         csv_path.joinpath(f'{to_filename(r)}_tla_remaining.csv'), index_col=0) for r in ['World'] + MAIN_REGIONS}
 
@@ -381,7 +381,7 @@ def plot_tla_remaining(alloc_name, reg=None):
 
     plot_alloc(tot_tla, ax=axes[0, 0], title='TLA before allocation', xlims=xlims)
 
-    path = datadir.joinpath('land', 'allocation', 'perc_land_remaining_after_allocation.csv')
+    path = datadir.joinpath('land', 'allocation2018', 'perc_land_remaining_after_allocation.csv')
     perc_tla_left_orig = pd.read_csv(path, index_col=0)
     tla_left_orig = tot_tla * perc_tla_left_orig / 100
     plot_alloc(tla_left_orig, ax=axes[0, 1], title='TLA remaining after original allocation', xlims=xlims)
@@ -408,7 +408,7 @@ def plot_solution_allocation(soln_name, alloc_name):
     fullname = get_full_soln_name(soln_name)
     orig_assigned_land = AEZ(fullname).soln_land_alloc_df
 
-    csv_path = datadir.joinpath('land', 'allocation', 'ranked', alloc_name, soln_name)
+    csv_path = datadir.joinpath('land', 'allocation2018', 'ranked', alloc_name, soln_name)
     regional_allocations = {}
     orig_regional_allocations = {}
     soln_regional_df = pd.DataFrame()
