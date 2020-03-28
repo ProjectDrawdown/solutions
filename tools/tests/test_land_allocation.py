@@ -25,8 +25,8 @@ def test_ranked_land_allocation():
     r.read_world_data_xls()
     r.make_csvs()
     tools.land_allocation.datadir = pathlib.Path(tmpdir.name)
-    tools.land_allocation.datadir.joinpath('land/allocation/ranked').mkdir(parents=True)
+    tools.land_allocation.datadir.joinpath('land/allocation2018/ranked').mkdir(parents=True)
     tools.land_allocation.ranked_land_allocation(csv_dirname='csv')
-    rankedpath = os.path.join(tmpdir.name, 'land', 'allocation', 'ranked', 'csv')
+    rankedpath = os.path.join(tmpdir.name, 'land', 'allocation2018', 'ranked', 'csv')
     assert os.path.exists(os.path.join(rankedpath, 'solution_order.csv'))
     assert len(list(os.listdir(rankedpath))) >= 2
