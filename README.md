@@ -96,7 +96,7 @@ The main user interface is a Jupyter Notebook:
 
 To use with [Voilà](https://blog.jupyter.org/and-voil%C3%A0-f6a2c08a4a93):
 ```sh
-(solutions) $ voila --enable_nbextensions=True  --file_whitelist="['.*']" ./VoilaDrawdown.ipynb
+(solutions) $ voila --enable_nbextensions=True --VoilaConfiguration.file_whitelist="['.*\.(png|jpg|gif|svg|csv|json|ico|js)']" ./VoilaDrawdown.ipynb
 ```
 
 ---

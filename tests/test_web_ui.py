@@ -18,7 +18,8 @@ def driver():
 
 @pytest.fixture(scope='session')
 def voila():
-    args=['jupyter', 'notebook', '--VoilaConfiguration.enable_nbextensions=True', '--no-browser', '--Voila.log_level=logging.DEBUG']
+    args=['jupyter', 'notebook', '--VoilaConfiguration.enable_nbextensions=True', '--no-browser',
+            '--Voila.log_level=logging.DEBUG']
     jup = subprocess.Popen(args=args, shell=False, bufsize=1, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, close_fds=True)
     urlparts = None
@@ -45,7 +46,15 @@ def test_voila_basic_function(driver, voila):
     assert tabs
     assert tabs.find_element_by_xpath('//div[contains(text(), "Overview")]')
 
-    # click the checkbox for Solar Farms, to render the solution
+
+@pytest.mark.slow
+def test_voila_RRS(driver, voila):
+    driver.get(voila)
+    # Rendering the solution takes about 30 seconds on a Macbook Pro, could
+    # take longer on a heavily loaded continuous integration server
+    driver.implicitly_wait(240)
+
+    # click the checkbox to render the solution
     checkboxdiv = driver.find_element_by_class_name('checkbox_solarpvutil')
     assert checkboxdiv
     checkbox = checkboxdiv.find_element_by_tag_name("input")
@@ -53,15 +62,42 @@ def test_voila_basic_function(driver, voila):
     assert checkbox.get_attribute("type") == "checkbox"
     checkbox.click()
 
-    # Rendering the solution takes about 30 seconds on a Macbook Pro, could take longer on a
-    # heavily loaded continuous integration server
+    # Check that the tab bar now contains the tabs for a solution
+    tabs = driver.find_element_by_class_name('web_ui_tab_bar')
+    assert tabs
+    assert tabs.find_element_by_xpath('//div[contains(text(), "Summary")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "Model")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "Variable Meta-Analysis")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "Adoption Data")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "TAM Data")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "First Cost")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "Operating Cost")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "Emissions")]')
+
+
+@pytest.mark.slow
+def test_voila_LAND(driver, voila):
+    driver.get(voila)
+    # Rendering the solution takes about 30 seconds on a Macbook Pro, could
+    # take longer on a heavily loaded continuous integration server
     driver.implicitly_wait(240)
+
+    # click the checkbox to render the solution
+    checkboxdiv = driver.find_element_by_class_name('checkbox_silvopasture')
+    assert checkboxdiv
+    checkbox = checkboxdiv.find_element_by_tag_name("input")
+    assert checkbox
+    assert checkbox.get_attribute("type") == "checkbox"
+    checkbox.click()
 
     # Check that the tab bar now contains the tabs for a solution
     tabs = driver.find_element_by_class_name('web_ui_tab_bar')
     assert tabs
     assert tabs.find_element_by_xpath('//div[contains(text(), "Summary")]')
     assert tabs.find_element_by_xpath('//div[contains(text(), "Model")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "Variable Meta-Analysis")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "Adoption Data")]')
+    assert tabs.find_element_by_xpath('//div[contains(text(), "AEZ Data")]')
     assert tabs.find_element_by_xpath('//div[contains(text(), "First Cost")]')
     assert tabs.find_element_by_xpath('//div[contains(text(), "Operating Cost")]')
     assert tabs.find_element_by_xpath('//div[contains(text(), "Emissions")]')
