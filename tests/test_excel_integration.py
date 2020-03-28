@@ -39,14 +39,21 @@ def get_pd_read_excel_args(r):
     return (usecols, skiprows, nrows)
 
 
-def verify_aez_data(obj, verify):
+def verify_aez_data(obj, verify, cohort):
     """Verified tables in AEZ Data."""
-    verify['AEZ Data'] = [
-            ('A48:H53', obj.ae.get_land_distribution(
-            ).reset_index().iloc[:6, :], None),
-            ('A55:H58', obj.ae.get_land_distribution(
-            ).reset_index().iloc[6:, :], None)
-    ]
+    if cohort == 2018:
+        verify['AEZ Data'] = [
+                ('A48:H53', obj.ae.get_land_distribution().reset_index().iloc[:6, :], None),
+                ('A55:H58', obj.ae.get_land_distribution().reset_index().iloc[6:, :], None)
+        ]
+    elif cohort == 2019:
+        # Cohort 2019 added more solutions which shifted rows downward
+        verify['AEZ Data'] = [
+                ('A53:H58', obj.ae.get_land_distribution().reset_index().iloc[:6, :], None),
+                ('A60:H63', obj.ae.get_land_distribution().reset_index().iloc[6:, :], None)
+        ]
+    else:
+        raise ValueError(f"unknown cohort {cohort}")
     return verify
 
 
@@ -1138,7 +1145,18 @@ def LAND_solution_verify_list(obj, zip_f):
         zip_f: expected.zip of the Excel file to verify against.
     """
     verify = {}
-    verify_aez_data(obj, verify)
+
+    aez_checked = False
+    cell = str(excel_read_cell_any_scenario(zip_f=zip_f, sheetname='AEZ Data', cell='A47'))
+    if cell.startswith('2014 Land Distribution'):
+        verify_aez_data(obj, verify, cohort=2018)
+        aez_checked = True
+    cell = str(excel_read_cell_any_scenario(zip_f=zip_f, sheetname='AEZ Data', cell='A52'))
+    if cell.startswith('2014 Land Distribution'):
+        verify_aez_data(obj, verify, cohort=2019)
+        aez_checked = True
+    assert aez_checked
+
     if obj.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
         verify_adoption_data(obj, verify)
     elif obj.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
