@@ -1007,12 +1007,14 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True, is_
 
     else:
         s = obj.c2.co2_ppm_calculator().loc[2015:].reset_index().abs()
-        ppm_near_zero_mask = s.mask(s < 0.000001, other=True).where(s < 0.000001, other=False)
+        ppm_near_zero_mask = s.mask(s < 1e-8, other=True).where(s < 1e-8, other=False)
+        s = obj.c2.co2_sequestered_global().loc[2015:].reset_index().abs()
+        seq_near_zero_mask = s.mask(s < 1e-8, other=True).where(s < 1e-8, other=False)
         verify['CO2 Calcs'] = [
                 ('A65:K110', obj.c2.co2eq_mmt_reduced(
                     ).loc[2015:].reset_index(), near_zero_mask),
                 ('A121:G166', obj.c2.co2_sequestered_global().reset_index().drop(
-                    columns=['Global Arctic']), None),
+                    columns=['Global Arctic']), seq_near_zero_mask),
                 ('A173:AW218', obj.c2.co2_ppm_calculator(
                     ).loc[2015:].reset_index(), ppm_near_zero_mask),
                 # CO2 eq table has an N20 column for LAND xls sheets that doesn't appear to be used, so we ignore it
@@ -1198,9 +1200,10 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None):
             exp = expected_df.iloc[r, c]
             if isinstance(act, str) and isinstance(exp, str):
                 matches = (act == exp)
-            elif pd.isna(act) or act == '' or act is None or act == 0 or act == pytest.approx(0.0):
-                matches = pd.isna(
-                    exp) or exp == '' or exp is None or exp == 0 or exp == pytest.approx(0.0, abs=1e-10)
+            elif (pd.isna(act) or act == '' or act is None or act == 0 or act == pytest.approx(0.0)
+                    or exp == pytest.approx(0.0)):
+                matches = (pd.isna(exp) or exp == '' or exp is None or exp == 0 or
+                        exp == pytest.approx(0.0, abs=1e-10))
             elif np.isinf(act):
                 # Excel #DIV/0! turns into NaN.
                 matches = pd.isna(exp) or np.isinf(exp)
