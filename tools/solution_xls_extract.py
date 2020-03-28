@@ -773,6 +773,17 @@ def get_filename_for_source(sourcename, prefix=''):
     return prefix + filename + '.csv'
 
 
+def write_aez(f, wb):
+    a = wb.sheet_by_name('Land Allocation - Max TLA')
+    first_solution = str(a.cell_value(*cell_to_offsets('B18')))
+    if first_solution == 'Peatland Protection':
+        cohort = 2019
+    elif first_solution == 'Forest Protection':
+        cohort = 2018
+    else:
+        raise ValueError('cannot determine AEZ Land Allocation to use')
+    f.write(f"        self.ae = aez.AEZ(solution_name=self.name, cohort={cohort})\n")
+
 def write_ad(f, wb, outputdir):
     """Generate the Adoption Data section of a solution.
        Arguments:
@@ -1559,7 +1570,7 @@ def output_solution_python_file(outputdir, xl_filename):
         write_tam(f=f, wb=wb, outputdir=outputdir)
     elif is_land:
         f.write("        # TLA\n")
-        f.write("        self.ae = aez.AEZ(solution_name=self.name)\n")
+        write_aez(f=f, wb=wb)
         if use_custom_tla:
             f.write("        if self.ac.use_custom_tla:\n")
             f.write("            self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))\n")
