@@ -22,7 +22,7 @@ class AllocationReader:
         if key == 'land':
             f = LAND_XLS_PATH
             self.regimes = model.dd.THERMAL_MOISTURE_REGIMES
-            sheetname = 'Land Allocation - Max TLA'
+            sheetname = '2019'
         else:
             f = OCEAN_XLS_PATH
             self.regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
@@ -63,9 +63,14 @@ class AllocationReader:
                 assert 'EZ' in self.sheet.cell_value(cell[0] - title_row_offset, cell[1] - 1)
                 assert 'EZ' in self.sheet.cell_value(cell[0] - 2, cell[1] - 1)
                 row, col = cell
-                num_cols = 7 if self.key == 'land' else 6
+                if self.key == 'land':
+                    row_mult = 31
+                    num_cols = 7
+                else:
+                    row_mult = 27
+                    num_cols = 6
                 for j in range(num_cols):
-                    row_offset = i * 27
+                    row_offset = i * row_mult
                     col_offset = j * 6
                     df = self.get_single_adoption_df(row + row_offset, col + col_offset)
                     df.name = aez = self.sheet.cell_value(row - title_row_offset, col - 1 + col_offset).strip()
@@ -79,8 +84,6 @@ class AllocationReader:
         e.g. get_single_adoption_df(*tools.util.cell_to_offsets('D18')) would give the
         table associated with cell D18 (Tropical-Humid, AEZ1).
         """
-
-        assert self.sheet.cell_value(row1, col1 - 1).endswith('Protection')
 
         df = self.df_template.copy(deep=True)
         for i in range(5):
