@@ -22,7 +22,7 @@ class AllocationReader:
         if key == 'land':
             f = LAND_XLS_PATH
             self.regimes = model.dd.THERMAL_MOISTURE_REGIMES
-            sheetname = 'Land Allocation - Max TLA'
+            sheetname = '2019'
         else:
             f = OCEAN_XLS_PATH
             self.regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
@@ -65,7 +65,7 @@ class AllocationReader:
                 row, col = cell
                 num_cols = 7 if self.key == 'land' else 6
                 for j in range(num_cols):
-                    row_offset = i * 27
+                    row_offset = i * 31
                     col_offset = j * 6
                     df = self.get_single_adoption_df(row + row_offset, col + col_offset)
                     df.name = aez = self.sheet.cell_value(row - title_row_offset, col - 1 + col_offset).strip()
