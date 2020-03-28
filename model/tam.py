@@ -301,8 +301,8 @@ class TAM(object, metaclass=MetaclassCache):
         result_pds = self._low_med_high(forecast=self.forecast_data(pds_region),
                 min_max_sd=self.forecast_min_max_sd(pds_region),
                 tamconfig=self.tamconfig[pds_region], data_sources=data_sources, region=pds_region)
-        result_2014 = result_main.loc[:2014]
-        result_2015 = result_main.loc[2015:]
+        result_2014 = result_main.loc[:2014].copy()
+        result_2015 = result_main.loc[2015:].copy()
         result_2015.update(other=result_pds, overwrite=True)
         result = pd.concat([result_2014, result_2015], sort=False)
         result.name = 'forecast_low_med_high_pds'
