@@ -960,6 +960,11 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     if a.cell_value(*cell_to_offsets('D59')):
         adoption_base_year = int(a.cell_value(*cell_to_offsets('D59')))
 
+    copy_pds_to_ref = True
+    for pds, ref in [('C91', 'C27'), ('C92', 'C28'), ('C93', 'C29'), ('C94', 'C30')]:
+        if int(h.cell_value(*cell_to_offsets(pds))) != int(h.cell_value(*cell_to_offsets(ref))):
+            copy_pds_to_ref = False
+
     f.write("        self.ht = helpertables.HelperTables(ac=self.ac,\n")
     f.write("            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
     f.write("            pds_adoption_data_per_region=pds_adoption_data_per_region,\n")
@@ -972,6 +977,7 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     f.write(f"            use_first_pds_datapoint_main={use_first_pds_datapoint_main},\n")
     if adoption_base_year:
         f.write(f"            adoption_base_year={adoption_base_year},\n")
+    f.write(f"            copy_pds_to_ref={copy_pds_to_ref},\n")
     f.write("            pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
     f.write("            pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
     f.write("\n")

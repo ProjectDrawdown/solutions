@@ -81,17 +81,14 @@ def test_soln_ref_funits_adopted_base_year_2018():
             soln_pds_adoption_basis='Linear')
     columns = ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)"]
     ref_datapoints = pd.DataFrame([[2018, 2.0, 2.0, 2.0, 2.0], [2050, 2.0, 2.0, 2.0, 2.0]],
-        columns=columns).set_index("Year")
+            columns=columns).set_index("Year")
     pds_datapoints = pd.DataFrame([[2014, 1.0, 1.0, 1.0, 1.0], [2050, 1.0, 1.0, 1.0, 1.0]],
-        columns=columns).set_index("Year")
+            columns=columns).set_index("Year")
     ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints,
-                                   pds_datapoints=pds_datapoints,
-                                   ref_adoption_limits=ref_tam_per_region,
-                                   pds_adoption_limits=None,
-                                   pds_adoption_data_per_region=None,
-                                   pds_adoption_trend_per_region=None,
-                                   pds_adoption_is_single_source=False,
-                                   adoption_base_year=2018)
+            pds_datapoints=pds_datapoints, ref_adoption_limits=ref_tam_per_region,
+            pds_adoption_limits=None, pds_adoption_data_per_region=None,
+            pds_adoption_trend_per_region=None, pds_adoption_is_single_source=False,
+            adoption_base_year=2018, copy_pds_to_ref=True)
     result = ht.soln_ref_funits_adopted()
     exp1 = pd.DataFrame(1.0, columns=columns[1:], index=result.index.copy())
     exp2 = pd.DataFrame(2.0, columns=columns[1:], index=result.index.copy())
@@ -99,6 +96,13 @@ def test_soln_ref_funits_adopted_base_year_2018():
     for region in columns[2:]:
         pd.testing.assert_series_equal(result.loc[2014:2017, region], exp2.loc[2014:2017, region])
     pd.testing.assert_frame_equal(result.loc[2018:2050, :], exp2.loc[2018:2050, :])
+    ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints,
+            pds_datapoints=pds_datapoints, ref_adoption_limits=ref_tam_per_region,
+            pds_adoption_limits=None, pds_adoption_data_per_region=None,
+            pds_adoption_trend_per_region=None, pds_adoption_is_single_source=False,
+            adoption_base_year=2018, copy_pds_to_ref=False)
+    result = ht.soln_ref_funits_adopted()
+    pd.testing.assert_frame_equal(result, exp2)
 
 
 def test_soln_pds_funits_adopted_by_region_with_tam_limit_world():
@@ -244,7 +248,7 @@ def test_soln_ref_funits_adopted_custom_ref_adoption_base_year_2018():
     ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints,
             pds_datapoints=pds_datapoints, ref_adoption_limits=ref_tam_per_region,
             pds_adoption_data_per_region=pds_ad_per_region, adoption_base_year=2018,
-            ref_adoption_data_per_region=ref_ad_per_region)
+            ref_adoption_data_per_region=ref_ad_per_region, copy_pds_to_ref=True)
     result = ht.soln_ref_funits_adopted()
     expected = ref_ad_per_region.loc[2014:2017].copy()
     expected.loc[:, 'World'] = pds_ad_per_region.loc[2014:2017, 'World']
@@ -252,6 +256,14 @@ def test_soln_ref_funits_adopted_custom_ref_adoption_base_year_2018():
     expected.loc[2014, ['A', 'B', 'C']] = 12.0
     pd.testing.assert_frame_equal(result.loc[2014:2017], expected)
     pd.testing.assert_frame_equal(result.loc[2018:], ref_ad_per_region.loc[2018:])
+    ht = helpertables.HelperTables(ac=ac, ref_datapoints=ref_datapoints,
+            pds_datapoints=pds_datapoints, ref_adoption_limits=ref_tam_per_region,
+            pds_adoption_data_per_region=pds_ad_per_region, adoption_base_year=2018,
+            ref_adoption_data_per_region=ref_ad_per_region, copy_pds_to_ref=False)
+    result = ht.soln_ref_funits_adopted()
+    expected = ref_ad_per_region.copy()
+    expected.loc[2018] = 12.0  # first ref_datapoint always copied into pds result
+    pd.testing.assert_frame_equal(result, expected)
 
 
 def test_soln_ref_funits_adopted_regional_tam_limit_NaN():
