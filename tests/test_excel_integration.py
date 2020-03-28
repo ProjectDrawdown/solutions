@@ -745,98 +745,98 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
                 ('BY69:CI115', obj.ua.pds_tam_growth().reset_index(), None),
                 # ('B135:L181' tested in 'Helper Tables'!C91)
                 ('Q135:AA181', obj.ua.soln_pds_cumulative_funits(
-                ).reset_index(), pds_cumulative_funit_mask),
+                    ).reset_index(), pds_cumulative_funit_mask),
                 ('AX136:BH182', obj.ua.soln_pds_tot_iunits_reqd(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 #('BN136:BS182', obj.ua.soln_pds_big4_iunits_reqd().reset_index(), None),
                 # ('B198:L244' tested in 'Helper Tables'!C27)
                 ('Q198:AA244', obj.ua.soln_ref_cumulative_funits(
-                ).reset_index(), soln_ref_cumulative_funits_mask),
+                    ).reset_index(), soln_ref_cumulative_funits_mask),
                 ('AX198:BH244', obj.ua.soln_ref_tot_iunits_reqd().reset_index(), None),
                 ('AG253:AQ298', obj.ua.conv_ref_new_iunits(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 ('AX252:BH298', obj.ua.conv_ref_annual_tot_iunits(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 ('B308:L354', obj.ua.soln_pds_net_grid_electricity_units_saved(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 ('Q308:AA354', obj.ua.soln_pds_net_grid_electricity_units_used(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 ('AD308:AN354', obj.ua.soln_pds_fuel_units_avoided(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 ('AT308:BD354', obj.ua.soln_pds_direct_co2_emissions_saved(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 ('BF308:BP354', obj.ua.soln_pds_direct_ch4_co2_emissions_saved(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 ('BR308:CB354', obj.ua.soln_pds_direct_n2o_co2_emissions_saved(
-                ).reset_index(), regional_mask),
+                    ).reset_index(), regional_mask),
                 ])
     elif soln_type == 'LAND_PROTECT':
         verify['Unit Adoption Calculations'].extend([
                 ('CG136:CH182', obj.ua.pds_cumulative_degraded_land_unprotected(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 # ('CZ136:DA182', Not implemented
                 ('DR136:DS182', obj.ua.pds_total_undegraded_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('EI136:EJ182', obj.ua.pds_cumulative_degraded_land_protected(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('CG198:CH244', obj.ua.ref_cumulative_degraded_land_unprotected(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 # ('CZ198:DA244', Not implemented
                 ('DR198:DS244', obj.ua.ref_total_undegraded_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('EI198:EJ244', obj.ua.ref_cumulative_degraded_land_protected(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('B252:C298', obj.ua.net_annual_land_units_adopted(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('Q252:R298', obj.ua.conv_ref_tot_iunits(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('AG253:AH298', obj.ua.conv_ref_new_iunits(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 # ('BO252:BP298', Not implemented
                 ('CG252:CH298', obj.ua.annual_reduction_in_total_degraded_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 # ('CZ252:DA298', Not implemented
                 ('DR252:DS298', obj.ua.cumulative_reduction_in_total_degraded_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('EI252:EJ298', obj.ua.net_land_units_after_emissions_lifetime(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('B308:C354', obj.ua.soln_pds_net_grid_electricity_units_saved(
-                ).loc[:, 'World'].reset_index(), regional_mask),
+                    ).loc[:, 'World'].reset_index(), regional_mask),
                 ('Q308:R354', obj.ua.soln_pds_net_grid_electricity_units_used(
-                ).loc[:, 'World'].reset_index(), regional_mask),
+                    ).loc[:, 'World'].reset_index(), regional_mask),
                 ('AD308:AE354', obj.ua.soln_pds_fuel_units_avoided(
-                ).loc[:, 'World'].reset_index(), regional_mask),
+                    ).loc[:, 'World'].reset_index(), regional_mask),
                 ('AT308:AU354', obj.ua.direct_co2eq_emissions_saved_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('BF308:BG354', obj.ua.direct_co2_emissions_saved_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('BR308:BS354', obj.ua.direct_n2o_co2_emissions_saved_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('CD308:CE354', obj.ua.direct_ch4_co2_emissions_saved_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ])
     elif soln_type == 'LAND_BIOSEQ':
         verify['Unit Adoption Calculations'].extend([
                 ('EH137:EI182', obj.ua.soln_pds_annual_land_area_harvested(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('EI253:EJ298', obj.ua.net_land_units_after_emissions_lifetime(
-                ).loc[2015:, 'World'].reset_index(), None),
+                    ).loc[2015:, 'World'].reset_index(), None),
                 ('B308:C354', obj.ua.soln_pds_net_grid_electricity_units_saved(
-                ).loc[:, 'World'].reset_index(), regional_mask),
+                    ).loc[:, 'World'].reset_index(), regional_mask),
                 ('Q308:R354', obj.ua.soln_pds_net_grid_electricity_units_used(
-                ).loc[:, 'World'].reset_index(), regional_mask),
+                    ).loc[:, 'World'].reset_index(), regional_mask),
                 ('AD308:AE354', obj.ua.soln_pds_fuel_units_avoided(
-                ).loc[:, 'World'].reset_index(), regional_mask),
+                    ).loc[:, 'World'].reset_index(), regional_mask),
                 ('AT308:AU354', obj.ua.direct_co2eq_emissions_saved_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('BF308:BG354', obj.ua.direct_co2_emissions_saved_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('BR308:BS354', obj.ua.direct_n2o_co2_emissions_saved_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ('CD308:CE354', obj.ua.direct_ch4_co2_emissions_saved_land(
-                ).loc[:, 'World'].reset_index(), None),
+                    ).loc[:, 'World'].reset_index(), None),
                 ])
     return verify
 
@@ -869,24 +869,24 @@ def verify_first_cost(obj, verify):
     """Verified tables in First Cost."""
     verify['First Cost'] = [
             ('C37:C82', obj.fc.soln_pds_install_cost_per_iunit(
-            ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
+                ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
             # ('D37:D82', checked by 'Unit Adoption Calculations'!AH137
             ('E37:E82', obj.fc.soln_pds_annual_world_first_cost(
-            ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
+                ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('F37:F82', obj.fc.soln_pds_cumulative_install(
-            ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
+                ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('L37:L82', obj.fc.soln_ref_install_cost_per_iunit(
-            ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
+                ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
             # ('M37:M82', checked by 'Unit Adoption Calculations'!AH199
             ('N37:N82', obj.fc.soln_ref_annual_world_first_cost(
-            ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
+                ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('O37:O82', obj.fc.conv_ref_install_cost_per_iunit(
-            ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
+                ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
             # ('P37:P82', checked by 'Unit Adoption Calculations'!AH253
             ('Q37:Q82', obj.fc.conv_ref_annual_world_first_cost(
-            ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
+                ).loc[2015:].to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('R37:R82', obj.fc.ref_cumulative_install().loc[2015:].to_frame(
-            ).reset_index(drop=True), "Excel_one_cent")
+                ).reset_index(drop=True), "Excel_one_cent")
             ]
     return verify
 
@@ -900,54 +900,50 @@ def verify_operating_cost(obj, verify):
     #
     # We mask off all cells where the value is less than one cent. We assert that being off by
     # a penny at  the end of the equipment lifetime is acceptable.
-    s = obj.oc.soln_pds_annual_breakout().reset_index()
-    soln_breakout_mask = s.mask(
-        s < 0.01, other=True).where(s < 0.01, other=False)
-    s = obj.oc.conv_ref_annual_breakout().reset_index()
-    conv_breakout_mask = s.mask(
-        s < 0.01, other=True).where(s < 0.01, other=False)
+    s = obj.oc.soln_pds_annual_breakout().reset_index().abs()
+    soln_breakout_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
+    s = obj.oc.conv_ref_annual_breakout().reset_index().abs()
+    conv_breakout_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
 
     verify['Operating Cost'] = [
-            ('B262:AV386', obj.oc.soln_pds_annual_breakout(
-            ).reset_index(), soln_breakout_mask),
-            ('B399:AV523', obj.oc.conv_ref_annual_breakout(
-            ).reset_index(), conv_breakout_mask),
+            ('B262:AV386', obj.oc.soln_pds_annual_breakout().reset_index(), soln_breakout_mask),
+            ('B399:AV523', obj.oc.conv_ref_annual_breakout().reset_index(), conv_breakout_mask),
             # ('B19:B64', Not implemented
             # ('C19:C64', checked by 'Unit Adoption Calculations'!C253
-            ('D19:D64', obj.oc.soln_pds_annual_operating_cost(
-            ).loc[2015:2060].to_frame().reset_index(drop=True), None),
-            ('E19:E64', obj.oc.soln_pds_cumulative_operating_cost(
-            ).loc[2015:2060].to_frame().reset_index(drop=True), None),
+            ('D19:D64', obj.oc.soln_pds_annual_operating_cost().loc[2015:2060].to_frame(
+                ).reset_index(drop=True), "Excel_one_cent"),
+            ('E19:E64', obj.oc.soln_pds_cumulative_operating_cost().loc[2015:2060].to_frame(
+                ).reset_index(drop=True), "Excel_one_cent"),
             ('F19:F64', obj.oc.soln_pds_new_funits_per_year(
-            ).loc[2015:, ['World']].reset_index(drop=True), None),
+                ).loc[2015:, ['World']].reset_index(drop=True), None),
             # ('I19:I64', Not implemented
             # ('J19:J64', checked by 'Unit Adoption Calculations'!C253
             ('K19:K64', obj.oc.conv_ref_annual_operating_cost(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('L19:L64', obj.oc.conv_ref_cumulative_operating_cost(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), "Excel_one_cent"),
             # ('B69:B114', equal to D19:D64,
             # ('C69:C114', equal to K19:K64,
             ('D69:D114', obj.oc.marginal_annual_operating_cost(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('B126:B250', obj.oc.soln_marginal_first_cost(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('C126:C250', obj.oc.soln_marginal_operating_cost_savings(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('D126:D250', obj.oc.soln_net_cash_flow(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('E126:E250', obj.oc.soln_net_present_value(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), "Excel_one_cent"),
             ('I126:I250', obj.oc.soln_vs_conv_single_iunit_cashflow(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), None),
             ('J126:J250', obj.oc.soln_vs_conv_single_iunit_npv(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), None),
             #('K126:K250', obj.oc.soln_vs_conv_single_iunit_payback().to_frame().reset_index(drop=True), None),
             #('L126:L250', obj.oc.soln_vs_conv_single_iunit_payback_discounted().to_frame().reset_index(drop=True), None),
             ('M126:M250', obj.oc.soln_only_single_iunit_cashflow(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), None),
             ('N126:N250', obj.oc.soln_only_single_iunit_npv(
-            ).to_frame().reset_index(drop=True), None),
+                ).to_frame().reset_index(drop=True), None),
             #('O126:O250', obj.oc.soln_only_single_iunit_payback().to_frame().reset_index(drop=True), None),
             #('P126:P250', obj.oc.soln_only_single_iunit_payback_discounted().to_frame().reset_index(drop=True), None),
             ]
@@ -965,7 +961,7 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True, is_
 
     # similar to operating cost, some co2 calcs values are very slightly offset from zero due to
     # floating point errors. We mask the problematic tables when they are close to 0.
-    s = obj.c2.co2eq_mmt_reduced().reset_index()
+    s = obj.c2.co2eq_mmt_reduced().reset_index().abs()
     near_zero_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
     if regional_mask is not None:
         near_zero_mask = near_zero_mask | regional_mask
@@ -1010,17 +1006,20 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True, is_
                 ('A172:F217', obj.c2.co2eq_ppm_calculator().loc[2015:].reset_index(), None), ])
 
     else:
+        s = obj.c2.co2_ppm_calculator().loc[2015:].reset_index().abs()
+        ppm_near_zero_mask = s.mask(s < 0.000001, other=True).where(s < 0.000001, other=False)
         verify['CO2 Calcs'] = [
                 ('A65:K110', obj.c2.co2eq_mmt_reduced(
-                ).loc[2015:].reset_index(), near_zero_mask),
+                    ).loc[2015:].reset_index(), near_zero_mask),
                 ('A121:G166', obj.c2.co2_sequestered_global().reset_index().drop(
                     columns=['Global Arctic']), None),
                 ('A173:AW218', obj.c2.co2_ppm_calculator(
-                ).loc[2015:].reset_index(), None),
+                    ).loc[2015:].reset_index(), ppm_near_zero_mask),
                 # CO2 eq table has an N20 column for LAND xls sheets that doesn't appear to be used, so we ignore it
                 ('A225:C270', obj.c2.co2eq_ppm_calculator().loc[2015:, [
-                 'CO2-eq PPM', 'CO2 PPM']].reset_index(), None),
-                ('E225:G270', obj.c2.co2eq_ppm_calculator().loc[2015:, ['CH4 PPB', 'CO2 RF', 'CH4 RF']].reset_index(drop=True),
+                    'CO2-eq PPM', 'CO2 PPM']].reset_index(), None),
+                ('E225:G270', obj.c2.co2eq_ppm_calculator().loc[2015:, [
+                    'CH4 PPB', 'CO2 RF', 'CH4 RF']].reset_index(drop=True),
                  near_zero_mask)
                 # All other tables are not implemented as they appear to be all 0
         ]
@@ -1235,10 +1234,9 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
                     # unit adoption is not zero it is 0.000000000000007105427357601000 which,
                     # when multiplied by a large unit cost, can result in a First Cost of (say) 2.5e-6
                     # instead of the zero which might otherwise be expected.
-                    # Mask off values less than one penny.
-                    s = expected_df
-                    mask = s.mask(s < 0.01, other=True).where(
-                        s < 0.01, other=False)
+                    # Mask off absolute values less than one penny.
+                    s = expected_df.abs()
+                    mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
             description = descr_base + sheetname + " " + cellrange
             compare_dataframes(actual_df=actual_df, expected_df=expected_df,
                     description=description, mask=mask)
