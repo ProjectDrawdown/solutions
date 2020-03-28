@@ -156,7 +156,8 @@ class TAM(object, metaclass=MetaclassCache):
             # be revisited later, when matching results from Excel is no longer required.
             # To revert, use:    m = forecast.loc[:2014, columns].mean(axis=1)
             # and:               m = forecast.loc[2015:, columns].mean(axis=1)
-            m = forecast.loc[:2014, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
+            forecast_filtered = forecast.loc[:2014, columns]
+            m = forecast_filtered.mask(forecast_filtered == 0.0, np.nan).mean(axis=1)
             m.name = 'Medium'
             result.update(m)
         elif columns and len(columns) == 1:
@@ -168,7 +169,8 @@ class TAM(object, metaclass=MetaclassCache):
                 name=tamconfig['source_after_2014'], groups_only=False, region_key=region_key)
         if columns and len(columns) > 1:
             # see comment above about Mean and this lambda function
-            m = forecast.loc[2015:, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
+            forecast_filtered = forecast.loc[2015:, columns]
+            m = forecast_filtered.mask(forecast_filtered == 0.0, np.nan).mean(axis=1)
             m.name = 'Medium'
             result.update(m)
         elif columns and len(columns) == 1:
@@ -299,8 +301,8 @@ class TAM(object, metaclass=MetaclassCache):
         result_pds = self._low_med_high(forecast=self.forecast_data(pds_region),
                 min_max_sd=self.forecast_min_max_sd(pds_region),
                 tamconfig=self.tamconfig[pds_region], data_sources=data_sources, region=pds_region)
-        result_2014 = result_main.loc[:2014].copy()
-        result_2015 = result_main.loc[2015:].copy()
+        result_2014 = result_main.loc[:2014]
+        result_2015 = result_main.loc[2015:]
         result_2015.update(other=result_pds, overwrite=True)
         result = pd.concat([result_2014, result_2015], sort=False)
         result.name = 'forecast_low_med_high_pds'
