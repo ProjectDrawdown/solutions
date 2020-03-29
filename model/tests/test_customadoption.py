@@ -86,14 +86,6 @@ def test_avg_high_low_with_limit():
     pd.testing.assert_frame_equal(highs.loc[2027:, :], limit.loc[2027:, :], check_dtype=False)
 
 
-def test_adjust_main_regions():
-    df = pd.read_csv(datadir.joinpath('af_high_ca_no_limits.csv'), index_col=0)
-    ca = customadoption.CustomAdoption(data_sources=[], soln_adoption_custom_name='')
-    ca._adjust_main_regions(df)
-    diff = df.loc[:, MAIN_REGIONS].sum(axis=1) - df.loc[:, 'World']
-    assert diff.sum() == pytest.approx(0)
-
-
 def test_adoption_data_per_region():
     data_sources = [
         {'name': 'scenario 1', 'filename': path1, 'include': True},
