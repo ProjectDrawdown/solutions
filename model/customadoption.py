@@ -39,17 +39,14 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             For RRS solutions this is typically tam.py:{pds,ref}_tam_per_region. For Land solutions
             this is typically tla.py:tla_per_region.
             The columns in total_adoption_limit must match the columns in generate_df_template.
-         match_regions_to_world: optionally adjust regional avg/high/low values so the main regions sum
-            to the world value.
     Generates average/high/low of chosen scenarios to be used as adoption data for the solution.
     """
 
     def __init__(self, data_sources, soln_adoption_custom_name, low_sd_mult=1, high_sd_mult=1,
-                 total_adoption_limit=None, match_regions_to_world=True):
+                 total_adoption_limit=None):
         self.low_sd_mult = low_sd_mult
         self.high_sd_mult = high_sd_mult
         self.total_adoption_limit = total_adoption_limit
-        self.match_regions_to_world = match_regions_to_world  # python-only feature
         self.scenarios = {}
         for d in data_sources:
             name = d.get('name', 'noname')
@@ -138,32 +135,12 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             avg_df[reg] = avg_vals = reg_df.mean(axis=1)
             high_df[reg] = avg_vals + reg_df.std(axis=1, ddof=0) * self.high_sd_mult
             low_df[reg] = avg_vals - reg_df.std(axis=1, ddof=0) * self.low_sd_mult
-        if self.match_regions_to_world and len(regions_to_avg) > 1:
-            self._adjust_main_regions(avg_df)
-            self._adjust_main_regions(high_df)
-            self._adjust_main_regions(low_df)
         if self.total_adoption_limit is not None:
             idx = self.total_adoption_limit.first_valid_index()
             avg_df.loc[idx:, :] = avg_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
             high_df.loc[idx:, :] = high_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
             low_df.loc[idx:, :] = low_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
         return avg_df, high_df, low_df
-
-    def _adjust_main_regions(self, regional_df):
-        """
-        For various reasons, the sum of the main region values can diverge from their corresponding
-        world values. This can produce problematic results.
-        We can fix this by proportionally adjusting the regional values to preserve their relative
-        ratios. This is a reasonable adjustment in the case where we are combining sources with
-        differing completeness of regional data, but would not be appropriate where the mismatch
-        is caused by error or a faulty calculation.
-        Args:
-            regional_df: DataFrame with REGIONS as columns and years as index.
-
-        Note: modifies DataFrame inplace
-        """
-        regional_df.loc[:, MAIN_REGIONS] = regional_df.loc[:, MAIN_REGIONS].mul(
-            regional_df.loc[:, 'World'] / regional_df.loc[:, MAIN_REGIONS].sum(axis=1), axis=0)
 
     @lru_cache()
     def adoption_data_per_region(self):
