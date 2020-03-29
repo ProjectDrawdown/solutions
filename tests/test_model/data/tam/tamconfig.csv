@@ -1,7 +1,0 @@
-param,World,PDS World,OECD90,Eastern Europe,Asia (Sans Japan),Middle East and Africa,Latin America,China,India,EU,USA
-source_until_2014,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES
-source_after_2014,Baseline Cases,Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES,ALL SOURCES
-trend,3rd Poly,3rd Poly,3rd Poly,3rd Poly,3rd Poly,3rd Poly,3rd Poly,3rd Poly,3rd Poly,3rd Poly,3rd Poly
-growth,Medium,Medium,Medium,Medium,Medium,Medium,Medium,Medium,Medium,Medium,Medium
-low_sd_mult,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
-high_sd_mult,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
