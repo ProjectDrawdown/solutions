@@ -28,11 +28,25 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             For example:
                 [
                   {'name': 'Study Name A', 'filename': 'filename A', 'include': boolean},
-                  {'name': 'Study Name B',{'filename': 'filename B', 'include': boolean},
+                  {'name': 'Study Name B', 'filename': 'filename B', 'include': boolean},
+                  {'name': 'Study Name C', 'include': boolean,
+                     'datapoints': pd.DataFrame([
+                         [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                         [2060, 10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0],
+                         ], columns=ca_pds_columns).set_index('Year')
+                  },
+                  {'name': 'Study Name D', 'include': boolean, 'growth_rate': 0.0132,
+                     'growth_initial': pd.DataFrame([
+                         [2014, 10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0],
+                         ], columns=ca_pds_columns).set_index('Year')
+                  }
+
                   ...
                 ]
-         soln_adoption_custom_name: from advanced_controls. Can be avg, high, low or a specific source.
-            For example: 'Average of All Custom PDS Scenarios'
+                where ca_pds_columns = ['Year'] + dd.REGIONS
+
+         soln_adoption_custom_name: from advanced_controls. Can be avg, high, low or a specific
+            source. For example: 'Average of All Custom PDS Scenarios'
          low_sd_mult: std deviation multiplier for 'low' values
          high_sd_mult: std deviation multiplier for 'high' values
          total_adoption_limit: the total adoption possible, adoption can be no greater than this.
@@ -53,11 +67,20 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             include = d.get('include', True)
             filename = d.get('filename', None)
             datapoints = d.get('datapoints', None)
-            assert not (filename and datapoints)  # one or the other, not both
+            growth_rate = d.get('growth_rate', None)
+            n = 0
             if filename is not None:
                 df = self._read_csv(filename)
+                n = n + 1
             if datapoints is not None:
                 df = self._linear_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
+                n = n + 1
+            if growth_rate is not None:
+                growth_initial = d.get('growth_initial', None)
+                df = self._growth_forecast(rate=growth_rate, initial=growth_initial,
+                        start_year=2012, end_year=2060)
+                n = n + 1
+            assert n <= 1, "Only one of filename, datapoints, or growth_rate may be used"
             self.scenarios[name] = {'df': df, 'include': include}
         self.soln_adoption_custom_name = soln_adoption_custom_name
 
@@ -116,6 +139,32 @@ class CustomAdoption(object, metaclass=MetaclassCache):
 
         df.index = df.index.astype(int)
         df.index.name = 'Year'
+        return df.sort_index()
+
+    def _growth_forecast(self, rate, initial, start_year, end_year):
+        """Computes a line from an initial datapoint, and fills in a dataframe.
+           rate: floatng point number at which the initial dataframe should grow.
+           initial: a Pandas DataFrame of adoption data, indexed by year.
+             The columns are expected to be regions like 'World', 'EU', 'India', etc.
+             This dataframe can contain multiple rows; only the first row will be used.
+           start_year: year the trend should begin, sometimes earlier than the first datapoint
+           end_year: year the trend should extend to, usually past the last datapoint
+        """
+        # In Excel, the first datapoint is always used as 2014 to compute the growth until 2060.
+        # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.u0yuiva79mg1
+        final = initial.copy()
+        linear = initial.copy()
+        for y in range(2015, 2051):
+            final = final * (1 + rate)
+        linear.loc[2050] = final.iloc[0]
+
+        year1 = initial.index[0]
+        df = self._linear_forecast(datapoints=linear, start_year=year1, end_year=end_year)
+
+        # years prior to the initial datapoint are set equal to the initial datapoint
+        for y in range(start_year, year1+1):
+            df.loc[y] = initial.iloc[0]
+
         return df.sort_index()
 
 
