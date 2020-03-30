@@ -1319,6 +1319,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
          prefix: string to prepend to filenames
     """
     custom_ad_tab = wb.sheet_by_name(sheet_name)
+    defaultinclude = False if 'PDS' in sheet_name else True
 
     assert custom_ad_tab.cell_value(*cell_to_offsets('AN25')) == 'High'
     multipliers = {'high': custom_ad_tab.cell_value(*cell_to_offsets('AO25')),
@@ -1329,7 +1330,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
             continue
         name = normalize_source_name(str(custom_ad_tab.cell(row, 14).value))
         includestr = str(custom_ad_tab.cell_value(row, 18))
-        include = convert_bool(includestr) if includestr else False
+        include = convert_bool(includestr) if includestr else defaultinclude
         filename = get_filename_for_source(name, prefix=prefix)
         if not filename:
             continue
@@ -1338,7 +1339,8 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
             if normalize_source_name(str(custom_ad_tab.cell(row, 1).value)) == name:
                 df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name,
                                    header=0, index_col=0, usecols="A:K", skiprows=row + 1, nrows=49)
-                df.rename(mapper={'Middle East & Africa': 'Middle East and Africa'},
+                df.rename(mapper={'Middle East & Africa': 'Middle East and Africa',
+                          'Asia (sans Japan)': 'Asia (Sans Japan)'},
                           axis='columns', inplace=True)
                 if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
                     df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
