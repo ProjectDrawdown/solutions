@@ -327,7 +327,12 @@ def get_land_scenarios(wb, solution_category):
                     s['soln_pds_adoption_basis'] = 'Fully Customized PDS'
 
             assert sr_tab.cell_value(row + 262, 1) == 'REF ADOPTION SCENARIO INPUTS'
+            adopt = str(sr_tab.cell_value(row + 263, 4)).strip()
+            if adopt: s['soln_ref_adoption_basis'] = adopt
+            custom = str(sr_tab.cell_value(row + 264, 4)).strip()
+            if custom: s['soln_ref_adoption_custom_name'] = custom
             s['soln_ref_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 265, 4))
+
             assert sr_tab.cell_value(row + 286, 1) == 'Adoption Adjustment'
             adjust = sr_tab.cell_value(row + 287, 4)
             if adjust and adjust != "(none)":
@@ -698,6 +703,7 @@ def normalize_source_name(sourcename):
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Middle Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges',
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Lowest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges',
         'Based on average of: LUT/EWG (2019) -100% RES; Ecofys (2018) - 1.5ºC and Greenpeace (2015) Advanced [R]evolution': 'Based on average of: LUT/EWG 2019 100% RES, Ecofys 2018 1.5C and Greenpeace 2015 Advanced Revolution',
+        'FAO 2015 (Sum of all regions)': 'FAO 2015',  # Afforestation Drawdown 2020
     }
     normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
     if normalized in special_cases:
@@ -828,14 +834,22 @@ def write_ad(f, wb, outputdir):
     f.write("             " + xls(a, 19, 12) + ", " + xls(a, 22, 12) + ", " + xls(a, 25, 12) + ", ")
     f.write(xls(a, 28, 12) + ", " + xls(a, 31, 12) + ",\n")
     f.write("             " + xls(a, 34, 12) + ", " + xls(a, 37, 12) + ", " + xls(a, 40, 12) + "],\n")
-    f.write("            ['low_sd_mult', " + xln(a, 24, 1) + ", " + xln(a, 16, 16) + ", ")
-    f.write(xln(a, 19, 16) + ", " + xln(a, 22, 16) + ", " + xln(a, 25, 16) + ", ")
-    f.write(xln(a, 28, 16) + ", " + xln(a, 31, 16) + ", " + xln(a, 34, 16) + ", ")
-    f.write(xln(a, 37, 16) + ", " + xln(a, 40, 16) + "],\n")
-    f.write("            ['high_sd_mult', " + xln(a, 23, 1) + ", " + xln(a, 15, 16) + ", ")
-    f.write(xln(a, 18, 16) + ", " + xln(a, 21, 16) + ", " + xln(a, 24, 16) + ", ")
-    f.write(xln(a, 27, 16) + ", " + xln(a, 30, 16) + ", " + xln(a, 33, 16) + ", ")
-    f.write(xln(a, 36, 16) + ", " + xln(a, 39, 16) + "]]\n")
+    f.write("            ['low_sd_mult', " + xln(a, 24, 1) + ", ")
+    if xls(a, 16, 17) == 'S.D.':
+        f.write(xln(a, 16, 16) + ", " + xln(a, 19, 16) + ", " + xln(a, 22, 16) + ", ")
+        f.write(xln(a, 25, 16) + ", " + xln(a, 28, 16) + ", " + xln(a, 31, 16) + ", ")
+        f.write(xln(a, 34, 16) + ", " + xln(a, 37, 16) + ", " + xln(a, 40, 16) + "],\n")
+    else:
+        sd = xln(a, 24, 1)
+        f.write(f"{sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}],\n")
+    f.write("            ['high_sd_mult', " + xln(a, 23, 1) + ", ")
+    if xls(a, 15, 17) == 'S.D.':
+        f.write(xln(a, 15, 16) + ", " + xln(a, 18, 16) + ", " + xln(a, 21, 16) + ", ")
+        f.write(xln(a, 24, 16) + ", " + xln(a, 27, 16) + ", " + xln(a, 30, 16) + ", ")
+        f.write(xln(a, 33, 16) + ", " + xln(a, 36, 16) + ", " + xln(a, 39, 16) + "]]\n")
+    else:
+        sd = xln(a, 23, 1)
+        f.write(f"{sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}]]\n")
     f.write("        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],\n")
     f.write("            dtype=np.object).set_index('param')\n")
     ad_regions = find_ad_regions(wb=wb)
@@ -1195,12 +1209,20 @@ def find_ad_regions(wb):
     ad_microwind = {'World': 44, 'OECD90': 296, 'Eastern Europe': 170, 'Asia (Sans Japan)': 233,
                   'Middle East and Africa': 359, 'Latin America': 423, 'China': 487, 'India': 613,
                   'EU': 107, 'USA': 552}
+    ad_afforestation = {'World': 44, 'OECD90': 102, 'Eastern Europe': 164, 'Asia (Sans Japan)': 225,
+                  'Middle East and Africa': 286, 'Latin America': 347, 'China': 408, 'India': 470,
+                  'EU': 530, 'USA': 591}
     tab = wb.sheet_by_name("Adoption Data")
-    for candidate in [ad_microwind]:
+    for candidate in [ad_microwind, ad_afforestation]:
         for region, row in candidate.items():
             if region == 'World':
                 continue
-            if region.lower() not in str(tab.cell(row, 0).value).lower():
+            found = False
+            for r in range(row - 10, row + 1):
+                if region.lower() in str(tab.cell(r, 0).value).lower():
+                    found = True
+                    break
+            if not found:
                 break
         else:
             return candidate
