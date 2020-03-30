@@ -1,18 +1,18 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Shackley et al. 2015, Hinode-cho",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,Asia (Sans Japan),Japan,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-Hammond et al 2011 (Harsono et al. 2013),http://www.sciencedirect.com/science/article/pii/S0301421511001236,Asia (Sans Japan),Malaysia,1  - Peer Reviewed,2015,,,US$2011,0.0,US$2014,,Data not found in the given source,1.0
-"Hammond et al 2011, Green Energy Corp. ",http://www.sciencedirect.com/science/article/pii/S0301421511001236,USA,USA,1  - Peer Reviewed,2015,,,US$2011,0.0,US$2014,,Data not found in the given source,1.0
-"Hammond et al 2011, GEM America",http://www.sciencedirect.com/science/article/pii/S0301421511001236,USA,USA,1  - Peer Reviewed,2015,,,US$2011,0.0,US$2014,,Data not found in the given source,1.0
-"Hammond et al 2011, International Environmental Services Corporation",http://www.sciencedirect.com/science/article/pii/S0301421511001236,USA,USA,1  - Peer Reviewed,2015,,,US$2011,0.0,US$2014,,Data not found in the given source,1.0
-"Hammond et al 2011, Pan America Resources",http://www.sciencedirect.com/science/article/pii/S0301421511001236,USA,USA,1  - Peer Reviewed,2015,,,US$2011,0.0,US$2014,,Data not found in the given source,1.0
-"Hammond et al 2011, Wastegen",http://www.sciencedirect.com/science/article/pii/S0301421511001236,OECD90,UK,1  - Peer Reviewed,2015,,,US$2011,0.0,US$2014,,Data not found in the given source,1.0
-"Shackley et al. 2015, (McCarl et al. 2009)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,World,World,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-"Shackley et al. 2015, (Bridgwater et al. 2002)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK and Europe,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-"Shackley et al. 2015, (Bridgwater 2009, small scale)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK and Europe,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-"Shackley et al. 2015, (Bridgwater 2009, medium scale)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK and Europe,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-"Shackley et al. 2015, (Bridgwater 2009, large scale)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK and Europe,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-"Shackley et al. 2015, Coaltec",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,USA,USA,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-"Shackley et al. 2015, Coaltec",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,USA,USA,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-"Shackley et al. 2015, UKBRC: large scale",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-"Shackley et al. 2015, UKBRC: medium scale",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
-"Shackley et al. 2015, UKBRC: small scale",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK,1  - Peer Reviewed,2015,,,US$2007,0.0,US$2014,,Table 6,
+"Shackley et al. 2015, Hinode-cho",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,Asia (Sans Japan),Japan,1  - Peer Reviewed,2015,,55500000.0,US$2007,63269999.99999999,US$2014,,Table 6,
+Hammond et al 2011 (Harsono et al. 2013),http://www.sciencedirect.com/science/article/pii/S0301421511001236,Asia (Sans Japan),Malaysia,1  - Peer Reviewed,2015,,1270000.0,US$2011,1333500.0,US$2014,,Data not found in the given source,1.0
+"Hammond et al 2011, Green Energy Corp. ",http://www.sciencedirect.com/science/article/pii/S0301421511001236,USA,USA,1  - Peer Reviewed,2015,,153000000.0,US$2011,160650000.0,US$2014,,Data not found in the given source,1.0
+"Hammond et al 2011, GEM America",http://www.sciencedirect.com/science/article/pii/S0301421511001236,USA,USA,1  - Peer Reviewed,2015,,19720000.0,US$2011,20706000.0,US$2014,,Data not found in the given source,1.0
+"Hammond et al 2011, International Environmental Services Corporation",http://www.sciencedirect.com/science/article/pii/S0301421511001236,USA,USA,1  - Peer Reviewed,2015,,34660000.0,US$2011,36393000.0,US$2014,,Data not found in the given source,1.0
+"Hammond et al 2011, Pan America Resources",http://www.sciencedirect.com/science/article/pii/S0301421511001236,USA,USA,1  - Peer Reviewed,2015,,14830000.0,US$2011,15571500.0,US$2014,,Data not found in the given source,1.0
+"Hammond et al 2011, Wastegen",http://www.sciencedirect.com/science/article/pii/S0301421511001236,OECD90,UK,1  - Peer Reviewed,2015,,89530000.0,US$2011,94006500.0,US$2014,,Data not found in the given source,1.0
+"Shackley et al. 2015, (McCarl et al. 2009)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,World,World,1  - Peer Reviewed,2015,,14200000.0,US$2007,16187999.999999998,US$2014,,Table 6,
+"Shackley et al. 2015, (Bridgwater et al. 2002)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK and Europe,1  - Peer Reviewed,2015,,17050000.0,US$2007,19437000.0,US$2014,,Table 6,
+"Shackley et al. 2015, (Bridgwater 2009, small scale)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK and Europe,1  - Peer Reviewed,2015,,2700000.0,US$2007,3077999.9999999995,US$2014,,Table 6,
+"Shackley et al. 2015, (Bridgwater 2009, medium scale)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK and Europe,1  - Peer Reviewed,2015,,11000000.0,US$2007,12539999.999999998,US$2014,,Table 6,
+"Shackley et al. 2015, (Bridgwater 2009, large scale)",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK and Europe,1  - Peer Reviewed,2015,,52000000.0,US$2007,59279999.99999999,US$2014,,Table 6,
+"Shackley et al. 2015, Coaltec",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,USA,USA,1  - Peer Reviewed,2015,,1200000.0,US$2007,1367999.9999999998,US$2014,,Table 6,
+"Shackley et al. 2015, Coaltec",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,USA,USA,1  - Peer Reviewed,2015,,5000000.0,US$2007,5699999.999999999,US$2014,,Table 6,
+"Shackley et al. 2015, UKBRC: large scale",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK,1  - Peer Reviewed,2015,,41250000.0,US$2007,47024999.99999999,US$2014,,Table 6,
+"Shackley et al. 2015, UKBRC: medium scale",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK,1  - Peer Reviewed,2015,,8000000.0,US$2007,9120000.0,US$2014,,Table 6,
+"Shackley et al. 2015, UKBRC: small scale",http://www.geos.ed.ac.uk/homes/sshackle/CostsBiochar.pdf,OECD90,UK,1  - Peer Reviewed,2015,,900000.0,US$2007,1025999.9999999999,US$2014,,Table 6,
