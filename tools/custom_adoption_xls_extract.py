@@ -2,7 +2,8 @@ import xlrd
 from collections import OrderedDict
 import pandas as pd
 from tools.util import cell_to_offsets, convert_float
-from model.customadoption import generate_df_template, YEARS, REGIONS
+from model.customadoption import generate_df_template, YEARS
+import model.dd as dd
 
 
 class CustomAdoptionReader:
@@ -48,7 +49,7 @@ class CustomAdoptionReader:
             row1, col1 = cell_to_offsets(scenario_num_cell)
         else:  # for use with read_xls
             row1, col1 = scenario_num_cell
-        for c, region in enumerate(REGIONS):
+        for c, region in enumerate(dd.REGIONS):
             col_name = self.sheet.cell_value(row1 + 1, col1 + 1 + c)
             assert col_name == region, 'column mismatch (xls: {}, python: {})'.format(col_name, region)
             col = pd.Series(index=df.index)

@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 from model.metaclass_cache import MetaclassCache
-from model.dd import REGIONS, MAIN_REGIONS
+import model.dd as dd
 import pandas as pd
 import numpy as np
 
@@ -12,7 +12,7 @@ YEARS = list(range(2012, 2061))
 
 def generate_df_template():
     """ Returns DataFrame to be populated by adoption data """
-    df = pd.DataFrame(index=YEARS, columns=REGIONS, dtype=np.float64)
+    df = pd.DataFrame(index=YEARS, columns=dd.REGIONS, dtype=np.float64)
     df.index = df.index.astype(int)
     df.index.name = 'Year'
     return df
@@ -91,8 +91,8 @@ class CustomAdoption(object, metaclass=MetaclassCache):
                          skip_blank_lines=True, comment='#', dtype=np.float64)
         df.index = df.index.astype(int)
         df.index.name = 'Year'
-        assert list(df.columns) == REGIONS
-        assert list(df.index) == YEARS
+        assert list(df.columns) == dd.REGIONS, f"unknown columns: {list(df.columns)}"
+        assert list(df.index) == YEARS, f"unknown index: {list(df.index)}"
         return df
 
 
@@ -246,7 +246,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             df = scen['df'].loc[2020:, :]
 
             # check if any regional data
-            has_regional_data = df.loc[2020:, MAIN_REGIONS].any().any()
+            has_regional_data = df.loc[2020:, dd.MAIN_REGIONS].any().any()
             report_summary.loc[name, 'Has regional data'] = has_regional_data
 
             # check which scenarios exceed the given regional adoption limits
@@ -259,7 +259,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
 
             # check ratio of the sum of the main regions to world region (should be ~1)
             if has_regional_data:
-                adoption_ratio = df.loc[2020:, MAIN_REGIONS].sum(axis=1) / df.loc[:, 'World']
+                adoption_ratio = df.loc[2020:, dd.MAIN_REGIONS].sum(axis=1) / df.loc[:, 'World']
                 report_data[name]['adoption ratio'] = adoption_ratio
                 # we allow a tolerance of 1%
                 report_summary.loc[name, 'Regions exceed world'] = adoption_ratio[adoption_ratio > 1.01].any()
