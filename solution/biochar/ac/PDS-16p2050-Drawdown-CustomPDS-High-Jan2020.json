@@ -1,8 +1,8 @@
 {
-    "name": "PDS-20p2050-Optimum-PDScustom-max-Bookedition1",
+    "name": "PDS-16p2050-Drawdown-CustomPDS-High-Jan2020",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "The current adoption of the solution was based on the \"Volumes of biochar transacted in 2014 and 2013 by region\" given by International Biochar Initiative 2014. The future adoption scenarios are based on the linear and 2nd degree polynomial trend of the total volume of biochar transacted between 2013-2015. Some scenarios have assumed 10-20% adoption of biochar based on the  Total Available Market  (TAM) as projected for the year 2050. This scenario presents the result of the \"max linear trend\" PDS custom adoption scenario. The result are higher than the Book edition 1, largely due to the correction of TAM for biochar. In addition, this model also includes revisions made to the financial calculations. ",
+    "description": "Updated results with new data",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -173,7 +173,8 @@
             0.0
         ]
     ],
-    "soln_pds_adoption_custom_name": "Linear, max growth",
-    "soln_ref_adoption_basis": "Default",
+    "soln_pds_adoption_custom_name": "High of All Custom PDS Scenarios",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Average of All Custom REF Scenarios",
     "soln_ref_adoption_regional_data": false
 }
