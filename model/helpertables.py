@@ -16,7 +16,7 @@ class HelperTables:
                  ref_adoption_limits=None, pds_adoption_limits=None,
                  pds_adoption_trend_per_region=None, pds_adoption_is_single_source=False,
                  ref_adoption_data_per_region=None, use_first_pds_datapoint_main=True,
-                 adoption_base_year=2014):
+                 adoption_base_year=2014, copy_pds_to_ref=False):
         """
         HelperTables.
            Arguments:
@@ -46,6 +46,8 @@ class HelperTables:
              adoption_base_year: solutions developed by the 2018 (and prior) cohorts used 2014
                as the base year for adoption. Solurions developed in the 2019 cohort use 2018
                as the base year.
+             copy_pds_to_ref: whether years <= adoption_base_year should be copied from
+               PDS to ref. Mostly used by cohort2019 energy models.
         """
         self.ac = ac
         self.ref_datapoints = ref_datapoints
@@ -58,6 +60,7 @@ class HelperTables:
         self.ref_adoption_data_per_region = ref_adoption_data_per_region
         self.use_first_pds_datapoint_main = use_first_pds_datapoint_main
         self.adoption_base_year = adoption_base_year
+        self.copy_pds_to_ref = copy_pds_to_ref
 
     @lru_cache()
     def soln_ref_funits_adopted(self, suppress_override=False):
@@ -89,7 +92,7 @@ class HelperTables:
                 adoption['World'] = adoption['World'].combine(
                     self.ref_adoption_limits['World'].fillna(0.0), min)
 
-        if self.adoption_base_year > 2014:
+        if self.adoption_base_year > 2014 and self.copy_pds_to_ref:
             # The Drawdown 2020 models get REF data for the World region for 2014-2018 from PDS.
             funits = self.soln_pds_funits_adopted(suppress_override=True)
             main_region = list(adoption.columns)[0]
@@ -154,10 +157,10 @@ class HelperTables:
         main_region = dd.REGIONS[0]
         first_year = self.pds_datapoints.first_valid_index()
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-            adoption = self.pds_adoption_data_per_region.loc[first_year:, :].copy(deep=True)
+            adoption = self.pds_adoption_data_per_region.loc[2014:, :].copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Linear':
             last_year = dd.CORE_END_YEAR
-            adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints)
+            adoption = self._linear_forecast(2014, last_year, self.pds_datapoints)
         elif 'S-Curve' in self.ac.soln_pds_adoption_basis:
             adoption = self.pds_adoption_trend_per_region.copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':

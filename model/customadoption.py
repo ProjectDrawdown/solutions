@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 from model.metaclass_cache import MetaclassCache
-from model.dd import REGIONS, MAIN_REGIONS
+import model.dd as dd
 import pandas as pd
 import numpy as np
 
@@ -12,7 +12,7 @@ YEARS = list(range(2012, 2061))
 
 def generate_df_template():
     """ Returns DataFrame to be populated by adoption data """
-    df = pd.DataFrame(index=YEARS, columns=REGIONS, dtype=np.float64)
+    df = pd.DataFrame(index=YEARS, columns=dd.REGIONS, dtype=np.float64)
     df.index = df.index.astype(int)
     df.index.name = 'Year'
     return df
@@ -28,39 +28,59 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             For example:
                 [
                   {'name': 'Study Name A', 'filename': 'filename A', 'include': boolean},
-                  {'name': 'Study Name B',{'filename': 'filename B', 'include': boolean},
+                  {'name': 'Study Name B', 'filename': 'filename B', 'include': boolean},
+                  {'name': 'Study Name C', 'include': boolean,
+                     'datapoints': pd.DataFrame([
+                         [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                         [2060, 10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0],
+                         ], columns=ca_pds_columns).set_index('Year')
+                  },
+                  {'name': 'Study Name D', 'include': boolean, 'growth_rate': 0.0132,
+                     'growth_initial': pd.DataFrame([
+                         [2014, 10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0],
+                         ], columns=ca_pds_columns).set_index('Year')
+                  }
+
                   ...
                 ]
-         soln_adoption_custom_name: from advanced_controls. Can be avg, high, low or a specific source.
-            For example: 'Average of All Custom PDS Scenarios'
+                where ca_pds_columns = ['Year'] + dd.REGIONS
+
+         soln_adoption_custom_name: from advanced_controls. Can be avg, high, low or a specific
+            source. For example: 'Average of All Custom PDS Scenarios'
          low_sd_mult: std deviation multiplier for 'low' values
          high_sd_mult: std deviation multiplier for 'high' values
          total_adoption_limit: the total adoption possible, adoption can be no greater than this.
             For RRS solutions this is typically tam.py:{pds,ref}_tam_per_region. For Land solutions
             this is typically tla.py:tla_per_region.
             The columns in total_adoption_limit must match the columns in generate_df_template.
-         match_regions_to_world: optionally adjust regional avg/high/low values so the main regions sum
-            to the world value.
     Generates average/high/low of chosen scenarios to be used as adoption data for the solution.
     """
 
     def __init__(self, data_sources, soln_adoption_custom_name, low_sd_mult=1, high_sd_mult=1,
-                 total_adoption_limit=None, match_regions_to_world=True):
+                 total_adoption_limit=None):
         self.low_sd_mult = low_sd_mult
         self.high_sd_mult = high_sd_mult
         self.total_adoption_limit = total_adoption_limit
-        self.match_regions_to_world = match_regions_to_world  # python-only feature
         self.scenarios = {}
         for d in data_sources:
             name = d.get('name', 'noname')
             include = d.get('include', True)
             filename = d.get('filename', None)
             datapoints = d.get('datapoints', None)
-            assert not (filename and datapoints)  # one or the other, not both
+            growth_rate = d.get('growth_rate', None)
+            n = 0
             if filename is not None:
                 df = self._read_csv(filename)
+                n = n + 1
             if datapoints is not None:
                 df = self._linear_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
+                n = n + 1
+            if growth_rate is not None:
+                growth_initial = d.get('growth_initial', None)
+                df = self._growth_forecast(rate=growth_rate, initial=growth_initial,
+                        start_year=2012, end_year=2060)
+                n = n + 1
+            assert n <= 1, "Only one of filename, datapoints, or growth_rate may be used"
             self.scenarios[name] = {'df': df, 'include': include}
         self.soln_adoption_custom_name = soln_adoption_custom_name
 
@@ -71,8 +91,8 @@ class CustomAdoption(object, metaclass=MetaclassCache):
                          skip_blank_lines=True, comment='#', dtype=np.float64)
         df.index = df.index.astype(int)
         df.index.name = 'Year'
-        assert list(df.columns) == REGIONS
-        assert list(df.index) == YEARS
+        assert list(df.columns) == dd.REGIONS, f"unknown columns: {list(df.columns)}"
+        assert list(df.index) == YEARS, f"unknown index: {list(df.index)}"
         return df
 
 
@@ -121,6 +141,32 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         df.index.name = 'Year'
         return df.sort_index()
 
+    def _growth_forecast(self, rate, initial, start_year, end_year):
+        """Computes a line from an initial datapoint, and fills in a dataframe.
+           rate: floatng point number at which the initial dataframe should grow.
+           initial: a Pandas DataFrame of adoption data, indexed by year.
+             The columns are expected to be regions like 'World', 'EU', 'India', etc.
+             This dataframe can contain multiple rows; only the first row will be used.
+           start_year: year the trend should begin, sometimes earlier than the first datapoint
+           end_year: year the trend should extend to, usually past the last datapoint
+        """
+        # In Excel, the first datapoint is always used as 2014 to compute the growth until 2060.
+        # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.u0yuiva79mg1
+        final = initial.copy()
+        linear = initial.copy()
+        for y in range(2015, 2051):
+            final = final * (1 + rate)
+        linear.loc[2050] = final.iloc[0]
+
+        year1 = initial.index[0]
+        df = self._linear_forecast(datapoints=linear, start_year=year1, end_year=end_year)
+
+        # years prior to the initial datapoint are set equal to the initial datapoint
+        for y in range(start_year, year1+1):
+            df.loc[y] = initial.iloc[0]
+
+        return df.sort_index()
+
 
     def _avg_high_low(self):
         """ Returns DataFrames of average, high and low scenarios. """
@@ -138,32 +184,12 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             avg_df[reg] = avg_vals = reg_df.mean(axis=1)
             high_df[reg] = avg_vals + reg_df.std(axis=1, ddof=0) * self.high_sd_mult
             low_df[reg] = avg_vals - reg_df.std(axis=1, ddof=0) * self.low_sd_mult
-        if self.match_regions_to_world and len(regions_to_avg) > 1:
-            self._adjust_main_regions(avg_df)
-            self._adjust_main_regions(high_df)
-            self._adjust_main_regions(low_df)
         if self.total_adoption_limit is not None:
             idx = self.total_adoption_limit.first_valid_index()
             avg_df.loc[idx:, :] = avg_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
             high_df.loc[idx:, :] = high_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
             low_df.loc[idx:, :] = low_df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
         return avg_df, high_df, low_df
-
-    def _adjust_main_regions(self, regional_df):
-        """
-        For various reasons, the sum of the main region values can diverge from their corresponding
-        world values. This can produce problematic results.
-        We can fix this by proportionally adjusting the regional values to preserve their relative
-        ratios. This is a reasonable adjustment in the case where we are combining sources with
-        differing completeness of regional data, but would not be appropriate where the mismatch
-        is caused by error or a faulty calculation.
-        Args:
-            regional_df: DataFrame with REGIONS as columns and years as index.
-
-        Note: modifies DataFrame inplace
-        """
-        regional_df.loc[:, MAIN_REGIONS] = regional_df.loc[:, MAIN_REGIONS].mul(
-            regional_df.loc[:, 'World'] / regional_df.loc[:, MAIN_REGIONS].sum(axis=1), axis=0)
 
     @lru_cache()
     def adoption_data_per_region(self):
@@ -220,7 +246,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             df = scen['df'].loc[2020:, :]
 
             # check if any regional data
-            has_regional_data = df.loc[2020:, MAIN_REGIONS].any().any()
+            has_regional_data = df.loc[2020:, dd.MAIN_REGIONS].any().any()
             report_summary.loc[name, 'Has regional data'] = has_regional_data
 
             # check which scenarios exceed the given regional adoption limits
@@ -233,7 +259,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
 
             # check ratio of the sum of the main regions to world region (should be ~1)
             if has_regional_data:
-                adoption_ratio = df.loc[2020:, MAIN_REGIONS].sum(axis=1) / df.loc[:, 'World']
+                adoption_ratio = df.loc[2020:, dd.MAIN_REGIONS].sum(axis=1) / df.loc[:, 'World']
                 report_data[name]['adoption ratio'] = adoption_ratio
                 # we allow a tolerance of 1%
                 report_summary.loc[name, 'Regions exceed world'] = adoption_ratio[adoption_ratio > 1.01].any()

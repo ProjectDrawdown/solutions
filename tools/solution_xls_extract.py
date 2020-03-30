@@ -281,6 +281,19 @@ def get_land_scenarios(wb, solution_category):
             assert sr_tab.cell_value(row + 201, 3) == 'Custom TLA Used?:'
             s['use_custom_tla'] = convert_bool(sr_tab.cell_value(row + 201, 4))
 
+            s['ref_base_adoption'] = {
+                'World': convert_sr_float(sr_tab.cell_value(row + 218, 4)),
+                'OECD90': convert_sr_float(sr_tab.cell_value(row + 219, 4)),
+                'Eastern Europe': convert_sr_float(sr_tab.cell_value(row + 220, 4)),
+                'Asia (Sans Japan)': convert_sr_float(sr_tab.cell_value(row + 221, 4)),
+                'Middle East and Africa': convert_sr_float(sr_tab.cell_value(row + 222, 4)),
+                'Latin America': convert_sr_float(sr_tab.cell_value(row + 223, 4)),
+                'China': convert_sr_float(sr_tab.cell_value(row + 224, 4)),
+                'India': convert_sr_float(sr_tab.cell_value(row + 225, 4)),
+                'EU': convert_sr_float(sr_tab.cell_value(row + 226, 4)),
+                'USA': convert_sr_float(sr_tab.cell_value(row + 227, 4)),
+            }
+
             assert sr_tab.cell_value(row + 230, 1) == 'PDS ADOPTION SCENARIO INPUTS'
             adopt = str(sr_tab.cell_value(row + 231, 4)).strip()
             if adopt: s['soln_pds_adoption_basis'] = adopt
@@ -773,6 +786,17 @@ def get_filename_for_source(sourcename, prefix=''):
     return prefix + filename + '.csv'
 
 
+def write_aez(f, wb):
+    a = wb.sheet_by_name('Land Allocation - Max TLA')
+    first_solution = str(a.cell_value(*cell_to_offsets('B18')))
+    if first_solution == 'Peatland Protection':
+        cohort = 2019
+    elif first_solution == 'Forest Protection':
+        cohort = 2018
+    else:
+        raise ValueError('cannot determine AEZ Land Allocation to use')
+    f.write(f"        self.ae = aez.AEZ(solution_name=self.name, cohort={cohort})\n")
+
 def write_ad(f, wb, outputdir):
     """Generate the Adoption Data section of a solution.
        Arguments:
@@ -956,9 +980,18 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     first_world_pds_yearly_result = int(h.cell_value(*cell_to_offsets('C91')))
     use_first_pds_datapoint_main = (first_world_pds_datapoint == first_world_pds_yearly_result)
 
-    adoption_base_year = None
-    if a.cell_value(*cell_to_offsets('D59')):
+    try:
         adoption_base_year = int(a.cell_value(*cell_to_offsets('D59')))
+    except ValueError:
+        try:
+            adoption_base_year = int(a.cell_value(*cell_to_offsets('D57')))
+        except ValueError:
+            adoption_base_year = None
+
+    copy_pds_to_ref = True
+    for pds, ref in [('C91', 'C27'), ('C92', 'C28'), ('C93', 'C29'), ('C94', 'C30')]:
+        if int(h.cell_value(*cell_to_offsets(pds))) != int(h.cell_value(*cell_to_offsets(ref))):
+            copy_pds_to_ref = False
 
     f.write("        self.ht = helpertables.HelperTables(ac=self.ac,\n")
     f.write("            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
@@ -972,6 +1005,7 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     f.write(f"            use_first_pds_datapoint_main={use_first_pds_datapoint_main},\n")
     if adoption_base_year:
         f.write(f"            adoption_base_year={adoption_base_year},\n")
+    f.write(f"            copy_pds_to_ref={copy_pds_to_ref},\n")
     f.write("            pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
     f.write("            pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
     f.write("\n")
@@ -1285,6 +1319,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
          prefix: string to prepend to filenames
     """
     custom_ad_tab = wb.sheet_by_name(sheet_name)
+    defaultinclude = False if 'PDS' in sheet_name else True
 
     assert custom_ad_tab.cell_value(*cell_to_offsets('AN25')) == 'High'
     multipliers = {'high': custom_ad_tab.cell_value(*cell_to_offsets('AO25')),
@@ -1295,7 +1330,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
             continue
         name = normalize_source_name(str(custom_ad_tab.cell(row, 14).value))
         includestr = str(custom_ad_tab.cell_value(row, 18))
-        include = convert_bool(includestr) if includestr else False
+        include = convert_bool(includestr) if includestr else defaultinclude
         filename = get_filename_for_source(name, prefix=prefix)
         if not filename:
             continue
@@ -1304,7 +1339,8 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
             if normalize_source_name(str(custom_ad_tab.cell(row, 1).value)) == name:
                 df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name,
                                    header=0, index_col=0, usecols="A:K", skiprows=row + 1, nrows=49)
-                df.rename(mapper={'Middle East & Africa': 'Middle East and Africa'},
+                df.rename(mapper={'Middle East & Africa': 'Middle East and Africa',
+                          'Asia (sans Japan)': 'Asia (Sans Japan)'},
                           axis='columns', inplace=True)
                 if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
                     df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
@@ -1443,8 +1479,13 @@ def output_solution_python_file(outputdir, xl_filename):
     wb = xlrd.open_workbook(filename=xl_filename)
     ac_tab = wb.sheet_by_name('Advanced Controls')
 
-    is_rrs = 'RRS' in xl_filename or 'TAM' in wb.sheet_names()
-    is_land = 'PDLAND' in xl_filename or 'L-Use' in xl_filename or 'AEZ Data' in wb.sheet_names()
+    if ('BIOSEQ' in xl_filename or 'PDLAND' in xl_filename or 'L-Use' in xl_filename or
+            'AEZ Data' in wb.sheet_names()):
+        is_rrs = False
+        is_land = True
+    elif 'RRS' in xl_filename or 'TAM' in wb.sheet_names():
+        is_rrs = True
+        is_land = False
     has_tam = is_rrs
 
     f = open(py_filename, 'w') if py_filename != '-' else sys.stdout
@@ -1553,14 +1594,14 @@ def output_solution_python_file(outputdir, xl_filename):
         write_tam(f=f, wb=wb, outputdir=outputdir)
     elif is_land:
         f.write("        # TLA\n")
-        f.write("        self.ae = aez.AEZ(solution_name=self.name)\n")
+        write_aez(f=f, wb=wb)
         if use_custom_tla:
             f.write("        if self.ac.use_custom_tla:\n")
             f.write("            self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))\n")
             f.write("            custom_world_vals = self.c_tla.get_world_values()\n")
             f.write("        else:\n")
             f.write("            custom_world_vals = None\n")
-            f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(), \n")
+            f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),\n")
             f.write("            custom_world_values=custom_world_vals)\n\n")
         else:
             f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())\n\n")

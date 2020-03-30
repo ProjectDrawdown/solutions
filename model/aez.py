@@ -25,10 +25,12 @@ class AEZ(object, metaclass=MetaclassCache):
        Args:
          solution_name: <soln file>.name
          ignore_allocation: optionally turn off land allocation to use max tla values
+         cohort: whether to use 2018 or 2019 land allocations.
     """
 
-    def __init__(self, solution_name, ignore_allocation=False):
+    def __init__(self, solution_name, ignore_allocation=False, cohort=2018):
         self.solution_name = solution_name
+        self.cohort = cohort
         self.regimes = dd.THERMAL_MOISTURE_REGIMES
 
         # AEZ data has a slightly different format for regions than the rest of the model. This
@@ -65,7 +67,7 @@ class AEZ(object, metaclass=MetaclassCache):
             df = df.fillna(0)
 
         for tmr in self.regimes:
-            tmr_path = LAND_CSV_PATH.joinpath('allocation', self._to_filename(tmr))
+            tmr_path = LAND_CSV_PATH.joinpath(f'allocation{self.cohort}', self._to_filename(tmr))
             for col in df:
                 if col.startswith('AEZ29'):  # this zone is not included in land allocation
                     continue
@@ -108,7 +110,7 @@ class AEZ(object, metaclass=MetaclassCache):
     def _populate_solution_land_distribution(self):
         """Calculates total land distribution for solution by region, currently fixed for all years.
 
-           'AEZ Data'!A47:H58
+           'AEZ Data'!A47:H58 in Cohort 2018, 'AEZ Data'!A53:H64 in Cohort 2019
         """
         cols = self.regimes
         soln_df = pd.DataFrame(columns=cols, index=self.regions).fillna(0.)
