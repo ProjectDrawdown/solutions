@@ -619,6 +619,39 @@ def test_cashflow_conversion_factor():
     assert result[2041] == pytest.approx(32.654203197)
 
 
+def test_conv_lifetime_zero():
+    soln_pds_install_cost_per_iunit = pd.Series(soln_pds_install_cost_per_iunit_nparray[:, 1],
+            index=soln_pds_install_cost_per_iunit_nparray[:, 0], dtype=np.float64)
+    ac = advanced_controls.AdvancedControls(report_end_year=2050,
+            conv_lifetime_capacity=0.0, conv_avg_annual_use=1.0,
+            soln_lifetime_capacity=70.0, soln_avg_annual_use=1.0,
+            conv_fixed_oper_cost_per_iunit=3.0, soln_fixed_oper_cost_per_iunit=4.0)
+    oc = operatingcost.OperatingCost(ac=ac, soln_net_annual_funits_adopted=None,
+            soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+            conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+            soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+            single_iunit_purchase_year=2017,
+            soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
+            conv_ref_install_cost_per_iunit=None, conversion_factor=1.0)
+    result = oc.soln_vs_conv_single_iunit_cashflow()
+    assert pd.isna(result.loc[2015:2060]).all()  # also tests that there is no DivideByZero error
+
+    # Same test, using conv_expected_lifetime = 0.0 for LAND models.
+    ac = advanced_controls.AdvancedControls(report_end_year=2050,
+            conv_expected_lifetime=0.0, soln_expected_lifetime=70.0,
+            conv_fixed_oper_cost_per_iunit=3.0, soln_fixed_oper_cost_per_iunit=4.0)
+    oc = operatingcost.OperatingCost(ac=ac, soln_net_annual_funits_adopted=None,
+            soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+            conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+            soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+            single_iunit_purchase_year=2017,
+            soln_pds_install_cost_per_iunit=soln_pds_install_cost_per_iunit,
+            conv_ref_install_cost_per_iunit=None, conversion_factor=1.0)
+    result = oc.soln_vs_conv_single_iunit_cashflow()
+    assert pd.isna(result.loc[2015:2060]).all()  # also tests that there is no DivideByZero error
+
+
+
 # SolarPVUtil 'Unit Adoption Calculations'!AX135:BH182
 soln_pds_tot_iunits_reqd_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
