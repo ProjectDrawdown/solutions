@@ -206,12 +206,14 @@ class HelperTables:
         # Note: this should be changed later. The jump between pds_datapoints
         # and the first row of custom adoption data causes anomalies in the regional results.
         # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
-        zero_zero = adoption.iloc[0, 0]
+        datapoint_year = self.pds_datapoints.first_valid_index()
+        main_region = dd.REGIONS[0]
+        first_datapoint_main_region = adoption.loc[datapoint_year, main_region]
         adoption.update(self.pds_datapoints.iloc[[0]])
         if not self.use_first_pds_datapoint_main:
             # Starting in Drawdown 2020 solutions, the World region computation is different
             # and no longer copies the first datapoint.
-            adoption.iloc[0, 0] = zero_zero
+            adoption.loc[datapoint_year, main_region] = first_datapoint_main_region
 
         adoption.name = "soln_pds_funits_adopted"
         adoption.index.name = "Year"
