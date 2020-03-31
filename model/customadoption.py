@@ -134,12 +134,16 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         for year in range(first_year - 1, start_year - 1, -1):
             df.loc[year] = (adopt0 - (float(year0 - year) * adopt_per_year)).clip(lower=0.0)
 
+        main_region = dd.REGIONS[0]
+        if df[main_region].isnull().all():
+            df[main_region] = df[dd.MAIN_REGIONS].sum(axis=1)
+
         if self.total_adoption_limit is not None:
             df = df.combine(self.total_adoption_limit, np.fmin)
 
         df.index = df.index.astype(int)
         df.index.name = 'Year'
-        return df.sort_index()
+        return df.sort_index().loc[start_year:end_year, :]
 
     def _growth_forecast(self, rate, initial, start_year, end_year):
         """Computes a line from an initial datapoint, and fills in a dataframe.
