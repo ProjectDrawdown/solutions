@@ -172,14 +172,18 @@ def get_rrs_scenarios(wb, solution_category):
             def percnt(r):
                 return 0.0 if sr_tab.cell_value(r, 4) == '' else sr_tab.cell_value(r, 4)
 
-            percentages = [('World', percnt(row + 170)), ('OECD90', percnt(row + 171)),
-                           ('Eastern Europe', percnt(row + 172)), ('Asia (Sans Japan)', percnt(row + 173)),
-
-                           ('Middle East and Africa', percnt(row + 174)), ('Latin America', percnt(row + 175)),
-
-                           ('China', percnt(row + 176)), ('India', percnt(row + 177)),
-                           ('EU', percnt(row + 178)), ('USA', percnt(row + 179))]
-            s['pds_adoption_final_percentage'] = percentages
+            s['pds_adoption_final_percentage'] = {
+                'World': percnt(row + 170),
+                'OECD90': percnt(row + 171),
+                'Eastern Europe': percnt(row + 172),
+                'Asia (Sans Japan)': percnt(row + 173),
+                'Middle East and Africa': percnt(row + 174),
+                'Latin America': percnt(row + 175),
+                'China': percnt(row + 176),
+                'India': percnt(row + 177),
+                'EU': percnt(row + 178),
+                'USA': percnt(row + 179),
+            }
 
             if s['soln_pds_adoption_basis'] == 'DEFAULT S-Curve':
                 s_curve_type = str(sr_tab.cell_value(row + 181, 4))
@@ -302,14 +306,18 @@ def get_land_scenarios(wb, solution_category):
             def percnt(r):
                 return 0.0 if sr_tab.cell_value(r, 4) == '' else sr_tab.cell_value(r, 4)
 
-            percentages = [('World', percnt(row + 236)), ('OECD90', percnt(row + 237)),
-                           ('Eastern Europe', percnt(row + 238)), ('Asia (Sans Japan)', percnt(row + 239)),
-
-                           ('Middle East and Africa', percnt(row + 240)), ('Latin America', percnt(row + 241)),
-
-                           ('China', percnt(row + 242)), ('India', percnt(row + 243)),
-                           ('EU', percnt(row + 244)), ('USA', percnt(row + 245))]
-            s['pds_adoption_final_percentage'] = percentages
+            s['pds_adoption_final_percentage'] = {
+                'World': percnt(row + 236),
+                'OECD90': percnt(row + 237),
+                'Eastern Europe': percnt(row + 238),
+                'Asia (Sans Japan)': percnt(row + 239),
+                'Middle East and Africa': percnt(row + 240),
+                'Latin America': percnt(row + 241),
+                'China': percnt(row + 242),
+                'India': percnt(row + 243),
+                'EU': percnt(row + 244),
+                'USA': percnt(row + 245),
+            }
 
             assert sr_tab.cell_value(row + 258, 1) == 'Fully Customized PDS'
             custom = str(sr_tab.cell_value(row + 259, 4)).strip()
@@ -928,8 +936,8 @@ def write_s_curve_ad(f, wb):
     f.write("        sc_percentages = list(self.ac.ref_base_adoption.values())\n")
     f.write("        sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
     f.write("        sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]\n")
-    f.write("        sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
-    f.write("        sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
+    f.write("        sconfig['last_percent'] = pd.Series(pd.Series(list(self.ac.pds_adoption_final_percentage.values()),\n")
+    f.write("            index=list(self.ac.pds_adoption_final_percentage.values()))\n")
     f.write("        if self.ac.pds_adoption_s_curve_innovation is not None:\n")
     f.write("          sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_innovation)\n")
     f.write("          sconfig['innovation'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
@@ -955,10 +963,11 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     final_datapoint_year = int(h.cell_value(*cell_to_offsets('B22')))
 
     tam_or_tla = 'ref_tam_per_region' if not is_land else 'self.tla_per_region'
-    f.write("        ht_ref_adoption_initial = pd.Series(list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)\n")
+    f.write("        ht_ref_adoption_initial = pd.Series(\n")
+    f.write("            list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)\n")
     # even when the final_datapoint_year is 2018, the TAM initial year is hard-coded to 2014
-    f.write(f"        ht_ref_adoption_final = {tam_or_tla}.loc[{final_datapoint_year}] * "
-        f"(ht_ref_adoption_initial / {tam_or_tla}.loc[2014])\n")
+    f.write(f"        ht_ref_adoption_final = {tam_or_tla}.loc[{final_datapoint_year}] * (ht_ref_adoption_initial /\n")
+    f.write(f"            {tam_or_tla}.loc[2014])\n")
     f.write("        ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
     f.write("        ht_ref_datapoints.loc[" + str(initial_datapoint_year) +
             "] = ht_ref_adoption_initial\n")
@@ -969,8 +978,9 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     final_datapoint_year = int(h.cell_value(*cell_to_offsets('B86')))
     tam_or_tla = 'pds_tam_per_region' if not is_land else 'self.tla_per_region'
     f.write("        ht_pds_adoption_initial = ht_ref_adoption_initial\n")
-    f.write("        ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
-    f.write("        ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))\n")
+    f.write("        ht_pds_adoption_final_percentage = pd.Series(\n")
+    f.write("            list(self.ac.pds_adoption_final_percentage.values()),\n")
+    f.write("            index=list(self.ac.pds_adoption_final_percentage.keys()))\n")
     f.write(f"        ht_pds_adoption_final = ht_pds_adoption_final_percentage * {tam_or_tla}.loc[{final_datapoint_year}]\n")
     f.write("        ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
     f.write("        ht_pds_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
@@ -1028,9 +1038,11 @@ def write_ua(f, wb, is_rrs=True):
     ac_tab = wb.sheet_by_name('Advanced Controls')
     f.write("        self.ua = unitadoption.UnitAdoption(ac=self.ac,\n")
     if is_rrs:
-        f.write("            ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,\n")
+        f.write("            ref_total_adoption_units=ref_tam_per_region,\n")
+        f.write("            pds_total_adoption_units=pds_tam_per_region,\n")
     else:
-        f.write("            ref_total_adoption_units=self.tla_per_region, pds_total_adoption_units=self.tla_per_region,\n")
+        f.write("            ref_total_adoption_units=self.tla_per_region,\n")
+        f.write("            pds_total_adoption_units=self.tla_per_region,\n")
         f.write("            electricity_unit_factor=1000000.0,\n")
     f.write("            soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
     f.write("            soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
