@@ -16,7 +16,7 @@ class HelperTables:
                  ref_adoption_limits=None, pds_adoption_limits=None,
                  pds_adoption_trend_per_region=None, pds_adoption_is_single_source=False,
                  ref_adoption_data_per_region=None, use_first_pds_datapoint_main=True,
-                 adoption_base_year=2014, copy_pds_to_ref=False):
+                 adoption_base_year=2014, copy_pds_to_ref=False, copy_ref_datapoint=True):
         """
         HelperTables.
            Arguments:
@@ -48,6 +48,7 @@ class HelperTables:
                as the base year.
              copy_pds_to_ref: whether years <= adoption_base_year should be copied from
                PDS to ref. Mostly used by cohort2019 energy models.
+             copy_ref_datapoint: whether to copy the first ref_datapoint directly into result.
         """
         self.ac = ac
         self.ref_datapoints = ref_datapoints
@@ -61,6 +62,7 @@ class HelperTables:
         self.use_first_pds_datapoint_main = use_first_pds_datapoint_main
         self.adoption_base_year = adoption_base_year
         self.copy_pds_to_ref = copy_pds_to_ref
+        self.copy_ref_datapoint = copy_ref_datapoint
 
     @lru_cache()
     def soln_ref_funits_adopted(self, suppress_override=False):
@@ -103,7 +105,7 @@ class HelperTables:
             # first cell of the table which is 2014. We implement bug-for-bug compatibility here.
             # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.i71c3bhbim59
             adoption.iloc[0, 1:] = self.ref_datapoints.iloc[0, 1:]
-        else:
+        elif self.copy_ref_datapoint:
             # Where we have data, use the actual data not the interpolation. Excel model does this
             # even in Custom REF Adoption case, unlike the top of this routine where we copy Custom
             # adoption verbatim.
