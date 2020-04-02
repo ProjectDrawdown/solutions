@@ -171,13 +171,14 @@ class CustomAdoption(object, metaclass=MetaclassCache):
 
         return df.sort_index()
 
-
     def _avg_high_low(self):
         """ Returns DataFrames of average, high and low scenarios. """
         regions_to_avg = {}
         for name, scen in self.scenarios.items():
             if scen['include']:
                 scen_df = scen['df'].dropna(axis=1, how='all')  # ignore null columns (i.e. blank regional data)
+                if self.total_adoption_limit is not None:
+                    scen_df = scen_df.combine(self.total_adoption_limit, np.minimum)
                 for reg in scen_df.columns:
                     if reg not in regions_to_avg:
                         regions_to_avg[reg] = pd.DataFrame({name: scen_df[reg]})
@@ -209,6 +210,8 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             result = data['df'].copy()
         else:
             raise ValueError('Unknown adoption name: ' + str(self.soln_adoption_custom_name))
+        if self.total_adoption_limit is not None:
+            result = result.combine(self.total_adoption_limit, np.minimum)
         result.name = 'adoption_data_per_region'
         return result
 

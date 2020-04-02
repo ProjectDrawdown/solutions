@@ -85,6 +85,26 @@ def test_avg_high_low_with_limit():
     pd.testing.assert_frame_equal(highs.loc[2027:, :], limit.loc[2027:, :], check_dtype=False)
 
 
+def test_avg_high_low_with_limit_per_source():
+    data_sources = [
+        {'name': 'scenario 1', 'filename': datadir.joinpath('ca_100.csv'), 'include': True},
+        {'name': 'scenario 2', 'filename': datadir.joinpath('ca_300.csv'), 'include': True},
+    ]
+    limit = pd.read_csv(datadir.joinpath('ca_200.csv'), index_col=0)
+    ca = customadoption.CustomAdoption(data_sources=data_sources, soln_adoption_custom_name='',
+                                       low_sd_mult=0.1, high_sd_mult=0.1,
+                                       total_adoption_limit=limit)
+    avg, high, low = ca._avg_high_low()
+    # if the limit is not applied to each individual source before averaging, then the average
+    # of 100.0 and 300.0 will be 200.0. Applying a limit of 200.0 to the computed average will
+    # not change anything.
+    # After applying the limit of 200.0 to ca_300.csv, the average of 100.0 and 200.0
+    # will be 150.0.
+    assert((avg == 150.0).all().all())
+    assert((high == 155.0).all().all())
+    assert((low == 145.0).all().all())
+
+
 def test_adoption_data_per_region():
     data_sources = [
         {'name': 'scenario 1', 'filename': path1, 'include': True},
