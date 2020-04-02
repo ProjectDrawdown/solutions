@@ -133,17 +133,19 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         adopt_per_year = (adopt1 - adopt0) / float(year1 - year0)
         for year in range(first_year - 1, start_year - 1, -1):
             df.loc[year] = (adopt0 - (float(year0 - year) * adopt_per_year)).clip(lower=0.0)
+        df.sort_index(inplace=True)
 
         main_region = dd.REGIONS[0]
         if df[main_region].isnull().all():
             df[main_region] = df[dd.MAIN_REGIONS].sum(axis=1)
 
         if self.total_adoption_limit is not None:
-            df = df.combine(self.total_adoption_limit, np.fmin)
+            idx = self.total_adoption_limit.first_valid_index()
+            df.loc[idx:, :] = df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
 
         df.index = df.index.astype(int)
         df.index.name = 'Year'
-        return df.sort_index().loc[start_year:end_year, :]
+        return df.loc[start_year:end_year, :]
 
     def _growth_forecast(self, rate, initial, start_year, end_year):
         """Computes a line from an initial datapoint, and fills in a dataframe.
@@ -171,13 +173,16 @@ class CustomAdoption(object, metaclass=MetaclassCache):
 
         return df.sort_index()
 
-
     def _avg_high_low(self):
         """ Returns DataFrames of average, high and low scenarios. """
         regions_to_avg = {}
         for name, scen in self.scenarios.items():
             if scen['include']:
                 scen_df = scen['df'].dropna(axis=1, how='all')  # ignore null columns (i.e. blank regional data)
+                if self.total_adoption_limit is not None:
+                    tal = self.total_adoption_limit
+                    idx = tal.first_valid_index()
+                    scen_df.loc[idx:, :] = scen_df.loc[idx:, :].combine(tal, np.minimum)
                 for reg in scen_df.columns:
                     if reg not in regions_to_avg:
                         regions_to_avg[reg] = pd.DataFrame({name: scen_df[reg]})
@@ -209,6 +214,9 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             result = data['df'].copy()
         else:
             raise ValueError('Unknown adoption name: ' + str(self.soln_adoption_custom_name))
+        if self.total_adoption_limit is not None:
+            idx = self.total_adoption_limit.first_valid_index()
+            result.loc[idx:, :] = result.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
         result.name = 'adoption_data_per_region'
         return result
 
