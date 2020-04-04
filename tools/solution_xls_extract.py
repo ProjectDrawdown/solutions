@@ -704,6 +704,7 @@ def normalize_source_name(sourcename):
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Lowest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges',
         'Based on average of: LUT/EWG (2019) -100% RES; Ecofys (2018) - 1.5ºC and Greenpeace (2015) Advanced [R]evolution': 'Based on average of: LUT/EWG 2019 100% RES, Ecofys 2018 1.5C and Greenpeace 2015 Advanced Revolution',
         'FAO 2015 (Sum of all regions)': 'FAO 2015',  # Afforestation Drawdown 2020
+        'FAO 2010 (Sum of all regions)': 'FAO 2010',  # Bamboo Drawdown 2020
     }
     normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
     if normalized in special_cases:
