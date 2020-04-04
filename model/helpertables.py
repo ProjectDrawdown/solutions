@@ -178,12 +178,11 @@ class HelperTables:
         elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
             raise NotImplementedError('Custom S-Curve support not implemented')
 
-        # Extend pds to match adoption's index
-        pds_adoption_limits_extended = self.pds_adoption_limits.reindex(adoption.index,
-                                                                        fill_value=np.inf)
-
         # cannot exceed the total addressable market or tla
         if self.pds_adoption_limits is not None:
+            # Extend pds to match adoption's index
+            pds_adoption_limits_extended = self.pds_adoption_limits.reindex(adoption.index,
+                                                                        fill_value=np.inf)
             cols = adoption.columns
             adoption.loc[:, :] = np.min([adoption.values,
                                         pds_adoption_limits_extended[cols].fillna(0.).values],
