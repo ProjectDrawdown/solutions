@@ -19,41 +19,65 @@ def linear_trend(data):
        Provides implementation for 'Adoption Data'!BY50:CA96 & 'TAM Data' columns BX:BZ
        Arguments: data is a pd.Series used to provide the x+y for curve fitting.
     """
-    result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
-            columns=['x', 'constant', 'adoption'], dtype=np.float64)
-    result.index.name = 'Year'
-    if data.dropna().empty:
-        return result
-    y = data.dropna().values
-    x = data.dropna().index - 2014
-    if x.size == 0 or y.size == 0: return result
-    (slope, intercept) = np.polyfit(x, y, 1)
-    for (offset, index) in enumerate(result.index):
-        result.loc[index, 'x'] = offset * slope
-        result.loc[index, 'constant'] = intercept
-        result.loc[index, 'adoption'] = sum(result.loc[index, result.columns != 'adoption'])
-    return result
 
+    years = np.arange(2014, 2061)
+    years_idx = pd.Index(years, name="Year")
+    columns = ["x", "constant", "adoption"]
+    data_clean = data.dropna()
+
+    if data_clean.empty: 
+        return pd.DataFrame(np.nan, columns=columns, dtype=np.float64, index=years_idx)
+
+    y = data_clean.values
+    x = data_clean.index - 2014
+
+    if x.size == 0 or y.size == 0: 
+        return pd.DataFrame(np.nan, columns=columns, dtype=np.float64, index=years_idx)
+
+    (slope, intercept) = np.polyfit(x, y, 1)
+
+    n_years = len(years)
+    offsets = np.arange(n_years)
+
+    x = offsets * slope
+    constant = np.full(n_years, intercept)
+    adoption = x + constant
+
+    return pd.DataFrame(np.column_stack([x,constant, adoption]), columns=columns,
+                                  dtype=np.float64, index=years_idx)
 
 def poly_degree2_trend(data):
     """2nd degree polynomial trend model.
        Provides implementation for 'Adoption Data'!CF50:CI96 & 'TAM Data' columns CE:CH
        Arguments: data is a pd.Series used to provide the x+y for curve fitting.
     """
-    result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
-            columns=['x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
-    result.index.name = 'Year'
-    if data.dropna().empty: return result
-    y = data.dropna().values
-    x = data.dropna().index - 2014
-    if x.size == 0 or y.size == 0: return result
+
+    years = np.arange(2014, 2061)
+    years_idx = pd.Index(years, name="Year")
+    columns = ['x^2', 'x', 'constant', 'adoption']
+    data_clean = data.dropna()
+
+    if data_clean.empty: 
+        return pd.DataFrame(np.nan, columns=columns, dtype=np.float64, index=years_idx)
+
+    y = data_clean.values
+    x = data_clean.index - 2014
+
+    if x.size == 0 or y.size == 0: 
+        return pd.DataFrame(np.nan, columns=columns, dtype=np.float64, index=years_idx)
+
     (c2, c1, intercept) = np.polyfit(x, y, 2)
-    for (offset, index) in enumerate(result.index):
-        result.loc[index, 'x^2'] = (offset ** 2) * c2
-        result.loc[index, 'x'] = offset * c1
-        result.loc[index, 'constant'] = intercept
-        result.loc[index, 'adoption'] = sum(result.loc[index, result.columns != 'adoption'])
-    return result
+    n_years = len(years)
+    offsets = np.arange(n_years)
+
+    x2 = (offsets ** 2) * c2
+    x = offsets * c1
+    constant = np.full(n_years, intercept)
+    adoption = x + x2 + constant
+
+    return pd.DataFrame(np.column_stack([x2, x, constant, adoption]), columns=columns,
+                                  dtype=np.float64, index=years_idx)
+
 
 
 def poly_degree3_trend(data):
@@ -61,21 +85,34 @@ def poly_degree3_trend(data):
        Provides implementation for 'Adoption Data'!CN50:CR96 & 'TAM Data' columns CM:CQ
        Arguments: data is a pd.Series used to provide the x+y for curve fitting.
     """
-    result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
-            columns=['x^3', 'x^2', 'x', 'constant', 'adoption'], dtype=np.float64)
-    result.index.name = 'Year'
-    if data.dropna().empty: return result
-    y = data.dropna().values
-    x = data.dropna().index - 2014
-    if x.size == 0 or y.size == 0: return result
+
+    years = np.arange(2014, 2061)
+    years_idx = pd.Index(years, name="Year")
+    columns = ['x^3', 'x^2', 'x', 'constant', 'adoption']
+    data_clean = data.dropna()
+
+    if data_clean.empty: 
+        return pd.DataFrame(np.nan, columns=columns, dtype=np.float64, index=years_idx)
+
+    y = data_clean.values
+    x = data_clean.index - 2014
+
+    if x.size == 0 or y.size == 0: 
+        return pd.DataFrame(np.nan, columns=columns, dtype=np.float64, index=years_idx)
+
     (c3, c2, c1, intercept) = np.polyfit(x, y, 3)
-    for (offset, index) in enumerate(result.index):
-        result.loc[index, 'x^3'] = (offset ** 3) * c3
-        result.loc[index, 'x^2'] = (offset ** 2) * c2
-        result.loc[index, 'x'] = offset * c1
-        result.loc[index, 'constant'] = intercept
-        result.loc[index, 'adoption'] = sum(result.loc[index, result.columns != 'adoption'])
-    return result
+    n_years = len(years)
+    offsets = np.arange(n_years)
+
+    x3 = (offsets ** 3) * c3
+    x2 = (offsets ** 2) * c2
+    x = offsets * c1
+    constant = np.full(n_years, intercept)
+    adoption = x + x2 + x3 + constant
+
+    return pd.DataFrame(np.column_stack([x3, x2, x, constant, adoption]), columns=columns,
+                                  dtype=np.float64, index=years_idx)
+
 
 
 def exponential_trend(data):
@@ -83,19 +120,31 @@ def exponential_trend(data):
        Provides implementation for 'Adoption Data'!CW50:CY96 & 'TAM Data' columns CV:CX
        Arguments: data is a pd.Series used to provide the x+y for curve fitting.
     """
-    result = pd.DataFrame(np.nan, index=np.arange(2014, 2061),
-            columns=['coeff', 'e^x', 'adoption'], dtype=np.float64)
-    result.index.name = 'Year'
-    if data.dropna().empty: return result
-    y = np.log(data.dropna().values)
-    x = data.dropna().index - 2014
-    if x.size == 0 or y.size == 0: return result
+    years = np.arange(2014, 2061)
+    years_idx = pd.Index(years, name="Year")
+    columns = ['coeff', 'e^x', 'adoption']
+    data_clean = data.dropna()
+
+    if data_clean.empty: 
+        return pd.DataFrame(np.nan, columns=columns, dtype=np.float64, index=years_idx)
+
+    y = np.log(data_clean.values)
+    x = data_clean.index - 2014
+
+    if x.size == 0 or y.size == 0: 
+        return pd.DataFrame(np.nan, columns=columns, dtype=np.float64, index=years_idx)
+
     (ce, coeff) = np.polyfit(x, y, 1)
-    for (offset, index) in enumerate(result.index):
-        result.loc[index, 'coeff'] = math.exp(coeff)
-        result.loc[index, 'e^x'] = math.exp(ce * offset)
-        result.loc[index, 'adoption'] = result.loc[index, 'coeff'] * result.loc[index, 'e^x']
-    return result
+    n_years = len(years)
+    offsets = np.arange(n_years)
+
+    ex = np.exp(offsets * ce)
+    coeff = np.full(n_years, np.exp(coeff))
+    adoption = ex * coeff
+
+    return pd.DataFrame(np.column_stack([coeff, ex, adoption]), columns=columns,
+                                  dtype=np.float64, index=years_idx)
+
 
 
 def single_trend(data):
