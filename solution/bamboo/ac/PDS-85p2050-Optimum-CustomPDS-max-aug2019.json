@@ -1,0 +1,116 @@
+{
+    "name": "PDS-85p2050-Optimum-CustomPDS-max-aug2019",
+    "solution_category": "land",
+    "vmas": "VMAs",
+    "description": "This scenario present result based on the updated 2019 AEZ model. Here the TLA for bamboo has increased and the new TLA is 337 Mha. Updates are also made to the adoption, financial and climate variables. Drawdown\u2019s future adoption for bamboo is based on data from the FAO\u2019s 2010 Forest Resource Assessment  (FAO, 2010a) as well as on projections from (Z. Song et al., 2013). Five custom adoption scenarios were created. This scenario presents the result based on maximum growth rate, which is represented by the scenario, \"max growth, linear trend\".",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "use_custom_tla": false,
+    "ref_base_adoption": {
+        "World": 33.7248409027092,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "Max growth, linear trend",
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014
+    ],
+    "conv_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_expected_lifetime": 0.0,
+    "yield_from_conv_practice": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "pds_2014_cost": {
+        "value": 915.355638487355,
+        "statistic": "mean"
+    },
+    "ref_2014_cost": {
+        "value": 915.355638487355,
+        "statistic": "mean"
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 238.068879794464,
+        "statistic": "mean"
+    },
+    "soln_expected_lifetime": 30.0,
+    "yield_gain_from_conv_to_soln": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "npv_discount_rate": 0.1,
+    "emissions_use_co2eq": true,
+    "emissions_use_agg_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "conv_indirect_co2_per_unit": 0.0,
+    "soln_indirect_co2_per_iunit": 0.0,
+    "tco2eq_reduced_per_land_unit": {
+        "value": -0.547680828241306,
+        "statistic": "mean"
+    },
+    "tco2eq_rplu_rate": "Annual",
+    "tco2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tco2_rplu_rate": "One-time",
+    "tn2o_co2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tn2o_co2_rplu_rate": "One-time",
+    "tch4_co2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tch4_co2_rplu_rate": "One-time",
+    "land_annual_emissons_lifetime": 100.0,
+    "conv_annual_energy_used": 0.0,
+    "soln_annual_energy_used": 0.0,
+    "seq_rate_global": {
+        "value": 2.03358274868357,
+        "statistic": "low"
+    },
+    "carbon_not_emitted_after_harvesting": {
+        "value": 16.2686619894686,
+        "statistic": "mean"
+    },
+    "disturbance_rate": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "harvest_frequency": 80.0
+}
