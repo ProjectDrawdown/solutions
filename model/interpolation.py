@@ -9,7 +9,6 @@
   interpolation methods used in the Adoption Data and TAM Data modules.
 """
 
-import math
 import numpy as np
 import pandas as pd
 
