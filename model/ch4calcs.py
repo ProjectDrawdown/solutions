@@ -4,10 +4,8 @@ Computes reductions in CO2-equivalent emissions.
 """
 
 from functools import lru_cache
-import math
 import numpy as np
 import pandas as pd
-
 
 
 class CH4Calcs:
@@ -70,23 +68,22 @@ class CH4Calcs:
             ch4_tons = self.avoided_direct_emissions_ch4_land()
         else:
             ch4_tons = self.ch4_tons_reduced()
-        columns = ["PPB", "Total"] + list(range(2015, 2061))
-        ppb_calculator = pd.DataFrame(0, columns=columns,
-                                      index=ch4_tons.index.copy(), dtype=np.float64)
-        ppb_calculator.index = ppb_calculator.index.astype(int)
-        first_year = ppb_calculator.first_valid_index()
-        last_year = ppb_calculator.last_valid_index()
-        for year in ppb_calculator.index:
-            if year not in columns:
-                continue
-            b = ch4_tons.loc[year, "World"]
-            for delta in range(1, last_year - first_year + 1):
-                if (year + delta - 1) > last_year:
-                    break
-                ppb_calculator.loc[year + delta - 1, year] = b * math.exp(-delta / 12)
-        ppb_calculator.loc[:, "Total"] = ppb_calculator.sum(axis=1)
-        for year in ppb_calculator.index:
-            ppb_calculator.loc[year, "PPB"] = ppb_calculator.loc[year, "Total"] / (
-                16.04 * 1.8 * 10 ** 5)
+
+        col_years = np.arange(2015, 2061)
+        index_years = ch4_tons.index.values
+
+        deltas = index_years.reshape(-1, 1) - col_years.reshape(1, -1) + 1
+
+        vals = np.exp( - deltas / 12) * ch4_tons.loc[col_years, "World"].values.reshape(1, -1)
+        vals[deltas < 1] = 0 # Overwrite values for negative deltas
+
+        total = vals.sum(axis=1).reshape(-1, 1)
+        ppb = total / (16.04 * 1.8 * 10 ** 5)
+
+        ppb_calculator = pd.DataFrame(np.concatenate([ppb, total, vals], axis=1),
+                                    columns=["PPB", "Total"] + list(col_years),
+                                    index=ch4_tons.index.copy(),
+                                    dtype=np.float64
+                                    )
         ppb_calculator.name = "ch4_ppb_calculator"
         return ppb_calculator

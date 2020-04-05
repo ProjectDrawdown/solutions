@@ -7,6 +7,7 @@ from interpolation.py, or use a simple linear fit implemented here.
 """
 from functools import lru_cache
 import pandas as pd
+import numpy as np
 import model.dd as dd
 
 
@@ -73,6 +74,7 @@ class HelperTables:
 
            SolarPVUtil 'Helper Tables'!B26:L73
         """
+
         if self.ac.soln_ref_adoption_basis == 'Custom':
             assert self.ref_adoption_data_per_region is not None
             adoption = self.ref_adoption_data_per_region.loc[2014:, :].copy(deep=True)
@@ -83,22 +85,26 @@ class HelperTables:
 
         # cannot exceed tam or tla
         if self.ref_adoption_limits is not None:
-            for col in adoption.columns:
-                adoption[col] = adoption[col].combine(self.ref_adoption_limits[col].fillna(0.0), min)
+            cols = adoption.columns
+            adoption.loc[:, :] = np.min([adoption.values, 
+                                         self.ref_adoption_limits[cols].fillna(0.).values], 
+                                        axis=0)
 
         if self.ac.soln_ref_adoption_regional_data:
             adoption.loc[:, 'World'] = adoption[dd.MAIN_REGIONS].sum(axis=1)
             if self.ref_adoption_limits is not None:
-                adoption['World'] = adoption['World'].combine(
-                    self.ref_adoption_limits['World'].fillna(0.0), min)
+                adoption['World'] = np.min([adoption['World'], 
+                                            self.ref_adoption_limits['World'].fillna(0.0)],
+                                            axis=0)
 
         if self.adoption_base_year > 2014 and self.copy_pds_to_ref:
             # The Drawdown 2020 models get REF data for the World region for 2014-2018 from PDS.
             funits = self.soln_pds_funits_adopted(suppress_override=True)
             main_region = list(adoption.columns)[0]
-            for y in range(2014, self.adoption_base_year):
-                adoption.loc[y, main_region] = funits.loc[y, main_region]
-            adoption = adoption.sort_index()
+            years = np.arange(2014, self.adoption_base_year)
+            adoption.loc[years, main_region] = funits.loc[years, main_region]
+            adoption.sort_index(inplace=True)
+
             # The Drawdown 2020 models also still copy the first ref_datapoint (for 2018) into the
             # first cell of the table which is 2014. We implement bug-for-bug compatibility here.
             # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.i71c3bhbim59
@@ -133,14 +139,17 @@ class HelperTables:
         year1 = datapoints.index.values[0]
         year2 = datapoints.index.values[1]
 
-        adoption = pd.DataFrame(columns=datapoints.columns, dtype='float')
-        for col in adoption.columns:
-            adopt1 = datapoints.loc[year1, col]
-            adopt2 = datapoints.loc[year2, col]
-            for year in range(first_year, last_year + 1):
-                fract_year = (float(year) - float(year1)) / (float(year2) - float(year1))
-                fract_adopt = fract_year * (float(adopt2) - float(adopt1))
-                adoption.loc[year, col] = adopt1 + fract_adopt
+        years = np.arange(first_year, last_year + 1).reshape(-1, 1)
+        adopt1 = datapoints.iloc[[0]].values
+        adopt2 = datapoints.iloc[[1]].values
+
+        fract_years = (years - year1) / (year2 - year1)
+        fract_adopt = fract_years * (adopt2 - adopt1)
+
+        adoption = pd.DataFrame(fract_adopt + adopt1,
+                                columns=datapoints.columns, 
+                                index=years.squeeze(), 
+                                dtype="float")
         return adoption
 
     @lru_cache()
@@ -174,15 +183,19 @@ class HelperTables:
 
         # cannot exceed the total addressable market or tla
         if self.pds_adoption_limits is not None:
-            for col in adoption.columns:
-                adoption[col] = adoption[col].combine(self.pds_adoption_limits[col].fillna(0.0), min)
+            # Extend pds to match adoption's index
+            pds_adoption_limits_extended = self.pds_adoption_limits.reindex(adoption.index,
+                                                                        fill_value=np.inf)
+            cols = adoption.columns
+            adoption.loc[:, :] = np.min([adoption.values,
+                                        pds_adoption_limits_extended[cols].fillna(0.).values],
+                                        axis=0)
 
         if self.ac.soln_pds_adoption_regional_data:
             adoption.loc[:, main_region] = adoption.loc[:, dd.MAIN_REGIONS].sum(axis=1)
             if self.pds_adoption_limits is not None:
-                for col in adoption.columns:
-                    adoption[main_region] = adoption[main_region].combine(
-                        self.pds_adoption_limits[main_region].fillna(0.0), min)
+                adoption[main_region] = np.min([adoption[main_region].values,
+                                                pds_adoption_limits_extended[main_region].fillna(0.0)], axis=0)
 
         if not suppress_override and self.ac.pds_adoption_use_ref_years:
             y = self.ac.pds_adoption_use_ref_years
