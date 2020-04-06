@@ -71,6 +71,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             least_sq = d.get('least_sq', None)
             growth_rate = d.get('growth_rate', None)
             maximum = d.get('maximum', None)
+            bug_no_limit = d.get('bug_no_limit', False)
             n = 0
             if filename is not None:
                 df = self._read_csv(filename)
@@ -86,10 +87,10 @@ class CustomAdoption(object, metaclass=MetaclassCache):
                 df = self._growth_forecast(rate=growth_rate, initial=growth_initial,
                         start_year=2012, end_year=2060)
                 n = n + 1
-            assert n <= 1, "Only one of filename, datapoints, or growth_rate may be used"
+            assert n == 1, "Only one of filename, datapoints, or growth_rate may be used"
             if maximum is not None:
                 df = df.clip(upper=maximum)
-            self.scenarios[name] = {'df': df, 'include': include}
+            self.scenarios[name] = {'df': df, 'include': include, 'bug_no_limit': bug_no_limit}
         self.soln_adoption_custom_name = soln_adoption_custom_name
 
 
@@ -182,7 +183,6 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         df.index.name = 'Year'
         return df.sort_index().loc[start_year:end_year, :]
 
-
     def _growth_forecast(self, rate, initial, start_year, end_year):
         """Computes a line from an initial datapoint, and fills in a dataframe.
            rate: floatng point number at which the initial dataframe should grow.
@@ -215,7 +215,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         for name, scen in self.scenarios.items():
             if scen['include']:
                 scen_df = scen['df'].dropna(axis=1, how='all')  # ignore null columns (i.e. blank regional data)
-                if self.total_adoption_limit is not None:
+                if self.total_adoption_limit is not None and not scen['bug_no_limit']:
                     tal = self.total_adoption_limit
                     idx = tal.first_valid_index()
                     scen_df.loc[idx:, :] = scen_df.loc[idx:, :].combine(tal, np.minimum)

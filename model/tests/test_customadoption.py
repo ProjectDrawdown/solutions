@@ -252,6 +252,35 @@ def test_datapoints_nolimit():
     assert result.loc[2060, 'World'] == pytest.approx(60)
 
 
+def test_datapoints_bug_no_limit():
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+             "Middle East and Africa", "Latin America"]
+    limit = pd.DataFrame(120.0, index=range(2014,2061), columns=columns)
+    data_sources = [
+        {'name': 'scenario 1', 'filename': datadir.joinpath('ca_100.csv'), 'include': True},
+        {'name': 'scenario 2', 'filename': datadir.joinpath('ca_300.csv'), 'include': True},
+    ]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='Average of All Custom Scenarios', total_adoption_limit=limit)
+    result = ca.adoption_data_per_region()
+    # scenario2 will be reduced to 120, (100 + 120) / 2 = 110
+    assert result.loc[2040, 'World'] == pytest.approx(110)
+    assert result.loc[2050, 'World'] == pytest.approx(110)
+    assert result.loc[2060, 'World'] == pytest.approx(110)
+    data_sources = [
+        {'name': 'scenario 1', 'filename': datadir.joinpath('ca_100.csv'), 'include': True},
+        {'name': 'scenario 2', 'filename': datadir.joinpath('ca_300.csv'), 'include': True,
+            'bug_no_limit': True},
+    ]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='Average of All Custom Scenarios', total_adoption_limit=limit)
+    result = ca.adoption_data_per_region()
+    # scenario2 will not be limited, (100 + 300) / 2 = 200 which is then limited to 200.
+    assert result.loc[2040, 'World'] == pytest.approx(120)
+    assert result.loc[2050, 'World'] == pytest.approx(120)
+    assert result.loc[2060, 'World'] == pytest.approx(120)
+
+
 def test_datapoints_no_negative():
     datapoints = pd.DataFrame([
         [2020, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],

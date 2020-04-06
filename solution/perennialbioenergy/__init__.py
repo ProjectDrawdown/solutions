@@ -124,15 +124,15 @@ class Scenario:
 
     # Custom PDS Data
     ca_pds_data_sources = [
-      {'name': 'Average growth, linear trend', 'include': True,
+      {'name': 'Average growth, linear trend', 'include': True, 'bug_no_limit':True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Average_growth_linear_trend.csv')},
-      {'name': 'Medium growth, linear trend', 'include': True,
+      {'name': 'Medium growth, linear trend', 'include': True, 'bug_no_limit':True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Medium_growth_linear_trend.csv')},
-      {'name': 'Max growth, linear trend', 'include': True,
+      {'name': 'Max growth, linear trend', 'include': True, 'bug_no_limit':True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Max_growth_linear_trend.csv')},
-      {'name': 'Average early growth, linear trend', 'include': True,
+      {'name': 'Average early growth, linear trend', 'include': True, 'bug_no_limit':True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Average_early_growth_linear_trend.csv')},
-      {'name': 'Medium early growth, linear trend', 'include': True,
+      {'name': 'Medium early growth, linear trend', 'include': True, 'bug_no_limit':True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Medium_early_growth_linear_trend.csv')},
       {'name': 'Max early growth, linear trend', 'include': True,
           'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Max_early_growth_linear_trend.csv')},
