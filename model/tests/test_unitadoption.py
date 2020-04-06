@@ -21,8 +21,8 @@ pds_tam_per_region = pd.read_csv(pds_tam_per_region_filename, header=0, index_co
 
 def test_ref_population():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     population = ua.ref_population()
     assert population['World'][2014] == pytest.approx(7249.180596)
     assert population['Middle East and Africa'][2031] == pytest.approx(2093.543821)
@@ -31,8 +31,8 @@ def test_ref_population():
 
 def test_ref_gdp():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     gdp = ua.ref_gdp()
     assert gdp['World'][2014] == pytest.approx(58307.866135)
     assert gdp['Latin America'][2030] == pytest.approx(8390.982338)
@@ -41,8 +41,8 @@ def test_ref_gdp():
 
 def test_ref_gdp_per_capita():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     gpc = ua.ref_gdp_per_capita()
     assert gpc['World'][2060] == pytest.approx(21.67246)
     assert gpc['Asia (Sans Japan)'][2029] == pytest.approx(6.51399)
@@ -51,8 +51,8 @@ def test_ref_gdp_per_capita():
 
 def test_ref_tam_per_capita():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     tpc = ua.ref_tam_per_capita()
     assert tpc['World'][2016] == pytest.approx(3.38350004047)
     assert tpc['Latin America'][2029] == pytest.approx(3.62748818668)
@@ -61,8 +61,8 @@ def test_ref_tam_per_capita():
 
 def test_ref_tam_per_gdp_per_capita():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     tpgpc = ua.ref_tam_per_gdp_per_capita()
     assert tpgpc['OECD90'][2014] == pytest.approx(256.68795471511)
     assert tpgpc['China'][2033] == pytest.approx(743.15450999975)
@@ -71,8 +71,8 @@ def test_ref_tam_per_gdp_per_capita():
 
 def test_ref_tam_growth():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     tg = ua.ref_tam_growth()
     assert tg['Eastern Europe'][2015] == pytest.approx(24.26693428425)
     assert tg['India'][2037] == pytest.approx(171.36849827619)
@@ -82,8 +82,8 @@ def test_ref_tam_growth():
 
 def test_pds_population():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     population = ua.pds_population()
     assert population['World'][2016] == pytest.approx(7415.5738320)
     assert population['India'][2031] == pytest.approx(1539.9070540)
@@ -92,8 +92,8 @@ def test_pds_population():
 
 def test_pds_gdp():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     gdp = ua.pds_gdp()
     assert gdp['Eastern Europe'][2014] == pytest.approx(2621.864076293940)
     assert gdp['Latin America'][2030] == pytest.approx(8058.323682075440)
@@ -102,8 +102,8 @@ def test_pds_gdp():
 
 def test_pds_gdp_per_capita():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     gpc = ua.pds_gdp_per_capita()
     assert gpc['World'][2060] == pytest.approx(21.703844951868)
     assert gpc['Asia (Sans Japan)'][2029] == pytest.approx(6.52868)
@@ -112,8 +112,8 @@ def test_pds_gdp_per_capita():
 
 def test_pds_tam_per_capita():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=pds_tam_per_region,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=pds_tam_per_region,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     tpc = ua.pds_tam_per_capita()
     assert tpc['World'][2015] == pytest.approx(3.357451)
     assert tpc['India'][2039] == pytest.approx(2.945601)
@@ -124,8 +124,8 @@ def test_pds_tam_per_gdp_per_capita():
     # we pass pds_total_adoption_units=ref_tam_per_region for convenience,
     # the test is just checking the results of the calculation.
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=ref_tam_per_region,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=ref_tam_per_region,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     tpgpc = ua.pds_tam_per_gdp_per_capita()
     assert tpgpc['OECD90'][2015] == pytest.approx(247.759624)
     assert tpgpc['China'][2032] == pytest.approx(759.164408)
@@ -134,8 +134,8 @@ def test_pds_tam_per_gdp_per_capita():
 
 def test_pds_tam_growth():
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=ref_tam_per_region,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=ref_tam_per_region,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=None)
     tg = ua.pds_tam_growth()
     assert tg['Eastern Europe'][2015] == pytest.approx(24.266934)
     assert tg['India'][2033] == pytest.approx(159.378951)
@@ -144,33 +144,44 @@ def test_pds_tam_growth():
 
 
 def test_cumulative_degraded_land_unprotected():
-    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074, delay_protection_1yr=True, disturbance_rate=1)
-    tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074, delay_protection_1yr=True,
+            disturbance_rate=1)
+    tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'),
+            index_col=0)
     units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'),
-                                index_col=0)
-    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=units_adopted,
-                                   pds_total_adoption_units=tla_per_reg)
-    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_pds_deg_unprotected_land.csv'), index_col=0)
-    pd.testing.assert_frame_equal(ua._cumulative_degraded_land('PDS', 'unprotected').loc[:, ['World']], expected_world)
+            index_col=0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
+            soln_pds_funits_adopted=units_adopted, pds_total_adoption_units=tla_per_reg)
+    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data',
+            'fp_pds_deg_unprotected_land.csv'), index_col=0)
+    pd.testing.assert_frame_equal(ua._cumulative_degraded_land('PDS',
+            'unprotected').loc[:, ['World']], expected_world)
 
 
 def test_cumulative_degraded_land_protected():
-    ac = advanced_controls.AdvancedControls(
-        disturbance_rate=0.0000157962432447763, delay_protection_1yr=True,degradation_rate=1)
-    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'), index_col=0)
-    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=units_adopted)
-    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_pds_deg_protected_land.csv'), index_col=0)
-    pd.testing.assert_frame_equal(ua._cumulative_degraded_land('PDS', 'protected').loc[:, ['World']], expected_world)
+    ac = advanced_controls.AdvancedControls(disturbance_rate=0.0000157962432447763,
+            delay_protection_1yr=True,degradation_rate=1)
+    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'),
+            index_col=0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
+            soln_pds_funits_adopted=units_adopted)
+    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data',
+            'fp_pds_deg_protected_land.csv'), index_col=0)
+    pd.testing.assert_frame_equal(ua._cumulative_degraded_land('PDS',
+            'protected').loc[:, ['World']], expected_world)
 
 
 def test_total_undegraded_land():
-    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074, disturbance_rate=0.0000157962432447763,
-                                            delay_protection_1yr=True)
-    tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'), index_col=0)
-    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'), index_col=0)
-    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=units_adopted,
-                                   pds_total_adoption_units=tla_per_reg)
-    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_total_undegraded_land.csv'), index_col=0)
+    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074,
+            disturbance_rate=0.0000157962432447763, delay_protection_1yr=True)
+    tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'),
+            index_col=0)
+    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'),
+            index_col=0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
+            soln_pds_funits_adopted=units_adopted, pds_total_adoption_units=tla_per_reg)
+    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data',
+            'fp_total_undegraded_land.csv'), index_col=0)
     # identical for REF and PDS so just test PDS
     pd.testing.assert_frame_equal(ua.pds_total_undegraded_land().loc[:, ['World']], expected_world)
 
@@ -178,11 +189,13 @@ def test_total_undegraded_land():
 def test_annual_reduction_in_total_degraded_land():
     cumu_ridl = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_cumu_ridl.csv'), index_col=0)
     expected_world = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_annu_ridl.csv'), index_col=0)
-    with mock.patch.object(unitadoption.UnitAdoption, 'cumulative_reduction_in_total_degraded_land',
-                           new=lambda x: cumu_ridl):
-        ua = unitadoption.UnitAdoption(ac=advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND),
-                                       soln_ref_funits_adopted=None, soln_pds_funits_adopted=None)
-        pd.testing.assert_frame_equal(ua.annual_reduction_in_total_degraded_land().loc[:, ['World']], expected_world)
+    with mock.patch.object(unitadoption.UnitAdoption,
+            'cumulative_reduction_in_total_degraded_land', new=lambda x: cumu_ridl):
+        ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND),
+        ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
+                soln_pds_funits_adopted=None)
+        pd.testing.assert_frame_equal(ua.annual_reduction_in_total_degraded_land(
+                ).loc[:, ['World']], expected_world)
 
 
 def test_soln_pds_cumulative_funits_bug_behavior():
@@ -195,9 +208,9 @@ def test_soln_pds_cumulative_funits_bug_behavior():
         [2017, 383.31, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
     soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
-                                   bug_cfunits_double_count=True)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+            bug_cfunits_double_count=True)
     result = ua.soln_pds_cumulative_funits()
     v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
           'China', 'India', 'EU', 'USA'],
@@ -210,13 +223,12 @@ def test_soln_pds_cumulative_funits_bug_behavior():
     pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
 
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
-
-                                   bug_cfunits_double_count=False)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+            bug_cfunits_double_count=False)
     result = ua.soln_pds_cumulative_funits()
-    v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
-          'China', 'India', 'EU', 'USA'],
+    v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+          'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
          [2014, 112.63, 75.0, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
          [2015, 288.87, 76.0, 1.33, 22.07, 2.58, 15.65, 15.97, 3.75, 56.27, 14.12],
          [2016, 560.90, 77.0, 2.33, 23.07, 3.58, 16.65, 16.97, 4.75, 57.27, 15.12],
@@ -228,21 +240,20 @@ def test_soln_pds_cumulative_funits_bug_behavior():
 
 def test_soln_pds_cumulative_funits_missing_data():
     funits = [
-        ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
-         'China', 'India', 'EU', 'USA'],
+        ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+            'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
         [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
         [2015, 176.24, 1.0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
         [2016, 272.03, np.nan, 1.0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
         [2017, 383.31, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
     soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
-
-                                   bug_cfunits_double_count=True)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+            bug_cfunits_double_count=True)
     result = ua.soln_pds_cumulative_funits()
-    v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
-          'China', 'India', 'EU', 'USA'],
+    v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+          'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
          [2014, 112.63, 150.00, 0.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
          [2015, 288.87, 151.00, 0.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
          [2016, 560.90, 151.00, 1.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
@@ -254,20 +265,19 @@ def test_soln_pds_cumulative_funits_missing_data():
 
 def test_soln_ref_cumulative_funits():
     funits = [
-        ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
-         'China', 'India', 'EU', 'USA'],
+        ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+            'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
         [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
         [2015, 117.07, 75.63, 0.34, 22.16, 1.71, 15.42, 15.43, 3.07, 55.76, 13.22],
         [2016, 121.51, 76.25, 0.34, 23.25, 1.85, 16.18, 15.89, 3.39, 56.25, 13.31],
         [2017, 125.95, 76.87, 0.35, 24.33, 1.98, 16.95, 16.35, 3.71, 56.73, 13.40]]
     soln_ref_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_ref_cumulative_funits()
-    v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
-          'China', 'India', 'EU', 'USA'],
+    v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
          [2014, 112.63, 75.00, 0.33, 21.07, 1.58, 14.65, 14.97, 2.75, 55.27, 13.12],
          [2015, 229.70, 150.63, 0.67, 43.23, 3.29, 30.07, 30.41, 5.82, 111.03, 26.34],
          [2016, 351.21, 226.88, 1.01, 66.48, 5.13, 46.25, 46.30, 9.21, 167.28, 39.65],
@@ -275,25 +285,25 @@ def test_soln_ref_cumulative_funits():
     expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
     expected.name = "soln_ref_cumulative_funits"
     pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False,
-                                  check_less_precise=2)
+            check_less_precise=2)
 
 
 def test_soln_ref_cumulative_funits_with_NaN():
     funits = [
-        ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
-         'China', 'India', 'EU', 'USA'],
+        ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+            'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
         [2014, 112.63, 75.00, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
         [2015, 117.07, 75.63, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
         [2016, 121.51, 76.25, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
         [2017, 125.95, 76.87, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
     soln_ref_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_ref_cumulative_funits()
-    v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America',
-          'China', 'India', 'EU', 'USA'],
+    v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
          [2014, 112.63, 75.00, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
          [2015, 229.70, 150.63, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
          [2016, 351.21, 226.88, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -301,7 +311,7 @@ def test_soln_ref_cumulative_funits_with_NaN():
     expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
     expected.name = "soln_ref_cumulative_funits"
     pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False,
-                                  check_less_precise=2)
+            check_less_precise=2)
 
 
 def test_soln_net_annual_funits_adopted():
@@ -312,9 +322,9 @@ def test_soln_net_annual_funits_adopted():
               [2015, 176.24, 0.0, 0.0], [2016, 272.03, 0.0, 0.0]]
     soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_net_annual_funits_adopted()
     funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 0.0, 0.0, 0.0],
               [2015, 59.17, -75.63, -0.34], [2016, 150.52, -76.25, -0.34]]
@@ -331,9 +341,9 @@ def test_soln_net_annual_funits_adopted_with_NaN():
               [2015, 176.24, np.nan, np.nan], [2016, 272.03, np.nan, np.nan]]
     soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=None,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_net_annual_funits_adopted()
     funits = [['Year', 'World', 'OECD90', 'Eastern Europe'], [2014, 0.0, 0.0, 0.0],
               [2015, 59.17, np.nan, np.nan], [2016, 150.52, np.nan, np.nan]]
@@ -344,24 +354,21 @@ def test_soln_net_annual_funits_adopted_with_NaN():
 
 def test_soln_net_annual_funits_adopted_land():
     """ Using data from Silvopasture """
-    sp_world = [0, 0, 0, 1.496434895, 4.926272512, 8.334043824, 11.71939477, 15.08199659, 18.42154804, 21.7377775,
-
-                25.03044494, 28.2993437, 30.91186053, 34.15769987, 37.38144769, 40.58301746, 43.762352, 46.91942388,
-
-                50.05423562, 53.16681962, 56.25723801, 59.32558217, 62.28412644, 65.31390912, 68.32225856, 71.30936481,
-
-                74.27544198, 77.22072697, 80.14547809, 83.0499736, 85.93451014, 88.79940118, 91.376051, 94.23271025,
-
-                97.07117348, 99.89175284, 102.6947702, 105.5903814, 108.3342353, 111.0613919, 113.7722351, 116.4671514,
-
-                119.146528, 121.8107521, 124.4602097, 127.0952848, 129.7163586]
+    sp_world = [0, 0, 0, 1.496434895, 4.926272512, 8.334043824, 11.71939477, 15.08199659,
+            18.42154804, 21.7377775, 25.03044494, 28.2993437, 30.91186053, 34.15769987,
+            37.38144769, 40.58301746, 43.762352, 46.91942388, 50.05423562, 53.16681962,
+            56.25723801, 59.32558217, 62.28412644, 65.31390912, 68.32225856, 71.30936481,
+            74.27544198, 77.22072697, 80.14547809, 83.0499736, 85.93451014, 88.79940118,
+            91.376051, 94.23271025, 97.07117348, 99.89175284, 102.6947702, 105.5903814,
+            108.3342353, 111.0613919, 113.7722351, 116.4671514, 119.146528, 121.8107521,
+            124.4602097, 127.0952848, 129.7163586]
     f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
     pds_ad = pd.read_csv(f, index_col=0)
     f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
     ref_ad = pd.read_csv(f, index_col=0)
     ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad,
-                                   soln_pds_funits_adopted=pds_ad)
+            soln_pds_funits_adopted=pds_ad)
     result = ua.soln_net_annual_funits_adopted()['World'].values
     # We only check world values because regional calcs have bugs and are unused in the xls
     np.testing.assert_array_almost_equal(result, sp_world)
@@ -380,9 +387,9 @@ def test_soln_net_annual_funits_adopted_cache():
         conv_lifetime_capacity=182411.28, conv_avg_annual_use=4946.84,
         soln_lifetime_capacity=48343.80, soln_avg_annual_use=1841.67)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     original = ua.soln_net_annual_funits_adopted().copy(deep=True)
     _ = ua.conv_ref_annual_tot_iunits()
     _ = ua.soln_pds_net_grid_electricity_units_saved()
@@ -424,9 +431,10 @@ def test_conv_ref_tot_iunits_land():
     sp_tla = pd.read_csv(f, index_col=0)
     f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
     ref_ad = pd.read_csv(f, index_col=0)
-    ua = unitadoption.UnitAdoption(ac=advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND),
-                                   pds_total_adoption_units=sp_tla, soln_ref_funits_adopted=ref_ad,
-                                   soln_pds_funits_adopted=None)
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            pds_total_adoption_units=sp_tla, soln_ref_funits_adopted=ref_ad,
+            soln_pds_funits_adopted=None)
     # test only world values as regional data has bugs in xls
     result = ua.conv_ref_tot_iunits()['World'].values
     world_expected = np.array([619.83739797667] * 47)
@@ -436,54 +444,49 @@ def test_conv_ref_tot_iunits_land():
 def test_conv_ref_annual_tot_iunits():
     ac = advanced_controls.AdvancedControls(conv_avg_annual_use=4946.840187342)
     soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-                                           columns=soln_ref_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-                                           columns=soln_pds_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_list[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.conv_ref_annual_tot_iunits()
     expected = pd.DataFrame(conv_ref_annual_tot_iunits_list[1:],
-                            columns=conv_ref_annual_tot_iunits_list[0]).set_index('Year')
+            columns=conv_ref_annual_tot_iunits_list[0]).set_index('Year')
     expected.name = "conv_ref_annual_tot_iunits"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_soln_pds_net_grid_electricity_units_used():
-    ac = advanced_controls.AdvancedControls(soln_annual_energy_used=0,
-                                            conv_annual_energy_used=1)
+    ac = advanced_controls.AdvancedControls(soln_annual_energy_used=0, conv_annual_energy_used=1)
     soln_pds_funits_adopted = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0]])
     soln_ref_funits_adopted = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_net_grid_electricity_units_used()
     expected = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     expected.name = "soln_pds_net_grid_electricity_units_used"
     pd.testing.assert_frame_equal(result, expected)
 
-    ac = advanced_controls.AdvancedControls(soln_annual_energy_used=4,
-                                            conv_annual_energy_used=1)
+    ac = advanced_controls.AdvancedControls(soln_annual_energy_used=4, conv_annual_energy_used=1)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     expected = pd.DataFrame([[3.0, 6.0, 9.0, 12.0], [15.0, 18.0, 21.0, 24.0]])
     expected.name = "soln_pds_net_grid_electricity_units_used"
     result = ua.soln_pds_net_grid_electricity_units_used()
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
-    ac = advanced_controls.AdvancedControls(soln_annual_energy_used=4,
-                                            conv_annual_energy_used=1)
+    ac = advanced_controls.AdvancedControls(soln_annual_energy_used=4, conv_annual_energy_used=1)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted,
-                                   electricity_unit_factor=10.0)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted,
+            electricity_unit_factor=10.0)
     expected = pd.DataFrame([[30.0, 60.0, 90.0, 120.0], [150.0, 180.0, 210.0, 240.0]])
     expected.name = "soln_pds_net_grid_electricity_units_used"
     result = ua.soln_pds_net_grid_electricity_units_used()
@@ -494,34 +497,34 @@ def test_soln_pds_net_grid_electricity_units_saved():
     soln_pds_funits_adopted = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0]])
     soln_ref_funits_adopted = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     ac = advanced_controls.AdvancedControls(soln_energy_efficiency_factor=0,
-                                            conv_annual_energy_used=0)
+            conv_annual_energy_used=0)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_net_grid_electricity_units_saved()
     expected = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     expected.name = "soln_pds_net_grid_electricity_units_saved"
     pd.testing.assert_frame_equal(result, expected)
 
     ac = advanced_controls.AdvancedControls(soln_energy_efficiency_factor=2,
-                                            conv_annual_energy_used=3)
+            conv_annual_energy_used=3)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     expected = pd.DataFrame([[6.0, 12.0, 18.0, 24.0], [30.0, 36.0, 42.0, 48.0]])
     expected.name = "soln_pds_net_grid_electricity_units_saved"
     result = ua.soln_pds_net_grid_electricity_units_saved()
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     ac = advanced_controls.AdvancedControls(soln_energy_efficiency_factor=2,
-                                            conv_annual_energy_used=3)
+            conv_annual_energy_used=3)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted,
-                                   electricity_unit_factor=10.0)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted,
+            electricity_unit_factor=10.0)
     expected = pd.DataFrame([[60.0, 120.0, 180.0, 240.0], [300.0, 360.0, 420.0, 480.0]])
     expected.name = "soln_pds_net_grid_electricity_units_saved"
     result = ua.soln_pds_net_grid_electricity_units_saved()
@@ -530,24 +533,24 @@ def test_soln_pds_net_grid_electricity_units_saved():
 
 def test_soln_pds_fuel_units_avoided():
     ac = advanced_controls.AdvancedControls(conv_fuel_consumed_per_funit=0,
-                                            soln_fuel_efficiency_factor=1)
+            soln_fuel_efficiency_factor=1)
     soln_pds_funits_adopted = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [1.0, 2.0, 3.0, 4.0]])
     soln_ref_funits_adopted = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_ref_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_ref_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_fuel_units_avoided()
     expected = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     expected.name = "soln_pds_fuel_units_avoided"
     pd.testing.assert_frame_equal(result, expected)
 
     ac = advanced_controls.AdvancedControls(conv_fuel_consumed_per_funit=2,
-                                            soln_fuel_efficiency_factor=2)
+            soln_fuel_efficiency_factor=2)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_fuel_units_avoided()
     expected = pd.DataFrame([[4.0, 8.0, 12.0, 16.0], [4.0, 8.0, 12.0, 16.0]])
     expected.name = "soln_pds_fuel_units_avoided"
@@ -556,13 +559,13 @@ def test_soln_pds_fuel_units_avoided():
 
 def test_soln_pds_direct_co2_emissions_saved():
     ac = advanced_controls.AdvancedControls(conv_emissions_per_funit=7,
-                                            soln_emissions_per_funit=5)
+            soln_emissions_per_funit=5)
     soln_pds_funits_adopted = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [1.0, 2.0, 3.0, 4.0]])
     soln_ref_funits_adopted = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_direct_co2_emissions_saved()
     expected = pd.DataFrame([[2.0, 4.0, 6.0, 8.0], [2.0, 4.0, 6.0, 8.0]])
     expected.name = "soln_pds_direct_co2_emissions_saved"
@@ -571,24 +574,24 @@ def test_soln_pds_direct_co2_emissions_saved():
 
 def test_soln_pds_direct_ch4_emissions_saved():
     ac = advanced_controls.AdvancedControls(co2eq_conversion_source='AR5 with feedback',
-                                            ch4_is_co2eq=False, ch4_co2_per_funit=2.0)
+            ch4_is_co2eq=False, ch4_co2_per_funit=2.0)
     soln_pds_funits_adopted = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [1.0, 2.0, 3.0, 4.0]])
     soln_ref_funits_adopted = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_direct_ch4_co2_emissions_saved()
     expected = pd.DataFrame([[68.0, 136.0, 204.0, 272.0], [68.0, 136.0, 204.0, 272.0]])
     expected.name = "soln_pds_direct_ch4_co2_emissions_saved"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     ac = advanced_controls.AdvancedControls(co2eq_conversion_source='AR5 with feedback',
-                                            ch4_is_co2eq=True, ch4_co2_per_funit=2.0)
+            ch4_is_co2eq=True, ch4_co2_per_funit=2.0)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_direct_ch4_co2_emissions_saved()
     expected = pd.DataFrame([[2.0, 4.0, 6.0, 8.0], [2.0, 4.0, 6.0, 8.0]])
     expected.name = "soln_pds_direct_ch4_co2_emissions_saved"
@@ -597,24 +600,24 @@ def test_soln_pds_direct_ch4_emissions_saved():
 
 def test_soln_pds_direct_n2o_emissions_saved():
     ac = advanced_controls.AdvancedControls(co2eq_conversion_source='AR5 with feedback',
-                                            n2o_is_co2eq=False, n2o_co2_per_funit=2.0)
+            n2o_is_co2eq=False, n2o_co2_per_funit=2.0)
     soln_pds_funits_adopted = pd.DataFrame([[1.0, 2.0, 3.0, 4.0], [1.0, 2.0, 3.0, 4.0]])
     soln_ref_funits_adopted = pd.DataFrame([[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_direct_n2o_co2_emissions_saved()
     expected = pd.DataFrame([[596.0, 1192.0, 1788.0, 2384.0], [596.0, 1192.0, 1788.0, 2384.0]])
     expected.name = "soln_pds_direct_n2o_co2_emissions_saved"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
     ac = advanced_controls.AdvancedControls(co2eq_conversion_source='AR5 with feedback',
-                                            n2o_is_co2eq=True, n2o_co2_per_funit=2.0)
+            n2o_is_co2eq=True, n2o_co2_per_funit=2.0)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_direct_n2o_co2_emissions_saved()
     expected = pd.DataFrame([[2.0, 4.0, 6.0, 8.0], [2.0, 4.0, 6.0, 8.0]])
     expected.name = "soln_pds_direct_n2o_co2_emissions_saved"
@@ -623,47 +626,43 @@ def test_soln_pds_direct_n2o_emissions_saved():
 
 def test_soln_pds_tot_iunits_reqd():
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-                                           columns=soln_pds_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(soln_avg_annual_use=1841.66857142857)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None)
     result = ua.soln_pds_tot_iunits_reqd()
     expected = pd.DataFrame(soln_pds_tot_iunits_reqd_list[1:],
-                            columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
+            columns=soln_pds_tot_iunits_reqd_list[0]).set_index('Year')
     expected.name = "soln_pds_tot_iunits_reqd"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_soln_pds_new_iunits_reqd():
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-                                           columns=soln_pds_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=48343.8,
-                                            soln_avg_annual_use=1841.66857142857)
+            soln_avg_annual_use=1841.66857142857)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=None)
     result = ua.soln_pds_new_iunits_reqd()
     expected = pd.DataFrame(soln_pds_new_iunits_reqd_list[1:],
-                            columns=soln_pds_new_iunits_reqd_list[0]).set_index('Year')
+            columns=soln_pds_new_iunits_reqd_list[0]).set_index('Year')
     expected.name = "soln_pds_new_iunits_reqd"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_soln_pds_new_iunits_reqd_multiple_replacements():
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-                                           columns=soln_pds_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=20000.0,
-                                            soln_avg_annual_use=5000.0)
+            soln_avg_annual_use=5000.0)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=None)
     result = ua.soln_pds_new_iunits_reqd()
     # values from SolarPVUtil setting 'Unit Adoption Calculations'
     # AH127 = 20000 and AH128 = 5000 to match advanced_controls above
@@ -674,97 +673,88 @@ def test_soln_pds_new_iunits_reqd_multiple_replacements():
 
 def test_soln_pds_new_iunits_reqd_repeated_cost_for_iunits():
     soln_pds_funits_adopted = pd.DataFrame(soln_funits_adopted_altcement_list[1:],
-                                           columns=soln_funits_adopted_altcement_list[0]).set_index(
-        'Year')
+            columns=soln_funits_adopted_altcement_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=30.0, soln_avg_annual_use=1.0)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
-
-                                   repeated_cost_for_iunits=True)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+            repeated_cost_for_iunits=True)
     result = ua.soln_pds_new_iunits_reqd()
     expected = pd.DataFrame(soln_new_iunits_reqd_altcement_list[1:],
-                            columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
+            columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
     expected.name = "soln_pds_new_iunits_reqd"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_soln_new_iunits_reqd_with_zero_funits_sometimes():
     funits_adopted = pd.DataFrame(soln_pds_funits_adopted_leds_commercial_list[1:],
-                                  columns=soln_pds_funits_adopted_leds_commercial_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_leds_commercial_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=50000.0,
-                                            soln_avg_annual_use=3635.85)
+            soln_avg_annual_use=3635.85)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=funits_adopted,
-                                   soln_ref_funits_adopted=None)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=funits_adopted, soln_ref_funits_adopted=None)
     result = ua.soln_pds_new_iunits_reqd()
     expected = pd.DataFrame(soln_pds_new_iunits_reqd_leds_commercial_list[1:],
-                            columns=soln_pds_new_iunits_reqd_leds_commercial_list[0]).set_index(
-        'Year')
+            columns=soln_pds_new_iunits_reqd_leds_commercial_list[0]).set_index('Year')
     expected.name = "soln_pds_new_iunits_reqd"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None,
-                                   soln_ref_funits_adopted=funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=funits_adopted)
     result = ua.soln_ref_new_iunits_reqd()
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_new_iunits_reqd_rounding_bug():
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_onshorewind_list[1:],
-                                           columns=soln_pds_funits_adopted_onshorewind_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_onshorewind_list[0]).set_index('Year')
     zero_funits_adopted = pd.DataFrame(0, index=soln_pds_funits_adopted.index.copy(),
-                                       columns=soln_pds_funits_adopted.columns.copy())
+            columns=soln_pds_funits_adopted.columns.copy())
     ac = advanced_controls.AdvancedControls(
-        soln_lifetime_capacity=63998.595, soln_avg_annual_use=2844.382,
-        conv_lifetime_capacity=63998.595, conv_avg_annual_use=2844.382)
+            soln_lifetime_capacity=63998.595, soln_avg_annual_use=2844.382,
+            conv_lifetime_capacity=63998.595, conv_avg_annual_use=2844.382)
     expected = pd.DataFrame(soln_pds_new_iunits_reqd_onshorewind_list[1:],
-                            columns=soln_pds_new_iunits_reqd_onshorewind_list[0]).set_index('Year')
+            columns=soln_pds_new_iunits_reqd_onshorewind_list[0]).set_index('Year')
     expected.name = "soln_pds_new_iunits_reqd"
     # 63998.595/2844.382 = 22.5 which cannot be represented by a floating point number
     # and will instead be 22.4999. Python's round() will return 22. Excel handles
     # this differently to return the 23 that humans expect.
     # This test case will fail if *_new_iunits_reqd() uses the basic Python round().
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_pds_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_pds_funits_adopted)
     result = ua.soln_pds_new_iunits_reqd()
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     result = ua.soln_ref_new_iunits_reqd()
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=zero_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=zero_funits_adopted)
     result = ua.conv_ref_new_iunits()
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_new_iunits_reqd_land():
     """ Using data from Silvopasture """
-    sp_world = [0, 0, 1.49643489480934, 3.42983761673287, 3.40777131208006, 3.3853509490275, 3.36260182010352,
-
-                3.3395514466838, 3.31622945888586, 3.29266744308518, 3.26889875807274, 2.61251683499262,
-                3.24583933270031, 3.22374782069915, 3.20156976815986, 3.17933454067742, 3.15707188573589,
-
-                3.13481173478948, 3.1125840024759, 3.09041838609068, 3.06834416845413, 2.95854426200356,
-                3.02978268035292, 3.00834944629167, 2.98710624970022, 2.96607716645508, 2.94528498898256,
-
-                2.92475112400388, 2.90449550819716, 2.88453654207888, 2.86489104204179, 2.57664981813053,
-
-                2.85665924514041, 4.33489812403127, 6.25041698217706, 6.2107886876006, 6.28096212022842,
-                6.10645576424633, 6.06670797541483, 6.02707271316069, 5.98758372231941, 5.94827534797025,
-
-                5.27674091268659, 5.89529695122053, 5.8588229736597, 5.8226435345909]
+    sp_world = [0, 0, 1.49643489480934, 3.42983761673287, 3.40777131208006, 3.3853509490275,
+            3.36260182010352, 3.3395514466838, 3.31622945888586, 3.29266744308518,
+            3.26889875807274, 2.61251683499262, 3.24583933270031, 3.22374782069915,
+            3.20156976815986, 3.17933454067742, 3.15707188573589, 3.13481173478948,
+            3.1125840024759, 3.09041838609068, 3.06834416845413, 2.95854426200356,
+            3.02978268035292, 3.00834944629167, 2.98710624970022, 2.96607716645508,
+            2.94528498898256, 2.92475112400388, 2.90449550819716, 2.88453654207888,
+            2.86489104204179, 2.57664981813053, 2.85665924514041, 4.33489812403127,
+            6.25041698217706, 6.2107886876006, 6.28096212022842, 6.10645576424633,
+            6.06670797541483, 6.02707271316069, 5.98758372231941, 5.94827534797025,
+            5.27674091268659, 5.89529695122053, 5.8588229736597, 5.8226435345909]
     f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
     sp_ad = pd.read_csv(f, index_col=0)
     ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30)
-    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None, soln_pds_funits_adopted=sp_ad)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
+            soln_pds_funits_adopted=sp_ad)
     result = ua.soln_pds_new_iunits_reqd()['World'].values
     # We only check world values because regional calcs have bugs and are unused in the xls
     np.testing.assert_array_almost_equal(result, sp_world)
@@ -772,92 +762,110 @@ def test_new_iunits_reqd_land():
 
 def test_soln_pds_big4_iunits_reqd():
     soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-                                           columns=soln_ref_funits_adopted_list[0]).set_index(
-        'Year')
+           columns=soln_ref_funits_adopted_list[0]).set_index('Year')
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-                                           columns=soln_pds_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(soln_avg_annual_use=1841.67)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_big4_iunits_reqd()
     expected = pd.DataFrame(soln_pds_big4_iunits_reqd_list[1:],
-                            columns=soln_pds_big4_iunits_reqd_list[0]).set_index('Year')
+            columns=soln_pds_big4_iunits_reqd_list[0]).set_index('Year')
     expected.name = "soln_pds_big4_iunits_reqd"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_soln_pds_big4_iunits_reqd_with_NaN():
     soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-                                           columns=soln_ref_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_no_regional_data_list[1:],
-                                           columns=soln_pds_funits_adopted_no_regional_data_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_no_regional_data_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(soln_avg_annual_use=1841.67)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_pds_big4_iunits_reqd()
     expected = pd.DataFrame(soln_pds_big4_iunits_reqd_no_regional_data_list[1:],
-                            columns=soln_pds_big4_iunits_reqd_no_regional_data_list[0]).set_index(
-        'Year')
+            columns=soln_pds_big4_iunits_reqd_no_regional_data_list[0]).set_index('Year')
     expected.name = "soln_pds_big4_iunits_reqd"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-def test_soln_ref_tot_iunits_reqd():
+def test_soln_ref_tot_iunits_reqd_RRS():
     soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-                                           columns=soln_ref_funits_adopted_list[0]).set_index(
-        'Year')
-    ac = advanced_controls.AdvancedControls(soln_avg_annual_use=1841.66857142857)
+            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.REPLACEMENT,
+            soln_avg_annual_use=1841.66857142857)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_ref_tot_iunits_reqd()
-    expected = pd.DataFrame(soln_ref_tot_iunits_reqd_list[1:],
-                            columns=soln_ref_tot_iunits_reqd_list[0]).set_index('Year')
+    expected = pd.DataFrame(soln_ref_tot_iunits_reqd_RRS_list[1:],
+            columns=soln_ref_tot_iunits_reqd_RRS_list[0]).set_index('Year')
     expected.name = "soln_ref_tot_iunits_reqd"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
-def test_soln_ref_new_iunits_reqd():
-    ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=48343.8,
-                                            soln_avg_annual_use=1841.66857142857)
+def test_soln_ref_tot_iunits_reqd_LAND():
     soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-                                           columns=soln_ref_funits_adopted_list[0]).set_index(
-        'Year')
-    soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-                                           columns=soln_pds_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=soln_ref_funits_adopted)
+    result = ua.soln_ref_tot_iunits_reqd()
+    expected = soln_ref_funits_adopted
+    expected.name = "soln_ref_tot_iunits_reqd"
+    pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+
+def test_soln_ref_new_iunits_reqd_RRS():
+    ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=48343.8,
+            soln_avg_annual_use=1841.66857142857)
+    soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
+            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
+    soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
+            columns=soln_pds_funits_adopted_list[0]).set_index('Year')
+    ua = unitadoption.UnitAdoption(ac=ac,
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_ref_new_iunits_reqd()
     expected = pd.DataFrame(soln_ref_new_iunits_reqd_list[1:],
-                            columns=soln_ref_new_iunits_reqd_list[0]).set_index('Year')
+            columns=soln_ref_new_iunits_reqd_list[0]).set_index('Year')
+    expected.name = "soln_ref_new_iunits_reqd"
+    pd.testing.assert_frame_equal(result, expected, check_exact=False)
+
+
+def test_soln_ref_new_iunits_reqd_LAND():
+    land_units_adopted_ref = pd.DataFrame(land_units_adopted_ref_list[1:],
+            columns=land_units_adopted_ref_list[0]).set_index('Year')
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND,
+            conv_expected_lifetime=0.0)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=land_units_adopted_ref)
+    result = ua.soln_ref_new_iunits_reqd()
+    expected = pd.DataFrame(land_units_required_list[1:],
+            columns=land_units_required_list[0]).set_index('Year')
     expected.name = "soln_ref_new_iunits_reqd"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_soln_ref_new_iunits_reqd_multiple_replacements():
     ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=20000.0,
-                                            soln_avg_annual_use=5000.0)
+            soln_avg_annual_use=5000.0)
     soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-                                           columns=soln_ref_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-                                           columns=soln_pds_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_list[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.soln_ref_new_iunits_reqd()
     # values from SolarPVUtil setting 'Unit Adoption Calculations'
     # AH189 = 20000 and AH190 = 5000 to match advanced_controls above
@@ -868,54 +876,48 @@ def test_soln_ref_new_iunits_reqd_multiple_replacements():
 
 def test_soln_ref_new_iunits_reqd_repeated_cost_for_iunits():
     soln_ref_funits_adopted = pd.DataFrame(soln_funits_adopted_altcement_list[1:],
-                                           columns=soln_funits_adopted_altcement_list[0]).set_index(
-        'Year')
+            columns=soln_funits_adopted_altcement_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(soln_lifetime_capacity=30.0, soln_avg_annual_use=1.0)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=None, soln_ref_funits_adopted=soln_ref_funits_adopted,
-
-                                   repeated_cost_for_iunits=True)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=None, soln_ref_funits_adopted=soln_ref_funits_adopted,
+            repeated_cost_for_iunits=True)
     result = ua.soln_ref_new_iunits_reqd()
     expected = pd.DataFrame(soln_new_iunits_reqd_altcement_list[1:],
-                            columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
+            columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
     expected.name = "soln_ref_new_iunits_reqd"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_conv_ref_new_iunits():
     ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=182411.28,
-                                            conv_avg_annual_use=4946.84)
+            conv_avg_annual_use=4946.84)
     soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-                                           columns=soln_ref_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-                                           columns=soln_pds_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_list[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.conv_ref_new_iunits()
     expected = pd.DataFrame(conv_ref_new_iunits_list[1:],
-                            columns=conv_ref_new_iunits_list[0]).set_index('Year')
+            columns=conv_ref_new_iunits_list[0]).set_index('Year')
     expected.name = "conv_ref_new_iunits"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_conv_ref_new_iunits_multiple_replacements():
     ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=20000.0,
-                                            conv_avg_annual_use=5000.0)
+            conv_avg_annual_use=5000.0)
     soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_list[1:],
-                                           columns=soln_ref_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_ref_funits_adopted_list[0]).set_index('Year')
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_list[1:],
-                                           columns=soln_pds_funits_adopted_list[0]).set_index(
-        'Year')
+            columns=soln_pds_funits_adopted_list[0]).set_index('Year')
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.conv_ref_new_iunits()
     # values from SolarPVUtil setting 'Unit Adoption Calculations'
     # AH252 = 4.0 and 'Advanced Controls'!F95 = 5000.0
@@ -925,24 +927,21 @@ def test_conv_ref_new_iunits_multiple_replacements():
 
 
 def test_conv_ref_new_iunits_land():
-    sp_world = [0, 0, 1.496434895, 3.429837617, 3.407771312, 3.385350949, 3.36260182, 3.339551447, 3.316229459,
-
-                3.292667443, 3.268898758, 2.612516835, 3.245839333, 3.223747821, 3.201569768, 3.179334541, 3.157071886,
-
-                3.134811735, 3.112584002, 3.090418386, 3.068344168, 2.958544262, 3.02978268, 3.008349446, 2.98710625,
-
-                2.966077166, 2.945284989, 2.924751124, 2.904495508, 2.884536542, 2.864891042, 2.576649818, 2.856659245,
-
-                4.334898124, 6.250416982, 6.210788688, 6.28096212, 6.106455764, 6.066707975, 6.027072713, 5.987583722,
-
-                5.948275348, 5.276740913, 5.895296951, 5.858822974, 5.822643535]
+    sp_world = [0, 0, 1.496434895, 3.429837617, 3.407771312, 3.385350949, 3.36260182, 3.339551447,
+            3.316229459, 3.292667443, 3.268898758, 2.612516835, 3.245839333, 3.223747821,
+            3.201569768, 3.179334541, 3.157071886, 3.134811735, 3.112584002, 3.090418386,
+            3.068344168, 2.958544262, 3.02978268, 3.008349446, 2.98710625, 2.966077166,
+            2.945284989, 2.924751124, 2.904495508, 2.884536542, 2.864891042, 2.576649818,
+            2.856659245, 4.334898124, 6.250416982, 6.210788688, 6.28096212, 6.106455764,
+            6.066707975, 6.027072713, 5.987583722, 5.948275348, 5.276740913, 5.895296951,
+            5.858822974, 5.822643535]
     f = this_dir.parents[0].joinpath('data', 'ad_sp_pds.csv')
     pds_ad = pd.read_csv(f, index_col=0)
     f = this_dir.parents[0].joinpath('data', 'ad_sp_ref.csv')
     ref_ad = pd.read_csv(f, index_col=0)
     ac = advanced_controls.AdvancedControls(soln_expected_lifetime=30, conv_expected_lifetime=30)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=ref_ad,
-                                   soln_pds_funits_adopted=pds_ad)
+            soln_pds_funits_adopted=pds_ad)
     # test only world values as regional data has bugs in xls
     result = ua.conv_ref_new_iunits()['World'].values
     np.testing.assert_array_almost_equal(result, sp_world)
@@ -950,46 +949,43 @@ def test_conv_ref_new_iunits_land():
 
 def test_conv_ref_new_iunits_repeated_cost_for_iunits():
     soln_pds_funits_adopted = pd.DataFrame(soln_funits_adopted_altcement_list[1:],
-                                           columns=soln_funits_adopted_altcement_list[0]).set_index(
-        'Year')
+            columns=soln_funits_adopted_altcement_list[0]).set_index('Year')
     soln_ref_funits_adopted = pd.DataFrame(0, index=soln_pds_funits_adopted.index,
-                                           columns=soln_pds_funits_adopted.columns)
+            columns=soln_pds_funits_adopted.columns)
     ac = advanced_controls.AdvancedControls(conv_lifetime_capacity=30.0, conv_avg_annual_use=1.0)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   ref_total_adoption_units=None, pds_total_adoption_units=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted,
-                                   repeated_cost_for_iunits=True)
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted,
+            repeated_cost_for_iunits=True)
     result = ua.conv_ref_new_iunits()
     expected = pd.DataFrame(soln_new_iunits_reqd_altcement_list[1:],
-                            columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
+            columns=soln_new_iunits_reqd_altcement_list[0]).set_index('Year')
     expected.name = "conv_ref_new_iunits"
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_direct_co2eq_emissions_saved_land():
     annual_ridl = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_annu_ridl.csv'), index_col=0)
-    ac = advanced_controls.AdvancedControls(tco2eq_reduced_per_land_unit=313.791126867655, tco2eq_rplu_rate='One-time',
-
-                                            delay_protection_1yr=False)
+    ac = advanced_controls.AdvancedControls(tco2eq_reduced_per_land_unit=313.791126867655,
+            tco2eq_rplu_rate='One-time', delay_protection_1yr=False)
     expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_des_co2eq.csv'), index_col=0)
     with mock.patch.object(unitadoption.UnitAdoption, 'annual_reduction_in_total_degraded_land',
                            new=lambda x: annual_ridl):
         ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
-                                       soln_pds_funits_adopted=None)
+                soln_pds_funits_adopted=None)
         pd.testing.assert_frame_equal(ua.direct_co2eq_emissions_saved_land(), expected)
 
 
 def test_net_land_units_after_emissions_lifetime():
     soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
-                                           columns=net_annual_land_units_adopted[0]).set_index(
-        'Year')
+            columns=net_annual_land_units_adopted[0]).set_index('Year')
     soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
     soln_ref_funits_adopted.loc[:, :] = 0.0
     ac = advanced_controls.AdvancedControls(land_annual_emissons_lifetime=10)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.net_land_units_after_emissions_lifetime()
     # Values from Conservation Agriculture with EG250 lifetime set to 10 years
     assert result.loc[2025, 'World'] == pytest.approx(0.0)
@@ -1001,43 +997,43 @@ def test_net_land_units_after_emissions_lifetime():
 
 
 def test_soln_pds_annual_land_area_harvested():
-    new_land_units_reqd = pd.read_csv(this_dir.parents[0].joinpath('data', 'afforestation_nlur.csv'),
-                                      index_col=0)
+    new_land_units_reqd = pd.read_csv(this_dir.parents[0].joinpath('data',
+            'afforestation_nlur.csv'), index_col=0)
     ac = advanced_controls.AdvancedControls(harvest_frequency=20)
     expected = pd.read_csv(this_dir.parents[0].joinpath('data', 'afforestation_harvest.csv'),
-                           index_col=0)
+            index_col=0)
     with mock.patch.object(unitadoption.UnitAdoption, 'soln_pds_new_iunits_reqd',
                            new=lambda x: new_land_units_reqd):
         ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
-                                       soln_pds_funits_adopted=None)
+                soln_pds_funits_adopted=None)
         pd.testing.assert_frame_equal(ua.soln_pds_annual_land_area_harvested().loc[:, ['World']],
-                                      expected.loc[:, ['World']])
+                expected.loc[:, ['World']])
 
 
 def test_soln_pds_annual_land_area_harvested_perennial_biomass():
     soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted_perbiomass_list[1:],
-                                           columns=net_annual_land_units_adopted_perbiomass_list[0]).set_index('Year')
+            columns=net_annual_land_units_adopted_perbiomass_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(harvest_frequency=20, soln_expected_lifetime=30.0)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted)
     result = ua.soln_pds_annual_land_area_harvested()
     expected = pd.DataFrame(soln_pds_annual_land_area_harvested_perennial_biomass_list[1:],
-                            columns=soln_pds_annual_land_area_harvested_perennial_biomass_list[0]).set_index('Year')
+            columns=soln_pds_annual_land_area_harvested_perennial_biomass_list[0]).set_index('Year')
     expected.name = 'soln_pds_annual_land_area_harvested'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 def test_direct_co2eq_emissions_saved_land_annual_not_protect():
     soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
-                                           columns=net_annual_land_units_adopted[0]).set_index('Year')
+            columns=net_annual_land_units_adopted[0]).set_index('Year')
     soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
     soln_ref_funits_adopted.loc[:, :] = 0.0
     ac = advanced_controls.AdvancedControls(land_annual_emissons_lifetime=100,
-                                            tco2eq_rplu_rate='Annual', disturbance_rate=0.0,
-                                            tco2eq_reduced_per_land_unit=0.23357743333333333)
+            tco2eq_rplu_rate='Annual', disturbance_rate=0.0,
+            tco2eq_reduced_per_land_unit=0.23357743333333333)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_co2eq_emissions_saved_land()
     # Values from Conservation Agriculture
     assert result.loc[2015, 'OECD90'] == pytest.approx(2.29507225337865)
@@ -1050,15 +1046,15 @@ def test_direct_co2eq_emissions_saved_land_annual_not_protect():
 
 def test_direct_co2eq_emissions_saved_land_onetime_not_protect():
     soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted_SRI_list[1:],
-                                           columns=net_annual_land_units_adopted_SRI_list[0]).set_index('Year')
+            columns=net_annual_land_units_adopted_SRI_list[0]).set_index('Year')
     soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
     soln_ref_funits_adopted.loc[:, :] = 0.0
     ac = advanced_controls.AdvancedControls(land_annual_emissons_lifetime=100,
-                                            tco2eq_rplu_rate='One-time', disturbance_rate=0.0,
-                                            tco2eq_reduced_per_land_unit=1.9964000000000002)
+            tco2eq_rplu_rate='One-time', disturbance_rate=0.0,
+            tco2eq_reduced_per_land_unit=1.9964000000000002)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_co2eq_emissions_saved_land()
     # Values from System of Rice Intensification Unit Adoption Calculations AT308:AU354
     assert result.loc[2015, 'World'] == pytest.approx(2.33469083300138)
@@ -1071,14 +1067,14 @@ def test_direct_co2eq_emissions_saved_land_onetime_not_protect():
 
 def test_direct_co2eq_emissions_saved_land_delta_pds_ref_factor():
     soln_pds_funits_adopted = pd.DataFrame(soln_pds_funits_adopted_smallholder_list[1:],
-                                           columns=soln_pds_funits_adopted_smallholder_list[0]).set_index('Year')
+            columns=soln_pds_funits_adopted_smallholder_list[0]).set_index('Year')
     soln_ref_funits_adopted = pd.DataFrame(soln_ref_funits_adopted_smallholder_list[1:],
-                                           columns=soln_ref_funits_adopted_smallholder_list[0]).set_index('Year')
+            columns=soln_ref_funits_adopted_smallholder_list[0]).set_index('Year')
     ac = advanced_controls.AdvancedControls(tco2eq_reduced_per_land_unit=313.791126867655,
-                                            avoided_deforest_with_intensification=0.255526315789474)
+            avoided_deforest_with_intensification=0.255526315789474)
     ua = unitadoption.UnitAdoption(ac=ac,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_co2eq_emissions_saved_land()
     # Values from Smallholder Intensification Unit Adoption Calculations AT308:AU354
     assert result.loc[2015, 'World'] == pytest.approx(86.1366493749314)
@@ -1094,44 +1090,44 @@ def test_direct_co2eq_emissions_saved_land_delta_pds_ref_factor():
 
 def test_various_direct_emissions_saved_land_onetime_protect():
     soln_pds_funits_adopted = pd.DataFrame(net_annual_land_units_adopted[1:],
-                                           columns=net_annual_land_units_adopted[0]).set_index('Year')
+            columns=net_annual_land_units_adopted[0]).set_index('Year')
     soln_ref_funits_adopted = soln_pds_funits_adopted.copy()
     soln_ref_funits_adopted.loc[:, :] = 0.0
     tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'),
-                              index_col=0)
+            index_col=0)
     ac = advanced_controls.AdvancedControls(delay_protection_1yr=True, tco2eq_rplu_rate='One-time',
-                                            disturbance_rate=0.0, degradation_rate=0.1,
-                                            tch4_co2_reduced_per_land_unit=0.1,
-                                            tco2eq_reduced_per_land_unit=0.0)
+            disturbance_rate=0.0, degradation_rate=0.1,
+            tch4_co2_reduced_per_land_unit=0.1,
+            tco2eq_reduced_per_land_unit=0.0)
     ua = unitadoption.UnitAdoption(ac=ac, pds_total_adoption_units=tla_per_reg,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_ch4_co2_emissions_saved_land()
     assert not all(result.loc[:, 'World'] == 0.0)
     ac = advanced_controls.AdvancedControls(delay_protection_1yr=True,
-                                            tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
-                                            tn2o_co2_reduced_per_land_unit=0.1, tco2eq_reduced_per_land_unit=0.0)
+            tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
+            tn2o_co2_reduced_per_land_unit=0.1, tco2eq_reduced_per_land_unit=0.0)
     ua = unitadoption.UnitAdoption(ac=ac, pds_total_adoption_units=tla_per_reg,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_n2o_co2_emissions_saved_land()
     assert not all(result.loc[:, 'World'] == 0.0)
     ac = advanced_controls.AdvancedControls(delay_protection_1yr=True,
-                                            tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
-                                            tco2_reduced_per_land_unit=0.1, tco2eq_reduced_per_land_unit=0.0)
+            tco2eq_rplu_rate='One-time', disturbance_rate=0.0, degradation_rate=0.1,
+            tco2_reduced_per_land_unit=0.1, tco2eq_reduced_per_land_unit=0.0)
     ua = unitadoption.UnitAdoption(ac=ac, pds_total_adoption_units=tla_per_reg,
-                                   soln_pds_funits_adopted=soln_pds_funits_adopted,
-                                   soln_ref_funits_adopted=soln_ref_funits_adopted)
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            soln_ref_funits_adopted=soln_ref_funits_adopted)
     result = ua.direct_co2_emissions_saved_land()
     assert not all(result.loc[:, 'World'] == 0.0)
 
 
 # SolarPVUtil 'Unit Adoption Calculations'!B134:L181
 soln_pds_funits_adopted_list = [
-    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America",
-     "China", "India", "EU", "USA"],
-    [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778, 14.65061888889,
-     14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+        "Latin America", "China", "India", "EU", "USA"],
+    [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778,
+        14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
     [2015, 176.24092107213, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2016, 272.03135207741, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2017, 383.30935172620, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -1181,10 +1177,10 @@ soln_pds_funits_adopted_list = [
 
 # SolarPVUtil 'Unit Adoption Calculations'!B134:L181 with regional columns set to nan.
 soln_pds_funits_adopted_no_regional_data_list = [
-    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America",
-     "China", "India", "EU", "USA"],
-    [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778, 14.65061888889,
-     14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+        "Latin America", "China", "India", "EU", "USA"],
+    [2014, 112.63303333333, 75.00424555556, 0.33238333333, 21.07250444444, 1.57507777778,
+        14.65061888889, 14.97222222222, 2.74830111111, 55.27205444444, 13.12465000000],
     [2015, 176.24092107213, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
     [2016, 272.03135207741, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
     [2017, 383.30935172620, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
@@ -1193,90 +1189,52 @@ soln_pds_funits_adopted_no_regional_data_list = [
     [2020, 654.00000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
     [2021, 969.38811535670, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
     [2022, 1147.67226717322, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2023, 1337.27131121334, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2024, 1537.48980140706, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2025, 1595.40000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2026, 1967.00333597537, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2027, 2194.90748820999, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2028, 2430.64930231826, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2029, 2673.53333223022, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2030, 3040.20000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2031, 3177.94625518520, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2032, 3438.08425608826, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2033, 3702.58268851506, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2034, 3970.74610639560, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2035, 4241.87906365990, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2036, 4515.28611423798, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2037, 4790.27181205984, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2038, 5066.14071105551, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2039, 5342.19736515499, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2040, 5665.20000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2041, 5892.09215438547, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2042, 6164.53939737649, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2043, 6434.39261119138, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2044, 6700.95634976017, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2045, 6963.53516701285, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2046, 7221.43361687946, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2047, 7473.95625328999, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2048, 7720.40763017447, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2049, 7960.09230146291, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2050, 8167.80000000000, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2051, 8416.37974297171, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2052, 8631.59162105212, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2053, 8837.25500925653, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2054, 9032.67446151498, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2055, 9217.15453175747, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2056, 9389.99977391402, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2057, 9550.51474191465, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2058, 9698.00398968936, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2059, 9831.77207116817, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-
     [2060, 9951.12354028110, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
      np.nan]]
 
 # SolarPVUtil 'Unit Adoption Calculations'!AX134:BH181
 soln_pds_tot_iunits_reqd_list = [
-    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America",
-     "China", "India", "EU", "USA"],
-    [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497, 0.00795507895, 0.00812970502,
-     0.00149228865, 0.03001194422, 0.00712649942],
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+        "Latin America", "China", "India", "EU", "USA"],
+    [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497,
+        0.00795507895, 0.00812970502, 0.00149228865, 0.03001194422, 0.00712649942],
     [2015, 0.09569632876, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2016, 0.14770917868, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2017, 0.20813155943, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -1428,8 +1386,8 @@ soln_pds_big4_iunits_reqd_no_regional_data_list = [
 
 # SolarPVUtil 'Unit Adoption Calculations'!AG134:AQ181
 soln_pds_new_iunits_reqd_list = [
-    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America",
-     "China", "India", "EU", "USA"],
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+        "Latin America", "China", "India", "EU", "USA"],
     [2015, 0.03453818387, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2016, 0.05201284992, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [2017, 0.06042238076, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -1576,8 +1534,158 @@ soln_ref_funits_adopted_list = [
     [2060, 316.79772706269, 103.62345283599, 0.57610192892, 71.06091037152, 7.78568566479, 49.91076481837,
      36.17435265380, 17.55170820188, 77.70340340347, 17.32929796233]]
 
+# Afforestation 'Unit Adoption Calculations'!B198:L244
+land_units_adopted_ref_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+        "Latin America", "China", "India", "EU", "USA"],
+    [2014, 290.462336306692, 93.524912848953, 44.555819604282, 91.502706434168, 17.425945016975,
+        16.513162302546, 0.0, 0.0, 0.0, 0.0],
+    [2015, 291.336550416405, 93.524912848953, 44.581222727229, 91.502706434168, 17.491860832197,
+        16.631091333141, 0.0, 0.0, 0.0, 0.0],
+    [2016, 292.240912741787, 93.524912848953, 44.607328549206, 91.502706434168, 17.560050550931,
+        16.753143733789, 0.0, 0.0, 0.0, 0.0],
+    [2017, 293.175447683892, 93.524912848953, 44.634138090782, 91.502706434168, 17.630515445805,
+        16.879320870103, 0.0, 0.0, 0.0, 0.0],
+    [2018, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2019, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2020, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2021, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2022, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2023, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2024, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2025, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2026, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2027, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2028, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2029, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2030, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2031, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2032, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2033, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2034, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2035, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2036, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2037, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2038, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2039, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2040, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2041, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2042, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2043, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2044, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2045, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2046, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2047, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2048, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2049, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2050, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2051, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2052, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2053, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2054, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2055, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2056, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2057, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2058, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2059, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0],
+    [2060, 294.140179643776, 93.524912848953, 44.661652372528, 91.502706434168, 17.703256789453,
+        17.009624107696, 0.0, 0.0, 0.0, 0.0]]
+
+# Afforestation 'Unit Adoption Calculations'!B198:L244
+land_units_required_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+        "Latin America", "China", "India", "EU", "USA"],
+    [2015, 0.874214109713, 0.0, 0.025403122947, 0.0, 0.065915815223, 0.117929030595, 0.0, 0.0, 0.0, 0.0],
+    [2016, 1.778576435095, 0.0, 0.051508944924, 0.0, 0.134105533956, 0.239981431243, 0.0, 0.0, 0.0, 0.0],
+    [2017, 2.713111377200, 0.0, 0.078318486500, 0.0, 0.204570428830, 0.366158567557, 0.0, 0.0, 0.0, 0.0],
+    [2018, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2019, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2020, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2021, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2022, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2023, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2024, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2025, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2026, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2027, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2028, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2029, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2030, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2031, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2032, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2033, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2034, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2035, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2036, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2037, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2038, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2039, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2040, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2041, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2042, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2043, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2044, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2045, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2046, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2047, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2048, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2049, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2050, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2051, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2052, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2053, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2054, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2055, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2056, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2057, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2058, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2059, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0],
+    [2060, 3.677843337084, 0.0, 0.105832768246, 0.0, 0.277311772478, 0.496461805150, 0.0, 0.0, 0.0, 0.0]]
+
 # SolarPVUtil 'Unit Adoption Calculations'!AX197:BH244
-soln_ref_tot_iunits_reqd_list = [
+soln_ref_tot_iunits_reqd_RRS_list = [
     ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America",
      "China", "India", "EU", "USA"],
     [2014, 0.06115814489, 0.04072624506, 0.00018047945, 0.01144207203, 0.00085524497, 0.00795507895, 0.00812970502,

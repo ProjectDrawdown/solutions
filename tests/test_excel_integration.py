@@ -526,8 +526,7 @@ def verify_custom_adoption(obj, verify):
        https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.kjrqk1o5e46m
     """
     verify['Custom PDS Adoption'] = [
-            ('A23:B71', obj.pds_ca.adoption_data_per_region()
-             ['World'].reset_index(), None)
+            ('A23:B71', obj.pds_ca.adoption_data_per_region()['World'].reset_index(), "Excel_NaN")
     ]
     # verify['Custom REF Adoption'] = []  # not yet implemented
     return verify

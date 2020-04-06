@@ -339,7 +339,10 @@ class OperatingCost:
             cost = 0
             if soln_lifetime <= 0:
                 break
-            remainder = (year - (first_year - 1)) % self.ac.conv_lifetime_replacement
+            if self.ac.conv_lifetime_replacement is None or self.ac.conv_lifetime_replacement == 0:
+                remainder = 0
+            else:
+                remainder = (year - (first_year - 1)) % self.ac.conv_lifetime_replacement
             if remainder <= 1 and remainder > 0:
                 # A new conventional iunit is costed as many times as needed to cover the
                 # lifetime and output of a solution iunit.
@@ -362,13 +365,17 @@ class OperatingCost:
             if self.ac.has_var_costs:
                 conv_var_cost = self.ac.conv_var_oper_cost_per_funit + self.ac.conv_fuel_cost_per_funit
                 soln_var_cost = self.ac.soln_var_oper_cost_per_funit + self.ac.soln_fuel_cost_per_funit
-                cost += (
-                            self.ac.soln_avg_annual_use * conv_var_cost - self.ac.soln_avg_annual_use * soln_var_cost) \
-                        * self.conversion_factor_vom
+                cost += (self.ac.soln_avg_annual_use * conv_var_cost - self.ac.soln_avg_annual_use *
+                        soln_var_cost) * self.conversion_factor_vom
 
             # account for a partial year at the end of the lifetime.
             cost *= min(1, soln_lifetime)
-            result[year] = cost if math.fabs(cost) > 0.01 else 0.0
+            if self.ac.conv_lifetime_replacement is None or self.ac.conv_lifetime_replacement == 0:
+                result[year] = np.nan
+            elif math.fabs(cost) < 0.01:
+                result[year] = 0.0
+            else:
+                result[year] = cost
 
             soln_lifetime -= 1
 

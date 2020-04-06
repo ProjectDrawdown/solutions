@@ -1,58 +1,42 @@
 {
-    "name": "PDS-84p2050-Plausible-PDScustom-low-Bookedition1",
+    "name": "PDS-84p2050-Plausible-PDScustom-low-BookVersion1",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "The current adoption value was estimated by interpolating the regional data available on the afforested area in the OECD 90, Eastern Europe, Asia sans Japan, Middle East and Africa, and Latin America for the years 1990, 2000, 2005, and 2010 in the FAO 2015 publication. The interpolated data were plotted in the adoption data sheet to get the current adoption value for the year 2014. The future adoption scenarios were projected based on these regional historical growth rates. In addition, aggressive adoption scenarios assuming 100% adoption of the solution were also created, with an early adoption (75-90%) by 2030. This scenario derives the result from the \"low of all\" PDS custom adoption scenarios. The results are similar to that of the Bookedition 1 result, so no separate scenario was created for the latter. This edition involves correction of the current adoption (in the previous model it was set for the year 2010), revision of the VMA data points, adjustment of custom adoption scenarios to match the results with the Book edition 1, correction of the formula used for the calculation of carbon emission at the time harvest, correction of net profit margin calculation methodology, and estimation of operational cost which was missing in the Book edition 1 results. ",
+    "description": "The current adoption value was estimated by interpolating the regional data available on the afforested area in the OECD 90, Eastern Europe, Asia sans Japan, Middle East and Africa, and Latin America for the years 1990, 2000, 2005, and 2010 in the FAO 2015 publication. The interpolated data were plotted in the adoption data sheet to get the current adoption value for the year 2014. The future adoption scenarios were projected based on these regional historical growth rates. In addition, aggressive adoption scenarios assuming 100% adoption of the solution were also created, with an early adoption (75-90%) by 2030. This scenario derives the result from the \"low of all\" PDS custom adoption scenarios. The results are similar to that of the BookVersion 1 result, so no separate scenario was created for the latter. This version involves correction of the current adoption (in the previous model it was set for the year 2010), revision of the VMA data points, adjustment of custom adoption scenarios to match the results with the Book Version 1, correction of the formula used for the calculation of carbon emission at the time harvest, correction of net profit margin calculation methodology, and estimation of operational cost which was missing in the Book Version 1 results. ",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": false,
+    "ref_base_adoption": {
+        "World": 297.786622386759,
+        "OECD90": 98.4178876451932,
+        "Eastern Europe": 44.6866027894336,
+        "Asia (Sans Japan)": 119.601702499052,
+        "Middle East and Africa": 17.6154482874786,
+        "Latin America": 17.4649811656021,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_custom_name": "Low of All Custom Scenarios",
+    "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
+        2014,
         2015,
         2016
     ],

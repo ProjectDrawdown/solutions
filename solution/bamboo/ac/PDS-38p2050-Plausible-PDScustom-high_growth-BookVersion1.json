@@ -1,56 +1,39 @@
 {
-    "name": "PDS-47p2050-Drawdown-PDScustom-avg-Bookedition1",
+    "name": "PDS-38p2050-Plausible-PDScustom-high growth-BookVersion1",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "The current adoption of the solution is based on the regional data (Asia, Middle East and Africa, and Latin America) available on Bamboo area for the year 1990, 2000, 2005, and 2010 from FAO 2010 publication. This data was interpolated to get the current adoption value as on 2014. The future adoption is projected based on these historical growth rates. This scenario derives the result from the \"average of all\" PDS custom adoption scenarios. As the solution is proposed to be implemented in the degraded grassland or forest area, we have considered the \"low\" value for the carbon sequestration. It was also assumed that at the time of harvest, a minimum of 10% of the sequestered carbon will be stored and not emitted as part of the harvest related emissions, however as the lifecycle of bamboo (approx. 80 years) is beyond the period of study (2020-2050), the emission at the time of bamboo harvest was not estimated in the present model. The result of this scenario are similar to the Book edition 1, so no separate scenario was created for the latter. This edition involves correction of current adoption, addition of new data points to the carbon sequestration, correction of the net profit margin calculation methodology,  and estimation of operational cost which was missing in the Book edition 1.  ",
+    "description": "The current adoption of the solution is based on the regional data (Asia, Middle East and Africa, and Latin America) available on Bamboo area for the year 1990, 2000, 2005, and 2010 from FAO 2010 publication. This data was interpolated to get the current adoption value as on 2014. The future adoption is projected based on these historical growth rates. This scenario presents the result of the \"high growth - linear trend\" PDS custom adoption scenario. As the solution is proposed to be implemented in the degraded grassland or forest area, we have considered the \"low\" value for the carbon sequestration. It was also assumed that at the time of harvest, a minimum of 10% of the sequestered carbon will be stored and not emitted as part of the harvest related emissions, however as the lifecycle of bamboo (approx. 80 years) is beyond the period of study (2020-2050), the emission at the time of bamboo harvest was not estimated in the present model. The result of this scenario are similar to the Book Version 1, so no separate scenario was created for the latter. This version involves correction of current adoption, addition of new data points to the carbon sequestration, correction of the net profit margin calculation methodology,  and estimation of operational cost which was missing in the Book Version 1.  ",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": false,
+    "ref_base_adoption": {
+        "World": 32.8913636108367,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 18.0440250214314,
+        "Middle East and Africa": 3.9611495064729,
+        "Latin America": 10.8861890829324,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "Average of All Custom Scenarios",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "High growth, linear trend",
+    "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
         2015

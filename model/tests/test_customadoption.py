@@ -2,7 +2,7 @@ import pathlib
 import pytest
 from model import customadoption
 import pandas as pd
-from numpy import nan
+import numpy as np
 
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
@@ -85,6 +85,26 @@ def test_avg_high_low_with_limit():
     pd.testing.assert_frame_equal(highs.loc[2027:, :], limit.loc[2027:, :], check_dtype=False)
 
 
+def test_avg_high_low_with_limit_per_source():
+    data_sources = [
+        {'name': 'scenario 1', 'filename': datadir.joinpath('ca_100.csv'), 'include': True},
+        {'name': 'scenario 2', 'filename': datadir.joinpath('ca_300.csv'), 'include': True},
+    ]
+    limit = pd.read_csv(datadir.joinpath('ca_200.csv'), index_col=0)
+    ca = customadoption.CustomAdoption(data_sources=data_sources, soln_adoption_custom_name='',
+                                       low_sd_mult=0.1, high_sd_mult=0.1,
+                                       total_adoption_limit=limit)
+    avg, high, low = ca._avg_high_low()
+    # if the limit is not applied to each individual source before averaging, then the average
+    # of 100.0 and 300.0 will be 200.0. Applying a limit of 200.0 to the computed average will
+    # not change anything.
+    # After applying the limit of 200.0 to ca_300.csv, the average of 100.0 and 200.0
+    # will be 150.0.
+    assert((avg == 150.0).all().all())
+    assert((high == 155.0).all().all())
+    assert((low == 145.0).all().all())
+
+
 def test_adoption_data_per_region():
     data_sources = [
         {'name': 'scenario 1', 'filename': path1, 'include': True},
@@ -137,7 +157,7 @@ def test_report():
     report, data = ca.report()
     print(report.iloc[1, :].values)
     assert list(report.iloc[0, :].values) == [True, True, True, False]
-    assert list(report.iloc[1, :].values) == [False, False, nan, nan]
+    assert list(report.iloc[1, :].values) == [False, False, np.nan, np.nan]
 
 
 def test_datapoints_limit():
@@ -232,6 +252,35 @@ def test_datapoints_nolimit():
     assert result.loc[2060, 'World'] == pytest.approx(60)
 
 
+def test_datapoints_bug_no_limit():
+    columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+             "Middle East and Africa", "Latin America"]
+    limit = pd.DataFrame(120.0, index=range(2014,2061), columns=columns)
+    data_sources = [
+        {'name': 'scenario 1', 'filename': datadir.joinpath('ca_100.csv'), 'include': True},
+        {'name': 'scenario 2', 'filename': datadir.joinpath('ca_300.csv'), 'include': True},
+    ]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='Average of All Custom Scenarios', total_adoption_limit=limit)
+    result = ca.adoption_data_per_region()
+    # scenario2 will be reduced to 120, (100 + 120) / 2 = 110
+    assert result.loc[2040, 'World'] == pytest.approx(110)
+    assert result.loc[2050, 'World'] == pytest.approx(110)
+    assert result.loc[2060, 'World'] == pytest.approx(110)
+    data_sources = [
+        {'name': 'scenario 1', 'filename': datadir.joinpath('ca_100.csv'), 'include': True},
+        {'name': 'scenario 2', 'filename': datadir.joinpath('ca_300.csv'), 'include': True,
+            'bug_no_limit': True},
+    ]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='Average of All Custom Scenarios', total_adoption_limit=limit)
+    result = ca.adoption_data_per_region()
+    # scenario2 will not be limited, (100 + 300) / 2 = 200 which is then limited to 200.
+    assert result.loc[2040, 'World'] == pytest.approx(120)
+    assert result.loc[2050, 'World'] == pytest.approx(120)
+    assert result.loc[2060, 'World'] == pytest.approx(120)
+
+
 def test_datapoints_no_negative():
     datapoints = pd.DataFrame([
         [2020, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -245,9 +294,57 @@ def test_datapoints_no_negative():
     assert result.loc[2015, 'World'] == pytest.approx(0.0)  # i.e. not negative.
 
 
+def test_datapoints_least_sq():
+    # Taken from Drawdown_RRS-BIOSEQ_Model_v1.1_MASTER_Afforestation-Jan2020.xlsm
+    data_sources = [{'name': 'Regional linear trend', 'include': True, 'least_sq': True,
+     'datapoints': pd.DataFrame([
+        [1990, np.nan, 96.8914, 44.1631, 106.1562, 16.5338, 14.9281],
+        [2000, np.nan, 97.2555, 44.2605, 107.5489, 16.7251, 15.2771],
+        [2005, np.nan, 97.6355, 44.3794, 109.8028, 16.9607, 15.6649],
+        [2010, np.nan, 97.8700, 44.4540, 111.5210, 17.1760, 16.0730],
+        [2014, np.nan, 98.1783330003811, 44.5558196042818, 113.7890763825080,
+            17.4259450169749, 16.5131623025461],
+        ], columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+            "Middle East and Africa", "Latin America"]).set_index("Year")
+    }]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='Regional linear trend')
+    result = ca.scenarios['Regional linear trend']['df']
+    # expected values also from Drawdown_RRS-BIOSEQ_Model_v1.1_MASTER_Afforestation-Jan2020.xlsm
+    # 'Custom PDS Adoption' in the first scenario 'Regional linear trend'
+    assert result.loc[2040, 'OECD90'] == pytest.approx(99.5072653875209)
+    assert result.loc[2050, 'Eastern Europe'] == pytest.approx(45.1173882050357)
+    assert result.loc[2055, 'World'] == pytest.approx(309.3451120801650)
+
+
+def test_datapoints_maximum():
+    datapoints = pd.DataFrame([
+        [2020, 20.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2050, 50.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+        columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+                 "Middle East and Africa", "Latin America"]).set_index("Year")
+    data_sources = [{'name': 'datapoints scenario', 'datapoints': datapoints, 'include': True,
+            'maximum': 33.5},]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='datapoints scenario')
+    result = ca.scenarios['datapoints scenario']['df']
+    assert result.loc[2020, 'World'] == pytest.approx(20)
+    assert result.loc[2030, 'World'] == pytest.approx(30)
+    assert result.loc[2031, 'World'] == pytest.approx(31)
+    assert result.loc[2032, 'World'] == pytest.approx(32)
+    assert result.loc[2033, 'World'] == pytest.approx(33)
+    assert result.loc[2034, 'World'] == pytest.approx(33.5)
+    assert result.loc[2035, 'World'] == pytest.approx(33.5)
+    assert result.loc[2040, 'World'] == pytest.approx(33.5)
+    assert result.loc[2050, 'World'] == pytest.approx(33.5)
+    assert result.loc[2060, 'World'] == pytest.approx(33.5)
+
+
 def test_growth():
-    growth_initial = pd.DataFrame([[2018, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]],
-        columns=["Year", "A", "B", "C", "D", "E", "F"]).set_index("Year")
+    growth_initial = pd.DataFrame([[2018, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 0.0, 0.0, 0.0, 0.0]],
+        columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                 'Middle East and Africa', 'Latin America',
+                 'USA', 'EU', 'India', 'China']).set_index('Year')
     data_sources = [{'name': 'growth scenario', 'growth_rate': 0.1,
             'growth_initial': growth_initial, 'include': True}]
     ca = customadoption.CustomAdoption(data_sources=data_sources,
@@ -256,15 +353,51 @@ def test_growth():
     # expected values generated by modifying an Excel Custom PDS Adoption scenario to have a
     # 10% growth rate and initial values in the dataframe above. As Excel only handles the
     # World region for growth computations, we iteratively set the World to each value above.
-    assert result.loc[2012, 'A'] == 1.0
-    assert result.loc[2015, 'A'] == 1.0
-    assert result.loc[2018, 'A'] == 1.0
-    assert result.loc[2030, 'A'] == pytest.approx(12.2172551998265)
-    assert result.loc[2040, 'A'] == pytest.approx(21.5649678663485)
-    assert result.loc[2050, 'A'] == pytest.approx(30.9126805328706)
-    assert result.loc[2060, 'A'] == pytest.approx(40.2603931993926)
-    assert result.loc[2060, 'B'] == pytest.approx(80.5207863987853)
-    assert result.loc[2060, 'C'] == pytest.approx(120.781179598178)
-    assert result.loc[2060, 'D'] == pytest.approx(161.041572797571)
-    assert result.loc[2060, 'E'] == pytest.approx(201.301965996963)
-    assert result.loc[2060, 'F'] == pytest.approx(241.562359196356)
+    assert result.loc[2012, 'World'] == 1.0
+    assert result.loc[2015, 'World'] == 1.0
+    assert result.loc[2018, 'World'] == 1.0
+    assert result.loc[2030, 'World'] == pytest.approx(12.2172551998265)
+    assert result.loc[2040, 'World'] == pytest.approx(21.5649678663485)
+    assert result.loc[2050, 'World'] == pytest.approx(30.9126805328706)
+    assert result.loc[2060, 'World'] == pytest.approx(40.2603931993926)
+    assert result.loc[2060, 'OECD90'] == pytest.approx(80.5207863987853)
+    assert result.loc[2060, 'Eastern Europe'] == pytest.approx(120.781179598178)
+    assert result.loc[2060, 'Asia (Sans Japan)'] == pytest.approx(161.041572797571)
+    assert result.loc[2060, 'Middle East and Africa'] == pytest.approx(201.301965996963)
+    assert result.loc[2060, 'Latin America'] == pytest.approx(241.562359196356)
+
+
+def test_datapoints_with_implied_main_region():
+    datapoints = pd.DataFrame([
+        [2020, np.nan, 10.0, 10.0, 10.0, 10.0, 10.0, 1.0, 3.0, 5.0, 7.0],
+        [2050, np.nan, 10.0, 10.0, 10.0, 10.0, 10.0, 1.0, 3.0, 5.0, 7.0]],
+        columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                 'Middle East and Africa', 'Latin America',
+                 'USA', 'EU', 'India', 'China']).set_index('Year')
+    data_sources = [{'name': 'implied world', 'datapoints': datapoints, 'include': True}]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='implied world')
+    result = ca.scenarios['implied world']['df']
+    assert result.loc[2025, 'World'] == 50.0
+    assert result.loc[2035, 'World'] == 50.0
+
+def test_start_year_in_range():
+    datapoints = pd.DataFrame([
+        [1990, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2000, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2010, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2020, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2030, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2040, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2060, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2070, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+        columns=['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+                 'Middle East and Africa', 'Latin America',
+                 'USA', 'EU', 'India', 'China']).set_index('Year')
+    data_sources = [{'name': 'implied world', 'datapoints': datapoints, 'include': True}]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='implied world')
+    result = ca.scenarios['implied world']['df']
+    assert result.first_valid_index() == 2012
+    assert result.last_valid_index() == 2060

@@ -67,21 +67,29 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             include = d.get('include', True)
             filename = d.get('filename', None)
             datapoints = d.get('datapoints', None)
+            least_sq = d.get('least_sq', None)
             growth_rate = d.get('growth_rate', None)
+            maximum = d.get('maximum', None)
+            bug_no_limit = d.get('bug_no_limit', False)
             n = 0
             if filename is not None:
                 df = self._read_csv(filename)
                 n = n + 1
-            if datapoints is not None:
+            if datapoints is not None and not least_sq:
                 df = self._linear_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
+                n = n + 1
+            if datapoints is not None and least_sq:
+                df = self._polyfit_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
                 n = n + 1
             if growth_rate is not None:
                 growth_initial = d.get('growth_initial', None)
                 df = self._growth_forecast(rate=growth_rate, initial=growth_initial,
                         start_year=2012, end_year=2060)
                 n = n + 1
-            assert n <= 1, "Only one of filename, datapoints, or growth_rate may be used"
-            self.scenarios[name] = {'df': df, 'include': include}
+            assert n == 1, "Only one of filename, datapoints, or growth_rate may be used"
+            if maximum is not None:
+                df = df.clip(upper=maximum)
+            self.scenarios[name] = {'df': df, 'include': include, 'bug_no_limit': bug_no_limit}
         self.soln_adoption_custom_name = soln_adoption_custom_name
 
 
@@ -133,13 +141,46 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         adopt_per_year = (adopt1 - adopt0) / float(year1 - year0)
         for year in range(first_year - 1, start_year - 1, -1):
             df.loc[year] = (adopt0 - (float(year0 - year) * adopt_per_year)).clip(lower=0.0)
+        df.sort_index(inplace=True)
+
+        main_region = dd.REGIONS[0]
+        if df[main_region].isnull().all():
+            df[main_region] = df[dd.MAIN_REGIONS].sum(axis=1)
 
         if self.total_adoption_limit is not None:
-            df = df.combine(self.total_adoption_limit, np.fmin)
+            idx = self.total_adoption_limit.first_valid_index()
+            df.loc[idx:, :] = df.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
 
         df.index = df.index.astype(int)
         df.index.name = 'Year'
-        return df.sort_index()
+        return df.loc[start_year:end_year, :]
+
+
+    def _polyfit_forecast(self, datapoints, start_year, end_year):
+        """Interpolates a line between datapoints, and fills in a dataframe.
+           datapoints: a Pandas DataFrame with 2+ rows of adoption data, indexed by year.
+             The columns are expected to be regions like 'World', 'EU', 'India', etc.
+             The year+adoption data provide the X,Y coordinates for a line to interpolate.
+           start_year: year the trend should begin, sometimes earlier than the first datapoint
+           end_year: year the trend should extend to, usually past the last datapoint
+        """
+        df = pd.DataFrame(columns=datapoints.columns, dtype='float')
+        for col in df.columns:
+            (slope, intercept) = np.polyfit(x=datapoints.index, y=datapoints[col], deg=1)
+            first_year = list(datapoints.index)[0]
+            initial_value = datapoints.loc[first_year, col]
+            for year in range(first_year, start_year - 1, -1):
+                df.loc[year, col] = (slope * year) + intercept
+            for year in range(first_year, end_year + 1):
+                df.loc[year, col] = (slope * year) + intercept
+
+        main_region = dd.REGIONS[0]
+        if df[main_region].isnull().all():
+            df[main_region] = df[dd.MAIN_REGIONS].sum(axis=1)
+
+        df.index = df.index.astype(int)
+        df.index.name = 'Year'
+        return df.sort_index().loc[start_year:end_year, :]
 
     def _growth_forecast(self, rate, initial, start_year, end_year):
         """Computes a line from an initial datapoint, and fills in a dataframe.
@@ -167,13 +208,16 @@ class CustomAdoption(object, metaclass=MetaclassCache):
 
         return df.sort_index()
 
-
     def _avg_high_low(self):
         """ Returns DataFrames of average, high and low scenarios. """
         regions_to_avg = {}
         for name, scen in self.scenarios.items():
             if scen['include']:
                 scen_df = scen['df'].dropna(axis=1, how='all')  # ignore null columns (i.e. blank regional data)
+                if self.total_adoption_limit is not None and not scen['bug_no_limit']:
+                    tal = self.total_adoption_limit
+                    idx = tal.first_valid_index()
+                    scen_df.loc[idx:, :] = scen_df.loc[idx:, :].combine(tal, np.minimum)
                 for reg in scen_df.columns:
                     if reg not in regions_to_avg:
                         regions_to_avg[reg] = pd.DataFrame({name: scen_df[reg]})
@@ -205,6 +249,9 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             result = data['df'].copy()
         else:
             raise ValueError('Unknown adoption name: ' + str(self.soln_adoption_custom_name))
+        if self.total_adoption_limit is not None:
+            idx = self.total_adoption_limit.first_valid_index()
+            result.loc[idx:, :] = result.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
         result.name = 'adoption_data_per_region'
         return result
 
