@@ -21,8 +21,8 @@ class AllocationReader:
     def __init__(self, key='land', outputdir=None):
         if key == 'land':
             f = LAND_XLS_PATH
-            self.regimes = model.dd.THERMAL_MOISTURE_REGIMES
-            sheetname = '2019'
+            self.regimes = model.dd.THERMAL_MOISTURE_REGIMES8
+            sheetname = '2020'
         else:
             f = OCEAN_XLS_PATH
             self.regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
@@ -60,8 +60,10 @@ class AllocationReader:
             tmr_dict = {}
             for cell in self.first_cells:
                 title_row_offset = 3 if self.key == 'land' else 5
-                assert 'EZ' in self.sheet.cell_value(cell[0] - title_row_offset, cell[1] - 1)
-                assert 'EZ' in self.sheet.cell_value(cell[0] - 2, cell[1] - 1)
+                err = f"no 'EZ' found at row {cell[0] - title_row_offset} col {cell[1] - 1}"
+                assert 'EZ' in self.sheet.cell_value(cell[0] - title_row_offset, cell[1] - 1), err
+                err = f"no 'EZ' found at row {cell[0] - 2} col {cell[1] - 1}"
+                assert 'EZ' in self.sheet.cell_value(cell[0] - 2, cell[1] - 1), err
                 row, col = cell
                 if self.key == 'land':
                     row_mult = 31

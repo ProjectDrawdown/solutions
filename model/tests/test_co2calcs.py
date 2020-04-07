@@ -562,25 +562,43 @@ def test_direct_emissions_from_harvesting():
     ac = advanced_controls.AdvancedControls(seq_rate_global=5.07437553005968, harvest_frequency=20.,
                                             carbon_not_emitted_after_harvesting=50.696244944853)
     c2 = co2calcs.CO2Calcs(ac=ac, annual_land_area_harvested=land_harvested)
-    pd.testing.assert_frame_equal(c2.direct_emissions_from_harvesting(), expected, check_dtype=False)
+    pd.testing.assert_frame_equal(c2.direct_emissions_from_harvesting(), expected,
+            check_dtype=False)
 
 
 def test_co2_sequestered_global_simple():
     """ Test vals from Tropical Forests """
-    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND, seq_rate_global=4.150868085)
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND,
+            seq_rate_global=4.150868085)
     funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
     land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
-    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits, regime_distribution=land_dist)
+    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits,
+            regime_distribution=land_dist)
     df = c2.co2_sequestered_global()
     assert df.loc[2060, 'All'] == pytest.approx(2884.57122692783)
     assert df.loc[2015, 'Tropical-Semi-Arid'] == pytest.approx(42.2676049356999)
 
 
+def test_co2_sequestered_global_custom_regime():
+    regimes = ['Tropical-Humid', 'Tropical-Semi-Arid', 'Boreal-Humid',
+               'Boreal-Semi-Arid', 'Temperate-Humid', 'Temperate-Semi-Arid',
+               'Global Arid', 'Global Arctic']
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND,
+            seq_rate_per_regime={'Tropical-Humid': 0.1, 'Temperate-Humid': 0.2,
+                'Boreal-Humid': 0.3, 'Tropical-Semi-Arid': 0.4, 'Temperate-Semi-Arid': 0.5,
+                'Boreal-Semi-Arid': 0.6, 'Global Arid': 0.7, 'Global Arctic': 0.0})
+    funits = pd.read_csv(datadir.joinpath('pds_adoption_trr8.csv'), index_col=0).fillna(1.0)
+    land_dist = pd.read_csv(datadir.joinpath('land_dist_trr8.csv'), index_col=0)
+    c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits,
+            regime_distribution=land_dist, regimes=regimes)
+    _ = c2.co2_sequestered_global()  # Check for error only
+
+
 def test_co2_sequestered_global_regrowth():
     """ Test vals from Forest Protection """
-    ac = advanced_controls.AdvancedControls(seq_rate_global=0.596666666666667, delay_regrowth_1yr=True,
-                                            include_unprotected_land_in_regrowth_calcs=False,
-                                            global_multi_for_regrowth=1., solution_category=SOLUTION_CATEGORY.LAND)
+    ac = advanced_controls.AdvancedControls(seq_rate_global=0.596666666666667,
+            delay_regrowth_1yr=True, include_unprotected_land_in_regrowth_calcs=False,
+            global_multi_for_regrowth=1., solution_category=SOLUTION_CATEGORY.LAND)
     land_dist = pd.read_csv(datadir.joinpath('fp_land_dist.csv'), index_col=0)
     total_ridl = pd.read_csv(datadir.joinpath('fp_cumu_ridl.csv'), index_col=0)
     pds_pdl = pd.read_csv(datadir.joinpath('fp_pds_deg_protected_land.csv'), index_col=0)
@@ -595,11 +613,11 @@ def test_co2_sequestered_global_regrowth():
 
 
 def test_co2_sequestered_global_simple_with_regime_seq():
-    ac = advanced_controls.AdvancedControls(seq_rate_global=np.nan, solution_category=SOLUTION_CATEGORY.LAND,
-                                            seq_rate_per_regime={'Tropical-Humid': 0.1, 'Temperate/Boreal-Humid': 0.2,
-                                                                 'Tropical-Semi-Arid': 0.3,
-                                                                 'Temperate/Boreal-Semi-Arid': 0.4, 'Global Arid': 0.5,
-                                                                 'Global Arctic': 0.0})
+    ac = advanced_controls.AdvancedControls(seq_rate_global=np.nan,
+            solution_category=SOLUTION_CATEGORY.LAND,
+            seq_rate_per_regime={'Tropical-Humid': 0.1, 'Temperate/Boreal-Humid': 0.2,
+                                 'Tropical-Semi-Arid': 0.3, 'Temperate/Boreal-Semi-Arid': 0.4,
+                                 'Global Arid': 0.5, 'Global Arctic': 0.0})
     funits = pd.read_csv(datadir.joinpath('pds_adoption_trr.csv'), index_col=0)
     land_dist = pd.read_csv(datadir.joinpath('land_dist_trr.csv'), index_col=0)
     c2 = co2calcs.CO2Calcs(ac=ac, soln_net_annual_funits_adopted=funits,
