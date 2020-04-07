@@ -52,6 +52,13 @@ def verify_aez_data(obj, verify, cohort):
                 ('A53:H58', obj.ae.get_land_distribution().reset_index().iloc[:6, :], None),
                 ('A60:H63', obj.ae.get_land_distribution().reset_index().iloc[6:, :], None)
         ]
+    elif cohort == 2020:
+        # Eight Thermal Moisture Regimes
+        verify['AEZ Data'] = [
+                ('A53:J58', obj.ae.get_land_distribution().reset_index().iloc[:6, :], None),
+                ('A60:J63', obj.ae.get_land_distribution().reset_index().iloc[6:, :], None)
+        ]
+
     else:
         raise ValueError(f"unknown cohort {cohort}")
     return verify
@@ -949,7 +956,8 @@ def verify_operating_cost(obj, verify):
     return verify
 
 
-def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True, is_rrs=True):
+def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True,
+        is_rrs=True, cohort=2018):
     """Verified tables in CO2 Calcs."""
     if include_regional_data == False:
         regional_mask = obj.c2.co2_mmt_reduced().loc[2015:].reset_index()
@@ -1009,11 +1017,25 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True, is_
         ppm_near_zero_mask = s.mask(s < 1e-8, other=True).where(s < 1e-8, other=False)
         s = obj.c2.co2_sequestered_global().loc[2015:].reset_index().abs()
         seq_near_zero_mask = s.mask(s < 1e-8, other=True).where(s < 1e-8, other=False)
+
+        co2_sequestered_global = obj.c2.co2_sequestered_global().copy().reset_index()
+        co2_sequestered_global.drop(columns=['Global Arctic'], inplace=True)
+        if cohort >= 2020:
+            # 8 Thermal-Moisture Regimes in model, but Excel CO2 Calcs did not update from 6 TMRs.
+            co2_sequestered_global['Temperate/Boreal-Humid'] = (
+                    co2_sequestered_global['Temperate-Humid'] +
+                    co2_sequestered_global['Boreal-Humid'])
+            co2_sequestered_global.drop(columns=['Temperate-Humid', 'Boreal-Humid'], inplace=True)
+            co2_sequestered_global['Temperate/Boreal-Semi-Arid'] = (
+                    co2_sequestered_global['Temperate-Semi-Arid'] +
+                    co2_sequestered_global['Boreal-Semi-Arid'])
+            co2_sequestered_global.drop(columns=['Temperate-Semi-Arid',
+                'Boreal-Semi-Arid'], inplace=True)
+
         verify['CO2 Calcs'] = [
                 ('A65:K110', obj.c2.co2eq_mmt_reduced(
                     ).loc[2015:].reset_index(), near_zero_mask),
-                ('A121:G166', obj.c2.co2_sequestered_global().reset_index().drop(
-                    columns=['Global Arctic']), seq_near_zero_mask),
+                ('A121:G166', co2_sequestered_global, seq_near_zero_mask),
                 ('A173:AW218', obj.c2.co2_ppm_calculator(
                     ).loc[2015:].reset_index(), ppm_near_zero_mask),
                 # CO2 eq table has an N20 column for LAND xls sheets that doesn't appear to be used, so we ignore it
@@ -1146,16 +1168,19 @@ def LAND_solution_verify_list(obj, zip_f):
     """
     verify = {}
 
-    aez_checked = False
     cell = str(excel_read_cell_any_scenario(zip_f=zip_f, sheetname='AEZ Data', cell='A47'))
     if cell.startswith('2014 Land Distribution'):
-        verify_aez_data(obj, verify, cohort=2018)
-        aez_checked = True
-    cell = str(excel_read_cell_any_scenario(zip_f=zip_f, sheetname='AEZ Data', cell='A52'))
-    if cell.startswith('2014 Land Distribution'):
-        verify_aez_data(obj, verify, cohort=2019)
-        aez_checked = True
-    assert aez_checked
+        cohort = 2018
+    else:
+        cell = str(excel_read_cell_any_scenario(zip_f=zip_f, sheetname='AEZ Data', cell='A52'))
+        assert cell.startswith('2014 Land Distribution')
+        cell = str(excel_read_cell_any_scenario(zip_f=zip_f, sheetname='AEZ Data', cell='D52'))
+        if cell == 'Boreal-Humid':
+            cohort = 2020
+        else:
+            cohort = 2019
+
+    verify_aez_data(obj, verify, cohort=cohort)
 
     if obj.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
         verify_adoption_data(obj, verify)
@@ -1175,7 +1200,7 @@ def LAND_solution_verify_list(obj, zip_f):
 
     verify_first_cost(obj, verify)
     verify_operating_cost(obj, verify)
-    verify_co2_calcs(obj, verify, is_rrs=False, include_regional_data=False)
+    verify_co2_calcs(obj, verify, is_rrs=False, include_regional_data=False, cohort=cohort)
     verify_ch4_calcs_land(obj, verify)
     return verify
 

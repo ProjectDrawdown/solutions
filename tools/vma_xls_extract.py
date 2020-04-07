@@ -259,7 +259,7 @@ class VMAReader:
             # Sometimes all weights are set to 0 instead of blank. Change them to be NaN.
             df['Weight'] = df['Weight'].replace(0, np.nan)
 
-        for r in range(last_row, last_row + 50):  # look past last row
+        for r in range(last_row, last_row + 100):  # look past last row
             if sheet.cell_value(row1 + r, 17) == 'Use weight?':
                 use_weight = tools.util.convert_bool(sheet.cell_value(row1 + r + 1, 17))
                 break
@@ -267,7 +267,7 @@ class VMAReader:
                 use_weight = tools.util.convert_bool(sheet.cell_value(row1 + r + 1, 18))
                 break
         else:
-            raise ValueError("No 'Use weight?' cell found")
+            raise ValueError(f"No 'Use weight?' cell found for VMA at {row1} last {last_row}")
 
         if fixed_summary:
             # Find the Average, High, Low cells.
