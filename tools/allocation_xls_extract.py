@@ -88,7 +88,7 @@ class AllocationReader:
         df = self.df_template.copy(deep=True)
         for i in range(5):
             col = []
-            for j in range(25):
+            for j in range(29):
                 col.append(tools.util.convert_float(self.sheet.cell_value(row1 + j, col1 + i)))
             df[self.columns[i]] = col
         return df
@@ -120,7 +120,7 @@ class AllocationReader:
         self.columns = []
         index = []
         row, col = self.first_cells[0]
-        for i in range(25):
+        for i in range(29):
             index.append(self.sheet.cell_value(row + i, col - 1))
         for i in range(5):
             self.columns.append(self.sheet.cell_value(row - 1, col + i))
