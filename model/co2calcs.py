@@ -233,7 +233,7 @@ class CO2Calcs:
                 net_land -= self.annual_land_area_harvested.loc[index, 'World']
             if pd.isna(self.ac.seq_rate_global):
                 for reg in self.regimes:
-                    seq_rate = pd.Series(self.ac.seq_rate_per_regime).loc[reg]
+                    seq_rate = self.ac.seq_rate_per_regime[reg]
                     df[reg] = (C_TO_CO2EQ * net_land * seq_rate * disturbance *
                                self.regime_distribution.loc['Global', reg] /
                                self.regime_distribution.loc['Global', 'All'])
