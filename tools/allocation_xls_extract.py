@@ -10,7 +10,7 @@ import tools.util
 import xlrd
 
 LAND_XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'Land Allocation - Max TLA.xlsx')
-LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocation')
+LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocation2018')
 OCEAN_XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean', 'Ocean Allocation - Max TOA.xlsx')
 OCEAN_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean', 'allocation')
 pd.set_option('display.expand_frame_repr', False)
@@ -23,10 +23,12 @@ class AllocationReader:
             f = LAND_XLS_PATH
             self.regimes = model.dd.THERMAL_MOISTURE_REGIMES8
             sheetname = '2020'
+            self.nsolutions = 29
         else:
             f = OCEAN_XLS_PATH
             self.regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
             sheetname = 'Ocean Allocation - Max TOA'
+            self.nsolutions = 25
         self.key = key
 
         wb = xlrd.open_workbook(filename=f)
@@ -90,7 +92,7 @@ class AllocationReader:
         df = self.df_template.copy(deep=True)
         for i in range(5):
             col = []
-            for j in range(29):
+            for j in range(self.nsolutions):
                 col.append(tools.util.convert_float(self.sheet.cell_value(row1 + j, col1 + i)))
             df[self.columns[i]] = col
         return df
@@ -122,7 +124,7 @@ class AllocationReader:
         self.columns = []
         index = []
         row, col = self.first_cells[0]
-        for i in range(29):
+        for i in range(self.nsolutions):
             index.append(self.sheet.cell_value(row + i, col - 1))
         for i in range(5):
             self.columns.append(self.sheet.cell_value(row - 1, col + i))

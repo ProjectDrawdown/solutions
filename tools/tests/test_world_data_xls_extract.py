@@ -18,10 +18,12 @@ def test_land():
     r.make_csvs()
     dirs = os.listdir(tmpdir.name)
     assert 'Global_Arctic.csv' in dirs
-    assert 'Temperate_Boreal_Humid.csv' in dirs
+    assert 'Temperate_Humid.csv' in dirs
+    assert 'Boreal_Humid.csv' in dirs
     assert 'Tropical_Humid.csv' in dirs
     assert 'Global_Arid.csv' in dirs
-    assert 'Temperate_Boreal_Semi_Arid.csv' in dirs
+    assert 'Temperate_Semi_Arid.csv' in dirs
+    assert 'Boreal_Semi_Arid.csv' in dirs
     assert 'Tropical_Semi_Arid.csv' in dirs
 
 
