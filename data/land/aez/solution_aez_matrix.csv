@@ -7,7 +7,7 @@ Smallholder Intensification,False,False,False,False,False,False,False,False,Fals
 Conservation Agriculture,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,False,True,True,False,True,True,True,False,True,True,False,False
 Improved Rice,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,False,True,True,False,False
 Irrigation Efficiency,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False
-Nutrient Management,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False
+Nutrient Management,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True
 Tree Intercropping,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False
 Managed Grazing,False,False,False,False,False,False,False,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
 Livestock Feed Modifications,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False

@@ -55,8 +55,8 @@ def get_tla_per_regime():
     """ Total land area per regime (Mha) """
     total_land_dict = {}
     for tmr in model.dd.THERMAL_MOISTURE_REGIMES:
-        df = pd.read_csv(datadir.joinpath('land', 'world', tools.util.to_filename(tmr) + '.csv'),
-                index_col=0).iloc[:5, 0] / 10000
+        df = pd.read_csv(datadir.joinpath('land', 'world', '2018',
+            tools.util.to_filename(tmr) + '.csv'), index_col=0).iloc[:5, 0] / 10000
         total_land_dict[tmr] = df
 
     return total_land_dict

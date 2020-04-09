@@ -10,7 +10,7 @@ import tools.util
 import xlrd
 
 LAND_XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'WORLD Land Data.xlsx')
-LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'world')
+LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'world', '2020')
 OCEAN_XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean', 'WORLD Ocean Data.xlsx')
 OCEAN_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean', 'world')
 
@@ -27,8 +27,8 @@ class WorldDataReader:
         """
         if key == 'land':
             filename = LAND_XLS_PATH
-            self.regimes = model.dd.THERMAL_MOISTURE_REGIMES
-            sheetname = 'WORLD Land Data'
+            self.regimes = model.dd.THERMAL_MOISTURE_REGIMES8
+            sheetname = '2020'
             self.first_cell = tools.util.cell_to_offsets('D4')
         else:
             filename = OCEAN_XLS_PATH

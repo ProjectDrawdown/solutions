@@ -52,6 +52,8 @@ def convert_sr_float(val):
     if m:
         s = str(m.group(1)).replace(',', '.')
         return float(s)
+    if str(val).startswith('Val:() Formula:='):
+        return float(0.0)
     if str(val).endswith('%'):
         (num, _) = str(val).split('%', maxsplit=1)
         return float(num) / 100.0
@@ -399,15 +401,36 @@ def get_land_scenarios(wb, solution_category):
                     # (4/2019) vma.py does have support for regimes in avg_high_low, it needs to be
                     # implemented in advanced_controls to pass a regime name through to vma.py
 
+                tmr6 = tmr8 = False
+                aez_tab = wb.sheet_by_name('AEZ Data')
+                for x in range(0, aez_tab.nrows):
+                    if aez_tab.cell_value(x, 0) == 'TOTAL Boreal-Humid land':
+                        tmr8 = True
+                        break
+                    if aez_tab.cell_value(x, 0) == 'TOTAL Temperate/Boreal-Humid land':
+                        tmr6 = True
+                        break
+
                 # For the public models using 'Variable Meta-analysis-DD', the DD tab does not contain
                 # avg/high/low for the Thermal Moisture Regimes so we extract value from ScenarioRecord.
-                s['seq_rate_per_regime'] = {
-                    'Tropical-Humid': convert_sr_float(sr_tab.cell_value(row + 170, 4)),
-                    'Temperate/Boreal-Humid': convert_sr_float(sr_tab.cell_value(row + 171, 4)),
-                    'Tropical-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 172, 4)),
-                    'Temperate/Boreal-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 173, 4)),
-                    'Global Arid': convert_sr_float(sr_tab.cell_value(row + 174, 7)),
-                    'Global Arctic': 0.0}
+                if tmr6:
+                    s['seq_rate_per_regime'] = {
+                        'Tropical-Humid': convert_sr_float(sr_tab.cell_value(row + 170, 4)),
+                        'Temperate/Boreal-Humid': convert_sr_float(sr_tab.cell_value(row + 171, 4)),
+                        'Tropical-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 172, 4)),
+                        'Temperate/Boreal-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 173, 4)),
+                        'Global Arid': convert_sr_float(sr_tab.cell_value(row + 174, 7)),
+                        'Global Arctic': 0.0}
+                if tmr8:
+                    s['seq_rate_per_regime'] = {
+                        'Tropical-Humid': convert_sr_float(sr_tab.cell_value(row + 170, 4)),
+                        'Temperate-Humid': convert_sr_float(sr_tab.cell_value(row + 171, 4)),
+                        'Boreal-Humid': convert_sr_float(sr_tab.cell_value(row + 171, 4)),
+                        'Tropical-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 172, 4)),
+                        'Temperate-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 173, 4)),
+                        'Boreal-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 173, 4)),
+                        'Global Arid': convert_sr_float(sr_tab.cell_value(row + 174, 7)),
+                        'Global Arctic': 0.0}
             else:
                 s['seq_rate_global'] = link_vma(sr_tab, row + 169, 4)
             if sr_tab.cell_value(row + 175, 3) == 'Growth Rate of Land Degradation':

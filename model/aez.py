@@ -28,10 +28,11 @@ class AEZ(object, metaclass=MetaclassCache):
          cohort: whether to use 2018 or 2019 land allocations.
     """
 
-    def __init__(self, solution_name, ignore_allocation=False, cohort=2018):
+    def __init__(self, solution_name, ignore_allocation=False, cohort=2018,
+            regimes=dd.THERMAL_MOISTURE_REGIMES):
         self.solution_name = solution_name
         self.cohort = cohort
-        self.regimes = dd.THERMAL_MOISTURE_REGIMES
+        self.regimes = regimes
 
         # AEZ data has a slightly different format for regions than the rest of the model. This
         # is in line with the xls version but should be changed later to keep regions consistent
@@ -99,9 +100,10 @@ class AEZ(object, metaclass=MetaclassCache):
            'AEZ Data'!D353:AG610
         """
         self.world_land_alloc_dict = {}
+        subdir = '2020' if len(self.regimes) == 8 else '2018'
         for tmr in self.regimes:
-            df = pd.read_csv(LAND_CSV_PATH.joinpath('world', self._to_filename(tmr) + '.csv'),
-                    index_col=0).drop('Total Area (km2)', 1)
+            df = pd.read_csv(LAND_CSV_PATH.joinpath('world', subdir,
+                    self._to_filename(tmr) + '.csv'), index_col=0).drop('Total Area (km2)', 1)
             # apply fixed world fraction to each region
             self.world_land_alloc_dict[tmr] = df.mul(self.soln_land_alloc_df.loc[tmr],
                     axis=1) / 10000
