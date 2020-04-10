@@ -1,56 +1,39 @@
 {
-    "name": "PDS-72p2050-Plausible-PDScustom-avg-Bookedition1",
+    "name": "PDS-40p2050-Plausible-customPDS-avg-30Jan2020",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "The current adoption of this solution is based on the data available on perennial crops (like switchgrass, miscanthus etc.) in some of the European countries. The adoption of the solution is projected based on the average percent future adoption of perennial bioenergy crops as derived from the meta-analysis of 7 data points. In addition some aggressive adoption scenarios were also created with an early adoption (50% by 2030). This scenario derives the result from the \"average of all\" PDS custom adoption scenarios. The results are same as that of the Book edition 1, so no separate scenario was created for the latter. This edition involves correction of current adoption, correction of other variables data points, correction of the methodology used to calculate emission at the time of harvest, and correction of the methodology used for the calculation of net profit margin. In addition, this edition also involves estimation of operational cost which was missing in the Book edition 1 result. The custom adoption scenarios were accordingly revised to match the result to Book edition 1. ",
+    "description": "updated results with corrected conventional financials; it is assumed that this solution which is allocated on degraded grassland doesn't replace conventional grazing practices, as not all degrdaed grassland areas are under grazing",
     "report_start_year": 2020,
     "report_end_year": 2050,
-    "use_custom_tla": false,
+    "use_custom_tla": true,
+    "ref_base_adoption": {
+        "World": 0.270759,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_custom_name": "Average of All Custom Scenarios",
+    "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "conv_2014_cost": {
         "value": 0.0,
@@ -67,19 +50,19 @@
         "statistic": ""
     },
     "pds_2014_cost": {
-        "value": 1298.7653261654,
+        "value": 1294.34695659146,
         "statistic": "mean"
     },
     "ref_2014_cost": {
-        "value": 1298.7653261654,
+        "value": 1294.34695659146,
         "statistic": "mean"
     },
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_fixed_oper_cost_per_iunit": {
-        "value": 562.358384723618,
+        "value": 599.507622476016,
         "statistic": "mean"
     },
-    "soln_expected_lifetime": 30.0,
+    "soln_expected_lifetime": 14.0,
     "yield_gain_from_conv_to_soln": {
         "value": 0.0,
         "statistic": ""
@@ -92,7 +75,7 @@
     "conv_indirect_co2_per_unit": 0.0,
     "soln_indirect_co2_per_iunit": 0.0,
     "tco2eq_reduced_per_land_unit": {
-        "value": 0.477366666666667,
+        "value": -0.577150055486542,
         "statistic": "mean"
     },
     "tco2eq_rplu_rate": "Annual",
@@ -115,11 +98,11 @@
     "conv_annual_energy_used": 0.0,
     "soln_annual_energy_used": 0.0,
     "seq_rate_global": {
-        "value": 1.183125,
+        "value": 1.08791666666667,
         "statistic": "mean"
     },
     "carbon_not_emitted_after_harvesting": {
-        "value": 8.6746725,
+        "value": 7.97225333333334,
         "statistic": "mean"
     },
     "disturbance_rate": {
