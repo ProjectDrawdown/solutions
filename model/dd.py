@@ -14,8 +14,8 @@ COUNTRY_REGION_MAP = {'China': 'Asia (Sans Japan)', 'India': 'Asia (Sans Japan)'
 # Land
 THERMAL_MOISTURE_REGIMES = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropical-Semi-Arid',
                             'Temperate/Boreal-Semi-Arid', 'Global Arid', 'Global Arctic']
-THERMAL_MOISTURE_REGIMES8 = ['Tropical-Humid', 'Tropical-Semi-Arid', 'Boreal-Humid',
-                             'Boreal-Semi-Arid', 'Temperate-Humid', 'Temperate-Semi-Arid',
+THERMAL_MOISTURE_REGIMES8 = ['Tropical-Humid', 'Temperate-Humid', 'Boreal-Humid',
+                             'Tropical-Semi-Arid', 'Temperate-Semi-Arid', 'Boreal-Semi-Arid',
                              'Global Arid', 'Global Arctic']
 
 

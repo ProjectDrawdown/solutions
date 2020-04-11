@@ -1031,6 +1031,10 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True,
                     co2_sequestered_global['Boreal-Semi-Arid'])
             co2_sequestered_global.drop(columns=['Temperate-Semi-Arid',
                 'Boreal-Semi-Arid'], inplace=True)
+        # Put columns in the same order as Excel.
+        co2_sequestered_global = co2_sequestered_global[["Year", "All", "Tropical-Humid",
+            "Temperate/Boreal-Humid", "Tropical-Semi-Arid", "Temperate/Boreal-Semi-Arid",
+            "Global Arid"]]
 
         verify['CO2 Calcs'] = [
                 ('A65:K110', obj.c2.co2eq_mmt_reduced(

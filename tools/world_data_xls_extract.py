@@ -55,9 +55,17 @@ class WorldDataReader:
 
         self.df_dict = {}
         row, col = self.first_cell
-        for i, regime in enumerate(self.regimes):
+        num_regimes = len(self.regimes)
+        regimes = list(self.regimes)  # make a copy
+        for i in range(0, num_regimes):
             row_offset = i * 16 if self.key == 'land' else i * 17
             df = self.get_single_table_df(row + row_offset, col)
+            xls_regime = str(self.sheet.cell_value(row + row_offset - 2, 2))
+            for regime in regimes:
+                if regime in xls_regime:
+                    regimes.remove(regime)
+                    break
+            assert regime in str(self.sheet.cell_value(row + row_offset - 2, 2))
             df.name = regime
             self.df_dict[regime] = df
         return self.df_dict
