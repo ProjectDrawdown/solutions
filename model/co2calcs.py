@@ -194,7 +194,7 @@ class CO2Calcs:
         cols = ['All'] + self.regimes
         index = pd.Index(list(range(2015, 2061)), name='Year')
         df = pd.DataFrame(columns=cols, index=index, dtype=np.float64)
-        set_regions_from_distribution = False
+        set_regions_from_regime_distribution = False
 
         if self.tot_red_in_deg_land is not None:
             # regrowth calculation
@@ -224,7 +224,7 @@ class CO2Calcs:
                 deg_seq_rate = self.ac.seq_rate_global * self.ac.global_multi_for_regrowth
             df['All'] = C_TO_CO2EQ * (
                 undeg_land * undeg_seq_rate + (pds_deg_land - ref_deg_land) * deg_seq_rate)
-            set_regions_from_distribution = True
+            set_regions_from_regime_distribution = True
         else:
             # simple calculation
             disturbance = 1 if self.ac.disturbance_rate is None else 1 - self.ac.disturbance_rate
@@ -240,15 +240,16 @@ class CO2Calcs:
                 df['All'] = df.fillna(0.0).sum(axis=1)
             else:
                 df['All'] = C_TO_CO2EQ * net_land * self.ac.seq_rate_global * disturbance
-                set_regions_from_distribution = True
+                set_regions_from_regime_distribution = True
 
-        if set_regions_from_distribution:
+        if set_regions_from_regime_distribution:
             for reg in self.regimes:
                 df[reg] = (df['All'] * self.regime_distribution.loc['Global', reg] /
-                        self.regime_distribution.loc[ 'Global', 'All'])
+                        self.regime_distribution.loc['Global', 'All'])
 
         df.name = 'co2_sequestered_global'
         return df
+
 
     @lru_cache()
     def co2_ppm_calculator(self):
