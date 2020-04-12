@@ -26,6 +26,7 @@ class AEZ(object, metaclass=MetaclassCache):
          solution_name: <soln file>.name
          ignore_allocation: optionally turn off land allocation to use max tla values
          cohort: whether to use 2018 or 2019 land allocations.
+         regimes: list of string names of thermal moisture regimes
     """
 
     def __init__(self, solution_name, ignore_allocation=False, cohort=2018,

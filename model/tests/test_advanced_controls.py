@@ -237,6 +237,17 @@ def test_substitute_vma_handles_raw_value_discrepancy():
     assert ac.seq_rate_global == pytest.approx(1.1)
 
 
+def test_lookup_vma():
+    class fakeVMA:
+        def avg_high_low(self, key):
+            return (1.2, 1.4, 1.0)
+
+    vmas = {'VMA1': fakeVMA(), 'VMA2': fakeVMA()}
+    ac = advanced_controls.AdvancedControls(vmas=vmas,
+            vma_values={'VMA1': 2.0, 'statistic': 'mean'})
+    assert ac.lookup_vma('VMA1') == 2.0
+
+
 def test_substitute_vma_regional_statistics():
     vals = {'World': 0, 'OECD90': 1, 'Eastern Europe': 2, 'Asia (Sans Japan)': 3,
             'Middle East and Africa': 4, 'Latin America': 5, 'China': 0, 'India': 0,
