@@ -39,6 +39,12 @@ class AdvancedControls:
     #    {'Sequestration Rates': vma.VMA('path_to_soln_vmas' + 'Sequestration_Rates.csv')}
     vmas: typing.Dict = None
 
+    # vma_values: dict of values for VMAs which have been manually set in this scenario.
+    #    dict keys should be the VMA title (found in VMA_info.csv in solution dir).
+    #    Example:
+    #    {'Sequestration Rates':  {"value": 1.0, "statistic": "mean"}}
+    vma_values: typing.Dict = None
+
     # name: string name of this scenario.
     name: str = None
 
@@ -795,8 +801,8 @@ class AdvancedControls:
         elif self.soln_expected_lifetime is not None:  # LAND
             return self.soln_expected_lifetime
         else:
-            raise ValueError(
-                'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for solution')
+            raise ValueError('Must input either lifetime capacity (RRS) or ' +
+                             'expected lifetime (LAND) for solution')
 
     @property
     def soln_lifetime_replacement_rounded(self):
@@ -809,8 +815,8 @@ class AdvancedControls:
             # Integration test will catch the case where this assumption is wrong
             return int(self.soln_expected_lifetime)
         else:
-            raise ValueError(
-                'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for solution')
+            raise ValueError('Must input either lifetime capacity (RRS) or ' +
+                             'expected lifetime (LAND) for solution')
 
     @property
     def conv_lifetime_replacement(self):
@@ -819,8 +825,8 @@ class AdvancedControls:
         elif self.conv_expected_lifetime is not None:  # LAND
             return self.conv_expected_lifetime
         else:
-            raise ValueError(
-                'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for conventional')
+            raise ValueError('Must input either lifetime capacity (RRS) or ' +
+                             'expected lifetime (LAND) for conventional')
 
     @property
     def conv_lifetime_replacement_rounded(self):
@@ -833,21 +839,27 @@ class AdvancedControls:
             # Integration test will catch the case where this assumption is wrong
             return int(self.conv_expected_lifetime)
         else:
-            raise ValueError(
-                'Must input either lifetime capacity (RRS) or expected lifetime (LAND) for conventional')
+            raise ValueError('Must input either lifetime capacity (RRS) or ' +
+                             'expected lifetime (LAND) for conventional')
 
+    def lookup_vma(self, vma_title):
+        """Look up a VMA value, using the value from the Advanced Controls, if any."""
+        if self.vma_values is None:
+            return None
+        return self.vma_values.get(vma_title, None)
 
     def _substitute_vma(self, val, vma_titles):
         """
-        If val is 'mean', 'high' or 'low', returns the corresponding statistic from the VMA object in
-        self.vmas with the corresponding title.
-        If val is 'mean per region', 'high per region' or 'low per region', returns a Series of regions and
-        corresponding stats. Note that 'World' region will be NaN, as these will be calculated by summing the main
-        regions throughout the model.
+        If val is 'mean', 'high' or 'low', returns the corresponding statistic from the
+        VMA object in self.vmas with the corresponding title.
+        If val is 'mean per region', 'high per region' or 'low per region', returns a Series
+        of regions and corresponding stats. Note that 'World' region will be NaN, as these will
+        be calculated by summing the main regions throughout the model.
         Args:
           val: input can be:
                 - a number
-                - a string ('mean', 'high' or 'low') or ('mean per region', 'high per region' or 'low per region')
+                - a string ('mean', 'high' or 'low') or ('mean per region', 'high per region'
+                  or 'low per region')
                 - a dict containing a 'value' key
           vma_titles: list of titles of VMA tables to check. The first one which exists
             will be used.
