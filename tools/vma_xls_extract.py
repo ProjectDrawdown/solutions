@@ -188,8 +188,9 @@ class VMAReader:
             'Specific': 'Specific Geographic Location',
             'Closest Matching Crop (by Revenue/ha)':
                 'Closest Matching Standard Crop (by Revenue/ha)',
+            'Weight (by climate)': 'Weight',
         }
-        return known_aliases.get(name, name)
+        return known_aliases.get(name.replace('\n', ''), name)
 
 
     def read_single_table(self, source_id_cell, sheetname, fixed_summary):
