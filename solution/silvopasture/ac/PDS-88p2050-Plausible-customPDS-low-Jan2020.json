@@ -1,61 +1,41 @@
 {
-    "name": "PDS-45p2050-Plausible-PDScustom-low-Bookedition1",
+    "name": "PDS-88p2050-Plausible-customPDS-low-Jan2020",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "This scenario represents the results based on the revisions made to the current adoption, future adoption scenarios, first cost, net profit margin, and carbon sequestration. In addition, the revised model also estimates the operational cost which was missing in the Book edition 1. This scenario derives result from \"low of all\" PDS custom scenario. The results are marginally lower than Book edition1, so no new scenario was created for the latter. ",
+    "description": "updated results with revised TLA wrt Jan 2020 AEZ updated model",
     "report_start_year": 2020,
     "report_end_year": 2050,
-    "use_custom_tla": false,
+    "use_custom_tla": true,
+    "ref_base_adoption": {
+        "World": 550.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_custom_name": "Low of All Custom Scenarios",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "[Type Scenario 1 Name Here (REF CASE)...]",
     "soln_ref_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [
-        2015,
-        2016
-    ],
     "conv_2014_cost": {
         "value": 0.0,
         "statistic": ""
@@ -67,25 +47,25 @@
     },
     "conv_expected_lifetime": 30.0,
     "yield_from_conv_practice": {
-        "value": 3.42857142857143,
+        "value": 2.55643564356436,
         "statistic": "mean"
     },
     "pds_2014_cost": {
-        "value": 462.453005939073,
+        "value": 1180.64654012027,
         "statistic": "mean"
     },
     "ref_2014_cost": {
-        "value": 462.453005939073,
+        "value": 1180.64654012027,
         "statistic": "mean"
     },
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_fixed_oper_cost_per_iunit": {
-        "value": 837.643130909091,
+        "value": 1034.12284470096,
         "statistic": "mean"
     },
     "soln_expected_lifetime": 30.0,
     "yield_gain_from_conv_to_soln": {
-        "value": 0.100544967245763,
+        "value": 0.111274025774883,
         "statistic": "mean"
     },
     "npv_discount_rate": 0.1,
@@ -119,7 +99,7 @@
     "conv_annual_energy_used": 0.0,
     "soln_annual_energy_used": 0.0,
     "seq_rate_global": {
-        "value": 4.64561688311688,
+        "value": 2.74279166666667,
         "statistic": "mean"
     },
     "carbon_not_emitted_after_harvesting": {
