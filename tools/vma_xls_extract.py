@@ -22,8 +22,11 @@ DATA_DIR_PATH = pathlib.Path(__file__).parents[1].joinpath('data')
 pd.set_option('display.expand_frame_repr', False)
 
 # A few VMA columns are only present in some solutions, for example specific to Land or Ocean solns.
-optional_columns = ['Thermal-Moisture Regime', 'Crop',
-        'Closest Matching Standard Crop (by Revenue/ha)',]
+OPTIONAL_COLUMNS = [
+    'Thermal-Moisture Regime',
+    'Crop',
+    'Closest Matching Standard Crop (by Revenue/ha)',
+]
 
 def convert_year(x):
     if pd.isna(x):
@@ -88,7 +91,7 @@ def df_approx(df1, df2):
 class VMAReader:
     def __init__(self, wb):
         """
-        xls_path: path to solution xls file
+        wb: Workbook from an Excel file, as from xlrd.open_workbook
         """
         self.wb = wb
         self.df_template = make_vma_df_template()
@@ -110,15 +113,19 @@ class VMAReader:
                 return filename
         return None
 
-
-    def read_xls(self, csv_path=None, alt_vma=False):
+    # TODO: Add test
+    def xls_df_dict(self, alt_vma=False):
         """
-        Reads the whole Variable Meta-analysis xls sheet.
-        Note this currently only works for LAND solutions.
-        csv_path: (pathlib path object or str) If specified, will write CSVs to path for each table
-        alt_vma: False = process the primary VMA sheet 'Variable Meta-analysis',
-                 True = process the alternate VMA sheet 'Variable Meta-analysis-DD' with fixed
-                    values for Average, High, and Low.
+        Finds all tables, reads them into dataframes, and then returns a
+        dictionary of {"table title": table_dataframe}
+
+        Arguments:
+            alt_vma: False = process the primary VMA sheet 'Variable Meta-analysis',
+                     True = process the alternate VMA sheet 'Variable Meta-analysis-DD' with fixed
+                        values for Average, High, and Low.
+
+        Returns:
+            TODO
         """
         if alt_vma:
             sheetname = 'Variable Meta-analysis-DD'
@@ -127,52 +134,85 @@ class VMAReader:
             sheetname = 'Variable Meta-analysis'
             fixed_summary = False
 
+        # TODO
         self._find_tables(sheetname=sheetname)
+        # TODO
         df_dict = collections.OrderedDict()
+
+        # TODO
         for title, location in self.table_locations.items():
             df, use_weight, summary = self.read_single_table(source_id_cell=location,
                                                              sheetname=sheetname,
                                                              fixed_summary=fixed_summary)
-            if df.empty:  # in line with our policy of setting empty tables to None
+            # import ipdb; ipdb.set_trace()
+            if df.empty:
+                # in line with our policy of setting empty tables to None
                 df_dict[title] = (None, False, (np.nan, np.nan, np.nan))
             else:
+                # Process optional columns, drop if they are totally empty
+                for col in OPTIONAL_COLUMNS:
+                    if df.loc[:, col].isnull().all():
+                        df.drop(labels=col, axis='columns', inplace=True)
+                # Then save the table dataframe in an ordered dict by title
                 df_dict[title] = (df, use_weight, summary)
 
-        idx = pd.Index(data=list(range(1, len(df_dict) + 1)), name='VMA number')
-        vma_df = pd.DataFrame(columns=['Filename', 'Title on xls', 'Has data?', 'Use weight?'],
-                index=idx)
+        return df_dict
+
+
+    def read_xls(self, csv_path=None, alt_vma=False):
+        """
+        Reads the whole Variable Meta-analysis xls sheet. TODO: Add more
+        Note this currently only works for LAND solutions.
+
+        Arguments:
+            csv_path: (pathlib path object or str) If specified, will write
+                CSVs to path for each table
+            alt_vma: See docstring for xls_df_dict
+        """
+
+        # TODO
+        df_dict = self.xls_df_dict(alt_vma)
+
+        vma_df = pd.DataFrame(
+            columns=['Filename', 'Title on xls', 'Has data?', 'Use weight?'],
+            index=pd.Index(data=list(range(1, len(df_dict) + 1)), name='VMA number')
+        )
         info_df = pd.DataFrame(columns=['Title on xls', 'Fixed Mean', 'Fixed High', 'Fixed Low'])
         info_df.index.name = 'VMA number'
+
         i = 1
-        for title, values in df_dict.items():
-            table = values[0]
-            use_weight = values[1]
-            (average, high, low) = values[2]
+        for title, (table_df, use_weight, (average, high, low)) in df_dict.items():
             path_friendly_title = ''
-            if table is not None:
-                for col in optional_columns:
-                    if table.loc[:, col].isnull().all():
-                        table.drop(labels=col, axis='columns', inplace=True)
-                existing = self.find_data_csv(table)
+            if table_df is not None:
+                existing = self.find_data_csv(table_df)
                 if existing is None:
                     path_friendly_title = tools.util.to_filename(title) + '.csv'
                     if csv_path is not None:
-                        table.to_csv(os.path.join(csv_path, path_friendly_title), index=False)
+                        table_df.to_csv(os.path.join(csv_path, path_friendly_title), index=False)
                 else:
                     # This CSV already exists in the data directory because multiple solutions
                     # use it. Reference the common file in all of those solutions.
                     path_friendly_title = existing
-            row = {'Filename': path_friendly_title, 'Title on xls': title,
-                   'Has data?': False if table is None else True,
+
+            row = {'Filename': path_friendly_title,
+                   'Title on xls': title,
+                   'Has data?': False if table_df is None else True,
                    'Use weight?': use_weight}
             vma_df.loc[i, :] = row
+
             if not pd.isna(average) or not pd.isna(high) or not pd.isna(low):
-                row = {'Title on xls': title, 'Fixed Mean': average, 'Fixed High': high,
-                        'Fixed Low': low}
+                row = {'Title on xls': title,
+                       'Fixed Mean': average,
+                       'Fixed High': high,
+                       'Fixed Low': low}
                 info_df.loc[i, :] = row
+
+            # Bookkeep to track our position in vma_df, info_df
             i += 1
+
         if csv_path is not None:
             info_df.to_csv(os.path.join(csv_path, 'VMA_info.csv'))
+
         return vma_df
 
 
@@ -221,7 +261,7 @@ class VMAReader:
             name_to_check = self.normalize_col_name(val.strip().replace('*', ''))
 
             col_name = col_names[idx]
-            while col_name in optional_columns and name_to_check != col_name:
+            while col_name in OPTIONAL_COLUMNS and name_to_check != col_name:
                 col_names.remove(col_name)
                 col_name = col_names[idx]
 
@@ -269,6 +309,7 @@ class VMAReader:
         else:
             raise ValueError("No 'Use weight?' cell found")
 
+        # import ipdb; ipdb.set_trace()
         if fixed_summary:
             # Find the Average, High, Low cells.
             for r in range(last_row, last_row + 50):

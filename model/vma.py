@@ -1,9 +1,14 @@
 """Implementation of the Variable Meta-Analysis module."""
 
 import math
+import pathlib
+
 import numpy as np
 import pandas as pd
+import xlrd
+
 import model.dd
+from tools.vma_xls_extract import VMAReader
 
 
 VMA_columns = ['Value', 'Units', 'Raw', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
@@ -22,11 +27,17 @@ def populate_fixed_summaries(vma_dict, filename):
         fixed_mean = row.get('Fixed Mean', np.nan)
         fixed_high = row.get('Fixed High', np.nan)
         fixed_low = row.get('Fixed Low', np.nan)
-        fixed_summary = None
-        if not pd.isna(fixed_mean) and not pd.isna(fixed_high) and not pd.isna(fixed_low):
-            fixed_summary = (fixed_mean, fixed_high, fixed_low)
+        fixed_summary = check_fixed_summary(fixed_mean, fixed_high, fixed_low)
         if fixed_summary is not None:
             vma_dict[title].fixed_summary = fixed_summary
+
+
+# TODO: Test
+def check_fixed_summary(mean, high, low):
+    if not pd.isna(mean) and not pd.isna(high) and not pd.isna(low):
+        return (mean, high, low)
+    else:
+        return None
 
 
 def convert_percentages(val):
@@ -39,6 +50,7 @@ def convert_percentages(val):
 class VMA:
     """Meta-analysis of multiple data sources to a summary result.
        Arguments:
+         TODO: Change filename to include xlsx
          filename: a CSV file containing data sources. This file must contain columns
            named "Raw Data Input", "Weight", and "Original Units". It can contain additional
            columns, which will be ignored.
@@ -51,9 +63,11 @@ class VMA:
            of calculating those values
     """
 
-    def __init__(self, filename, low_sd=1.0, high_sd=1.0, discard_multiplier=3,
-            stat_correction=None, use_weight=False, fixed_summary=None):
+    def __init__(self, filename, title=None, low_sd=1.0, high_sd=1.0,
+                 discard_multiplier=3, stat_correction=None, use_weight=False,
+                 fixed_summary=None):
         self.filename = filename
+        self.title = title
         self.low_sd = low_sd
         self.high_sd = high_sd
         self.discard_multiplier = discard_multiplier
@@ -67,34 +81,84 @@ class VMA:
         self.fixed_summary = fixed_summary
         self.df = pd.DataFrame(columns=VMA_columns)
         if filename:
-            self._read_csv(filename=self.filename)
+            # Accept either strings or Pathlib
+            if isinstance(filename, str):
+                filename = pathlib.Path(filename)
+            if filename.suffix == '.csv':
+                self._read_csv(filename=filename)
+            elif filename.suffix == '.xlsx':
+                self._read_xls(filename=filename, title=title)
+            else:
+                raise ValueError(
+                    '{} has unrecognized filetype'.format(filename)
+                )
+
         else:
             self.source_data = pd.DataFrame()
 
     def _read_csv(self, filename):
-        xl_df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
-        self.source_data = xl_df
+        csv_df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
+        self._convert_from_human_readable(csv_df)
+
+    def _read_xls(self, filename, title):
+        workbook = xlrd.open_workbook(filename=filename)
+        vma_reader = VMAReader(workbook)
+
+        # import ipdb; ipdb.set_trace()
+
+        # Pull all tables from this workbook in the dictionary format
+        # {"table title": table_dataframe}
+        if 'Variable Meta-analysis-DD' in workbook.sheet_names():
+            dataframe_dict = vma_reader.xls_df_dict(alt_vma=True)
+        else:
+            dataframe_dict = vma_reader.xls_df_dict()
+
+        assert title in dataframe_dict, \
+               "Title {!r} not available in {}.".format(title, filename) + \
+               "\nOptions:\n\t" + "\n\t".join(dataframe_dict.keys())
+
+        xl_df, use_weight, (mean, high, low) = dataframe_dict[title]
+        self._convert_from_human_readable(xl_df)
+
+        # TODO: Comment
+        fixed_summary = check_fixed_summary(mean, high, low)
+        if fixed_summary is not None:
+            self.fixed_summary = fixed_summary
+
+
+    def _convert_from_human_readable(self, readable_df):
+        """
+        TODO
+        """
+        if readable_df is None:
+            if self.title is None:
+                source = "\n\tFile: {}\n".format(self.filename)
+            else:
+                source = "\n\tFile: {}\n\tTitle: {!r}\n".format(self.filename,
+                                                                self.title)
+            raise ValueError("Dataframe from" + source + "is None, is that VMA empty?")
+        self.source_data = readable_df
         if self.use_weight:
-            assert not all(pd.isnull(xl_df['Weight'])), "'Use weight' selected but no weights to use"
-        self.df['Weight'] = xl_df['Weight'].apply(convert_percentages)
-        self.df['Raw'] = xl_df['Raw Data Input'].apply(convert_percentages)
-        self.df['Units'] = xl_df['Original Units']
-        self.df['Value'] = xl_df['Conversion calculation']
-        self.df['Exclude?'] = xl_df['Exclude Data?'].fillna(False)
+            assert not all(pd.isnull(readable_df['Weight'])), "'Use weight' selected but no weights to use"
+        self.df['Weight'] = readable_df['Weight'].apply(convert_percentages)
+        self.df['Raw'] = readable_df['Raw Data Input'].apply(convert_percentages)
+        self.df['Units'] = readable_df['Original Units']
+        self.df['Value'] = readable_df['Conversion calculation']
+        self.df['Exclude?'] = readable_df['Exclude Data?'].fillna(False)
         # correct some common typos and capitalization differences from Excel files.
-        normalized_region = (xl_df['World / Drawdown Region']
+        normalized_region = (readable_df['World / Drawdown Region']
                 .replace('Middle East & Africa', 'Middle East and Africa')
                 .replace('Asia (sans Japan)', 'Asia (Sans Japan)'))
-        xl_df['World / Drawdown Region'] = normalized_region.astype(model.dd.rgn_cat_dtype)
-        self.df['Region'] = xl_df['World / Drawdown Region']
+        readable_df['World / Drawdown Region'] = normalized_region.astype(model.dd.rgn_cat_dtype)
+        self.df['Region'] = readable_df['World / Drawdown Region']
         main_region = normalized_region.copy()
         for k, v in model.dd.COUNTRY_REGION_MAP.items():
             main_region.replace(k, v, inplace=True)
         self.df['Main Region'] = main_region
-        if 'Thermal-Moisture Regime' in xl_df.columns:
-            dft = xl_df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
-            xl_df['Thermal-Moisture Regime'] = dft
-            self.df['TMR'] = xl_df['Thermal-Moisture Regime'].fillna('')
+        if 'Thermal-Moisture Regime' in readable_df.columns:
+            dft = readable_df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
+            readable_df['Thermal-Moisture Regime'] = dft
+            self.df['TMR'] = readable_df['Thermal-Moisture Regime'].fillna('')
         self.df['Value'].fillna(self.df['Raw'], inplace=True)
 
     def _discard_outliers(self):
