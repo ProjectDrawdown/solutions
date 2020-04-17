@@ -18,8 +18,10 @@ def populate_fixed_summaries(vma_dict, filename):
     """
     Convenience function for use by solution classes.
     Args:
-      vma_dict: dict indexed by VMA Title
-      filename: VMA_info CSV file with fixed summary data for Mean, High, Low
+        vma_dict: dict indexed by VMA Title
+        filename: VMA_info CSV file with fixed summary data for Mean, High, Low
+    Modifies the given vma_dict according to the title in the 'Title on xls'
+    row of the 'filename' CSV, populating the vma.fixed_summary field.
     """
     vma_info_df = pd.read_csv(filename, index_col=0)
     for _, row in vma_info_df.iterrows():
@@ -50,10 +52,14 @@ def convert_percentages(val):
 class VMA:
     """Meta-analysis of multiple data sources to a summary result.
        Arguments:
-         TODO: Change filename to include xlsx
+         TODO: Change filename to include xlsx (and xlsm?)
          filename: a CSV file containing data sources. This file must contain columns
            named "Raw Data Input", "Weight", and "Original Units". It can contain additional
            columns, which will be ignored.
+         title: string, name of the VMA to extract from an Excel file. This
+           value is unused if filename is a CSV, and can be passed in as None.
+           Will raise an AssertionError if the title is not available in the
+           Excel file.
          low_sd: number of multiples of the stddev to use for the low result.
          high_sd: number of multiples of the stddev to use for the high result.
          discard_multiplier: discard outlier values more than this many multiples of the
@@ -80,31 +86,51 @@ class VMA:
             self.stat_correction = stat_correction
         self.fixed_summary = fixed_summary
         self.df = pd.DataFrame(columns=VMA_columns)
+
         if filename:
-            # Accept either strings or Pathlib
+            # Turn strings into pathlib
             if isinstance(filename, str):
                 filename = pathlib.Path(filename)
+            # Instantiate VMA with various file types
             if filename.suffix == '.csv':
                 self._read_csv(filename=filename)
             elif filename.suffix == '.xlsx':
+                # TODO: Add a test for .xlsm
                 self._read_xls(filename=filename, title=title)
             else:
-                raise ValueError(
-                    '{} has unrecognized filetype'.format(filename)
-                )
+                raise ValueError('{} has unrecognized filetype'.format(filename))
 
         else:
             self.source_data = pd.DataFrame()
 
     def _read_csv(self, filename):
+        """
+        Read a properly formatted CSV file (e.g. as is produced by
+        solution_xls_extract) to instantiate this VMA.
+
+        Arguments:
+            filename: pathlib.Path to a CSV file
+
+        Populates self.source_data and self.df
+        """
         csv_df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
         self._convert_from_human_readable(csv_df)
 
+    # TODO: Do timing test
     def _read_xls(self, filename, title):
+        """
+        Read a properly formatted xlsx (TODO?) file (with Advanced Controls
+        and Variable Meta-analysis sheets) to instantiate this VMA.
+
+        Arguments:
+            filename: pathlib.Path to an Excel file
+            title: string matching VMA name in the Variable Meta-analysis sheet
+
+        Populates self.source_data, self.df, and self.fixed_summary if the
+        required values are present.
+        """
         workbook = xlrd.open_workbook(filename=filename)
         vma_reader = VMAReader(workbook)
-
-        # import ipdb; ipdb.set_trace()
 
         # Pull all tables from this workbook in the dictionary format
         # {"table title": table_dataframe}
@@ -120,7 +146,7 @@ class VMA:
         xl_df, use_weight, (mean, high, low) = dataframe_dict[title]
         self._convert_from_human_readable(xl_df)
 
-        # TODO: Comment
+        # Populate the self.fixed_summary field if the values are valid
         fixed_summary = check_fixed_summary(mean, high, low)
         if fixed_summary is not None:
             self.fixed_summary = fixed_summary
@@ -128,7 +154,16 @@ class VMA:
 
     def _convert_from_human_readable(self, readable_df):
         """
-        TODO
+        Converts a known set of readable column names to a known column set. A
+        few data cleanups are also performed, such as doing converting
+        percentages and filling NaN values.
+
+        Arguments:
+            readable_df: dataframe (from CSV or Excel file) using the standard
+                long-form column names
+
+        Populates self.source_data with readable_df directly. Populates self.df
+        with a series of renamed columns, along with a few data cleanup steps.
         """
         if readable_df is None:
             if self.title is None:

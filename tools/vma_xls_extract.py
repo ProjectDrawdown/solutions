@@ -116,8 +116,8 @@ class VMAReader:
     # TODO: Add test
     def xls_df_dict(self, alt_vma=False):
         """
-        Finds all tables, reads them into dataframes, and then returns a
-        dictionary of {"table title": table_dataframe}
+        Finds all tables in self.wb, reads them into dataframes, then returns a
+        dictionary keyed by the table title.
 
         Arguments:
             alt_vma: False = process the primary VMA sheet 'Variable Meta-analysis',
@@ -125,7 +125,13 @@ class VMAReader:
                         values for Average, High, and Low.
 
         Returns:
-            TODO
+            Returns a dictionary of tuples, of the form: {
+                "title of the VMA, found by _find_tables": (
+                    VMA dataframe,
+                    Boolean value from the table on whether to "Use weight?" 
+                    Float tuple, fixed summary values: (mean, high, low)
+                )
+            }
         """
         if alt_vma:
             sheetname = 'Variable Meta-analysis-DD'
@@ -134,17 +140,15 @@ class VMAReader:
             sheetname = 'Variable Meta-analysis'
             fixed_summary = False
 
-        # TODO
+        # Extract VMA table locations
         self._find_tables(sheetname=sheetname)
-        # TODO
-        df_dict = collections.OrderedDict()
 
-        # TODO
+        # Extract and save the VMA data for each title
+        df_dict = collections.OrderedDict()
         for title, location in self.table_locations.items():
             df, use_weight, summary = self.read_single_table(source_id_cell=location,
                                                              sheetname=sheetname,
                                                              fixed_summary=fixed_summary)
-            # import ipdb; ipdb.set_trace()
             if df.empty:
                 # in line with our policy of setting empty tables to None
                 df_dict[title] = (None, False, (np.nan, np.nan, np.nan))
@@ -161,16 +165,21 @@ class VMAReader:
 
     def read_xls(self, csv_path=None, alt_vma=False):
         """
-        Reads the whole Variable Meta-analysis xls sheet. TODO: Add more
+        Reads the whole Variable Meta-analysis xls sheet. If a CSV path is
+        given, writes out a series of CSVs, of the form <table title>.csv and
+        VMA_info.csv (contains summary data for each VMA).
         Note this currently only works for LAND solutions.
 
         Arguments:
             csv_path: (pathlib path object or str) If specified, will write
                 CSVs to path for each table
             alt_vma: See docstring for xls_df_dict
+
+        Returns a sort of "directory dataframe", pointing to each created CSV,
+        noting the VMA title for that CSV, along with a couple of boolean
+        values.
         """
 
-        # TODO
         df_dict = self.xls_df_dict(alt_vma)
 
         vma_df = pd.DataFrame(

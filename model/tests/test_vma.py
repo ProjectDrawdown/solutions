@@ -29,6 +29,13 @@ class TestVMAFromXlsx:
             vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'))
         assert 'Title None not available' in error.exconly()
 
+    def test_bad_title(self):
+        """Check that a nonexistent title raises an error."""
+        with pytest.raises(AssertionError) as error:
+            vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'),
+                    title='Not a real title')
+        assert "Title 'Not a real title' not available" in error.exconly()
+
     @pytest.mark.parametrize('title,expected', (
         ('Current Adoption',
          (314.150, 450.0, 178.3)),
@@ -54,7 +61,10 @@ class TestVMAFromXlsx:
          (0.24150576, 0.36171938, 0.12129214)),
     ))
     def test_vals(self, title, expected):
-        """ Values from Car Fuel Efficiency Variable Meta Analysis """
+        """
+        Checks known values from Silvopasture Variable Meta Analysis, taken
+        from the xlsx file.
+        """
         v = vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'),
                     title=title,
                     low_sd=1.0,
@@ -80,13 +90,16 @@ class TestVMAFromXlsx:
         'Indirect CO2 Emissions per SOLUTION Implementation Unit',
     ))
     def test_empty_vmas(self, title):
+        """
+        Check that existing titles with no data raise an error. Titles taken
+        from the test xlsx file.
+        """
         with pytest.raises(ValueError) as error:
             vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'),
                     title=title)
         assert 'silvopasture.xlsx' in error.exconly()
         assert title in error.exconly()
-        assert 'Dataframe' in error.exconly()
-        assert 'is None, is that VMA empty?' in error.exconly()
+        assert 'is that VMA empty?' in error.exconly()
 
 
 def test_source_data():
