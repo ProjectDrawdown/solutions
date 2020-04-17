@@ -58,10 +58,12 @@ def convert_percentages(val):
 class VMA:
     """Meta-analysis of multiple data sources to a summary result.
        Arguments:
-         TODO: Change filename to include xlsx (and xlsm?)
-         filename: a CSV file containing data sources. This file must contain columns
-           named "Raw Data Input", "Weight", and "Original Units". It can contain additional
-           columns, which will be ignored.
+         filename: (string or pathlib.Path) a CSV file or xlsx/xslm containing
+           data sources. The CSV file must contain columns named "Raw Data
+           Input", "Weight", and "Original Units". It can contain additional
+           columns, which will be ignored. The xlsx/xlsm file needs to have
+           columns structured in a certain way, see VMAReader.df_template for
+           more information.
          title: string, name of the VMA to extract from an Excel file. This
            value is unused if filename is a CSV, and can be passed in as None.
            Will raise an AssertionError if the title is not available in the
@@ -100,8 +102,7 @@ class VMA:
             # Instantiate VMA with various file types
             if filename.suffix == '.csv':
                 self._read_csv(filename=filename)
-            elif filename.suffix == '.xlsx':
-                # TODO: Add a test for .xlsm
+            elif filename.suffix == '.xlsx' or filename.suffix == '.xlsm':
                 self._read_xls(filename=filename, title=title)
             else:
                 raise ValueError('{} has unrecognized filetype'.format(filename))
@@ -125,8 +126,8 @@ class VMA:
     # TODO: Do timing test
     def _read_xls(self, filename, title):
         """
-        Read a properly formatted xlsx (TODO?) file (with Advanced Controls
-        and Variable Meta-analysis sheets) to instantiate this VMA.
+        Read a properly formatted xlsx/xlsm file (with a Variable
+        Meta-analysis sheet) to instantiate this VMA.
 
         Arguments:
             filename: pathlib.Path to an Excel file

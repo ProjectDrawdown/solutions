@@ -61,12 +61,13 @@ class TestVMAFromXlsx:
         ('Percent silvopasture area to the total grassland area (including potential)',
          (0.24150576, 0.36171938, 0.12129214)),
     ))
-    def test_vals(self, title, expected):
+    @pytest.mark.parametrize('filetype', ('xlsx', 'xlsm'))
+    def test_vals(self, filetype, title, expected):
         """
         Checks known values from Silvopasture Variable Meta Analysis, taken
         from the xlsx file.
         """
-        v = vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'),
+        v = vma.VMA(filename=datadir.joinpath('silvopasture.{}'.format(filetype)),
                     title=title,
                     low_sd=1.0,
                     high_sd=1.0)
@@ -90,15 +91,17 @@ class TestVMAFromXlsx:
         'Disturbance Rate',
         'Indirect CO2 Emissions per SOLUTION Implementation Unit',
     ))
-    def test_empty_vmas(self, title):
+    @pytest.mark.parametrize('filetype', ('xlsx', 'xlsm'))
+    def test_empty_vmas(self, filetype, title):
         """
         Check that existing titles with no data raise an error. Titles taken
         from the test xlsx file.
         """
+        filename = 'silvopasture.{}'.format(filetype)
         with pytest.raises(ValueError) as error:
-            vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'),
+            vma.VMA(filename=datadir.joinpath(filename),
                     title=title)
-        assert 'silvopasture.xlsx' in error.exconly()
+        assert filename in error.exconly()
         assert title in error.exconly()
         assert 'is that VMA empty?' in error.exconly()
 
