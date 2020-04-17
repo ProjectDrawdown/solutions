@@ -24,21 +24,11 @@ jobs:
       run: |
         pip install tox
         tox -e health_update
-    - name: Create Survey Update Commit
-      uses: stefanzweifel/git-auto-commit-action@v4.1.1
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v2.7.0
       with:
+        token: ${{ secrets.SURVEY_HEALTH }}
         commit_message: Updating survey health files
-        # Optional name of the branch the commit should be pushed to
-        # Required if Action is used in Workflow listening to the `pull_request` event
-        branch: solution-survey-cron
-
-        # Optional glob pattern of files which should be added to the commit
-        file_pattern: data/health/*
-
-        # Optional local file path to the repository
-        repository: .
-
-        # Optional commit user and author settings
-        commit_user_name: Survey Health Cron Job
-        commit_user_email: drawdownbot@decarbon.earth
-        commit_author: DrawdownBot <drawdownbot@decarbon.earth>
+        title: Updating survey health files
+        author: Survey Health Cron Job <drawdownbot@decarbon.earth>
+        team-reviewers: owners, maintainers
