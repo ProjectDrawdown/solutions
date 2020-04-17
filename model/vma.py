@@ -29,17 +29,23 @@ def populate_fixed_summaries(vma_dict, filename):
         fixed_mean = row.get('Fixed Mean', np.nan)
         fixed_high = row.get('Fixed High', np.nan)
         fixed_low = row.get('Fixed Low', np.nan)
-        fixed_summary = check_fixed_summary(fixed_mean, fixed_high, fixed_low)
+        fixed_summary = check_fixed_summary([fixed_mean, fixed_high, fixed_low])
         if fixed_summary is not None:
             vma_dict[title].fixed_summary = fixed_summary
 
 
-# TODO: Test
-def check_fixed_summary(mean, high, low):
-    if not pd.isna(mean) and not pd.isna(high) and not pd.isna(low):
-        return (mean, high, low)
-    else:
+def check_fixed_summary(values):
+    """Checks that there are no NaN/None values in the given summary.
+    Arguments:
+        values: iterable (generally floats of length 3, but that doesn't
+            matter to the function)
+    Returns:
+        None if any value is NaN/None, otherwise a tuple of the given iterable
+    """
+    if any([pd.isna(value) for value in values]):
         return None
+    else:
+        return tuple(values)
 
 
 def convert_percentages(val):
@@ -143,11 +149,11 @@ class VMA:
                "Title {!r} not available in {}.".format(title, filename) + \
                "\nOptions:\n\t" + "\n\t".join(dataframe_dict.keys())
 
-        xl_df, use_weight, (mean, high, low) = dataframe_dict[title]
+        xl_df, use_weight, summary = dataframe_dict[title]
         self._convert_from_human_readable(xl_df)
 
         # Populate the self.fixed_summary field if the values are valid
-        fixed_summary = check_fixed_summary(mean, high, low)
+        fixed_summary = check_fixed_summary(summary)
         if fixed_summary is not None:
             self.fixed_summary = fixed_summary
 
