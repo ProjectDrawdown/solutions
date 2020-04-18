@@ -1,5 +1,7 @@
+import collections
 import pathlib
 
+import numpy as np
 import pandas as pd
 import pytest
 import tools.vma_xls_extract
@@ -61,6 +63,39 @@ def test_read_xls_additional_var():
     vma_df = vma_r.read_xls()
     s = 'Percent silvopasture area to the total grassland area (including potential)'
     assert s in vma_df['Title on xls'].unique()
+
+
+def test_xls_df_dict():
+    """ Check that wb is extracted to a dictionary (component of read_xls) """
+
+    vma_r = tools.vma_xls_extract.VMAReader(wb)
+    df_dict = vma_r.xls_df_dict()
+
+    # Do some basic type and shape checking
+    assert isinstance(df_dict, collections.OrderedDict)
+    for key, value in df_dict.items():
+        # VMA title
+        assert isinstance(key, str)
+        # (df, boolean, (float, float, float))
+        assert isinstance(value, tuple)
+        assert len(value) == 3
+        if value[0] is None:
+            assert value[1] is False
+            assert value[2] == (np.nan, ) * 3
+        else:
+            assert isinstance(value[0], pd.core.frame.DataFrame)
+            assert not value[0].empty
+            assert isinstance(value[1], bool)
+            assert isinstance(value[2], tuple)
+            assert len(value[2]) == 3
+            for number in value[2]:
+                assert isinstance(number, float)
+
+    # Check an arbitrary column
+    assert 'Disturbance Rate' in df_dict.keys()
+
+    # A known number of VMAs are empty in the example xlsx
+    assert sum([value[0] is None for value in df_dict.values()]) == 13
 
 
 def test_normalize_col_name():

@@ -113,7 +113,6 @@ class VMAReader:
                 return filename
         return None
 
-    # TODO: Add test
     def xls_df_dict(self, alt_vma=False):
         """
         Finds all tables in self.wb, reads them into dataframes, then returns a
@@ -161,7 +160,6 @@ class VMAReader:
                 df_dict[title] = (df, use_weight, summary)
 
         return df_dict
-
 
     def read_xls(self, csv_path=None, alt_vma=False):
         """
