@@ -20,7 +20,7 @@ The codebase has some momentum already, has been continuously developed since Se
 
 + Project Drawdown's solution models were constructed in Excel, with a large number of Excel files now. There are two releases of the Excel models which are relevant to this effort:
     + 2019: released to the public in January 2019
-    + 2020: extended from the 2019 models by a new cohort of researchers, preparing for public release on Feb 20, 2020.
+    + 2020: extended from the 2019 models by a new cohort of researchers, released as The Drawdown Review in March 2020.
 
 ---
 
