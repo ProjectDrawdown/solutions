@@ -436,9 +436,21 @@ def test_conv_ref_tot_iunits_land():
             pds_total_adoption_units=sp_tla, soln_ref_funits_adopted=ref_ad,
             soln_pds_funits_adopted=None)
     # test only world values as regional data has bugs in xls
-    result = ua.conv_ref_tot_iunits()['World'].values
-    world_expected = np.array([619.83739797667] * 47)
-    np.testing.assert_array_almost_equal(result, world_expected)
+    result = ua.conv_ref_tot_iunits()['World']
+    world_expected = pd.Series(619.83739797667, index=range(2014, 2061))
+    pd.testing.assert_series_equal(result, world_expected, check_exact=False, check_names=False)
+
+
+def test_conv_ref_tot_iunits_land_NaN():
+    f = this_dir.parents[0].joinpath('data', 'sp_tla.csv')
+    sp_tla = pd.read_csv(f, index_col=0)
+    soln_ref_funits_adopted = pd.DataFrame(np.nan, index=sp_tla.index, columns=sp_tla.columns)
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            pds_total_adoption_units=sp_tla, soln_ref_funits_adopted=soln_ref_funits_adopted,
+            soln_pds_funits_adopted=None)
+    result = ua.conv_ref_tot_iunits()['World']
+    assert not pd.isna(result).any()  # verify that fillna(0.0) is used
 
 
 def test_conv_ref_annual_tot_iunits():
