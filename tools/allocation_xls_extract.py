@@ -10,7 +10,7 @@ import tools.util
 import xlrd
 
 LAND_XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'Land Allocation - Max TLA.xlsx')
-LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocation2018')
+LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land', 'allocation2020')
 OCEAN_XLS_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean', 'Ocean Allocation - Max TOA.xlsx')
 OCEAN_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean', 'allocation')
 pd.set_option('display.expand_frame_repr', False)
@@ -125,7 +125,9 @@ class AllocationReader:
         index = []
         row, col = self.first_cells[0]
         for i in range(self.nsolutions):
-            index.append(self.sheet.cell_value(row + i, col - 1))
+            name = self.sheet.cell_value(row + i, col - 1)
+            assert name, f"Empty solution name at offset {i}"
+            index.append(name)
         for i in range(5):
             self.columns.append(self.sheet.cell_value(row - 1, col + i))
         self.df_template = pd.DataFrame(columns=self.columns, index=index)
