@@ -143,20 +143,26 @@ class VMA:
         required values are present.
         """
         workbook = xlrd.open_workbook(filename=filename)
+        if 'Variable Meta-analysis-DD' in workbook.sheet_names():
+            alt_vma = True
+        else:
+            alt_vma = False
+
         vma_reader = VMAReader(workbook)
 
-        # Pull all tables from this workbook in the dictionary format
-        # {"table title": table_dataframe}
-        if 'Variable Meta-analysis-DD' in workbook.sheet_names():
-            dataframe_dict = vma_reader.xls_df_dict(alt_vma=True)
-        else:
-            dataframe_dict = vma_reader.xls_df_dict()
+        # Pull the desired table from this workbook
+        try:
+            (xl_df, use_weight, summary) = \
+                vma_reader.xls_df_dict(alt_vma=alt_vma, title=title)[title]
+        except KeyError:
+            # The title wasn't available in the given workbook. Read all titles
+            # to give the user a hint.
+            full_dict = vma_reader.xls_df_dict(alt_vma=alt_vma)
+            raise ValueError(
+                "Title {!r} not available in {}.".format(title, filename) + \
+                "\nOptions:\n\t" + "\n\t".join(full_dict.keys())
+            )
 
-        assert title in dataframe_dict, \
-               "Title {!r} not available in {}.".format(title, filename) + \
-               "\nOptions:\n\t" + "\n\t".join(dataframe_dict.keys())
-
-        xl_df, use_weight, summary = dataframe_dict[title]
         self._convert_from_human_readable(xl_df)
 
         # Populate the self.fixed_summary field if the values are valid

@@ -26,13 +26,13 @@ def test_vals_from_real_soln_csv():
 class TestVMAFromXlsx:
     def test_no_title(self):
         """Check that the default title (None) raises an error."""
-        with pytest.raises(AssertionError) as error:
+        with pytest.raises(ValueError) as error:
             vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'))
         assert 'Title None not available' in error.exconly()
 
     def test_bad_title(self):
         """Check that a nonexistent title raises an error."""
-        with pytest.raises(AssertionError) as error:
+        with pytest.raises(ValueError) as error:
             vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'),
                     title='Not a real title')
         assert "Title 'Not a real title' not available" in error.exconly()

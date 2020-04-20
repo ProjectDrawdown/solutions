@@ -119,10 +119,13 @@ class VMAReader:
                 return filename
         return None
 
-    def xls_df_dict(self, alt_vma=False):
+    def xls_df_dict(self, alt_vma=False, title=None):
         """
-        Finds all tables in self.wb, reads them into dataframes, then returns a
-        dictionary keyed by the table title.
+        Finds tables in self.wb, reads them into dataframes, then returns a
+        dictionary keyed by the table title. If a title is given, return a
+        dictionary with just that title and dataframe.
+
+        Raises KeyError if the title is not available.
 
         Arguments:
             alt_vma: False = process the primary VMA sheet 'Variable Meta-analysis',
@@ -151,7 +154,13 @@ class VMAReader:
         # Extract and save the VMA data for each title
         df_dict = collections.OrderedDict()
 
-        for title, location in self.table_locations.items():
+        # Either extract all titles or the desired one
+        if title is None:
+            locations_to_process = self.table_locations.items()
+        else:
+            locations_to_process = [(title, self.table_locations[title])]
+
+        for title, location in locations_to_process:
             df, use_weight, summary = self.read_single_table(source_id_cell=location,
                                                              sheetname=sheetname,
                                                              fixed_summary=fixed_summary)
