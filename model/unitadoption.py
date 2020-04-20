@@ -490,7 +490,7 @@ class UnitAdoption:
 
         if (self.ac.solution_category == SOLUTION_CATEGORY.LAND or
                 self.ac.solution_category == SOLUTION_CATEGORY.OCEAN):
-            result = self.total_area_per_region - self.soln_ref_funits_adopted
+            result = self.total_area_per_region - self.soln_ref_funits_adopted.fillna(0.0)
         else:  # RRS
             result = ((self.ref_tam_per_region - self.soln_ref_funits_adopted.fillna(0.0)) /
                       self.ac.conv_avg_annual_use)

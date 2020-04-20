@@ -1,5 +1,5 @@
 """Afforestation solution model.
-   Excel filename: Drawdown_RRS-BIOSEQ_Model_v1.1_MASTER_Afforestation-Jan2020.xlsm
+   Excel filename: Drawdown_RRS-BIOSEQ_Model_v1.1_MASTER_Afforestation-Mar2020.xlsm
 """
 
 import pathlib
@@ -128,7 +128,8 @@ class Scenario:
         self.ac = scenarios[scenario]
 
         # TLA
-        self.ae = aez.AEZ(solution_name=self.name, cohort=2019)
+        self.ae = aez.AEZ(solution_name=self.name, cohort=2020,
+                regimes=dd.THERMAL_MOISTURE_REGIMES8)
         if self.ac.use_custom_tla:
             self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))
             custom_world_vals = self.c_tla.get_world_values()
@@ -417,5 +418,6 @@ class Scenario:
             conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
-            regime_distribution=self.ae.get_land_distribution())
+            regime_distribution=self.ae.get_land_distribution(),
+            regimes=dd.THERMAL_MOISTURE_REGIMES8)
 

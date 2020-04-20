@@ -113,7 +113,9 @@ class AEZ(object, metaclass=MetaclassCache):
     def _populate_solution_land_distribution(self):
         """Calculates total land distribution for solution by region, currently fixed for all years.
 
-           'AEZ Data'!A47:H58 in Cohort 2018, 'AEZ Data'!A53:H64 in Cohort 2019
+           'AEZ Data'!A47:H58 in Cohort 2018
+           'AEZ Data'!A53:H64 in Cohort 2019
+           'AEZ Data'!A53:J64 in the 3/2020 update which split Temperate from Boreal to make 8 TMRs
         """
         cols = self.regimes
         soln_df = pd.DataFrame(columns=cols, index=self.regions).fillna(0.)

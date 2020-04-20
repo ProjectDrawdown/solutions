@@ -21,7 +21,7 @@ def test_solutions(name, constructor, scenarios):
         # a few more solutions have cached values from Drawdown2020 which are incorrect for
         # the BookEdition scenarios, or vice-versa.
         skip += ['Farmland Restoration', 'Afforestation', 'Bamboo', 'Nutrient Management',
-                 'Perennial Bioenergy Crops']
+                 'Perennial Bioenergy Crops', 'Silvopasture']
         if obj.name not in skip:
             errstr = f"{obj.name}: {scenario} : {obj.ac.incorrect_cached_values}"
             assert len(obj.ac.incorrect_cached_values) == 0, errstr
