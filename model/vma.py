@@ -1,5 +1,6 @@
 """Implementation of the Variable Meta-Analysis module."""
 
+import io
 import math
 import pathlib
 
@@ -58,12 +59,13 @@ def convert_percentages(val):
 class VMA:
     """Meta-analysis of multiple data sources to a summary result.
        Arguments:
-         filename: (string or pathlib.Path) a CSV file or xlsx/xslm containing
-           data sources. The CSV file must contain columns named "Raw Data
-           Input", "Weight", and "Original Units". It can contain additional
-           columns, which will be ignored. The xlsx/xlsm file needs to have
-           columns structured in a certain way, see VMAReader.df_template for
-           more information.
+         filename: (string, pathlib.Path, or io.StringIO) Can be either
+           * a CSV file or xlsx/xslm containing data sources. The CSV file must
+             contain columns named "Raw Data Input", "Weight", and "Original
+             Units". It can contain additional columns, which will be ignored.
+           * The xlsx/xlsm file needs to have columns structured in a certain
+             way, see VMAReader.df_template for more information.
+           * io.StringIO objects are processed as if they are opened CSV files
          title: string, name of the VMA to extract from an Excel file. This
            value is unused if filename is a CSV, and can be passed in as None.
            Will raise an AssertionError if the title is not available in the
@@ -99,13 +101,17 @@ class VMA:
             # Turn strings into pathlib
             if isinstance(filename, str):
                 filename = pathlib.Path(filename)
+
             # Instantiate VMA with various file types
-            if filename.suffix == '.csv':
+            if isinstance(filename, io.StringIO):
                 self._read_csv(filename=filename)
             elif filename.suffix == '.xlsx' or filename.suffix == '.xlsm':
                 self._read_xls(filename=filename, title=title)
             else:
-                raise ValueError('{} has unrecognized filetype'.format(filename))
+                # Fall back on this as the default behavior, there are a
+                # variety of use cases that have been built-in, they do not
+                # all end with '.csv'
+                self._read_csv(filename=filename)
 
         else:
             self.source_data = pd.DataFrame()
