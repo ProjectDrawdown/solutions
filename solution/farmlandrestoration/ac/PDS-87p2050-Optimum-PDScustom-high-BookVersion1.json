@@ -1,13 +1,13 @@
 {
-    "name": "PDS-71p2050-Drawdown-CustomPDS-avg-aug2019",
+    "name": "PDS-87p2050-Optimum-PDScustom-high-BookVersion1",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "aug2019",
+    "description": "The current adoption of this solution is based on data points available for India, EU, and Australia. The future adoption is based on the IPCC and UNEP targets towards the restoration of degraded lands. Since, abandoned farmlands are a subset of degraded land, it was assumed that their restoration will also follow similar trends. This scenario derives result from the \"high of all\" PDS custom scenarios. The results are similar to that of the Book Version1, so no new scenario was created for the latter. This revised model involves changes in the financial variables, correction of the net profit margin calculation methodology, and estimation of operational cost which was missing in the Book Version1. ",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": false,
     "ref_base_adoption": {
-        "World": 20.029603,
+        "World": 9.619693,
         "OECD90": 0.0,
         "Eastern Europe": 0.0,
         "Asia (Sans Japan)": 0.0,
@@ -32,7 +32,7 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Average of All Custom Scenarios",
+    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "conv_2014_cost": {
@@ -50,16 +50,16 @@
         "statistic": ""
     },
     "pds_2014_cost": {
-        "value": 629.88715,
+        "value": 446.823352380952,
         "statistic": "mean"
     },
     "ref_2014_cost": {
-        "value": 629.88715,
+        "value": 446.823352380952,
         "statistic": "mean"
     },
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_fixed_oper_cost_per_iunit": {
-        "value": 380.437230807143,
+        "value": 376.854590391157,
         "statistic": "mean"
     },
     "soln_expected_lifetime": 30.0,
@@ -75,10 +75,10 @@
     "conv_indirect_co2_per_unit": 0.0,
     "soln_indirect_co2_per_iunit": 0.0,
     "tco2eq_reduced_per_land_unit": {
-        "value": -0.233577433333333,
-        "statistic": "mean"
+        "value": 0.0,
+        "statistic": ""
     },
-    "tco2eq_rplu_rate": "Annual",
+    "tco2eq_rplu_rate": "One-time",
     "tco2_reduced_per_land_unit": {
         "value": 0.0,
         "statistic": ""
@@ -98,7 +98,7 @@
     "conv_annual_energy_used": 0.0,
     "soln_annual_energy_used": 0.0,
     "seq_rate_global": {
-        "value": 1.28795781964257,
+        "value": 1.32526666666667,
         "statistic": "mean"
     },
     "carbon_not_emitted_after_harvesting": {

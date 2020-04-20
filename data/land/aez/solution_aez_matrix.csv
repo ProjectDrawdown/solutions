@@ -2,7 +2,7 @@ Solutions,"AEZ1: Forest, prime, minimal","AEZ2: Forest, good, minimal","AEZ3: Fo
 Biochar,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
 SRI,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,False,True,True,True,True,True,True,False,True,True,False,False
 Regenerative Agriculture,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,False,True,True,False,True,True,True,False,True,True,False,False
-Farmland Restoration,False,False,False,False,False,False,False,True,True,True,True,True,True,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+Farmland Restoration,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True
 Smallholder Intensification,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,True,False
 Conservation Agriculture,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,False,True,True,False,True,True,True,False,True,True,False,False
 Improved Rice,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,True,True,True,True,True,True,True,True,True,False,True,True,False,False
