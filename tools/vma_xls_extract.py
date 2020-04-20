@@ -95,10 +95,11 @@ class VMAReader:
         """
         self.wb = wb
         self.df_template = make_vma_df_template()
-        self.data_csvs = self.read_data_csvs()
+        # Give a starter value for this, it will get populated later if
+        # necessary (don't populate now for speed reasons)
+        self._data_csvs = None
 
-
-    def read_data_csvs(self):
+    def _read_data_csvs(self):
         data_csvs = {}
         for filename in DATA_DIR_PATH.rglob('*.csv'):
             relpath = filename.relative_to(DATA_DIR_PATH).parts
@@ -106,9 +107,14 @@ class VMAReader:
                     skip_blank_lines=True, comment='#', dtype="object")
         return data_csvs
 
-
     def find_data_csv(self, df):
-        for filename, data_df in self.data_csvs.items():
+        # Poplate self._data_csvs if it hasn't been done yet. Do this
+        # just-in-time to support use cases where we don't need to call
+        # find_data_csv, like xls_df_dict().
+        if self._data_csvs is None:
+            self._data_csvs = self._read_data_csvs()
+
+        for filename, data_df in self._data_csvs.items():
             if df_approx(df, data_df):
                 return filename
         return None
@@ -144,6 +150,7 @@ class VMAReader:
 
         # Extract and save the VMA data for each title
         df_dict = collections.OrderedDict()
+
         for title, location in self.table_locations.items():
             df, use_weight, summary = self.read_single_table(source_id_cell=location,
                                                              sheetname=sheetname,
