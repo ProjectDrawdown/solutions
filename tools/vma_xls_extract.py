@@ -151,15 +151,13 @@ class VMAReader:
         # Extract VMA table locations
         self._find_tables(sheetname=sheetname)
 
-        # Extract and save the VMA data for each title
-        df_dict = collections.OrderedDict()
-
         # Either extract all titles or the desired one
         if title is None:
             locations_to_process = self.table_locations.items()
         else:
             locations_to_process = [(title, self.table_locations[title])]
 
+        df_dict = collections.OrderedDict()
         for title, location in locations_to_process:
             df, use_weight, summary = self.read_single_table(source_id_cell=location,
                                                              sheetname=sheetname,
@@ -332,7 +330,6 @@ class VMAReader:
         else:
             raise ValueError("No 'Use weight?' cell found")
 
-        # import ipdb; ipdb.set_trace()
         if fixed_summary:
             # Find the Average, High, Low cells.
             for r in range(last_row, last_row + 50):

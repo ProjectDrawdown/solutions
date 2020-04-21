@@ -129,7 +129,6 @@ class VMA:
         csv_df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
         self._convert_from_human_readable(csv_df)
 
-    # TODO: Do timing test
     def _read_xls(self, filename, title):
         """
         Read a properly formatted xlsx/xlsm file (with a Variable
@@ -143,12 +142,11 @@ class VMA:
         required values are present.
         """
         workbook = xlrd.open_workbook(filename=filename)
+        vma_reader = VMAReader(workbook)
         if 'Variable Meta-analysis-DD' in workbook.sheet_names():
             alt_vma = True
         else:
             alt_vma = False
-
-        vma_reader = VMAReader(workbook)
 
         # Pull the desired table from this workbook
         try:
@@ -169,7 +167,6 @@ class VMA:
         fixed_summary = check_fixed_summary(summary)
         if fixed_summary is not None:
             self.fixed_summary = fixed_summary
-
 
     def _convert_from_human_readable(self, readable_df):
         """
