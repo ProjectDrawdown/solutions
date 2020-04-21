@@ -1,5 +1,5 @@
 """Farmland Restoration solution model.
-   Excel filename: Drawdown_RRS-BIOSEQ_Model_v1.1_MASTER_Farmland_Restoration_Jan2020.xlsm
+   Excel filename: Drawdown_RRS-BIOSEQ_Model_v1.1_MASTER_Farmland_Restoration_Mar2020.xlsm
 """
 
 import pathlib
@@ -111,7 +111,8 @@ class Scenario:
         self.ac = scenarios[scenario]
 
         # TLA
-        self.ae = aez.AEZ(solution_name=self.name, cohort=2019)
+        self.ae = aez.AEZ(solution_name=self.name, cohort=2020,
+                regimes=dd.THERMAL_MOISTURE_REGIMES8)
         if self.ac.use_custom_tla:
             self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))
             custom_world_vals = self.c_tla.get_world_values()
@@ -120,47 +121,111 @@ class Scenario:
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
+        adconfig_list = [
+            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
+             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
+             'Medium', 'Medium', 'Medium'],
+            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
+             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
+             'NOTE', 'NOTE', 'NOTE'],
+            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
+        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
+            dtype=np.object).set_index('param')
+        ad_data_sources = {
+            'Raw Data for ALL LAND TYPES': {
+                'Sum of regional prognostications below': THISDIR.joinpath('ad', 'ad_Sum_of_regional_prognostications_below.csv'),
+            },
+            'Region: Asia (Sans Japan)': {
+                'Raw Data for ALL LAND TYPES': {
+                  'Dara et al. 2018; Kazakshstan recultivation': THISDIR.joinpath('ad', 'ad_Dara_et_al__2018_Kazakshstan_recultivation.csv'),
+              },
+            },
+            'Region: China': {
+                'Tropical-Humid Land': {
+                  'Lin, L, et al 2018, Wenzhou province only': THISDIR.joinpath('ad', 'ad_Lin_L_et_al_2018_Wenzhou_province_only.csv'),
+              },
+            },
+            'Region: EU': {
+                'Tropical-Humid Land': {
+                  'Estel et al. 2015, 2nd Poly, capped at 94.7mha': THISDIR.joinpath('ad', 'ad_Estel_et_al__2015_2nd_Poly_capped_at_94_7mha.csv'),
+              },
+            },
+        }
+        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+            main_includes_regional=True,
+            adconfig=adconfig)
+
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
         growth_initial = pd.DataFrame([[2018] + list(self.ac.ref_base_adoption.values())],
                 columns=ca_pds_columns).set_index('Year')
         tla_init = self.ac.ref_base_adoption['World']
         tla_grow = self.tla_per_region.loc[2050, 'World'] - tla_init
+
         ca_pds_data_sources = [
             {'name': '1.32% ann, Linear Trend', 'include': True, 'growth_rate': 0.013219212962963,
-                'growth_initial': growth_initial},
+             # Limited information on restoration of abandoned farmland is available (see
+             # data interpolation sheet). As abandoned farmlands area a subset of degraded
+             # land, it is asumed that the restoration of abandoned farmland will also follow
+             # similar trends. Refer sheet, "Adoption rates-Deg Area".
+             'growth_initial': growth_initial},
             {'name': '2.64% annual rate, Linear Trend', 'include': False,
-                'growth_rate': (2 * 0.013219212962963), 'growth_initial': growth_initial},
+             # This scenario projects future growth by doubling of historical annual
+             # rate in India
+             'growth_rate': (2 * 0.013219212962963), 'growth_initial': growth_initial},
             {'name': '63% of TLA, Linear Trend', 'include': True,
+             #  It is assumed that by 2050, 63% of the total degraded farmlands will be restored
+             # for cropping. This is the highest reported adoption - from rainfed cultivated
+             # areas in India over several decades: see Adoption trends-Deg Area worksheet.
              'datapoints': pd.DataFrame([
                  [2012] + list(self.ac.ref_base_adoption.values()),
                  [2018] + list(self.ac.ref_base_adoption.values()),
                  [2050, tla_init + (tla_grow * 0.63), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                  ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Very high: 85%  of TLA, Linear Trend', 'include': False,
+             # It is assumed that by 2050, 85% of the total abandoned farmlands will be
+             # restored for cropping.
              'datapoints': pd.DataFrame([
                  [2012] + list(self.ac.ref_base_adoption.values()),
                  [2018] + list(self.ac.ref_base_adoption.values()),
                  [2050, tla_init + (tla_grow * 0.85), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                  ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Maximum, Linear Trend', 'include': True,
+             # It is assumed that by 2050, 100% of the total abandoned farmlands will be
+             # restored for cropping.
              'datapoints': pd.DataFrame([
                  [2012] + list(self.ac.ref_base_adoption.values()),
                  [2018] + list(self.ac.ref_base_adoption.values()),
                  [2050, tla_init + (tla_grow * 1.00), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                  ], columns=ca_pds_columns).set_index('Year')},
-            {'name': 'Historical linear based on Whenzhou province China reclaimed lands',
-                'include': True, 'growth_rate': 0.0696, 'growth_initial': growth_initial},
+            {'name': 'Historical linear based on Whenzhou province China reclaimed lands', 'include': True,
+             # Based on low interpolated linear trend from historical data on annual adoption
+             # rate for Whenzhoue province China; Lin, Jia et al 2017
+             'include': True, 'growth_rate': 0.0696, 'growth_initial': growth_initial},
             {'name': 'Historical linear based on EU -Estel et al 2015', 'include': True,
-                'growth_rate': 0.0568, 'growth_initial': growth_initial},
+             # Based on low interpolated linear trend from historical data on annual adoption
+             # rate for EU, based on Estel et al 2015
+             'growth_rate': 0.0568, 'growth_initial': growth_initial},
             {'name': 'Historical linear trend based on Kazakstan, Dara et al 2017', 'include': True,
-                'growth_rate': 0.0512, 'growth_initial': growth_initial},
+             # Based on low interpolated linear trend from historical data on annual adoption
+             # rate for Kazahkstan, based on Dara et al 2017
+             'growth_rate': 0.0512, 'growth_initial': growth_initial},
         ]
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=1.0, low_sd_mult=1.0,
             total_adoption_limit=self.tla_per_region)
 
+        for s in self.pds_ca.scenarios.values():
+            df = s['df']
+            for year in range(2012, 2019):
+                df.loc[year] = [20.029602999999, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            df.sort_index(inplace=True)
+
+        ref_adoption_data_per_region = None
 
         if False:
             # One may wonder why this is here. This file was code generated.
@@ -170,18 +235,25 @@ class Scenario:
             pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
             pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
             pds_adoption_is_single_source = None
+        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+            pds_adoption_data_per_region = self.ad.adoption_data_per_region()
+            pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
+            pds_adoption_is_single_source = self.ad.adoption_is_single_source()
 
-        ht_ref_adoption_initial = pd.Series(list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)
-        ht_ref_adoption_final = self.tla_per_region.loc[2050] * (ht_ref_adoption_initial / self.tla_per_region.loc[2014])
+        ht_ref_adoption_initial = pd.Series(
+            list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)
+        ht_ref_adoption_final = self.tla_per_region.loc[2050] * (ht_ref_adoption_initial /
+            self.tla_per_region.loc[2014])
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
         ht_ref_datapoints.loc[2018] = ht_ref_adoption_initial
         ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
         ht_pds_adoption_initial = ht_ref_adoption_initial
-        ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
-        ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
+        ht_pds_adoption_final_percentage = pd.Series(
+            list(self.ac.pds_adoption_final_percentage.values()),
+            index=list(self.ac.pds_adoption_final_percentage.keys()))
         ht_pds_adoption_final = ht_pds_adoption_final_percentage * self.tla_per_region.loc[2050]
         ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_pds_datapoints.loc[2018] = ht_pds_adoption_initial
+        ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
         ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
         self.ht = helpertables.HelperTables(ac=self.ac,
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
@@ -196,7 +268,8 @@ class Scenario:
         self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
-            ref_total_adoption_units=self.tla_per_region, pds_total_adoption_units=self.tla_per_region,
+            ref_total_adoption_units=self.tla_per_region,
+            pds_total_adoption_units=self.tla_per_region,
             electricity_unit_factor=1000000.0,
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
@@ -249,5 +322,6 @@ class Scenario:
             conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
-            regime_distribution=self.ae.get_land_distribution())
+            regime_distribution=self.ae.get_land_distribution(),
+            regimes=dd.THERMAL_MOISTURE_REGIMES8)
 
