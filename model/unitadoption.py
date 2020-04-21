@@ -4,6 +4,7 @@ from functools import lru_cache
 import os.path
 import pathlib
 import pandas as pd
+import numpy as np
 from model import emissionsfactors
 from model.dd import REGIONS, OCEAN_REGIONS
 from model.advanced_controls import SOLUTION_CATEGORY
@@ -333,7 +334,7 @@ class UnitAdoption:
         """
         if self.repeated_cost_for_iunits:
             return self.soln_pds_tot_iunits_reqd().iloc[1:].copy(deep=True).clip(lower=0.0)
-        result = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # iloc[0] NA after diff
+        result = self.soln_pds_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # [0] nan w/ diff
         for region, column in result.iteritems():
             for year, value in column.iteritems():
                 # Add replacement units, if needed by adding the number of units
@@ -387,22 +388,13 @@ class UnitAdoption:
         result.name = "soln_ref_tot_iunits_reqd"
         return result
 
-    @lru_cache()
-    def soln_ref_new_iunits_reqd(self):
-        """New implementation units required (includes replacement units)
-
-           Should reflect the unit lifetime assumed in the First Cost tab. For
-           simplicity assumed a fix lifetime rather than a gaussian distribution,
-           but this can be changed if needed.
-
-           This table is also used to Calculate  Marginal First Cost and NPV.
-
+    def soln_ref_new_iunits_reqd_RRS(self):
+        """New implementation units required (includes replacement units), RRS version
            SolarPVUtil 'Unit Adoption Calculations'!AG197:AQ244
         """
         if self.repeated_cost_for_iunits:
             return self.soln_ref_tot_iunits_reqd().iloc[1:].copy(deep=True).clip(lower=0.0)
-        result = self.soln_ref_tot_iunits_reqd().diff().clip(lower=0).iloc[
-                 1:]  # iloc[0] NA after diff
+        result = self.soln_ref_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # [0] NaN w/ diff
         for region, column in result.iteritems():
             for year, value in column.iteritems():
                 # Add replacement units, if needed by adding the number of units
@@ -413,6 +405,39 @@ class UnitAdoption:
                     prior_year = year - self.ac.soln_lifetime_replacement_rounded - 1
                     if fa.loc[prior_year, region] <= fa.loc[year, region]:
                         result.at[year, region] += result.at[replacement_year, region]
+        return result
+
+    def soln_ref_new_iunits_reqd_LAND(self):
+        """New implementation units required (includes replacement units), LAND version
+           Afforestation 'Unit Adoption Calculations'!AG197:AQ244
+        """
+        result = self.soln_ref_funits_adopted.diff().clip(lower=0).iloc[1:]  # [0] NaN w/ diff
+        for region, column in result.iteritems():
+            for year, value in column.iteritems():
+                # Add replacement units, if needed by adding the number of units
+                # added N * conv_lifetime_replacement ago, that now need replacement.
+                replacement_year = int(year - (self.ac.conv_lifetime_replacement_rounded + 1))
+                if replacement_year in result.index:
+                    fa = self.soln_ref_funits_adopted
+                    if fa.at[replacement_year, region] <= fa.at[year, region]:
+                        result.at[year, region] += result.at[replacement_year, region]
+        return result
+
+    @lru_cache()
+    def soln_ref_new_iunits_reqd(self):
+        """New implementation units required (includes replacement units)
+
+           Should reflect the unit lifetime assumed in the First Cost tab. For
+           simplicity assumed a fix lifetime rather than a gaussian distribution,
+           but this can be changed if needed.
+
+           This table is also used to Calculate Marginal First Cost and NPV.
+        """
+        if (self.ac.solution_category == SOLUTION_CATEGORY.LAND or
+                self.ac.solution_category == SOLUTION_CATEGORY.OCEAN):
+            result = self.soln_ref_new_iunits_reqd_LAND()
+        else:
+            result = self.soln_ref_new_iunits_reqd_RRS()
         result.name = "soln_ref_new_iunits_reqd"
         return result
 
@@ -463,8 +488,9 @@ class UnitAdoption:
         SolarPVUtil 'Unit Adoption Calculations'!Q251:AA298
         """
 
-        if self.ac.solution_category == SOLUTION_CATEGORY.LAND or self.ac.solution_category == SOLUTION_CATEGORY.OCEAN:
-            result = self.total_area_per_region - self.soln_ref_funits_adopted
+        if (self.ac.solution_category == SOLUTION_CATEGORY.LAND or
+                self.ac.solution_category == SOLUTION_CATEGORY.OCEAN):
+            result = self.total_area_per_region - self.soln_ref_funits_adopted.fillna(0.0)
         else:  # RRS
             result = ((self.ref_tam_per_region - self.soln_ref_funits_adopted.fillna(0.0)) /
                       self.ac.conv_avg_annual_use)
@@ -504,20 +530,19 @@ class UnitAdoption:
         """
         if self.repeated_cost_for_iunits:
             return self.conv_ref_annual_tot_iunits().iloc[1:].copy(deep=True).clip(lower=0.0)
-        growth = self.conv_ref_annual_tot_iunits().diff().clip(lower=0).iloc[
-                 1:]  # iloc[0] NA after diff
-        replacements = pd.DataFrame(0, index=growth.index.copy(), columns=growth.columns.copy(),
-                                    dtype='float64')
-        for region, column in replacements.iteritems():
-            for year, value in column.iteritems():
-                # Add replacement units, if needed by adding the number of units
-                # added N * conv_lifetime_replacement ago, that now need replacement.
-                replacement_year = int(year - (self.ac.conv_lifetime_replacement_rounded + 1))
-                while replacement_year in growth.index:
-                    replacements.at[year, region] += growth.at[replacement_year, region]
-                    replacement_year -= (self.ac.conv_lifetime_replacement_rounded + 1)
-        result = growth + replacements
-        result.name = "conv_ref_new_iunits"
+
+        growth = self.conv_ref_annual_tot_iunits()
+        growth_array = np.max([growth.values[1:] - growth.values[:-1], np.full(growth.values[1:].shape, 0.)], axis=0)
+
+        result = pd.DataFrame(growth_array.copy(), index=growth.index[1:], columns=growth.columns)
+        result.name="conv_ref_new_iunits"
+
+        shift = self.ac.conv_lifetime_replacement_rounded + 1
+        current_shift = shift
+        while current_shift < growth_array.shape[0]:
+            result.iloc[current_shift:] += growth_array[:-current_shift]
+            current_shift += shift
+            
         return result
 
     @lru_cache()

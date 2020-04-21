@@ -9,7 +9,7 @@ import math
 import fair
 import numpy as np
 import pandas as pd
-import model.advanced_controls as ac
+import model.advanced_controls
 import model.dd
 import model.fairutil
 
@@ -52,7 +52,7 @@ class CO2Calcs:
                  conv_ref_grid_CO2eq_per_KWh=None, fuel_in_liters=None,
                  annual_land_area_harvested=None, regime_distribution=None,
                  tot_red_in_deg_land=None, pds_protected_deg_land=None,
-                 ref_protected_deg_land=None):
+                 ref_protected_deg_land=None, regimes=None):
         self.ac = ac
         self.ch4_ppb_calculator = ch4_ppb_calculator
         self.soln_pds_net_grid_electricity_units_saved = soln_pds_net_grid_electricity_units_saved
@@ -75,6 +75,17 @@ class CO2Calcs:
         self.tot_red_in_deg_land = tot_red_in_deg_land  # protection models
         self.pds_protected_deg_land = pds_protected_deg_land  # protection models
         self.ref_protected_deg_land = ref_protected_deg_land  # protection models
+
+        if regimes is not None:
+            self.regimes = regimes
+        elif self.ac is None or self.ac.solution_category is None:
+            self.regimes = None
+        elif self.ac.solution_category == model.advanced_controls.SOLUTION_CATEGORY.LAND:
+            self.regimes = model.dd.THERMAL_MOISTURE_REGIMES
+        elif self.ac.solution_category == model.advanced_controls.SOLUTION_CATEGORY.OCEAN:
+            self.regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
+        else:
+            self.regimes = None
 
         self.baseline = model.fairutil.baseline_emissions()
 
@@ -130,8 +141,8 @@ class CO2Calcs:
         """
         s = self.ac.report_start_year
         e = self.ac.report_end_year
-        if (self.ac.solution_category != ac.SOLUTION_CATEGORY.LAND and
-                self.ac.solution_category != ac.SOLUTION_CATEGORY.OCEAN):
+        if (self.ac.solution_category != model.advanced_controls.SOLUTION_CATEGORY.LAND and
+                self.ac.solution_category != model.advanced_controls.SOLUTION_CATEGORY.OCEAN):
             # RRS
             co2eq_reduced_grid_emissions = self.co2eq_reduced_grid_emissions()
             m = pd.DataFrame(0.0, columns=co2eq_reduced_grid_emissions.columns.copy(),
@@ -145,7 +156,7 @@ class CO2Calcs:
             m = m.sub(self.co2eq_net_indirect_emissions().loc[s:e], fill_value=0)
         else:
             # LAND/OCEAN
-            if self.ac.solution_category == ac.SOLUTION_CATEGORY.LAND:
+            if self.ac.solution_category == model.advanced_controls.SOLUTION_CATEGORY.LAND:
                 regions = model.dd.REGIONS
             else:
                 regions = model.dd.OCEAN_REGIONS
@@ -177,17 +188,13 @@ class CO2Calcs:
         Tropical Forests 'CO2 Calcs'!A119:G166 (Land models)
         """
 
-        if self.ac.solution_category == ac.SOLUTION_CATEGORY.LAND:
-            regimes = model.dd.THERMAL_MOISTURE_REGIMES
-        elif self.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN:
-            regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
-        else:
+        if self.regimes is None:
             return None
 
-        cols = ['All'] + regimes
+        cols = ['All'] + self.regimes
         index = pd.Index(list(range(2015, 2061)), name='Year')
         df = pd.DataFrame(columns=cols, index=index, dtype=np.float64)
-        set_regions_from_distribution = False
+        set_regions_from_regime_distribution = False
 
         if self.tot_red_in_deg_land is not None:
             # regrowth calculation
@@ -217,7 +224,7 @@ class CO2Calcs:
                 deg_seq_rate = self.ac.seq_rate_global * self.ac.global_multi_for_regrowth
             df['All'] = C_TO_CO2EQ * (
                 undeg_land * undeg_seq_rate + (pds_deg_land - ref_deg_land) * deg_seq_rate)
-            set_regions_from_distribution = True
+            set_regions_from_regime_distribution = True
         else:
             # simple calculation
             disturbance = 1 if self.ac.disturbance_rate is None else 1 - self.ac.disturbance_rate
@@ -225,23 +232,24 @@ class CO2Calcs:
             if self.annual_land_area_harvested is not None:
                 net_land -= self.annual_land_area_harvested.loc[index, 'World']
             if pd.isna(self.ac.seq_rate_global):
-                for reg in regimes:
-                    seq_rate = pd.Series(self.ac.seq_rate_per_regime).loc[reg]
+                for reg in self.regimes:
+                    seq_rate = self.ac.seq_rate_per_regime[reg]
                     df[reg] = (C_TO_CO2EQ * net_land * seq_rate * disturbance *
                                self.regime_distribution.loc['Global', reg] /
                                self.regime_distribution.loc['Global', 'All'])
                 df['All'] = df.fillna(0.0).sum(axis=1)
             else:
                 df['All'] = C_TO_CO2EQ * net_land * self.ac.seq_rate_global * disturbance
-                set_regions_from_distribution = True
+                set_regions_from_regime_distribution = True
 
-        if set_regions_from_distribution:
-            for reg in regimes:
+        if set_regions_from_regime_distribution:
+            for reg in self.regimes:
                 df[reg] = (df['All'] * self.regime_distribution.loc['Global', reg] /
-                        self.regime_distribution.loc[ 'Global', 'All'])
+                        self.regime_distribution.loc['Global', 'All'])
 
         df.name = 'co2_sequestered_global'
         return df
+
 
     @lru_cache()
     def co2_ppm_calculator(self):
@@ -265,8 +273,8 @@ class CO2Calcs:
         else:
             co2_vals = self.co2_mmt_reduced()['World']
 
-        if (self.ac.solution_category == ac.SOLUTION_CATEGORY.LAND or
-                self.ac.solution_category == ac.SOLUTION_CATEGORY.OCEAN):
+        if (self.ac.solution_category == model.advanced_controls.SOLUTION_CATEGORY.LAND or
+                self.ac.solution_category == model.advanced_controls.SOLUTION_CATEGORY.OCEAN):
             co2_vals = self.co2_sequestered_global()['All'] + self.co2eq_mmt_reduced()['World']
             assert self.ac.emissions_use_co2eq, 'Land/ocean models must use CO2 eq'
 
@@ -279,7 +287,7 @@ class CO2Calcs:
         last_year = ppm_calculator.last_valid_index()
         for year in ppm_calculator.index:
             if (year < self.ac.report_start_year and
-                    self.ac.solution_category != ac.SOLUTION_CATEGORY.LAND):
+                    self.ac.solution_category != model.advanced_controls.SOLUTION_CATEGORY.LAND):
                 # On RRS xls models this skips the calc but on LAND the calc is done anyway
                 # Note that this affects the values for all years and should probably NOT be
                 # skipped (i.e. LAND is the correct implementation)
@@ -341,7 +349,7 @@ class CO2Calcs:
               EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
            SolarPVUtil 'CO2 Calcs'!R234:AB280
         """
-        if self.ac.solution_category == ac.SOLUTION_CATEGORY.REPLACEMENT:
+        if self.ac.solution_category == model.advanced_controls.SOLUTION_CATEGORY.REPLACEMENT:
             return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2_per_KWh
         else:
             return self.soln_net_annual_funits_adopted * 0
@@ -385,7 +393,7 @@ class CO2Calcs:
            SolarPVUtil 'CO2 Calcs'!R288:AB334
            (Not present in Land solutions)
         """
-        if self.ac.solution_category == ac.SOLUTION_CATEGORY.REPLACEMENT:
+        if self.ac.solution_category == model.advanced_controls.SOLUTION_CATEGORY.REPLACEMENT:
             return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2eq_per_KWh
         else:
             return self.soln_net_annual_funits_adopted * 0

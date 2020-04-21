@@ -1,14 +1,14 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,,Pg/yr,0.0,tons/year,,Rice,
-Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,,Pg/yr,0.0,tons/year,,Other cereals,
-Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,,Pg/yr,0.0,tons/year,,Sugarcane,
-Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,,Pg/yr,0.0,tons/year,,Rice,
-Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,,Pg/yr,0.0,tons/year,,Other cereals,
-Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,,Pg/yr,0.0,tons/year,,Sugarcane,
-Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,,Pg/yr,0.0,tons/year,,Rice,
-Woolf et al 2010,http://www.nature.com/articles/ncomms1054,World,,2  - Peer Reviewed,2011,,,Pg/yr,0.0,tons/year,,Other cereals,
-Woolf et al 2010,http://www.nature.com/articles/ncomms1055,World,,3  - Peer Reviewed,2012,,,Pg/yr,0.0,tons/year,,Sugarcane,
-Lehmann et al 2006,"http://www.css.cornell.edu/faculty/lehmann/publ/MitAdaptStratGlobChange%2011,%20403-427,%20Lehmann,%202006.pdf",World,,1  - Peer Reviewed,2006,,,Pg/yr,0.0,tons/year,,Rice,
-Lehmann et al 2006,"http://www.css.cornell.edu/faculty/lehmann/publ/MitAdaptStratGlobChange%2011,%20403-427,%20Lehmann,%202006.pdf",World,,1  - Peer Reviewed,2006,,,Pg/yr,0.0,tons/year,,Groundnut shell,
-Slade et al 2014,https://workspace.imperial.ac.uk/ecosystemsandenvironment/Public/Slade_Global%20bioenergy_resources%202014.pdf,World,,1  - Peer Reviewed,2014,,,EJ/yr,0.0,tons/year,,agricultural residue,1.0
-Slade et al 2014,https://workspace.imperial.ac.uk/ecosystemsandenvironment/Public/Slade_Global%20bioenergy_resources%202014.pdf,World,,1  - Peer Reviewed,2014,,,EJ/yr,0.0,tons/year,,agricultural residue,1.0
+Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,0.22,Pg/yr,105874999.99999999,tons/year,,Rice,
+Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,0.072,Pg/yr,34650000.0,tons/year,,Other cereals,
+Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,0.09,Pg/yr,43312499.99999999,tons/year,,Sugarcane,
+Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,0.25,Pg/yr,120312499.99999999,tons/year,,Rice,
+Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,0.13,Pg/yr,62562499.99999999,tons/year,,Other cereals,
+Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,0.11,Pg/yr,52937499.99999999,tons/year,,Sugarcane,
+Woolf et al 2010,http://www.nature.com/articles/ncomms1053,World,,1  - Peer Reviewed,2010,,0.28,Pg/yr,134750000.0,tons/year,,Rice,
+Woolf et al 2010,http://www.nature.com/articles/ncomms1054,World,,2  - Peer Reviewed,2011,,0.18,Pg/yr,86624999.99999999,tons/year,,Other cereals,
+Woolf et al 2010,http://www.nature.com/articles/ncomms1055,World,,3  - Peer Reviewed,2012,,0.13,Pg/yr,62562499.99999999,tons/year,,Sugarcane,
+Lehmann et al 2006,"http://www.css.cornell.edu/faculty/lehmann/publ/MitAdaptStratGlobChange%2011,%20403-427,%20Lehmann,%202006.pdf",World,,1  - Peer Reviewed,2006,,0.04,Pg/yr,19250000.0,tons/year,,Rice,
+Lehmann et al 2006,"http://www.css.cornell.edu/faculty/lehmann/publ/MitAdaptStratGlobChange%2011,%20403-427,%20Lehmann,%202006.pdf",World,,1  - Peer Reviewed,2006,,0.002,Pg/yr,962499.9999999999,tons/year,,Groundnut shell,
+Slade et al 2014,https://workspace.imperial.ac.uk/ecosystemsandenvironment/Public/Slade_Global%20bioenergy_resources%202014.pdf,World,,1  - Peer Reviewed,2014,,10.0,EJ/yr,5.555555555555556e+17,tons/year,,agricultural residue,1.0
+Slade et al 2014,https://workspace.imperial.ac.uk/ecosystemsandenvironment/Public/Slade_Global%20bioenergy_resources%202014.pdf,World,,1  - Peer Reviewed,2014,,66.0,EJ/yr,3.6666666666666665e+18,tons/year,,agricultural residue,1.0

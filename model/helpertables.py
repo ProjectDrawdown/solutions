@@ -7,6 +7,7 @@ from interpolation.py, or use a simple linear fit implemented here.
 """
 from functools import lru_cache
 import pandas as pd
+import numpy as np
 import model.dd as dd
 
 
@@ -16,7 +17,7 @@ class HelperTables:
                  ref_adoption_limits=None, pds_adoption_limits=None,
                  pds_adoption_trend_per_region=None, pds_adoption_is_single_source=False,
                  ref_adoption_data_per_region=None, use_first_pds_datapoint_main=True,
-                 adoption_base_year=2014):
+                 adoption_base_year=2014, copy_pds_to_ref=False, copy_ref_datapoint=True):
         """
         HelperTables.
            Arguments:
@@ -46,6 +47,9 @@ class HelperTables:
              adoption_base_year: solutions developed by the 2018 (and prior) cohorts used 2014
                as the base year for adoption. Solurions developed in the 2019 cohort use 2018
                as the base year.
+             copy_pds_to_ref: whether years <= adoption_base_year should be copied from
+               PDS to ref. Mostly used by cohort2019 energy models.
+             copy_ref_datapoint: whether to copy the first ref_datapoint directly into result.
         """
         self.ac = ac
         self.ref_datapoints = ref_datapoints
@@ -58,6 +62,8 @@ class HelperTables:
         self.ref_adoption_data_per_region = ref_adoption_data_per_region
         self.use_first_pds_datapoint_main = use_first_pds_datapoint_main
         self.adoption_base_year = adoption_base_year
+        self.copy_pds_to_ref = copy_pds_to_ref
+        self.copy_ref_datapoint = copy_ref_datapoint
 
     @lru_cache()
     def soln_ref_funits_adopted(self, suppress_override=False):
@@ -70,6 +76,7 @@ class HelperTables:
 
            SolarPVUtil 'Helper Tables'!B26:L73
         """
+
         if self.ac.soln_ref_adoption_basis == 'Custom':
             assert self.ref_adoption_data_per_region is not None
             adoption = self.ref_adoption_data_per_region.loc[2014:, :].copy(deep=True)
@@ -80,27 +87,31 @@ class HelperTables:
 
         # cannot exceed tam or tla
         if self.ref_adoption_limits is not None:
-            for col in adoption.columns:
-                adoption[col] = adoption[col].combine(self.ref_adoption_limits[col].fillna(0.0), min)
+            cols = adoption.columns
+            adoption.loc[:, :] = np.min([adoption.values, 
+                                         self.ref_adoption_limits[cols].fillna(0.).values], 
+                                        axis=0)
 
         if self.ac.soln_ref_adoption_regional_data:
             adoption.loc[:, 'World'] = adoption[dd.MAIN_REGIONS].sum(axis=1)
             if self.ref_adoption_limits is not None:
-                adoption['World'] = adoption['World'].combine(
-                    self.ref_adoption_limits['World'].fillna(0.0), min)
+                adoption['World'] = np.min([adoption['World'], 
+                                            self.ref_adoption_limits['World'].fillna(0.0)],
+                                            axis=0)
 
-        if self.adoption_base_year > 2014:
+        if self.adoption_base_year > 2014 and self.copy_pds_to_ref:
             # The Drawdown 2020 models get REF data for the World region for 2014-2018 from PDS.
             funits = self.soln_pds_funits_adopted(suppress_override=True)
             main_region = list(adoption.columns)[0]
-            for y in range(2014, self.adoption_base_year):
-                adoption.loc[y, main_region] = funits.loc[y, main_region]
-            adoption = adoption.sort_index()
+            years = np.arange(2014, self.adoption_base_year)
+            adoption.loc[years, main_region] = funits.loc[years, main_region]
+            adoption.sort_index(inplace=True)
+
             # The Drawdown 2020 models also still copy the first ref_datapoint (for 2018) into the
             # first cell of the table which is 2014. We implement bug-for-bug compatibility here.
             # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.i71c3bhbim59
             adoption.iloc[0, 1:] = self.ref_datapoints.iloc[0, 1:]
-        else:
+        elif self.copy_ref_datapoint:
             # Where we have data, use the actual data not the interpolation. Excel model does this
             # even in Custom REF Adoption case, unlike the top of this routine where we copy Custom
             # adoption verbatim.
@@ -130,14 +141,17 @@ class HelperTables:
         year1 = datapoints.index.values[0]
         year2 = datapoints.index.values[1]
 
-        adoption = pd.DataFrame(columns=datapoints.columns, dtype='float')
-        for col in adoption.columns:
-            adopt1 = datapoints.loc[year1, col]
-            adopt2 = datapoints.loc[year2, col]
-            for year in range(first_year, last_year + 1):
-                fract_year = (float(year) - float(year1)) / (float(year2) - float(year1))
-                fract_adopt = fract_year * (float(adopt2) - float(adopt1))
-                adoption.loc[year, col] = adopt1 + fract_adopt
+        years = np.arange(first_year, last_year + 1).reshape(-1, 1)
+        adopt1 = datapoints.iloc[[0]].values
+        adopt2 = datapoints.iloc[[1]].values
+
+        fract_years = (years - year1) / (year2 - year1)
+        fract_adopt = fract_years * (adopt2 - adopt1)
+
+        adoption = pd.DataFrame(fract_adopt + adopt1,
+                                columns=datapoints.columns, 
+                                index=years.squeeze(), 
+                                dtype="float")
         return adoption
 
     @lru_cache()
@@ -154,10 +168,10 @@ class HelperTables:
         main_region = dd.REGIONS[0]
         first_year = self.pds_datapoints.first_valid_index()
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-            adoption = self.pds_adoption_data_per_region.loc[first_year:, :].copy(deep=True)
+            adoption = self.pds_adoption_data_per_region.loc[2014:, :].copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Linear':
             last_year = dd.CORE_END_YEAR
-            adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints)
+            adoption = self._linear_forecast(2014, last_year, self.pds_datapoints)
         elif 'S-Curve' in self.ac.soln_pds_adoption_basis:
             adoption = self.pds_adoption_trend_per_region.copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
@@ -171,15 +185,19 @@ class HelperTables:
 
         # cannot exceed the total addressable market or tla
         if self.pds_adoption_limits is not None:
-            for col in adoption.columns:
-                adoption[col] = adoption[col].combine(self.pds_adoption_limits[col].fillna(0.0), min)
+            # Extend pds to match adoption's index
+            pds_adoption_limits_extended = self.pds_adoption_limits.reindex(adoption.index,
+                                                                        fill_value=np.inf)
+            cols = adoption.columns
+            adoption.loc[:, :] = np.min([adoption.values,
+                                        pds_adoption_limits_extended[cols].fillna(0.).values],
+                                        axis=0)
 
         if self.ac.soln_pds_adoption_regional_data:
             adoption.loc[:, main_region] = adoption.loc[:, dd.MAIN_REGIONS].sum(axis=1)
             if self.pds_adoption_limits is not None:
-                for col in adoption.columns:
-                    adoption[main_region] = adoption[main_region].combine(
-                        self.pds_adoption_limits[main_region].fillna(0.0), min)
+                adoption[main_region] = np.min([adoption[main_region].values,
+                                                pds_adoption_limits_extended[main_region].fillna(0.0)], axis=0)
 
         if not suppress_override and self.ac.pds_adoption_use_ref_years:
             y = self.ac.pds_adoption_use_ref_years
@@ -190,12 +208,14 @@ class HelperTables:
         # Note: this should be changed later. The jump between pds_datapoints
         # and the first row of custom adoption data causes anomalies in the regional results.
         # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
-        zero_zero = adoption.iloc[0, 0]
+        datapoint_year = self.pds_datapoints.first_valid_index()
+        main_region = dd.REGIONS[0]
+        first_datapoint_main_region = adoption.loc[datapoint_year, main_region]
         adoption.update(self.pds_datapoints.iloc[[0]])
         if not self.use_first_pds_datapoint_main:
             # Starting in Drawdown 2020 solutions, the World region computation is different
             # and no longer copies the first datapoint.
-            adoption.iloc[0, 0] = zero_zero
+            adoption.loc[datapoint_year, main_region] = first_datapoint_main_region
 
         adoption.name = "soln_pds_funits_adopted"
         adoption.index.name = "Year"

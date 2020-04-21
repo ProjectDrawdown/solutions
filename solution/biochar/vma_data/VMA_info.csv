@@ -1,16 +1,1 @@
 VMA number,Title on xls,Fixed Mean,Fixed High,Fixed Low
-1,Current Adoption,7457.0,7457.0,7457.0
-3,SOLUTION First Cost per Implementation Unit,21639272.727272723,44005816.44405451,-727270.989509061
-5,SOLUTION Lifetime Capacity,410116.3636363636,410116.3636363636,410116.3636363636
-7,SOLUTION Average Annual Use,20505.81818181818,46121.01751140012,-5109.381147763754
-9,SOLUTION Variable Operating Cost (VOM) per Functional Unit,193.9207142857143,328.63462323269533,59.20680533873326
-18,SOLUTION Direct Emissions per Functional Unit,-0.9583317307692307,-0.7049036389816374,-1.211759822556824
-23,Biochar retail price (US$/tons),3025.96,5155.453764818296,896.4662351817042
-24,Biochar wholesale price (US$/tons),2057.6923076923076,4127.211589837704,-11.826974453088951
-25,Net Biochar Production per Biochar Facility,17797.058823529413,39243.58585618489,-3649.4682091260656
-26,SOLUTION Net Profit Margin,423.386978021978,558.100886968959,288.673069074997
-27,Biochar potential based on biomass availability by type (crop residues),65800000.0,106025073.80353701,25574926.19646299
-28,Biochar potential based on biomass availability by type (biomass crops),216562500.0,275503346.9357202,157621653.0642798
-29,Biochar potential based on biomass availability by type (other residues),55825000.0,93975799.16020763,17674200.83979238
-30,Carbon content in biomass (%),0.48124999999999996,0.5448537538200384,0.4176462461799615
-31,Estimated Fraction of Input Biochar that is output to be Sold,0.3,0.3,0.3

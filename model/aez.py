@@ -25,11 +25,15 @@ class AEZ(object, metaclass=MetaclassCache):
        Args:
          solution_name: <soln file>.name
          ignore_allocation: optionally turn off land allocation to use max tla values
+         cohort: whether to use 2018 or 2019 land allocations.
+         regimes: list of string names of thermal moisture regimes
     """
 
-    def __init__(self, solution_name, ignore_allocation=False):
+    def __init__(self, solution_name, ignore_allocation=False, cohort=2018,
+            regimes=dd.THERMAL_MOISTURE_REGIMES):
         self.solution_name = solution_name
-        self.regimes = dd.THERMAL_MOISTURE_REGIMES
+        self.cohort = cohort
+        self.regimes = regimes
 
         # AEZ data has a slightly different format for regions than the rest of the model. This
         # is in line with the xls version but should be changed later to keep regions consistent
@@ -65,7 +69,7 @@ class AEZ(object, metaclass=MetaclassCache):
             df = df.fillna(0)
 
         for tmr in self.regimes:
-            tmr_path = LAND_CSV_PATH.joinpath('allocation', self._to_filename(tmr))
+            tmr_path = LAND_CSV_PATH.joinpath(f'allocation{self.cohort}', self._to_filename(tmr))
             for col in df:
                 if col.startswith('AEZ29'):  # this zone is not included in land allocation
                     continue
@@ -97,9 +101,10 @@ class AEZ(object, metaclass=MetaclassCache):
            'AEZ Data'!D353:AG610
         """
         self.world_land_alloc_dict = {}
+        subdir = '2020' if len(self.regimes) == 8 else '2018'
         for tmr in self.regimes:
-            df = pd.read_csv(LAND_CSV_PATH.joinpath('world', self._to_filename(tmr) + '.csv'),
-                    index_col=0).drop('Total Area (km2)', 1)
+            df = pd.read_csv(LAND_CSV_PATH.joinpath('world', subdir,
+                    self._to_filename(tmr) + '.csv'), index_col=0).drop('Total Area (km2)', 1)
             # apply fixed world fraction to each region
             self.world_land_alloc_dict[tmr] = df.mul(self.soln_land_alloc_df.loc[tmr],
                     axis=1) / 10000
@@ -108,7 +113,9 @@ class AEZ(object, metaclass=MetaclassCache):
     def _populate_solution_land_distribution(self):
         """Calculates total land distribution for solution by region, currently fixed for all years.
 
-           'AEZ Data'!A47:H58
+           'AEZ Data'!A47:H58 in Cohort 2018
+           'AEZ Data'!A53:H64 in Cohort 2019
+           'AEZ Data'!A53:J64 in the 3/2020 update which split Temperate from Boreal to make 8 TMRs
         """
         cols = self.regimes
         soln_df = pd.DataFrame(columns=cols, index=self.regions).fillna(0.)

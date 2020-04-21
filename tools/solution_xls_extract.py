@@ -52,6 +52,8 @@ def convert_sr_float(val):
     if m:
         s = str(m.group(1)).replace(',', '.')
         return float(s)
+    if str(val).startswith('Val:() Formula:='):
+        return float(0.0)
     if str(val).endswith('%'):
         (num, _) = str(val).split('%', maxsplit=1)
         return float(num) / 100.0
@@ -172,14 +174,18 @@ def get_rrs_scenarios(wb, solution_category):
             def percnt(r):
                 return 0.0 if sr_tab.cell_value(r, 4) == '' else sr_tab.cell_value(r, 4)
 
-            percentages = [('World', percnt(row + 170)), ('OECD90', percnt(row + 171)),
-                           ('Eastern Europe', percnt(row + 172)), ('Asia (Sans Japan)', percnt(row + 173)),
-
-                           ('Middle East and Africa', percnt(row + 174)), ('Latin America', percnt(row + 175)),
-
-                           ('China', percnt(row + 176)), ('India', percnt(row + 177)),
-                           ('EU', percnt(row + 178)), ('USA', percnt(row + 179))]
-            s['pds_adoption_final_percentage'] = percentages
+            s['pds_adoption_final_percentage'] = {
+                'World': percnt(row + 170),
+                'OECD90': percnt(row + 171),
+                'Eastern Europe': percnt(row + 172),
+                'Asia (Sans Japan)': percnt(row + 173),
+                'Middle East and Africa': percnt(row + 174),
+                'Latin America': percnt(row + 175),
+                'China': percnt(row + 176),
+                'India': percnt(row + 177),
+                'EU': percnt(row + 178),
+                'USA': percnt(row + 179),
+            }
 
             if s['soln_pds_adoption_basis'] == 'DEFAULT S-Curve':
                 s_curve_type = str(sr_tab.cell_value(row + 181, 4))
@@ -281,6 +287,19 @@ def get_land_scenarios(wb, solution_category):
             assert sr_tab.cell_value(row + 201, 3) == 'Custom TLA Used?:'
             s['use_custom_tla'] = convert_bool(sr_tab.cell_value(row + 201, 4))
 
+            s['ref_base_adoption'] = {
+                'World': convert_sr_float(sr_tab.cell_value(row + 218, 4)),
+                'OECD90': convert_sr_float(sr_tab.cell_value(row + 219, 4)),
+                'Eastern Europe': convert_sr_float(sr_tab.cell_value(row + 220, 4)),
+                'Asia (Sans Japan)': convert_sr_float(sr_tab.cell_value(row + 221, 4)),
+                'Middle East and Africa': convert_sr_float(sr_tab.cell_value(row + 222, 4)),
+                'Latin America': convert_sr_float(sr_tab.cell_value(row + 223, 4)),
+                'China': convert_sr_float(sr_tab.cell_value(row + 224, 4)),
+                'India': convert_sr_float(sr_tab.cell_value(row + 225, 4)),
+                'EU': convert_sr_float(sr_tab.cell_value(row + 226, 4)),
+                'USA': convert_sr_float(sr_tab.cell_value(row + 227, 4)),
+            }
+
             assert sr_tab.cell_value(row + 230, 1) == 'PDS ADOPTION SCENARIO INPUTS'
             adopt = str(sr_tab.cell_value(row + 231, 4)).strip()
             if adopt: s['soln_pds_adoption_basis'] = adopt
@@ -289,14 +308,18 @@ def get_land_scenarios(wb, solution_category):
             def percnt(r):
                 return 0.0 if sr_tab.cell_value(r, 4) == '' else sr_tab.cell_value(r, 4)
 
-            percentages = [('World', percnt(row + 236)), ('OECD90', percnt(row + 237)),
-                           ('Eastern Europe', percnt(row + 238)), ('Asia (Sans Japan)', percnt(row + 239)),
-
-                           ('Middle East and Africa', percnt(row + 240)), ('Latin America', percnt(row + 241)),
-
-                           ('China', percnt(row + 242)), ('India', percnt(row + 243)),
-                           ('EU', percnt(row + 244)), ('USA', percnt(row + 245))]
-            s['pds_adoption_final_percentage'] = percentages
+            s['pds_adoption_final_percentage'] = {
+                'World': percnt(row + 236),
+                'OECD90': percnt(row + 237),
+                'Eastern Europe': percnt(row + 238),
+                'Asia (Sans Japan)': percnt(row + 239),
+                'Middle East and Africa': percnt(row + 240),
+                'Latin America': percnt(row + 241),
+                'China': percnt(row + 242),
+                'India': percnt(row + 243),
+                'EU': percnt(row + 244),
+                'USA': percnt(row + 245),
+            }
 
             assert sr_tab.cell_value(row + 258, 1) == 'Fully Customized PDS'
             custom = str(sr_tab.cell_value(row + 259, 4)).strip()
@@ -306,7 +329,12 @@ def get_land_scenarios(wb, solution_category):
                     s['soln_pds_adoption_basis'] = 'Fully Customized PDS'
 
             assert sr_tab.cell_value(row + 262, 1) == 'REF ADOPTION SCENARIO INPUTS'
+            adopt = str(sr_tab.cell_value(row + 263, 4)).strip()
+            if adopt: s['soln_ref_adoption_basis'] = adopt
+            custom = str(sr_tab.cell_value(row + 264, 4)).strip()
+            if custom: s['soln_ref_adoption_custom_name'] = custom
             s['soln_ref_adoption_regional_data'] = convert_bool(sr_tab.cell_value(row + 265, 4))
+
             assert sr_tab.cell_value(row + 286, 1) == 'Adoption Adjustment'
             adjust = sr_tab.cell_value(row + 287, 4)
             if adjust and adjust != "(none)":
@@ -373,15 +401,36 @@ def get_land_scenarios(wb, solution_category):
                     # (4/2019) vma.py does have support for regimes in avg_high_low, it needs to be
                     # implemented in advanced_controls to pass a regime name through to vma.py
 
+                tmr6 = tmr8 = False
+                aez_tab = wb.sheet_by_name('AEZ Data')
+                for x in range(0, aez_tab.nrows):
+                    if aez_tab.cell_value(x, 0) == 'TOTAL Boreal-Humid land':
+                        tmr8 = True
+                        break
+                    if aez_tab.cell_value(x, 0) == 'TOTAL Temperate/Boreal-Humid land':
+                        tmr6 = True
+                        break
+
                 # For the public models using 'Variable Meta-analysis-DD', the DD tab does not contain
                 # avg/high/low for the Thermal Moisture Regimes so we extract value from ScenarioRecord.
-                s['seq_rate_per_regime'] = {
-                    'Tropical-Humid': convert_sr_float(sr_tab.cell_value(row + 170, 4)),
-                    'Temperate/Boreal-Humid': convert_sr_float(sr_tab.cell_value(row + 171, 4)),
-                    'Tropical-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 172, 4)),
-                    'Temperate/Boreal-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 173, 4)),
-                    'Global Arid': convert_sr_float(sr_tab.cell_value(row + 174, 7)),
-                    'Global Arctic': 0.0}
+                if tmr6:
+                    s['seq_rate_per_regime'] = {
+                        'Tropical-Humid': convert_sr_float(sr_tab.cell_value(row + 170, 4)),
+                        'Temperate/Boreal-Humid': convert_sr_float(sr_tab.cell_value(row + 171, 4)),
+                        'Tropical-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 172, 4)),
+                        'Temperate/Boreal-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 173, 4)),
+                        'Global Arid': convert_sr_float(sr_tab.cell_value(row + 174, 7)),
+                        'Global Arctic': 0.0}
+                if tmr8:
+                    s['seq_rate_per_regime'] = {
+                        'Tropical-Humid': convert_sr_float(sr_tab.cell_value(row + 170, 4)),
+                        'Temperate-Humid': convert_sr_float(sr_tab.cell_value(row + 171, 4)),
+                        'Boreal-Humid': convert_sr_float(sr_tab.cell_value(row + 171, 4)),
+                        'Tropical-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 172, 4)),
+                        'Temperate-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 173, 4)),
+                        'Boreal-Semi-Arid': convert_sr_float(sr_tab.cell_value(row + 173, 4)),
+                        'Global Arid': convert_sr_float(sr_tab.cell_value(row + 174, 7)),
+                        'Global Arctic': 0.0}
             else:
                 s['seq_rate_global'] = link_vma(sr_tab, row + 169, 4)
             if sr_tab.cell_value(row + 175, 3) == 'Growth Rate of Land Degradation':
@@ -677,6 +726,8 @@ def normalize_source_name(sourcename):
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Middle Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges',
         "Combined from IEA (2016) ETP 2016, ICAO (2014) Annual Report 2014, Appendix 1, Boeing (2013) World Air cargo Forecast 2014-2015, Airbus (2014) Global market Forecast: Flying by the Numbers 2015-2034 - Lowest Ranges": 'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges',
         'Based on average of: LUT/EWG (2019) -100% RES; Ecofys (2018) - 1.5ºC and Greenpeace (2015) Advanced [R]evolution': 'Based on average of: LUT/EWG 2019 100% RES, Ecofys 2018 1.5C and Greenpeace 2015 Advanced Revolution',
+        'FAO 2015 (Sum of all regions)': 'FAO 2015',  # Afforestation Drawdown 2020
+        'FAO 2010 (Sum of all regions)': 'FAO 2010',  # Bamboo Drawdown 2020
     }
     normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
     if normalized in special_cases:
@@ -773,6 +824,17 @@ def get_filename_for_source(sourcename, prefix=''):
     return prefix + filename + '.csv'
 
 
+def write_aez(f, wb):
+    a = wb.sheet_by_name('Land Allocation - Max TLA')
+    first_solution = str(a.cell_value(*cell_to_offsets('B18')))
+    if first_solution == 'Peatland Protection':
+        cohort = 2019
+    elif first_solution == 'Forest Protection':
+        cohort = 2018
+    else:
+        raise ValueError('cannot determine AEZ Land Allocation to use')
+    f.write(f"        self.ae = aez.AEZ(solution_name=self.name, cohort={cohort})\n")
+
 def write_ad(f, wb, outputdir):
     """Generate the Adoption Data section of a solution.
        Arguments:
@@ -796,19 +858,25 @@ def write_ad(f, wb, outputdir):
     f.write("             " + xls(a, 19, 12) + ", " + xls(a, 22, 12) + ", " + xls(a, 25, 12) + ", ")
     f.write(xls(a, 28, 12) + ", " + xls(a, 31, 12) + ",\n")
     f.write("             " + xls(a, 34, 12) + ", " + xls(a, 37, 12) + ", " + xls(a, 40, 12) + "],\n")
-    f.write("            ['low_sd_mult', " + xln(a, 24, 1) + ", " + xln(a, 16, 16) + ", ")
-    f.write(xln(a, 19, 16) + ", " + xln(a, 22, 16) + ", " + xln(a, 25, 16) + ", ")
-    f.write(xln(a, 28, 16) + ", " + xln(a, 31, 16) + ", " + xln(a, 34, 16) + ", ")
-    f.write(xln(a, 37, 16) + ", " + xln(a, 40, 16) + "],\n")
-    f.write("            ['high_sd_mult', " + xln(a, 23, 1) + ", " + xln(a, 15, 16) + ", ")
-    f.write(xln(a, 18, 16) + ", " + xln(a, 21, 16) + ", " + xln(a, 24, 16) + ", ")
-    f.write(xln(a, 27, 16) + ", " + xln(a, 30, 16) + ", " + xln(a, 33, 16) + ", ")
-    f.write(xln(a, 36, 16) + ", " + xln(a, 39, 16) + "]]\n")
+    f.write("            ['low_sd_mult', " + xln(a, 24, 1) + ", ")
+    if xls(a, 16, 17) == 'S.D.':
+        f.write(xln(a, 16, 16) + ", " + xln(a, 19, 16) + ", " + xln(a, 22, 16) + ", ")
+        f.write(xln(a, 25, 16) + ", " + xln(a, 28, 16) + ", " + xln(a, 31, 16) + ", ")
+        f.write(xln(a, 34, 16) + ", " + xln(a, 37, 16) + ", " + xln(a, 40, 16) + "],\n")
+    else:
+        sd = xln(a, 24, 1)
+        f.write(f"{sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}],\n")
+    f.write("            ['high_sd_mult', " + xln(a, 23, 1) + ", ")
+    if xls(a, 15, 17) == 'S.D.':
+        f.write(xln(a, 15, 16) + ", " + xln(a, 18, 16) + ", " + xln(a, 21, 16) + ", ")
+        f.write(xln(a, 24, 16) + ", " + xln(a, 27, 16) + ", " + xln(a, 30, 16) + ", ")
+        f.write(xln(a, 33, 16) + ", " + xln(a, 36, 16) + ", " + xln(a, 39, 16) + "]]\n")
+    else:
+        sd = xln(a, 23, 1)
+        f.write(f"{sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}]]\n")
     f.write("        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],\n")
     f.write("            dtype=np.object).set_index('param')\n")
-    ad_regions = {'World': 44, 'OECD90': 104, 'Eastern Europe': 168, 'Asia (Sans Japan)': 231,
-                  'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484,
-                  'EU': 548, 'USA': 613}
+    ad_regions = find_ad_regions(wb=wb)
     ad_outputdir = os.path.join(outputdir, 'ad')
     os.makedirs(ad_outputdir, exist_ok=True)
     sources = extract_source_data(wb=wb, sheet_name='Adoption Data', regions=ad_regions,
@@ -906,8 +974,8 @@ def write_s_curve_ad(f, wb):
     f.write("        sc_percentages = list(self.ac.ref_base_adoption.values())\n")
     f.write("        sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
     f.write("        sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]\n")
-    f.write("        sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
-    f.write("        sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
+    f.write("        sconfig['last_percent'] = pd.Series(pd.Series(list(self.ac.pds_adoption_final_percentage.values()),\n")
+    f.write("            index=list(self.ac.pds_adoption_final_percentage.values()))\n")
     f.write("        if self.ac.pds_adoption_s_curve_innovation is not None:\n")
     f.write("          sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_innovation)\n")
     f.write("          sconfig['innovation'] = pd.Series(list(sc_percentages), index=list(sc_regions))\n")
@@ -933,10 +1001,11 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     final_datapoint_year = int(h.cell_value(*cell_to_offsets('B22')))
 
     tam_or_tla = 'ref_tam_per_region' if not is_land else 'self.tla_per_region'
-    f.write("        ht_ref_adoption_initial = pd.Series(list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)\n")
+    f.write("        ht_ref_adoption_initial = pd.Series(\n")
+    f.write("            list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)\n")
     # even when the final_datapoint_year is 2018, the TAM initial year is hard-coded to 2014
-    f.write(f"        ht_ref_adoption_final = {tam_or_tla}.loc[{final_datapoint_year}] * "
-        f"(ht_ref_adoption_initial / {tam_or_tla}.loc[2014])\n")
+    f.write(f"        ht_ref_adoption_final = {tam_or_tla}.loc[{final_datapoint_year}] * (ht_ref_adoption_initial /\n")
+    f.write(f"            {tam_or_tla}.loc[2014])\n")
     f.write("        ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
     f.write("        ht_ref_datapoints.loc[" + str(initial_datapoint_year) +
             "] = ht_ref_adoption_initial\n")
@@ -947,8 +1016,9 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     final_datapoint_year = int(h.cell_value(*cell_to_offsets('B86')))
     tam_or_tla = 'pds_tam_per_region' if not is_land else 'self.tla_per_region'
     f.write("        ht_pds_adoption_initial = ht_ref_adoption_initial\n")
-    f.write("        ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)\n")
-    f.write("        ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))\n")
+    f.write("        ht_pds_adoption_final_percentage = pd.Series(\n")
+    f.write("            list(self.ac.pds_adoption_final_percentage.values()),\n")
+    f.write("            index=list(self.ac.pds_adoption_final_percentage.keys()))\n")
     f.write(f"        ht_pds_adoption_final = ht_pds_adoption_final_percentage * {tam_or_tla}.loc[{final_datapoint_year}]\n")
     f.write("        ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
     f.write("        ht_pds_datapoints.loc[" + str(initial_datapoint_year) + "] = ht_pds_adoption_initial\n")
@@ -958,9 +1028,18 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     first_world_pds_yearly_result = int(h.cell_value(*cell_to_offsets('C91')))
     use_first_pds_datapoint_main = (first_world_pds_datapoint == first_world_pds_yearly_result)
 
-    adoption_base_year = None
-    if a.cell_value(*cell_to_offsets('D59')):
+    try:
         adoption_base_year = int(a.cell_value(*cell_to_offsets('D59')))
+    except ValueError:
+        try:
+            adoption_base_year = int(a.cell_value(*cell_to_offsets('D57')))
+        except ValueError:
+            adoption_base_year = None
+
+    copy_pds_to_ref = True
+    for pds, ref in [('C91', 'C27'), ('C92', 'C28'), ('C93', 'C29'), ('C94', 'C30')]:
+        if int(h.cell_value(*cell_to_offsets(pds))) != int(h.cell_value(*cell_to_offsets(ref))):
+            copy_pds_to_ref = False
 
     f.write("        self.ht = helpertables.HelperTables(ac=self.ac,\n")
     f.write("            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,\n")
@@ -974,6 +1053,7 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     f.write(f"            use_first_pds_datapoint_main={use_first_pds_datapoint_main},\n")
     if adoption_base_year:
         f.write(f"            adoption_base_year={adoption_base_year},\n")
+    f.write(f"            copy_pds_to_ref={copy_pds_to_ref},\n")
     f.write("            pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
     f.write("            pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
     f.write("\n")
@@ -996,9 +1076,11 @@ def write_ua(f, wb, is_rrs=True):
     ac_tab = wb.sheet_by_name('Advanced Controls')
     f.write("        self.ua = unitadoption.UnitAdoption(ac=self.ac,\n")
     if is_rrs:
-        f.write("            ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,\n")
+        f.write("            ref_total_adoption_units=ref_tam_per_region,\n")
+        f.write("            pds_total_adoption_units=pds_tam_per_region,\n")
     else:
-        f.write("            ref_total_adoption_units=self.tla_per_region, pds_total_adoption_units=self.tla_per_region,\n")
+        f.write("            ref_total_adoption_units=self.tla_per_region,\n")
+        f.write("            pds_total_adoption_units=self.tla_per_region,\n")
         f.write("            electricity_unit_factor=1000000.0,\n")
     f.write("            soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),\n")
     f.write("            soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),\n")
@@ -1127,9 +1209,9 @@ def find_source_data_columns(wb, sheet_name, row):
        Returns:
          The string of Excel columns to use, like 'B:R'
     """
-    ad_tab = wb.sheet_by_name(sheet_name)
-    for col in range(2, ad_tab.ncols):
-        if ad_tab.cell(row, col).value == 'Functional Unit':
+    tab = wb.sheet_by_name(sheet_name)
+    for col in range(2, tab.ncols):
+        if tab.cell(row, col).value == 'Functional Unit':
             break
     return 'B:' + chr(ord('A') + col - 1)
 
@@ -1142,6 +1224,33 @@ def data_sources_equivalent_for_region(region, world):
             if region_filename != world_filename:
                 return False
     return True
+
+
+def find_ad_regions(wb):
+    ad_default = {'World': 44, 'OECD90': 104, 'Eastern Europe': 168, 'Asia (Sans Japan)': 231,
+                  'Middle East and Africa': 294, 'Latin America': 357, 'China': 420, 'India': 484,
+                  'EU': 548, 'USA': 613}
+    ad_microwind = {'World': 44, 'OECD90': 296, 'Eastern Europe': 170, 'Asia (Sans Japan)': 233,
+                  'Middle East and Africa': 359, 'Latin America': 423, 'China': 487, 'India': 613,
+                  'EU': 107, 'USA': 552}
+    ad_afforestation = {'World': 44, 'OECD90': 102, 'Eastern Europe': 164, 'Asia (Sans Japan)': 225,
+                  'Middle East and Africa': 286, 'Latin America': 347, 'China': 408, 'India': 470,
+                  'EU': 530, 'USA': 591}
+    tab = wb.sheet_by_name("Adoption Data")
+    for candidate in [ad_microwind, ad_afforestation]:
+        for region, row in candidate.items():
+            if region == 'World':
+                continue
+            found = False
+            for r in range(row - 10, row + 1):
+                if region.lower() in str(tab.cell(r, 0).value).lower():
+                    found = True
+                    break
+            if not found:
+                break
+        else:
+            return candidate
+    return ad_default
 
 
 def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
@@ -1268,6 +1377,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
          prefix: string to prepend to filenames
     """
     custom_ad_tab = wb.sheet_by_name(sheet_name)
+    defaultinclude = False if 'PDS' in sheet_name else True
 
     assert custom_ad_tab.cell_value(*cell_to_offsets('AN25')) == 'High'
     multipliers = {'high': custom_ad_tab.cell_value(*cell_to_offsets('AO25')),
@@ -1278,7 +1388,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
             continue
         name = normalize_source_name(str(custom_ad_tab.cell(row, 14).value))
         includestr = str(custom_ad_tab.cell_value(row, 18))
-        include = convert_bool(includestr) if includestr else False
+        include = convert_bool(includestr) if includestr else defaultinclude
         filename = get_filename_for_source(name, prefix=prefix)
         if not filename:
             continue
@@ -1287,7 +1397,8 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
             if normalize_source_name(str(custom_ad_tab.cell(row, 1).value)) == name:
                 df = pd.read_excel(wb, engine='xlrd', sheet_name=sheet_name,
                                    header=0, index_col=0, usecols="A:K", skiprows=row + 1, nrows=49)
-                df.rename(mapper={'Middle East & Africa': 'Middle East and Africa'},
+                df.rename(mapper={'Middle East & Africa': 'Middle East and Africa',
+                          'Asia (sans Japan)': 'Asia (Sans Japan)'},
                           axis='columns', inplace=True)
                 if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
                     df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
@@ -1426,8 +1537,13 @@ def output_solution_python_file(outputdir, xl_filename):
     wb = xlrd.open_workbook(filename=xl_filename)
     ac_tab = wb.sheet_by_name('Advanced Controls')
 
-    is_rrs = 'RRS' in xl_filename or 'TAM' in wb.sheet_names()
-    is_land = 'PDLAND' in xl_filename or 'L-Use' in xl_filename or 'AEZ Data' in wb.sheet_names()
+    if ('BIOSEQ' in xl_filename or 'PDLAND' in xl_filename or 'L-Use' in xl_filename or
+            'AEZ Data' in wb.sheet_names()):
+        is_rrs = False
+        is_land = True
+    elif 'RRS' in xl_filename or 'TAM' in wb.sheet_names():
+        is_rrs = True
+        is_land = False
     has_tam = is_rrs
 
     f = open(py_filename, 'w') if py_filename != '-' else sys.stdout
@@ -1536,14 +1652,14 @@ def output_solution_python_file(outputdir, xl_filename):
         write_tam(f=f, wb=wb, outputdir=outputdir)
     elif is_land:
         f.write("        # TLA\n")
-        f.write("        self.ae = aez.AEZ(solution_name=self.name)\n")
+        write_aez(f=f, wb=wb)
         if use_custom_tla:
             f.write("        if self.ac.use_custom_tla:\n")
             f.write("            self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))\n")
             f.write("            custom_world_vals = self.c_tla.get_world_values()\n")
             f.write("        else:\n")
             f.write("            custom_world_vals = None\n")
-            f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(), \n")
+            f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),\n")
             f.write("            custom_world_values=custom_world_vals)\n\n")
         else:
             f.write("        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())\n\n")

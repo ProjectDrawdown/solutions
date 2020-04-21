@@ -278,7 +278,7 @@ class Scenario:
             use_first_pds_datapoint_main=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source,
-            adoption_base_year=2018)
+            adoption_base_year=2018, copy_pds_to_ref=True)
 
         self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=2)
 

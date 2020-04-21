@@ -11,3 +11,5 @@ __pycache__
 
 .tox
 .vscode
+.idea
+geckodriver.log

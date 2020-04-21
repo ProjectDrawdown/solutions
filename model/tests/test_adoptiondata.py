@@ -195,8 +195,16 @@ def test_adoption_low_med_high_with_zero():
             soln_pds_adoption_prognostication_growth='Medium')
     ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
     result = ad.adoption_low_med_high(region='World')
-    # Zero should be dropped for the mean, to match Excel.
+    # Zero should be dropped for the mean, to match Excel behavior.
     assert all(result.loc[:, 'Medium'] == 1.0)
+    # With a single source, zero should not be dropped.
+    ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source='zero',
+            soln_pds_adoption_prognostication_growth='Medium')
+    ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+    result = ad.adoption_low_med_high(region='World')
+    expected = pd.read_csv(str(datadir.joinpath('ad_all_zero.csv')), index_col=0)
+    pd.testing.assert_series_equal(result.loc[:, 'Medium'], expected.loc[:, 'World'],
+            check_names=False, check_exact=True)
 
 
 def test_adoption_with_regional_data():
@@ -431,6 +439,13 @@ def test_regional_data_sources():
     assert result.loc[2019, 'World'] == pytest.approx(15.0)
     assert result.loc[2019, 'OECD90'] == pytest.approx(10.0)
     assert result.loc[2019, 'Latin America'] == pytest.approx(15.0)
+    ac = advanced_controls.AdvancedControls(
+        soln_pds_adoption_prognostication_source='Baseline Cases',
+        soln_pds_adoption_prognostication_growth='Medium')
+    ad = adoptiondata.AdoptionData(ac=ac, data_sources=data_sources, adconfig=g_adconfig)
+    result = ad.adoption_trend_per_region()
+    assert result.loc[2019, 'World'] == pytest.approx(15.0)
+    assert result.loc[2019, 'OECD90'] == pytest.approx(10.0)
 
 
 # SolarPVUtil 'Adoption Data'!X46:Z94

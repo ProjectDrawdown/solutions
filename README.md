@@ -6,7 +6,7 @@
 
 This repository is an in-progress rewrite of the Project Drawdown model engine. This is intended to be a replacement for the series of interconnected Excel spreadsheets currently used by the project to do climate solution modeling. The intention is to create an implementation which will allow us to broaden the use of the climate solution models to policymakers, business leaders, and other decisionmakers and interested parties.
 
-The codebase has some momentum already, has been continuously developed since September of 2018, and implements a substantial portion of the desired functionality. Planned deliverables and current status are listed below. We have also [recorded a video of the goals](https://youtu.be/ZwJFEDVZAfs), which allows demonstration where prototypes exist.
+The codebase has some momentum already, has been continuously developed since September of 2018, and implements a substantial portion of the desired functionality. Planned deliverables and current status are listed below. We have also [recorded a video of the goals](https://youtu.be/Ffmx9KS-fW8), which allows demonstration where prototypes exist.
 
 ---
 
@@ -20,7 +20,7 @@ The codebase has some momentum already, has been continuously developed since Se
 
 + Project Drawdown's solution models were constructed in Excel, with a large number of Excel files now. There are two releases of the Excel models which are relevant to this effort:
     + 2019: released to the public in January 2019
-    + 2020: extended from the 2019 models by a new cohort of researchers, preparing for public release on Feb 20, 2020.
+    + 2020: extended from the 2019 models by a new cohort of researchers, released as The Drawdown Review in March 2020.
 
 ---
 
@@ -96,7 +96,7 @@ The main user interface is a Jupyter Notebook:
 
 To use with [Voilà](https://blog.jupyter.org/and-voil%C3%A0-f6a2c08a4a93):
 ```sh
-(solutions) $ voila --enable_nbextensions=True  --file_whitelist="['.*']" ./VoilaDrawdown.ipynb
+(solutions) $ voila --enable_nbextensions=True --VoilaConfiguration.file_whitelist="['.*\.(png|jpg|gif|svg|csv|json|ico|js)']" ./VoilaDrawdown.ipynb
 ```
 
 ---
