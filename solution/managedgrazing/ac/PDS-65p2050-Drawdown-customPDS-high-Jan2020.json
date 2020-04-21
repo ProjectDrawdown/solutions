@@ -1,56 +1,39 @@
 {
-    "name": "PDS-54p2050-Drawdown-PDScustom-high-Bookedition1",
+    "name": "PDS-65p2050-Drawdown-customPDS-high-Jan2020",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "The current adoption of this solution is based on the country level data available on managed grazing. A weighted approach was used to calculate the global current adoption value. The future adoption of managed grazing is projected based on weighted \"average, medium, and high\" growth rates, calculated based on the available country specific area under managed grazing and the region specific total grazing area (Using Henderson et al 2015 estimates). This scenario derives the result from the \"high of all\" PDS custom adoption scenarios. The results are similar to the Book edition 1 result, so no separate scenario was created for the latter. This edition involves correction of the solution's and conventional net profit margin, estimation of operational cost for the solution and conventional, and adjustment to the custom adoption scenarios to match the result with the Book edition 1. ",
+    "description": "updated results with revised TLA wrt Jan 2020 updated AEZ model",
     "report_start_year": 2020,
     "report_end_year": 2050,
-    "use_custom_tla": false,
+    "use_custom_tla": true,
+    "ref_base_adoption": {
+        "World": 71.6320447618953,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "conv_2014_cost": {
         "value": 0.0,
@@ -58,30 +41,30 @@
     },
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_fixed_oper_cost_per_iunit": {
-        "value": 328.415857769938,
+        "value": 672.40928785835,
         "statistic": "mean"
     },
     "conv_expected_lifetime": 30.0,
     "yield_from_conv_practice": {
-        "value": 3.42857142857143,
+        "value": 2.55643564356436,
         "statistic": "mean"
     },
     "pds_2014_cost": {
-        "value": 136.951306373046,
+        "value": 75.011500894952,
         "statistic": "mean"
     },
     "ref_2014_cost": {
-        "value": 136.951306373046,
+        "value": 75.011500894952,
         "statistic": "mean"
     },
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_fixed_oper_cost_per_iunit": {
-        "value": 3235.02382866437,
+        "value": 626.432886370536,
         "statistic": "mean"
     },
     "soln_expected_lifetime": 30.0,
     "yield_gain_from_conv_to_soln": {
-        "value": 0.1023,
+        "value": 0.214020251036774,
         "statistic": "mean"
     },
     "npv_discount_rate": 0.1,
@@ -114,9 +97,16 @@
     "land_annual_emissons_lifetime": 100.0,
     "conv_annual_energy_used": 0.0,
     "soln_annual_energy_used": 0.0,
-    "seq_rate_global": {
-        "value": 0.578757141543119,
-        "statistic": "mean"
+    "seq_rate_global": NaN,
+    "seq_rate_per_regime": {
+        "Tropical-Humid": 0.665072069621974,
+        "Temperate-Humid": 0.47527858552471,
+        "Boreal-Humid": 0.47527858552471,
+        "Tropical-Semi-Arid": 0.636031128184208,
+        "Temperate-Semi-Arid": 0.626523608292714,
+        "Boreal-Semi-Arid": 0.626523608292714,
+        "Global Arid": 0.0,
+        "Global Arctic": 0.0
     },
     "carbon_not_emitted_after_harvesting": {
         "value": 0.0,
