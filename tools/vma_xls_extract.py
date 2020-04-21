@@ -228,7 +228,7 @@ class VMAReader:
 
             assert col_name == name_to_check, f'unknown VMA column: {name_to_check} on row {row1}'
             idx += 1
-        assert idx == len(col_names), f'columns not present: {idx} != {len(col_names)}'
+        assert idx == len(col_names), f'wrong columns: {idx} != {len(col_names)} at row {row1}'
 
         max_sources = 120
         done = False
