@@ -1,8 +1,8 @@
 Solution,% tla,% world alloc,avg abatement cost,model type,has regional data,ca exceeds alloc,ca exceeds max tla,ca scen exceeds alloc count,ca scen exceeds max tla count,ca scen regions exceed world count,ca scen world exceeds regions count
-afforestation,67.1707243872053,5.756416521434398,2.3264381422690414,core,True,False,False,4,0,0,1
-bamboo,67.62772779062489,2.9164593808703714,5.50277217365158,core,True,False,False,0,0,0,0
+afforestation,100.0,5.756416521434398,2.3441063620721785,core,True,False,False,4,0,0,1
+bamboo,67.62772779062492,2.9164593808703714,5.50277217365158,core,True,False,False,3,0,0,0
 conservationagriculture,51.01233731371465,6.317720007799282,-28.067014490845906,yield,True,False,False,0,0,1,0
-farmlandrestoration,90.66191326874122,2.97335400336174,16.753409339250297,core,False,False,False,0,0,0,0
+farmlandrestoration,90.66191326874122,2.97335400336174,11.323434475220314,core,False,False,False,0,0,0,0
 forestprotection,92.82261256755088,8.496675659518786,-0.0,protect,False,False,False,0,0,0,0
 improvedrice,87.11322037774433,0.8606359894455311,-3.4411664335937586,core,True,False,False,5,0,3,5
 indigenouspeoplesland,95.85229954635274,10.38577868906691,-0.0,protect,False,False,False,0,0,0,0
@@ -14,7 +14,7 @@ peatlands,99.03852328101632,2.957079080830361,-0.0,core,False,False,False,0,0,0,
 perennialbioenergy,93.0397726009988,2.123824288115529,23.010765363203483,core,False,False,False,1,0,0,0
 regenerativeagriculture,71.31869674706621,6.317660007446539,-13.42572289410737,yield,True,False,False,0,0,0,0
 riceintensification,100.0,0.44619757678573857,-0.21293679151628045,yield,False,False,False,0,0,0,0
-silvopasture,59.078159324925544,7.488335317552567,4.835255217612302,yield,True,False,False,2,0,0,0
+silvopasture,100.0,6.596897998661431,10.304592327046942,yield,False,False,False,0,0,0,0
 temperateforests,74.10377705777432,1.5714226231531045,-0.0,core,False,False,False,0,0,0,0
 treeintercropping,99.99999999999999,3.7190390616707973,3.4856400043842255,yield,False,False,False,0,0,0,0
 tropicalforests,85.05551604572568,2.4373497345548163,-0.0,core,False,False,False,0,0,0,0
