@@ -13,6 +13,7 @@ can be updated by running the relevant script in the 'tools' directory.
 import pathlib
 import re
 
+import numpy as np
 import pandas as pd
 from model import dd
 from model.metaclass_cache import MetaclassCache
@@ -61,7 +62,7 @@ class AEZ(object, metaclass=MetaclassCache):
 
            'AEZ Data'!A63:AD70
         """
-        df = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_la_template.csv'), index_col=0)
+        df = pd.DataFrame(np.nan, columns=dd.AEZS, index=self.regimes)
         if self.ignore_allocation:
             self.soln_land_alloc_df = df.fillna(1)
             return

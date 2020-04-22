@@ -828,12 +828,13 @@ def write_aez(f, wb):
     a = wb.sheet_by_name('Land Allocation - Max TLA')
     first_solution = str(a.cell_value(*cell_to_offsets('B18')))
     if first_solution == 'Peatland Protection':
-        cohort = 2019
+        f.write("        self.ae = aez.AEZ(solution_name=self.name, cohort=2020,\n")
+        f.write("                regimes=dd.THERMAL_MOISTURE_REGIMES8)\n")
     elif first_solution == 'Forest Protection':
-        cohort = 2018
+        f.write("        self.ae = aez.AEZ(solution_name=self.name, cohort=2018)\n")
     else:
         raise ValueError('cannot determine AEZ Land Allocation to use')
-    f.write(f"        self.ae = aez.AEZ(solution_name=self.name, cohort={cohort})\n")
+
 
 def write_ad(f, wb, outputdir):
     """Generate the Adoption Data section of a solution.
@@ -1196,7 +1197,8 @@ def write_c2_c4(f, is_rrs=True, is_protect=False, has_harvest=False):
             f.write("            ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),\n")
         if has_harvest:
             f.write("            annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),\n")
-        f.write("            regime_distribution=self.ae.get_land_distribution())\n")
+        f.write("            regime_distribution=self.ae.get_land_distribution(),\n")
+        f.write("            regimes=dd.THERMAL_MOISTURE_REGIMES8)\n")
     f.write("\n")
 
 

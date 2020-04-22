@@ -661,7 +661,7 @@ class AdvancedControls:
     yield_from_conv_practice: typing.Any = dataclasses.field(default=None, metadata={
         'vma_titles': ['Yield from CONVENTIONAL Practice'],
         'subtitle': '(kg / ha /yr)',
-        'tooltip': ("Yield  from CONVENTIONAL Practice"),
+        'tooltip': ("Yield from CONVENTIONAL Practice"),
         'excelref': '"Advanced Controls"!G77 (Land models)',
         })
 

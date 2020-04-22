@@ -1,36 +1,36 @@
 Solution,RegionalFractionTAM,RegionalFractionAdoption,Rvalue
-afforestation:PDS-65p2050-drawdown-customPDS-30Jan2020,,0.547197976206871,0.9610374079523193
-afforestation:PDS-100p2050-Drawdown-CustomPDS-high-Aug2019,,0.6653632003908976,0.9876861702761794
-afforestation:PDS-65p2050-Drawdown-CustomPDS-high0.5stdv-Jan2020,,0.547197976206871,0.9610374079523193
-afforestation:PDS-87p2050-plausible-avg-aug,,0.5109580332072814,0.9929743267693087
-afforestation:PDS-69p2050-Drawdown-PDSCustom-avg-Nov2019,,0.45107002324224904,0.9783451788413421
-afforestation:PDS-100p2050-Optimum-CustomPDS-HighgrowthKreidenweis-July2018,,0.0,0.8779787579478744
-afforestation:PDS-84p2050-Plausible-PDScustom-low-BookVersion1,,0.12441681954074037,0.9136723667832801
-afforestation:PDS-100p2050-Drawdown-CustomPDS-High-July2019,,0.6653632003908976,0.9876861702761794
-afforestation:PDS-100p2050-Optimum-PDScustom-high-kreidnweis-Aug2019,,0.0,0.8779787579478744
-afforestation:PDS-62p2050-Plausible-PDSCustom-low-Nov2019,,0.13457144019197373,0.16317104131610133
-afforestation:PDS-99p2050-Drawdown-Optimum-PDScustom-high-BookVersion1,,0.6653632003908976,0.9883952876629035
-afforestation:PDS-57p2050-Plausible-CustomPDS-Avg-Jan2020,,0.45107002324224904,0.9783451788413421
-afforestation:PDS-57p2050-Plausible-cusomPDS-avg-30Jan2020,,0.45107002324224904,0.9783451788413421
-afforestation:PDS-82p2050-Optimum-PDSCustom-high-Nov2019,,0.547197976206871,0.9610374079523193
+afforestation:PDS-65p2050-drawdown-customPDS-30Jan2020,,0.6099198119219646,0.9610374079523193
+afforestation:PDS-100p2050-Drawdown-CustomPDS-high-Aug2019,,0.6099198119219646,0.9614664896190777
+afforestation:PDS-65p2050-Drawdown-CustomPDS-high0.5stdv-Jan2020,,0.6099198119219646,0.9610374079523193
+afforestation:PDS-87p2050-plausible-avg-aug,,0.5028127009792347,0.9783605370857195
+afforestation:PDS-69p2050-Drawdown-PDSCustom-avg-Nov2019,,0.5028127009792347,0.9783451788413421
+afforestation:PDS-100p2050-Optimum-CustomPDS-HighgrowthKreidenweis-July2018,,0.0,0.9284417532304144
+afforestation:PDS-84p2050-Plausible-PDScustom-low-BookVersion1,,0.15016554890205916,0.0918377017937475
+afforestation:PDS-100p2050-Drawdown-CustomPDS-High-July2019,,0.6099198119219646,0.9614664896190777
+afforestation:PDS-100p2050-Optimum-PDScustom-high-kreidnweis-Aug2019,,0.0,0.9284417532304144
+afforestation:PDS-62p2050-Plausible-PDSCustom-low-Nov2019,,0.15016554890205916,0.16317104131610133
+afforestation:PDS-99p2050-Drawdown-Optimum-PDScustom-high-BookVersion1,,0.6099198119219646,0.9616948975802435
+afforestation:PDS-57p2050-Plausible-CustomPDS-Avg-Jan2020,,0.5028127009792347,0.9783451788413421
+afforestation:PDS-57p2050-Plausible-cusomPDS-avg-30Jan2020,,0.5028127009792347,0.9783451788413421
+afforestation:PDS-82p2050-Optimum-PDSCustom-high-Nov2019,,0.6099198119219646,0.9610374079523193
 airplanes:PDS1-68p2050_14.9% Efficiency (Book Ed.1),0.0,0.0,0.9237175225431983
 airplanes:PDS2-73p2050_3rd Manufacturer+Retrofit (Book Ed.1),0.0,0.0,0.9366046638662329
 airplanes:PDS3-73p2050_3rd Manufacturer+Retrofit+18% (Book Ed.1),0.0,0.0,0.9366046638662329
 "altcement:PDS1,2,3-19p2050-Availability Analysis (Book Ed.1)",0.9890652701340027,0.9999999999999998,
-bamboo:PDS-61p2050-Drawdown-PDSCustom-high-Nov2019,,0.23233184333286605,0.9985446336401138
-bamboo:PDS-41p2050-Plausible-CustomPDS-avg-aug2019,,0.4166238763297502,0.9984029957535964
-bamboo:PDS-28p2050-Plausible-customPDS-avg-Jan2020,,0.2927866488769046,0.9991967237316343
-bamboo:PDS-66p2050-Drawdown-CustomPDS-High-July2019,,0.40947893184908296,0.9990241547917424
-bamboo:PDS-69p2050-Optimum-PDScustom-high-BookVersion1,,0.40947893184908296,0.999136326330189
-bamboo:PDS-38p2050-Plausible-PDScustom-high growth-BookVersion1,,1.0000000000000002,0.9995844698637026
-bamboo:PDS-41p2050-Plausible-CustomPDS-Avg-July2019,,0.4166238763297502,0.9984029957535964
-bamboo:PDS-34p2050-Plausible-PDSCustom-avg-Nov2019,,0.2927866488769046,0.9991967237316343
+bamboo:PDS-61p2050-Drawdown-PDSCustom-high-Nov2019,,0.15752975025777613,0.9985446336401138
+bamboo:PDS-41p2050-Plausible-CustomPDS-avg-aug2019,,0.2070091889602229,0.9991114868044173
+bamboo:PDS-28p2050-Plausible-customPDS-avg-Jan2020,,0.20700918896022302,0.9991967237316343
+bamboo:PDS-66p2050-Drawdown-CustomPDS-High-July2019,,0.15752975025777605,0.9985137490248348
+bamboo:PDS-69p2050-Optimum-PDScustom-high-BookVersion1,,0.15752975025777605,0.9985828926122994
+bamboo:PDS-38p2050-Plausible-PDScustom-high growth-BookVersion1,,0.667628725967543,0.9995844698637026
+bamboo:PDS-41p2050-Plausible-CustomPDS-Avg-July2019,,0.2070091889602229,0.9991114868044173
+bamboo:PDS-34p2050-Plausible-PDSCustom-avg-Nov2019,,0.20700918896022302,0.9991967237316343
 bamboo:PDS-85p2050-Optimum-PDSCustom-max-Nov2019,,0.0,0.9979103239209609
-bamboo:PDS-85p2050-Optimum-CustomPDS-max-aug2019,,0.0,0.9983108932761194
-bamboo:PDS-47p2050-Drawdown-PDScustom-avg-BookVersion1,,0.4166238763297502,0.9986076574694237
-bamboo:PDS-66p2050-Drawdown-CustomPDS-high-aug2019,,0.40947893184908296,0.9990241547917424
-bamboo:PDS-57p2050-Drawdown-customPDS-high-Jan2020,,0.23233184333286605,0.9985446336401138
-bamboo:PDS-85p2050-Optimum-CustomPDS-Max-July2019,,0.0,0.9983108932761194
+bamboo:PDS-85p2050-Optimum-CustomPDS-max-aug2019,,0.0,0.997884632021835
+bamboo:PDS-47p2050-Drawdown-PDScustom-avg-BookVersion1,,0.2070091889602229,0.9992096177839698
+bamboo:PDS-66p2050-Drawdown-CustomPDS-high-aug2019,,0.15752975025777605,0.9985137490248348
+bamboo:PDS-57p2050-Drawdown-customPDS-high-Jan2020,,0.15752975025777613,0.9985446336401138
+bamboo:PDS-85p2050-Optimum-CustomPDS-Max-July2019,,0.0,0.997884632021835
 bikeinfrastructure:PDS1-5p2050-Based on ITDP/UCD (Book Ed.1),0.0,0.0,0.9814878707504631
 bikeinfrastructure:PDS3-10p2050-Only Ice Car users as conventional (Book Ed.1),0.0,0.0,1.0
 bikeinfrastructure:PDS2-8p2050-Based on Several Sources (Book Ed.1),0.0,0.0,0.9907295125188489
@@ -95,17 +95,19 @@ electricbikes:PDS2-5p2050_Based on ITDP/UCD (Book Ed.1),0.6501258118270206,0.0,0
 electricvehicles:PDS2-30p2050-Based on IEA (2012 ETP) (Book Ed.1),0.0,0.0,0.9131200688175674
 electricvehicles:PDS3-40p2050-Based on IEA (2012 ETP)+Double Occu (Book Ed.1),0.0,0.0,0.9533524650056616
 electricvehicles:PDS1-16p2050-Based on IEA 2DS (Book Ed.1),0.0,0.0,0.960852061535761
-farmlandrestoration:PDS-92p2050-Optimum-20190424,,0.0,0.9966828864396111
-farmlandrestoration:PDS-65p2050-Drawdown-20190424,,0.0,0.9980213292909015
-farmlandrestoration:PDS-51p2050-Plauisble-customPDS-avg-29Jan2020,,0.0,0.9978341234066579
-farmlandrestoration:PDS-71p2050-Drawdown-CustomPDS-avg-aug2019,,0.0,0.9980213292909015
-farmlandrestoration:PDS-37p2050-Plausible-20190424,,0.0,0.9973786941187963
-farmlandrestoration:PDS-94p2050-Optimum-CustomPDS-high-aug2019,,0.0,0.9966828864396111
-farmlandrestoration:PDS-37p2050-Plausible-PDSCustom-avg-Nov2019,,0.0,0.9953902502467401
-farmlandrestoration:PDS-80p2050-Drawdown-customPDS-high-29Jan2020,,0.0,0.995981491613834
-farmlandrestoration:PDS-65p2050-Drawdown-PDSCustom-avg-Nov2019,,0.0,0.9978341234066579
-farmlandrestoration:PDS-47p2050-Plausible-CustomPDS-low-aug2019,,0.0,0.9973786941187963
-farmlandrestoration:PDS-92p2050-Optimum-PDSCustom-high-Nov2019,,0.0,0.995981491613834
+farmlandrestoration:PDS-92p2050-Optimum-20190424,,0.0,0.9959814916138341
+farmlandrestoration:PDS-87p2050-Optimum-PDScustom-high-BookVersion1,,0.0,0.9941188694304364
+farmlandrestoration:PDS-65p2050-Drawdown-20190424,,0.0,0.9978341234066577
+farmlandrestoration:PDS-51p2050-Plauisble-customPDS-avg-29Jan2020,,0.0,0.9978341234066577
+farmlandrestoration:PDS-71p2050-Drawdown-CustomPDS-avg-aug2019,,0.0,0.9978341234066577
+farmlandrestoration:PDS-37p2050-Plausible-20190424,,0.0,0.9953902502467405
+farmlandrestoration:PDS-94p2050-Optimum-CustomPDS-high-aug2019,,0.0,0.9959814916138341
+farmlandrestoration:PDS-52p2050-Drawdown-PDScustom-avg-BookVersion1,,0.0,0.9953650353174794
+farmlandrestoration:PDS-37p2050-Plausible-PDSCustom-avg-Nov2019,,0.0,0.9953902502467405
+farmlandrestoration:PDS-80p2050-Drawdown-customPDS-high-29Jan2020,,0.0,0.9959814916138341
+farmlandrestoration:PDS-65p2050-Drawdown-PDSCustom-avg-Nov2019,,0.0,0.9978341234066577
+farmlandrestoration:PDS-47p2050-Plausible-CustomPDS-low-aug2019,,0.0,0.9953902502467405
+farmlandrestoration:PDS-92p2050-Optimum-PDSCustom-high-Nov2019,,0.0,0.9959814916138341
 forestprotection:PDS-87p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9195468536979597
 forestprotection:PDS-89p2050-Drawdown-PDScustom-aggmax-Bookedition1,,0.0,0.8419295689979969
 forestprotection:PDS-92p2050-Optimum-PDScustom-high-Bookedition1,,0.0,0.7633818895973588
@@ -153,9 +155,17 @@ leds_commercial:PDS2-90p2050-E18.2%-Linear 90% (Book Ed.1),1.2171826193031983,1.
 leds_residential:PDS1-90p2050-linear (Book Ed.1),1.1017575492219833,1.1017575492219833,0.9999990310274217
 leds_residential:PDS3-100p2050-linear (Book Ed.1),1.1017575492219833,1.1017575492219833,0.9972825596667373
 leds_residential:PDS2-95p2050-linear (Book Ed.1),1.1017575492219833,1.1017575492219833,0.9993533436688251
-managedgrazing:PDS-62p2050-Optimum-PDScustom-high2s-Bookedition1,,0.7738184241846555,0.9439969291003405
-managedgrazing:PDS-46p2050-Plausible-PDScustom-avg-Bookedition1,,0.8297811093857542,0.9784201796455237
-managedgrazing:PDS-54p2050-Drawdown-PDScustom-high-Bookedition1,,0.7738184241846555,0.9439969291003405
+managedgrazing:PDS-62p2050-Optimum-BookVersion1-High2S,,0.6459804012895475,0.9934812824948148
+managedgrazing:PDS-43p2050-Plausible-customPDS-avg-Jan2020,,0.5041441795466609,0.9960632665886127
+managedgrazing:PDS-54p2050-Plausible-CustomPDS-avg-aug2019,,0.5041441795466609,0.9960632665886127
+managedgrazing:PDS-100p2050-Optimum-PDSCustom-futuremax-Nov2019,,0.0,0.993117250103869
+managedgrazing:PDS-54p2050-Drawdown-Book Version1-High,,0.6459804012895475,0.9934812824948148
+managedgrazing:PDS-55p2050-Plausible-PDSCustom-avg-Nov2019,,0.5041441795466609,0.9960632665886127
+managedgrazing:PDS-76p2050-Drawdown-PDSCustom-high-Nov2019,,0.645666904547142,0.9935693295499912
+managedgrazing:PDS-46p2050-Plausible-Book Version1-Avg,,0.5034336305583438,0.9958391117932152
+managedgrazing:PDS-100p2050-Optimum-CustomPDS-futuremax-aug2019,,0.0,0.993117250103869
+managedgrazing:PDS-97p2050-Drawdown-CustomPDS-high-aug2019,,0.645666904547142,0.9935693295499912
+managedgrazing:PDS-65p2050-Drawdown-customPDS-high-Jan2020,,0.645666904547142,0.9935693295499912
 masstransit:PDS1-21p2050-based on IEA (Book Ed.1),0.6400848029234245,0.0,0.9946006626342533
 masstransit:PDS2-35p2050-based on ITDP/UCD (Book Ed.1),0.6400848029234245,0.0,0.9981286918119617
 masstransit:PDS3-45p2050-linear (Book Ed.1),0.6400848029234245,0.6400848029234245,1.0
@@ -222,9 +232,18 @@ riceintensification:PDS-100p2050-Optimum-PDScustom-high-BookEdition1,,0.0,0.8372
 ships:PDS3-100p2050-Lowest EEOI (Book Ed.1),0.0,0.0,0.9842934729175642
 ships:PDS1-97p2050-Mean EEOI (Book Ed.1),0.0,0.0,0.9724283454965719
 ships:PDS2-100p2050-1 SD Below Mean EEOI (Book Ed.1),0.0,0.0,0.9820682230087809
-silvopasture:PDS-54p2050-Optimum-PDScustom-high0.5SD-Bookedition1,,1.0262074170852797,0.964567766883934
-silvopasture:PDS-54p2050-Drawdown-PDScustom-high-basedonpasture-Bookedition1,,0.0,0.9997531314884891
-silvopasture:PDS-45p2050-Plausible-PDScustom-low-Bookedition1,,1.202321842386076,0.9993720565631793
+silvopasture:PDS-88p2050-Plausible-customPDS-low-Jan2020,,0.0,0.9952332623475775
+silvopasture:PDS-99p2050-Optimum-PDSCustom-high-Nov2019,,0.0,0.9287972934404575
+silvopasture:PDS-54p2050-Optimum-PDScustom-high0.5SD-BookVersion1,,0.0,0.9485838913177393
+silvopasture:PDS-94p2050-Drawdown-customPDS-avg-Jan2020,,0.0,0.9768877790594601
+silvopasture:PDS-77p2050-Plausible-CustomPDS-Avg-July2019,,0.0,0.9903680034157334
+silvopasture:PDS-100p2050-Optimum-customPDS-high-Jan2020,,0.0,0.9287972934404575
+silvopasture:PDS-81p2050-Drawdown-CustomPDS-Medium-July2019,,0.0,0.9967591980713717
+silvopasture:PDS-91p2050-Drawdown-PDSCustom-avg-Nov2019,,0.0,0.9768877790594601
+silvopasture:PDS-84p2050-Optimum-CustomPDS-High-July2019,,0.0,0.9543969905740107
+silvopasture:PDS-45p2050-Plausible-PDScustom-low-BookVersion1,,0.0,0.7628405067737323
+silvopasture:PDS-54p2050-Drawdown-PDScustom-high-basedonpasture-BookVersion1,,0.0,0.8213905539610923
+silvopasture:PDS-83p2050-Plausible-PDSCustom-low-Nov2019,,0.0,0.9952332623475775
 smartglass:PDS2-48p2050-EE21.3% based on Navigant (Book Ed.1),0.0,0.0,0.9013181423243413
 smartglass:PDS3-75p2050-EE21.3% based on Navigant (Book Ed.1),0.0,0.0,0.9374059384695885
 smartglass:PDS1-29p2050-EE21.3% based on Navigant (Book Ed.1),0.0,0.0,0.9032859808555163
