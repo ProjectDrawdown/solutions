@@ -108,13 +108,11 @@ class TestVMAFromXlsx:
 
 def test_check_fixed_summary():
     # Check that None/NaN values give an empty result
-    assert vma.check_fixed_summary((None, None, None)) is None
-    assert vma.check_fixed_summary([None, 1.1, 50]) is None
-    assert vma.check_fixed_summary((-4.3, np.nan, 50)) is None
-    assert vma.check_fixed_summary([-4.3, 1.1, np.nan]) is None
+    assert vma.check_fixed_summary(None, None, None) is None
+    assert vma.check_fixed_summary(None, 1.1, 50) is None
+    assert vma.check_fixed_summary(-4.3, np.nan, 50) is None
     # Check that we get a tuple of the given values back
-    assert vma.check_fixed_summary([-4.3, 1.1, 50]) == (-4.3, 1.1, 50)
-    assert vma.check_fixed_summary((-4.3, 1.1, 50)) == (-4.3, 1.1, 50)
+    assert vma.check_fixed_summary(-4.3, 1.1, 50) == (-4.3, 1.1, 50)
 
 
 def test_source_data():

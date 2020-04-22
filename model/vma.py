@@ -30,16 +30,15 @@ def populate_fixed_summaries(vma_dict, filename):
         fixed_mean = row.get('Fixed Mean', np.nan)
         fixed_high = row.get('Fixed High', np.nan)
         fixed_low = row.get('Fixed Low', np.nan)
-        fixed_summary = check_fixed_summary([fixed_mean, fixed_high, fixed_low])
+        fixed_summary = check_fixed_summary(fixed_mean, fixed_high, fixed_low)
         if fixed_summary is not None:
             vma_dict[title].fixed_summary = fixed_summary
 
 
-def check_fixed_summary(values):
+def check_fixed_summary(*values):
     """Checks that there are no NaN/None values in the given summary.
     Arguments:
-        values: iterable (generally floats of length 3, but that doesn't
-            matter to the function)
+        values: individually given values, e.g. check_fixed(1, 2, None)
     Returns:
         None if any value is NaN/None, otherwise a tuple of the given iterable
     """
@@ -60,16 +59,15 @@ class VMA:
     """Meta-analysis of multiple data sources to a summary result.
        Arguments:
          filename: (string, pathlib.Path, or io.StringIO) Can be either
-           * a CSV file or xlsx/xslm containing data sources. The CSV file must
+           * Path to a CSV file containing data sources. The CSV file must
              contain columns named "Raw Data Input", "Weight", and "Original
              Units". It can contain additional columns, which will be ignored.
            * The xlsx/xlsm file needs to have columns structured in a certain
              way, see VMAReader.df_template for more information.
            * io.StringIO objects are processed as if they are opened CSV files
          title: string, name of the VMA to extract from an Excel file. This
-           value is unused if filename is a CSV, and can be passed in as None.
-           Will raise an AssertionError if the title is not available in the
-           Excel file.
+           value is unused if filename is a CSV. Will raise an AssertionError
+           if the title is not available in the Excel file.
          low_sd: number of multiples of the stddev to use for the low result.
          high_sd: number of multiples of the stddev to use for the high result.
          discard_multiplier: discard outlier values more than this many multiples of the
@@ -164,15 +162,15 @@ class VMA:
         self._convert_from_human_readable(xl_df)
 
         # Populate the self.fixed_summary field if the values are valid
-        fixed_summary = check_fixed_summary(summary)
+        fixed_summary = check_fixed_summary(*summary)
         if fixed_summary is not None:
             self.fixed_summary = fixed_summary
 
     def _convert_from_human_readable(self, readable_df):
         """
         Converts a known set of readable column names to a known column set. A
-        few data cleanups are also performed, such as doing converting
-        percentages and filling NaN values.
+        few data cleanups are also performed, such as converting percentages
+        and filling NaN values.
 
         Arguments:
             readable_df: dataframe (from CSV or Excel file) using the standard
