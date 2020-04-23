@@ -161,7 +161,7 @@ class Scenario:
         # Max land Expected total land commited under Bonn Challenge and NY Declaration 
         max_land = 350.0
 
-        # Mha of current commitments in temperate thermal moistrue regime
+        # Mha of current commitments in temperate thermal moisture regime
         committed_mha = bonn_mha * temperate_percent
 
         # Mha of total degraded land available for new commitments in
@@ -181,13 +181,14 @@ class Scenario:
 
         ca_pds_data_sources = [
             {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, (Charlotte Wheeler, 2016)', 'include': True,
-                # "The adoption scenarios are calculated using the linear trendline based
-                # on: (1) Current commitments to date, (2) Potential future commitments,
-                # (3) The proportion of committee land restored to intact forest (100% or 44.23%),
-                # and (4) The year commitments are realised (2030, 2045 or 2060).  In this
-                # scenario, NYDF prediction for max area available for temperate forest
-                # restoration, 100% new commitment for intact forest and year 2030 was
-                # considered when the commitments will be realized. 
+                'description': (
+                    'The adoption scenarios are calculated using the linear trendline based '
+                    'on: (1) Current commitments to date, (2) Potential future commitments, (3) '
+                    'The proportion of committee land restored to intact forest (100% or 44.23%), '
+                    'and (4) The year commitments are realised (2030, 2045 or 2060).  In this '
+                    'scenario, NYDF prediction for max area available for temperate forest '
+                    'restoration, 100% new commitment for intact forest and year 2030 was '
+                    'considered when the commitments will be realized.'),
                 'maximum': intact_mha,
                 'datapoints': pd.DataFrame([
                     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -195,13 +196,14 @@ class Scenario:
                     [2031, ds1_2030, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Optimistic-Achieve Commitment in 15 years w/ 100% intact, WRI estimates (Charlotte Wheeler, 2016)', 'include': True,
-                # The adoption scenarios are calculated using the linear trendline based
-                # on: (1) Current commitments to date, (2) Potential future commitments,
-                # (3) The proportion of committee land restored to intact forest (100% or 44.23%),
-                # and (4) The year commitments are realised (2030, 2045 or 2060). In this
-                # scenario, WRI prediction for max area available for temperate forest
-                # restoration, 100% new commitment for intact forest and year 2030 was
-                # considered when the commitments will be realized.
+                'description': (
+                    'The adoption scenarios are calculated using the linear trendline based '
+                    'on: (1) Current commitments to date, (2) Potential future commitments, (3) '
+                    'The proportion of committee land restored to intact forest (100% or 44.23%), '
+                    'and (4) The year commitments are realised (2030, 2045 or 2060). In this '
+                    'scenario, WRI prediction for max area available for temperate forest '
+                    'restoration, 100% new commitment for intact forest and year 2030 was '
+                    'considered when the commitments will be realized. '),
                 'maximum': intact_mha,
                 'datapoints': pd.DataFrame([
                     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -209,13 +211,14 @@ class Scenario:
                     [2031, future_mha_100p, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Conservative-Achieve Commitment in 15 years w/ 44.2% intact, (Charlotte Wheeler,2016)', 'include': True,
-                # The adoption scenarios are calculated using the linear trendline based
-                # on: (1) Current commitments to date, (2) Potential future commitments,
-                # (3) The proportion of committee land restored to intact forest (100% or 44.23%),
-                # and (4) The year commitments are realised (2030, 2045 or 2060). In this
-                # scenario, WRI prediction for max area available for temperate forest
-                # restoration, 44.23% new commitment for intact forest and year 2030 was
-                # considered when the commitments will be realized.
+                'description': (
+                    'The adoption scenarios are calculated using the linear trendline based '
+                    'on: (1) Current commitments to date, (2) Potential future commitments, (3) '
+                    'The proportion of committee land restored to intact forest (100% or 44.23%), '
+                    'and (4) The year commitments are realised (2030, 2045 or 2060). In this '
+                    'scenario, WRI prediction for max area available for temperate forest '
+                    'restoration, 44.23% new commitment for intact forest and year 2030 was '
+                    'considered when the commitments will be realized. '),
                 'maximum': intact_mha,
                 'datapoints': pd.DataFrame([
                     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -223,27 +226,29 @@ class Scenario:
                     [2031, future_mha_44p, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Conservative-Achieve Commitment in 15 years w/ 44.2% intact with continued growth post-2030, (Charlotte Wheeler,2016)', 'include': True,
-                # The adoption scenarios are calculated using the linear trendline based
-                # on: (1) Current commitments to date, (2) Potential future commitments,
-                # (3) The proportion of committee land restored to intact forest (100% or 44.23%),
-                # and (4) The year commitments are realised (2030, 2045 or 2060). In this
-                # scenario, WRI prediction for max area available for temperate forest
-                # restoration, 44.23% new commitment for intact forest and year 2030 was
-                # considered when the commitments will be realized, with continued growth
-                # in post 2030.
+                'description': (
+                    'The adoption scenarios are calculated using the linear trendline based '
+                    'on: (1) Current commitments to date, (2) Potential future commitments, (3) '
+                    'The proportion of committee land restored to intact forest (100% or 44.23%), '
+                    'and (4) The year commitments are realised (2030, 2045 or 2060). In this '
+                    'scenario, WRI prediction for max area available for temperate forest '
+                    'restoration, 44.23% new commitment for intact forest and year 2030 was '
+                    'considered when the commitments will be realized, with continued growth '
+                    'in post 2030.'),
                 'maximum': intact_mha,
                 'datapoints': pd.DataFrame([
                     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     [2030, future_mha_44p, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Conservative-Achieve Commitment in 30 years w/ 100% intact, (Charlotte Wheeler,2016)', 'include': True,
-                # The adoption scenarios are calculated using the linear trendline based
-                # on: (1) Current commitments to date, (2) Potential future commitments,
-                # (3) The proportion of committee land restored to intact forest (100% or 44.23%),
-                # and (4) The year commitments are realised (2030, 2045 or 2060). In this
-                # scenario, WRI prediction for max area available for temperate forest
-                # restoration, 100% new commitment for intact forest and year 2045 was
-                # considered when the commitments will be realized.
+                'description': (
+                    'The adoption scenarios are calculated using the linear trendline based '
+                    'on: (1) Current commitments to date, (2) Potential future commitments, (3) '
+                    'The proportion of committee land restored to intact forest (100% or 44.23%), '
+                    'and (4) The year commitments are realised (2030, 2045 or 2060). In this '
+                    'scenario, WRI prediction for max area available for temperate forest '
+                    'restoration, 100% new commitment for intact forest and year 2045 was '
+                    'considered when the commitments will be realized. '),
                 'maximum': intact_mha,
                 'datapoints': pd.DataFrame([
                     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -251,13 +256,14 @@ class Scenario:
                     [2046, future_mha_100p, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Conservative-Achieve Commitment in 30 years w/ 44.2% intact, (Charlotte Wheeler,2016)', 'include': True,
-                # The adoption scenarios are calculated using the linear trendline based
-                # on: (1) Current commitments to date, (2) Potential future commitments,
-                # (3) The proportion of committee land restored to intact forest (100% or 44.23%),
-                # and (4) The year commitments are realised (2030, 2045 or 2060). In this
-                # scenario, WRI prediction for max area available for temperate forest
-                # restoration, 44.23% new commitment for intact forest and year 2045 was
-                # considered when the commitments will be realized.
+                'description': (
+                    'The adoption scenarios are calculated using the linear trendline based '
+                    'on: (1) Current commitments to date, (2) Potential future commitments, (3) '
+                    'The proportion of committee land restored to intact forest (100% or 44.23%), '
+                    'and (4) The year commitments are realised (2030, 2045 or 2060). In this '
+                    'scenario, WRI prediction for max area available for temperate forest '
+                    'restoration, 44.23% new commitment for intact forest and year 2045 was '
+                    'considered when the commitments will be realized. '),
                 'maximum': intact_mha,
                 'datapoints': pd.DataFrame([
                     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -265,40 +271,43 @@ class Scenario:
                     [2046, future_mha_44p, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Conservative-Achieve Commitment in 30 years w/ 44.2% intact with continued growth, (Charlotte Wheeler,2016)', 'include': True,
-                # The adoption scenarios are calculated using the linear trendline based
-                # on: (1) Current commitments to date, (2) Potential future commitments,
-                # (3) The proportion of committee land restored to intact forest (100% or 44.23%),
-                # and (4) The year commitments are realised (2030, 2045 or 2060). In this
-                # scenario, WRI prediction for max area available for temperate forest
-                # restoration, 44.23% new commitment for intact forest and year 2045 was
-                # considered when the commitments will be realized, with continued growth
-                # in post 2045.
+                'description': (
+                    'The adoption scenarios are calculated using the linear trendline based '
+                    'on: (1) Current commitments to date, (2) Potential future commitments, (3) '
+                    'The proportion of committee land restored to intact forest (100% or 44.23%), '
+                    'and (4) The year commitments are realised (2030, 2045 or 2060). In this '
+                    'scenario, WRI prediction for max area available for temperate forest '
+                    'restoration, 44.23% new commitment for intact forest and year 2045 was '
+                    'considered when the commitments will be realized, with continued growth '
+                    'in post 2045. '),
                 'maximum': intact_mha,
                 'datapoints': pd.DataFrame([
                     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     [2045, future_mha_44p, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Conservative-Achieve Commitment in 45 years w/ 100% intact (Charlotte Wheeler,2016)', 'include': True,
-                # The adoption scenarios are calculated using the linear trendline based
-                # on: (1) Current commitments to date, (2) Potential future commitments,
-                # (3) The proportion of committee land restored to intact forest (100% or 44.23%),
-                # and (4) The year commitments are realised (2030, 2045 or 2060). In this
-                # scenario, WRI prediction for max area available for temperate forest
-                # restoration, 100% new commitment for intact forest and year 2060 was
-                # considered when the commitments will be realized.
+                'description': (
+                    'The adoption scenarios are calculated using the linear trendline based '
+                    'on: (1) Current commitments to date, (2) Potential future commitments, (3) '
+                    'The proportion of committee land restored to intact forest (100% or 44.23%), '
+                    'and (4) The year commitments are realised (2030, 2045 or 2060). In this '
+                    'scenario, WRI prediction for max area available for temperate forest '
+                    'restoration, 100% new commitment for intact forest and year 2060 was '
+                    'considered when the commitments will be realized. '),
                 'maximum': intact_mha,
                 'datapoints': pd.DataFrame([
                     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     [2060, future_mha_100p, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                     ], columns=ca_pds_columns).set_index('Year')},
             {'name': 'Conservative-Achieve Commitment in 45 years w/ 44.2% intact (Charlotte Wheeler,2016)', 'include': True,
-                # The adoption scenarios are calculated using the linear trendline based
-                # on: (1) Current commitments to date, (2) Potential future commitments,
-                # (3) The proportion of committee land restored to intact forest (100% or 44.23%),
-                # and (4) The year commitments are realised (2030, 2045 or 2060). In this
-                # scenario, WRI prediction for max area available for temperate forest
-                # restoration, 44.23% new commitment for intact forest and year 2060 was
-                # considered when the commitments will be realized.
+                'description': (
+                    'The adoption scenarios are calculated using the linear trendline based '
+                    'on: (1) Current commitments to date, (2) Potential future commitments, (3) '
+                    'The proportion of committee land restored to intact forest (100% or 44.23%), '
+                    'and (4) The year commitments are realised (2030, 2045 or 2060). In this '
+                    'scenario, WRI prediction for max area available for temperate forest '
+                    'restoration, 44.23% new commitment for intact forest and year 2060 was '
+                    'considered when the commitments will be realized. '),
                 'maximum': intact_mha,
                 'datapoints': pd.DataFrame([
                     [2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],

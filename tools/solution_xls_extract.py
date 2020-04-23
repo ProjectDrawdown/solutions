@@ -19,6 +19,7 @@ import os.path
 import pathlib
 import re
 import sys
+import textwrap
 import unicodedata
 import warnings
 
@@ -927,7 +928,13 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
     f.write(f"        ca_{case.lower()}_data_sources = [\n")
 
     for s in scenarios:
-        f.write("            {'name': '" + s['name'].strip() + "', 'include': " + str(s['include']) + ",\n")
+        f.write(f"            {{'name': '{s['name'].strip()}', 'include': {str(s['include'])},\n")
+        description = s['description'].replace("'", "")
+        lines = textwrap.wrap(s['description'], width=75)
+        f.write(f"                'description': (\n")
+        for line in lines:
+            f.write(f"                    '{line} '\n")
+        f.write(f"                    ),\n")
         f.write(f"                'filename': THISDIR.joinpath('ca_{case.lower()}_data', '{s['filename']}')}},\n")
     f.write("        ]\n")
 
@@ -1405,9 +1412,11 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
                 if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
                     df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
                     skip = False
+                description = str(custom_ad_tab.cell_value(row, 13))
                 break
         if not skip:
-            scenarios.append({'name': name, 'filename': filename, 'include': include})
+            scenarios.append({'name': name, 'filename': filename, 'include': include,
+                'description': description})
     return scenarios, multipliers
 
 
