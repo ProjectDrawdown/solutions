@@ -263,12 +263,14 @@ solarpvutil:PDS-20p2050-Plausible2020,1.0990576040386826,0.0,0.9429749102961813
 telepresence:PDS1-16p2050-Average Predicted Adoption (Book Ed.1),0.0,0.0,0.983683610317763
 telepresence:PDS3-49p2050-50% Adoption (Book Ed.1),0.0,0.0,0.9927398173086593
 telepresence:PDS2-29p2050-Maximum Prediction (Book Ed.1),0.0,0.0,0.9768936324185968
-temperateforests:PDS-74p2050-Optimum-PDScustomadoption-max,,0.0,0.7928126296921498
-temperateforests:PDS-73p2050-Drawdown-PDScustom-high-Bookedition1,,0.0,0.9406920908903832
-temperateforests:PDS-49p2050-Plausible-PDScustomadoption-avg,,0.0,0.9540570107437536
-temperateforests:PDS-74p2050-Optimum-PDScustom-100%in15years-Bookedition1,,0.0,0.7928126296921515
-temperateforests:PDS-49p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9540530864752856
-temperateforests:PDS-73p2050-Drawdown-PDScustomadoption-high,,0.0,0.9406912763311506
+temperateforests:PDS-74p2050-Optimum-PDScustomadoption-max,,0.0,0.7928126296921509
+temperateforests:PDS-73p2050-Drawdown-PDScustom-high-Bookedition1,,0.0,0.9544859491022616
+temperateforests:PDS-49p2050-Plausible-PDScustomadoption-avg,,0.0,0.9693872296575912
+temperateforests:PDS-74p2050-Optimum-PDScustom-100%in15years-Bookedition1,,0.0,0.7928126296921509
+temperateforests:PDS-62p2050-Plausible-customPDS-avg-Jan2020,,0.0,0.9693778604372787
+temperateforests:PDS-86p2050-Drawdown-customPDS-high-Jan2020,,0.0,0.9544859491022616
+temperateforests:PDS-49p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9693778604372787
+temperateforests:PDS-73p2050-Drawdown-PDScustomadoption-high,,0.0,0.9545034912359873
 trains:PDS3-10p2050-Full Electrification (Book Ed.1),0.0,0.0,0.9686872125341368
 trains:PDS2-5p2050-based on on IEA 2DS (Book Ed.1),0.0,0.0,0.999998199486215
 trains:PDS1-4p2050-Doubled Historical Electrification Rate (Book Ed.1),0.0,0.0,0.98618914866522
@@ -281,9 +283,21 @@ tropicalforests:PDS-58p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.94504555
 tropicalforests:PDS-84p2050-Optimum-PDScustom-100%intact15years-Bookedition1,,0.0,0.7928126296921513
 tropicalforests:PDS-84p2050-Optimum-PDScustomadoption-100%in15years,,0.0,0.7928126296921513
 tropicalforests:PDS-79p2050-Drawdown-PDScustom-high-Bookedition1,,0.0,0.9063190023259242
-tropicaltreestaples:PDS-52p2050-Plausible-PDScustom-low-Bookedition1,,0.0,0.9994335263954617
-tropicaltreestaples:PDS-68p2050-Drawdown-PDScustom-avg-Bookedition1,,0.0,0.9839759480242576
-tropicaltreestaples:PDS-84p2050-Optimum-PDScustom-high-Bookedition1,,0.0,0.9620409154301266
+tropicaltreestaples:PDS-67p2050-Optimum-CustomPDS-high2ndpoly-aug2019,,0.0,0.9555276453751979
+tropicaltreestaples:PDS-67p2050-Optimum-customPDS-high-Jan2020,,0.0,0.9893569697967713
+tropicaltreestaples:PDS-91p2050-DrawdownScenario_Dec2018,,0.0,0.9863181197901587
+tropicaltreestaples:PDS-100p2050-OptimumScenario_Dec2018,,0.0,0.9859010672378558
+tropicaltreestaples:PDS-43p2050-Drawdown-customPDS-avg-Jan2020,,0.0,0.9920925796918131
+tropicaltreestaples:PDS-68p2050-Drawdown-PDScustom-avg-BookVersion1,,0.0,0.9865273600263407
+tropicaltreestaples:PDS-42p2050-Drawdown-PDSCustom-avg-Nov2019,,0.0,0.9920925796918131
+tropicaltreestaples:PDS-83p2050-PlausibleScenario_Dec2018,,0.0,0.9825938438839825
+tropicaltreestaples:PDS-18p2050-Plausible-customPDS-low-Jan2020,,0.0,0.9942691541135421
+tropicaltreestaples:PDS-37p2050-Plauisble-CustomPDS-avg-aug2019,,0.0,0.9921209074392164
+tropicaltreestaples:PDS-50p2050-Optimum-PDSCustom-high-Nov2019,,0.0,0.9893569697967713
+tropicaltreestaples:PDS-33p2050-Plausible-PDSCustom-low-Nov2019,,0.0,0.9942691541135421
+tropicaltreestaples:PDS-84p2050-Optimum-PDScustom-high-BookVersion1,,0.0,0.9861321746421073
+tropicaltreestaples:PDS-52p2050-Plausible-PDScustom-low-BookVersion1,,0.0,0.9824551845321041
+tropicaltreestaples:PDS-45p2050-Drawdown-CustomPDS-high-aug2019,,0.0,0.989796992326784
 trucks:PDS2-9p2050-Based on ICCT (Book Ed.1),0.0,0.0,0.9865939919678519
 trucks:PDS3-15p2050-Maximum (Book Ed.1),0.0,0.0,0.9875993031742191
 trucks:PDS1-7p2050-Based on ICCT/RMI (Book Ed.1),0.0,0.0,0.9715272268773669
