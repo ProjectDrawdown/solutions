@@ -179,6 +179,7 @@ class VMA:
         Populates self.source_data with readable_df directly. Populates self.df
         with a series of renamed columns, along with a few data cleanup steps.
         """
+        self._validate_readable_df(readable_df)
         if readable_df is None:
             if self.title is None:
                 source = "\n\tFile: {}\n".format(self.filename)
@@ -209,6 +210,15 @@ class VMA:
             readable_df['Thermal-Moisture Regime'] = dft
             self.df['TMR'] = readable_df['Thermal-Moisture Regime'].fillna('')
         self.df['Value'].fillna(self.df['Raw'], inplace=True)
+
+    def _validate_readable_df(self, readable_df):
+        if readable_df is None:
+            if self.title is None:
+                source = "\n\tFile: {}\n".format(self.filename)
+            else:
+                source = "\n\tFile: {}\n\tTitle: {!r}\n".format(self.filename,
+                                                                self.title)
+            raise ValueError("Dataframe from" + source + "is None, is that VMA empty?")
 
     def _discard_outliers(self):
         """Discard outlier values beyond a multiple of the stddev."""
