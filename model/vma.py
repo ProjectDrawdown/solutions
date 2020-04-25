@@ -75,7 +75,8 @@ class VMA:
         xl_df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
         self.source_data = xl_df
         if self.use_weight:
-            assert not all(pd.isnull(xl_df['Weight'])), "'Use weight' selected but no weights to use"
+            err = f"'Use weight' selected but no weights to use in {filename}"
+            assert not all(pd.isnull(xl_df['Weight'])), err
         self.df['Weight'] = xl_df['Weight'].apply(convert_percentages)
         self.df['Raw'] = xl_df['Raw Data Input'].apply(convert_percentages)
         self.df['Units'] = xl_df['Original Units']
