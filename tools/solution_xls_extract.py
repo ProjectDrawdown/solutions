@@ -19,6 +19,7 @@ import os.path
 import pathlib
 import re
 import sys
+import textwrap
 import unicodedata
 import warnings
 
@@ -286,6 +287,17 @@ def get_land_scenarios(wb, solution_category):
 
             assert sr_tab.cell_value(row + 201, 3) == 'Custom TLA Used?:'
             s['use_custom_tla'] = convert_bool(sr_tab.cell_value(row + 201, 4))
+            values = (sr_tab.cell_value(row + 203, 4) and sr_tab.cell_value(row + 203, 7) and
+                    sr_tab.cell_value(row + 203, 10))
+            if s['use_custom_tla'] and values:
+                world_tla = convert_sr_float(sr_tab.cell_value(row + 203, 4))
+                future_ref = convert_sr_float(sr_tab.cell_value(row + 203, 7))
+                future_pds = convert_sr_float(sr_tab.cell_value(row + 203, 10))
+                # we can only handle if all three are the same
+                err = f"mismatched Custom TLA values at row {row + 203}"
+                assert world_tla == pytest.approx(future_ref), err
+                assert world_tla == pytest.approx(future_pds), err
+                s['custom_tla_fixed_value'] = world_tla
 
             s['ref_base_adoption'] = {
                 'World': convert_sr_float(sr_tab.cell_value(row + 218, 4)),
@@ -927,7 +939,13 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
     f.write(f"        ca_{case.lower()}_data_sources = [\n")
 
     for s in scenarios:
-        f.write("            {'name': '" + s['name'].strip() + "', 'include': " + str(s['include']) + ",\n")
+        f.write(f"            {{'name': '{s['name'].strip()}', 'include': {str(s['include'])},\n")
+        description = s['description'].replace("'", "")
+        lines = textwrap.wrap(s['description'], width=75)
+        f.write(f"                'description': (\n")
+        for line in lines:
+            f.write(f"                    '{line} '\n")
+        f.write(f"                    ),\n")
         f.write(f"                'filename': THISDIR.joinpath('ca_{case.lower()}_data', '{s['filename']}')}},\n")
     f.write("        ]\n")
 
@@ -1405,9 +1423,11 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
                 if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
                     df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
                     skip = False
+                description = str(custom_ad_tab.cell_value(row, 13))
                 break
         if not skip:
-            scenarios.append({'name': name, 'filename': filename, 'include': include})
+            scenarios.append({'name': name, 'filename': filename, 'include': include,
+                'description': description})
     return scenarios, multipliers
 
 
@@ -1621,7 +1641,8 @@ def output_solution_python_file(outputdir, xl_filename):
         if s.get('soln_ref_adoption_basis', '') == 'Custom':
             has_custom_ref_ad = True
         if s.get('use_custom_tla', ''):
-            extract_custom_tla(wb, outputdir=outputdir)
+            if not 'custom_tla_fixed_value' in s:
+                extract_custom_tla(wb, outputdir=outputdir)
             use_custom_tla = True
         if 'delay_protection_1yr' in s.keys():
             is_protect = True
@@ -1656,7 +1677,10 @@ def output_solution_python_file(outputdir, xl_filename):
         f.write("        # TLA\n")
         write_aez(f=f, wb=wb)
         if use_custom_tla:
-            f.write("        if self.ac.use_custom_tla:\n")
+            f.write("        if self.ac.use_custom_tla and self.ac.custom_tla_fixed_value is not None:\n")
+            f.write("            self.c_tla = tla.CustomTLA(fixed_value=self.ac.custom_tla_fixed_value)\n")
+            f.write("            custom_world_vals = self.c_tla.get_world_values()\n")
+            f.write("        elif self.ac.use_custom_tla:\n")
             f.write("            self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))\n")
             f.write("            custom_world_vals = self.c_tla.get_world_values()\n")
             f.write("        else:\n")

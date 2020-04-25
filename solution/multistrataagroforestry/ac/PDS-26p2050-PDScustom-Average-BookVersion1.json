@@ -1,56 +1,42 @@
 {
-    "name": "PDS-30p2050-PDScustom-High-Bookedition1",
+    "name": "PDS-26p2050-PDScustom-Average-BookVersion1",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "The current adoption of the solution was based on the estimates given by Nair 2012. The future adoption scenarios were developed based on the future prognostication given by Bonn Challenge and NY Deceleration for the restoration of degraded land. This scenario derives the result from the \"high of all\" PDS custom scenarios. The results are same as that of the Book edition1, so no separate scenario was created for the latter. The revised model involves correction of net profit margin calculation methodology and estimation of operational cost which was missing in Book edition1. This solution was allocated both in the cropland and grassland AEZs, so we have created two separate models for this solution. One for the cropland AEZs and one for the grassland AEZs. The model built for the cropland AEZs has only half of the allocated current adoption of this solution, so that model doesn't have any future adoption scenarios and therefore no results were generated there. This model is built for the grassland AEZs, where the remaining half of the the current adoption and all of the future adoption of this solution is allocated. Thus, for this solution, the results are coming only from this model, although we have created two separate models. ",
+    "description": "The current adoption of the solution was based on the estimates given by Nair 2012. The future adoption scenarios were developed based on the future prognostication given by Bonn Challenge and NY Deceleration for the restoration of degraded land. This scenario derives the result from the \"average of all\" PDS custom scenarios. The results are same as that of the Book Version1, so no separate scenario was created for the latter. The revised model involves correction of net profit margin calculation methodology and estimation of operational cost which was missing in Book Version1. This solution was allocated both in the cropland and grassland AEZs, so we have created two separate models for this solution. One for the cropland AEZs and one for the grassland AEZs. The model built for the cropland AEZs has only half of the allocated current adoption of this solution, so that model doesn't have any future adoption scenarios and therefore no results were generated there. This model is built for the grassland AEZs, where the remaining half of the the current adoption and all of the future adoption of this solution is allocated. Thus, for this solution, the results are coming only from this model, although we have created two separate models.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": false,
+    "ref_base_adoption": {
+        "World": 50.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
+    "pds_adoption_use_ref_years": [
+        2014
     ],
-    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "Average of All Custom Scenarios",
+    "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "conv_2014_cost": {
         "value": 0.0,
