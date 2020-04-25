@@ -1423,7 +1423,10 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
                 if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
                     df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
                     skip = False
-                description = str(custom_ad_tab.cell_value(row, 13))
+                for offset in range(0, 3):
+                    description = str(custom_ad_tab.cell_value(row + offset, 13))
+                    if description:
+                        break
                 break
         if not skip:
             scenarios.append({'name': name, 'filename': filename, 'include': include,
