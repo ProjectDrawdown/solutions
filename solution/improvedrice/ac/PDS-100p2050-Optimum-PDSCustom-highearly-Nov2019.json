@@ -1,13 +1,13 @@
 {
-    "name": "PDS-80p2050-Drawdown-PDScustom-high-BookVersion1",
+    "name": "PDS-100p2050-Optimum-PDSCustom-highearly-Nov2019",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "The current adoption was only available for the \"direct seeded rice\", which is one of the practices proposed under this solution. However, due to the limitation of the required data, we have used the average adoption of direct seeded rice across different countries as the current adoption for this solution. The future area under this solution is projected based on the available adoption data at the country level, which is largely available for the Asian region. As the rice is primarily cultivated in the Asian region, it is assumed that the other regions will also follow the similar trends. The projected scenarios were based on the average to high adoption growth rate with some of the scenarios assuming an early adoption (75% by 2030). This scenario presents the result of the \"high of all\" PDS custom adoption scenario. This version also involves the correction of the current adoption, conventional operational cost and net profit margin, solution net profit margin with revised methodology and the estimation of operational cost which was missing in the Book Version 1 results.  ",
+    "description": "This is updated scenario based on updated data, adoption scenarios, and change of current adoption year from 2014 to 2018.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": false,
     "ref_base_adoption": {
-        "World": 2.8510575,
+        "World": 40.676943006981,
         "OECD90": 0.0,
         "Eastern Europe": 0.0,
         "Asia (Sans Japan)": 0.0,
@@ -32,12 +32,10 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
-    "soln_ref_adoption_basis": "Default",
+    "soln_pds_adoption_custom_name": "High Growth, Early Adoption",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Average of All Custom Scenarios",
     "soln_ref_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [
-        2014
-    ],
     "conv_2014_cost": {
         "value": 0.0,
         "statistic": ""
@@ -49,7 +47,7 @@
     },
     "conv_expected_lifetime": 30.0,
     "yield_from_conv_practice": {
-        "value": 1176.99596120478,
+        "value": 1.22974866040524,
         "statistic": "mean"
     },
     "pds_2014_cost": {
@@ -67,7 +65,7 @@
     },
     "soln_expected_lifetime": 30.0,
     "yield_gain_from_conv_to_soln": {
-        "value": -0.0294026934864787,
+        "value": 0.0452174810427601,
         "statistic": "mean"
     },
     "npv_discount_rate": 0.1,
@@ -88,12 +86,12 @@
     },
     "tco2_rplu_rate": "One-time",
     "tn2o_co2_reduced_per_land_unit": {
-        "value": -0.384685714285714,
+        "value": -1.25096680851064,
         "statistic": "mean"
     },
     "tn2o_co2_rplu_rate": "Annual",
     "tch4_co2_reduced_per_land_unit": {
-        "value": 5.60113953488372,
+        "value": 5.26953660377358,
         "statistic": "mean"
     },
     "tch4_co2_rplu_rate": "Annual",
