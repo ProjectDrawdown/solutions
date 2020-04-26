@@ -189,6 +189,7 @@ class VMAReader:
             'Closest Matching Crop (by Revenue/ha)':
                 'Closest Matching Standard Crop (by Revenue/ha)',
             'Weight (by climate)': 'Weight',
+            'Weight (for World Data Only)': 'Weight',
         }
         return known_aliases.get(name.replace('\n', ''), name)
 
