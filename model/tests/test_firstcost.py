@@ -72,39 +72,6 @@ def test_soln_pds_install_cost_per_iunit_with_nan():
     pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
 
 
-def test_soln_pds_install_cost_per_iunit_with_zero():
-    """Test PDS install cost per unit
-
-       Values taken from
-       Drawdown-Alternative (High Vol. Fly Ash) Cement_RRS_v1.1_16Nov2018_PUBLIC.xlsm
-       then filled with zero. This approximates the behavior of the Nuclear solution.
-    """
-    ac = advanced_controls.AdvancedControls(
-            pds_2014_cost=32130000.0,
-            ref_2014_cost=32130000.0,
-            conv_2014_cost=45900000.0,
-            soln_first_cost_efficiency_rate=0.0,
-            soln_first_cost_below_conv=True,
-            conv_first_cost_efficiency_rate=0.0)
-    soln_pds_tot_iunits_reqd = pd.DataFrame(
-            soln_pds_tot_iunits_reqd_altcement_list[1:],
-            columns=soln_pds_tot_iunits_reqd_altcement_list[0]).set_index('Year').fillna(0.0)
-    fc = firstcost.FirstCost(ac=ac,
-            pds_learning_increase_mult=2, ref_learning_increase_mult=2,
-            conv_learning_increase_mult=2, soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
-            soln_ref_tot_iunits_reqd=None, conv_ref_tot_iunits=None, soln_pds_new_iunits_reqd=None,
-            soln_ref_new_iunits_reqd=None, conv_ref_new_iunits=None, fc_convert_iunit_factor=1.0)
-    expected = pd.Series(
-            soln_pds_install_cost_per_iunit_altcement_nparray[:, 1],
-            index=soln_pds_install_cost_per_iunit_altcement_nparray[:, 0],
-            dtype=np.float64)
-    expected.index = expected.index.astype(int)
-    expected.index.name = "Year"
-    expected.name = "soln_pds_install_cost_per_iunit"
-    result = fc.soln_pds_install_cost_per_iunit()
-    pd.testing.assert_series_equal(result.loc[2015:], expected, check_exact=False)
-
-
 def test_conv_ref_install_cost_per_iunit():
     """Test conventional install cost per unit
 
