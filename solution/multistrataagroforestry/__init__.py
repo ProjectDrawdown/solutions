@@ -239,7 +239,6 @@ class Scenario:
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=1.0, low_sd_mult=1.0,
             total_adoption_limit=self.tla_per_region)
-        print(ca_pds_data_sources)
 
         for s in self.pds_ca.scenarios.values():
             df = s['df']
