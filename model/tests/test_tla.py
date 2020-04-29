@@ -44,3 +44,9 @@ def test_custom_tla():
 def test_custom_tla_handles_bad_filename():
     with pytest.raises(FileNotFoundError):
         _ = tla.CustomTLA(filename='adfadf')
+
+
+def test_custom_tla_fixed_value():
+    tl = tla.CustomTLA(fixed_value=7.0)
+    df = tl.get_world_values()
+    assert (df['World'] == 7.0).all()

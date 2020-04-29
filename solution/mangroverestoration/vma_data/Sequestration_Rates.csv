@@ -1,0 +1,4 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Sidik et al. (2019), Table 4 AGB+ BGC+ leaf litter. Full reference: Sidik, F., Fernanda Adame, M., & Lovelock, C. E. (2019). Carbon sequestration and fluxes of restored mangroves in abandoned aquaculture ponds. Journal of the Indian Ocean Region, 1–16. https://doi.org/10.1080/19480881.2019.1605659
+",https://www.tandfonline.com/doi/full/10.1080/19480881.2019.1605659,Asia (Sans Japan),Indonesia,,2012,,16.3,tC/ ha/ yr,,t C/ha/yr,,,True
+PD 2019- Sum of averages of AGB and BGB.,,,,,,,6.580755743944637,tC/ ha/ yr,,t C/ha/yr,,,

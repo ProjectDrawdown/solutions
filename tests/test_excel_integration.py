@@ -1741,6 +1741,19 @@ def test_ManagedGrazing_LAND():
 
 
 @pytest.mark.slow
+def test_MangroveRestoration_LAND():
+    from solution import mangroverestoration
+    zipfilename = str(solutiondir.joinpath(
+        'mangroverestoration', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for scenario in mangroverestoration.scenarios.keys():
+        obj = mangroverestoration.Scenario(scenario=scenario)
+        verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(
+            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+
+
+@pytest.mark.slow
 def test_MassTransit_RRS():
     from solution import masstransit
     zipfilename = str(solutiondir.joinpath(

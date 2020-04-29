@@ -1,0 +1,5 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Worthington and Spalding (2018), Table 8.1 on page 28. Full reference:Worthington, T., & Spalding, M. (2018). Mangrove Restoration Potential: a global map highlighting a critical opportunity. 36. https://doi.org/10.17863/CAM.39153
+
+",https://doi.org/10.17863/CAM.39153 ,World,,,2018,,190147.0,Ha,0.190147,million hectares,,,True
+PDS Custom 2019,,World,,,,,,,0.0,million hectares,,,

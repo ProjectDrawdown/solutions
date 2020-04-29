@@ -40,14 +40,20 @@ def tla_per_region(land_dist, custom_world_values=None):
 
 
 class CustomTLA(object, metaclass=MetaclassCache):
-    def __init__(self, filename):
+    def __init__(self, filename=None, fixed_value=None):
         """
         Class for Custom TLA data
         Args:
             filename: path to 'custom_tla_data.csv' file
         """
-        self.df = pd.read_csv(filename, header=0, index_col=0,
-                skipinitialspace=True, skip_blank_lines=True)
+        assert not (filename and fixed_value), "Can only supply one of {filename, fixed_value}"
+        if filename:
+            self.df = pd.read_csv(filename, header=0, index_col=0,
+                    skipinitialspace=True, skip_blank_lines=True)
+        elif fixed_value:
+            self.df = pd.DataFrame(fixed_value, index=range(2012, 2061), columns=['World'])
+        else:
+            raise ValueError("Must supply one of {filename, fixed_value}")
 
     def _avg_high_low(self):
         # This is not yet implemented as the only solutions that use Custom TLA so far (Tropical

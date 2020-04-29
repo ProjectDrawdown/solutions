@@ -175,9 +175,18 @@ microwind:PDS-0p2050-Plausible2020,1.0990576040386826,0.0,0.9941359390662217
 microwind:PDS-0p2050-Plausible (Book Ed. 1),1.0990576040386826,0.0,0.988750542999565
 microwind:PDS-0p2050-Drawdown (Book Ed. 1),0.7151913916705964,0.0,0.9941359390662217
 microwind:PDS-0p2050-Optimum2020,0.7151913916705964,0.0,0.9776459400562486
-multistrataagroforestry:PDS-30p2050-PDScustom-High-Bookedition1,,0.0,0.9902158647638502
-multistrataagroforestry:PDS-22p2050-PDScustom-Low-Bookedition1,,0.0,0.9961464337419509
-multistrataagroforestry:PDS-26p2050-PDScustom-Average-Bookedition1,,0.0,0.9925355053301742
+multistrataagroforestry:PDS-28p2050-Optimum-CustomPDS-high-aug2019,,0.0,0.9872802533521225
+multistrataagroforestry:PDS-30p2050-PDScustom-High-BookVersion1,,0.0,0.9490722716348339
+multistrataagroforestry:PDS-28p2050-Optimum-PDSCustom-high-Nov2019,,0.0,0.9872802533521228
+multistrataagroforestry:PDS-12p2050-Plausible-customPDS-low-Jan2020,,0.0,0.9958927919274283
+multistrataagroforestry:PDS-20p2050-Drawdown-customPDS-avg-Jan2020,,0.0,0.9911375809288445
+multistrataagroforestry:PDS-20p2050-Drawdown-CustomPDS-avg-aug2019,,0.0,0.9911375809288447
+multistrataagroforestry:PDS-20p2050-Drawdown-PDSCustom-avg-Nov2019,,0.0,0.9911375809288445
+multistrataagroforestry:PDS-12p2050-Plausible-CustomPDS-low-aug2019,,0.0,0.9958927919274284
+multistrataagroforestry:PDS-26p2050-PDScustom-Average-BookVersion1,,0.0,0.9344112493555089
+multistrataagroforestry:PDS-22p2050-PDScustom-Low-BookVersion1,,0.0,0.8980724497802663
+multistrataagroforestry:PDS-12p2050-Plausible-PDSCustom-low-Nov2019,,0.0,0.9958927919274283
+multistrataagroforestry:PDS-28p2050-optimum-customPDS-high-Jan2020,,0.0,0.9872802533521228
 nuclear:PDS-9p2050-Drawdown2020,0.7151913916705964,0.6344738895553323,0.998281769433352
 nuclear:PDS-10p2050-Drawdown (Book Ed. 1),0.7151913916705964,0.6344738895553323,0.998281769433352
 nuclear:PDS-12p2050-Plausible (Book Ed.1),1.0990576040386826,0.5472476108767712,0.9988800439523636

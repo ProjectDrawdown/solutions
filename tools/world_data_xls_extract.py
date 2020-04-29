@@ -30,11 +30,13 @@ class WorldDataReader:
             self.regimes = model.dd.THERMAL_MOISTURE_REGIMES8
             sheetname = '2020'
             self.first_cell = tools.util.cell_to_offsets('D4')
+            self.valid_zones = model.dd.AEZS
         else:
             filename = OCEAN_XLS_PATH
             self.regimes = model.dd.THERMAL_DYNAMICAL_REGIMES
             sheetname = 'WORLD_Ocean_Data'
             self.first_cell = tools.util.cell_to_offsets('D10')
+            self.valid_zones = None
         self.key = key
 
         wb = xlrd.open_workbook(filename=filename)
@@ -124,7 +126,11 @@ class WorldDataReader:
         for i in self.row_nums:
             index.append(self.sheet.cell_value(row + i, col - 1))
         for i in range(self.num_zones):
-            self.columns.append(self.sheet.cell_value(row - row_offset, col + 1 + i))
+            zone = str(self.sheet.cell_value(row - row_offset, col + 1 + i)).strip()
+            zone = " ".join(zone.split())  # collapse multiple spaces into one.
+            if self.valid_zones:
+                assert zone in self.valid_zones
+            self.columns.append(zone)
         self.df_template = pd.DataFrame(columns=self.columns, index=index)
 
 

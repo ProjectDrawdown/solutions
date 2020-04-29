@@ -679,6 +679,9 @@ class AdvancedControls:
     #   "Advanced Controls"!E54 (Land models)
     use_custom_tla: bool = None
 
+    # a fixed value to set in all elements of a custom TLA, instead of loading from CSV.
+    custom_tla_fixed_value: float = None
+
     # harvest_frequency: new growth is harvested/cleared every ... (years)
     #   Afforestation "Advanced Controls"!B187
     harvest_frequency: float = None

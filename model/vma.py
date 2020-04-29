@@ -189,7 +189,8 @@ class VMA:
             raise ValueError("Dataframe from" + source + "is None, is that VMA empty?")
         self.source_data = readable_df
         if self.use_weight:
-            assert not all(pd.isnull(readable_df['Weight'])), "'Use weight' selected but no weights to use"
+            err = f"'Use weight' selected but no weights to use in {filename}"
+            assert not all(pd.isnull(readable_df['Weight'])), err
         self.df['Weight'] = readable_df['Weight'].apply(convert_percentages)
         self.df['Raw'] = readable_df['Raw Data Input'].apply(convert_percentages)
         self.df['Units'] = readable_df['Original Units']
