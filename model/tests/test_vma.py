@@ -67,7 +67,7 @@ class TestVMAFromXlsx:
         Checks known values from Silvopasture Variable Meta Analysis, taken
         from the xlsx file.
         """
-        v = vma.VMA(filename=datadir.joinpath('silvopasture.{}'.format(filetype)),
+        v = vma.VMA(filename=datadir.joinpath(f'silvopasture.{filetype}'),
                     title=title,
                     low_sd=1.0,
                     high_sd=1.0)
@@ -97,7 +97,7 @@ class TestVMAFromXlsx:
         Check that existing titles with no data raise an error. Titles taken
         from the test xlsx file.
         """
-        filename = 'silvopasture.{}'.format(filetype)
+        filename = f'silvopasture.{filetype}'
         with pytest.raises(ValueError) as error:
             vma.VMA(filename=datadir.joinpath(filename),
                     title=title)

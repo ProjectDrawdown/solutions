@@ -125,7 +125,7 @@ class VMA:
         Populates self.source_data and self.df
         """
         csv_df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
-        self._convert_from_human_readable(csv_df)
+        self._convert_from_human_readable(csv_df, filename)
 
     def _read_xls(self, filename, title):
         """
@@ -155,18 +155,18 @@ class VMA:
             # to give the user a hint.
             full_dict = vma_reader.xls_df_dict(alt_vma=alt_vma)
             raise ValueError(
-                "Title {!r} not available in {}.".format(title, filename) + \
-                "\nOptions:\n\t" + "\n\t".join(full_dict.keys())
+                f"Title {title!r} not available in {filename}\nOptions\n\t" + \
+                "\n\t".join(full_dict.keys())
             )
 
-        self._convert_from_human_readable(xl_df)
+        self._convert_from_human_readable(xl_df, filename)
 
         # Populate the self.fixed_summary field if the values are valid
         fixed_summary = check_fixed_summary(*summary)
         if fixed_summary is not None:
             self.fixed_summary = fixed_summary
 
-    def _convert_from_human_readable(self, readable_df):
+    def _convert_from_human_readable(self, readable_df, filename):
         """
         Converts a known set of readable column names to a known column set. A
         few data cleanups are also performed, such as converting percentages
@@ -175,18 +175,13 @@ class VMA:
         Arguments:
             readable_df: dataframe (from CSV or Excel file) using the standard
                 long-form column names
+            filename: pathlib.Path to source file, passed through for error
+                transparency purposes
 
         Populates self.source_data with readable_df directly. Populates self.df
         with a series of renamed columns, along with a few data cleanup steps.
         """
         self._validate_readable_df(readable_df)
-        if readable_df is None:
-            if self.title is None:
-                source = "\n\tFile: {}\n".format(self.filename)
-            else:
-                source = "\n\tFile: {}\n\tTitle: {!r}\n".format(self.filename,
-                                                                self.title)
-            raise ValueError("Dataframe from" + source + "is None, is that VMA empty?")
         self.source_data = readable_df
         if self.use_weight:
             err = f"'Use weight' selected but no weights to use in {filename}"
@@ -215,10 +210,9 @@ class VMA:
     def _validate_readable_df(self, readable_df):
         if readable_df is None:
             if self.title is None:
-                source = "\n\tFile: {}\n".format(self.filename)
+                source = f"\n\tFile: {self.filename}\n"
             else:
-                source = "\n\tFile: {}\n\tTitle: {!r}\n".format(self.filename,
-                                                                self.title)
+                source = f"\n\tFile: {self.filename}\n\tTitle: {self.title!r}\n"
             raise ValueError("Dataframe from" + source + "is None, is that VMA empty?")
 
     def _discard_outliers(self):
