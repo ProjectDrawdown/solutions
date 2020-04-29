@@ -180,7 +180,6 @@ class VMAReader:
         Reads the whole Variable Meta-analysis xls sheet. If a CSV path is
         given, writes out a series of CSVs, of the form <table title>.csv and
         VMA_info.csv (contains summary data for each VMA).
-        Note this currently only works for LAND solutions.
 
         Arguments:
             csv_path: (pathlib path object or str) If specified, will write
