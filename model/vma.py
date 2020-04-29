@@ -101,16 +101,14 @@ class VMA:
                 filename = pathlib.Path(filename)
 
             # Instantiate VMA with various file types
-            if isinstance(filename, io.StringIO):
+            if isinstance(filename, io.StringIO) or filename.suffix == '.csv':
                 self._read_csv(filename=filename)
             elif filename.suffix == '.xlsx' or filename.suffix == '.xlsm':
                 self._read_xls(filename=filename, title=title)
             else:
-                # Fall back on this as the default behavior, there are a
-                # variety of use cases that have been built-in, they do not
-                # all end with '.csv'
-                self._read_csv(filename=filename)
-
+                raise ValueError(
+                    f'{filename!r} is not a recognized filetype for vma.VMA'
+                )
         else:
             self.source_data = pd.DataFrame()
 

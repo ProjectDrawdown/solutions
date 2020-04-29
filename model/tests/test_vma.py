@@ -317,7 +317,7 @@ def test_no_warnings_in_avg_high_low():
 
 
 def test_write_to_file():
-    f = tempfile.NamedTemporaryFile(mode='w')
+    f = tempfile.NamedTemporaryFile(mode='w', suffix='.csv')
     f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 1.0,,,,
       B, 1.0,,,,
@@ -332,7 +332,7 @@ def test_write_to_file():
         assert 'updated source ID' in fid.read()
 
 def test_reload_from_file():
-    f = tempfile.NamedTemporaryFile(mode='w')
+    f = tempfile.NamedTemporaryFile(mode='w', suffix='.csv')
     f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       original source ID, 1.0,,,,
       """)
@@ -381,3 +381,9 @@ def test_no_filename():
     assert pd.isna(mean)
     assert pd.isna(high)
     assert pd.isna(low)
+
+def test_bad_filetype():
+    with pytest.raises(ValueError) as error:
+        vma.VMA(filename='file.bad')
+    assert 'file.bad' in error.exconly()
+    assert 'not a recognized filetype for vma.VMA' in error.exconly()
