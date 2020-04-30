@@ -6,6 +6,7 @@ import pathlib
 import tempfile
 
 from model import vma
+import numpy as np
 import pandas as pd
 
 
@@ -13,13 +14,105 @@ basedir = pathlib.Path(__file__).parents[2]
 datadir = pathlib.Path(__file__).parents[0].joinpath('data')
 
 
-def test_vals_from_real_soln():
+def test_vals_from_real_soln_csv():
     """ Values from Silvopasture Variable Meta Analysis """
     f = datadir.joinpath('vma1_silvopasture.csv')
     v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
     result = v.avg_high_low()
     expected = (314.15, 450.0, 178.3)
     assert result == pytest.approx(expected)
+
+
+class TestVMAFromXlsx:
+    def test_no_title(self):
+        """Check that the default title (None) raises an error."""
+        with pytest.raises(ValueError) as error:
+            vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'))
+        assert 'Title None not available' in error.exconly()
+
+    def test_bad_title(self):
+        """Check that a nonexistent title raises an error."""
+        with pytest.raises(ValueError) as error:
+            vma.VMA(filename=datadir.joinpath('silvopasture.xlsx'),
+                    title='Not a real title')
+        assert "Title 'Not a real title' not available" in error.exconly()
+
+    @pytest.mark.parametrize('title,expected', (
+        ('Current Adoption',
+         (314.150, 450.0, 178.3)),
+        ('SOLUTION First Cost per Implementation Unit',
+         (462.45300593, 713.74365784, 211.16235403)),
+        ('CONVENTIONAL Operating Cost per Functional Unit per Annum',
+         (328.41585777, 706.18860047, -49.35688493)),
+        ('SOLUTION Operating Cost per Functional Unit per Annum',
+         (837.64313091, 1694.62599661, -19.33973480)),
+        ('CONVENTIONAL Net Profit Margin per Functional Unit per Annum',
+         (143.54391845, 231.31902470, 55.76881221)),
+        ('SOLUTION Net Profit Margin per Functional Unit per Annum',
+         (460.21969692, 732.99682009, 187.44257376)),
+        ('Yield from CONVENTIONAL Practice',
+         (3.42857143, 5.08534479, 1.77179807)),
+        ('Yield Gain (% Increase from CONVENTIONAL to SOLUTION)',
+         (0.10054497, 0.18294670, 0.01814324)),
+        ('t CH4-CO2-eq Reduced per Land Unit',
+         (0.0, 0.0, 0.0)),
+        ('Sequestration Rates',
+         (4.64561688, 8.24249349, 1.04874028)),
+        ('Percent silvopasture area to the total grassland area (including potential)',
+         (0.24150576, 0.36171938, 0.12129214)),
+    ))
+    @pytest.mark.parametrize('filetype', ('xlsx', 'xlsm'))
+    def test_vals(self, filetype, title, expected):
+        """
+        Checks known values from Silvopasture Variable Meta Analysis, taken
+        from the xlsx file.
+        """
+        v = vma.VMA(filename=datadir.joinpath(f'silvopasture.{filetype}'),
+                    title=title,
+                    low_sd=1.0,
+                    high_sd=1.0)
+        assert v.avg_high_low() == pytest.approx(expected)
+
+    @pytest.mark.parametrize('title', (
+        'CONVENTIONAL First Cost per Implementation Unit',
+        'Electricty Consumed per CONVENTIONAL Functional Unit',
+        'SOLUTION Energy Efficiency Factor',
+        'Total Energy Used per SOLUTION functional unit',
+        'Fuel Consumed per CONVENTIONAL Functional Unit',
+        'Fuel Reduction Factor SOLUTION',
+        't CO2-eq (Aggregate emissions) Reduced per Land Unit',
+        't CO2 Reduced per Land Unit',
+        't N2O-CO2-eq Reduced per Land Unit',
+        'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE',
+        'Indirect CO2 Emissions per SOLUTION Implementation Unit',
+        'Indirect CO2 Emissions per SOLUTION Implementation Unit',
+        'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing',
+        'Indirect CO2 Emissions per SOLUTION Implementation Unit',
+        'Disturbance Rate',
+        'Indirect CO2 Emissions per SOLUTION Implementation Unit',
+    ))
+    @pytest.mark.parametrize('filetype', ('xlsx', 'xlsm'))
+    def test_empty_vmas(self, filetype, title):
+        """
+        Check that existing titles with no data raise an error. Titles taken
+        from the test xlsx file.
+        """
+        filename = f'silvopasture.{filetype}'
+        with pytest.raises(ValueError) as error:
+            vma.VMA(filename=datadir.joinpath(filename),
+                    title=title)
+        assert filename in error.exconly()
+        assert title in error.exconly()
+        assert 'is that VMA empty?' in error.exconly()
+
+
+def test_check_fixed_summary():
+    # Check that None/NaN values give an empty result
+    assert vma.check_fixed_summary(None, None, None) is None
+    assert vma.check_fixed_summary(None, 1.1, 50) is None
+    assert vma.check_fixed_summary(-4.3, np.nan, 50) is None
+    # Check that we get a tuple of the given values back
+    assert vma.check_fixed_summary(-4.3, 1.1, 50) == (-4.3, 1.1, 50)
 
 
 def test_source_data():
@@ -224,7 +317,7 @@ def test_no_warnings_in_avg_high_low():
 
 
 def test_write_to_file():
-    f = tempfile.NamedTemporaryFile(mode='w')
+    f = tempfile.NamedTemporaryFile(mode='w', suffix='.csv')
     f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 1.0,,,,
       B, 1.0,,,,
@@ -239,7 +332,7 @@ def test_write_to_file():
         assert 'updated source ID' in fid.read()
 
 def test_reload_from_file():
-    f = tempfile.NamedTemporaryFile(mode='w')
+    f = tempfile.NamedTemporaryFile(mode='w', suffix='.csv')
     f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       original source ID, 1.0,,,,
       """)
@@ -288,3 +381,9 @@ def test_no_filename():
     assert pd.isna(mean)
     assert pd.isna(high)
     assert pd.isna(low)
+
+def test_bad_filetype():
+    with pytest.raises(ValueError) as error:
+        vma.VMA(filename='file.bad')
+    assert 'file.bad' in error.exconly()
+    assert 'not a recognized filetype for vma.VMA' in error.exconly()
