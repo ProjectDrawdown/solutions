@@ -171,13 +171,32 @@ def test_soln_pds_new_funits_per_year():
     pd.testing.assert_frame_equal(result.loc[2015:, ['World']], expected, check_exact=False)
 
 
-def test_soln_pds_net_annual_iunits_reqd():
+def test_soln_pds_new_funits_per_year():
     oc = _defaultOperatingCost()
-    expected = pd.DataFrame(soln_pds_net_annual_iunits_reqd_list[1:],
-            columns=soln_pds_net_annual_iunits_reqd_list[0]).set_index('Year')
-    result = oc.soln_pds_net_annual_iunits_reqd()
+    expected = pd.DataFrame(soln_pds_new_funits_per_year_list[1:],
+            columns=soln_pds_new_funits_per_year_list[0]).set_index('Year')
+    expected.name = 'soln_pds_new_funits_per_year'
+    expected.index = expected.index.astype(int)
+    result = oc.soln_pds_new_funits_per_year()
     # TODO need data to check the rest of the regional columns
-    pd.testing.assert_frame_equal(result.loc[:, ['World']], expected, check_exact=False)
+    pd.testing.assert_frame_equal(result.loc[2015:, ['World']], expected, check_exact=False)
+
+
+def test_soln_pds_new_funits_per_year_2012():
+    ac = advanced_controls.AdvancedControls(report_end_year=2050)
+    net_funits = pd.DataFrame(50.0, index=range(2012, 2061), columns=['A', 'B', 'C', 'D'])
+    oc = operatingcost.OperatingCost(ac=ac, soln_net_annual_funits_adopted=net_funits,
+            soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+            conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+            soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+            single_iunit_purchase_year=2017, conversion_factor=1.0,
+            soln_pds_install_cost_per_iunit=None, conv_ref_install_cost_per_iunit=None)
+    result = oc.soln_pds_new_funits_per_year()
+    # if soln_pds_new_funits_per_year is calculated from the start of the net_funits data
+    # in 2012, then result[2012] will be 50.0 (but will be dropped) and result[2015] will be 0.0.
+    # soln_pds_new_funits_per_year is supposed to start in 2015.
+    assert result.loc[2015, 'A'] == 50.0
+    assert result.loc[2016, 'A'] == 0.0
 
 
 def test_soln_pds_new_annual_iunits_reqd():
@@ -564,6 +583,84 @@ def test_annual_breakout_nonzero_cost_zero_lifetime_replacement():
             conv_ref_install_cost_per_iunit=None, conversion_factor=1.0)
     with pytest.raises(AssertionError):
         result = oc.soln_pds_annual_breakout()
+
+
+def test_soln_pds_annual_breakout_land():
+    columns = ['World', 'A']
+    index = range(2015, 2061)
+    soln_net_annual_funits_adopted = pd.DataFrame(1.0, columns=columns, index=index)
+    soln_pds_tot_iunits_reqd = pd.DataFrame(5.0, columns=columns, index=index)
+    soln_ref_tot_iunits_reqd = pd.DataFrame(2.0, columns=columns, index=index)
+
+    ac = advanced_controls.AdvancedControls(report_end_year=2050,
+            soln_lifetime_capacity=10.0, soln_avg_annual_use=1.0,
+            soln_fuel_cost_per_funit=0.0, soln_fixed_oper_cost_per_iunit=7.0)
+    oc = operatingcost.OperatingCost(ac=ac,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+            soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+            conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+            soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+            single_iunit_purchase_year=None, soln_pds_install_cost_per_iunit=None,
+            conv_ref_install_cost_per_iunit=None, conversion_factor=1.0)
+    result = oc.soln_pds_annual_breakout()
+    # For RRS the cost is (soln_pds_tot_iunits_reqd - soln_ref_tot_iunits_reqd) *
+    #   soln_fixed_oper_cost_per_iunit == 21.0.
+    assert result.loc[2015, 2015] == 21.0
+
+    ac = advanced_controls.AdvancedControls(report_end_year=2050,
+            solution_category=advanced_controls.SOLUTION_CATEGORY.LAND,
+            soln_expected_lifetime=10.0, soln_fuel_cost_per_funit=0.0,
+            soln_fixed_oper_cost_per_iunit=7.0)
+    oc = operatingcost.OperatingCost(ac=ac,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+            soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+            conv_ref_annual_tot_iunits=None, soln_pds_annual_world_first_cost=None,
+            soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+            single_iunit_purchase_year=None, soln_pds_install_cost_per_iunit=None,
+            conv_ref_install_cost_per_iunit=None, conversion_factor=1.0)
+    result = oc.soln_pds_annual_breakout()
+    # Land only uses funits (aka Land Units), so the answer is
+    # soln_net_annual_funits_adopted * soln_fixed_oper_cost_per_iunit == 7.0
+    assert result.loc[2015, 2015] == 7.0
+
+
+def test_conv_ref_annual_breakout_land():
+    columns = ['World', 'A']
+    index = range(2015, 2061)
+    soln_net_annual_funits_adopted = pd.DataFrame(1.0, columns=columns, index=index)
+    conv_ref_annual_tot_iunits = pd.DataFrame(3.0, columns=columns, index=index)
+
+    ac = advanced_controls.AdvancedControls(report_end_year=2050, soln_lifetime_capacity=10.0,
+            soln_avg_annual_use=1.0, conv_fixed_oper_cost_per_iunit=7.0)
+    oc = operatingcost.OperatingCost(ac=ac,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+            conv_ref_annual_tot_iunits=conv_ref_annual_tot_iunits,
+            soln_pds_annual_world_first_cost=None,
+            soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+            single_iunit_purchase_year=None, soln_pds_install_cost_per_iunit=None,
+            conv_ref_install_cost_per_iunit=None, conversion_factor=1.0)
+    result = oc.conv_ref_annual_breakout()
+    # For RRS the cost is conv_ref_annual_tot_iunits * soln_fixed_oper_cost_per_iunit == 21.0.
+    assert result.loc[2015, 2015] == 21.0
+
+    ac = advanced_controls.AdvancedControls(report_end_year=2050,
+            solution_category=advanced_controls.SOLUTION_CATEGORY.LAND,
+            soln_expected_lifetime=10.0, conv_fixed_oper_cost_per_iunit=7.0)
+    oc = operatingcost.OperatingCost(ac=ac,
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            soln_pds_tot_iunits_reqd=None, soln_ref_tot_iunits_reqd=None,
+            conv_ref_annual_tot_iunits=conv_ref_annual_tot_iunits,
+            soln_pds_annual_world_first_cost=None,
+            soln_ref_annual_world_first_cost=None, conv_ref_annual_world_first_cost=None,
+            single_iunit_purchase_year=None, soln_pds_install_cost_per_iunit=None,
+            conv_ref_install_cost_per_iunit=None, conversion_factor=1.0)
+    result = oc.conv_ref_annual_breakout()
+    # Land only uses funits (aka Land Units), so the answer is
+    # soln_net_annual_funits_adopted * soln_fixed_oper_cost_per_iunit == 7.0
+    assert result.loc[2015, 2015] == 7.0
 
 
 def test_cashflow_no_fractional_years():

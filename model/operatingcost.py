@@ -4,6 +4,7 @@ from functools import lru_cache
 import math
 
 import model.dd as dd
+from model.advanced_controls import SOLUTION_CATEGORY
 import numpy as np
 import numpy_financial
 import pandas as pd
@@ -118,8 +119,8 @@ class OperatingCost:
         """New functional units required each year.
            SolarPVUtil 'Operating Cost'!F19:F64
         """
-        growth = self.soln_net_annual_funits_adopted.fillna(0.0).diff()
-        growth.iloc[0] = self.soln_net_annual_funits_adopted.iloc[0]  # iloc[0] is NA after diff()
+        growth = self.soln_net_annual_funits_adopted.loc[2015:].fillna(0.0).diff()
+        growth.iloc[0] = self.soln_net_annual_funits_adopted.loc[2015:].iloc[0]  # iloc[0] is NA after diff()
         growth.name = 'soln_pds_new_funits_per_year'
         return growth.sort_index()
 
@@ -154,9 +155,18 @@ class OperatingCost:
            Fixed and Variable costs that are constant or changing over time are included.
            SolarPVUtil 'Operating Cost'!B262:AV386
         """
+        if (self.ac.solution_category == SOLUTION_CATEGORY.LAND or
+                self.ac.solution_category == SOLUTION_CATEGORY.OCEAN):
+            new_land_units_per_year = self.soln_pds_new_funits_per_year().loc[:, 'World']
+            new_funits_per_year = new_land_units_per_year
+            new_annual_iunits_reqd = new_land_units_per_year
+        else:
+            new_funits_per_year = self.soln_pds_new_funits_per_year().loc[:, 'World']
+            new_annual_iunits_reqd = self.soln_pds_new_annual_iunits_reqd().loc[:, 'World']
+
         result = self._annual_breakout(
-            new_funits_per_year=self.soln_pds_new_funits_per_year().loc[:, 'World'],
-            new_annual_iunits_reqd=self.soln_pds_new_annual_iunits_reqd().loc[:, 'World'],
+            new_funits_per_year=new_funits_per_year,
+            new_annual_iunits_reqd=new_annual_iunits_reqd,
             lifetime_replacement=self.ac.soln_lifetime_replacement,
             var_oper_cost_per_funit=self.ac.soln_var_oper_cost_per_funit,
             fuel_cost_per_funit=self.ac.soln_fuel_cost_per_funit,
@@ -191,9 +201,18 @@ class OperatingCost:
            Fixed and Variable costs that are constant or changing over time are included.
            SolarPVUtil 'Operating Cost'!B399:AV523
         """
+        if (self.ac.solution_category == SOLUTION_CATEGORY.LAND or
+                self.ac.solution_category == SOLUTION_CATEGORY.OCEAN):
+            new_land_units_per_year = self.soln_pds_new_funits_per_year().loc[:, 'World']
+            new_funits_per_year = new_land_units_per_year
+            new_annual_iunits_reqd = new_land_units_per_year
+        else:
+            new_funits_per_year = self.soln_pds_new_funits_per_year().loc[:, 'World']
+            new_annual_iunits_reqd = self.conv_ref_new_annual_iunits_reqd().loc[:, 'World']
+
         result = self._annual_breakout(
-            new_funits_per_year=self.soln_pds_new_funits_per_year().loc[:, 'World'],
-            new_annual_iunits_reqd=self.conv_ref_new_annual_iunits_reqd().loc[:, 'World'],
+            new_funits_per_year=new_funits_per_year,
+            new_annual_iunits_reqd=new_annual_iunits_reqd,
             lifetime_replacement=self.ac.soln_lifetime_replacement,
             var_oper_cost_per_funit=self.ac.conv_var_oper_cost_per_funit,
             fuel_cost_per_funit=self.ac.conv_fuel_cost_per_funit,
