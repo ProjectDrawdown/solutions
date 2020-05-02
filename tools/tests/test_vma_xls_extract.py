@@ -38,6 +38,7 @@ def test_single_table_use_weight():
     assert not uw
 
 
+@pytest.mark.slow
 def test_read_xls_num_dfs():
     """ Check we produce the right amount of tables + discard empty ones """
     vma_r = tools.vma_xls_extract.VMAReader(wb)
@@ -47,6 +48,7 @@ def test_read_xls_num_dfs():
     assert non_empty_tables == 11
 
 
+@pytest.mark.slow
 def test_read_xls():
     """ Check some specifc values from Silvopasture """
     vma_r = tools.vma_xls_extract.VMAReader(wb)
@@ -57,6 +59,7 @@ def test_read_xls():
     assert 'SOLUTION Energy Efficiency Factor' in unique
 
 
+@pytest.mark.slow
 def test_read_xls_additional_var():
     """ Check the additional var from Silvopasture """
     vma_r = tools.vma_xls_extract.VMAReader(wb)
@@ -65,6 +68,7 @@ def test_read_xls_additional_var():
     assert s in vma_df['Title on xls'].unique()
 
 
+@pytest.mark.slow
 def test_xls_df_dict():
     """ Check that wb is extracted to a dictionary (component of read_xls) """
 

@@ -2,6 +2,7 @@ import pytest
 from model import aez
 
 
+@pytest.mark.slow
 def test_populate_solution_land_allocation():
     trr_aez = aez.AEZ('Tropical Forest Restoration')
     assert trr_aez.soln_land_alloc_df.loc['Tropical-Humid',

@@ -1,56 +1,40 @@
 {
-    "name": "PDS-61p2050-Drawdown-PDScustom-high-BookEdition1",
+    "name": "PDS-62p2050-Optimum-PDSCustom-max-Nov2019",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "This scenario represents the result based on the revisions made to the current adoption, first cost and net profit margin of the solution, and to the conventional operational cost and net profit margin. In addition, the revised model also estimated the operational cost which was missing in the Book Edition 1. The growth rates used to develop the future adoption of RA and the carbon sequestration values for different thermal moisture regimes are the one which were used in the Book Edition 1. This scenario represent the result of the \"high of all\" PDS custom scenario. As the solution is a bridge solution to Conservation Agriculture (CA), the future growth area of this solution, also includes the area which was transferred from CA to this solution. This scenario is correspondent with the \"high-high early adoption, polynomial trend\" PDS custom scenario of CA. ",
+    "description": "This is updated scenario based on updated data, adoption scenarios, and change of current adoption year from 2014 to 2018.\r\n",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": false,
+    "ref_base_adoption": {
+        "World": 11.8392848833092,
+        "OECD90": 6.9407230176938,
+        "Eastern Europe": 1.95630392167648,
+        "Asia (Sans Japan)": 2.13245326677564,
+        "Middle East and Africa": 0.436647749460477,
+        "Latin America": 0.37315692770282,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "Max, Linear Trend",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Average of All Custom Scenarios",
     "soln_ref_adoption_regional_data": false,
     "conv_2014_cost": {
         "value": 0.0,
@@ -63,7 +47,7 @@
     },
     "conv_expected_lifetime": 30.0,
     "yield_from_conv_practice": {
-        "value": 3789.87993810478,
+        "value": 4.02469905097275,
         "statistic": "mean"
     },
     "pds_2014_cost": {
@@ -81,7 +65,7 @@
     },
     "soln_expected_lifetime": 30.0,
     "yield_gain_from_conv_to_soln": {
-        "value": 0.0825714285714286,
+        "value": -0.0101666666666667,
         "statistic": "mean"
     },
     "npv_discount_rate": 0.1,
@@ -116,10 +100,12 @@
     "soln_annual_energy_used": 0.0,
     "seq_rate_global": NaN,
     "seq_rate_per_regime": {
-        "Tropical-Humid": 1.18015559208201,
-        "Temperate/Boreal-Humid": 0.618832443746458,
+        "Tropical-Humid": 1.24507327292924,
+        "Temperate-Humid": 0.659559828194157,
+        "Boreal-Humid": 0.659559828194157,
         "Tropical-Semi-Arid": 1.41975893495969,
-        "Temperate/Boreal-Semi-Arid": 0.384690007457083,
+        "Temperate-Semi-Arid": 0.384690007457083,
+        "Boreal-Semi-Arid": 0.384690007457083,
         "Global Arid": 0.0,
         "Global Arctic": 0.0
     },
