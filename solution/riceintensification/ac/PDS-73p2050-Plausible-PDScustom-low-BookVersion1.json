@@ -1,56 +1,40 @@
 {
-    "name": "PDS-100p2050-Optimum-PDScustom-high-BookEdition1",
+    "name": "PDS-73p2050-Plausible-PDScustom-low-BookVersion1",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "The current adoption of the solution is based on the data received from Prof Norman Uphoff through personal communication for the countries where the solution have been well adopted. The future adoption is projected based on the the adoption projections given for China, India, and Indonesia. The adoption scenarios are thus built based on the average, medium and high projections given for these three countries. Some of the scenarios involve an early adoption of 100% by 2030. This scenario stores the results derived from the \"high of all\" PDS custom adoption scenarios. This Edition also involves the correction of the net profit margin with the revised methodology, correction of greenhouse gas emissions with data correction, and the estimation of operational cost which was missing in the Book Edition 1 result. In addition the conventional net profit margin and operational cost values were also corrected. The result of this scenario is marginally higher than the Book Edition 1, so no new scenario was created for the latter.",
+    "description": "The current adoption of the solution is based on the data received from Prof Norman Uphoff through personal communication for the countries where the solution have been well adopted. The future adoption is projected based on the the adoption projections given for China, India, and Indonesia. The adoption scenarios are thus built based on the average, medium and high projections given for these three countries. Some of the scenarios involve an early adoption of 100% by 2030. This scenario stores the results derived from the \"low of all\" PDS custom adoption scenarios. This version also involves the correction of the net profit margin with the revised methodology, correction of greenhouse gas emissions with data correction, and the estimation of operational cost which was missing in the Book Version 1 result. In addition the conventional net profit margin and operational cost values were also corrected. The result of this scenario is marginally higher than the Book Version 1, so no new scenario was created for the latter.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": false,
+    "ref_base_adoption": {
+        "World": 3.49,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "pds_adoption_use_ref_years": [ 2014 ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "Low of All Custom Scenarios",
+    "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "conv_2014_cost": {
         "value": 0.0,

@@ -1,5 +1,6 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Jain et al 2014,http://link.springer.com/article/10.1007/s10333-013-0390-2,Asia (Sans Japan),India,1  - Peer Reviewed,2014,,,kg CO2-eq/ha,0.0,t CO2-eq / ha,,Refer abstract,
-Hardy et al. 2013,https://works.bepress.com/venkatanarayana_motkuri/9/,Asia (Sans Japan),India,1  - Peer Reviewed,2013,,,kg CO2-eq/ha,0.0,t CO2-eq / ha,,Refer table 2a,
-FAO 2010,http://www.fao.org/fileadmin/templates/ex_act/pdf/Climate_Mitigation_Potential_of_Rice_Value_Chain_EN_Mar.pdf,Asia (Sans Japan),India,2 - Public Sector/ Multilateral Agency,2010,,,t CO2-eq / ha,,t CO2-eq / ha,,Refer section 4.3,
-FAO 2010,http://www.fao.org/fileadmin/templates/ex_act/pdf/Climate_Mitigation_Potential_of_Rice_Value_Chain_EN_Mar.pdf,Asia (Sans Japan),India,2 - Public Sector/ Multilateral Agency,2010,,,t CO2-eq / ha,,t CO2-eq / ha,,Refer section 4.3,
+Jain et al 2014,http://link.springer.com/article/10.1007/s10333-013-0390-2,Asia (Sans Japan),India,1  - Peer Reviewed,2014,,243.80000000000007,kg CO2-eq/ha,0.24380000000000007,t CO2-eq / ha,,Refer abstract,
+Hardy et al. 2013,https://works.bepress.com/venkatanarayana_motkuri/9/,Asia (Sans Japan),India,1  - Peer Reviewed,2013,,3749.0,kg CO2-eq/ha,3.749,t CO2-eq / ha,,Refer table 2a,
+FAO 2010,http://www.fao.org/fileadmin/templates/ex_act/pdf/Climate_Mitigation_Potential_of_Rice_Value_Chain_EN_Mar.pdf,Asia (Sans Japan),India,2 - Public Sector/ Multilateral Agency,2010,,5.01301775147929,t CO2-eq / ha,,t CO2-eq / ha,,Refer section 4.3,
+FAO 2010,http://www.fao.org/fileadmin/templates/ex_act/pdf/Climate_Mitigation_Potential_of_Rice_Value_Chain_EN_Mar.pdf,Asia (Sans Japan),India,2 - Public Sector/ Multilateral Agency,2010,,2.17112426035503,t CO2-eq / ha,,t CO2-eq / ha,,Refer section 4.3,
+"Gathorne-Hardy et al., 2016",http://agri.ckcest.cn/ass/49098144-7dc6-4a94-84e1-0761b6389bc8.pdf,Asia (Sans Japan),India,1  - Peer Reviewed,2016,,304.0,kg CO2 -eq/ha,0.304,t CO2-eq / ha,,Refer to Table 4,
