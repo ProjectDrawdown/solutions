@@ -23,6 +23,7 @@ def test_vals_from_real_soln_csv():
     assert result == pytest.approx(expected)
 
 
+@pytest.mark.slow
 class TestVMAFromXlsx:
     def test_no_title(self):
         """Check that the default title (None) raises an error."""
