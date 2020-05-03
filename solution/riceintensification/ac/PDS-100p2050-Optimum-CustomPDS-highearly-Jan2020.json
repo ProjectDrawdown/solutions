@@ -1,56 +1,40 @@
 {
-    "name": "PDS-87p2050-Drawdown-PDScustom-avg-BookEdition1",
+    "name": "PDS-100p2050-Optimum-CustomPDS-highearly-Jan2020",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "The current adoption of the solution is based on the data received from Prof Norman Uphoff through personal communication for the countries where the solution have been well adopted. The future adoption is projected based on the the adoption projections given for China, India, and Indonesia. The adoption scenarios are thus built based on the average, medium and high projections given for these three countries. Some of the scenarios involve an early adoption of 100% by 2030. This scenario stores the results derived from the \"average of all\" PDS custom adoption scenarios. This Edition also involves the correction of the net profit margin with the revised methodology, correction of greenhouse gas emissions with data correction, and the estimation of operational cost which was missing in the Book Edition 1 result. In addition the conventional net profit margin and operational cost values were also corrected. The result of this scenario is marginally higher than the Book Edition 1, so no new scenario was created for the latter.",
+    "description": "updated results with new scenario description",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": false,
+    "ref_base_adoption": {
+        "World": 6.67424059341448,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "Average of All Custom Scenarios",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "High, Linear Trend, Early Growth",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Average of All Custom Scenarios",
     "soln_ref_adoption_regional_data": false,
     "conv_2014_cost": {
         "value": 0.0,
@@ -58,12 +42,12 @@
     },
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_fixed_oper_cost_per_iunit": {
-        "value": 652.735403234368,
+        "value": 655.863930910406,
         "statistic": "mean"
     },
     "conv_expected_lifetime": 30.0,
     "yield_from_conv_practice": {
-        "value": 1176.99596120478,
+        "value": 1.22974866040524,
         "statistic": "mean"
     },
     "pds_2014_cost": {
@@ -76,12 +60,12 @@
     },
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_fixed_oper_cost_per_iunit": {
-        "value": 646.921752343548,
+        "value": 642.952452033837,
         "statistic": "mean"
     },
     "soln_expected_lifetime": 30.0,
     "yield_gain_from_conv_to_soln": {
-        "value": 0.381228947368421,
+        "value": 0.352186001067094,
         "statistic": "mean"
     },
     "npv_discount_rate": 0.1,
@@ -102,12 +86,12 @@
     },
     "tco2_rplu_rate": "Annual",
     "tn2o_co2_reduced_per_land_unit": {
-        "value": -0.024659427,
+        "value": -0.0839397135,
         "statistic": "mean"
     },
     "tn2o_co2_rplu_rate": "Annual",
     "tch4_co2_reduced_per_land_unit": {
-        "value": 1.99931692307692,
+        "value": 1.32852,
         "statistic": "mean"
     },
     "tch4_co2_rplu_rate": "Annual",

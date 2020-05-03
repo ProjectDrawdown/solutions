@@ -419,7 +419,6 @@ class Scenario:
                 fname = f'ds{idx}_incr_change_in_cons_ag_current.csv'
             cons_ag_file = THISDIR.joinpath('ca_pds_data', fname)
             if cons_ag_file.is_file():
-                print(f"Updating {idx} from {fname}")
                 cons_ag_adopt = pd.read_csv(str(cons_ag_file), header=0, index_col=0, comment='#',
                         skipinitialspace=True, skip_blank_lines=True, dtype=np.float64)
                 # growth in Conservation Agriculture is not a factor, only reduction in area
@@ -441,10 +440,6 @@ class Scenario:
                     0.392113171655, 0.364411206077, 0.0, 0.0, 0.0, 0.0]
             df.loc[2018] = [11.8009, 6.946491121632, 1.839133620034, 2.006885018162,
                     0.438513174434, 0.373269709916, 0.0, 0.0, 0.0, 0.0]
-
-        if self.ac.name == 'PDS-62p2050-Optimum-PDSCustom-max-Nov2019':
-            print(ca_pds_data_sources)
-            print(self.pds_ca.scenarios)
 
         # Custom REF Data
         ca_ref_data_sources = [

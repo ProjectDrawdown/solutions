@@ -213,7 +213,7 @@ class HelperTables:
         first_datapoint_main_region = adoption.loc[datapoint_year, main_region]
         adoption.update(self.pds_datapoints.iloc[[0]])
         if not self.use_first_pds_datapoint_main:
-            # Starting in Drawdown 2020 solutions, the World region computation is different
+            # In some Drawdown 2020 solutions, the World region computation is different
             # and no longer copies the first datapoint.
             adoption.loc[datapoint_year, main_region] = first_datapoint_main_region
 
