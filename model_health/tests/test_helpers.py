@@ -13,8 +13,7 @@ from model_health.helpers import (
     get_survey_data,
     get_regional_nonzero_tam,
     get_regional_nonzero_adoption,
-    get_regional_tam_percent,
-    get_regional_adoption_percent,
+    get_regional_as_percent,
 )
 import pdb
 
@@ -87,22 +86,22 @@ mock_py_solutions = pd.DataFrame(
 
 mock_survey_data = pd.DataFrame(
     [
-        ["biochar:PDS-20p2050-Optimum-PDScustom-max-Bookedition1", 0.0, 0.0, 0.99,],
+        ["biochar:PDS-20p2050-Optimum-PDScustom-max-Bookedition1", 0.0, 0.0, 0.99],
         [
             "perennialbioenergy:PDS-72p2050-Plausible-PDScustom-avg-BookVersion1",
             np.nan,
             0.0,
             0.99,
         ],
-        ["improvedcookstoves:PDS3-25p2050_Linear to 25% (Book Ed.1)", 1.10, 1.10, 1.0,],
-        ["biogas:PDS-1p2050-Optimum (Book Ed.1)", 0.71, 0.003, 0.97,],
+        ["improvedcookstoves:PDS3-25p2050_Linear to 25% (Book Ed.1)", 1.10, 1.10, 1.0],
+        ["biogas:PDS-1p2050-Optimum (Book Ed.1)", 0.71, 0.003, 0.97],
         [
             "tropicaltreestaples:PDS-42p2050-Drawdown-PDSCustom-avg-Nov2019",
             np.nan,
             0.0,
             0.99,
         ],
-        ["solarpvutil:PDS-20p2050-Plausible2020", 1.09, 0.0, np.nan,],
+        ["solarpvutil:PDS-20p2050-Plausible2020", 1.09, np.nan, 0.94],
         [
             "trains:PDS1-4p2050-Doubled Historical Electrification Rate (Book Ed.1)",
             0.0,
@@ -246,7 +245,7 @@ def test_get_survey_data():
 
 def test_get_regional_nonzero_tam():
     result = get_regional_nonzero_tam(mock_survey_data)
-    expected = {"nonzero_count": 8, "zero_count": 2}
+    expected = {"nonzero_count": 4, "zero_count": 6}
     assert result == expected
 
 
@@ -257,25 +256,14 @@ def test_get_regional_nonzero_adoption():
 
 
 def test_get_regional_tam_percent():
-    result = get_regional_tam_percent(mock_survey_data)
-    expected = pd.Series(
-        [
-            np.nan,
-            110.00000000000001,
-            71.0,
-            np.nan,
-            109.00000000000001,
-            np.nan,
-            92.7,
-            np.nan,
-        ]
-    )
+    result = get_regional_as_percent(mock_survey_data, "RegionalFractionTAM")
+    expected = pd.Series([110.00000000000001, 71.0, 109.00000000000001, 92.7])
     # Only check values
     np.testing.assert_array_equal(result.values, expected.values)
 
 
 def test_get_regional_adoption_percent():
-    result = get_regional_adoption_percent(mock_survey_data)
+    result = get_regional_as_percent(mock_survey_data, "RegionalFractionAdoption")
     expected = pd.Series([110.00000000000001, 0.3])
     # Only check values
     np.testing.assert_array_equal(result.values, expected.values)

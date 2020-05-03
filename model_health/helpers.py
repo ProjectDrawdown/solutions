@@ -86,8 +86,10 @@ def get_survey_data():
 
 def get_regional_nonzero_tam(survey_data):
 
-    nonzero_count = (survey_data["RegionalFractionTAM"] != 0.0).sum()
-    zero_count = survey_data.shape[0] - nonzero_count
+    msk_isnull = survey_data["RegionalFractionTAM"].isnull()
+    msk_zero = survey_data["RegionalFractionTAM"] == 0.0
+    zero_count = (msk_zero | msk_isnull).sum()
+    nonzero_count = survey_data.shape[0] - zero_count
     return {
         "nonzero_count": nonzero_count,
         "zero_count": zero_count,
@@ -96,21 +98,17 @@ def get_regional_nonzero_tam(survey_data):
 
 def get_regional_nonzero_adoption(survey_data):
 
-    nonzero_count = (survey_data["RegionalFractionAdoption"] != 0.0).sum()
-    zero_count = survey_data.shape[0] - nonzero_count
+    msk_isnull = survey_data["RegionalFractionAdoption"].isnull()
+    msk_zero = survey_data["RegionalFractionAdoption"] == 0.0
+    zero_count = (msk_zero | msk_isnull).sum()
+    nonzero_count = survey_data.shape[0] - zero_count
     return {
         "nonzero_count": nonzero_count,
         "zero_count": zero_count,
     }
 
 
-def get_regional_tam_percent(survey_data):
-
-    msk_non_null = survey_data["RegionalFractionTAM"] != 0.0
-    return survey_data.loc[msk_non_null, "RegionalFractionTAM"] * 100
-
-
-def get_regional_adoption_percent(survey_data):
-
-    msk_non_null = survey_data["RegionalFractionAdoption"] != 0.0
-    return survey_data.loc[msk_non_null, "RegionalFractionAdoption"] * 100
+def get_regional_as_percent(survey_data, column):
+    msk_non_null = survey_data[column].notnull()
+    msk_non_zero = survey_data[column] != 0.0
+    return survey_data.loc[msk_non_null & msk_non_zero, column] * 100
