@@ -11,3 +11,4 @@ solution/mangroverestoration/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/improvedrice/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/regenerativeagriculture/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/riceintensification/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
+solution/grasslandprotection/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
