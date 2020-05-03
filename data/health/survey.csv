@@ -126,9 +126,19 @@ highspeedrail:PDS1-4p2050-Announced Constr+1%Traffic Density (Book Ed.1),0.0,0.0
 improvedcookstoves:PDS3-25p2050_Linear to 25% (Book Ed.1),1.1088236768799442,1.1088236768799442,1.0
 improvedcookstoves:PDS1-15p2050_Low Growth (Book Ed.1),1.1088236768799442,0.0,0.999300515989594
 improvedcookstoves:PDS2-20p2050_High Growth (Book Ed.1),1.1088236768799442,0.0,0.9996058452513643
-improvedrice:PDS-100p2050-Optimum-PDS-max-BookVersion1,,0.3855195380007747,0.9862282435904245
-improvedrice:PDS-80p2050-Drawdown-PDScustom-high-BookVersion1,,0.5120269172049726,0.9906189046246849
-improvedrice:PDS-54p2050-Plausible-PDScustom-avg-BookVersion1,,0.6210381876420442,0.9935967365701457
+improvedrice:PDS-100p2050-Drawdown-PDSCustom-high-Nov2019,,0.0,0.9319307857824418
+improvedrice:PDS-100p2050-Optimum-PDSCustom-highearly-Nov2019,,0.0,0.7600330127433319
+improvedrice:PDS-86p2050-Plausible-Custom PDS-Avg,,0.0,0.9769178038160632
+improvedrice:PDS-100p2050-Drawdown-PDS Custom-High,,0.0,0.9386187355563559
+improvedrice:PDS-100p2050-Optimum-CustomPDS-highearly-aug2019,,0.0,0.7705932276828156
+improvedrice:PDS-84p2050-Plausible-CustomPDS-avg-aug2019,,0.0,0.9769178038160632
+"improvedrice:PDS-100p2050-Optimum-PDS Custom-High Growth, Early Adoption",,0.0,0.7705932276828156
+improvedrice:PDS-100p2050-Drawdown-customPDS-high-Jan2020,,0.0,0.9319307857824418
+improvedrice:PDS-84p2050-Plausible-customPDS-avg-Jan2020,,0.0,0.9728182713865982
+improvedrice:PDS-84p2050-Plausible-PDSCustom-avg-Nov2019,,0.0,0.9728182713865982
+improvedrice:PDS-100p2050-Drawdown-CustomPDS-high-aug2019,,0.0,0.9386187355563559
+improvedrice:PDS-80p2050-Drawdown-PDScustom-high-BookVersion1,,0.0,0.928366397370724
+improvedrice:PDS-54p2050-Plausible-PDScustom-avg-BookVersion1,,0.0,0.9530445625307777
 indigenouspeoplesland:PDS-91p2050-Optimum-PDScustom-high-Bookedition1,,0.0,0.9952536248728295
 indigenouspeoplesland:PDS-61p2050-Plausible-PDScustom-low-Bookedition1,,0.0,0.9812726297141984
 indigenouspeoplesland:PDS-76p2050-Drawdown-PDScustom-avg-Bppkedition1,,0.0,0.9922529020563144
@@ -232,9 +242,16 @@ recycledpaper:PDS2-77p2050-Mean Growth (Book Ed.1),1.2360617693542109,0.0,0.9945
 recycledpaper:PDS3-80p2050-High Growth (Book Ed.1),1.2360617693542109,0.0,0.9852818152808984
 refrigerants:PDS1-93p2050-Individual Banks (Book Ed.1),0.0,0.0,0.9199832442680641
 refrigerants:PDS2/3-100p2050-Combined Banks (Book Ed.1),0.0,0.0,0.8982586073211768
-regenerativeagriculture:PDS-61p2050-Drawdown-PDScustom-high-BookEdition1,,1.017045566324402,0.9834178206695765
-regenerativeagriculture:PDS-47p2050-Plausible-PDScustom-avg-BookEdition1,,0.9998561674923554,0.987119778160576
-regenerativeagriculture:PDS-62p2050-Optimum-PDScustom-max-BookEdition1,,0.999999999961688,0.9447045807857277
+regenerativeagriculture:PDS-47p2050-Drawdown-customPDS-high-29Jan2020,,1.0,0.9991788042519177
+regenerativeagriculture:PDS-47p2050-Plausible-PDScustom-avg-BookVersion1,,1.0,0.9270162270113963
+regenerativeagriculture:PDS-32p2050-Plausible-customPDS-29Jan2020,,1.0,0.9991788042519177
+regenerativeagriculture:PDS-47p2050-Plausible-PDSCustom-avg-Nov2019,,1.0,0.9991788042519177
+regenerativeagriculture:PDS-33p2050-Plausible-customPDS-low-Jan2020,,1.0,0.9991788042519177
+regenerativeagriculture:PDS-62p2050-Optimum-PDScustom-max-BookVersion1,,0.9999999999561072,0.9296505799964965
+regenerativeagriculture:PDS-61p2050-Drawdown-PDScustom-high-BookVersion1,,1.0,0.9270162270113963
+regenerativeagriculture:PDS-62p2050-Optimum-PDSCustom-max-Nov2019,,1.0027317628852361,0.9234128415984131
+regenerativeagriculture:PDS-47p2050-Drawdown-customPDS-avg-Jan2020,,1.0,0.9991788042519177
+regenerativeagriculture:PDS-62p2050-Drawdown-PDSCustom-high-Nov2019,,1.0,0.9991788042519177
 riceintensification:PDS-87p2050-Drawdown-PDScustom-avg-BookEdition1,,0.0,0.9300898207874397
 riceintensification:PDS-73p2050-Plausible-PDScustom-low-BookEdition1,,0.0,0.9813077826786221
 riceintensification:PDS-100p2050-Optimum-PDScustom-high-BookEdition1,,0.0,0.8372224742588056
