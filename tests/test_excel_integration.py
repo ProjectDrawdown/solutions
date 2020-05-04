@@ -1572,6 +1572,18 @@ def test_Geothermal_RRS():
 
 
 @pytest.mark.slow
+def test_GrasslandProtection_LAND():
+    from solution import grasslandprotection
+    zipfilename = str(solutiondir.joinpath(
+        'grasslandprotection', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for scenario in grasslandprotection.scenarios.keys():
+        obj = grasslandprotection.Scenario(scenario=scenario)
+        verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+
+
+@pytest.mark.slow
 def test_GreenRoofs_RRS():
     from solution import greenroofs
     zipfilename = str(solutiondir.joinpath(

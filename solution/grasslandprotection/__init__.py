@@ -1,5 +1,5 @@
-"""Peatland Protection solution model.
-   Excel filename: Drawdown_RRS-BIOSEQProtect_Model_v1.1b_Peatland_Mar2020.xlsm
+"""Grassland Protection solution model.
+   Excel filename: Drawdown_RRS-BIOSEQProtect_Model_v1.1d_Grassland Protection_Mar2020.xlsm
 """
 
 import pathlib
@@ -53,16 +53,14 @@ VMAs = {
     'Fuel Reduction Factor for UNDEGRADED Land': vma.VMA(
         filename=None, use_weight=False),
     't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
+        filename=THISDIR.joinpath("vma_data", "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv"),
+        use_weight=False),
     't CO2 Reduced per Land Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "t_CO2_Reduced_per_Land_Unit.csv"),
-        use_weight=False),
+        filename=None, use_weight=False),
     't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "t_N2O_CO2_eq_Reduced_per_Land_Unit.csv"),
-        use_weight=False),
+        filename=None, use_weight=False),
     't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "t_CH4_CO2_eq_Reduced_per_Land_Unit.csv"),
-        use_weight=False),
+        filename=None, use_weight=False),
     'Indirect CO2-eq Emissions DEGRADED LAND': vma.VMA(
         filename=None, use_weight=False),
     'Indirect CO2-eq Emissions UNDEGRADED LAND': vma.VMA(
@@ -72,7 +70,7 @@ VMAs = {
         use_weight=False),
     'Growth Rate of Land Degradation': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "Growth_Rate_of_Land_Degradation.csv"),
-        use_weight=True),
+        use_weight=False),
     'Disturbance Rate': vma.VMA(
         filename=None, use_weight=False),
     't C storage in Protected Landtype': vma.VMA(
@@ -84,18 +82,6 @@ VMAs = {
         filename=None, use_weight=False),
     'Temperate Multiplier for Regrowth': vma.VMA(
         filename=None, use_weight=False),
-    'Peatland area in 1990': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Peatland_area_in_1990.csv"),
-        use_weight=False),
-    'Peatland area in 2008': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Peatland_area_in_2008.csv"),
-        use_weight=False),
-    'Degraded Peatland Area in 1990': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Degraded_Peatland_Area_in_1990.csv"),
-        use_weight=False),
-    'Degraded Peatland Area in 2008': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Degraded_Peatland_Area_in_2008.csv"),
-        use_weight=False),
 }
 vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
 
@@ -106,7 +92,7 @@ units = {
     "operating cost": "US$B",
 }
 
-name = 'Peatland Protection'
+name = 'Grassland Protection'
 solution_category = ac.SOLUTION_CATEGORY.LAND
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
@@ -152,6 +138,10 @@ class Scenario:
         adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
             dtype=np.object).set_index('param')
         ad_data_sources = {
+            'Raw Data for ALL LAND TYPES': {
+                'Henwood 1994 and Henwood 2010': THISDIR.joinpath('ad', 'ad_Henwood_1994_and_Henwood_2010.csv'),
+                'Henwood 2010': THISDIR.joinpath('ad', 'ad_Henwood_2010.csv'),
+            },
         }
         self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
             main_includes_regional=True,
@@ -160,227 +150,103 @@ class Scenario:
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
         tla_world_2050 = self.tla_per_region.loc[2050, 'World']
+        ad_2014 = 132.860079407797  # adoption in year 2014 (refer B647, adoption data sheet)
         ad_2018 = self.ac.ref_base_adoption['World']
-        growth_initial = pd.DataFrame([[2018] + list(self.ac.ref_base_adoption.values())],
-                columns=ca_pds_columns).set_index('Year')
-
-        degrade_rate_high = pd.Series(0.00506640879193976, index=range(2014, 2061))
-
-        degrade_rate_low = pd.Series(0, index=range(2014, 2061))
-        degrade_rate_low.loc[2014:2019] = 0.00506640879193976
-        degrade_rate_low.loc[2020:2029] = 0.00253320439596988
-        degrade_rate_low.loc[2030:] = 0.0
-
-        degrade_rate_alt = pd.Series(0, index=range(2014, 2061))
-        degrade_rate_alt.loc[2014] = 0.00506640879193976
-        degrade_rate_alt.loc[2015] = 0.00464420805927811
-        degrade_rate_alt.loc[2016] = 0.00422200732661647
-        degrade_rate_alt.loc[2017] = 0.00379980659395482
-        degrade_rate_alt.loc[2018] = 0.00337760586129317
-        degrade_rate_alt.loc[2019] = 0.00295540512863153
-        degrade_rate_alt.loc[2020] = 0.00253320439596988
-        degrade_rate_alt.loc[2021] = 0.00227988395637289
-        degrade_rate_alt.loc[2022] = 0.00202656351677590
-        degrade_rate_alt.loc[2023] = 0.00177324307717892
-        degrade_rate_alt.loc[2024] = 0.00151992263758193
-        degrade_rate_alt.loc[2025] = 0.00126660219798494
-        degrade_rate_alt.loc[2026] = 0.00101328175838795
-        degrade_rate_alt.loc[2027] = 0.00075996131879096
-        degrade_rate_alt.loc[2028] = 0.00050664087919398
-        degrade_rate_alt.loc[2029] = 0.00025332043959699
-        degrade_rate_alt.loc[2030:] = 0.0
+        total_temperate_grassland = 1209.098
+        degrade_vma = VMAs['Growth Rate of Land Degradation']
+        degrade_cached = self.ac.lookup_vma(vma_title='Growth Rate of Land Degradation')
+        annual_degrade = degrade_cached if degrade_cached else degrade_vma.avg_high_low(key='mean')
 
         # In Excel, the Custom PDS Scenarios tab columns AC:AF compute a limit on adoption
         # based on the amount of degraded land remaining. We compute the same limit here.
-        # This version takes the adoption into account.
-        def constrained_tla_adoption(rate, datapoints):
+        def constrained_tla(ad_2050):
+            (slope, intercept) = np.polyfit(x=[2018, 2050], y=[ad_2018, ad_2050], deg=1)
             degrade_df = pd.DataFrame(0, index=range(2014, 2061), columns=[
                 'Total undegraded land at the start of the year',
                 'Degraded land at the end of the year',
                 'Total undegraded land at the end of the year', 'Constrained TLA'])
             for year in range(2014, 2061):
                 if year == 2014:
-                    # Not a typo, Excel uses the 2018 base adoption number starting in 2014.
-                    # We are bug-for-bug compatible here.
-                    undeg_start = tla_world_2050 - ad_2018
+                    undeg_start = tla_world_2050 - ad_2014
                 else:
                     last = degrade_df.loc[year-1, 'Total undegraded land at the end of the year']
-                    new = datapoints.loc[year, 'World'] - datapoints.loc[year-1, 'World']
-                    undeg_start = last - new
+                    undeg_start = last - slope
                 degrade_df.loc[year, 'Total undegraded land at the start of the year'] = undeg_start
-                degraded_end = max(0, undeg_start * rate[year])
+                degraded_end = max(0, undeg_start * annual_degrade)
                 degrade_df.loc[year, 'Degraded land at the end of the year'] = degraded_end
                 degrade_df.loc[year, 'Total undegraded land at the end of the year'] = (
                         undeg_start - degraded_end)
                 degrade_df.loc[year, 'Constrained TLA'] = (tla_world_2050 -
                         degrade_df['Degraded land at the end of the year'].sum())
-            return degrade_df
+            return degrade_df['Constrained TLA'].min()
 
-        def constrained_tla(rate):
-            degrade_df = pd.DataFrame(0, index=range(2014, 2061), columns=[
-                'Total undegraded land at the start of the year',
-                'Degraded land at the end of the year',
-                'Total undegraded land at the end of the year', 'Constrained TLA'])
-            for year in range(2014, 2061):
-                if year == 2014:
-                    # Not a typo, Excel uses the 2018 base adoption number starting in 2014.
-                    # We are bug-for-bug compatible here.
-                    undeg_start = tla_world_2050 - ad_2018
-                else:
-                    last = degrade_df.loc[year-1, 'Constrained TLA']
-                    undeg_start = last - ad_2018
-                degrade_df.loc[year, 'Total undegraded land at the start of the year'] = undeg_start
-                degraded_end = max(0, undeg_start * rate[year])
-                degrade_df.loc[year, 'Degraded land at the end of the year'] = degraded_end
-                degrade_df.loc[year, 'Total undegraded land at the end of the year'] = (
-                        undeg_start - degraded_end)
-                degrade_df.loc[year, 'Constrained TLA'] = (tla_world_2050 -
-                        degrade_df['Degraded land at the end of the year'].sum())
-            return degrade_df
+        # Data Source 1: Linear growth, conservative
+        # SOURCE: Henwood, W. D. (2010). Toward a strategy for the conservation and
+        # protection of the world's temperate grasslands. Great Plains Research, 121-134.
+        ds1_commit_2014 = 0.25  # % commitment for protection of temperate grassland by 2014
+        ds1_adoption_2050 = total_temperate_grassland * ds1_commit_2014
+        ds1_constrained_tla = constrained_tla(ad_2050=ds1_adoption_2050)
 
+        # Data Source 3: Linear growth, High
+        # SOURCE: Henwood, W. D. (2010). Toward a strategy for the conservation and
+        # protection of the world's temperate grasslands. Great Plains Research, 121-134.
+        ds3_commit_2014 = 0.5  # % commitment for protection of temperate grassland by 2014
+        ds3_adoption_2018 = self.ac.ref_base_adoption['World']
+        ds3_adoption_2050 = total_temperate_grassland * ds3_commit_2014
+        ds3_constrained_tla = constrained_tla(ad_2050=ds3_adoption_2050)
 
-        # DATA SOURCE 1
-        # https://rsis.ramsar.org/ris-search/peatland?pagetab=2&f%5B0%5D=wetlandTypes_en_ss%3AInland%20wetlands&f%5B1%5D=wetlandTypes_en_ss%3AU%3A%20Permanent%20Non-forested%20peatlands&f%5B2%5D=wetlandTypes_en_ss%3AXp%3A%20Permanent%20Forested%20peatlands&f%5B3%5D=managementPlanAvailable_i%3A-1
-        ds1_growth_rate = 0.0622897686767343
-        # silvopasture and farmlandrestoration use a growth_rate feature of customadoption
-        # to do something like this. However those two solutions calculate a linear growth
-        # and then use it to call TREND() to fit a line through it. peatlands uses the raw
-        # linear growth data as its Custom Adoption. not quite compatible with what
-        # silvopasture and farmlandrestoration do, so we calculate it here.
-        ds1_datapoints = pd.DataFrame(0.0, index=range(2012, 2061), columns=dd.REGIONS)
-        ds1_datapoints.loc[2012:2018, 'World'] = ad_2018
-        for year in range(2019, 2061):
-            rate = 1 + ds1_growth_rate
-            ds1_datapoints.loc[year, 'World'] = ds1_datapoints.loc[year-1, 'World'] * rate
-
-        # DATA SOURCE 2
-        df = constrained_tla_adoption(rate=degrade_rate_high, datapoints=ds1_datapoints)
-        ds2_adoption_2050 = df.loc[2050, 'Constrained TLA']
-        ds2_adoption_2030 = 0.7 * ds2_adoption_2050
-
-        # DATA SOURCE 4
-        df = constrained_tla_adoption(rate=degrade_rate_alt, datapoints=ds1_datapoints)
-        ds4_adoption_2050 = df.loc[2050, 'Constrained TLA']
-        ds4_adoption_2030 = 0.7 * ds4_adoption_2050
-
-        # DATA SOURCE 5
-        df = constrained_tla(rate=degrade_rate_high)
-        ds5_constrained_tla = df.loc[2050, 'Constrained TLA']
-
-        # DATA SOURCE 7
-        ds7_constrained_tla = constrained_tla(degrade_rate_low).loc[2050, 'Constrained TLA']
-
-        # DATA SOURCE 9
-        ds9_growth_rate = 0.0394112383173051
-        # silvopasture and farmlandrestoration use a growth_rate feature of customadoption
-        # to do something like this. However those two solutions calculate a linear growth
-        # and then use it to call TREND() to fit a line through it. peatlands uses the raw
-        # linear growth data as its Custom Adoption. So calculate it here.
-        ds9_datapoints = pd.DataFrame(0.0, index=range(2012, 2061), columns=dd.REGIONS)
-        ds9_datapoints.loc[2012:2018, 'World'] = ad_2018
-        for year in range(2019, 2061):
-            rate = 1 + ds9_growth_rate
-            ds9_datapoints.loc[year, 'World'] = ds9_datapoints.loc[year-1, 'World'] * rate
-        df = constrained_tla_adoption(degrade_rate_high, ds9_datapoints)
-        ds9_constrained_tla = df.loc[:, 'Constrained TLA'].min()
-
-        # DATA SOURCE 10
-        df = constrained_tla_adoption(degrade_rate_low, ds9_datapoints)
-        ds10_constrained_tla = df.loc[:, 'Constrained TLA'].min()
+        # Data Source 4: Linear growth, High
+        # SOURCE: Henwood, W. D. (2010). Toward a strategy for the conservation and
+        # protection of the world's temperate grasslands. Great Plains Research, 121-134.
+        ds4_commit_2014 = 1.0  # % commitment for protection of temperate grassland by 2014
+        ds4_adoption_2018 = self.ac.ref_base_adoption['World']
+        ds4_adoption_2050 = total_temperate_grassland * ds4_commit_2014
+        ds4_constrained_tla = constrained_tla(ad_2050=ds4_adoption_2050)
 
         ca_pds_data_sources = [
-            {'name': 'High adoption and conservative degradation rate', 'include': True,
+            {'name': 'Linear growth, conservative', 'include': True, 'maximum': ds1_constrained_tla,
                 'description': (
-                    'The Peatlands Ramsar sites with management plans evolution (1985-2015) was '
-                    'used to estimate the yearly increase rate of 6,23% corresponding to 1985- '
-                    "2015 coupled with the TLA's current degradation rate of 0.51%. "
+                    'The future adoption is projected based on the protection commitment made '
+                    'for the temperate grassland, which is 10% of the total temperate grassland '
+                    'area. Since, the current protection is much higher than the 10% commitment, '
+                    'so 25% commitment target is considered for this projection. '
                     ),
-                'datapoints': ds1_datapoints, 'maximum': 331},
-            {'name': 'Scenario 1 + 70% conservative degradation TLA in 2030', 'include': True,
-                'description': (
-                    'Scenario 1 with linear increase up to 70% of TLA 2050 value in 2030 and '
-                    'then linear increase to 100% TLA value in 2050 from then onwards '
-                    ),
-                'maximum': ds2_adoption_2050,
                 'datapoints': pd.DataFrame([
-                    [2014, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [2030, ds2_adoption_2030, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [2050, ds2_adoption_2050, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+                    [2018, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+                    [2050, ds1_adoption_2050, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
                     ], columns=ca_pds_columns).set_index('Year')},
-            {'name': 'High adoption and low degradation rate', 'include': True,
+            {'name': 'Exsisting progonostication', 'include': True, 'maximum': ds1_constrained_tla,
                 'description': (
-                    'The Peatlands Ramsar sites with management plans  evolution (1985-2015) was '
-                    'used to estimate the yearly increase rate of 6,23% corresponding to 1985- '
-                    '2015 coupled with the he New York declaration on Forests is used  to '
-                    'estimate an alternative degradation rate which starts from 0.51% and '
-                    'linearly decreases to half its value in 2020 and then to zero in 2030. '
+                    'The future adoption value was projected using the data interpolator and '
+                    'adoption data sheet based on the data available on protected grassland area '
+                    'globally in the temperate in the year 1994/2010 and 1996/2009. '
+                    'NOTE: in actual implementation, this scenario is set equal to the "Linear '
+                    'Growth, conservative" scenario not from adoption data.'
                     ),
-                'datapoints': ds1_datapoints, 'maximum': 396},
-            {'name': 'Scenario 3 + 70% low degradation TLA in 2030', 'include': True,
-                'description': (
-                    'Scenario 3 with linear increase up to 70% of TLA 2050 value in 2030 and '
-                    'then linear increase to 100% TLA value in 2050 from then onwards '
-                    ),
-                'maximum': ds4_adoption_2050,
                 'datapoints': pd.DataFrame([
-                    [2014, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [2030, ds4_adoption_2030, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+                    [2018, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+                    [2050, ds1_adoption_2050, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+                    ], columns=ca_pds_columns).set_index('Year')},
+            {'name': 'Linear growth, High', 'include': True, 'maximum': ds3_constrained_tla,
+                'description': (
+                    'The future adoption is projected based on the protection commitment made '
+                    'for the temperate grassland, which is 10% of the total temperate grassland '
+                    'area. Since, the current protection is much higher than the 10% commitment, '
+                    'so 50% commitment target is considered for this projection. '
+                    ),
+                'datapoints': pd.DataFrame([
+                    [2018, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+                    [2050, ds3_adoption_2050, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+                    ], columns=ca_pds_columns).set_index('Year')},
+            {'name': 'Max adoption, linear trend', 'include': True, 'maximum': ds4_constrained_tla,
+                'description': (
+                    'In this scenario, it is assumed that 100% of the grassland as per the TLA '
+                    'will be protected by 2050 '
+                    ),
+                'datapoints': pd.DataFrame([
+                    [2018, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
                     [2050, ds4_adoption_2050, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
                     ], columns=ca_pds_columns).set_index('Year')},
-            {'name': '100% conservative degradation TLA in 2050', 'include': True,
-                'description': (
-                    '100% adoption ofconservative degradation rate TLA  by 2050 '
-                    ),
-                'maximum': ds5_constrained_tla,
-                'datapoints': pd.DataFrame([
-                    [2014, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [2050, ds5_constrained_tla, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    ], columns=ca_pds_columns).set_index('Year')},
-            {'name': '80% conservative degradation TLA in 2030', 'include': True,
-                'description': (
-                    'Linear increase up to 80% of TLA 2050 value in 2030 (calculated with the '
-                    'conservative degradation rate) and then linear increase to 100% TLA value '
-                    'in 2050 from then onwards '
-                    ),
-                'maximum': ds5_constrained_tla,
-                'datapoints': pd.DataFrame([
-                    [2014, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [2030, 0.8 * ds5_constrained_tla, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [2050, ds5_constrained_tla, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    ], columns=ca_pds_columns).set_index('Year')},
-            {'name': '100% low degradation TLA in 2050', 'include': True,
-                'description': (
-                    '100% adoption of low degradation rate TLA  by 2050 '
-                    ),
-                'maximum': ds7_constrained_tla,
-                'datapoints': pd.DataFrame([
-                    [2014, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [2050, ds7_constrained_tla, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    ], columns=ca_pds_columns).set_index('Year')},
-            {'name': '80% low degradation TLA in 2030', 'include': True,
-                'description': (
-                    '80% low degradation TLA in 2030 '
-                    ),
-                'maximum': ds7_constrained_tla,
-                'datapoints': pd.DataFrame([
-                    [2014, ad_2018, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [2030, 0.8 * ds7_constrained_tla, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [2050, ds7_constrained_tla, 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    ], columns=ca_pds_columns).set_index('Year')},
-            {'name': 'Medium adoption and conservative degradation rate', 'include': True,
-                'description': (
-                    'The Peatlands Ramsar sites with management plans evolution (1985-2015) was '
-                    'used to estimate the yearly increase rate of 3,94% corresponding to 1990- '
-                    "2015 coupled with the TLA's current degradation rate of 0.51%. "
-                    ),
-                'datapoints': ds9_datapoints, 'maximum': ds9_constrained_tla},
-            {'name': 'Medium adoption and low degradation rate', 'include': True,
-                'description': (
-                    'The Peatlands Ramsar sites with management plans evolution (1985-2015) was '
-                    'used to estimate the yearly increase rate of 3,94% corresponding to 1990- '
-                    "2015 coupled with the TLA's low degradation rate of 0.51%. "
-                    ),
-                'datapoints': ds9_datapoints, 'maximum': ds10_constrained_tla},
         ]
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
@@ -389,9 +255,30 @@ class Scenario:
 
         for s in self.pds_ca.scenarios.values():
             df = s['df']
-            df.loc[2014:2018, 'World'] = ad_2018
+            df.loc[2014, 'World'] = 132.860079407797
+            df.loc[2015, 'World'] = 139.475887288368
+            df.loc[2016, 'World'] = 146.114200458296
+            df.loc[2017, 'World'] = 152.77501982823
+            df.loc[2018, 'World'] = 159.457782791276
 
-        ref_adoption_data_per_region = None
+        # Custom REF Data
+        ca_ref_data_sources = [
+            {'name': '[Type Scenario 1 Name Here (REF CASE)...]', 'include': True,
+                'description': (
+                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
+                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
+                    ),
+                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv')},
+        ]
+        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
+            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
+            high_sd_mult=1.0, low_sd_mult=1.0,
+            total_adoption_limit=self.tla_per_region)
+
+        if self.ac.soln_ref_adoption_basis == 'Custom':
+            ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
+        else:
+            ref_adoption_data_per_region = None
 
         if False:
             # One may wonder why this is here. This file was code generated.
@@ -419,15 +306,16 @@ class Scenario:
             index=list(self.ac.pds_adoption_final_percentage.keys()))
         ht_pds_adoption_final = ht_pds_adoption_final_percentage * self.tla_per_region.loc[2050]
         ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_pds_datapoints.loc[2018] = ht_pds_adoption_initial
+        ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
         ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
         self.ht = helpertables.HelperTables(ac=self.ac,
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
-            use_first_pds_datapoint_main=True,
+            ref_adoption_data_per_region=ref_adoption_data_per_region,
+            use_first_pds_datapoint_main=False,
             adoption_base_year=2018,
-            copy_pds_to_ref=True,
+            copy_pds_to_ref=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
@@ -439,7 +327,7 @@ class Scenario:
             electricity_unit_factor=1000000.0,
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-            bug_cfunits_double_count=True)
+            bug_cfunits_double_count=False)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
         conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
