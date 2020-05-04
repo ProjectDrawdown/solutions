@@ -252,9 +252,21 @@ regenerativeagriculture:PDS-61p2050-Drawdown-PDScustom-high-BookVersion1,,1.0,0.
 regenerativeagriculture:PDS-62p2050-Optimum-PDSCustom-max-Nov2019,,1.0027317628852361,0.9234128415984131
 regenerativeagriculture:PDS-47p2050-Drawdown-customPDS-avg-Jan2020,,1.0,0.9991788042519177
 regenerativeagriculture:PDS-62p2050-Drawdown-PDSCustom-high-Nov2019,,1.0,0.9991788042519177
-riceintensification:PDS-87p2050-Drawdown-PDScustom-avg-BookEdition1,,0.0,0.9300898207874397
-riceintensification:PDS-73p2050-Plausible-PDScustom-low-BookEdition1,,0.0,0.9813077826786221
-riceintensification:PDS-100p2050-Optimum-PDScustom-high-BookEdition1,,0.0,0.8372224742588056
+riceintensification:PDS-77p2050-Plauisble-PDSCustom-avg-Nov2019,,0.0,0.9999369857186893
+riceintensification:PDS-100p2050-Optimum-PDSCustom-High Early Growth-June2019,,0.0,0.709312769552532
+riceintensification:PDS-100p2050-Drawdown-PDSCustom-high-Nov2019,,0.0,0.9999369857186893
+riceintensification:PDS-100p2050-Optimum-PDSCustom-highearly-Nov2019,,0.0,0.7031410016478589
+riceintensification:PDS-100p2050-Optimum-CustomPDS-highearly-aug2019,,0.0,0.709312769552532
+riceintensification:PDS-100p2050-Optimum-CustomPDS-highearly-Jan2020,,0.0,0.7031410016478589
+riceintensification:PDS-87p2050-Drawdown-PDScustom-avg-BookVersion1,,0.0,0.9948085097539983
+riceintensification:PDS-100p2050-Drawdown-PDSCustom-High of all-June2019,,0.0,0.9962133990938007
+riceintensification:PDS-73p2050-Plausible-PDScustom-low-BookVersion1,,0.0,0.9948085097539983
+riceintensification:PDS-77p2050-Plausible-customPDS-avg-Jan2020,,0.0,0.9999369857186893
+riceintensification:PDS-75p2050-Plausible-PDSCustom-Avg of all-June2019,,0.0,0.9962133990938007
+riceintensification:PDS-100p2050-Drawdown-CustomPDS-high-aug2019,,0.0,0.9962133990938007
+riceintensification:PDS-100p2050-Drawdown-customPDS-high-Jan2020,,0.0,0.9999369857186893
+riceintensification:PDS-100p2050-Optimum-PDScustom-high-BookVersion1,,0.0,0.9948085097539983
+riceintensification:PDS-77p2050-Plausible-CustomPDS-avg-aug2019,,0.0,0.9962133990938007
 ships:PDS3-100p2050-Lowest EEOI (Book Ed.1),0.0,0.0,0.9842934729175642
 ships:PDS1-97p2050-Mean EEOI (Book Ed.1),0.0,0.0,0.9724283454965719
 ships:PDS2-100p2050-1 SD Below Mean EEOI (Book Ed.1),0.0,0.0,0.9820682230087809
