@@ -223,9 +223,16 @@ onshorewind:PDS-27p2050-Drawdown2020,0.7151913916705964,0.2842829618058761,0.989
 onshorewind:PDS-22p2050-Plausible (Book Ed. 1),1.0990576040386826,0.6111460403998333,0.9959045631882919
 onshorewind:PDS-27p2050-Optimum2020,0.7151913916705964,0.2842829618058761,0.9899838108721001
 onshorewind:PDS-20p2050-Plausible2020,1.0990576040386826,0.6111460403998333,0.9959045631882919
-peatlands:PDS-69p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9197220039778472
-peatlands:PDS-94p2050-Optimum-PDScustom-aggmax-Bookedition1,,0.0,0.7742349987766715
-peatlands:PDS-95p2050-Drawdown-PDScustom-high-Bookedition1,,0.0,0.8603687470433032
+peatlands:PDS-97p2050-Drawdown-PDSCustom-high-Nov2018,,0.0,0.9397743036456728
+peatlands:PDS-58p2050-Plausible-customPDS-avg-Jan2020,,0.0,0.9623193971463665
+peatlands:PDS-69p2050-Plausible-PDScustom-avg-BookVersion1,,0.0,0.9522289456381499
+peatlands:PDS-97p2050-Drawdown-customPDS-high-Jan2020,,0.0,0.9397743036456727
+peatlands:PDS-95p2050-Optimum-PDSCustom-80%lowdeg-Nov2019,,0.0,0.8897119890065156
+peatlands:PDS-58p2050-Plauisble-PDSCustom-avg-Nov2019,,0.0,0.9623193971463666
+peatlands:PDS-95p2050-Drawdown-PDScustom-high-BookVersion1,,0.0,0.9401278077665018
+peatlands:PDS-97p2050-Drawdown-CustomPDS-High-July2019,,0.0,0.939885181365607
+peatlands:PDS-95p2050-Optimum-CustomPDS-80%lowdegradation-July2019,,0.0,0.8891180512384204
+peatlands:PDS-57p2050-Plausible-CustomPDS-Avg-July2019,,0.0,0.9575253478483533
 perennialbioenergy:PDS-72p2050-Drawdown-customPDS-high-Jan2020,,0.0,0.9989670065206601
 perennialbioenergy:PDS-62p2050-Plausible-PDSCustom-avg-aug2019,,0.0,0.9978478181691349
 perennialbioenergy:PDS-89p2050-Drawdown-PDSCustom-max-Nov2019,,0.0,0.9989670065206601
