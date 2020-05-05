@@ -185,6 +185,7 @@ class UnitAdoption:
         """
         degraded = self.cumulative_reduction_in_total_degraded_land()
         result = degraded.diff().fillna(0.0)
+        result.iloc[0] = degraded.iloc[0]
         result.name = 'annual_reduction_in_total_degraded_land'
         return result
 
