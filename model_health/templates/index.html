@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Model Health Dashboard</title>
+</head>
+{{cdn}}
+{% for name, chart in charts.items() %}
+{{chart.script|safe}}
+{% endfor %}
+
+<body>
+    <h1>Project Drawdown: Model Health Dashboard</h1>
+    <p>This dashboard reports statistics about the health of the collection of Drawdown solution models.</p>
+    {% for name, chart in charts.items() %}
+    {{chart.body|safe}}
+    {% endfor %}
+</body>
+
+</html>
+<style type="text/css">
+    html {
+        display: table;
+        margin: auto;
+    }
+
+    body {
+        display: table-cell;
+        vertical-align: middle;
+    }
+</style>
