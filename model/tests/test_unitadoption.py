@@ -187,15 +187,42 @@ def test_total_undegraded_land():
 
 
 def test_annual_reduction_in_total_degraded_land():
-    cumu_ridl = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_cumu_ridl.csv'), index_col=0)
-    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_annu_ridl.csv'), index_col=0)
-    with mock.patch.object(unitadoption.UnitAdoption,
-            'cumulative_reduction_in_total_degraded_land', new=lambda x: cumu_ridl):
-        ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND),
-        ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
-                soln_pds_funits_adopted=None)
-        pd.testing.assert_frame_equal(ua.annual_reduction_in_total_degraded_land(
-                ).loc[:, ['World']], expected_world)
+    regions = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+            'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']
+    soln_pds_funits_adopted = pd.DataFrame(0.0, columns=regions, index=range(2014, 2061))
+    soln_ref_funits_adopted = pd.DataFrame(0.0, columns=regions, index=range(2014, 2061))
+    pds_total_adoption_units = pd.DataFrame(10.0, columns=regions, index=range(2014, 2061))
+    for x, idx in enumerate(soln_pds_funits_adopted.index):
+        soln_pds_funits_adopted.loc[idx, :] = x * 0.1
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND,
+            delay_protection_1yr=False, disturbance_rate=0.01, degradation_rate=0.04)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            soln_ref_funits_adopted=soln_ref_funits_adopted,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            pds_total_adoption_units=pds_total_adoption_units)
+    result = ua.annual_reduction_in_total_degraded_land()
+    # (degradation_rate - disturbance_rate) * funits
+    assert result.loc[2015, 'World'] == pytest.approx(0.003)
+
+
+def test_annual_reduction_in_total_degraded_land_first_year_nonzero():
+    regions = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+            'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']
+    soln_pds_funits_adopted = pd.DataFrame(0.0, columns=regions, index=range(2013, 2061))
+    soln_ref_funits_adopted = pd.DataFrame(0.0, columns=regions, index=range(2013, 2061))
+    pds_total_adoption_units = pd.DataFrame(10.0, columns=regions, index=range(2014, 2061))
+    for x, idx in enumerate(soln_pds_funits_adopted.index):
+        soln_pds_funits_adopted.loc[idx, :] = x * 0.1
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND,
+            delay_protection_1yr=False, disturbance_rate=0.01, degradation_rate=0.04)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            soln_ref_funits_adopted=soln_ref_funits_adopted,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            pds_total_adoption_units=pds_total_adoption_units)
+    result = ua.annual_reduction_in_total_degraded_land()
+    # This exposes a particular corner case where we had a bug, if the first year of
+    # annual_reduction_in_total_degraded_land is not zero.
+    assert result.loc[2014, 'World'] != 0
 
 
 def test_soln_pds_cumulative_funits_bug_behavior():
