@@ -8,14 +8,13 @@ from model_health.helpers import (
     get_all_solutions,
     get_pds_adoption_basis_counts,
     get_py_solutions,
-    get_ref_adoption_basis_count,
+    get_ref_adoption_basis_counts,
     get_scenarios_per_solution,
     get_survey_data,
     get_regional_nonzero_tam,
     get_regional_nonzero_adoption,
     get_regional_as_percent,
 )
-import pdb
 
 mock_py_solutions = pd.DataFrame(
     [
@@ -206,30 +205,34 @@ def test_get_py_solutions():
 
 def test_get_scenarios_per_solution():
     result = get_scenarios_per_solution(mock_py_solutions)
-    expected = pd.Series({"bamboo": 6, "nuclear": 2, "biochar": 2})
-    expected.index.name = "solution"
-    expected.name = "scenario"
-    pd.testing.assert_series_equal(result, expected)
+    expected = pd.DataFrame(
+        {"solution": ["bamboo", "nuclear", "biochar"], "scenario": [6, 2, 2]}
+    )
+    pd.testing.assert_frame_equal(result, expected)
 
 
 def test_get_pds_adoption_basis_counts():
     result = get_pds_adoption_basis_counts(mock_py_solutions)
-    expected = {
-        "Fully Customized PDS": 8,
-        "Existing Adoption Prognostications": 2,
-        "Linear": 0,
-        "Bass Diffusion S-Curve": 0,
-        "Logistic S-Curve": 0,
-        "Customized S-Curve Adoption": 0,
-    }
+    expected = pd.DataFrame(
+        {
+            "type": [
+                "Fully Customized PDS",
+                "Existing Adoption Prognostications",
+                "Linear",
+                "Bass Diffusion S-Curve",
+                "Logistic S-Curve",
+                "Customized S-Curve Adoption",
+            ],
+            "count": [8, 2, 0, 0, 0, 0],
+        }
+    )
+    pd.testing.assert_frame_equal(result, expected)
 
-    assert result == expected
 
-
-def test_get_ref_adoption_basis_count():
-    result = get_ref_adoption_basis_count(mock_py_solutions)
-    expected = {"Default": 8, "Custom": 2}
-    assert result == expected
+def test_get_ref_adoption_basis_counts():
+    result = get_ref_adoption_basis_counts(mock_py_solutions)
+    expected = pd.DataFrame({"type": ["Default", "Custom"], "count": [8, 2]})
+    pd.testing.assert_frame_equal(result, expected)
 
 
 def test_get_survey_data():

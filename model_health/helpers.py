@@ -38,10 +38,12 @@ def get_excel_python_count(all_solutions, py_solutions):
     python_solutions_count = py_solutions.solution.nunique()
 
     excel_solutions_count = total_solutions_count - python_solutions_count
-    return {
-        "Excel Only": excel_solutions_count,
-        "Python & Excel": python_solutions_count,
-    }
+    return pd.DataFrame(
+        {
+            "type": ["Excel Only", "Python & Excel"],
+            "count": [excel_solutions_count, python_solutions_count],
+        }
+    )
 
 
 def get_scenarios_per_solution(py_solutions):
@@ -49,6 +51,7 @@ def get_scenarios_per_solution(py_solutions):
         py_solutions.groupby(["solution"])["scenario"]
         .count()
         .sort_values(ascending=False)
+        .reset_index()
     )
 
 
@@ -61,16 +64,21 @@ def get_pds_adoption_basis_counts(py_solutions):
         "Fully Customized PDS",
         "Customized S-Curve Adoption",
     ]
-    pds_adoption_basis_counts = py_solutions.pds_adoption_basis.value_counts().to_dict()
+    pds_adoption_basis_counts = py_solutions.pds_adoption_basis.value_counts()
+    pds_adoption_basis_counts.index.name = "type"
+    pds_adoption_basis_counts.name = "count"
     for key in keys:
-        if key not in pds_adoption_basis_counts:
+        if key not in pds_adoption_basis_counts.index:
             pds_adoption_basis_counts[key] = 0
 
-    return pds_adoption_basis_counts
+    return pds_adoption_basis_counts.reset_index()
 
 
-def get_ref_adoption_basis_count(py_solutions):
-    return py_solutions.ref_adoption_basis.value_counts().to_dict()
+def get_ref_adoption_basis_counts(py_solutions):
+    ref_adoption_basis_counts = py_solutions.ref_adoption_basis.value_counts()
+    ref_adoption_basis_counts.index.name = "type"
+    ref_adoption_basis_counts.name = "count"
+    return ref_adoption_basis_counts.reset_index()
 
 
 def get_survey_data():
