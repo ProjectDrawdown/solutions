@@ -4,7 +4,7 @@ import pathlib
 
 sys.path.append(pathlib.Path(__file__).parents[1])
 
-from model_health.dashboard import generate_html
+from dashboard.dashboard import generate_html
 
 DASHBOARD_FILE = "index.html"
 

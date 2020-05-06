@@ -8,7 +8,7 @@ from bokeh.plotting import figure
 from bokeh.resources import CDN
 from bokeh.transform import cumsum
 
-from model_health.helpers import (
+from dashboard.helpers import (
     get_all_solutions,
     get_excel_python_count,
     get_pds_adoption_basis_counts,

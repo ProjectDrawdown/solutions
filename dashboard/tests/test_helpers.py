@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from mock import patch
 
-from model_health.helpers import (
+from dashboard.helpers import (
     get_all_solutions,
     get_pds_adoption_basis_counts,
     get_py_solutions,
@@ -168,8 +168,8 @@ def test_get_all_solutions():
     assert df.columns.tolist() == ["Solution", "DirName", "Sector"]
 
 
-@patch("model_health.helpers.solution_loader.all_solutions_scenarios", _mock_factory)
-@patch("model_health.helpers.importlib.import_module", _mock_importlib)
+@patch("dashboard.helpers.solution_loader.all_solutions_scenarios", _mock_factory)
+@patch("dashboard.helpers.importlib.import_module", _mock_importlib)
 def test_get_py_solutions():
     df = get_py_solutions()
     pd.testing.assert_frame_equal(

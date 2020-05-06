@@ -1,7 +1,7 @@
 from bokeh.resources import CDN
 from jinja2 import Environment, PackageLoader, Template
-from model_health.charts import make_pie_chart
-from model_health.helpers import (
+from dashboard.charts import make_pie_chart
+from dashboard.helpers import (
     get_all_solutions,
     get_excel_python_count,
     get_pds_adoption_basis_counts,
@@ -43,7 +43,7 @@ def get_all_charts_html():
 
 
 def generate_html():
-    env = Environment(loader=PackageLoader("model_health", "templates"),)
+    env = Environment(loader=PackageLoader("dashboard", "templates"),)
     template = env.get_template("index.html")
 
     charts = get_all_charts_html()
