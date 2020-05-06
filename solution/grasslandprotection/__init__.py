@@ -153,9 +153,6 @@ class Scenario:
         ad_2014 = 132.860079407797  # adoption in year 2014 (refer B647, adoption data sheet)
         ad_2018 = self.ac.ref_base_adoption['World']
         total_temperate_grassland = 1209.098
-        degrade_vma = VMAs['Growth Rate of Land Degradation']
-        degrade_cached = self.ac.lookup_vma(vma_title='Growth Rate of Land Degradation')
-        annual_degrade = degrade_cached if degrade_cached else degrade_vma.avg_high_low(key='mean')
 
         # In Excel, the Custom PDS Scenarios tab columns AC:AF compute a limit on adoption
         # based on the amount of degraded land remaining. We compute the same limit here.
@@ -172,7 +169,7 @@ class Scenario:
                     last = degrade_df.loc[year-1, 'Total undegraded land at the end of the year']
                     undeg_start = last - slope
                 degrade_df.loc[year, 'Total undegraded land at the start of the year'] = undeg_start
-                degraded_end = max(0, undeg_start * annual_degrade)
+                degraded_end = max(0, undeg_start * self.ac.degradation_rate)
                 degrade_df.loc[year, 'Degraded land at the end of the year'] = degraded_end
                 degrade_df.loc[year, 'Total undegraded land at the end of the year'] = (
                         undeg_start - degraded_end)

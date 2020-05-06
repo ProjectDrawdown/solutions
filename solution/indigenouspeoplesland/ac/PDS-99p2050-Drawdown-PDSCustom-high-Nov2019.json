@@ -1,0 +1,122 @@
+{
+    "name": "PDS-99p2050-Drawdown-PDSCustom-high-Nov2019",
+    "solution_category": "land",
+    "vmas": "VMAs",
+    "description": "This is updated scenario based on updated data, adoption scenarios, and change of current adoption year from 2014 to 2018.\r\n",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "use_custom_tla": true,
+    "custom_tla_fixed_value": 1155.1279078572097,
+    "ref_base_adoption": {
+        "World": 496.809418409265,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Average of All Custom Scenarios",
+    "soln_ref_adoption_regional_data": false,
+    "conv_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_expected_lifetime": 0.0,
+    "yield_from_conv_practice": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "pds_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_expected_lifetime": 0.0,
+    "yield_gain_from_conv_to_soln": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "npv_discount_rate": 0.1,
+    "emissions_use_co2eq": true,
+    "emissions_use_agg_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "conv_indirect_co2_per_unit": 0.0,
+    "soln_indirect_co2_per_iunit": 0.0,
+    "tco2eq_reduced_per_land_unit": {
+        "value": 281.102218263681,
+        "statistic": "low"
+    },
+    "tco2eq_rplu_rate": "One-time",
+    "tco2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tco2_rplu_rate": "One-time",
+    "tn2o_co2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tn2o_co2_rplu_rate": "One-time",
+    "tch4_co2_reduced_per_land_unit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "tch4_co2_rplu_rate": "One-time",
+    "land_annual_emissons_lifetime": 30.0,
+    "conv_annual_energy_used": 0.0,
+    "soln_annual_energy_used": 0.0,
+    "seq_rate_global": {
+        "value": 0.675232558139535,
+        "statistic": "mean"
+    },
+    "global_multi_for_regrowth": 1.0,
+    "degradation_rate": {
+        "value": 0.00465056724841035,
+        "statistic": "mean"
+    },
+    "tC_storage_in_protected_land_type": {
+        "value": 201.496715866622,
+        "xls cell formula": "D189+(B138/'Variable Meta-analysis'!$AN$32)"
+    },
+    "disturbance_rate": {
+        "value": 0.00218083333333333,
+        "statistic": "mean"
+    },
+    "delay_protection_1yr": false,
+    "delay_regrowth_1yr": false,
+    "include_unprotected_land_in_regrowth_calcs": false
+}
