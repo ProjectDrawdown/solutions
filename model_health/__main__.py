@@ -1,7 +1,8 @@
-from os.path import dirname, abspath
-import sys
 
-sys.path.append(dirname(dirname(abspath(__file__))))
+import sys
+import pathlib
+
+sys.path.append(pathlib.Path(__file__).parents[1])
 
 from model_health.dashboard import generate_html
 
