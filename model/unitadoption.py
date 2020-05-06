@@ -273,8 +273,8 @@ class UnitAdoption:
               is Degraded (via a Disturbance) in Current Year
            ForestProtection 'Unit Adoption Calculations'!DS197:DT244
         """
-        deg_land = self.ref_cumulative_degraded_land_unprotected()
-        deg_land += self.ref_cumulative_degraded_land_protected()
+        deg_land = (self.ref_cumulative_degraded_land_unprotected() +
+                self.ref_cumulative_degraded_land_protected())
         result = self.total_area_per_region - deg_land
         result.name = 'ref_total_undegraded_land'
         return result
@@ -301,9 +301,8 @@ class UnitAdoption:
             units_adopted = self.soln_ref_funits_adopted
         else:
             raise ValueError("Must indicate 'REF' or 'PDS'")
-        years = list(range(2014, 2061))
-        index = pd.Index(years, name='Year')
-        df = pd.DataFrame(0., columns=units_adopted.columns.copy(), index=index)
+        df = pd.DataFrame(0., columns=units_adopted.columns.copy(), index=range(2014, 2061))
+        df.index.name = 'Year'
 
         if None in [self.ac.delay_protection_1yr, self.ac.disturbance_rate, self.ac.degradation_rate]:
             return df  # passthru a DataFrame of zeros for non protection solutions
@@ -313,7 +312,7 @@ class UnitAdoption:
             # protected table starts with nonzero value
             df.loc[2014, :] = units_adopted.loc[2014, :] * self.ac.disturbance_rate
 
-        for y in years[1:]:
+        for y in list(df.index)[1:]:
             protected_land = units_adopted.loc[y - delay, :]
             degraded_land = df.loc[y - 1, :]
             if protected_or_unprotected == 'protected':
