@@ -2,9 +2,10 @@
 import sys
 import pathlib
 
-sys.path.append(pathlib.Path(__file__).parents[1])
+root_path = pathlib.Path(__file__).parents[1].resolve().as_posix()
+sys.path.append(root_path)
 
-from dashboard.dashboard import generate_html
+from dashboard.generator import generate_html
 
 DASHBOARD_FILE = "index.html"
 
