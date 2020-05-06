@@ -7,6 +7,8 @@ from bokeh.palettes import Colorblind
 from bokeh.plotting import figure
 from bokeh.resources import CDN
 from bokeh.transform import cumsum
+import numpy as np
+import pandas as pd
 
 from dashboard.helpers import (
     get_all_solutions,
@@ -22,7 +24,7 @@ from dashboard.helpers import (
 )
 
 
-def make_pie_chart(data, cat_column, val_column, title, as_html):
+def make_pie_chart(data, cat_column, val_column, title, as_html=False):
     data = data.copy()
     data["angle"] = data[val_column] / data[val_column].sum() * 2 * pi
     if data.shape[0] == 2:
@@ -32,7 +34,7 @@ def make_pie_chart(data, cat_column, val_column, title, as_html):
 
     fig = figure(
         plot_height=400,
-        plot_width=700,
+        plot_width=650,
         title=title,
         toolbar_location=None,
         tools="hover",
@@ -49,6 +51,7 @@ def make_pie_chart(data, cat_column, val_column, title, as_html):
         line_color="grey",
         fill_color="color",
         legend_field="type",
+        alpha=0.6,
         source=data,
     )
 
@@ -62,25 +65,39 @@ def make_pie_chart(data, cat_column, val_column, title, as_html):
     return fig
 
 
-def make_scenarios_per_solution_chart(scenarios_per_solution):
-    # TODO
-    # scenarios_per_solution.scenario.plot.hist()
+def make_hist_chart(data, title, xlabel, ylabel, bins=10, density=False, as_html=False):
 
-    y_scale = bqplot.LinearScale()
-    y_axis = bqplot.Axis(scale=y_scale, orientation="vertical", label="solutions")
-    x_scale = bqplot.LinearScale()
-    x_axis = bqplot.Axis(scale=x_scale, tick_format="d", label="num scenarios")
-    hist = bqplot.Hist(
-        sample=scenarios_per_solution, scales={"sample": x_scale, "count": y_scale}
+    hist, edges = np.histogram(data, density=density, bins=bins)
+    bars = pd.DataFrame({"top": hist, "left": edges[:-1], "right": edges[1:]})
+    bars["bottom"] = 0
+
+    fig = figure(
+        title=title,
+        tools="hover",
+        plot_height=400,
+        plot_width=650,
+        tooltips="From @left{1.1f} to @right{1.1f}: @{top} solutions",
     )
-    scenarios_per_solution_chart = bqplot.Figure(
-        marks=[hist],
-        axes=[x_axis, y_axis],
-        padding_y=0,
-        title="Num scenarios per solution",
+
+    fig.quad(
+        top="top",
+        bottom="bottom",
+        left="left",
+        right="right",
+        fill_color=Colorblind[3][0],
+        line_color="white",
+        alpha=0.6,
+        source=bars,
     )
-    scenarios_per_solution_chart.layout.width = "50%"
-    scenarios_per_solution_chart.layout.height = "300px"
+    fig.y_range.start = 0
+    fig.xaxis.axis_label = xlabel
+    fig.yaxis.axis_label = ylabel
+    fig.grid.grid_line_color = "grey"
+
+    if as_html is True:
+        script, body = components(fig)
+        return {"script": script, "body": body}
+    return fig
 
 
 # # ------------------- Regional Data -------------------

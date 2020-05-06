@@ -1,6 +1,6 @@
 from bokeh.resources import CDN
 from jinja2 import Environment, PackageLoader, Template
-from dashboard.charts import make_pie_chart
+from dashboard.charts import make_pie_chart, make_hist_chart
 from dashboard.helpers import (
     get_all_solutions,
     get_excel_python_count,
@@ -38,6 +38,13 @@ def get_all_charts_html():
     )
     charts["ref_adoption_basis_counts"] = make_pie_chart(
         ref_adoption_basis_counts, "type", "count", "REF Adoption Basis", as_html=True
+    )
+    charts["num_scenario_per_solution"] = make_hist_chart(
+        scenarios_per_solution.scenario,
+        "Num scenarios per solution",
+        "scenario",
+        "solution",
+        as_html=True,
     )
     return charts
 
