@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import pandas as pd
 import numpy as np
 from mock import patch
-
+import pytest
 from dashboard.helpers import (
     get_all_solutions,
     get_pds_adoption_basis_counts,
@@ -11,8 +11,7 @@ from dashboard.helpers import (
     get_ref_adoption_basis_counts,
     get_scenarios_per_solution,
     get_survey_data,
-    get_regional_nonzero_tam,
-    get_regional_nonzero_adoption,
+    get_regional_nonzero,
     get_regional_as_percent,
 )
 
@@ -246,26 +245,22 @@ def test_get_survey_data():
     ]
 
 
-def test_get_regional_nonzero_tam():
-    result = get_regional_nonzero_tam(mock_survey_data)
-    expected = {"nonzero_count": 4, "zero_count": 6}
-    assert result == expected
+@pytest.mark.parametrize(
+    "column,count",
+    [("RegionalFractionTAM", [4, 6]), ("RegionalFractionAdoption", [2, 8])],
+)
+def test_get_regional_nonzero(column, count):
+    result = get_regional_nonzero(mock_survey_data, column)
+    expected = pd.DataFrame({"type": ["nonzero", "zero"], "count": count})
+    pd.testing.assert_frame_equal(result, expected)
 
 
-def test_get_regional_nonzero_adoption():
-    result = get_regional_nonzero_adoption(mock_survey_data)
-    expected = {"nonzero_count": 2, "zero_count": 8}
-    assert result == expected
-
-
-def test_get_regional_tam_percent():
+def test_get_regional_percent():
     result = get_regional_as_percent(mock_survey_data, "RegionalFractionTAM")
     expected = pd.Series([110.00000000000001, 71.0, 109.00000000000001, 92.7])
     # Only check values
     np.testing.assert_array_equal(result.values, expected.values)
 
-
-def test_get_regional_adoption_percent():
     result = get_regional_as_percent(mock_survey_data, "RegionalFractionAdoption")
     expected = pd.Series([110.00000000000001, 0.3])
     # Only check values

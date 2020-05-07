@@ -17,14 +17,13 @@ from dashboard.helpers import (
     get_py_solutions,
     get_ref_adoption_basis_counts,
     get_regional_as_percent,
-    get_regional_nonzero_adoption,
-    get_regional_nonzero_tam,
+    get_regional_nonzero,
     get_scenarios_per_solution,
     get_survey_data,
 )
 
 
-def make_pie_chart(data, cat_column, val_column, title, as_html=False):
+def make_pie_chart(data, cat_column, val_column, title, as_html=True):
     data = data.copy()
     data["angle"] = data[val_column] / data[val_column].sum() * 2 * pi
     if data.shape[0] == 2:
@@ -65,7 +64,7 @@ def make_pie_chart(data, cat_column, val_column, title, as_html=False):
     return fig
 
 
-def make_hist_chart(data, title, xlabel, ylabel, bins=10, density=False, as_html=False):
+def make_hist_chart(data, title, xlabel, ylabel, bins=10, density=False, as_html=True):
 
     hist, edges = np.histogram(data, density=density, bins=bins)
     bars = pd.DataFrame({"top": hist, "left": edges[:-1], "right": edges[1:]})
@@ -98,77 +97,6 @@ def make_hist_chart(data, title, xlabel, ylabel, bins=10, density=False, as_html
         script, body = components(fig)
         return {"script": script, "body": body}
     return fig
-
-
-# # ------------------- Regional Data -------------------
-
-
-# def get_nonzero_regional_tam_chart():
-#     nonzero_chart = bqplot.Pie(
-#         sizes=[nonzero_count, zero_count],
-#         labels=["YES", "NO"],
-#         colors=["Green", "Red"],
-#         display_values=True,
-#         values_format="d",
-#         display_labels="inside",
-#         radius=110,
-#     )
-#     tam_regional_nonzero_fig = bqplot.Figure(
-#         marks=[nonzero_chart], title="Has Regional TAM Data?"
-#     )
-#     tam_regional_nonzero_fig.layout.width = "320px"
-#     tam_regional_nonzero_fig.fig_margin = {"left": 1, "right": 1, "top": 1, "bottom": 1}
-
-
-# def get_tam_regional_chart():
-#     y_scale = bqplot.LinearScale()
-#     y_axis = bqplot.Axis(scale=y_scale, orientation="vertical", label="# scenarios")
-#     x_scale = bqplot.LinearScale()
-#     x_axis = bqplot.Axis(scale=x_scale, tick_format=".1f", label="percentage")
-#     hist_data = regional_nonzero_tam["RegionalFractionTAM"] * 100.0
-#     hist = bqplot.Hist(sample=hist_data, scales={"sample": x_scale, "count": y_scale})
-#     hist.bins = 50
-#     tam_regional_chart = bqplot.Figure(
-#         marks=[hist],
-#         axes=[x_axis, y_axis],
-#         padding_y=0,
-#         title="Regional TAM as a % of World",
-#     )
-#     tam_regional_chart.layout.width = "100%"
-
-
-# def get_non_zero_adoption_chart():
-#     nonzero_chart = bqplot.Pie(
-#         sizes=[nonzero_count, zero_count],
-#         labels=["YES", "NO"],
-#         colors=["Green", "Red"],
-#         display_values=True,
-#         values_format="d",
-#         display_labels="inside",
-#         radius=110,
-#     )
-#     ad_regional_nonzero_fig = bqplot.Figure(
-#         marks=[nonzero_chart], title="Has Regional Adoption Data?"
-#     )
-#     ad_regional_nonzero_fig.layout.width = "320px"
-#     ad_regional_nonzero_fig.fig_margin = {"left": 1, "right": 1, "top": 1, "bottom": 1}
-
-
-# def get_ad_regional_chart():
-#     y_scale = bqplot.LinearScale()
-#     y_axis = bqplot.Axis(scale=y_scale, orientation="vertical", label="# scenarios")
-#     x_scale = bqplot.LinearScale()
-#     x_axis = bqplot.Axis(scale=x_scale, tick_format=".1f", label="percentage")
-#     hist_data = regional_nonzero_adoption["RegionalFractionAdoption"] * 100.0
-#     hist = bqplot.Hist(sample=hist_data, scales={"sample": x_scale, "count": y_scale})
-#     hist.bins = 100
-#     ad_regional_chart = bqplot.Figure(
-#         marks=[hist],
-#         axes=[x_axis, y_axis],
-#         padding_y=0,
-#         title="Regional Adoption as a % of World",
-#     )
-#     ad_regional_chart.layout.width = "100%"
 
 
 # def get_pds_adoption_hist():

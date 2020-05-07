@@ -92,28 +92,15 @@ def get_survey_data():
     )
 
 
-def get_regional_nonzero_tam(survey_data):
+def get_regional_nonzero(survey_data, column):
 
-    msk_isnull = survey_data["RegionalFractionTAM"].isnull()
-    msk_zero = survey_data["RegionalFractionTAM"] == 0.0
+    msk_isnull = survey_data[column].isnull()
+    msk_zero = survey_data[column] == 0.0
     zero_count = (msk_zero | msk_isnull).sum()
     nonzero_count = survey_data.shape[0] - zero_count
-    return {
-        "nonzero_count": nonzero_count,
-        "zero_count": zero_count,
-    }
-
-
-def get_regional_nonzero_adoption(survey_data):
-
-    msk_isnull = survey_data["RegionalFractionAdoption"].isnull()
-    msk_zero = survey_data["RegionalFractionAdoption"] == 0.0
-    zero_count = (msk_zero | msk_isnull).sum()
-    nonzero_count = survey_data.shape[0] - zero_count
-    return {
-        "nonzero_count": nonzero_count,
-        "zero_count": zero_count,
-    }
+    return pd.DataFrame(
+        {"type": ["nonzero", "zero"], "count": [nonzero_count, zero_count]}
+    )
 
 
 def get_regional_as_percent(survey_data, column):
