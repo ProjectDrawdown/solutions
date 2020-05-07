@@ -5,20 +5,6 @@ import pandas as pd
 
 import solution.factory as solution_loader
 
-SOLUTIONS_PATH = os.path.join("data", "overview", "solutions.csv")
-SURVEY_PATH = os.path.join("data", "health", "survey.csv")
-
-
-def get_all_solutions():
-    return pd.read_csv(
-        SOLUTIONS_PATH,
-        index_col=False,
-        skipinitialspace=True,
-        header=0,
-        skip_blank_lines=True,
-        comment="#",
-    )
-
 
 def get_py_solutions():
     data = []
@@ -79,17 +65,6 @@ def get_ref_adoption_basis_counts(py_solutions):
     ref_adoption_basis_counts.index.name = "type"
     ref_adoption_basis_counts.name = "count"
     return ref_adoption_basis_counts.reset_index()
-
-
-def get_survey_data():
-    return pd.read_csv(
-        SURVEY_PATH,
-        index_col=False,
-        skipinitialspace=True,
-        header=0,
-        skip_blank_lines=True,
-        comment="#",
-    )
 
 
 def get_regional_nonzero(survey_data, column):

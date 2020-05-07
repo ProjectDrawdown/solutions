@@ -5,12 +5,10 @@ import numpy as np
 from mock import patch
 import pytest
 from dashboard.helpers import (
-    get_all_solutions,
     get_pds_adoption_basis_counts,
     get_py_solutions,
     get_ref_adoption_basis_counts,
     get_scenarios_per_solution,
-    get_survey_data,
     get_regional_nonzero,
     get_regional_as_percent,
 )
@@ -161,12 +159,6 @@ def _mock_importlib(name):
     return Module({"a": Scenario("a", "a", None), "b": Scenario("b", "b", "Custom")})
 
 
-def test_get_all_solutions():
-    df = get_all_solutions()
-    assert df.shape == (79, 3)
-    assert df.columns.tolist() == ["Solution", "DirName", "Sector"]
-
-
 @patch("dashboard.helpers.solution_loader.all_solutions_scenarios", _mock_factory)
 @patch("dashboard.helpers.importlib.import_module", _mock_importlib)
 def test_get_py_solutions():
@@ -232,17 +224,6 @@ def test_get_ref_adoption_basis_counts():
     result = get_ref_adoption_basis_counts(mock_py_solutions)
     expected = pd.DataFrame({"type": ["Default", "Custom"], "count": [8, 2]})
     pd.testing.assert_frame_equal(result, expected)
-
-
-def test_get_survey_data():
-    df = get_survey_data()
-    assert df.shape == (346, 4)
-    assert df.columns.tolist() == [
-        "Solution",
-        "RegionalFractionTAM",
-        "RegionalFractionAdoption",
-        "Rvalue",
-    ]
 
 
 @pytest.mark.parametrize(
