@@ -327,9 +327,26 @@ temperateforests:PDS-73p2050-Drawdown-PDScustomadoption-high,,0.0,0.954503491235
 trains:PDS3-10p2050-Full Electrification (Book Ed.1),0.0,0.0,0.9686872125341368
 trains:PDS2-5p2050-based on on IEA 2DS (Book Ed.1),0.0,0.0,0.999998199486215
 trains:PDS1-4p2050-Doubled Historical Electrification Rate (Book Ed.1),0.0,0.0,0.98618914866522
-treeintercropping:PDS-75p2050-Drawdown-PDScustom-avg-Bookedition1,,0.0,0.9974089810380126
-treeintercropping:PDS-56p2050-Plausible-PDScustom-low-Bookedition1,,0.0,0.999633024094079
-treeintercropping:PDS-100p2050-Optimum-PDScustom-high-Bookedition1,,0.0,0.9820857510771038
+treeintercropping:PDS-100p2050-Drawdown-PDSCustom-high-Nov2019,,0.0,0.965531809131889
+treeintercropping:PDS-96p2050-Optimum-CustomPDS-high-aug2019,,0.0,0.9726282489014146
+treeintercropping:PDS-99p2050-Drawdown-customPDS-high-30Jan2020,,0.0,0.965531809131889
+treeintercropping:PDS-84p2050-Plausible-customPDS-aavg-Jan2020,,0.0,0.988551337715833
+treeintercropping:PDS-97p2050-Drawdown-Jan2019,,0.0,0.9726282489014146
+treeintercropping:PDS-91p2050-Plausible-PDSCustom-avg-Nov2019,,0.0,0.988551337715833
+treeintercropping:PDS-56p2050-Plausible-PDScustom-low-BookVersion1,,0.0,0.09190813556976526
+treeintercropping:PDS-84p2050-Plausible-customPDS-avg-30Jan2020,,0.0,0.988551337715833
+treeintercropping:PDS-96p2050-Drawdown2019,,0.0,0.9726282489014146
+treeintercropping:PDS-100p2050-Optimum,,0.0,0.8827748407663037
+treeintercropping:PDS-83p2050-Plausible2019,,0.0,0.9891191698859024
+treeintercropping:PDS-75p2050-Drawdown-PDScustom-avg-BookVersion1,,0.0,0.7747771130807716
+treeintercropping:PDS-100p2050-Drawdown-CustomPDS-Maxlinear-aug2019,,0.0,0.9858680346140102
+treeintercropping:PDS-99p2050-Drawdown-customPDS-high-Jan2020,,0.0,0.965531809131889
+treeintercropping:PDS-100p2050-Optimum-Jan2019,,0.0,0.8827748407663037
+treeintercropping:PDS-81p2050-Plausible-CustomPDS-avg-aug2019,,0.0,0.9891191698859024
+treeintercropping:PDS-83p2050-Plausible-Jan2019,,0.0,0.9891191698859024
+treeintercropping:PDS-100p2050-Optimum-customPDS-39%EUadoption-Jan2020,,0.0,0.8659200841854984
+treeintercropping:PDS-100p2050-Optimum-PDSCustom-veryhigh-Nov2019,,0.0,0.8659200841854984
+treeintercropping:PDS-100p2050-Optimum-PDScustom-high-BookVersion1,,0.0,0.939183866854149
 tropicalforests:PDS-77p2050-Drawdown-PDScustomadoption-high,,0.0,0.9063185579528095
 tropicalforests:PDS-58p2050-Plausible-PDScustomadoption-avg,,0.0,0.9450454574926045
 tropicalforests:PDS-58p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9450455593319422
