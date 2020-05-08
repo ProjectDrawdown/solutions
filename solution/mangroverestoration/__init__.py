@@ -1,5 +1,5 @@
-"""Mangrove Restoration solution model.
-   Excel filename: Drawdown_RRS-BIOSEQ_Model_v1.1d_MASTER_mangrove restoration_Mar2020.xlsm
+"""Mangrove Protection solution model.
+   Excel filename: Drawdown_RRS-BIOSEQProtect_Model_v1.1b_Coastal_Wetlands(Mangroves)_Mar2020.xlsm
 """
 
 import pathlib
@@ -35,57 +35,55 @@ VMAs = {
     'SOLUTION First Cost per Implementation Unit': vma.VMA(
         filename=None, use_weight=False),
     'CONVENTIONAL Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv"),
-        use_weight=False),
+        filename=None, use_weight=False),
     'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
         filename=None, use_weight=False),
-    'CONVENTIONAL Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
-        use_weight=False),
-    'SOLUTION Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
     'Yield from CONVENTIONAL Practice': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Yield_from_CONVENTIONAL_Practice.csv"),
-        use_weight=True),
+        filename=None, use_weight=False),
     'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)': vma.VMA(
         filename=None, use_weight=False),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
+    'Average Electricty Used DEGRADED LAND': vma.VMA(
         filename=None, use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
+    'Energy Efficiency Factor UNDEGRADED LAND': vma.VMA(
         filename=None, use_weight=False),
-    'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
+    'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND': vma.VMA(
         filename=None, use_weight=False),
-    'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
+    'Fuel Consumed on DEGRADED Land': vma.VMA(
         filename=None, use_weight=False),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
+    'Fuel Reduction Factor for UNDEGRADED Land': vma.VMA(
         filename=None, use_weight=False),
     't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
         filename=None, use_weight=False),
     't CO2 Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
+        filename=THISDIR.joinpath("vma_data", "t_CO2_Reduced_per_Land_Unit.csv"),
+        use_weight=False),
     't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
         filename=None, use_weight=False),
     't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
         filename=None, use_weight=False),
-    'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE': vma.VMA(
+    'Indirect CO2-eq Emissions DEGRADED LAND': vma.VMA(
         filename=None, use_weight=False),
-    'Indirect CO2 Emissions per  Implementation Unit - SOLUTION': vma.VMA(
+    'Indirect CO2-eq Emissions UNDEGRADED LAND': vma.VMA(
         filename=None, use_weight=False),
     'Sequestration Rates': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "Sequestration_Rates.csv"),
         use_weight=False),
-    'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing': vma.VMA(
-        filename=None, use_weight=False),
+    'Growth Rate of Land Degradation': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "Growth_Rate_of_Land_Degradation.csv"),
+        use_weight=False),
     'Disturbance Rate': vma.VMA(
         filename=None, use_weight=False),
-    'Time to forest maturity': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Time_to_forest_maturity.csv"),
+    't C storage in Protected Landtype': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "t_C_storage_in_Protected_Landtype.csv"),
         use_weight=False),
-    'AGB sequestration rates': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "AGB_sequestration_rates.csv"),
-        use_weight=False),
-    'BGC sequestration rates': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "BGC_sequestration_rates.csv"),
+    'Global Multipler for Regrowth': vma.VMA(
+        filename=None, use_weight=False),
+    'Tropical Multipler for Regrowth': vma.VMA(
+        filename=None, use_weight=False),
+    'Temperate Multiplier for Regrowth': vma.VMA(
+        filename=None, use_weight=False),
+    'Total Available Land': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "Total_Available_Land.csv"),
         use_weight=False),
 }
 vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
@@ -97,7 +95,7 @@ units = {
     "operating cost": "US$B",
 }
 
-name = 'Mangrove Restoration'
+name = 'Mangrove Protection'
 solution_category = ac.SOLUTION_CATEGORY.LAND
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
@@ -149,94 +147,81 @@ class Scenario:
             adconfig=adconfig)
 
         # Custom PDS Data
-        ca_pds_columns = ['Year'] + dd.REGIONS
-        tla_2050 = self.tla_per_region.loc[2050, 'World']
-
-        # Page 9, Green India Mission- Mission document
-        # http://moef.gov.in/wp-content/uploads/2017/08/GIM_Mission-Document-1.pdf
-        i_percent = 300000 / 346713
-
-        # Guatemala
-        # Table on page 35 of "Mesa de Restauración del Paisaje Forestal de Guatemala 2015.
-        # Estrategia de Restauración del Paisaje Forestal: Mecanismo para el Desarrollo Rural
-        # Sostenible de Guatemala, 58 pp."
-        g_percent = 10132 / 26464
-
-        avg_percent = (i_percent + g_percent) / 2.0
-
         ca_pds_data_sources = [
-            {'name': 'India restoration commitment applied to TLA', 'include': True,
+            {'name': 'Constant degradation rate, 100% adoption by 2050, linear', 'include': True,
                 'description': (
-                    'The National Mission for a Green India included a commitment to restore 0.1 '
-                    'Mha of mangroves in 10 years (up to 2020). We assume that this commitment '
-                    'will be replicated in the next three decades resulting in 300,000 hectares '
-                    'to be restored by 2050. This would represent a restoration of 89% of '
-                    'mangrove restorable area in India. We apply this % to the global mangrove '
-                    'area. '
+                    'The TLA_Envelope sheet was used to compute the annual degradation of the '
+                    'wetland.  The annual protection rate was adjusted so that 100% of the '
+                    'remaining wetlands in 2050 were protected.  This adoption is less than 100% '
+                    'of the wetlands in 2014. '
                     ),
-             'datapoints': pd.DataFrame([
-                [2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2050, i_percent * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2051, i_percent * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                ], columns=ca_pds_columns).set_index('Year')},
-            {'name': 'India + Guatemala restoration commitment applied to TLA', 'include': True,
+                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Constant_degradation_rate_100_adoption_by_2050_linear.csv')},
+            {'name': 'Constant degradation rate, 80% adoption by 2050, linear', 'include': True,
                 'description': (
-                    "Guatemala's NDC includes the restoration of 10,000 ha of mangroves by 2045. "
-                    'This would represent 38% of total mangrove restorable area in the country. '
-                    'We use the average of both India  (87%) and Guatemala % and apply them to '
-                    'the TLA '
+                    'The TLA_Envelope sheet was used to compute the annual degradation of the '
+                    'wetland.  The annual protection rate was adjusted so that 80% of the '
+                    'remaining wetlands in 2050 were protected.  This is the same as Scenario 1 '
+                    'except for a smaller percentage protected by 2050. '
                     ),
-             'datapoints': pd.DataFrame([
-                [2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2050, avg_percent * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2051, avg_percent * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                ], columns=ca_pds_columns).set_index('Year')},
-            {'name': 'India restoration commitment applied to TLA with 100% adoption by 2030', 'include': True,
+                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Constant_degradation_rate_80_adoption_by_2050_linear.csv')},
+            {'name': 'Constant degradation rate, 100% adoption by 2030, linear', 'include': True,
                 'description': (
-                    'Scenario 1 + 100% of adoption by 2030 '
+                    'The TLA_Envelope sheet was used to compute the annual degradation of the '
+                    'wetland.  The annual protection rate was adjusted so that 100% of the '
+                    'remaining wetlands in 2030 were protected.  Because there is 100% '
+                    'protection in 2030, all values after that are constant. '
                     ),
-             'datapoints': pd.DataFrame([
-                [2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2030, i_percent * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2031, i_percent * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                ], columns=ca_pds_columns).set_index('Year')},
-            {'name': 'India + Guatemala restoration commitment applied to TLA with 100% adoption in 2030', 'include': True,
+                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Constant_degradation_rate_100_adoption_by_2030_linear.csv')},
+            {'name': 'Constant degradation rate, 80% adoption by 2030, linear', 'include': True,
                 'description': (
-                    'Scenario 2 + 100% adoption by 2030 '
+                    'The TLA_Envelope sheet was used to compute the annual degradation of the '
+                    'wetland.  The annual protection rate was adjusted so that 80% of the '
+                    'remaining wetlands in 2030 were protected.  Because there is only 80% '
+                    'protection in 2030 linear interpolation was used to bridge the 2014, 2030, '
+                    'and 2050 values. '
                     ),
-             'datapoints': pd.DataFrame([
-                [2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2030, avg_percent * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2031, avg_percent * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                ], columns=ca_pds_columns).set_index('Year')},
-            {'name': '100% TLA by 2050', 'include': True,
+                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Constant_degradation_rate_80_adoption_by_2030_linear.csv')},
+            {'name': 'Variable degradation rate, 100% adoption by 2050, linear', 'include': True,
                 'description': (
-                    'Linear increase to 100% TLA by 2050 '
+                    'The TLA_Envelope sheet was used to compute the annual degradation of the '
+                    'wetland.  The annual protection rate was adjusted so that 100% of the '
+                    'remaining wetlands in 2050 were protected.  This adoption is less than 100% '
+                    'of the wetlands in 2014.  This is the same as Scenario 1 except an annual '
+                    'reduction in degradation rate is applied. '
                     ),
-             'datapoints': pd.DataFrame([
-                [2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2050, 1.0 * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2051, 1.0 * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                ], columns=ca_pds_columns).set_index('Year')},
-            {'name': '100% TLA by 2030', 'include': True,
+                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Variable_degradation_rate_100_adoption_by_2050_linear.csv')},
+            {'name': 'Variable degradation rate, 80% adoption by 2050, linear', 'include': True,
                 'description': (
-                    'Linear increase to 100% TLA by 2030 '
+                    'The TLA_Envelope sheet was used to compute the annual degradation of the '
+                    'wetland.  The annual protection rate was adjusted so that 80% of the '
+                    'remaining wetlands in 2050 were protected.  This is the same as Scenario 5 '
+                    'except for a smaller percentage protected by 2050. '
                     ),
-             'datapoints': pd.DataFrame([
-                [2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2030, 1.0 * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [2031, 1.0 * tla_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                ], columns=ca_pds_columns).set_index('Year')},
+                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Variable_degradation_rate_80_adoption_by_2050_linear.csv')},
+            {'name': 'Variable degradation rate, 100% adoption by 2030, linear', 'include': True,
+                'description': (
+                    'The TLA_Envelope sheet was used to compute the annual degradation of the '
+                    'wetland.  The annual protection rate was adjusted so that 100% of the '
+                    'remaining wetlands in 2030 were protected.  Because there is 100% '
+                    'protection in 2030, all values after that are constant. This is the same as '
+                    'Scenario 3 except a variable degradation rate is used. '
+                    ),
+                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Variable_degradation_rate_100_adoption_by_2030_linear.csv')},
+            {'name': 'Variable degradation rate, 80% adoption by 2030, linear', 'include': True,
+                'description': (
+                    'The TLA_Envelope sheet was used to compute the annual degradation of the '
+                    'wetland.  The annual protection rate was adjusted so that 80% of the '
+                    'remaining wetlands in 2030 were protected.  Because there is only 80% '
+                    'protection in 2030 linear interpolation was used to bridge the 2014, 2030, '
+                    'and 2050 values.  This scenario is the same as Scenario 4 except a variable '
+                    'degradation rate is used. '
+                    ),
+                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Variable_degradation_rate_80_adoption_by_2030_linear.csv')},
         ]
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=1.0, low_sd_mult=1.0,
             total_adoption_limit=self.tla_per_region)
-
-        for s in self.pds_ca.scenarios.values():
-            df = s['df']
-            for y in range(2014, 2019):
-                df.loc[y, 'World'] = 0.0
 
         ref_adoption_data_per_region = None
 
@@ -266,15 +251,15 @@ class Scenario:
             index=list(self.ac.pds_adoption_final_percentage.keys()))
         ht_pds_adoption_final = ht_pds_adoption_final_percentage * self.tla_per_region.loc[2050]
         ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_pds_datapoints.loc[2018] = ht_pds_adoption_initial
+        ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
         ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
         self.ht = helpertables.HelperTables(ac=self.ac,
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
-            use_first_pds_datapoint_main=True,
+            use_first_pds_datapoint_main=False,
             adoption_base_year=2018,
-            copy_pds_to_ref=True,
+            copy_pds_to_ref=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
@@ -334,7 +319,9 @@ class Scenario:
             conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
             conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-            annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
+            tot_red_in_deg_land=self.ua.cumulative_reduction_in_total_degraded_land(),
+            pds_protected_deg_land=self.ua.pds_cumulative_degraded_land_protected(),
+            ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
 

@@ -1,0 +1,20 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+FAO 2000,http://www.fao.org/docrep/007/j1533e/J1533E02.htm,World,,2 - Public Sector/ Multilateral Agency,,,1.9,% Annually,0.019,% Annually,,,True
+FAO 2000,http://www.fao.org/docrep/007/j1533e/J1533E02.htm,World,,2 - Public Sector/ Multilateral Agency,,,1.1,% Annually,0.011000000000000001,% Annually,,,True
+"Webber et al., 2016",http://www.un.org/depts/los/global_reporting/WOA_RPROC/Chapter_48.pdf,World,,2 - Public Sector/ Multilateral Agency,,,2.0,% Annually,0.02,% Annually,,,True
+"Webber et al., 2016",http://www.un.org/depts/los/global_reporting/WOA_RPROC/Chapter_48.pdf,World,,2 - Public Sector/ Multilateral Agency,,,1.0,% Annually,0.01,% Annually,,,True
+"Webber et al., 2016",http://www.un.org/depts/los/global_reporting/WOA_RPROC/Chapter_48.pdf,World,,2 - Public Sector/ Multilateral Agency,,,1.04,% Annually,0.0104,% Annually,,,True
+"Webber et al., 2016",http://www.un.org/depts/los/global_reporting/WOA_RPROC/Chapter_48.pdf,World,,2 - Public Sector/ Multilateral Agency,,,0.72,% Annually,0.0072,% Annually,,,True
+"Webber et al., 2016",http://www.un.org/depts/los/global_reporting/WOA_RPROC/Chapter_48.pdf,World,,2 - Public Sector/ Multilateral Agency,,,0.66,% Annually,0.0066,% Annually,,,True
+"Strong & Minnemeyer, 2015",http://www.wri.org/blog/2015/02/satellite-data-reveals-state-world%E2%80%99s-mangrove-forests,World,,2 - Public Sector/ Multilateral Agency,,,0.13,% Annually,0.0013,% Annually,,,False
+Sikamaki 2012,http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3437861/,World,,1  - Peer Reviewed,,,0.7,% Annually,0.006999999999999999,% Annually,,,True
+Durate 2008,http://www.fbbva.es/TLFU/dat/00%20Duarte_Separata.pdf,World,,2 - Public Sector/ Multilateral Agency,,,2.0,% Annually,0.02,% Annually,,,True
+Valiela et al 2001,http://bioscience.oxfordjournals.org/content/51/10/807.full.pdf+html,World,,1  - Peer Reviewed,,,1.0,% Annually,0.01,% Annually,,,False
+Valiela et al 2001,http://bioscience.oxfordjournals.org/content/51/10/807.full.pdf+html,World,,1  - Peer Reviewed,,,3.0,% Annually,0.03,% Annually,,,False
+"Hamilton and Casey, 2016",http://onlinelibrary.wiley.com/doi/10.1111/geb.12449/epdf,World,,1  - Peer Reviewed,,,0.39,% Annually,0.0039000000000000003,% Annually,,"2000 to 2012, all forest cover in mangrove biome.",False
+FAO 2007,http://www.fao.org/3/a-a1427e.pdf,World,,2 - Public Sector/ Multilateral Agency,,,1.04,% Annually,0.0104,% Annually,,,False
+FAO 2007,http://www.fao.org/3/a-a1427e.pdf,World,,2 - Public Sector/ Multilateral Agency,,,0.72,% Annually,0.0072,% Annually,,,False
+FAO 2007,http://www.fao.org/3/a-a1427e.pdf,World,,2 - Public Sector/ Multilateral Agency,,,0.66,% Annually,0.0066,% Annually,,,False
+Pendelton et al 2012,http://journals.plos.org/plosone/article/asset?id=10.1371%2Fjournal.pone.0043542.PDF,World,,1  - Peer Reviewed,,,0.7,% Annually,0.006999999999999999,% Annually,,,True
+Pendelton et al 2012,http://journals.plos.org/plosone/article/asset?id=10.1371%2Fjournal.pone.0043542.PDF,World,,1  - Peer Reviewed,,,3.0,% Annually,0.03,% Annually,,,True
+,,,,,,,,,,% Annually,,,True

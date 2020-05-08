@@ -1,0 +1,37 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Miteva et al 2015,http://ac.els-cdn.com/S0921800915003419/1-s2.0-S0921800915003419-main.pdf?_tid=08432b00-6f87-11e6-980a-00000aab0f6b&acdnat=1472653823_0d6e5bb506173f1b87614ced10ec4476,Asia (Sans Japan),Indonesia,1  - Peer Reviewed,,,84.41,t CO2 / ha,,t CO2 / ha / year,,,False
+Sikkamaki et al 2012,http://www.pnas.org/content/109/36/14369.full.pdf,World,,1  - Peer Reviewed,,,8.808,t CO2 / ha,,t CO2 / ha / year,,,True
+Pendelton et al 2012,http://journals.plos.org/plosone/article/asset?id=10.1371%2Fjournal.pone.0043542.PDF,World,,1  - Peer Reviewed,,,17.249,t CO2 / ha,,t CO2 / ha / year,,,True
+Mcleod et al 2010,http://espace.library.uq.edu.au/view/UQ:251863/UQ251863_OA.pdf,World,,1  - Peer Reviewed,,,17.028799999999997,t CO2 / ha,,t CO2 / ha / year,,,False
+Sikkamaki et al 2012,http://www.pnas.org/content/109/36/14369.full.pdf,World,,1  - Peer Reviewed,,,11.3403,t CO2 / ha,,t CO2 / ha / year,,,True
+Sikkamaki et al 2012,http://www.rff.org/files/sharepoint/WorkImages/Download/RFF-Rpt-2012-BlueCarbon_final_web.pdf,World,,2 - Public Sector/ Multilateral Agency,,,8.808,t CO2 / ha,,t CO2 / ha / year,,,True
+CEC 2013,http://www3.cec.org/islandora/en/item/11368-north-american-blue-carbon-scoping-study-en.pdf,USA,North America,2 - Public Sector/ Multilateral Agency,,,7.602142857142858,t CO2 / ha,,t CO2 / ha / year,,,True
+UNFCC,http://unfccc.int/resource/docs/2011/smsn/igo/141.pdf,USA,Central America,2 - Public Sector/ Multilateral Agency,,,106.0,t CO2 / ha,,t CO2 / ha / year,,,True
+UNFCC,http://unfccc.int/resource/docs/2011/smsn/igo/141.pdf,USA,Central America,2 - Public Sector/ Multilateral Agency,,,30.000000000000004,t CO2 / ha,,t CO2 / ha / year,,,True
+UNEP 2013,http://www.unep.org/pdf/REDDcarbon_lowres.pdf,Middle East and Africa,Central Africa,2 - Public Sector/ Multilateral Agency,,,118.174,t CO2 / ha,,t CO2 / ha / year,,,True
+Donato et al 2011,http://mangroveactionproject.org/wp-content/uploads/2013/10/Donato.etal_2011_NatureGeo_MangroveCarbonStorage.pdf,World,,1  - Peer Reviewed,,,0.02,PgC/13.7Mha/yr,5.348905109489052,t CO2 / ha / year,,Divide by approx. area of Mangroves (for this estimate),False
+Donato et al 2011,http://mangroveactionproject.org/wp-content/uploads/2013/10/Donato.etal_2011_NatureGeo_MangroveCarbonStorage.pdf,World,,1  - Peer Reviewed,,,0.12,PgC/15.2Mha/yr,28.926315789473687,t CO2 / ha / year,,Divide by approx. area of Mangroves (for this estimate),False
+Siikamäki et al 2012,http://www.pnas.org/content/109/36/14369.full.pdf,World,,1  - Peer Reviewed,,,84.0,Mt CO2/14Mha/yr,6.0,t CO2 / ha / year,,Divide by approx. area of Mangroves.,False
+Siikamäki et al 2012,http://www.pnas.org/content/109/36/14369.full.pdf,World,,1  - Peer Reviewed,,,122.0,Mt CO2/14Mha/yr,8.714285714285714,t CO2 / ha / year,,Divide by approx. area of Mangroves.,False
+Siikamäki et al 2012,http://www.pnas.org/content/109/36/14369.full.pdf,World,,1  - Peer Reviewed,,,159.0,Mt CO2/14Mha/yr,11.357142857142858,t CO2 / ha / year,,Divide by approx. area of Mangroves.,False
+"Lovelock et al.  2017; cited Lang’at et al., 2014",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,25.3,t CO2 / ha / year,,t CO2 / ha / year,,,False
+"Lovelock et al.  2017; cited Lang’at et al., 2014",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,35.6,t CO2 / ha / year,,t CO2 / ha / year,,,False
+"Lovelock et al.  2017; cited Kauffman et al., 2014",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,82.0,t CO2 / ha / year,,t CO2 / ha / year,,,False
+"Lovelock et al.  2017; cited Sidik and Lovelock, 2013",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,16.0,t CO2 / ha / year,,t CO2 / ha / year,,,False
+"Lovelock et al.  2017; cited Sidik and Lovelock, 2013
+",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,44.0,t CO2 / ha / year,,t CO2 / ha / year,,,False
+"Lovelock et al.  2017; cited Lovelock et al., 2011
+",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,106.0,t CO2 / ha / year,,t CO2 / ha / year,,,False
+"Lovelock et al.  2017; cited Lovelock et al., 2011
+",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,30.0,t CO2 / ha / year,,t CO2 / ha / year,,,False
+"Lovelock et al.  2017; cited Bulmer et al., 2015
+",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,21.4,t CO2 / ha / year,,t CO2 / ha / year,,,False
+"Lovelock et al.  2017; cited Cahoon et al., 2003
+",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,18.7,t CO2 / ha / year,,t CO2 / ha / year,,,False
+"Lovelock et al.  2017
+",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,33.9,t CO2 / ha / year,,t CO2 / ha / year,,"Model output, 100% soil goes oxic",False
+"Lovelock et al.  2017
+",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,27.2,t CO2 / ha / year,,t CO2 / ha / year,,"Model output, 50% soil goes oxic",False
+"Lovelock et al.  2017
+",https://www.frontiersin.org/articles/10.3389/fmars.2017.00143/full,World,,1  - Peer Reviewed,,,20.4,t CO2 / ha / year,,t CO2 / ha / year,,"Model output, 0% soil goes oxic",False
+Pendelton et al 2012,http://journals.plos.org/plosone/article/asset?id=10.1371%2Fjournal.pone.0043542.PDF,World,,1  - Peer Reviewed,,,0.016551724137931035,Pg CO2/Mha/year,16.551724137931036,t CO2 / ha / year,,"Their central estimate, Table 1, divide global emissions by total area",True
