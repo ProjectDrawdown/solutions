@@ -1,24 +1,11 @@
 from math import pi
 
-import bqplot
-from bokeh.embed import components, file_html, autoload_static
-from bokeh.io import show
+from bokeh.embed import components
 from bokeh.palettes import Colorblind
 from bokeh.plotting import figure
-from bokeh.resources import CDN
 from bokeh.transform import cumsum
 import numpy as np
 import pandas as pd
-
-from dashboard.helpers import (
-    get_excel_python_count,
-    get_pds_adoption_basis_counts,
-    get_py_solutions,
-    get_ref_adoption_basis_counts,
-    get_regional_as_percent,
-    get_regional_nonzero,
-    get_scenarios_per_solution,
-)
 
 
 def make_pie_chart(data, cat_column, val_column, title, as_html=True):

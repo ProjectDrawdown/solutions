@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 from bokeh.resources import CDN
-from jinja2 import Environment, PackageLoader, Template
+from jinja2 import Environment, PackageLoader
 
 from dashboard.charts import make_hist_chart, make_pie_chart, make_comparison_chart
 from dashboard.helpers import (
