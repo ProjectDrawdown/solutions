@@ -13,11 +13,13 @@ from dashboard.helpers import (
     get_regional_as_percent,
     get_regional_nonzero,
     get_scenarios_per_solution,
+    get_issues_with_regional_data,
 )
 
 SOLUTIONS_PATH = os.path.join("data", "overview", "solutions.csv")
 SURVEY_PATH = os.path.join("data", "health", "survey.csv")
 LAND_SURVEY_PATH = os.path.join("data", "health", "landsurvey.csv")
+SCENARIOS_PATH = os.path.join("data", "health", "scenario_uniq_values.csv")
 
 
 def _get_summary_charts(all_solutions, py_solutions):
@@ -100,6 +102,47 @@ def _get_land_solution_analytics(land_survey):
         "Has regional adoption data? (Land solutions)",
     )
 
+    issues_with_regional_data = get_issues_with_regional_data(land_survey)
+    charts["issues_with_regional_data"] = make_pie_chart(
+        issues_with_regional_data,
+        "type",
+        "count",
+        "Issues with regional data in Custom Adoption scenarios)",
+    )
+    return charts
+
+
+def _get_scenarios_analytics(scenarios):
+    cols_to_exclude = [
+        "soln_ref_adoption_basis",
+        "soln_ref_adoption_custom_name",
+        "soln_pds_adoption_basis",
+        "soln_pds_adoption_custom_name",
+        "soln_pds_adoption_prognostication_source",
+        "soln_pds_adoption_prognostication_trend",
+        "soln_pds_adoption_prognostication_growth",
+        "pds_source_post_2014",
+        "pds_adoption_use_ref_years",
+        "pds_adoption_final_percentage",
+        "use_custom_tla",
+    ]
+    scenarios_count = (
+        scenarios.drop(cols_to_exclude, axis=1)
+        .apply(pd.Series.value_counts)
+        .T.fillna(0.0)
+    )
+    scenarios_count["solutions"] = scenarios_count.sum(axis=1) - scenarios_count[1.0]
+    scenarios_count.drop(
+        scenarios_count[scenarios_count.solutions == 0.0].index, inplace=True
+    )
+
+    charts = {}
+    charts["scenarios_comparison"] = make_comparison_chart(
+        scenarios_count["solutions"],
+        "solutions",
+        "index",
+        "Parameters which differ between scenarios within solution",
+    )
     return charts
 
 
@@ -129,8 +172,12 @@ def get_all_charts():
     land_survey = pd.read_csv(LAND_SURVEY_PATH, index_col=0)
     land_survey_charts = _get_land_solution_analytics(land_survey)
 
+    scenarios = pd.read_csv(SCENARIOS_PATH, index_col=0)
+    scenarios_charts = _get_scenarios_analytics(scenarios)
+
     charts = dict(summary_charts, **regional_charts)
     charts.update(land_survey_charts)
+    charts.update(scenarios_charts)
     return charts
 
 

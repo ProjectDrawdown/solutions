@@ -71,9 +71,10 @@ def make_hist_chart(data, title, xlabel, ylabel, bins=10, density=False, as_html
     fig = figure(
         title=title,
         tools="hover",
+        toolbar_location=None,
         plot_height=400,
         plot_width=650,
-        tooltips="[@left{1.1f} - @right{1.1f}]: @{top}",
+        tooltips="[@left{1.1f}, @right{1.1f}): @{top}",
     )
 
     fig.quad(
@@ -104,6 +105,7 @@ def make_comparison_chart(data, x_col, y_col, title, as_html=True):
         title=title,
         y_range=data[y_col],
         tools="hover",
+        toolbar_location=None,
         plot_height=600,
         plot_width=600,
         tooltips=f"@{{{y_col}}}: @{{{x_col}}}",
@@ -115,6 +117,7 @@ def make_comparison_chart(data, x_col, y_col, title, as_html=True):
         fill_color=Colorblind[3][0],
         source=data,
         height=0.5,
+        alpha=0.6,
     )
     fig.xaxis.axis_label = x_col
 

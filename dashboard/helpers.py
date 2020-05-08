@@ -82,3 +82,44 @@ def get_regional_as_percent(survey_data, column):
     msk_non_null = survey_data[column].notnull()
     msk_non_zero = survey_data[column] != 0.0
     return survey_data.loc[msk_non_null & msk_non_zero, column] * 100
+
+
+def get_issues_with_regional_data(land_survey):
+    msk_regions = land_survey["has regional data"]
+    land_survey = land_survey.loc[msk_regions]
+
+    def check_exceed(val):
+        # Values have different types
+        # need conversion
+        try:
+            return int(val) > 0
+        except ValueError as e:
+            if val == "False":
+                return False
+            elif val == "True":
+                return True
+        raise e
+
+    n = land_survey.shape[0]
+    msk_exceeds_world_count = land_survey["ca scen regions exceed world count"].apply(
+        check_exceed
+    )
+    msk_exceeds_regions_count = land_survey[
+        "ca scen world exceeds regions count"
+    ].apply(check_exceed)
+    msk_mismatch = msk_exceeds_world_count | msk_exceeds_regions_count
+
+    msk_exceeds_alloc_count = land_survey["ca scen exceeds alloc count"].apply(
+        check_exceed
+    )
+
+    no_issues = ((-msk_mismatch) & (-msk_exceeds_alloc_count)).sum()
+    exceeds_limits = (msk_exceeds_alloc_count & (-msk_mismatch)).sum()
+    regions_mismatch = (msk_mismatch & (-msk_exceeds_alloc_count)).sum()
+    both_issues = (msk_mismatch & msk_exceeds_alloc_count).sum()
+    return pd.DataFrame(
+        {
+            "type": ["No Issues", "Exceed Limits", "Regions Mismatch", "Both Issues"],
+            "count": [no_issues, exceeds_limits, regions_mismatch, both_issues],
+        }
+    )
