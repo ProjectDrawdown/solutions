@@ -1,18 +1,61 @@
 from dataclasses import dataclass
 
-import pandas as pd
 import numpy as np
-from mock import patch
+import pandas as pd
 import pytest
+from mock import patch
+
 from dashboard.helpers import (
+    get_excel_python_count,
+    get_issues_with_regional_data,
     get_pds_adoption_basis_counts,
     get_py_solutions,
     get_ref_adoption_basis_counts,
-    get_scenarios_per_solution,
-    get_regional_nonzero,
     get_regional_as_percent,
+    get_regional_nonzero,
+    get_scenarios_per_solution,
 )
 
+mock_all_solutions = pd.DataFrame(
+    {
+        "Solution": {
+            50: "Perennial Biomass",
+            36: "Mass Transit",
+            18: "Managed Grazing",
+            66: "Farmland Irrigation",
+            76: "Carpooling",
+            19: "Nuclear",
+            43: "LED Lighting (Commercial)",
+            58: "Bike Infrastructure",
+            55: "Industrial Recycling",
+            57: "Landfill Methane",
+        },
+        "DirName": {
+            50: "perennialbioenergy",
+            36: "masstransit",
+            18: "managedgrazing",
+            66: "irrigationefficiency",
+            76: "carpooling",
+            19: "nuclear",
+            43: "leds_commercial",
+            58: "bikeinfrastructure",
+            55: np.nan,
+            57: "landfillmethane",
+        },
+        "Sector": {
+            50: "Land Use",
+            36: "Transport",
+            18: "Food",
+            66: "Food",
+            76: "Transport",
+            19: "Electricity Generation",
+            43: "Buildings and Cities",
+            58: "Buildings and Cities",
+            55: "Materials",
+            57: "Buildings and Cities",
+        },
+    }
+)
 mock_py_solutions = pd.DataFrame(
     [
         [
@@ -236,13 +279,43 @@ def test_get_regional_nonzero(column, count):
     pd.testing.assert_frame_equal(result, expected)
 
 
-def test_get_regional_percent():
-    result = get_regional_as_percent(mock_survey_data, "RegionalFractionTAM")
-    expected = pd.Series([110.00000000000001, 71.0, 109.00000000000001, 92.7])
+@pytest.mark.parametrize(
+    "column,count",
+    [
+        ("RegionalFractionTAM", [110.00000000000001, 71.0, 109.00000000000001, 92.7]),
+        ("RegionalFractionAdoption", [110.00000000000001, 0.3]),
+    ],
+)
+def test_get_regional_percent(column, count):
+    result = get_regional_as_percent(mock_survey_data, column)
+    expected = pd.Series(count)
     # Only check values
     np.testing.assert_array_equal(result.values, expected.values)
 
-    result = get_regional_as_percent(mock_survey_data, "RegionalFractionAdoption")
-    expected = pd.Series([110.00000000000001, 0.3])
-    # Only check values
-    np.testing.assert_array_equal(result.values, expected.values)
+
+def test_get_issues_with_regional_data():
+    land_survey = pd.DataFrame(
+        {
+            "has regional data": [True, True, True, True, True, False],
+            "ca scen regions exceed world count": ["False", 2, 1, 0, "False", 0],
+            "ca scen world exceeds regions count": ["True", "0", 1, 0, "0", 1],
+            "ca scen exceeds alloc count": ["False", 1, 0, 0, 1, 1],
+        }
+    )
+    result = get_issues_with_regional_data(land_survey)
+    expected = pd.DataFrame(
+        {
+            "type": ["No Issues", "Exceed Limits", "Regions Mismatch", "Both Issues"],
+            "count": [1, 1, 2, 1],
+        }
+    )
+    pd.testing.assert_frame_equal(result, expected)
+
+
+def test_get_excel_python_count():
+    result = get_excel_python_count(mock_all_solutions, mock_py_solutions)
+    expected = pd.DataFrame(
+        {"type": {0: "Excel Only", 1: "Python & Excel"}, "count": {0: 7, 1: 3}}
+    )
+
+    pd.testing.assert_frame_equal(result, expected)

@@ -98,7 +98,6 @@ def get_issues_with_regional_data(land_survey):
                 return False
             elif val == "True":
                 return True
-        raise e
 
     n = land_survey.shape[0]
     msk_exceeds_world_count = land_survey["ca scen regions exceed world count"].apply(
