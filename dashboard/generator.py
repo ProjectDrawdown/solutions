@@ -107,7 +107,7 @@ def _get_land_solution_analytics(land_survey):
         issues_with_regional_data,
         "type",
         "count",
-        "Issues with regional data in Custom Adoption scenarios)",
+        "Issues with regional data in Custom Adoption scenarios",
     )
     return charts
 
@@ -175,18 +175,22 @@ def get_all_charts():
     scenarios = pd.read_csv(SCENARIOS_PATH, index_col=0)
     scenarios_charts = _get_scenarios_analytics(scenarios)
 
-    charts = dict(summary_charts, **regional_charts)
-    charts.update(land_survey_charts)
-    charts.update(scenarios_charts)
-    return charts
+    return summary_charts, regional_charts, land_survey_charts, scenarios_charts
 
 
 def generate_html():
     env = Environment(loader=PackageLoader("dashboard", "templates"),)
     template = env.get_template("index.html")
 
-    charts = get_all_charts()
+    summary, regional, land_survey, scenarios = get_all_charts()
+
     cdn = CDN.render()
 
-    html = template.render(cdn=cdn, charts=charts)
+    html = template.render(
+        cdn=cdn,
+        summary=summary,
+        regional=regional,
+        land_survey=land_survey,
+        scenarios=scenarios,
+    )
     return html

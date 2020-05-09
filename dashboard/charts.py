@@ -18,7 +18,7 @@ def make_pie_chart(data, cat_column, val_column, title, as_html=True):
 
     fig = figure(
         plot_height=400,
-        plot_width=650,
+        plot_width=550,
         title=title,
         toolbar_location=None,
         tools="hover",
@@ -29,7 +29,7 @@ def make_pie_chart(data, cat_column, val_column, title, as_html=True):
     fig.wedge(
         x=0,
         y=1,
-        radius=0.4,
+        radius=0.3,
         start_angle=cumsum("angle", include_zero=True),
         end_angle=cumsum("angle"),
         line_color="grey",
@@ -60,7 +60,7 @@ def make_hist_chart(data, title, xlabel, ylabel, bins=10, density=False, as_html
         tools="hover",
         toolbar_location=None,
         plot_height=400,
-        plot_width=650,
+        plot_width=550,
         tooltips="[@left{1.1f}, @right{1.1f}): @{top}",
     )
 
