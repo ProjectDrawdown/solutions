@@ -143,35 +143,61 @@ def test_pds_tam_growth():
     assert tg['OECD90'][2014] == ''
 
 
-def test_cumulative_degraded_land_unprotected():
-    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074, delay_protection_1yr=True,
-            disturbance_rate=1)
-    tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'),
-            index_col=0)
-    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'),
-            index_col=0)
+def test_pds_cumulative_degraded_land_unprotected():
+    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074,
+            delay_protection_1yr=True, disturbance_rate=1)
+    datadir = this_dir.parents[0].joinpath('data')
+    tla_per_reg = pd.read_csv(datadir.joinpath('fp_tla_per_reg.csv'), index_col=0)
+    units_adopted = pd.read_csv(datadir.joinpath('fp_units_adopted.csv'), index_col=0)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
             soln_pds_funits_adopted=units_adopted, pds_total_adoption_units=tla_per_reg)
-    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data',
-            'fp_pds_deg_unprotected_land.csv'), index_col=0)
-    pd.testing.assert_frame_equal(ua._cumulative_degraded_land('PDS',
-            'unprotected').loc[:, ['World']], expected_world)
+    expected_world = pd.read_csv(datadir.joinpath('fp_pds_deg_unprotected_land.csv'),
+            squeeze=True, index_col=0)
+    result = ua.pds_cumulative_degraded_land_unprotected()
+    pd.testing.assert_series_equal(result['World'], expected_world)
 
 
-def test_cumulative_degraded_land_protected():
+def test_pds_cumulative_degraded_land_protected():
     ac = advanced_controls.AdvancedControls(disturbance_rate=0.0000157962432447763,
-            delay_protection_1yr=True,degradation_rate=1)
-    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'),
-            index_col=0)
+            delay_protection_1yr=True, degradation_rate=1)
+    datadir = this_dir.parents[0].joinpath('data')
+    units_adopted = pd.read_csv(datadir.joinpath('fp_units_adopted.csv'), index_col=0)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
             soln_pds_funits_adopted=units_adopted)
-    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data',
-            'fp_pds_deg_protected_land.csv'), index_col=0)
-    pd.testing.assert_frame_equal(ua._cumulative_degraded_land('PDS',
-            'protected').loc[:, ['World']], expected_world)
+    expected_world = pd.read_csv(datadir.joinpath('fp_pds_deg_protected_land.csv'),
+            squeeze=True, index_col=0)
+    result = ua.pds_cumulative_degraded_land_protected()
+    pd.testing.assert_series_equal(result['World'], expected_world)
 
 
-def test_total_undegraded_land():
+def test_ref_cumulative_degraded_land_unprotected():
+    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074,
+            delay_protection_1yr=True, disturbance_rate=1)
+    datadir = this_dir.parents[0].joinpath('data')
+    tla_per_reg = pd.read_csv(datadir.joinpath('fp_tla_per_reg.csv'), index_col=0)
+    units_adopted = pd.read_csv(datadir.joinpath('fp_units_adopted.csv'), index_col=0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_pds_funits_adopted=None,
+            soln_ref_funits_adopted=units_adopted, pds_total_adoption_units=tla_per_reg)
+    expected_world = pd.read_csv(datadir.joinpath('fp_pds_deg_unprotected_land.csv'),
+            squeeze=True, index_col=0)
+    result = ua.ref_cumulative_degraded_land_unprotected()
+    pd.testing.assert_series_equal(result['World'], expected_world)
+
+
+def test_ref_cumulative_degraded_land_protected():
+    ac = advanced_controls.AdvancedControls(disturbance_rate=0.0000157962432447763,
+            delay_protection_1yr=True, degradation_rate=1)
+    datadir = this_dir.parents[0].joinpath('data')
+    units_adopted = pd.read_csv(datadir.joinpath('fp_units_adopted.csv'), index_col=0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_pds_funits_adopted=None,
+            soln_ref_funits_adopted=units_adopted)
+    expected_world = pd.read_csv(datadir.joinpath('fp_pds_deg_protected_land.csv'),
+            squeeze=True, index_col=0)
+    result = ua.ref_cumulative_degraded_land_protected()
+    pd.testing.assert_series_equal(result['World'], expected_world)
+
+
+def test_pds_total_undegraded_land():
     ac = advanced_controls.AdvancedControls(degradation_rate=0.003074,
             disturbance_rate=0.0000157962432447763, delay_protection_1yr=True)
     tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'),
@@ -181,21 +207,66 @@ def test_total_undegraded_land():
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
             soln_pds_funits_adopted=units_adopted, pds_total_adoption_units=tla_per_reg)
     expected_world = pd.read_csv(this_dir.parents[0].joinpath('data',
-            'fp_total_undegraded_land.csv'), index_col=0)
-    # identical for REF and PDS so just test PDS
-    pd.testing.assert_frame_equal(ua.pds_total_undegraded_land().loc[:, ['World']], expected_world)
+            'fp_total_undegraded_land.csv'), squeeze=True, index_col=0)
+    pd.testing.assert_series_equal(ua.pds_total_undegraded_land()['World'], expected_world)
+
+
+def test_ref_total_undegraded_land():
+    ac = advanced_controls.AdvancedControls(degradation_rate=0.003074,
+            disturbance_rate=0.0000157962432447763, delay_protection_1yr=True)
+    tla_per_reg = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_tla_per_reg.csv'),
+            index_col=0)
+    units_adopted = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_units_adopted.csv'),
+            index_col=0)
+    ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=units_adopted,
+            soln_pds_funits_adopted=None, pds_total_adoption_units=tla_per_reg)
+    unprotected = ua.ref_cumulative_degraded_land_unprotected()
+    before = unprotected.loc[2015, 'World']
+    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data',
+            'fp_total_undegraded_land.csv'), squeeze=True, index_col=0)
+    pd.testing.assert_series_equal(ua.ref_total_undegraded_land()['World'], expected_world)
+    # test for lru_cache corruption, which we had a problem with.
+    after = unprotected.loc[2015, 'World']
+    assert before == after
 
 
 def test_annual_reduction_in_total_degraded_land():
-    cumu_ridl = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_cumu_ridl.csv'), index_col=0)
-    expected_world = pd.read_csv(this_dir.parents[0].joinpath('data', 'fp_annu_ridl.csv'), index_col=0)
-    with mock.patch.object(unitadoption.UnitAdoption,
-            'cumulative_reduction_in_total_degraded_land', new=lambda x: cumu_ridl):
-        ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND),
-        ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
-                soln_pds_funits_adopted=None)
-        pd.testing.assert_frame_equal(ua.annual_reduction_in_total_degraded_land(
-                ).loc[:, ['World']], expected_world)
+    regions = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+            'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']
+    soln_pds_funits_adopted = pd.DataFrame(0.0, columns=regions, index=range(2014, 2061))
+    soln_ref_funits_adopted = pd.DataFrame(0.0, columns=regions, index=range(2014, 2061))
+    pds_total_adoption_units = pd.DataFrame(10.0, columns=regions, index=range(2014, 2061))
+    for x, idx in enumerate(soln_pds_funits_adopted.index):
+        soln_pds_funits_adopted.loc[idx, :] = x * 0.1
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND,
+            delay_protection_1yr=False, disturbance_rate=0.01, degradation_rate=0.04)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            soln_ref_funits_adopted=soln_ref_funits_adopted,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            pds_total_adoption_units=pds_total_adoption_units)
+    result = ua.annual_reduction_in_total_degraded_land()
+    # (degradation_rate - disturbance_rate) * funits
+    assert result.loc[2015, 'World'] == pytest.approx(0.003)
+
+
+def test_annual_reduction_in_total_degraded_land_first_year_nonzero():
+    regions = ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+            'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA']
+    soln_pds_funits_adopted = pd.DataFrame(0.0, columns=regions, index=range(2013, 2061))
+    soln_ref_funits_adopted = pd.DataFrame(0.0, columns=regions, index=range(2013, 2061))
+    pds_total_adoption_units = pd.DataFrame(10.0, columns=regions, index=range(2014, 2061))
+    for x, idx in enumerate(soln_pds_funits_adopted.index):
+        soln_pds_funits_adopted.loc[idx, :] = x * 0.1
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND,
+            delay_protection_1yr=False, disturbance_rate=0.01, degradation_rate=0.04)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            soln_ref_funits_adopted=soln_ref_funits_adopted,
+            soln_pds_funits_adopted=soln_pds_funits_adopted,
+            pds_total_adoption_units=pds_total_adoption_units)
+    result = ua.annual_reduction_in_total_degraded_land()
+    # This exposes a particular corner case where we had a bug, if the first year of
+    # annual_reduction_in_total_degraded_land is not zero.
+    assert result.loc[2014, 'World'] != 0
 
 
 def test_soln_pds_cumulative_funits_bug_behavior():
