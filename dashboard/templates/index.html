@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Model Health Dashboard</title>
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+{{cdn}}
+{% for chart_group in [summary, regional, land_survey, scenarios] %}
+{% for name, chart in chart_group.items() %}
+{{chart.script|safe}}
+{% endfor %}
+{% endfor %}
+
+<body>
+
+    <div class="dashboard container">
+        <img src="https://raw.githubusercontent.com/ProjectDrawdown/solutions/master/dashboard/img/ProjectDrawdown.png"
+            alt="drawdown logo" width="200" height="100">
+        <h1>Model Health Dashboard</h1>
+        <p>This dashboard reports statistics about the health of the collection of Drawdown solution models.</p>
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#summary">Summary</a></li>
+                <li><a data-toggle="tab" href="#regional">Regional</a></li>
+                <li><a data-toggle="tab" href="#land_survey">Land Survey</a></li>
+                <li><a data-toggle="tab" href="#scenarios">Scenarios</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="summary" class="tab-pane fade in active">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{summary.solution_implementation.body}}
+                        </div>
+                        <div class="col-lg-6">
+                            {{summary.pds_adoption_basis.body}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{summary.ref_adoption_basis_counts.body}}
+                        </div>
+                        <div class="col-lg-6">
+                            {{summary.num_scenario_per_solution.body}}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="regional" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{regional.regional_nonzero_TAM.body}}
+                        </div>
+                        <div class="col-lg-6">
+                            {{regional.regional_TAM_percent.body}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{regional.regional_nonzero_Adoption.body}}
+                        </div>
+                        <div class="col-lg-6">
+                            {{regional.regional_Adoption_percent.body}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{regional.pds_adoption_r_squared.body}}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="land_survey" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{land_survey["% tla"].body}}
+                        </div>
+                        <div class="col-lg-6">
+                            {{land_survey["% world alloc"].body}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{land_survey["avg abatement cost"].body}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{land_survey.has_regions.body}}
+                        </div>
+                        <div class="col-lg-6">
+                            {{land_survey.issues_with_regional_data.body}}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="scenarios" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{scenarios.scenarios_comparison.body}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</body>
+
+</html>
+<style type="text/css">
+    body {
+        font-family: "Roboto";
+        font-size: 15px;
+    }
+
+    .container.dashboard {
+        padding: 10px 10px;
+    }
+
+    .nav-tabs {
+        padding: 10px 10px;
+    }
+
+    h1 {
+        padding: 10px 0px;
+    }
+</style>
