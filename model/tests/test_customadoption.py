@@ -294,9 +294,9 @@ def test_datapoints_no_negative():
     assert result.loc[2015, 'World'] == pytest.approx(0.0)  # i.e. not negative.
 
 
-def test_datapoints_least_sq():
+def test_datapoints_datapoints_degree_1():
     # Taken from Drawdown_RRS-BIOSEQ_Model_v1.1_MASTER_Afforestation-Jan2020.xlsm
-    data_sources = [{'name': 'Regional linear trend', 'include': True, 'least_sq': True,
+    data_sources = [{'name': 'Regional linear trend', 'include': True, 'datapoints_degree': 1,
      'datapoints': pd.DataFrame([
         [1990, np.nan, 96.8914, 44.1631, 106.1562, 16.5338, 14.9281],
         [2000, np.nan, 97.2555, 44.2605, 107.5489, 16.7251, 15.2771],
@@ -315,6 +315,33 @@ def test_datapoints_least_sq():
     assert result.loc[2040, 'OECD90'] == pytest.approx(99.5072653875209)
     assert result.loc[2050, 'Eastern Europe'] == pytest.approx(45.1173882050357)
     assert result.loc[2055, 'World'] == pytest.approx(309.3451120801650)
+
+
+def test_datapoints_datapoints_degree_3():
+    # Taken from Drawdown_RRS-BIOSEQAgri_Model_v1.1b_Conservation_Agriculture_28Feb2020.xlsm
+    data_sources = [{'name': 'degree3', 'include': True, 'datapoints_degree': 3,
+     'datapoints': pd.DataFrame([
+        [2018, 108.9261700401280, 43.7005755429800, 9.0409602615725, 8.9347309927289,
+            1.1134178930081, 46.1364853498384],
+        [2030, 376.2654577367930, 32.8311338312219, 104.3539285279180, 158.0238892381100,
+            32.9622589705103, 48.0942471690326],
+        [2050, 282.1990933025950, 24.6233503734164, 78.2654463959384, 118.5179169285820,
+            24.7216942278827, 36.0706853767745],
+        [2080, 163.3892550601920, 65.5508633144700, 13.5614403923587, 13.4020964890934,
+            1.6701268395122, 69.2047280247576],
+        ], columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+            "Middle East and Africa", "Latin America"]).set_index("Year")
+    }]
+    ca = customadoption.CustomAdoption(data_sources=data_sources,
+            soln_adoption_custom_name='degree3')
+    result = ca.scenarios['degree3']['df']
+    # expected from Drawdown_RRS-BIOSEQAgri_Model_v1.1b_Conservation_Agriculture_28Feb2020.xlsm
+    # 'Custom PDS Adoption' scenario 7 "Likely max CA based on Prestele BottomUp Map, polynominal"
+    assert result.loc[2025, 'World'] == pytest.approx(306.494563043118)
+    assert result.loc[2030, 'Eastern Europe'] == pytest.approx(104.353928521276000)
+    assert result.loc[2035, 'Latin America'] == pytest.approx(45.687040837481600)
+    assert result.loc[2045, 'Asia (Sans Japan)'] == pytest.approx(148.444525264204000)
+    assert result.loc[2055, 'World'] == pytest.approx(217.292268067598000)
 
 
 def test_datapoints_maximum():

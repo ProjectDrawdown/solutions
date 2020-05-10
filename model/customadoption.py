@@ -67,7 +67,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             include = d.get('include', True)
             filename = d.get('filename', None)
             datapoints = d.get('datapoints', None)
-            least_sq = d.get('least_sq', None)
+            datapoints_degree = d.get('datapoints_degree', None)
             growth_rate = d.get('growth_rate', None)
             maximum = d.get('maximum', None)
             bug_no_limit = d.get('bug_no_limit', False)
@@ -75,11 +75,13 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             if filename is not None:
                 df = self._read_csv(filename)
                 n = n + 1
-            if datapoints is not None and not least_sq:
+            if datapoints is not None and not datapoints_degree:
+                # Note that datapoints_degree=0 will also make it here, which is what we want.
                 df = self._linear_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
                 n = n + 1
-            if datapoints is not None and least_sq:
-                df = self._polyfit_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
+            if datapoints is not None and datapoints_degree:
+                df = self._polyfit_forecast(datapoints=datapoints, degree=datapoints_degree,
+                        start_year=2012, end_year=2060)
                 n = n + 1
             if growth_rate is not None:
                 growth_initial = d.get('growth_initial', None)
@@ -156,23 +158,24 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         return df.loc[start_year:end_year, :]
 
 
-    def _polyfit_forecast(self, datapoints, start_year, end_year):
+    def _polyfit_forecast(self, datapoints, degree, start_year, end_year):
         """Interpolates a line between datapoints, and fills in a dataframe.
            datapoints: a Pandas DataFrame with 2+ rows of adoption data, indexed by year.
              The columns are expected to be regions like 'World', 'EU', 'India', etc.
              The year+adoption data provide the X,Y coordinates for a line to interpolate.
+           degree: the order of polynomial to fit
            start_year: year the trend should begin, sometimes earlier than the first datapoint
            end_year: year the trend should extend to, usually past the last datapoint
         """
         df = pd.DataFrame(columns=datapoints.columns, dtype='float')
         for col in df.columns:
-            (slope, intercept) = np.polyfit(x=datapoints.index, y=datapoints[col], deg=1)
+            coeff = np.polyfit(x=datapoints.index, y=datapoints[col], deg=degree)
             first_year = list(datapoints.index)[0]
             initial_value = datapoints.loc[first_year, col]
             for year in range(first_year, start_year - 1, -1):
-                df.loc[year, col] = (slope * year) + intercept
+                df.loc[year, col] = np.polyval(p=coeff, x=year)
             for year in range(first_year, end_year + 1):
-                df.loc[year, col] = (slope * year) + intercept
+                df.loc[year, col] = np.polyval(p=coeff, x=year)
 
         main_region = dd.REGIONS[0]
         if df[main_region].isnull().all():

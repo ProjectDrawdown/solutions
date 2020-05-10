@@ -159,7 +159,7 @@ class Scenario:
         ds4_percent_adoption_2050 = 0.85
         ds4_adoption_2050 = ds4_percent_adoption_2050 * tla_2050
         ca_pds_data_sources = [
-            {'name': 'Low growth, linear trend', 'include': True, 'least_sq': True,
+            {'name': 'Low growth, linear trend', 'include': True, 'datapoints_degree': 1,
                 # This scenario projects the future adoption of bamboo based on historical regional
                 # growth reported for the 1990-2010 period in the Global Forest Resource Assessment
                 # 2010 report, published by the FAO.
