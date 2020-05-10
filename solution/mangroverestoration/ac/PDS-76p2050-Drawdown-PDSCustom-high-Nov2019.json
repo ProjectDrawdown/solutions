@@ -1,14 +1,13 @@
 {
-    "name": "PDS-100p2050-Optimum-PDSCustom-100%2030-Dec2019",
+    "name": "PDS-76p2050-Drawdown-PDSCustom-high-Nov2019",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "This is updated scenario based on updated data, adoption scenarios, and change of current adoption year from 2014 to 2018.\r\n",
+    "description": "This is updated scenario based on updated data, adoption scenarios, and change of current adoption year from 2014 to 2018.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": true,
-    "custom_tla_fixed_value": 0.812,
     "ref_base_adoption": {
-        "World": 0.0,
+        "World": 3.22248272302866,
         "OECD90": 0.0,
         "Eastern Europe": 0.0,
         "Asia (Sans Japan)": 0.0,
@@ -22,7 +21,7 @@
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": {
-        "World": 0.0,
+        "World": 0.243714285714285,
         "OECD90": 0.0,
         "Eastern Europe": 0.0,
         "Asia (Sans Japan)": 0.0,
@@ -33,9 +32,10 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "100% TLA by 2030",
+    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [ 2014 ],
     "conv_2014_cost": {
         "value": 0.0,
         "statistic": ""
@@ -45,7 +45,7 @@
         "value": 0.0,
         "statistic": ""
     },
-    "conv_expected_lifetime": 30.0,
+    "conv_expected_lifetime": 0.0,
     "yield_from_conv_practice": {
         "value": 0.0,
         "statistic": ""
@@ -70,7 +70,7 @@
     },
     "npv_discount_rate": 0.1,
     "emissions_use_co2eq": true,
-    "emissions_use_agg_co2eq": true,
+    "emissions_use_agg_co2eq": false,
     "emissions_grid_source": "Meta-Analysis",
     "emissions_grid_range": "Mean",
     "conv_indirect_co2_per_unit": 0.0,
@@ -81,10 +81,10 @@
     },
     "tco2eq_rplu_rate": "One-time",
     "tco2_reduced_per_land_unit": {
-        "value": 0.0,
-        "statistic": ""
+        "value": 32.7518657615995,
+        "statistic": "mean"
     },
-    "tco2_rplu_rate": "One-time",
+    "tco2_rplu_rate": "Annual",
     "tn2o_co2_reduced_per_land_unit": {
         "value": 0.0,
         "statistic": ""
@@ -95,20 +95,27 @@
         "statistic": ""
     },
     "tch4_co2_rplu_rate": "One-time",
-    "land_annual_emissons_lifetime": 100.0,
+    "land_annual_emissons_lifetime": 30.0,
     "conv_annual_energy_used": 0.0,
     "soln_annual_energy_used": 0.0,
     "seq_rate_global": {
-        "value": 6.58075574394464,
+        "value": 1.90555555555556,
         "statistic": "mean"
     },
-    "carbon_not_emitted_after_harvesting": {
-        "value": 0.0,
-        "statistic": ""
+    "global_multi_for_regrowth": 1.0,
+    "degradation_rate": {
+        "value": 0.00991428571428571,
+        "statistic": "mean"
+    },
+    "tC_storage_in_protected_land_type": {
+        "value": 585.768937533866,
+        "statistic": "mean"
     },
     "disturbance_rate": {
         "value": 0.0,
         "statistic": ""
     },
-    "harvest_frequency": 100.0
+    "delay_protection_1yr": true,
+    "delay_regrowth_1yr": true,
+    "include_unprotected_land_in_regrowth_calcs": false
 }

@@ -1,5 +1,9 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Worthington and Spalding (2018), Table 8.1 on page 28. Full reference:Worthington, T., & Spalding, M. (2018). Mangrove Restoration Potential: a global map highlighting a critical opportunity. 36. https://doi.org/10.17863/CAM.39153
-
-",https://doi.org/10.17863/CAM.39153 ,World,,,2018,,190147.0,Ha,0.190147,million hectares,,,True
-PDS Custom 2019,,World,,,,,,,0.0,million hectares,,,
+"UNEP-WCMC, WDPA, 2014",https://portals.iucn.org/library/sites/library/files/documents/2014-043.pdf ,World,,2 - Public Sector/ Multilateral Agency,,,0.281,%,3.7154885792481727,million hectares,,,False
+Giri et al (Based on IUCN I-IV protected area category of 15 countries having 75% of the world mangroves),https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1466-8238.2010.00584.x,World,,1  - Peer Reviewed,,,0.069,%,0.9123441707050673,million hectares,,,False
+Spalding et al 2010,https://www.taylorfrancis.com/books/9781136530968,World,,2 - Public Sector/ Multilateral Agency,,,0.25,%,3.305594821395171,million hectares,,,False
+UNEP-WCMC 2007,https://www.unep-wcmc.org/resources-and-data/state-of-the-worlds-protected-areas-2007,World,,2 - Public Sector/ Multilateral Agency,,,0.29,%,3.834489992818398,million hectares,,,False
+Brooks et al 2004,http://bioscience.oxfordjournals.org/content/54/12/1081.full.pdf+html,World,,1  - Peer Reviewed,,,0.16,%,2.1155806856929096,million hectares,,,False
+WDPA 2014,https://portals.iucn.org/library/sites/library/files/documents/2014-043.pdf ,World,,2 - Public Sector/ Multilateral Agency,,,0.317,%,4.1914942335290775,million hectares,,,True
+"UNEP-WCMC, 2018 & Spalding et al., 2010",https://habitats.oceanplus.org/mangroves,World,,2 - Public Sector/ Multilateral Agency,,,0.43,%,5.685623092799695,million hectares,,,False
+"Butchart et al., 2015",https://onlinelibrary.wiley.com/doi/full/10.1111/conl.12158,World,,1  - Peer Reviewed,,,0.226,%,2.988257718541235,million hectares,,,False
