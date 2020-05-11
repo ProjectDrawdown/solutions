@@ -252,7 +252,7 @@ class Scenario:
                     'the year 2002, 2008, 2013, and targeted percentage for the year 2030 by '
                     'Rights and Resources 2018  publication. '
                     ),
-                'least_sq': True, 'datapoints': ds1_datapoints, 'maximum': ds1_maximum},
+                'datapoints_degree': 1, 'datapoints': ds1_datapoints, 'maximum': ds1_maximum},
             {'name': 'High growth, Linear Trend', 'include': True,
                 'description': (
                     'Future adoption of forest area under Indigenous People (IP) management was '
@@ -262,7 +262,7 @@ class Scenario:
                     'the forest area under indigenous people management will increase to 75% by '
                     '2050 in Low and Middle Income Countries. '
                     ),
-                'least_sq': True, 'datapoints': ds2_datapoints, 'maximum': ds2_maximum},
+                'datapoints_degree': 1, 'datapoints': ds2_datapoints, 'maximum': ds2_maximum},
             {'name': 'Max growth, Linear Trend', 'include': True,
                 'description': (
                     'Future adoption of forest area under Indigenous People (IP) management was '
@@ -272,7 +272,7 @@ class Scenario:
                     'the forest area under indigenous people management will increase to 100% by '
                     '2050 in Low and Middle Income Countries. '
                     ),
-                'least_sq': True, 'datapoints': ds3_datapoints, 'maximum': ds3_maximum},
+                'datapoints_degree': 1, 'datapoints': ds3_datapoints, 'maximum': ds3_maximum},
             {'name': 'Moderate growth, AEZ TLA, Linear Trend', 'include': True,
                 'description': (
                     'Future adoption of forest area under Indigenous People (IP) management was '
@@ -282,7 +282,7 @@ class Scenario:
                     'calculated with reference to the assigned TLA of the solution and not by '
                     'the total area as calculated for theLow and Middle Income Countries. '
                     ),
-                'least_sq': True, 'datapoints': ds4_datapoints, 'maximum': ds4_maximum},
+                'datapoints_degree': 1, 'datapoints': ds4_datapoints, 'maximum': ds4_maximum},
             {'name': 'High growth, AEZ TLA, Linear Trend', 'include': True,
                 'description': (
                     'Future adoption of forest area under Indigenous People (IP) management was '
@@ -295,7 +295,7 @@ class Scenario:
                     'solution and not by the total area as calculated for the Low and Middle '
                     'Income Countries. '
                     ),
-                'least_sq': True, 'datapoints': ds5_datapoints, 'maximum': ds5_maximum},
+                'datapoints_degree': 1, 'datapoints': ds5_datapoints, 'maximum': ds5_maximum},
             {'name': 'Max growth, AEZ TLA, Linear Trend', 'include': True,
                 'description': (
                     'Future adoption of forest area under Indigenous People (IP) management was '
@@ -308,7 +308,7 @@ class Scenario:
                     'solution and not by the total area as calculated for the Low and Middle '
                     'Income Countries. '
                     ),
-                'least_sq': True, 'datapoints': ds6_datapoints, 'maximum': ds6_maximum},
+                'datapoints_degree': 1, 'datapoints': ds6_datapoints, 'maximum': ds6_maximum},
         ]
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,

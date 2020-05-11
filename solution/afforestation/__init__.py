@@ -175,7 +175,7 @@ class Scenario:
         ds7_adoption_2050 = ds7_percent_adoption_2050 * tla_2050
 
         ca_pds_data_sources = [
-                {'name': 'Regional linear trend', 'include': True, 'least_sq': True,
+                {'name': 'Regional linear trend', 'include': True, 'datapoints_degree': 1,
               # Future forest plantation area is projected based on country level data available
               # for the year 1990, 2000, 2005, and 2010 from the FAO's Forest Resource Assessment
               # report from 2015. 
