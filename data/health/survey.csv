@@ -80,9 +80,20 @@ concentratedsolar:PDS-6p2050-Optimum2020.,0.7151913916705964,1.1265846961442534,
 concentratedsolar:PDS-8p2050-Optimum (Book Ed.1),0.7151913916705964,1.3970737307691168,0.9679408430706962
 concentratedsolar:PDS-8p2050-Drawdown (Book Ed.1),0.7151913916705964,1.3970737307691168,0.9679408430706962
 concentratedsolar:PDS-7p2050-Plausible2020.,1.0990576040386826,1.3970737307691168,0.9679408430706962
-conservationagriculture:PDS-39p2050-Plausible-PDScustom-high-Bookedition1,,1.0169662899091259,0.14528330089397698
-conservationagriculture:PDS-25p2050-PDS-25p2050-Optimum-PDScustom-avg-Bookedition1,,1.0282927904352466,0.06348976734369419
-"conservationagriculture:PDS-30p2050-Drawdown-PDScustom-high,highearly-Bookedition1",,1.0000000002048335,0.12435625489313921
+conservationagriculture:PDS-45p2050-Plausible-CustomPDS-high-aug2019,,1.0,0.8219667576479575
+conservationagriculture:PDS-54p2050-Plausible-customPDS-high-Jan2020,,1.0000000000000002,0.048422719423304283
+conservationagriculture:PDS-35p2050-Drawdown-PDSCustom-highhighearly-Nov2019,,1.000000000223586,0.5767846573212884
+conservationagriculture:PDS-39p2050-Plausible-PDScustom-high-BookVersion1,,1.0,0.7333765349564209
+conservationagriculture:PDS-31p2050-Optimum-PDSCustom-avg-Nov2019,,1.0,0.7399282046484603
+conservationagriculture:PDS-44p2050-Drawdown-customPDS-highhighearly-Jan2020,,0.9999999998697181,0.6149792941616691
+conservationagriculture:PDS-35p2050-Drawdown-CustomPDS-highearly-aug2019,,1.000000000223586,0.5786973088887509
+"conservationagriculture:PDS-30p2050-Drawdown-PDScustom-high,highearly-BookVersion1",,0.9999999998777597,0.5457390853793354
+conservationagriculture:PDS-32p2050-Drawdown_Apr2019,,1.000000000223586,0.5786973088887509
+conservationagriculture:PDS-42p2050-Plausible-Apr2019,,1.0,0.8219667576479575
+conservationagriculture:PDS-31p2050-Optimum-CustomPDS-avg-aug2019,,1.0,0.8219667576479575
+conservationagriculture:PDS-29p2050-Optimum_Apr2019,,1.0,0.8219667576479575
+conservationagriculture:PDS-45p2050-Plausible-PDSCustom-high-Nov2019,,1.0,0.7399282046484603
+conservationagriculture:PDS-25p2050-PDS-25p2050-Optimum-PDScustom-avg-BookVersion1,,1.0,0.7333765349564209
 coolroofs:PDS3-93p2050-Integrated-EE8.42%-FE-2.62% (Book),1.6165080339091262,0.0,0.9812183166357588
 coolroofs:PDS2-89p2050-Integrated-EE8.51%-FE-2.67% (Book),1.6165080339091262,0.0,0.9815927640491442
 coolroofs:PDS1-61p2050-Integrated-EE8.72%-FE-2.81% (Book),1.6165080339091262,0.0,0.9735910402610773
