@@ -1,56 +1,40 @@
 {
-    "name": "PDS-89p2050-Drawdown-PDScustom-aggmax-Bookedition1",
+    "name": "PDS-98p2050-Drawdown-PDSCustom-high-Nov2019",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "The current adoption is based on the FAO 2015 estimates for global area under forest protection. The future adoption scenarios are based on the national and international commitments for forest protection. Considering a higher rate of forest degradation and reduced area of intact forest, adoption scenarios are build to maximize the area under forest protection. Thus, protection of 80%-100% of the intact forest  were assumed in different custom adoption scenarios with some scenarios assuming an early adoption 75-90% by 2030. This scenario presents the result of the \"Aggressive-Max, High early growth 2\" PDS custom adoption scenario, with standard deviation input set to \"1.5\" in the Custom PDS Adoption sheet. The results are marginally lesser than the Book edition 1, so no new scenario was created for the latter. This model upgrade involves, changes in the TLA, current adoption, and creation of new custom adoption scenarios. ",
+    "description": "This is updated scenario based on updated data, adoption scenarios, and change of current adoption year from 2014 to 2018.\r\n",
     "report_start_year": 2020,
     "report_end_year": 2050,
-    "use_custom_tla": false,
+    "use_custom_tla": true,
+    "custom_tla_fixed_value": 1155.12790785721,
+    "ref_base_adoption": {
+        "World": 651.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "Aggressive-Max, high early growth2",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "conv_2014_cost": {
         "value": 0.0,
@@ -92,8 +76,8 @@
     "conv_indirect_co2_per_unit": 0.0,
     "soln_indirect_co2_per_iunit": 0.0,
     "tco2eq_reduced_per_land_unit": {
-        "value": 313.791126867655,
-        "statistic": "mean"
+        "value": 280.872672028533,
+        "statistic": "low"
     },
     "tco2eq_rplu_rate": "One-time",
     "tco2_reduced_per_land_unit": {
@@ -115,20 +99,20 @@
     "conv_annual_energy_used": 0.0,
     "soln_annual_energy_used": 0.0,
     "seq_rate_global": {
-        "value": 0.596666666666667,
+        "value": 0.837682083997874,
         "statistic": "mean"
     },
     "global_multi_for_regrowth": 1.0,
     "degradation_rate": {
-        "value": 0.003074,
+        "value": 0.00465056724841035,
         "statistic": "mean"
     },
     "tC_storage_in_protected_land_type": {
-        "value": 177.3,
-        "statistic": "mean"
+        "value": 194.881771586493,
+        "xls cell formula": "D189+B138/'Variable Meta-analysis'!AN32"
     },
     "disturbance_rate": {
-        "value": 1.57962432447763e-05,
+        "value": 0.00226202280614774,
         "statistic": "mean"
     },
     "delay_protection_1yr": true,
