@@ -339,6 +339,11 @@ def get_land_scenarios(wb, solution_category):
                 s['soln_pds_adoption_custom_name'] = custom
                 if 'soln_pds_adoption_basis' not in s:  # sometimes row 164 is blank
                     s['soln_pds_adoption_basis'] = 'Fully Customized PDS'
+                high, low = str(sr_tab.cell_value(row + 260, 7)).split(',')
+                if high != "1" and high != "":
+                    s['soln_pds_adoption_custom_high_sd_mult'] = float(high)
+                if low != "1" and low != "":
+                    s['soln_pds_adoption_custom_low_sd_mult'] = float(low)
 
             assert sr_tab.cell_value(row + 262, 1) == 'REF ADOPTION SCENARIO INPUTS'
             adopt = str(sr_tab.cell_value(row + 263, 4)).strip()
@@ -960,7 +965,8 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
     if case == 'PDS':
         f.write("        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
         f.write("            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
-        f.write(f"            high_sd_mult={multipliers['high']}, low_sd_mult={multipliers['low']},\n")
+        f.write(f"            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,\n")
+        f.write(f"            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,\n")
         if is_land:
             f.write("            total_adoption_limit=self.tla_per_region)\n")
         else:
