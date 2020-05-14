@@ -1,8 +1,8 @@
 {
-    "name": "PDS2-8p2050-Based on Several Sources (Book Ed.1)",
+    "name": "PDS3-10p2050-ICE Car Replacement Only",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Using data from multipler sources for estimates and projections for each of the five Drawdown Regions, we estimate the global projection by first interpolating each region 9averaged over all projections in that region) and then sum over all regions. This scenario uses inputs of the model developed for the Drawdown book edition 1, some of which were updated.",
+    "description": "The other scenarios compare the adoption of bikes to a combination of other modes, including cars and mass transit (as indicated by the conventional use of electricity and fuel). In this scenario, the conventional is assumed to be only internal combustion engine (ICE) cars, and hence only motor gasoline is used at a higher rate, and no electricity is used (diesel engines are also omitted). The impact is greater then for each adopted passenger-km. The passenger-km adoption is also assumed to rise linearly to 10% of the TAM.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -28,11 +28,11 @@
     },
     "conv_fuel_cost_per_funit": 0.0,
     "pds_2014_cost": {
-        "value": 211270.65943419177,
+        "value": 211268.99617870402,
         "statistic": ""
     },
     "ref_2014_cost": {
-        "value": 211270.65943419177,
+        "value": 211268.99617870402,
         "statistic": ""
     },
     "soln_first_cost_efficiency_rate": 0.0,
@@ -46,7 +46,7 @@
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
-        "value": 2873750.3539548563,
+        "value": 2873737.2367601125,
         "statistic": ""
     },
     "soln_fixed_oper_cost_per_iunit": {
@@ -54,13 +54,13 @@
         "statistic": ""
     },
     "soln_fuel_cost_per_funit": 0.0,
-    "npv_discount_rate": 0.0638,
+    "npv_discount_rate": 0.063842795581566,
     "conv_annual_energy_used": {
-        "value": 0.0043050629350364494,
+        "value": 0.0,
         "statistic": ""
     },
     "soln_energy_efficiency_factor": {
-        "value": 1.0,
+        "value": 0.0,
         "statistic": ""
     },
     "soln_annual_energy_used": {
@@ -68,7 +68,7 @@
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 34734831.72341607,
+        "value": 52940977.6576322,
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
@@ -117,98 +117,39 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            856.0
-        ],
-        [
-            "OECD90",
-            233.98839923734755
-        ],
-        [
-            "Eastern Europe",
-            3.173527202810714
-        ],
-        [
-            "Asia (Sans Japan)",
-            859.4513386529659
-        ],
-        [
-            "Middle East and Africa",
-            48.52296834532601
-        ],
-        [
-            "Latin America",
-            157.5563510884852
-        ],
-        [
-            "China",
-            311.3487952155772
-        ],
-        [
-            "India",
-            185.19183304641325
-        ],
-        [
-            "EU",
-            138.07360106730914
-        ],
-        [
-            "USA",
-            13.301055629175583
-        ]
-    ],
-    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "ref_base_adoption": {
+        "World": 898.036058722178,
+        "OECD90": 233.98839923734755,
+        "Eastern Europe": 3.173527202810714,
+        "Asia (Sans Japan)": 859.4513386529659,
+        "Middle East and Africa": 48.52296834532601,
+        "Latin America": 157.5563510884852,
+        "China": 311.3487952155772,
+        "India": 185.19183304641325,
+        "EU": 138.07360106730914,
+        "USA": 13.301055629175583
+    },
+    "soln_pds_adoption_basis": "DEFAULT Linear",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "(OPT2) Drawdown Team projections based on a weighted average of Several Sources",
+    "pds_adoption_final_percentage": {
+        "World": 0.1,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Drawdown Book Ed.1 Reference Scenario",
+    "soln_ref_adoption_custom_name": "Linear REF Growth Integrated with Recent Historical Adoption",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
+        2014,
         2015,
-        2016
+        2016,
+        2017
     ]
 }

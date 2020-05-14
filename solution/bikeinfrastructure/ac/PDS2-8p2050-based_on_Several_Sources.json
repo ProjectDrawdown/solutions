@@ -1,8 +1,8 @@
 {
-    "name": "PDS1-5p2050-Based on ITDP/UCD (Book Ed.1)",
+    "name": "PDS2-8p2050-based on Several Sources",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Using the Bike usage projections of the ITDP/UCD (2015) Publication \"A High Shift Cycling Scenario\", we interpolated for missing years. This scenario uses inputs of the model developed for the Drawdown Book Edition 1, some of which have been updated.",
+    "description": "Using dataa from multiple sources for estimates and projections for each of the five Drawdown Regions, we estimate the global projection by first interpolating each region (averaged over all projections in that region) and then sum over all regions.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -28,11 +28,11 @@
     },
     "conv_fuel_cost_per_funit": 0.0,
     "pds_2014_cost": {
-        "value": 211270.65943419177,
+        "value": 211268.99617870402,
         "statistic": ""
     },
     "ref_2014_cost": {
-        "value": 211270.65943419177,
+        "value": 211268.99617870402,
         "statistic": ""
     },
     "soln_first_cost_efficiency_rate": 0.0,
@@ -46,7 +46,7 @@
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
-        "value": 2873750.3539548563,
+        "value": 2873737.2367601125,
         "statistic": ""
     },
     "soln_fixed_oper_cost_per_iunit": {
@@ -54,9 +54,9 @@
         "statistic": ""
     },
     "soln_fuel_cost_per_funit": 0.0,
-    "npv_discount_rate": 0.0638,
+    "npv_discount_rate": 0.063842795581566,
     "conv_annual_energy_used": {
-        "value": 0.0043050629350364494,
+        "value": 0.004370205868298732,
         "statistic": ""
     },
     "soln_energy_efficiency_factor": {
@@ -68,7 +68,7 @@
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 34734831.72341607,
+        "value": 33665812.319058344,
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
@@ -118,7 +118,7 @@
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
     "ref_base_adoption": {
-        "World": 856.0,
+        "World": 898.036058722178,
         "OECD90": 233.98839923734755,
         "Eastern Europe": 3.173527202810714,
         "Asia (Sans Japan)": 859.4513386529659,
@@ -143,12 +143,8 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 Scenario 1",
+    "soln_pds_adoption_custom_name": "(PDS2) Drawdown Team projections based on a weighted average of Several Sources",
     "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Drawdown Book Ed.1 Reference Scenario",
-    "soln_ref_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [
-        2015,
-        2016
-    ]
+    "soln_ref_adoption_custom_name": "Linear REF Growth Integrated with Recent Historical Adoption",
+    "soln_ref_adoption_regional_data": false
 }

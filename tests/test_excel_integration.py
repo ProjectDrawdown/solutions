@@ -720,6 +720,10 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
     if ref_tam_mask is not None and regional_mask is not None:
         regional_mask |= ref_tam_mask
 
+    # BikeInfra-RRSv1.1c-7Oct2019.xlsm catastrophic subtraction in one scenario
+    s = obj.ua.soln_net_annual_funits_adopted().reset_index()
+    m = s.mask(s < 1e-10, other=True).where(s < 1e-10, other=False)
+    soln_net_annual_funits_adopted_mask = m | regional_mask
     verify['Unit Adoption Calculations'].extend([
             ('P17:Z63', obj.ua.ref_population().reset_index(), None),
             ('AB17:AL63', obj.ua.ref_gdp().reset_index(), None),
@@ -728,8 +732,8 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
             ('AB69:AL115', obj.ua.pds_gdp().reset_index(), None),
             ('AN69:AX115', obj.ua.pds_gdp_per_capita().reset_index(), None),
             ('AG199:AQ244', obj.ua.soln_ref_new_iunits_reqd().reset_index(), None),
-            ('B252:L298', obj.ua.soln_net_annual_funits_adopted(
-            ).reset_index(), regional_mask),
+            ('B252:L298', obj.ua.soln_net_annual_funits_adopted().reset_index(),
+                soln_net_annual_funits_adopted_mask),
             ('Q252:AA298', obj.ua.conv_ref_tot_iunits().reset_index(), ref_tam_mask),
     ])
 

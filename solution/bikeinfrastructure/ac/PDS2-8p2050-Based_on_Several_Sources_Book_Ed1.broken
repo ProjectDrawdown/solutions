@@ -1,8 +1,8 @@
 {
-    "name": "PDS1-5p2050-Based on ITDP/UCD (Book Ed.1)",
+    "name": "PDS2-8p2050-Based on Several Sources (Book Ed.1)",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Using the Bike usage projections of the ITDP/UCD (2015) Publication \"A High Shift Cycling Scenario\", we interpolated for missing years. This scenario uses inputs of the model developed for the Drawdown Book Edition 1, some of which have been updated.",
+    "description": "Using data from multipler sources for estimates and projections for each of the five Drawdown Regions, we estimate the global projection by first interpolating each region 9averaged over all projections in that region) and then sum over all regions. This scenario uses inputs of the model developed for the Drawdown book edition 1, some of which were updated.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -143,12 +143,14 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 Scenario 1",
+    "soln_pds_adoption_custom_name": "(OPT2) Drawdown Team projections based on a weighted average of Several Sources",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Drawdown Book Ed.1 Reference Scenario",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
         2015,
-        2016
+        2016,
+        2017,
+        2018
     ]
 }

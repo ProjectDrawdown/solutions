@@ -1,8 +1,8 @@
 {
-    "name": "PDS3-10p2050-Only Ice Car users as conventional (Book Ed.1)",
+    "name": "PDS1-5p2050-based on ITDP/UC Davis",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "The other scenarios compare the adoption of bikes to a combination of other modes, including cars and mass transit (as indicated by the conventional use of electricity and fuel). In this scenario, the conventional is assumed to be only cars, and hence only motor gasoline is used at a higher rate, and no electricity is used. The impact is greater then for each adopted passenger-km. The passenger-km adoption is also assumed to rise linearly to 10% of the TAM. This scenario uses inputs of the model developed for the Drawdown book edition 1, some of which have been updated.",
+    "description": "Using the Bike usage projections of the ITDP/UCD (2015) Publication \"A High Shift Cycling Scenario\", we interpolated for missing years using recent historical actuals.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -28,11 +28,11 @@
     },
     "conv_fuel_cost_per_funit": 0.0,
     "pds_2014_cost": {
-        "value": 211270.65943419177,
+        "value": 211268.99617870402,
         "statistic": ""
     },
     "ref_2014_cost": {
-        "value": 211270.65943419177,
+        "value": 211268.99617870402,
         "statistic": ""
     },
     "soln_first_cost_efficiency_rate": 0.0,
@@ -46,7 +46,7 @@
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
-        "value": 2873750.3539548563,
+        "value": 2873737.2367601125,
         "statistic": ""
     },
     "soln_fixed_oper_cost_per_iunit": {
@@ -54,9 +54,9 @@
         "statistic": ""
     },
     "soln_fuel_cost_per_funit": 0.0,
-    "npv_discount_rate": 0.0638,
+    "npv_discount_rate": 0.063842795581566,
     "conv_annual_energy_used": {
-        "value": 0.0043050629350364494,
+        "value": 0.004370205868298732,
         "statistic": ""
     },
     "soln_energy_efficiency_factor": {
@@ -68,7 +68,7 @@
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 52940977.6576322,
+        "value": 33665812.319058344,
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
@@ -117,94 +117,36 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            856.0
-        ],
-        [
-            "OECD90",
-            233.98839923734755
-        ],
-        [
-            "Eastern Europe",
-            3.173527202810714
-        ],
-        [
-            "Asia (Sans Japan)",
-            859.4513386529659
-        ],
-        [
-            "Middle East and Africa",
-            48.52296834532601
-        ],
-        [
-            "Latin America",
-            157.5563510884852
-        ],
-        [
-            "China",
-            311.3487952155772
-        ],
-        [
-            "India",
-            185.19183304641325
-        ],
-        [
-            "EU",
-            138.07360106730914
-        ],
-        [
-            "USA",
-            13.301055629175583
-        ]
-    ],
-    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "ref_base_adoption": {
+        "World": 898.036058722178,
+        "OECD90": 233.98839923734755,
+        "Eastern Europe": 3.173527202810714,
+        "Asia (Sans Japan)": 859.4513386529659,
+        "Middle East and Africa": 48.52296834532601,
+        "Latin America": 157.5563510884852,
+        "China": 311.3487952155772,
+        "India": 185.19183304641325,
+        "EU": 138.07360106730914,
+        "USA": 13.301055629175583
+    },
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "(OPT3) Drawdown Theoretical linear growth until 10% urban transport adoption in 2050",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_prognostication_source": "(PDS1) Based on ITDP/UCD (2015) A Global High Shift Cycling Scenario (with recent historical data included)",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "Medium",
     "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Drawdown Book Ed.1 Reference Scenario",
+    "soln_ref_adoption_custom_name": "Linear REF Growth Integrated with Recent Historical Adoption",
     "soln_ref_adoption_regional_data": false
 }
