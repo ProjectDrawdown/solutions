@@ -339,7 +339,10 @@ def get_land_scenarios(wb, solution_category):
                 s['soln_pds_adoption_custom_name'] = custom
                 if 'soln_pds_adoption_basis' not in s:  # sometimes row 164 is blank
                     s['soln_pds_adoption_basis'] = 'Fully Customized PDS'
-                high, low = str(sr_tab.cell_value(row + 260, 7)).split(',')
+                try:
+                    high, low = str(sr_tab.cell_value(row + 260, 7)).split(',')
+                except ValueError:
+                    high = low = "1"
                 if high != "1" and high != "":
                     s['soln_pds_adoption_custom_high_sd_mult'] = float(high)
                 if low != "1" and low != "":

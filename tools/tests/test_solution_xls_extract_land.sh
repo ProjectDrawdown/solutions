@@ -50,6 +50,10 @@ ac_files=$(cat ${tmpdir}/ac/*)
 require "$output" "class Scenario" && \
 # Check Custom TLA is handled
 require "${output}" "tla.CustomTLA" && \
+# High/Low Stddev multipliers for custom PDS adoption
+require "${ac_files}" '"soln_pds_adoption_custom_high_sd_mult": 1.5,' && \
+require "${ac_files}" '"soln_pds_adoption_custom_low_sd_mult": 1.6,' && \
+test -f ${tmpdir}/custom_tla_data.csv && \
 true
 
 rm -rf ${tmpdir}
