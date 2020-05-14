@@ -41,3 +41,11 @@ def test_ocean():
     assert 'Shallow.csv' in dirs
     assert 'Slopes.csv' in dirs
     assert 'Transition.csv' in dirs
+
+
+@pytest.mark.slow
+def test_invoke_land_test():
+    script = str(this_dir.joinpath('test_world_data_xls_extract.sh'))
+    toolsdir = str(this_dir.parents[0])
+    rc = subprocess.run([script, toolsdir], capture_output=True, timeout=120)
+    assert rc.returncode == 0, rc.stdout

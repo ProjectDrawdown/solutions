@@ -91,15 +91,6 @@ class WorldDataReader:
 
     def make_csvs(self):
         """ Makes csv versions of tables and stores in data/land/world """
-        # Sanity check
-        if list(self.outputdir.glob('*')):
-            ans = input('Overwrite existing csv files? y or n')
-            if ans == 'n':
-                return
-            elif ans != 'y':
-                print('Not a valid answer')
-                return
-
         # check the DataFrames are loaded
         if self.df_dict is None:
             self.read_world_data_xls()
