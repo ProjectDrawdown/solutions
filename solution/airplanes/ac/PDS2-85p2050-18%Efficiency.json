@@ -1,8 +1,8 @@
 {
-    "name": "PDS3-73p2050_3rd Manufacturer+Retrofit+18% (Book Ed.1)",
+    "name": "PDS2-85p2050-18%Efficiency",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality. 50 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 18.3% more efficient). We assume that the production rate of the big players remains constant, and the newcomer produces 60 single aisle and 30 twin aisle p.a. This book scenario uses previously estimated inputs (including lifetime, annual use, operations cost and fuel emissions factors) which have been updated in the latest scenario",
+    "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality. 100 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 18% more efficient). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually. Global Load factor of solution aircraft increases to 83% (current US average).",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -11,12 +11,12 @@
     },
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_lifetime_capacity": {
-        "value": 10.500501677840942,
-        "statistic": ""
+        "value": 9.73837488548039,
+        "statistic": "mean"
     },
     "conv_avg_annual_use": {
-        "value": 0.42170689469240735,
-        "statistic": ""
+        "value": 0.39109939299118,
+        "statistic": "mean"
     },
     "conv_var_oper_cost_per_funit": {
         "value": 0.0,
@@ -26,7 +26,7 @@
         "value": 0.0,
         "statistic": ""
     },
-    "conv_fuel_cost_per_funit": 76646661.48997816,
+    "conv_fuel_cost_per_funit": 39707342.2400621,
     "pds_2014_cost": {
         "value": 18028435.066958193,
         "statistic": ""
@@ -38,12 +38,12 @@
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_first_cost_below_conv": true,
     "soln_lifetime_capacity": {
-        "value": 10.120965472617776,
-        "statistic": ""
+        "value": 10.4720464205645,
+        "statistic": "mean"
     },
     "soln_avg_annual_use": {
-        "value": 0.42170689469240735,
-        "statistic": ""
+        "value": 0.420564113275684,
+        "statistic": "mean"
     },
     "soln_var_oper_cost_per_funit": {
         "value": 0.0,
@@ -53,8 +53,8 @@
         "value": 0.0,
         "statistic": ""
     },
-    "soln_fuel_cost_per_funit": 65213534.48438975,
-    "npv_discount_rate": 0.0922,
+    "soln_fuel_cost_per_funit": 32560020.636851,
+    "npv_discount_rate": 0.0967777777777778,
     "conv_annual_energy_used": {
         "value": 0.0,
         "statistic": ""
@@ -68,19 +68,19 @@
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 64983529.2760908,
+        "value": 64340127.99612951,
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
-        "value": 0.183,
+        "value": 0.18,
         "statistic": ""
     },
     "conv_fuel_emissions_factor": {
-        "value": 0.0017733703679999999,
+        "value": 0.00253071819,
         "statistic": ""
     },
     "soln_fuel_emissions_factor": {
-        "value": 0.0017733703679999999,
+        "value": 0.00253071819,
         "statistic": ""
     },
     "conv_emissions_per_funit": {
@@ -115,10 +115,10 @@
     "emissions_grid_source": "Meta-Analysis",
     "emissions_grid_range": "Mean",
     "source_until_2014": "ALL SOURCES",
-    "ref_source_post_2014": "ALL SOURCES",
-    "pds_source_post_2014": "ALL SOURCES",
+    "ref_source_post_2014": "Baseline Cases",
+    "pds_source_post_2014": "Baseline Cases",
     "ref_base_adoption": {
-        "World": 490.5239834755743,
+        "World": 1183.886535061472,
         "OECD90": 0.0,
         "Eastern Europe": 0.0,
         "Asia (Sans Japan)": 0.0,
@@ -131,7 +131,6 @@
     },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [ 2014 ],
     "pds_adoption_final_percentage": {
         "World": 0.0,
         "OECD90": 0.0,
@@ -144,7 +143,8 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Book Ed.1 Scenario 2",
-    "soln_ref_adoption_basis": "Default",
+    "soln_pds_adoption_custom_name": "PDS2 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 18%",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Reference Based on Historical Aircraft Deliveries of Airbus, Boeing",
     "soln_ref_adoption_regional_data": false
 }
