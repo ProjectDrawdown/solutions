@@ -1,8 +1,8 @@
 {
-    "name": "PDS1-5p2050-Based on ITDP/UCD (Book Ed.1)",
+    "name": "PDS3-10p2050-ICE Car Replacement  (Book Ed.1)",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Using the Bike usage projections of the ITDP/UCD (2015) Publication \"A High Shift Cycling Scenario\", we interpolated for missing years. This scenario uses inputs of the model developed for the Drawdown Book Edition 1, some of which have been updated.",
+    "description": "The other scenarios compare the adoption of bikes to a combination of other modes, including cars and mass transit (as indicated by the conventional use of electricity and fuel). In this scenario, the conventional is assumed to be only cars, and hence only motor gasoline is used at a higher rate, and no electricity is used. The impact is greater then for each adopted passenger-km. The passenger-km adoption is also assumed to rise linearly to 10% of the TAM. This scenario uses inputs of the model developed for the Drawdown book edition 1, some of which have been updated.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -68,7 +68,7 @@
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 34734831.72341607,
+        "value": 52940977.6576322,
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
@@ -143,12 +143,15 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 Scenario 1",
+    "soln_pds_adoption_custom_name": "(PDS3) Drawdown Theoretical linear growth until 10% urban transport adoption in 2050",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Drawdown Book Ed.1 Reference Scenario",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
+        2014,
         2015,
-        2016
+        2016,
+        2017,
+        2018
     ]
 }

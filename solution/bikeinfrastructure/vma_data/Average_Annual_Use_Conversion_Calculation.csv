@@ -1,2 +1,2 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Metropolitan Washington Council of Governments,https://www.mwcog.org/clrp/update/files/2016Profiles/DCBikeLanes.pdf,OECD90,USA,,2016,,,vehicle km converted to bike lane km,,,,,
+Metropolitan Washington Council of Governments,https://www.mwcog.org/clrp/update/files/2016Profiles/DCBikeLanes.pdf,OECD90,USA,,2016,,0.25,vehicle km converted to bike lane km,,,,,
