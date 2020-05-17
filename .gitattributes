@@ -20,3 +20,4 @@ solution/conservationagriculture/testdata/*.zip filter=lfs diff=lfs merge=lfs -t
 solution/forestprotection/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/airplanes/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/bikeinfrastructure/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
+solution/composting/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
