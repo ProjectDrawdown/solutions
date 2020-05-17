@@ -320,6 +320,40 @@ def test_soln_pds_funits_adopted_single_source():
     pd.testing.assert_frame_equal(result.loc[2014:], expected, check_exact=False)
 
 
+def test_soln_pds_funits_adopted_single_source_2018():
+    ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
+                                            soln_pds_adoption_prognostication_growth='Medium',
+                                            soln_pds_adoption_prognostication_trend='3rd poly',
+                                            soln_pds_adoption_prognostication_source='A',
+                                            soln_pds_adoption_basis='Existing Adoption Prognostications')
+    pds_datapoints = pd.DataFrame([
+        [2018, 100.0, 75.0, 0.3, 21.0, 1.5, 14.5, 15.0, 2.7, 55.3, 13.1],
+        [2050, 2600.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]],
+        columns=["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)",
+                 "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]).set_index("Year")
+    pds_adoption_data_per_region = pd.DataFrame(adoption_data_med_single_source_list[1:],
+                                                columns=adoption_data_med_single_source_list[0],
+                                                dtype=np.float64).set_index('Year')
+    pds_adoption_data_per_region.index = pds_adoption_data_per_region.index.astype(int)
+    pds_adoption_trend_per_region = pd.DataFrame(pds_adoption_trend_per_region_list[1:],
+                                                 columns=pds_adoption_trend_per_region_list[0],
+                                                 dtype=np.float64).set_index('Year')
+    pds_adoption_trend_per_region.index = pds_adoption_trend_per_region.index.astype(int)
+    ht = helpertables.HelperTables(ac=ac, ref_datapoints=None, pds_datapoints=pds_datapoints,
+                                   ref_adoption_limits=None, pds_adoption_limits=pds_tam_per_region,
+                                   pds_adoption_data_per_region=pds_adoption_data_per_region,
+                                   pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+                                   pds_adoption_is_single_source=True,
+                                   use_first_pds_datapoint_main=False)
+    result = ht.soln_pds_funits_adopted()
+    expected = pd.DataFrame(soln_pds_funits_adopted_single_source_list[1:],
+                            columns=soln_pds_funits_adopted_single_source_list[0]).set_index('Year')
+    expected.name = 'soln_ref_funits_adopted'
+    # We used to set only years starting with the first datapoint, 2018 in this case. This
+    # wasn't correct, check that years starting in 2014 are set.
+    pd.testing.assert_series_equal(result.loc[2014:, 'World'], expected['World'], check_exact=False)
+
+
 def test_soln_pds_funits_adopted_passthru():
     ac = advanced_controls.AdvancedControls(soln_ref_adoption_regional_data=False,
                                             soln_pds_adoption_prognostication_growth='Medium',

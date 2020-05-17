@@ -1091,7 +1091,9 @@ def write_ef(f, wb):
     """Write out the Emissions Factors module for this solution class."""
     ef_tab = wb.sheet_by_name('Emissions Factors')
     grid_factor_2015 = float(ef_tab.cell_value(*cell_to_offsets('B291')))
-    if grid_factor_2015 == pytest.approx(0.619753649484954):
+    if grid_factor_2015 == pytest.approx(0.617381627523255):
+        f.write("        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=3)\n")
+    elif grid_factor_2015 == pytest.approx(0.619753649484954):
         f.write("        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=2)\n")
     else:
         f.write("        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")

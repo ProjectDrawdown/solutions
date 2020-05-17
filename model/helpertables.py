@@ -179,7 +179,7 @@ class HelperTables:
             if self.pds_adoption_is_single_source:
                 # The World region can specify a single source (all the sub-regions use
                 # ALL SOURCES). If it does, use that one source without curve fitting.
-                adoption[main_region] = self.pds_adoption_data_per_region.loc[first_year:, main_region]
+                adoption[main_region] = self.pds_adoption_data_per_region[main_region]
         elif self.ac.soln_pds_adoption_basis == 'Customized S-Curve Adoption':
             raise NotImplementedError('Custom S-Curve support not implemented')
 

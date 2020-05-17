@@ -720,6 +720,11 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
     if ref_tam_mask is not None and regional_mask is not None:
         regional_mask |= ref_tam_mask
 
+    # BikeInfra-RRSv1.1c-7Oct2019.xlsm catastrophic subtraction in one scenario
+    s = obj.ua.soln_net_annual_funits_adopted().reset_index()
+    m = s.mask(s < 1e-10, other=True).where(s < 1e-10, other=False)
+    soln_net_annual_funits_adopted_mask = (m | regional_mask) if regional_mask is not None else m
+
     verify['Unit Adoption Calculations'].extend([
             ('P17:Z63', obj.ua.ref_population().reset_index(), None),
             ('AB17:AL63', obj.ua.ref_gdp().reset_index(), None),
@@ -728,8 +733,8 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
             ('AB69:AL115', obj.ua.pds_gdp().reset_index(), None),
             ('AN69:AX115', obj.ua.pds_gdp_per_capita().reset_index(), None),
             ('AG199:AQ244', obj.ua.soln_ref_new_iunits_reqd().reset_index(), None),
-            ('B252:L298', obj.ua.soln_net_annual_funits_adopted(
-            ).reset_index(), regional_mask),
+            ('B252:L298', obj.ua.soln_net_annual_funits_adopted().reset_index(),
+                soln_net_annual_funits_adopted_mask),
             ('Q252:AA298', obj.ua.conv_ref_tot_iunits().reset_index(), ref_tam_mask),
     ])
 
@@ -1209,7 +1214,7 @@ def LAND_solution_verify_list(obj, zip_f):
     return verify
 
 
-def compare_dataframes(actual_df, expected_df, description='', mask=None):
+def compare_dataframes(actual_df, expected_df, description='', mask=None, absignore=None):
     """Compare two dataframes and print where they differ."""
     nerrors = 0
     if actual_df.shape != expected_df.shape:
@@ -1217,6 +1222,7 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None):
                 str(actual_df.shape) + " versus " + str(expected_df.shape))
     (nrows, ncols) = actual_df.shape
     msg = ''
+    rel = 1e-6 if absignore else None  # if abs & !rel, rel is ignored. We want rel.
     for r in range(nrows):
         for c in range(ncols):
             if mask is not None:
@@ -1236,7 +1242,7 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None):
                 # Excel #DIV/0! turns into NaN.
                 matches = pd.isna(exp) or np.isinf(exp)
             else:
-                matches = (act == pytest.approx(exp))
+                matches = (act == pytest.approx(exp, rel=rel, abs=absignore))
             if not matches:
                 msg += "Err [" + str(r) + "][" + str(c) + "] : " + \
                         "'" + str(act) + "' != '" + str(exp) + "'\n"
@@ -1257,6 +1263,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
             zip_csv_f = zip_f.open(name=arcname)
             expected_df = pd.read_csv(filepath_or_buffer=zip_csv_f, header=None,
                 index_col=None, usecols=usecols, skiprows=skiprows, nrows=nrows)
+            absignore = None
             if isinstance(mask, str):
                 if mask == "Excel_NaN":
                     mask = expected_df.isna()
@@ -1268,9 +1275,10 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
                     # Mask off absolute values less than one penny.
                     s = expected_df.abs()
                     mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
+                    absignore = 0.01
             description = descr_base + sheetname + " " + cellrange
             compare_dataframes(actual_df=actual_df, expected_df=expected_df,
-                    description=description, mask=mask)
+                    description=description, mask=mask, absignore=absignore)
 
 
 @pytest.mark.slow
