@@ -1209,7 +1209,7 @@ def LAND_solution_verify_list(obj, zip_f):
     return verify
 
 
-def compare_dataframes(actual_df, expected_df, description='', mask=None):
+def compare_dataframes(actual_df, expected_df, description='', mask=None, absignore=None):
     """Compare two dataframes and print where they differ."""
     nerrors = 0
     if actual_df.shape != expected_df.shape:
@@ -1217,6 +1217,7 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None):
                 str(actual_df.shape) + " versus " + str(expected_df.shape))
     (nrows, ncols) = actual_df.shape
     msg = ''
+    rel = 1e-6 if absignore else None  # if abs & !rel, rel is ignored. We want rel.
     for r in range(nrows):
         for c in range(ncols):
             if mask is not None:
@@ -1236,7 +1237,7 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None):
                 # Excel #DIV/0! turns into NaN.
                 matches = pd.isna(exp) or np.isinf(exp)
             else:
-                matches = (act == pytest.approx(exp))
+                matches = (act == pytest.approx(exp, rel=rel, abs=absignore))
             if not matches:
                 msg += "Err [" + str(r) + "][" + str(c) + "] : " + \
                         "'" + str(act) + "' != '" + str(exp) + "'\n"
@@ -1257,6 +1258,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
             zip_csv_f = zip_f.open(name=arcname)
             expected_df = pd.read_csv(filepath_or_buffer=zip_csv_f, header=None,
                 index_col=None, usecols=usecols, skiprows=skiprows, nrows=nrows)
+            absignore = None
             if isinstance(mask, str):
                 if mask == "Excel_NaN":
                     mask = expected_df.isna()
@@ -1268,9 +1270,10 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
                     # Mask off absolute values less than one penny.
                     s = expected_df.abs()
                     mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
+                    absignore = 0.01
             description = descr_base + sheetname + " " + cellrange
             compare_dataframes(actual_df=actual_df, expected_df=expected_df,
-                    description=description, mask=mask)
+                    description=description, mask=mask, absignore=absignore)
 
 
 @pytest.mark.slow
