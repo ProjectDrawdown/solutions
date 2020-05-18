@@ -79,6 +79,8 @@ def get_rrs_scenarios(wb, solution_category):
         if col_d == 'Name of Scenario:' and 'TEMPLATE' not in col_e:
             # start of scenario block
             scenario_name = col_e
+            if 'broken' in scenario_name:
+                continue
             s = {}
 
             s['name'] = scenario_name
@@ -257,8 +259,6 @@ def get_rrs_scenarios(wb, solution_category):
     return scenarios
 
 
-
-
 def get_land_scenarios(wb, solution_category):
     """Extract scenarios from a LAND Excel file.
        Arguments:
@@ -273,6 +273,8 @@ def get_land_scenarios(wb, solution_category):
         if col_d == 'Name of Scenario:' and 'TEMPLATE' not in col_e:
             # start of scenario block
             scenario_name = col_e
+            if 'broken' in scenario_name:
+                continue
             s = {}
 
             s['name'] = scenario_name
@@ -1577,9 +1579,11 @@ def output_solution_python_file(outputdir, xl_filename):
             'AEZ Data' in wb.sheet_names()):
         is_rrs = False
         is_land = True
-    elif 'RRS' in xl_filename or 'TAM' in wb.sheet_names():
+    elif 'RRS' in xl_filename or 'TAM Data' in wb.sheet_names():
         is_rrs = True
         is_land = False
+    else:
+        raise ValueError('Cannot determine solution category')
     has_tam = is_rrs
 
     f = open(py_filename, 'w') if py_filename != '-' else sys.stdout

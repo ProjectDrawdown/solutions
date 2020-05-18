@@ -1,12 +1,12 @@
 {
-    "name": "PDS2-66p2050-Existing Projections + Rapid growth (Book Ed.1)",
+    "name": "PDS-36p2050-May2020",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "This scenario uses mainly the high growth prognostication from existing sources, (See Adoption Data sheet for the Mean+1 SD projection). The adoption is limited for later years by feedstocks however. This is a result of integration with other solutions in Project Drawdown. This scenario uses inputs calculated for the Drawdown book edition 1, some of which have updated.",
+    "description": "All regions follow historical EU growth path (max 55% adoption) for total global adoption of 36% by 2050. ",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
-        "value": 265859166.33454278,
+        "value": 272081195.3789954,
         "statistic": ""
     },
     "conv_first_cost_efficiency_rate": 0.0,
@@ -19,8 +19,8 @@
         "statistic": ""
     },
     "conv_var_oper_cost_per_funit": {
-        "value": 121382547.05072224,
-        "statistic": ""
+        "value": 139157285.575107,
+        "xls cell formula": "H101+D192"
     },
     "conv_fixed_oper_cost_per_iunit": {
         "value": 0.0,
@@ -28,11 +28,11 @@
     },
     "conv_fuel_cost_per_funit": 0.0,
     "pds_2014_cost": {
-        "value": 161236682.14665875,
+        "value": 139720139.19252658,
         "statistic": ""
     },
     "ref_2014_cost": {
-        "value": 161236682.14665875,
+        "value": 139720139.19252658,
         "statistic": ""
     },
     "soln_first_cost_efficiency_rate": 0.0,
@@ -46,8 +46,8 @@
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
-        "value": 98474740.8333385,
-        "statistic": ""
+        "value": 139847635.319605,
+        "xls cell formula": "H116+D192"
     },
     "soln_fixed_oper_cost_per_iunit": {
         "value": 0.0,
@@ -84,11 +84,11 @@
         "statistic": ""
     },
     "conv_emissions_per_funit": {
-        "value": 468619.23333333334,
+        "value": 559239.425,
         "statistic": ""
     },
     "soln_emissions_per_funit": {
-        "value": 203388.7650793651,
+        "value": 160128.9512774807,
         "statistic": ""
     },
     "conv_indirect_co2_per_unit": {
@@ -114,96 +114,36 @@
     "emissions_use_co2eq": true,
     "emissions_grid_source": "Meta-Analysis",
     "emissions_grid_range": "Mean",
-    "source_until_2014": "ALL SOURCES",
-    "ref_source_post_2014": "Ambitious Cases",
-    "pds_source_post_2014": "Ambitious Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            120.0
-        ],
-        [
-            "OECD90",
-            69.02
-        ],
-        [
-            "Eastern Europe",
-            4.13
-        ],
-        [
-            "Asia (Sans Japan)",
-            13.0
-        ],
-        [
-            "Middle East and Africa",
-            5.66
-        ],
-        [
-            "Latin America",
-            14.0
-        ],
-        [
-            "China",
-            2.75
-        ],
-        [
-            "India",
-            7.29
-        ],
-        [
-            "EU",
-            36.8
-        ],
-        [
-            "USA",
-            20.84
-        ]
-    ],
+    "source_until_2014": "Organic Fraction of MSW - From Waste TAM",
+    "ref_source_post_2014": "Organic Fraction of MSW - From Waste TAM",
+    "pds_source_post_2014": "Drawdown TAM: Organic Fraction of MSW - Waste TAM",
+    "ref_base_adoption": {
+        "World": 131.540502616249,
+        "OECD90": 63.0763380296636,
+        "Eastern Europe": 2.88637729277583,
+        "Asia (Sans Japan)": 60.0288227406692,
+        "Middle East and Africa": 5.31812672525022,
+        "Latin America": 0.230837827890141,
+        "China": 4.6019002576339,
+        "India": 42.2618412201257,
+        "EU": 39.82045,
+        "USA": 22.77
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "Drawdown Customized Scenario 1",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "PDS2-EU Growth Path, May 2020",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false
 }

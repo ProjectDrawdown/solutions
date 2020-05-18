@@ -1,7 +1,10 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Global using WARM,,World,,yes,2015,,,tCO2eq/tonne waste,0.0,t CO2-eq/Million Metric t (Organic Waste),,,
-Composting Council Canada,http://compostingcouncil.org/wp/wp-content/uploads/2011/03/Measuring-the-benefits-of-composting-source1.pdf,OECD90,USA data using global values,,2007,,,tCO2eq/tonne waste,0.0,t CO2-eq/Million Metric t (Organic Waste),,,
-Barton et al. Waste Management 28 (2008) 690–698,,OECD90,USA,1  - Peer Reviewed,2008,,,tCO2eq/tonne waste,0.0,t CO2-eq/Million Metric t (Organic Waste),,,
-Barton et al. Waste Management 28 (2008) 690–699,,OECD90,USA,1  - Peer Reviewed,2008,,,tCO2eq/tonne waste,0.0,t CO2-eq/Million Metric t (Organic Waste),,Open dumping,
-CA Air Resources Board (2016). Method for estimating greenhouse gas emission reductions from diversion of organic waste from landfills to compost facilities,https://www.arb.ca.gov/cc/waste/cerffinal.pdf,OECD90,USA,2 - Public Sector/ Multilateral Agency,2016,,,MTCO2eq/short ton waste,0.0,t CO2-eq/Million Metric t (Organic Waste),,Gas decomposition of mixed organics,
-Brown et al,http://faculty.washington.edu/slb/docs/slb_JEQ_08.pdf,OECD90,USA,1  - Peer Reviewed,2008,,,CO2eqMg/Mg Waste,0.0,t CO2-eq/Million Metric t (Organic Waste),,,
+Global using WARM,,World,,yes,2015,,0.2,tCO2eq/tonne waste,200000.0,t CO2-eq/Million Metric t (Organic Waste),,,
+Composting Council Canada,http://compostingcouncil.org/wp/wp-content/uploads/2011/03/Measuring-the-benefits-of-composting-source1.pdf,OECD90,USA data using global values,,2007,,0.33,tCO2eq/tonne waste,330000.0,t CO2-eq/Million Metric t (Organic Waste),,,
+Barton et al. Waste Management 28 (2008) 690–698,,OECD90,USA,1  - Peer Reviewed,2008,,0.74,tCO2eq/tonne waste,740000.0,t CO2-eq/Million Metric t (Organic Waste),,,
+Barton et al. Waste Management 28 (2008) 690–699,,OECD90,USA,1  - Peer Reviewed,2008,,1.2,tCO2eq/tonne waste,1200000.0,t CO2-eq/Million Metric t (Organic Waste),,Open dumping,
+CA Air Resources Board (2016). Method for estimating greenhouse gas emission reductions from diversion of organic waste from landfills to compost facilities,https://www.arb.ca.gov/cc/waste/cerffinal.pdf,OECD90,USA,2 - Public Sector/ Multilateral Agency,2016,,0.334,MTCO2eq/short ton waste,341715.4,t CO2-eq/Million Metric t (Organic Waste),,Gas decomposition of mixed organics,
+Brown et al,http://faculty.washington.edu/slb/docs/slb_JEQ_08.pdf,OECD90,USA,1  - Peer Reviewed,2008,,0.0,CO2eqMg/Mg Waste,0.0,t CO2-eq/Million Metric t (Organic Waste),,,1.0
+Mu et al. ,http://dx.doi.org/10.1016/j.wasman.2016.10.026,USA,,1  - Peer Reviewed,2016,,648.0,kg CO2/tonne,648000.0,t CO2-eq/Million Metric t (Organic Waste),,landfill,
+Andersen et al.,doi:10.1016/j.wasman.2011.09.014,EU,Denmark,1  - Peer Reviewed,2012,,4.2,kg CO2/Mg waste,4200.0,t CO2-eq/Million Metric t (Organic Waste),,landfill,
+Bong et al,http://dx.doi.org/10.1016/j.jclepro.2016.07.066,Asia (Sans Japan),Malaysia,1  - Peer Reviewed,2016,,1010.0,kg CO2/tonne,1010000.0,t CO2-eq/Million Metric t (Organic Waste),,food waste ,

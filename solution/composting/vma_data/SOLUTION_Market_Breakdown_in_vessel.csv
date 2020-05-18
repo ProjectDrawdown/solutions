@@ -1,0 +1,5 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Organics Recycling Group 2009 Industry Survey,http://www.organics-recycling.org.uk/dmdocuments/2009_Organics_Report_Final.pdf ,EU,UK,2 - Public Sector/ Multilateral Agency,2009,,0.43,,0.43,% of waste processed,,"33% of systems, and 43% of waste ",True
+,https://ilsr.org/wp-content/uploads/2014/07/state-of-composting-in-us.pdf,USA,,,2013,,0.35,,0.35,,,,
+,http://www.organics-recycling.org.uk/uploads/article1769/Compost_Survey_2005-06.pdf,EU,UK,,2006,,0.14,,0.14,,,,True
+WRAP,http://www.wrap.org.uk/sites/files/wrap/ASORI%202012.pdf,EU,UK,,2012,,0.27,,0.27,,,68% OAW,

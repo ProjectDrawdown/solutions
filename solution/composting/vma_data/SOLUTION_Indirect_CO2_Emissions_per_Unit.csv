@@ -1,2 +1,2 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Drawdown Assumption,,,,,,,1.0,,,Million Metric t (Organic Waste)/Facility for 1 Million Metric tonnes Organics per year/year,,,
+Schwarz and Bonhotal,https://doi.org/10.1080/1065657X.2018.1438934 ,USA,,1  - Peer Reviewed,2018,,-0.0299,tCO2/Mg fresh matter,-29900.0,t CO2-eq/ Million Metric t (Organic Waste),,sequestration ,
