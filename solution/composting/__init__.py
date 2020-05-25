@@ -368,6 +368,16 @@ class Scenario:
                     'percent '
                     ),
                 'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2EU_Growth_Path_May_2020.csv')},
+            {'name': 'PDS3-Austria Growth Path, May 2020', 'include': True,
+                'description': (
+                    'OECD follows EU pledge (met by Austria in 2008) to reduce to 35% the amount '
+                    'of organic matter in landfills in 20 years (65% increase in diversion to '
+                    'composting from current level). All other regions increase at the same '
+                    "rate. Bounded by OECD max in 2036 (73%), which is the same as Austria's "
+                    'current composting rate. - Note that not all organic matter can be '
+                    'composted as some will end up processed by AD, even in the optimum scenario '
+                    ),
+                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3Austria_Growth_Path_May_2020.csv')},
         ]
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
