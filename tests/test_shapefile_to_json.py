@@ -10,5 +10,5 @@ def test_shapefile_to_json():
             geometry.Polygon([[1, 0], [2, 0], [2, 1], [1, 1], [1, 0]])
         ]
     })
-    
+
     assert 0 < 1
