@@ -114,7 +114,6 @@ topojson_str = """
 
 def test_shapefile_to_json():
     tmp_dir = os.getenv("TEMP_DIR")
-    os.chdir(tmp_dir)
     gdf = geopandas.GeoDataFrame({
         "name": ["abc", "def"],
         "geometry": [
@@ -123,16 +122,16 @@ def test_shapefile_to_json():
         ]
     })
 
-    # basename = os.path.join(tmp_dir, "shapefile_to_json_test")
     basename = "shapefile_to_json_test"
-    gdf.to_file(f"{basename}.shp")
+    tmp_basename = os.path.join(tmp_dir, basename)
+    gdf.to_file(f"{tmp_basename}.shp")
 
-    with ZipFile(f"{basename}.zip", "w") as testzip:
-        testzip.write(f"{basename}.shp")
-        testzip.write(f"{basename}.cpg")
-        testzip.write(f"{basename}.dbf")
-        testzip.write(f"{basename}.shx")
+    with ZipFile(f"{tmp_basename}.zip", "w") as testzip:
+        testzip.write(f"{tmp_basename}.shp", arcname=f"{basename}.shp")
+        testzip.write(f"{tmp_basename}.cpg", arcname=f"{basename}.cpg")
+        testzip.write(f"{tmp_basename}.dbf", arcname=f"{basename}.dbf")
+        testzip.write(f"{tmp_basename}.shx", arcname=f"{basename}.shx")
 
-    topojson = convert_to_json(os.path.join(tmp_dir, f"{basename}.zip"))
+    topojson = convert_to_json(f"{tmp_basename}.zip")
 
     assert json.loads(topojson_str) == json.loads(topojson)
