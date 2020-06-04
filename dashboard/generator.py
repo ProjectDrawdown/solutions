@@ -14,6 +14,7 @@ from dashboard.helpers import (
     get_regional_nonzero,
     get_scenarios_per_solution,
     get_issues_with_regional_data,
+    get_custom_pds_data_basis_counts,
 )
 
 SOLUTIONS_PATH = os.path.join("data", "overview", "solutions.csv")
@@ -26,6 +27,7 @@ def _get_summary_charts(all_solutions, py_solutions):
     excel_python_count = get_excel_python_count(all_solutions, py_solutions)
     pds_adoption_basis_counts = get_pds_adoption_basis_counts(py_solutions)
     ref_adoption_basis_counts = get_ref_adoption_basis_counts(py_solutions)
+    custom_pds_data_basis_counts = get_custom_pds_data_basis_counts()
     scenarios_per_solution = get_scenarios_per_solution(py_solutions)
 
     charts = {}
@@ -37,6 +39,9 @@ def _get_summary_charts(all_solutions, py_solutions):
     )
     charts["ref_adoption_basis_counts"] = make_pie_chart(
         ref_adoption_basis_counts, "type", "count", "REF Adoption Basis"
+    )
+    charts["custom_pds_data_basis_counts"] = make_pie_chart(
+        custom_pds_data_basis_counts, "type", "count", "PDS Custom Adoption Basis"
     )
     charts["num_scenario_per_solution"] = make_hist_chart(
         scenarios_per_solution.scenario,

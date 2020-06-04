@@ -75,23 +75,28 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             if filename is not None:
                 df = self._read_csv(filename)
                 n = n + 1
+                data_basis = 'tabular'
             if datapoints is not None and not datapoints_degree:
                 # Note that datapoints_degree=0 will also make it here, which is what we want.
                 df = self._linear_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
                 n = n + 1
+                data_basis = 'linear' if len(datapoints) < 30 else 'algorithmic'
             if datapoints is not None and datapoints_degree:
                 df = self._polyfit_forecast(datapoints=datapoints, degree=datapoints_degree,
                         start_year=2012, end_year=2060)
                 n = n + 1
+                data_basis = 'polyfit'
             if growth_rate is not None:
                 growth_initial = d.get('growth_initial', None)
                 df = self._growth_forecast(rate=growth_rate, initial=growth_initial,
                         start_year=2012, end_year=2060)
                 n = n + 1
+                data_basis = 'growth'
             assert n == 1, "Only one of filename, datapoints, or growth_rate may be used"
             if maximum is not None:
                 df = df.clip(upper=maximum)
-            self.scenarios[name] = {'df': df, 'include': include, 'bug_no_limit': bug_no_limit}
+            self.scenarios[name] = {'df': df, 'include': include, 'bug_no_limit': bug_no_limit,
+                    'data_basis': data_basis}
         self.soln_adoption_custom_name = soln_adoption_custom_name
 
 
