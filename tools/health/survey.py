@@ -42,7 +42,7 @@ def scenario_survey():
             y = s.ht.soln_pds_funits_adopted().loc[:, 'World'].values
             slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
             results.loc[name, 'Rvalue'] = r_value
-    return results
+    return results.sort_index()
 
 
 if __name__ == '__main__':
