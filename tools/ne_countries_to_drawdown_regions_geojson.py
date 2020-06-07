@@ -1,3 +1,5 @@
+# pylint: skip-file
+
 """
 This module converts Natural Earth's ne_10m_admin_0_countries.zip shapefile to
 GeoJSON. Individual countries are mapped to Drawdown regions according to
@@ -6,6 +8,8 @@ https://github.com/ProjectDrawdown/spatial-aez/blob/master/admin_names.py
 
 import sys
 import os
+import admin_names
+import geopandas
 
 help_message = """
 Usage:
@@ -27,8 +31,6 @@ def map_ne_admin_to_drawdown_region(row):
     """
     Maps Natural Earth's ADMIN name to Drawdown region
     """
-    import admin_names
-
     ne_name = row['ADMIN']
     dd_name = admin_names.lookup(ne_name)
 
@@ -52,8 +54,6 @@ def map_ne_admin_counties_to_drawdown_regions(shapefile_zip_path):
     countries to Drawdown regions and outputs GeoJSON which only includes
     Drawdown regions. Individual countries' information is removed.
     """
-    import geopandas
-
     esri = geopandas.read_file(f"zip://{shapefile_zip_path}")
     esri['DRAWDOWN_REGION'] = esri.apply(lambda row: map_ne_admin_to_drawdown_region(row), axis=1)
     all_rows_region_only = esri[['DRAWDOWN_REGION', 'geometry']].dropna()
