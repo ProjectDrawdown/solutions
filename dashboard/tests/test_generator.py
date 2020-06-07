@@ -385,6 +385,7 @@ mock_scenarios = pd.DataFrame(
 )
 
 
+@pytest.mark.slow
 def test__get_summary_charts():
     result = _get_summary_charts(mock_all_solutions, mock_py_solutions)
     assert sorted(result.keys()) == [
