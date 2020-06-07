@@ -68,30 +68,41 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             filename = d.get('filename', None)
             datapoints = d.get('datapoints', None)
             datapoints_degree = d.get('datapoints_degree', None)
+            dataframe = d.get('dataframe', None)
             growth_rate = d.get('growth_rate', None)
             maximum = d.get('maximum', None)
             bug_no_limit = d.get('bug_no_limit', False)
-            n = 0
+            df = None
+            data_basis = []
             if filename is not None:
-                df = self._read_csv(filename)
-                n = n + 1
+                new = self._read_csv(filename)
+                df = new if df is None else df.add(new, fill_value=0.0, axis='index')
+                data_basis.append('tabular')
             if datapoints is not None and not datapoints_degree:
                 # Note that datapoints_degree=0 will also make it here, which is what we want.
-                df = self._linear_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
-                n = n + 1
+                new = self._linear_forecast(datapoints=datapoints, start_year=2012, end_year=2060)
+                df = new if df is None else df.add(new, fill_value=0.0, axis='index')
+                basis = 'linear' if len(datapoints) < 30 else 'algorithmic'
+                data_basis.append(basis)
             if datapoints is not None and datapoints_degree:
-                df = self._polyfit_forecast(datapoints=datapoints, degree=datapoints_degree,
+                new = self._polyfit_forecast(datapoints=datapoints, degree=datapoints_degree,
                         start_year=2012, end_year=2060)
-                n = n + 1
+                df = new if df is None else df.add(new, fill_value=0.0, axis='index')
+                data_basis.append('polyfit')
             if growth_rate is not None:
                 growth_initial = d.get('growth_initial', None)
-                df = self._growth_forecast(rate=growth_rate, initial=growth_initial,
+                new = self._growth_forecast(rate=growth_rate, initial=growth_initial,
                         start_year=2012, end_year=2060)
-                n = n + 1
-            assert n == 1, "Only one of filename, datapoints, or growth_rate may be used"
+                df = new if df is None else df.add(new, fill_value=0.0, axis='index')
+                data_basis.append('growth')
+            if dataframe is not None:
+                new = dataframe
+                df = new if df is None else df.add(new, fill_value=0.0, axis='index')
+                data_basis.append('dataframe')
             if maximum is not None:
                 df = df.clip(upper=maximum)
-            self.scenarios[name] = {'df': df, 'include': include, 'bug_no_limit': bug_no_limit}
+            self.scenarios[name] = {'df': df, 'include': include, 'bug_no_limit': bug_no_limit,
+                    'data_basis': data_basis}
         self.soln_adoption_custom_name = soln_adoption_custom_name
 
 

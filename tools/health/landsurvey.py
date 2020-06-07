@@ -15,10 +15,14 @@ datadir = pathlib.Path(__file__).parents[2].joinpath('data')
 
 
 def get_land_scenarios():
-    soln_df = pd.read_csv(datadir.joinpath('overview', 'solutions.csv'), index_col=0)
-    land_soln_names = soln_df[soln_df[' Sector'].isin([' Food', ' Land Use'])].dropna()[' DirName'].values
-    land_soln_names = [x.strip() for x in land_soln_names if x.strip() not in ['biochar', 'improvedcookstoves', 'composting']]
-    return {k: x for k, x in solution.factory.all_solutions_scenarios().items() if k in land_soln_names}
+    soln_df = pd.read_csv(datadir.joinpath('overview', 'solutions.csv'),
+            index_col=0, skipinitialspace=True)
+    keeplist = ['Food', 'Land Use']
+    land_soln_names = soln_df[soln_df['Sector'].isin(keeplist)].dropna()['DirName'].values
+    skiplist = ['biochar', 'improvedcookstoves', 'composting']
+    land_soln_names = [x.strip() for x in land_soln_names if x.strip() not in skiplist]
+    all_solutions_scenarios = solution.factory.all_solutions_scenarios()
+    return {k: x for k, x in all_solutions_scenarios.items() if k in land_soln_names}
 
 
 def land_alloc_sum(land_solutions_scenarios, solns=None, outfile=None):
@@ -45,17 +49,16 @@ def land_alloc_sum(land_solutions_scenarios, solns=None, outfile=None):
     df = 100 - df
     df[df < 0] = 0
     pd.options.display.float_format = '{:.1f}'.format
-    print(df)
     if outfile is not None:
-        df.to_csv(outfile)
+        df.sort_index().to_csv(outfile)
     return df
 
 
 def get_tla_per_regime():
     """ Total land area per regime (Mha) """
     total_land_dict = {}
-    for tmr in model.dd.THERMAL_MOISTURE_REGIMES:
-        df = pd.read_csv(datadir.joinpath('land', 'world', '2018',
+    for tmr in model.dd.THERMAL_MOISTURE_REGIMES8:
+        df = pd.read_csv(datadir.joinpath('land', 'world', '2020',
             tools.util.to_filename(tmr) + '.csv'), index_col=0).iloc[:5, 0] / 10000
         total_land_dict[tmr] = df
 
@@ -131,6 +134,7 @@ def full_survey(land_solutions_scenarios, outfile):
         results.at[name, 'ca scen world exceeds regions count'] = alloc_report.loc[
                                                                   :, 'World exceeds regions'].fillna(False).sum()
 
+    results.sort_index(inplace=True)
     results.to_csv(outfile)
     return results
 
@@ -186,17 +190,9 @@ def avg_abatement_cost(soln):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='Do the land survey')
-    parser.add_argument('--only-landsurvey', action='store_true')
-
+    parser = argparse.ArgumentParser(description='Do the land survey')
     args = parser.parse_args(sys.argv[1:])
 
     land_scenarios = get_land_scenarios()
-
     full_survey(land_scenarios, datadir.joinpath('health', 'landsurvey.csv'))
     # aez_survey()
-
-    if not args.only_landsurvey:
-        land_alloc_sum(land_scenarios, outfile=datadir.joinpath('land', 'allocation',
-            'perc_land_remaining_after_allocation.csv'))

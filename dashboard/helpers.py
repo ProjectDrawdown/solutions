@@ -66,8 +66,30 @@ def get_ref_adoption_basis_counts(py_solutions):
     return ref_adoption_basis_counts.reset_index()
 
 
-def get_regional_nonzero(survey_data, column):
+def get_custom_pds_data_basis_counts():
+    # data sources in model/customadoption.py. If we add new ones they will be discovered
+    # by the code below and added to the dataframe, the ones here will just always be present
+    # with a count of zero if no scenario uses them.
+    sources = ['tabular', 'linear', 'algorithmic', 'polyfit', 'growth', 'dataframe']
+    data = pd.Series(0, index=sources)
+    all_solutions = solution_loader.all_solutions()
+    for name in all_solutions:
+        solution_module = importlib.import_module("solution." + name)
+        obj = solution_module.Scenario()
+        if hasattr(obj, 'pds_ca'):
+            for val in obj.pds_ca.scenarios.values():
+                keylist = val.get('data_basis', ['unknown'])
+                for key in keylist:
+                    if key in data.index:
+                        data[key] += 1
+                    else:
+                        data[key] = 1
+    data.index.name = "type"
+    data.name = "count"
+    return data.reset_index()
 
+
+def get_regional_nonzero(survey_data, column):
     msk_isnull = survey_data[column].isnull()
     msk_zero = survey_data[column] == 0.0
     zero_count = (msk_zero | msk_isnull).sum()

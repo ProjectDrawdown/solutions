@@ -247,10 +247,10 @@ class Scenario:
         ds2_2030 = [x * 0.6 for x in ds2_2050]
 
         # Data Source 3
-        percent = {'OECD90': 0.6, 'Eastern Europe': 0.6, 'Asia (Sans Japan)': 0.6,
+        ds3_percent = {'OECD90': 0.6, 'Eastern Europe': 0.6, 'Asia (Sans Japan)': 0.6,
                    'Middle East and Africa': 0.6, 'Latin America': 0.6,
                    'China': 0.0, 'India': 0.0, 'EU': 0.0, 'USA': 0.0}
-        ds3_2050 = _get_datapoints(percent=percent)
+        ds3_2050 = _get_datapoints(percent=ds3_percent)
         ds3_2030 = [x * 0.8 for x in ds3_2050]
 
         # Data Source 4
@@ -277,6 +277,29 @@ class Scenario:
             ds8_percent[region] = (ds1_percent[region] + ds2_percent[region]) / 2.0
         ds8_2050 = _get_datapoints(percent=ds8_percent)
 
+        # Shrinkage in land area used for the Conservation Agriculture solution are added to
+        # the land area available for Regenerative Agriculture.
+        cons_ag_dataframes = {}
+        for idx in range(1, 9):
+            if 'BookVersion1' in self.ac.name:
+                fname = f'ds{idx}_incr_change_in_cons_ag_book.csv'
+            else:
+                fname = f'ds{idx}_incr_change_in_cons_ag_current.csv'
+            cons_ag_file = THISDIR.joinpath('ca_pds_data', fname)
+            key = f'ds{idx}_cons_ag'
+            if cons_ag_file.is_file():
+                cons_ag_adopt = pd.read_csv(str(cons_ag_file), header=0, index_col=0, comment='#',
+                        skipinitialspace=True, skip_blank_lines=True, dtype=np.float64)
+                cons_ag_adopt['China'] = 0.0
+                cons_ag_adopt['India'] = 0.0
+                cons_ag_adopt['EU'] = 0.0
+                cons_ag_adopt['USA'] = 0.0
+                # growth in Conservation Agriculture is not a factor, only reduction in area
+                cons_ag_adopt[cons_ag_adopt >= 0.0] = 0.0
+                cons_ag_dataframes[key] = cons_ag_adopt.abs()
+            else:
+                cons_ag_dataframes[key] = None
+
         ca_pds_data_sources = [
             {'name': 'Low, Linear Trend', 'include': False,
                 'description': (
@@ -291,6 +314,7 @@ class Scenario:
                     'was made in response to the new year set for the currrent adoption, i.e., '
                     '2018. '
                     ),
+             'dataframe': cons_ag_dataframes['ds1_cons_ag'],
              'datapoints': pd.DataFrame([
                 [2018] + ad_2018,
                 [2030] + ds1_2030,
@@ -309,6 +333,7 @@ class Scenario:
                     'adoption by country". This change was made in response to the new year set '
                     'for the currrent adoption, i.e., 2018. '
                     ),
+             'dataframe': cons_ag_dataframes['ds2_cons_ag'],
              'datapoints': pd.DataFrame([
                 [2018] + ad_2018,
                 [2030] + ds2_2030,
@@ -323,6 +348,7 @@ class Scenario:
                     'sheet "org adoption by country". This change was made in response to the '
                     'new year set for the currrent adoption, i.e., 2018. '
                     ),
+             'dataframe': cons_ag_dataframes['ds3_cons_ag'],
              'datapoints': pd.DataFrame([
                 [2018] + ad_2018,
                 [2030] + ds3_2030,
@@ -341,6 +367,7 @@ class Scenario:
                     'country". This change was made in response to the new year set for the '
                     'currrent adoption, i.e., 2018. '
                     ),
+             'dataframe': cons_ag_dataframes['ds4_cons_ag'],
              'datapoints': pd.DataFrame([
                 [2018] + ad_2018,
                 [2030] + ds4_2030,
@@ -359,6 +386,7 @@ class Scenario:
                     'was made in response to the new year set for the currrent adoption, i.e., '
                     '2018. '
                     ),
+             'dataframe': cons_ag_dataframes['ds5_cons_ag'],
              'datapoints': pd.DataFrame([
                 [2018] + ad_2018,
                 [2030] + ds5_2030,
@@ -375,6 +403,7 @@ class Scenario:
                     'country". This change was made in response to the new year set for the '
                     'currrent adoption, i.e., 2018. '
                     ),
+             'dataframe': cons_ag_dataframes['ds6_cons_ag'],
              'datapoints': pd.DataFrame([
                 [2018] + ad_2018,
                 [2040] + ds6_2040,
@@ -391,6 +420,7 @@ class Scenario:
                     'country". This change was made in response to the new year set for the '
                     'currrent adoption, i.e., 2018. '
                     ),
+             'dataframe': cons_ag_dataframes['ds7_cons_ag'],
              'datapoints': pd.DataFrame([
                 [2018] + ad_2018,
                 [2040] + ds7_2040,
@@ -400,6 +430,7 @@ class Scenario:
                 'description': (
                     'Baseline adoption '
                     ),
+             'dataframe': cons_ag_dataframes['ds8_cons_ag'],
              'datapoints': pd.DataFrame([
                 [2018] + ad_2018,
                 [2050] + ds8_2050,
@@ -409,22 +440,6 @@ class Scenario:
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=1.0, low_sd_mult=1.0,
             total_adoption_limit=self.tla_per_region)
-
-        # Shrinkage in land area used for the Conservation Agriculture solution are added to
-        # the land area available for Regenerative Agriculture.
-        for idx, s in enumerate(self.pds_ca.scenarios.values(), start=1):
-            if 'BookVersion1' in self.ac.name:
-                fname = f'ds{idx}_incr_change_in_cons_ag_book.csv'
-            else:
-                fname = f'ds{idx}_incr_change_in_cons_ag_current.csv'
-            cons_ag_file = THISDIR.joinpath('ca_pds_data', fname)
-            if cons_ag_file.is_file():
-                cons_ag_adopt = pd.read_csv(str(cons_ag_file), header=0, index_col=0, comment='#',
-                        skipinitialspace=True, skip_blank_lines=True, dtype=np.float64)
-                # growth in Conservation Agriculture is not a factor, only reduction in area
-                cons_ag_adopt[cons_ag_adopt >= 0.0] = 0.0
-                cons_ag_adopt['China', 'India', 'EU', 'USA'] = 0.0
-                s['df'] += cons_ag_adopt.abs()
 
         # Current adoption values for the year 2012-2017 are taken from the sheet
         # "org adoption by country" in the Excel file for this solution.
