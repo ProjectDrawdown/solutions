@@ -156,37 +156,57 @@ colors = {
 }
 
 
-def baseline(solutions):
-    return model.fairutil.baseline_emissions().add(solutions['Health and Education'], fill_value=0.0)
+def baseline(solutions, book):
+    if book:
+        health = solutions[['Educating Girls', 'Family Planning']].sum(axis=1)
+    else:
+        health = solutions['Health and Education']
+    return model.fairutil.baseline_emissions().add(health, fill_value=0.0)
 
 
-def process_scenario(filename, outdir, scenario):
+def process_scenario(filename, outdir, scenario, book=False):
     sheet_name = 'Gtperyr_' + scenario
+    if book:
+        name_r = 3
+        name_c = 3
+        dispo_r = 2
+        v2020_r = 9
+        nrows = 50
+        usecols = 'A:DL'
+    else:
+        name_r = 5
+        name_c = 9
+        dispo_r = 3
+        v2020_r = 11
+        nrows = 52
+        usecols = 'A:HR'
     raw = pd.read_excel(io=filename, sheet_name=sheet_name, header=None, index_col=0,
-            dtype=object, skiprows=0, nrows=52, usecols='A:HR')
-    solution_names = sorted([x.strip(' ') for x in list(set(raw.iloc[5, 9:].dropna()))])
+            dtype=object, skiprows=0, nrows=nrows, usecols='A:HR')
+    solution_names = sorted([x.strip(' ') for x in list(set(raw.iloc[name_r, name_c:].dropna()))])
 
-    solutions = pd.DataFrame(0, index=g_years, columns=solution_names)
+    solutions = pd.DataFrame(0, index=g_years, columns=solution_names, dtype="float64")
     solutions.index.name = 'Year'
     prev_solution = None
-    for (_, col) in raw.iloc[:, 9:].iteritems():
-        numeric = pd.to_numeric(col.iloc[11:], errors='coerce').fillna(0.0)
+    for (_, col) in raw.iloc[:, name_c:].iteritems():
+        numeric = pd.to_numeric(col.iloc[v2020_r:], errors='coerce').fillna(0.0)
+        numeric.index.name = 'Year'
+        numeric.index = numeric.index.astype(int)
         if np.count_nonzero(numeric.to_numpy()) == 0:
             continue
-        disposition = col.iloc[3]
+        disposition = col.iloc[dispo_r]
         if disposition not in ['Avoided', 'Sequestration', 'ELC', 'F+D', 'IND']:
             continue
-        mechanism = col.iloc[3] if not pd.isna(col.iloc[3]) else 'Avoided'
-        solution = col.iloc[5].strip() if not pd.isna(col.iloc[5]) else prev_solution
+        mechanism = col.iloc[dispo_r] if not pd.isna(col.iloc[dispo_r]) else 'Avoided'
+        solution = col.iloc[name_r].strip() if not pd.isna(col.iloc[name_r]) else prev_solution
         if solution == 'Peatland Protection' or solution == 'Peatland Restoration':
             continue
         if mechanism == 'Avoided':
             numeric.iloc[0] = 0.0
         numeric.name = solution
-        solutions[solution] += ((numeric / 1000.0) / 3.664)  # Mtons CO2 -> Gtons C
+        solutions[solution] = solutions[solution].add(((numeric / 1000.0) / 3.664), fill_value=0.0)  # Mtons CO2 -> Gtons C
         prev_solution = solution
 
-    total = baseline(solutions)
+    total = baseline(solutions, book=book)
     C,_,T = fair.forward.fair_scm(emissions=total.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     baseline_C = pd.Series(C, index=total.index.copy())
@@ -197,9 +217,9 @@ def process_scenario(filename, outdir, scenario):
     concentration = pd.DataFrame(index=g_years,
             columns=["Emissions (GtC)", "Baseline (ppm)", "Drawdown (ppm)"])
     concentration.index.name = 'Year'
-    concentration["Emissions (GtC)"] = baseline(solutions)
+    concentration["Emissions (GtC)"] = baseline(solutions, book=book)
     concentration["Baseline (ppm)"] = baseline_C
-    total = baseline(solutions)
+    total = baseline(solutions, book=book)
     emissions = solutions.sum(axis=1)
     #emissions = raw.iloc[11:, 0:2].sum(axis=1) / 3.664
     total = total.subtract(emissions.fillna(0.0), fill_value=0.0)
@@ -250,7 +270,7 @@ def animate(frame, ax, start, lines, emissions, baseline_T):
                 y2=df_T.loc[2020:end].values, color=color)
 
 
-def produce_animation(solutions, filename, writer):
+def produce_animation(solutions, filename, writer, book=False):
     sector_gtons = pd.DataFrame()
     for solution in solutions:
         sectors = animation_sectors[solution]
@@ -259,7 +279,7 @@ def produce_animation(solutions, filename, writer):
                 sector_gtons.loc[:, sector] = solutions.loc[:, solution] / len(sectors)
             else:
                 sector_gtons.loc[:, sector] += solutions.loc[:, solution] / len(sectors)
-    start = baseline(solutions)
+    start = baseline(solutions, book=book)
     _,_,start_T = fair.forward.fair_scm(emissions=start.values, useMultigas=False,
             r0=model.fairutil.r0, tcrecs=model.fairutil.tcrecs)
     baseline_T = pd.Series(start_T, index=start.index.copy())
@@ -300,7 +320,7 @@ def produce_animation(solutions, filename, writer):
     return sectors_df_T
 
 
-def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
+def process_ghgs(file2020, outdir, file2017=None, writer=None, ext='.mp4'):
     plt.rcParams.update({
         "lines.color": "white",
         "patch.edgecolor": "white",
@@ -316,9 +336,15 @@ def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
         "figure.edgecolor": "black",
         "savefig.facecolor": "black",
         "savefig.edgecolor": "black"})
+    if file2017:
+        for scenario in ['OPT1', 'OPT2', 'OPT3']:
+            print(f"Book {scenario} CSV")
+            _ = process_scenario(filename=file2017, outdir=outdir, scenario=scenario, book=True)
+
     for scenario in ['PDS1', 'PDS2']:
         print(f"{scenario} CSV")
-        solutions = process_scenario(filename=excelfile, outdir=outdir, scenario=scenario)
+        _ = process_scenario(filename=file2020, outdir=outdir, scenario=scenario)
+        solutions = process_scenario(filename=file2020, outdir=outdir, scenario=scenario)
         if writer is None:
             ffmpeg = matplotlib.animation.writers['ffmpeg']
             writer = ffmpeg(fps=15, bitrate=-1,
@@ -328,7 +354,7 @@ def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
                         '-movflags', '+faststart'],)
         if writer:
             print(f"{scenario} animation")
-            base = os.path.splitext(os.path.basename(excelfile))[0]
+            base = os.path.splitext(os.path.basename(file2020))[0]
             mp4 = base + '_' + scenario + ext
             sectors_T = produce_animation(solutions=solutions, filename=os.path.join(outdir, mp4),
                     writer=writer)
@@ -339,10 +365,10 @@ def process_ghgs(excelfile, outdir, writer=None, ext='.mp4'):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Produce FaIR results from Drawdown emissions data.')
-    parser.add_argument('--excelfile', help='Excel filename to process',
-            default='CORE-Global_GHG_Accounting_2-1-2020_FINAL.xlsm')
     parser.add_argument('--outdir', help='output directory', default='.')
 
     args = parser.parse_args(sys.argv[1:])
 
-    process_ghgs(excelfile=args.excelfile, outdir=args.outdir)
+    file2017 = 'CORE-Global_Carbon_Budget_2017 v6.3 (Book V1 Updated Printing).xlsm'
+    file2020 = 'CORE-Global_GHG_Accounting_2-1-2020_FINAL.xlsm'
+    process_ghgs(file2020=file2020, file2017=file2017, outdir=args.outdir)
