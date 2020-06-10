@@ -1,62 +1,62 @@
 {
-    "name": "PDS2-30p2050-Based on IEA (2012 ETP) (Book Ed.1)",
+    "name": "PDS1-16p2050-with IEA 2DS (Integrated)",
     "solution_category": "reduction",
     "vmas": "VMAs",
     "vma_values": {
         "Current Average Car Occupancy": 1.62318069972403
     },
-    "description": "Using the IEA's Energy Technology Perspectives 2012 projections of EV sales' growth, we project the sales and then global EV stock. Assuming the ICCT's global car occupancy average and a 50% growth in this occupancy by 2050, we estimate the total passenger-km of EV during the period of analysis.",
+    "description": "We use the IEA's 2DS projection of on-road vehicles (ETP 2016) as a base and convert to passenger-km using annual usage rates and average occupancy from ICCT. \r\n\r\nThe Carpooling solution adjusts the car occupancy of all cars (solution and conventional) so this new input is used in this model and that changes some other inputs.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
-        "value": 27301.838757440706,
+        "value": 26480.507606410407,
         "statistic": ""
     },
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_lifetime_capacity": {
-        "value": 0.00031246110689814923,
+        "value": 0.0003224991044858732,
         "statistic": ""
     },
     "conv_avg_annual_use": {
-        "value": 2.48071096456146e-05,
+        "value": 2.55894437311493e-05,
         "statistic": "mean"
     },
     "conv_var_oper_cost_per_funit": {
-        "value": 11798301.217552487,
-        "statistic": ""
-    },
-    "conv_fixed_oper_cost_per_iunit": {
-        "value": 6362.37299618263,
+        "value": 11432570.396862,
         "statistic": "mean"
     },
-    "conv_fuel_cost_per_funit": 55302452.42866199,
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 631.406921686286,
+        "statistic": "mean"
+    },
+    "conv_fuel_cost_per_funit": 53153220.9737592,
     "pds_2014_cost": {
-        "value": 47609.897539880934,
+        "value": 34757.34412680124,
         "statistic": ""
     },
     "ref_2014_cost": {
-        "value": 47609.897539880934,
+        "value": 34757.34412680124,
         "statistic": ""
     },
-    "soln_first_cost_efficiency_rate": 0.0215,
+    "soln_first_cost_efficiency_rate": 0.02,
     "soln_first_cost_below_conv": true,
     "soln_lifetime_capacity": {
-        "value": 0.00031246110689814923,
-        "statistic": ""
+        "value": 0.000322499104485873,
+        "xls cell formula": "LifetimeConventional"
     },
     "soln_avg_annual_use": {
-        "value": 3.100888705701825e-05,
-        "statistic": ""
-    },
-    "soln_var_oper_cost_per_funit": {
-        "value": 4993722.539303601,
-        "statistic": ""
-    },
-    "soln_fixed_oper_cost_per_iunit": {
-        "value": 6362.37299618263,
+        "value": 2.55894437311493e-05,
         "statistic": "mean"
     },
-    "soln_fuel_cost_per_funit": 17170822.429946873,
+    "soln_var_oper_cost_per_funit": {
+        "value": 4810276.92301066,
+        "statistic": "mean"
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 631.406921686286,
+        "statistic": "mean"
+    },
+    "soln_fuel_cost_per_funit": 20672939.2034064,
     "npv_discount_rate": 0.04,
     "conv_annual_energy_used": {
         "value": 0.0,
@@ -67,16 +67,16 @@
         "statistic": ""
     },
     "soln_annual_energy_used": {
-        "value": 0.09035474233074314,
-        "statistic": ""
+        "value": 0.109490461357292,
+        "statistic": "mean"
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 52941803.48093162,
-        "statistic": ""
+        "value": 51323238.5035932,
+        "statistic": "mean"
     },
     "soln_fuel_efficiency_factor": {
-        "value": 0.9179199248358034,
-        "statistic": ""
+        "value": 0.897390344515709,
+        "statistic": "mean"
     },
     "conv_fuel_emissions_factor": {
         "value": 0.002273941593,
@@ -95,12 +95,12 @@
         "statistic": ""
     },
     "conv_indirect_co2_per_unit": {
-        "value": 9.679024775197812,
-        "statistic": ""
+        "value": 9.78444884486288,
+        "statistic": "mean"
     },
     "soln_indirect_co2_per_iunit": {
-        "value": 10.251543667017724,
-        "statistic": ""
+        "value": 9.99226666666667,
+        "statistic": "mean"
     },
     "conv_indirect_co2_is_iunits": true,
     "ch4_co2_per_funit": {
@@ -121,7 +121,7 @@
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
     "ref_base_adoption": {
-        "World": 16.701444916159307,
+        "World": 113.54543137799892,
         "OECD90": 14.405959906291683,
         "Eastern Europe": 8.68248837596512e-05,
         "Asia (Sans Japan)": 2.7858260096477,
@@ -132,7 +132,7 @@
         "EU": 4.508096807458965,
         "USA": 6.7600117997589235
     },
-    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": {
         "World": 0.0,
@@ -146,10 +146,16 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Book Ed.1 Scenario 2",
+    "soln_pds_adoption_prognostication_source": "Based on: IEA ETP 2016 2DS",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "Medium",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
-        2014
+        2014,
+        2015,
+        2016,
+        2017,
+        2018
     ]
 }
