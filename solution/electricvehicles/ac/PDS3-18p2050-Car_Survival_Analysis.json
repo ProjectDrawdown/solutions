@@ -1,11 +1,11 @@
 {
-    "name": "PDS2-30p2050-Based on IEA (2012 ETP) (Book Ed.1)",
+    "name": "PDS3-18p2050-Car Survival Analysis",
     "solution_category": "reduction",
     "vmas": "VMAs",
     "vma_values": {
-        "Current Average Car Occupancy": 1.62318069972403
+        "Current Average Car Occupancy": 1.57355595595399
     },
-    "description": "Using the IEA's Energy Technology Perspectives 2012 projections of EV sales' growth, we project the sales and then global EV stock. Assuming the ICCT's global car occupancy average and a 50% growth in this occupancy by 2050, we estimate the total passenger-km of EV during the period of analysis.",
+    "description": "Using ICCT (2012) Vehicle Survival Data for 6 selected countries and OICA's Historical Car sales data, we \n1. Estimate the share of cars in any year that will retire in future years\n2. Estimate how many (ICE) cars of the six countries will retire in the coming years. \n3. Scale up the estimated number of cars that will retire to the entire world based on country car stock data,\n4. Sum total cars retired (a share of these are assumed captured by technology) and remove retired EV's assuming they have a fixed lifetime\n5. Convert remaining retired (ICE) cars to passenger-km of maximum possible adoption, but then apply a limit set by prior adoption of higher priority solutions.\nMode  priority is: Walking, Biking Infrastructure, E-Biking, Mass Transit, Carpooling, Electric Vehicles and Car Fuel Efficiency/Hybrids",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -18,18 +18,18 @@
         "statistic": ""
     },
     "conv_avg_annual_use": {
-        "value": 2.48071096456146e-05,
-        "statistic": "mean"
+        "value": 2.480710964561463e-05,
+        "statistic": ""
     },
     "conv_var_oper_cost_per_funit": {
-        "value": 11798301.217552487,
+        "value": 11798368.442342987,
         "statistic": ""
     },
     "conv_fixed_oper_cost_per_iunit": {
-        "value": 6362.37299618263,
-        "statistic": "mean"
+        "value": 631.4069216862857,
+        "statistic": ""
     },
-    "conv_fuel_cost_per_funit": 55302452.42866199,
+    "conv_fuel_cost_per_funit": 55303315.0884721,
     "pds_2014_cost": {
         "value": 47609.897539880934,
         "statistic": ""
@@ -38,25 +38,25 @@
         "value": 47609.897539880934,
         "statistic": ""
     },
-    "soln_first_cost_efficiency_rate": 0.0215,
+    "soln_first_cost_efficiency_rate": 0.02,
     "soln_first_cost_below_conv": true,
     "soln_lifetime_capacity": {
-        "value": 0.00031246110689814923,
-        "statistic": ""
+        "value": 0.000312461106898149,
+        "xls cell formula": "LifetimeConventional"
     },
     "soln_avg_annual_use": {
-        "value": 3.100888705701825e-05,
+        "value": 2.480710964561465e-05,
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
-        "value": 4993722.539303601,
+        "value": 3899653.3427668572,
         "statistic": ""
     },
     "soln_fixed_oper_cost_per_iunit": {
-        "value": 6362.37299618263,
-        "statistic": "mean"
+        "value": 631.4069216862857,
+        "statistic": ""
     },
-    "soln_fuel_cost_per_funit": 17170822.429946873,
+    "soln_fuel_cost_per_funit": 19801202.4382226,
     "npv_discount_rate": 0.04,
     "conv_annual_energy_used": {
         "value": 0.0,
@@ -67,7 +67,7 @@
         "statistic": ""
     },
     "soln_annual_energy_used": {
-        "value": 0.09035474233074314,
+        "value": 0.14163950241933182,
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
@@ -75,7 +75,7 @@
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
-        "value": 0.9179199248358034,
+        "value": 1.0,
         "statistic": ""
     },
     "conv_fuel_emissions_factor": {
@@ -95,11 +95,11 @@
         "statistic": ""
     },
     "conv_indirect_co2_per_unit": {
-        "value": 9.679024775197812,
+        "value": 8.497902,
         "statistic": ""
     },
     "soln_indirect_co2_per_iunit": {
-        "value": 10.251543667017724,
+        "value": 10.399999999999999,
         "statistic": ""
     },
     "conv_indirect_co2_is_iunits": true,
@@ -146,7 +146,7 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Book Ed.1 Scenario 2",
+    "soln_pds_adoption_custom_name": "PDS3-Based on Replacing All Retired Cars from Survival Analysis",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
