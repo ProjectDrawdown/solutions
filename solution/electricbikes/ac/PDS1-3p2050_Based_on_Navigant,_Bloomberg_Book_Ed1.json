@@ -2,7 +2,7 @@
     "name": "PDS1-3p2050_Based on Navigant, Bloomberg (Book Ed.1)",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Using sales data from Navigant and other data from Bloomberg, we estimate the stock of e-bikes in each Drawdown Region. We assume that Sealed Lead Acid (SLA) batteries are retired/replaced every three years, and that Lithium Ion batteries (Li) are replaced every 8 years. We further assume that over time more sales for Li batteries occurs as a percent of all e-bike battery sales. Sales growth slows from 5% or 2% in some regions to 1% worldwide. This scenario has older inputs that match those used for the book edition 1, but which have been updated in the newer scenarios.",
+    "description": "Using sales data from Navigant and other data from Bloomberg, we estimate the stock of e-bikes in each Drawdown Region. We assume that Sealed Lead Acid (SLA) batteries are retired/replaced every three years, and that Lithium Ion batteries (Li) are replaced every 6 years. We further assume that over time more sales for Li batteries occurs as a percent of all e-bike battery sales. Sales growth slows from 5% or 2% in some regions to 1% worldwide. This scenario has older inputs that match those used for the book edition 1, but which have been updated in the newer scenarios.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -117,92 +117,32 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            561.0
-        ],
-        [
-            "OECD90",
-            35.63818652262168
-        ],
-        [
-            "Eastern Europe",
-            1.9927024684919843
-        ],
-        [
-            "Asia (Sans Japan)",
-            441.0159122922099
-        ],
-        [
-            "Middle East and Africa",
-            1.248023339153054
-        ],
-        [
-            "Latin America",
-            3.6014881104912106
-        ],
-        [
-            "China",
-            277.7410283849392
-        ],
-        [
-            "India",
-            5.674389798859366
-        ],
-        [
-            "EU",
-            28.00294411913302
-        ],
-        [
-            "USA",
-            7.901342605929202
-        ]
-    ],
+    "ref_base_adoption": {
+        "World": 561.0,
+        "OECD90": 35.63818652262168,
+        "Eastern Europe": 1.9927024684919843,
+        "Asia (Sans Japan)": 441.0159122922099,
+        "Middle East and Africa": 1.248023339153054,
+        "Latin America": 3.6014881104912106,
+        "China": 277.7410283849392,
+        "India": 5.674389798859366,
+        "EU": 28.00294411913302,
+        "USA": 7.901342605929202
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_custom_name": "Book Ed.1 Scenario 1",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Book Reference Scenario",

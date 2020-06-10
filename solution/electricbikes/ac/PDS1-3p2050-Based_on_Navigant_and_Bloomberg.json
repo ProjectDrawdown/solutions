@@ -1,25 +1,25 @@
 {
-    "name": "PDS2-5p2050_Based on ITDP/UCD (Book Ed.1)",
+    "name": "PDS1-3p2050-Based on Navigant and Bloomberg",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "ITDP and UCDavis published their Global High Shift (and then High Shift Cycling) Scenario results in 2014-2015. Using this raw data, we interpolate and extrapolate where data are unavailable. Regions are regrouped according to our best matching to Drawdown regions. This scenario uses inputs from previous models used to develop results for the Drawdown book Edition 1, some of which have been updated in newer scenarios.",
+    "description": "Using sales data from Navigant and other data from Bloomberg, we estimate the stock of e-bikes in each Drawdown Region. We assume that Sealed Lead Acid (SLA) batteries are retired/replaced every three years, and that Lithium Ion batteries (Li) are replaced every 6 years. We further assume that over time more sales for Li batteries occurs as a percent of all e-bike battery sales. Sales growth slows from 5% or 2% in some regions to 1% worldwide.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
-        "value": 533792.5232451062,
+        "value": 4007461.6295288657,
         "statistic": ""
     },
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_lifetime_capacity": {
-        "value": 0.1615250444807001,
+        "value": 0.14652342876953095,
         "statistic": ""
     },
     "conv_avg_annual_use": {
-        "value": 0.010728885808352105,
+        "value": 0.008251328737684829,
         "statistic": ""
     },
     "conv_var_oper_cost_per_funit": {
-        "value": 19796898.423763297,
+        "value": 40638416.173987836,
         "statistic": ""
     },
     "conv_fixed_oper_cost_per_iunit": {
@@ -28,21 +28,21 @@
     },
     "conv_fuel_cost_per_funit": 0.0,
     "pds_2014_cost": {
-        "value": 391146.9061220421,
+        "value": 327187.63295274484,
         "statistic": ""
     },
     "ref_2014_cost": {
-        "value": 391146.9061220421,
+        "value": 327187.63295274484,
         "statistic": ""
     },
     "soln_first_cost_efficiency_rate": 0.06,
     "soln_first_cost_below_conv": true,
     "soln_lifetime_capacity": {
-        "value": 0.017048616067320818,
+        "value": 0.019568952480010518,
         "statistic": ""
     },
     "soln_avg_annual_use": {
-        "value": 0.009300303712680364,
+        "value": 0.008251328737684829,
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
@@ -53,10 +53,10 @@
         "value": 0.0,
         "statistic": ""
     },
-    "soln_fuel_cost_per_funit": 8200.07908254629,
-    "npv_discount_rate": 0.045,
+    "soln_fuel_cost_per_funit": 1645129.25630762,
+    "npv_discount_rate": 0.04,
     "conv_annual_energy_used": {
-        "value": 0.004239652217925736,
+        "value": 0.0042723917523480575,
         "statistic": ""
     },
     "soln_energy_efficiency_factor": {
@@ -64,11 +64,11 @@
         "statistic": ""
     },
     "soln_annual_energy_used": {
-        "value": 5.865578742880033e-05,
+        "value": 0.011835671174282032,
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 34734831.72341607,
+        "value": 33665812.319058344,
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
@@ -92,14 +92,14 @@
         "statistic": ""
     },
     "conv_indirect_co2_per_unit": {
-        "value": 363.08846239681094,
+        "value": 20869.628212017087,
         "statistic": ""
     },
     "soln_indirect_co2_per_iunit": {
-        "value": 119.47434825446553,
+        "value": 7314.2387159020445,
         "statistic": ""
     },
-    "conv_indirect_co2_is_iunits": true,
+    "conv_indirect_co2_is_iunits": false,
     "ch4_co2_per_funit": {
         "value": 0.0,
         "statistic": ""
@@ -118,18 +118,18 @@
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
     "ref_base_adoption": {
-        "World": 561.0,
-        "OECD90": 35.63818652262168,
-        "Eastern Europe": 1.9927024684919843,
-        "Asia (Sans Japan)": 441.0159122922099,
-        "Middle East and Africa": 1.248023339153054,
-        "Latin America": 3.6014881104912106,
-        "China": 277.7410283849392,
-        "India": 5.674389798859366,
-        "EU": 28.00294411913302,
-        "USA": 7.901342605929202
+        "World": 585.7253782880321,
+        "OECD90": 27.58573685617297,
+        "Eastern Europe": 0.4659378712980704,
+        "Asia (Sans Japan)": 393.0459137000878,
+        "Middle East and Africa": 4.100835395106859,
+        "Latin America": 0.8086634627171421,
+        "China": 284.85986024862393,
+        "India": 4.863154674765828,
+        "EU": 13.080721157581095,
+        "USA": 5.635702872251287
     },
-    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": {
         "World": 0.0,
@@ -143,8 +143,17 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Book Ed.1 Scenario 2",
+    "soln_pds_adoption_prognostication_source": "Drawdown Team based on Data from Navigant, Bloomberg and other Sources",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "Medium",
     "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Book Reference Scenario",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_custom_name": "Default REF Projection with Adjustment for Recent Historical Adoptions",
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018
+    ]
 }

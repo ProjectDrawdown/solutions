@@ -1,3 +1,3 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-ITDP & UC Davis (2015) A Global High shift Cycling Scenario,https://www.itdp.org/2015/11/12/a-global-high-shift-cycling-scenario/,World,,5 - Not Verified,2014,,,Billion pkm,,Billion PKM,,Estimated from interpolating the published data,
-Drawdown Team using Navigant sales data,Navigant Adoption Data'!B67,World,,5 - Not Verified,2014,,,Billion pkm,,Billion PKM,,,
+ITDP & UC Davis (2015) A Global High shift Cycling Scenario,https://www.itdp.org/2015/11/12/a-global-high-shift-cycling-scenario/,World,,5 - Not Verified,2018,,585.7253782880321,Billion pkm,,Billion PKM,,Estimated from interpolating the published data,
+Drawdown Team using Navigant sales data,Navigant Adoption Data'!B67,World,,5 - Not Verified,2014,,553.72723224,Billion pkm,,Billion PKM,,,
