@@ -1,8 +1,12 @@
 {
-    "name": "PDS3-90p2050-Linear (Book Ed.1) ",
+    "name": "PDS1-15p2050-(Book Ed.1)",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Drawdown Team Assumption of linear growth to 90% of the TAM (which is all annual commuting in North America). This scenario was developed for the Drawdown book edition 1 and has been updated.",
+    "vma_values": {
+        "Current Average Car Occupancy": 1.57,
+        "Average Ridesharing Car Occupancy": 3.0
+    },
+    "description": "Drawdown Team Calculations (assuming 15% carpooling in 2050) based on:Polzin & Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from US BLS and StatCan. This scenario uses inputs calculated for the Drawdown book edition 1, some of which were updated.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -117,92 +121,36 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            167778037799.2084
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_basis": "DEFAULT Linear",
+    "ref_base_adoption": {
+        "World": 167778037799.2084,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.9
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "PDS1 (15%) - Drawdown Book Edition 1",
     "soln_ref_adoption_basis": "Default",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014
+    ]
 }

@@ -1,8 +1,12 @@
 {
-    "name": "PDS2-20p2050-(Book Ed.1)",
+    "name": "PDS1-38p2050_Car Occupancy to 1.75 (Integrated)",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Drawdown Team Calculations (assuming 20% carpooling in 2050) based on:Polzin & Pisarski (2015), US Census Bureau, and Statistic Brain and Labor Force Data from US BLS and StatCan. This scenario uses inputs calculated for the Drawdown book edition 1, some of which were updated.",
+    "vma_values": {
+        "Current Average Car Occupancy": 1.57,
+        "Average Ridesharing Car Occupancy": 3.0
+    },
+    "description": "We consider only urban mobility that is provided by cars in this scenario (which declines from less ambitious scenarios), and define ridesharing to be trips that have 3 passengers (driver is excluded only if is not also a passenger/traveler). All other trips are assumed to be single occupancy. In this way adoption can be defined with the average car occupancy figures. We then define the current adoption in terms of current car occupancy, and define future adoption using a target car occupancy for 2050. For this scenario, that is 2, well ahead of  the current value.\r\nThen after projecting the adoption of EV's and Hybrids, we take the adoption-weighted electricity and fuel consumption and use it in this model.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -11,11 +15,11 @@
     },
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_lifetime_capacity": {
-        "value": 18.156082559999998,
+        "value": 9.0,
         "statistic": ""
     },
     "conv_avg_annual_use": {
-        "value": 18.156082559999998,
+        "value": 9.0,
         "statistic": ""
     },
     "conv_var_oper_cost_per_funit": {
@@ -26,7 +30,7 @@
         "value": 0.0,
         "statistic": ""
     },
-    "conv_fuel_cost_per_funit": 0.0870228608414654,
+    "conv_fuel_cost_per_funit": 0.047651347740205,
     "pds_2014_cost": {
         "value": 0.0,
         "statistic": ""
@@ -38,41 +42,41 @@
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_first_cost_below_conv": true,
     "soln_lifetime_capacity": {
-        "value": 41.9405507136,
+        "value": 27.0,
         "statistic": ""
     },
     "soln_avg_annual_use": {
-        "value": 41.9405507136,
+        "value": 27.0,
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
-        "value": 0.010437363715801258,
+        "value": 0.008036770061166971,
         "statistic": ""
     },
     "soln_fixed_oper_cost_per_iunit": {
         "value": 0.0,
         "statistic": ""
     },
-    "soln_fuel_cost_per_funit": 0.0376722341305045,
+    "soln_fuel_cost_per_funit": 0.0158837825800683,
     "npv_discount_rate": 0.04,
     "conv_annual_energy_used": {
-        "value": 0.0,
+        "value": 1.672636561790747e-11,
         "statistic": ""
     },
     "soln_energy_efficiency_factor": {
-        "value": 0.0,
-        "statistic": ""
+        "value": 0.666666666666667,
+        "xls cell formula": "G144"
     },
     "soln_annual_energy_used": {
         "value": 0.0,
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 0.08330689018636556,
+        "value": 0.043765905894845185,
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
-        "value": 0.5670995670995671,
+        "value": 0.6666666666666667,
         "statistic": ""
     },
     "conv_fuel_emissions_factor": {
@@ -99,7 +103,7 @@
         "value": 0.0,
         "statistic": ""
     },
-    "conv_indirect_co2_is_iunits": false,
+    "conv_indirect_co2_is_iunits": true,
     "ch4_co2_per_funit": {
         "value": 0.0,
         "statistic": ""
@@ -115,95 +119,38 @@
     "emissions_grid_source": "Meta-Analysis",
     "emissions_grid_range": "Mean",
     "source_until_2014": "ALL SOURCES",
-    "ref_source_post_2014": "Baseline Cases",
-    "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            167778037799.2084
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "ref_source_post_2014": "ALL SOURCES",
+    "pds_source_post_2014": "Drawdown TAM: Integrated Urban TAM post Non-Car Solutions for PDS1",
+    "ref_base_adoption": {
+        "World": 3515221717452.7983,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "PDS2 (20%) - Drawdown Book Edition 1",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "PDS1 - With Global Load Factor of 1.75 person per vehicle per trip by 2050",
     "soln_ref_adoption_basis": "Default",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014
+    ]
 }

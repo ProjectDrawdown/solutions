@@ -720,9 +720,11 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
     if ref_tam_mask is not None and regional_mask is not None:
         regional_mask |= ref_tam_mask
 
-    # BikeInfra-RRSv1.1c-7Oct2019.xlsm catastrophic subtraction in one scenario
+    # BikeInfra-RRSv1.1c-7Oct2019.xlsm catastrophic subtraction in one scenario,
+    # Carpool-RRSv1.1b-Jan2020.xlsm also catastrophic cancellation in multiple scenarios.
+    baseline = obj.ua.soln_net_annual_funits_adopted().mean() * 1e-6
     s = obj.ua.soln_net_annual_funits_adopted().reset_index()
-    m = s.mask(s < 1e-10, other=True).where(s < 1e-10, other=False)
+    m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
     soln_net_annual_funits_adopted_mask = (m | regional_mask) if regional_mask is not None else m
 
     verify['Unit Adoption Calculations'].extend([
@@ -747,6 +749,17 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
         s = obj.ua.soln_ref_cumulative_funits().reset_index()
         soln_ref_cumulative_funits_mask = s.mask(
             s < 1e-11, other=True).where(s < 1e-11, other=False)
+
+        # Carpool-RRSv1.1b-Jan2020.xlsm catastrophic cancellation in multiple scenarios.
+        baseline = obj.ua.conv_ref_annual_tot_iunits().mean() * 1e-6
+        s = obj.ua.conv_ref_annual_tot_iunits().reset_index()
+        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        conv_ref_annual_tot_iunits_mask = (m | regional_mask) if regional_mask is not None else m
+        baseline = obj.ua.soln_pds_fuel_units_avoided().mean() * 1e-6
+        s = obj.ua.soln_pds_fuel_units_avoided().reset_index()
+        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        soln_pds_fuel_units_avoided_mask = (m | regional_mask) if regional_mask is not None else m
+
         verify['Unit Adoption Calculations'].extend([
                 ('BA17:BK63', obj.ua.ref_tam_per_capita().reset_index(), None),
                 ('BM17:BW63', obj.ua.ref_tam_per_gdp_per_capita().reset_index(), None),
@@ -769,13 +782,13 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
                 ('AG253:AQ298', obj.ua.conv_ref_new_iunits(
                     ).reset_index(), regional_mask),
                 ('AX252:BH298', obj.ua.conv_ref_annual_tot_iunits(
-                    ).reset_index(), regional_mask),
+                    ).reset_index(), conv_ref_annual_tot_iunits_mask),
                 ('B308:L354', obj.ua.soln_pds_net_grid_electricity_units_saved(
                     ).reset_index(), regional_mask),
                 ('Q308:AA354', obj.ua.soln_pds_net_grid_electricity_units_used(
                     ).reset_index(), regional_mask),
                 ('AD308:AN354', obj.ua.soln_pds_fuel_units_avoided(
-                    ).reset_index(), regional_mask),
+                    ).reset_index(), soln_pds_fuel_units_avoided_mask),
                 ('AT308:BD354', obj.ua.soln_pds_direct_co2_emissions_saved(
                     ).reset_index(), regional_mask),
                 ('BF308:BP354', obj.ua.soln_pds_direct_ch4_co2_emissions_saved(
