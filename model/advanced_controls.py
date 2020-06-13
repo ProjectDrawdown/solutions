@@ -24,7 +24,7 @@ valid_ref_adoption_bases = {'Default', 'Custom', None}
 valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
 
-@dataclasses.dataclass(eq=True, frozen=True)
+@dataclasses.dataclass(eq=True, frozen=False)
 class AdvancedControls:
     """Advanced Controls module, with settings impacting other modules."""
 
@@ -55,6 +55,7 @@ class AdvancedControls:
     # jsfile: the filename containing the JSON (if any)
     js: str = None
     jsfile: str = None
+
 
     # pds_2014_cost: US$2014 cost to acquire + install, per implementation
     #   unit (ex: kW for energy scenarios), for the Project Drawdown Solution (PDS)
@@ -431,6 +432,41 @@ class AdvancedControls:
             "Purchase costs can be amortized here or included as a first cost, but not both."),
         'excelref': 'SolarPVUtil "Advanced Controls"!I128; Silvopasture "Advanced Controls"!C92',
         })
+
+    soln_net_profit_margin_per_iunit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['SOLUTION Net Profit Margin per Functional Unit per Annum'],
+        'subtitle': None,
+        'tooltip': """
+        NOTE: 
+        This is the Net Profit Margin per functional unit, derived from the SOLUTION technologies/practices.  
+        In most cases this will be expressed as a profit per 'hectare of land'. 
+        This should capture the Net Profit Margin from maintaining the SOLUTION practice. 
+        The value should reflect the average over the reasonable lifetime of the practice.
+        
+        Note:
+        If the Net Profit Margin changes significantly across years, you can use a customized calculation at bottom of 
+        'Net Profit Margin' sheet. 
+        """
+        ,
+        'excelref': 'ConservationAgriculture "Advanced Controls"!D92'
+    })
+    conv_net_profit_margin_per_iunit: float = dataclasses.field(default=None, metadata={
+        'vma_titles': ['CONVENTIONAL Net Profit Margin per Functional Unit per Annum'],
+        'subtitle': None,
+        'tooltip': """
+        NOTE: 
+        This is the Net Profit Margin per functional unit, derived from the CONVENTIONAL technologies/practices.  
+        In most cases this will be expressed as a profit per 'hectare of land'. 
+        This should capture the Net Profit Margin from maintaining the CONVENTIONAL practice. 
+        The value should reflect the average over the reasonable lifetime of the practice.
+
+        Note:
+        If the Net Profit Margin changes significantly across years, you can use a customized calculation at bottom of 
+        'Net Profit Margin' sheet. 
+        """
+        ,
+        'excelref': 'ConservationAgriculture "Advanced Controls"!D75'
+    })
 
     # soln_fuel_cost_per_funit: Fuel/consumable cost per functional unit.
     #   SolarPVUtil "Advanced Controls"!K128

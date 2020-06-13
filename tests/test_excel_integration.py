@@ -961,6 +961,12 @@ def verify_operating_cost(obj, verify):
     return verify
 
 
+def verify_net_profit_margin(obj, verify):
+    # Blocked on ingesting npm into objs.
+    verify['Net Profit Margin'] = []
+    return verify
+
+
 def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True,
         is_rrs=True, cohort=2018):
     """Verified tables in CO2 Calcs."""
@@ -1210,6 +1216,7 @@ def LAND_solution_verify_list(obj, zip_f):
     verify_first_cost(obj, verify)
     verify_operating_cost(obj, verify)
     verify_co2_calcs(obj, verify, is_rrs=False, include_regional_data=False, cohort=cohort)
+    verify_net_profit_margin(obj, verify)
     verify_ch4_calcs_land(obj, verify)
     return verify
 
