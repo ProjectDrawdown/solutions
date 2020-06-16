@@ -1644,6 +1644,19 @@ def test_HighSpeedRail_RRS():
 
 
 @pytest.mark.slow
+def test_HybridCars_RRS():
+    from solution import hybridcars
+    zipfilename = str(solutiondir.joinpath(
+        'hybridcars', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for scenario in hybridcars.scenarios.keys():
+        obj = hybridcars.Scenario(scenario=scenario)
+        verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(
+            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+
+
+@pytest.mark.slow
 def test_ImprovedCookStoves_RRS():
     from solution import improvedcookstoves
     zipfilename = str(solutiondir.joinpath(

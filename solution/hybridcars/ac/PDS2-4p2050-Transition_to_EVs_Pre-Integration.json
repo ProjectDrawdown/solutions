@@ -1,0 +1,157 @@
+{
+    "name": "PDS2-4p2050-Transition to EVs (Pre-Integration)",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "description": "Considering that Electric Vehicles (BEV or PHEV)  are a better technology from a lifetime emissions perspective, HEV are considered as a transition technology in the PDS2 where the target is drawdown by 2050 particularly within cities where there is minimal range anxiety. In this Drawdown scenario, then, the focus is on growing EV after all higher priority solutions (like non-motorized transportation) in cities are grown to their maximum potential. For HEV's then, the adoption is projected to only occur where BEV or PHEV cars cannot easily be used, such as for long distance intercity trips. The HEV adoption is projected to continue its growth, guided by the IEA 2DS, until the late 2040's when it starts to decline and trend to zero. Sales data for multiple key countries and regions were used to estimate the actual global sales for early years.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 27301.838757440706,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 311755.0004967467,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 24751.05,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 0.0118250236630694,
+        "statistic": "mean"
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 631.406921686286,
+        "statistic": "mean"
+    },
+    "conv_fuel_cost_per_funit": 0.0549536830654601,
+    "pds_2014_cost": {
+        "value": 32952.42190413766,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 32952.42190413766,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.03,
+    "soln_first_cost_below_conv": false,
+    "soln_lifetime_capacity": {
+        "value": 311755.000496747,
+        "xls cell formula": "LifetimeConventional"
+    },
+    "soln_avg_annual_use": {
+        "value": 24751.05,
+        "xls cell formula": "F98"
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 0.00864698773835641,
+        "statistic": "mean"
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 631.406921686286,
+        "statistic": "mean"
+    },
+    "soln_fuel_cost_per_funit": 0.0347112249738984,
+    "npv_discount_rate": 0.04,
+    "conv_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 0.0530617134945003,
+        "statistic": "mean"
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 0.368354893837582,
+        "statistic": "mean"
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 0.002273941593,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 0.002273941593,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 9.67160889271708,
+        "statistic": "mean"
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 9.54160151569284,
+        "statistic": "mean"
+    },
+    "conv_indirect_co2_is_iunits": true,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "Baseline Cases",
+    "pds_source_post_2014": "Baseline Cases",
+    "ref_base_adoption": {
+        "World": 383153583719.27997,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "PDS2-Transition to EVs in Cities",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Default REF Projection with Adjustment for Recent Historical Adoptions",
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018
+    ]
+}
