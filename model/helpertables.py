@@ -17,7 +17,8 @@ class HelperTables:
                  ref_adoption_limits=None, pds_adoption_limits=None,
                  pds_adoption_trend_per_region=None, pds_adoption_is_single_source=False,
                  ref_adoption_data_per_region=None, use_first_pds_datapoint_main=True,
-                 adoption_base_year=2014, copy_pds_to_ref=False, copy_ref_datapoint=True):
+                 adoption_base_year=2014, copy_pds_to_ref=False, copy_ref_datapoint=True,
+                 copy_pds_datapoint=True):
         """
         HelperTables.
            Arguments:
@@ -64,6 +65,7 @@ class HelperTables:
         self.adoption_base_year = adoption_base_year
         self.copy_pds_to_ref = copy_pds_to_ref
         self.copy_ref_datapoint = copy_ref_datapoint
+        self.copy_pds_datapoint = copy_pds_datapoint
 
     @lru_cache()
     def soln_ref_funits_adopted(self, suppress_override=False):
@@ -203,19 +205,20 @@ class HelperTables:
             y = self.ac.pds_adoption_use_ref_years
             adoption.update(self.soln_ref_funits_adopted(suppress_override=True).loc[y, main_region])
 
-        # Where we have actual data, use the actual data not the interpolation. Excel model does
-        # this in all cases, even Custom PDS Adoption.
-        # Note: this should be changed later. The jump between pds_datapoints
-        # and the first row of custom adoption data causes anomalies in the regional results.
-        # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
-        datapoint_year = self.pds_datapoints.first_valid_index()
-        main_region = dd.REGIONS[0]
-        first_datapoint_main_region = adoption.loc[datapoint_year, main_region]
-        adoption.update(self.pds_datapoints.iloc[[0]])
-        if not self.use_first_pds_datapoint_main:
-            # In some Drawdown 2020 solutions, the World region computation is different
-            # and no longer copies the first datapoint.
-            adoption.loc[datapoint_year, main_region] = first_datapoint_main_region
+        if self.copy_pds_datapoint:
+            # Where we have actual data, use the actual data not the interpolation.
+            # Excel model does this in all cases, even Custom PDS Adoption.
+            # Note: this should be changed later. The jump between pds_datapoints
+            # and the first row of custom adoption data causes anomalies in the regional results.
+            # See: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
+            datapoint_year = self.pds_datapoints.first_valid_index()
+            main_region = dd.REGIONS[0]
+            first_datapoint_main_region = adoption.loc[datapoint_year, main_region]
+            adoption.update(self.pds_datapoints.iloc[[0]])
+            if not self.use_first_pds_datapoint_main:
+                # In some Drawdown 2020 solutions, the World region computation is different
+                # and no longer copies the first datapoint.
+                adoption.loc[datapoint_year, main_region] = first_datapoint_main_region
 
         adoption.name = "soln_pds_funits_adopted"
         adoption.index.name = "Year"

@@ -2,6 +2,9 @@
     "name": "PDS2-30p2050-Based on IEA (2012 ETP) (Book Ed.1)",
     "solution_category": "reduction",
     "vmas": "VMAs",
+    "vma_values": {
+        "Current Average Car Occupancy": 1.62318069972403
+    },
     "description": "Using the IEA's Energy Technology Perspectives 2012 projections of EV sales' growth, we project the sales and then global EV stock. Assuming the ICCT's global car occupancy average and a 50% growth in this occupancy by 2050, we estimate the total passenger-km of EV during the period of analysis.",
     "report_start_year": 2020,
     "report_end_year": 2050,
@@ -117,93 +120,36 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            16.701444916159307
-        ],
-        [
-            "OECD90",
-            14.405959906291683
-        ],
-        [
-            "Eastern Europe",
-            8.68248837596512e-05
-        ],
-        [
-            "Asia (Sans Japan)",
-            2.7858260096477
-        ],
-        [
-            "Middle East and Africa",
-            8.68248837596512e-05
-        ],
-        [
-            "Latin America",
-            8.68248837596512e-05
-        ],
-        [
-            "China",
-            2.6861138324271523
-        ],
-        [
-            "India",
-            0.09962535233678836
-        ],
-        [
-            "EU",
-            4.508096807458965
-        ],
-        [
-            "USA",
-            6.7600117997589235
-        ]
-    ],
+    "ref_base_adoption": {
+        "World": 16.701444916159307,
+        "OECD90": 14.405959906291683,
+        "Eastern Europe": 8.68248837596512e-05,
+        "Asia (Sans Japan)": 2.7858260096477,
+        "Middle East and Africa": 8.68248837596512e-05,
+        "Latin America": 8.68248837596512e-05,
+        "China": 2.6861138324271523,
+        "India": 0.09962535233678836,
+        "EU": 4.508096807458965,
+        "USA": 6.7600117997589235
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_custom_name": "Book Ed.1 Scenario 2",
     "soln_ref_adoption_basis": "Default",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014
+    ]
 }

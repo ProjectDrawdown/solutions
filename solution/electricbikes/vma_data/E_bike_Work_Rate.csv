@@ -1,2 +1,2 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Eric Hicks (2012) ""Watt Hours; Calculating E-bike Range"". Electric Bike Web Blog",https://www.electricbike.com/watt-hours/,OECD90,USA,3 - For Profit,2012,,,Wh/mile,0.0,Wh/km,,,
+"Eric Hicks (2012) ""Watt Hours; Calculating E-bike Range"". Electric Bike Web Blog",https://www.electricbike.com/watt-hours/,OECD90,USA,3 - For Profit,2012,,20.0,Wh/mile,12.42742384474,Wh/km,,,

@@ -1,0 +1,161 @@
+{
+    "name": "PDS1-16p2050-with IEA 2DS (Integrated)",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "vma_values": {
+        "Current Average Car Occupancy": 1.62318069972403
+    },
+    "description": "We use the IEA's 2DS projection of on-road vehicles (ETP 2016) as a base and convert to passenger-km using annual usage rates and average occupancy from ICCT. \r\n\r\nThe Carpooling solution adjusts the car occupancy of all cars (solution and conventional) so this new input is used in this model and that changes some other inputs.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 26480.507606410407,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 0.0003224991044858732,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 2.55894437311493e-05,
+        "statistic": "mean"
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 11432570.396862,
+        "statistic": "mean"
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 631.406921686286,
+        "statistic": "mean"
+    },
+    "conv_fuel_cost_per_funit": 53153220.9737592,
+    "pds_2014_cost": {
+        "value": 34757.34412680124,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 34757.34412680124,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.02,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 0.000322499104485873,
+        "xls cell formula": "LifetimeConventional"
+    },
+    "soln_avg_annual_use": {
+        "value": 2.55894437311493e-05,
+        "statistic": "mean"
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 4810276.92301066,
+        "statistic": "mean"
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 631.406921686286,
+        "statistic": "mean"
+    },
+    "soln_fuel_cost_per_funit": 20672939.2034064,
+    "npv_discount_rate": 0.04,
+    "conv_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.109490461357292,
+        "statistic": "mean"
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 51323238.5035932,
+        "statistic": "mean"
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 0.897390344515709,
+        "statistic": "mean"
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 0.002273941593,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 0.002273941593,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 9.78444884486288,
+        "statistic": "mean"
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 9.99226666666667,
+        "statistic": "mean"
+    },
+    "conv_indirect_co2_is_iunits": true,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "Baseline Cases",
+    "pds_source_post_2014": "Baseline Cases",
+    "ref_base_adoption": {
+        "World": 113.54543137799892,
+        "OECD90": 14.405959906291683,
+        "Eastern Europe": 8.68248837596512e-05,
+        "Asia (Sans Japan)": 2.7858260096477,
+        "Middle East and Africa": 8.68248837596512e-05,
+        "Latin America": 8.68248837596512e-05,
+        "China": 2.6861138324271523,
+        "India": 0.09962535233678836,
+        "EU": 4.508096807458965,
+        "USA": 6.7600117997589235
+    },
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_prognostication_source": "Based on: IEA ETP 2016 2DS",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "Medium",
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018
+    ]
+}

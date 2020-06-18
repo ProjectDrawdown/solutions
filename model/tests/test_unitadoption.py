@@ -309,6 +309,51 @@ def test_soln_pds_cumulative_funits_bug_behavior():
     pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
 
 
+def test_soln_pds_cumulative_funits_bug_behavior_ref_base_adoption():
+    funits = [
+        ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
+            'Latin America', 'China', 'India', 'EU', 'USA'],
+        [2014, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99],
+        [2015, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2016, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [2017, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+    soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
+    ac = advanced_controls.AdvancedControls(solution_category=SOLUTION_CATEGORY.LAND,
+        ref_base_adoption={ "World": 10.0, "OECD90": 9.0, "Eastern Europe": 8.0,
+            "Asia (Sans Japan)": 7.0, "Middle East and Africa": 6.0, "Latin America": 5.0,
+            "China": 4.0, "India": 3.0, "EU": 2.0, "USA": 1.0})
+    ua = unitadoption.UnitAdoption(ac=ac,
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+            bug_cfunits_double_count=True)
+    result = ua.soln_pds_cumulative_funits()
+    assert result.loc[2014, 'World'] == pytest.approx(0.1)
+    assert result.loc[2014, 'OECD90'] == pytest.approx(9.2)
+    assert result.loc[2014, 'Eastern Europe'] == pytest.approx(8.3)
+    assert result.loc[2014, 'Asia (Sans Japan)'] == pytest.approx(7.4)
+    assert result.loc[2014, 'Middle East and Africa'] == pytest.approx(6.5)
+    assert result.loc[2014, 'Latin America'] == pytest.approx(5.6)
+    assert result.loc[2014, 'China'] == pytest.approx(4.7)
+    assert result.loc[2014, 'India'] == pytest.approx(3.8)
+    assert result.loc[2014, 'EU'] == pytest.approx(2.9)
+    assert result.loc[2014, 'USA'] == pytest.approx(1.99)
+    ua = unitadoption.UnitAdoption(ac=ac,
+            ref_total_adoption_units=None, pds_total_adoption_units=None,
+            soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
+            bug_cfunits_double_count=False)
+    result = ua.soln_pds_cumulative_funits()
+    assert result.loc[2014, 'World'] == pytest.approx(0.1)
+    assert result.loc[2014, 'OECD90'] == pytest.approx(0.2)
+    assert result.loc[2014, 'Eastern Europe'] == pytest.approx(0.3)
+    assert result.loc[2014, 'Asia (Sans Japan)'] == pytest.approx(0.4)
+    assert result.loc[2014, 'Middle East and Africa'] == pytest.approx(0.5)
+    assert result.loc[2014, 'Latin America'] == pytest.approx(0.6)
+    assert result.loc[2014, 'China'] == pytest.approx(0.7)
+    assert result.loc[2014, 'India'] == pytest.approx(0.8)
+    assert result.loc[2014, 'EU'] == pytest.approx(0.9)
+    assert result.loc[2014, 'USA'] == pytest.approx(0.99)
+
+
 def test_soln_pds_cumulative_funits_missing_data():
     funits = [
         ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
