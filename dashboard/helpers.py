@@ -20,13 +20,22 @@ def get_py_solutions():
 
 def get_excel_python_count(all_solutions, py_solutions):
     total_solutions_count = all_solutions.Solution.nunique()
-    python_solutions_count = py_solutions.solution.nunique()
+    python_2019_count = 0
+    python_2020_count = 0
 
-    excel_solutions_count = total_solutions_count - python_solutions_count
+    for name in py_solutions['solution'].unique():
+        solution_module = importlib.import_module("solution." + name)
+        obj = solution_module.Scenario()
+        if obj.ac.ref_base_adoption is not None:
+            python_2020_count += 1
+        else:
+            python_2019_count += 1
+
+    excel_solutions_count = total_solutions_count - python_2019_count - python_2020_count
     return pd.DataFrame(
         {
-            "type": ["Excel Only", "Python & Excel"],
-            "count": [excel_solutions_count, python_solutions_count],
+            "type": ["Excel Only", "Excel & Python 2020", "Excel & Python 2019"],
+            "count": [excel_solutions_count, python_2020_count, python_2019_count],
         }
     )
 

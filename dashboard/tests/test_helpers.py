@@ -315,7 +315,8 @@ def test_get_issues_with_regional_data():
 def test_get_excel_python_count():
     result = get_excel_python_count(mock_all_solutions, mock_py_solutions)
     expected = pd.DataFrame(
-        {"type": {0: "Excel Only", 1: "Python & Excel"}, "count": {0: 7, 1: 3}}
+            {"type": {0: "Excel Only", 1: "Excel & Python 2020", 2: "Excel & Python 2019"},
+                "count": {0: 7, 1: 3, 2: 0}}
     )
 
     pd.testing.assert_frame_equal(result, expected)
