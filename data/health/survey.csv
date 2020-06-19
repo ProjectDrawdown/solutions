@@ -70,9 +70,9 @@ bottomtrawling:default,,0.7215088030669773,0.9865597603824362
 buildingautomation:PDS1-51p2050-SCurve (Book Ed.1),0.8032890314804253,1.0,0.9912288739957325
 buildingautomation:PDS2-70p2050-Linear (Book Ed.1),0.8032890314804253,1.0,0.9993344940587241
 buildingautomation:PDS3-72p2050-Linear (Book Ed.1),0.8032890314804253,1.0,0.9994012595323009
-carpooling:PDS1-15p2050-(Book Ed.1),0.0,0.0,0.9896722408591557
-carpooling:PDS2-20p2050-(Book Ed.1),0.0,0.0,0.9912834000939634
-carpooling:PDS3-90p2050-Linear (Book Ed.1) ,0.0,0.0,0.999937644540021
+carpooling:PDS1-38p2050_Car Occupancy to 1.75 (Integrated),0.0,0.0,0.9770656748349441
+carpooling:PDS2-50p2050_Car Occupancy to 2.0 (Integrated),0.0,0.0,0.9390765243716553
+carpooling:PDS3-100p2050_Car Occupancy to 3.0 (Integrated),0.0,0.0,0.9615227079512798
 cars:PDS1-6p2050-Conservative (Book Ed.1),0.0,0.0,0.889791668578832
 cars:PDS2-13p2050-Amitious Cases (Book Ed.1),0.0,0.0,0.8209732414636313
 cars:PDS3-5p2050-Ambitious+DoubleOccu (Book Ed.1),0.0,0.0,0.40610888187213773
@@ -107,12 +107,24 @@ coolroofs:PDS3-93p2050-Integrated-EE8.42%-FE-2.62% (Book),1.6165080339091262,0.0
 districtheating:PDS1-12p2050-Plausible (Book Ed.1),0.0,0.0,0.9908212101712544
 districtheating:PDS2-13p2050-Drawdown Scen. (Book Ed.1),0.0,0.0,0.9926556292154802
 districtheating:PDS3-14p2050-Optimum (Book Ed.1),0.0,0.0,0.9823537425268166
-"electricbikes:PDS1-3p2050_Based on Navigant, Bloomberg (Book Ed.1)",0.6501258118270206,0.0,0.995601361786891
-electricbikes:PDS2-5p2050_Based on ITDP/UCD (Book Ed.1),0.6501258118270206,0.0,0.9896610687338874
-electricbikes:PDS3-6p2050_Growth to 6.5% (Book Ed.1),0.6501258118270206,0.6501258118270205,1.0
-electricvehicles:PDS1-16p2050-Based on IEA 2DS (Book Ed.1),0.0,0.0,0.960852061535761
-electricvehicles:PDS2-30p2050-Based on IEA (2012 ETP) (Book Ed.1),0.0,0.0,0.9131200688175674
-electricvehicles:PDS3-40p2050-Based on IEA (2012 ETP)+Double Occu (Book Ed.1),0.0,0.0,0.9533524650056616
+electricbikes:PDS1-3p2050-Based on Navigant and Bloomberg,0.6491196089881476,1.0531437972027184,0.9934506683707397
+"electricbikes:PDS1-3p2050_Based on Navigant, Bloomberg (Book Ed.1)",0.6491196089881476,0.0,0.995601361786891
+electricbikes:PDS2-5p2050-Based on ITDP/UCDavis,0.6491196089881476,0.639539136702424,0.9459165423130533
+electricbikes:PDS2-5p2050_Based on ITDP/UCD (Book Ed.1),0.6491196089881476,0.0,0.9896610687338874
+electricbikes:PDS3-6p2050-linear Growth,0.6491196089881476,0.6491196089881474,0.9988181813772755
+electricbikes:PDS3-6p2050_Growth to 6.5% (Book Ed.1),0.6491196089881476,0.6491196089881475,0.9991339740299806
+electricvehicles:PDS1-16p2050-Based on IEA 2DS,0.0,0.0,0.9603670988602199
+electricvehicles:PDS1-16p2050-Based on IEA 2DS (Book Ed.1),0.0,0.0,0.9608554986524014
+electricvehicles:PDS1-16p2050-using IEA 2DS (Pre-Integration),0.0,0.0,0.960262686464165
+electricvehicles:PDS1-16p2050-with IEA 2DS (Integrated),0.0,0.0,0.9602610067470303
+electricvehicles:PDS2-23p2050-Based on IEA (2017) B2DS,0.0,0.0,0.9496400121006643
+electricvehicles:PDS2-23p2050-using IEA B2DS (Integrated),0.0,0.0,0.949455461471279
+electricvehicles:PDS2-23p2050-using IEA B2DS (Pre-Integration),0.0,0.0,0.9494616745283031
+electricvehicles:PDS2-30p2050-Based on IEA (2012 ETP) (Book Ed.1),0.0,0.0,0.9131220152897874
+electricvehicles:PDS3-18p2050-Car Survival Analysis,0.0,0.0,0.9780664206482196
+electricvehicles:PDS3-18p2050-Car Survival Analysis (Pre-Integration),0.0,0.0,0.9777553708146889
+electricvehicles:PDS3-18p2050-Survival Analysis (Integrated),0.0,0.0,0.9828022699016776
+electricvehicles:PDS3-40p2050-Based on IEA (2012 ETP)+Double Occu (Book Ed.1),0.0,0.0,0.953353985477513
 farmlandrestoration:PDS-37p2050-Plausible-20190424,,0.0,0.9953902502467405
 farmlandrestoration:PDS-37p2050-Plausible-PDSCustom-avg-Nov2019,,0.0,0.9953902502467405
 farmlandrestoration:PDS-47p2050-Plausible-CustomPDS-low-aug2019,,0.0,0.9953902502467405
@@ -152,6 +164,17 @@ heatpumps:PDS3-60p2050-Bass Diff (Book Ed.1),0.0,0.0,0.9487456572907891
 highspeedrail:PDS1-4p2050-Announced Constr+1%Traffic Density (Book Ed.1),0.0,0.0,0.9887867114586133
 highspeedrail:PDS2-4p2050-Announced Constr+2.5% Traffic Density Inc (Book Ed.1),0.0,0.0,0.9984836748317192
 highspeedrail:PDS3-5p2050-Japanese Travel Density (Book Ed.1),0.0,0.0,0.9995605759108482
+hybridcars:PDS1-11p2050-Based on IEA 2DS,0.0,0.0,0.9650848901426567
+hybridcars:PDS1-11p2050-using IEA 2DS (Integrated),0.0,0.0,0.9650142342423105
+hybridcars:PDS1-11p2050-using IEA 2DS (Pre-Integration),0.0,0.0,0.9650142342423105
+hybridcars:PDS1-6p2050-Conservative (Book Ed.1),0.0,0.0,0.8916173626709363
+hybridcars:PDS2-0p2050-Transition to EVs in Cities,0.0,0.0,0.8134608304177742
+hybridcars:PDS2-4p2050-Transition to EV's (Integrated),0.0,0.0,0.813335944438269
+hybridcars:PDS2-4p2050-Transition to EVs (Pre-Integration),0.0,0.0,0.813335944438269
+hybridcars:PDS3-0p2050-Transition to EV's,0.0,0.0,-0.053465237772831894
+hybridcars:PDS3-1p2050-Transition to EV's (Integrated),0.0,0.0,-0.054714721814811115
+hybridcars:PDS3-1p2050-Transition to EVs (Pre-Integration),0.0,0.0,-0.054714721814811115
+hybridcars:PDS3-5p2050-Ambitious+DoubleOccu (Book Ed.1),0.0,0.0,0.4061539740599035
 improvedcookstoves:PDS1-15p2050_Low Growth (Book Ed.1),1.1088236768799442,0.0,0.999300515989594
 improvedcookstoves:PDS2-20p2050_High Growth (Book Ed.1),1.1088236768799442,0.0,0.9996058452513643
 improvedcookstoves:PDS3-25p2050_Linear to 25% (Book Ed.1),1.1088236768799442,1.1088236768799442,1.0
@@ -272,10 +295,10 @@ peatlands:PDS-97p2050-Drawdown-PDSCustom-high-Nov2018,,0.0,0.9397743036456728
 peatlands:PDS-97p2050-Drawdown-customPDS-high-Jan2020,,0.0,0.9397743036456727
 perennialbioenergy:PDS-100p2050-Optimum-PDSCustom-max-aug2019,,0.0,0.9865524455770296
 perennialbioenergy:PDS-100p2050-Optimum-PDScustom-high-BookVersion1,,0.0,0.9989393416867052
-perennialbioenergy:PDS-40p2050-Plausible-customPDS-avg-30Jan2020,,0.0,0.9978478181691349
-perennialbioenergy:PDS-40p2050-Plausible-customPDS-avg-Jan2020,,0.0,0.9978478181691349
-perennialbioenergy:PDS-56p2050-Plausible-PDSCustom-avg-Nov2019,,0.0,0.9978478181691349
-perennialbioenergy:PDS-62p2050-Plausible-PDSCustom-avg-aug2019,,0.0,0.9978478181691349
+perennialbioenergy:PDS-40p2050-Plausible-customPDS-avg-30Jan2020,,0.0,0.9978478181691354
+perennialbioenergy:PDS-40p2050-Plausible-customPDS-avg-Jan2020,,0.0,0.9978478181691354
+perennialbioenergy:PDS-56p2050-Plausible-PDSCustom-avg-Nov2019,,0.0,0.9978478181691354
+perennialbioenergy:PDS-62p2050-Plausible-PDSCustom-avg-aug2019,,0.0,0.9978478181691354
 perennialbioenergy:PDS-72p2050-Drawdown-customPDS-high-30Jan2020,,0.0,0.9989670065206601
 perennialbioenergy:PDS-72p2050-Drawdown-customPDS-high-Jan2020,,0.0,0.9989670065206601
 perennialbioenergy:PDS-72p2050-Plausible-PDScustom-avg-BookVersion1,,0.0,0.9983464075790411
