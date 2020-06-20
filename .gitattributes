@@ -26,3 +26,4 @@ solution/carpooling/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/electricbikes/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/electricvehicles/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/hybridcars/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
+solution/highspeedrail/testdata/*.zip filter=lfs diff=lfs merge=lfs -text

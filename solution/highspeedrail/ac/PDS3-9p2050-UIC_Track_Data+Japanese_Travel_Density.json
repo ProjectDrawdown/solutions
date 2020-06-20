@@ -1,26 +1,26 @@
 {
-    "name": "PDS1-4p2050-Announced Constr+1%Traffic Density (Book Ed.1)",
+    "name": "PDS3-9p2050-UIC Track Data+Japanese Travel Density",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Taking the announcements of HSR track projects, and estimated completion date, we use a regionally- appropriate travel density estimation to determine how much travel will occur on built tracks. We include a 1% annual growth in this travel density and interpolate the adoption over study period. This scenario uses the book inputs for lifetime, average annual use, indirect emissions and operating cost variables, all of which have since been updated with more data.",
+    "description": "Taking the announcements of HSR track projects, and estimated completion date, we use the Japanese Travel Density (pass-km/year/track-km), one of the highest travel densities found worldwide, as the theoretical maximum usage. This would imply that all states, regions and entities manage high speed rail demand to take full advantage of all tools for maximizing rideship including significant supporting infrastructural works for improving accessibility, system frequency, and cost; limiting air competition and encouraging urban density. HSR is compared to airlines increasing available seat-km for short haul flights (<800km).",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
-        "value": 310606165.6666667,
+        "value": 0.0,
         "statistic": ""
     },
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_lifetime_capacity": {
-        "value": 26.934010544521403,
+        "value": 8.04e-10,
         "statistic": ""
     },
     "conv_avg_annual_use": {
-        "value": 1.3467005272260701,
+        "value": 8.04e-10,
         "statistic": ""
     },
     "conv_var_oper_cost_per_funit": {
-        "value": 56889437.0,
-        "xls cell formula": "SUM(12494749,44394688)"
+        "value": 103177006.577711,
+        "statistic": "mean"
     },
     "conv_fixed_oper_cost_per_iunit": {
         "value": 0.0,
@@ -28,33 +28,33 @@
     },
     "conv_fuel_cost_per_funit": 0.0,
     "pds_2014_cost": {
-        "value": 35998677.53393008,
+        "value": 27208664.405802872,
         "statistic": ""
     },
     "ref_2014_cost": {
-        "value": 35998677.53393008,
+        "value": 27208664.405802872,
         "statistic": ""
     },
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_first_cost_below_conv": true,
     "soln_lifetime_capacity": {
-        "value": 0.8386806271634845,
-        "statistic": ""
+        "value": 1.18611111111111,
+        "xls cell formula": "35*F113"
     },
     "soln_avg_annual_use": {
-        "value": 0.023962303633242428,
+        "value": 0.03388888888888889,
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
-        "value": 24414376.0,
-        "xls cell formula": "SUM(18529191,5885185)"
+        "value": 150323949.94551,
+        "statistic": "mean"
     },
     "soln_fixed_oper_cost_per_iunit": {
         "value": 0.0,
         "statistic": ""
     },
     "soln_fuel_cost_per_funit": 0.0,
-    "npv_discount_rate": 0.06379756793388117,
+    "npv_discount_rate": 0.0637975679338812,
     "conv_annual_energy_used": {
         "value": 0.0,
         "statistic": ""
@@ -76,7 +76,7 @@
         "statistic": ""
     },
     "conv_fuel_emissions_factor": {
-        "value": 0.0024590159999999996,
+        "value": 0.00253071819,
         "statistic": ""
     },
     "soln_fuel_emissions_factor": {
@@ -92,11 +92,11 @@
         "statistic": ""
     },
     "conv_indirect_co2_per_unit": {
-        "value": 25644.77424305321,
+        "value": 72997.5,
         "statistic": ""
     },
     "soln_indirect_co2_per_iunit": {
-        "value": 12014.334253425719,
+        "value": 12103.287675527992,
         "statistic": ""
     },
     "conv_indirect_co2_is_iunits": false,
@@ -118,7 +118,7 @@
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
     "ref_base_adoption": {
-        "World": 614.0,
+        "World": 947.9500000000116,
         "OECD90": 202.18263170296004,
         "Eastern Europe": 2.738,
         "Asia (Sans Japan)": 409.376,
@@ -143,11 +143,11 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "PDS1 - Projecting HSR Travel based on announced Track building plans",
-    "soln_ref_adoption_basis": "Default",
+    "soln_pds_adoption_custom_name": "PDS3 - Projecting HSR Travel based on announced Track building plans",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "HSR Share of Passenger Rail Market is Fixed",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
-        2014,
-        2015
+        2014
     ]
 }
