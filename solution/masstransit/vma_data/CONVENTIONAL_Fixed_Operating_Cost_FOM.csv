@@ -1,3 +1,3 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Sum of Depreciation and Insurance Costs from tables Below,Variable 25 - Insurance,World,,5 - Not Verified,,,,,,US2014$/Urban trip,,High values (1 SD above mean of each component),
-,Variable 26 - First Cost,,,,,,,,,US2014$/Urban trip,,Low values (1 SD below mean of each component),
+Sum of Depreciation and Insurance Costs from tables Below,Variable 25 - Insurance,World,,5 - Not Verified,,,1.869167993335485,,,US2014$/Person-trip (urban),,High values (1 SD above mean of each component),
+,Variable 26 - First Cost,,,,,,1.250631992495109,,,US2014$/Person-trip (urban),,Low values (1 SD below mean of each component),

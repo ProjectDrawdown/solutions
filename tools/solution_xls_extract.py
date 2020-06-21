@@ -774,10 +774,13 @@ def normalize_source_name(sourcename):
         if '2014' in name and '4DS' in name: return 'Based on: IEA ETP 2014 4DS' + suffix
         if '2014' in name and '6DS' in name: return 'Based on: IEA ETP 2014 6DS' + suffix
         if '2016' in name and '6DS' in name: return 'Based on: IEA ETP 2016 6DS' + suffix
+        if 'ETP16' in name and '6DS' in name: return 'Based on: IEA ETP 2016 6DS' + suffix
         if '2016' in name and '4DS' in name: return 'Based on: IEA ETP 2016 4DS' + suffix
+        if 'ETP16' in name and '4DS' in name: return 'Based on: IEA ETP 2016 4DS' + suffix
         if '2016' in name and '2DS' in name and 'OPT2-PERENNIALS' in name:
             return 'Based on: IEA ETP 2016 2DS with OPT2 perennials' + suffix
         if '2016' in name and '2DS' in name: return 'Based on: IEA ETP 2016 2DS' + suffix
+        if 'ETP16' in name and '2DS' in name: return 'Based on: IEA ETP 2016 2DS' + suffix
         if '2016' in name and 'ANNEX' in name: return 'Based on: IEA ETP 2016 Annex' + suffix
         if '2017' in name and 'REF' in name: return 'Based on: IEA ETP 2017 Ref Tech' + suffix
         if '2017' in name and 'B2DS' in name: return 'Based on: IEA ETP 2017 B2DS' + suffix

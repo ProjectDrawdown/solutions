@@ -1250,7 +1250,7 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None, absign
             elif (pd.isna(act) or act == '' or act is None or act == 0 or act == pytest.approx(0.0)
                     or exp == pytest.approx(0.0)):
                 matches = (pd.isna(exp) or exp == '' or exp is None or exp == 0 or
-                        exp == pytest.approx(0.0, abs=1e-10))
+                        exp == pytest.approx(0.0, abs=1e-7))
             elif np.isinf(act):
                 # Excel #DIV/0! turns into NaN.
                 matches = pd.isna(exp) or np.isinf(exp)

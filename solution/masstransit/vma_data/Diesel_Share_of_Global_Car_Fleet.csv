@@ -1,0 +1,2 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+IEA (2016) Energy Technology Perspectives.,,World,,2 - Public Sector/ Multilateral Agency,2014,,143.9,Cars,0.15,Percent,,"Using the IEA's car stock data (by type) for 2010, and 2015, the linear interpolation for 2014 was calculated (143.9m) and this was divided by the totalstock in 2014: 965.4m)",

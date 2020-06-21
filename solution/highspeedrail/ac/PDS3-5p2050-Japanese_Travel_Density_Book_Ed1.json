@@ -117,96 +117,37 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            614.0
-        ],
-        [
-            "OECD90",
-            202.18263170296004
-        ],
-        [
-            "Eastern Europe",
-            2.738
-        ],
-        [
-            "Asia (Sans Japan)",
-            409.376
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            386.3
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            107.5006306909091
-        ],
-        [
-            "USA",
-            0.7167517029599999
-        ]
-    ],
+    "ref_base_adoption": {
+        "World": 614.0,
+        "OECD90": 202.18263170296004,
+        "Eastern Europe": 2.738,
+        "Asia (Sans Japan)": 409.376,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 386.3,
+        "India": 0.0,
+        "EU": 107.5006306909091,
+        "USA": 0.7167517029599999
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_custom_name": "PDS3 - Projecting HSR Travel based on announced Track building plans",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
+        2014,
         2015
     ]
 }
