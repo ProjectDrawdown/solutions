@@ -1,8 +1,8 @@
 {
-    "name": "PDS1-21p2050-based on IEA (Book Ed.1)",
+    "name": "PDS2-35p2050-Based on ITDP/UCDavis",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Using a linear interpolation of the IEA's 2DS Mass Transit scenario data, we project adoption to 2060. The reference scenario is based on the IEA's 6DS scenario where adoption increases, peaks then declines. This was seen as more realistic that the drastic increase that the standard Drawdown scenario would imply. This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated since publication.",
+    "description": "We take the Global High Shift Cycling Scenario data from the ITDP's 2015 publication, and interpolate for missing years using a 3rd degree polynomial curve fit. The reference scenario is based on the IEA's 6DS scenario where adoption increases, peaks then declines. This was seen as more realistic that the drastic increase that the standard Drawdown scenario would imply. ",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -23,10 +23,10 @@
         "statistic": ""
     },
     "conv_fixed_oper_cost_per_iunit": {
-        "value": 1.5971260490990509,
+        "value": 1.559899992915297,
         "statistic": ""
     },
-    "conv_fuel_cost_per_funit": 0.0553033150884721,
+    "conv_fuel_cost_per_funit": 0.0548294975379287,
     "pds_2014_cost": {
         "value": 0.0,
         "statistic": ""
@@ -46,7 +46,7 @@
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
-        "value": 0.14,
+        "value": 0.14961104136444575,
         "statistic": ""
     },
     "soln_fixed_oper_cost_per_iunit": {
@@ -64,7 +64,7 @@
         "statistic": ""
     },
     "soln_annual_energy_used": {
-        "value": 9.261385289614363e-12,
+        "value": 9.277647746932293e-12,
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
@@ -72,7 +72,7 @@
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
-        "value": 0.8268821867810374,
+        "value": 0.8190500716056847,
         "statistic": ""
     },
     "conv_fuel_emissions_factor": {
@@ -84,11 +84,11 @@
         "statistic": ""
     },
     "conv_emissions_per_funit": {
-        "value": 0.0,
+        "value": 4.293702407991257e-06,
         "statistic": ""
     },
     "soln_emissions_per_funit": {
-        "value": 0.0,
+        "value": 8.359424255920272e-06,
         "statistic": ""
     },
     "conv_indirect_co2_per_unit": {
@@ -118,7 +118,7 @@
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
     "ref_base_adoption": {
-        "World": 9607070620938.643,
+        "World": 9707434183804.113,
         "OECD90": 2177533057697.923,
         "Eastern Europe": 575975431282.0925,
         "Asia (Sans Japan)": 4506889445113.769,
@@ -129,7 +129,7 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": {
         "World": 0.0,
@@ -143,18 +143,10 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 Scenario 1",
+    "soln_pds_adoption_prognostication_source": "PDS2-Based on ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data (high shift) with recent historical data added",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "Medium",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Adoption Based on IEA 6DS",
-    "soln_ref_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [
-        2014,
-        2015,
-        2016,
-        2017,
-        2018,
-        2019,
-        2020,
-        2021
-    ]
+    "soln_ref_adoption_regional_data": false
 }

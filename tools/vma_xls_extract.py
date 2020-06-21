@@ -46,6 +46,14 @@ def convert_conversion_calculation(x):
     return x
 
 
+def try_float(x):
+    if pd.isna(x):
+        return x
+    try:
+        return float(x)
+    except ValueError:
+        return x
+
 # dtype conversion map
 COLUMN_DTYPE_MAP = {
     'SOURCE ID: Author/Org, Date, Info': lambda x: x,
@@ -56,7 +64,7 @@ COLUMN_DTYPE_MAP = {
     'Source Validation Code': lambda x: x,
     'Year / Date': lambda x: convert_year(x),
     'License Code': lambda x: x,
-    'Raw Data Input': lambda x: float(x) if x is not np.nan else x,
+    'Raw Data Input': lambda x: try_float(x),
     'Original Units': lambda x: x,
     'Conversion calculation': lambda x: convert_conversion_calculation(x),
     'Common Units': lambda x: x,

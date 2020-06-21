@@ -1,8 +1,8 @@
 {
-    "name": "PDS1-21p2050-based on IEA (Book Ed.1)",
+    "name": "PDS3-45p2050-Linear to 45%",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Using a linear interpolation of the IEA's 2DS Mass Transit scenario data, we project adoption to 2060. The reference scenario is based on the IEA's 6DS scenario where adoption increases, peaks then declines. This was seen as more realistic that the drastic increase that the standard Drawdown scenario would imply. This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated since publication.",
+    "description": "Taking the maximum expected mass transit mobility worldwide as 45% of the Urban mobility TAM in 2050, we project a linear growth out to 2050 from current adoption in 2018. The reference scenario is based on the IEA's 6DS scenario where adoption increases, peaks then declines. This was seen as more realistic that the drastic increase that the standard Drawdown scenario would imply. ",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -23,10 +23,10 @@
         "statistic": ""
     },
     "conv_fixed_oper_cost_per_iunit": {
-        "value": 1.5971260490990509,
+        "value": 1.559899992915297,
         "statistic": ""
     },
-    "conv_fuel_cost_per_funit": 0.0553033150884721,
+    "conv_fuel_cost_per_funit": 0.0548294975379287,
     "pds_2014_cost": {
         "value": 0.0,
         "statistic": ""
@@ -46,7 +46,7 @@
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
-        "value": 0.14,
+        "value": 0.14961104136444575,
         "statistic": ""
     },
     "soln_fixed_oper_cost_per_iunit": {
@@ -64,7 +64,7 @@
         "statistic": ""
     },
     "soln_annual_energy_used": {
-        "value": 9.261385289614363e-12,
+        "value": 9.277647746932293e-12,
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
@@ -72,7 +72,7 @@
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
-        "value": 0.8268821867810374,
+        "value": 0.8190500716056847,
         "statistic": ""
     },
     "conv_fuel_emissions_factor": {
@@ -84,11 +84,11 @@
         "statistic": ""
     },
     "conv_emissions_per_funit": {
-        "value": 0.0,
+        "value": 4.293702407991257e-06,
         "statistic": ""
     },
     "soln_emissions_per_funit": {
-        "value": 0.0,
+        "value": 8.359424255920272e-06,
         "statistic": ""
     },
     "conv_indirect_co2_per_unit": {
@@ -118,7 +118,7 @@
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
     "ref_base_adoption": {
-        "World": 9607070620938.643,
+        "World": 9707434183804.113,
         "OECD90": 2177533057697.923,
         "Eastern Europe": 575975431282.0925,
         "Asia (Sans Japan)": 4506889445113.769,
@@ -129,21 +129,20 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_basis": "DEFAULT Linear",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": {
-        "World": 0.0,
-        "OECD90": 0.0,
-        "Eastern Europe": 0.0,
-        "Asia (Sans Japan)": 0.0,
-        "Middle East and Africa": 0.0,
-        "Latin America": 0.0,
-        "China": 0.0,
-        "India": 0.0,
-        "EU": 0.0,
-        "USA": 0.0
+        "World": 0.45,
+        "OECD90": 0.45,
+        "Eastern Europe": 0.45,
+        "Asia (Sans Japan)": 0.45,
+        "Middle East and Africa": 0.45,
+        "Latin America": 0.45,
+        "China": 0.45,
+        "India": 0.45,
+        "EU": 0.45,
+        "USA": 0.45
     },
-    "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 Scenario 1",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Adoption Based on IEA 6DS",
     "soln_ref_adoption_regional_data": false,
@@ -152,9 +151,6 @@
         2015,
         2016,
         2017,
-        2018,
-        2019,
-        2020,
-        2021
+        2018
     ]
 }
