@@ -1,8 +1,8 @@
 {
-    "name": "PDS2-100p2050-1 SD Below Mean EEOI (Book Ed.1)",
+    "name": "PDS3-97p2050-Lowest_EEOI",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "We take (1 standard deviation below the mean of) the estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2008. This scenario uses inputs calculated for the Drawdown book edition 1, some of which were updated.",
+    "description": "We take the lowest estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2014. ",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -26,7 +26,7 @@
         "value": 0.0,
         "statistic": ""
     },
-    "conv_fuel_cost_per_funit": 1818597.774776236,
+    "conv_fuel_cost_per_funit": 2025164.00495252,
     "pds_2014_cost": {
         "value": 11520609.511049619,
         "statistic": ""
@@ -53,8 +53,8 @@
         "value": 0.0,
         "statistic": ""
     },
-    "soln_fuel_cost_per_funit": 1381104.13088959,
-    "npv_discount_rate": 0.0922,
+    "soln_fuel_cost_per_funit": 1584116.77618618,
+    "npv_discount_rate": 0.0935,
     "conv_annual_energy_used": {
         "value": 0.0,
         "statistic": ""
@@ -115,98 +115,41 @@
     "emissions_grid_source": "Meta-Analysis",
     "emissions_grid_range": "Mean",
     "source_until_2014": "ALL SOURCES",
-    "ref_source_post_2014": "Baseline Cases",
-    "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            14427.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "ref_source_post_2014": "ALL SOURCES",
+    "pds_source_post_2014": "ALL SOURCES",
+    "ref_base_adoption": {
+        "World": 3053.413692416354,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 Scenario 2",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "PDS3 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - most ambitious values from all scenarios",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
-        2015
+        2014,
+        2015,
+        2016,
+        2017
     ]
 }

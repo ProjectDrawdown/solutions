@@ -142,16 +142,16 @@ def test_invalid_discards():
         m, 10000, ,
         n, 10000, ,
         o, 10000, ,
-        p, 10000000000, ,
+        p, 20000, ,
         q, 1, ,
     """
     f = io.StringIO(s)
-    v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
+    v = vma.VMA(filename=f, discard_multiplier=1)
     result = v.avg_high_low()
-    expected = (10000, 10000, 10000)  # The 10,000,000,000 and 1 values should be discarded.
+    expected = (10000, 10000, 10000)  # rows p and q should be discarded.
     assert result == pytest.approx(expected)
     f = io.StringIO(s)
-    v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0, stat_correction=False)
+    v = vma.VMA(filename=f, discard_multiplier=1, stat_correction=False)
     result = v.avg_high_low()
     assert result != pytest.approx(expected)
 
@@ -388,3 +388,51 @@ def test_bad_filetype():
         vma.VMA(filename='file.bad')
     assert 'file.bad' in error.exconly()
     assert 'not a recognized filetype for vma.VMA' in error.exconly()
+
+def test_invalid_percent_range():
+    # Taken from solution/ships/vma_data/Learning_Rate.csv, '10-15%' cannot be converted to float.
+    f = io.StringIO("""Source ID,Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+      A,,World,,,2011,,10-15%,%,,,,,
+      B,,World,,,2012,,0.1,%,,,,,
+      """)
+    v = vma.VMA(filename=f)
+    (mean, high, low) = v.avg_high_low()
+    assert np.isinf(mean)
+    assert pd.isna(high)
+    assert not np.isinf(high)
+    assert pd.isna(low)
+    assert not np.isinf(low)
+    # Same CSV, but exclude the invalid entry
+    f = io.StringIO("""Source ID,Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+      A,,World,,,2011,,10-15%,%,,,,,Y
+      B,,World,,,2012,,0.1,%,,,,,
+      """)
+    v = vma.VMA(filename=f)
+    (mean, high, low) = v.avg_high_low()
+    assert not np.isinf(mean)
+    assert not pd.isna(high)
+    assert not pd.isna(low)
+
+
+def test_invalid_float_range():
+    f = io.StringIO("""Source ID,Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+      A,,World,,,2011,,10-15,,,,,,
+      B,,World,,,2012,,0.1,,,,,,
+      """)
+    v = vma.VMA(filename=f)
+    (mean, high, low) = v.avg_high_low()
+    assert np.isinf(mean)
+    assert pd.isna(high)
+    assert not np.isinf(high)
+    assert pd.isna(low)
+    assert not np.isinf(low)
+    # Same CSV, but exclude the invalid entry
+    f = io.StringIO("""Source ID,Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+      A,,World,,,2011,,10-15,,,,,,Y
+      B,,World,,,2012,,0.1,,,,,,
+      """)
+    v = vma.VMA(filename=f)
+    (mean, high, low) = v.avg_high_low()
+    assert not np.isinf(mean)
+    assert not pd.isna(high)
+    assert not pd.isna(low)
