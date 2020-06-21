@@ -1,8 +1,8 @@
 {
-    "name": "PDS1-7p2050-Based on ICCT/RMI (Book Ed.1)",
+    "name": "PDS2-7p2050_based on ICCT",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "ICCT estimates the total freight work each five years, and RMI estimates that by 2050 50% of trucks globally may have efficient technologies (7% of entire freight market). We therefore interpolate and extrapolate ICCT's freight work data and project linear adoption globally from current adoption of truck freight work (approximately 5%) to RMI's projection in 2050. This book scenario uses the previously estimated current adoption, lifetimes, average annual use and the adoption projection using older data. These have all since been updated.",
+    "description": "We use the number of truck sales estimated for each of ICCT's 16 regions (interpolated and extrapolated for each) to estimate the number of truck with efficiency packages installed. ICCT has an estimate of the year when truck fuel efficiency legislation becomes mandatory for each region.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -11,7 +11,7 @@
     },
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_lifetime_capacity": {
-        "value": 18.301358278305766,
+        "value": 11.272348820767084,
         "statistic": ""
     },
     "conv_avg_annual_use": {
@@ -26,7 +26,7 @@
         "value": 0.0,
         "statistic": ""
     },
-    "conv_fuel_cost_per_funit": 49535.4361898068,
+    "conv_fuel_cost_per_funit": 48369.766942528,
     "pds_2014_cost": {
         "value": 49701.61706839143,
         "statistic": ""
@@ -38,7 +38,7 @@
     "soln_first_cost_efficiency_rate": 0.1,
     "soln_first_cost_below_conv": true,
     "soln_lifetime_capacity": {
-        "value": 18.301358278305766,
+        "value": 11.272348820767084,
         "statistic": ""
     },
     "soln_avg_annual_use": {
@@ -53,8 +53,8 @@
         "value": 0.0,
         "statistic": ""
     },
-    "soln_fuel_cost_per_funit": 30101.0333913393,
-    "npv_discount_rate": 0.093,
+    "soln_fuel_cost_per_funit": 29392.6950454095,
+    "npv_discount_rate": 0.0967777777777778,
     "conv_annual_energy_used": {
         "value": 0.0,
         "statistic": ""
@@ -118,7 +118,7 @@
     "ref_source_post_2014": "Based on: IEA ETP 2014 6DS",
     "pds_source_post_2014": "Based on: IEA ETP 2014 2DS",
     "ref_base_adoption": {
-        "World": 600621.0,
+        "World": 1055789.453035265,
         "OECD90": 0.0,
         "Eastern Europe": 0.0,
         "Asia (Sans Japan)": 0.0,
@@ -143,11 +143,8 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Book Ed.1 Scenario 1",
+    "soln_pds_adoption_custom_name": "PDS2 - Based on an ICCT Truck Sales extrapolation",
     "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Drawdown Book Reference Scenario",
-    "soln_ref_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [
-        2014
-    ]
+    "soln_ref_adoption_custom_name": "Efficient Truck Share of Market is Fixed",
+    "soln_ref_adoption_regional_data": false
 }
