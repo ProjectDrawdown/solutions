@@ -1,8 +1,8 @@
 {
-    "name": "PDS3-49p2050-50% Adoption (Book Ed.1)",
+    "name": "PDS1-20p2050-Bass Curve Fit",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "A Bass Diffusion Curve is fitted using Excel Goal Seek to get to 50% Adoption in 2050. The reference adoption uses the reference adoption case developed for the book.",
+    "description": "This scenario uses 20% as the maximum adoption of telepresence by 2050 for replacement of airtravel (supported by several sources). It fits a Bass Diffusion model using Excel Goal Seek by maximizing the emissions reduction with constraints on the parameters as guided by the Bass Diffusion model literature, and constraints on the outputs (such as the percent adoption of all year to 2050 being limited to 20%).",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -19,7 +19,7 @@
         "statistic": ""
     },
     "conv_var_oper_cost_per_funit": {
-        "value": 0.25512761284796576,
+        "value": 0.2512815834811869,
         "statistic": ""
     },
     "conv_fixed_oper_cost_per_iunit": {
@@ -53,8 +53,8 @@
         "value": 0.0,
         "statistic": ""
     },
-    "soln_fuel_cost_per_funit": 0.00133544502054752,
-    "npv_discount_rate": 0.0922,
+    "soln_fuel_cost_per_funit": 0.00133536973277021,
+    "npv_discount_rate": 0.0967777777777778,
     "conv_annual_energy_used": {
         "value": 0.0,
         "statistic": ""
@@ -76,7 +76,7 @@
         "statistic": ""
     },
     "conv_fuel_emissions_factor": {
-        "value": 0.0017733703679999999,
+        "value": 0.00253071819,
         "statistic": ""
     },
     "soln_fuel_emissions_factor": {
@@ -92,7 +92,7 @@
         "statistic": ""
     },
     "conv_indirect_co2_per_unit": {
-        "value": 0.00022600000000000005,
+        "value": 7.299750000000001e-05,
         "statistic": ""
     },
     "soln_indirect_co2_per_iunit": {
@@ -118,7 +118,7 @@
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
     "ref_base_adoption": {
-        "World": 198505316569.03406,
+        "World": 447243783376.7851,
         "OECD90": 0.0,
         "Eastern Europe": 0.0,
         "Asia (Sans Japan)": 0.0,
@@ -143,11 +143,19 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "PDS3 - Bass diffusion Adoption Curve - 50% Adoption in 2050",
+    "soln_pds_adoption_custom_name": "PDS1 - Bass diffusion Adoption Curve - 16% Adoption in 2050",
     "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Book Ed.1 Reference Scenario",
+    "soln_ref_adoption_custom_name": "Telepresence Share of Business Aviation Market is Fixed",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
-        2014
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022
     ]
 }

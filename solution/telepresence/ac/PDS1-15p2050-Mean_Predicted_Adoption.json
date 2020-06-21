@@ -1,8 +1,8 @@
 {
-    "name": "PDS3-49p2050-50% Adoption (Book Ed.1)",
+    "name": "PDS1-15p2050-Mean Predicted Adoption",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "A Bass Diffusion Curve is fitted using Excel Goal Seek to get to 50% Adoption in 2050. The reference adoption uses the reference adoption case developed for the book.",
+    "description": "This scenario uses the average estimated 2050 adoption of telepresence or replacement of airtravel estimated by several sources as the 2050 adoption. It fits a Bass Diffusion model from the current adoption to the 2050 adoption using Excel Goal Seek by maximizing the emissions reduction while adjusting each parameter in sequence until no improvement can be made.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -19,7 +19,7 @@
         "statistic": ""
     },
     "conv_var_oper_cost_per_funit": {
-        "value": 0.25512761284796576,
+        "value": 0.2512815834811869,
         "statistic": ""
     },
     "conv_fixed_oper_cost_per_iunit": {
@@ -53,8 +53,8 @@
         "value": 0.0,
         "statistic": ""
     },
-    "soln_fuel_cost_per_funit": 0.00133544502054752,
-    "npv_discount_rate": 0.0922,
+    "soln_fuel_cost_per_funit": 0.00133536973277021,
+    "npv_discount_rate": 0.0967777777777778,
     "conv_annual_energy_used": {
         "value": 0.0,
         "statistic": ""
@@ -76,7 +76,7 @@
         "statistic": ""
     },
     "conv_fuel_emissions_factor": {
-        "value": 0.0017733703679999999,
+        "value": 0.00253071819,
         "statistic": ""
     },
     "soln_fuel_emissions_factor": {
@@ -92,7 +92,7 @@
         "statistic": ""
     },
     "conv_indirect_co2_per_unit": {
-        "value": 0.00022600000000000005,
+        "value": 7.299750000000001e-05,
         "statistic": ""
     },
     "soln_indirect_co2_per_iunit": {
@@ -143,9 +143,8 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "PDS3 - Bass diffusion Adoption Curve - 50% Adoption in 2050",
-    "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Book Ed.1 Reference Scenario",
+    "soln_pds_adoption_custom_name": "PDS1 - Bass diffusion Adoption Curve - 16% Adoption in 2050",
+    "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
         2014
