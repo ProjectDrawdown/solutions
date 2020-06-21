@@ -1,3 +1,3 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Drawdown Team Calculations,Sheet 'conventional',,Global ,,2012,,,tons/billion ton miles,0.0,Select Fuel on Adv. Controls,,Density of IFO380 is around 1 kg/L,
-,Cell K 34,,,,,,,,,Select Fuel on Adv. Controls,,,
+Drawdown Team Calculations,Sheet 'conventional',,Global ,,2012,,3663.130513588676,tons/billion ton miles,3663130.5135886758,Liter/ Billion Ton - nmiles,,Density of IFO380 is around 1 kg/L,
+,Cell K 34,,,,,,,,,Liter/ Billion Ton - nmiles,,,

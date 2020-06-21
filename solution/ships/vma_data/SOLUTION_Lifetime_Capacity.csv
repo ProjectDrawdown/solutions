@@ -1,2 +1,2 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Smith et al., 2014;  pg 154",Sheet 'Conventional'  for calculation of conversion factor,,Global ,,2014,,,years,0.0,Billion Ton - nmiles/Ship,,,
+"Smith et al., 2014;  pg 154",Sheet 'Conventional'  for calculation of conversion factor,,Global ,,2014,,25.0,years,34.62518245159868,Billion Ton - nmiles/Ship,,,
