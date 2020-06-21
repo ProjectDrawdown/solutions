@@ -51,7 +51,22 @@ def check_fixed_summary(*values):
 def convert_percentages(val):
     """pd.apply() functions to convert percentages"""
     if isinstance(val, str) and val.endswith('%'):
-        return float(val.strip('%')) / 100.0
+        try:
+            return float(val.strip('%')) / 100.0
+        except ValueError:
+            return np.inf
+    try:
+        return float(val)
+    except ValueError:
+        return np.inf
+
+
+def convert_NaN(val):
+    """pd.apply() functions to convert NaN"""
+    if isinstance(val, str) and val.lower() == 'nan':
+        return np.nan
+    if pd.isna(val):
+        return np.nan
     return val
 
 
@@ -187,7 +202,7 @@ class VMA:
         self.df['Weight'] = readable_df['Weight'].apply(convert_percentages)
         self.df['Raw'] = readable_df['Raw Data Input'].apply(convert_percentages)
         self.df['Units'] = readable_df['Original Units']
-        self.df['Value'] = readable_df['Conversion calculation']
+        self.df['Value'] = readable_df['Conversion calculation'].apply(convert_NaN)
         self.df['Exclude?'] = readable_df['Exclude Data?'].fillna(False)
         # correct some common typos and capitalization differences from Excel files.
         normalized_region = (readable_df['World / Drawdown Region']
@@ -216,12 +231,12 @@ class VMA:
     def _discard_outliers(self):
         """Discard outlier values beyond a multiple of the stddev."""
         df = self.df
-        mean = df['Value'].mean()
+        mean = df['Value'].astype('float64').mean(skipna=True)
         sd = df['Value'].std(ddof=0)
+        if pd.isna(mean) or pd.isna(sd):
+            return df
         valid = df['Value'] <= (mean + (self.discard_multiplier * sd))
         df = df[valid]
-        mean = df['Value'].mean()
-        sd = df['Value'].std(ddof=0)
         valid = df['Value'] >= (mean - (self.discard_multiplier * sd))
         df = df[valid]
         return df
@@ -265,7 +280,7 @@ class VMA:
 
             if self.use_weight:
                 weights = df['Weight'].fillna(1.0)
-                mean = (df['Value'] * weights).sum() / total_weights
+                mean = (df['Value'] * weights).sum(skipna=True) / total_weights
                 if M == 0.0:
                     sd = 0.0
                 else:
@@ -275,7 +290,7 @@ class VMA:
                     denominator = ((M - 1) / M) * total_weights
                     sd = math.sqrt(numerator / denominator)
             else:
-                mean = df['Value'].mean()
+                mean = df['Value'].mean(skipna=True)
                 # whole population stddev, ddof=0
                 sd = df['Value'].std(ddof=0)
 
