@@ -161,9 +161,12 @@ greenroofs:PDS3-75p2050-Integrated-FE-12.54% (Book),1.3513034163031408,1.3512832
 heatpumps:PDS1-25p2050-Bass Diff. (Book Ed.1),0.0,0.0,0.934542154061207
 heatpumps:PDS2-45p2050-Bass Diff. (Book Ed.1),0.0,0.0,0.9376338637977784
 heatpumps:PDS3-60p2050-Bass Diff (Book Ed.1),0.0,0.0,0.9487456572907891
-highspeedrail:PDS1-4p2050-Announced Constr+1%Traffic Density (Book Ed.1),0.0,0.0,0.9887867114586133
-highspeedrail:PDS2-4p2050-Announced Constr+2.5% Traffic Density Inc (Book Ed.1),0.0,0.0,0.9984836748317192
-highspeedrail:PDS3-5p2050-Japanese Travel Density (Book Ed.1),0.0,0.0,0.9995605759108482
+highspeedrail:PDS1-3p2050-UIC Track Data+1% Travel Density Growth,0.0,0.0,0.9908883676751802
+highspeedrail:PDS1-4p2050-Announced Constr+1%Traffic Density (Book Ed.1),0.0,0.0,0.989200161653512
+highspeedrail:PDS2-4p2050-Announced Constr+2.5% Traffic Density Inc (Book Ed.1),0.0,0.0,0.9917475956714397
+highspeedrail:PDS2-4p2050-UIC Track Data+2.5% Travel Density Growth,0.0,0.0,0.9920848433770577
+highspeedrail:PDS3-5p2050-Japanese Travel Density (Book Ed.1),0.0,0.0,0.9679787476338849
+highspeedrail:PDS3-9p2050-UIC Track Data+Japanese Travel Density,0.0,0.0,0.9676870577465321
 hybridcars:PDS1-11p2050-Based on IEA 2DS,0.0,0.0,0.9650848901426567
 hybridcars:PDS1-11p2050-using IEA 2DS (Integrated),0.0,0.0,0.9650142342423105
 hybridcars:PDS1-11p2050-using IEA 2DS (Pre-Integration),0.0,0.0,0.9650142342423105
@@ -236,9 +239,12 @@ managedgrazing:PDS-62p2050-Optimum-BookVersion1-High2S,,0.6459804012895475,0.993
 managedgrazing:PDS-65p2050-Drawdown-customPDS-high-Jan2020,,0.645666904547142,0.9935693295499912
 managedgrazing:PDS-76p2050-Drawdown-PDSCustom-high-Nov2019,,0.645666904547142,0.9935693295499912
 managedgrazing:PDS-97p2050-Drawdown-CustomPDS-high-aug2019,,0.645666904547142,0.9935693295499912
-masstransit:PDS1-21p2050-based on IEA (Book Ed.1),0.6400848029234245,0.0,0.9946006626342533
-masstransit:PDS2-35p2050-based on ITDP/UCD (Book Ed.1),0.6400848029234245,0.0,0.9981286918119617
-masstransit:PDS3-45p2050-linear (Book Ed.1),0.6400848029234245,0.6400848029234245,1.0
+masstransit:PDS1-21p2050-based on IEA (Book Ed.1),0.32004240179209137,0.0,0.9946320070836785
+masstransit:PDS1-22p2050-Based on IEA 2DS,0.32004240179209137,1.3140120040993963,0.9958225015695865
+masstransit:PDS2-35p2050-Based on ITDP/UCDavis,0.32004240179209137,0.8450393329030802,0.9969598268413811
+masstransit:PDS2-35p2050-based on ITDP/UCD (Book Ed.1),0.32004240179209137,0.0,0.9981453942578407
+masstransit:PDS3-45p2050-Linear to 45%,0.32004240179209137,0.32004240179209137,0.9987671779867904
+masstransit:PDS3-45p2050-linear (Book Ed.1),0.32004240179209137,0.32004240179209137,0.9991538361297989
 microwind:PDS-0p2050-Drawdown (Book Ed. 1),0.7151913916705963,0.0,0.9941359390662218
 microwind:PDS-0p2050-Drawdown2020,0.7151913916705963,0.0,0.9887505429995651
 microwind:PDS-0p2050-Optimum (Book Ed. 1),0.7151913916705963,0.0,0.9941359390662218
@@ -334,9 +340,9 @@ riceintensification:PDS-77p2050-Plauisble-PDSCustom-avg-Nov2019,,0.0,0.999936985
 riceintensification:PDS-77p2050-Plausible-CustomPDS-avg-aug2019,,0.0,0.9962133990938007
 riceintensification:PDS-77p2050-Plausible-customPDS-avg-Jan2020,,0.0,0.9999369857186893
 riceintensification:PDS-87p2050-Drawdown-PDScustom-avg-BookVersion1,,0.0,0.9948085097539983
-ships:PDS1-97p2050-Mean EEOI (Book Ed.1),0.0,0.0,0.9724283454965718
-ships:PDS2-100p2050-1 SD Below Mean EEOI (Book Ed.1),0.0,0.0,0.982068223008781
-ships:PDS3-100p2050-Lowest EEOI (Book Ed.1),0.0,0.0,0.9842934729175642
+ships:PDS1-57p2050-Avg_EEOI,0.0,0.0,0.9467647603466565
+ships:PDS2-78p2050-1StDev_below_Mean_EEOI,0.0,0.0,0.9483954015882127
+ships:PDS3-97p2050-Lowest_EEOI,0.0,0.0,0.9543727538470542
 silvopasture:PDS-100p2050-Optimum-customPDS-high-Jan2020,,0.0,0.9287972934404575
 silvopasture:PDS-45p2050-Plausible-PDScustom-low-BookVersion1,,0.0,0.7628405067737323
 silvopasture:PDS-54p2050-Drawdown-PDScustom-high-basedonpasture-BookVersion1,,0.0,0.8213905539610923
@@ -365,9 +371,15 @@ solarpvroof:PDS-7p2050-Plausible (Book Ed. 1),1.0990576040386824,0.0,0.942962155
 solarpvutil:PDS-20p2050-Plausible2020,1.0990576040386824,0.0,0.9429749102961811
 solarpvutil:PDS-25p2050-Drawdown2020,0.7151913916705963,0.0,0.9955827732550862
 solarpvutil:PDS-25p2050-Optimum2020,0.7151913916705963,0.0,0.9955827732550862
-telepresence:PDS1-16p2050-Average Predicted Adoption (Book Ed.1),0.0,0.0,0.983683610317763
-telepresence:PDS2-29p2050-Maximum Prediction (Book Ed.1),0.0,0.0,0.9768936324185968
-telepresence:PDS3-49p2050-50% Adoption (Book Ed.1),0.0,0.0,0.9927398173086593
+telepresence:PDS1-15p2050-Mean Predicted Adoption,0.0,0.0,0.9993745670013178
+telepresence:PDS1-16p2050-Average Predicted Adoption (Book Ed.1),0.0,0.0,0.9995929694235017
+telepresence:PDS1-20p2050-Bass Curve Fit,0.0,0.0,0.9996764383751913
+telepresence:PDS2-28p2050-Bass Curve Fit,0.0,0.0,0.9996598855626362
+telepresence:PDS2-29p2050-Maximum Predicted Adoption,0.0,0.0,0.9996249018093877
+telepresence:PDS2-29p2050-Maximum Prediction (Book Ed.1),0.0,0.0,0.9996283667238869
+telepresence:PDS3-46p2050-Bass Curve Fit,0.0,0.0,0.9980455892728831
+telepresence:PDS3-49p2050-50% Adoption (Book Ed.1),0.0,0.0,0.9980455892728831
+telepresence:PDS3-50p2050-50% Adoption,0.0,0.0,0.9980740056248286
 temperateforests:PDS-49p2050-Plausible-PDScustom-avg-Bookedition1,,0.0,0.9693778604372787
 temperateforests:PDS-49p2050-Plausible-PDScustomadoption-avg,,0.0,0.9693872296575912
 temperateforests:PDS-62p2050-Plausible-customPDS-avg-Jan2020,,0.0,0.9693778604372787
@@ -376,9 +388,9 @@ temperateforests:PDS-73p2050-Drawdown-PDScustomadoption-high,,0.0,0.954503491235
 temperateforests:PDS-74p2050-Optimum-PDScustom-100%in15years-Bookedition1,,0.0,0.7928126296921509
 temperateforests:PDS-74p2050-Optimum-PDScustomadoption-max,,0.0,0.7928126296921509
 temperateforests:PDS-86p2050-Drawdown-customPDS-high-Jan2020,,0.0,0.9544859491022616
-trains:PDS1-4p2050-Doubled Historical Electrification Rate (Book Ed.1),0.0,0.0,0.98618914866522
-trains:PDS2-5p2050-based on on IEA 2DS (Book Ed.1),0.0,0.0,0.999998199486215
-trains:PDS3-10p2050-Full Electrification (Book Ed.1),0.0,0.0,0.9686872125341368
+trains:PDS1-5p2050-with UIC Electrification Rate,0.0,0.0,0.9893861841826017
+trains:PDS2-8p2050-with IEA 2DS,0.0,0.0,0.9974045911400227
+trains:PDS3-9p2050-Complete Electrification,0.0,0.0,0.9947707537695247
 treeintercropping:PDS-100p2050-Drawdown-CustomPDS-Maxlinear-aug2019,,0.0,0.9858680346140102
 treeintercropping:PDS-100p2050-Drawdown-PDSCustom-high-Nov2019,,0.0,0.965531809131889
 treeintercropping:PDS-100p2050-Optimum,,0.0,0.8827748407663037
@@ -420,9 +432,12 @@ tropicaltreestaples:PDS-68p2050-Drawdown-PDScustom-avg-BookVersion1,,0.0,0.98652
 tropicaltreestaples:PDS-83p2050-PlausibleScenario_Dec2018,,0.0,0.9825938438839825
 tropicaltreestaples:PDS-84p2050-Optimum-PDScustom-high-BookVersion1,,0.0,0.9861321746421073
 tropicaltreestaples:PDS-91p2050-DrawdownScenario_Dec2018,,0.0,0.9863181197901587
+trucks:PDS1-6p2050-using ICCT/RMI,0.0,0.0,0.971744713716558
 trucks:PDS1-7p2050-Based on ICCT/RMI (Book Ed.1),0.0,0.0,0.9715272268773669
-trucks:PDS2-9p2050-Based on ICCT (Book Ed.1),0.0,0.0,0.9865939919678519
+trucks:PDS2-7p2050_based on ICCT,0.0,0.0,0.9867355054935724
+trucks:PDS2-9p2050-Based on ICCT (Book Ed.1),0.0,0.0,0.9867767086720266
 trucks:PDS3-15p2050-Maximum (Book Ed.1),0.0,0.0,0.9875993031742191
+trucks:PDS3-7p2050_based on IEA (Maximum),0.0,0.0,0.9402633892479009
 walkablecities:PDS1-4p2050-Based on ITDP/UCD (Book Ed.1),0.0,0.0,0.9999999270895874
 walkablecities:PDS2-7p2050-2.4% Annual Density Increase (Book Ed.1),0.0,0.0,0.9921299150433003
 walkablecities:PDS3-8p2050-Linear (Book Ed.1),0.0,0.0,0.9999999999999998
