@@ -1,8 +1,8 @@
 {
-    "name": "PDS1-4p2050-Based on ITDP/UCD (Book Ed.1)",
+    "name": "PDS1-4p2050-Based on ITDP/UCDavis",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Taking the projected walking according to ITDP/UCD's Global High Shift Cycling Scenario (2015) results, we interpolate for missing years using a 3rd Degree Poynomial. This is the book scenario which has the same inputs as the updated scenario.",
+    "description": "Taking the projected walking according to ITDP/UCD's Global High Shift Cycling Scenario (2015) results, we interpolate for missing years using a 3rd Degree Poynomial.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -23,10 +23,10 @@
         "statistic": ""
     },
     "conv_fixed_oper_cost_per_iunit": {
-        "value": 1.5973752970573485,
+        "value": 1.5598999929152975,
         "statistic": ""
     },
-    "conv_fuel_cost_per_funit": 55303315.086855,
+    "conv_fuel_cost_per_funit": 54829497.5363255,
     "pds_2014_cost": {
         "value": 0.0,
         "statistic": ""
@@ -117,96 +117,39 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            1523.491464812742
-        ],
-        [
-            "OECD90",
-            205.85584501120192
-        ],
-        [
-            "Eastern Europe",
-            57.71269810953001
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            310.14334483044007
-        ],
-        [
-            "India",
-            180.29053359808
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "ref_base_adoption": {
+        "World": 1573.2565357163114,
+        "OECD90": 205.85584501120192,
+        "Eastern Europe": 57.71269810953001,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 310.14334483044007,
+        "India": 180.29053359808,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Existing Adoption Prognostications",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_prognostication_source": "ITDP/UCD (2015) A Global High Shift Cycling Scenario - High Shift Scenario",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_prognostication_source": "ITDP/UCD (2015) A Global High Shift Cycling Scenario - High Shift Scenario  - Early Years replaced with Recent Historical Data",
     "soln_pds_adoption_prognostication_trend": "3rd Poly",
     "soln_pds_adoption_prognostication_growth": "Medium",
     "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Custom REF Scenario 1: Fixed Passenger-km Annual after 2014",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_custom_name": "ITDP/ UCDavis (2015) Global Highshift Cycling Scenario - Baseline Case for Walking",
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014
+    ]
 }
