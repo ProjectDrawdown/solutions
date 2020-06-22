@@ -1,16 +1,16 @@
 {
-    "name": "PDS1,2,3-19p2050-Availability Analysis (Book Ed.1)",
+    "name": "PDS1-21p2050-Availability Analysis",
     "solution_category": "reduction",
     "vmas": "VMAs",
     "vma_values": {
         "Clinker to Cement Ratio in Year 2": 0.45
     },
-    "description": "This scenario is based on a Fly Ash availability analysis since Fly Ash incorporation in cement is the definition of this solution and that is based on coal burning which has an uncertain future. Fly Ash cement is therefore a transition solution. The availability assumptions are shown in the Custom Adoption sheets. All PDS scenarios are the same. This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated since publication.",
+    "description": "This scenario is based on a Fly Ash availability analysis since Fly Ash incorporation in cement is the definition of this solution and that is based on coal burning which has an uncertain future. Fly Ash cement is therefore a transition solution. The availability assumptions are shown in the Custom Adoption sheets. The availability of fly ash depends on coal use for electricity generation which is reduced in each PDS scenario, but all end at zero coal use by 2050, albeit at different rates.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
-        "value": 45900000.0,
-        "xls cell formula": "0.45*102000000"
+        "value": 76750000.0,
+        "statistic": ""
     },
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_lifetime_capacity": {
@@ -31,12 +31,12 @@
     },
     "conv_fuel_cost_per_funit": 0.0,
     "pds_2014_cost": {
-        "value": 32130000.0,
-        "xls cell formula": "0.45*71400000"
+        "value": 47986781.25,
+        "statistic": ""
     },
     "ref_2014_cost": {
-        "value": 32130000.0,
-        "xls cell formula": "0.45*71400000"
+        "value": 47986781.25,
+        "statistic": ""
     },
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_first_cost_below_conv": true,
@@ -59,8 +59,8 @@
     "soln_fuel_cost_per_funit": 0.0,
     "npv_discount_rate": 0.0922,
     "conv_annual_energy_used": {
-        "value": 0.0585,
-        "xls cell formula": "58.5/1000"
+        "value": 0.15726303528681215,
+        "statistic": ""
     },
     "soln_energy_efficiency_factor": {
         "value": 0.45,
@@ -71,7 +71,7 @@
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 3113.0,
+        "value": 4558.606257936431,
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
@@ -146,8 +146,8 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 PDS 1, 2 and 3",
+    "soln_pds_adoption_custom_name": "Adoption Based on Fly Ash Availability Analysis/ PDS 1",
     "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Drawdown Book Edition 1 Scenario REF Adoption",
+    "soln_ref_adoption_custom_name": "REF Custom Adoption Based on Fly Ash Availability Analysis",
     "soln_ref_adoption_regional_data": false
 }
