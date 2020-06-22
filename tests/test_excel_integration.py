@@ -741,14 +741,18 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
     ])
 
     if soln_type == 'RRS':
-        pds_cumulative_funit_mask = regional_mask if regional_mask is not None else "Excel_NaN"
         # Some solutions, notably HighSpeedRail, have regional results which drop to near zero
         # for a year and then bounce back. The ~0 results are the result of catastrophic
         # subtraction with only a few bits of precision, not close enough for pytest.approx.
         # Just mask those cells off.
         s = obj.ua.soln_ref_cumulative_funits().reset_index()
-        soln_ref_cumulative_funits_mask = s.mask(
-            s < 1e-11, other=True).where(s < 1e-11, other=False)
+        soln_ref_cumulative_funits_mask = s.mask(s < 1e-11, other=True).where(s < 1e-11, other=False)
+
+        pds_cumulative_funit_mask = regional_mask if regional_mask is not None else "Excel_NaN"
+        baseline = obj.ua.soln_pds_cumulative_funits().mean() * 1e-6
+        s = obj.ua.soln_pds_cumulative_funits().reset_index()
+        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        soln_pds_cumulative_funits_mask = m | regional_mask if regional_mask is not None else m
 
         # Carpool-RRSv1.1b-Jan2020.xlsm catastrophic cancellation in multiple scenarios.
         baseline = obj.ua.conv_ref_annual_tot_iunits().mean() * 1e-6
@@ -760,6 +764,16 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
         m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
         soln_pds_fuel_units_avoided_mask = (m | regional_mask) if regional_mask is not None else m
 
+        # Alternative Cement
+        baseline = obj.ua.conv_ref_new_iunits().mean() * 1e-6
+        s = obj.ua.conv_ref_new_iunits().reset_index()
+        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        conv_ref_new_iunits_mask = (m | regional_mask) if regional_mask is not None else m
+        baseline = obj.ua.soln_pds_direct_co2_emissions_saved().mean() * 1e-6
+        s = obj.ua.soln_pds_direct_co2_emissions_saved().reset_index()
+        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        soln_pds_direct_co2_emissions_saved_mask = (m | regional_mask) if regional_mask is not None else m
+
         verify['Unit Adoption Calculations'].extend([
                 ('BA17:BK63', obj.ua.ref_tam_per_capita().reset_index(), None),
                 ('BM17:BW63', obj.ua.ref_tam_per_gdp_per_capita().reset_index(), None),
@@ -768,99 +782,59 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
                 ('BM69:BW115', obj.ua.pds_tam_per_gdp_per_capita().reset_index(), None),
                 ('BY69:CI115', obj.ua.pds_tam_growth().reset_index(), None),
                 # ('B135:L181' tested in 'Helper Tables'!C91)
-                ('Q135:AA181', obj.ua.soln_pds_cumulative_funits(
-                    ).reset_index(), pds_cumulative_funit_mask),
-                ('AX136:BH182', obj.ua.soln_pds_tot_iunits_reqd(
-                    ).reset_index(), regional_mask),
-                ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd(
-                    ).reset_index(), regional_mask),
+                ('Q135:AA181', obj.ua.soln_pds_cumulative_funits().reset_index(), soln_pds_cumulative_funits_mask),
+                ('AX136:BH182', obj.ua.soln_pds_tot_iunits_reqd().reset_index(), regional_mask),
+                ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd().reset_index(), regional_mask),
                 #('BN136:BS182', obj.ua.soln_pds_big4_iunits_reqd().reset_index(), None),
                 # ('B198:L244' tested in 'Helper Tables'!C27)
-                ('Q198:AA244', obj.ua.soln_ref_cumulative_funits(
-                    ).reset_index(), soln_ref_cumulative_funits_mask),
+                ('Q198:AA244', obj.ua.soln_ref_cumulative_funits().reset_index(), soln_ref_cumulative_funits_mask),
                 ('AX198:BH244', obj.ua.soln_ref_tot_iunits_reqd().reset_index(), None),
-                ('AG253:AQ298', obj.ua.conv_ref_new_iunits(
-                    ).reset_index(), regional_mask),
-                ('AX252:BH298', obj.ua.conv_ref_annual_tot_iunits(
-                    ).reset_index(), conv_ref_annual_tot_iunits_mask),
-                ('B308:L354', obj.ua.soln_pds_net_grid_electricity_units_saved(
-                    ).reset_index(), regional_mask),
-                ('Q308:AA354', obj.ua.soln_pds_net_grid_electricity_units_used(
-                    ).reset_index(), regional_mask),
-                ('AD308:AN354', obj.ua.soln_pds_fuel_units_avoided(
-                    ).reset_index(), soln_pds_fuel_units_avoided_mask),
-                ('AT308:BD354', obj.ua.soln_pds_direct_co2_emissions_saved(
-                    ).reset_index(), regional_mask),
-                ('BF308:BP354', obj.ua.soln_pds_direct_ch4_co2_emissions_saved(
-                    ).reset_index(), regional_mask),
-                ('BR308:CB354', obj.ua.soln_pds_direct_n2o_co2_emissions_saved(
-                    ).reset_index(), regional_mask),
+                ('AG253:AQ298', obj.ua.conv_ref_new_iunits().reset_index(), conv_ref_new_iunits_mask),
+                ('AX252:BH298', obj.ua.conv_ref_annual_tot_iunits().reset_index(), conv_ref_annual_tot_iunits_mask),
+                ('B308:L354', obj.ua.soln_pds_net_grid_electricity_units_saved().reset_index(), regional_mask),
+                ('Q308:AA354', obj.ua.soln_pds_net_grid_electricity_units_used().reset_index(), regional_mask),
+                ('AD308:AN354', obj.ua.soln_pds_fuel_units_avoided().reset_index(), soln_pds_fuel_units_avoided_mask),
+                ('AT308:BD354', obj.ua.soln_pds_direct_co2_emissions_saved().reset_index(), soln_pds_direct_co2_emissions_saved_mask),
+                ('BF308:BP354', obj.ua.soln_pds_direct_ch4_co2_emissions_saved().reset_index(), regional_mask),
+                ('BR308:CB354', obj.ua.soln_pds_direct_n2o_co2_emissions_saved().reset_index(), regional_mask),
                 ])
     elif soln_type == 'LAND_PROTECT':
         verify['Unit Adoption Calculations'].extend([
-                ('CG136:CH182', obj.ua.pds_cumulative_degraded_land_unprotected(
-                    ).loc[:, 'World'].reset_index(), None),
+                ('CG136:CH182', obj.ua.pds_cumulative_degraded_land_unprotected().loc[:, 'World'].reset_index(), None),
                 # ('CZ136:DA182', Not implemented
-                ('DR136:DS182', obj.ua.pds_total_undegraded_land(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('EI136:EJ182', obj.ua.pds_cumulative_degraded_land_protected(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('CG198:CH244', obj.ua.ref_cumulative_degraded_land_unprotected(
-                    ).loc[:, 'World'].reset_index(), None),
+                ('DR136:DS182', obj.ua.pds_total_undegraded_land().loc[:, 'World'].reset_index(), None),
+                ('EI136:EJ182', obj.ua.pds_cumulative_degraded_land_protected().loc[:, 'World'].reset_index(), None),
+                ('CG198:CH244', obj.ua.ref_cumulative_degraded_land_unprotected().loc[:, 'World'].reset_index(), None),
                 # ('CZ198:DA244', Not implemented
-                ('DR198:DS244', obj.ua.ref_total_undegraded_land(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('EI198:EJ244', obj.ua.ref_cumulative_degraded_land_protected(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('B252:C298', obj.ua.net_annual_land_units_adopted(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('Q252:R298', obj.ua.conv_ref_tot_iunits(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('AG253:AH298', obj.ua.conv_ref_new_iunits(
-                    ).loc[:, 'World'].reset_index(), None),
+                ('DR198:DS244', obj.ua.ref_total_undegraded_land().loc[:, 'World'].reset_index(), None),
+                ('EI198:EJ244', obj.ua.ref_cumulative_degraded_land_protected().loc[:, 'World'].reset_index(), None),
+                ('B252:C298', obj.ua.net_annual_land_units_adopted().loc[:, 'World'].reset_index(), None),
+                ('Q252:R298', obj.ua.conv_ref_tot_iunits().loc[:, 'World'].reset_index(), None),
+                ('AG253:AH298', obj.ua.conv_ref_new_iunits().loc[:, 'World'].reset_index(), None),
                 # ('BO252:BP298', Not implemented
-                ('CG252:CH298', obj.ua.annual_reduction_in_total_degraded_land(
-                    ).loc[:, 'World'].reset_index(), None),
+                ('CG252:CH298', obj.ua.annual_reduction_in_total_degraded_land().loc[:, 'World'].reset_index(), None),
                 # ('CZ252:DA298', Not implemented
-                ('DR252:DS298', obj.ua.cumulative_reduction_in_total_degraded_land(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('EI252:EJ298', obj.ua.net_land_units_after_emissions_lifetime(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('B308:C354', obj.ua.soln_pds_net_grid_electricity_units_saved(
-                    ).loc[:, 'World'].reset_index(), regional_mask),
-                ('Q308:R354', obj.ua.soln_pds_net_grid_electricity_units_used(
-                    ).loc[:, 'World'].reset_index(), regional_mask),
-                ('AD308:AE354', obj.ua.soln_pds_fuel_units_avoided(
-                    ).loc[:, 'World'].reset_index(), regional_mask),
-                ('AT308:AU354', obj.ua.direct_co2eq_emissions_saved_land(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('BF308:BG354', obj.ua.direct_co2_emissions_saved_land(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('BR308:BS354', obj.ua.direct_n2o_co2_emissions_saved_land(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('CD308:CE354', obj.ua.direct_ch4_co2_emissions_saved_land(
-                    ).loc[:, 'World'].reset_index(), None),
+                ('DR252:DS298', obj.ua.cumulative_reduction_in_total_degraded_land().loc[:, 'World'].reset_index(), None),
+                ('EI252:EJ298', obj.ua.net_land_units_after_emissions_lifetime().loc[:, 'World'].reset_index(), None),
+                ('B308:C354', obj.ua.soln_pds_net_grid_electricity_units_saved().loc[:, 'World'].reset_index(), regional_mask),
+                ('Q308:R354', obj.ua.soln_pds_net_grid_electricity_units_used().loc[:, 'World'].reset_index(), regional_mask),
+                ('AD308:AE354', obj.ua.soln_pds_fuel_units_avoided().loc[:, 'World'].reset_index(), regional_mask),
+                ('AT308:AU354', obj.ua.direct_co2eq_emissions_saved_land().loc[:, 'World'].reset_index(), None),
+                ('BF308:BG354', obj.ua.direct_co2_emissions_saved_land().loc[:, 'World'].reset_index(), None),
+                ('BR308:BS354', obj.ua.direct_n2o_co2_emissions_saved_land().loc[:, 'World'].reset_index(), None),
+                ('CD308:CE354', obj.ua.direct_ch4_co2_emissions_saved_land().loc[:, 'World'].reset_index(), None),
                 ])
     elif soln_type == 'LAND_BIOSEQ':
         verify['Unit Adoption Calculations'].extend([
-                ('EH137:EI182', obj.ua.soln_pds_annual_land_area_harvested(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('EI253:EJ298', obj.ua.net_land_units_after_emissions_lifetime(
-                    ).loc[2015:, 'World'].reset_index(), None),
-                ('B308:C354', obj.ua.soln_pds_net_grid_electricity_units_saved(
-                    ).loc[:, 'World'].reset_index(), regional_mask),
-                ('Q308:R354', obj.ua.soln_pds_net_grid_electricity_units_used(
-                    ).loc[:, 'World'].reset_index(), regional_mask),
-                ('AD308:AE354', obj.ua.soln_pds_fuel_units_avoided(
-                    ).loc[:, 'World'].reset_index(), regional_mask),
-                ('AT308:AU354', obj.ua.direct_co2eq_emissions_saved_land(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('BF308:BG354', obj.ua.direct_co2_emissions_saved_land(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('BR308:BS354', obj.ua.direct_n2o_co2_emissions_saved_land(
-                    ).loc[:, 'World'].reset_index(), None),
-                ('CD308:CE354', obj.ua.direct_ch4_co2_emissions_saved_land(
-                    ).loc[:, 'World'].reset_index(), None),
+                ('EH137:EI182', obj.ua.soln_pds_annual_land_area_harvested().loc[:, 'World'].reset_index(), None),
+                ('EI253:EJ298', obj.ua.net_land_units_after_emissions_lifetime().loc[2015:, 'World'].reset_index(), None),
+                ('B308:C354', obj.ua.soln_pds_net_grid_electricity_units_saved().loc[:, 'World'].reset_index(), regional_mask),
+                ('Q308:R354', obj.ua.soln_pds_net_grid_electricity_units_used().loc[:, 'World'].reset_index(), regional_mask),
+                ('AD308:AE354', obj.ua.soln_pds_fuel_units_avoided().loc[:, 'World'].reset_index(), regional_mask),
+                ('AT308:AU354', obj.ua.direct_co2eq_emissions_saved_land().loc[:, 'World'].reset_index(), None),
+                ('BF308:BG354', obj.ua.direct_co2_emissions_saved_land().loc[:, 'World'].reset_index(), None),
+                ('BR308:BS354', obj.ua.direct_n2o_co2_emissions_saved_land().loc[:, 'World'].reset_index(), None),
+                ('CD308:CE354', obj.ua.direct_ch4_co2_emissions_saved_land().loc[:, 'World'].reset_index(), None),
                 ])
     return verify
 
@@ -923,24 +897,28 @@ def verify_operating_cost(obj, verify):
     # and there aren't enough bits to even meet that requirement.
     #
     # We mask off all cells where the value is less than one cent. We assert that being off by
-    # a penny at  the end of the equipment lifetime is acceptable.
+    # a penny at the end of the equipment lifetime is acceptable.
     s = obj.oc.soln_pds_annual_breakout().reset_index().abs()
     soln_breakout_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
     s = obj.oc.conv_ref_annual_breakout().reset_index().abs()
     conv_breakout_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
 
+    baseline = obj.oc.soln_pds_new_funits_per_year().loc[2015:, 'World'].mean() * 1e-6
+    s = obj.oc.soln_pds_new_funits_per_year().loc[2015:, ['World']].reset_index(drop=True)
+    soln_pds_new_funits_per_year_mask = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+
     verify['Operating Cost'] = [
             ('B262:AV386', obj.oc.soln_pds_annual_breakout().reset_index(), soln_breakout_mask),
             ('B399:AV523', obj.oc.conv_ref_annual_breakout().reset_index(), conv_breakout_mask),
-            # ('B19:B64', Not implemented
+            # ('B19:B64', Not implemented, model never uses it.
             # ('C19:C64', checked by 'Unit Adoption Calculations'!C253
             ('D19:D64', obj.oc.soln_pds_annual_operating_cost().loc[2015:2060].to_frame(
                 ).reset_index(drop=True), "Excel_one_cent"),
             ('E19:E64', obj.oc.soln_pds_cumulative_operating_cost().loc[2015:2060].to_frame(
                 ).reset_index(drop=True), "Excel_one_cent"),
-            ('F19:F64', obj.oc.soln_pds_new_funits_per_year(
-                ).loc[2015:, ['World']].reset_index(drop=True), None),
-            # ('I19:I64', Not implemented
+            ('F19:F64', obj.oc.soln_pds_new_funits_per_year().loc[2015:, ['World']].reset_index(
+                drop=True), soln_pds_new_funits_per_year_mask),
+            # ('I19:I64', Not implemented, model never uses it.
             # ('J19:J64', checked by 'Unit Adoption Calculations'!C253
             ('K19:K64', obj.oc.conv_ref_annual_operating_cost(
                 ).to_frame().reset_index(drop=True), "Excel_one_cent"),
@@ -991,44 +969,53 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True,
     if regional_mask is not None:
         near_zero_mask = near_zero_mask | regional_mask
 
+    # Alternative Cement
+    baseline = obj.c2.co2eq_direct_reduced_emissions().loc[2015:].mean() * 1e-6
+    s = obj.c2.co2eq_direct_reduced_emissions().loc[2015:].reset_index()
+    mask = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+    if regional_mask is not None:
+        mask = mask | regional_mask
+    co2eq_direct_reduced_emissions_mask = mask
+    baseline = obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].mean() * 1e-6
+    s = obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index()
+    mask = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+    if regional_mask is not None:
+        mask = mask | regional_mask
+    co2eq_reduced_fuel_emissions_mask = mask
+
+
     if is_rrs:
         verify['CO2 Calcs'] = [
-                ('A235:K280', obj.c2.co2_reduced_grid_emissions(
-                ).loc[2015:].reset_index(), regional_mask),
-                ('R235:AB280', obj.c2.co2_replaced_grid_emissions(
-                ).loc[2015:].reset_index(), regional_mask),
-                ('AI235:AS280', obj.c2.co2_increased_grid_usage_emissions(
-                ).loc[2015:].reset_index(), regional_mask),
-                ('A289:K334', obj.c2.co2eq_reduced_grid_emissions(
-                ).loc[2015:].reset_index(), regional_mask),
-                ('R289:AB334', obj.c2.co2eq_replaced_grid_emissions(
-                ).loc[2015:].reset_index(), regional_mask),
-                ('AI289:AS334', obj.c2.co2eq_increased_grid_usage_emissions(
-                ).loc[2015:].reset_index(), regional_mask),
-                ('A345:K390', obj.c2.co2eq_direct_reduced_emissions(
-                ).loc[2015:].reset_index(), regional_mask),
+                ('A235:K280', obj.c2.co2_reduced_grid_emissions().loc[2015:].reset_index(), regional_mask),
+                ('R235:AB280', obj.c2.co2_replaced_grid_emissions().loc[2015:].reset_index(), regional_mask),
+                ('AI235:AS280', obj.c2.co2_increased_grid_usage_emissions().loc[2015:].reset_index(), regional_mask),
+                ('A289:K334', obj.c2.co2eq_reduced_grid_emissions().loc[2015:].reset_index(), regional_mask),
+                ('R289:AB334', obj.c2.co2eq_replaced_grid_emissions().loc[2015:].reset_index(), regional_mask),
+                ('AI289:AS334', obj.c2.co2eq_increased_grid_usage_emissions().loc[2015:].reset_index(), regional_mask),
+                ('A345:K390', obj.c2.co2eq_direct_reduced_emissions().loc[2015:].reset_index(),
+                    co2eq_direct_reduced_emissions_mask),
                 ]
 
         if shifted:
             # Some spreadsheets have the last two blocks shifted by several cells
             verify['CO2 Calcs'].extend([
-                    ('R345:AB390', obj.c2.co2eq_reduced_fuel_emissions(
-                    ).loc[2015:].reset_index(), regional_mask),
-                    ('AM345:AW390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)])
+                    ('R345:AB390', obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index(),
+                        co2eq_reduced_fuel_emissions_mask),
+                    ('AM345:AW390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)
+                    ])
         else:
             verify['CO2 Calcs'].extend([
-                    ('U345:AE390', obj.c2.co2eq_reduced_fuel_emissions(
-                    ).loc[2015:].reset_index(), regional_mask),
-                    ('AP345:AZ390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)])
+                    ('U345:AE390', obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index(),
+                        co2eq_reduced_fuel_emissions_mask),
+                    ('AP345:AZ390', obj.c2.co2eq_net_indirect_emissions().loc[2015:].reset_index(), regional_mask)
+                    ])
 
         verify['CO2 Calcs'].extend([
-                ('A10:K55', obj.c2.co2_mmt_reduced(
-                ).loc[2015:].reset_index(), regional_mask),
-                ('A120:AW165', obj.c2.co2_ppm_calculator(
-                ).loc[2015:].reset_index(), None),
-                ('A65:K110', obj.c2.co2eq_mmt_reduced(
-                ).loc[2015:].reset_index(), regional_mask),
-                ('A172:F217', obj.c2.co2eq_ppm_calculator().loc[2015:].reset_index(), None), ])
+                ('A10:K55', obj.c2.co2_mmt_reduced().loc[2015:].reset_index(), regional_mask),
+                ('A120:AW165', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), None),
+                ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), regional_mask),
+                ('A172:F217', obj.c2.co2eq_ppm_calculator().loc[2015:].reset_index(), None),
+                ])
 
     else:
         s = obj.c2.co2_ppm_calculator().loc[2015:].reset_index().abs()
@@ -1055,17 +1042,14 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True,
             "Global Arid"]]
 
         verify['CO2 Calcs'] = [
-                ('A65:K110', obj.c2.co2eq_mmt_reduced(
-                    ).loc[2015:].reset_index(), near_zero_mask),
+                ('A65:K110', obj.c2.co2eq_mmt_reduced().loc[2015:].reset_index(), near_zero_mask),
                 ('A121:G166', co2_sequestered_global, seq_near_zero_mask),
-                ('A173:AW218', obj.c2.co2_ppm_calculator(
-                    ).loc[2015:].reset_index(), ppm_near_zero_mask),
+                ('A173:AW218', obj.c2.co2_ppm_calculator().loc[2015:].reset_index(), ppm_near_zero_mask),
                 # CO2 eq table has an N20 column for LAND xls sheets that doesn't appear to be used, so we ignore it
                 ('A225:C270', obj.c2.co2eq_ppm_calculator().loc[2015:, [
                     'CO2-eq PPM', 'CO2 PPM']].reset_index(), None),
                 ('E225:G270', obj.c2.co2eq_ppm_calculator().loc[2015:, [
-                    'CH4 PPB', 'CO2 RF', 'CH4 RF']].reset_index(drop=True),
-                 near_zero_mask)
+                    'CH4 PPB', 'CO2 RF', 'CH4 RF']].reset_index(drop=True), near_zero_mask)
                 # All other tables are not implemented as they appear to be all 0
         ]
 
@@ -1073,10 +1057,8 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True,
 def verify_ch4_calcs_rrs(obj, verify):
     """Verified tables in CH4 Calcs."""
     verify['CH4 Calcs'] = [
-            ('A11:K56', obj.c4.ch4_tons_reduced(
-            ).loc[2015:, :].reset_index(), None),
-            ('A65:AW110', obj.c4.ch4_ppb_calculator(
-            ).loc[2015:, :].reset_index(), None),
+            ('A11:K56', obj.c4.ch4_tons_reduced().loc[2015:, :].reset_index(), None),
+            ('A65:AW110', obj.c4.ch4_ppb_calculator().loc[2015:, :].reset_index(), None),
             ]
     return verify
 
@@ -1084,10 +1066,8 @@ def verify_ch4_calcs_rrs(obj, verify):
 def verify_ch4_calcs_land(obj, verify):
     """Verified tables in CH4 Calcs."""
     verify['CH4 Calcs'] = [
-            ('A13:B58', obj.c4.avoided_direct_emissions_ch4_land(
-            ).loc[2015:, 'World'].reset_index(), None),
-            ('A67:AW112', obj.c4.ch4_ppb_calculator(
-            ).loc[2015:, :].reset_index(), None),
+            ('A13:B58', obj.c4.avoided_direct_emissions_ch4_land().loc[2015:, 'World'].reset_index(), None),
+            ('A67:AW112', obj.c4.ch4_ppb_calculator().loc[2015:, :].reset_index(), None),
             ]
     return verify
 
@@ -1287,7 +1267,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
                     # instead of the zero which might otherwise be expected.
                     # Mask off absolute values less than one penny.
                     s = expected_df.abs()
-                    mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
+                    mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False) | expected_df.isna()
                     absignore = 0.01
             description = descr_base + sheetname + " " + cellrange
             compare_dataframes(actual_df=actual_df, expected_df=expected_df,
