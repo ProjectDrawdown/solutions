@@ -1,8 +1,8 @@
 {
-    "name": "PDS3-10p2050-Full Electrification (Book Ed.1)",
+    "name": "PDS1-4p2050-Doubled Historical Electrification Rate (Book Ed.1)",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "UIC data for 2014 indicates 27% electrification of rails. The IEA 2DS scenario projects that 40% of rail freight can be powered by electricity by 2050. We examine the impact of making this target 100% in 2050 by linearly interpolating between these two percentages (Note TAM is all freight including non-rail). We also assume a doubling of the electrified track usage versus the conventional. This scenario uses inputs to the model developed for the Drawdown book, some of which have been updated for later scenarios.",
+    "description": "Electrified railway tkms increase at TWICE the historical average annual rate of track electrification. Using UIC data, we estimate the average electrification rate at 1.4% annually. We double this and use this rate as the optimistically plausible electrification rate. This is reasonable since it still remains below the annual rate of many year's growth according to UIC data below. This may come from increased track length and uniform usage, or higher usage of electrified tracks versus other tracks. This scenario uses inputs from the model developed for the Drawdown book, some of which have been updated.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -42,7 +42,7 @@
         "statistic": ""
     },
     "soln_avg_annual_use": {
-        "value": 14.49769460453358,
+        "value": 7.248847302266793,
         "statistic": ""
     },
     "soln_var_oper_cost_per_funit": {
@@ -117,93 +117,33 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            2751916.5073962263
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "ref_base_adoption": {
+        "World": 2751916.5073962263,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "PDS3 - Linear projection of Electricity-powered rail freight from 27% of rail freight in 2014 to 100% in 2050",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "PDS2 - Doubling of Historical Electrification Rate (UIC data)",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Drawdown Book Reference Scenario",
     "soln_ref_adoption_regional_data": false

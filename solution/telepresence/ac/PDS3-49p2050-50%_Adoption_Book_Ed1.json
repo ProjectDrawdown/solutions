@@ -117,94 +117,37 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Baseline Cases",
     "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            198505316569.03406
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "ref_base_adoption": {
+        "World": 198505316569.03406,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_custom_name": "PDS3 - Bass diffusion Adoption Curve - 50% Adoption in 2050",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Book Ed.1 Reference Scenario",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014
+    ]
 }

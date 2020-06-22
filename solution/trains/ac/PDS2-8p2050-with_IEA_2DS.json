@@ -1,8 +1,8 @@
 {
-    "name": "PDS1-4p2050-Doubled Historical Electrification Rate (Book Ed.1)",
+    "name": "PDS2-8p2050-with IEA 2DS",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Electrified railway tkms increase at TWICE the historical average annual rate of track electrification. Using UIC data, we estimate the average electrification rate at 1.4% annually. We double this and use this rate as the optimistically plausible electrification rate. This is reasonable since it still remains below the annual rate of many year's growth according to UIC data below. This may come from increased track length and uniform usage, or higher usage of electrified tracks versus other tracks. This scenario uses inputs from the model developed for the Drawdown book, some of which have been updated.",
+    "description": "UIC data for 2014 indicates 27% electrification of rails (37% in 2018). The IEA 2DS scenario projects that 40% of rail freight can be powered by electricity by 2050. We linearly interpolate between 2018 and 2050. ",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": {
@@ -26,7 +26,7 @@
         "value": 0.0,
         "statistic": ""
     },
-    "conv_fuel_cost_per_funit": 8946.708608056493,
+    "conv_fuel_cost_per_funit": 16069.217746164,
     "pds_2014_cost": {
         "value": 1888940.5168064325,
         "statistic": ""
@@ -53,8 +53,8 @@
         "value": 0.0,
         "statistic": ""
     },
-    "soln_fuel_cost_per_funit": 1043.9785714285686,
-    "npv_discount_rate": 0.06245,
+    "soln_fuel_cost_per_funit": 6073.30242743616,
+    "npv_discount_rate": 0.063842795581566,
     "conv_annual_energy_used": {
         "value": 0.0,
         "statistic": ""
@@ -64,11 +64,11 @@
         "statistic": ""
     },
     "soln_annual_energy_used": {
-        "value": 1.1035714285714256e-05,
+        "value": 6.420343381133547e-05,
         "statistic": ""
     },
     "conv_fuel_consumed_per_funit": {
-        "value": 6855.0407555928305,
+        "value": 12609.082342957821,
         "statistic": ""
     },
     "soln_fuel_efficiency_factor": {
@@ -112,99 +112,39 @@
     "n2o_is_co2eq": false,
     "co2eq_conversion_source": "AR5 with feedback",
     "emissions_use_co2eq": true,
-    "emissions_grid_source": "Meta-Analysis",
-    "emissions_grid_range": "Mean",
+    "emissions_grid_source": "IPCC Only",
+    "emissions_grid_range": "Median",
     "source_until_2014": "ALL SOURCES",
-    "ref_source_post_2014": "Baseline Cases",
-    "pds_source_post_2014": "Baseline Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            2751916.5073962263
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "ref_source_post_2014": "Ambitious Cases",
+    "pds_source_post_2014": "Ambitious Cases",
+    "ref_base_adoption": {
+        "World": 4151692.7385801757,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
-    "soln_pds_adoption_custom_name": "PDS1 - Doubling of Historical Electrification Rate (UIC data)",
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "PDS1 - Linear projection of Electricity-powered rail freight from 27% of rail freight in 2014 to 40% in 2050 (IEA 2DS projection)",
     "soln_ref_adoption_basis": "Custom",
-    "soln_ref_adoption_custom_name": "Drawdown Book Reference Scenario",
+    "soln_ref_adoption_custom_name": "Default REF Projection with Adjustment for Recent Historical Adoptions",
     "soln_ref_adoption_regional_data": false
 }

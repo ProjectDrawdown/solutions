@@ -29,3 +29,6 @@ solution/hybridcars/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/highspeedrail/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/masstransit/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
 solution/ships/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
+solution/telepresence/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
+solution/trains/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
+solution/trucks/testdata/*.zip filter=lfs diff=lfs merge=lfs -text
