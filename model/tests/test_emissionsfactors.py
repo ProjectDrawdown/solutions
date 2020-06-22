@@ -89,6 +89,9 @@ def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
     eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=3)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2043, 'World'] == pytest.approx(0.52233785855)
+    eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=4)
+    table = eg.conv_ref_grid_CO2eq_per_KWh()
+    assert table.loc[2042, 'World'] == pytest.approx(0.52865037213)
 
 
 def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh_invalid_range():
