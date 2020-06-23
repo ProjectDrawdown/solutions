@@ -1,7 +1,7 @@
 Solution,% tla,% world alloc,avg abatement cost,model type,has regional data,ca exceeds alloc,ca exceeds max tla,ca scen exceeds alloc count,ca scen exceeds max tla count,ca scen regions exceed world count,ca scen world exceeds regions count
 afforestation,100.0,5.534462774640482,2.345440503384527,core,True,False,False,4,0,0,1
 bamboo,67.62772779062492,2.804007635145213,5.659278978395536,core,True,False,False,3,0,0,0
-conservationagriculture,43.903558169403226,5.280293925302772,-20.13144707122462,yield,True,False,False,False,False,0,0
+conservationagriculture,43.90355815526343,5.280293925302772,-20.131447067976968,yield,True,False,False,False,False,0,0
 farmlandrestoration,90.66191326874122,2.8587085361455524,11.323434475220314,core,False,False,False,0,0,0,0
 forestprotection,100.0,8.946903663004989,-0.0,protect,True,False,False,0,0,4,0
 improvedrice,99.99999999999999,0.8556388696476024,-3.702420195071345,yield,False,False,False,0,0,0,0
