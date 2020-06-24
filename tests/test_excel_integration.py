@@ -1431,18 +1431,6 @@ def test_Carpooling_RRS():
 
 
 @pytest.mark.slow
-def test_Cars_RRS():
-    from solution import cars
-    zipfilename = str(solutiondir.joinpath('cars', 'testdata', 'expected.zip'))
-    zip_f = zipfile.ZipFile(file=zipfilename)
-    for scenario in cars.scenarios.keys():
-        obj = cars.Scenario(scenario=scenario)
-        verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
-        check_excel_against_object(
-            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
-
-
-@pytest.mark.slow
 def test_Composting_RRS():
     from solution import composting
     zipfilename = str(solutiondir.joinpath(

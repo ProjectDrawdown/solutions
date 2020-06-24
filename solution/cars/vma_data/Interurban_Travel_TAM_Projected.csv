@@ -1,7 +1,0 @@
-"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-IEA (Case 1),https://www.iea.org/etp/etpmodel/transport/,World,World (2045),2 - Public Sector/ Multilateral Agency,2012,,,billion passenger-km,,,,,
-IEA (2016) Energy Technology Perspectives 2016: Towards Sustainable Urban Energy Systems (4DS Scenario),https://www.iea.org/etp/etpmodel/transport/,World,World (2045),2 - Public Sector/ Multilateral Agency,2016,,,billion passenger-km,,,,,
-IEA (2016) Energy Technology Perspectives 2016: Towards Sustainable Urban Energy Systems (6DS Scenario),https://www.iea.org/etp/etpmodel/transport/,World,World (2045),2 - Public Sector/ Multilateral Agency,2016,,,billion passenger-km,,,,,
-IEA (2016) Energy Technology Perspectives 2016: Towards Sustainable Urban Energy Systems (2DS Scenario),https://www.iea.org/etp/etpmodel/transport/,World,World (2045),2 - Public Sector/ Multilateral Agency,2016,,,billion passenger-km,,,,,
-"Schäfer, A. (2007, February). Long-term trends in global passenger mobility. In Frontiers of Engineering: Reports on Leading-Edge Engineering from the 2006 Symposium (p. 85). National Academies Press.",http://www.nap.edu/catalog/11827.html,World,World (2050),1  - Peer Reviewed,2007,,,billion passenger-km,,,,,
-ICCT (Base case),http://www.theicct.org/global-transportation-roadmap-model,World,World (2045),4 - Independently Verified,2012,,,billion passenger-km,,,,,
