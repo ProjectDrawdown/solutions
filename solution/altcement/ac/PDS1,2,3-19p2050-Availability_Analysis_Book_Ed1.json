@@ -2,6 +2,9 @@
     "name": "PDS1,2,3-19p2050-Availability Analysis (Book Ed.1)",
     "solution_category": "reduction",
     "vmas": "VMAs",
+    "vma_values": {
+        "Clinker to Cement Ratio in Year 2": 0.45
+    },
     "description": "This scenario is based on a Fly Ash availability analysis since Fly Ash incorporation in cement is the definition of this solution and that is based on coal burning which has an uncertain future. Fly Ash cement is therefore a transition solution. The availability assumptions are shown in the Custom Adoption sheets. All PDS scenarios are the same. This scenario uses inputs calculated for the Drawdown book edition 1, some of which have been updated since publication.",
     "report_start_year": 2020,
     "report_end_year": 2050,
@@ -117,92 +120,32 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "ALL SOURCES",
     "pds_source_post_2014": "ALL SOURCES",
-    "pds_base_adoption": [
-        [
-            "World",
-            222.222222222222
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "ref_base_adoption": {
+        "World": 222.222222222222,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": [
-        [
-            "World",
-            0.0
-        ],
-        [
-            "OECD90",
-            0.0
-        ],
-        [
-            "Eastern Europe",
-            0.0
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.0
-        ],
-        [
-            "Middle East and Africa",
-            0.0
-        ],
-        [
-            "Latin America",
-            0.0
-        ],
-        [
-            "China",
-            0.0
-        ],
-        [
-            "India",
-            0.0
-        ],
-        [
-            "EU",
-            0.0
-        ],
-        [
-            "USA",
-            0.0
-        ]
-    ],
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 PDS 1, 2 and 3",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Drawdown Book Edition 1 Scenario REF Adoption",

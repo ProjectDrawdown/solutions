@@ -27,7 +27,7 @@ def test_solutions(name, constructor, scenarios):
                  'Grassland Protection', 'Peatland Protection', 'IP Forest Management',
                  'Tree Intercropping', 'Mangrove Protection', 'Conservation Agriculture',
                  'Forest Protection', 'Aircraft Fuel Efficiency', 'Bike Infrastructure',
-                 'Composting']
+                 'Composting', 'Alternative Cements']
         if obj.name not in skip:
             errstr = f"{obj.name}: {scenario} : {obj.ac.incorrect_cached_values}"
             assert len(obj.ac.incorrect_cached_values) == 0, errstr

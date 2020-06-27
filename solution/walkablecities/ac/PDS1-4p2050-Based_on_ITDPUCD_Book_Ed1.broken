@@ -1,0 +1,155 @@
+{
+    "name": "PDS1-4p2050-Based on ITDP/UCD (Book Ed.1)",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "description": "Taking the projected walking according to ITDP/UCD's Global High Shift Cycling Scenario (2015) results, we interpolate for missing years using a 3rd Degree Poynomial. This is the book scenario which has the same inputs as the updated scenario.",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 1.4162003604e-08,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 1.4162003604e-08,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 11732406.139444258,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": {
+        "value": 1.5973752970573485,
+        "statistic": ""
+    },
+    "conv_fuel_cost_per_funit": 55303315.086855,
+    "pds_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 1.6209874133333332e-09,
+        "statistic": ""
+    },
+    "soln_avg_annual_use": {
+        "value": 1.6209874133333332e-09,
+        "statistic": ""
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_fuel_cost_per_funit": 0.0,
+    "npv_discount_rate": 0.04,
+    "conv_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_energy_efficiency_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_annual_energy_used": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 52941803.479383595,
+        "statistic": ""
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 0.002273941593,
+        "statistic": ""
+    },
+    "soln_fuel_emissions_factor": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "soln_emissions_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": {
+        "value": 30976.73458017209,
+        "statistic": ""
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": {
+        "value": 0.0,
+        "statistic": ""
+    },
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "Baseline Cases",
+    "pds_source_post_2014": "Baseline Cases",
+    "ref_base_adoption": {
+        "World": 1523.491464812742,
+        "OECD90": 205.85584501120192,
+        "Eastern Europe": 57.71269810953001,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 310.14334483044007,
+        "India": 180.29053359808,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_prognostication_source": "ITDP/UCD (2015) A Global High Shift Cycling Scenario - High Shift Scenario",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "Medium",
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Custom REF Scenario 1: Fixed Passenger-km Annual after 2014",
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2014
+    ]
+}
