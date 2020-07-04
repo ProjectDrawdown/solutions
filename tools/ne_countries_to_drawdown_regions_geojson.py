@@ -27,25 +27,23 @@ SPECIAL_COUNTRIES = [
 ]
 
 
-def map_ne_admin_to_drawdown_region(row):
+def map_ne_admin_to_drawdown_regions(row):
     """
-    Maps Natural Earth's ADMIN name to Drawdown region
+    Maps Natural Earth's ADMIN name to a list of Drawdown regions
     """
     ne_name = row['ADMIN']
     dd_name = admin_names.lookup(ne_name)
 
     if dd_name in SPECIAL_COUNTRIES:
-        return dd_name
+        return [dd_name]
     else:
         dd_region = admin_names.region_mapping.get(dd_name)
         if dd_region is None:
             return None
         elif isinstance(dd_region, list):
-            # TODO: What to do if length of the list is more than 1?
-            return dd_region[0]
-        else:
-            # This should never happen, since it seems like all values in region_mapping are lists
             return dd_region
+        else:
+            raise ValueError(f"List expected, but got {dd_region}")
 
 
 def map_ne_admin_counties_to_drawdown_regions(shapefile_zip_path):
@@ -54,10 +52,26 @@ def map_ne_admin_counties_to_drawdown_regions(shapefile_zip_path):
     countries to Drawdown regions and outputs GeoJSON which only includes
     Drawdown regions. Individual countries' information is removed.
     """
+    dd_col_name = 'DRAWDOWN_REGION'
     esri = geopandas.read_file(f"zip://{shapefile_zip_path}")
-    esri['DRAWDOWN_REGION'] = esri.apply(lambda row: map_ne_admin_to_drawdown_region(row), axis=1)
-    all_rows_region_only = esri[['DRAWDOWN_REGION', 'geometry']].dropna()
-    region_only = all_rows_region_only.dissolve('DRAWDOWN_REGION')
+    esri[dd_col_name] = esri.apply(
+        lambda row: map_ne_admin_to_drawdown_regions(row), axis=1)
+
+    # Expanding list of Drawdown regions into separate rows
+    expanded_rows = []
+    def list_to_rows(row):
+        values = row[dd_col_name]
+        if isinstance(values, list):  # Can be None
+            for v in values:
+                new_row = row.to_dict()
+                new_row[dd_col_name] = v
+                expanded_rows.append(new_row)
+
+    esri.apply(list_to_rows, axis=1)
+    expanded_esri = geopandas.GeoDataFrame(expanded_rows)
+
+    all_rows_region_only = expanded_esri[[dd_col_name, 'geometry']]
+    region_only = all_rows_region_only.dissolve(dd_col_name)
     return region_only
 
 
