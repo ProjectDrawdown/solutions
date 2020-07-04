@@ -11,11 +11,21 @@ import os
 import admin_names
 import geopandas
 
-help_message = """
+HELP_MESSAGE = """
 Usage:
 python ne_countries_to_drawdown_regions_geojson.py /path/to/shapefile.zip [/path/to/output.json]
     produces GeoJSON file from shapefile ZIP. If output path is not provided,
     it will use name of .zip file to create JSON output file in the python working dir.
+"""
+
+NEXT_STEPS = """
+1) Install NPM packages 'topojson-server' and 'topojson-simplify' from https://github.com/topojson/topojson project:
+   > npm install topojson-server
+   > npm install topojson-simplify
+2) Convert GeoJSON to TopoJSON:
+   > ./node_modules/topojson-server/bin/geo2topo ./ne_10m_admin_0_countries.json > ne_10m_admin_0_countries_topo.json
+3) Simplify TopoJSON in order to reduce size. Smaller P value will result in smaller file with less details:
+   > ./node_modules/topojson-simplify/bin/toposimplify -P 0.01 ne_10m_admin_0_countries_topo.json > ne_10m_admin_0_countries_topo_simplified.json
 """
 
 # List of countries and territories which should NOT be mapped to regions
@@ -77,7 +87,7 @@ def map_ne_admin_counties_to_drawdown_regions(shapefile_zip_path):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print(help_message)
+        print(HELP_MESSAGE)
         sys.exit(1)
 
     shapefile_zip_path = sys.argv[1]
@@ -97,3 +107,4 @@ if __name__ == '__main__':
         region_only.to_file(output_json_path, driver='GeoJSON')
 
         print(f"GeoJSON saved to {output_json_path}")
+        print(NEXT_STEPS)
