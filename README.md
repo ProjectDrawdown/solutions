@@ -1,6 +1,3 @@
-![status](https://github.com/ProjectDrawdown/solutions/workflows/Drawdown%20Solutions%20Python%20application/badge.svg)
-[![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions)
-
 # Project Drawdown Model Engine
 [Project Drawdown](https://www.drawdown.org/) is the most comprehensive plan yet published for how to solve Global Warming. Project Drawdown entered the climate conversation with the [publication of the 2017 book](https://www.drawdown.org/the-book), and continues its mission to inspire and communicate solutions.
 
@@ -59,6 +56,9 @@ We need better ways for people to explore the overall set of climate solutions a
 
 ---
 
+![status](https://github.com/ProjectDrawdown/solutions/workflows/Drawdown%20Solutions%20Python%20application/badge.svg)
+[![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions)
+
 ## Getting started
 
 You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [git-lfs](https://git-lfs.github.com/), and [Python 3](https://docs.python.org/3/using/index.html) (>= 3.8) installed. The jupyter labextensions require [nodejs](https://nodejs.org/) and [npm](https://www.npmjs.com/).
@@ -70,32 +70,32 @@ $ git clone https://github.com/ProjectDrawdown/solutions.git
 $ cd solutions
 ```
 
-We recommend using [pipenv](https://github.com/pypa/pipenv) for a virtual environment:
+Tests are based on [tox](https://tox.readthedocs.org/). The default test target runs in about two minutes.
+```
+$ tox
 
+# The "ci" (continuous integration) target runs all tests, and takes roughly two hours to finish.
+$ tox -e ci
+
+# to run a specific test:
+$ tox -- tools/tests/test_vma_xls_extract.py::test_read_xls
+```
+
+The main user interface is a Jupyter Notebook intended to run in the cloud via [Jupyterhub](https://jupyter.org/hub). To run Jupyter locally we recommend using [pipenv](https://github.com/pypa/pipenv) for a virtual environment:
 ```sh
 $ pipenv shell
-(solutions) $ pip install -r requirements.txt
+(solutions) $ pipenv install -r requirements.txt
 (solutions) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (solutions) $ jupyter labextension install bqplot ipyvolume jupyter-threejs qgrid
-```
-
-Tests are based on [tox](https://tox.readthedocs.org/). To run tests one can use make. The test target runs in less than two minutes, the alltests
-target takes over an hour to finish.
-```
-(solutions) $ make test
-(solutions) $ make alltests
-
-# to run a specific test, call tox directly:
-(solutions) $ tox -- tools/tests/test_vma_xls_extract.py::test_read_xls
-```
-
-The main user interface is a Jupyter Notebook:
-```sh
 (solutions) $ jupyter lab ./Drawdown.ipynb
 ```
 
 To use with [Voilà](https://blog.jupyter.org/and-voil%C3%A0-f6a2c08a4a93):
 ```sh
+$ pipenv shell
+(solutions) $ pipenv install -r requirements.txt
+(solutions) $ jupyter nbextension install --py --sys-prefix vega
+(solutions) $ jupyter nbextension enable vega --py --sys-prefix
 (solutions) $ voila --enable_nbextensions=True --VoilaConfiguration.file_whitelist="['.*\.(png|jpg|gif|svg|csv|json|ico|js)']" ./VoilaDrawdown.ipynb
 ```
 
