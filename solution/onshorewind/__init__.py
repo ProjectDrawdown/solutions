@@ -36,25 +36,25 @@ VMAs = {
         filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
         use_weight=False),
     'CONVENTIONAL Lifetime Capacity': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
         use_weight=True),
     'SOLUTION Lifetime Capacity': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
         use_weight=False),
     'CONVENTIONAL Average Annual Use': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
         use_weight=True),
     'SOLUTION Average Annual Use': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
         use_weight=False),
     'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
         use_weight=True),
     'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
         use_weight=False),
     'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv"),
         use_weight=True),
     'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Fixed_Operating_Cost_FOM.csv"),
@@ -86,7 +86,7 @@ VMAs = {
         filename=THISDIR.joinpath("vma_data", "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit.csv"),
         use_weight=True),
     'Weighted Average CONVENTIONAL Plant Efficiency': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Weighted_Average_CONVENTIONAL_Plant_Efficiency.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "Weighted_Average_CONVENTIONAL_Plant_Efficiency.csv"),
         use_weight=True),
     'Coal Plant Efficiency': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "Coal_Plant_Efficiency.csv"),
@@ -104,7 +104,7 @@ VMAs = {
         filename=THISDIR.joinpath("vma_data", "Share_of_Onshore_wind_on_total_Wind_Generation.csv"),
         use_weight=False),
     'Discount Rate: Commercial / Industry': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Discount_Rate_Commercial_Industry.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "Discount_Rate_Commercial_Industry.csv"),
         use_weight=False),
 }
 vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))

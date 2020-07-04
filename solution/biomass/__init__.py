@@ -36,13 +36,13 @@ VMAs = {
         filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
         use_weight=False),
     'CONVENTIONAL Lifetime Capacity': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
         use_weight=True),
     'SOLUTION Lifetime Capacity': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
         use_weight=False),
     'CONVENTIONAL Average Annual Use': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
         use_weight=True),
     'SOLUTION Average Annual Use': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
@@ -54,7 +54,7 @@ VMAs = {
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
         use_weight=False),
     'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv"),
         use_weight=True),
     'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Fixed_Operating_Cost_FOM.csv"),
@@ -85,7 +85,7 @@ VMAs = {
     'N2O-CO2eq Tons Reduced': vma.VMA(
         filename=None, use_weight=False),
     '2005-2014 Average CONVENTIONAL Fuel Price per functional unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit.csv"),
+        filename=DATADIR.joinpath('energy', "vma_data", "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit.csv"),
         use_weight=True),
     'Weighted Average CONVENTIONAL Plant Efficiency': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "Weighted_Average_CONVENTIONAL_Plant_Efficiency.csv"),
