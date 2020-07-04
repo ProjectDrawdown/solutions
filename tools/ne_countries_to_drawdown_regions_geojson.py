@@ -64,6 +64,7 @@ def map_ne_admin_counties_to_drawdown_regions(shapefile_zip_path):
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print(help_message)
+        sys.exit(1)
 
     shapefile_zip_path = sys.argv[1]
     if not os.path.exists(shapefile_zip_path):
