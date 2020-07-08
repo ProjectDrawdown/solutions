@@ -16,7 +16,7 @@ toolsdir=$1
 
 
 tmpdir=$(mktemp -d soln_xls.XXXXXX)
-PYTHONPATH=.:${PYTHONPATH} ${toolsdir}/solution_xls_extract.py --excelfile=${toolsdir}/tests/solution_xls_extract_LAND_test_A.xlsm --outputdir=${tmpdir}
+PYTHONPATH=.:${PYTHONPATH} python3 ${toolsdir}/solution_xls_extract.py --excelfile=${toolsdir}/tests/solution_xls_extract_LAND_test_A.xlsm --outputdir=${tmpdir}
 output=$(cat ${tmpdir}/__init__.py)
 ac_files=$(cat ${tmpdir}/ac/*)
 
