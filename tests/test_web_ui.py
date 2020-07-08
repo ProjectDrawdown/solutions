@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 import urllib
 
@@ -9,7 +10,9 @@ from webdrivermanager import GeckoDriverManager
 
 @pytest.fixture(scope='session')
 def driver():
-    geckodriver_executable_path = GeckoDriverManager().download_and_install()[1]
+    geckodriver_executable_path = shutil.which('geckodriver')
+    if geckodriver_executable_path is None:
+        geckodriver_executable_path = GeckoDriverManager().download_and_install()[1]
     options = Options()
     options.headless = True
     driver = webdriver.Firefox(executable_path=geckodriver_executable_path, options=options)

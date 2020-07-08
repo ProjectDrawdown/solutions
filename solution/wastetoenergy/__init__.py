@@ -93,7 +93,7 @@ VMAs = {
       filename=DATADIR.joinpath(*('energy', 'vma_Coal_Plant_Efficiency_2.csv')),
       use_weight=False),
   'Natural Gas Plant Efficiency': vma.VMA(
-      filename=THISDIR.joinpath("vma_data", "Natural_Gas_Plant_Efficiency.csv"),
+      filename=DATADIR.joinpath('energy', "vma_data", "Natural_Gas_Plant_Efficiency.csv"),
       use_weight=False),
   'Oil Plant Efficiency': vma.VMA(
       filename=DATADIR.joinpath(*('energy', 'vma_Oil_Plant_Efficiency_2.csv')),
