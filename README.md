@@ -81,9 +81,9 @@ $ tox -e ci
 $ tox -- tools/tests/test_vma_xls_extract.py::test_read_xls
 ```
 
-The main user interface is a Jupyter Notebook intended to run in the cloud via [Jupyterhub](https://jupyter.org/hub). To run Jupyter locally we recommend using [pipenv](https://github.com/pypa/pipenv) for a virtual environment:
+The main user interface is a Jupyter Notebook intended to run in the cloud via [Jupyterhub](https://jupyter.org/hub). To run Jupyter locally we recommend using [pipenv](https://github.com/pypa/pipenv) for a virtual environment. As we use tox to run tests within virtual environments, we set the WORKON_HOME environment variable to have pipenv not re-install the same support in a new location:
 ```sh
-$ pipenv shell
+$ WORKON_HOME="${PWD}/.tox/common" pipenv shell
 (solutions) $ pipenv install -r requirements.txt
 (solutions) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (solutions) $ jupyter labextension install bqplot ipyvolume jupyter-threejs qgrid
@@ -92,7 +92,7 @@ $ pipenv shell
 
 To use with [Voilà](https://blog.jupyter.org/and-voil%C3%A0-f6a2c08a4a93):
 ```sh
-$ pipenv shell
+$ WORKON_HOME="${PWD}/.tox/common" pipenv shell
 (solutions) $ pipenv install -r requirements.txt
 (solutions) $ jupyter nbextension install --py --sys-prefix vega
 (solutions) $ jupyter nbextension enable vega --py --sys-prefix
