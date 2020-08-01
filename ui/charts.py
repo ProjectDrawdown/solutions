@@ -1346,7 +1346,6 @@ class JupyterUI:
                 pds_per_region_melted = pds_per_region.reset_index().melt(
                         'Year', value_name='adoption', var_name='region')[['region', 'adoption']]
                 chart = alt.Chart(geo_source).mark_geoshape(
-                    fill='#dddddd',
                     stroke='black',
                 ).encode(
                     color=alt.Color('adoption:Q', scale=alt.Scale(scheme='greens')),
@@ -1375,7 +1374,6 @@ class JupyterUI:
                     pds_percent_per_region_melted = pds_percent_per_region.reset_index().melt(
                             'Year', value_name='percent', var_name='region')[['region', 'percent']]
                     chart = alt.Chart(geo_source).mark_geoshape(
-                        fill='#dddddd',
                         stroke='black',
                     ).encode(
                         color=alt.Color('percent:Q', scale=alt.Scale(scheme='greens')),
