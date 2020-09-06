@@ -8,6 +8,11 @@ import pathlib
 import numpy as np
 import pandas as pd
 
+# import sys
+# sys.path.append('c:\\Users\\sunishchal.dev\\Documents\\solutions')
+
+# import solarpvutil
+
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
 
@@ -77,6 +82,8 @@ class Scenario:
 
         # Table 2: REF2, Electricity Generation TAM (TWh)										 
         # Electricity_cluster!B26:K73
+        # obj = solarpvutil.Scenario() # Not using electricity TAM output due to slight discrepancy in Asia values
+        # self.ref2_tam = obj.tm.ref_tam_per_region()
         self.ref2_tam = pd.DataFrame(ref2_tam_list[1:],
             columns=ref2_tam_list[0],
             index=list(range(2014, 2061)), dtype=np.float64)
@@ -169,6 +176,12 @@ class Scenario:
         # Electricity_cluster!W77:AD124
         self.change_elec_gen = change_elec_gen
 
+        # Table 7: Difference in FUNCTIONAL & IMPLEMENTATION UNITS between REF1 and REF2 populations in LLDC+HighNRR+HighED	
+        # CONVENTIONAL												
+        addl_func_units_highed = pd.DataFrame(None,
+                    columns=['Additional Functional Units in REF2 vs REF2 (TWh)', 'Annual Functional Units Increase (TWh)', 'Change in TAM (%)', 'Annual Implementation Units Increase + Replacement (TW)'],
+                    index=list(range(2014, 2061)), dtype=np.float64)
+        
 
 # TABLE 1: Current TAM Mix
 current_tam_mix_list = [
