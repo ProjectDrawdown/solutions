@@ -36,6 +36,21 @@ lldc_high_nrr_config = {
 lldc_high_nrr_regions_y = dict(filter(lambda x: x[1] == 'Y', lldc_high_nrr_config.items())).keys()
 lldc_high_nrr_regions_n = dict(filter(lambda x: x[1] == 'N', lldc_high_nrr_config.items())).keys()
 
+# TABLE 1: Current TAM Mix
+current_tam_mix_list = [
+        ['Energy Source', '2018', 'Include in SOL?', 'Include in CONV?'],
+        ['Coal', 39.28, 'N', 'Y'],
+        ['Natural gas', 22.72, 'N', 'Y'],
+        ['Nuclear', 10.45, 'N', 'N'],
+        ['Oil', 3.41, 'N', 'Y'],
+        ['Hydroelectric', 15.52, 'N', 'Y'],
+        ['Solar Photovoltaic', 1.73, 'N', 'N'],
+        ['Wave and Tidal', 0.00, 'N', 'N'],
+        ['Wind Onshore', 4.36, 'N', 'N'],
+        ['Wind Offshore', 0.24, 'N', 'N'],
+        ['Biomass and Waste', 1.90, 'N', 'N'],
+        ['Concentrated Solar Power', 0.05, 'N', 'N'],
+        ['Geothermal', 0.34, 'N', 'N']]
 
 class Scenario:
     name = name
@@ -43,7 +58,7 @@ class Scenario:
 
     def __init__(self, scenario=None):
 
-        # Population scenarios
+        # Load in population scenarios
         
         # REF1 Population
         # Population_Tables!C2:L49
@@ -70,20 +85,7 @@ class Scenario:
         self.ref2_low_edu.index = self.ref2_low_edu.index.astype(int)
 
         # TABLE 1: Current TAM Mix
-        self.current_tam_mix = pd.DataFrame(current_tam_mix_list,
-                    columns=['2018', 'Include in SOL?', 'Include in CONV?'],
-                    index=['Coal',
-                            'Natural gas',
-                            'Nuclear',
-                            'Oil',
-                            'Hydroelectric',
-                            'Solar Photovoltaic',
-                            'Wave and Tidal',
-                            'Wind Onshore',
-                            'Wind Offshore',
-                            'Biomass and Waste',
-                            'Concentrated Solar Power',
-                            'Geothermal'])
+        self.current_tam_mix = pd.DataFrame(current_tam_mix_list[1:], columns=current_tam_mix_list[1])
 
         # Table 2: REF2, Electricity Generation TAM (TWh)										 
         # Electricity_cluster!B26:K73
@@ -188,20 +190,6 @@ class Scenario:
                     index=list(range(2014, 2061)), dtype=np.float64)
         
 
-# TABLE 1: Current TAM Mix
-current_tam_mix_list = [
-        [39.28, 'N', 'Y'],
-        [22.72, 'N', 'Y'],
-        [10.45, 'N', 'N'],
-        [3.41, 'N', 'Y'],
-        [15.52, 'N', 'Y'],
-        [1.73, 'N', 'N'],
-        [0.00, 'N', 'N'],
-        [4.36, 'N', 'N'],
-        [0.24, 'N', 'N'],
-        [1.90, 'N', 'N'],
-        [0.05, 'N', 'N'],
-        [0.34, 'N', 'N']]
 
 
 # Table 2: REF2, Electricity Generation TAM (TWh)										

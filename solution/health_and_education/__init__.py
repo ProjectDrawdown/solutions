@@ -14,7 +14,7 @@ THISDIR = pathlib.Path(__file__).parents[0]
 
 
 class Scenario:
-    name = name
+    # name = name
     # solution_category = solution_category
 
     def __init__(self, scenario=None):
