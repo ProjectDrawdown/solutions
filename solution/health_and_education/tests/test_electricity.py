@@ -4,7 +4,7 @@ sys.path.append('c:\\Users\\sunishchal.dev\\Documents\\solutions\\solution\\heal
 import pandas as pd
 import numpy as np
 
-import electricity_cluster
+import clusters.electricity_cluster as electricity_cluster
 
 test_elec = electricity_cluster.Scenario()
 exp_elec = pd.read_csv('expected_elec_cluster.csv', header=None)

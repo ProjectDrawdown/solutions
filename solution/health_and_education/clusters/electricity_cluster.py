@@ -12,7 +12,7 @@ import pandas as pd
 
 # import solarpvutil
 
-DATADIR = pathlib.Path(__file__).parents[0].joinpath('data')
+DATADIR = pathlib.Path(__file__).parents[1].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
 
 name = 'Health and Education - Electricity Cluster'
