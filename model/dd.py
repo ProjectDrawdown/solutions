@@ -48,3 +48,15 @@ tdr_cat_dtype = pandas.api.types.CategoricalDtype(categories=THERMAL_DYNAMICAL_R
 # time ranges
 CORE_START_YEAR = 2015
 CORE_END_YEAR = 2060
+
+# Config for health & education solution
+# Regions included as Least & Less Developed Countries & high Net Reproducitve Rate:
+LLDC_HIGH_NRR_CONFIG = {
+    'OECD90': 'N', 
+    'Eastern Europe': 'N', 
+    'Asia (Sans Japan)': 'Y', 
+    'Middle East and Africa': 'Y', 
+    'Latin America': 'N'
+}
+LLDC_HIGH_NRR_REGION_Y = dict(filter(lambda x: x[1] == 'Y', LLDC_HIGH_NRR_CONFIG.items())).keys()
+LLDC_HIGH_NRR_REGION_N = dict(filter(lambda x: x[1] == 'N', LLDC_HIGH_NRR_CONFIG.items())).keys()

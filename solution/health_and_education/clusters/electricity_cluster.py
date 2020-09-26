@@ -27,16 +27,6 @@ pct_impact = 0.50
 use_fixed_weight = 'N'
 ## TODO: Move above block to advanced_controls.py after we figure out if it varies by scenario
 
-# Regions included as LLDC+HighNRR:
-lldc_high_nrr_config = {
-    'OECD90': 'N', 
-    'Eastern Europe': 'N', 
-    'Asia (Sans Japan)': 'Y', 
-    'Middle East and Africa': 'Y', 
-    'Latin America': 'N'
-}
-lldc_high_nrr_regions_y = dict(filter(lambda x: x[1] == 'Y', lldc_high_nrr_config.items())).keys()
-lldc_high_nrr_regions_n = dict(filter(lambda x: x[1] == 'N', lldc_high_nrr_config.items())).keys()
 
 # TABLE 1: Current TAM Mix
 current_tam_mix_list = [
@@ -125,10 +115,10 @@ class Scenario:
                     columns=['LLDC+HighNRR', 'China', 'MDC + LAC + EE', 'Total Electricity Demand in Countries with Higher Educational Attainment (TWh)', 'Total Electricity Demand in Countries with Higher Educational Attainment (TWh) % LLDC'],
                     index=list(range(2014, 2061)), dtype=np.float64)
 
-        ref2_elec_gen.loc[:, 'LLDC+HighNRR'] = self.ref2_tam.loc[:, lldc_high_nrr_regions_y].sum(axis=1) - self.ref2_tam.loc[:, 'China']
+        ref2_elec_gen.loc[:, 'LLDC+HighNRR'] = self.ref2_tam.loc[:, dd.LLDC_HIGH_NRR_REGION_Y].sum(axis=1) - self.ref2_tam.loc[:, 'China']
         ref2_elec_gen.loc[:, 'China'] = self.ref2_tam.loc[:, 'China']
-        ref2_elec_gen.loc[:, 'MDC + LAC + EE'] = self.ref2_tam.loc[:, lldc_high_nrr_regions_n].sum(axis=1) 
-        if lldc_high_nrr_config['Asia (Sans Japan)'] == 'N':
+        ref2_elec_gen.loc[:, 'MDC + LAC + EE'] = self.ref2_tam.loc[:, dd.LLDC_HIGH_NRR_REGION_N].sum(axis=1) 
+        if dd.LLDC_HIGH_NRR_CONFIG['Asia (Sans Japan)'] == 'N':
             ref2_elec_gen.loc[:, 'MDC + LAC + EE'] = ref2_elec_gen.loc[:, 'MDC + LAC + EE'] - self.ref2_tam.loc[:, 'China']
         ref2_elec_gen.loc[:, 'Total Electricity Demand in Countries with Higher Educational Attainment (TWh)'] = ref2_elec_gen.loc[:, ['LLDC+HighNRR', 'China', 'MDC + LAC + EE']].sum(axis=1)
         ref2_elec_gen.loc[:, 'Total Electricity Demand in Countries with Higher Educational Attainment (TWh) % LLDC'] = ref2_elec_gen.loc[:, 'LLDC+HighNRR'] / ref2_elec_gen.loc[:, 'Total Electricity Demand in Countries with Higher Educational Attainment (TWh)']
@@ -141,15 +131,15 @@ class Scenario:
                     columns=['LLDC with low educational attainment, excluding China', 'MDC + EE + LAC with low educational attainment, excluding China', 'China', 'LLDC with higher educational attainment, excluding China', 'MDC + EE + LAC with higher educational attainment', 'Total Electricity Demand in Countries with Low Educational Attainment (TWh), exluding China', 'Total Electricity Demand in Countries with Low Educational Attainment (TWh), exluding China % LLDC', 'Total Electricity Demand in Countries with Higher Educational Attainment (TWh)', 'Total Electricity Demand in Countries with Higher Educational Attainment (TWh) % LLDC', 'Total Electricity Demand (TWh)', 'Total Electricity Demand (TWh) % LLDC'],
                     index=list(range(2014, 2061)), dtype=np.float64)
 
-        ref1_elec_gen.loc[:, 'LLDC with low educational attainment, excluding China'] = ref1_tam_low_edu.loc[:, lldc_high_nrr_regions_y].sum(axis=1) - ref1_tam_low_edu.loc[:, 'China']
-        ref1_elec_gen.loc[:, 'MDC + EE + LAC with low educational attainment, excluding China'] = ref1_tam_low_edu.loc[:, lldc_high_nrr_regions_n].sum(axis=1)
-        if lldc_high_nrr_config['Asia (Sans Japan)'] == 'N':
+        ref1_elec_gen.loc[:, 'LLDC with low educational attainment, excluding China'] = ref1_tam_low_edu.loc[:, dd.LLDC_HIGH_NRR_REGION_Y].sum(axis=1) - ref1_tam_low_edu.loc[:, 'China']
+        ref1_elec_gen.loc[:, 'MDC + EE + LAC with low educational attainment, excluding China'] = ref1_tam_low_edu.loc[:, dd.LLDC_HIGH_NRR_REGION_N].sum(axis=1)
+        if dd.LLDC_HIGH_NRR_CONFIG['Asia (Sans Japan)'] == 'N':
             ref1_elec_gen.loc[:, 'MDC + LAC + EE'] = ref1_elec_gen.loc[:, 'MDC + LAC + EE'] - self.ref1_tam_low_edu.loc[:, 'China']
         ref1_elec_gen.loc[:, 'China'] = ref1_tam_high_edu.loc[:, 'China']
 
-        ref1_elec_gen.loc[:, 'LLDC with higher educational attainment, excluding China'] = ref1_tam_high_edu.loc[:, lldc_high_nrr_regions_y].sum(axis=1) - ref1_tam_high_edu.loc[:, 'China']
-        ref1_elec_gen.loc[:, 'MDC + EE + LAC with higher educational attainment'] = ref1_tam_high_edu.loc[:, lldc_high_nrr_regions_n].sum(axis=1)
-        if lldc_high_nrr_config['Asia (Sans Japan)'] == 'N':
+        ref1_elec_gen.loc[:, 'LLDC with higher educational attainment, excluding China'] = ref1_tam_high_edu.loc[:, dd.LLDC_HIGH_NRR_REGION_Y].sum(axis=1) - ref1_tam_high_edu.loc[:, 'China']
+        ref1_elec_gen.loc[:, 'MDC + EE + LAC with higher educational attainment'] = ref1_tam_high_edu.loc[:, dd.LLDC_HIGH_NRR_REGION_N].sum(axis=1)
+        if dd.LLDC_HIGH_NRR_CONFIG['Asia (Sans Japan)'] == 'N':
             ref1_elec_gen.loc[:, 'MDC + EE + LAC with higher educational attainment'] = ref1_elec_gen.loc[:, 'MDC + EE + LAC with higher educational attainment'] - self.ref1_tam_high_edu.loc[:, 'China']
 
         ref1_elec_gen.loc[:, 'Total Electricity Demand in Countries with Low Educational Attainment (TWh), exluding China'] = ref1_elec_gen.loc[:, 'LLDC with low educational attainment, excluding China'] + ref1_elec_gen.loc[:, 'MDC + EE + LAC with low educational attainment, excluding China']
