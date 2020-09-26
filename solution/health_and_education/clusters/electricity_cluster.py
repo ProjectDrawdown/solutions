@@ -7,10 +7,12 @@ import pathlib
 import numpy as np
 import pandas as pd
 
-# import sys
-# sys.path.append('c:\\Users\\sunishchal.dev\\Documents\\solutions')
+import sys
+repo_path = str(pathlib.Path(__file__).parents[3])
+sys.path.append(repo_path)
 
-# import solarpvutil
+from solution import solarpvutil
+from model import dd
 
 DATADIR = pathlib.Path(__file__).parents[1].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
