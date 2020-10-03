@@ -45,6 +45,16 @@ def test_electricity_cluster():
     exp_change_elec_gen.index = exp_elec.iloc[77:124, 7].astype(int).values
     pd.testing.assert_frame_equal(test_elec.change_elec_gen, exp_change_elec_gen, check_exact=False, rtol=1e-3)
 
+    exp_addl_func_units_highed = exp_elec.iloc[132:179, 4:7].astype(float)
+    exp_addl_func_units_highed.columns = exp_elec.iloc[130, 4:7].values
+    exp_addl_func_units_highed.index = exp_elec.iloc[132:179, 0].astype(int, errors='ignore').values
+    pd.testing.assert_frame_equal(test_elec.addl_func_units_highed, exp_addl_func_units_highed, check_exact=False, rtol=1e-3)
+
+    exp_addl_func_units_lowed = exp_elec.iloc[132:179, 12:15].astype(float)
+    exp_addl_func_units_lowed.columns = exp_elec.iloc[130, 12:15].values
+    exp_addl_func_units_lowed.index = exp_elec.iloc[132:179, 0].astype(int, errors='ignore').values
+    pd.testing.assert_frame_equal(test_elec.addl_func_units_lowed, exp_addl_func_units_lowed, check_exact=False, rtol=1e-3)
+
 
     print("Test complete: electricity cluster")
 

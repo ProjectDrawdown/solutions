@@ -13,12 +13,14 @@ sys.path.append(repo_path)
 
 from solution import solarpvutil
 from model import dd
+from model import advanced_controls as ac
+from model import emissionsfactors as ef
 
 DATADIR = pathlib.Path(__file__).parents[1].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
 
 name = 'Health and Education - Electricity Cluster'
-# solution_category = ac.SOLUTION_CATEGORY.REDUCTION #TODO: Confirm this is a reduction solution
+solution_category = ac.SOLUTION_CATEGORY.REDUCTION 
 
 # Assumptions:
 # % impact of educational attainment on uptake of Family Planning:
@@ -27,10 +29,9 @@ pct_impact = 0.50
 use_fixed_weight = 'N'
 ## TODO: Move above block to advanced_controls.py after we figure out if it varies by scenario
 
-
 # TABLE 1: Current TAM Mix
 current_tam_mix_list = [
-        ['Energy Source', '2018', 'Include in SOL?', 'Include in CONV?'],
+        ['Energy Source', 'Weighting Factor', 'Include in SOL?', 'Include in CONV?'],
         ['Coal', 39.28, 'N', 'Y'],
         ['Natural gas', 22.72, 'N', 'Y'],
         ['Nuclear', 10.45, 'N', 'N'],
@@ -113,7 +114,7 @@ class Scenario:
         # Table 4: Total REF2 Electricity Generation by Economic Development Status (TWh)					
         ref2_elec_gen = pd.DataFrame(None,
                     columns=['LLDC+HighNRR', 'China', 'MDC + LAC + EE', 'Total Electricity Demand in Countries with Higher Educational Attainment (TWh)', 'Total Electricity Demand in Countries with Higher Educational Attainment (TWh) % LLDC'],
-                    index=list(range(2014, 2061)), dtype=np.float64)
+                    index=list(range(2014, 2061)), dtype=np.float64) # TODO: remove hard coded year indices
 
         ref2_elec_gen.loc[:, 'LLDC+HighNRR'] = self.ref2_tam.loc[:, dd.LLDC_HIGH_NRR_REGION_Y].sum(axis=1) - self.ref2_tam.loc[:, 'China']
         ref2_elec_gen.loc[:, 'China'] = self.ref2_tam.loc[:, 'China']
@@ -178,14 +179,66 @@ class Scenario:
         # Table 7: Difference in FUNCTIONAL & IMPLEMENTATION UNITS between REF1 and REF2 populations in LLDC+HighNRR+HighED	
         # CONVENTIONAL												
         addl_func_units_highed = pd.DataFrame(None,
-                    columns=['Additional Functional Units in REF2 vs REF2 (TWh)', 'Annual Functional Units Increase (TWh)', 'Change in TAM (%)', 'Annual Implementation Units Increase + Replacement (TW)'],
+                    columns=['Additional Functional Units in REF2 vs REF2', 'Annual Functional Units Increase', 'Change in TAM'],
                     index=list(range(2014, 2061)), dtype=np.float64)
         
+        current_tam_mix = pd.DataFrame(current_tam_mix_list[1:], columns=current_tam_mix_list[0])
 
+        if use_fixed_weight == 'N':
+            conv_weight_factor = self.change_elec_gen.loc[:, '% LLDC with higher educational attainment']
+        elif use_fixed_weight == 'Y':
+            conv_weight_factor = fixed_weighting_factor
+        else:
+            raise Exception('Invalid value passed for "use_fixed_weight", please use Y or N')
+
+        conv_weight_sum = current_tam_mix.loc[current_tam_mix['Include in CONV?'] == 'Y', 'Weighting Factor'].sum()
+        
+        addl_func_units_highed.loc[:, 'Additional Functional Units in REF2 vs REF2'] = conv_weight_factor * (conv_weight_sum \
+             * ((self.ref1_tam_high_edu['World'] + self.ref1_tam_low_edu['World']) - self.ref2_tam['World']))
+        addl_func_units_highed.loc[:, 'Annual Functional Units Increase'] = addl_func_units_highed['Additional Functional Units in REF2 vs REF2'].diff()
+        addl_func_units_highed.loc[2016, 'Annual Functional Units Increase'] = addl_func_units_highed.loc[2016, 'Additional Functional Units in REF2 vs REF2'] 
+        addl_func_units_highed.loc[:, 'Change in TAM'] = addl_func_units_highed['Additional Functional Units in REF2 vs REF2'] \
+             / ((self.ref1_tam_high_edu['World'] + self.ref1_tam_low_edu['World']) - self.ref2_tam['World'])
+
+        # Convert to TWh
+        addl_func_units_highed = addl_func_units_highed / 100
+
+        # Electricity_cluster!E131:G179
+        self.addl_func_units_highed = addl_func_units_highed
+
+        # Table 8: Difference in FUNCTIONAL & IMPLEMENTATION UNITS between REF1 and REF2 populations in LLDC+HighNRR+LowED
+        # CONVENTIONAL												
+        addl_func_units_lowed = pd.DataFrame(None,
+                    columns=['Additional Functional Units in REF2 vs REF2', 'Annual Functional Units Increase', 'Change in TAM'],
+                    index=list(range(2014, 2061)), dtype=np.float64)
+                    
+        if use_fixed_weight == 'N':
+            conv_weight_factor = self.change_elec_gen.loc[:, '% LLDC with Low Educational Attainment']
+        elif use_fixed_weight == 'Y':
+            conv_weight_factor = fixed_weighting_factor
+        else:
+            raise Exception('Invalid value passed for "use_fixed_weight", please use Y or N')
+
+        addl_func_units_lowed.loc[:, 'Additional Functional Units in REF2 vs REF2'] = conv_weight_factor * (conv_weight_sum \
+             * ((self.ref1_tam_high_edu['World'] + self.ref1_tam_low_edu['World']) - self.ref2_tam['World']))
+        addl_func_units_lowed.loc[:, 'Annual Functional Units Increase'] = addl_func_units_lowed['Additional Functional Units in REF2 vs REF2'].diff()
+        addl_func_units_lowed.loc[2016, 'Annual Functional Units Increase'] = addl_func_units_lowed.loc[2016, 'Additional Functional Units in REF2 vs REF2'] 
+        addl_func_units_lowed.loc[:, 'Change in TAM'] = addl_func_units_lowed['Additional Functional Units in REF2 vs REF2'] \
+             / ((self.ref1_tam_high_edu['World'] + self.ref1_tam_low_edu['World']) - self.ref2_tam['World'])
+
+        # Convert to TWh
+        addl_func_units_lowed = addl_func_units_lowed / 100
+
+        # Electricity_cluster!M131:O179
+        self.addl_func_units_lowed = addl_func_units_lowed
+
+        # ref_gred_emis = ef.ElectricityGenOnGrid(ac.AdvancedControls()).conv_ref_grid_CO2eq_per_KWh()
+        # print(ref_gred_emis.head())
 
 
 # Table 2: REF2, Electricity Generation TAM (TWh)										
 # Electricity_cluster!B26:K73
+# TODO: Replace this with solarpvutil.Scenario.ref_tam_per_region once we resolve the data mismatch
 ref2_tam_list = [
         ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
         [22548.00000, 9630.94132, 2021.81456, 8068.09850, 1750.27240, 1681.57391, 5262.77320, 1324.87968, 3379.55071, 4226.08258],
