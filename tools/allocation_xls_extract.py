@@ -18,7 +18,7 @@ pd.set_option('display.expand_frame_repr', False)
 
 class AllocationReader:
 
-    def __init__(self, key='land', outputdir=None):
+    def __init__(self, key='land', outputdir=None): # Function definition and declaration.
         if key == 'land':
             f = LAND_XLS_PATH
             self.regimes = model.dd.THERMAL_MOISTURE_REGIMES8
