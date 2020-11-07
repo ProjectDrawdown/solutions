@@ -277,3 +277,5 @@ class Scenario:
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
 
+        def to_json(self):
+            self.c2.to_json()
