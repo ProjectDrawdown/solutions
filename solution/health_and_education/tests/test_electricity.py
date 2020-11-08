@@ -55,6 +55,43 @@ def test_electricity_cluster():
     exp_addl_func_units_lowed.index = exp_elec.iloc[132:179, 0].astype(int, errors='ignore').values
     pd.testing.assert_frame_equal(test_elec.addl_func_units_lowed, exp_addl_func_units_lowed, check_exact=False, rtol=1e-3)
 
+    exp_emis_diff_highed = exp_elec.iloc[132:179, 21:26].astype(float)
+    exp_emis_diff_highed.columns = range(exp_emis_diff_highed.shape[1]) # Default columns to integers to avoid mismatch between Excel & pandas col names
+    test_elec.emis_diff_highed.columns = range(test_elec.emis_diff_highed.shape[1])
+    exp_emis_diff_highed.index = exp_elec.iloc[132:179, 0].astype(int, errors='ignore').values
+    pd.testing.assert_frame_equal(test_elec.emis_diff_highed, exp_emis_diff_highed, check_exact=False, rtol=1e-3)
+
+    exp_emis_diff_lowed = exp_elec.iloc[132:179, 34:39].astype(float)
+    exp_emis_diff_lowed.columns = range(exp_emis_diff_lowed.shape[1])
+    test_elec.emis_diff_lowed.columns = range(test_elec.emis_diff_lowed.shape[1])
+    exp_emis_diff_lowed.index = exp_elec.iloc[132:179, 0].astype(int, errors='ignore').values
+    pd.testing.assert_frame_equal(test_elec.emis_diff_lowed, exp_emis_diff_lowed, check_exact=False, rtol=1e-3)
+
+    exp_emissions_allocations_lldc = exp_elec.iloc[132:179, [44, 45, 47, 48, 50, 51, 54, 55]].astype(float)
+    exp_emissions_allocations_lldc.columns = range(exp_emissions_allocations_lldc.shape[1])
+    test_elec.emissions_allocations_lldc.columns = range(test_elec.emissions_allocations_lldc.shape[1])
+    exp_emissions_allocations_lldc.index = exp_elec.iloc[132:179, 43].astype(int, errors='ignore').values
+    pd.testing.assert_frame_equal(test_elec.emissions_allocations_lldc, exp_emissions_allocations_lldc, check_exact=False, rtol=1e-2)
+
+    exp_addl_func_units_mdc = exp_elec.iloc[191:238, 4:7].astype(float)
+    exp_addl_func_units_mdc.columns = exp_elec.iloc[189, 4:7].values
+    exp_addl_func_units_mdc.index = exp_elec.iloc[191:238, 0].astype(int, errors='ignore').values
+    pd.testing.assert_frame_equal(test_elec.addl_func_units_mdc, exp_addl_func_units_mdc, check_exact=False, rtol=1e-3)
+
+    exp_emis_diff_mdc = exp_elec.iloc[191:238, 14:19].astype(float)
+    exp_emis_diff_mdc.columns = range(exp_emis_diff_mdc.shape[1])
+    test_elec.emis_diff_mdc.columns = range(test_elec.emis_diff_mdc.shape[1])
+    exp_emis_diff_mdc.index = exp_elec.iloc[191:238, 0].astype(int, errors='ignore').values
+    pd.testing.assert_frame_equal(test_elec.emis_diff_mdc, exp_emis_diff_mdc, check_exact=False, rtol=1e-3)
+
+    exp_emissions_allocations_mdc = exp_elec.iloc[191:238, [23, 24, 26, 27, 29, 30, 33, 34]].astype(float)
+    exp_emissions_allocations_mdc.columns = range(exp_emissions_allocations_mdc.shape[1])
+    test_elec.emissions_allocations_mdc.columns = range(test_elec.emissions_allocations_mdc.shape[1])
+    exp_emissions_allocations_mdc.index = exp_elec.iloc[191:238, 22].astype(int, errors='ignore').values
+    pd.testing.assert_frame_equal(test_elec.emissions_allocations_mdc, exp_emissions_allocations_mdc, check_exact=False, rtol=1e-2)
+
+    # print(test_elec.emis_diff_highed.head())
+    # print(exp_emis_diff_highed.head())
 
     print("Test complete: electricity cluster")
 

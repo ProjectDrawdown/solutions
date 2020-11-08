@@ -177,7 +177,7 @@ class Scenario:
         self.change_elec_gen = change_elec_gen
 
         # Table 7: Difference in FUNCTIONAL & IMPLEMENTATION UNITS between REF1 and REF2 populations in LLDC+HighNRR+HighED	
-        # CONVENTIONAL												
+        # CONVENTIONAL								
         addl_func_units_highed = pd.DataFrame(None,
                     columns=['Additional Functional Units in REF2 vs REF2', 'Annual Functional Units Increase', 'Change in TAM'],
                     index=list(range(2014, 2061)), dtype=np.float64)
@@ -207,7 +207,7 @@ class Scenario:
         self.addl_func_units_highed = addl_func_units_highed
 
         # Table 8: Difference in FUNCTIONAL & IMPLEMENTATION UNITS between REF1 and REF2 populations in LLDC+HighNRR+LowED
-        # CONVENTIONAL												
+        # CONVENTIONAL									
         addl_func_units_lowed = pd.DataFrame(None,
                     columns=['Additional Functional Units in REF2 vs REF2', 'Annual Functional Units Increase', 'Change in TAM'],
                     index=list(range(2014, 2061)), dtype=np.float64)
@@ -232,8 +232,118 @@ class Scenario:
         # Electricity_cluster!M131:O179
         self.addl_func_units_lowed = addl_func_units_lowed
 
-        # ref_gred_emis = ef.ElectricityGenOnGrid(ac.AdvancedControls()).conv_ref_grid_CO2eq_per_KWh()
-        # print(ref_gred_emis.head())
+        # Table 9: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+HighED
+        # CONVENTIONAL Avoided Emissions/ Million Metric Tons CO2
+        # emissions_factors_ref1_co2eq = ef.ElectricityGenOnGrid(ac.AdvancedControls()).conv_ref_grid_CO2eq_per_KWh()
+        emissions_factors_ref1_co2eq = pd.DataFrame(ef_co2_eq_list[1:],
+            columns=ef_co2_eq_list[0],
+            index=list(range(2014, 2061)), dtype=np.float64)
+
+        emis_diff_highed = pd.DataFrame(None,
+                    columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+                    index=list(range(2014, 2061)), dtype=np.float64)
+
+        emis_diff_highed['Conventional: Grid'] = addl_func_units_highed['Additional Functional Units in REF2 vs REF2'] * emissions_factors_ref1_co2eq['World']
+        emis_diff_highed['Emission Reductions: Conv Total'] = emis_diff_highed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # Electricity_cluster!V131:Z179
+        self.emis_diff_highed = emis_diff_highed
+        
+        # Table 10: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+LowED
+        # CONVENTIONAL  - Least and Less Developed Countries (sans LAC, EE, China)	
+        emis_diff_lowed = pd.DataFrame(None,
+                    columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+                    index=list(range(2014, 2061)), dtype=np.float64)
+
+        emis_diff_lowed['Conventional: Grid'] = addl_func_units_lowed['Additional Functional Units in REF2 vs REF2'] * emissions_factors_ref1_co2eq['World']
+        emis_diff_lowed['Emission Reductions: Conv Total'] = emis_diff_lowed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # Electricity_cluster!AI131:AM179
+        self.emis_diff_lowed = emis_diff_lowed
+        
+        # Table 11: EMISSIONS ALLOCATIONS TO (a) Health & Education; (b) Education ONLY; (c) Family Planning (excluding education)
+        # Least and less developed countries
+        emissions_allocations_lldc = pd.DataFrame(None,
+                    columns=['Health & Education: Conv Total', 'Health & Education: Solution Total', 'Education: Conv Total', 'Education: Solution Total', 'Family Planning: Conv Total', 'Family Planning: Solution Total', '% Allocation to Education: Conv Total', '% Allocation to Education: Solution Total'],
+                    index=list(range(2014, 2061)), dtype=np.float64)
+
+        emissions_allocations_lldc['Health & Education: Conv Total'] = emis_diff_lowed['Emission Reductions: Conv Total'] + emis_diff_highed['Emission Reductions: Conv Total']
+        emissions_allocations_lldc['Health & Education: Conv Total'] = emissions_allocations_lldc['Health & Education: Conv Total'].fillna(0.0)
+        emissions_allocations_lldc['Health & Education: Solution Total'] = 0.0
+        emissions_allocations_lldc['Education: Conv Total'] = emis_diff_lowed['Emission Reductions: Conv Total'] * pct_impact
+        emissions_allocations_lldc['Education: Conv Total'] = emissions_allocations_lldc['Education: Conv Total'].fillna(0.0)
+        emissions_allocations_lldc['Education: Solution Total'] = 0.0
+        emissions_allocations_lldc['Family Planning: Conv Total'] = emissions_allocations_lldc['Health & Education: Conv Total'] - emissions_allocations_lldc['Education: Conv Total']
+        emissions_allocations_lldc['Family Planning: Conv Total'] = emissions_allocations_lldc['Family Planning: Conv Total'].fillna(0.0)
+        emissions_allocations_lldc['Family Planning: Solution Total'] = 0.0
+        emissions_allocations_lldc['% Allocation to Education: Conv Total'] = emissions_allocations_lldc['Education: Conv Total'] / emissions_allocations_lldc['Health & Education: Conv Total']
+        emissions_allocations_lldc['% Allocation to Education: Conv Total'] = emissions_allocations_lldc['% Allocation to Education: Conv Total'].round(2)
+        emissions_allocations_lldc['% Allocation to Education: Solution Total'] = np.nan
+
+        # Electricity_cluster!AR131:BD179
+        self.emissions_allocations_lldc = emissions_allocations_lldc
+        
+        # Table 12: Difference in FUNCTIONAL & IMPLEMENTATION UNITS between REF1 and REF2 populations in MDC + LAC + EE + China
+        # CONVENTIONAL Avoided Emissions/ Million Metric Tons CO2									
+        addl_func_units_mdc = pd.DataFrame(None,
+                    columns=['Additional Functional Units in REF2 vs REF2', 'Annual Functional Units Increase', 'Change in TAM'],
+                    index=list(range(2014, 2061)), dtype=np.float64)
+        
+        current_tam_mix = pd.DataFrame(current_tam_mix_list[1:], columns=current_tam_mix_list[0])
+
+        if use_fixed_weight == 'N':
+            conv_weight_factor = self.change_elec_gen.loc[:, '% MDC + LAC + EE + China']
+        elif use_fixed_weight == 'Y':
+            conv_weight_factor = fixed_weighting_factor
+        else:
+            raise Exception('Invalid value passed for "use_fixed_weight", please use Y or N')
+
+        conv_weight_sum = current_tam_mix.loc[current_tam_mix['Include in CONV?'] == 'Y', 'Weighting Factor'].sum()
+        
+        addl_func_units_mdc.loc[:, 'Additional Functional Units in REF2 vs REF2'] = conv_weight_factor * (conv_weight_sum \
+             * (self.ref1_tam_all_regions['World']  - self.ref2_tam['World']))
+        addl_func_units_mdc.loc[:, 'Annual Functional Units Increase'] = addl_func_units_mdc['Additional Functional Units in REF2 vs REF2'].diff()
+        addl_func_units_mdc.loc[2016, 'Annual Functional Units Increase'] = addl_func_units_mdc.loc[2016, 'Additional Functional Units in REF2 vs REF2'] 
+        addl_func_units_mdc.loc[:, 'Change in TAM'] = addl_func_units_mdc['Additional Functional Units in REF2 vs REF2'] \
+             / (self.ref1_tam_all_regions['World'] - self.ref2_tam['World'])
+
+        # Convert to TWh
+        addl_func_units_mdc = addl_func_units_mdc / 100
+
+        # Electricity_cluster!E190:G238
+        self.addl_func_units_mdc = addl_func_units_mdc
+
+        # Table 13: Difference in EMISSIONS between REF1 and REF2 populations in MDC + LAC + EE + China
+        # CONVENTIONAL Avoided Emissions/ Million Metric Tons CO2
+        emis_diff_mdc = pd.DataFrame(None,
+                    columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+                    index=list(range(2014, 2061)), dtype=np.float64)
+
+        emis_diff_mdc['Conventional: Grid'] = addl_func_units_mdc['Additional Functional Units in REF2 vs REF2'] * emissions_factors_ref1_co2eq['World']
+        emis_diff_mdc['Emission Reductions: Conv Total'] = emis_diff_mdc[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # Electricity_cluster!O190:S238
+        self.emis_diff_mdc = emis_diff_mdc
+
+        # Table 14: EMISSIONS ALLOCATIONS TO (a) Health & Education; (b) Education ONLY; (c) Family Planning (excluding education)
+        # More developed countries
+        emissions_allocations_mdc = pd.DataFrame(None,
+                    columns=['Health & Education: Conv Total', 'Health & Education: Solution Total', 'Education: Conv Total', 'Education: Solution Total', 'Family Planning: Conv Total', 'Family Planning: Solution Total', '% Allocation to Education: Conv Total', '% Allocation to Education: Solution Total'],
+                    index=list(range(2014, 2061)), dtype=np.float64)
+
+        emissions_allocations_mdc['Health & Education: Conv Total'] = emis_diff_mdc['Emission Reductions: Conv Total'].fillna(0.0)
+        emissions_allocations_mdc['Health & Education: Solution Total'] = 0.0 # emis_diff_mdc['Emission Reductions: Solution Total']
+        emissions_allocations_mdc['Education: Conv Total'] = np.nan
+        emissions_allocations_mdc['Education: Solution Total'] = np.nan
+        emissions_allocations_mdc['Family Planning: Conv Total'] = emissions_allocations_mdc['Health & Education: Conv Total'] - emissions_allocations_mdc['Education: Conv Total'].fillna(0.0)
+        # emissions_allocations_mdc['Family Planning: Conv Total'] = emissions_allocations_mdc['Family Planning: Conv Total'].fillna(0.0)
+        emissions_allocations_mdc['Family Planning: Solution Total'] = emissions_allocations_mdc['Health & Education: Solution Total'] - emissions_allocations_mdc['Education: Solution Total'].fillna(0.0)
+        emissions_allocations_mdc['% Allocation to Education: Conv Total'] = emissions_allocations_mdc['Education: Conv Total'].fillna(0.0) / emissions_allocations_mdc['Health & Education: Conv Total']
+        emissions_allocations_mdc['% Allocation to Education: Conv Total'] = emissions_allocations_mdc['% Allocation to Education: Conv Total'].fillna(0.0)
+        emissions_allocations_mdc['% Allocation to Education: Solution Total'] = emissions_allocations_mdc['Family Planning: Solution Total'] / (emissions_allocations_mdc['Education: Solution Total'] + emissions_allocations_mdc['Family Planning: Solution Total'])
+
+        # Electricity_cluster!X192:AI238
+        self.emissions_allocations_mdc = emissions_allocations_mdc
 
 
 # Table 2: REF2, Electricity Generation TAM (TWh)										
@@ -290,3 +400,55 @@ ref2_tam_list = [
         [55306.26947, 13424.16108, 3456.00506, 27958.39935, 10096.30850, 6079.06453, 11837.49604, 9087.41057, 5065.47630, 5667.10030]]
 
 
+# GRID EMISSIONS FACTORS: REF Grid EFs kg CO2-eq per kwh									
+# Emissions Factors!B11:K57
+# TODO: Replace this with emissions_factors module once interface is better understood
+ef_co2_eq_list = [
+        ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+        [None, None, None, None, None, None, None, None, None, None],
+        [0.617381628, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.613053712, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.605559021, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.599823764, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.596692109, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.592956465, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.589394210, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.585889941, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.582469966, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.579126508, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.576180724, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.572640473, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.569484654, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.566378788, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.563317175, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.560425096, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.557305440, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.554345365, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.551409592, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.548493724, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.545513743, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.542688056, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.539794403, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.536903541, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.533998347, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.530880184, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.528185055, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.525268472, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.522337859, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.519390128, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.516316183, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.513431317, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.510414389, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.507368630, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.504753472, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.503017663, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.501095098, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.499244741, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.497355610, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.495425752, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.493412239, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.491436597, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.489373931, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.487263794, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.485104746, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666], 
+        [0.483057065, 0.454068989, 0.724747956, 0.457658947, 0.282243907, 0.564394712, 0.535962403, 0.787832379, 0.360629290, 0.665071666]]
