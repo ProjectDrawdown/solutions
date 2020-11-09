@@ -558,6 +558,53 @@ class CO2Calcs:
         return result
 
 
+    def to_json(self):
+        rs = dict()
+        rs['co2_mmt_reduced'] = self.co2_mmt_reduced()
+        rs['co2eq_mmt_reduced'] = self.co2eq_mmt_reduced()
+
+        co2_sequestered_global = self.co2_sequestered_global()
+        if co2_sequestered_global is not None:
+            rs['co2_sequestered_global'] = sequestered_global
+
+        ppm_calculator = self.co2_ppm_calculator()
+        if ppm_calculator is not None:
+            rs['co2_ppm_calculator'] = ppm_calculator
+
+        rs['co2eq_ppm_calculator'] = self.co2eq_ppm_calculator()
+
+        rs['co2_reduced_grid_emissions'] = clean_nan(self.co2_reduced_grid_emissions())
+        rs['co2_replaced_grid_emissions'] = clean_nan(self.co2_replaced_grid_emissions())
+        rs['co2eq_increased_grid_usage_emissions'] = clean_nan(self.co2eq_increased_grid_usage_emissions())
+        rs['co2eq_reduced_grid_emissions'] = clean_nan(self.co2eq_reduced_grid_emissions())
+        rs['co2eq_replaced_grid_emissions'] = clean_nan(self.co2eq_replaced_grid_emissions())
+        rs['co2eq_increased_grid_usage_emissions'] = clean_nan(self.co2eq_increased_grid_usage_emissions())
+        rs['co2eq_direct_reduced_emissions'] = clean_nan(self.co2eq_direct_reduced_emissions())
+        reduced_fuel_emissions = None
+        try:
+            reduced_fuel_emissions = self.co2eq_reduced_fuel_emissions()
+        except Exception as e:
+            raise
+        if reduced_fuel_emissions is not None:
+            rs['co2eq_reduced_fuel_emissions'] = reduced_fuel_emissions
+
+        rs['co2eq_net_indirect_emissions'] = self.co2eq_net_indirect_emissions()
+        rs['FaIR_CFT_baseline'] = self.FaIR_CFT_baseline()
+        rs['FaIR_CFT'] = self.FaIR_CFT()
+        rs['FaIR_CFT_RCP45'] = self.FaIR_CFT_RCP45()
+        return rs
+
+
+
+def clean_nan(dataframe):
+    for region in dataframe:
+        #print(region)
+        #print(reduced_grid_emissions[region].keys())
+        for year in dataframe[region].keys():
+            if (np.isnan(dataframe[region][year])):
+                dataframe[region][year] = 0.0
+    return dataframe
+
 
 # The following formulae come from the SolarPVUtil Excel implementation of 27Aug18.
 # There was no explanation of where they came from or what they really mean.

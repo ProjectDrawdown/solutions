@@ -5,9 +5,9 @@ import math
 import numpy as np
 
 import model.dd
+from model.data_handler import DataHandler
 
-
-class FirstCost:
+class FirstCost(DataHandler):
     """Implementation for the First Cost module.
 
     Arguments:
@@ -223,3 +223,5 @@ class FirstCost:
         result = csum1.add(csum2)
         result.name = "ref_cumulative_install"
         return result
+    def to_json(self):
+        return DataHandler.to_json(self)
