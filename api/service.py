@@ -25,6 +25,7 @@ def get_scenario(name: str, q: Optional[str]=None):
     rs = dict()
     rs['c2'] = obj.c2.to_json()
     rs['fc'] = obj.fc.to_json()
-    return rs
+    rs_final = dict({name: rs})
+    return rs_final
   else:
     return {}

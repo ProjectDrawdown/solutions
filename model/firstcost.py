@@ -6,6 +6,7 @@ import numpy as np
 
 import model.dd
 from model.data_handler import DataHandler
+from model.data_handler import data_func
 
 class FirstCost(DataHandler):
     """Implementation for the First Cost module.
@@ -56,6 +57,7 @@ class FirstCost(DataHandler):
         self.conv_ref_first_cost_uses_tot_units = conv_ref_first_cost_uses_tot_units
 
     @lru_cache()
+    @data_func
     def soln_pds_install_cost_per_iunit(self):
         """Install cost per implementation unit in Solution-PDS
            'First Cost'!C37:C82

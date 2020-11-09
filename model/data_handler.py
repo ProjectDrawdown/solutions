@@ -11,9 +11,13 @@ class DataHandler:
         obj_vars.remove('to_json')
         for k in obj_vars:
             func = getattr(self, k)
-            if( not k.startswith('__') and callable(func)):
+            if(not k.startswith('__') and hasattr(func, 'wrapped')):
                 outputs[k] = clean_nan(func())
         return outputs
+
+def data_func(method):
+    method.wrapped = True
+    return method
 
 def clean_nan(dataframe):
     for year in dataframe.keys():
