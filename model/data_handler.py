@@ -8,10 +8,9 @@ class DataHandler:
         var_keys = vars(self).keys()
         outputs = dict()
         obj_vars = dir(self)
-        obj_vars.remove('to_json')
         for k in obj_vars:
             func = getattr(self, k)
-            if(not k.startswith('__') and hasattr(func, 'wrapped')):
+            if(hasattr(func, 'wrapped')):
                 outputs[k] = clean_nan(func())
         return outputs
 
