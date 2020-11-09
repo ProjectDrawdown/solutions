@@ -13,6 +13,8 @@ import model.advanced_controls
 import model.dd
 import model.fairutil
 
+from model.data_handler import DataHandler
+from model.data_handler import data_func
 
 C_TO_CO2EQ = 3.666
 # Note: a different value of 3.64 is sometimes used for certain results in Excel
@@ -91,6 +93,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2_mmt_reduced(self):
         """CO2 MMT Reduced
            Annual CO2 reductions by region and year are calculated by adding reduced emissions
@@ -558,41 +561,41 @@ class CO2Calcs:
         return result
 
 
-    def to_json(self):
-        rs = dict()
-        rs['co2_mmt_reduced'] = self.co2_mmt_reduced()
-        rs['co2eq_mmt_reduced'] = self.co2eq_mmt_reduced()
-
-        co2_sequestered_global = self.co2_sequestered_global()
-        if co2_sequestered_global is not None:
-            rs['co2_sequestered_global'] = sequestered_global
-
-        ppm_calculator = self.co2_ppm_calculator()
-        if ppm_calculator is not None:
-            rs['co2_ppm_calculator'] = ppm_calculator
-
-        rs['co2eq_ppm_calculator'] = self.co2eq_ppm_calculator()
-
-        rs['co2_reduced_grid_emissions'] = clean_nan(self.co2_reduced_grid_emissions())
-        rs['co2_replaced_grid_emissions'] = clean_nan(self.co2_replaced_grid_emissions())
-        rs['co2eq_increased_grid_usage_emissions'] = clean_nan(self.co2eq_increased_grid_usage_emissions())
-        rs['co2eq_reduced_grid_emissions'] = clean_nan(self.co2eq_reduced_grid_emissions())
-        rs['co2eq_replaced_grid_emissions'] = clean_nan(self.co2eq_replaced_grid_emissions())
-        rs['co2eq_increased_grid_usage_emissions'] = clean_nan(self.co2eq_increased_grid_usage_emissions())
-        rs['co2eq_direct_reduced_emissions'] = clean_nan(self.co2eq_direct_reduced_emissions())
-        reduced_fuel_emissions = None
-        try:
-            reduced_fuel_emissions = self.co2eq_reduced_fuel_emissions()
-        except Exception as e:
-            raise
-        if reduced_fuel_emissions is not None:
-            rs['co2eq_reduced_fuel_emissions'] = reduced_fuel_emissions
-
-        rs['co2eq_net_indirect_emissions'] = self.co2eq_net_indirect_emissions()
-        rs['FaIR_CFT_baseline'] = self.FaIR_CFT_baseline()
-        rs['FaIR_CFT'] = self.FaIR_CFT()
-        rs['FaIR_CFT_RCP45'] = self.FaIR_CFT_RCP45()
-        return rs
+    # def to_json(self):
+    #     rs = dict()
+    #     rs['co2_mmt_reduced'] = self.co2_mmt_reduced()
+    #     rs['co2eq_mmt_reduced'] = self.co2eq_mmt_reduced()
+    #
+    #     co2_sequestered_global = self.co2_sequestered_global()
+    #     if co2_sequestered_global is not None:
+    #         rs['co2_sequestered_global'] = sequestered_global
+    #
+    #     ppm_calculator = self.co2_ppm_calculator()
+    #     if ppm_calculator is not None:
+    #         rs['co2_ppm_calculator'] = ppm_calculator
+    #
+    #     rs['co2eq_ppm_calculator'] = self.co2eq_ppm_calculator()
+    #
+    #     rs['co2_reduced_grid_emissions'] = clean_nan(self.co2_reduced_grid_emissions())
+    #     rs['co2_replaced_grid_emissions'] = clean_nan(self.co2_replaced_grid_emissions())
+    #     rs['co2eq_increased_grid_usage_emissions'] = clean_nan(self.co2eq_increased_grid_usage_emissions())
+    #     rs['co2eq_reduced_grid_emissions'] = clean_nan(self.co2eq_reduced_grid_emissions())
+    #     rs['co2eq_replaced_grid_emissions'] = clean_nan(self.co2eq_replaced_grid_emissions())
+    #     rs['co2eq_increased_grid_usage_emissions'] = clean_nan(self.co2eq_increased_grid_usage_emissions())
+    #     rs['co2eq_direct_reduced_emissions'] = clean_nan(self.co2eq_direct_reduced_emissions())
+    #     reduced_fuel_emissions = None
+    #     try:
+    #         reduced_fuel_emissions = self.co2eq_reduced_fuel_emissions()
+    #     except Exception as e:
+    #         raise
+    #     if reduced_fuel_emissions is not None:
+    #         rs['co2eq_reduced_fuel_emissions'] = reduced_fuel_emissions
+    #
+    #     rs['co2eq_net_indirect_emissions'] = self.co2eq_net_indirect_emissions()
+    #     rs['FaIR_CFT_baseline'] = self.FaIR_CFT_baseline()
+    #     rs['FaIR_CFT'] = self.FaIR_CFT()
+    #     rs['FaIR_CFT_RCP45'] = self.FaIR_CFT_RCP45()
+    #     return rs
 
 
 
