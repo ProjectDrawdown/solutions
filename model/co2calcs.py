@@ -21,7 +21,7 @@ C_TO_CO2EQ = 3.666
 # Here we will always use this value for consistency
 
 
-class CO2Calcs:
+class CO2Calcs(DataHandler):
     """CO2 Calcs module.
         Arguments:
           ac: advanced_cost.py object, storing settings to control model operation.
@@ -127,6 +127,7 @@ class CO2Calcs:
         return m
 
     @lru_cache()
+    @data_func
     def co2eq_mmt_reduced(self):
         """CO2-eq MMT Reduced
            Annual CO2-eq reductions by region are calculated by multiplying the estimated energy
@@ -184,6 +185,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2_sequestered_global(self):
         """
         Total Carbon Sequestration (World section only)
@@ -255,6 +257,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2_ppm_calculator(self):
         """CO2 parts per million reduction over time calculator.
 
@@ -313,6 +316,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2eq_ppm_calculator(self):
         """PPM calculations for CO2, CH4, and CO2-eq from other sources.
            RRS: SolarPVUtil 'CO2 Calcs'!A171:F217
@@ -333,6 +337,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2_reduced_grid_emissions(self):
         """Reduced Grid Emissions = NE(t) * EF(e,t)
 
@@ -345,6 +350,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2_replaced_grid_emissions(self):
         """CO2 Replaced Grid Emissions = NAFU(Sol,t) * EF(e,t)  (i.e. only direct emissions)
            where
@@ -359,6 +365,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2_increased_grid_usage_emissions(self):
         """Increased Grid Emissions (MMT CO2e) = NEU(t) * EF(e,t)
 
@@ -371,6 +378,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2eq_reduced_grid_emissions(self):
         """Reduced Grid MMT CO2-eq Emissions = NEU(t) * EF(e,t)
 
@@ -387,6 +395,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2eq_replaced_grid_emissions(self):
         """CO2-equivalent replaced Grid MMT CO2-eq Emissions = NAFU(Sol,t) * EF(e,t)
 
@@ -403,6 +412,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2eq_increased_grid_usage_emissions(self):
         """Increased Grid Emissions (MMT CO2e) = NEU(t) * EF(e,t)
 
@@ -419,6 +429,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2eq_direct_reduced_emissions(self):
         """Direct MMT CO2-eq Emissions Reduced = [DEm(Con,t) - DEm(Sol,t)]  / 1000000
 
@@ -435,6 +446,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2eq_reduced_fuel_emissions(self):
         """Reduced Fuel Emissions MMT CO2-eq =
             NAFU(Con,t) * Fuel(Con,t) * [Em(cf) -  (1 - FRF) * Em(sf) * if(Fuel Units are Same,
@@ -461,6 +473,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def co2eq_net_indirect_emissions(self):
         """Net Indirect Emissions MMT CO2-eq by implementation unit (t) =
               [NIU (Sol,t) * IEm (Sol,t)] - [NIU (Cont.) * IEm (Con,t)]  /  1000000
@@ -483,17 +496,21 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def direct_emissions_from_harvesting(self):
         """Net Land Units [Mha]* (Carbon Sequestration Rate [t C/ha/yr] *
            Years of Sequestration [yr] - Carbon Stored even After Harvesting/Clearing [t C/ha]) *
            (CO2 per C)
            Afforestation 'CO2 Calcs'!CU365:DD411"""
-        return self.annual_land_area_harvested * (
-                self.ac.seq_rate_global * self.ac.harvest_frequency -
-                self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
-
+        if self.ac.seq_rate_global is not None and self.ac.harvest_frequency is not None and self.ac.carbon_not_emitted_after_harvesting is not None:
+            return self.annual_land_area_harvested * (
+            self.ac.seq_rate_global * self.ac.harvest_frequency -
+            self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
+        else:
+            return None
 
     @lru_cache()
+    @data_func
     def FaIR_CFT_baseline(self):
         """Return FaIR results for the baseline case.
 
@@ -513,6 +530,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def FaIR_CFT(self):
         """Return FaIR results for the baseline + Drawdown solution.
 
@@ -542,6 +560,7 @@ class CO2Calcs:
 
 
     @lru_cache()
+    @data_func
     def FaIR_CFT_RCP45(self):
         """Return FaIR results for the RCP45 case.
 
@@ -560,6 +579,8 @@ class CO2Calcs:
         result.name = 'FaIR_CFT_RCP45'
         return result
 
+    def to_json(self):
+        return DataHandler.to_json(self, clean_nan)
 
     # def to_json(self):
     #     rs = dict()
@@ -600,9 +621,9 @@ class CO2Calcs:
 
 
 def clean_nan(dataframe):
+    if(dataframe is None):
+        return {}
     for region in dataframe:
-        #print(region)
-        #print(reduced_grid_emissions[region].keys())
         for year in dataframe[region].keys():
             if (np.isnan(dataframe[region][year])):
                 dataframe[region][year] = 0.0
