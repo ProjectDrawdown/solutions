@@ -496,16 +496,15 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
     def direct_emissions_from_harvesting(self):
         """Net Land Units [Mha]* (Carbon Sequestration Rate [t C/ha/yr] *
            Years of Sequestration [yr] - Carbon Stored even After Harvesting/Clearing [t C/ha]) *
            (CO2 per C)
            Afforestation 'CO2 Calcs'!CU365:DD411"""
            return self.annual_land_area_harvested * (
-           self.ac.seq_rate_global * self.ac.harvest_frequency -
-           self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
-        
+                   self.ac.seq_rate_global * self.ac.harvest_frequency -
+                   self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
+
     @lru_cache()
     @data_func
     def FaIR_CFT_baseline(self):
