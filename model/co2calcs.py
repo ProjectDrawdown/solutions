@@ -502,13 +502,10 @@ class CO2Calcs(DataHandler):
            Years of Sequestration [yr] - Carbon Stored even After Harvesting/Clearing [t C/ha]) *
            (CO2 per C)
            Afforestation 'CO2 Calcs'!CU365:DD411"""
-        if self.ac.seq_rate_global is not None and self.ac.harvest_frequency is not None and self.ac.carbon_not_emitted_after_harvesting is not None:
-            return self.annual_land_area_harvested * (
-            self.ac.seq_rate_global * self.ac.harvest_frequency -
-            self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
-        else:
-            return None
-
+           return self.annual_land_area_harvested * (
+           self.ac.seq_rate_global * self.ac.harvest_frequency -
+           self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
+        
     @lru_cache()
     @data_func
     def FaIR_CFT_baseline(self):
