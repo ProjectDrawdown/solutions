@@ -277,5 +277,13 @@ class Scenario:
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
 
-        def to_json(self):
-            self.c2.to_json()
+    def to_json(self):
+        json_data = dict()
+        instance_vars = vars(self).keys()
+        for iv in instance_vars:
+            print(iv)
+            try:
+                json_data[iv] = getattr(self, iv).to_json()
+            except Exception as e:
+                print(e)
+        return json_data

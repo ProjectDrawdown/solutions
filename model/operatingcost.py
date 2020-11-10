@@ -8,7 +8,9 @@ from model.advanced_controls import SOLUTION_CATEGORY
 import numpy as np
 import numpy_financial
 import pandas as pd
+import model
 
+from model.decorators import data_func
 
 class OperatingCost:
     """Implementation for the Operating Cost module.
