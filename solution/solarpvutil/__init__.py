@@ -281,9 +281,8 @@ class Scenario:
         json_data = dict()
         instance_vars = vars(self).keys()
         for iv in instance_vars:
-            print(iv)
             try:
                 json_data[iv] = getattr(self, iv).to_json()
             except Exception as e:
                 print(e)
-        return json_data
+        return {self.scenario: json_data}

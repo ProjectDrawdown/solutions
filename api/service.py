@@ -10,11 +10,6 @@ def get_scenario(name: str, q: Optional[str]=None):
   if solutions[name]:
     constructor = solutions[name][0]
     obj = constructor(scenario=None)
-    # rs = dict()
-    # rs['c2'] = obj.c2.to_json()
-    # rs['fc'] = obj.fc.to_json()
-    # rs_final = dict({name: rs})
-    # return rs_final
-    return obj.to_json()
+    return {name: obj.to_json()}
   else:
     return {}
