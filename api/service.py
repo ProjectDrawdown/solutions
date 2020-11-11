@@ -2,14 +2,29 @@ from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
 import solution.factory
+from model.data_handler import DataHandler
+
 app = FastAPI()
 
 @app.get('/solutions/{name}')
 def get_scenario(name: str, q: Optional[str]=None):
-  solutions = solution.factory.all_solutions_scenarios()
-  if solutions[name]:
-    constructor = solutions[name][0]
+
+  sol = solution.factory.one_solution_scenarios(name)
+  if sol:
+    constructor = sol[0]
     obj = constructor(scenario=None)
-    return {name: obj.to_json()}
+    return {name: to_json(obj)}
   else:
     return {}
+
+def to_json(scenario):
+    json_data = dict()
+    instance_vars = vars(scenario).keys()
+    for iv in instance_vars:
+        try:
+            obj = getattr(scenario, iv)
+            if issubclass(type(obj), DataHandler):
+                json_data[iv] = obj.to_json()
+        except Exception as e:
+                json_data[iv] = None
+    return {scenario.scenario: json_data}

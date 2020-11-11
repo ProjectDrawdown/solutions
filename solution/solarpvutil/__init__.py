@@ -276,13 +276,3 @@ class Scenario:
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
-    def to_json(self):
-        json_data = dict()
-        instance_vars = vars(self).keys()
-        for iv in instance_vars:
-            try:
-                json_data[iv] = getattr(self, iv).to_json()
-            except Exception as e:
-                print(e)
-        return {self.scenario: json_data}

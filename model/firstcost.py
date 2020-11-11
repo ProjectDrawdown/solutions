@@ -232,5 +232,3 @@ class FirstCost(DataHandler):
         result = csum1.add(csum2)
         result.name = "ref_cumulative_install"
         return result
-    def to_json(self):
-        return DataHandler.to_json(self)
