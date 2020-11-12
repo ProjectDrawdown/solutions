@@ -5,6 +5,7 @@ import numpy as np
 class DataHandler:
 
     def clean_nan(dataframe):
+        """ It replaces NaN values by 0 """
         if(dataframe is None):
             return {}
         for level1 in dataframe.keys():
