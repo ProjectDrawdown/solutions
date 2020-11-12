@@ -8,10 +8,7 @@ class DataHandler:
         if(dataframe is None):
             return {}
         for level1 in dataframe.keys():
-            print("Type dataframe")
-            print(type(dataframe[level1]))
             if isinstance(dataframe[level1], pd.Series):
-                print("Series!")
                 for level2 in dataframe[level1].keys():
                     if np.isnan(dataframe[level1][level2]):
                         dataframe[level1][level2] = 0.0

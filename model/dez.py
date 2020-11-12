@@ -17,6 +17,9 @@ import pandas as pd
 from model import dd
 from model.metaclass_cache import MetaclassCache
 
+from model.data_handler import DataHandler
+from model.decorators import data_func
+
 OCEAN_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean')
 
 
@@ -36,6 +39,7 @@ class DEZ(object, metaclass=MetaclassCache):
         self._populate_world_ocean_allocation()
         self._populate_solution_ocean_distribution()
 
+    @data_func
     def get_ocean_distribution(self):
         """ Returns relevant ocean data for Unit Adoption module"""
         return self.soln_ocean_dist_df

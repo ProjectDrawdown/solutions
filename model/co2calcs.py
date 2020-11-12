@@ -312,7 +312,6 @@ class CO2Calcs(DataHandler):
         for year in ppm_calculator.index:
             ppm_calculator.at[year, 'PPM'] = ppm_calculator.at[year, 'Total'] / (44.01 * 1.8 * 100)
         ppm_calculator.name = 'co2_ppm_calculator'
-        print(ppm_calculator.info())
         return ppm_calculator
 
 
@@ -347,10 +346,7 @@ class CO2Calcs(DataHandler):
               EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
            SolarPVUtil 'CO2 Calcs'!A234:K280
         """
-        res = self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2_per_KWh
-        #return self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2_per_KWh
-        print(res.info())
-        return res
+        return self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2_per_KWh
 
     @lru_cache()
     @data_func
@@ -577,21 +573,6 @@ class CO2Calcs(DataHandler):
         result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=fair.RCPs.rcp45.Emissions.year)
         result.name = 'FaIR_CFT_RCP45'
         return result
-
-#     def to_json(self):
-#         return DataHandler.to_json(self, clean_nan)
-#
-# def clean_nan(dataframe):
-#     if(dataframe is None):
-#         return {}
-#     for region in dataframe:
-#         print("Type dataframe")
-#         print(type(dataframe[region]))
-#         for year in dataframe[region].keys():
-#             if (np.isnan(dataframe[region][year])):
-#                 dataframe[region][year] = 0.0
-#     return dataframe
-
 
 # The following formulae come from the SolarPVUtil Excel implementation of 27Aug18.
 # There was no explanation of where they came from or what they really mean.

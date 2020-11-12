@@ -8,6 +8,10 @@ from functools import lru_cache
 import enum
 import pandas as pd
 
+
+from model.data_handler import DataHandler
+from model.decorators import data_func
+
 CO2EQ_SOURCE = enum.Enum('CO2EQ_SOURCE', 'AR5_WITH_FEEDBACK AR4 SAR')
 GRID_SOURCE = enum.Enum('GRID_SOURCE', 'META IPCC')
 GRID_RANGE = enum.Enum('GRID_RANGE', 'MEAN HIGH LOW')
@@ -96,6 +100,7 @@ class ElectricityGenOnGrid:
         self.grid_emissions_version = grid_emissions_version
 
     @lru_cache()
+    @data_func
     def conv_ref_grid_CO2eq_per_KWh(self):
         """Grid emission factors (kg CO2-eq per kwh) derived from the AMPERE 3
            MESSAGE Base model. Grid emission factors are fixed at 2015 levels
@@ -146,6 +151,7 @@ class ElectricityGenOnGrid:
 
 
     @lru_cache()
+    @data_func
     def conv_ref_grid_CO2_per_KWh(self):
         """Generation mixes from the AMPERE/MESSAGE WG3 BAU scenario, direct emission
            factors by fuel from the IPCC WG3 Annex III Table A.III.2.

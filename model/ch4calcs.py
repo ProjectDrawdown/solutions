@@ -27,6 +27,7 @@ class CH4Calcs(DataHandler):
 
 
     @lru_cache()
+    @data_func
     def ch4_tons_reduced(self):
         """CH4 reduced, in tons.
            replace gas_ch4_step = `gas_tons_ch4' * `e'^(-(time_from_present - `n')/12)
@@ -43,7 +44,6 @@ class CH4Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
     def avoided_direct_emissions_ch4_land(self):
         """CH4 emissions avoided, in tons
            replace gas_ch4_step = `gas_tons_ch4' * `e'^(-(time_from_present - `n')/12)
@@ -90,9 +90,3 @@ class CH4Calcs(DataHandler):
                                     )
         ppb_calculator.name = "ch4_ppb_calculator"
         return ppb_calculator
-
-    def to_json(self):
-        return DataHandler.to_json(self, clean_nan)
-
-def clean_nan(dataframe):
-    return dataframe

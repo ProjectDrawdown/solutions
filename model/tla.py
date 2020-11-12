@@ -11,6 +11,8 @@ import pandas as pd
 from model import dd
 from model.metaclass_cache import MetaclassCache
 
+from model.data_handler import DataHandler
+from model.decorators import data_func
 
 def tla_per_region(land_dist, custom_world_values=None):
     """
@@ -62,5 +64,6 @@ class CustomTLA(object, metaclass=MetaclassCache):
         return self.df
 
     @lru_cache()
+    @data_func
     def get_world_values(self):
         return self._avg_high_low()

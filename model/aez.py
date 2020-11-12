@@ -18,6 +18,9 @@ import pandas as pd
 from model import dd
 from model.metaclass_cache import MetaclassCache
 
+from model.data_handler import DataHandler
+from model.decorators import data_func
+
 LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land')
 
 
@@ -46,16 +49,14 @@ class AEZ(object, metaclass=MetaclassCache):
         self._populate_world_land_allocation()
         self._populate_solution_land_distribution()
 
-
+    @data_func
     def get_land_distribution(self):
         """Returns relevant land data for Unit Adoption module"""
         return self.soln_land_dist_df
 
-
     def _to_filename(self, name):
         """Removes special characters and separates words with single underscores"""
         return re.sub(' +', '_', re.sub('[^a-zA-Z0-9' '\n]', ' ', name)).strip('_')
-
 
     def _populate_solution_land_allocation(self):
         """Calculates solution specific land allocation using values from 'allocation' directory.
