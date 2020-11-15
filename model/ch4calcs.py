@@ -57,6 +57,7 @@ class CH4Calcs(DataHandler):
 
 
     @lru_cache()
+    @data_func
     def ch4_ppb_calculator(self):
         """Parts Per Billion reduction calculator for CH4.
 
