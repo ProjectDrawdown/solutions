@@ -816,15 +816,3 @@ class UnitAdoption(DataHandler):
         """ForestProtection 'Unit Adoption Calculations'!CD307:CE354"""
         return self._direct_emissions_saved_land(ghg='CH4-CO2-eq', ghg_rplu=self.ac.tch4_co2_reduced_per_land_unit,
                                                  ghg_rplu_rate=self.ac.tch4_co2_rplu_rate)
-
-    def to_json(self):
-        return DataHandler.to_json(self, clean_nan)
-
-def clean_nan(dataframe):
-    if(dataframe is None):
-        return {}
-    for region in dataframe:
-        for year in dataframe[region].keys():
-            if (np.isnan(dataframe[region][year])):
-                dataframe[region][year] = 0.0
-    return dataframe
