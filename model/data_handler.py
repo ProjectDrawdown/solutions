@@ -10,14 +10,7 @@ class DataHandler:
         if(dataframe is None):
             return {}
 
-        for level1 in dataframe.keys():
-            if isinstance(dataframe[level1], pd.Series):
-                for level2 in dataframe[level1].keys():
-                    if np.isnan(dataframe[level1][level2]):
-                        dataframe[level1][level2] = 0.0
-            else:
-                if np.isnan(dataframe[level1]):
-                    dataframe[level1] = 0.0
+        dataframe = dataframe.fillna(0)
         return dataframe
 
     def to_json(self, clean_nan=clean_nan):

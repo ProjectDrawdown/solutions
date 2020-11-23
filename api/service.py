@@ -7,12 +7,12 @@ from model.data_handler import DataHandler
 app = FastAPI()
 
 @app.get('/solutions/{name}')
-def get_scenario(name: str, q: Optional[str]=None):
+def get_scenario(name: str, scenario: Optional[str]=None):
 
   sol = solution.factory.one_solution_scenarios(name)
   if sol:
     constructor = sol[0]
-    obj = constructor(scenario=None)
+    obj = constructor(scenario=scenario)
     return {name: to_json(obj)}
   else:
     return {}
