@@ -23,7 +23,7 @@ from model.decorators import data_func
 OCEAN_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean')
 
 
-class DEZ(object, metaclass=MetaclassCache):
+class DEZ(DataHandler, object, metaclass=MetaclassCache):
     """ DEZ Data module """
 
     def __init__(self, solution_name):

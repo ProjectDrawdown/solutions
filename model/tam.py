@@ -14,7 +14,7 @@ import pandas as pd
 from model.data_handler import DataHandler
 from model.decorators import data_func
 
-class TAM(object, metaclass=MetaclassCache):
+class TAM(DataHandler, object, metaclass=MetaclassCache):
     """Total Addressable Market module."""
 
     def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources,
@@ -229,7 +229,6 @@ class TAM(object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
     def forecast_data(self, region):
         """
           World: SolarPVUtil 'TAM Data'!B45:Q94
@@ -247,7 +246,6 @@ class TAM(object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
     def forecast_min_max_sd(self, region):
         """
           World: SolarPVUtil 'TAM Data'!V45:Y94
@@ -316,7 +314,6 @@ class TAM(object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
     def forecast_low_med_high(self, region):
         """
           OECD90: SolarPVUtil 'TAM Data'!AA163:AC212
@@ -356,7 +353,6 @@ class TAM(object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
     def forecast_trend(self, region, trend=None):
         """Forecast for a region via one of several interpolation algorithms.
 

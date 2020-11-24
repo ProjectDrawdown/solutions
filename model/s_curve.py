@@ -8,7 +8,7 @@ import model.dd as dd
 from model.data_handler import DataHandler
 from model.decorators import data_func
 
-class SCurve:
+class SCurve(DataHandler):
     def __init__(self, transition_period, sconfig):
         """S-Curve (sigmoid adoption forecast) implementation.
          Arguments:

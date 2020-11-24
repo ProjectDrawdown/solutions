@@ -24,7 +24,7 @@ from model.decorators import data_func
 LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land')
 
 
-class AEZ(object, metaclass=MetaclassCache):
+class AEZ(DataHandler, object, metaclass=MetaclassCache):
     """AEZ Data module.
        Args:
          solution_name: <soln file>.name

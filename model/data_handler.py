@@ -10,6 +10,7 @@ class DataHandler:
         if(dataframe is None):
             return {}
 
+        dataframe = dataframe.replace([np.inf, -np.inf], np.nan)
         dataframe = dataframe.fillna(0)
         return dataframe
 

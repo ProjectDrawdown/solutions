@@ -94,7 +94,7 @@ def string_to_emissions_grid_range(text):
         raise ValueError("invalid grid range name=" + str(text))
 
 
-class ElectricityGenOnGrid:
+class ElectricityGenOnGrid(DataHandler):
     def __init__(self, ac, grid_emissions_version=1):
         self.ac = ac
         self.grid_emissions_version = grid_emissions_version

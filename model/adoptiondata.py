@@ -13,7 +13,7 @@ import pandas as pd
 from model.data_handler import DataHandler
 from model.decorators import data_func
 
-class AdoptionData(object, metaclass=MetaclassCache):
+class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
     """Implements Adoption Data module."""
 
     def __init__(self, ac, data_sources, adconfig, main_includes_regional=None):
@@ -146,7 +146,6 @@ class AdoptionData(object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
     def adoption_data(self, region):
         """Return adoption data for the given solution in the 'World' region.
            World: SolarPVUtil 'Adoption Data'!B45:R94
@@ -183,7 +182,6 @@ class AdoptionData(object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
     def adoption_min_max_sd(self, region):
         """Return the min, max, and standard deviation for the adoption data in the 'World' region.
            World: SolarPVUtil 'Adoption Data'!X45:Z94
@@ -217,7 +215,6 @@ class AdoptionData(object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
     def adoption_low_med_high(self, region):
         """Return the selected data sources as Medium, and N stddev away as Low and High.
            World: SolarPVUtil 'Adoption Data'!AB45:AD94
@@ -252,7 +249,6 @@ class AdoptionData(object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
     def adoption_trend(self, region, trend=None):
         """Adoption prediction via one of several interpolation algorithms in the region.
 
@@ -305,7 +301,7 @@ class AdoptionData(object, metaclass=MetaclassCache):
         return result
 
     @lru_cache()
-    @data_func
+    #@data_func
     def adoption_is_single_source(self):
         """Whether the source data selected is one source or multiple."""
         return not interpolation.is_group_name(data_sources=self.data_sources,
@@ -317,7 +313,7 @@ class AdoptionData(object, metaclass=MetaclassCache):
         result.loc[first_year, region] = adoption_low_med_high.loc[first_year, 'Medium']
 
     @lru_cache()
-    @data_func
+    #@data_func
     def adoption_data_per_region(self):
         """Return a dataframe of adoption data, one column per region."""
         growth = self.ac.soln_pds_adoption_prognostication_growth
@@ -333,7 +329,7 @@ class AdoptionData(object, metaclass=MetaclassCache):
         return df
 
     @lru_cache()
-    @data_func
+    #@data_func
     def adoption_trend_per_region(self):
         """Return a dataframe of adoption trends, one column per region."""
         df = pd.DataFrame(columns=dd.REGIONS)

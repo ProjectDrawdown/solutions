@@ -41,7 +41,7 @@ def tla_per_region(land_dist, custom_world_values=None):
     return df
 
 
-class CustomTLA(object, metaclass=MetaclassCache):
+class CustomTLA(DataHandler, object, metaclass=MetaclassCache):
     def __init__(self, filename=None, fixed_value=None):
         """
         Class for Custom TLA data
