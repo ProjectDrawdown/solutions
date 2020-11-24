@@ -5,6 +5,10 @@ from api.service import app
 client = TestClient(app)
 
 def test_solutions():
-    response = client.get("/solutions/solarpvutil")
+    response = client.get("/solutions/solarpvutil?scenario=PDS-25p2050-Optimum2020")
     assert response.status_code == 200
-    assert 'solarpvutil' in response.json() 
+    json_data = response.json()
+    assert 'solarpvutil' in json_data
+    assert 'PDS-25p2050-Optimum2020' in json_data['solarpvutil']
+    scenario = json_data['solarpvutil']['PDS-25p2050-Optimum2020']
+    assert 'tm' in scenario
