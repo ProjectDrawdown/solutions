@@ -90,8 +90,12 @@ def test_electricity_cluster():
     exp_emissions_allocations_mdc.index = exp_elec.iloc[191:238, 22].astype(int, errors='ignore').values
     pd.testing.assert_frame_equal(test_elec.emissions_allocations_mdc, exp_emissions_allocations_mdc, check_exact=False, rtol=1e-2)
 
-    # print(test_elec.emis_diff_highed.head())
-    # print(exp_emis_diff_highed.head())
+    # Test the final CO2 reduction output (columns/indices are dropped since it's not a real table)
+    exp_emissions_avoided = exp_elec.iloc[[4, 7, 11], [13, 14]].reset_index(drop=True).T.reset_index(drop=True).T.astype(float)
+    test_emissions_avoided = pd.DataFrame([[test_elec.emissions_avoided_lldc_period, test_elec.emissions_avoided_lldc_full],
+                                        [test_elec.emissions_avoided_mdc_period, test_elec.emissions_avoided_mdc_full],
+                                        [test_elec.emissions_avoided_total_period, test_elec.emissions_avoided_total_full]])
+    pd.testing.assert_frame_equal(test_emissions_avoided, exp_emissions_avoided, check_exact=False, rtol=1e-2)
 
     print("Test complete: electricity cluster")
 
