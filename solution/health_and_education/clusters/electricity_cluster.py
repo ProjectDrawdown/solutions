@@ -11,7 +11,6 @@ import sys
 repo_path = str(pathlib.Path(__file__).parents[3])
 sys.path.append(repo_path)
 
-from solution import solarpvutil
 from model import dd
 from model import advanced_controls as ac
 from model import emissionsfactors as ef
@@ -21,6 +20,8 @@ THISDIR = pathlib.Path(__file__).parents[0]
 
 name = 'Health and Education - Electricity Cluster'
 solution_category = ac.SOLUTION_CATEGORY.REDUCTION 
+period_start = 2020
+period_end = 2050
 
 # Assumptions:
 # % impact of educational attainment on uptake of Family Planning:
@@ -101,7 +102,7 @@ class Scenario:
         # (b) FOR REGIONS WITH HIGHER EDUCATIONAL ATTAINMENT										
         ref1_tam_high_edu = ((self.ref2_tam / self.ref2_population) * self.ref1_population) - ref1_tam_low_edu
 
-        # Electricity_cluster!@26:AI73
+        # Electricity_cluster!Y26:AI73
         self.ref1_tam_high_edu = ref1_tam_high_edu
 
         # Table 3: REF1 ,Electricity Generation TAM (TWh)	
@@ -344,6 +345,35 @@ class Scenario:
 
         # Electricity_cluster!X192:AI238
         self.emissions_allocations_mdc = emissions_allocations_mdc
+
+        # Total Emissions Avoided due to Health & Education (Gt CO2-eq)
+        emissions_avoided_lldc_period = self.emissions_allocations_lldc.loc[period_start:period_end, 'Health & Education: Conv Total'].sum()
+        emissions_avoided_lldc_full = self.emissions_allocations_lldc.loc[:, 'Health & Education: Conv Total'].sum()
+        emissions_avoided_mdc_period = self.emissions_allocations_mdc.loc[period_start:period_end, 'Health & Education: Conv Total'].sum()
+        emissions_avoided_mdc_full = self.emissions_allocations_mdc.loc[:, 'Health & Education: Conv Total'].sum()
+
+        # Electricity_cluster!N4:O12
+        self.emissions_avoided_lldc_period = round(emissions_avoided_lldc_period/1000, 2)
+        self.emissions_avoided_lldc_full = round(emissions_avoided_lldc_full/1000, 2)
+        self.emissions_avoided_mdc_period = round(emissions_avoided_mdc_period/1000, 2)
+        self.emissions_avoided_mdc_full = round(emissions_avoided_mdc_full/1000, 2)
+        self.emissions_avoided_total_period = round(self.emissions_avoided_lldc_period + self.emissions_avoided_mdc_period, 2)
+        self.emissions_avoided_total_full = round(self.emissions_avoided_lldc_full + self.emissions_avoided_mdc_full, 2)
+
+        # To avoid the hard coded 2015 - 2060 date range in Excel, infer the min/max years from the dataframe
+        min_range = min(emissions_allocations_mdc.index)
+        max_range = max(emissions_allocations_mdc.index)
+
+        print('Total Emissions Avoided due to Health & Education (Gt CO2-eq)')
+        print('\nLeast & Less Developed Countries (Conventional):')
+        print(f'{min_range} - {max_range}:', self.emissions_avoided_lldc_period)
+        print(f'{period_start} - {period_end}:', self.emissions_avoided_lldc_full)
+        print('\nMore Developed Countries (Conventional):')
+        print(f'{min_range} - {max_range}:', self.emissions_avoided_mdc_period)
+        print(f'{period_start} - {period_end}:', self.emissions_avoided_mdc_full)
+        print('\nTotal (Conventional):')
+        print(f'{min_range} - {max_range}:', self.emissions_avoided_total_period)
+        print(f'{period_start} - {period_end}:', self.emissions_avoided_total_full)
 
 
 # Table 2: REF2, Electricity Generation TAM (TWh)										
