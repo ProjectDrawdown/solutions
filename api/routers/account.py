@@ -55,6 +55,7 @@ def get_user_by_login(login):
 
 def create_user(name, payload):
     fake_users_db[name] = payload
+    return fake_users_db[name]
 
 
 @router.get("/login")
@@ -90,7 +91,7 @@ async def verify_authorization(
     if db_user is None:
         db_user = create_user("javm", github_user)
 
-    verified_user = fake_users_db(db_user.login)
+    verified_user = fake_users_db[db_user.login]
     access_token = create_access_token(data=verified_user)
 
     return Token(access_token=access_token, token_type="bearer", user=db_user)
