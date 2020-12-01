@@ -13,13 +13,13 @@ class GithubUser(BaseModel):
     avatar_url: str
 
 class User(BaseModel):
-    id: int
+    id: int = 1
     login: str
     name: str
-    company: str
-    location: str
+    company: str = None
+    location: str = None
     email: str
-    picture: str
+    picture: str = None
 
 class Token(BaseModel):
     access_token: str
