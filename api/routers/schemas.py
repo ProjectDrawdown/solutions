@@ -7,8 +7,8 @@ class AuthorizationResponse(BaseModel):
 class GithubUser(BaseModel):
     login: str
     name: str
-    company: str
-    location: str
+    company: str = None
+    location: str = None
     email: str
     avatar_url: str
 
@@ -20,9 +20,6 @@ class User(BaseModel):
     location: str
     email: str
     picture: str
-
-    class Config:
-        orm_mode = True
 
 class Token(BaseModel):
     access_token: str
