@@ -1,6 +1,6 @@
 from fastapi import Depends, FastAPI, Header, HTTPException
 
-from .routers import account
+from .routers import account, user
 
 app = FastAPI()
 
@@ -10,6 +10,7 @@ app = FastAPI()
 
 
 app.include_router(account.router)
+app.include_router(user.router)
 # app.include_router(
 #     items.router,
 #     prefix="/items",
