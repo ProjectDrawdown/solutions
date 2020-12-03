@@ -1,21 +1,18 @@
+import httpx
 from urllib.parse import urlencode
 from urllib.parse import parse_qsl
-
+from typing import Dict
 from api.db import get_user_by_login, create_user, fake_users_db
-
 from api.routers.schemas import Url, AuthorizationResponse, GithubUser, User, Token
 from api.routers.helpers import generate_token, create_access_token
 from api.config import Settings
 
-from typing import Dict
-import httpx
-
 settings = Settings()
 provider = settings.provider[settings.default_provider]
+
 LOGIN_URL = f"https://{provider['domain']}/login/oauth/authorize"
 TOKEN_URL = f"https://{provider['domain']}/login/oauth/access_token"
 REDIRECT_URL = f"{settings.api_url}/auth/{settings.default_provider}"
-
 USER_URL = "https://api.github.com/user"
 
 def login_url():
@@ -43,7 +40,7 @@ async def exchange_code(body):
 
     db_user = get_user_by_login(github_user.login)
     if db_user is None:
-        db_user = create_user("javm", github_user)
+        db_user = create_user(github_user.login, github_user)
 
     verified_user = fake_users_db[db_user.login]
     access_token = create_access_token(data=verified_user)

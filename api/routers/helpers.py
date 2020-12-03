@@ -1,17 +1,12 @@
-from datetime import datetime, timedelta
-
 import jwt
-
+from datetime import datetime, timedelta
 from api.config import Settings
 from .schemas import User
-
 from fastapi import Header, HTTPException, status
 from fastapi.security.utils import get_authorization_scheme_param
 from pydantic import ValidationError
 
-
 settings = Settings()
-
 
 def get_user_from_header(*, authorization: str = Header(None)) -> User:
     credentials_exception = HTTPException(
@@ -19,16 +14,18 @@ def get_user_from_header(*, authorization: str = Header(None)) -> User:
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-
     scheme, token = get_authorization_scheme_param(authorization)
     if scheme.lower() != "bearer":
         raise credentials_exception
-
+    print(scheme)
+    print(token)
     try:
         payload = jwt.decode(
             token, settings.jwt_secret_key,
             algorithms=[settings.jwt_algorithm]
         )
+        print("Payload")
+        print(payload)
         try:
             token_data = User(**payload)
             return token_data
@@ -36,7 +33,6 @@ def get_user_from_header(*, authorization: str = Header(None)) -> User:
             raise credentials_exception
     except jwt.PyJWTError:
         raise credentials_exception
-
 
 def create_access_token(*, data: User, exp: int = None) -> bytes:
     to_encode = data.dict()
@@ -52,3 +48,7 @@ def create_access_token(*, data: User, exp: int = None) -> bytes:
 
 def generate_token():
     return 0
+
+def decode_google_id_token(id_token):
+    decoded_token = jwt.decode(id_token, verify=False)
+    return decoded_token

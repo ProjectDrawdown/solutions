@@ -13,7 +13,7 @@ class Settings(BaseSettings):
         'client_secret': '576ASgg-3_XGMHqW8dCLEjDA'
      }
     }
-    default_provider: str = 'github'
+    default_provider: str = 'google'
     api_url: str = 'http://localhost:8000'
     jwt_secret_key = 'hkBxrbZ9Td4QEwgRewV6gZSVH4q78vBia4GBYuqd09SsiMsIjH'
     jwt_algorithm = 'HS256'

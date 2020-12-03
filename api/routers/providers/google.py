@@ -1,54 +1,54 @@
+import httpx
+from typing import Dict
 from urllib.parse import urlencode
 from urllib.parse import parse_qsl
-
 from api.db import get_user_by_login, create_user, fake_users_db
-
 from api.routers.schemas import Url, AuthorizationResponse, GoogleUser, User, Token
-from api.routers.helpers import generate_token, create_access_token
+from api.routers.helpers import generate_token, create_access_token, decode_google_id_token
 from api.config import Settings
 
-from typing import Dict
-import httpx
-
-#from authlib.integrations.starlette_client import OAuth
-
 settings = Settings()
-
 provider = settings.provider[settings.default_provider]
 
-
-
 LOGIN_URL = f"https://{provider['domain']}/signin/oauth/authorize"
-#TOKEN_URL = f"https://{provider['domain']}/signin/oauth/access_token"
 TOKEN_URL = f"https://oauth2.googleapis.com/token"
-USER_URL = "https://api.github.com/user"
 REDIRECT_URL = f"{settings.api_url}/auth/{settings.default_provider}"
 
-CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+def login_url():
+    params = {
+        'client_id': provider['client_id'],
+        'response_type': 'code',
+        'redirect_uri': REDIRECT_URL,
+        'scope': 'email profile openid',
+        'state': generate_token(),
+    }
+    return Url(url=f"{LOGIN_URL}?{urlencode(params)}")
 
 
-async def exchange_code(params):
-    google_params = {
+async def exchange_code(body):
+    params = {
+    'client_id': provider['client_id'],
+    'client_secret': provider['client_secret'],
+    'code': body.code,
     'redirect_uri': REDIRECT_URL,
     'grant_type': 'authorization_code'
     }
-    params.pop('state')
-    params.update(google_params)
-    print(params)
     async with httpx.AsyncClient() as client:
-        token_request = await client.post(TOKEN_URL, data=params)
-        print("Token")
-        print(token_request)
-        response: Dict[bytes, bytes] = dict(parse_qsl(token_request.content))
-        github_token = response[b"access_token"].decode("utf-8")
-        github_header = {"Authorization": f"token {github_token}"}
-        user_request = await client.get(USER_URL, headers=github_header)
-        github_user = Google(**user_request.json())
+        token_info = await client.post(TOKEN_URL, data=params)
+        json_response = token_info.json()
+        id_token = json_response['id_token']
+        user_data = decode_google_id_token(id_token)
+        user_data['login'] = user_data['email']
+        print(user_data)
+        google_user = GoogleUser(**user_data)
 
-    db_user = get_user_by_login(github_user.login)
+    db_user = get_user_by_login(google_user.login)
     if db_user is None:
-        db_user = create_user("antonio", github_user)
+        db_user = create_user(google_user.login, google_user)
 
     verified_user = fake_users_db[db_user.login]
+    print(fake_users_db)
+    print("Verified user")
+    print(verified_user)
     access_token = create_access_token(data=verified_user)
     return Token(access_token=access_token, token_type="bearer", user=db_user)

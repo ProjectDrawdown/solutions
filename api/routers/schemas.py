@@ -18,10 +18,9 @@ class GoogleUser(BaseModel):
     company: str = None
     location: str = None
     email: str
-    avatar_url: str
+    picture: str
 
 class User(BaseModel):
-    id: int = 1
     login: str
     name: str
     company: str = None
