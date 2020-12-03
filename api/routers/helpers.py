@@ -24,8 +24,7 @@ def get_user_from_header(*, authorization: str = Header(None)) -> User:
             token, settings.jwt_secret_key,
             algorithms=[settings.jwt_algorithm]
         )
-        print("Payload")
-        print(payload)
+
         try:
             token_data = User(**payload)
             return token_data

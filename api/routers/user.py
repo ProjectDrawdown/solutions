@@ -8,7 +8,7 @@ router = APIRouter()
 def read_profile(
     user: User = Depends(get_user_from_header)
 ):
-    db_user = {}
+    db_user = user
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
