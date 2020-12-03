@@ -12,6 +12,14 @@ class GithubUser(BaseModel):
     email: str
     avatar_url: str
 
+class GoogleUser(BaseModel):
+    login: str
+    name: str
+    company: str = None
+    location: str = None
+    email: str
+    avatar_url: str
+
 class User(BaseModel):
     id: int = 1
     login: str

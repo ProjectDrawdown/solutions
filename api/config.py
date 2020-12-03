@@ -8,8 +8,9 @@ class Settings(BaseSettings):
        'client_secret': 'f224953ec4f81de58c8c33188bf7cc71316576e6'
        },
      'google': {
-        'domain': 'google.com',
-        'client_id': '123'
+        'domain': 'accounts.google.com',
+        'client_id': '959419789086-u11hdmkljkcefar2l7vtff983tv2icu7.apps.googleusercontent.com',
+        'client_secret': '576ASgg-3_XGMHqW8dCLEjDA'
      }
     }
     default_provider: str = 'github'
