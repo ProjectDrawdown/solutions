@@ -13,3 +13,4 @@ __pycache__
 .vscode
 .idea
 geckodriver.log
+.env
