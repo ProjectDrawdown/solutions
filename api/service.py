@@ -1,3 +1,4 @@
+from functools import lru_cache
 from fastapi import Depends, FastAPI, Header, HTTPException
 from .routers import account, user
 

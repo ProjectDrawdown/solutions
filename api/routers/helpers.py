@@ -1,12 +1,12 @@
 import jwt
 from datetime import datetime, timedelta
-from api.config import Settings
+from api.config import get_settings
 from .schemas import User
 from fastapi import Header, HTTPException, status
 from fastapi.security.utils import get_authorization_scheme_param
 from pydantic import ValidationError
 
-settings = Settings()
+settings = get_settings()
 
 def get_user_from_header(*, authorization: str = Header(None)) -> User:
     credentials_exception = HTTPException(
@@ -17,14 +17,11 @@ def get_user_from_header(*, authorization: str = Header(None)) -> User:
     scheme, token = get_authorization_scheme_param(authorization)
     if scheme.lower() != "bearer":
         raise credentials_exception
-    print(scheme)
-    print(token)
     try:
         payload = jwt.decode(
             token, settings.jwt_secret_key,
             algorithms=[settings.jwt_algorithm]
         )
-
         try:
             token_data = User(**payload)
             return token_data

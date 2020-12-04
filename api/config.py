@@ -1,19 +1,43 @@
 from pydantic import BaseSettings
+from functools import lru_cache
+import pathlib
 
 class Settings(BaseSettings):
+
+    default_provider: str = 'google'
+    api_url: str
+    jwt_secret_key: str
+    jwt_algorithm: str
+
+    github_domain: str
+    github_client_id: str
+    github_client_secret: str
+    github_user_url: str
+
+    google_domain: str
+    google_client_id: str
+    google_client_secret: str
+
+    class Config:
+        env_file = pathlib.Path(__file__).parents[0].joinpath('.env').resolve()
+
+@lru_cache()
+def get_settings():
+    return Settings()
+
+@lru_cache()
+def get_providers():
+    settings = get_settings()
     provider = {
     'github': {
-       'domain': 'github.com',
-       'client_id': '8a3847cc0c3c0137c4e5',
-       'client_secret': 'f224953ec4f81de58c8c33188bf7cc71316576e6'
-       },
-     'google': {
-        'domain': 'accounts.google.com',
-        'client_id': '959419789086-u11hdmkljkcefar2l7vtff983tv2icu7.apps.googleusercontent.com',
-        'client_secret': '576ASgg-3_XGMHqW8dCLEjDA'
-     }
+        'domain': settings.github_domain,
+        'client_id': settings.github_client_id,
+        'client_secret': settings.github_client_secret
+        },
+    'google': {
+        'domain': settings.google_domain,
+        'client_id': settings.google_client_id,
+        'client_secret': settings.google_client_secret
+        }
     }
-    default_provider: str = 'google'
-    api_url: str = 'http://localhost:8000'
-    jwt_secret_key = 'hkBxrbZ9Td4QEwgRewV6gZSVH4q78vBia4GBYuqd09SsiMsIjH'
-    jwt_algorithm = 'HS256'
+    return provider

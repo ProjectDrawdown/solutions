@@ -5,15 +5,16 @@ from typing import Dict
 from api.db import get_user_by_login, create_user, fake_users_db
 from api.routers.schemas import Url, AuthorizationResponse, GithubUser, User, Token
 from api.routers.helpers import generate_token, create_access_token
-from api.config import Settings
+from api.config import get_settings, get_providers
 
-settings = Settings()
-provider = settings.provider[settings.default_provider]
+settings = get_settings()
+provider = get_providers()['github']
 
 LOGIN_URL = f"https://{provider['domain']}/login/oauth/authorize"
 TOKEN_URL = f"https://{provider['domain']}/login/oauth/access_token"
-REDIRECT_URL = f"{settings.api_url}/auth/{settings.default_provider}"
-USER_URL = "https://api.github.com/user"
+REDIRECT_URL = f"{settings.api_url}/auth/github"
+
+USER_URL = settings.github_user_url
 
 def login_url():
     params = {

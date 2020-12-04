@@ -1,12 +1,12 @@
 import importlib
 from fastapi import APIRouter
-from api.config import Settings
+from api.config import get_settings
 from .schemas import Url, User, Token, AuthorizationResponse
 
-settings = Settings()
+settings = get_settings()
+
 importname = 'api.routers.providers.' + settings.default_provider
 provider_module = importlib.import_module(importname)
-provider = settings.provider[settings.default_provider]
 
 router = APIRouter()
 
