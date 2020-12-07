@@ -30,8 +30,3 @@ class DataHandler:
                 outputs[k] = clean_nan(data)
 
         return outputs
-
-    def make_str(x):
-        if isinstance(x, np.int64):
-            return str(x)
-        return x
