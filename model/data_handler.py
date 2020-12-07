@@ -21,15 +21,14 @@ class DataHandler:
             func = getattr(self, k)
             if hasattr(func, 'wrapped'):
                 data = func()
-                frame = {}
                 if data is not None:
                     for level1 in data.keys():
                         if isinstance(level1, np.int64):
                             label = str(level1)
-                            frame[label] = data[level1]
-                    if len(frame.keys()) > 0:
-                        data = frame
+                            data[label] = data[level1]
+                            del data[level1]
                 outputs[k] = clean_nan(data)
+
         return outputs
 
     def make_str(x):

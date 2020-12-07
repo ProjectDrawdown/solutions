@@ -301,7 +301,6 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         return result
 
     @lru_cache()
-    #@data_func
     def adoption_is_single_source(self):
         """Whether the source data selected is one source or multiple."""
         return not interpolation.is_group_name(data_sources=self.data_sources,
@@ -313,7 +312,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         result.loc[first_year, region] = adoption_low_med_high.loc[first_year, 'Medium']
 
     @lru_cache()
-    #@data_func
+    @data_func
     def adoption_data_per_region(self):
         """Return a dataframe of adoption data, one column per region."""
         growth = self.ac.soln_pds_adoption_prognostication_growth
@@ -329,7 +328,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         return df
 
     @lru_cache()
-    #@data_func
+    @data_func
     def adoption_trend_per_region(self):
         """Return a dataframe of adoption trends, one column per region."""
         df = pd.DataFrame(columns=dd.REGIONS)

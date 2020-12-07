@@ -25,6 +25,6 @@ def to_json(scenario):
             obj = getattr(scenario, iv)
             if issubclass(type(obj), DataHandler):
                 json_data[iv] = obj.to_json()
-        except Exception as e:
+        except BaseException as e:
             json_data[iv] = None
     return {scenario.scenario: json_data}
