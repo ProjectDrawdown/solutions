@@ -21,12 +21,13 @@ class DataHandler:
             func = getattr(self, k)
             if hasattr(func, 'wrapped'):
                 data = func()
-                if data is not None:
-                    for level1 in data.keys():
-                        if isinstance(level1, np.int64):
-                            label = str(level1)
-                            data[label] = data[level1]
-                            del data[level1]
-                outputs[k] = clean_nan(data)
-
+                if data is not None and (isinstance(data, pd.DataFrame) or isinstance(data, pd.Series)):
+                    for l in data.keys():
+                        if isinstance(l, np.int64):
+                            label = str(l)
+                            data[label] = data[l]
+                            del data[l]
+                    outputs[k] = clean_nan(data)
+                else:
+                    outputs[k] = data
         return outputs

@@ -301,6 +301,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         return result
 
     @lru_cache()
+    @data_func
     def adoption_is_single_source(self):
         """Whether the source data selected is one source or multiple."""
         return not interpolation.is_group_name(data_sources=self.data_sources,
