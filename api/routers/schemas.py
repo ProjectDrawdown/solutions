@@ -9,7 +9,7 @@ class GithubUser(BaseModel):
     name: str
     company: str = None
     location: str = None
-    email: str
+    email: str = None
     avatar_url: str
 
 class GoogleUser(BaseModel):
