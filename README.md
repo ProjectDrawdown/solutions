@@ -75,12 +75,12 @@ $ cd solutions
 
 Environment Setup - Python 3.8
 ```sh
-`pipenv shell`
+$ pipenv shell
 # Or assuming you have multiple versions installed use the following 
-`pipenv --python /Users/sam/.pyenv/versions/3.8.6/bin/python shell`
+$ pipenv --python /Users/sam/.pyenv/versions/3.8.6/bin/python shell
 
 # Now inside the virtual env install tools
-`pip install -r requirements.txt`
+$ pip install -r requirements.txt
 ```
 
 Tests are based on [tox](https://tox.readthedocs.org/). The default test target runs in about two minutes.
