@@ -19,7 +19,7 @@ class DataHandler:
         obj_vars = dir(self)
         for k in obj_vars:
             func = getattr(self, k)
-            if hasattr(func, 'wrapped'):
+            if hasattr(func, 'data_func'):
                 data = func()
                 if data is not None and (isinstance(data, pd.DataFrame) or isinstance(data, pd.Series)):
                     for l in data.keys():

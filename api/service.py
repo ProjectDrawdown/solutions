@@ -8,7 +8,6 @@ app = FastAPI()
 
 @app.get('/solutions/{name}')
 def get_scenario(name: str, scenario: Optional[str]=None):
-
   sol = solution.factory.one_solution_scenarios(name)
   if sol:
     constructor = sol[0]
