@@ -73,6 +73,16 @@ $ git clone https://github.com/ProjectDrawdown/solutions.git
 $ cd solutions
 ```
 
+Environment Setup - Python 3.8
+```sh
+`pipenv shell`
+# Or assuming you have multiple versions installed use the following 
+`pipenv --python /Users/sam/.pyenv/versions/3.8.6/bin/python shell`
+
+# Now inside the virtual env install tools
+`pip install -r requirements.txt`
+```
+
 Tests are based on [tox](https://tox.readthedocs.org/). The default test target runs in about two minutes.
 ```
 $ tox
@@ -83,6 +93,12 @@ $ tox -e ci
 # to run a specific test:
 $ tox -- tools/tests/test_vma_xls_extract.py::test_read_xls
 ```
+
+To run the API
+`uvicorn api.service:app --reload`
+And to test from Postman or browser
+`http://127.0.0.1:8000/solutions/solarpvutil?scenario=PDS-25p2050-Optimum2020`
+
 
 The main user interface is a Jupyter Notebook intended to run in the cloud via [Jupyterhub](https://jupyter.org/hub). To run Jupyter locally we recommend using [pipenv](https://github.com/pypa/pipenv) for a virtual environment. As we use tox to run tests within virtual environments, we set the WORKON_HOME environment variable to have pipenv not re-install the same support in a new location:
 ```sh
