@@ -7,8 +7,10 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
+from model.data_handler import DataHandler
+from model.decorators import data_func
 
-class CH4Calcs:
+class CH4Calcs(DataHandler):
     """CH4 Calcs module.
          Arguments:
            ac: advanced_cost.py object, storing settings to control model operation.
@@ -25,6 +27,7 @@ class CH4Calcs:
 
 
     @lru_cache()
+    @data_func
     def ch4_tons_reduced(self):
         """CH4 reduced, in tons.
            replace gas_ch4_step = `gas_tons_ch4' * `e'^(-(time_from_present - `n')/12)

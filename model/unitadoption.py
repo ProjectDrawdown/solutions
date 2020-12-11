@@ -9,7 +9,10 @@ from model import dd
 from model import emissionsfactors
 from model.advanced_controls import SOLUTION_CATEGORY
 
-class UnitAdoption:
+from model.data_handler import DataHandler
+from model.decorators import data_func
+
+class UnitAdoption(DataHandler):
     """Implementation for the Unit Adoption module.
 
        Arguments:
@@ -43,6 +46,7 @@ class UnitAdoption:
         self.electricity_unit_factor = electricity_unit_factor
 
     @lru_cache()
+    @data_func
     def ref_population(self):
         """Population by region for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!P16:Z63
@@ -55,6 +59,7 @@ class UnitAdoption:
         return result
 
     @lru_cache()
+    @data_func
     def ref_gdp(self):
         """GDP by region for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!AB16:AL63
@@ -67,6 +72,7 @@ class UnitAdoption:
         return result
 
     @lru_cache()
+    @data_func
     def ref_gdp_per_capita(self):
         """GDP per capita for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!AN16:AX63
@@ -76,6 +82,7 @@ class UnitAdoption:
         return result
 
     @lru_cache()
+    @data_func
     def ref_tam_per_capita(self):
         """Total Addressable Market per capita for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!BA16:BK63
@@ -85,6 +92,7 @@ class UnitAdoption:
         return result
 
     @lru_cache()
+    @data_func
     def ref_tam_per_gdp_per_capita(self):
         """Total Addressable Market per unit of GDP per capita for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!BM16:BW63
@@ -282,15 +290,15 @@ class UnitAdoption:
     def _cumulative_degraded_land(self, ref_or_pds, protected_or_unprotected):
         """
         Calculation of annual land degradation. Units: Millions ha
-    
+
         Calculation (protected land):
         Protected Land that was Degraded Up to Previous Year +
         (Land Protected by SOL  - Protected Land Degraded up to Previous Year) * Disturbance Rate
-    
+
         Calculation (unprotected land):
         Land Degraded Up to Previous Year +
         (Total land/TLA - Land Protected by SOL  - Land Degraded in Previous Year) * Degradation Rate
-    
+
         Args:
           ref_or_pds: whether we use 'REF' or 'PDS' unit adoption data
           protected_or_unprotected: whether we calculate for 'protected' or 'unprotected' land
@@ -520,14 +528,14 @@ class UnitAdoption:
         Note that iunits = land units for LAND models.
         From Excel:
         'Total cumulative units of the conventional or legacy practice installed by year.
-    
+
         Reflects the total increase in the installed base units less the installation of
         Solution/technology units. Assumes a binary market with demand for either the
         defined Conventional Unit (or a weighted average of a mix of technologies/practices)
         or a Solution Unit. NOTE for integration: In REF case a weighted factor needs to
         account for current technology mix; for PDS case proposed technology mix needs to
         be reflected here.'
-    
+
         SolarPVUtil 'Unit Adoption Calculations'!Q251:AA298
         """
 
@@ -585,7 +593,7 @@ class UnitAdoption:
         while current_shift < growth_array.shape[0]:
             result.iloc[current_shift:] += growth_array[:-current_shift]
             current_shift += shift
-            
+
         return result
 
     @lru_cache()
@@ -710,11 +718,11 @@ class UnitAdoption:
     def soln_pds_annual_land_area_harvested(self):
         """Land Area Harvested is used to estimate the impact of harvesting the product of the land on
            Carbon Sequestration (CO2 Calcs) and on Emissions (CO2 Calcs):
-    
+
            Since some land is cleared every x years, it cannot sequester Carbon in that year, not until
            the land is fully re-planted by the following year. When land is cleared, there are emissions created from at
            least some of the material on the land, these emissions are calculated based on this table.
-    
+
            There is a year's delay before the x-year harvesting frequency begins due to planting time in the first year.
            After that, the x-year frequency continues.
            Afforestation 'Unit Adoption Calculations'!EH135:ER182 """
@@ -748,14 +756,14 @@ class UnitAdoption:
             delta_pds_ref_factor: trigger an alternate calculation taking the delta in the diff()
               of the PDS and REF, times this factor. Used by Smallholder Intensification (aka
               Women Smallholders) for direct_co2eq_emissions_saved_land.
-    
+
           [PROTECTION MODEL (e.g. Forest Protection]
            Emissions avoided (if Annual Emissions) =
                 (Cumulative Reduced Land Degradation/MHa - Cumulative Reduced Land after Emissions Lifetime/MHa)
                                 * Aggregate GHG avoided rate (t GHG/ha/yr)
            Emissions avoided (if One-time Emissions) =
                 Marginal Reduced Land Degradation /MHa *  Aggregate GHG avoided rate (t GHG/ha)
-    
+
            [NON PROTECTION MODEL (e.g. Conservation Agriculture]
            Emissions avoided (if Annual Emissions) =
                  (Net Land Units/MHa - Net Land Units after Emissions Lifetime /MHa)

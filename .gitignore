@@ -12,4 +12,5 @@ __pycache__
 .tox
 .vscode
 .idea
+.venv
 geckodriver.log

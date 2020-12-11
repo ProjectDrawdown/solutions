@@ -10,7 +10,11 @@ from model import interpolation
 import numpy as np
 import pandas as pd
 
-class TAM(object, metaclass=MetaclassCache):
+
+from model.data_handler import DataHandler
+from model.decorators import data_func
+
+class TAM(DataHandler, object, metaclass=MetaclassCache):
     """Total Addressable Market module."""
 
     def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources,
@@ -416,6 +420,7 @@ class TAM(object, metaclass=MetaclassCache):
 
 
     @lru_cache()
+    @data_func
     def ref_tam_per_region(self):
         """Compiles the TAM for each of the major regions into a single dataframe.
 
@@ -432,6 +437,7 @@ class TAM(object, metaclass=MetaclassCache):
         return result
 
     @lru_cache()
+    @data_func
     def pds_tam_per_region(self):
         """Compiles the PDS TAM for each of the major regions into a single dataframe.
 
