@@ -8,9 +8,13 @@ from model.advanced_controls import SOLUTION_CATEGORY
 import numpy as np
 import numpy_financial
 import pandas as pd
+import model
+
+from model.data_handler import DataHandler
+from model.decorators import data_func
 
 
-class OperatingCost:
+class OperatingCost(DataHandler):
     """Implementation for the Operating Cost module.
 
       Arguments:
@@ -65,6 +69,7 @@ class OperatingCost:
 
 
     @lru_cache()
+    @data_func
     def soln_pds_annual_operating_cost(self):
         """Total operating cost per year.
            SolarPVUtil 'Operating Cost'!D19:D64
@@ -75,6 +80,7 @@ class OperatingCost:
 
 
     @lru_cache()
+    @data_func
     def soln_pds_cumulative_operating_cost(self):
         """Cumulative operating cost.
            SolarPVUtil 'Operating Cost'!E19:E64
@@ -85,6 +91,7 @@ class OperatingCost:
 
 
     @lru_cache()
+    @data_func
     def conv_ref_annual_operating_cost(self):
         """Total operating cost per year.
            SolarPVUtil 'Operating Cost'!K19:K64
@@ -95,6 +102,7 @@ class OperatingCost:
 
 
     @lru_cache()
+    @data_func
     def conv_ref_cumulative_operating_cost(self):
         """Cumulative operating cost.
            SolarPVUtil 'Operating Cost'!L19:L64
@@ -105,6 +113,7 @@ class OperatingCost:
 
 
     @lru_cache()
+    @data_func
     def marginal_annual_operating_cost(self):
         """Marginal operating cost, difference between soln_pds and conv_ref.
            SolarPVUtil 'Operating Cost'!D69:D114
