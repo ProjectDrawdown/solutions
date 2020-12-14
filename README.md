@@ -83,6 +83,24 @@ $ pipenv --python /Users/sam/.pyenv/versions/3.8.6/bin/python shell
 $ pip install -r requirements.txt
 ```
 
+Database Setup
+1. You'll need to have postgres running
+2. Connection string contained in `api/.env` for `DATABASE_URL`
+3. Using `pipenv shell` run the following to apply existing migrations
+```sh
+alembic upgrade head
+```
+
+Schema Updates
+1. When changing models in `api/db/models.py` run the following to create migrations
+```sh
+alembic revision -m "add provider column" --autogenerate
+```
+2. Apply changes
+```sh
+alembic upgrade head
+```
+
 Tests are based on [tox](https://tox.readthedocs.org/). The default test target runs in about two minutes.
 ```
 $ tox

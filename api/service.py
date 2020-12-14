@@ -1,13 +1,21 @@
 import json
 import glob
 import pathlib
+import uvicorn
+
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel
+from functools import lru_cache
+
 import solution.factory
 from model.data_handler import DataHandler
+from api.routers import account, user
+
 
 app = FastAPI()
+app.include_router(account.router)
+app.include_router(user.router)
 DATADIR = pathlib.Path(__file__).parents[0].joinpath('data')
 
 @app.get('/solutions/{name}')
@@ -41,3 +49,6 @@ def scenario_group(cannonical: str):
             js = j.copy()
     return {cannonical: js[cannonical]}
 
+# For Debugging
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

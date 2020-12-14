@@ -14,3 +14,5 @@ __pycache__
 .idea
 .venv
 geckodriver.log
+.env
+api/env-examples
