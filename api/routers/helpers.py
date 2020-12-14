@@ -8,6 +8,13 @@ from pydantic import ValidationError
 
 settings = get_settings()
 
+def row2dict(row):
+    d = {}
+    for column in row.__table__.columns:
+        d[column.name] = str(getattr(row, column.name))
+
+    return d
+
 def get_user_from_header(*, authorization: str = Header(None)) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -31,7 +38,7 @@ def get_user_from_header(*, authorization: str = Header(None)) -> User:
         raise credentials_exception
 
 def create_access_token(*, data: User, exp: int = None) -> bytes:
-    to_encode = data.dict()
+    to_encode = data
     if exp is not None:
         to_encode.update({"exp": exp})
     else:

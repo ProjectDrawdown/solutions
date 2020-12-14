@@ -1,6 +1,7 @@
 from pydantic import BaseSettings
 from functools import lru_cache
 import pathlib
+from db.database import get_session_maker
 
 class Settings(BaseSettings):
 
@@ -17,6 +18,8 @@ class Settings(BaseSettings):
     google_domain: str
     google_client_id: str
     google_client_secret: str
+
+    database_url: str
 
     class Config:
         env_file = pathlib.Path(__file__).parents[0].joinpath('.env').resolve()
@@ -41,3 +44,12 @@ def get_providers():
         }
     }
     return provider
+
+session_maker = get_session_maker(get_settings().database_url)
+
+def get_db():
+    db = session_maker()
+    try:
+        yield db
+    finally:
+        db.close()

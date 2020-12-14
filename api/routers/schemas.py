@@ -6,7 +6,7 @@ class AuthorizationResponse(BaseModel):
 
 class GithubUser(BaseModel):
     login: str
-    name: str
+    name: str = None
     company: str = None
     location: str = None
     email: str = None

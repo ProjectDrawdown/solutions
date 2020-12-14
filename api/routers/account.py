@@ -1,6 +1,8 @@
 import importlib
-from fastapi import APIRouter
-from api.config import get_settings
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from api.config import get_settings, get_db
 from .schemas import Url, User, Token, AuthorizationResponse
 
 settings = get_settings()
@@ -22,7 +24,7 @@ def get_login_url(provider: str) -> Url:
     return provider_module.login_url()
 
 @router.post('/authorize/{provider}')
-async def verify_authorization( body: AuthorizationResponse, provider: str) -> Token:
+async def verify_authorization( body: AuthorizationResponse, provider: str, db: Session = Depends(get_db)) -> Token:
     importname = 'api.routers.providers.' + provider
     provider_module = importlib.import_module(importname)
-    return await provider_module.exchange_code(body)
+    return await provider_module.exchange_code(body, db)

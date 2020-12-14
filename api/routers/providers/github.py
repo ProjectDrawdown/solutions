@@ -2,9 +2,9 @@ import httpx
 from urllib.parse import urlencode
 from urllib.parse import parse_qsl
 from typing import Dict
-from api.db import get_user_by_login, create_user, fake_users_db
+from api.queries import get_user, create_user
 from api.routers.schemas import Url, AuthorizationResponse, GithubUser, User, Token
-from api.routers.helpers import generate_token, create_access_token
+from api.routers.helpers import generate_token, create_access_token, row2dict
 from api.config import get_settings, get_providers
 
 settings = get_settings()
@@ -24,7 +24,7 @@ def login_url():
     }
     return Url(url=f"{LOGIN_URL}?{urlencode(params)}")
 
-async def exchange_code(body):
+async def exchange_code(body, db):
     params = {
         'client_id': provider['client_id'],
         'client_secret': provider['client_secret'],
@@ -39,10 +39,10 @@ async def exchange_code(body):
         user_request = await client.get(USER_URL, headers=github_header)
         github_user = GithubUser(**user_request.json())
 
-    db_user = get_user_by_login(github_user.login)
+    db_user = get_user(db, github_user.login)
     if db_user is None:
-        db_user = create_user(github_user.login, github_user)
+        db_user = create_user(db, github_user)
 
-    verified_user = fake_users_db[db_user.login]
-    access_token = create_access_token(data=verified_user)
-    return Token(access_token=access_token, token_type="bearer", user=db_user)
+    user_data = row2dict(db_user)
+    access_token = create_access_token(data=user_data)
+    return Token(access_token=access_token, token_type="bearer", user=user_data)
