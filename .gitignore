@@ -16,3 +16,5 @@ __pycache__
 geckodriver.log
 .env
 api/env-examples
+docker-compose.yml
+
