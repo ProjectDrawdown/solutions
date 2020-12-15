@@ -5,11 +5,11 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 
+sys.path = ['', '..'] + sys.path[1:]
 from api.db.models import Base
 from pathlib import Path
 from dotenv import load_dotenv
 
-sys.path = ['', '..'] + sys.path[1:]
 env_path = Path('./api') / '.env'
 parsed_env = load_dotenv(env_path)
 

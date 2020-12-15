@@ -9,7 +9,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL="http://localhost"
       - DATABASE_URL="postgresql://someuser:somepassword@someurl/drawdown"
       - API_URL="http://localhost:8000"
       - JWT_SECRET_KEY="somejwtsecretkey"
