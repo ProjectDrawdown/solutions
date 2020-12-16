@@ -39,7 +39,7 @@ async def exchange_code(body, db):
         user_request = await client.get(USER_URL, headers=github_header)
         github_user = GithubUser(**user_request.json())
 
-    db_user = get_user(db, github_user.login)
+    db_user = get_user(db, github_user)
     if db_user is None:
         db_user = create_user(db, github_user)
 

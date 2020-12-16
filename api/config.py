@@ -1,7 +1,7 @@
 from pydantic import BaseSettings
 from functools import lru_cache
 import pathlib
-from .db.database import get_session_maker
+from api.db.database import get_session_maker
 
 class Settings(BaseSettings):
 

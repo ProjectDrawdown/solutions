@@ -35,3 +35,9 @@ class Token(BaseModel):
 
 class Url(BaseModel):
     url: str
+
+class Workbook(BaseModel):
+    name: str
+    ui: dict
+    projectionSettings: dict
+    projections: list

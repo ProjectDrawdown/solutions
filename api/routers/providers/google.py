@@ -41,7 +41,7 @@ async def exchange_code(body, db):
         user_data['login'] = user_data['email']
         google_user = GoogleUser(**user_data)
 
-    db_user = get_user(db, google_user.login)
+    db_user = get_user(db, google_user)
     if db_user is None:
         db_user = create_user(db, google_user, 'google')
 
