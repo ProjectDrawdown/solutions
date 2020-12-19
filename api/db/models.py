@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Enum
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from sqlalchemy.orm import relationship, validates
 import json
 from jsonschema import validate
@@ -26,12 +26,6 @@ class User(Base):
     role = Column(Enum(UserRole), default=UserRole.default)
     workbooks = relationship("Workbook", back_populates="author")
 
-class WorkbookVariation(Base):
-    __tablename__ = 'workbook_variation'
-
-    id = Column(Integer, primary_key=True, index=True)
-    workbook_id = Column(Integer, ForeignKey('workbook.id'))
-    variation_id = Column(Integer, ForeignKey('variation.id'))
 class Workbook(Base):
     __tablename__ = 'workbook'
 
@@ -42,12 +36,12 @@ class Workbook(Base):
     ui = Column(JSONB)
     start_year = Column(Integer)
     end_year = Column(Integer)
-    workbooks = relationship("Workbook", back_populates="author")
-    variations = relationship(
-        "Variation",
-        secondary=WorkbookVariation,
-        back_populates="workbooks")
+    control_id = Column(Integer, ForeignKey('control.id'))
+    control = relationship("Control")
+    scenario_id = Column(Integer, ForeignKey('scenario.id'))
+    scenario = relationship("Scenario")
 
+    variation = Column(JSONB)
 
     @validates('data')
     def validate_data(self, key, value):
@@ -56,15 +50,19 @@ class Workbook(Base):
         # what is described in schema.
         validate(instance=my_json, schema=workbook_schema)
 
-class Variation(Base):
-    __tablename__ = 'variation'
+class Scenario(Base):
+    __tablename__ = 'scenario'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
+    name = Column(String, index=True)
     json = Column(JSONB)
-    workbooks = relationship(
-        "Workbook",
-        secondary=WorkbookVariation,
-        back_populates="variations")
+
+class Control(Base):
+    __tablename__ = 'control'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, index=True)
+    json = Column(JSONB)
 
 # class Technology(Base):
 #     __tablename__ = 'technology'

@@ -8,14 +8,13 @@ from pydantic import BaseModel
 from functools import lru_cache
 
 import solution.factory
-from model.data_handler import DataHandler
-from api.routers import account, user, workbook, scenerios
+from api.routers import account, user, workbook, scenarios
 
 app = FastAPI()
 app.include_router(account.router)
 app.include_router(user.router)
 app.include_router(workbook.router)
-app.include_router(scenerios.router)
+app.include_router(scenarios.router)
 
 # For Debugging
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import httpx
 from urllib.parse import urlencode
 from urllib.parse import parse_qsl
 from typing import Dict
-from api.queries import get_user, create_user
+from api.queries.user_queries import get_user, create_user
 from api.routers.schemas import Url, AuthorizationResponse, GithubUser, User, Token
 from api.routers.helpers import generate_token, create_access_token, row2dict
 from api.config import get_settings, get_providers

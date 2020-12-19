@@ -12,5 +12,4 @@ def create_user(db: Session, user: schemas.User, provider_name: str):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db_user 
-
+    return db_user

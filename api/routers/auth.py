@@ -1,11 +1,11 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from .helpers import get_user_from_header
 from api.config import get_db
 from api.routers.schemas import User
 from api.db.models import User as DBUser
-from api.queries import get_user
+from api.queries.user_queries import get_user
 
 
 async def get_current_user(

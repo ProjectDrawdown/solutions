@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class AuthorizationResponse(BaseModel):
@@ -37,7 +38,10 @@ class Url(BaseModel):
     url: str
 
 class Workbook(BaseModel):
-    name: str
-    ui: dict
-    projectionSettings: dict
-    projections: list
+    name: Optional[str]
+    ui: Optional[dict]
+    start_year: Optional[int]
+    end_year: Optional[int]
+    scenario_id: Optional[int]
+    control_id: Optional[int]
+    reference: Optional[dict]

@@ -1,7 +1,10 @@
 import json
 from jsonpath_ng import jsonpath, parse
+from os import listdir
+from os.path import isfile, join
 
-scenarioDataFiles = [
+legacyDataFiles = {
+  'drawdown-2020': [
     ["onshorewind","solution/onshorewind/ac/PDS-27p2050-Drawdown2020.json"],
     ["offshorewind","solution/offshorewind/ac/PDS-3p2050-Drawdown2020.json"],
     ["nuclear","solution/nuclear/ac/PDS-9p2050-Drawdown2020.json"],
@@ -17,9 +20,15 @@ scenarioDataFiles = [
     ["instreamhydro","solution/instreamhydro/ac/PDS-2p2050-Drawdown2020.json"],
     ["concentratedsolar","solution/concentratedsolar/ac/PDS-6p2050-Drawdown2020.json"],
     ["microwind","solution/microwind/ac/PDS-0p2050-Drawdown2020.json"],
-]
+  ]
+}
 
 varProjectionNamesPaths = [
+  ["name", "name", "", "", ""],
+  ["vmas", "vmas", "", "", ""],
+  ["description", "description", "", "", ""],
+  ["emissions_use_co2eq", "emissions_use_co2eq", "", "", ""],
+  ["pds_source_post_2014", "pds_source_post_2014", "", "", ""],
   ["conv_2014_cost","technologies.fossilfuelelectricity.start_year_cost","start_year_cost","First Cost per Implementation Unit","dollars"],
   ["conv_first_cost_efficiency_rate","technologies.fossilfuelelectricity.first_cost_efficiency_rate","first_cost_efficiency_rate","First Cost Efficiency Rate","float"],
   ["conv_fixed_oper_cost_per_iunit","technologies.fossilfuelelectricity.fixed_oper_cost_per_iunit","fixed_oper_cost_per_iunit","Operating Cost per Functional Unit per Annum","dollars"],
@@ -61,8 +70,10 @@ varProjectionNamesPaths = [
   ["soln_var_oper_cost_per_funit","technologies.solarpvutil.var_oper_cost_per_funit","var_oper_cost_per_funit","Variable Operating Cost (VOM) per Functional Unit","currency"],
   ["emissions_grid_range","technologies.solarpvutil.grid_range","grid_range","REF Case Grid Emission Factors - Range",""],
   ["emissions_grid_source","technologies.solarpvutil.grid_source","grid_source","REF Case Grid Emission Factors - Source","reference"],
-  ["report_end_year","technologies.report_end_year","report_end_year","End Year","year"],
-  ["report_start_year","technologies.report_start_year","report_start_year","Start Year","year"],
+  # ["report_end_year","technologies.solarpvutil.report_end_year","report_end_year","End Year","year"],
+  # ["report_start_year","technologies.solarpvutil.report_start_year","report_start_year","Start Year","year"],
+  ["report_end_year","report_end_year","report_end_year","End Year","year"],
+  ["report_start_year","report_start_year","report_start_year","Start Year","year"],
   ["soln_annual_energy_used","technologies.solarpvutil.annual_energy_used","annual_energy_used","Total Energy Used per Functional Unit","float"],
   ["soln_avg_annual_use","technologies.solarpvutil.avg_annual_use","avg_annual_use","Average Annual Use","float"],
   ["pds_adoption_use_ref_years","technologies.solarpvutil.adoption_use_ref_years","use_ref_years","Years for which the Helpertables PDS adoption for 'World' should use the REF adoption values","int"],
@@ -383,7 +394,7 @@ for field in pythonFieldMetadataArray:
   pythonFieldMetadataObj[field[0]] = field[1]
   pythonFieldMetadataObj[field[0]]['type'] = field[2]
 
-def add(obj, path: str, value):
+def set_value_at(obj, path: str, value):
   path_keys = path.split('.')
   current_obj = obj
   for i in range(len(path_keys)):
@@ -394,43 +405,107 @@ def add(obj, path: str, value):
       current_obj[key] = value
     current_obj = current_obj[key]
 
+def get_value_at(obj, path: str):
+  path_keys = path.split('.')
+  current_obj = obj
+  for i in range(len(path_keys)):
+    key = path_keys[i]
+    if key not in current_obj.keys():
+      return None
+    else:
+        current_obj = current_obj[key]
+    if i == len(path_keys) - 1:
+      return current_obj    
+
 def transform():
-  # with open('solution/solarpvutil/ac/PDS-25p2050-Drawdown2020.json') as f:
+  # # with open('solution/solarpvutil/ac/PDS-25p2050-Drawdown2020.json') as f:
 
-  #   data = json.load(f)
+  # #   data = json.load(f)
 
-  projection_schema = {}
-  # variation_schema = {}
+  # projection_schema = {}
+  # # variation_schema = {}
 
-  for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
-    obj = {
-      'name': converted_name,
-      'label': label,
-      'fieldType': unit
-    }
-    if existing_name in pythonFieldMetadataObj:
-      obj['pythonMetadata'] = pythonFieldMetadataObj[existing_name]
-    add(projection_schema, path, obj)
+  # for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
+  #   obj = {
+  #     'name': converted_name,
+  #     'label': label,
+  #     'fieldType': unit
+  #   }
+  #   if existing_name in pythonFieldMetadataObj:
+  #     obj['pythonMetadata'] = pythonFieldMetadataObj[existing_name]
+  #   add(projection_schema, path, obj)
 
-  variation_schema = projection_schema.copy()
+  # variation_schema = projection_schema.copy()
 
   jsonProjectionData = {
-    'start_year': 2014
+    # 'start_year': 2014
   }
   jsonRefData = {}
 
-  for [technology, filenameData] in scenarioDataFiles:
+  for [technology, filenameData] in legacyDataFiles['drawdown-2020']:
     with open(filenameData) as f:
       sampleScenarioData = json.load(f)
       for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
         technologyPath = path.replace('solarpvutil', technology)
         if existing_name in sampleScenarioData:
-          add(jsonProjectionData, technologyPath, sampleScenarioData[existing_name])
+          set_value_at(jsonProjectionData, technologyPath, sampleScenarioData[existing_name])
 
       for [existing_name, path, converted_name, label, unit] in varRefNamesPaths:
         technologyPath = path.replace('solarpvutil', technology)
         if existing_name in sampleScenarioData:
-          add(jsonRefData, technologyPath, sampleScenarioData[existing_name])
+          set_value_at(jsonRefData, technologyPath, sampleScenarioData[existing_name])
 
 
-  return [projection_schema, variation_schema, jsonProjectionData, jsonRefData]
+  return [jsonProjectionData, jsonRefData]
+
+def get_solution_file_paths(solution_name):
+    path = f'solution/{solution_name}/ac/'
+    onlyfiles = [f'{path}{f}' for f in listdir(path) if isfile(join(path, f))]
+    return onlyfiles
+
+def transform_technology_scenario(technology, path):
+    jsonProjectionData = {}
+    with open(path) as f:
+      scenarioData = json.load(f)
+      for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
+        # hacky
+        technologyPath = path.replace('solarpvutil', technology)
+        if existing_name in scenarioData:
+          set_value_at(jsonProjectionData, technologyPath, scenarioData[existing_name])
+    return jsonProjectionData
+
+def transform_technology_reference(technology, path):
+  jsonReferenceData = {}
+  with open(path) as f:
+    scenarioData = json.load(f)
+    for [existing_name, path, converted_name, label, unit] in varRefNamesPaths:
+      # hacky
+      technologyPath = path.replace('solarpvutil', technology)
+      if existing_name in scenarioData:
+        set_value_at(jsonReferenceData, technologyPath, scenarioData[existing_name])
+  return jsonReferenceData
+
+def rehydrate_legacy_json(tech_scenario_json, tech_reference_json):
+  rehydrated_json = {}
+  for technology in tech_scenario_json['technologies'].keys():
+    for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
+      technologyPath = path.replace('solarpvutil', technology)
+      value = get_value_at(tech_scenario_json, technologyPath)
+      if value is not None:
+        rehydrated_json[existing_name] = value
+    for [existing_name, path, converted_name, label, unit] in varRefNamesPaths:
+      technologyPath = path.replace('solarpvutil', technology)
+      value = get_value_at(tech_reference_json, technologyPath)
+      if value is not None:
+        rehydrated_json[existing_name] = value
+  return rehydrated_json
+
+# def detransform_technology_scenario(json):
+#     jsonProjectionData = {}
+#     with open(path) as f:
+#       scenarioData = json.load(f)
+#       for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
+#         # hacky
+#         technologyPath = path.replace('solarpvutil', technology)
+#         parse(technologyPath)
+#     return jsonProjectionData

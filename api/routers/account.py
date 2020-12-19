@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from api.config import get_settings, get_db
-from .schemas import Url, User, Token, AuthorizationResponse
+from api.routers.schemas import Url, User, Token, AuthorizationResponse
 
 settings = get_settings()
 router = APIRouter()
