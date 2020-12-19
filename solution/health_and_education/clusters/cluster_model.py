@@ -253,6 +253,29 @@ class Scenario():
         
         # SpaceHeating_cluster!V131:Z179
         self.emis_diff_highed = emis_diff_highed
+
+
+    def calc_emis_diff_highed_spacecooling(self, ef_co2_eq_list):
+        # Table 9: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+HighED
+        # CONVENTIONAL Avoided Emissions/ Million Metric Tons CO2
+        # emissions_factors_ref1_co2eq = ef.ElectricityGenOnGrid(ac.AdvancedControls()).conv_ref_grid_CO2eq_per_KWh()
+        self.emissions_factors_ref1_co2eq = pd.DataFrame(ef_co2_eq_list[1:],
+            columns=ef_co2_eq_list[0],
+            index=list(range(2014, 2061)), dtype=np.float64)
+
+        emis_diff_highed = pd.DataFrame(None,
+            columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+            index=list(range(2014, 2061)), dtype=np.float64)
+        
+        if self.assumptions['Grid'] == 'Y':
+            emis_diff_highed['Conventional: Grid'] = self.addl_func_units_highed['Additional Functional Units in REF2 vs REF2'] \
+                * self.current_tam_mix.loc[self.current_tam_mix['Energy Source'] == 'Electricity', 'Weighting Factor'].values[0] \
+                * self.assumptions['Twh_per_TWh'] * self.emissions_factors_ref1_co2eq['World'] / 100
+        
+        emis_diff_highed['Emission Reductions: Conv Total'] = emis_diff_highed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # SpaceHeating_cluster!V131:Z179
+        self.emis_diff_highed = emis_diff_highed
         
 
     def calc_emis_diff_lowed(self):
@@ -285,6 +308,24 @@ class Scenario():
             emis_diff_lowed['Conventional: Fuel'] = self.addl_func_units_lowed['Additional Functional Units in REF2 vs REF2'] \
                 * (self.current_tam_mix.loc[self.current_tam_mix['Energy Source'].isin(['Coal', 'Oil Products', 'Natural Gas', 'Biomass, waste and other renewables']), 'Weighting Factor'].sum() / self.conv_weight_sum) \
                 * (self.assumptions['Weighted Emission Factor for Space Heating and Cooling'] * self.assumptions['TJ_per_TWh']) / 10**6
+
+        emis_diff_lowed['Emission Reductions: Conv Total'] = emis_diff_lowed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # SpaceHeating_cluster!AI131:AM179
+        self.emis_diff_lowed = emis_diff_lowed
+        
+
+    def calc_emis_diff_lowed_spacecooling(self):
+        # Table 10: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+LowED
+        # CONVENTIONAL  - Least and Less Developed Countries (sans LAC, EE, China)	
+        emis_diff_lowed = pd.DataFrame(None,
+            columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+            index=list(range(2014, 2061)), dtype=np.float64)
+
+        if self.assumptions['Grid'] == 'Y':
+            emis_diff_lowed['Conventional: Grid'] = self.addl_func_units_lowed['Additional Functional Units in REF2 vs REF2'] \
+                * self.current_tam_mix.loc[self.current_tam_mix['Energy Source'] == 'Electricity', 'Weighting Factor'].values[0] \
+                * self.assumptions['Twh_per_TWh'] *  self.emissions_factors_ref1_co2eq['World'] / 100
 
         emis_diff_lowed['Emission Reductions: Conv Total'] = emis_diff_lowed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
         
@@ -383,6 +424,24 @@ class Scenario():
         self.emis_diff_mdc = emis_diff_mdc
 
 
+    def calc_emis_diff_mdc_spacecooling(self):
+        # Table 13: Difference in EMISSIONS between REF1 and REF2 populations in MDC + LAC + EE + China
+        # CONVENTIONAL Avoided Emissions/ Million Metric Tons CO2
+        emis_diff_mdc = pd.DataFrame(None,
+            columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+            index=list(range(2014, 2061)), dtype=np.float64)
+
+        if self.assumptions['Grid'] == 'Y':
+            emis_diff_mdc['Conventional: Grid'] = self.addl_func_units_mdc['Additional Functional Units in REF2 vs REF2'] \
+                * self.current_tam_mix.loc[self.current_tam_mix['Energy Source'] == 'Electricity', 'Weighting Factor'].values[0] \
+                * self.assumptions['Twh_per_TWh'] *  self.emissions_factors_ref1_co2eq['World'] / 100
+
+        emis_diff_mdc['Emission Reductions: Conv Total'] = emis_diff_mdc[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # SpaceHeating_cluster!O190:S238
+        self.emis_diff_mdc = emis_diff_mdc
+
+
     def calc_emis_alloc_mdc(self):
         # Table 14: EMISSIONS ALLOCATIONS TO (a) Health & Education; (b) Education ONLY; (c) Family Planning (excluding education)
         # More developed countries
@@ -426,6 +485,7 @@ class Scenario():
         min_range = min(self.emissions_allocations_mdc.index)
         max_range = max(self.emissions_allocations_mdc.index)
 
+        print('\n', self.name)
         print('Total Emissions Avoided due to Health & Education (Gt CO2-eq)')
         print('\nLeast & Less Developed Countries (Conventional):')
         print(f'{min_range} - {max_range}:', self.emissions_avoided_lldc_full)
