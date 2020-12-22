@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import Query
 
-from db.models import User
-from routers import schemas
+from api.db.models import User
+from api.routers import schemas
 
 def get_user(db: Session, user: User):
     return db.query(User).filter(User.login == user.login).first()

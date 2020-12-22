@@ -24,11 +24,11 @@ legacyDataFiles = {
 }
 
 varProjectionNamesPaths = [
-  ["name", "name", "", "", ""],
-  ["vmas", "vmas", "", "", ""],
-  ["description", "description", "", "", ""],
-  ["emissions_use_co2eq", "emissions_use_co2eq", "", "", ""],
-  ["pds_source_post_2014", "pds_source_post_2014", "", "", ""],
+  ["name", "technologies.solarpvutil.name", "", "", ""],
+  ["vmas", "technologies.solarpvutil.vmas", "", "", ""],
+  ["description", "technologies.solarpvutil.description", "", "", ""],
+  ["emissions_use_co2eq", "technologies.solarpvutil.emissions_use_co2eq", "", "", ""],
+  ["pds_source_post_2014", "technologies.solarpvutil.pds_source_post_2014", "", "", ""],
   ["conv_2014_cost","technologies.fossilfuelelectricity.start_year_cost","start_year_cost","First Cost per Implementation Unit","dollars"],
   ["conv_first_cost_efficiency_rate","technologies.fossilfuelelectricity.first_cost_efficiency_rate","first_cost_efficiency_rate","First Cost Efficiency Rate","float"],
   ["conv_fixed_oper_cost_per_iunit","technologies.fossilfuelelectricity.fixed_oper_cost_per_iunit","fixed_oper_cost_per_iunit","Operating Cost per Functional Unit per Annum","dollars"],
@@ -485,19 +485,18 @@ def transform_technology_reference(technology, path):
         set_value_at(jsonReferenceData, technologyPath, scenarioData[existing_name])
   return jsonReferenceData
 
-def rehydrate_legacy_json(tech_scenario_json, tech_reference_json):
+def rehydrate_legacy_json(technology, tech_scenario_json, tech_reference_json):
   rehydrated_json = {}
-  for technology in tech_scenario_json['technologies'].keys():
-    for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
-      technologyPath = path.replace('solarpvutil', technology)
-      value = get_value_at(tech_scenario_json, technologyPath)
-      if value is not None:
-        rehydrated_json[existing_name] = value
-    for [existing_name, path, converted_name, label, unit] in varRefNamesPaths:
-      technologyPath = path.replace('solarpvutil', technology)
-      value = get_value_at(tech_reference_json, technologyPath)
-      if value is not None:
-        rehydrated_json[existing_name] = value
+  for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
+    technologyPath = path.replace('solarpvutil', technology)
+    value = get_value_at(tech_scenario_json, technologyPath)
+    if value is not None:
+      rehydrated_json[existing_name] = value
+  for [existing_name, path, converted_name, label, unit] in varRefNamesPaths:
+    technologyPath = path.replace('solarpvutil', technology)
+    value = get_value_at(tech_reference_json, technologyPath)
+    if value is not None:
+      rehydrated_json[existing_name] = value
   return rehydrated_json
 
 # def detransform_technology_scenario(json):

@@ -53,3 +53,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def get_resource_path(entity: str, id: int):
+  api_url = get_settings().api_url
+  return f'{api_url}/resource/{entity}/{id}/'

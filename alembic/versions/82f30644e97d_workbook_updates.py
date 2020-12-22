@@ -1,8 +1,8 @@
-"""workbooks
+"""workbook updates
 
-Revision ID: 7792f854cf99
-Revises: fc61e7fb4d9a
-Create Date: 2020-12-16 16:22:16.435797
+Revision ID: 82f30644e97d
+Revises: 6b7b9069b417
+Create Date: 2020-12-21 13:25:14.458951
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7792f854cf99'
-down_revision = 'fc61e7fb4d9a'
+revision = '82f30644e97d'
+down_revision = '6b7b9069b417'
 branch_labels = None
 depends_on = None
 

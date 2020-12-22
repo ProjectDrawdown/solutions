@@ -9,3 +9,4 @@ def clone(db: Session, query: Query):
   make_transient(source_obj)  # http://docs.sqlalchemy.org/en/rel_1_1/orm/session_api.html#sqlalchemy.orm.session.make_transient
   delattr(source_obj, 'id')
   return source_obj
+
