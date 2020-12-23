@@ -16,9 +16,12 @@ boot_scripts:
 
 ### App
 app_port: "8000"
+app_host: "0.0.0.0"
+app_uid: "api.service:app"
 app_container_port: "3000"
 app_container_folder: "/app"
-app_command: "uvicorn api.service:app --reload --host 0.0.0.0 --port {{ app_port }}"
+app_executable: "/usr/bin/uvicorn"
+app_command: "{{ app_executable }} {{ app_uid }} --reload --host {{ app_host }} --port {{ app_port }}"
 
 ### DB
 db_user: "pdd"
