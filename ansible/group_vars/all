@@ -9,7 +9,7 @@ group: "{{ name }}"
 repository: "git@bitbucket.org:colabcoop-ondemand/drawdown-solutions-api.git"
 
 ### JWT
-jwt_secrret_key: "somejwtsecretkey"
+jwt_secret_key: "somejwtsecretkey"
 jwt_algorithm: "HS256"
 
 ### GitHub

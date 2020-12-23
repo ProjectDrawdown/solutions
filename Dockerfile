@@ -13,8 +13,8 @@ COPY requirements.txt /app/requirements.txt
 
 RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
-# RUN virtualenv .pyenv
-# RUN . .pyenv/bin/activate
+RUN virtualenv .pyenv
+RUN . .pyenv/bin/activate
 
 COPY . /app/
 
