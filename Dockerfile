@@ -10,6 +10,8 @@ WORKDIR /app
 
 COPY requirements.txt /app/requirements.txt
 
+RUN pip install virtualenv
+
 RUN virtualenv .pyenv
 RUN . .pyenv/bin/activate
 
