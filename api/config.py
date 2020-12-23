@@ -1,7 +1,7 @@
 from pydantic import BaseSettings
 from functools import lru_cache
 import pathlib
-from .db.database import get_session_maker
+from api.db.database import get_session_maker
 
 class Settings(BaseSettings):
 
@@ -53,3 +53,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def get_resource_path(entity: str, id: int):
+  api_url = get_settings().api_url
+  return f'{api_url}/resource/{entity}/{id}/'

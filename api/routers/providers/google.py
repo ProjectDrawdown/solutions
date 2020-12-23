@@ -2,7 +2,7 @@ import httpx
 from typing import Dict
 from urllib.parse import urlencode
 from urllib.parse import parse_qsl
-from api.queries import get_user, create_user
+from api.queries.user_queries import get_user, create_user
 from api.routers.schemas import Url, AuthorizationResponse, GoogleUser, User, Token
 from api.routers.helpers import generate_token, create_access_token, decode_google_id_token, row2dict
 from api.config import get_settings, get_providers
@@ -41,7 +41,7 @@ async def exchange_code(body, db):
         user_data['login'] = user_data['email']
         google_user = GoogleUser(**user_data)
 
-    db_user = get_user(db, google_user.login)
+    db_user = get_user(db, google_user)
     if db_user is None:
         db_user = create_user(db, google_user, 'google')
 

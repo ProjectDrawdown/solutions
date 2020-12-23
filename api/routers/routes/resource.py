@@ -1,0 +1,127 @@
+from enum import Enum
+from typing import List
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from typing import Optional
+import pathlib
+import json
+from api.config import get_settings, get_db, get_resource_path
+import solution.factory
+from api.db.models import (
+  Scenario as DBScenario,
+  Reference as DBReference,
+  Workbook as DBWorkbook,
+  Variation as DBVariation
+)
+from api.routers import schemas
+
+from api.queries.resource_queries import (
+  get_entity,
+  save_entity, 
+  all_entities,
+  all_entity_paths,
+  clone_variation,
+  save_variation,
+  delete_unused_variations
+)
+from api.queries.workbook_queries import (
+  save_workbook
+)
+from api.transform import transform, rehydrate_legacy_json
+
+settings = get_settings()
+router = APIRouter()
+DATADIR = pathlib.Path(__file__).parents[0].joinpath('data')
+
+entity_mapping = {
+  'scenario': DBScenario,
+  'reference': DBReference,
+  'variation': DBVariation
+}
+schema_mapping = {
+  'scenario': DBScenario,
+  'reference': DBReference,
+  'variation': DBVariation
+}
+class EntityName(str, Enum):
+    scenario = "scenario"
+    reference = "reference"
+    variation = "variation"
+
+@router.get('/resource/{entity}/{id}', response_model=schemas.ResourceOut)
+async def get_by_name(entity: EntityName, id: int, db: Session = Depends(get_db)):
+  return get_entity(db, id, entity_mapping[entity])
+
+@router.get('/resource/{entity}s/full/', response_model=List[schemas.ResourceOut])
+async def get_all(entity: EntityName, db: Session = Depends(get_db)):
+  return all_entities(db, entity_mapping[entity])
+
+@router.get('/resource/{entity}s/paths/', response_model=List[str])
+async def get_all_paths(entity: EntityName, db: Session = Depends(get_db)):
+  return all_entity_paths(db, entity, entity_mapping[entity])
+
+@router.post('/variation/fork/{id}', response_model=schemas.VariationOut)
+async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = Depends(get_db)):
+  cloned_variation = clone_variation(db, id)
+
+  if patch.scenario_parent_path is not None:
+    cloned_variation.data['scenario_parent_path'] = patch.scenario_parent_path
+  if patch.scenario_parent_path is not None:
+    cloned_variation.data['reference_parent_path'] = patch.reference_parent_path
+  if patch.scenario_vars is not None:  
+    cloned_variation.data['scenario_vars'] = patch.scenario_vars
+  if patch.reference_vars is not None:
+    cloned_variation.data['reference_vars'] = patch.references_vars
+
+  return save_variation(db, cloned_variation)
+
+@router.post('/variation/', response_model=schemas.VariationOut)
+async def post_variation(variation: schemas.VariationIn, db: Session = Depends(get_db)):
+  new_variation = DBVariation(
+    name = variation.name,
+    data = variation.data,
+  )
+  new_variation.data['scenario_parent_path'] = variation.scenario_parent_path
+  new_variation.data['reference_parent_path'] = variation.reference_parent_path
+  new_variation.data['scenario_vars'] = variation.scenario_vars
+  new_variation.data['reference_vars'] = variation.references_vars
+  return save_variation(db, new_variation)
+
+@router.get("/initialize/")
+async def initialize(db: Session = Depends(get_db)):
+  [scenario_json, references_json] = transform()
+
+  canonical_scenario = 'drawdown-2020'
+
+  scenario = save_entity(db, canonical_scenario, scenario_json, DBScenario)
+  reference = save_entity(db, canonical_scenario, references_json, DBReference)
+
+  variation = DBVariation(
+    name = 'default',
+    data = {
+      "scenario_parent_path": scenario.path,
+      "reference_parent_path": reference.path,
+      "scenario_vars": {},
+      "reference_vars": {},
+    }
+  )
+  db_variation = save_variation(db, variation)
+
+  workbook = DBWorkbook(
+    name = 'default',
+    ui = {},
+    start_year = 2020,
+    end_year = 2050,
+    variations = [
+      db_variation.path
+    ]
+  )
+
+  db_workbook = save_workbook(db, workbook)
+
+  return db_workbook
+  # return rehydrate_legacy_json(scenario_json, references_json)
+
+@router.get("/garbage_collect")
+async def garbage_collect(db: Session = Depends(get_db)):
+  delete_unused_variations()
