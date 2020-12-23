@@ -1,11 +1,9 @@
 import importlib
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import json 
+import json
 import urllib
 import uuid
-
-import jsondiff
 
 from api.config import get_settings, get_db
 from api.queries.user_queries import get_user
@@ -19,7 +17,7 @@ workbook_by_id,
 )
 
 from api.db.models import (
-  User as DBUser, 
+  User as DBUser,
   Workbook as DBWorkbook,
   Variation as DBVariation
 )
@@ -57,7 +55,7 @@ async def fork_workbook(
     id: int,
     db_active_user: DBUser = Depends(get_current_active_user),
     db: Session = Depends(get_db)):
-    
+
     cloned_workbook = clone_workbook(db, id)
     cloned_workbook.author_id = db_active_user.id
     saved_workbook = save_workbook(db, cloned_workbook)
@@ -68,7 +66,7 @@ async def create_workbook(
   workbook: schemas.WorkbookNew,
   db_active_user: DBUser = Depends(get_current_active_user),
   db: Session = Depends(get_db)):
-  
+
   dbworkbook = DBWorkbook(
     name = workbook.name,
     author_id = db_active_user.id,
@@ -87,11 +85,11 @@ async def update_workbook(
   workbook_edits: schemas.WorkbookPatch,
   db_active_user: DBUser = Depends(get_current_active_user),
   db: Session = Depends(get_db)):
-  
+
   active_user_workbooks = list(filter(lambda w: w.id == id, db_active_user.workbooks))
   if len(active_user_workbooks) == 0:
     raise HTTPException(status_code=400, detail="Workbook not found")
-  
+
   db_workbook = active_user_workbooks[0]
   workbook_edits_dict = dict(workbook_edits)
   for key in workbook_edits_dict:
@@ -120,7 +118,7 @@ async def calculate(workbook_commit_id: str, db: Session = Depends(get_db)):
         with urllib.request.urlopen(reference_parent_path) as url:
           reference_data = json.loads(url.read().decode())
           jsons = list(map(lambda tech: {
-              'tech': tech, 
+              'tech': tech,
               'json': rehydrate_legacy_json(
                 tech,
                 scenario_data['data'],
@@ -156,7 +154,7 @@ async def compare_with_files(workbook_id: int, db: Session = Depends(get_db)):
         with urllib.request.urlopen(reference_parent_path) as url:
           reference_data = json.loads(url.read().decode())
           jsons = list(map(lambda tech: {
-              'tech': tech, 
+              'tech': tech,
               'json': rehydrate_legacy_json(
                 tech,
                 scenario_data['data'],
