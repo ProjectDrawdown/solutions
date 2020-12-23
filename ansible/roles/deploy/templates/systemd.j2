@@ -5,6 +5,7 @@ Requires=docker.service
 After=docker.service
 
 [Service]
+Type=oneshot
 RemainAfterExit=true
 WorkingDirectory={{ item.app_folder | default(boot_default_app_folder) }}/%i
 Environment={{ item.env_vars | default(boot_default_env_vars) }}
