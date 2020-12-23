@@ -4,7 +4,7 @@ url: "stage.api.pdd.colab.coop"
 no_output: False
 
 ### Repository
-version: "develop"
+version: "deploy"
 
 ### Boot
 boot_scripts:
