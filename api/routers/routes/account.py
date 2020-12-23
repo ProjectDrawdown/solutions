@@ -13,10 +13,6 @@ default_provider = settings.default_provider
 def get_login_url_default() -> Url:
     return get_login_url(default_provider)
 
-@router.post('/authorize')
-async def verify_authorization_default(body: AuthorizationResponse) -> Token:
-    return await verify_authorization(body, default_provider)
-
 @router.get('/login/{provider}')
 def get_login_url(provider: str) -> Url:
     importname = 'api.routers.providers.' + provider

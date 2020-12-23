@@ -6,6 +6,9 @@ from api.db.models import Workbook as DBWorkbook
 def workbook_by_id(db: Session, id: int) -> DBWorkbook:
     return db.query(DBWorkbook).get(id)
 
+def workbook_by_commit(db: Session, uuid: str) -> DBWorkbook:
+    return db.query(DBWorkbook).filter(DBWorkbook.commit==uuid).first()
+
 def workbooks_by_user_id(db: Session, author_id: int) -> DBWorkbook:
     return db.query(DBWorkbook).filter(DBWorkbook.author_id==author_id).all()
 

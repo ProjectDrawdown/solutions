@@ -3,7 +3,7 @@ import json
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import Query
 
-from api.db.models import Scenario, Reference, Variation
+from api.db.models import Scenario, Reference, Variation, Workbook
 from api.db.helpers import clone
 from api.routers import schemas
 
@@ -41,3 +41,7 @@ def save_entity(db: Session, name: str, obj, table):
     db.commit()
     db.refresh(db_obj)
     return db_obj
+
+def delete_unused_variations(db: Session):
+    unused_vars = db.query(Variation).join(Workbook, Variation.path not in Workbook.variations).all()
+    return unused_vars

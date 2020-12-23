@@ -1,5 +1,4 @@
 import json
-from jsonpath_ng import jsonpath, parse
 from os import listdir
 from os.path import isfile, join
 
@@ -485,26 +484,25 @@ def transform_technology_reference(technology, path):
         set_value_at(jsonReferenceData, technologyPath, scenarioData[existing_name])
   return jsonReferenceData
 
-def rehydrate_legacy_json(technology, tech_scenario_json, tech_reference_json):
+def rehydrate_legacy_json(technology, tech_scenario_json, tech_reference_json, overrides):
   rehydrated_json = {}
   for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
     technologyPath = path.replace('solarpvutil', technology)
     value = get_value_at(tech_scenario_json, technologyPath)
+    if technologyPath in overrides['scenario_vars']:
+      override = overrides['scenario_vars'][technologyPath]
+      if override is not None:
+        value = override
     if value is not None:
       rehydrated_json[existing_name] = value
   for [existing_name, path, converted_name, label, unit] in varRefNamesPaths:
     technologyPath = path.replace('solarpvutil', technology)
     value = get_value_at(tech_reference_json, technologyPath)
+    if technologyPath in overrides['reference_vars']:
+      override = overrides['reference_vars'][technologyPath]
+      if override is not None:
+        value = override
     if value is not None:
       rehydrated_json[existing_name] = value
   return rehydrated_json
 
-# def detransform_technology_scenario(json):
-#     jsonProjectionData = {}
-#     with open(path) as f:
-#       scenarioData = json.load(f)
-#       for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
-#         # hacky
-#         technologyPath = path.replace('solarpvutil', technology)
-#         parse(technologyPath)
-#     return jsonProjectionData

@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 import json 
 import urllib
+import uuid
 
 import jsondiff
 
@@ -13,7 +14,8 @@ workbook_by_id,
   workbooks_by_user_id,
   all_workbooks,
   clone_workbook,
-  save_workbook
+  save_workbook,
+  workbook_by_commit
 )
 
 from api.db.models import (
@@ -79,7 +81,6 @@ async def create_workbook(
   saved_workbook = save_workbook(db, dbworkbook)
   return saved_workbook.id
 
-@lru_cache()
 @router.patch("/workbook/{id}")
 async def update_workbook(
   id: int,
@@ -103,9 +104,12 @@ async def update_workbook(
   except:
     raise HTTPException(status_code=400, detail="Invalid Request")
 
-@router.get("/calculate/{workbook_id}")
-async def calculate(workbook_id: int, db: Session = Depends(get_db)):
-  workbook = workbook_by_id(db, workbook_id)
+@lru_cache()
+@router.get("/calculate/{workbook_commit_id}")
+async def calculate(workbook_commit_id: str, db: Session = Depends(get_db)):
+  workbook = workbook_by_commit(db, workbook_commit_id)
+  if workbook is None:
+    raise HTTPException(status_code=400, detail="Workbook not found")
   for variation_path in workbook.variations:
     with urllib.request.urlopen(variation_path) as url:
       variation_data: schemas.Resource = json.loads(url.read().decode())
@@ -120,7 +124,8 @@ async def calculate(workbook_id: int, db: Session = Depends(get_db)):
               'json': rehydrate_legacy_json(
                 tech,
                 scenario_data['data'],
-                reference_data['data'])
+                reference_data['data'],
+                variation_data['data'])
               }
             , scenario_data['data']['technologies']))
           jsons = list(filter(lambda json: json['tech'] != 'fossilfuelelectricity', jsons))

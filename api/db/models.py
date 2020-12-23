@@ -1,11 +1,12 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Enum
-from sqlalchemy.dialects.postgresql import JSONB, ARRAY
+from sqlalchemy.dialects.postgresql import JSONB, ARRAY, UUID
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.hybrid import hybrid_property
 import json
 from jsonschema import validate
 import enum
 from api.config import get_resource_path
+from uuid import uuid4
 
 from .database import Base
 from .json_schemas import workbook_schema
@@ -32,6 +33,7 @@ class Workbook(Base):
   __tablename__ = 'workbook'
 
   id = Column(Integer, primary_key=True, index=True)
+  commit = Column(UUID(as_uuid=True), default=uuid4, onupdate=uuid4)
   name = Column(String)
   author_id = Column(Integer, ForeignKey('user.id'))
   author = relationship("User", back_populates="workbooks")

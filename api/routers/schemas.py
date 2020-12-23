@@ -65,8 +65,17 @@ class VariationOut(ResourceOut):
 
 class ResourceIn(BaseModel):
   name: Optional[str]
-  data: Dict[Any, Any]
 
 class VariationIn(ResourceIn):
   scenario_parent_path: str
   reference_parent_path: str
+  scenario_vars: Dict[str, Any]
+  reference_vars: Dict[str, Any]
+
+class VariationPatch(ResourceIn):
+  scenario_parent_path: Optional[str]
+  reference_parent_path: Optional[str]
+  scenario_vars: Optional[Dict[str, Any]]
+  reference_vars: Optional[Dict[str, Any]]
+
+
