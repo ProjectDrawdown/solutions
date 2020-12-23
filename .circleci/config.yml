@@ -7,28 +7,28 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - deps-{{ checksum "~/repo/ansible/requirements.txt" }}
+          - deps-{{ checksum "~/project/ansible/requirements.txt" }}
       - run:
           name: Install PIP Dependencies
           command: |
             python3 -m venv env
             . env/bin/activate
-            pip install -r ~/repo/ansible/requirements.txt
+            pip install -r ~/project/ansible/requirements.txt
       - save_cache:
-          key: deps-{{ checksum "~/repo/ansible/requirements.txt" }}
+          key: deps-{{ checksum "~/project/ansible/requirements.txt" }}
           paths:
             - "env"
       - run:
           name: Setup Ansible Vault pass
           command: |
-            echo $VAULT_PASS | tee ~/repo/ansible/.vault-pass
+            echo $VAULT_PASS | tee ~/project/ansible/.vault-pass
       - run:
           name: Deploy with Ansible
           command: |
             . env/bin/activate
-            cd ~/repo/ansible
+            cd ~/project/ansible
             if [ "${CIRCLE_BRANCH}" == "develop" ]; then
-              ansible-playbook -i hosts deploy.yml --limit staging_pdd_v1 --vault-password-file ~/repo/ansible/.vault-pass
+              ansible-playbook -i hosts deploy.yml --limit staging_pdd_v1 --vault-password-file ~/project/ansible/.vault-pass
             fi
 workflows:
   version: 2
