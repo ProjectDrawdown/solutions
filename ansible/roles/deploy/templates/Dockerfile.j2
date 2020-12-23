@@ -1,0 +1,12 @@
+FROM python:3
+
+RUN mkdir "{{ app_container_folder }}"
+VOLUME "{{ app_container_folder }}"
+WORKDIR "{{ app_container_folder }}"
+
+COPY requirements.txt requirements.txt
+
+RUN python -m pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+EXPOSE 8000

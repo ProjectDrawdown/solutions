@@ -1,0 +1,9 @@
+### General
+name: "pdd"
+home_folder: "/opt/www/{{ name }}"
+app_folder: "{{ home_folder }}/api"
+user: "{{ name }}"
+group: "{{ name }}"
+
+### Repository
+repository: "git@bitbucket.org:colabcoop-ondemand/drawdown-solutions-api.git"

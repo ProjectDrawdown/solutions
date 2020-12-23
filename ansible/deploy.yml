@@ -1,0 +1,6 @@
+---
+- hosts: all
+  roles:
+    - name: Deploy
+      role: deploy
+      tags: deploy

@@ -1,0 +1,12 @@
+---
+no_output: True
+boot_scripts: []
+boot_default_name: "bootscript"
+boot_default_type: "forking"
+boot_default_description: "CoLab boot script"
+boot_default_url: "https://colab.coop"
+boot_default_env_vars: ""
+boot_default_app_user: "ubuntu"
+boot_default_app_folder: "/home/ubuntu"
+boot_default_start_cmd: "echo 'Boot start script placeholder ...'"
+boot_default_stop_cmd: "echo 'Boot stop script placeholder ...'"

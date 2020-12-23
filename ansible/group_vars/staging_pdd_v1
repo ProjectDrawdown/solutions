@@ -1,0 +1,51 @@
+### Evnironment
+env: "staging"
+url: "stage.api.pdd.colab.coop"
+no_output: False
+
+### Repository
+version: "develop"
+
+### Boot
+boot_scripts:
+  - name: "pdd"
+    description: "PDD API"
+    url: "https://{{ url }}"
+    app_user: "{{ user }}"
+    app_folder: "{{ app_folder }}"
+
+### App
+app_port: "8000"
+app_container_port: "3000"
+app_container_folder: "/app"
+app_command: "uvicorn api.service:app --reload --host 0.0.0.0 --port {{ app_port }}"
+
+### DB
+db_user: "pdd"
+db_pwd: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  61626430643261306330623637316434663462623963333733356663666264633263373864356366
+  3036633330653765653233353931326535356162663866630a306563333266383765313762633934
+  64356133653839616536643137396631373665303237393930376332643436343762316533393833
+  6564343166623664630a313533353632636263313436323034343534323838653833356331666235
+  65386661356164653036353062653065343531363366636337643565343439373666
+db_host: "staging-pdd-db-v1.c0qdl67cgkfl.us-east-1.rds.amazonaws.com"
+db_port: "5452"
+db_name: "pdd"
+db_protocol: "postgresql"
+db_url: "{{ db_protocol }}://{{ db_user }}:{{ db_pwd }}@{{ db_host }}:{{ db_port }}/{{ db_name }}"
+
+### JWT
+jwt_secrret_key: "somejwtsecretkey"
+jwt_algorithm: "HS256"
+
+### GitHub
+gh_domain: "github.com"
+gh_client_id: "somegithubclientid"
+gh_client_secret: "somegithubclientsecret"
+gh_user_url: "https://api.github.com/user"
+
+### Google
+ggl_domain: "accounts.google.com"
+ggl_client_id: "somegoogleclientid"
+ggl_client_secret: "somegoogleclientsecret"
