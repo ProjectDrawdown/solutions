@@ -11,7 +11,7 @@ services:
     volumes:
       - "{{ app_folder }}:{{ app_container_folder }}"
     environment:
-      - DATABASE_URL="{{ db_url }}"
+      - "DATABASE_URL={{ db_url }}"
       - API_URL="https://{{ url }}"
       - JWT_SECRET_KEY="{{ jwt_secrret_key }}"
       - JWT_ALGORITHM="{{ jwt_algorithm }}"

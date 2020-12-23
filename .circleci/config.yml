@@ -1,0 +1,42 @@
+version: 2
+jobs:
+  deploy:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - deps-{{ checksum "~/repo/ansible/requirements.txt" }}
+      - run:
+          name: Install PIP Dependencies
+          command: |
+            python3 -m venv env
+            . env/bin/activate
+            pip install -r ~/repo/ansible/requirements.txt
+      - save_cache:
+          key: deps-{{ checksum "~/repo/ansible/requirements.txt" }}
+          paths:
+            - "env"
+      - run:
+          name: Setup Ansible Vault pass
+          command: |
+            echo $VAULT_PASS | tee ~/repo/ansible/.vault-pass
+      - run:
+          name: Deploy with Ansible
+          command: |
+            . env/bin/activate
+            cd ~/repo/ansible
+            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              ansible-playbook -i hosts deploy.yml --limit staging_pdd_v1 --vault-password-file ~/repo/ansible/.vault-pass
+            fi
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only:
+                - develop
+                - master
