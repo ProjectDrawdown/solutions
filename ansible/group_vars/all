@@ -1,0 +1,24 @@
+### General
+name: "pdd"
+home_folder: "/opt/www/{{ name }}"
+app_folder: "{{ home_folder }}/api"
+user: "{{ name }}"
+group: "{{ name }}"
+
+### Repository
+repository: "git@bitbucket.org:colabcoop-ondemand/drawdown-solutions-api.git"
+
+### JWT
+jwt_secrret_key: "somejwtsecretkey"
+jwt_algorithm: "HS256"
+
+### GitHub
+gh_domain: "github.com"
+gh_client_id: "somegithubclientid"
+gh_client_secret: "somegithubclientsecret"
+gh_user_url: "https://api.github.com/user"
+
+### Google
+ggl_domain: "accounts.google.com"
+ggl_client_id: "somegoogleclientid"
+ggl_client_secret: "somegoogleclientsecret"

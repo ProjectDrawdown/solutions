@@ -1,0 +1,20 @@
+[Unit]
+Description={{ item.description | default(boot_default_description) }}
+Documentation={{ item.url | default(boot_default_url) }}
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory={{ item.app_folder | default(boot_default_app_folder) }}/%i
+Environment={{ item.env_vars | default(boot_default_env_vars) }}
+User={{ item.app_user | default(boot_default_app_user) }}
+TimeoutStartSec=20
+Restart=on-failure
+ExecStart=/usr/local/bin/docker-compose up --remove-orphans -d
+ExecStop=/usr/local/bin/docker-compose down
+
+[Install]
+WantedBy=multi-user.target
+
