@@ -1,17 +1,16 @@
 version: "3"
 services:
   {{ name }}:
-    build: .
     restart: "always"
     container_name: "{{ name }}"
-    command:
-      - "{{ app_command }}"
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
     ports:
       - "{{ app_container_port }}:{{ app_port }}"
     volumes:
       - "{{ app_folder }}:{{ app_container_folder }}"
     environment:
-      - PATH="$PATH:/usr/local/bin"
       - DATABASE_URL="{{ db_url }}"
       - API_URL="https://{{ url }}"
       - JWT_SECRET_KEY="{{ jwt_secrret_key }}"
