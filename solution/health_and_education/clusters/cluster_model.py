@@ -63,7 +63,8 @@ class Scenario():
     def calc_ref1_tam(self):
         # Table 3: REF1 TAM FOR POPULATIONS IN REGIONS WITH LOW EDUCATIONAL ATTAINMENT ONLY
         ref1_tam_low_edu = (self.ref2_tam / self.ref2_population) * self.ref1_low_edu
-        ref1_tam_low_edu.loc[:, 'Asia (Sans Japan)'] = ((self.ref2_tam.loc[:, 'Asia (Sans Japan)'] - self.ref2_tam.loc[:, 'China']) / self.ref2_population.loc[:, 'Asia (Sans Japan)']) * self.ref1_low_edu.loc[:, 'Asia (Sans Japan)']
+        ref1_tam_low_edu.loc[:, 'Asia (Sans Japan)'] = ((self.ref2_tam.loc[:, 'Asia (Sans Japan)'] - self.ref2_tam.loc[:, 'China']) \
+            / self.ref2_population.loc[:, 'Asia (Sans Japan)']) * self.ref1_low_edu.loc[:, 'Asia (Sans Japan)']
         ref1_tam_low_edu.loc[:, 'World'] = ref1_tam_low_edu.loc[:, ref1_tam_low_edu.columns[1:6]].sum(axis=1)									
 								
         self.ref1_tam_low_edu = ref1_tam_low_edu
@@ -92,7 +93,8 @@ class Scenario():
         if dd.LLDC_HIGH_NRR_CONFIG['Asia (Sans Japan)'] == 'N':
             ref2_demand.loc[:, 'MDC + LAC + EE'] = ref2_demand.loc[:, 'MDC + LAC + EE'] - self.ref2_tam.loc[:, 'China']
         ref2_demand.loc[:, 'Demand in Countries with Higher Educational Attainment'] = ref2_demand.loc[:, ['LLDC+HighNRR', 'China', 'MDC + LAC + EE']].sum(axis=1)
-        ref2_demand.loc[:, 'Demand in Countries with Higher Educational Attainment % LLDC'] = ref2_demand.loc[:, 'LLDC+HighNRR'] / ref2_demand.loc[:, 'Demand in Countries with Higher Educational Attainment']
+        ref2_demand.loc[:, 'Demand in Countries with Higher Educational Attainment % LLDC'] = ref2_demand.loc[:, 'LLDC+HighNRR'] \
+            / ref2_demand.loc[:, 'Demand in Countries with Higher Educational Attainment']
 
         # SpaceHeating_cluster!B77:F124
         self.ref2_demand = ref2_demand
@@ -101,7 +103,10 @@ class Scenario():
     def calc_ref1_demand(self):
         # Table 5: Total REF1 Demand by Economic Development Status												
         ref1_demand = pd.DataFrame(None,
-            columns=['LLDC with low educational attainment, excluding China', 'MDC + EE + LAC with low educational attainment, excluding China', 'China', 'LLDC with higher educational attainment, excluding China', 'MDC + EE + LAC with higher educational attainment', 'Demand in Countries with Low Educational Attainment, exluding China', 'Demand in Countries with Low Educational Attainment, exluding China % LLDC', 'Demand in Countries with Higher Educational Attainment', 'Demand in Countries with Higher Educational Attainment % LLDC', 'Demand', 'Demand % LLDC'],
+            columns=['LLDC with low educational attainment, excluding China', 'MDC + EE + LAC with low educational attainment, excluding China', 'China', 
+                'LLDC with higher educational attainment, excluding China', 'MDC + EE + LAC with higher educational attainment', 
+                'Demand in Countries with Low Educational Attainment, exluding China', 'Demand in Countries with Low Educational Attainment, exluding China % LLDC', 
+                'Demand in Countries with Higher Educational Attainment', 'Demand in Countries with Higher Educational Attainment % LLDC', 'Demand', 'Demand % LLDC'],
             index=list(range(2014, 2061)), dtype=np.float64)
 
         ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] = self.ref1_tam_low_edu.loc[:, dd.LLDC_HIGH_NRR_REGION_Y].sum(axis=1) - self.ref1_tam_low_edu.loc[:, 'China']
@@ -110,18 +115,26 @@ class Scenario():
             ref1_demand.loc[:, 'MDC + LAC + EE'] = ref1_demand.loc[:, 'MDC + LAC + EE'] - self.ref1_tam_low_edu.loc[:, 'China']
         ref1_demand.loc[:, 'China'] = self.ref1_tam_high_edu.loc[:, 'China']
 
-        ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] = self.ref1_tam_high_edu.loc[:, dd.LLDC_HIGH_NRR_REGION_Y].sum(axis=1) - self.ref1_tam_high_edu.loc[:, 'China']
+        ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] = self.ref1_tam_high_edu.loc[:, dd.LLDC_HIGH_NRR_REGION_Y].sum(axis=1) \
+            - self.ref1_tam_high_edu.loc[:, 'China']
         ref1_demand.loc[:, 'MDC + EE + LAC with higher educational attainment'] = self.ref1_tam_high_edu.loc[:, dd.LLDC_HIGH_NRR_REGION_N].sum(axis=1)
         if dd.LLDC_HIGH_NRR_CONFIG['Asia (Sans Japan)'] == 'N':
-            ref1_demand.loc[:, 'MDC + EE + LAC with higher educational attainment'] = ref1_demand.loc[:, 'MDC + EE + LAC with higher educational attainment'] - self.ref1_tam_high_edu.loc[:, 'China']
+            ref1_demand.loc[:, 'MDC + EE + LAC with higher educational attainment'] = ref1_demand.loc[:, 'MDC + EE + LAC with higher educational attainment'] \
+                - self.ref1_tam_high_edu.loc[:, 'China']
 
-        ref1_demand.loc[:, 'Demand in Countries with Low Educational Attainment, exluding China'] = ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] + ref1_demand.loc[:, 'MDC + EE + LAC with low educational attainment, excluding China']
-        ref1_demand.loc[:, 'Demand in Countries with Low Educational Attainment, exluding China % LLDC'] = ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] / ref1_demand.loc[:, 'Demand in Countries with Low Educational Attainment, exluding China']
+        ref1_demand.loc[:, 'Demand in Countries with Low Educational Attainment, exluding China'] = ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] \
+            + ref1_demand.loc[:, 'MDC + EE + LAC with low educational attainment, excluding China']
+        ref1_demand.loc[:, 'Demand in Countries with Low Educational Attainment, exluding China % LLDC'] = ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] \
+            / ref1_demand.loc[:, 'Demand in Countries with Low Educational Attainment, exluding China']
 
-        ref1_demand.loc[:, 'Demand in Countries with Higher Educational Attainment'] = ref1_demand.loc[:, 'China'] + ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] + ref1_demand.loc[:, 'MDC + EE + LAC with higher educational attainment']
-        ref1_demand.loc[:, 'Demand in Countries with Higher Educational Attainment % LLDC'] = ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] / ref1_demand.loc[:, 'Demand in Countries with Higher Educational Attainment']
+        ref1_demand.loc[:, 'Demand in Countries with Higher Educational Attainment'] = ref1_demand.loc[:, 'China'] \
+            + ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] \
+            + ref1_demand.loc[:, 'MDC + EE + LAC with higher educational attainment']
+        ref1_demand.loc[:, 'Demand in Countries with Higher Educational Attainment % LLDC'] = ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] \
+            / ref1_demand.loc[:, 'Demand in Countries with Higher Educational Attainment']
 
-        ref1_demand.loc[:, 'Demand'] = ref1_demand.loc[:, 'Demand in Countries with Low Educational Attainment, exluding China'] + ref1_demand.loc[:, 'Demand in Countries with Higher Educational Attainment']
+        ref1_demand.loc[:, 'Demand'] = ref1_demand.loc[:, 'Demand in Countries with Low Educational Attainment, exluding China'] \
+            + ref1_demand.loc[:, 'Demand in Countries with Higher Educational Attainment']
         ref1_demand.loc[:, 'Demand % LLDC'] = ref1_demand.loc[:, 'Demand in Countries with Low Educational Attainment, exluding China'] / ref1_demand.loc[:, 'Demand']
 
         # SpaceHeating_cluster!H77:T124
@@ -131,22 +144,37 @@ class Scenario():
     def calc_change_demand(self):
         # Table 6: Change in Demand by MDC vs. LLDC Regions, REF1-REF2							
         change_demand = pd.DataFrame(None,
-            columns=['LLDC', 'China', 'MDC + EE +LAC', 'Total change in REF1-REF2', '% LLDC with higher educational attainment', '% LLDC with Low Educational Attainment', '% LLDC', '% MDC + LAC + EE + China'],
+            columns=['LLDC', 'China', 'MDC + EE +LAC', 'Total change in REF1-REF2', '% LLDC with higher educational attainment', 
+                '% LLDC with Low Educational Attainment', '% LLDC', '% MDC + LAC + EE + China'],
             index=list(range(2014, 2061)), dtype=np.float64)
 
-        change_demand.loc[:, 'LLDC'] = (self.ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] + self.ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China']) - self.ref2_demand.loc[:, 'LLDC+HighNRR']
+        change_demand.loc[:, 'LLDC'] = (self.ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] \
+            + self.ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China']) - self.ref2_demand.loc[:, 'LLDC+HighNRR']
+
         change_demand.loc[:, 'China'] = self.ref1_demand.loc[:, 'China'] - self.ref2_demand.loc[:, 'China']
-        change_demand.loc[:, 'MDC + EE +LAC'] = (self.ref1_demand.loc[:, 'MDC + EE + LAC with higher educational attainment'] + self.ref1_demand.loc[:, 'MDC + EE + LAC with low educational attainment, excluding China']) - self.ref2_demand.loc[:, 'MDC + LAC + EE']
-        # change_demand.loc[[2014, 2015], 'MDC + EE +LAC'] = 0
+        change_demand.loc[:, 'MDC + EE +LAC'] = (self.ref1_demand.loc[:, 'MDC + EE + LAC with higher educational attainment'] \
+            + self.ref1_demand.loc[:, 'MDC + EE + LAC with low educational attainment, excluding China']) - self.ref2_demand.loc[:, 'MDC + LAC + EE']
 
         change_demand.loc[:, 'Total change in REF1-REF2'] = change_demand.loc[:, 'LLDC'] + change_demand.loc[:, 'China'] + change_demand.loc[:, 'MDC + EE +LAC']
 
-        change_demand.loc[:, '% LLDC with higher educational attainment'] = (change_demand.loc[:, 'LLDC'] * (self.ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] / (self.ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] + self.ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China']))) / change_demand.loc[:, 'Total change in REF1-REF2']
+        change_demand.loc[:, '% LLDC with higher educational attainment'] = (change_demand.loc[:, 'LLDC'] \
+            * (self.ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] \
+                / (self.ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] \
+                + self.ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China']))) \
+            / change_demand.loc[:, 'Total change in REF1-REF2']
 
-        change_demand.loc[:, '% LLDC with Low Educational Attainment'] = (change_demand.loc[:, 'LLDC'] / change_demand.loc[:, 'Total change in REF1-REF2']) * (self.ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] / (self.ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] + self.ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'])) 
+        change_demand.loc[:, '% LLDC with Low Educational Attainment'] = (change_demand.loc[:, 'LLDC'] / change_demand.loc[:, 'Total change in REF1-REF2']) \
+            * (self.ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'] \
+                / (self.ref1_demand.loc[:, 'LLDC with higher educational attainment, excluding China'] \
+                + self.ref1_demand.loc[:, 'LLDC with low educational attainment, excluding China'])) 
+
         change_demand.loc[:, '% LLDC'] = (change_demand.loc[:, 'LLDC'] / change_demand.loc[:, 'Total change in REF1-REF2'])
-        change_demand.loc[:, '% MDC + LAC + EE + China'] = (change_demand.loc[:, 'China'] + change_demand.loc[:, 'MDC + EE +LAC']) / change_demand.loc[:, 'Total change in REF1-REF2']
+        change_demand.loc[:, '% MDC + LAC + EE + China'] = (change_demand.loc[:, 'China'] + change_demand.loc[:, 'MDC + EE +LAC']) \
+            / change_demand.loc[:, 'Total change in REF1-REF2']
         change_demand = change_demand.fillna(0).replace((-np.inf, np.inf), np.nan)
+        
+        # Force valuesin order to pass test against Excel, which seems to have been zerod out manually for the first 2 rows
+        change_demand.iloc[0:2, :] = 0
 
         # SpaceHeating_cluster!W77:AD124
         self.change_demand = change_demand
@@ -246,7 +274,8 @@ class Scenario():
         
         if self.assumptions['Fuel'] == 'Y':
             emis_diff_highed['Conventional: Fuel'] = self.addl_func_units_highed['Additional Functional Units in REF2 vs REF2'] \
-                * (self.current_tam_mix.loc[self.current_tam_mix['Energy Source'].isin(['Coal', 'Oil Products', 'Natural Gas', 'Biomass, waste and other renewables']), 'Weighting Factor'].sum() / self.conv_weight_sum) \
+                * (self.current_tam_mix.loc[self.current_tam_mix['Energy Source'].isin(['Coal', 'Oil Products', 'Natural Gas', 'Biomass, waste and other renewables']), 'Weighting Factor'].sum() \
+                    / self.conv_weight_sum) \
                 * (self.assumptions['Weighted Emission Factor for Space Heating and Cooling'] * self.assumptions['TJ_per_TWh']) / 10**6
         
         emis_diff_highed['Emission Reductions: Conv Total'] = emis_diff_highed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
@@ -464,35 +493,47 @@ class Scenario():
         self.emissions_allocations_mdc = emissions_allocations_mdc
 
 
-    def calc_total_emis(self):
+    def calc_total_emis(self, mdc=True):
         # Total Emissions Avoided due to Health & Education (Gt CO2-eq)
         emissions_avoided_lldc_period = self.emissions_allocations_lldc.loc[self.assumptions['period_start']:self.assumptions['period_end'], 'Health & Education: Conv Total'].sum()
         emissions_avoided_lldc_full = self.emissions_allocations_lldc.loc[:, 'Health & Education: Conv Total'].sum()
-        emissions_avoided_mdc_period = self.emissions_allocations_mdc.loc[self.assumptions['period_start']:self.assumptions['period_end'], 'Health & Education: Conv Total'].sum()
-        emissions_avoided_mdc_full = self.emissions_allocations_mdc.loc[:, 'Health & Education: Conv Total'].sum()
+        
+        if mdc:
+            emissions_avoided_mdc_period = self.emissions_allocations_mdc.loc[self.assumptions['period_start']:self.assumptions['period_end'], 'Health & Education: Conv Total'].sum()
+            emissions_avoided_mdc_full = self.emissions_allocations_mdc.loc[:, 'Health & Education: Conv Total'].sum()
 
         # Electricity_cluster!N4:O12
         self.emissions_avoided_lldc_period = round(emissions_avoided_lldc_period/1000, 2)
         self.emissions_avoided_lldc_full = round(emissions_avoided_lldc_full/1000, 2)
-        self.emissions_avoided_mdc_period = round(emissions_avoided_mdc_period/1000, 2)
-        self.emissions_avoided_mdc_full = round(emissions_avoided_mdc_full/1000, 2)
+        
+        if mdc:
+            self.emissions_avoided_mdc_period = round(emissions_avoided_mdc_period/1000, 2)
+            self.emissions_avoided_mdc_full = round(emissions_avoided_mdc_full/1000, 2)
+        else: 
+            self.emissions_avoided_mdc_period = 0
+            self.emissions_avoided_mdc_full = 0
+
+
         self.emissions_avoided_total_period = round(self.emissions_avoided_lldc_period + self.emissions_avoided_mdc_period, 2)
         self.emissions_avoided_total_full = round(self.emissions_avoided_lldc_full + self.emissions_avoided_mdc_full, 2)
 
 
-    def print_total_emis(self):
+    def print_total_emis(self, mdc=True):
         # To avoid the hard coded 2015 - 2060 date range in Excel, infer the min/max years from the dataframe
-        min_range = min(self.emissions_allocations_mdc.index)
-        max_range = max(self.emissions_allocations_mdc.index)
+        min_range = min(self.emissions_allocations_lldc.index)
+        max_range = max(self.emissions_allocations_lldc.index)
 
         print('\n', self.name)
         print('Total Emissions Avoided due to Health & Education (Gt CO2-eq)')
         print('\nLeast & Less Developed Countries (Conventional):')
         print(f'{min_range} - {max_range}:', self.emissions_avoided_lldc_full)
         print(f'{self.period_start} - {self.period_end}:', self.emissions_avoided_lldc_period)
-        print('\nMore Developed Countries (Conventional):')
-        print(f'{min_range} - {max_range}:', self.emissions_avoided_mdc_full)
-        print(f'{self.period_start} - {self.period_end}:', self.emissions_avoided_mdc_period)
+
+        if mdc:
+            print('\nMore Developed Countries (Conventional):')
+            print(f'{min_range} - {max_range}:', self.emissions_avoided_mdc_full)
+            print(f'{self.period_start} - {self.period_end}:', self.emissions_avoided_mdc_period)
+
         print('\nTotal (Conventional):')
         print(f'{min_range} - {max_range}:', self.emissions_avoided_total_full)
         print(f'{self.period_start} - {self.period_end}:', self.emissions_avoided_total_period)

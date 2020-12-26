@@ -15,25 +15,21 @@ def test_space_cooling():
     
     # Default columns to integers to avoid mismatch between Excel & pandas col names using T.reset_index()
     exp_ref2_tam = expected_df.iloc[28:75, 1:11].T.reset_index(drop=True).T.astype(float)
-    # exp_ref2_tam.columns = expected_df.iloc[27, 1:11].values
     exp_ref2_tam.index = expected_df.iloc[28:75, 0].astype(int).values
     test_ref2_tam = test_dfs.ref2_tam.T.reset_index(drop=True).T
     pd.testing.assert_frame_equal(test_ref2_tam, exp_ref2_tam, check_exact=False)
 
     exp_ref1_tam_low_edu = expected_df.iloc[28:75, 13:23].T.reset_index(drop=True).T.astype(float)
-    # exp_ref1_tam_low_edu.columns = expected_df.iloc[27, 13:23].values
     exp_ref1_tam_low_edu.index = expected_df.iloc[28:75, 12].astype(int).values
     test_ref1_tam_low_edu = test_dfs.ref1_tam_low_edu.T.reset_index(drop=True).T
     pd.testing.assert_frame_equal(test_ref1_tam_low_edu, exp_ref1_tam_low_edu, check_exact=False)
 
     exp_ref1_tam_high_edu = expected_df.iloc[28:75, 25:35].T.reset_index(drop=True).T.astype(float)
-    # exp_ref1_tam_high_edu.columns = expected_df.iloc[27, 25:35].values
     exp_ref1_tam_high_edu.index = expected_df.iloc[28:75, 24].astype(int).values
     test_ref1_tam_high_edu = test_dfs.ref1_tam_high_edu.T.reset_index(drop=True).T
     pd.testing.assert_frame_equal(test_ref1_tam_high_edu, exp_ref1_tam_high_edu, check_exact=False)
 
     exp_ref1_tam_all_regions = expected_df.iloc[28:75, 37:47].T.reset_index(drop=True).T.astype(float)
-    # exp_ref1_tam_all_regions.columns = expected_df.iloc[27, 37:47].values
     exp_ref1_tam_all_regions.index = expected_df.iloc[28:75, 36].astype(int).values
     test_ref1_tam_all_regions = test_dfs.ref1_tam_all_regions.T.reset_index(drop=True).T
     pd.testing.assert_frame_equal(test_ref1_tam_all_regions, exp_ref1_tam_all_regions, check_exact=False)

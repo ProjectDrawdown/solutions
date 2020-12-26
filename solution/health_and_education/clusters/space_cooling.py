@@ -44,7 +44,7 @@ current_tam_mix_list = [
         ['Electricity', 95.0, 'N', 'Y']]
 
 # Table 2: REF2,  Heating Demand TAM (TWh Therms)										
-# SpaceHeating_cluster!B28:K75
+# SpaceCooling_cluster!B28:K75
 # TODO: Replace this with solarpvutil.Scenario.ref_tam_per_region once we resolve the data mismatch
 ref2_tam_list = [
         ['World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
