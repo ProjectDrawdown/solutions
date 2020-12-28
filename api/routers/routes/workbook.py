@@ -1,3 +1,4 @@
+import asyncio
 import importlib
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -5,7 +6,10 @@ import json
 import urllib
 import uuid
 
-from api.config import get_settings, get_db
+from pycallgraph import PyCallGraph
+from pycallgraph.output import GraphvizOutput
+
+from api.config import get_settings, get_db, AioWrap
 from api.queries.user_queries import get_user
 from api.queries.workbook_queries import (
 workbook_by_id,
@@ -102,44 +106,40 @@ async def update_workbook(
   except:
     raise HTTPException(status_code=400, detail="Invalid Request")
 
+async def calc(constructor, input):
+    return to_json(constructor(input))
+
 @lru_cache()
 @router.get("/calculate/{workbook_commit_id}")
-async def calculate(workbook_commit_id: str, db: Session = Depends(get_db)):
+async def calculate(workbook_commit_id: str, client: AioWrap = Depends(AioWrap), db: Session = Depends(get_db)):
   workbook = workbook_by_commit(db, workbook_commit_id)
   if workbook is None:
     raise HTTPException(status_code=400, detail="Workbook not found")
   for variation_path in workbook.variations:
-    with urllib.request.urlopen(variation_path) as url:
-      variation_data: schemas.Resource = json.loads(url.read().decode())
-      scenario_parent_path = variation_data['data']['scenario_parent_path']
-      reference_parent_path = variation_data['data']['reference_parent_path']
-      with urllib.request.urlopen(scenario_parent_path) as url:
-        scenario_data = json.loads(url.read().decode())
-        with urllib.request.urlopen(reference_parent_path) as url:
-          reference_data = json.loads(url.read().decode())
-          jsons = list(map(lambda tech: {
-              'tech': tech,
-              'json': rehydrate_legacy_json(
-                tech,
-                scenario_data['data'],
-                reference_data['data'],
-                variation_data['data'])
-              }
-            , scenario_data['data']['technologies']))
-          jsons = list(filter(lambda json: json['tech'] != 'fossilfuelelectricity', jsons))
-          constructors = factory_2.all_solutions_scenarios(jsons)
-          results = {}
-          for constructor in constructors:
-              name = list(filter(lambda json: json['tech'] == constructor, jsons))[0]['json']['name']
-              obj = constructors[constructor][0](name)
-              results[constructor] = to_json(obj)
-          return results
-          # if sol:
-          #     constructor = sol[0]
-          #     obj = constructor(scenario=json['name'], json_override=json['tech'])
-          #     return {name: to_json(obj)}
-          # else:
-          #     return {}
+    variation_data = await client(variation_path)
+    scenario_parent_path = variation_data['data']['scenario_parent_path']
+    reference_parent_path = variation_data['data']['reference_parent_path']
+    scenario_data = await client(scenario_parent_path)
+    reference_data = await client(reference_parent_path)
+    jsons = list(map(lambda tech: {
+        'tech': tech,
+        'json': rehydrate_legacy_json(
+          tech,
+          scenario_data['data'],
+          reference_data['data'],
+          variation_data['data'])
+        }
+      , scenario_data['data']['technologies']))
+    jsons = list(filter(lambda json: json['tech'] != 'fossilfuelelectricity', jsons))
+    constructors = factory_2.all_solutions_scenarios(jsons)
+    results = {}
+    tasks = []
+    for constructor in constructors:
+        name = list(filter(lambda json: json['tech'] == constructor, jsons))[0]['json']['name']
+        tasks.append(calc(constructors[constructor][0], name))
+
+    results = await asyncio.wait(tasks)
+    return [r._result for r in results[0]]
 
 @router.get("/test_diffs/{workbook_id}")
 async def compare_with_files(workbook_id: int, db: Session = Depends(get_db)):
@@ -175,6 +175,7 @@ async def compare_with_files(workbook_id: int, db: Session = Depends(get_db)):
 
 def to_json(scenario):
     json_data = dict()
+    json_data['name'] = scenario.name
     instance_vars = vars(scenario).keys()
     for iv in instance_vars:
         try:
@@ -183,4 +184,4 @@ def to_json(scenario):
                 json_data[iv] = obj.to_json()
         except BaseException as e:
             json_data[iv] = None
-    return {scenario.scenario: json_data}
+    return json_data

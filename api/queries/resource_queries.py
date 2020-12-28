@@ -43,5 +43,16 @@ def save_entity(db: Session, name: str, obj, table):
     return db_obj
 
 def delete_unused_variations(db: Session):
-    unused_vars = db.query(Variation).join(Workbook, Variation.path not in Workbook.variations).all()
-    return unused_vars
+    # would be nice to do in the db but this doesn't work because path is a hybrid property
+    # unused_vars = db.query(Variation).join(Workbook, Workbook.variations.contains([Variation.path])).all()
+
+    all_workbooks = db.query(Workbook).all()
+    all_variations = db.query(Variation).all()
+    for variation in all_variations:
+        found = False
+        for workbook in all_workbooks:
+            if variation.path in workbook.variations:
+                found = True
+        if not found:
+            db.delete(variation)
+    db.commit()
