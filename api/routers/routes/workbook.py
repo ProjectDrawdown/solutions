@@ -6,13 +6,10 @@ import json
 import urllib
 import uuid
 
-from pycallgraph import PyCallGraph
-from pycallgraph.output import GraphvizOutput
-
 from api.config import get_settings, get_db, AioWrap
 from api.queries.user_queries import get_user
 from api.queries.workbook_queries import (
-workbook_by_id,
+  workbook_by_id,
   workbooks_by_user_id,
   all_workbooks,
   clone_workbook,
