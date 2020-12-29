@@ -1,10 +1,14 @@
 import asyncio
 import importlib
+import hashlib
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 import json
 import urllib
 import uuid
+import aioredis
+import fastapi_plugins
+from pandas import DataFrame, Series
 
 from api.config import get_settings, get_db, AioWrap
 from api.queries.user_queries import get_user
@@ -103,12 +107,21 @@ async def update_workbook(
   except:
     raise HTTPException(status_code=400, detail="Invalid Request")
 
-async def calc(constructor, input):
-    return to_json(constructor(input))
+async def calc(constructor, input, hashed_json_input):
+    return [to_json(constructor(input)), hashed_json_input]
 
 @lru_cache()
 @router.get("/calculate/{workbook_commit_id}")
-async def calculate(workbook_commit_id: str, client: AioWrap = Depends(AioWrap), db: Session = Depends(get_db)):
+async def calculate(
+  workbook_commit_id: str, 
+  client: AioWrap = Depends(AioWrap), 
+  db: Session = Depends(get_db),
+  cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
+
+  cached_result = await cache.get(workbook_commit_id)
+  if cached_result is not None:
+    return json.loads(cached_result)
+
   workbook = workbook_by_commit(db, workbook_commit_id)
   if workbook is None:
     raise HTTPException(status_code=400, detail="Workbook not found")
@@ -129,46 +142,31 @@ async def calculate(workbook_commit_id: str, client: AioWrap = Depends(AioWrap),
       , scenario_data['data']['technologies']))
     jsons = list(filter(lambda json: json['tech'] != 'fossilfuelelectricity', jsons))
     constructors = factory_2.all_solutions_scenarios(jsons)
-    results = {}
     tasks = []
+    json_cached_results = []
     for constructor in constructors:
-        name = list(filter(lambda json: json['tech'] == constructor, jsons))[0]['json']['name']
-        tasks.append(calc(constructors[constructor][0], name))
+        current_json_input: dict = list(filter(lambda json: json['tech'] == constructor, jsons))[0]
+        name = current_json_input['json']['name']
+        hashed_json_input = hashlib.md5(json.dumps(current_json_input).encode('utf-8')).hexdigest()
+        
+        cached_result = await cache.get(hashed_json_input)
+        if cached_result is not None:
+          json_cached_results.append(json.loads(cached_result))
+        else:
+          tasks.append(calc(constructors[constructor][0], name, hashed_json_input))
 
-    results = await asyncio.wait(tasks)
-    return [r._result for r in results[0]]
+    json_results = []
 
-@router.get("/test_diffs/{workbook_id}")
-async def compare_with_files(workbook_id: int, db: Session = Depends(get_db)):
-  workbook = workbook_by_id(db, workbook_id)
-  for variation_path in workbook.variations:
-    with urllib.request.urlopen(variation_path) as url:
-      variation_data: schemas.Resource = json.loads(url.read().decode())
-      scenario_parent_path = variation_data['data']['scenario_parent_path']
-      reference_parent_path = variation_data['data']['reference_parent_path']
-      with urllib.request.urlopen(scenario_parent_path) as url:
-        scenario_data = json.loads(url.read().decode())
-        with urllib.request.urlopen(reference_parent_path) as url:
-          reference_data = json.loads(url.read().decode())
-          jsons = list(map(lambda tech: {
-              'tech': tech,
-              'json': rehydrate_legacy_json(
-                tech,
-                scenario_data['data'],
-                reference_data['data'])
-              }
-            , scenario_data['data']['technologies']))
-          jsons = list(filter(lambda json: json['tech'] != 'fossilfuelelectricity', jsons))
+    if len(tasks) > 0:
+      calculated_results = await asyncio.wait(tasks)
+      for r in calculated_results[0]:
+        json_results.append(r._result[0])
+        await cache.set(r._result[1], json.dumps(r._result[0]))
 
-          constructors = factory.all_solutions_scenarios()
-          results2 = {}
-          for constructor in constructors:
-              names = list(filter(lambda json: json['tech'] == constructor, jsons))
-              if len(names) > 0:
-                name = names[0]['json']['name']
-                obj = constructors[constructor][0](name)
-                results2[constructor] = to_json(obj)
-          return results2
+    result = json_results + json_cached_results
+    await cache.set(workbook_commit_id, json.dumps(result))
+    return result
+
 
 def to_json(scenario):
     json_data = dict()
@@ -179,6 +177,9 @@ def to_json(scenario):
             obj = getattr(scenario, iv)
             if issubclass(type(obj), DataHandler):
                 json_data[iv] = obj.to_json()
+                for jv in json_data[iv]:
+                  if type(json_data[iv][jv]) in [DataFrame, Series]:
+                    json_data[iv][jv] = json.loads(json_data[iv][jv].to_json())
         except BaseException as e:
             json_data[iv] = None
     return json_data
