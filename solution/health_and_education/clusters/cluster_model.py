@@ -316,6 +316,25 @@ class Scenario():
         self.emis_diff_highed = emis_diff_highed
 
 
+    def calc_emis_diff_highed_comlight(self, ef_co2_eq_list):
+        self.emissions_factors_ref1_co2eq = pd.DataFrame(ef_co2_eq_list[1:],
+            columns=ef_co2_eq_list[0],
+            index=list(range(2014, 2061)), dtype=np.float64)
+
+        emis_diff_highed = pd.DataFrame(None,
+            columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+            index=list(range(2014, 2061)), dtype=np.float64)
+        
+        if self.assumptions['Grid'] == 'Y':
+            emis_diff_highed['Conventional: Grid'] = self.addl_func_units_highed['Additional Functional Units in REF2 vs REF2'] \
+                * self.assumptions['Twh_per_TWh'] * self.emissions_factors_ref1_co2eq['World']
+        
+        emis_diff_highed['Emission Reductions: Conv Total'] = emis_diff_highed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # SpaceHeating_cluster!V131:Z179
+        self.emis_diff_highed = emis_diff_highed
+
+
     def calc_emis_diff_lowed(self):
         # Table 10: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+LowED
         # CONVENTIONAL  - Least and Less Developed Countries (sans LAC, EE, China)	
@@ -377,6 +396,21 @@ class Scenario():
 
         emis_diff_lowed['Emission Reductions: Conv Total'] = emis_diff_lowed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
         
+        self.emis_diff_lowed = emis_diff_lowed
+        
+
+    def calc_emis_diff_lowed_comlight(self):
+        emis_diff_lowed = pd.DataFrame(None,
+            columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+            index=list(range(2014, 2061)), dtype=np.float64)
+
+        if self.assumptions['Grid'] == 'Y':
+            emis_diff_lowed['Conventional: Grid'] = self.addl_func_units_lowed['Additional Functional Units in REF2 vs REF2'] \
+                * self.assumptions['Twh_per_TWh'] *  self.emissions_factors_ref1_co2eq['World']
+
+        emis_diff_lowed['Emission Reductions: Conv Total'] = emis_diff_lowed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # SpaceHeating_cluster!AI131:AM179
         self.emis_diff_lowed = emis_diff_lowed
 
         
@@ -472,8 +506,6 @@ class Scenario():
 
 
     def calc_emis_diff_mdc_spacecooling(self):
-        # Table 13: Difference in EMISSIONS between REF1 and REF2 populations in MDC + LAC + EE + China
-        # CONVENTIONAL Avoided Emissions/ Million Metric Tons CO2
         emis_diff_mdc = pd.DataFrame(None,
             columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
             index=list(range(2014, 2061)), dtype=np.float64)
@@ -485,7 +517,20 @@ class Scenario():
 
         emis_diff_mdc['Emission Reductions: Conv Total'] = emis_diff_mdc[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
         
-        # SpaceHeating_cluster!O190:S238
+        self.emis_diff_mdc = emis_diff_mdc
+
+
+    def calc_emis_diff_mdc_comlight(self):
+        emis_diff_mdc = pd.DataFrame(None,
+            columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+            index=list(range(2014, 2061)), dtype=np.float64)
+
+        if self.assumptions['Grid'] == 'Y':
+            emis_diff_mdc['Conventional: Grid'] = self.addl_func_units_mdc['Additional Functional Units in REF2 vs REF2'] \
+                * self.assumptions['Twh_per_TWh'] *  self.emissions_factors_ref1_co2eq['World']
+
+        emis_diff_mdc['Emission Reductions: Conv Total'] = emis_diff_mdc[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
         self.emis_diff_mdc = emis_diff_mdc
 
 
