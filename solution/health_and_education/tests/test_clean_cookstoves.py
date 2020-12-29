@@ -52,8 +52,6 @@ def test_clean_cookstoves():
     exp_addl_func_units_highed = expected_df.iloc[134:181, 4:7].T.reset_index(drop=True).T.astype(float)
     exp_addl_func_units_highed.index = expected_df.iloc[134:181, 0].astype(int, errors='ignore').values
     test_addl_func_units_highed = test_dfs.addl_func_units_highed.T.reset_index(drop=True).T
-    print(test_addl_func_units_highed.head())
-    print(exp_addl_func_units_highed.head())
     pd.testing.assert_frame_equal(test_addl_func_units_highed, exp_addl_func_units_highed, check_exact=False, rtol=1e-3)
 
     exp_addl_func_units_lowed = expected_df.iloc[134:181, 12:15].T.reset_index(drop=True).T.astype(float)

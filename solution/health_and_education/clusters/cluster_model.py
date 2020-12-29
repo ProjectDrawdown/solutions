@@ -256,9 +256,6 @@ class Scenario():
 
 
     def calc_emis_diff_highed_spaceheating(self, ef_co2_eq_list):
-        # Table 9: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+HighED
-        # CONVENTIONAL Avoided Emissions/ Million Metric Tons CO2
-        # emissions_factors_ref1_co2eq = ef.ElectricityGenOnGrid(ac.AdvancedControls()).conv_ref_grid_CO2eq_per_KWh()
         self.emissions_factors_ref1_co2eq = pd.DataFrame(ef_co2_eq_list[1:],
             columns=ef_co2_eq_list[0],
             index=list(range(2014, 2061)), dtype=np.float64)
@@ -285,9 +282,6 @@ class Scenario():
 
 
     def calc_emis_diff_highed_spacecooling(self, ef_co2_eq_list):
-        # Table 9: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+HighED
-        # CONVENTIONAL Avoided Emissions/ Million Metric Tons CO2
-        # emissions_factors_ref1_co2eq = ef.ElectricityGenOnGrid(ac.AdvancedControls()).conv_ref_grid_CO2eq_per_KWh()
         self.emissions_factors_ref1_co2eq = pd.DataFrame(ef_co2_eq_list[1:],
             columns=ef_co2_eq_list[0],
             index=list(range(2014, 2061)), dtype=np.float64)
@@ -305,7 +299,22 @@ class Scenario():
         
         # SpaceHeating_cluster!V131:Z179
         self.emis_diff_highed = emis_diff_highed
+
+
+    def calc_emis_diff_highed_cleancookstoves(self):
+        emis_diff_highed = pd.DataFrame(None,
+            columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+            index=list(range(2014, 2061)), dtype=np.float64)
         
+        if self.assumptions['Fuel'] == 'Y':
+            emis_diff_highed['Conventional: Fuel'] = self.addl_func_units_highed['Additional Functional Units in REF2 vs REF2'] \
+                * (self.assumptions['CO2-eq Emissions for Solid Biofuels'] * self.assumptions['TJ_per_TWh']) / 10**6
+        
+        emis_diff_highed['Emission Reductions: Conv Total'] = emis_diff_highed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # SpaceHeating_cluster!V131:Z179
+        self.emis_diff_highed = emis_diff_highed
+
 
     def calc_emis_diff_lowed(self):
         # Table 10: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+LowED
@@ -322,8 +331,6 @@ class Scenario():
         
 
     def calc_emis_diff_lowed_spaceheating(self):
-        # Table 10: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+LowED
-        # CONVENTIONAL  - Least and Less Developed Countries (sans LAC, EE, China)	
         emis_diff_lowed = pd.DataFrame(None,
             columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
             index=list(range(2014, 2061)), dtype=np.float64)
@@ -344,9 +351,7 @@ class Scenario():
         self.emis_diff_lowed = emis_diff_lowed
         
 
-    def calc_emis_diff_lowed_spacecooling(self):
-        # Table 10: Difference in EMISSIONS between REF1 and REF2 populations in LLDC+HighNRR+LowED
-        # CONVENTIONAL  - Least and Less Developed Countries (sans LAC, EE, China)	
+    def calc_emis_diff_lowed_spacecooling(self):	
         emis_diff_lowed = pd.DataFrame(None,
             columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
             index=list(range(2014, 2061)), dtype=np.float64)
@@ -358,7 +363,20 @@ class Scenario():
 
         emis_diff_lowed['Emission Reductions: Conv Total'] = emis_diff_lowed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
         
-        # SpaceHeating_cluster!AI131:AM179
+        self.emis_diff_lowed = emis_diff_lowed
+        
+
+    def calc_emis_diff_lowed_cleancookstoves(self):
+        emis_diff_lowed = pd.DataFrame(None,
+            columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+            index=list(range(2014, 2061)), dtype=np.float64)
+
+        if self.assumptions['Fuel'] == 'Y':
+            emis_diff_lowed['Conventional: Fuel'] = self.addl_func_units_lowed['Additional Functional Units in REF2 vs REF2'] \
+                * (self.assumptions['CO2-eq Emissions for Solid Biofuels'] * self.assumptions['TJ_per_TWh']) / 10**6
+
+        emis_diff_lowed['Emission Reductions: Conv Total'] = emis_diff_lowed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
         self.emis_diff_lowed = emis_diff_lowed
 
         

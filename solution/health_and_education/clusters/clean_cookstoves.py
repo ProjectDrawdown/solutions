@@ -40,14 +40,14 @@ assumptions = {
 # TABLE 1: Current TAM Mix
 current_tam_mix_list = [
         ['Energy Source', 'Weighting Factor', 'Include in SOL?', 'Include in CONV?'],
-        ['LPG', 23.7722604650757, 'N', 'Y'],
-        ['Electricity', 3.09086628733514, 'N', 'Y'],
+        ['LPG', 23.7722604650757, 'N', 'N'],
+        ['Electricity', 3.09086628733514, 'N', 'N'],
         ['Firewood (incl crop residue+dung)', 44.5074639589554, 'N', 'Y'],
-        ['Biogas', 1.00127286339017, 'N', 'Y'],
-        ['Coal', 15.3972560062807, 'N', 'Y'],
-        ['Natural Gas', 2.92055789748195, 'N', 'Y'],
-        ['Kerosene', 2.30072086818361, 'N', 'Y'],
-        ['Coal gas', 2.92055789748195, 'N', 'Y']]
+        ['Biogas', 1.00127286339017, 'N', 'N'],
+        ['Coal', 15.3972560062807, 'N', 'N'],
+        ['Natural Gas', 2.92055789748195, 'N', 'N'],
+        ['Kerosene', 2.30072086818361, 'N', 'N'],
+        ['Coal gas', 2.92055789748195, 'N', 'N']]
 
 # Table 2: REF2,  Heating Demand TAM (TWh Therms)										
 # Clean Cookstoves_cluster!B28:K75
@@ -171,8 +171,8 @@ class Cluster:
         scenario.calc_change_demand()
         scenario.calc_addl_units_highed()
         scenario.calc_addl_units_lowed()
-        scenario.calc_emis_diff_highed_spacecooling(ef_co2_eq_list)
-        scenario.calc_emis_diff_lowed_spacecooling()
+        scenario.calc_emis_diff_highed_cleancookstoves()
+        scenario.calc_emis_diff_lowed_cleancookstoves()
         scenario.calc_emis_alloc_lldc()
         scenario.calc_total_emis(mdc=False)
         scenario.print_total_emis(mdc=False)
