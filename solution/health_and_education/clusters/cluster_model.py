@@ -281,6 +281,32 @@ class Scenario():
         self.emis_diff_highed = emis_diff_highed
 
 
+    def calc_emis_diff_highed_waterheating(self, ef_co2_eq_list):
+        self.emissions_factors_ref1_co2eq = pd.DataFrame(ef_co2_eq_list[1:],
+            columns=ef_co2_eq_list[0],
+            index=list(range(2014, 2061)), dtype=np.float64)
+
+        emis_diff_highed = pd.DataFrame(None,
+            columns=['Conventional: Grid','Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect', 'Emission Reductions: Conv Total'],
+            index=list(range(2014, 2061)), dtype=np.float64)
+        
+        if self.assumptions['Grid'] == 'Y':
+            emis_diff_highed['Conventional: Grid'] = self.addl_func_units_highed['Additional Functional Units in REF2 vs REF2'] \
+                * (self.current_tam_mix.loc[self.current_tam_mix['Energy Source'] == 'Electricity (Heating & Cooling)', 'Weighting Factor'].values[0] / self.conv_weight_sum) \
+                * self.assumptions['Twh_per_TWh'] * self.emissions_factors_ref1_co2eq['World']
+        
+        if self.assumptions['Fuel'] == 'Y':
+            emis_diff_highed['Conventional: Fuel'] = self.addl_func_units_highed['Additional Functional Units in REF2 vs REF2'] \
+                * (self.current_tam_mix.loc[self.current_tam_mix['Energy Source'].isin(['Coal', 'Oil Products', 'Natural Gas']), 'Weighting Factor'].sum() \
+                    / self.conv_weight_sum) \
+                * (self.assumptions['Weighted Emission Factor for Space Heating and Cooling'] * self.assumptions['TJ_per_TWh']) / 10**6
+        
+        emis_diff_highed['Emission Reductions: Conv Total'] = emis_diff_highed[['Conventional: Grid', 'Conventional: Fuel', 'Conventional: Other Direct', 'Conventional: Indirect']].sum(axis=1, min_count=1)
+        
+        # WaterHeating_cluster!V131:Z179
+        self.emis_diff_highed = emis_diff_highed
+
+
     def calc_emis_diff_highed_spacecooling(self, ef_co2_eq_list):
         self.emissions_factors_ref1_co2eq = pd.DataFrame(ef_co2_eq_list[1:],
             columns=ef_co2_eq_list[0],
