@@ -735,7 +735,7 @@ class AdvancedControls:
         object.__setattr__(self, 'incorrect_cached_values', {})
         for field in dataclasses.fields(self):
             vma_titles = field.metadata.get('vma_titles', None)
-            if vma_titles is not None and self.vmas is not None and not isinstance(self.vmas, str):
+            if vma_titles is not None and self.vmas is not None:
                 val = getattr(self, field.name)
                 newval = self._substitute_vma(val=val, vma_titles=vma_titles)
                 if newval is not None:

@@ -1,9 +1,9 @@
 import json
 from os import listdir
 from os.path import isfile, join
-from .transforms.variable_paths import varProjectionNamesPaths
-from .transforms.reference_variable_paths import varRefNamesPaths
-from .transforms.metadata import pythonFieldMetadataArray
+from api.transforms.variable_paths import varProjectionNamesPaths
+from api.transforms.reference_variable_paths import varRefNamesPaths
+from api.transforms.metadata import pythonFieldMetadataArray
 
 legacyDataFiles = {
   'drawdown-2020': [
@@ -32,14 +32,14 @@ legacyDataFiles = {
     ["improvedrice","solution/improvedrice/ac/PDS-100p2050-Drawdown-customPDS-high-Jan2020.json"],
     ["riceintensification","solution/riceintensification/ac/PDS-100p2050-Drawdown-CustomPDS-high-Jan2020.json"],
     ["farmlandrestoration","solution/farmlandrestoration/ac/PDS-80p2050-Drawdown-customPDS-high-29Jan2020.json"],
-    ["multistrataagroforestry","solution/multistrataagroforestry/ac/PDS-20p2050-Drawdown-customPDS-avg-Jan2020.json"],
+    # ["multistrataagroforestry","solution/multistrataagroforestry/ac/PDS-20p2050-Drawdown-customPDS-avg-Jan2020.json"],
     ["regenerativeagriculture","solution/regenerativeagriculture/ac/PDS-47p2050-Drawdown-customPDS-high-29Jan2020.json"],
     ["nutrientmanagement","solution/nutrientmanagement/ac/PDS-58p2050-Drawdown-customPDS-avg-Jan2020.json"],
 
     # Land Use
     ["peatlands","solution/peatlands/ac/PDS-97p2050-Drawdown-customPDS-high-Jan2020.json"],
     ["forestprotection","solution/forestprotection/ac/PDS-97p2050-Drawdown-customPDS-high-Jan2020.json"],
-    ["bamboo","solution/bamboo/ac/PDS-57p2050-Drawdown-customPDS-high-Jan2020.json"],
+    # ["bamboo","solution/bamboo/ac/PDS-57p2050-Drawdown-customPDS-high-Jan2020.json"],
     ["indigenouspeoplesland","solution/indigenouspeoplesland/ac/PDS-99p2050-Drawdown-customPDS-high-Jan2020.json"],
     ["afforestation","solution/afforestation/ac/PDS-65p2050-Drawdown-CustomPDS-high05stdv-Jan2020.json"],
     ["grasslandprotection","solution/grasslandprotection/ac/PDS-87p2050-Drawdown-customPDS-high-Jan2020.json"],
@@ -111,12 +111,20 @@ def transform():
       for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
         technologyPath = path.replace('solarpvutil', technology)
         if existing_name in sampleScenarioData:
-          set_value_at(jsonProjectionData, technologyPath, sampleScenarioData[existing_name])
+          value = sampleScenarioData[existing_name]
+          if value == value:
+            #nan != nan 
+            #edge case scenario
+            set_value_at(jsonProjectionData, technologyPath, value)
 
       for [existing_name, path, converted_name, label, unit] in varRefNamesPaths:
         technologyPath = path.replace('solarpvutil', technology)
         if existing_name in sampleScenarioData:
-          set_value_at(jsonRefData, technologyPath, sampleScenarioData[existing_name])
+          value = sampleScenarioData[existing_name]
+          if value == value:
+            #nan != nan 
+            #edge case scenario
+            set_value_at(jsonRefData, technologyPath, value)
 
 
   return [jsonProjectionData, jsonRefData]

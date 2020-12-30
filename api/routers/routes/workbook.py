@@ -151,7 +151,10 @@ async def setup_calculations(jsons, cache):
     current_json_input: dict = list(filter(lambda json: json['tech'] == constructor, jsons))[0]
     name = current_json_input['json']['name']
     technology = current_json_input['tech']
-    hashed_json_input = hashlib.md5(json.dumps(current_json_input).encode('utf-8')).hexdigest()
+    copied_json_input = current_json_input.copy()
+    # deleting vmas because they're not always serializable (todo?)
+    del copied_json_input['json']['vmas']
+    hashed_json_input = hashlib.md5(json.dumps(copied_json_input).encode('utf-8')).hexdigest()
 
     cached_result = await cache.get(hashed_json_input)
     if cached_result is None:

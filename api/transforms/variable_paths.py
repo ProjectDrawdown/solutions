@@ -59,4 +59,23 @@ varProjectionNamesPaths = [
   ["growth","categories.electricity_generation.tam_growth","growth","","regionalize_enum(low,medium,high)"],
   ["low_sd_mult","categories.electricity_generation.tam_low_sd_mult","low_sd_mult","","regionalize_float"],
   ["high_sd_mult","categories.electricity_generation.tam_high_sd_mult","high_sd_mult","","regionalize_float"],
+
+  #land
+  ["use_custom_tla","technologies.solarpvutil.use_custom_tla","use_custom_tla","","boolean"],
+  ["conv_expected_lifetime","technologies.fossilfuelelectricity.expected_lifetime","expected_lifetime","","float"],
+  ["yield_from_conv_practice","technologies.fossilfuelelectricity.yield","yield","","float"],
+  ["soln_expected_lifetime","technologies.solarpvutil.expected_lifetime","expected_lifetime","","float"],
+  ["yield_gain_from_conv_to_soln","technologies.solarpvutil.yield_gain","yield_gain","","float"],
+  ["emissions_use_agg_co2eq","technologies.solarpvutil.emissions_use_agg_co2eq","emissions_use_agg_co2eq","",""],
+  ["emissions_use_agg_co2eq","technologies.solarpvutil.emissions_use_agg_co2eq","emissions_use_agg_co2eq","",""],
+  ["tco2eq_reduced_per_land_unit","technologies.solarpvutil.tco2eq_reduced_per_land_unit","tco2eq_reduced_per_land_unit","",""],
+  ["tco2eq_rplu_rate","technologies.solarpvutil.tco2eq_rplu_rate","tco2eq_rplu_rate","",""],
+  ["tco2_rplu_rate","technologies.solarpvutil.tco2_rplu_rate","tco2_rplu_rate","",""],
+  ["tn2o_co2_reduced_per_land_unit","technologies.solarpvutil.tn2o_co2_reduced_per_land_unit","tn2o_co2_reduced_per_land_unit","",""],
+  ["tn2o_co2_rplu_rate","technologies.solarpvutil.tn2o_co2_rplu_rate","tn2o_co2_rplu_rate","",""],
+  ["harvest_frequency","technologies.solarpvutil.harvest_frequency","harvest_frequency","","float"],
+  ["disturbance_rate","technologies.solarpvutil.disturbance_rate","disturbance_rate","","float"],
+  ["carbon_not_emitted_after_harvesting","technologies.solarpvutil.carbon_not_emitted_after_harvesting","carbon_not_emitted_after_harvesting","","float"],
+  ["seq_rate_global","technologies.solarpvutil.seq_rate_global","seq_rate_global","","float"],
+  ["land_annual_emissons_lifetime","technologies.solarpvutil.land_annual_emissons_lifetime","land_annual_emissons_lifetime","","float"],
 ]

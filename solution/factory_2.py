@@ -17,6 +17,9 @@ def one_solution_scenarios(solution, j):
     m = importlib.import_module(importname)
     if len(m.scenarios) > 1:
         replacement_scenarios = {}
+        j['vmas'] = m.VMAs
+        # j['js'] = j
+        # j['jsfile'] = str(filename)
         replacement_scenarios[j['name']] = AdvancedControls(**j)
         m.scenarios = replacement_scenarios
     return (m.Scenario, list(m.scenarios.keys()))
