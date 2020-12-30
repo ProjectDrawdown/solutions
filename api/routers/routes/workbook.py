@@ -152,7 +152,7 @@ async def setup_calculations(jsons, cache):
     name = current_json_input['json']['name']
     technology = current_json_input['tech']
     hashed_json_input = hashlib.md5(json.dumps(current_json_input).encode('utf-8')).hexdigest()
-    
+
     cached_result = await cache.get(hashed_json_input)
     if cached_result is None:
       tasks.append(calc(constructors[constructor][0], name, hashed_json_input, technology))
@@ -181,8 +181,8 @@ def build_result_paths(key_list):
 
 # @router.get("/calculate/{workbook_commit_id}", response_model=List[schemas.Calculation])
 # async def calculate(
-#   workbook_commit_id: str, 
-#   client: AioWrap = Depends(AioWrap), 
+#   workbook_commit_id: str,
+#   client: AioWrap = Depends(AioWrap),
 #   db: Session = Depends(get_db),
 #   cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
 
@@ -204,8 +204,8 @@ def build_result_paths(key_list):
 
 @router.get("/calculate/{workbook_commit_id}", response_model=List[schemas.CalculationPath])
 async def calculate_2(
-  workbook_commit_id: str, 
-  client: AioWrap = Depends(AioWrap), 
+  workbook_commit_id: str,
+  client: AioWrap = Depends(AioWrap),
   db: Session = Depends(get_db),
   cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
 
@@ -225,10 +225,10 @@ async def calculate_2(
     result_paths += build_result_paths(key_list)
     await cache.set(workbook_commit_id, json.dumps(result_paths))
     return result_paths
-    
+
 @router.get("/resource/projection/{technology_hash}", response_model=schemas.Calculation)
 async def get_tech_result(
-  technology_hash: str, 
+  technology_hash: str,
   cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
   try:
     return json.loads(await cache.get(technology_hash))
