@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
 import pathlib
@@ -62,7 +62,10 @@ async def get_all_paths(entity: EntityName, db: Session = Depends(get_db)):
 
 @router.post('/variation/fork/{id}', response_model=schemas.VariationOut)
 async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = Depends(get_db)):
-  cloned_variation = clone_variation(db, id)
+  try:
+    cloned_variation = clone_variation(db, id)
+  except:
+    raise HTTPException(status_code=400, detail="Variation not found")
 
   if patch.scenario_parent_path is not None:
     cloned_variation.data['scenario_parent_path'] = patch.scenario_parent_path
@@ -71,7 +74,7 @@ async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = D
   if patch.scenario_vars is not None:  
     cloned_variation.data['scenario_vars'] = patch.scenario_vars
   if patch.reference_vars is not None:
-    cloned_variation.data['reference_vars'] = patch.references_vars
+    cloned_variation.data['reference_vars'] = patch.reference_vars
 
   return save_variation(db, cloned_variation)
 
@@ -79,12 +82,12 @@ async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = D
 async def post_variation(variation: schemas.VariationIn, db: Session = Depends(get_db)):
   new_variation = DBVariation(
     name = variation.name,
-    data = variation.data,
+    data = {},
   )
   new_variation.data['scenario_parent_path'] = variation.scenario_parent_path
   new_variation.data['reference_parent_path'] = variation.reference_parent_path
   new_variation.data['scenario_vars'] = variation.scenario_vars
-  new_variation.data['reference_vars'] = variation.references_vars
+  new_variation.data['reference_vars'] = variation.reference_vars
   return save_variation(db, new_variation)
 
 @router.get("/initialize/")
