@@ -32,14 +32,14 @@ legacyDataFiles = {
     ["improvedrice","solution/improvedrice/ac/PDS-100p2050-Drawdown-customPDS-high-Jan2020.json"],
     ["riceintensification","solution/riceintensification/ac/PDS-100p2050-Drawdown-CustomPDS-high-Jan2020.json"],
     ["farmlandrestoration","solution/farmlandrestoration/ac/PDS-80p2050-Drawdown-customPDS-high-29Jan2020.json"],
-    # ["multistrataagroforestry","solution/multistrataagroforestry/ac/PDS-20p2050-Drawdown-customPDS-avg-Jan2020.json"],
+    ["multistrataagroforestry","solution/multistrataagroforestry/ac/PDS-20p2050-Drawdown-customPDS-avg-Jan2020.json"],
     ["regenerativeagriculture","solution/regenerativeagriculture/ac/PDS-47p2050-Drawdown-customPDS-high-29Jan2020.json"],
     ["nutrientmanagement","solution/nutrientmanagement/ac/PDS-58p2050-Drawdown-customPDS-avg-Jan2020.json"],
 
     # Land Use
     ["peatlands","solution/peatlands/ac/PDS-97p2050-Drawdown-customPDS-high-Jan2020.json"],
     ["forestprotection","solution/forestprotection/ac/PDS-97p2050-Drawdown-customPDS-high-Jan2020.json"],
-    # ["bamboo","solution/bamboo/ac/PDS-57p2050-Drawdown-customPDS-high-Jan2020.json"],
+    ["bamboo","solution/bamboo/ac/PDS-57p2050-Drawdown-customPDS-high-Jan2020.json"],
     ["indigenouspeoplesland","solution/indigenouspeoplesland/ac/PDS-99p2050-Drawdown-customPDS-high-Jan2020.json"],
     ["afforestation","solution/afforestation/ac/PDS-65p2050-Drawdown-CustomPDS-high05stdv-Jan2020.json"],
     ["grasslandprotection","solution/grasslandprotection/ac/PDS-87p2050-Drawdown-customPDS-high-Jan2020.json"],
@@ -113,7 +113,7 @@ def transform():
         if existing_name in sampleScenarioData:
           value = sampleScenarioData[existing_name]
           if value == value:
-            #nan != nan 
+            #nan != nan
             #edge case scenario
             set_value_at(jsonProjectionData, technologyPath, value)
 
@@ -122,7 +122,7 @@ def transform():
         if existing_name in sampleScenarioData:
           value = sampleScenarioData[existing_name]
           if value == value:
-            #nan != nan 
+            #nan != nan
             #edge case scenario
             set_value_at(jsonRefData, technologyPath, value)
 

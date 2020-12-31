@@ -62,6 +62,7 @@ varProjectionNamesPaths = [
 
   #land
   ["use_custom_tla","technologies.solarpvutil.use_custom_tla","use_custom_tla","","boolean"],
+  ["custom_tla_fixed_value","technologies.solarpvutil.custom_tla_fixed_value","custom_tla_fixed_value","","float"],
   ["conv_expected_lifetime","technologies.fossilfuelelectricity.expected_lifetime","expected_lifetime","","float"],
   ["yield_from_conv_practice","technologies.fossilfuelelectricity.yield","yield","","float"],
   ["soln_expected_lifetime","technologies.solarpvutil.expected_lifetime","expected_lifetime","","float"],
@@ -70,12 +71,29 @@ varProjectionNamesPaths = [
   ["emissions_use_agg_co2eq","technologies.solarpvutil.emissions_use_agg_co2eq","emissions_use_agg_co2eq","",""],
   ["tco2eq_reduced_per_land_unit","technologies.solarpvutil.tco2eq_reduced_per_land_unit","tco2eq_reduced_per_land_unit","",""],
   ["tco2eq_rplu_rate","technologies.solarpvutil.tco2eq_rplu_rate","tco2eq_rplu_rate","",""],
+  ["tco2_reduced_per_land_unit","technologies.solarpvutil.tco2_reduced_per_land_unit","tco2_reduced_per_land_unit","",""],
   ["tco2_rplu_rate","technologies.solarpvutil.tco2_rplu_rate","tco2_rplu_rate","",""],
   ["tn2o_co2_reduced_per_land_unit","technologies.solarpvutil.tn2o_co2_reduced_per_land_unit","tn2o_co2_reduced_per_land_unit","",""],
   ["tn2o_co2_rplu_rate","technologies.solarpvutil.tn2o_co2_rplu_rate","tn2o_co2_rplu_rate","",""],
-  ["harvest_frequency","technologies.solarpvutil.harvest_frequency","harvest_frequency","","float"],
-  ["disturbance_rate","technologies.solarpvutil.disturbance_rate","disturbance_rate","","float"],
-  ["carbon_not_emitted_after_harvesting","technologies.solarpvutil.carbon_not_emitted_after_harvesting","carbon_not_emitted_after_harvesting","","float"],
-  ["seq_rate_global","technologies.solarpvutil.seq_rate_global","seq_rate_global","","float"],
+  ["tch4_co2_reduced_per_land_unit","technologies.solarpvutil.tch4_co2_reduced_per_land_unit","tch4_co2_reduced_per_land_unit","","float"],
+  ["tch4_co2_rplu_rate","technologies.solarpvutil.tch4_co2_rplu_rate","tch4_co2_rplu_rate","",""],
   ["land_annual_emissons_lifetime","technologies.solarpvutil.land_annual_emissons_lifetime","land_annual_emissons_lifetime","","float"],
+  ["seq_rate_global","technologies.solarpvutil.seq_rate_global","seq_rate_global","","float"],
+  ["carbon_not_emitted_after_harvesting","technologies.solarpvutil.carbon_not_emitted_after_harvesting","carbon_not_emitted_after_harvesting","","float"],
+  ["disturbance_rate","technologies.solarpvutil.disturbance_rate","disturbance_rate","","float"],
+  ["harvest_frequency","technologies.solarpvutil.harvest_frequency","harvest_frequency","","float"],
+  ["global_multi_for_regrowth","technologies.solarpvutil.global_multi_for_regrowth","global_multi_for_regrowth","","float"],
+  ["degradation_rate","technologies.solarpvutil.degradation_rate","degradation_rate","","float"],
+  ["tC_storage_in_protected_land_type","technologies.solarpvutil.tC_storage_in_protected_land_type","tC_storage_in_protected_land_type","","float"],
+  ["delay_protection_1yr","technologies.solarpvutil.delay_protection_1yr","delay_protection_1yr","","boolean"],
+  ["delay_regrowth_1yr","technologies.solarpvutil.delay_regrowth_1yr","delay_regrowth_1yr","","boolean"],
+  ["include_unprotected_land_in_regrowth_calcs","technologies.solarpvutil.include_unprotected_land_in_regrowth_calcs","include_unprotected_land_in_regrowth_calcs","","boolean"],
+  ["direct_emissions_saved_land","technologies.solarpvutil.direct_emissions_saved_land","direct_emissions_saved_land","",""],
+
+  #food
+  ["soln_ref_adoption_basis","technologies.solarpvutil.soln_ref_adoption_basis","soln_ref_adoption_basis","","reference_string"],
+  ["soln_ref_adoption_custom_name","technologies.solarpvutil.soln_ref_adoption_custom_name","soln_ref_adoption_custom_name","","reference_string"],
+  ["soln_ref_adoption_regional_data","technologies.solarpvutil.soln_ref_adoption_regional_data","soln_ref_adoption_regional_data","","boolean"],
+
+  #buildings and cities
 ]
