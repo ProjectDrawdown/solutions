@@ -34,8 +34,7 @@ assumptions = {
     'Grid': 'N',
     'Fuel': 'N',
     'Other Direct': 'Y',
-    'Indirect': 'Y',
-    'Weighted Emission Factor for Space Heating and Cooling': 87.04
+    'Indirect': 'Y'
 }
 
 # TABLE 1: Current TAM Mix
