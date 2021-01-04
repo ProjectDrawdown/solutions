@@ -5,15 +5,28 @@ import uvicorn
 from typing import Optional
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel
+from fastapi_plugins import redis_plugin
 
 import solution.factory
 from api.routers.routes import account, user, workbook, resource
+from api.config import get_settings, RedisSettings
 
 app = FastAPI()
 app.include_router(account.router)
 app.include_router(user.router)
 app.include_router(workbook.router)
 app.include_router(resource.router)
+
+redis_config = RedisSettings()
+
+@app.on_event('startup')
+async def on_startup() -> None:
+    await redis_plugin.init_app(app, config=redis_config)
+    await redis_plugin.init()
+
+@app.on_event('shutdown')
+async def on_shutdown() -> None:
+    await redis_plugin.terminate()
 
 # For Debugging
 if __name__ == "__main__":

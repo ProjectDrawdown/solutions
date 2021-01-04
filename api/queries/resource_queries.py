@@ -16,6 +16,9 @@ def row2dict(row):
 def get_entity(db: Session, id: int, table):
     return db.query(table).filter(table.id == id).first()
 
+def get_entities_by_name(db: Session, name: str, table):
+    return db.query(table).filter(table.name.like(name)).all()
+
 def all_entities(db: Session, table):
     return db.query(table).all()
 

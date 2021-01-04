@@ -1,5 +1,7 @@
 version: "3"
 services:
+  redis:
+    image: "redis:alpine"
   {{ name }}:
     restart: "always"
     container_name: "{{ name }}"
@@ -21,4 +23,7 @@ services:
       - "GITHUB_USER_URL={{ gh_user_url }}"
       - "GOOGLE_DOMAIN={{ ggl_domain }}"
       - "GOOGLE_CLIENT_ID={{ ggl_client_id }}"
-      - "GOOGLE_CLIENT_SECRET={{ ggl_client_secret }}" 
+      - "GOOGLE_CLIENT_SECRET={{ ggl_client_secret }}"
+      - "REDIS_URL=redis://redis"
+    depends_on:
+      - redis

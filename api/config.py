@@ -3,6 +3,9 @@ import aiohttp
 from typing import Any, Dict, List, Union
 from functools import lru_cache
 import pathlib
+import aioredis
+import fastapi_plugins
+
 from api.db.database import get_session_maker
 
 class Settings(BaseSettings):
@@ -22,9 +25,12 @@ class Settings(BaseSettings):
     google_client_secret: str
 
     database_url: str
-
+    redis_url: str
     class Config:
         env_file = pathlib.Path(__file__).parents[0].joinpath('.env').resolve()
+
+class RedisSettings(fastapi_plugins.RedisSettings):
+    pass
 
 @lru_cache()
 def get_settings():
