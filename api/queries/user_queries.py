@@ -13,3 +13,12 @@ def create_user(db: Session, user: schemas.User, provider_name: str):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def all_users(db: Session):
+    return db.query(User).all()
+
+def save_user(db: Session, user: User):
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user

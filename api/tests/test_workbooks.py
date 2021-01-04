@@ -4,6 +4,12 @@ from api.service import app
 
 client = TestClient(app)
 
+def test_get_all_workbooks():
+  response = client.get("/workbooks/")
+  assert response.status_code == 200
+  json_data = response.json()
+  assert len(json_data) > 0
+
 # def test_solutions():
 #     response = client.get("/solutions/solarpvutil?scenario=PDS-25p2050-Optimum2020")
 #     assert response.status_code == 200

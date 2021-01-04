@@ -69,3 +69,5 @@ class Reference(Resource, Base):
 class Variation(Resource, Base):
   __tablename__ = 'variation'
 
+class VMA(Resource, Base):
+  __tablename__ = 'vma'

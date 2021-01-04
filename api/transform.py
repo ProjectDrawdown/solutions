@@ -1,4 +1,6 @@
 import json
+import csv
+import os
 from os import listdir
 from os.path import isfile, join
 from api.transforms.variable_paths import varProjectionNamesPaths
@@ -178,3 +180,40 @@ def rehydrate_legacy_json(technology, tech_scenario_json, tech_reference_json, o
       rehydrated_json[existing_name] = value
   return rehydrated_json
 
+def csv_to_json(csvFilePath: str) -> dict: 
+      
+  # create a dictionary 
+  data = []
+    
+  # Open a csv reader called DictReader 
+  with open(csvFilePath, encoding='utf-8') as csvf: 
+      csvReader = csv.DictReader(csvf) 
+        
+      # Convert each row into a dictionary  
+      # and add it to data 
+      for row in csvReader: 
+            
+          # Assuming a column named 'No' to 
+          # be the primary key 
+          # key = rows['No'] 
+          # data[key] = rows 
+          data.append(row)
+
+  return {'rows':data}
+
+def populate_vmas():
+  directory = 'solution'
+  converted_list = []
+
+  for subdir, _, _ in os.walk(directory):
+    for subdir_vma, _, files in os.walk(f'{subdir}/vma_data'):
+      for file in files:
+        path = os.path.join(subdir_vma, file)
+        converted = {
+         'data': csv_to_json(path),
+         'technology': subdir,
+         'filename': file
+        }
+        converted_list.append(converted)
+        
+  return converted_list

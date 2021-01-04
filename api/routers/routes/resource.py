@@ -11,12 +11,14 @@ from api.db.models import (
   Scenario as DBScenario,
   Reference as DBReference,
   Workbook as DBWorkbook,
-  Variation as DBVariation
+  Variation as DBVariation,
+  VMA as DBVMA
 )
 from api.routers import schemas
 
 from api.queries.resource_queries import (
   get_entity,
+  get_entities_by_name,
   save_entity, 
   all_entities,
   all_entity_paths,
@@ -27,7 +29,7 @@ from api.queries.resource_queries import (
 from api.queries.workbook_queries import (
   save_workbook
 )
-from api.transform import transform, rehydrate_legacy_json
+from api.transform import transform, rehydrate_legacy_json, populate_vmas
 
 settings = get_settings()
 router = APIRouter()
@@ -36,21 +38,23 @@ DATADIR = pathlib.Path(__file__).parents[0].joinpath('data')
 entity_mapping = {
   'scenario': DBScenario,
   'reference': DBReference,
-  'variation': DBVariation
+  'variation': DBVariation,
+  'vma': DBVMA,
 }
-schema_mapping = {
-  'scenario': DBScenario,
-  'reference': DBReference,
-  'variation': DBVariation
-}
+
 class EntityName(str, Enum):
     scenario = "scenario"
     reference = "reference"
     variation = "variation"
+    vma = "vma"
 
 @router.get('/resource/{entity}/{id}', response_model=schemas.ResourceOut)
-async def get_by_name(entity: EntityName, id: int, db: Session = Depends(get_db)):
+async def get_by_id(entity: EntityName, id: int, db: Session = Depends(get_db)):
   return get_entity(db, id, entity_mapping[entity])
+
+@router.get('/resource/{entity}', response_model=List[schemas.ResourceOut])
+async def get_by_name(entity: EntityName, name: str, db: Session = Depends(get_db)):
+  return get_entities_by_name(db, name, entity_mapping[entity])
 
 @router.get('/resource/{entity}s/full/', response_model=List[schemas.ResourceOut])
 async def get_all(entity: EntityName, db: Session = Depends(get_db)):
@@ -122,9 +126,14 @@ async def initialize(db: Session = Depends(get_db)):
 
   db_workbook = save_workbook(db, workbook)
 
+  vmas = populate_vmas()
+  for vma in vmas:
+    name = vma['technology'] + '-' + vma['filename']
+    save_entity(db, name, vma['data'], DBVMA)
+
   return db_workbook
   # return rehydrate_legacy_json(scenario_json, references_json)
 
 @router.get("/garbage_collect")
 async def garbage_collect(db: Session = Depends(get_db)):
-  delete_unused_variations()
+  delete_unused_variations(db)
