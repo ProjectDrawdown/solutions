@@ -158,7 +158,7 @@ def transform_technology_reference(technology, path):
         set_value_at(jsonReferenceData, technologyPath, scenarioData[existing_name])
   return jsonReferenceData
 
-def rehydrate_legacy_json(technology, tech_scenario_json, tech_reference_json, overrides):
+def rehydrate_legacy_json(start_year: int, end_year: int, technology: str, tech_scenario_json, tech_reference_json, overrides):
   rehydrated_json = {}
   for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
     technologyPath = path.replace('solarpvutil', technology)
@@ -178,6 +178,8 @@ def rehydrate_legacy_json(technology, tech_scenario_json, tech_reference_json, o
         value = override
     if value is not None:
       rehydrated_json[existing_name] = value
+  rehydrated_json['report_start_year'] = start_year
+  rehydrated_json['report_end_year'] = end_year
   return rehydrated_json
 
 def csv_to_json(csvFilePath: str) -> dict: 
