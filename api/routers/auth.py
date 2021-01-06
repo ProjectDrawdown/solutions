@@ -20,3 +20,9 @@ async def get_current_active_user(current_user: DBUser = Depends(get_current_use
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+async def get_current_workbook(id: int, current_active_user: DBUser = Depends(get_current_active_user)):
+    active_user_workbooks = list(filter(lambda w: w.id == id, current_active_user.workbooks))
+    if len(active_user_workbooks) == 0:
+        raise HTTPException(status_code=400, detail="Workbook not found")
+    return active_user_workbooks[0]

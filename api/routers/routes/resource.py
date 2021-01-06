@@ -122,13 +122,15 @@ async def initialize(db: Session = Depends(get_db)):
   )
   db_variation = save_variation(db, variation)
 
+  variation_dict = variation.__dict__['data']
+
   workbook = DBWorkbook(
     name = 'default',
     ui = {},
     start_year = 2020,
     end_year = 2050,
     variations = [
-      db_variation.path
+      variation_dict
     ]
   )
 

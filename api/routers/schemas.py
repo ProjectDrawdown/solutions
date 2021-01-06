@@ -50,96 +50,6 @@ class Token(BaseModel):
 class Url(BaseModel):
   url: str
 
-class WorkbookNew(BaseModel):
-  name: str
-  ui: dict
-  start_year: int
-  end_year: int
-  variations: List[str]
-  class Config:
-    orm_mode = True
-    schema_extra = {
-      "example": {
-        "name": "default",
-        "author": {
-          "login": "user@example.coop",
-          "email": "user@example.coop",
-        },
-        "ui": {
-          "portfolioSolutions": [
-            'solarpvutil',
-          ],
-          "openPanel": "panelId", 
-          "quickVariables": [
-            'technologies.biogas.fixed_oper_cost_per_iunit',
-          ],
-        },
-        "start_year": 2020,
-        "end_year": 2050,
-        "variations": [
-          get_resource_path('variation', 0)
-        ]
-      }
-    }
-
-class WorkbookPatch(BaseModel):
-  name: Optional[str]
-  ui: Optional[dict]
-  start_year: Optional[int]
-  end_year: Optional[int]
-  variations: Optional[List[str]]
-  class Config:
-    orm_mode = True
-    schema_extra = {
-      "example": {
-        "name": "default",
-        "ui": {
-          "portfolioSolutions": [
-            'solarpvutil',
-          ],
-          "openPanel": "panelId", 
-          "quickVariables": [
-            'technologies.biogas.fixed_oper_cost_per_iunit',
-          ],
-        },
-        "variations": [
-          get_resource_path('variation', 0)
-        ]
-      }
-    }
-
-class WorkbookOut(BaseModel):
-  id: int
-  author: Optional[User]
-  version: int
-  name: str
-  ui: dict
-  start_year: int
-  end_year: int
-  variations: List[str]
-  class Config:
-    orm_mode = True
-    schema_extra = {
-      "example": {
-        "id": 1,
-        "version": "2",
-        "name": "default",
-        "ui": {
-          "portfolioSolutions": [
-            'solarpvutil',
-          ],
-          "openPanel": "panelId", 
-          "quickVariables": [
-            'technologies.biogas.fixed_oper_cost_per_iunit',
-          ],
-        },
-        "start_year": 2020,
-        "end_year": 2050,
-        "variations": [
-          get_resource_path('variation', 0)
-        ]
-      }
-    }
 
 class ResourceOut(BaseModel):
   id: Optional[int]
@@ -195,10 +105,6 @@ class VariationIn(ResourceIn):
               }
             },
             "reference_vars": {
-              "technologies.biogas.fixed_oper_cost_per_iunit": {
-                  "value": 0.0,
-                  "statistic": "mean"
-              }
             },
         }
     }
@@ -220,6 +126,114 @@ class VariationPatch(ResourceIn):
         }
     }
 
+class PublishVariation(BaseModel):
+  name: str
+
+class WorkbookNew(BaseModel):
+  name: str
+  ui: dict
+  start_year: int
+  end_year: int
+  class Config:
+    orm_mode = True
+    schema_extra = {
+      "example": {
+        "name": "default",
+        "author": {
+          "login": "user@example.coop",
+          "email": "user@example.coop",
+        },
+        "ui": {
+          "portfolioSolutions": [
+            'solarpvutil',
+          ],
+          "openPanel": "panelId", 
+          "quickVariables": [
+            'technologies.biogas.fixed_oper_cost_per_iunit',
+          ],
+        },
+        "start_year": 2020,
+        "end_year": 2050
+      }
+    }
+
+class WorkbookPatch(BaseModel):
+  name: Optional[str]
+  ui: Optional[dict]
+  start_year: Optional[int]
+  end_year: Optional[int]
+  variations: List[Dict[Any, Any]]
+  class Config:
+    orm_mode = True
+    schema_extra = {
+      "example": {
+        "name": "default",
+        "ui": {
+          "portfolioSolutions": [
+            'solarpvutil',
+          ],
+          "openPanel": "panelId", 
+          "quickVariables": [
+            'technologies.biogas.fixed_oper_cost_per_iunit',
+          ],
+        },
+      }
+    }
+
+class WorkbookOut(BaseModel):
+  id: int
+  author: Optional[User]
+  version: int
+  name: str
+  ui: dict
+  start_year: int
+  end_year: int
+  variations: List[Dict[Any, Any]]
+  class Config:
+    orm_mode = True
+    schema_extra = {
+      "example": {
+        "id": 1,
+        "version": "2",
+        "name": "default",
+        "ui": {
+          "portfolioSolutions": [
+            'solarpvutil',
+          ],
+          "openPanel": "panelId", 
+          "quickVariables": [
+            'technologies.biogas.fixed_oper_cost_per_iunit',
+          ],
+        },
+        "start_year": 2020,
+        "end_year": 2050,
+        "variations": [
+          {
+            "id": 21,
+            "name": 'example',
+            "data": {
+              "scenario_vars": {
+                "technologies.biogas.fixed_oper_cost_per_iunit": {
+                  "value": 10,
+                  "statistic": ""
+                }
+              },
+              "reference_vars": {
+                "technologies.biogas.fixed_oper_cost_per_iunit": {
+                  "value": 0,
+                  "statistic": "mean"
+                }
+              },
+              "scenario_parent_path": get_resource_path('scenario', 0),
+              "reference_parent_path": get_resource_path('reference', 0)
+            },
+            "path": get_resource_path('variation', 0)
+          }
+        ]
+      }
+    }
+
+
 class Calculation(BaseModel):
   name: str
   data: Dict[Any, Any]
@@ -228,3 +242,8 @@ class CalculationPath(BaseModel):
   technology: str
   technology_full: str
   path: str
+  delta: Dict[Any, Any]
+
+class CalculationResults(BaseModel):
+  meta: Dict[Any, Any]
+  results: List[CalculationPath]

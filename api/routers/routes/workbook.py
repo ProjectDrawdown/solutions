@@ -7,7 +7,7 @@ import urllib
 import uuid
 import aioredis
 import fastapi_plugins
-from typing import List
+from typing import List, Optional, Any
 
 from api.config import get_settings, get_db, AioWrap, get_resource_path
 from api.queries.user_queries import get_user
@@ -20,7 +20,10 @@ from api.queries.workbook_queries import (
   workbook_by_commit
 )
 
-from api.queries.resource_queries import get_entity_by_name
+from api.queries.resource_queries import (
+  get_entity_by_name,
+  save_variation
+)
 
 from api.db.models import (
   User as DBUser,
@@ -31,13 +34,13 @@ from api.db.models import (
 
 from api.routers import schemas
 from api.routers.helpers import get_user_from_header
-from api.routers.auth import get_current_active_user
+from api.routers.auth import get_current_active_user, get_current_workbook
 from functools import lru_cache
 from api.calculate import calculate
 
 from model.advanced_controls import AdvancedControls, get_vma_for_param
-from transforms.variable_paths import varProjectionNamesPaths
-from transforms.reference_variable_paths import varRefNamesPaths
+from api.transforms.variable_paths import varProjectionNamesPaths
+from api.transforms.reference_variable_paths import varRefNamesPaths
 
 settings = get_settings()
 router = APIRouter()
@@ -83,7 +86,7 @@ async def create_workbook(
     ui = workbook.ui,
     start_year = workbook.start_year,
     end_year = workbook.end_year,
-    variations = workbook.variations
+    variations = []
   )
 
   saved_workbook = save_workbook(db, dbworkbook)
@@ -93,59 +96,111 @@ async def create_workbook(
 async def update_workbook(
   id: int,
   workbook_edits: schemas.WorkbookPatch,
-  db_active_user: DBUser = Depends(get_current_active_user),
-  db: Session = Depends(get_db)):
+  new_variation_paths: List[str],
+  db_workbook: DBWorkbook = Depends(get_current_workbook),
+  db: Session = Depends(get_db),
+  client: AioWrap = Depends(AioWrap)):
 
-  active_user_workbooks = list(filter(lambda w: w.id == id, db_active_user.workbooks))
-  if len(active_user_workbooks) == 0:
-    raise HTTPException(status_code=400, detail="Workbook not found")
-
-  db_workbook = active_user_workbooks[0]
   workbook_edits_dict = dict(workbook_edits)
   for key in workbook_edits_dict:
     value = workbook_edits_dict[key]
     if value is not None:
       db_workbook.__setattr__(key, value)
+
+  for path in new_variation_paths:
+    variation_data = json.loads(await client(path))
+    db_workbook.variations.append(variation_data)
+  
   db_workbook.version = db_workbook.version + 1
-  try:
-    saved_db_workbook = save_workbook(db, db_workbook)
-    return saved_db_workbook
-  except:
-    raise HTTPException(status_code=400, detail="Invalid Request")
+  saved_db_workbook = save_workbook(db, db_workbook)
+  return saved_db_workbook
 
-# @router.get("/calculate/{workbook_commit_id}", response_model=List[schemas.Calculation])
-# async def calculate(
-#   workbook_commit_id: str,
-#   client: AioWrap = Depends(AioWrap),
-#   db: Session = Depends(get_db),
-#   cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
+def replace(arr: List[Any], index: int, item: Any):
+  return arr[:index] + [item] + arr[index+1:]
 
-#   cached_result = await cache.get(workbook_commit_id)
-#   if cached_result is not None:
-#     return json.loads(cached_result)
+@router.patch("/workbook/{id}/variation/{variation_index}", response_model=schemas.WorkbookOut)
+async def update_workbook_variation(
+  id: int,
+  variation_index: int,
+  variation_patch: schemas.VariationIn,
+  db_workbook: DBWorkbook = Depends(get_current_workbook),
+  db: Session = Depends(get_db)):
 
-#   workbook = workbook_by_commit(db, workbook_commit_id)
-#   if workbook is None:
-#     raise HTTPException(status_code=400, detail="Workbook not found")
-#   for variation_path in workbook.variations:
-#     input_data = await fetch_data(variation_path, client)
-#     jsons = build_json(*input_data)
-#     [tasks, key_list, json_cached_results] = await setup_calculations(jsons, cache)
-#     [json_results, key_list] = await perform_calculations(tasks, cache, key_list)
-#     result = json_results + json_cached_results
-#     await cache.set(workbook_commit_id, json.dumps(result))
-#     return result
+  db_workbook.variations = replace(db_workbook.variations, variation_index, variation_patch.__dict__)
+  db_workbook.version = db_workbook.version + 1
+  saved_db_workbook = save_workbook(db, db_workbook)
+  return saved_db_workbook
+    
+@router.post("/workbook/{id}/variation", response_model=schemas.WorkbookOut)
+async def add_workbook_variation(
+  id: int,
+  variation_path: Optional[str] = None,
+  variation_patch: Optional[schemas.VariationIn] = None,
+  db_workbook: DBWorkbook = Depends(get_current_workbook),
+  db: Session = Depends(get_db),
+  client: AioWrap = Depends(AioWrap)):
 
-@router.get("/calculate", response_model=List[schemas.CalculationPath])
+  if variation_patch:
+    variation = {
+      'scenario_vars': variation_patch.scenario_vars,
+      'reference_vars': variation_patch.reference_vars,
+      'scenario_parent_path': variation_patch.scenario_parent_path,
+      'reference_parent_path': variation_patch.reference_parent_path
+    }
+  if variation_path:
+    variation = (await client(variation_path))['data']
+    variation.pop('name')
+
+  db_workbook.variations = db_workbook.variations + [variation]
+  db_workbook.version = db_workbook.version + 1
+  saved_db_workbook = save_workbook(db, db_workbook)
+  return saved_db_workbook
+
+def without(arr: List[Any], index: int):
+  return arr[:index] + arr[index+1:]
+
+@router.delete("/workbook/{id}/variation/{variation_index}", response_model=schemas.WorkbookOut)
+async def delete_workbook_variation(
+  id: int,
+  variation_index: int,
+  db_workbook: DBWorkbook = Depends(get_current_workbook),
+  db: Session = Depends(get_db)):
+
+  db_workbook.variations = without(db_workbook.variations, variation_index)
+  db_workbook.version = db_workbook.version + 1
+  saved_db_workbook = save_workbook(db, db_workbook)
+  return saved_db_workbook
+
+@router.post("/workbook/{id}/variation/{variation_index}", response_model=schemas.VariationOut)
+async def publish_variation(
+  id: int,
+  variation_index: int,
+  info: schemas.PublishVariation,
+  db_workbook: DBWorkbook = Depends(get_current_workbook),
+  db: Session = Depends(get_db)):
+
+  variation = db_workbook.variations[variation_index]
+  new_variation = DBVariation(
+    name = info.name,
+    data = variation,
+  )
+  # new_variation.data['scenario_parent_path'] = variation.scenario_parent_path
+  # new_variation.data['reference_parent_path'] = variation.reference_parent_path
+  # new_variation.data['scenario_vars'] = variation.scenario_vars
+  # new_variation.data['reference_vars'] = variation.reference_vars
+  return save_variation(db, new_variation)
+
+@router.get("/calculate")#, response_model=List[schemas.CalculationResults])
 async def get_calculate(
   workbook_id: int,
-  workbook_version: int,
+  variation_index: int,
+  workbook_version: Optional[int] = None,
   client: AioWrap = Depends(AioWrap),
   db: Session = Depends(get_db),
   cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
-  return await calculate(workbook_id, workbook_version, client, db, cache)
+  return await calculate(workbook_id, workbook_version, variation_index, client, db, cache)
 
-@router.get("/resource/projection/{technology_hash}", response_model=schemas.Calculation)
+@router.get("/resource/projection_run/{technology_hash}")#, response_model=schemas.CalculationResults)
 async def get_tech_result(
   technology_hash: str,
   cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
@@ -154,9 +209,26 @@ async def get_tech_result(
   except:
     raise HTTPException(status_code=400, detail=f"Cached results not found: GET /calculate/... to fill cache and get new projection url paths")
 
+@router.get("/resource/delta/{technology_hash}")
+async def get_delta(
+  technology_hash: str,
+  cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
+  try:
+    return json.loads(await cache.get(f'delta-{technology_hash}'))
+  except:
+    raise HTTPException(status_code=400, detail=f"Cached results not found: GET /calculate/... to fill cache and get new projection url paths")
+
+@router.get("/resource/projection/{key}")#, response_model=schemas.Calculation)
+async def get_projection_run(
+  key: str,
+  cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
+  try:
+    return json.loads(await cache.get(key))
+  except:
+    raise HTTPException(status_code=400, detail=f"Cached results not found: GET /calculate/... to fill cache and get new projection url paths")
+
 @router.get("/vma/mappings/{technology}")
 async def get_vma_mappings(technology: str, db: Session = Depends(get_db)):
-  ac = AdvancedControls()
   paths = varProjectionNamesPaths + varRefNamesPaths
   importname = 'solution.' + technology
   m = importlib.import_module(importname)

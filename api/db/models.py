@@ -40,7 +40,7 @@ class Workbook(Base):
   ui = Column(JSONB)
   start_year = Column(Integer)
   end_year = Column(Integer)
-  variations = Column(ARRAY(String))
+  variations = Column(ARRAY(JSONB))
 
   @validates('data')
   def validate_data(self, key, value):

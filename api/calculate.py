@@ -1,5 +1,7 @@
+from typing import Optional, Dict, Any
 import asyncio
 import json
+import re
 import hashlib
 from fastapi import HTTPException
 from pandas import DataFrame, Series
@@ -33,19 +35,16 @@ def to_json(scenario):
 async def calc(constructor, input, hashed_json_input, technology):
     return [to_json(constructor(input)), hashed_json_input, technology]
 
-async def fetch_data(variation_path, client) -> [dict, dict, dict]:
-  variation_data = await client(variation_path)
-  if not variation_data:
-    raise HTTPException(status_code=400, detail=f"Variation not found: {variation_path}")
-  scenario_parent_path = variation_data['data']['scenario_parent_path']
-  reference_parent_path = variation_data['data']['reference_parent_path']
+async def fetch_data(variation, client) -> [dict, dict, dict]:
+  scenario_parent_path = variation['scenario_parent_path']
+  reference_parent_path = variation['reference_parent_path']
   scenario_data = await client(scenario_parent_path)
   if not scenario_data:
     raise HTTPException(status_code=400, detail=f"Scenario not found: {scenario_parent_path}")
   reference_data = await client(reference_parent_path)
   if not reference_data:
     raise HTTPException(status_code=400, detail=f"Reference not found: {reference_parent_path}")
-  return [variation_data, scenario_data, reference_data]
+  return [variation, scenario_data, reference_data]
 
 def build_json(start_year: int, end_year: int, variation_data: dict, scenario_data: dict, reference_data: dict):
   jsons = list(map(lambda tech: {
@@ -56,7 +55,7 @@ def build_json(start_year: int, end_year: int, variation_data: dict, scenario_da
       tech,
       scenario_data['data'],
       reference_data['data'],
-      variation_data['data'])
+      variation_data)
     }, scenario_data['data']['technologies']))
   return list(filter(lambda json: json['tech'] != 'fossilfuelelectricity', jsons))
 
@@ -81,7 +80,7 @@ async def setup_calculations(jsons, cache):
       tasks.append(calc(constructors[constructor][0], name, hashed_json_input, technology))
     else:
       # Inputs have not changed for technology
-      key_list.append([technology, name, hashed_json_input])
+      key_list.append([technology, name, hashed_json_input, False])
       json_cached_results.append(json.loads(cached_result))
   return [tasks, key_list, json_cached_results]
 
@@ -94,13 +93,14 @@ async def perform_calculations(tasks, cache, key_list, prev_results, version):
       json_results.append(json_result)
       await cache.set(key_hash, json.dumps(json_result))
       if prev_results:
-        prev_tech_result = list(filter(lambda result: result['technology_full'] == json_result['name'], prev_results))[0]
+        prev_tech_result = list(filter(lambda result: result['technology_full'] == json_result['name'], prev_results['results']))[0]
         prev_cached_json_result = json.loads(await cache.get(prev_tech_result['hash']))
         # do diff
-        ddiff = DeepDiff(json_result, prev_cached_json_result, ignore_order=True)
-        key_list.append([tech, json_result['name'], key_hash, ddiff])
+        delta = DeepDiff(json_result, prev_cached_json_result, ignore_order=True)
+        await cache.set(f'delta-{key_hash}', json.dumps(delta))
+        key_list.append([tech, json_result['name'], key_hash, True])
       else:
-        key_list.append([tech, json_result['name'], key_hash, {}])
+        key_list.append([tech, json_result['name'], key_hash, False])
   return [json_results, key_list]
 
 def build_result_paths(key_list):
@@ -109,40 +109,61 @@ def build_result_paths(key_list):
       'hash': key_hash,
       'technology': tech,
       'technology_full': tech_full,
-      'diff': diff
-    } for [tech, tech_full, key_hash, diff] in key_list]
+      'delta':  get_resource_path('delta', key_hash) if has_delta else None
+    } for [tech, tech_full, key_hash, has_delta] in key_list]
 
 def compound_key(workbook_id: int, workbook_version: int):
   return f'workbook-{workbook_id}-{workbook_version}'
 
-async def get_prev_calc(workbook_id: int, workbook_version: int, cache):
-  prev_version = workbook_version - 1
-  cache_key = compound_key(workbook_id, prev_version)
-  cached_result = await cache.get(cache_key)
-  if cached_result is not None:
-    return json.loads(cached_result)
+async def get_prev_calc(workbook_id: int, workbook_version: int, cache) -> [int, Dict[Any, Any]]:
+  keys = await cache.keys(f'workbook-{workbook_id}-*')
+  if len(keys) > 0:
+    versions = [int(re.search(r'(\d+)[^-]*$', key.decode("utf-8")).group(0)) for key in keys]
+    versions.sort()
+    prev_version = versions[-1]
+    cache_key = compound_key(workbook_id, prev_version)
+    cached_result = await cache.get(cache_key)
+    if cached_result is not None:
+      return [prev_version, f'workbook-{workbook_id}-{prev_version}', json.loads(cached_result)]
+  return [None, None, {}]
 
-async def calculate(workbook_id: int, workbook_version: int, client, db, cache):
+async def calculate(workbook_id: int, workbook_version: Optional[int], variation_index: int, client, db, cache):
+  workbook: Workbook = workbook_by_id(db, workbook_id)
+  if workbook_version is None:
+    workbook_version = workbook.version
+
   cache_key = compound_key(workbook_id, workbook_version)
   cached_result = await cache.get(cache_key)
   if cached_result is not None:
     return json.loads(cached_result)
 
-  prev = await get_prev_calc(workbook_id, workbook_version, cache)
+  [prev_version, prev_key, prev_data] = await get_prev_calc(workbook_id, workbook_version, cache)
 
-  workbook: Workbook = workbook_by_id(db, workbook_id)
   if workbook is None:
     raise HTTPException(status_code=400, detail="Workbook not found")
   result_paths = []
-  for variation_path in workbook.variations:
-    input_data = await fetch_data(variation_path, client)
-    jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
-    [tasks, key_list, _] = await setup_calculations(jsons, cache)
-    [_, key_list] = await perform_calculations(tasks, cache, key_list, prev, workbook_version)
-    result_paths += build_result_paths(key_list)
-    await cache.set(cache_key, json.dumps(result_paths))
+  variation = workbook.variations[variation_index]
+  input_data = await fetch_data(variation, client)
+  jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
+  [tasks, key_list, _] = await setup_calculations(jsons, cache)
+  [_, key_list] = await perform_calculations(tasks, cache, key_list, prev_data, workbook_version)
+  result_paths += build_result_paths(key_list)
+  result = {
+    'meta': {
+      'previous_run': {
+        'version': prev_version,
+        'data': get_resource_path('projection_run', prev_key)
+      } if prev_version else None,
+      'current_run': {
+        'version': workbook_version,
+        'data': get_resource_path('projection_run', cache_key)
+      }
+    },
+    'results': result_paths
+  }
+  await cache.set(cache_key, json.dumps(result))
 
-  return result_paths
+  return result
 
 # async def calculate_diff(workbook_id: int, workbook_version: int, client, db, cache):
 #   compound_key = f'{workbook_id}-{workbook_version}'
