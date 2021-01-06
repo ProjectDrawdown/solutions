@@ -147,7 +147,7 @@ class WorkbookNew(BaseModel):
           "portfolioSolutions": [
             'solarpvutil',
           ],
-          "openPanel": "panelId", 
+          "openPanel": "panelId",
           "quickVariables": [
             'technologies.biogas.fixed_oper_cost_per_iunit',
           ],
@@ -172,7 +172,7 @@ class WorkbookPatch(BaseModel):
           "portfolioSolutions": [
             'solarpvutil',
           ],
-          "openPanel": "panelId", 
+          "openPanel": "panelId",
           "quickVariables": [
             'technologies.biogas.fixed_oper_cost_per_iunit',
           ],
@@ -200,7 +200,7 @@ class WorkbookOut(BaseModel):
           "portfolioSolutions": [
             'solarpvutil',
           ],
-          "openPanel": "panelId", 
+          "openPanel": "panelId",
           "quickVariables": [
             'technologies.biogas.fixed_oper_cost_per_iunit',
           ],
@@ -242,8 +242,8 @@ class CalculationPath(BaseModel):
   technology: str
   technology_full: str
   path: str
-  delta: Dict[Any, Any]
 
 class CalculationResults(BaseModel):
   meta: Dict[Any, Any]
   results: List[CalculationPath]
+
