@@ -48,6 +48,14 @@ class EntityName(str, Enum):
     variation = "variation"
     vma = "vma"
 
+@router.get('/resource/vma/info/{technology}')
+async def get_vma_info(technology: str, db: Session = Depends(get_db)):
+  return get_entities_by_name(db, f'solution/{technology}/VMA_info.csv', DBVMA)
+
+@router.get('/resource/vma/all/{technology}')
+async def get_vma_all(technology: str, db: Session = Depends(get_db)):
+  return get_entities_by_name(db, f'solution/{technology}/%.csv', DBVMA)
+
 @router.get('/resource/{entity}/{id}', response_model=schemas.ResourceOut)
 async def get_by_id(entity: EntityName, id: int, db: Session = Depends(get_db)):
   return get_entity(db, id, entity_mapping[entity])
@@ -128,7 +136,7 @@ async def initialize(db: Session = Depends(get_db)):
 
   vmas = populate_vmas()
   for vma in vmas:
-    name = vma['technology'] + '-' + vma['filename']
+    name = f"{vma['technology']}/{vma['filename']}"
     save_entity(db, name, vma['data'], DBVMA)
 
   return db_workbook

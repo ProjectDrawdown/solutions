@@ -3,12 +3,13 @@ import json
 import hashlib
 from fastapi import HTTPException
 from pandas import DataFrame, Series
-from model.data_handler import DataHandler
+from deepdiff import DeepDiff
 
+from model.data_handler import DataHandler
 from solution import factory, factory_2
 
 from api.config import AioWrap, get_resource_path
-from api.queries.workbook_queries import workbook_by_commit
+from api.queries.workbook_queries import workbook_by_id
 from api.transform import rehydrate_legacy_json
 from api.db.models import Workbook
 
@@ -76,13 +77,15 @@ async def setup_calculations(jsons, cache):
 
     cached_result = await cache.get(hashed_json_input)
     if cached_result is None:
+      # Inputs have changed for technology
       tasks.append(calc(constructors[constructor][0], name, hashed_json_input, technology))
     else:
+      # Inputs have not changed for technology
       key_list.append([technology, name, hashed_json_input])
       json_cached_results.append(json.loads(cached_result))
   return [tasks, key_list, json_cached_results]
 
-async def perform_calculations(tasks, cache, key_list):
+async def perform_calculations(tasks, cache, key_list, prev_results, version):
   json_results = []
   if len(tasks) > 0:
     calculated_results = await asyncio.wait(tasks)
@@ -90,22 +93,44 @@ async def perform_calculations(tasks, cache, key_list):
       [json_result, key_hash, tech] = r._result
       json_results.append(json_result)
       await cache.set(key_hash, json.dumps(json_result))
-      key_list.append([tech, json_result['name'], key_hash])
+      if prev_results:
+        prev_tech_result = list(filter(lambda result: result['technology_full'] == json_result['name'], prev_results))[0]
+        prev_cached_json_result = json.loads(await cache.get(prev_tech_result['hash']))
+        # do diff
+        ddiff = DeepDiff(json_result, prev_cached_json_result, ignore_order=True)
+        key_list.append([tech, json_result['name'], key_hash, ddiff])
+      else:
+        key_list.append([tech, json_result['name'], key_hash, {}])
   return [json_results, key_list]
 
 def build_result_paths(key_list):
   return [{
       'path': get_resource_path('projection', key_hash),
+      'hash': key_hash,
       'technology': tech,
-      'technology_full': tech_full
-    } for [tech, tech_full, key_hash] in key_list]
+      'technology_full': tech_full,
+      'diff': diff
+    } for [tech, tech_full, key_hash, diff] in key_list]
 
-async def calculate(workbook_commit_id, client, db, cache):
-  cached_result = await cache.get(workbook_commit_id)
+def compound_key(workbook_id: int, workbook_version: int):
+  return f'workbook-{workbook_id}-{workbook_version}'
+
+async def get_prev_calc(workbook_id: int, workbook_version: int, cache):
+  prev_version = workbook_version - 1
+  cache_key = compound_key(workbook_id, prev_version)
+  cached_result = await cache.get(cache_key)
   if cached_result is not None:
     return json.loads(cached_result)
 
-  workbook: Workbook = workbook_by_commit(db, workbook_commit_id)
+async def calculate(workbook_id: int, workbook_version: int, client, db, cache):
+  cache_key = compound_key(workbook_id, workbook_version)
+  cached_result = await cache.get(cache_key)
+  if cached_result is not None:
+    return json.loads(cached_result)
+
+  prev = await get_prev_calc(workbook_id, workbook_version, cache)
+
+  workbook: Workbook = workbook_by_id(db, workbook_id)
   if workbook is None:
     raise HTTPException(status_code=400, detail="Workbook not found")
   result_paths = []
@@ -113,8 +138,34 @@ async def calculate(workbook_commit_id, client, db, cache):
     input_data = await fetch_data(variation_path, client)
     jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
     [tasks, key_list, _] = await setup_calculations(jsons, cache)
-    [_, key_list] = await perform_calculations(tasks, cache, key_list)
+    [_, key_list] = await perform_calculations(tasks, cache, key_list, prev, workbook_version)
     result_paths += build_result_paths(key_list)
-    await cache.set(workbook_commit_id, json.dumps(result_paths))
+    await cache.set(cache_key, json.dumps(result_paths))
 
   return result_paths
+
+# async def calculate_diff(workbook_id: int, workbook_version: int, client, db, cache):
+#   compound_key = f'{workbook_id}-{workbook_version}'
+#   prev_compound_key = f'{workbook_id}-{workbook_version - 1}'
+
+#   prev_cached_result = await cache.get(prev_compound_key)
+#   if not prev_cached_result:
+#     return calculate(workbook_id, workbook_version, client, db, cache)
+
+#   cached_result = await cache.get(compound_key)
+#   if cached_result is not None:
+#     return json.loads(cached_result)
+
+#   workbook: Workbook = workbook_by_id(db, workbook_id)
+#   if workbook is None:
+#     raise HTTPException(status_code=400, detail="Workbook not found")
+#   result_paths = []
+#   for variation_path in workbook.variations:
+#     input_data = await fetch_data(variation_path, client)
+#     jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
+#     [tasks, key_list, _] = await setup_calculations(jsons, cache)
+#     [_, key_list] = await perform_calculations(tasks, cache, key_list)
+#     result_paths += build_result_paths(key_list)
+#     await cache.set(compound_key, json.dumps(result_paths))
+
+#   return result_paths

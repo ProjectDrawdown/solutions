@@ -1,4 +1,3 @@
-from uuid import UUID
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
 from api.db import models
@@ -112,7 +111,7 @@ class WorkbookPatch(BaseModel):
 class WorkbookOut(BaseModel):
   id: int
   author: Optional[User]
-  commit: UUID
+  version: int
   name: str
   ui: dict
   start_year: int
@@ -123,7 +122,7 @@ class WorkbookOut(BaseModel):
     schema_extra = {
       "example": {
         "id": 1,
-        "commit": "2f78ebbb-9b6b-468a-b1cf-6d615d90b3ce",
+        "version": "2",
         "name": "default",
         "ui": {
           "portfolioSolutions": [
