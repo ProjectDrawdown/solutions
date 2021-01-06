@@ -209,12 +209,12 @@ async def get_tech_result(
   except:
     raise HTTPException(status_code=400, detail=f"Cached results not found: GET /calculate/... to fill cache and get new projection url paths")
 
-@router.get("/resource/delta/{technology_hash}")
+@router.get("/resource/diffs/{technology_hash}")
 async def get_delta(
   technology_hash: str,
   cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
   try:
-    return json.loads(await cache.get(f'delta-{technology_hash}'))
+    return json.loads(await cache.get(f'diff-{technology_hash}'))
   except:
     raise HTTPException(status_code=400, detail=f"Cached results not found: GET /calculate/... to fill cache and get new projection url paths")
 

@@ -96,8 +96,8 @@ async def perform_calculations(tasks, cache, key_list, prev_results, version):
         prev_tech_result = list(filter(lambda result: result['technology_full'] == json_result['name'], prev_results['results']))[0]
         prev_cached_json_result = json.loads(await cache.get(prev_tech_result['hash']))
         # do diff
-        delta = DeepDiff(json_result, prev_cached_json_result, ignore_order=True)
-        await cache.set(f'delta-{key_hash}', json.dumps(delta))
+        diff = DeepDiff(json_result, prev_cached_json_result, ignore_order=True)
+        await cache.set(f'diff-{key_hash}', json.dumps(diff))
         key_list.append([tech, json_result['name'], key_hash, True])
       else:
         key_list.append([tech, json_result['name'], key_hash, False])
@@ -150,14 +150,10 @@ async def calculate(workbook_id: int, workbook_version: Optional[int], variation
   result_paths += build_result_paths(key_list)
   result = {
     'meta': {
-      'previous_run': {
-        'version': prev_version,
-        'data': get_resource_path('projection_run', prev_key)
-      } if prev_version else None,
-      'current_run': {
-        'version': workbook_version,
-        'data': get_resource_path('projection_run', cache_key)
-      }
+      'previous_run': prev_data['meta'] if prev_version else None,
+      'version': workbook_version,
+      'path': get_resource_path('projection_run', cache_key),
+      'variation_data': variation
     },
     'results': result_paths
   }
