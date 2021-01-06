@@ -81,7 +81,7 @@ async def setup_calculations(jsons, cache):
       tasks.append(calc(constructors[constructor][0], name, hashed_json_input, technology))
     else:
       # Inputs have not changed for technology
-      key_list.append([technology, name, hashed_json_input])
+      key_list.append([technology, name, hashed_json_input, {}])
       json_cached_results.append(json.loads(cached_result))
   return [tasks, key_list, json_cached_results]
 
@@ -97,6 +97,12 @@ async def perform_calculations(tasks, cache, key_list, prev_results, version):
         prev_tech_result = list(filter(lambda result: result['technology_full'] == json_result['name'], prev_results))[0]
         prev_cached_json_result = json.loads(await cache.get(prev_tech_result['hash']))
         # do diff
+
+        print('\n')
+        print(prev_tech_result['hash'])
+        print(key_hash)
+        print('\n')
+
         ddiff = DeepDiff(json_result, prev_cached_json_result, ignore_order=True)
         key_list.append([tech, json_result['name'], key_hash, ddiff])
       else:

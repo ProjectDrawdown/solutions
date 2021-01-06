@@ -36,8 +36,8 @@ from functools import lru_cache
 from api.calculate import calculate
 
 from model.advanced_controls import AdvancedControls, get_vma_for_param
-from transforms.variable_paths import varProjectionNamesPaths
-from transforms.reference_variable_paths import varRefNamesPaths
+from api.transforms.variable_paths import varProjectionNamesPaths
+from api.transforms.reference_variable_paths import varRefNamesPaths
 
 settings = get_settings()
 router = APIRouter()
