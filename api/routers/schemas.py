@@ -266,6 +266,7 @@ class CalculationMeta(BaseModel):
   version: int
   path: str
   variation_data: VariationIn
+  summary_path: str
 
 class CalculationResults(BaseModel):
   meta: CalculationMeta

@@ -30,6 +30,16 @@ def to_json(scenario):
             json_data[iv] = None
     json_data.pop('tm', None)
     json_data.pop('ae', None)
+    if 'c2' in json_data and json_data['c2']:
+      year_calculation = 'co2_ppm_calculator'
+      if year_calculation in json_data['c2']:
+        calculator = json_data['c2'][year_calculation]
+        json_data['c2'][year_calculation] = {
+            **dict({
+                'years': [{'year': key, 'data': calculator[key]} for key in calculator if key.isdigit()],
+            }),
+            **dict([[key, calculator[key]] for key in calculator if not key.isdigit()])
+        }
     return {'name': scenario.name, 'data': json_data}
 
 async def calc(constructor, input, hashed_json_input, technology):
@@ -158,7 +168,8 @@ async def calculate(workbook_id: int, workbook_version: Optional[int], variation
       'previous_run_path': get_projection_path('calculation', prev_key) if prev_version else None,
       'version': workbook_version,
       'path': get_projection_path('calculation', cache_key),
-      'variation_data': variation
+      'variation_data': variation,
+      'summary_path': get_projection_path('summary', cache_key)
     },
     'results': result_paths
   }
