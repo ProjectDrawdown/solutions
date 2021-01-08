@@ -10,7 +10,7 @@ from deepdiff import DeepDiff
 from model.data_handler import DataHandler
 from solution import factory, factory_2
 
-from api.config import AioWrap, get_resource_path
+from api.config import AioWrap, get_projection_path
 from api.queries.workbook_queries import workbook_by_id
 from api.transform import rehydrate_legacy_json
 from api.db.models import Workbook
@@ -93,23 +93,28 @@ async def perform_calculations(tasks, cache, key_list, prev_results, version):
       json_results.append(json_result)
       await cache.set(key_hash, json.dumps(json_result))
       if prev_results:
-        prev_tech_result = list(filter(lambda result: result['technology_full'] == json_result['name'], prev_results['results']))[0]
+        prev_tech_result = [result for result in prev_results['results'] if result['technology'] == tech][0]
         prev_cached_json_result = json.loads(await cache.get(prev_tech_result['hash']))
         # do diff
         diff = DeepDiff(json_result, prev_cached_json_result, ignore_order=True)
-        await cache.set(f'diff-{key_hash}', json.dumps(diff))
-        key_list.append([tech, json_result['name'], key_hash, True])
+        if diff:
+          # diffs found
+          await cache.set(f'diff-{key_hash}', json.dumps(diff))
+          key_list.append([tech, json_result['name'], key_hash, True])
+        else:
+          # no diff in tech from previous run
+          key_list.append([tech, json_result['name'], key_hash, False])
       else:
         key_list.append([tech, json_result['name'], key_hash, False])
   return [json_results, key_list]
 
 def build_result_paths(key_list):
   return [{
-      'path': get_resource_path('projection', key_hash),
+      'path': get_projection_path('technology', key_hash),
       'hash': key_hash,
       'technology': tech,
       'technology_full': tech_full,
-      'delta':  get_resource_path('delta', key_hash) if has_delta else None
+      'diff_path':  get_projection_path('diffs', key_hash) if has_delta else None
     } for [tech, tech_full, key_hash, has_delta] in key_list]
 
 def compound_key(workbook_id: int, workbook_version: int):
@@ -150,9 +155,9 @@ async def calculate(workbook_id: int, workbook_version: Optional[int], variation
   result_paths += build_result_paths(key_list)
   result = {
     'meta': {
-      'previous_run': prev_data['meta'] if prev_version else None,
+      'previous_run_path': get_projection_path('calculation', prev_key) if prev_version else None,
       'version': workbook_version,
-      'path': get_resource_path('projection_run', cache_key),
+      'path': get_projection_path('calculation', cache_key),
       'variation_data': variation
     },
     'results': result_paths

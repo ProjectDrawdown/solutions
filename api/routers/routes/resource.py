@@ -30,6 +30,7 @@ from api.queries.workbook_queries import (
   save_workbook
 )
 from api.transform import transform, rehydrate_legacy_json, populate_vmas
+from api.transforms.validate_variation import build_schema
 
 settings = get_settings()
 router = APIRouter()
@@ -143,6 +144,11 @@ async def initialize(db: Session = Depends(get_db)):
 
   return db_workbook
   # return rehydrate_legacy_json(scenario_json, references_json)
+
+@router.get('/vma/aggregates/{technology}')
+async def get_vma_agg(variable_path: str, db: Session = Depends(get_db)):
+  # if there's a vma_info object just use that
+  pass
 
 @router.get("/garbage_collect")
 async def garbage_collect(db: Session = Depends(get_db)):

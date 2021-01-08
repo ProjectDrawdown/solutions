@@ -1,7 +1,8 @@
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from api.db import models
 from api.config import get_resource_path
+from api.transforms.validate_variation import validate_ref_vars, validate_scenario_vars
 
 class AuthorizationResponse(BaseModel):
   state: str
@@ -93,6 +94,21 @@ class VariationIn(ResourceIn):
   reference_parent_path: str
   scenario_vars: Dict[str, Any]
   reference_vars: Dict[str, Any]
+
+  @validator('scenario_vars')
+  def validate_scenario(cls, v):
+    res = validate_scenario_vars(v)
+    if not res[0]:
+      raise ValueError(res[1])
+    return v
+
+  @validator('reference_vars')
+  def validate_reference(cls, v):
+    res = validate_ref_vars(v)
+    if not res[0]:
+      raise ValueError(res[1])
+    return v
+
   class Config:
     schema_extra = {
         "example": {
@@ -238,12 +254,22 @@ class Calculation(BaseModel):
   name: str
   data: Dict[Any, Any]
 
-class CalculationPath(BaseModel):
+class TechCalculation(BaseModel):
+  path: str
+  hash: str
   technology: str
   technology_full: str
+  diff_path: Optional[str]
+
+class CalculationMeta(BaseModel):
+  previous_run_path: Optional[str]
+  version: int
   path: str
+  variation_data: VariationIn
 
 class CalculationResults(BaseModel):
-  meta: Dict[Any, Any]
-  results: List[CalculationPath]
+  meta: CalculationMeta
+  results: List[TechCalculation]
 
+class CalculationDiffs(BaseModel):
+  values_changed: Optional[Dict[Any, Any]]
