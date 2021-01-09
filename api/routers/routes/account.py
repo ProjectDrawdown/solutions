@@ -1,5 +1,6 @@
 import importlib
 from fastapi import APIRouter, Depends
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from api.config import get_settings, get_db
@@ -8,6 +9,15 @@ from api.routers.schemas import Url, User, Token, AuthorizationResponse
 settings = get_settings()
 router = APIRouter()
 default_provider = settings.default_provider
+
+@router.get('/authredirect', response_class=RedirectResponse)
+def for_dev_only_will_remove():
+    return RedirectResponse(get_login_url_default().url)
+
+@router.get('/auth/{provider}')
+async def for_dev_only_will_remove2(code: str, db: Session = Depends(get_db)):
+    body = AuthorizationResponse(code=code, state=0)
+    return await verify_authorization(body, default_provider, db)
 
 @router.get('/login')
 def get_login_url_default() -> Url:

@@ -11,15 +11,22 @@ import solution.factory
 from api.config import get_settings, RedisSettings
 
 from api.routers.routes import (
-    account, 
-    user, 
-    workbook, 
+    account,
+    user,
+    workbook,
     resource,
     vma,
     projection
 )
 
-app = FastAPI()
+with open('./api/docs.html', 'r') as f:
+    docs = f.read()
+
+app = FastAPI(
+        title="Project Drawdown API",
+        description=docs,
+        version="1.0"
+        )
 app.include_router(account.router)
 app.include_router(user.router)
 app.include_router(workbook.router)
