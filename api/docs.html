@@ -1,0 +1,24 @@
+<p>
+Welcome to the Project Drawdown API automated documentation.
+</p>
+
+<h3>Authentication</h3>
+
+<p>
+First, <code>GET /login/{provider}</code> where provider is either "google" or "github".
+</p>
+
+<p>
+Then, visit the URL that is returned <code>{ "url": "https://accounts.google.com ...." }</code>
+</p>
+
+<p>
+After authenticating with the OAuth provider, the redirect (.env configurable) will contain the oauth code. Pass that code into the request body's "code" attribute to <code>POST /authorize/{provider}</code>.
+</p>
+
+<h3>Workbooks</h3>
+
+<p>
+To create a new workbook, <code>POST /workbook</code> with a request body as shown in the example below.
+</p>
+

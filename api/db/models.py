@@ -33,14 +33,14 @@ class Workbook(Base):
   __tablename__ = 'workbook'
 
   id = Column(Integer, primary_key=True, index=True)
-  commit = Column(UUID(as_uuid=True), default=uuid4, onupdate=uuid4)
+  version = Column(Integer, default=0)
   name = Column(String)
   author_id = Column(Integer, ForeignKey('user.id'))
   author = relationship("User", back_populates="workbooks")
   ui = Column(JSONB)
   start_year = Column(Integer)
   end_year = Column(Integer)
-  variations = Column(ARRAY(String))
+  variations = Column(ARRAY(JSONB))
 
   @validates('data')
   def validate_data(self, key, value):

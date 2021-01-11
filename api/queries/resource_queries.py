@@ -19,6 +19,9 @@ def get_entity(db: Session, id: int, table):
 def get_entities_by_name(db: Session, name: str, table):
     return db.query(table).filter(table.name.like(name)).all()
 
+def get_entity_by_name(db: Session, name: str, table):
+    return db.query(table).filter(table.name.like(name)).first()
+
 def all_entities(db: Session, table):
     return db.query(table).all()
 

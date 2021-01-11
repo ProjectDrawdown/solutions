@@ -8,14 +8,34 @@ from pydantic import BaseModel
 from fastapi_plugins import redis_plugin
 
 import solution.factory
-from api.routers.routes import account, user, workbook, resource
 from api.config import get_settings, RedisSettings
+from api import config
 
-app = FastAPI()
+from api.routers.routes import (
+    account,
+    user,
+    workbook,
+    resource,
+    vma,
+    projection
+)
+
+with open('./api/docs.html', 'r') as f:
+    docs = f.read()
+
+app = FastAPI(
+        title="Project Drawdown API",
+        description=docs,
+        version="1.0"
+        )
 app.include_router(account.router)
 app.include_router(user.router)
 app.include_router(workbook.router)
 app.include_router(resource.router)
+app.include_router(vma.router)
+app.include_router(projection.router)
+
+config.app = app
 
 redis_config = RedisSettings()
 

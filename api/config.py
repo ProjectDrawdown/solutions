@@ -66,9 +66,18 @@ def get_resource_path(entity: str, id: int):
   api_url = get_settings().api_url
   return f'{api_url}/resource/{entity}/{id}/'
 
+def get_projection_path(path: str, id: int):
+  api_url = get_settings().api_url
+  return f'{api_url}/projection/{path}/{id}/'
+
 JSONType = Union[str, int, float, bool, None, Dict[str, Any], List[Any]]
 class AioWrap(object):
     async def __call__(self, site: str) -> JSONType:
         async with aiohttp.ClientSession() as client:
             async with client.get(site) as resp:
                 return await resp.json()
+
+app = None
+
+def get_app():
+    return app

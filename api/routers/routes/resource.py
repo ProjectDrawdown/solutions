@@ -30,6 +30,7 @@ from api.queries.workbook_queries import (
   save_workbook
 )
 from api.transform import transform, rehydrate_legacy_json, populate_vmas
+from api.transforms.validate_variation import build_schema
 
 settings = get_settings()
 router = APIRouter()
@@ -47,6 +48,14 @@ class EntityName(str, Enum):
     reference = "reference"
     variation = "variation"
     vma = "vma"
+
+@router.get('/resource/vma/info/{technology}')
+async def get_vma_info(technology: str, db: Session = Depends(get_db)):
+  return get_entities_by_name(db, f'solution/{technology}/VMA_info.csv', DBVMA)
+
+@router.get('/resource/vma/all/{technology}')
+async def get_vma_all(technology: str, db: Session = Depends(get_db)):
+  return get_entities_by_name(db, f'solution/{technology}/%.csv', DBVMA)
 
 @router.get('/resource/{entity}/{id}', response_model=schemas.ResourceOut)
 async def get_by_id(entity: EntityName, id: int, db: Session = Depends(get_db)):
@@ -114,13 +123,15 @@ async def initialize(db: Session = Depends(get_db)):
   )
   db_variation = save_variation(db, variation)
 
+  variation_dict = variation.__dict__['data']
+
   workbook = DBWorkbook(
     name = 'default',
     ui = {},
     start_year = 2020,
     end_year = 2050,
     variations = [
-      db_variation.path
+      variation_dict
     ]
   )
 
@@ -128,11 +139,16 @@ async def initialize(db: Session = Depends(get_db)):
 
   vmas = populate_vmas()
   for vma in vmas:
-    name = vma['technology'] + '-' + vma['filename']
+    name = f"{vma['technology']}/{vma['filename']}"
     save_entity(db, name, vma['data'], DBVMA)
 
   return db_workbook
   # return rehydrate_legacy_json(scenario_json, references_json)
+
+@router.get('/vma/aggregates/{technology}')
+async def get_vma_agg(variable_path: str, db: Session = Depends(get_db)):
+  # if there's a vma_info object just use that
+  pass
 
 @router.get("/garbage_collect")
 async def garbage_collect(db: Session = Depends(get_db)):
