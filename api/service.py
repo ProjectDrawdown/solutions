@@ -9,6 +9,7 @@ from fastapi_plugins import redis_plugin
 
 import solution.factory
 from api.config import get_settings, RedisSettings
+from api import config
 
 from api.routers.routes import (
     account, 
@@ -26,6 +27,8 @@ app.include_router(workbook.router)
 app.include_router(resource.router)
 app.include_router(vma.router)
 app.include_router(projection.router)
+
+config.app = app
 
 redis_config = RedisSettings()
 

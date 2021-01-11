@@ -1,6 +1,6 @@
 import importlib
 import pathlib
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, FastAPI
 from sqlalchemy.orm import Session
 import json
 import urllib
@@ -9,7 +9,7 @@ import aioredis
 import fastapi_plugins
 from typing import List, Optional, Any
 
-from api.config import get_settings, get_db, AioWrap, get_resource_path
+from api.config import get_settings, get_db, AioWrap, get_resource_path, get_app
 from api.queries.user_queries import get_user
 from api.queries.workbook_queries import (
   workbook_by_id,
@@ -197,5 +197,19 @@ async def get_calculate(
   workbook_version: Optional[int] = None,
   client: AioWrap = Depends(AioWrap),
   db: Session = Depends(get_db),
-  cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
+  cache: aioredis.Redis = Depends(fastapi_plugins.depends_redis)):
   return await calculate(workbook_id, workbook_version, variation_index, client, db, cache)
+
+@router.websocket("/calculate/ws")
+async def get_calculat_ws(
+  workbook_id: int,
+  variation_index: int,
+  websocket: WebSocket,
+  workbook_version: Optional[int] = None,
+  client: AioWrap = Depends(AioWrap),
+  db: Session = Depends(get_db)):
+  app = get_app()
+  cache = app.state.REDIS.redis
+  await websocket.accept()
+  await calculate(workbook_id, workbook_version, variation_index, client, db, cache, websocket)
+    

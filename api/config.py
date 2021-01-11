@@ -76,3 +76,8 @@ class AioWrap(object):
         async with aiohttp.ClientSession() as client:
             async with client.get(site) as resp:
                 return await resp.json()
+
+app = None
+
+def get_app():
+    return app
