@@ -196,8 +196,8 @@ async def calculate(workbook_id: int, workbook_version: Optional[int], variation
   # ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
   # ps.print_stats()
 
-  with open('test.txt', 'w+') as f:
-    f.write(s.getvalue())
+  # with open('test.txt', 'w+') as f:
+  #  f.write(s.getvalue())
 
   return result
 
