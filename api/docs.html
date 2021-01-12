@@ -22,3 +22,19 @@ After authenticating with the OAuth provider, the redirect (.env configurable) w
 To create a new workbook, <code>POST /workbook</code> with a request body as shown in the example below.
 </p>
 
+<p>
+To retrieve a workbook, <code>GET /workbook/{workbook_id}</code>.
+</p>
+
+<p>
+To calculate the projections in this workbook, <code>GET /calculate/?workbook_id={workbook_id}&variation_index={variation_index}</code>. Variation index is the index of the variation as listed in <code>GET /workbook/{workbook_id}</code>.
+</p>
+
+<p>
+To make an edit to a variation, <code>PATCH /workbook/{workbook_id}/variation/{variation_id}</code>, with a request body as shown in the example below.
+</p>
+
+<p>
+Then you will want to re-calculate the workbook as above. The resulting list of technologies should now include a "diff_path" where a technology's outputs have changed. That path will contain the output for that technology.
+</p>
+
