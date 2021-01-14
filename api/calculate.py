@@ -15,9 +15,9 @@ from api.queries.workbook_queries import workbook_by_id
 from api.transform import rehydrate_legacy_json
 from api.db.models import Workbook
 
-# import cProfile
-# import pstats
-# import io
+import cProfile
+import pstats
+import io
 
 def to_json(scenario):
     json_data = dict()
@@ -73,14 +73,13 @@ def build_json(start_year: int, end_year: int, variation_data: dict, scenario_da
     }, scenario_data['data']['technologies']))
   return list(filter(lambda json: json['tech'] != 'fossilfuelelectricity', jsons))
 
-async def setup_calculations(jsons, cache):
+async def setup_calculations(id, jsons, cache, websocket: WebSocket):
   tasks = []
   key_list = []
   json_cached_results = []
-  constructors = factory_2.all_solutions_scenarios(jsons)
 
-  for constructor in constructors:
-    current_json_input: dict = list(filter(lambda json: json['tech'] == constructor, jsons))[0]
+  for current_json_input in jsons:
+    # current_json_input: dict = list(filter(lambda json: json['tech'] == constructor, pruned_jsons))[0]
     name = current_json_input['json']['name']
     technology = current_json_input['tech']
     copied_json_input = current_json_input.copy()
@@ -90,39 +89,63 @@ async def setup_calculations(jsons, cache):
 
     cached_result = await cache.get(hashed_json_input)
     if cached_result is None:
+      constructor = factory_2.one_solution_scenarios(technology, current_json_input['json'])
       # Inputs have changed for technology
-      tasks.append(calc(constructors[constructor][0], name, hashed_json_input, technology))
+      tasks.append(calc(constructor[0], name, hashed_json_input, technology))
     else:
       # Inputs have not changed for technology
       key_list.append([technology, name, hashed_json_input, False])
-      json_cached_results.append(json.loads(cached_result))
+      str_cached_result = json.loads(cached_result)
+      json_cached_results.append(str_cached_result)
+      if websocket:
+        await websocket.send_text(str_cached_result)
   return [tasks, key_list, json_cached_results]
 
-async def perform_calculations(tasks, cache, key_list, prev_results, version, websocket: WebSocket = None):
+async def find_diffs(prev_result_list, tech, json_result, key_hash, key_list, cache, websocket):
+  prev_tech_result = [result for result in prev_result_list if result['technology'] == tech][0]
+  prev_cached_json_result = json.loads(await cache.get(prev_tech_result['hash']))
+  # do diff
+  diff = DeepDiff(json_result, prev_cached_json_result, ignore_order=True)
+  if diff:
+    # diffs found
+    cache_diff_str = json.dumps({
+      'tech': tech,
+      'diff': diff
+    })
+    await cache.set(f'diff-{key_hash}', cache_diff_str)
+    if websocket:
+      await websocket.send_text(cache_diff_str)
+    key_list.append([tech, json_result['name'], key_hash, True])
+  else:
+    # no diff in tech from previous run
+    key_list.append([tech, json_result['name'], key_hash, False])
+
+async def process_tech_calc(id, json_result, key_hash, prev_results, tech, key_list, cache, websocket):
+  str_json_result = json.dumps(json_result)
+  if websocket:
+    await websocket.send_text(str_json_result)
+  await cache.set(key_hash, str_json_result)
+  if prev_results:
+    await find_diffs(prev_results['results'], tech, json_result, key_hash, key_list, cache, websocket)
+  else:
+    key_list.append([tech, json_result['name'], key_hash, False])
+
+async def perform_calculations_async(id, tasks, cache, key_list, prev_results, version, websocket: WebSocket = None):
   json_results = []
   if len(tasks) > 0:
     calculated_results = await asyncio.wait(tasks)
     for r in calculated_results[0]:
       [json_result, key_hash, tech] = r._result
       json_results.append(json_result)
-      str_json_result = json.dumps(json_result)
-      if websocket:
-        await websocket.send_text(str_json_result)
-      await cache.set(key_hash, str_json_result)
-      if prev_results:
-        prev_tech_result = [result for result in prev_results['results'] if result['technology'] == tech][0]
-        prev_cached_json_result = json.loads(await cache.get(prev_tech_result['hash']))
-        # do diff
-        diff = DeepDiff(json_result, prev_cached_json_result, ignore_order=True)
-        if diff:
-          # diffs found
-          await cache.set(f'diff-{key_hash}', json.dumps(diff))
-          key_list.append([tech, json_result['name'], key_hash, True])
-        else:
-          # no diff in tech from previous run
-          key_list.append([tech, json_result['name'], key_hash, False])
-      else:
-        key_list.append([tech, json_result['name'], key_hash, False])
+      await process_tech_calc(id, json_result, key_hash, prev_results, tech, key_list, cache, websocket)
+  return [json_results, key_list]
+
+async def perform_calculations_sync(id, tasks, cache, key_list, prev_results, version, websocket: WebSocket = None):
+  json_results = []
+  for task in tasks:
+    [json_result, key_hash, tech] = await task
+    json_results.append(json_result)
+    await process_tech_calc(id, json_result, key_hash, prev_results, tech, key_list, cache, websocket)
   return [json_results, key_list]
 
 def build_result_paths(key_list):
@@ -161,7 +184,25 @@ def build_result(prev_key: str, prev_version: str, workbook_version: str, cache_
     'results': result_paths
   }
 
-async def calculate(workbook_id: int, workbook_version: Optional[int], variation_index: int, client, db, cache, websocket: WebSocket = None):
+async def websocket_send_cached(str_cached_result: str, cached_result: dict, websocket: WebSocket, cache):
+  for technology in cached_result['results']:
+    cached_tech = await cache.get(technology['hash'])
+    await websocket.send_text(str(cached_tech))
+    if technology['diff_path']:
+      cached_diff = await cache.get(f'diff-{technology["hash"]}')
+      await websocket.send_text(cached_diff)
+  await websocket.send_text(str_cached_result)
+
+async def calculate(
+  workbook_id: int, 
+  workbook_version: Optional[int], 
+  variation_index: int, 
+  client, 
+  db, 
+  cache, 
+  run_async: bool,
+  websocket: WebSocket = None):
+
   workbook: Workbook = workbook_by_id(db, workbook_id)
   if workbook_version is None:
     workbook_version = workbook.version
@@ -170,60 +211,35 @@ async def calculate(workbook_id: int, workbook_version: Optional[int], variation
   cached_result = await cache.get(cache_key)
   if cached_result is not None:
     if websocket:
-      await websocket.send_text(str(cached_result))
+      await websocket_send_cached(str(cached_result), json.loads(cached_result), websocket, cache)
+      return
     return json.loads(cached_result)
 
   [prev_version, prev_key, prev_data] = await get_prev_calc(workbook_id, workbook_version, cache)
 
-  # with cProfile.Profile() as pr:
-  if workbook is None:
-    raise HTTPException(status_code=400, detail="Workbook not found")
-  result_paths = []
-  variation = workbook.variations[variation_index]
-  input_data = await fetch_data(variation, client)
-  jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
-  [tasks, key_list, _] = await setup_calculations(jsons, cache)
-  [_, key_list] = await perform_calculations(tasks, cache, key_list, prev_data, workbook_version, websocket)
-  result_paths += build_result_paths(key_list)
-  result = build_result(prev_key, prev_version, workbook_version, cache_key, variation, result_paths)
-  str_result = json.dumps(result)
-  await cache.set(cache_key, str_result)
-  if websocket:
-    await websocket.send_text(str_result)
-  # pr.print_stats()
-  # pr.dump_stats('calc.prof')
-  # s = io.StringIO()
-  # ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
-  # ps.print_stats()
+  with cProfile.Profile() as pr:
+    if workbook is None:
+      raise HTTPException(status_code=400, detail="Workbook not found")
+    result_paths = []
+    variation = workbook.variations[variation_index]
+    input_data = await fetch_data(variation, client)
+    jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
+    [tasks, key_list, _] = await setup_calculations(cache_key, jsons, cache, websocket)
+    perform_func = perform_calculations_async if run_async else perform_calculations_sync
+    [_, key_list] = await perform_func(cache_key, tasks, cache, key_list, prev_data, workbook_version, websocket)
+    result_paths += build_result_paths(key_list)
+    result = build_result(prev_key, prev_version, workbook_version, cache_key, variation, result_paths)
+    str_result = json.dumps(result)
+    await cache.set(cache_key, str_result)
+    if websocket:
+      await websocket.send_text(str_result)
+  pr.print_stats()
+  pr.dump_stats('calc.prof')
+  s = io.StringIO()
+  ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
+  ps.print_stats()
 
-  with open('test.txt', 'w+') as f:
-    f.write(s.getvalue())
+  # with open('test.txt', 'w+') as f:
+  #   f.write(s.getvalue())
 
   return result
-
-
-# async def calculate_diff(workbook_id: int, workbook_version: int, client, db, cache):
-#   compound_key = f'{workbook_id}-{workbook_version}'
-#   prev_compound_key = f'{workbook_id}-{workbook_version - 1}'
-
-#   prev_cached_result = await cache.get(prev_compound_key)
-#   if not prev_cached_result:
-#     return calculate(workbook_id, workbook_version, client, db, cache)
-
-#   cached_result = await cache.get(compound_key)
-#   if cached_result is not None:
-#     return json.loads(cached_result)
-
-#   workbook: Workbook = workbook_by_id(db, workbook_id)
-#   if workbook is None:
-#     raise HTTPException(status_code=400, detail="Workbook not found")
-#   result_paths = []
-#   for variation_path in workbook.variations:
-#     input_data = await fetch_data(variation_path, client)
-#     jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
-#     [tasks, key_list, _] = await setup_calculations(jsons, cache)
-#     [_, key_list] = await perform_calculations(tasks, cache, key_list)
-#     result_paths += build_result_paths(key_list)
-#     await cache.set(compound_key, json.dumps(result_paths))
-
-#   return result_paths
