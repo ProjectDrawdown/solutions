@@ -194,22 +194,24 @@ async def publish_variation(
 async def get_calculate(
   workbook_id: int,
   variation_index: int,
+  run_async: Optional[bool] = True,
   workbook_version: Optional[int] = None,
   client: AioWrap = Depends(AioWrap),
   db: Session = Depends(get_db),
   cache: aioredis.Redis = Depends(fastapi_plugins.depends_redis)):
-  return await calculate(workbook_id, workbook_version, variation_index, client, db, cache)
+  return await calculate(workbook_id, workbook_version, variation_index, client, db, cache, run_async)
 
 @router.websocket("/calculate/ws")
 async def get_calculat_ws(
   workbook_id: int,
   variation_index: int,
   websocket: WebSocket,
+  run_async: Optional[bool] = True,
   workbook_version: Optional[int] = None,
   client: AioWrap = Depends(AioWrap),
   db: Session = Depends(get_db)):
   app = get_app()
   cache = app.state.REDIS.redis
   await websocket.accept()
-  await calculate(workbook_id, workbook_version, variation_index, client, db, cache, websocket)
+  await calculate(workbook_id, workbook_version, variation_index, client, db, cache, run_async, websocket)
     

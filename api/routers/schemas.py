@@ -273,4 +273,5 @@ class CalculationResults(BaseModel):
   results: List[TechCalculation]
 
 class CalculationDiffs(BaseModel):
-  values_changed: Optional[Dict[Any, Any]]
+  tech: str
+  diff: Dict[Any, Any]
