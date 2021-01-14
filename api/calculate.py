@@ -194,12 +194,12 @@ async def websocket_send_cached(str_cached_result: str, cached_result: dict, web
   await websocket.send_text(str_cached_result)
 
 async def calculate(
-  workbook_id: int, 
-  workbook_version: Optional[int], 
-  variation_index: int, 
-  client, 
-  db, 
-  cache, 
+  workbook_id: int,
+  workbook_version: Optional[int],
+  variation_index: int,
+  client,
+  db,
+  cache,
   run_async: bool,
   websocket: WebSocket = None):
 
@@ -233,11 +233,11 @@ async def calculate(
     await cache.set(cache_key, str_result)
     if websocket:
       await websocket.send_text(str_result)
-  pr.print_stats()
-  pr.dump_stats('calc.prof')
-  s = io.StringIO()
-  ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
-  ps.print_stats()
+  # pr.print_stats()
+  # pr.dump_stats('calc.prof')
+  # s = io.StringIO()
+  # ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
+  # ps.print_stats()
 
   # with open('test.txt', 'w+') as f:
   #   f.write(s.getvalue())
