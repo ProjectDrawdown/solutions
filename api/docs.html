@@ -38,3 +38,21 @@ To make an edit to a variation, <code>PATCH /workbook/{workbook_id}/variation/{v
 Then you will want to re-calculate the workbook as above. The resulting list of technologies should now include a "diff_path" where a technology's outputs have changed. That path will contain the output for that technology.
 </p>
 
+<h3>Websockets Interface</h3>
+
+<p>
+To connect with websockets for a streaming return:
+
+<code>
+var host = "localhost:8000";
+var workbook_id = 43;
+var variation_index = 0;
+var ws = new WebSocket(`ws://${host}/calculate/ws?workbook_id=${workbook_id}&variation_index=${variation_index}&run_async=false`);
+ws.onmessage = function(event) {
+    console.log(event.data)
+};
+</code>
+
+This version of the calculate endpoint returns results as they are completed.
+</p>
+
