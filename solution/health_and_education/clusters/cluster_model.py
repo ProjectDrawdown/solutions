@@ -79,6 +79,19 @@ class Scenario():
 
         # SpaceHeating_cluster!AL28:AU75
         self.ref1_tam_all_regions = ref1_tam_all_regions
+    
+
+    def calc_ref1_tam_plastics(self):
+        # Table 3: REF1 TAM FOR REGIONS WITH HIGHER EDUCATIONAL ATTAINMENT										
+        ref1_tam_high_edu = ((self.ref2_tam / self.ref2_population) * self.ref1_population) 
+
+        self.ref1_tam_high_edu = ref1_tam_high_edu
+
+        # Table 3: REF1 TAM FOR ALL REGIONS										
+        ref1_tam_all_regions = ref1_tam_high_edu.copy()
+
+        # SpaceHeating_cluster!AL28:AU75
+        self.ref1_tam_all_regions = ref1_tam_all_regions
 
 
     def calc_ref2_demand(self):
@@ -729,35 +742,40 @@ class Scenario():
         self.emissions_allocations_mdc = emissions_allocations_mdc
 
 
-    def calc_total_emis(self, mdc=True):
+    def calc_total_emis(self, mdc=True, lldc=True):
         # Total Emissions Avoided due to Health & Education (Gt CO2-eq)
-        emissions_avoided_lldc_period = self.emissions_allocations_lldc.loc[self.assumptions['period_start']:self.assumptions['period_end'], 'Health & Education: Conv Total'].sum()
-        emissions_avoided_lldc_full = self.emissions_allocations_lldc.loc[:, 'Health & Education: Conv Total'].sum()
+        if lldc:
+            emissions_avoided_lldc_period = self.emissions_allocations_lldc.loc[self.assumptions['period_start']:self.assumptions['period_end'], 'Health & Education: Conv Total'].sum()
+            emissions_avoided_lldc_full = self.emissions_allocations_lldc.loc[:, 'Health & Education: Conv Total'].sum()
+
+            self.emissions_avoided_lldc_period = round(emissions_avoided_lldc_period/1000, 2)
+            self.emissions_avoided_lldc_full = round(emissions_avoided_lldc_full/1000, 2)
+        else: 
+            self.emissions_avoided_lldc_period = 0
+            self.emissions_avoided_lldc_full = 0
         
         if mdc:
             emissions_avoided_mdc_period = self.emissions_allocations_mdc.loc[self.assumptions['period_start']:self.assumptions['period_end'], 'Health & Education: Conv Total'].sum()
             emissions_avoided_mdc_full = self.emissions_allocations_mdc.loc[:, 'Health & Education: Conv Total'].sum()
 
-        # Electricity_cluster!N4:O12
-        self.emissions_avoided_lldc_period = round(emissions_avoided_lldc_period/1000, 2)
-        self.emissions_avoided_lldc_full = round(emissions_avoided_lldc_full/1000, 2)
-        
-        if mdc:
             self.emissions_avoided_mdc_period = round(emissions_avoided_mdc_period/1000, 2)
             self.emissions_avoided_mdc_full = round(emissions_avoided_mdc_full/1000, 2)
         else: 
             self.emissions_avoided_mdc_period = 0
             self.emissions_avoided_mdc_full = 0
 
-
         self.emissions_avoided_total_period = round(self.emissions_avoided_lldc_period + self.emissions_avoided_mdc_period, 2)
         self.emissions_avoided_total_full = round(self.emissions_avoided_lldc_full + self.emissions_avoided_mdc_full, 2)
 
 
-    def print_total_emis(self, mdc=True):
+    def print_total_emis(self, mdc=True, lldc=True):
         # To avoid the hard coded 2015 - 2060 date range in Excel, infer the min/max years from the dataframe
-        min_range = min(self.emissions_allocations_lldc.index)
-        max_range = max(self.emissions_allocations_lldc.index)
+        if lldc:
+            min_range = min(self.emissions_allocations_lldc.index)
+            max_range = max(self.emissions_allocations_lldc.index)
+        else:
+            min_range = min(self.emissions_allocations_mdc.index)
+            max_range = max(self.emissions_allocations_mdc.index)
 
         print('\n', self.name)
         print('Total Emissions Avoided due to Health & Education (Gt CO2-eq)')
