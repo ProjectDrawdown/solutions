@@ -37,5 +37,38 @@ async def get_vma_mappings(technology: str, db: Session = Depends(get_db)):
             'path': db_file.path,
             'file': db_file,
           })
-
   return result
+
+
+@router.get("/vma/aggregate/{technology}")
+async def get_vma_agg(technology: str, db: Session = Depends(get_db)):
+  # if vma_info exists extract data from that
+  vma_info = db.query(VMA).filter(VMA.name==f'solution/{technology}/VMA_info.csv').first()
+  if vma_info and len(vma_info.data['rows']) > 0:
+    return vma_info
+  else:
+    mappings = await get_vma_mappings(technology, db)
+    info = []
+    for mapping in mappings:
+      file = mapping['file']
+      var = mapping['var']
+      min = None
+      max = None
+      sum = 0
+      count = len(file.data['rows'])
+      for row in file.data['rows']:
+        value = float(row['Raw Data Input'])
+        sum = sum + value
+        if not min or min > value:
+          min = value
+        if not max or max < value:
+          max = value
+      avg = sum / count
+      info.append({
+        "Fixed Low": str(min),
+        "Fixed High": str(max),
+        "Fixed Mean": str(avg),
+        "Title on xls": mapping['vma_title']
+      })
+    return info
+      

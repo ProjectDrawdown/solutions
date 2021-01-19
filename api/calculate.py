@@ -32,7 +32,7 @@ def to_json(scenario):
               for jv in json_data[iv]:
                 if type(json_data[iv][jv]) in [DataFrame, Series]:
                   json_data[iv][jv] = json.loads(json_data[iv][jv].to_json())
-      except BaseException:
+      except BaseException as e:
             json_data[iv] = None
     if 'c2' in json_data and json_data['c2']:
       year_calculation = 'co2_ppm_calculator'
@@ -46,8 +46,14 @@ def to_json(scenario):
         }
     return {'name': scenario.name, 'data': json_data}
 
-async def calc(constructor, input, hashed_json_input, technology):
-    return [to_json(constructor(input)), hashed_json_input, technology]
+async def calc(input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket):
+  constructor = factory_2.one_solution_scenarios(technology, json_input)[0]
+  try:
+    result = to_json(constructor(input))
+  except Exception as e:
+    result = e
+  await process_tech_calc(result, hashed_json_input, prev_results, technology, key_list, cache, websocket)
+  return result
 
 async def fetch_data(variation, client) -> [dict, dict, dict]:
   scenario_parent_path = variation['scenario_parent_path']
@@ -73,7 +79,7 @@ def build_json(start_year: int, end_year: int, variation_data: dict, scenario_da
     }, scenario_data['data']['technologies']))
   return list(filter(lambda json: json['tech'] != 'fossilfuelelectricity', jsons))
 
-async def setup_calculations(id, jsons, cache, websocket: WebSocket):
+async def setup_calculations(jsons, prev_data, cache, websocket: WebSocket):
   tasks = []
   key_list = []
   json_cached_results = []
@@ -89,9 +95,16 @@ async def setup_calculations(id, jsons, cache, websocket: WebSocket):
 
     cached_result = await cache.get(hashed_json_input)
     if cached_result is None:
-      constructor = factory_2.one_solution_scenarios(technology, current_json_input['json'])
       # Inputs have changed for technology
-      tasks.append(calc(constructor[0], name, hashed_json_input, technology))
+      tasks.append(asyncio.create_task(calc(
+        name, 
+        hashed_json_input, 
+        technology, 
+        current_json_input['json'], 
+        prev_data, 
+        key_list, 
+        cache, 
+        websocket)))
     else:
       # Inputs have not changed for technology
       key_list.append([technology, name, hashed_json_input, False])
@@ -120,7 +133,7 @@ async def find_diffs(prev_result_list, tech, json_result, key_hash, key_list, ca
     # no diff in tech from previous run
     key_list.append([tech, json_result['name'], key_hash, False])
 
-async def process_tech_calc(id, json_result, key_hash, prev_results, tech, key_list, cache, websocket):
+async def process_tech_calc(json_result, key_hash, prev_results, tech, key_list, cache, websocket):
   str_json_result = json.dumps(json_result)
   if websocket:
     await websocket.send_text(str_json_result)
@@ -130,23 +143,21 @@ async def process_tech_calc(id, json_result, key_hash, prev_results, tech, key_l
   else:
     key_list.append([tech, json_result['name'], key_hash, False])
 
-async def perform_calculations_async(id, tasks, cache, key_list, prev_results, version, websocket: WebSocket = None):
+async def perform_calculations_async(tasks):
   json_results = []
   if len(tasks) > 0:
     calculated_results = await asyncio.wait(tasks)
     for r in calculated_results[0]:
-      [json_result, key_hash, tech] = r._result
+      json_result = r._result
       json_results.append(json_result)
-      await process_tech_calc(id, json_result, key_hash, prev_results, tech, key_list, cache, websocket)
-  return [json_results, key_list]
+  return json_results
 
-async def perform_calculations_sync(id, tasks, cache, key_list, prev_results, version, websocket: WebSocket = None):
+async def perform_calculations_sync(tasks):
   json_results = []
   for task in tasks:
-    [json_result, key_hash, tech] = await task
+    json_result = await task
     json_results.append(json_result)
-    await process_tech_calc(id, json_result, key_hash, prev_results, tech, key_list, cache, websocket)
-  return [json_results, key_list]
+  return json_results
 
 def build_result_paths(key_list):
   return [{
@@ -224,9 +235,9 @@ async def calculate(
     variation = workbook.variations[variation_index]
     input_data = await fetch_data(variation, client)
     jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
-    [tasks, key_list, _] = await setup_calculations(cache_key, jsons, cache, websocket)
+    [tasks, key_list, _] = await setup_calculations(jsons, prev_data, cache, websocket)
     perform_func = perform_calculations_async if run_async else perform_calculations_sync
-    [_, key_list] = await perform_func(cache_key, tasks, cache, key_list, prev_data, workbook_version, websocket)
+    await perform_func(tasks)
     result_paths += build_result_paths(key_list)
     result = build_result(prev_key, prev_version, workbook_version, cache_key, variation, result_paths)
     str_result = json.dumps(result)

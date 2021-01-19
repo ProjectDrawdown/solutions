@@ -6,6 +6,7 @@ fastapi==0.61.1
 fastapi-plugins==0.6.0
 httpx==0.16.1
 jsonschema==3.2.0
+numba==0.52.0
 numpy-financial==1.0.0
 pandas==1.1.4
 psycopg2-binary==2.8.6
