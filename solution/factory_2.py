@@ -13,7 +13,6 @@ def all_solutions():
             skip_blank_lines=True, comment='#')
     return sorted(overview['DirName'].dropna().tolist())
 
-@lru_cache
 def import_scenario(importname: str):
     return importlib.import_module(importname)
 
