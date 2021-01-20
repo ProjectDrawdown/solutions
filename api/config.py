@@ -26,6 +26,9 @@ class Settings(BaseSettings):
 
     database_url: str
     redis_url: str
+
+    max_workers: int
+
     class Config:
         env_file = pathlib.Path(__file__).parents[0].joinpath('.env').resolve()
 

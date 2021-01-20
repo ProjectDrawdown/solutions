@@ -11,7 +11,7 @@ import concurrent.futures
 from model.data_handler import DataHandler
 from solution import factory, factory_2
 
-from api.config import AioWrap, get_projection_path
+from api.config import AioWrap, get_projection_path, get_settings
 from api.queries.workbook_queries import workbook_by_id
 from api.transform import rehydrate_legacy_json
 from api.db.models import Workbook
@@ -19,6 +19,8 @@ from api.db.models import Workbook
 import cProfile
 import pstats
 import io
+
+settings = get_settings()
 
 def to_json(scenario):
     json_data = dict()
@@ -181,13 +183,12 @@ async def perform_calculations_async(tasks):
   #     json_results.append(json_result)
 
   if len(tasks) > 0:
-    # with concurrent.futures.ProcessPoolExecutor(max_workers=5) as pool:
-    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=settings.max_workers) as pool:
 
       # futures = {pool.submit(run, calc, *task) for task in tasks}
       loop = asyncio.get_event_loop()
       futures = [loop.run_in_executor(pool, calc, *task) for task in tasks]
-      
+
       # for future in concurrent.futures.as_completed(futures):
       #   data = future.result()
       #   json_results.append(data)
