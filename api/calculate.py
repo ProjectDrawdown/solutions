@@ -6,6 +6,7 @@ import hashlib
 from fastapi import HTTPException, WebSocket
 from pandas import DataFrame, Series
 from deepdiff import DeepDiff
+import concurrent.futures
 
 from model.data_handler import DataHandler
 from solution import factory, factory_2
@@ -46,14 +47,31 @@ def to_json(scenario):
         }
     return {'name': scenario.name, 'data': json_data}
 
-async def calc(input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs):
+# async def calc(input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs):
+#   constructor = factory_2.one_solution_scenarios(technology, json_input)[0]
+#   try:
+#     result = to_json(constructor(input))
+#   except Exception as e:
+#     result = e
+#   await process_tech_calc(result, hashed_json_input, prev_results, technology, key_list, cache, websocket, do_diffs)
+#   return result
+
+def calc(input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs):
   constructor = factory_2.one_solution_scenarios(technology, json_input)[0]
   try:
     result = to_json(constructor(input))
   except Exception as e:
     result = e
-  await process_tech_calc(result, hashed_json_input, prev_results, technology, key_list, cache, websocket, do_diffs)
-  return result
+  return (result, input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs)
+
+def run(corofn, *args):
+  loop = asyncio.new_event_loop()
+  try:
+      coro = corofn(*args)
+      asyncio.set_event_loop(loop)
+      return loop.run_until_complete(coro)
+  finally:
+      loop.close()
 
 async def fetch_data(variation, client) -> [dict, dict, dict]:
   scenario_parent_path = variation['scenario_parent_path']
@@ -96,7 +114,17 @@ async def setup_calculations(jsons, prev_data, cache, websocket: WebSocket, do_d
     cached_result = await cache.get(hashed_json_input)
     if cached_result is None:
       # Inputs have changed for technology
-      tasks.append(asyncio.create_task(calc(
+      # tasks.append(asyncio.create_task(calc(
+      #   name,
+      #   hashed_json_input,
+      #   technology,
+      #   current_json_input['json'],
+      #   prev_data,
+      #   key_list,
+      #   cache,
+      #   websocket,
+      #   do_diffs)))
+      tasks.append((
         name,
         hashed_json_input,
         technology,
@@ -105,7 +133,7 @@ async def setup_calculations(jsons, prev_data, cache, websocket: WebSocket, do_d
         key_list,
         cache,
         websocket,
-        do_diffs)))
+        do_diffs))
     else:
       # Inputs have not changed for technology
       key_list.append([technology, name, hashed_json_input, False])
@@ -146,11 +174,29 @@ async def process_tech_calc(json_result, key_hash, prev_results, tech, key_list,
 
 async def perform_calculations_async(tasks):
   json_results = []
+  # if len(tasks) > 0:
+  #   calculated_results = await asyncio.wait(tasks)
+  #   for r in calculated_results[0]:
+  #     json_result = r._result
+  #     json_results.append(json_result)
+
   if len(tasks) > 0:
-    calculated_results = await asyncio.wait(tasks)
-    for r in calculated_results[0]:
-      json_result = r._result
-      json_results.append(json_result)
+    # with concurrent.futures.ProcessPoolExecutor(max_workers=5) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as pool:
+
+      # futures = {pool.submit(run, calc, *task) for task in tasks}
+      loop = asyncio.get_event_loop()
+      futures = [loop.run_in_executor(pool, calc, *task) for task in tasks]
+      
+      # for future in concurrent.futures.as_completed(futures):
+      #   data = future.result()
+      #   json_results.append(data)
+      results = await asyncio.gather(*futures)
+      for r in results:
+        (result, input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs) = r
+        await process_tech_calc(result, hashed_json_input, prev_results, technology, key_list, cache, websocket, do_diffs)
+        json_results.append(result)
+
   return json_results
 
 async def perform_calculations_sync(tasks):
