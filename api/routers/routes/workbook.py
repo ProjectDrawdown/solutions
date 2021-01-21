@@ -149,7 +149,7 @@ async def add_workbook_variation(
     }
   if variation_path:
     variation = (await client(variation_path))['data']
-    variation.pop('name')
+    # variation.pop('name')
 
   db_workbook.variations = db_workbook.variations + [variation]
   db_workbook.version = db_workbook.version + 1
