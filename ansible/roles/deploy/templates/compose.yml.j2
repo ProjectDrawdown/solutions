@@ -25,5 +25,6 @@ services:
       - "GOOGLE_CLIENT_ID={{ ggl_client_id }}"
       - "GOOGLE_CLIENT_SECRET={{ ggl_client_secret }}"
       - "REDIS_URL=redis://redis"
+      - "MAX_WORKERS=4"
     depends_on:
       - redis
