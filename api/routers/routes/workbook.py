@@ -110,7 +110,7 @@ async def update_workbook(
   for path in new_variation_paths:
     variation_data = json.loads(await client(path))
     db_workbook.variations.append(variation_data)
-  
+
   db_workbook.version = db_workbook.version + 1
   saved_db_workbook = save_workbook(db, db_workbook)
   return saved_db_workbook
@@ -130,7 +130,7 @@ async def update_workbook_variation(
   db_workbook.version = db_workbook.version + 1
   saved_db_workbook = save_workbook(db, db_workbook)
   return saved_db_workbook
-    
+
 @router.post("/workbook/{id}/variation", response_model=schemas.WorkbookOut)
 async def add_workbook_variation(
   id: int,
@@ -194,18 +194,20 @@ async def publish_variation(
 async def get_calculate(
   workbook_id: int,
   variation_index: int,
+  do_diffs: Optional[bool] = False,
   run_async: Optional[bool] = True,
   workbook_version: Optional[int] = None,
   client: AioWrap = Depends(AioWrap),
   db: Session = Depends(get_db),
   cache: aioredis.Redis = Depends(fastapi_plugins.depends_redis)):
-  return await calculate(workbook_id, workbook_version, variation_index, client, db, cache, run_async)
+  return await calculate(workbook_id, workbook_version, variation_index, client, db, cache, run_async, do_diffs)
 
 @router.websocket("/calculate/ws")
 async def get_calculat_ws(
   workbook_id: int,
   variation_index: int,
   websocket: WebSocket,
+  do_diffs: Optional[bool] = False,
   run_async: Optional[bool] = True,
   workbook_version: Optional[int] = None,
   client: AioWrap = Depends(AioWrap),
@@ -213,5 +215,5 @@ async def get_calculat_ws(
   app = get_app()
   cache = app.state.REDIS.redis
   await websocket.accept()
-  await calculate(workbook_id, workbook_version, variation_index, client, db, cache, run_async, websocket)
-    
+  await calculate(workbook_id, workbook_version, variation_index, client, db, cache, run_async, do_diffs, websocket)
+

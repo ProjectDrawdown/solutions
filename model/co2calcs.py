@@ -3,8 +3,12 @@
 Computes reductions in CO2-equivalent emissions.
 """
 
-from functools import lru_cache
+from functools import lru_cache, wraps
+import hashlib
 import math
+from numba import jit
+import json
+from io import StringIO
 
 import fair
 import numpy as np
@@ -20,6 +24,70 @@ C_TO_CO2EQ = 3.666
 # Note: a different value of 3.64 is sometimes used for certain results in Excel
 # Here we will always use this value for consistency
 
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
+@lru_cache
+def fair_scm_cached(json_input: str):
+    input = json.loads(json_input)
+    values = np.array(input['values'])
+    kwargs = {}
+    for k in input['kwargs']:
+        if isinstance(input['kwargs'][k], list):
+            kwargs[k] = np.array(input['kwargs'][k])
+        else:
+            kwargs[k] = input['kwargs'][k]
+    return fair.forward.fair_scm(emissions=values, useMultigas=input['useMultigas'], **kwargs)
+
+def fair_scm(values, useMultigas, **kwargs):
+    key = json.dumps({
+        'values': values,
+        'useMultigas': useMultigas,
+        'kwargs': kwargs
+    }, cls=NumpyEncoder)
+    return fair_scm_cached(key)
+
+@lru_cache
+def co2_ppm_calculator_cached(
+    co2_vals,
+    solution_category,
+    report_start_year,
+    ):
+
+    co2_vals = pd.read_csv(StringIO(co2_vals), index_col=0, squeeze=True, float_precision='round_trip')
+
+    columns = ['PPM', 'Total'] + list(range(2015, 2061))
+    ppm_calculator = pd.DataFrame(0, columns=columns, index=co2_vals.index.copy(),
+                                      dtype=np.float64)
+    ppm_calculator.index = ppm_calculator.index.astype(int)
+    ppm_calculator.index.name = 'Year'
+    first_year = ppm_calculator.first_valid_index()
+    last_year = ppm_calculator.last_valid_index()
+    for year in ppm_calculator.index:
+        if (year < report_start_year and
+                solution_category != model.advanced_controls.SOLUTION_CATEGORY.LAND):
+            # On RRS xls models this skips the calc but on LAND the calc is done anyway
+            # Note that this affects the values for all years and should probably NOT be
+            # skipped (i.e. LAND is the correct implementation)
+            # see: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
+            continue
+        b = co2_vals[year]
+        for delta in range(1, last_year - first_year + 2):
+            if (year + delta - 1) > last_year:
+                break
+            val = 0.217
+            val += 0.259 * math.exp(-delta / 172.9)
+            val += 0.338 * math.exp(-delta / 18.51)
+            val += 0.186 * math.exp(-delta / 1.186)
+            ppm_calculator.loc[year + delta - 1, year] = b * val
+    ppm_calculator.loc[:, 'Total'] = ppm_calculator.sum(axis=1)
+    for year in ppm_calculator.index:
+        ppm_calculator.at[year, 'PPM'] = ppm_calculator.at[year, 'Total'] / (44.01 * 1.8 * 100)
+    ppm_calculator.name = 'co2_ppm_calculator'
+    return ppm_calculator
 
 class CO2Calcs(DataHandler):
     """CO2 Calcs module.
@@ -284,36 +352,7 @@ class CO2Calcs(DataHandler):
             co2_vals = self.co2_sequestered_global()['All'] + self.co2eq_mmt_reduced()['World']
             assert self.ac.emissions_use_co2eq, 'Land/ocean models must use CO2 eq'
 
-        columns = ['PPM', 'Total'] + list(range(2015, 2061))
-        ppm_calculator = pd.DataFrame(0, columns=columns, index=co2_vals.index.copy(),
-                                      dtype=np.float64)
-        ppm_calculator.index = ppm_calculator.index.astype(int)
-        ppm_calculator.index.name = 'Year'
-        first_year = ppm_calculator.first_valid_index()
-        last_year = ppm_calculator.last_valid_index()
-        for year in ppm_calculator.index:
-            if (year < self.ac.report_start_year and
-                    self.ac.solution_category != model.advanced_controls.SOLUTION_CATEGORY.LAND):
-                # On RRS xls models this skips the calc but on LAND the calc is done anyway
-                # Note that this affects the values for all years and should probably NOT be
-                # skipped (i.e. LAND is the correct implementation)
-                # see: https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#
-                continue
-            b = co2_vals[year]
-            for delta in range(1, last_year - first_year + 2):
-                if (year + delta - 1) > last_year:
-                    break
-                val = 0.217
-                val += 0.259 * math.exp(-delta / 172.9)
-                val += 0.338 * math.exp(-delta / 18.51)
-                val += 0.186 * math.exp(-delta / 1.186)
-                ppm_calculator.loc[year + delta - 1, year] = b * val
-        ppm_calculator.loc[:, 'Total'] = ppm_calculator.sum(axis=1)
-        for year in ppm_calculator.index:
-            ppm_calculator.at[year, 'PPM'] = ppm_calculator.at[year, 'Total'] / (44.01 * 1.8 * 100)
-        ppm_calculator.name = 'co2_ppm_calculator'
-        return ppm_calculator
-
+        return co2_ppm_calculator_cached(co2_vals.to_csv(), self.ac.solution_category, self.ac.report_start_year)
 
     @lru_cache()
     @data_func
@@ -504,7 +543,6 @@ class CO2Calcs(DataHandler):
                 self.ac.seq_rate_global * self.ac.harvest_frequency -
                 self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
 
-    @lru_cache()
     @data_func
     def FaIR_CFT_baseline(self):
         """Return FaIR results for the baseline case.
@@ -518,7 +556,7 @@ class CO2Calcs(DataHandler):
              T: Change in temperature since pre-industrial time in Kelvin
         """
         kwargs = model.fairutil.fair_scm_kwargs()
-        (C, F, T) = fair.forward.fair_scm(emissions=self.baseline.values, useMultigas=False, **kwargs)
+        (C, F, T) = fair_scm(self.baseline.values, False, **kwargs)
         result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index)
         result.name = 'FaIR_CFT_baseline'
         return result
@@ -548,7 +586,7 @@ class CO2Calcs(DataHandler):
             emissions = emissions.subtract(other=gtonsC, fill_value=0.0)
 
         kwargs = model.fairutil.fair_scm_kwargs()
-        (C, F, T) = fair.forward.fair_scm(emissions=emissions.values, useMultigas=False, **kwargs)
+        (C, F, T) = fair_scm(emissions.values, False, **kwargs)
         result = pd.DataFrame({'C': C , 'F': F, 'T': T}, index=emissions.index)
         result.name = 'FaIR_CFT'
         return result
@@ -568,8 +606,7 @@ class CO2Calcs(DataHandler):
              T: Change in temperature since pre-industrial time in Kelvin
         """
         kwargs = model.fairutil.fair_scm_kwargs()
-        (C, F, T) = fair.forward.fair_scm(emissions=fair.RCPs.rcp45.Emissions.emissions[:, 0],
-                useMultigas=False, **kwargs)
+        (C, F, T) = fair_scm(fair.RCPs.rcp45.Emissions.emissions[:, 0],False, **kwargs)
         result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=fair.RCPs.rcp45.Emissions.year)
         result.name = 'FaIR_CFT_RCP45'
         return result
@@ -577,18 +614,19 @@ class CO2Calcs(DataHandler):
 # The following formulae come from the SolarPVUtil Excel implementation of 27Aug18.
 # There was no explanation of where they came from or what they really mean.
 
+@jit
 def co2_rf(x):
     original_co2 = 400
     return 5.35 * math.log((original_co2 + x) / original_co2)
 
 
-
+@jit
 def f(M, N):
     return 0.47 * math.log(
         1 + 2.01 * 10 ** -5 * (M * N) ** 0.75 + 5.31 * 10 ** -15 * M * (M * N) ** 1.52)
 
 
-
+@jit
 def ch4_rf(x):
     original_ch4 = 1800
     original_n2o = 320
@@ -599,7 +637,7 @@ def ch4_rf(x):
     return (indirect_ch4_forcing_scalar * 0.036 * (new_M ** 0.5 - old_M ** 0.5) -
             f(new_M, N) + f(old_M, N))
 
-
+@jit
 def co2eq_ppm(x):
     original_co2 = 400
     return (original_co2 * math.exp(x / 5.35)) - original_co2

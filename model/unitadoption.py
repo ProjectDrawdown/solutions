@@ -5,12 +5,50 @@ import os.path
 import pathlib
 import pandas as pd
 import numpy as np
+from io import StringIO
+
 from model import dd
 from model import emissionsfactors
 from model.advanced_controls import SOLUTION_CATEGORY
 
 from model.data_handler import DataHandler
 from model.decorators import data_func
+
+@lru_cache
+def cumulative_degraded_land( 
+    total_area_per_region,
+    units_adopted,
+    disturbance_rate,
+    delay_protection_1yr,
+    degradation_rate,
+    protected_or_unprotected):
+
+    total_area_per_region = pd.read_csv(StringIO(total_area_per_region), index_col=0, squeeze=True, float_precision='round_trip')
+    units_adopted = pd.read_csv(StringIO(units_adopted), index_col=0, squeeze=True, float_precision='round_trip')
+
+    df = pd.DataFrame(0., columns=units_adopted.columns.copy(), index=range(2014, 2061))
+    df.index.name = 'Year'
+
+    if None in [delay_protection_1yr, disturbance_rate, degradation_rate]:
+        return df  # passthru a DataFrame of zeros for non protection solutions
+
+    delay = 1 if delay_protection_1yr else 0
+    if protected_or_unprotected == 'protected':
+        # protected table starts with nonzero value
+        df.loc[2014, :] = units_adopted.loc[2014, :] * disturbance_rate
+
+    for y in list(df.index)[1:]:
+        protected_land = units_adopted.loc[y - delay, :]
+        degraded_land = df.loc[y - 1, :]
+        if protected_or_unprotected == 'protected':
+            row = degraded_land + (protected_land - degraded_land) * disturbance_rate
+            row = pd.DataFrame([row, protected_land]).min()
+        elif protected_or_unprotected == 'unprotected':
+            tot_area = total_area_per_region.loc[y, :]
+            row = degraded_land + (tot_area - protected_land - degraded_land) * degradation_rate
+            row = pd.DataFrame([row, tot_area]).min()
+        df.loc[y, :] = row
+    return df
 
 class UnitAdoption(DataHandler):
     """Implementation for the Unit Adoption module.
@@ -309,29 +347,15 @@ class UnitAdoption(DataHandler):
             units_adopted = self.soln_ref_funits_adopted
         else:
             raise ValueError("Must indicate 'REF' or 'PDS'")
-        df = pd.DataFrame(0., columns=units_adopted.columns.copy(), index=range(2014, 2061))
-        df.index.name = 'Year'
 
-        if None in [self.ac.delay_protection_1yr, self.ac.disturbance_rate, self.ac.degradation_rate]:
-            return df  # passthru a DataFrame of zeros for non protection solutions
-
-        delay = 1 if self.ac.delay_protection_1yr else 0
-        if protected_or_unprotected == 'protected':
-            # protected table starts with nonzero value
-            df.loc[2014, :] = units_adopted.loc[2014, :] * self.ac.disturbance_rate
-
-        for y in list(df.index)[1:]:
-            protected_land = units_adopted.loc[y - delay, :]
-            degraded_land = df.loc[y - 1, :]
-            if protected_or_unprotected == 'protected':
-                row = degraded_land + (protected_land - degraded_land) * self.ac.disturbance_rate
-                row = pd.DataFrame([row, protected_land]).min()
-            elif protected_or_unprotected == 'unprotected':
-                tot_area = self.total_area_per_region.loc[y, :]
-                row = degraded_land + (tot_area - protected_land - degraded_land) * self.ac.degradation_rate
-                row = pd.DataFrame([row, tot_area]).min()
-            df.loc[y, :] = row
-        return df
+        return cumulative_degraded_land(
+            self.total_area_per_region.to_csv(),
+            units_adopted.to_csv(),
+            self.ac.disturbance_rate,
+            self.ac.delay_protection_1yr,
+            self.ac.degradation_rate,
+            protected_or_unprotected
+        )
 
     @lru_cache()
     def soln_pds_cumulative_funits(self):

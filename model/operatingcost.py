@@ -2,17 +2,78 @@
 
 from functools import lru_cache
 import math
+from io import StringIO
 
 import model.dd as dd
 from model.advanced_controls import SOLUTION_CATEGORY
 import numpy as np
 import numpy_financial
 import pandas as pd
+from numba import jit
 import model
 
 from model.data_handler import DataHandler
 from model.decorators import data_func
 
+@lru_cache
+def annual_breakout(
+    new_funits_per_year, 
+    new_annual_iunits_reqd,
+    lifetime_replacement, 
+    var_oper_cost_per_funit, 
+    fuel_cost_per_funit,
+    fixed_oper_cost_per_iunit,
+    report_end_year,
+    has_var_costs,
+    conversion_factor_vom,
+    conversion_factor_fom):
+
+    # index_col = year
+    # squeeze -> pd.Dataframe to pd.Series
+    # round_trip retains float precision
+    new_funits_per_year = pd.read_csv(StringIO(new_funits_per_year), index_col=0, squeeze=True, float_precision='round_trip')
+    new_annual_iunits_reqd = pd.read_csv(StringIO(new_annual_iunits_reqd), index_col=0,  squeeze=True, float_precision='round_trip')
+
+    """Breakout of operating cost per year, including replacements.
+        Supplies calculations for:
+        SolarPVUtil 'Operating Cost'!B262:AV386 for soln_pds
+        SolarPVUtil 'Operating Cost'!B399:AV523 for conv_ref
+    """
+    first_year = dd.CORE_START_YEAR
+    last_year = report_end_year
+    last_column = dd.CORE_END_YEAR
+    # last_row = 2139
+    breakout = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
+                            columns=np.arange(first_year, last_column + 1), dtype='float')
+    breakout.index.name = 'Year'
+    breakout.index = breakout.index.astype(int)
+
+    # if there are no operating costs we return a table of 0s
+    if not has_var_costs and not fixed_oper_cost_per_iunit:
+        return breakout
+
+    for year in range(first_year, last_year + 1):
+        # within the years of interest, assume replacement of worn out equipment.
+        lifetime = lifetime_replacement
+        assert lifetime_replacement != 0, 'Cannot have a lifetime replacement of 0 and non-zero operating costs'
+        while math.ceil(lifetime) < (last_year + 1 - year):
+            lifetime += lifetime_replacement
+
+        cost = var_oper_cost_per_funit + fuel_cost_per_funit if has_var_costs else 0
+        total = new_funits_per_year.loc[year] * cost * conversion_factor_vom
+        cost = fixed_oper_cost_per_iunit
+        total += new_annual_iunits_reqd.loc[year] * cost * conversion_factor_fom
+
+        # for each year, add in operating costs for equipment purchased in that
+        # starting year through the year where it wears out.
+        for row in range(year, last_year + 1):
+            remaining_lifetime = np.clip(lifetime, 0, 1)
+            val = total * remaining_lifetime
+            breakout.loc[row, year] = val if math.fabs(val) > 0.01 else 0.0
+            lifetime -= 1
+            if lifetime <= 0:
+                break
+    return breakout
 
 class OperatingCost(DataHandler):
     """Implementation for the Operating Cost module.
@@ -239,46 +300,19 @@ class OperatingCost(DataHandler):
     def _annual_breakout(self, new_funits_per_year, new_annual_iunits_reqd,
                          lifetime_replacement, var_oper_cost_per_funit, fuel_cost_per_funit,
                          fixed_oper_cost_per_iunit):
-        """Breakout of operating cost per year, including replacements.
-           Supplies calculations for:
-           SolarPVUtil 'Operating Cost'!B262:AV386 for soln_pds
-           SolarPVUtil 'Operating Cost'!B399:AV523 for conv_ref
-        """
-        first_year = dd.CORE_START_YEAR
-        last_year = self.ac.report_end_year
-        last_column = dd.CORE_END_YEAR
-        # last_row = 2139
-        breakout = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
-                                columns=np.arange(first_year, last_column + 1), dtype='float')
-        breakout.index.name = 'Year'
-        breakout.index = breakout.index.astype(int)
+        return annual_breakout(
+            new_funits_per_year.to_csv(),
+            new_annual_iunits_reqd.to_csv(),
+            lifetime_replacement,
+            var_oper_cost_per_funit,
+            fuel_cost_per_funit,
+            fixed_oper_cost_per_iunit,
+            self.ac.report_end_year,
+            self.ac.has_var_costs,
+            self.conversion_factor_vom,
+            self.conversion_factor_fom
+        )
 
-        # if there are no operating costs we return a table of 0s
-        if not self.ac.has_var_costs and not fixed_oper_cost_per_iunit:
-            return breakout
-
-        for year in range(first_year, last_year + 1):
-            # within the years of interest, assume replacement of worn out equipment.
-            lifetime = lifetime_replacement
-            assert lifetime_replacement != 0, 'Cannot have a lifetime replacement of 0 and non-zero operating costs'
-            while math.ceil(lifetime) < (last_year + 1 - year):
-                lifetime += lifetime_replacement
-
-            cost = var_oper_cost_per_funit + fuel_cost_per_funit if self.ac.has_var_costs else 0
-            total = new_funits_per_year.loc[year] * cost * self.conversion_factor_vom
-            cost = fixed_oper_cost_per_iunit
-            total += new_annual_iunits_reqd.loc[year] * cost * self.conversion_factor_fom
-
-            # for each year, add in operating costs for equipment purchased in that
-            # starting year through the year where it wears out.
-            for row in range(year, last_year + 1):
-                remaining_lifetime = np.clip(lifetime, 0, 1)
-                val = total * remaining_lifetime
-                breakout.loc[row, year] = val if math.fabs(val) > 0.01 else 0.0
-                lifetime -= 1
-                if lifetime <= 0:
-                    break
-        return breakout
 
 
     @lru_cache()
@@ -297,6 +331,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_marginal_operating_cost_savings(self):
         """Marginal First Cost.
            SolarPVUtil 'Operating Cost'!C126:C250
@@ -311,6 +346,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_net_cash_flow(self):
         """Marginal First Cost.
            SolarPVUtil 'Operating Cost'!D126:D250
@@ -323,6 +359,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_net_present_value(self):
         """Marginal First Cost.
            SolarPVUtil 'Operating Cost'!E126:E250
@@ -338,6 +375,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_vs_conv_single_iunit_cashflow(self):
         """Estimate the cash flows for a single solution implementation unit while matching
            the output of that unit (in functional units) with the equivalent output of a
@@ -412,6 +450,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_vs_conv_single_iunit_npv(self):
         """Net Present Value of single iunit cashflow.
            SolarPVUtil 'Operating Cost'!J126:J250
@@ -429,6 +468,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_vs_conv_single_iunit_payback(self):
         """Whether the solution has paid off versus the conventional, for each year.
            SolarPVUtil 'Operating Cost'!K126:K250
@@ -440,6 +480,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_vs_conv_single_iunit_payback_discounted(self):
         """Whether the solution NPV has paid off versus the conventional, for each year.
            SolarPVUtil 'Operating Cost'!L126:L250
@@ -451,6 +492,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_only_single_iunit_cashflow(self):
         """
            SolarPVUtil 'Operating Cost'!M126:M250
@@ -500,6 +542,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_only_single_iunit_npv(self):
         """Net Present Value of single iunit cashflow, looking only at costs of the Solution.
            SolarPVUtil 'Operating Cost'!N126:N250
@@ -517,6 +560,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_only_single_iunit_payback(self):
         """Whether the solution has paid off, for each year.
            SolarPVUtil 'Operating Cost'!O126:O250
@@ -528,6 +572,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
+    @jit
     def soln_only_single_iunit_payback_discounted(self):
         """Whether the solution NPV has paid off, for each year.
            SolarPVUtil 'Operating Cost'!P126:P250

@@ -1,6 +1,7 @@
 """Return objects for solutions."""
 import importlib
 import pathlib
+from functools import lru_cache
 
 import pandas as pd
 
@@ -12,9 +13,12 @@ def all_solutions():
             skip_blank_lines=True, comment='#')
     return sorted(overview['DirName'].dropna().tolist())
 
+def import_scenario(importname: str):
+    return importlib.import_module(importname)
+
 def one_solution_scenarios(solution, j):
     importname = 'solution.' + solution
-    m = importlib.import_module(importname)
+    m = import_scenario(importname)
     if len(m.scenarios) > 1:
         replacement_scenarios = {}
         j['vmas'] = m.VMAs
