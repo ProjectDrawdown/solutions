@@ -7,6 +7,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "94:a6:df:e0:d7:c5:92:55:dc:80:73:c2:29:67:18:7d"
+            - "e5:4a:b6:22:01:2c:ba:d6:4a:05:df:fc:78:70:b5:88"
       - checkout
       - run:
           name: Clone Operations Repository
