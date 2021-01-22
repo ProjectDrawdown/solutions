@@ -36,7 +36,7 @@ jobs:
             . env/bin/activate
             cd ~/operations/ansible/api
             if [ "${CIRCLE_BRANCH}" == "develop" ]; then
-              ansible-playbook -i hosts deploy.yml --limit staging_pdd_v1 --vault-password-file ~/project/ansible/.vault-pass
+              ansible-playbook -i hosts deploy.yml --limit staging_pdd_v1 --vault-password-file ~/operations/ansible/api/.vault-pass
             fi
 workflows:
   version: 2
