@@ -1,4 +1,8 @@
 scenario_var_schema = {
+  #custom additions(after generating)
+  "technologies.*.adoption_base_adoption": [
+    "<class 'list'>"
+  ],
   "technologies.onshorewind.name": [
     "<class 'str'>"
   ],

@@ -20,18 +20,43 @@ import cProfile
 import pstats
 import io
 
+import ntpath
+import pathlib
+
 settings = get_settings()
 
-def to_json(scenario):
+def map_to_json(mapping):
+  if mapping is None:
+    return None
+  if isinstance(mapping, pathlib.PosixPath):
+    return mapping.name
+  elif isinstance(mapping, str):
+    return ntpath.basename(mapping)
+  elif isinstance(mapping, dict):
+    return dict(map(lambda key: (key, map_to_json(mapping[key])), mapping))
+
+def to_json(scenario, regions):
     json_data = dict()
     instance_vars = vars(scenario).keys()
+    metadata = {}
+      
+    if getattr(scenario, 'ad', None):
+      metadata['ad_data_sources'] = map_to_json(getattr(scenario.ad, 'data_sources', None))
+    if getattr(scenario, 'tm', None):
+      metadata['tam_pds_data_sources'] = map_to_json(getattr(scenario.tm, 'tam_pds_data_sources', None))
+      metadata['tam_ref_data_sources'] = map_to_json(getattr(scenario.tm, 'tam_ref_data_sources', None))
+    if getattr(scenario, 'pds_ca', None):
+      metadata['pds_ca_data_sources'] = map_to_json(getattr(scenario.pds_ca, 'data_sources', None))
+    if getattr(scenario, 'ref_ca', None):
+      metadata['ref_ca_data_sources'] = map_to_json(getattr(scenario.ref_ca, 'data_sources', None))
+    
     for iv in instance_vars:
       if iv in ['tm', 'ae', 'ad']:
         continue
       try:
           obj = getattr(scenario, iv)
           if issubclass(type(obj), DataHandler):
-              json_data[iv] = obj.to_json()
+              json_data[iv] = obj.to_json(regions)
               for jv in json_data[iv]:
                 if type(json_data[iv][jv]) in [DataFrame, Series]:
                   json_data[iv][jv] = json.loads(json_data[iv][jv].to_json())
@@ -47,7 +72,7 @@ def to_json(scenario):
             }),
             **dict([[key, calculator[key]] for key in calculator if not key.isdigit()])
         }
-    return {'name': scenario.name, 'data': json_data}
+    return {'name': scenario.name, 'data': json_data, 'metadata': metadata}
 
 # async def calc(input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs):
 #   constructor = factory_2.one_solution_scenarios(technology, json_input)[0]
@@ -58,10 +83,10 @@ def to_json(scenario):
 #   await process_tech_calc(result, hashed_json_input, prev_results, technology, key_list, cache, websocket, do_diffs)
 #   return result
 
-def calc(input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs):
+def calc(input, hashed_json_input, technology, regions, json_input, prev_results, key_list, cache, websocket, do_diffs):
   constructor = factory_2.one_solution_scenarios(technology, json_input)[0]
   try:
-    result = to_json(constructor(input))
+    result = to_json(constructor(input), regions)
   except Exception as e:
     result = e
   return (result, input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs)
@@ -99,7 +124,7 @@ def build_json(start_year: int, end_year: int, variation_data: dict, scenario_da
     }, scenario_data['data']['technologies']))
   return list(filter(lambda json: json['tech'] != 'fossilfuelelectricity', jsons))
 
-async def setup_calculations(jsons, prev_data, cache, websocket: WebSocket, do_diffs: bool):
+async def setup_calculations(jsons, regions, prev_data, cache, websocket: WebSocket, do_diffs: bool):
   tasks = []
   key_list = []
   json_cached_results = []
@@ -130,6 +155,7 @@ async def setup_calculations(jsons, prev_data, cache, websocket: WebSocket, do_d
         name,
         hashed_json_input,
         technology,
+        regions,
         current_json_input['json'],
         prev_data,
         key_list,
@@ -264,6 +290,7 @@ async def calculate(
   websocket: WebSocket = None):
 
   workbook: Workbook = workbook_by_id(db, workbook_id)
+  regions = workbook.regions
   if workbook_version is None:
     workbook_version = workbook.version
 
@@ -284,7 +311,7 @@ async def calculate(
     variation = workbook.variations[variation_index]
     input_data = await fetch_data(variation, client)
     jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
-    [tasks, key_list, _] = await setup_calculations(jsons, prev_data, cache, websocket, do_diffs)
+    [tasks, key_list, _] = await setup_calculations(jsons, regions, prev_data, cache, websocket, do_diffs)
     perform_func = perform_calculations_async if run_async else perform_calculations_sync
     await perform_func(tasks)
     result_paths += build_result_paths(key_list)

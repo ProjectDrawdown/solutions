@@ -41,6 +41,7 @@ from api.calculate import calculate
 from model.advanced_controls import AdvancedControls, get_vma_for_param
 from api.transforms.variable_paths import varProjectionNamesPaths
 from api.transforms.reference_variable_paths import varRefNamesPaths
+from api.transforms.validate_variation import validate_full_schema
 
 settings = get_settings()
 router = APIRouter()
@@ -84,6 +85,7 @@ async def create_workbook(
     name = workbook.name,
     author_id = db_active_user.id,
     ui = workbook.ui,
+    regions = workbook.regions,
     start_year = workbook.start_year,
     end_year = workbook.end_year,
     variations = []
@@ -96,7 +98,6 @@ async def create_workbook(
 async def update_workbook(
   id: int,
   workbook_edits: schemas.WorkbookPatch,
-  new_variation_paths: List[str],
   db_workbook: DBWorkbook = Depends(get_current_workbook),
   db: Session = Depends(get_db),
   client: AioWrap = Depends(AioWrap)):
@@ -106,10 +107,6 @@ async def update_workbook(
     value = workbook_edits_dict[key]
     if value is not None:
       db_workbook.__setattr__(key, value)
-
-  for path in new_variation_paths:
-    variation_data = json.loads(await client(path))
-    db_workbook.variations.append(variation_data)
 
   db_workbook.version = db_workbook.version + 1
   saved_db_workbook = save_workbook(db, db_workbook)
@@ -124,12 +121,20 @@ async def update_workbook_variation(
   variation_index: int,
   variation_patch: schemas.VariationIn,
   db_workbook: DBWorkbook = Depends(get_current_workbook),
-  db: Session = Depends(get_db)):
+  db: Session = Depends(get_db),
+  client: AioWrap = Depends(AioWrap)):
+
+  validation = await validate_full_schema(variation_patch, client)
+  if not validation['valid']:
+    raise HTTPException(status_code=422, detail=validation['reason'])
+  warnings = validation.get('warnings')
 
   db_workbook.variations = replace(db_workbook.variations, variation_index, variation_patch.__dict__)
   db_workbook.version = db_workbook.version + 1
   saved_db_workbook = save_workbook(db, db_workbook)
-  return saved_db_workbook
+  response = schemas.WorkbookOut.from_orm(saved_db_workbook)
+  response.warnings = warnings
+  return response
 
 @router.post("/workbook/{id}/variation", response_model=schemas.WorkbookOut)
 async def add_workbook_variation(
@@ -151,10 +156,17 @@ async def add_workbook_variation(
     variation = (await client(variation_path))['data']
     # variation.pop('name')
 
+  validation = await validate_full_schema(variation, client)
+  if not validation['valid']:
+    raise HTTPException(status_code=422, detail=validation['reason'])
+  warnings = validation.get('warnings')
+
   db_workbook.variations = db_workbook.variations + [variation]
   db_workbook.version = db_workbook.version + 1
   saved_db_workbook = save_workbook(db, db_workbook)
-  return saved_db_workbook
+  response = schemas.WorkbookOut.from_orm(saved_db_workbook)
+  response.warnings = warnings
+  return response
 
 def without(arr: List[Any], index: int):
   return arr[:index] + arr[index+1:]

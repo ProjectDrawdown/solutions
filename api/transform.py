@@ -203,12 +203,15 @@ def csv_to_json(csvFilePath: str) -> dict:
 
   return {'rows':data}
 
-def populate_vmas():
+def populate(resource: str):
+  # resource can be one of the following:
+  #   vma_data, tam, ca_pds_data, ca_ref_data
+
   directory = 'solution'
   converted_list = []
 
   for subdir, _, _ in os.walk(directory):
-    for subdir_vma, _, files in os.walk(f'{subdir}/vma_data'):
+    for subdir_vma, _, files in os.walk(f'{subdir}/{resource}'):
       for file in files:
         path = os.path.join(subdir_vma, file)
         converted = {

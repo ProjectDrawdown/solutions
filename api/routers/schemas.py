@@ -1,8 +1,10 @@
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Literal
 from pydantic import BaseModel, validator
 from api.db import models
 from api.config import get_resource_path
 from api.transforms.validate_variation import validate_ref_vars, validate_scenario_vars
+
+region_type = List[Literal["World", "OECD90","Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]]
 
 class AuthorizationResponse(BaseModel):
   state: str
@@ -150,11 +152,13 @@ class WorkbookNew(BaseModel):
   ui: dict
   start_year: int
   end_year: int
+  regions: region_type
   class Config:
     orm_mode = True
     schema_extra = {
       "example": {
         "name": "default",
+        "regions": ["World"],
         "author": {
           "login": "user@example.coop",
           "email": "user@example.coop",
@@ -175,15 +179,17 @@ class WorkbookNew(BaseModel):
 
 class WorkbookPatch(BaseModel):
   name: Optional[str]
+  regions: Optional[region_type]
   ui: Optional[dict]
   start_year: Optional[int]
   end_year: Optional[int]
-  variations: List[Dict[Any, Any]]
+  variations: Optional[List[Dict[Any, Any]]]
   class Config:
     orm_mode = True
     schema_extra = {
       "example": {
         "name": "default",
+        "regions": ["China"],
         "ui": {
           "portfolioSolutions": [
             'solarpvutil',
@@ -201,9 +207,11 @@ class WorkbookOut(BaseModel):
   author: Optional[User]
   version: int
   name: str
+  regions: region_type
   ui: dict
   start_year: int
   end_year: int
+  warnings: Optional[List[str]]
   variations: List[Dict[Any, Any]]
   class Config:
     orm_mode = True
@@ -212,6 +220,7 @@ class WorkbookOut(BaseModel):
         "id": 1,
         "version": "2",
         "name": "default",
+        "regions": ["World"],
         "ui": {
           "portfolioSolutions": [
             'solarpvutil',
@@ -223,6 +232,7 @@ class WorkbookOut(BaseModel):
         },
         "start_year": 2020,
         "end_year": 2050,
+        "warnings": ["blah", "blah", "blah"],
         "variations": [
           {
             "id": 21,
@@ -253,6 +263,7 @@ class WorkbookOut(BaseModel):
 class Calculation(BaseModel):
   name: str
   data: Dict[Any, Any]
+  metadata: Dict[Any, Any]
 
 class TechCalculation(BaseModel):
   path: str

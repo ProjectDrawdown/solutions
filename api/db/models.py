@@ -35,6 +35,7 @@ class Workbook(Base):
   id = Column(Integer, primary_key=True, index=True)
   version = Column(Integer, default=0)
   name = Column(String)
+  regions = Column(ARRAY(String), default=['World'])
   author_id = Column(Integer, ForeignKey('user.id'))
   author = relationship("User", back_populates="workbooks")
   ui = Column(JSONB)
@@ -71,3 +72,15 @@ class Variation(Resource, Base):
 
 class VMA(Resource, Base):
   __tablename__ = 'vma'
+
+class TAM(Resource, Base):
+  __tablename__ = 'tam'
+
+class AdoptionData(Resource, Base):
+  __tablename__ = 'adoption_data'
+
+class CustomAdoptionPDS(Resource, Base):
+  __tablename__ = 'ca_pds'
+
+class CustomAdoptionRef(Resource, Base):
+  __tablename__ = 'ca_ref'
