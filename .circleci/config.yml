@@ -4,31 +4,39 @@ jobs:
     docker:
       - image: circleci/python:3.8
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "94:a6:df:e0:d7:c5:92:55:dc:80:73:c2:29:67:18:7d"
+            - "e5:4a:b6:22:01:2c:ba:d6:4a:05:df:fc:78:70:b5:88"
       - checkout
+      - run:
+          name: Clone Operations Repository
+          command: |
+            git clone git@bitbucket.org:colabcoop-ondemand/drawdown-solutions-ops.git ~/operations
       - restore_cache:
           keys:
-          - deps-{{ checksum "~/project/ansible/requirements.txt" }}
+          - deps-{{ checksum "~/operations/ansible/api/requirements.txt" }}
       - run:
           name: Install PIP Dependencies
           command: |
             python3 -m venv env
             . env/bin/activate
-            pip install -r ~/project/ansible/requirements.txt
+            pip install -r ~/operations/ansible/api/requirements.txt
       - save_cache:
-          key: deps-{{ checksum "~/project/ansible/requirements.txt" }}
+          key: deps-{{ checksum "~/operations/ansible/api/requirements.txt" }}
           paths:
             - "env"
       - run:
           name: Setup Ansible Vault pass
           command: |
-            echo $VAULT_PASS | tee ~/project/ansible/.vault-pass
+            echo $VAULT_PASS | tee ~/operations/ansible/api/.vault-pass
       - run:
           name: Deploy with Ansible
           command: |
             . env/bin/activate
-            cd ~/project/ansible
+            cd ~/operations/ansible/api
             if [ "${CIRCLE_BRANCH}" == "develop" ]; then
-              ansible-playbook -i hosts deploy.yml --limit staging_pdd_v1 --vault-password-file ~/project/ansible/.vault-pass
+              ansible-playbook -i hosts deploy.yml --limit staging_pdd_v1 --vault-password-file ~/operations/ansible/api/.vault-pass
             fi
 workflows:
   version: 2

@@ -7,6 +7,8 @@ This repository is an in-progress rewrite of the Project Drawdown model engine. 
 
 The codebase has some momentum already, has been continuously developed since September of 2018, and implements a substantial portion of the desired functionality. Planned deliverables and current status are listed below. We have also [recorded a video of the goals](https://youtu.be/Ffmx9KS-fW8), which allows demonstration where prototypes exist.
 
+As of Nov 2020, CoLab Cooperative has begun implementing an REST API server to expose the model's functionality to a frontend consumer.
+
 ---
 
 ## Background
@@ -62,78 +64,78 @@ We need better ways for people to explore the overall set of climate solutions a
 ![status](https://github.com/ProjectDrawdown/solutions/workflows/Drawdown%20Solutions%20Python%20application/badge.svg)
 [![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions)
 
-## Getting started
+## Getting the source code
 
-You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [git-lfs](https://git-lfs.github.com/), and [Python 3](https://docs.python.org/3/using/index.html) (>= 3.8) installed. The jupyter labextensions require [nodejs](https://nodejs.org/) and [npm](https://www.npmjs.com/).
+Note that develop has deviated considerably from master, and we haven't yet merged to master.
 
-Get a copy of this source code:
-
+1. Get a copy of this source code:
 ```sh
 $ git clone https://github.com/ProjectDrawdown/solutions.git
 $ cd solutions
+$ git checkout develop
 ```
 
-Environment Setup - Python 3.8
+## Environment Variables
+
+1. Copy the example
+```
+$ cp api/env-example api/.env
+```
+
+2. Valid OAuth keys will be necessary. See [Github](https://docs.github.com/en/free-pro-team@latest/developers/apps/authorizing-oauth-apps) and [Google](https://developers.google.com/identity/protocols/oauth2/openid-connect) instructions for how to obtain these client ID and client secret keys. Update the .env file.
+```
+GITHUB_CLIENT_ID=somegithubclientid
+GITHUB_CLIENT_SECRET=somegithubclientsecret
+GOOGLE_CLIENT_ID=somegoogleclientid
+GOOGLE_CLIENT_SECRET=somegoogleclientsecret
+```
+
+3. For running in production, you'll probably want a secure JWT secret key in the .env file as well:
+```
+JWT_SECRET_KEY=somejwtsecretkey
+```
+
+## Getting started with Docker (to be updated when returning to github!!!!)
+
+If you have docker and docker-compose installed, you should be able to get started fairly quickly, following these steps:
+
+1. ```$ cp docker-compose.yml.local.example docker-compose.yml```
+2. ```$ docker-compose build``` to build the docker containers
+3. and then ```$ docker-compose up``` to run the project
+
+## Getting started without Docker (to be updated when returning to github!!!!)
+
+1. You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Python 3](https://docs.python.org/3/using/index.html) (>= 3.8) installed. You will need [Postgres](https://www.postgresql.org/) and [Redis](https://redis.io/) running.
+
+2. Python 3.8
 ```sh
 $ pipenv shell
 # Or assuming you have multiple versions installed use the following 
 $ pipenv --python /Users/sam/.pyenv/versions/3.8.6/bin/python shell
-
 # Now inside the virtual env install tools
 $ pip install -r requirements.txt
 ```
 
-Database Setup
-1. You'll need to have postgres running
-2. Connection string contained in `api/.env` for `DATABASE_URL`
-3. Using `pipenv shell` run the following to apply existing migrations
+3. Database Setup
+You'll need to have postgres running. You'll want a valid connection string contained in `api/.env` for `DATABASE_URL`. Using `pipenv shell` run the following to apply existing migrations:
 ```sh
-alembic upgrade head
+$ alembic upgrade head
 ```
 
-Schema Updates
-1. When changing models in `api/db/models.py` run the following to create migrations
+4. Schema Updates
+When changing models in `api/db/models.py` run the following to create migrations:
 ```sh
-alembic revision -m "add provider column" --autogenerate
+$ alembic revision -m "add provider column" --autogenerate
 ```
-2. Apply changes
+
+Apply changes
 ```sh
-alembic upgrade head
+$ alembic upgrade head
 ```
 
-Tests are based on [tox](https://tox.readthedocs.org/). The default test target runs in about two minutes.
-```
-$ tox
-
-# The "ci" (continuous integration) target runs all tests, and takes roughly two hours to finish.
-$ tox -e ci
-
-# to run a specific test:
-$ tox -- tools/tests/test_vma_xls_extract.py::test_read_xls
-```
-
-To run the API
-`uvicorn api.service:app --reload`
-And to test from Postman or browser
-`http://127.0.0.1:8000/solutions/solarpvutil?scenario=PDS-25p2050-Optimum2020`
-
-
-The main user interface is a Jupyter Notebook intended to run in the cloud via [Jupyterhub](https://jupyter.org/hub). To run Jupyter locally we recommend using [pipenv](https://github.com/pypa/pipenv) for a virtual environment. As we use tox to run tests within virtual environments, we set the WORKON_HOME environment variable to have pipenv not re-install the same support in a new location:
+5. To run the API
 ```sh
-$ WORKON_HOME="${PWD}/.tox/common" pipenv shell
-(solutions) $ pipenv install -r requirements.txt
-(solutions) $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
-(solutions) $ jupyter labextension install bqplot ipyvolume jupyter-threejs qgrid
-(solutions) $ jupyter lab ./Drawdown.ipynb
-```
-
-To use with [Voilà](https://blog.jupyter.org/and-voil%C3%A0-f6a2c08a4a93):
-```sh
-$ WORKON_HOME="${PWD}/.tox/common" pipenv shell
-(solutions) $ pipenv install -r requirements.txt
-(solutions) $ jupyter nbextension install --py --sys-prefix vega
-(solutions) $ jupyter nbextension enable vega --py --sys-prefix
-(solutions) $ voila --enable_nbextensions=True --VoilaConfiguration.file_whitelist="['.*\.(png|jpg|gif|svg|csv|json|ico|js)']" ./VoilaDrawdown.ipynb
+$ uvicorn api.service:app --reload
 ```
 
 ---
@@ -155,4 +157,5 @@ Huge thanks to Beni Bienz of The Climate Foundation for his work in implementing
 
 ## Contact
 
-Denton Gentry (dgentry@carboncaptu.re) is currently the technical point of contact for this project.
+David Brooks (david@colab.coop) is currently the technical point of contact for this project.
+

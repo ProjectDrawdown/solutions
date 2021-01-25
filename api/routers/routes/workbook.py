@@ -154,7 +154,7 @@ async def add_workbook_variation(
     }
   if variation_path:
     variation = (await client(variation_path))['data']
-    variation.pop('name')
+    # variation.pop('name')
 
   validation = await validate_full_schema(variation, client)
   if not validation['valid']:

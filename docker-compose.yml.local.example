@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+  web:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db/drawdown
+      - API_URL=http://localhost:8000
+      - JWT_SECRET_KEY=somejwtsecretkey
+      - JWT_ALGORITHM=HS256
+      - GITHUB_DOMAIN=github.com
+      - GITHUB_CLIENT_ID=somegithubclientid
+      - GITHUB_CLIENT_SECRET=somegihubclientsecret
+      - GITHUB_USER_URL=https://api.github.com/user
+      - GOOGLE_DOMAIN=accounts.google.com
+      - GOOGLE_CLIENT_ID=somegoogleclientid
+      - GOOGLE_CLIENT_SECRET=somegoogleclientsecret
+      - MAX_VARIATIONS_PER_WORKBOOK=1000
+      - REDIS_URL=redis://redis
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  pgdata:
+

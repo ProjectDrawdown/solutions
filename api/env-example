@@ -1,10 +1,13 @@
-API_URL="http://localhost:8000"
-JWT_SECRET_KEY="hkBxrbZ9Td4QEwgRewV6gZSVH4q78vBia4GBYuqd09SsiMsIjH"
-JWT_ALGORITHM="HS256"
-GITHUB_DOMAIN="github.com"
-GITHUB_CLIENT_ID="8a3847cc0c3c0137c4e5"
-GITHUB_CLIENT_SECRET="f224953ec4f81de58c8c33188bf7cc71316576e6"
-GITHUB_USER_URL="https://api.github.com/user"
-GOOGLE_DOMAIN ="accounts.google.com"
-GOOGLE_CLIENT_ID="959419789086-u11hdmkljkcefar2l7vtff983tv2icu7.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET="576ASgg-3_XGMHqW8dCLEjDA"
+DATABASE_URL=postgresql://postgres:postgres@localhost/drawdown
+API_URL=http://localhost:8000
+JWT_SECRET_KEY=somejwtsecretkey
+JWT_ALGORITHM=HS256
+GITHUB_DOMAIN=github.com
+GITHUB_CLIENT_ID=somegithubclientid
+GITHUB_CLIENT_SECRET=somegithubclientsecret
+GITHUB_USER_URL=https://api.github.com/user
+GOOGLE_DOMAIN=accounts.google.com
+GOOGLE_CLIENT_ID=somegoogleclientid
+GOOGLE_CLIENT_SECRET=somegoogleclientsecret
+REDIS_URL=redis://localhost
+
