@@ -7,13 +7,7 @@ import pathlib
 import json
 from api.config import get_settings, get_db, get_resource_path
 import solution.factory
-from api.db.models import (
-  Scenario as DBScenario,
-  Reference as DBReference,
-  Workbook as DBWorkbook,
-  Variation as DBVariation,
-  VMA as DBVMA
-)
+from api.db import models
 from api.routers import schemas
 
 from api.queries.resource_queries import (
@@ -29,7 +23,7 @@ from api.queries.resource_queries import (
 from api.queries.workbook_queries import (
   save_workbook
 )
-from api.transform import transform, rehydrate_legacy_json, populate_vmas
+from api.transform import transform, rehydrate_legacy_json, populate
 from api.transforms.validate_variation import build_schema
 
 settings = get_settings()
@@ -37,10 +31,14 @@ router = APIRouter()
 DATADIR = pathlib.Path(__file__).parents[0].joinpath('data')
 
 entity_mapping = {
-  'scenario': DBScenario,
-  'reference': DBReference,
-  'variation': DBVariation,
-  'vma': DBVMA,
+  'scenario': models.Scenario,
+  'reference': models.Reference,
+  'variation': models.Variation,
+  'vma': models.VMA,
+  'adoption_data': models.AdoptionData,
+  'tam': models.TAM,
+  'ca_pds': models.CustomAdoptionPDS,
+  'ca_ref': models.CustomAdoptionRef
 }
 
 class EntityName(str, Enum):
@@ -48,14 +46,19 @@ class EntityName(str, Enum):
     reference = "reference"
     variation = "variation"
     vma = "vma"
+    ad = "adoption_data"
+    tam = "tam"
+    ca_pds = "ca_pds"
+    ca_ref = "ca_ref"
+
 
 @router.get('/resource/vma/info/{technology}')
 async def get_vma_info(technology: str, db: Session = Depends(get_db)):
-  return get_entities_by_name(db, f'solution/{technology}/VMA_info.csv', DBVMA)
+  return get_entities_by_name(db, f'solution/{technology}/VMA_info.csv', models.VMA)
 
 @router.get('/resource/vma/all/{technology}')
 async def get_vma_all(technology: str, db: Session = Depends(get_db)):
-  return get_entities_by_name(db, f'solution/{technology}/%.csv', DBVMA)
+  return get_entities_by_name(db, f'solution/{technology}/%.csv', models.VMA)
 
 @router.get('/resource/{entity}/{id}', response_model=schemas.ResourceOut)
 async def get_by_id(entity: EntityName, id: int, db: Session = Depends(get_db)):
@@ -93,7 +96,7 @@ async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = D
 
 @router.post('/variation/', response_model=schemas.VariationOut)
 async def post_variation(variation: schemas.VariationIn, db: Session = Depends(get_db)):
-  new_variation = DBVariation(
+  new_variation = models.Variation(
     name = variation.name,
     data = {},
   )
@@ -109,10 +112,10 @@ async def initialize(db: Session = Depends(get_db)):
 
   canonical_scenario = 'drawdown-2020'
 
-  scenario = save_entity(db, canonical_scenario, scenario_json, DBScenario)
-  reference = save_entity(db, canonical_scenario, references_json, DBReference)
+  scenario = save_entity(db, canonical_scenario, scenario_json, models.Scenario)
+  reference = save_entity(db, canonical_scenario, references_json, models.Reference)
 
-  variation = DBVariation(
+  variation = models.Variation(
     name = 'default',
     data = {
       "scenario_parent_path": scenario.path,
@@ -125,9 +128,10 @@ async def initialize(db: Session = Depends(get_db)):
 
   variation_dict = variation.__dict__['data']
 
-  workbook = DBWorkbook(
+  workbook = models.Workbook(
     name = 'default',
     ui = {},
+    regions = ['World'],
     start_year = 2020,
     end_year = 2050,
     variations = [
@@ -137,10 +141,22 @@ async def initialize(db: Session = Depends(get_db)):
 
   db_workbook = save_workbook(db, workbook)
 
-  vmas = populate_vmas()
-  for vma in vmas:
-    name = f"{vma['technology']}/{vma['filename']}"
-    save_entity(db, name, vma['data'], DBVMA)
+
+  # populate resource tables:
+
+  resource_models = [
+    ('vma_data', models.VMA),
+    ('tam', models.TAM),
+    ('ad', models.AdoptionData),
+    ('ca_pds_data', models.CustomAdoptionPDS),
+    ('ca_ref_data', models.CustomAdoptionRef)
+  ]
+
+  for (directory, model) in resource_models:
+    resources = populate(directory)
+    for res in resources:
+      name = f"{res['technology']}/{res['filename']}"
+      save_entity(db, name, res['data'], model)
 
   return db_workbook
   # return rehydrate_legacy_json(scenario_json, references_json)
@@ -153,3 +169,25 @@ async def get_vma_agg(variable_path: str, db: Session = Depends(get_db)):
 @router.get("/garbage_collect")
 async def garbage_collect(db: Session = Depends(get_db)):
   delete_unused_variations(db)
+
+@router.get("/technology/meta_info/{technology}")
+async def technology_meta_info(technology: str):
+  paths = varProjectionNamesPaths + varRefNamesPaths
+  importname = 'solution.' + technology
+  m = importlib.import_module(importname)
+  result = []
+  for path in paths:
+    vma_titles = get_vma_for_param(path[0])
+    for title in vma_titles:
+      vma_file = m.VMAs.get(title)
+      if vma_file and vma_file.filename:
+        db_file = get_entity_by_name(db, f'solution/{technology}/{vma_file.filename.name}', VMA)
+        if db_file:
+          result.append({
+            'var': path[0],
+            'vma_title': title,
+            'vma_filename': vma_file.filename.name,
+            'path': db_file.path,
+            'file': db_file,
+          })
+  return result

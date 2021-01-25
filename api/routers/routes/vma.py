@@ -4,6 +4,7 @@ import fastapi_plugins
 import aioredis
 import json
 import importlib
+import math
 
 from api.config import get_settings, get_db, AioWrap, get_resource_path
 from api.transforms.variable_paths import varProjectionNamesPaths
@@ -45,29 +46,33 @@ async def get_vma_agg(technology: str, db: Session = Depends(get_db)):
   # if vma_info exists extract data from that
   vma_info = db.query(VMA).filter(VMA.name==f'solution/{technology}/VMA_info.csv').first()
   if vma_info and len(vma_info.data['rows']) > 0:
-    return vma_info
+    return vma_info['data']
   else:
     mappings = await get_vma_mappings(technology, db)
     info = []
     for mapping in mappings:
       file = mapping['file']
-      var = mapping['var']
-      min = None
-      max = None
       sum = 0
-      count = len(file.data['rows'])
+      values = []
       for row in file.data['rows']:
-        value = float(row['Raw Data Input'])
-        sum = sum + value
-        if not min or min > value:
-          min = value
-        if not max or max < value:
-          max = value
-      avg = sum / count
+        if row['Raw Data Input'] != "":
+          value = float(row['Raw Data Input'])
+          sum = sum + value
+          values.append(value)
+      mean = sum / len(values)
+      sum_std_dev = 0
+      for value in values:
+        diff = mean - value
+        sum_std_dev = sum_std_dev + diff * diff
+      std_dev = math.sqrt(sum_std_dev / len(values))
+
+      fixed_low = mean - std_dev
+      fixed_high = mean + std_dev
+
       info.append({
-        "Fixed Low": str(min),
-        "Fixed High": str(max),
-        "Fixed Mean": str(avg),
+        "Fixed Low": str(fixed_low),
+        "Fixed High": str(fixed_high),
+        "Fixed Mean": str(mean),
         "Title on xls": mapping['vma_title']
       })
     return info
