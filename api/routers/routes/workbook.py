@@ -7,13 +7,14 @@ import urllib
 import uuid
 import aioredis
 import fastapi_plugins
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Literal, Union
 
 from api.config import get_settings, get_db, AioWrap, get_resource_path, get_app
 from api.queries.user_queries import get_user
 from api.queries.workbook_queries import (
   workbook_by_id,
   workbooks_by_user_id,
+  workbooks_by_default_user,
   all_workbooks,
   clone_workbook,
   save_workbook,
@@ -54,9 +55,12 @@ async def get_workbook_by_id(id: int, db: Session = Depends(get_db)):
     raise HTTPException(status_code=400, detail="Workbook not found")
   return workbook
 
-@router.get("/workbooks/{user_id}", response_model=List[schemas.WorkbookOut])
-async def get_all_workbooks_by_user(user_id: int, db: Session = Depends(get_db)):
-  return workbooks_by_user_id(db, user_id)
+@router.get("/workbooks/{user_id}", response_model=List[schemas.WorkbookOut], summary="use 'default' for unowned workbooks")
+async def get_all_workbooks_by_user(user_id: Union[int, Literal['default']], db: Session = Depends(get_db)):
+  if user_id == 'default':
+    return workbooks_by_default_user(db)
+  else:
+    return workbooks_by_user_id(db, user_id)
 
 @router.get("/workbooks/", response_model=List[schemas.WorkbookOut])
 async def get_all_workbooks(db: Session = Depends(get_db)):

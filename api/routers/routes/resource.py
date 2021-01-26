@@ -18,7 +18,8 @@ from api.queries.resource_queries import (
   all_entity_paths,
   clone_variation,
   save_variation,
-  delete_unused_variations
+  delete_unused_variations,
+  clear_all_tables
 )
 from api.queries.workbook_queries import (
   save_workbook
@@ -108,42 +109,42 @@ async def post_variation(variation: schemas.VariationIn, db: Session = Depends(g
 
 @router.get("/initialize/")
 async def initialize(db: Session = Depends(get_db)):
+  if db.query(models.VMA).count() > 0:
+    if settings.is_production:
+      raise HTTPException(status_code=400, detail="Database already initialized")
+    else:
+      clear_all_tables(db)
+
   [scenario_json, references_json] = transform()
 
-  canonical_scenario = 'drawdown-2020'
-
-  scenario = save_entity(db, canonical_scenario, scenario_json, models.Scenario)
-  reference = save_entity(db, canonical_scenario, references_json, models.Reference)
-
-  variation = models.Variation(
-    name = 'default',
-    data = {
-      "scenario_parent_path": scenario.path,
-      "reference_parent_path": reference.path,
-      "scenario_vars": {},
-      "reference_vars": {},
-    }
-  )
-  db_variation = save_variation(db, variation)
-
-  variation_dict = variation.__dict__['data']
-
-  workbook = models.Workbook(
-    name = 'default',
-    ui = {},
-    regions = ['World'],
-    start_year = 2020,
-    end_year = 2050,
-    variations = [
-      variation_dict
-    ]
-  )
-
-  db_workbook = save_workbook(db, workbook)
-
+  canonical_scenarios = ['drawdown-2020', 'plausible-2020', 'optimum-2020']
+  for canonical_scenario in canonical_scenarios:
+    scenario = save_entity(db, canonical_scenario, scenario_json, models.Scenario)
+    reference = save_entity(db, canonical_scenario, references_json, models.Reference)
+    variation = models.Variation(
+      name = 'default',
+      data = {
+        "scenario_parent_path": scenario.path,
+        "reference_parent_path": reference.path,
+        "scenario_vars": {},
+        "reference_vars": {},
+      }
+    )
+    save_variation(db, variation)
+    variation_dict = variation.__dict__['data']
+    workbook = models.Workbook(
+      name = 'canonical_scenarios',
+      ui = {},
+      regions = ['World'],
+      start_year = 2020,
+      end_year = 2050,
+      variations = [
+        variation_dict
+      ]
+    )
+    db_workbook = save_workbook(db, workbook)
 
   # populate resource tables:
-
   resource_models = [
     ('vma_data', models.VMA),
     ('tam', models.TAM),
@@ -151,15 +152,11 @@ async def initialize(db: Session = Depends(get_db)):
     ('ca_pds_data', models.CustomAdoptionPDS),
     ('ca_ref_data', models.CustomAdoptionRef)
   ]
-
   for (directory, model) in resource_models:
     resources = populate(directory)
     for res in resources:
       name = f"{res['technology']}/{res['filename']}"
       save_entity(db, name, res['data'], model)
-
-  return db_workbook
-  # return rehydrate_legacy_json(scenario_json, references_json)
 
 @router.get('/vma/aggregates/{technology}')
 async def get_vma_agg(variable_path: str, db: Session = Depends(get_db)):

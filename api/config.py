@@ -1,6 +1,6 @@
 from pydantic import BaseSettings
 import aiohttp
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional
 from functools import lru_cache
 import pathlib
 import aioredis
@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     redis_url: str
 
     max_workers: int
+
+    is_production: Optional[bool]
 
     class Config:
         env_file = pathlib.Path(__file__).parents[0].joinpath('.env').resolve()

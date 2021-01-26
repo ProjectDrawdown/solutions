@@ -3,6 +3,7 @@ import json
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import Query
 
+from api.db import models
 from api.db.models import Scenario, Reference, Variation, Workbook
 from api.db.helpers import clone
 from api.routers import schemas
@@ -61,4 +62,19 @@ def delete_unused_variations(db: Session):
                 found = True
         if not found:
             db.delete(variation)
+    db.commit()
+
+def clear_all_tables(db: Session):
+    for model in [
+        models.VMA,
+        models.TAM,
+        models.AdoptionData,
+        models.CustomAdoptionPDS,
+        models.CustomAdoptionRef,
+        models.Scenario,
+        models.Reference,
+        models.Variation,
+        models.Workbook
+        ]:
+            db.query(model).delete()
     db.commit()

@@ -2,6 +2,7 @@ from typing import Optional, List, Dict, Any, Literal
 from pydantic import BaseModel, validator
 from api.db import models
 from api.config import get_resource_path
+from api.transform import flatten_variation
 from api.transforms.validate_variation import validate_ref_vars, validate_scenario_vars
 
 region_type = List[Literal["World", "OECD90","Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa", "Latin America", "China", "India", "EU", "USA"]]
@@ -70,15 +71,23 @@ class VariationOut(ResourceOut):
         "name": 'example',
         "data": {
           "scenario_vars": {
-            "technologies.biogas.fixed_oper_cost_per_iunit": {
-              "value": 10,
-              "statistic": ""
+            "technologies": {
+              "biogas": {
+                "fixed_oper_cost_per_iunit": {
+                  "value": 10,
+                  "statistic": ""
+                }
+              }
             }
           },
           "reference_vars": {
-            "technologies.biogas.fixed_oper_cost_per_iunit": {
-              "value": 0,
-              "statistic": "mean"
+            "technologies": {
+              "biogas": {
+                "fixed_oper_cost_per_iunit": {
+                  "value": 0,
+                  "statistic": "mean"
+                }
+              }
             }
           },
           "scenario_parent_path": get_resource_path('scenario', 0),
@@ -99,14 +108,14 @@ class VariationIn(ResourceIn):
 
   @validator('scenario_vars')
   def validate_scenario(cls, v):
-    res = validate_scenario_vars(v)
+    res = validate_scenario_vars(flatten_variation(v))
     if not res[0]:
       raise ValueError(res[1])
     return v
 
   @validator('reference_vars')
   def validate_reference(cls, v):
-    res = validate_ref_vars(v)
+    res = validate_ref_vars(flatten_variation(v))
     if not res[0]:
       raise ValueError(res[1])
     return v
@@ -117,9 +126,13 @@ class VariationIn(ResourceIn):
             "scenario_parent_path": get_resource_path('scenario', 0),
             "reference_parent_path": get_resource_path('reference', 0),
             "scenario_vars": {
-              "technologies.biogas.fixed_oper_cost_per_iunit": {
-                  "value": 10.0,
-                  "statistic": ""
+              "technologies": {
+                "biogas": {
+                  "fixed_oper_cost_per_iunit": {
+                    "value": 10.0,
+                    "statistic": ""
+                  }
+                }
               }
             },
             "reference_vars": {
@@ -134,14 +147,18 @@ class VariationPatch(ResourceIn):
   reference_vars: Optional[Dict[str, Any]]
   class Config:
     schema_extra = {
-        "example": {
-            "scenario_vars": {
-              "technologies.biogas.fixed_oper_cost_per_iunit": {
-                  "value": 11.0,
-                  "statistic": ""
+      "example": {
+        "scenario_vars": {
+          "technologies": {
+            "biogas": {
+              "fixed_oper_cost_per_iunit": {
+                "value": 11.0,
+                "statistic": ""
               }
             }
+          }
         }
+      }
     }
 
 class PublishVariation(BaseModel):
@@ -239,15 +256,23 @@ class WorkbookOut(BaseModel):
             "name": 'example',
             "data": {
               "scenario_vars": {
-                "technologies.biogas.fixed_oper_cost_per_iunit": {
-                  "value": 10,
-                  "statistic": ""
+                "technologies": {
+                  "biogas": {
+                    "fixed_oper_cost_per_iunit": {
+                      "value": 10,
+                      "statistic": ""
+                    }
+                  }
                 }
               },
               "reference_vars": {
-                "technologies.biogas.fixed_oper_cost_per_iunit": {
-                  "value": 0,
-                  "statistic": "mean"
+                "technologies": {
+                  "biogas": {
+                    "fixed_oper_cost_per_iunit": {
+                      "value": 0,
+                      "statistic": "mean"
+                    }
+                  }
                 }
               },
               "scenario_parent_path": get_resource_path('scenario', 0),
