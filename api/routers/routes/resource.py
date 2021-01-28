@@ -145,7 +145,8 @@ async def initialize(db: Session = Depends(get_db)):
       end_year = 2050,
       variations = [
         variation_dict
-      ]
+      ],
+      vma_sources = {}
     )
     db_workbook = save_workbook(db, workbook)
 
