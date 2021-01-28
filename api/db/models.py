@@ -1,11 +1,11 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Enum
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Enum, LargeBinary
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY, UUID
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.hybrid import hybrid_property
 import json
 from jsonschema import validate
 import enum
-from api.config import get_resource_path
+from api.config import get_resource_path, get_path
 from uuid import uuid4
 
 from .database import Base
@@ -28,6 +28,7 @@ class User(Base):
   is_active = Column(Boolean, default=True)
   role = Column(Enum(UserRole), default=UserRole.default)
   workbooks = relationship("Workbook", back_populates="author")
+  vma_csvs = relationship("VMA_CSV", back_populates="author")
 
 class Workbook(Base):
   __tablename__ = 'workbook'
@@ -42,6 +43,8 @@ class Workbook(Base):
   start_year = Column(Integer)
   end_year = Column(Integer)
   variations = Column(ARRAY(JSONB))
+  has_run = Column(Boolean, default=False)
+  vma_sources = Column(JSONB)
 
   @validates('data')
   def validate_data(self, key, value):
@@ -70,11 +73,27 @@ class Reference(Resource, Base):
 class Variation(Resource, Base):
   __tablename__ = 'variation'
 
-class VMA(Resource, Base):
-  __tablename__ = 'vma'
+class VMA_CSV(Base):
+  __tablename__ = 'vma_csv'
+  id = Column(Integer, primary_key=True)
+  name = Column(String, index=True)
+  technology = Column(String)
+  variable = Column(String)
+  legacy_variable = Column(String)
+  original_filename = Column(String)
+  author_id = Column(Integer, ForeignKey('user.id'))
+  author = relationship("User", back_populates="vma_csvs")
+  data = Column(LargeBinary)
+
+  @hybrid_property
+  def path(self):
+    return get_path(self.__tablename__, self.id)
 
 class TAM(Resource, Base):
   __tablename__ = 'tam'
+
+class VMA(Resource, Base):
+  __tablename__ = 'vma'
 
 class AdoptionData(Resource, Base):
   __tablename__ = 'adoption_data'

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 import fastapi_plugins
 import aioredis
@@ -10,9 +10,11 @@ from api.config import get_settings, get_db, AioWrap, get_resource_path
 from api.transforms.variable_paths import varProjectionNamesPaths
 from api.transforms.reference_variable_paths import varRefNamesPaths
 from model.advanced_controls import AdvancedControls, get_vma_for_param
-
+from api.routers.auth import get_current_active_user
+from api.routers import schemas
 from api.queries.resource_queries import get_entity_by_name
-from api.db.models import VMA
+from api.db import models
+from model.vma2 import VMA
 
 settings = get_settings()
 router = APIRouter()
@@ -29,7 +31,7 @@ async def get_vma_mappings(technology: str, db: Session = Depends(get_db)):
     for title in vma_titles:
       vma_file = m.VMAs.get(title)
       if vma_file and vma_file.filename:
-        db_file = get_entity_by_name(db, f'solution/{technology}/{vma_file.filename.name}', VMA)
+        db_file = get_entity_by_name(db, f'solution/{technology}/{vma_file.filename.name}', models.VMA)
         if db_file:
           result.append({
             'var': path[0],
@@ -40,40 +42,49 @@ async def get_vma_mappings(technology: str, db: Session = Depends(get_db)):
           })
   return result
 
+@router.get("/vma_csv/{id}")
+async def get_vma_csv(id: str, db: Session = Depends(get_db)):
+  return db.query(models.VMA_CSV).get(id)
 
-@router.get("/vma/aggregate/{technology}")
-async def get_vma_agg(technology: str, db: Session = Depends(get_db)):
-  # if vma_info exists extract data from that
-  vma_info = db.query(VMA).filter(VMA.name==f'solution/{technology}/VMA_info.csv').first()
-  if vma_info and len(vma_info.data['rows']) > 0:
-    return vma_info['data']
-  else:
-    mappings = await get_vma_mappings(technology, db)
-    info = []
-    for mapping in mappings:
-      file = mapping['file']
-      sum = 0
-      values = []
-      for row in file.data['rows']:
-        if row['Raw Data Input'] != "":
-          value = float(row['Raw Data Input'])
-          sum = sum + value
-          values.append(value)
-      mean = sum / len(values)
-      sum_std_dev = 0
-      for value in values:
-        diff = mean - value
-        sum_std_dev = sum_std_dev + diff * diff
-      std_dev = math.sqrt(sum_std_dev / len(values))
+@router.post("/vma_csv/")
+async def post_vma_csv(
+  name: str = Form(...),
+  technology: str = Form(...),
+  variable: str = Form(...),
+  data: UploadFile = File(...),
+  db_active_user: models.User = Depends(get_current_active_user),
+  db: Session = Depends(get_db)):
+  vma_csv = models.VMA_CSV(
+    data = data.file.read(),
+    author = db_active_user,
+    name = name,
+    technology = technology,
+    variable = variable
+  )
+  db.add(vma_csv)
+  db.commit()
+  db.refresh(vma_csv)
+  return vma_csv
 
-      fixed_low = mean - std_dev
-      fixed_high = mean + std_dev
-
-      info.append({
-        "Fixed Low": str(fixed_low),
-        "Fixed High": str(fixed_high),
-        "Fixed Mean": str(mean),
-        "Title on xls": mapping['vma_title']
-      })
-    return info
-      
+@router.get("/vma/calculation/")
+async def calculate_vma_groupings(
+  variable: str,
+  stat_correction: bool,
+  use_weight: bool,
+  db: Session = Depends(get_db)):
+  
+  vma_csvs = db.query(models.VMA_CSV).filter(
+    models.VMA_CSV.variable==variable
+  ).all()
+  results = []
+  for csv in vma_csvs:
+    vma = VMA(csv.data, stat_correction=stat_correction, use_weight=use_weight)
+    [mean, high, low] = vma.avg_high_low()
+    results.append({
+      'path': csv.path,
+      'source': csv.name,
+      'mean': mean,
+      'high': high,
+      'low': low
+    })
+  return results

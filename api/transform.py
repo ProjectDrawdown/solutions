@@ -1,11 +1,14 @@
 import json
 import csv
 import os
+import importlib
+from typing import List
 from os import listdir
 from os.path import isfile, join
 from api.transforms.variable_paths import varProjectionNamesPaths
 from api.transforms.reference_variable_paths import varRefNamesPaths
 from api.transforms.metadata import pythonFieldMetadataArray
+from model.advanced_controls import AdvancedControls, get_vma_for_param, get_param_for_vma_name
 
 legacyDataFiles = {
   'drawdown-2020': [
@@ -290,6 +293,10 @@ def csv_to_json(csvFilePath: str) -> dict:
 
   return {'rows':data}
 
+def csv_to_binary(csvFilePath: str) -> bytes:
+   with open(csvFilePath, 'rb') as f:
+    return f.read()
+
 def populate(resource: str):
   # resource can be one of the following:
   #   vma_data, tam, ca_pds_data, ca_ref_data
@@ -307,6 +314,42 @@ def populate(resource: str):
          'filename': file
         }
         converted_list.append(converted)
+        
+  return converted_list
+
+def convert_to_new_path(legacy_name: str, technology: str) -> str:
+  paths = varProjectionNamesPaths + varRefNamesPaths
+  for [existing_name, path, converted_name, label, unit] in paths:
+    technologyPath = path.replace('solarpvutil', technology)
+    if legacy_name == existing_name:
+      return technologyPath
+
+def convert_vmas_to_binary() -> List[dict]:
+  directory = 'solution'
+  converted_list = []
+  get_param_for_vma_name('s')
+  for subdir, _, _ in os.walk(directory):
+
+    for subdir_vma, _, files in os.walk(f'{subdir}/vma_data'):
+      technology = subdir.split('/')[1]
+      importname = 'solution.' + technology
+      m = importlib.import_module(importname)
+      for file in files:
+        mappings = dict(map(lambda v: (str(m.VMAs[v].filename).split('/')[-1], v), filter(lambda v: m.VMAs[v].filename, m.VMAs)))
+        if file in mappings:
+          path = os.path.join(subdir_vma, file)
+          vma_name = mappings[file]
+          legacy_var_name = get_param_for_vma_name(vma_name)
+          if legacy_var_name:
+            updated_path = convert_to_new_path(legacy_var_name, technology)
+            vma = {
+            'data': csv_to_binary(path),
+            'technology': technology,
+            'filename': file,
+            'path': updated_path,
+            'legacy_variable': legacy_var_name,
+            }
+            converted_list.append(vma)
         
   return converted_list
 

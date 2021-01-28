@@ -24,7 +24,12 @@ from api.queries.resource_queries import (
 from api.queries.workbook_queries import (
   save_workbook
 )
-from api.transform import transform, rehydrate_legacy_json, populate
+from api.transform import (
+  transform, 
+  rehydrate_legacy_json, 
+  populate,
+  convert_vmas_to_binary
+)
 from api.transforms.validate_variation import build_schema
 
 settings = get_settings()
@@ -158,14 +163,18 @@ async def initialize(db: Session = Depends(get_db)):
       name = f"{res['technology']}/{res['filename']}"
       save_entity(db, name, res['data'], model)
 
-@router.get('/vma/aggregates/{technology}')
-async def get_vma_agg(variable_path: str, db: Session = Depends(get_db)):
-  # if there's a vma_info object just use that
-  pass
-
-@router.get("/garbage_collect")
-async def garbage_collect(db: Session = Depends(get_db)):
-  delete_unused_variations(db)
+  vmas = convert_vmas_to_binary()
+  for vma in vmas:
+    vma_csv = models.VMA_CSV(
+      name=vma['filename'],
+      technology=vma['technology'],
+      variable=vma['path'],
+      legacy_variable=vma['legacy_variable'],
+      original_filename=vma['filename'],
+      data=vma['data']
+    )
+    db.add(vma_csv)
+  db.commit()
 
 @router.get("/technology/meta_info/{technology}")
 async def technology_meta_info(technology: str):

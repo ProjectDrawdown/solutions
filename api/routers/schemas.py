@@ -170,6 +170,7 @@ class WorkbookNew(BaseModel):
   start_year: int
   end_year: int
   regions: region_type
+  vma_sources: dict
   class Config:
     orm_mode = True
     schema_extra = {
@@ -190,7 +191,14 @@ class WorkbookNew(BaseModel):
           ],
         },
         "start_year": 2020,
-        "end_year": 2050
+        "end_year": 2050,
+        "vma_sources": {
+          "scenario_vars.technologies.biogas.fixed_oper_cost_per_iunit.value": {
+            "source": "IPCC (2014) WG3 AR5, Coal - PC, min   (Table A.III.1)",
+            "use_corrected": True,
+            "weighted": True
+          }
+        },
       }
     }
 
@@ -200,7 +208,7 @@ class WorkbookPatch(BaseModel):
   ui: Optional[dict]
   start_year: Optional[int]
   end_year: Optional[int]
-  variations: Optional[List[Dict[Any, Any]]]
+  vma_sources: Optional[dict]
   class Config:
     orm_mode = True
     schema_extra = {
@@ -216,6 +224,13 @@ class WorkbookPatch(BaseModel):
             'technologies.biogas.fixed_oper_cost_per_iunit',
           ],
         },
+        "vma_sources": {
+          "scenario_vars.technologies.biogas.fixed_oper_cost_per_iunit.value": {
+            "source": "IPCC (2014) WG3 AR5, Coal - PC, min   (Table A.III.1)",
+            "use_corrected": True,
+            "weighted": True
+          }
+        },
       }
     }
 
@@ -230,6 +245,8 @@ class WorkbookOut(BaseModel):
   end_year: int
   warnings: Optional[List[str]]
   variations: List[Dict[Any, Any]]
+  has_run: bool
+  vma_sources: Dict[Any, Any]
   class Config:
     orm_mode = True
     schema_extra = {
@@ -250,6 +267,14 @@ class WorkbookOut(BaseModel):
         "start_year": 2020,
         "end_year": 2050,
         "warnings": ["blah", "blah", "blah"],
+        "has_run": True,
+        "vma_sources": {
+          "scenario_vars.technologies.biogas.fixed_oper_cost_per_iunit.value": {
+            "source": "IPCC (2014) WG3 AR5, Coal - PC, min   (Table A.III.1)",
+            "use_corrected": True,
+            "weighted": True
+          }
+        },
         "variations": [
           {
             "id": 21,
@@ -311,3 +336,5 @@ class CalculationResults(BaseModel):
 class CalculationDiffs(BaseModel):
   tech: str
   diff: Dict[Any, Any]
+
+

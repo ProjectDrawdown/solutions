@@ -74,7 +74,8 @@ def clear_all_tables(db: Session):
         models.Scenario,
         models.Reference,
         models.Variation,
-        models.Workbook
+        models.Workbook,
+        models.VMA_CSV
         ]:
             db.query(model).delete()
     db.commit()

@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import asyncio
 import json
 import re
@@ -290,6 +290,8 @@ async def calculate(
   websocket: WebSocket = None):
 
   workbook: Workbook = workbook_by_id(db, workbook_id)
+  if not workbook:
+    raise HTTPException(400, 'Workbook not found')
   regions = workbook.regions
   if workbook_version is None:
     workbook_version = workbook.version
@@ -320,6 +322,10 @@ async def calculate(
     await cache.set(cache_key, str_result)
     if websocket:
       await websocket.send_text(str_result)
+
+    workbook.has_run = True
+    db.add(workbook)
+    db.commit()
   # pr.print_stats()
   # pr.dump_stats('calc.prof')
   # s = io.StringIO()

@@ -75,6 +75,10 @@ def get_projection_path(path: str, id: int):
   api_url = get_settings().api_url
   return f'{api_url}/projection/{path}/{id}/'
 
+def get_path(path: str, id: int):
+  api_url = get_settings().api_url
+  return f'{api_url}/{path}/{id}/'
+
 JSONType = Union[str, int, float, bool, None, Dict[str, Any], List[Any]]
 class AioWrap(object):
     async def __call__(self, site: str) -> JSONType:

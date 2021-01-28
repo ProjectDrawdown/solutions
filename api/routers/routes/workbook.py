@@ -92,7 +92,8 @@ async def create_workbook(
     regions = workbook.regions,
     start_year = workbook.start_year,
     end_year = workbook.end_year,
-    variations = []
+    variations = [],
+    has_run = False
   )
 
   saved_workbook = save_workbook(db, dbworkbook)
@@ -113,6 +114,7 @@ async def update_workbook(
       db_workbook.__setattr__(key, value)
 
   db_workbook.version = db_workbook.version + 1
+  db_workbook.has_run = False
   saved_db_workbook = save_workbook(db, db_workbook)
   return saved_db_workbook
 
@@ -135,6 +137,7 @@ async def update_workbook_variation(
 
   db_workbook.variations = replace(db_workbook.variations, variation_index, variation_patch.__dict__)
   db_workbook.version = db_workbook.version + 1
+  db_workbook.has_run = False
   saved_db_workbook = save_workbook(db, db_workbook)
   response = schemas.WorkbookOut.from_orm(saved_db_workbook)
   response.warnings = warnings
@@ -167,6 +170,7 @@ async def add_workbook_variation(
 
   db_workbook.variations = db_workbook.variations + [variation]
   db_workbook.version = db_workbook.version + 1
+  db_workbook.has_run = False
   saved_db_workbook = save_workbook(db, db_workbook)
   response = schemas.WorkbookOut.from_orm(saved_db_workbook)
   response.warnings = warnings
