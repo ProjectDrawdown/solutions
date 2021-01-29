@@ -192,7 +192,7 @@ def field_name_to_legacy(new_path: str, technology: str) -> str:
 
 async def validate_full_schema(variation: dict, client):
   warnings = []
-  input_data = await fetch_data(variation, client)
+  input_data = await fetch_data(variation.__dict__, client)
   jsons = build_json(2015, 2020, *input_data)
   for j in jsons:
     pds_basis = j['json']["soln_pds_adoption_basis"]
