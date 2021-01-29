@@ -306,33 +306,31 @@ async def calculate(
 
   [prev_version, prev_key, prev_data] = await get_prev_calc(workbook_id, workbook_version, cache)
 
-  with cProfile.Profile() as pr:
-    if workbook is None:
-      raise HTTPException(status_code=400, detail="Workbook not found")
-    result_paths = []
-    variation = workbook.variations[variation_index]
-    input_data = await fetch_data(variation, client)
-    jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
-    [tasks, key_list, _] = await setup_calculations(jsons, regions, prev_data, cache, websocket, do_diffs)
-    perform_func = perform_calculations_async if run_async else perform_calculations_sync
-    await perform_func(tasks)
-    result_paths += build_result_paths(key_list)
-    result = build_result(prev_key, prev_version, workbook_version, cache_key, variation, result_paths)
-    str_result = json.dumps(result)
-    await cache.set(cache_key, str_result)
-    if websocket:
-      await websocket.send_text(str_result)
+  # with cProfile.Profile() as pr:
+  if workbook is None:
+    raise HTTPException(status_code=400, detail="Workbook not found")
+  result_paths = []
+  variation = workbook.variations[variation_index]
+  input_data = await fetch_data(variation, client)
+  jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
+  [tasks, key_list, _] = await setup_calculations(jsons, regions, prev_data, cache, websocket, do_diffs)
+  perform_func = perform_calculations_async if run_async else perform_calculations_sync
+  await perform_func(tasks)
+  result_paths += build_result_paths(key_list)
+  result = build_result(prev_key, prev_version, workbook_version, cache_key, variation, result_paths)
+  str_result = json.dumps(result)
+  await cache.set(cache_key, str_result)
+  if websocket:
+    await websocket.send_text(str_result)
 
-    workbook.has_run = True
-    db.add(workbook)
-    db.commit()
+  workbook.has_run = True
+  db.add(workbook)
+  db.commit()
   # pr.print_stats()
   # pr.dump_stats('calc.prof')
   # s = io.StringIO()
   # ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
   # ps.print_stats()
 
-  # with open('test.txt', 'w+') as f:
-  #  f.write(s.getvalue())
 
   return result

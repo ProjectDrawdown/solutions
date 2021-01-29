@@ -3,7 +3,7 @@ import re
 import pickle
 from api.transforms.variable_paths import varProjectionNamesPaths
 from api.transforms.reference_variable_paths import varRefNamesPaths
-from api.transform import legacyDataFiles
+from api.transform import legacyDataFiles, get_value_at, set_value_at
 from api.transforms.ref_var_schema import ref_var_schema
 from api.transforms.scenario_var_schema import scenario_var_schema
 from api.calculate import fetch_data, build_json
@@ -43,11 +43,11 @@ def build_schema():
     f.write(json.dumps(schema))
 
 
-def validate_scenario_vars(variation: dict):
-  return validate(variation, scenario_var_schema, 'scenario')
+def validate_scenario_vars(source: dict, variation: dict):
+  return validate(source, variation, scenario_var_schema, 'scenario')
 
-def validate_ref_vars(variation: dict):
-  return validate(variation, ref_var_schema, 'reference')
+def validate_ref_vars(source: dict, variation: dict):
+  return validate(source, variation, ref_var_schema, 'reference')
 
 pds_validation_matrix = {
   'Linear': {
@@ -153,7 +153,35 @@ ref_validation_matrix = {
   }
 }
 
-def validate(variation: dict, schema_dict: dict, name: str):
+def replace_type_identifiers(type_id: str) -> str:
+  return type_id \
+    .replace("<class 'str'>", 'text') \
+    .replace("<class 'float'>", 'number') \
+    .replace("<class 'int'>", 'integer') \
+    .replace("<class 'bool'>", 'true/false') \
+    .replace("\"", '')
+
+def error_str_types(schema):
+  if schema == '{"value": "<class \'float\'>", "statistic": "<class \'str\'>"}':
+    return 'must be a number'
+  if isinstance(schema, dict):
+    return 'must be a dictionary ' + replace_type_identifiers(schema)
+  elif isinstance(schema[0], list):
+    return 'must be a list ' + replace_type_identifiers(schema)
+  else:
+    return 'must be ' + replace_type_identifiers(schema)
+  
+def gen_error(key: str, variation: dict, name: str, schema: dict):
+  allowed_types_str = ''
+  if len(schema) > 1: 
+   for s in schema:
+     allowed_types_str += error_str_types(json.dumps(s)) + 'or '
+  else:
+    allowed_types_str = error_str_types(json.dumps(schema[0]))
+  
+  return f'{key} in {name} {allowed_types_str}'
+
+def validate(source: dict, variation: dict, schema_dict: dict, name: str):
   for key in variation:
     schema = schema_dict.get(key)
     if not schema:
@@ -169,16 +197,15 @@ def validate(variation: dict, schema_dict: dict, name: str):
           if option == drilled:
             found = True
         if not found:
-          return [False, f'{key}: {variation[key]} not valid schema for {name}. Must be one of the following types: {schema}']
+          return [False, gen_error(key, variation, name, schema)]
+    elif type(variation[key]) in [float, int] and schema == [{'statistic': "<class 'str'>", 'value': "<class 'float'>"}]:
+      set_value_at(source, key, {'value': variation[key], 'statistic': ""}) 
     elif f'{type(variation[key])}' not in schema:
       if isinstance(variation[key], int):
         if f'{type(0.0)}' not in schema:
-          return [False, f'{key}: {variation[key]} not valid schema for {name}. Must be one of the following types: {schema}']
-
-  # if variation['adoption_basis']:
-  #   pds_value = pds_validation_matrix.get(variation['adoption_basis'])
-  #   if pds_value:
-  #     for field in pds_value['fields']:
+          return [False, gen_error(key, variation, name, schema)]
+      else:
+        return [False, gen_error(key, variation, name, schema)]
     
   return [True, '']
 

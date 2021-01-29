@@ -108,14 +108,14 @@ class VariationIn(ResourceIn):
 
   @validator('scenario_vars')
   def validate_scenario(cls, v):
-    res = validate_scenario_vars(flatten_variation(v))
+    res = validate_scenario_vars(v, flatten_variation(v))
     if not res[0]:
       raise ValueError(res[1])
     return v
 
   @validator('reference_vars')
   def validate_reference(cls, v):
-    res = validate_ref_vars(flatten_variation(v))
+    res = validate_ref_vars(v, flatten_variation(v))
     if not res[0]:
       raise ValueError(res[1])
     return v
