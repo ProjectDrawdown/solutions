@@ -44,7 +44,6 @@ class Workbook(Base):
   end_year = Column(Integer)
   variations = Column(ARRAY(JSONB))
   has_run = Column(Boolean, default=False)
-  vma_sources = Column(JSONB)
 
   @validates('data')
   def validate_data(self, key, value):

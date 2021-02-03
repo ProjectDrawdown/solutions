@@ -55,7 +55,9 @@ async def get_workbook_by_id(id: int, db: Session = Depends(get_db)):
     raise HTTPException(status_code=400, detail="Workbook not found")
   return workbook
 
-@router.get("/workbooks/{user_id}", response_model=List[schemas.WorkbookOut], summary="use 'default' for unowned workbooks")
+@router.get("/workbooks/{user_id}", 
+  response_model=List[schemas.WorkbookOut], 
+  summary="use 'default' for unowned workbooks")
 async def get_all_workbooks_by_user(user_id: Union[int, Literal['default']], db: Session = Depends(get_db)):
   if user_id == 'default':
     return workbooks_by_default_user(db)
@@ -154,6 +156,7 @@ async def add_workbook_variation(
 
   if variation_patch:
     variation = {
+      'vma_sources': variation_patch.vma_sources,
       'scenario_vars': variation_patch.scenario_vars,
       'reference_vars': variation_patch.reference_vars,
       'scenario_parent_path': variation_patch.scenario_parent_path,
