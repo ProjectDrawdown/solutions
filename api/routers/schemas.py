@@ -24,8 +24,8 @@ class GoogleUser(BaseModel):
   name: str
   company: str = None
   location: str = None
-  email: str
-  picture: str
+  email: str = None
+  picture: str = None
 
 class User(BaseModel):
   id: Optional[int]
@@ -35,6 +35,7 @@ class User(BaseModel):
   location: str = None
   email: str
   picture: str = None
+  meta: Dict[Any, Any] = {}
   class Config:
     orm_mode = True
 
@@ -43,6 +44,7 @@ class UserPatch(BaseModel):
   company: str = None
   location: str = None
   picture: str = None
+  meta: Dict[Any, Any] = None
   class Config:
     orm_mode = True
 

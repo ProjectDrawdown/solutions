@@ -74,11 +74,11 @@ async def get_by_id(entity: EntityName, id: int, db: Session = Depends(get_db)):
 async def get_by_name(entity: EntityName, name: str, db: Session = Depends(get_db)):
   return get_entities_by_name(db, name, entity_mapping[entity])
 
-@router.get('/resource/{entity}s/full/', response_model=List[schemas.ResourceOut])
+@router.get('/resource/{entity}s/full', response_model=List[schemas.ResourceOut])
 async def get_all(entity: EntityName, db: Session = Depends(get_db)):
   return all_entities(db, entity_mapping[entity])
 
-@router.get('/resource/{entity}s/paths/', response_model=List[str])
+@router.get('/resource/{entity}s/paths', response_model=List[str])
 async def get_all_paths(entity: EntityName, db: Session = Depends(get_db)):
   return all_entity_paths(db, entity, entity_mapping[entity])
 
@@ -100,7 +100,7 @@ async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = D
 
   return save_variation(db, cloned_variation)
 
-@router.post('/variation/', response_model=schemas.VariationOut)
+@router.post('/variation', response_model=schemas.VariationOut)
 async def post_variation(variation: schemas.VariationIn, db: Session = Depends(get_db)):
   new_variation = models.Variation(
     name = variation.name,
@@ -112,7 +112,7 @@ async def post_variation(variation: schemas.VariationIn, db: Session = Depends(g
   new_variation.data['reference_vars'] = variation.reference_vars
   return save_variation(db, new_variation)
 
-@router.get("/initialize/")
+@router.get("/initialize")
 async def initialize(db: Session = Depends(get_db)):
   if db.query(models.VMA).count() > 0:
     if settings.is_production:
@@ -133,6 +133,7 @@ async def initialize(db: Session = Depends(get_db)):
         "reference_parent_path": reference.path,
         "scenario_vars": {},
         "reference_vars": {},
+        "vma_sources": {}
       }
     )
     save_variation(db, variation)
@@ -145,8 +146,7 @@ async def initialize(db: Session = Depends(get_db)):
       end_year = 2050,
       variations = [
         variation_dict
-      ],
-      vma_sources = {}
+      ]
     )
     db_workbook = save_workbook(db, workbook)
 
@@ -176,25 +176,3 @@ async def initialize(db: Session = Depends(get_db)):
     )
     db.add(vma_csv)
   db.commit()
-
-@router.get("/technology/meta_info/{technology}")
-async def technology_meta_info(technology: str):
-  paths = varProjectionNamesPaths + varRefNamesPaths
-  importname = 'solution.' + technology
-  m = importlib.import_module(importname)
-  result = []
-  for path in paths:
-    vma_titles = get_vma_for_param(path[0])
-    for title in vma_titles:
-      vma_file = m.VMAs.get(title)
-      if vma_file and vma_file.filename:
-        db_file = get_entity_by_name(db, f'solution/{technology}/{vma_file.filename.name}', VMA)
-        if db_file:
-          result.append({
-            'var': path[0],
-            'vma_title': title,
-            'vma_filename': vma_file.filename.name,
-            'path': db_file.path,
-            'file': db_file,
-          })
-  return result

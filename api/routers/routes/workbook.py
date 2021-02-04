@@ -64,7 +64,7 @@ async def get_all_workbooks_by_user(user_id: Union[int, Literal['default']], db:
   else:
     return workbooks_by_user_id(db, user_id)
 
-@router.get("/workbooks/", response_model=List[schemas.WorkbookOut])
+@router.get("/workbooks", response_model=List[schemas.WorkbookOut])
 async def get_all_workbooks(db: Session = Depends(get_db)):
   return all_workbooks(db)
 
@@ -81,7 +81,7 @@ async def fork_workbook(
   saved_workbook = save_workbook(db, cloned_workbook)
   return saved_workbook
 
-@router.post("/workbook/", response_model=schemas.WorkbookOut)
+@router.post("/workbook", response_model=schemas.WorkbookOut)
 async def create_workbook(
   workbook: schemas.WorkbookNew,
   db_active_user: DBUser = Depends(get_current_active_user),
