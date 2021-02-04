@@ -14,7 +14,7 @@ from api.config import get_settings, RedisSettings
 from api import config
 
 settings = get_settings()
-origins = settings.client_url
+origins = ["http://localhost:3000", settings.client_url]
 
 from api.routers.routes import (
     account,

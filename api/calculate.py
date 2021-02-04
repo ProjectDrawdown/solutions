@@ -39,7 +39,7 @@ def to_json(scenario, regions):
     json_data = dict()
     instance_vars = vars(scenario).keys()
     metadata = {}
-      
+
     if getattr(scenario, 'ad', None):
       metadata['ad_data_sources'] = map_to_json(getattr(scenario.ad, 'data_sources', None))
     if getattr(scenario, 'tm', None):
