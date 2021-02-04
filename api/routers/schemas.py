@@ -24,8 +24,8 @@ class GoogleUser(BaseModel):
   name: str
   company: str = None
   location: str = None
-  email: str
-  picture: str
+  email: str = None
+  picture: str = None
 
 class User(BaseModel):
   id: Optional[int]
@@ -35,6 +35,7 @@ class User(BaseModel):
   location: str = None
   email: str
   picture: str = None
+  meta: Dict[Any, Any] = {}
   class Config:
     orm_mode = True
 
@@ -43,6 +44,7 @@ class UserPatch(BaseModel):
   company: str = None
   location: str = None
   picture: str = None
+  meta: Dict[Any, Any] = None
   class Config:
     orm_mode = True
 
@@ -70,6 +72,13 @@ class VariationOut(ResourceOut):
         "id": 21,
         "name": 'example',
         "data": {
+          "vma_sources": {
+            "scenario_vars.technologies.biogas.fixed_oper_cost_per_iunit.value": {
+              "source": "IPCC (2014) WG3 AR5, Coal - PC, min   (Table A.III.1)",
+              "use_corrected": True,
+              "weighted": True
+            }
+          },
           "scenario_vars": {
             "technologies": {
               "biogas": {
@@ -105,7 +114,7 @@ class VariationIn(ResourceIn):
   reference_parent_path: str
   scenario_vars: Dict[str, Any]
   reference_vars: Dict[str, Any]
-
+  vma_sources: Dict[str, Any]
   @validator('scenario_vars')
   def validate_scenario(cls, v):
     res = validate_scenario_vars(v, flatten_variation(v))
@@ -123,6 +132,13 @@ class VariationIn(ResourceIn):
   class Config:
     schema_extra = {
         "example": {
+            "vma_sources": {
+                "scenario_vars.technologies.biogas.fixed_oper_cost_per_iunit.value": {
+                  "source": "",
+                  "use_corrected": True,
+                  "weighted": True
+                }
+              },
             "scenario_parent_path": get_resource_path('scenario', 0),
             "reference_parent_path": get_resource_path('reference', 0),
             "scenario_vars": {
@@ -170,7 +186,6 @@ class WorkbookNew(BaseModel):
   start_year: int
   end_year: int
   regions: region_type
-  vma_sources: dict
   class Config:
     orm_mode = True
     schema_extra = {
@@ -192,13 +207,6 @@ class WorkbookNew(BaseModel):
         },
         "start_year": 2020,
         "end_year": 2050,
-        "vma_sources": {
-          "scenario_vars.technologies.biogas.fixed_oper_cost_per_iunit.value": {
-            "source": "IPCC (2014) WG3 AR5, Coal - PC, min   (Table A.III.1)",
-            "use_corrected": True,
-            "weighted": True
-          }
-        },
       }
     }
 
@@ -208,7 +216,6 @@ class WorkbookPatch(BaseModel):
   ui: Optional[dict]
   start_year: Optional[int]
   end_year: Optional[int]
-  vma_sources: Optional[dict]
   class Config:
     orm_mode = True
     schema_extra = {
@@ -223,14 +230,7 @@ class WorkbookPatch(BaseModel):
           "quickVariables": [
             'technologies.biogas.fixed_oper_cost_per_iunit',
           ],
-        },
-        "vma_sources": {
-          "scenario_vars.technologies.biogas.fixed_oper_cost_per_iunit.value": {
-            "source": "IPCC (2014) WG3 AR5, Coal - PC, min   (Table A.III.1)",
-            "use_corrected": True,
-            "weighted": True
-          }
-        },
+        }
       }
     }
 
@@ -246,7 +246,6 @@ class WorkbookOut(BaseModel):
   warnings: Optional[List[str]]
   variations: List[Dict[Any, Any]]
   has_run: bool
-  vma_sources: Dict[Any, Any]
   class Config:
     orm_mode = True
     schema_extra = {
@@ -268,18 +267,18 @@ class WorkbookOut(BaseModel):
         "end_year": 2050,
         "warnings": ["blah", "blah", "blah"],
         "has_run": True,
-        "vma_sources": {
-          "scenario_vars.technologies.biogas.fixed_oper_cost_per_iunit.value": {
-            "source": "IPCC (2014) WG3 AR5, Coal - PC, min   (Table A.III.1)",
-            "use_corrected": True,
-            "weighted": True
-          }
-        },
         "variations": [
           {
             "id": 21,
             "name": 'example',
             "data": {
+              "vma_sources": {
+                "scenario_vars.technologies.biogas.fixed_oper_cost_per_iunit.value": {
+                  "source": "",
+                  "use_corrected": True,
+                  "weighted": True
+                }
+              },
               "scenario_vars": {
                 "technologies": {
                   "biogas": {

@@ -46,7 +46,7 @@ async def get_vma_mappings(technology: str, db: Session = Depends(get_db)):
 async def get_vma_csv(id: str, db: Session = Depends(get_db)):
   return db.query(models.VMA_CSV).get(id)
 
-@router.post("/vma_csv/")
+@router.post("/vma_csv")
 async def post_vma_csv(
   name: str = Form(...),
   technology: str = Form(...),
@@ -66,7 +66,7 @@ async def post_vma_csv(
   db.refresh(vma_csv)
   return vma_csv
 
-@router.get("/vma/calculation/")
+@router.get("/vma/calculation")
 async def calculate_vma_groupings(
   variable: str,
   stat_correction: bool,

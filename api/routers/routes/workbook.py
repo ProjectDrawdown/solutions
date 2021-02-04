@@ -55,14 +55,16 @@ async def get_workbook_by_id(id: int, db: Session = Depends(get_db)):
     raise HTTPException(status_code=400, detail="Workbook not found")
   return workbook
 
-@router.get("/workbooks/{user_id}", response_model=List[schemas.WorkbookOut], summary="use 'default' for unowned workbooks")
+@router.get("/workbooks/{user_id}", 
+  response_model=List[schemas.WorkbookOut], 
+  summary="use 'default' for unowned workbooks")
 async def get_all_workbooks_by_user(user_id: Union[int, Literal['default']], db: Session = Depends(get_db)):
   if user_id == 'default':
     return workbooks_by_default_user(db)
   else:
     return workbooks_by_user_id(db, user_id)
 
-@router.get("/workbooks/", response_model=List[schemas.WorkbookOut])
+@router.get("/workbooks", response_model=List[schemas.WorkbookOut])
 async def get_all_workbooks(db: Session = Depends(get_db)):
   return all_workbooks(db)
 
@@ -79,7 +81,7 @@ async def fork_workbook(
   saved_workbook = save_workbook(db, cloned_workbook)
   return saved_workbook
 
-@router.post("/workbook/", response_model=schemas.WorkbookOut)
+@router.post("/workbook", response_model=schemas.WorkbookOut)
 async def create_workbook(
   workbook: schemas.WorkbookNew,
   db_active_user: DBUser = Depends(get_current_active_user),
@@ -154,6 +156,7 @@ async def add_workbook_variation(
 
   if variation_patch:
     variation = {
+      'vma_sources': variation_patch.vma_sources,
       'scenario_vars': variation_patch.scenario_vars,
       'reference_vars': variation_patch.reference_vars,
       'scenario_parent_path': variation_patch.scenario_parent_path,

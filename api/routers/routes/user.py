@@ -27,6 +27,7 @@ def patch_user(
     user.company = patch.company
     user.location = patch.location
     user.picture = patch.picture
+    user.meta = patch.meta
     return save_user(db, user)
 
 @router.get("/users", response_model=List[schemas.User])

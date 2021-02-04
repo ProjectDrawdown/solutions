@@ -37,6 +37,19 @@ def get_user_from_header(credentials: HTTPAuthorizationCredentials = Security(se
     except jwt.PyJWTError:
         raise credentials_exception
 
+def get_refresh_token_from_header(credentials: HTTPAuthorizationCredentials = Security(security)) -> str:
+    try:
+        payload = jwt.decode(
+            credentials.credentials, settings.jwt_secret_key,
+            algorithms=[settings.jwt_algorithm]
+        )
+        try:
+            return payload['refresh_token']
+        except ValidationError:
+            raise credentials_exception
+    except jwt.PyJWTError:
+        raise credentials_exception
+
 def create_access_token(*, data: User, exp: int = None) -> bytes:
     to_encode = data
     if exp is not None:
