@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from api.config import get_settings, get_db
 from api.routers.schemas import Url, User, Token, AuthorizationResponse
+from api.routers.helpers import get_refresh_token_from_header
 
 settings = get_settings()
 router = APIRouter()
@@ -39,7 +40,15 @@ def get_login_url(provider: str) -> Url:
 The client must provide the auth code from the oauth provider.
         """
         )
-async def verify_authorization( body: AuthorizationResponse, provider: str, db: Session = Depends(get_db)) -> Token:
+async def verify_authorization(body: AuthorizationResponse, provider: str, db: Session = Depends(get_db)) -> Token:
     importname = 'api.routers.providers.' + provider
     provider_module = importlib.import_module(importname)
     return await provider_module.exchange_code(body, db)
+
+@router.post("/refresh-token/{provider}",
+        summary="Creates a new jwt using the refresh oauth api."
+        )
+async def refresh_token(provider: str, refresh_token: str = Depends(get_refresh_token_from_header), db: Session = Depends(get_db)):
+    importname = 'api.routers.providers.' + provider
+    provider_module = importlib.import_module(importname)
+    return await provider_module.refresh_code(refresh_token, db)

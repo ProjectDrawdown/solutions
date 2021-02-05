@@ -50,7 +50,7 @@ async def get_vma_mappings(technology: str, db: Session = Depends(get_db)):
 async def get_vma_csv(id: str, db: Session = Depends(get_db)):
   return db.query(models.VMA_CSV).get(id)
 
-@router.post("/vma_csv/",
+@router.post("/vma_csv",
         summary="Upload a custom VMA CSV"
         )
 async def post_vma_csv(
@@ -72,7 +72,7 @@ async def post_vma_csv(
   db.refresh(vma_csv)
   return vma_csv
 
-@router.get("/vma/calculation/",
+@router.get("/vma/calculation",
         summary="Get VMA calculation",
         description="For a given variable, calculate the VMA values from the corresponding CSVs. This will return low, mean, and high values for the variable, as well as the source name and path"
         )

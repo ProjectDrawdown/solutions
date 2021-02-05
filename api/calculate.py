@@ -50,7 +50,36 @@ def to_json(scenario, regions):
     if getattr(scenario, 'ref_ca', None):
       metadata['ref_ca_data_sources'] = map_to_json(getattr(scenario.ref_ca, 'data_sources', None))
 
+
+    if getattr(scenario, 'ua'):
+      j = json.loads(scenario.ua.soln_ref_funits_adopted.to_json())
+      json_data['soln_ref_funits_adopted'] = { region: j[region] for region in regions }
+      j = json.loads(scenario.ua.soln_pds_funits_adopted.to_json())
+      json_data['soln_pds_funits_adopted'] = { region: j[region] for region in regions }
+      j = json.loads(scenario.ua.ref_tam_per_region.to_json())
+      json_data['ref_total_adoption_units'] = { region: j[region] for region in regions }
+      j = json.loads(scenario.ua.pds_tam_per_region.to_json())
+      json_data['pds_total_adoption_units'] = { region: j[region] for region in regions }
+      j = json.loads(scenario.ua.pds_tam_per_region.to_json())
+      json_data['pds_tam_per_region'] = { region: j[region] for region in regions }
+      j = json.loads(scenario.ua.ref_tam_per_region.to_json())
+      json_data['ref_tam_per_region'] = { region: j[region] for region in regions }
+    if getattr(scenario, 'ht'):
+      j = json.loads(scenario.ht.pds_adoption_data_per_region.to_json())
+      json_data['pds_adoption_data_per_region'] = { region: j[region] for region in regions }
+    if getattr(scenario, 'c2'):
+      j = json.loads(scenario.c2.co2_mmt_reduced().to_json())
+      json_data['co2_mmt_reduced'] = { region: j[region] for region in regions }
+
+    try:
+      if getattr(scenario, 'oc'):
+        json_data['soln_net_cash_flow'] = json.loads(scenario.oc.soln_net_cash_flow().to_json())
+    except:
+      json_data['soln_net_cash_flow'] = None
+
     for iv in instance_vars:
+      if iv in ['tm', 'ae', 'ad', 'ua']:
+        continue
       try:
           obj = getattr(scenario, iv)
           if issubclass(type(obj), DataHandler):
@@ -189,7 +218,11 @@ async def find_diffs(prev_result_list, tech, json_result, key_hash, key_list, ca
     key_list.append([tech, json_result['name'], key_hash, False])
 
 async def process_tech_calc(json_result, key_hash, prev_results, tech, key_list, cache, websocket, do_diffs: bool):
-  str_json_result = json.dumps(json_result)
+  try:
+    str_json_result = json.dumps(json_result)
+  except:
+    str_json_result = json.dumps({"error": str(json_result)})
+
   if websocket:
     await websocket.send_text(str_json_result)
   await cache.set(key_hash, str_json_result)

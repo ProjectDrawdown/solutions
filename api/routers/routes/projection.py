@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 import fastapi_plugins
 import aioredis
 import json
 
 from api.config import get_settings, get_db, AioWrap, get_resource_path
 from api.routers import schemas
+from api.db import models
 
 settings = get_settings()
 router = APIRouter()
@@ -63,4 +65,23 @@ async def get_projection_summary(
       summary[tech['technology']]['co2_mmt_reduced'] = tech_results['data']['c2']['co2_mmt_reduced']
 
   return summary
+
+@router.get("/technology/meta_info/{technology}",
+        summary="Returns the metadata for technology: ad_data_sources, tam_pds_data_sources, pds_ca_data_sources, ref_ca_data_sources."
+        )
+async def technology_meta_info(
+  technology: str,
+  db: Session = Depends(get_db),
+  cache: aioredis.Redis=Depends(fastapi_plugins.depends_redis)):
+
+  workbook = db.query(models.Workbook).filter(models.Workbook.has_run==True).first()
+  cache_key = f'workbook-{workbook.id}-{workbook.version}'
+
+  cached_run = json.loads(await cache.get(cache_key))
+
+  tech_result = next(filter(lambda r: r['technology']==technology, cached_run['results']))
+
+  tech_json = json.loads(await cache.get(tech_result['hash']))
+
+  return tech_json['metadata']
 

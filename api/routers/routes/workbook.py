@@ -59,15 +59,14 @@ async def get_workbook_by_id(id: int, db: Session = Depends(get_db)):
 
 @router.get("/workbooks/{user_id}", response_model=List[schemas.WorkbookOut],
         summary="Get workbooks for a given user id",
-        description="NOTE: use 'default' for unowned workbooks"
-        )
+        description="NOTE: use 'default' for unowned workbooks")
 async def get_all_workbooks_by_user(user_id: Union[int, Literal['default']], db: Session = Depends(get_db)):
   if user_id == 'default':
     return workbooks_by_default_user(db)
   else:
     return workbooks_by_user_id(db, user_id)
 
-@router.get("/workbooks/", response_model=List[schemas.WorkbookOut],
+@router.get("/workbooks", response_model=List[schemas.WorkbookOut],
         summary="Get all workbooks"
         )
 async def get_all_workbooks(db: Session = Depends(get_db)):
@@ -88,7 +87,7 @@ async def fork_workbook(
   saved_workbook = save_workbook(db, cloned_workbook)
   return saved_workbook
 
-@router.post("/workbook/", response_model=schemas.WorkbookOut,
+@router.post("/workbook", response_model=schemas.WorkbookOut,
         summary="Create a new workbook",
         description="Note: the example request body needs to include scenario and reference paths that actually exist. Find this at `GET /resource/scenarios/paths`, and `GET /resource/references/paths`."
         )
@@ -185,6 +184,7 @@ async def add_workbook_variation(
 
   if variation_patch:
     variation = {
+      'vma_sources': variation_patch.vma_sources,
       'scenario_vars': variation_patch.scenario_vars,
       'reference_vars': variation_patch.reference_vars,
       'scenario_parent_path': variation_patch.scenario_parent_path,

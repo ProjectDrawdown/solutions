@@ -27,6 +27,7 @@ class User(Base):
   picture = Column(String)
   is_active = Column(Boolean, default=True)
   role = Column(Enum(UserRole), default=UserRole.default)
+  meta = Column(JSONB)
   workbooks = relationship("Workbook", back_populates="author")
   vma_csvs = relationship("VMA_CSV", back_populates="author")
 
@@ -44,7 +45,6 @@ class Workbook(Base):
   end_year = Column(Integer)
   variations = Column(ARRAY(JSONB))
   has_run = Column(Boolean, default=False)
-  vma_sources = Column(JSONB)
 
   @validates('data')
   def validate_data(self, key, value):
