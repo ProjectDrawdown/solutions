@@ -95,19 +95,18 @@ GOOGLE_CLIENT_SECRET=somegoogleclientsecret
 JWT_SECRET_KEY=somejwtsecretkey
 ```
 
-## Getting started with Docker (to be updated when returning to github!!!!)
+## Getting started with Docker
 
 If you have docker and docker-compose installed, you should be able to get started fairly quickly, following these steps:
 
-1. ```$ cp docker-compose.yml.local.example docker-compose.yml```
-2. ```$ docker-compose build``` to build the docker containers
-3. and then ```$ docker-compose up``` to run the project
+`$ cp docker-compose.yml.local.example docker-compose.yml`
+`$ docker-compose build` to build the docker containers
 
-## Getting started without Docker (to be updated when returning to github!!!!)
+## Getting started without Docker
 
-1. You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Python 3](https://docs.python.org/3/using/index.html) (>= 3.8) installed. You will need [Postgres](https://www.postgresql.org/) and [Redis](https://redis.io/) running.
+You will need [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Python 3](https://docs.python.org/3/using/index.html) (>= 3.8) installed. You will need [Postgres](https://www.postgresql.org/) and [Redis](https://redis.io/) running.
 
-2. Python 3.8
+Python 3.8
 ```sh
 $ pipenv shell
 # Or assuming you have multiple versions installed use the following 
@@ -116,27 +115,66 @@ $ pipenv --python /Users/sam/.pyenv/versions/3.8.6/bin/python shell
 $ pip install -r requirements.txt
 ```
 
-3. Database Setup
-You'll need to have postgres running. You'll want a valid connection string contained in `api/.env` for `DATABASE_URL`. Using `pipenv shell` run the following to apply existing migrations:
+## Database Creation
+You will need to have postgres running and you will need the psql program.
+```sh
+$ psql -h 0.0.0.0 -p 5432 -U postgres
+postgres=# CREATE DATABASE drawdown;
+```
+
+## Running the project with Docker
+`$ docker-compose up` to run the project
+
+## Running the project without Docker
+
+### Without docker, you will need to do a database setup
+
+You will need to have postgres running. You will want a valid connection string contained in `api/.env` for `DATABASE_URL`. Using `pipenv shell` run the following to apply existing migrations:
 ```sh
 $ alembic upgrade head
 ```
 
-4. Schema Updates
+And finally, to run the API:
+```sh
+$ uvicorn api.service:app --reload
+```
+
+## Schema Updates
 When changing models in `api/db/models.py` run the following to create migrations:
 ```sh
 $ alembic revision -m "add provider column" --autogenerate
 ```
 
-Apply changes
+Note: if you are not using docker-compose, you will need to manually run:
+
 ```sh
 $ alembic upgrade head
 ```
 
-5. To run the API
-```sh
-$ uvicorn api.service:app --reload
+### Initializing the data
+
+To create the default workbooks, use the `GET /initialize` endpoint. This will generate a variety of data, including the 3 Drawdown canonical workbooks. This will also load some CSVs into the database for easy retrieval, and provide the data for the `/resource/{path}` endpoints.
+
+To improve performance for the app, it is recommended you run the `GET /calculate` endpoint for the 3 canonical workbooks as a first step, as this will cache results for all the technologies for the workbooks. Any variation updates, when calculated, will take advantage of this initial cache as much as possible.
+
+### Some gotchas
+
+When updating variation values, you may find you need to update like this:
+
 ```
+"some_solution_variable": 1234.56
+```
+
+And other times, you may find you need to update the value like this:
+
+```
+"some_different_variable": {
+  "value": 1234.56,
+  "statistic": "mean"
+}
+```
+
+This matches the existing .json files extracted from the original excel files. At some point, we may want to normalize all values to the second option, but for now just keep in mind you will need to know when to use which. You can access the `resource/scenario/{id}` endpoint to determine which format to send.
 
 ---
 
