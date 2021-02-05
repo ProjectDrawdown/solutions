@@ -19,17 +19,26 @@ async def for_dev_only_will_remove2(code: str, db: Session = Depends(get_db)):
     body = AuthorizationResponse(code=code, state=0)
     return await verify_authorization(body, default_provider, db)
 
-@router.get('/login')
+@router.get('/login',
+        summary="Get login url from default provider"
+        )
 def get_login_url_default() -> Url:
     return get_login_url(default_provider)
 
-@router.get('/login/{provider}')
+@router.get('/login/{provider}',
+        summary="Get login url from given provider"
+        )
 def get_login_url(provider: str) -> Url:
     importname = 'api.routers.providers.' + provider
     provider_module = importlib.import_module(importname)
     return provider_module.login_url()
 
-@router.post('/authorize/{provider}')
+@router.post('/authorize/{provider}',
+        summary="Get jwt for a given provider",
+        description="""
+The client must provide the auth code from the oauth provider.
+        """
+        )
 async def verify_authorization( body: AuthorizationResponse, provider: str, db: Session = Depends(get_db)) -> Token:
     importname = 'api.routers.providers.' + provider
     provider_module = importlib.import_module(importname)
