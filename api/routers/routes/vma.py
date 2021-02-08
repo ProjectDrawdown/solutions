@@ -20,7 +20,9 @@ settings = get_settings()
 router = APIRouter()
 default_provider = settings.default_provider
 
-@router.get("/vma/mappings/{technology}")
+@router.get("/vma/mappings/{technology}",
+        summary="Get VMA mappings for a given technology"
+        )
 async def get_vma_mappings(technology: str, db: Session = Depends(get_db)):
   paths = varProjectionNamesPaths + varRefNamesPaths
   importname = 'solution.' + technology
@@ -42,11 +44,15 @@ async def get_vma_mappings(technology: str, db: Session = Depends(get_db)):
           })
   return result
 
-@router.get("/vma_csv/{id}")
+@router.get("/vma_csv/{id}",
+        summary="Retrieve a VMA CSV with the given id"
+        )
 async def get_vma_csv(id: str, db: Session = Depends(get_db)):
   return db.query(models.VMA_CSV).get(id)
 
-@router.post("/vma_csv")
+@router.post("/vma_csv",
+        summary="Upload a custom VMA CSV"
+        )
 async def post_vma_csv(
   name: str = Form(...),
   technology: str = Form(...),
@@ -66,13 +72,16 @@ async def post_vma_csv(
   db.refresh(vma_csv)
   return vma_csv
 
-@router.get("/vma/calculation")
+@router.get("/vma/calculation",
+        summary="Get VMA calculation",
+        description="For a given variable, calculate the VMA values from the corresponding CSVs. This will return low, mean, and high values for the variable, as well as the source name and path"
+        )
 async def calculate_vma_groupings(
   variable: str,
   stat_correction: bool,
   use_weight: bool,
   db: Session = Depends(get_db)):
-  
+
   vma_csvs = db.query(models.VMA_CSV).filter(
     models.VMA_CSV.variable==variable
   ).all()
