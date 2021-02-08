@@ -35,7 +35,7 @@ class User(BaseModel):
   location: str = None
   email: str
   picture: str = None
-  meta: Dict[Any, Any] = {}
+  meta: Optional[Dict[Any, Any]] = {}
   class Config:
     orm_mode = True
 
