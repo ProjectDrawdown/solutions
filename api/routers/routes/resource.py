@@ -97,6 +97,8 @@ async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = D
     cloned_variation.data['scenario_vars'] = patch.scenario_vars
   if patch.reference_vars is not None:
     cloned_variation.data['reference_vars'] = patch.reference_vars
+  if patch.vma_sources is not None:
+    cloned_variation.data['vma_sources'] = patch.reference_vars
 
   return save_variation(db, cloned_variation)
 
@@ -110,6 +112,7 @@ async def post_variation(variation: schemas.VariationIn, db: Session = Depends(g
   new_variation.data['reference_parent_path'] = variation.reference_parent_path
   new_variation.data['scenario_vars'] = variation.scenario_vars
   new_variation.data['reference_vars'] = variation.reference_vars
+  new_variation.data['vma_sources'] = variation.vma_sources
   return save_variation(db, new_variation)
 
 @router.get("/initialize")

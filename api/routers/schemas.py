@@ -161,6 +161,7 @@ class VariationPatch(ResourceIn):
   reference_parent_path: Optional[str]
   scenario_vars: Optional[Dict[str, Any]]
   reference_vars: Optional[Dict[str, Any]]
+  vma_sources: Optional[Dict[str, Any]]
   class Config:
     schema_extra = {
       "example": {

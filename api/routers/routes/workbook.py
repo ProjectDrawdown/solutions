@@ -207,10 +207,6 @@ async def publish_variation(
     name = info.name,
     data = variation,
   )
-  # new_variation.data['scenario_parent_path'] = variation.scenario_parent_path
-  # new_variation.data['reference_parent_path'] = variation.reference_parent_path
-  # new_variation.data['scenario_vars'] = variation.scenario_vars
-  # new_variation.data['reference_vars'] = variation.reference_vars
   return save_variation(db, new_variation)
 
 @router.get("/calculate", response_model=schemas.CalculationResults)
