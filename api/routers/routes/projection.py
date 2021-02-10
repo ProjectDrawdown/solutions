@@ -53,8 +53,13 @@ async def get_projection_summary(
     hash = tech['hash']
     tech_results = json.loads(await cache.get(hash))
     summary[tech['technology']] = {}
-    if tech_results['data']['c2'] and tech_results['data']['c2']['co2_mmt_reduced']:
-      summary[tech['technology']]['co2_mmt_reduced'] = tech_results['data']['c2']['co2_mmt_reduced']
+    if getattr(tech_results, 'data', None):
+      if tech_results['data']['c2'] and tech_results['data']['c2']['co2_mmt_reduced']:
+        summary[tech['technology']]['co2_mmt_reduced'] = tech_results['data']['c2']['co2_mmt_reduced']
+      if tech_results['data']['soln_ref_funits_adopted']:
+        summary[tech['technology']]['soln_ref_funits_adopted'] = tech_results['data']['soln_ref_funits_adopted']
+      if tech_results['data']['soln_pds_funits_adopted']:
+        summary[tech['technology']]['soln_pds_funits_adopted'] = tech_results['data']['soln_pds_funits_adopted']
 
   return summary
 
