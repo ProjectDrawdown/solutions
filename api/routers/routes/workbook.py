@@ -48,27 +48,33 @@ settings = get_settings()
 router = APIRouter()
 default_provider = settings.default_provider
 
-@router.get("/workbook/{id}", response_model=schemas.WorkbookOut)
+@router.get("/workbook/{id}", response_model=schemas.WorkbookOut,
+        summary="Get workbook for a given workbook id"
+        )
 async def get_workbook_by_id(id: int, db: Session = Depends(get_db)):
   workbook = workbook_by_id(db, id)
   if not workbook:
     raise HTTPException(status_code=400, detail="Workbook not found")
   return workbook
 
-@router.get("/workbooks/{user_id}", 
-  response_model=List[schemas.WorkbookOut], 
-  summary="use 'default' for unowned workbooks")
+@router.get("/workbooks/{user_id}", response_model=List[schemas.WorkbookOut],
+        summary="Get workbooks for a given user id",
+        description="NOTE: use 'default' for unowned workbooks")
 async def get_all_workbooks_by_user(user_id: Union[int, Literal['default']], db: Session = Depends(get_db)):
   if user_id == 'default':
     return workbooks_by_default_user(db)
   else:
     return workbooks_by_user_id(db, user_id)
 
-@router.get("/workbooks", response_model=List[schemas.WorkbookOut])
+@router.get("/workbooks", response_model=List[schemas.WorkbookOut],
+        summary="Get all workbooks"
+        )
 async def get_all_workbooks(db: Session = Depends(get_db)):
   return all_workbooks(db)
 
-@router.post("/workbook/{id}", response_model=schemas.WorkbookOut)
+@router.post("/workbook/{id}", response_model=schemas.WorkbookOut,
+        summary="Fork a workbook with the given workbook id"
+        )
 async def fork_workbook(
     id: int,
     db_active_user: DBUser = Depends(get_current_active_user),
@@ -81,7 +87,10 @@ async def fork_workbook(
   saved_workbook = save_workbook(db, cloned_workbook)
   return saved_workbook
 
-@router.post("/workbook", response_model=schemas.WorkbookOut)
+@router.post("/workbook", response_model=schemas.WorkbookOut,
+        summary="Create a new workbook",
+        description="Note: the example request body needs to include scenario and reference paths that actually exist. Find this at `GET /resource/scenarios/paths`, and `GET /resource/references/paths`."
+        )
 async def create_workbook(
   workbook: schemas.WorkbookNew,
   db_active_user: DBUser = Depends(get_current_active_user),
@@ -101,7 +110,14 @@ async def create_workbook(
   saved_workbook = save_workbook(db, dbworkbook)
   return saved_workbook
 
-@router.patch("/workbook/{id}", response_model=schemas.WorkbookOut)
+@router.patch("/workbook/{id}", response_model=schemas.WorkbookOut,
+        summary="Update a workbook",
+        description="""
+When you update a workbook, this endpoint will return the new workbook which will have its workbook version incremented by one.
+
+Note that updating a workbook does not calculate the workbook. See `GET /calculate`
+        """
+        )
 async def update_workbook(
   id: int,
   workbook_edits: schemas.WorkbookPatch,
@@ -123,7 +139,12 @@ async def update_workbook(
 def replace(arr: List[Any], index: int, item: Any):
   return arr[:index] + [item] + arr[index+1:]
 
-@router.patch("/workbook/{id}/variation/{variation_index}", response_model=schemas.WorkbookOut)
+@router.patch("/workbook/{id}/variation/{variation_index}", response_model=schemas.WorkbookOut,
+        summary="Patch a workbook variation",
+        description="""
+Patching a workbook variation expects a request body matching the below example.
+        """
+        )
 async def update_workbook_variation(
   id: int,
   variation_index: int,
@@ -145,7 +166,14 @@ async def update_workbook_variation(
   response.warnings = warnings
   return response
 
-@router.post("/workbook/{id}/variation", response_model=schemas.WorkbookOut)
+@router.post("/workbook/{id}/variation", response_model=schemas.WorkbookOut,
+        summary="Create a workbook variation",
+        description="""
+Validations will be performed on any vars that are patched here.
+
+You can either pass the variation body or an existing variation path (`GET /resources/variations/paths`).
+        """
+        )
 async def add_workbook_variation(
   id: int,
   variation_path: Optional[str] = None,
@@ -182,7 +210,9 @@ async def add_workbook_variation(
 def without(arr: List[Any], index: int):
   return arr[:index] + arr[index+1:]
 
-@router.delete("/workbook/{id}/variation/{variation_index}", response_model=schemas.WorkbookOut)
+@router.delete("/workbook/{id}/variation/{variation_index}", response_model=schemas.WorkbookOut,
+        summary="Delete a workbook variation"
+        )
 async def delete_workbook_variation(
   id: int,
   variation_index: int,
@@ -194,7 +224,14 @@ async def delete_workbook_variation(
   saved_db_workbook = save_workbook(db, db_workbook)
   return saved_db_workbook
 
-@router.post("/workbook/{id}/variation/{variation_index}", response_model=schemas.VariationOut)
+@router.post("/workbook/{id}/variation/{variation_index}", response_model=schemas.VariationOut,
+        summary="Publish a variation",
+        description="""
+Publishing a workbook variation allows others to build off of your work.
+
+A clone of your variation object will be added to `GET /resources/variations/all`.
+        """
+        )
 async def publish_variation(
   id: int,
   variation_index: int,
@@ -209,7 +246,11 @@ async def publish_variation(
   )
   return save_variation(db, new_variation)
 
-@router.get("/calculate", response_model=schemas.CalculationResults)
+@router.get("/calculate", response_model=schemas.CalculationResults,
+        summary="""
+Calculate a given variation at the variation index of the given workbook id.
+        """
+        )
 async def get_calculate(
   workbook_id: int,
   variation_index: int,

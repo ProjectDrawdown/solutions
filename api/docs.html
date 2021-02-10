@@ -1,6 +1,42 @@
+<h2>
+Welcome to the Drawdown API automated documentation.
+</h2>
+
+<h3>What's this all about anyway?</h3>
+
 <p>
-Welcome to the Project Drawdown API automated documentation.
+Drawdown is a nonprofit organization that has published the book "Drawdown" and seeks to help the world reach “Drawdown”— the future point in time when levels of greenhouse gases in the atmosphere stop climbing and start to steadily decline.
 </p>
+
+<p>
+To that end, Drawdown has developed prediction model using detailed and comprehensive datasets in order to help determine what the world needs to do to reach Drawdown. This model is intended to be the most comprehensive database of climate change solutions in the world.
+</p>
+
+<p>
+This software provides a web interface to that model, allowing the user to change inputs to the model and run the calculations in order to experiment with predictions the model returns, and allows users to share and build off each other's work.
+</p>
+
+<h4>Glossary</h4>
+<ul>
+  <li>
+    <b>Technology</b> - A technology solution is a potential solution for a particular climate problem. For instance, the technology "Electric Cars" attempts to solve the problem of fossil-fuel-based urban transportation.
+  </li>
+  <li>
+    <b>Scenario</b> - A scenario is a set of technologies and a default set of input values. There are 3 "canonical" scenarios: Plausible, Drawdown, and Optimistic, also known as PDS1, PDS2, and PDS3.
+  </li>
+  <li>
+    <b>Reference</b> - A reference is a set of values that give the model a baseline with which to compare the scenario values to. This can be considered the outcome of doing nothing.
+  </li>
+  <li>
+    <b>Variable Meta-Analysis (VMA)</b> - VMA data exists for several input values. This data is collected from a variety of academic and commercial sources, and are used to acheive the most accurate prognostications. 
+  </li>
+  <li>
+    <b>Total Addressable Market (TAM)</b> - TAM data exists to ensure that a calculation for a given technology does not exceed the total market size for that sector.
+  </li>
+  <li>
+    <b>Adoption Data</b> - Adoption data exists to help the calculations with accuracy on how quickly the technology could be adopted.
+  </li>
+</ul>
 
 <h3>Authentication</h3>
 
@@ -17,6 +53,8 @@ After authenticating with the OAuth provider, the redirect (.env configurable) w
 </p>
 
 <h3>Workbooks</h3>
+
+A Workbook will contain the work done for a given Scenario and Reference. Values that you change are contained in Variations. A Workbook can contain one or more Variations. A user can create multiple Workbooks.
 
 <p>
 To create a new workbook, <code>POST /workbook</code> with a request body as shown in the example below.

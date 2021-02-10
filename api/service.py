@@ -29,7 +29,7 @@ with open('./api/docs.html', 'r') as f:
     docs = f.read()
 
 app = FastAPI(
-        title="Project Drawdown API",
+        title="Drawdown API",
         description=docs,
         version="1.0"
         )

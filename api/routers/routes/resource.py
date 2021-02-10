@@ -13,7 +13,7 @@ from api.routers import schemas
 from api.queries.resource_queries import (
   get_entity,
   get_entities_by_name,
-  save_entity, 
+  save_entity,
   all_entities,
   all_entity_paths,
   clone_variation,
@@ -25,8 +25,8 @@ from api.queries.workbook_queries import (
   save_workbook
 )
 from api.transform import (
-  transform, 
-  rehydrate_legacy_json, 
+  transform,
+  rehydrate_legacy_json,
   populate,
   convert_vmas_to_binary
 )
@@ -58,31 +58,47 @@ class EntityName(str, Enum):
     ca_ref = "ca_ref"
 
 
-@router.get('/resource/vma/info/{technology}')
+@router.get('/resource/vma/info/{technology}',
+        summary="Get the VMA info for a given technology",
+        description="VMA info exists when VMA sources cannot be viewed. Note that there may not be existing VMA info for every technology."
+        )
 async def get_vma_info(technology: str, db: Session = Depends(get_db)):
   return get_entities_by_name(db, f'solution/{technology}/VMA_info.csv', models.VMA)
 
-@router.get('/resource/vma/all/{technology}')
+@router.get('/resource/vma/all/{technology}',
+        summary="Get all the VMA data for a given technology",
+        description="Returns all VMA data for a technology"
+        )
 async def get_vma_all(technology: str, db: Session = Depends(get_db)):
   return get_entities_by_name(db, f'solution/{technology}/%.csv', models.VMA)
 
-@router.get('/resource/{entity}/{id}', response_model=schemas.ResourceOut)
+@router.get('/resource/{entity}/{id}', response_model=schemas.ResourceOut,
+        summary="Get resource entity by id"
+        )
 async def get_by_id(entity: EntityName, id: int, db: Session = Depends(get_db)):
   return get_entity(db, id, entity_mapping[entity])
 
-@router.get('/resource/{entity}', response_model=List[schemas.ResourceOut])
+@router.get('/resource/{entity}', response_model=List[schemas.ResourceOut],
+        summary="Get resource entity by name"
+        )
 async def get_by_name(entity: EntityName, name: str, db: Session = Depends(get_db)):
   return get_entities_by_name(db, name, entity_mapping[entity])
 
-@router.get('/resource/{entity}s/full', response_model=List[schemas.ResourceOut])
+@router.get('/resource/{entity}s/full', response_model=List[schemas.ResourceOut],
+        summary="Get the full resource (all data) of an entity by name"
+        )
 async def get_all(entity: EntityName, db: Session = Depends(get_db)):
   return all_entities(db, entity_mapping[entity])
 
-@router.get('/resource/{entity}s/paths', response_model=List[str])
+@router.get('/resource/{entity}s/paths', response_model=List[str],
+        summary="Get the resource paths (no data) of an entity by name"
+        )
 async def get_all_paths(entity: EntityName, db: Session = Depends(get_db)):
   return all_entity_paths(db, entity, entity_mapping[entity])
 
-@router.post('/variation/fork/{id}', response_model=schemas.VariationOut)
+@router.post('/variation/fork/{id}', response_model=schemas.VariationOut,
+        summary="Fork a variation with given id"
+        )
 async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = Depends(get_db)):
   try:
     cloned_variation = clone_variation(db, id)
@@ -93,7 +109,7 @@ async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = D
     cloned_variation.data['scenario_parent_path'] = patch.scenario_parent_path
   if patch.scenario_parent_path is not None:
     cloned_variation.data['reference_parent_path'] = patch.reference_parent_path
-  if patch.scenario_vars is not None:  
+  if patch.scenario_vars is not None:
     cloned_variation.data['scenario_vars'] = patch.scenario_vars
   if patch.reference_vars is not None:
     cloned_variation.data['reference_vars'] = patch.reference_vars
@@ -102,7 +118,10 @@ async def fork_variation(id: int, patch: schemas.VariationPatch, db: Session = D
 
   return save_variation(db, cloned_variation)
 
-@router.post('/variation', response_model=schemas.VariationOut)
+@router.post('/variation', response_model=schemas.VariationOut,
+        summary="Create a new variation",
+        description="Note: the variation is not automatically added to the workbook. Use `POST /workbook/{id}/variation` to add a variation to a workbook."
+        )
 async def post_variation(variation: schemas.VariationIn, db: Session = Depends(get_db)):
   new_variation = models.Variation(
     name = variation.name,
@@ -115,7 +134,10 @@ async def post_variation(variation: schemas.VariationIn, db: Session = Depends(g
   new_variation.data['vma_sources'] = variation.vma_sources
   return save_variation(db, new_variation)
 
-@router.get("/initialize")
+@router.get("/initialize",
+        summary="Initialize the database with data",
+        description="Puts default scenario, reference, VMA, etd data into the database. Creates corresponding workbook for each scenario. In production, initialization is only allowed once."
+        )
 async def initialize(db: Session = Depends(get_db)):
   if db.query(models.VMA).count() > 0:
     if settings.is_production:
@@ -179,3 +201,4 @@ async def initialize(db: Session = Depends(get_db)):
     )
     db.add(vma_csv)
   db.commit()
+
