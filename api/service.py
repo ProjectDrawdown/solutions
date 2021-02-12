@@ -34,8 +34,6 @@ app = FastAPI(
         version="1.0"
         )
 
-app.router.redirect_slashes = False
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
