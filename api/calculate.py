@@ -35,6 +35,26 @@ def map_to_json(mapping):
   elif isinstance(mapping, dict):
     return dict(map(lambda key: (key, map_to_json(mapping[key])), mapping))
 
+def format_year_data(x):
+  first = list(x.keys())[0]
+  try:
+    first = int(first)
+  except:
+    first = list(x.keys())[0]
+
+  if isinstance(x, dict) and isinstance(first, int):
+    newlist = []
+    for y in x:
+      newlist.append({"year": y, "value": x[y]})
+    return newlist
+  elif isinstance(x, dict) and not isinstance(first, int):
+    for y in x:
+      if isinstance(x[y], dict):
+        x[y] = format_year_data(x[y])
+    return x
+  else:
+    return x
+
 def to_json(scenario, regions):
     json_data = dict()
     instance_vars = vars(scenario).keys()
@@ -99,6 +119,8 @@ def to_json(scenario, regions):
             }),
             **dict([[key, calculator[key]] for key in calculator if not key.isdigit()])
         }
+    for x in json_data:
+        json_data[x] = format_year_data(json_data[x])
     return {'name': scenario.name, 'data': json_data, 'metadata': metadata}
 
 # async def calc(input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs):
