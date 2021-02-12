@@ -120,7 +120,8 @@ def to_json(scenario, regions):
             **dict([[key, calculator[key]] for key in calculator if not key.isdigit()])
         }
     for x in json_data:
-        json_data[x] = format_year_data(json_data[x])
+        if json_data[x] is not None:
+            json_data[x] = format_year_data(json_data[x])
     return {'name': scenario.name, 'data': json_data, 'metadata': metadata}
 
 # async def calc(input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs):
