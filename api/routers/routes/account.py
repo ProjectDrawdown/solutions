@@ -16,9 +16,9 @@ def for_dev_only_will_remove():
     return RedirectResponse(get_login_url_default().url)
 
 @router.get('/auth/{provider}')
-async def for_dev_only_will_remove2(code: str, db: Session = Depends(get_db)):
+async def for_dev_only_will_remove2(code: str, provider: str, db: Session = Depends(get_db)):
     body = AuthorizationResponse(code=code, state=0)
-    return await verify_authorization(body, default_provider, db)
+    return await verify_authorization(body, provider, db)
 
 @router.get('/login',
         summary="Get login url from default provider"

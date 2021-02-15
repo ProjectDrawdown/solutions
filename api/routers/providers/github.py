@@ -6,6 +6,7 @@ from api.queries.user_queries import get_user, create_user
 from api.routers.schemas import Url, AuthorizationResponse, GithubUser, User, Token
 from api.routers.helpers import generate_token, create_access_token, row2dict
 from api.config import get_settings, get_providers
+from api.db import models
 
 settings = get_settings()
 provider = get_providers()['github']
@@ -41,8 +42,19 @@ async def exchange_code(body, db):
 
     db_user = get_user(db, github_user)
     if db_user is None:
-        db_user = create_user(db, github_user)
+        user = models.User(
+            login = github_user.login,
+            email = github_user.email,
+            provider = 'github',
+            name = github_user.name,
+            location = github_user.location,
+            picture = github_user.avatar_url,
+            is_active = True,
+            meta = {}
+        )
+        db_user = create_user(db, user)
 
-    user_data = row2dict(db_user)
-    access_token = create_access_token(data=user_data)
-    return Token(access_token=access_token, token_type="bearer", user=user_data)
+    user_dict = row2dict(db_user)
+    user_dict['meta'] = {}
+    access_token = create_access_token(data=user_dict)
+    return Token(access_token=access_token, token_type="bearer", user=user_dict)
