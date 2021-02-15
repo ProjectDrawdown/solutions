@@ -34,5 +34,5 @@ class DataHandler:
                                 del data[l]
                     outputs[k] = clean_nan(data)
                 else:
-                    outputs[k] = data
+                    outputs[k] = clean_nan(data)
         return outputs
