@@ -69,8 +69,10 @@ async def get_all_workbooks_by_user(user_id: Union[int, Literal['default']], db:
 @router.get("/workbooks", response_model=List[schemas.WorkbookOut],
         summary="Get all workbooks"
         )
-async def get_all_workbooks(db: Session = Depends(get_db)):
-  return all_workbooks(db)
+async def get_all_workbooks(
+        db_active_user: DBUser = Depends(get_current_active_user),
+        db: Session = Depends(get_db)):
+  return all_workbooks(db, db_active_user.id)
 
 @router.post("/workbook/{id}", response_model=schemas.WorkbookOut,
         summary="Fork a workbook with the given workbook id"

@@ -15,8 +15,11 @@ def workbooks_by_user_id(db: Session, author_id: int) -> DBWorkbook:
 def workbooks_by_default_user(db: Session) -> DBWorkbook:
     return db.query(DBWorkbook).filter(DBWorkbook.author_id.is_(None)).all()
 
-def all_workbooks(db: Session):
-    return db.query(DBWorkbook).all()
+def all_workbooks(db: Session, id: int):
+    q1 = db.query(DBWorkbook).filter(DBWorkbook.author_id==id)
+    q2 = db.query(DBWorkbook).filter(DBWorkbook.author_id.is_(None))
+    q3 = q1.union(q2)
+    return q3.all()
 
 def clone_workbook(db: Session, id: int):
     cloned = clone(db, db.query(DBWorkbook).filter(DBWorkbook.id==id))
