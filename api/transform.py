@@ -26,6 +26,9 @@ legacyDataFiles = {
     ["instreamhydro","solution/instreamhydro/ac/PDS-2p2050-Drawdown2020.json"],
     ["concentratedsolar","solution/concentratedsolar/ac/PDS-6p2050-Drawdown2020.json"],
     ["microwind","solution/microwind/ac/PDS-0p2050-Drawdown2020.json"],
+    ["solarhotwater","solution/solarhotwater/ac/PDS2-44p2050-Mean_of_Custom_Scen_Book_Ed1.json"],
+    ["biogas_small","solution/biogas_small/ac/PDS2-3p2050_Chinese_Adoption_Book_Ed1.json"],
+    ["wastetoenergy","solution/wastetoenergy/ac/PDS-0p2050-Drawdown_Book_Ed1.json"],
 
     # Food
     ["silvopasture","solution/silvopasture/ac/PDS-94p2050-Drawdown-customPDS-avg-Jan2020.json"],
@@ -272,23 +275,23 @@ def rehydrate_legacy_json(start_year: int, end_year: int, technology: str, tech_
   rehydrated_json['report_end_year'] = end_year
   return rehydrated_json
 
-def csv_to_json(csvFilePath: str) -> dict: 
-      
-  # create a dictionary 
+def csv_to_json(csvFilePath: str) -> dict:
+
+  # create a dictionary
   data = []
-    
-  # Open a csv reader called DictReader 
-  with open(csvFilePath, encoding='utf-8') as csvf: 
-      csvReader = csv.DictReader(csvf) 
-        
-      # Convert each row into a dictionary  
-      # and add it to data 
-      for row in csvReader: 
-            
-          # Assuming a column named 'No' to 
-          # be the primary key 
-          # key = rows['No'] 
-          # data[key] = rows 
+
+  # Open a csv reader called DictReader
+  with open(csvFilePath, encoding='utf-8') as csvf:
+      csvReader = csv.DictReader(csvf)
+
+      # Convert each row into a dictionary
+      # and add it to data
+      for row in csvReader:
+
+          # Assuming a column named 'No' to
+          # be the primary key
+          # key = rows['No']
+          # data[key] = rows
           data.append(row)
 
   return {'rows':data}
@@ -314,7 +317,7 @@ def populate(resource: str):
          'filename': file
         }
         converted_list.append(converted)
-        
+
   return converted_list
 
 def convert_to_new_path(legacy_name: str, technology: str) -> str:
@@ -350,11 +353,11 @@ def convert_vmas_to_binary() -> List[dict]:
             'legacy_variable': legacy_var_name,
             }
             converted_list.append(vma)
-        
+
   return converted_list
 
 def flatten_variation(obj):
-  def inner(obj, path): 
+  def inner(obj, path):
     paths = []
     if isinstance(obj, dict) and 'value' not in obj:
       for key in obj:
