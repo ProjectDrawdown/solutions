@@ -72,6 +72,9 @@ legacyDataFiles = {
     ["instreamhydro","solution/instreamhydro/ac/PDS-2p2050-Plausible2020.json"],
     ["concentratedsolar","solution/concentratedsolar/ac/PDS-7p2050-Plausible2020.json"],
     ["microwind","solution/microwind/ac/PDS-0p2050-Plausible2020.json"],
+    ["solarhotwater","solution/solarhotwater/ac/PDS1-25p2050-Low_of_Custom_Scen_Book_Ed1.json"],
+    ["biogas_small","solution/biogas_small/ac/PDS1-2p2050_Asian_Adoption_Book_Ed1.json"],
+    ["wastetoenergy","solution/wastetoenergy/ac/PDS-1p2050-Plausible_Book_Ed1.json"],
 
     # Food
     ["silvopasture","solution/silvopasture/ac/PDS-88p2050-Plausible-customPDS-low-Jan2020.json"],
@@ -115,6 +118,9 @@ legacyDataFiles = {
     ["instreamhydro","solution/instreamhydro/ac/PDS-2p2050-Optimum2020.json"],
     ["concentratedsolar","solution/concentratedsolar/ac/PDS-6p2050-Optimum2020.json"],
     ["microwind","solution/microwind/ac/PDS-0p2050-Optimum2020.json"],
+    ["solarhotwater","solution/solarhotwater/ac/PDS3-62p2050-High_of_Custom_Scen_Book_Ed1.json"],
+    ["biogas_small","solution/biogas_small/ac/PDS3-3p2050_Max_Adoption_Book_Ed1.json"],
+    ["wastetoenergy","solution/wastetoenergy/ac/PDS-0p2050-Optimum_Book_Ed1.json"],
 
     # Food
     ["silvopasture","solution/silvopasture/ac/PDS-100p2050-Optimum-customPDS-high-Jan2020.json"],
