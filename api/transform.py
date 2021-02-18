@@ -356,7 +356,7 @@ def convert_vmas_to_binary() -> List[dict]:
 def flatten_variation(obj):
   def inner(obj, path): 
     paths = []
-    if isinstance(obj, dict) and 'value' not in obj:
+    if isinstance(obj, dict) and ('value' not in obj) and ('World' not in obj) and ('EU' not in obj) and ('USA' not in obj) and ('China' not in obj) and ('India' not in obj) and ('OECD90' not in obj) and ('Latin America' not in obj) and ('Eastern Europe' not in obj) and ('Asia (Sans Japan)' not in obj) and ('Middle East and Africa' not in obj):
       for key in obj:
         result = inner(obj[key], f'{path}.{key}' if path else key)
         if isinstance(result, list):
