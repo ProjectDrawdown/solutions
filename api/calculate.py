@@ -367,6 +367,9 @@ async def calculate(
   variation = workbook.variations[variation_index]
   input_data = await fetch_data(variation, client)
   jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
+  if settings.input_logs:
+    with open(f"json_input.log", 'a') as f:
+        f.write(f"\n\n\n{jsons}\n\n\n")
   [tasks, key_list, _] = await setup_calculations(jsons, regions, prev_data, cache, websocket, do_diffs)
   perform_func = perform_calculations_async if run_async else perform_calculations_sync
   await perform_func(tasks)

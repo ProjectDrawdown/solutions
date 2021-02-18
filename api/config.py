@@ -34,6 +34,8 @@ class Settings(BaseSettings):
 
     is_production: Optional[bool]
 
+    input_logs: bool
+
     class Config:
         env_file = pathlib.Path(__file__).parents[0].joinpath('.env').resolve()
 

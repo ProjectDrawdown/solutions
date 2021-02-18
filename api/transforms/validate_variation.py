@@ -63,7 +63,6 @@ pds_validation_matrix = {
       {
         'key': 'technologies.*.adoption_prognostication_growth',
         'required': True,
-        'values': ['Low', 'Medium', 'High'],
       },
       {
         'key': 'technologies.*.adoption_prognostication_trend',
@@ -81,7 +80,6 @@ pds_validation_matrix = {
         {
         'key': 'technologies.*.adoption_prognostication_growth',
         'required': False,
-        'values': ['Low', 'Medium', 'High'],
         'warning': True
       },
     ]
@@ -95,7 +93,6 @@ pds_validation_matrix = {
       {
         'key': 'technologies.*.adoption_prognostication_growth',
         'required': False,
-        'values': ['Low', 'Medium', 'High'],
         'warning': True
       }
     ]
@@ -109,7 +106,6 @@ pds_validation_matrix = {
       {
         'key': 'technologies.*.adoption_prognostication_growth',
         'required': False,
-        'values': ['Low', 'Medium', 'High'],
         'warning': True
       }
     ]
@@ -123,7 +119,6 @@ pds_validation_matrix = {
       {
         'key': 'technologies.*.adoption_prognostication_growth',
         'required': False,
-        'values': ['Low', 'Medium', 'High'],
         'warning': True
       }
     ]
@@ -170,15 +165,15 @@ def error_str_types(schema):
     return 'must be a list ' + replace_type_identifiers(schema)
   else:
     return 'must be ' + replace_type_identifiers(schema)
-  
+
 def gen_error(key: str, variation: dict, name: str, schema: dict):
   allowed_types_str = ''
-  if len(schema) > 1: 
+  if len(schema) > 1:
    for s in schema:
      allowed_types_str += error_str_types(json.dumps(s)) + 'or '
   else:
     allowed_types_str = error_str_types(json.dumps(schema[0]))
-  
+
   return f'{key} in {name} {allowed_types_str}'
 
 def validate(source: dict, variation: dict, schema_dict: dict, name: str):
@@ -199,14 +194,14 @@ def validate(source: dict, variation: dict, schema_dict: dict, name: str):
         if not found:
           return [False, gen_error(key, variation, name, schema)]
     elif type(variation[key]) in [float, int] and schema == [{'statistic': "<class 'str'>", 'value': "<class 'float'>"}]:
-      set_value_at(source, key, {'value': variation[key], 'statistic': ""}) 
+      set_value_at(source, key, {'value': variation[key], 'statistic': ""})
     elif f'{type(variation[key])}' not in schema:
       if isinstance(variation[key], int):
         if f'{type(0.0)}' not in schema:
           return [False, gen_error(key, variation, name, schema)]
       else:
         return [False, gen_error(key, variation, name, schema)]
-    
+
   return [True, '']
 
 def field_name_to_legacy(new_path: str, technology: str) -> str:
@@ -225,7 +220,7 @@ async def validate_full_schema(variation: dict, client):
     pds_basis = j['json']["soln_pds_adoption_basis"]
     ref_basis = j['json']['soln_ref_adoption_basis']
     rules = [
-      pds_validation_matrix.get(pds_basis), 
+      pds_validation_matrix.get(pds_basis),
       ref_validation_matrix.get(ref_basis)
     ]
     for rule in rules:
@@ -241,7 +236,7 @@ async def validate_full_schema(variation: dict, client):
             warnings.append(f'{input_field_key} will be overidden')
           if field['required']:
             if value is None:
-              return { 
+              return {
                 'valid': False,
                 'reason': f'{input_field_key} missing'
               }
