@@ -13,7 +13,7 @@ provider = get_providers()['github']
 
 LOGIN_URL = f"https://{provider['domain']}/login/oauth/authorize"
 TOKEN_URL = f"https://{provider['domain']}/login/oauth/access_token"
-REDIRECT_URL = f"{settings.client_url}/auth/github"
+REDIRECT_URL = f"{settings.auth_redirect_url}/auth/github"
 
 USER_URL = settings.github_user_url
 

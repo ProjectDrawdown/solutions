@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     max_workers: int
 
     client_url: str
+    auth_redirect_url: str
 
     is_production: Optional[bool]
 

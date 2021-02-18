@@ -13,9 +13,7 @@ provider = get_providers()['google']
 
 LOGIN_URL = f"https://{provider['domain']}/signin/oauth/authorize"
 TOKEN_URL = f"https://oauth2.googleapis.com/token"
-TOKEN_URL = f"https://oauth2.googleapis.com/token"
-
-REDIRECT_URL = f"{settings.client_url}/auth/google"
+REDIRECT_URL = f"{settings.auth_redirect_url}/auth/google"
 
 def login_url():
     params = {
