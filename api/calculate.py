@@ -23,6 +23,8 @@ import io
 import ntpath
 import pathlib
 
+import api.transforms.validate_variation
+
 settings = get_settings()
 
 def map_to_json(mapping):
@@ -365,11 +367,17 @@ async def calculate(
     raise HTTPException(status_code=400, detail="Workbook not found")
   result_paths = []
   variation = workbook.variations[variation_index]
+
+  validation = await api.transforms.validate_variation.validate_full_schema(dict(variation), client)
+  if not validation['valid']:
+    raise HTTPException(status_code=422, detail=validation['reason'])
+  warnings = validation.get('warnings')
+
   input_data = await fetch_data(variation, client)
   jsons = build_json(workbook.start_year, workbook.end_year, *input_data)
   if settings.input_logs:
     with open(f"json_input.log", 'a') as f:
-        f.write(f"\n\n\n{jsons}\n\n\n")
+        f.write(f"\n\n\n{json.dumps(jsons)}\n\n\n")
   [tasks, key_list, _] = await setup_calculations(jsons, regions, prev_data, cache, websocket, do_diffs)
   perform_func = perform_calculations_async if run_async else perform_calculations_sync
   await perform_func(tasks)
@@ -389,5 +397,6 @@ async def calculate(
   # ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
   # ps.print_stats()
 
+  result["warnings"] = warnings
 
   return result

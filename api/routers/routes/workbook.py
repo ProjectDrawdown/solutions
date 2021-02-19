@@ -155,17 +155,17 @@ async def update_workbook_variation(
   db: Session = Depends(get_db),
   client: AioWrap = Depends(AioWrap)):
 
-  validation = await validate_full_schema(variation_patch, client)
-  if not validation['valid']:
-    raise HTTPException(status_code=422, detail=validation['reason'])
-  warnings = validation.get('warnings')
+  # validation = await validate_full_schema(variation_patch, client)
+  # if not validation['valid']:
+  #   raise HTTPException(status_code=422, detail=validation['reason'])
+  # warnings = validation.get('warnings')
 
   db_workbook.variations = replace(db_workbook.variations, variation_index, variation_patch.__dict__)
   db_workbook.version = db_workbook.version + 1
   db_workbook.has_run = False
   saved_db_workbook = save_workbook(db, db_workbook)
   response = schemas.WorkbookOut.from_orm(saved_db_workbook)
-  response.warnings = warnings
+  # response.warnings = warnings
   return response
 
 @router.post("/workbook/{id}/variation", response_model=schemas.WorkbookOut,
