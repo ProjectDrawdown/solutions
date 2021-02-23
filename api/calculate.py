@@ -96,6 +96,8 @@ def to_json(scenario, regions):
     try:
       if getattr(scenario, 'oc'):
         json_data['soln_net_cash_flow'] = json.loads(scenario.oc.soln_net_cash_flow().to_json())
+        if not any(json_data['soln_net_cash_flow'].values()):
+            json_data['soln_net_cash_flow'] = None
     except:
       json_data['soln_net_cash_flow'] = None
 
