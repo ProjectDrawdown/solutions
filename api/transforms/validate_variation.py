@@ -67,7 +67,7 @@ pds_validation_matrix = {
       {
         'key': 'technologies.*.adoption_prognostication_trend',
         'required': True,
-        'values': ['3rd Poly'],
+        'values': ['Linear', '2nd Poly', '3rd Poly', 'Exp'],
       },
       {
         'key': 'technologies.*.adoption_prognostication_source',
