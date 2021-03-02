@@ -320,6 +320,7 @@ class TechCalculation(BaseModel):
   hash: str
   technology: str
   technology_full: str
+  name: str
   diff_path: Optional[str]
 
 class CalculationMeta(BaseModel):

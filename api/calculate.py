@@ -1,4 +1,5 @@
 from typing import Optional, Dict, Any, List
+import importlib
 import asyncio
 import json
 import re
@@ -137,13 +138,13 @@ def to_json(scenario, regions):
 #   await process_tech_calc(result, hashed_json_input, prev_results, technology, key_list, cache, websocket, do_diffs)
 #   return result
 
-def calc(input, hashed_json_input, technology, regions, json_input, prev_results, key_list, cache, websocket, do_diffs):
+def calc(input, name_full, hashed_json_input, technology, regions, json_input, prev_results, key_list, cache, websocket, do_diffs):
   constructor = factory_2.one_solution_scenarios(technology, json_input)[0]
   try:
     result = to_json(constructor(input), regions)
   except Exception as e:
     result = e
-  return (result, input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs)
+  return (result, input, name_full, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs)
 
 def run(corofn, *args):
   loop = asyncio.new_event_loop()
@@ -187,6 +188,9 @@ async def setup_calculations(jsons, regions, prev_data, cache, websocket: WebSoc
     # current_json_input: dict = list(filter(lambda json: json['tech'] == constructor, pruned_jsons))[0]
     name = current_json_input['json']['name']
     technology = current_json_input['tech']
+    m = importlib.import_module("solution." + technology)
+    name_full = m.Scenario.name
+
     copied_json_input = current_json_input.copy()
     # deleting vmas because they're not always serializable (todo?)
     del copied_json_input['json']['vmas']
@@ -207,6 +211,7 @@ async def setup_calculations(jsons, regions, prev_data, cache, websocket: WebSoc
       #   do_diffs)))
       tasks.append((
         name,
+        name_full,
         hashed_json_input,
         technology,
         regions,
@@ -218,7 +223,7 @@ async def setup_calculations(jsons, regions, prev_data, cache, websocket: WebSoc
         do_diffs))
     else:
       # Inputs have not changed for technology
-      key_list.append([technology, name, hashed_json_input, False])
+      key_list.append([technology, name, name_full, hashed_json_input, False])
       str_cached_result = json.loads(cached_result)
       json_cached_results.append(str_cached_result)
       if websocket:
@@ -244,7 +249,7 @@ async def find_diffs(prev_result_list, tech, json_result, key_hash, key_list, ca
     # no diff in tech from previous run
     key_list.append([tech, json_result['name'], key_hash, False])
 
-async def process_tech_calc(json_result, key_hash, prev_results, tech, key_list, cache, websocket, do_diffs: bool):
+async def process_tech_calc(json_result, name, key_hash, prev_results, tech, key_list, cache, websocket, do_diffs: bool):
   try:
     str_json_result = json.dumps(json_result)
   except:
@@ -256,7 +261,7 @@ async def process_tech_calc(json_result, key_hash, prev_results, tech, key_list,
   if prev_results and do_diffs:
     await find_diffs(prev_results['results'], tech, json_result, key_hash, key_list, cache, websocket)
   else:
-    key_list.append([tech, json_result['name'], key_hash, False])
+    key_list.append([tech, json_result['name'], name, key_hash, False])
 
 async def perform_calculations_async(tasks):
   json_results = []
@@ -278,8 +283,8 @@ async def perform_calculations_async(tasks):
       #   json_results.append(data)
       results = await asyncio.gather(*futures)
       for r in results:
-        (result, input, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs) = r
-        await process_tech_calc(result, hashed_json_input, prev_results, technology, key_list, cache, websocket, do_diffs)
+        (result, input, name_full, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs) = r
+        await process_tech_calc(result, name_full, hashed_json_input, prev_results, technology, key_list, cache, websocket, do_diffs)
         json_results.append(result)
 
   return json_results
@@ -297,8 +302,9 @@ def build_result_paths(key_list):
       'hash': key_hash,
       'technology': tech,
       'technology_full': tech_full,
+      'name': name,
       'diff_path':  get_projection_path('diffs', key_hash) if has_delta else None
-    } for [tech, tech_full, key_hash, has_delta] in key_list]
+    } for [tech, tech_full, name, key_hash, has_delta] in key_list]
 
 def compound_key(workbook_id: int, workbook_version: int):
   return f'workbook-{workbook_id}-{workbook_version}'
