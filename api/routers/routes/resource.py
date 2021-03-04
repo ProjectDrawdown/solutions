@@ -165,6 +165,7 @@ async def initialize(db: Session = Depends(get_db)):
     variation_dict = variation.__dict__['data']
     workbook = models.Workbook(
       name = canonical_scenario,
+      description = canonical_scenario + " one of the canonical scenarios.",
       ui = {},
       regions = ['World'],
       start_year = 2020,

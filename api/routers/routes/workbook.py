@@ -100,6 +100,7 @@ async def create_workbook(
 
   dbworkbook = DBWorkbook(
     name = workbook.name,
+    description = workbook.description,
     author_id = db_active_user.id,
     ui = workbook.ui,
     regions = workbook.regions,

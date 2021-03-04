@@ -37,6 +37,7 @@ class Workbook(Base):
   id = Column(Integer, primary_key=True, index=True)
   version = Column(Integer, default=0)
   name = Column(String)
+  description = Column(String)
   regions = Column(ARRAY(String), default=['World'])
   author_id = Column(Integer, ForeignKey('user.id'))
   author = relationship("User", back_populates="workbooks")

@@ -183,6 +183,7 @@ class PublishVariation(BaseModel):
 
 class WorkbookNew(BaseModel):
   name: str
+  description: str
   ui: dict
   start_year: int
   end_year: int
@@ -191,7 +192,8 @@ class WorkbookNew(BaseModel):
     orm_mode = True
     schema_extra = {
       "example": {
-        "name": "default",
+        "name": "default name",
+        "description": "default description",
         "regions": ["World"],
         "author": {
           "login": "user@example.coop",
@@ -213,6 +215,7 @@ class WorkbookNew(BaseModel):
 
 class WorkbookPatch(BaseModel):
   name: Optional[str]
+  description: Optional[str]
   regions: Optional[region_type]
   ui: Optional[dict]
   start_year: Optional[int]
@@ -240,6 +243,7 @@ class WorkbookOut(BaseModel):
   author: Optional[User]
   version: int
   name: str
+  description: str
   regions: region_type
   ui: dict
   start_year: int
@@ -253,7 +257,8 @@ class WorkbookOut(BaseModel):
       "example": {
         "id": 1,
         "version": "2",
-        "name": "default",
+        "name": "default name",
+        "description": "default description",
         "regions": ["World"],
         "ui": {
           "portfolioSolutions": [
