@@ -38,6 +38,28 @@ def map_to_json(mapping):
   elif isinstance(mapping, dict):
     return dict(map(lambda key: (key, map_to_json(mapping[key])), mapping))
 
+def calculate_ref_emissions(tam_per_region, grid_co2, conversion_factor):
+  ref_emissions = []
+  for idx, year in enumerate(tam_per_region):
+    if idx == len(grid_co2):
+      break
+    ref_emissions.append({
+        'year': year['year'],
+        'value': year['value'] * grid_co2[idx]['value'] * conversion_factor
+        })
+  return ref_emissions
+
+def calculate_emissions_reduction(soln_ref_funits_adopted, soln_pds_funits_adopted, grid_co2, conversion_factor):
+  emissions_reduction = []
+  for idx, year in enumerate(soln_ref_funits_adopted):
+    if idx == len(grid_co2):
+      break
+    emissions_reduction.append({
+        'year': year['year'],
+        'value': (year['value'] - soln_pds_funits_adopted[idx]['value']) * grid_co2[idx]['value'] * conversion_factor
+        })
+  return emissions_reduction
+
 def format_year_data(x):
   first = list(x.keys())[0]
   try:
