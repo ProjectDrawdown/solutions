@@ -38,6 +38,17 @@ def map_to_json(mapping):
   elif isinstance(mapping, dict):
     return dict(map(lambda key: (key, map_to_json(mapping[key])), mapping))
 
+def sum_ref_emissions(acc, tech_ref_emissions):
+  for idx, year in enumerate(tech_ref_emissions):
+    if idx > len(acc) - 1:
+      acc.append(year)
+    else:
+      acc[idx] = {
+              'year': year['year'],
+              'value': year['value'] + acc[idx]['value']
+              }
+  return acc
+
 def calculate_ref_emissions(tam_per_region, grid_co2, conversion_factor):
   ref_emissions = []
   for idx, year in enumerate(tam_per_region):
