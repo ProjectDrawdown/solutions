@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Enum, LargeBinary
+from sqlalchemy import DateTime, Boolean, Column, ForeignKey, Integer, String, Enum, LargeBinary
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY, UUID
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -7,6 +7,7 @@ from jsonschema import validate
 import enum
 from api.config import get_resource_path, get_path
 from uuid import uuid4
+from datetime import datetime
 
 from .database import Base
 from .json_schemas import workbook_schema
@@ -45,6 +46,8 @@ class Workbook(Base):
   end_year = Column(Integer)
   variations = Column(ARRAY(JSONB))
   has_run = Column(Boolean, default=False)
+  created_at = Column(DateTime, default=datetime.now())
+  updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
 
   @validates('data')
   def validate_data(self, key, value):

@@ -1,4 +1,5 @@
 from typing import Optional, List, Dict, Any, Literal
+from datetime import datetime
 from pydantic import BaseModel, validator
 from api.db import models
 from api.config import get_resource_path
@@ -191,7 +192,14 @@ class WorkbookNew(BaseModel):
     orm_mode = True
     schema_extra = {
       "example": {
+<<<<<<< Updated upstream
         "name": "default",
+=======
+        "name": "default name",
+        "description": "default description",
+        "created_at": "2020-01-01",
+        "updated_at": "2020-01-02",
+>>>>>>> Stashed changes
         "regions": ["World"],
         "author": {
           "login": "user@example.coop",
@@ -240,6 +248,9 @@ class WorkbookOut(BaseModel):
   author: Optional[User]
   version: int
   name: str
+  description: str
+  created_at: datetime
+  updated_at: datetime
   regions: region_type
   ui: dict
   start_year: int
@@ -253,7 +264,10 @@ class WorkbookOut(BaseModel):
       "example": {
         "id": 1,
         "version": "2",
-        "name": "default",
+        "name": "default name",
+        "description": "default description",
+        "created_at": "2020-01-01",
+        "updated_at": "2020-01-02",
         "regions": ["World"],
         "ui": {
           "portfolioSolutions": [
