@@ -157,6 +157,8 @@ def replace_type_identifiers(type_id: str) -> str:
     .replace("\"", '')
 
 def error_str_types(schema):
+  if "OECD90" in schema:
+    return 'must be a number'
   if schema == '{"value": "<class \'float\'>", "statistic": "<class \'str\'>"}':
     return 'must be a number'
   if isinstance(schema, dict):
@@ -167,6 +169,7 @@ def error_str_types(schema):
     return 'must be ' + replace_type_identifiers(schema)
 
 def gen_error(key: str, variation: dict, name: str, schema: dict):
+  key = key.split('.')[-1]
   allowed_types_str = ''
   if len(schema) > 1:
    for s in schema:
@@ -233,7 +236,7 @@ async def validate_full_schema(variation: dict, client):
           value = j['json'].get(legacy_field_name)
           field_key = field['key']
 
-          input_field_key = field_key.replace("*", j["tech"])
+          input_field_key = field_key.replace("*", j["tech"]).split(".")[-1]
 
           if value and field.get("warning"):
             warnings.append(f'{input_field_key} will be overidden')
