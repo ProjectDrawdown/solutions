@@ -168,8 +168,8 @@ async def initialize(db: Session = Depends(get_db)):
       description = canonical_scenario + " one of the canonical scenarios.",
       ui = {},
       regions = ['World'],
-      start_year = 2020,
-      end_year = 2050,
+      start_year = 2014,
+      end_year = 2060,
       variations = [
         variation_dict
       ]
