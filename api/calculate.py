@@ -218,7 +218,6 @@ async def setup_calculations(jsons, regions, prev_data, cache, websocket: WebSoc
   json_cached_results = []
 
   for current_json_input in jsons:
-    # current_json_input: dict = list(filter(lambda json: json['tech'] == constructor, pruned_jsons))[0]
     name = current_json_input['json']['name']
     technology = current_json_input['tech']
     m = importlib.import_module("solution." + technology)
@@ -231,17 +230,6 @@ async def setup_calculations(jsons, regions, prev_data, cache, websocket: WebSoc
 
     cached_result = await cache.get(hashed_json_input)
     if cached_result is None:
-      # Inputs have changed for technology
-      # tasks.append(asyncio.create_task(calc(
-      #   name,
-      #   hashed_json_input,
-      #   technology,
-      #   current_json_input['json'],
-      #   prev_data,
-      #   key_list,
-      #   cache,
-      #   websocket,
-      #   do_diffs)))
       tasks.append((
         name,
         name_full,
@@ -298,12 +286,6 @@ async def process_tech_calc(json_result, name, key_hash, prev_results, tech, key
 
 async def perform_calculations_async(tasks):
   json_results = []
-  # if len(tasks) > 0:
-  #   calculated_results = await asyncio.wait(tasks)
-  #   for r in calculated_results[0]:
-  #     json_result = r._result
-  #     json_results.append(json_result)
-
   if len(tasks) > 0:
     with concurrent.futures.ThreadPoolExecutor(max_workers=settings.max_workers) as pool:
 
@@ -311,9 +293,6 @@ async def perform_calculations_async(tasks):
       loop = asyncio.get_event_loop()
       futures = [loop.run_in_executor(pool, calc, *task) for task in tasks]
 
-      # for future in concurrent.futures.as_completed(futures):
-      #   data = future.result()
-      #   json_results.append(data)
       results = await asyncio.gather(*futures)
       for r in results:
         (result, input, name_full, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs) = r
@@ -343,15 +322,15 @@ def compound_key(workbook_id: int, workbook_version: int):
   return f'workbook-{workbook_id}-{workbook_version}'
 
 async def get_prev_calc(workbook_id: int, workbook_version: int, cache) -> [int, Dict[Any, Any]]:
-  keys = await cache.keys(f'workbook-{workbook_id}-*')
-  if len(keys) > 0:
-    versions = [int(re.search(r'(\d+)[^-]*$', key.decode("utf-8")).group(0)) for key in keys]
-    versions.sort()
-    prev_version = versions[-1]
-    cache_key = compound_key(workbook_id, prev_version)
-    cached_result = await cache.get(cache_key)
-    if cached_result is not None:
-      return [prev_version, compound_key(workbook_id, prev_version), json.loads(cached_result)]
+  # keys = await cache.keys(f'workbook-{workbook_id}-*')
+  # if len(keys) > 0:
+  #   versions = [int(re.search(r'(\d+)[^-]*$', key.decode("utf-8")).group(0)) for key in keys]
+  #   versions.sort()
+  #   prev_version = versions[-1]
+  #   cache_key = compound_key(workbook_id, prev_version)
+  #   cached_result = await cache.get(cache_key)
+  #   if cached_result is not None:
+  #     return [prev_version, compound_key(workbook_id, prev_version), json.loads(cached_result)]
   return [None, None, {}]
 
 def build_result(prev_key: str, prev_version: str, workbook_version: str, cache_key: str, variation, result_paths):
@@ -403,7 +382,6 @@ async def calculate(
 
   [prev_version, prev_key, prev_data] = await get_prev_calc(workbook_id, workbook_version, cache)
 
-  # with cProfile.Profile() as pr:
   if workbook is None:
     raise HTTPException(status_code=400, detail="Workbook not found")
   result_paths = []
@@ -432,11 +410,6 @@ async def calculate(
   workbook.has_run = True
   db.add(workbook)
   db.commit()
-  # pr.print_stats()
-  # pr.dump_stats('calc.prof')
-  # s = io.StringIO()
-  # ps = pstats.Stats(pr, stream=s).sort_stats('tottime')
-  # ps.print_stats()
 
   result["warnings"] = warnings
 
