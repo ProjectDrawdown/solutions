@@ -109,7 +109,16 @@ def to_json(scenario, regions):
 
     if getattr(scenario, 'ua'):
       j = json.loads(scenario.ua.soln_ref_funits_adopted.to_json())
+
       json_data['soln_ref_funits_adopted'] = { region: j[region] for region in regions }
+
+      # Hacky solution to data being in the wrong place
+      # if ["World"]["2020"] is 0, then copy "Middle East and Africa" data to "World"
+      if json_data['soln_ref_funits_adopted']["World"]["2020"] == 0:
+          json_data['soln_ref_funits_adopted']["World"] = j["Middle East and Africa"]
+
+
+
       j = json.loads(scenario.ua.soln_pds_funits_adopted.to_json())
       json_data['soln_pds_funits_adopted'] = { region: j[region] for region in regions }
       j = json.loads(scenario.ua.ref_tam_per_region.to_json())
