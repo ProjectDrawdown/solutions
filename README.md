@@ -60,7 +60,7 @@ We need better ways for people to explore the overall set of climate solutions a
 ---
 
 ![status](https://github.com/ProjectDrawdown/solutions/workflows/Drawdown%20Solutions%20Python%20application/badge.svg)
-[![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions)
+[![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions) [![Join the chat at https://gitter.im/Solutions_platform/Engineering](https://badges.gitter.im/Solutions_platform/Engineering.svg)](https://gitter.im/Solutions_platform/Engineering?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Getting started
 
