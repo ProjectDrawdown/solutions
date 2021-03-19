@@ -138,6 +138,13 @@ def to_json(scenario, regions):
 
     try:
       if getattr(scenario, 'oc'):
+        json_data['soln_marginal_operating_cost_savings'] = json.loads(scenario.oc.soln_marginal_operating_cost_savings().to_json())
+        if not any(json_data['soln_marginal_operating_cost_savings'].values()):
+            del json_data['soln_marginal_operating_cost_savings']
+    except:
+      json_data['soln_marginal_operating_cost_savings'] = None
+    try:
+      if getattr(scenario, 'oc'):
         json_data['soln_net_cash_flow'] = json.loads(scenario.oc.soln_net_cash_flow().to_json())
         if not any(json_data['soln_net_cash_flow'].values()):
             del json_data['soln_net_cash_flow']
