@@ -9,6 +9,7 @@ services:
     image: postgres:12
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: drawdown
     volumes:
       - pgdata:/var/lib/postgresql/data/
     ports:
@@ -24,6 +25,8 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db/drawdown
       - API_URL=http://localhost:8000
       - JWT_SECRET_KEY=somejwtsecretkey
+      - CLIENT_URL=http://localhost:3000
+      - AUTH_REDIRECT_URL=http://localhost:3000
       - JWT_ALGORITHM=HS256
       - GITHUB_DOMAIN=github.com
       - GITHUB_CLIENT_ID=somegithubclientid
@@ -34,10 +37,11 @@ services:
       - GOOGLE_CLIENT_SECRET=somegoogleclientsecret
       - MAX_VARIATIONS_PER_WORKBOOK=1000
       - REDIS_URL=redis://redis
+      - MAX_WORKERS=4
+      - INPUT_LOGS=false
     depends_on:
       - db
       - redis
 
 volumes:
   pgdata:
-
