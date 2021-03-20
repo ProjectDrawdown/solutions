@@ -129,12 +129,7 @@ db_1     | 2021-03-20 21:41:04.538 UTC [37] FATAL:  database "drawdown" does not
 ```
 
 1. Having `docker-compose up` running (even if the web server fails)
-2. Use `docker exec -it <container-identifier> /bin/bash` connect to the DB container. You can get the DB container ID or name directly using `docker ps` with `docker-compose up`, but you should be able to use the default DB container name `solutions_db_1`:
-
-```
-docker exec -it solutions_db_1 /bin/bash
-```
-
+2. Connect to the running DB container using `docker-compose exec -it db /bin/bash`
 3. As above:
 
 ```sh
