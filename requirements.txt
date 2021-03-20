@@ -1,4 +1,4 @@
-aiohttp==3.7.3
+aiohttp==3.7.4
 alembic==1.4.3
 deepdiff==5.2.1
 fair==1.6.1
