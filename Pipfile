@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+black = "*"
 
 [packages]
 altair = ">=3.1.0"
@@ -34,4 +35,7 @@ mock = ">=4.0.2"
 Jinja2 = ">=2.11.2"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
