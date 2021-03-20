@@ -122,6 +122,28 @@ $ psql -h 0.0.0.0 -p 5432 -U postgres
 postgres=# CREATE DATABASE drawdown;
 ```
 
+If you're running the app via `docker-compose`, you may get the following error the first time you run:
+
+```
+db_1     | 2021-03-20 21:41:04.538 UTC [37] FATAL:  database "drawdown" does not exist
+```
+
+1. Having `docker-compose up` running (even if the web server fails)
+2. Use `docker exec -it <container-identifier> /bin/bash` connect to the DB container. You can get the DB container ID or name directly using `docker ps` with `docker-compose up`, but you should be able to use the default DB container name `solutions_db_1`:
+
+```
+docker exec -it solutions_db_1 /bin/bash
+```
+
+3. As above:
+
+```sh
+$ psql -h 0.0.0.0 -p 5432 -U postgres
+postgres=# CREATE DATABASE drawdown;
+```
+
+*N.B.* There should be a way to initialize this via `docker-compose`.
+
 ## Running the project with Docker
 `$ docker-compose up` to run the project
 
