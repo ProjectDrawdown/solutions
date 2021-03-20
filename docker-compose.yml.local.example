@@ -19,6 +19,7 @@ services:
       context: .
     ports:
       - "8000:8000"
+      - "8866:8866"
     volumes:
       - .:/app
     environment:

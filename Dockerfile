@@ -10,6 +10,8 @@ COPY . /app/
 WORKDIR /app
 
 RUN python -m pip install --upgrade pip
+RUN pip install pipenv
+RUN pip install tox
 RUN pip install -r requirements.txt
 
 EXPOSE 8000
