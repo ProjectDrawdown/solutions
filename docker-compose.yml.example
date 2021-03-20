@@ -9,11 +9,14 @@ services:
     image: postgres:12
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: drawdown
     volumes:
       - ./pgdata:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
   web:
+    restart: always
+    command: uvicorn api.service:app --reload --host 0.0.0.0 --port 8000
     build:
       context: .
     ports:
