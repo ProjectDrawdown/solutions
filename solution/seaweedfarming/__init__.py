@@ -34,7 +34,20 @@ THISDIR = pathlib.Path(__file__).parents[0]
 YIELD_DATA_FILE = THISDIR.joinpath('OceanInputsDataFrame.csv')
 
 yield_df = pd.read_csv(YIELD_DATA_FILE)
-print(yield_df)
+yield_series = yield_df['Conversion calculation**']
+# print(yield_df)
+carbon_content_of_algae_biomass_avg = 0.284687
+farm_biomass_export_avg = 0.55
+pct_longterm_sequestration_from_exported_carbon_in_farms_avg = 0.372239
+# todo calculate these averages from raw data (see advanced controls row 208)
+
+carbon_sequestration = (yield_df['Conversion calculation**'] / (1-farm_biomass_export_avg))*farm_biomass_export_avg*carbon_content_of_algae_biomass_avg*pct_longterm_sequestration_from_exported_carbon_in_farms_avg
+
+
+print(type(carbon_sequestration))
+print(carbon_sequestration)
+print("Mean:")
+print(np.mean(carbon_sequestration))
 # create a list of valid scenario objects
 # -- make csvs from excel model
 # -- each named scenario will: 
