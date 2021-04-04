@@ -1,0 +1,8 @@
+id,"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Thermal-Moisture Regime,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion Calculation,Common Units,Assumptions,Exclude Data?,ReasonForExclusion
+1,Froehlich et al. (2019),https://www.sciencedirect.com/science/article/abs/pii/S0960982219308863,World,,,,,,1900,sq.km, -   ,mha,"Page 3089, first paragraph",N,
+2,Duarte et al. (2017),https://www.frontiersin.org/articles/10.3389/fmars.2017.00100/full,World,,,,,,1600,sq.km, -   ,mha,"Page 2, bottom of  third paragraph",N,
+3,"Krause- Jensen et al. (2018), page 3, second paragraph",https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2018.0236,China,,,,,,1250,sq.km, -   ,mha,"Page 3, second paragraph",Y,Regional values are excluded given that there are several global values
+4,"Zhang et al. (2017), page 2102, second paragraph",https://link.springer.com/article/10.1007/s11430-017-9148-7,China,,,,,,140820,ha, 0.14 ,mha,"2016 mariculture area. Source cited: Chinese Statistics Yearbook, 2017",Y,Regional values are excluded given that there are several global values
+5,Project Drawdown 2019 interpolated value,Refer Adoption Data sheet,World,,,,,,0.21,million hectares,,mha,,N,
+6,"Hwang et al. (2019), Table 4, page 490",https://www.tandfonline.com/doi/full/10.1080/00318884.2019.1639436,China,,,,2016,,136223,ha, 0.14 ,mha,,Y,Regional values are excluded given that there are several global values
+7,"Sondak and Chung (2015), Page 2, 3rd paragraph",https://link.springer.com/article/10.1007/s12601-015-0001-9,Asia (Sans Japan),Korea,,,2012,,72461,ha, 0.07 ,mha,,Y,Regional values are excluded given that there are several global values
