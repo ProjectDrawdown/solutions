@@ -61,6 +61,46 @@ print(np.mean(carbon_sequestration))
 
 scenarios = {'PDS-4p2050- Plausible PDS custom- Avg of All': advanced_controls.AdvancedControls()}
 
+"""
+ Note that for seaweed farming we don't have CONVENTIONAL data sets, only SOLUTIONs.
+"""
+VMAs = {
+    'Current Adoption': vma.VMA(
+        filename=THISDIR.joinpath("vma_data","Current_Adoption.csv"),
+        use_weight=False),
+    'SOLUTION First Cost per Implementation Unit': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
+        use_weight=False),
+    'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv"),
+        use_weight=False),
+    'SOLUTION Net Profit Margin per Functional Unit per Annum': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
+        use_weight=False),
+    'Sequestration Rate': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "Sequestration_Rate.csv"),
+        use_weight=False),
+    'Carbon Content Dry Biomass': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "Carbon_Content_Dry_Biomass.csv"),
+        use_weight=False),
+    'Wet Dry Conversion': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "Wet_Dry_Conversion.csv"),
+        use_weight=False),
+    'Farm Biomass Export': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "Farm_Biomass_Export.csv"),
+        use_weight=False),
+    'Long Term Sequestration Rate': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "Long_Term_Sequestration_Rate.csv"),
+        use_weight=False),
+    'Yield Dry Weight': vma.VMA(
+        filename=THISDIR.joinpath("vma_data", "Yield_Dry_Weight.csv"),
+        use_weight=False)
+}
+
+# for vma in VMAs:
+#   print(vma + "\n")
+
+print(VMAs)
 
 
 
