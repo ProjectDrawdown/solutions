@@ -33,21 +33,34 @@ from solution import land
 THISDIR = pathlib.Path(__file__).parents[0]
 YIELD_DATA_FILE = THISDIR.joinpath('OceanInputsDataFrame.csv')
 
+## Read yield CSV into data frame (yield from VMA tab 1219B:1289R)
+
 yield_df = pd.read_csv(YIELD_DATA_FILE)
-yield_series = yield_df['Conversion calculation**']
-# print(yield_df)
+
+## Print yield_df column headers
+
+# for h in yield_df.head():
+#   print(h)
+
+## Conversion calc series, only including rows where Exclude Data? != 'Y'
+
+conversion_calc_s = yield_df['Conversion calculation**'][yield_df['Exclude Data?'] != 'Y']
+
+## todo: these averages from raw data (see advanced controls row 208)
+
 carbon_content_of_algae_biomass_avg = 0.284687
 farm_biomass_export_avg = 0.55
 pct_longterm_sequestration_from_exported_carbon_in_farms_avg = 0.372239
-# todo calculate these averages from raw data (see advanced controls row 208)
 
-carbon_sequestration = (yield_df['Conversion calculation**'] / (1-farm_biomass_export_avg))*farm_biomass_export_avg*carbon_content_of_algae_biomass_avg*pct_longterm_sequestration_from_exported_carbon_in_farms_avg
+## Calculate carbon sequestration (formula from cells starting with VMA tab 780M )
 
+carbon_sequestration_s = (conversion_calc_s / (1-farm_biomass_export_avg))*farm_biomass_export_avg*carbon_content_of_algae_biomass_avg*pct_longterm_sequestration_from_exported_carbon_in_farms_avg
 
-print(type(carbon_sequestration))
-print(carbon_sequestration)
-print("Mean:")
-print(np.mean(carbon_sequestration))
+## Calculate and print the mean
+
+carbon_sequestration_mean = carbon_sequestration_s.mean()
+print('Mean: {}'.format(carbon_sequestration_mean))
+
 # create a list of valid scenario objects
 # -- make csvs from excel model
 # -- each named scenario will: 
