@@ -1,0 +1,17 @@
+name: pd-jupyter
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - jupyter
+  - ipywidgets
+  - pandas
+  - bokeh
+  - numba
+  - pylint
+  - pytest
+  - pip
+  - pip:
+    - fair
+    - numpy-financial
+    - xlrd
