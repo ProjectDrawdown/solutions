@@ -15,7 +15,7 @@ class Solution:
     @classmethod
     def solution_list(cls):
         """Return a list solutions we hava access to"""
-        return [ s.stem for s in Path('solution').glob('[a-z]*') ]
+        return [ s.stem for s in Path('solution').glob('[a-z]*') if s.is_dir() ]
     
     @classmethod
     def scenario_list(cls, solution_name):
