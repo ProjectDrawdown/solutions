@@ -6,7 +6,7 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-import xlrd
+import openpyxl
 
 from model import adoptiondata
 from model import advanced_controls as ac
@@ -194,7 +194,7 @@ class Scenario:
             adconfig=adconfig)
 
         # Custom PDS Data
-        wb = xlrd.open_workbook(filename=THISDIR.joinpath('data.xlsx'), on_demand=True)
+        wb = openpyxl.load_workbook(filename=THISDIR.joinpath('data.xlsx'), data_only=True)
         def isint(x):
             try:
                 int(x)
@@ -212,7 +212,7 @@ class Scenario:
 
         # Data Source 1
         hvfac_mmt_pds1 = pd.read_excel(io=wb, sheet_name='HVFAC Links', header=0, index_col=0,
-                usecols='B:L', dtype='float', engine='xlrd', skiprows=62, nrows=46
+                usecols='B:L', dtype='float', engine='openpyxl', skiprows=62, nrows=46
                 ).rename(mapper=demangle, axis='columns').rename(columns={
                     'Asia (sans Japan)': 'Asia (Sans Japan)',
                     'Middle East & Africa': 'Middle East and Africa',
@@ -223,7 +223,7 @@ class Scenario:
 
         # Data Source 2
         hvfac_mmt_pds2 = pd.read_excel(io=wb, sheet_name='HVFAC Links', header=0, index_col=0,
-                usecols='O:Y', dtype='float', engine='xlrd', skiprows=62, nrows=46
+                usecols='O:Y', dtype='float', engine='openpyxl', skiprows=62, nrows=46
                 ).rename(mapper=demangle, axis='columns').rename(columns={
                     'Asia (sans Japan)': 'Asia (Sans Japan)',
                     'Middle East & Africa': 'Middle East and Africa',
@@ -234,7 +234,7 @@ class Scenario:
 
         # Data Source 3
         hvfac_mmt_pds3 = pd.read_excel(io=wb, sheet_name='HVFAC Links', header=0, index_col=0,
-                usecols='AB:AL', dtype='float', engine='xlrd', skiprows=62, nrows=46
+                usecols='AB:AL', dtype='float', engine='openpyxl', skiprows=62, nrows=46
                 ).rename(mapper=demangle, axis='columns').rename(columns={
                     'Asia (sans Japan)': 'Asia (Sans Japan)',
                     'Middle East & Africa': 'Middle East and Africa',
@@ -369,7 +369,7 @@ class Scenario:
         # Custom REF Data
         # Data Source 1
         hvfac_mmt_ref = pd.read_excel(io=wb, sheet_name='HVFAC Links', header=0, index_col=0,
-                usecols='B:L', dtype='float', engine='xlrd', skiprows=113, nrows=46
+                usecols='B:L', dtype='float', engine='openpyxl', skiprows=113, nrows=46
                 ).rename(mapper=demangle, axis='columns').rename(columns={
                     'Asia (sans Japan)': 'Asia (Sans Japan)',
                     'Middle East & Africa': 'Middle East and Africa',

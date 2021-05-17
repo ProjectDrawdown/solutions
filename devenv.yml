@@ -14,4 +14,4 @@ dependencies:
   - pip:
     - fair
     - numpy-financial
-    - xlrd
+    - openpyxl
