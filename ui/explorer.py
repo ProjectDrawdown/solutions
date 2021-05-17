@@ -25,7 +25,7 @@ def hover_tool( points ):
     )
 
 
-class SolutionExporer:
+class SolutionExplorer:
     """Creates pretty charts for solution."""
     # The plan is that the charts will share some common selections, so you
     # can focus on a scenario with one click, that kind of thing.
