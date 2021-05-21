@@ -10,8 +10,7 @@ from model.metaclass_cache import MetaclassCache
 import numpy as np
 import pandas as pd
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from model.data_handler import DataHandler, data_func
 
 class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
     """Implements Adoption Data module."""

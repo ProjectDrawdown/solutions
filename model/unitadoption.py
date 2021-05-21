@@ -11,8 +11,7 @@ from model import dd
 from model import emissionsfactors
 from model.advanced_controls import SOLUTION_CATEGORY
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from model.data_handler import DataHandler, data_func
 
 @lru_cache
 def cumulative_degraded_land( 

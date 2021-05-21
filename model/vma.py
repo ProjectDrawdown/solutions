@@ -152,7 +152,7 @@ class VMA:
         Populates self.source_data, self.df, and self.fixed_summary if the
         required values are present.
         """
-        workbook = openpyxl.load_workbook(filename=filename)
+        workbook = openpyxl.load_workbook(filename=filename, data_only=True)
         vma_reader = VMAReader(workbook)
         if 'Variable Meta-analysis-DD' in workbook.sheet_names():
             alt_vma = True

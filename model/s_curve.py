@@ -5,8 +5,7 @@ import pandas as pd
 
 import model.dd as dd
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from model.data_handler import DataHandler, data_func
 
 class SCurve(DataHandler):
     def __init__(self, transition_period, sconfig):
