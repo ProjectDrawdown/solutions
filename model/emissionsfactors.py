@@ -9,7 +9,8 @@ import enum
 import pandas as pd
 
 
-from model.data_handler import DataHandler, data_func
+from model.data_handler import DataHandler
+from model.decorators import data_func
 
 CO2EQ_SOURCE = enum.Enum('CO2EQ_SOURCE', 'AR5_WITH_FEEDBACK AR4 SAR')
 GRID_SOURCE = enum.Enum('GRID_SOURCE', 'META IPCC')

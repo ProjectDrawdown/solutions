@@ -4,12 +4,6 @@ import numpy as np
 import copy
 from typing import List
 
-def data_func(method):
-    """Mark this function as having its value saved.  Decorator used by inheritors of the `DataHandler` class to designate which methods
-    should be output with the class in the `to_json` method."""
-    method.data_func = True
-    return method
-
 class DataHandler:
 
     def clean_nan(dataframe):

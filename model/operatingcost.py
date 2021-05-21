@@ -12,7 +12,8 @@ import pandas as pd
 from numba import jit
 import model
 
-from model.data_handler import DataHandler, data_func
+from model.data_handler import DataHandler
+from model.decorators import data_func
 
 @lru_cache
 def annual_breakout(

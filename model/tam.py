@@ -11,7 +11,8 @@ import numpy as np
 import pandas as pd
 
 
-from model.data_handler import DataHandler, data_func
+from model.data_handler import DataHandler
+from model.decorators import data_func
 
 class TAM(DataHandler, object, metaclass=MetaclassCache):
     """Total Addressable Market module."""

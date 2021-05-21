@@ -6,7 +6,8 @@ import numpy as np
 
 import model.dd
 
-from model.data_handler import DataHandler, data_func
+from model.data_handler import DataHandler
+from model.decorators import data_func
 
 class FirstCost(DataHandler):
     """Implementation for the First Cost module.

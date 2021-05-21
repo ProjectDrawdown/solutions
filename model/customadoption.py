@@ -6,7 +6,8 @@ import model.dd as dd
 import pandas as pd
 import numpy as np
 
-from model.data_handler import DataHandler, data_func
+from model.data_handler import DataHandler
+from model.decorators import data_func
 
 pd.set_option('display.expand_frame_repr', False)
 YEARS = list(range(2012, 2061))

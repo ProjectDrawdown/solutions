@@ -6,33 +6,13 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-import openpyxl
+import xlrd
 
 import model.dd
 from tools.vma_xls_extract import VMAReader
 
 
 VMA_columns = ['Value', 'Units', 'Raw', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
-
-
-def populate_fixed_summaries(vma_dict, filename):
-    """
-    Convenience function for use by solution classes.
-    Args:
-        vma_dict: dict indexed by VMA Title
-        filename: VMA_info CSV file with fixed summary data for Mean, High, Low
-    Modifies the given vma_dict according to the title in the 'Title on xls'
-    row of the 'filename' CSV, populating the vma.fixed_summary field.
-    """
-    vma_info_df = pd.read_csv(filename, index_col=0)
-    for _, row in vma_info_df.iterrows():
-        title = row['Title on xls']
-        fixed_mean = row.get('Fixed Mean', np.nan)
-        fixed_high = row.get('Fixed High', np.nan)
-        fixed_low = row.get('Fixed Low', np.nan)
-        fixed_summary = check_fixed_summary(fixed_mean, fixed_high, fixed_low)
-        if fixed_summary is not None:
-            vma_dict[title].fixed_summary = fixed_summary
 
 
 def check_fixed_summary(*values):
@@ -92,10 +72,10 @@ class VMA:
            of calculating those values
     """
 
-    def __init__(self, filename, title=None, low_sd=1.0, high_sd=1.0,
+    def __init__(self, vma_data_csv: bytes, title=None, low_sd=1.0, high_sd=1.0,
                  discard_multiplier=3, stat_correction=None, use_weight=False,
                  fixed_summary=None):
-        self.filename = filename
+        self.vma_data_csv = vma_data_csv
         self.title = title
         self.low_sd = low_sd
         self.high_sd = high_sd
@@ -110,76 +90,10 @@ class VMA:
         self.fixed_summary = fixed_summary
         self.df = pd.DataFrame(columns=VMA_columns)
 
-        if filename:
-            # Turn strings into pathlib
-            if isinstance(filename, str):
-                filename = pathlib.Path(filename)
+        csv_df = pd.read_csv(io.BytesIO(vma_data_csv), index_col=False, skipinitialspace=True, skip_blank_lines=True)
+        self._convert_from_human_readable(csv_df)
 
-            # Instantiate VMA with various file types
-            if isinstance(filename, io.StringIO) or filename.suffix == '.csv':
-                self._read_csv(filename=filename)
-            elif filename.suffix == '.xlsx' or filename.suffix == '.xlsm':
-                self._read_xls(filename=filename, title=title)
-            else:
-                raise ValueError(
-                    f'{filename!r} is not a recognized filetype for vma.VMA'
-                )
-        else:
-            self.source_data = pd.DataFrame()
-
-    def _read_csv(self, filename):
-        """
-        Read a properly formatted CSV file (e.g. as is produced by
-        solution_xls_extract) to instantiate this VMA.
-
-        Arguments:
-            filename: pathlib.Path to a CSV file
-
-        Populates self.source_data and self.df
-        """
-        csv_df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
-        self._convert_from_human_readable(csv_df, filename)
-
-    def _read_xls(self, filename, title):
-        """
-        Read a properly formatted xlsx/xlsm file (with a Variable
-        Meta-analysis sheet) to instantiate this VMA.
-
-        Arguments:
-            filename: pathlib.Path to an Excel file
-            title: string matching VMA name in the Variable Meta-analysis sheet
-
-        Populates self.source_data, self.df, and self.fixed_summary if the
-        required values are present.
-        """
-        workbook = openpyxl.load_workbook(filename=filename)
-        vma_reader = VMAReader(workbook)
-        if 'Variable Meta-analysis-DD' in workbook.sheet_names():
-            alt_vma = True
-        else:
-            alt_vma = False
-
-        # Pull the desired table from this workbook
-        try:
-            (xl_df, use_weight, summary) = \
-                vma_reader.xls_df_dict(alt_vma=alt_vma, title=title)[title]
-        except KeyError:
-            # The title wasn't available in the given workbook. Read all titles
-            # to give the user a hint.
-            full_dict = vma_reader.xls_df_dict(alt_vma=alt_vma)
-            raise ValueError(
-                f"Title {title!r} not available in {filename}\nOptions\n\t" + \
-                "\n\t".join(full_dict.keys())
-            )
-
-        self._convert_from_human_readable(xl_df, filename)
-
-        # Populate the self.fixed_summary field if the values are valid
-        fixed_summary = check_fixed_summary(*summary)
-        if fixed_summary is not None:
-            self.fixed_summary = fixed_summary
-
-    def _convert_from_human_readable(self, readable_df, filename):
+    def _convert_from_human_readable(self, readable_df):
         """
         Converts a known set of readable column names to a known column set. A
         few data cleanups are also performed, such as converting percentages
@@ -197,7 +111,7 @@ class VMA:
         self._validate_readable_df(readable_df)
         self.source_data = readable_df
         if self.use_weight:
-            err = f"'Use weight' selected but no weights to use in {filename}"
+            err = f"'Use weight' selected but no weights to use"
             assert not all(pd.isnull(readable_df['Weight'])), err
         self.df['Weight'] = readable_df['Weight'].apply(convert_percentages)
         self.df['Raw'] = readable_df['Raw Data Input'].apply(convert_percentages)
@@ -222,11 +136,7 @@ class VMA:
 
     def _validate_readable_df(self, readable_df):
         if readable_df is None:
-            if self.title is None:
-                source = f"\n\tFile: {self.filename}\n"
-            else:
-                source = f"\n\tFile: {self.filename}\n\tTitle: {self.title!r}\n"
-            raise ValueError("Dataframe from" + source + "is None, is that VMA empty?")
+            raise ValueError("Dataframe is that VMA empty?")
 
     def _discard_outliers(self):
         """Discard outlier values beyond a multiple of the stddev."""
@@ -307,10 +217,3 @@ class VMA:
             return low
         else:
             raise ValueError(f"invalid key: {key}. key must be 'mean', 'high', 'low' or None")
-
-    def write_to_file(self, new_df):
-        new_df.to_csv(path_or_buf=self.filename, index=False)
-        self._read_csv(filename=self.filename)
-
-    def reload_from_file(self):
-        self._read_csv(filename=self.filename)

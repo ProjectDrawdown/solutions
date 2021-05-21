@@ -17,7 +17,8 @@ import model.advanced_controls
 import model.dd
 import model.fairutil
 
-from model.data_handler import DataHandler, data_func
+from model.data_handler import DataHandler
+from model.decorators import data_func
 
 C_TO_CO2EQ = 3.666
 # Note: a different value of 3.64 is sometimes used for certain results in Excel
