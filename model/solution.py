@@ -1,6 +1,7 @@
 """Top Level Solution Constructor"""
 
 import importlib
+import json
 from pathlib import Path
 from datetime import date
 import pandas as pd
@@ -12,15 +13,25 @@ class Solution:
     this class are to aggregate data across multiple scenarios as pandas
     DataFrames"""
 
-    @classmethod
-    def solution_list(cls):
+    @staticmethod
+    def solution_list():
         """Return a list solutions we hava access to"""
         return [ s.stem for s in Path('solution').glob('[a-z]*') if s.is_dir() ]
     
-    @classmethod
-    def scenario_list(cls, solution_name):
+    @staticmethod
+    def scenario_list(solution_name):
         """Return a list of scenarios for a given solution"""
-        return [ s.stem.replace('_',' ') for s in Path('solution', solution_name, 'ac') .glob('*') ]
+        # Peek inside each of the scenario files and get the name out.
+        result = []
+        for s in Path('solution', solution_name, 'ac').glob('*.json'):
+            with open(s) as f:
+                j = json.loads(f.read())
+                result.append(j['name'])
+        return result
+    
+    @staticmethod
+    def scenario_count(solution_name):
+        return len(Path('solution', solution_name, 'ac').glob('*.json'))
 
     def __init__(self, solution_dir, scenario_names=None, start_year=None):
         """solution_dir: the bare name of a solution directory, e.g. 'bioplastics'
