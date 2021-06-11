@@ -1,3 +1,0 @@
-# necessary for jupyterlab integration
-jupyter labextension install @jupyter-widgets/jupyterlab-manager 
-jupyter labextension install bqplot ipyvolume jupyter-threejs qgrid
