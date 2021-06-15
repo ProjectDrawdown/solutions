@@ -99,8 +99,16 @@ JWT_SECRET_KEY=somejwtsecretkey
 
 If you have docker and docker-compose installed, you should be able to get started fairly quickly, following these steps:
 
-`$ cp docker-compose.yml.local.example docker-compose.yml`
-`$ docker-compose build` to build the docker containers
+```sh
+$ cp docker-compose.yml.local.example docker-compose.yml
+
+$ docker-compose up --build
+# our project is mounted to the container, so changes will automatically be reflected after saving. We would only need to restart the container when introducing a new external dependency. 
+```
+to build the docker containers.
+
+_NOTE: For windows machine using WSL (Windows Subsystem for Linux), we will need to enable 'WSL Integration' for required distro in Windows Docker Desktop (Settings -> Resources-> WSL Integration -> Enable integration with required distros)._
+
 
 ## Getting started without Docker
 
