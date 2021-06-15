@@ -147,7 +147,7 @@ async def initialize(db: Session = Depends(get_db)):
 
   [scenario_json, references_json] = transform()
 
-  canonical_scenarios = ['drawdown-2020', 'plausible-2020', 'optimum-2020']
+  canonical_scenarios = ['PDS-2', 'PDS-1', 'PDS-3']
   for canonical_scenario in canonical_scenarios:
     scenario = save_entity(db, canonical_scenario, scenario_json, models.Scenario)
     reference = save_entity(db, canonical_scenario, references_json, models.Reference)

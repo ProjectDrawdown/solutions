@@ -11,7 +11,7 @@ from api.transforms.metadata import pythonFieldMetadataArray
 from model.advanced_controls import AdvancedControls, get_vma_for_param, get_param_for_vma_name
 
 legacyDataFiles = {
-  'drawdown-2020': [
+  'PDS-2': [
 
     # Electricity Generation
     ["onshorewind","solution/onshorewind/ac/PDS-27p2050-Drawdown2020.json"],
@@ -54,7 +54,7 @@ legacyDataFiles = {
     # Buildings and Cities
     ["landfillmethane","solution/landfillmethane/ac/PDS-0p2050-Drawdown2020.json"],
   ],
-  'plausible-2020': [
+  'PDS-1': [
 
     # Electricity Generation
     ["onshorewind","solution/onshorewind/ac/PDS-20p2050-Plausible2020.json"],
@@ -97,7 +97,7 @@ legacyDataFiles = {
     # Buildings and Cities
     ["landfillmethane","solution/landfillmethane/ac/PDS-0p2050-Plausible2020.json"],
   ],
-  'optimum-2020': [
+  'PDS-3': [
 
     # Electricity Generation
     ["onshorewind","solution/onshorewind/ac/PDS-27p2050-Optimum2020.json"],
@@ -195,7 +195,7 @@ def transform():
   }
   jsonRefData = {}
 
-  for [technology, filenameData] in legacyDataFiles['drawdown-2020']:
+  for [technology, filenameData] in legacyDataFiles['PDS-2']:
     with open(filenameData) as f:
       sampleScenarioData = json.load(f)
       for [existing_name, path, converted_name, label, unit] in varProjectionNamesPaths:
