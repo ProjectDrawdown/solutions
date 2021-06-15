@@ -3,7 +3,7 @@ alembic==1.4.3
 aioredis==1.3.1
 deepdiff==5.2.1
 fair==1.6.1
-fastapi==0.61.1
+fastapi==0.65.2
 fastapi-plugins==0.6.0
 httpx==0.16.1
 jsonschema==3.2.0
