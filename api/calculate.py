@@ -395,12 +395,12 @@ async def calculate(
     workbook_version = workbook.version
 
   cache_key = compound_key(workbook_id, workbook_version)
-  # cached_result = await cache.get(cache_key)
-  # if cached_result is not None:
-  #   if websocket:
-  #     await websocket_send_cached(str(cached_result), json.loads(cached_result), websocket, cache)
-  #     return
-  #   return json.loads(cached_result)
+  cached_result = await cache.get(cache_key)
+  if cached_result is not None:
+    if websocket:
+      await websocket_send_cached(str(cached_result), json.loads(cached_result), websocket, cache)
+      return
+    return json.loads(cached_result)
 
   [prev_version, prev_key, prev_data] = await get_prev_calc(workbook_id, workbook_version, cache)
 
