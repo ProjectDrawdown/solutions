@@ -4,6 +4,8 @@ import asyncio
 import json
 import re
 import hashlib
+import logging
+from logging.config import dictConfig
 from fastapi import HTTPException, WebSocket
 from pandas import DataFrame, Series
 from deepdiff import DeepDiff
@@ -12,7 +14,7 @@ import concurrent.futures
 from model.data_handler import DataHandler
 from solution import factory, factory_2
 
-from api.config import AioWrap, get_projection_path, get_settings
+from api.config import AioWrap, LogSettings, get_projection_path, get_settings
 from api.queries.workbook_queries import workbook_by_id
 from api.transform import rehydrate_legacy_json
 from api.db.models import Workbook
@@ -26,6 +28,8 @@ import pathlib
 
 import api.transforms.validate_variation
 
+dictConfig(LogSettings().dict())
+logger = logging.getLogger("solutions")
 settings = get_settings()
 
 def map_to_json(mapping):
@@ -192,6 +196,7 @@ def calc(input, name_full, hashed_json_input, technology, regions, json_input, p
   try:
     result = to_json(constructor(input), regions)
   except Exception as e:
+    logger.error("Failed to calculate scenario: {}".format(e))
     result = e
   return (result, input, name_full, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs)
 
@@ -289,16 +294,17 @@ async def find_diffs(prev_result_list, tech, json_result, key_hash, key_list, ca
 async def process_tech_calc(json_result, name, key_hash, prev_results, tech, key_list, cache, websocket, do_diffs: bool):
   try:
     str_json_result = json.dumps(json_result)
+
+    if prev_results and do_diffs:
+      await find_diffs(prev_results['results'], tech, json_result, key_hash, key_list, cache, websocket)
+    else:
+      key_list.append([tech, json_result['name'], name, key_hash, False])
   except:
     str_json_result = json.dumps({"error": str(json_result)})
 
   if websocket:
     await websocket.send_text(str_json_result)
   await cache.set(key_hash, str_json_result)
-  if prev_results and do_diffs:
-    await find_diffs(prev_results['results'], tech, json_result, key_hash, key_list, cache, websocket)
-  else:
-    key_list.append([tech, json_result['name'], name, key_hash, False])
 
 async def perform_calculations_async(tasks):
   json_results = []
@@ -389,12 +395,12 @@ async def calculate(
     workbook_version = workbook.version
 
   cache_key = compound_key(workbook_id, workbook_version)
-  cached_result = await cache.get(cache_key)
-  if cached_result is not None:
-    if websocket:
-      await websocket_send_cached(str(cached_result), json.loads(cached_result), websocket, cache)
-      return
-    return json.loads(cached_result)
+  # cached_result = await cache.get(cache_key)
+  # if cached_result is not None:
+  #   if websocket:
+  #     await websocket_send_cached(str(cached_result), json.loads(cached_result), websocket, cache)
+  #     return
+  #   return json.loads(cached_result)
 
   [prev_version, prev_key, prev_data] = await get_prev_calc(workbook_id, workbook_version, cache)
 
@@ -414,6 +420,7 @@ async def calculate(
     with open(f"json_input.log", 'a') as f:
         f.write(f"\n\n\n{json.dumps(jsons)}\n\n\n")
   [tasks, key_list, _] = await setup_calculations(jsons, regions, prev_data, cache, websocket, do_diffs)
+  
   perform_func = perform_calculations_async if run_async else perform_calculations_sync
   await perform_func(tasks)
   result_paths += build_result_paths(key_list)
