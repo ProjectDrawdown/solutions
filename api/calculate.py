@@ -193,6 +193,7 @@ def to_json(scenario, regions):
 
 def calc(input, name_full, hashed_json_input, technology, regions, json_input, prev_results, key_list, cache, websocket, do_diffs):
   constructor = factory_2.one_solution_scenarios(technology, json_input)[0]
+
   try:
     result = to_json(constructor(input), regions)
   except Exception as e:
@@ -301,6 +302,7 @@ async def process_tech_calc(json_result, name, key_hash, prev_results, tech, key
       key_list.append([tech, json_result['name'], name, key_hash, False])
   except:
     str_json_result = json.dumps({"error": str(json_result)})
+    logger.error(str_json_result)
 
   if websocket:
     await websocket.send_text(str_json_result)
@@ -316,6 +318,7 @@ async def perform_calculations_async(tasks):
       futures = [loop.run_in_executor(pool, calc, *task) for task in tasks]
 
       results = await asyncio.gather(*futures)
+
       for r in results:
         (result, input, name_full, hashed_json_input, technology, json_input, prev_results, key_list, cache, websocket, do_diffs) = r
         await process_tech_calc(result, name_full, hashed_json_input, prev_results, technology, key_list, cache, websocket, do_diffs)
@@ -420,7 +423,7 @@ async def calculate(
     with open(f"json_input.log", 'a') as f:
         f.write(f"\n\n\n{json.dumps(jsons)}\n\n\n")
   [tasks, key_list, _] = await setup_calculations(jsons, regions, prev_data, cache, websocket, do_diffs)
-  
+
   perform_func = perform_calculations_async if run_async else perform_calculations_sync
   await perform_func(tasks)
   result_paths += build_result_paths(key_list)

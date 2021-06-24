@@ -10,6 +10,7 @@ warnings.filterwarnings("ignore")
 
 from typing import Optional
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from starlette.responses import RedirectResponse
 from pydantic import BaseModel
 from fastapi_plugins import redis_plugin
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,6 +39,10 @@ app = FastAPI(
         description=docs,
         version="1.0"
         )
+
+@app.get("/")
+async def docs_redirect():
+    return RedirectResponse(url='/docs')
 
 app.add_middleware(
     CORSMiddleware,
