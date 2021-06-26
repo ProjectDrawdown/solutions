@@ -7,6 +7,7 @@ import pandas as pd
 
 from model.advanced_controls import AdvancedControls
 
+
 def all_solutions():
     path = pathlib.Path(__file__).parents[1].joinpath('data', 'overview', 'solutions.csv')
     overview = pd.read_csv(path, index_col=False, skipinitialspace=True, header=0,
@@ -14,12 +15,16 @@ def all_solutions():
     return sorted(overview['DirName'].dropna().tolist())
 
 def import_scenario(importname: str):
+    # TODO: in some cases, the scenarios in the module is being
+    # overwritten to the base scenario instead of importing it
+    # from the solutions.<importname>/ac
     return importlib.import_module(importname)
 
 def one_solution_scenarios(solution, j):
     importname = 'solution.' + solution
     m = import_scenario(importname)
-    if len(m.scenarios) > 1:
+
+    if len(m.scenarios) > 0:
         replacement_scenarios = {}
         j['vmas'] = m.VMAs
         # j['js'] = j
