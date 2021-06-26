@@ -8,6 +8,7 @@ import uuid
 import aioredis
 import fastapi_plugins
 from typing import List, Optional, Any, Literal, Union
+from datetime import datetime
 
 from api.config import get_settings, get_db, AioWrap, get_resource_path, get_app
 from api.queries.user_queries import get_user
@@ -164,6 +165,7 @@ async def update_workbook_variation(
   db_workbook.variations = replace(db_workbook.variations, variation_index, variation_patch.__dict__)
   db_workbook.version = db_workbook.version + 1
   db_workbook.has_run = False
+  db_workbook.updated_at = datetime.now()
   saved_db_workbook = save_workbook(db, db_workbook)
   response = schemas.WorkbookOut.from_orm(saved_db_workbook)
   # response.warnings = warnings
