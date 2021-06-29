@@ -20,22 +20,20 @@ def import_scenario(importname: str):
     # from the solutions.<importname>/ac
     return importlib.import_module(importname)
 
-def one_solution_scenarios(solution, j):
+def one_solution_scenarios(solution, j=None):
+    """Load the scenarios for a single solution, optionally overriding
+    the advanced controls for a single scenario"""
     importname = 'solution.' + solution
     m = import_scenario(importname)
-
-    if len(m.scenarios) > 0:
-        replacement_scenarios = {}
+    if j is not None:
+        # replace the configuration of scenario j.name with the values in j
         j['vmas'] = m.VMAs
-        # j['js'] = j
-        # j['jsfile'] = str(filename)
-        replacement_scenarios[j['name']] = AdvancedControls(**j)
-        m.scenarios = replacement_scenarios
+        m.scenarios[j['name']] = AdvancedControls(**j)
     return (m.Scenario, list(m.scenarios.keys()))
 
 def all_solutions_scenarios(scenarios):
     everything = {}
     for scenario in scenarios:
         solution_name = scenario['tech']
-        everything[solution_name] = one_solution_scenarios(solution_name, scenario['json'])
+        everything[solution_name] = one_solution_scenarios(solution_name)
     return everything
