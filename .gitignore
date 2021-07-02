@@ -19,3 +19,6 @@ api/env-examples
 docker-compose.yml
 json_input.log
 
+build/
+dist/
+*.egg-info/
