@@ -24,6 +24,15 @@ def recursive_get_package_data():
 
   return matches
 
+def list_package_dependencies():
+  '''
+    return the list of dependencies as array of string
+  '''
+  with open('requirements.txt') as f:
+      required = f.read().splitlines()
+
+  return required
+
 setup(
   name='drawdown-solutions',
   version='1.0',
@@ -35,6 +44,7 @@ setup(
     # This can be removed once the rest of the project is cleaned up
     exclude = ['alembic', 'api', 'limbo', 'test'],
   ),
+  install_requires=list_package_dependencies(),
   url='https://github.com/ProjectDrawdown/solutions',
   license='LICENSE',
   long_description=open('README.md').read(),
