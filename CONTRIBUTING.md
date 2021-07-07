@@ -12,25 +12,10 @@ Before you start you'll need to set up a free [GitHub][link_github] account and 
 may be found on [ReproducibleImaging.org](https://www.reproducibleimaging.org/).
 
 Already know what you're looking for in this guide? Jump to the following sections:
-* [Understanding issue labels](#issue-labels)
 * [Making a change](#making-a-change)
 * [Notes for new code](#notes-for-new-code)
+* [Review process](#review-process)
 * [Recognizing contributions](#recognizing-contributions)
-
-## Issue labels
-
-The current list of issue labels are [here][link_labels] and include:
-
-* [![Bugs](https://img.shields.io/badge/-bugs-fc2929.svg)][link_bugs]  
-    *These issues point to problems in the project.*
-
-    If you find new a bug, please provide as much information as possible to recreate the error.
-
-    If you experience the same bug as one already listed in an open issue, please add any additional
-    information that you have as a comment.
-
-* [![Good First Issue](https://img.shields.io/badge/-good%20first%20issue-5319e7.svg)][link_goodfirstissue]  
-    These issues contain a task that any developer can help with, without having to come up to speed on the rest of the system.
 
 
 ## Making a change
@@ -70,15 +55,23 @@ similar to the following:
 
 ## Notes for New Code
 
-#### Testing
-New code should be tested. Test coverage is a key deliverable of this project, we want the codebase to be
-amenable to extensions by the annual cohort of researchers and good coverage is essential to that.
+### Testing
 
 [![codecov](https://codecov.io/gh/ProjectDrawdown/solutions/branch/master/graph/badge.svg)](https://codecov.io/gh/ProjectDrawdown/solutions)
 
-Bug fixes must include an example that exposes the issue.
-New features should have tests that exercise its functionality. There is a [YouTube video describing the layers of testing](https://www.youtube.com/watch?v=K6P56qUkCrw0).
+Test coverage is a key deliverable of this project, we want the codebase to be
+amenable to extensions by the annual cohort of researchers and good coverage is essential to that.
+There is a [YouTube video describing the testing system used in this project](https://www.youtube.com/watch?v=K6P56qUkCrw0).
+New code should include test coverage that is consistent with that system.
+Bugs must include examples showing 
+
 If you're not sure what this means for your code, please ask in your pull request.
+
+
+## Review Process
+
+In addition to the normal code review which any pull request will undergo, changes which augment or modify the analytical functionality of the models will need to be approved by Project Drawdown before being
+accepted into the repository.   
 
 ## Recognizing contributions
 
@@ -88,20 +81,14 @@ You can see a list of current contributors in our [zenodo file][link_zenodo], wh
 generate author lists [as described in this blog post](http://blog.chrisgorgolewski.org/2017/11/sharing-academic-credit-in-open-source.html).
 If you are new to the project, don't forget to add your name and affiliation there!
 
-## Thank you!
-
-You're awesome. :wave::smiley:
-
-<br>
-
-*&mdash; Based on contributing guidelines from the [Nipype][link_nipype] project, which was
-itself based on contributing guidelines from the [STEMMRoleModels][link_stemmrolemodels] project.*
+---
+_Credit to the [Nipype][link_nipype] and [STEMMRoleModels][link_stemmrolemodels] projects for the inspiration
+for the format of this document._
 
 [link_github]: https://github.com/
 [link_ddsolutions]: https://github.com/ProjectDrawdown/solutions
 [link_signupinstructions]: https://help.github.com/articles/signing-up-for-a-new-github-account
 [link_issues]: https://github.com/ProjectDrawdown/solutions/issues
-[link_labels]: https://github.com/ProjectDrawdown/solutions/labels
 [link_discussingissues]: https://help.github.com/articles/discussing-projects-in-issues-and-pull-requests
 
 [link_bugs]: https://github.com/ProjectDrawdown/solutions/labels/bug
@@ -113,7 +100,6 @@ itself based on contributing guidelines from the [STEMMRoleModels][link_stemmrol
 [link_pushpullblog]: https://www.igvita.com/2011/12/19/dont-push-your-pull-requests/
 [link_updateupstreamwiki]: https://help.github.com/articles/syncing-a-fork/
 
-[link_cloning]: https://help.github.com/articles/cloning-a-repository/
 [link_stemmrolemodels]: https://github.com/KirstieJane/STEMMRoleModels
 [link_nipype]: https://github.com/nipy/nipype
 [link_zenodo]: https://github.com/ProjectDrawdown/solutions/blob/master/.zenodo.json
