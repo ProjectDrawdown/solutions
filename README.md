@@ -11,6 +11,7 @@ Future updates to the research will be published in this repository.
 
 While this repo covers the model and analytics in the form of a python library, our [sister project](https://github.com/ProjectDrawdown/global-research-platform) develops that into a hosted solution with a researcher-aimed UI.
 
+---
 ## Status
 
 Conversion Status:
@@ -23,6 +24,7 @@ Conversion Status:
 Other Status:
   * We anticipate ongoing work to make the models and analytics more understandable, both in terms of code improvements and documentation.
 
+---
 # Using the code
 
 ## Getting the source code
@@ -43,6 +45,7 @@ There are two requirements files, depending on how you want to set up your envir
 
 The Jupyter environment is recommended for exploring the code and doing development, while the pip deployment is better for deployment as a package.
 
+---
 
 ## License
 The python code for the model engine is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at [https://github.com/ProjectDrawdown/solutions](https://github.com/ProjectDrawdown/solutions). No part of this Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
@@ -55,6 +58,8 @@ Data supplied from Project Drawdown (mostly in the form of CSV files) is license
 Many thanks to the contributors of the &lt;code&gt;earth hackathon held at the Internet Archive on Sept. 5, 6, and 7 of 2018 which began this project. They are: Owen Barton, Robert L. Read, Denton Gentry, Henry Poole, Greg Elin, Marc Jones, and Stephanie Liu, in addition to Project Drawdown scientists and volunteers, Ryan Allard, Catherine Foster, Chad Frischmann, Kevin Bayuk, and Nick Peters.
 
 Huge thanks to Beni Bienz of The Climate Foundation for his work in implementing a substantial portion of the original system, and to Denton Gentry for the majority of the subsequent development.
+
+---
 
 ## Contact
 
