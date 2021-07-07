@@ -1,7 +1,0 @@
-[flake8]
-ignore =
-    # one blank line before docstring
-    D203,
-    E128, E126
-exclude = .git,__pycache__,voila
-max-complexity = 10
