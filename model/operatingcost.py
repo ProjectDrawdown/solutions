@@ -9,7 +9,7 @@ from model.advanced_controls import SOLUTION_CATEGORY
 import numpy as np
 import numpy_financial
 import pandas as pd
-from numba import jit
+#from numba import jit
 import model
 
 from model.data_handler import DataHandler
@@ -331,7 +331,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_marginal_operating_cost_savings(self):
         """Marginal First Cost.
            SolarPVUtil 'Operating Cost'!C126:C250
@@ -346,7 +346,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_net_cash_flow(self):
         """Marginal First Cost.
            SolarPVUtil 'Operating Cost'!D126:D250
@@ -359,7 +359,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_net_present_value(self):
         """Marginal First Cost.
            SolarPVUtil 'Operating Cost'!E126:E250
@@ -375,7 +375,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_vs_conv_single_iunit_cashflow(self):
         """Estimate the cash flows for a single solution implementation unit while matching
            the output of that unit (in functional units) with the equivalent output of a
@@ -450,7 +450,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_vs_conv_single_iunit_npv(self):
         """Net Present Value of single iunit cashflow.
            SolarPVUtil 'Operating Cost'!J126:J250
@@ -468,7 +468,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_vs_conv_single_iunit_payback(self):
         """Whether the solution has paid off versus the conventional, for each year.
            SolarPVUtil 'Operating Cost'!K126:K250
@@ -480,7 +480,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_vs_conv_single_iunit_payback_discounted(self):
         """Whether the solution NPV has paid off versus the conventional, for each year.
            SolarPVUtil 'Operating Cost'!L126:L250
@@ -492,7 +492,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_only_single_iunit_cashflow(self):
         """
            SolarPVUtil 'Operating Cost'!M126:M250
@@ -542,7 +542,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_only_single_iunit_npv(self):
         """Net Present Value of single iunit cashflow, looking only at costs of the Solution.
            SolarPVUtil 'Operating Cost'!N126:N250
@@ -560,7 +560,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_only_single_iunit_payback(self):
         """Whether the solution has paid off, for each year.
            SolarPVUtil 'Operating Cost'!O126:O250
@@ -572,7 +572,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @jit
+    #@jit
     def soln_only_single_iunit_payback_discounted(self):
         """Whether the solution NPV has paid off, for each year.
            SolarPVUtil 'Operating Cost'!P126:P250

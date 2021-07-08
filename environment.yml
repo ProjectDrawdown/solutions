@@ -1,0 +1,15 @@
+name: pd-dev
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - jupyter
+  - pandas
+  - bokeh
+  - pylint
+  - pytest
+  - pip
+  - pip:
+    - fair
+    - numpy-financial
+    - openpyxl

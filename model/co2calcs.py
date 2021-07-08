@@ -6,7 +6,7 @@ Computes reductions in CO2-equivalent emissions.
 from functools import lru_cache, wraps
 import hashlib
 import math
-from numba import jit
+#from numba import jit
 import json
 from io import StringIO
 
@@ -614,19 +614,19 @@ class CO2Calcs(DataHandler):
 # The following formulae come from the SolarPVUtil Excel implementation of 27Aug18.
 # There was no explanation of where they came from or what they really mean.
 
-@jit
+#@jit
 def co2_rf(x):
     original_co2 = 400
     return 5.35 * math.log((original_co2 + x) / original_co2)
 
 
-@jit
+#@jit
 def f(M, N):
     return 0.47 * math.log(
         1 + 2.01 * 10 ** -5 * (M * N) ** 0.75 + 5.31 * 10 ** -15 * M * (M * N) ** 1.52)
 
 
-@jit
+#@jit
 def ch4_rf(x):
     original_ch4 = 1800
     original_n2o = 320
@@ -637,7 +637,7 @@ def ch4_rf(x):
     return (indirect_ch4_forcing_scalar * 0.036 * (new_M ** 0.5 - old_M ** 0.5) -
             f(new_M, N) + f(old_M, N))
 
-@jit
+#@jit
 def co2eq_ppm(x):
     original_co2 = 400
     return (original_co2 * math.exp(x / 5.35)) - original_co2
