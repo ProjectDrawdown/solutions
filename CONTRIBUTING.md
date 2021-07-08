@@ -26,7 +26,7 @@ similar to the following:
   
     Make sure to keep your fork up to date with the original repository. One way to do this is to [configure a new remote named "upstream"](https://help.github.com/articles/configuring-a-remote-for-a-fork/) and to [sync your fork with the upstream repository](https://help.github.com/articles/syncing-a-fork/).  
 
-1. **Developing and Testing.**  
+1. **Develop and Test.**  
 
     Now you can work on the changes you have planned.  We encourage you to reach out for assistance as you work.  One way to do this easily is to create a Work-In-Progress (WIP) pull request (see the next section).
 
