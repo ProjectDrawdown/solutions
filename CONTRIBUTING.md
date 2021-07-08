@@ -1,7 +1,7 @@
 # Contributing to Project Drawdown Solutions
 
 Welcome to the Project Drawdown Solutions repository! We're excited that you're here and want to help
-with solutions to climate change.   TThese guidelines are designed to make it as easy as possible 
+with solutions to climate change.   These guidelines are designed to make it as easy as possible 
 to get involved. If you have any questions that aren't discussed below, please let us know by 
 [opening an issue](https://github.com/ProjectDrawdown/solutions/issues)!
 
