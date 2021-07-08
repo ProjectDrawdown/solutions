@@ -56,6 +56,14 @@ There are two requirements files, depending on how you want to set up your envir
 
 The conda environment is recommended for exploring the code and doing development, while the pip deployment is better for deployment as a package.
 
+## Using Project Drawdown Solutions as a package
+
+If you would like to use this project as a dependency in _your_ code, you can do so by including the following line in your requirements.txt file:
+
+```
+      git+git://github.com/ProjectDrawdown/solutions@develop
+```
+
 ---
 
 ## License
