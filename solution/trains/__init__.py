@@ -6,7 +6,7 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-import xlrd
+import openpyxl
 
 from model import adoptiondata
 from model import advanced_controls as ac
@@ -159,13 +159,13 @@ class Scenario:
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
         # Custom PDS Data
-        wb = xlrd.open_workbook(filename=THISDIR.joinpath('trainsdata.xlsx'))
+        wb = openpyxl.load_workbook(filename=THISDIR.joinpath('trainsdata.xlsx'), data_only=True)
         adoption1 = pd.read_excel(io=wb, sheet_name='Adoption1', header=0, index_col=0,
-                usecols='A:C', dtype='float', engine='xlrd', skiprows=12, nrows=47)
+                usecols='A:C', dtype='float', engine='openpyxl', skiprows=12, nrows=47)
         adoption2 = pd.read_excel(io=wb, sheet_name='Adoption2', header=0, index_col=0,
-                usecols='A:B', dtype='float', engine='xlrd', skiprows=12, nrows=47)
+                usecols='A:B', dtype='float', engine='openpyxl', skiprows=12, nrows=47)
         adoption3 = pd.read_excel(io=wb, sheet_name='Adoption3', header=0, index_col=0,
-                usecols='A:C', dtype='float', engine='xlrd', skiprows=12, nrows=47)
+                usecols='A:C', dtype='float', engine='openpyxl', skiprows=12, nrows=47)
 
         ds1_df = pd.DataFrame(index=range(2012, 2061), columns=dd.REGIONS)
         ds1_df['World'] = adoption2['Electrified Freight million tonne-km']

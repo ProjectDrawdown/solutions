@@ -6,7 +6,7 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-import xlrd
+import openpyxl
 
 import model.dd
 from tools.vma_xls_extract import VMAReader
@@ -152,7 +152,7 @@ class VMA:
         Populates self.source_data, self.df, and self.fixed_summary if the
         required values are present.
         """
-        workbook = xlrd.open_workbook(filename=filename)
+        workbook = openpyxl.load_workbook(filename=filename,data_only=True,keep_links=False)
         vma_reader = VMAReader(workbook)
         if 'Variable Meta-analysis-DD' in workbook.sheet_names():
             alt_vma = True

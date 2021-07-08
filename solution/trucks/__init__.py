@@ -6,7 +6,8 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-import xlrd
+import openpyxl
+import warnings
 
 from model import adoptiondata
 from model import advanced_controls as ac
@@ -159,13 +160,17 @@ class Scenario:
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
         # Custom PDS Data
-        wb = xlrd.open_workbook(filename=THISDIR.joinpath('trucksdata.xlsx'))
+        wb = None
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            wb = openpyxl.load_workbook(filename=THISDIR.joinpath('trucksdata.xlsx'), data_only=True)
+        
         adoption1 = pd.read_excel(io=wb, sheet_name='AdoptionFactoring1', header=0, index_col=0,
-                usecols='B:C', dtype='float', engine='xlrd', skiprows=11, nrows=51)
+                usecols='B:C', dtype='float', engine='openpyxl', skiprows=11, nrows=51)
         adoption2 = pd.read_excel(io=wb, sheet_name='AdoptionFactoring2', header=0, index_col=0,
-                usecols='B:H,J:M', dtype='float', engine='xlrd', skiprows=10, nrows=50)
+                usecols='B:H,J:M', dtype='float', engine='openpyxl', skiprows=10, nrows=50)
         adoption3 = pd.read_excel(io=wb, sheet_name='AdoptionFactoring3', header=0, index_col=0,
-                usecols='B:D', dtype='float', engine='xlrd', skiprows=9, nrows=51)
+                usecols='B:D', dtype='float', engine='openpyxl', skiprows=9, nrows=51)
 
         ds1_df = pd.DataFrame(index=range(2012, 2061), columns=dd.REGIONS)
         ds1_df['World'] = adoption1.loc[2014:, 'Global']

@@ -1,18 +1,16 @@
 import re
+import openpyxl
 from numpy import nan
 
-
-def cell_to_offsets(cell):
-    """Convert an Excel reference like C33 to (row, col) for xlrd."""
-    (col, row) = filter(None, re.split(r'(\d+)', cell))
-    colnum = 0
-    for i, c in enumerate(col):
-        colnum = (colnum + min(i, 1)) * 26 + (ord(c.upper()) - ord('A'))
-    return (int(row) - 1, colnum)
+def cell_to_offsets(cellref):
+    """Convert an Excel reference like "C33" to (row, col) in 1-based notation"""
+    return openpyxl.utils.cell.coordinate_to_tuple(cellref)
 
 
 def convert_bool(val):
     """Infer a boolean from common conventions in the spreadsheet."""
+    if val is None:
+        raise ValueError('Cannot convert empty value to boolean')       
     v = str(val).lower()
     if v == 'y' or v == 'yes':
         return True
@@ -26,7 +24,7 @@ def convert_float(val, return_nan=False):
     Convert a float; empty cell == 0.0 floating point.
     Ignores strings if they are not empty (will pass through without throwing an error).
     """
-    if val == '':
+    if val is None or val == '':
         return nan if return_nan else 0
     else:
         return float(val)
@@ -34,7 +32,7 @@ def convert_float(val, return_nan=False):
 
 def empty_to_nan(val):
     """ Converts empty cell or cell containing only spaces to NaN """
-    if isinstance(val, str) and val.replace(' ', '') == '':
+    if val is None or isinstance(val, str) and val.replace(' ', '') == '':
         return nan
     else:
         return val

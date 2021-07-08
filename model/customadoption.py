@@ -183,6 +183,13 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         """
         df = pd.DataFrame(columns=datapoints.columns, dtype='float')
         for col in df.columns:
+            # Denise 6/21
+            # Note there is a bug here: polyfit throws an error if the data is all NaN
+            # I don't understand the code well enough to be sure this is the right thing 
+            # to do, but it will sort of fix the problem right now.
+            if datapoints[col].isnull().all():
+                # skip this column
+                continue
             coeff = np.polyfit(x=datapoints.index, y=datapoints[col], deg=degree)
             first_year = list(datapoints.index)[0]
             initial_value = datapoints.loc[first_year, col]
@@ -230,7 +237,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         regions_to_avg = {}
         for name, scen in self.scenarios.items():
             if scen['include']:
-                scen_df = scen['df'].dropna(axis=1, how='all')  # ignore null columns (i.e. blank regional data)
+                scen_df = scen['df'].dropna(axis=1, how='all').copy()  # ignore null columns (i.e. blank regional data)
                 if self.total_adoption_limit is not None and not scen['bug_no_limit']:
                     tal = self.total_adoption_limit
                     idx = tal.first_valid_index()

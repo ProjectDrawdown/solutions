@@ -6,7 +6,7 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-import xlrd
+import openpyxl
 
 from model import adoptiondata
 from model import advanced_controls as ac
@@ -207,9 +207,9 @@ class Scenario:
         # Custom PDS Data
 
         # Data about EV Sales comes from sheets from the original Excel implementation
-        wb = xlrd.open_workbook(filename=THISDIR.joinpath('electricvehicledata.xlsx'))
+        wb = openpyxl.load_workbook(filename=THISDIR.joinpath('electricvehicledata.xlsx'), data_only=True)
         raw_sales = pd.read_excel(io=wb, sheet_name='EV Sales', header=0, index_col=0,
-                usecols='A:K', dtype='float', engine='xlrd', skiprows=7, nrows=43)
+                usecols='A:K', dtype='float', engine='openpyxl', skiprows=7, nrows=43)
         ev_sales = raw_sales.rename(axis='columns', mapper={
             'World ': 'World',
             'OECD90 (US, EU Japan, Canada)': 'OECD90',
@@ -240,7 +240,7 @@ class Scenario:
 
         # Data Source 2
         raw = pd.read_excel(io=wb, sheet_name='Vehicle Survival', header=0, index_col=None,
-                usecols='D:AR', dtype='float', engine='xlrd', skiprows=8, nrows=5).T
+                usecols='D:AR', dtype='float', engine='openpyxl', skiprows=8, nrows=5).T
         survival_ds2 = pd.concat([ev_stock.loc[:2019, 'World'], raw[3]])
         capture_pct_ds2 = raw[4]
         car_usage = 15765.0  # https://theicct.org/global-transportation-roadmap-model (now 404s)

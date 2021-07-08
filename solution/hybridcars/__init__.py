@@ -6,7 +6,7 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-import xlrd
+import openpyxl
 
 from model import adoptiondata
 from model import advanced_controls as ac
@@ -207,9 +207,9 @@ class Scenario:
             adconfig=adconfig)
 
         # Custom PDS Data
-        wb = xlrd.open_workbook(filename=THISDIR.joinpath('hybridcarsdata.xlsx'))
+        wb = openpyxl.load_workbook(filename=THISDIR.joinpath('hybridcarsdata.xlsx'), data_only=True)
         raw_sales = pd.read_excel(io=wb, sheet_name='HEV Sales', header=0, index_col=0,
-                usecols='A:K', dtype='float', engine='xlrd', skiprows=7, nrows=43)
+                usecols='A:K', dtype='float', engine='openpyxl', skiprows=7, nrows=43)
         hev_sales = raw_sales.rename(axis='columns', mapper={
             'World ': 'World',
             'OECD90 (US, EU Japan, Canada)': 'OECD90',
