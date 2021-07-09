@@ -136,8 +136,7 @@ class Scenario:
              'NOTE', 'NOTE', 'NOTE'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
-            dtype=np.object).set_index('param')
+        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
         ad_data_sources = {
             'Raw Data for ALL LAND TYPES': {
                 'RR 2018, https://rightsandresources.org/wp-content/uploads/2018/09/At-A-Crossroads_RRI_Sept-2018.pdf': THISDIR.joinpath('ad', 'ad_RR_2018_httpsrightsandresources_orgwpcontentuploads201809AtACrossroads_RRI_Sept2018_pdf.csv'),

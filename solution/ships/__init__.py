@@ -135,8 +135,7 @@ class Scenario:
                 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0],
-            dtype=np.object).set_index('param')
+        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
         tam_ref_data_sources = {
               'Conservative Cases': {
                   'Based on Smith et al (2014) 3rd IMO GHG Study - from Fig 82, 83 on P138, P139 (Max range) combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_Smith_et_al_2014_3rd_IMO_GHG_Study_from_Fig_82_83_on_P138_P139_Max_range_combin_1bc1c897.csv'),
@@ -168,8 +167,7 @@ class Scenario:
              'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
-            dtype=np.object).set_index('param')
+        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
         ad_data_sources = {
         }
         self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,

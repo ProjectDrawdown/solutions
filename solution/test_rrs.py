@@ -1,7 +1,7 @@
 """Test rrs.py."""
 
 import pytest
-import rrs
+from . import rrs
 
 
 def test_rrs():

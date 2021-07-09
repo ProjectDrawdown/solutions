@@ -140,8 +140,7 @@ class Scenario:
                 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0],
-            dtype=np.object).set_index('param')
+        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
         tam_ref_data_sources = {
               'Baseline Cases': {
                   'Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Highest Ranges': THISDIR.joinpath('tam', 'tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Highest_Ranges.csv'),
@@ -160,11 +159,11 @@ class Scenario:
 
         # Custom PDS Data
         wb = openpyxl.load_workbook(filename=THISDIR.joinpath('trainsdata.xlsx'), data_only=True)
-        adoption1 = pd.read_excel(io=wb, sheet_name='Adoption1', header=0, index_col=0,
+        adoption1 = pd.read_excel(wb, sheet_name='Adoption1', header=0, index_col=0,
                 usecols='A:C', dtype='float', engine='openpyxl', skiprows=12, nrows=47)
-        adoption2 = pd.read_excel(io=wb, sheet_name='Adoption2', header=0, index_col=0,
+        adoption2 = pd.read_excel(wb, sheet_name='Adoption2', header=0, index_col=0,
                 usecols='A:B', dtype='float', engine='openpyxl', skiprows=12, nrows=47)
-        adoption3 = pd.read_excel(io=wb, sheet_name='Adoption3', header=0, index_col=0,
+        adoption3 = pd.read_excel(wb, sheet_name='Adoption3', header=0, index_col=0,
                 usecols='A:C', dtype='float', engine='openpyxl', skiprows=12, nrows=47)
 
         ds1_df = pd.DataFrame(index=range(2012, 2061), columns=dd.REGIONS)

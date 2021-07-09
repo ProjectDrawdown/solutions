@@ -154,7 +154,7 @@ class VMA:
         """
         workbook = openpyxl.load_workbook(filename=filename,data_only=True,keep_links=False)
         vma_reader = VMAReader(workbook)
-        if 'Variable Meta-analysis-DD' in workbook.sheet_names():
+        if 'Variable Meta-analysis-DD' in workbook.sheetnames:
             alt_vma = True
         else:
             alt_vma = False

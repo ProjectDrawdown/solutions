@@ -136,8 +136,7 @@ class Scenario:
                 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0],
-            dtype=np.object).set_index('param')
+        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
         tam_ref_data_sources = {
               'Baseline Cases': {
                   'ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
@@ -168,8 +167,7 @@ class Scenario:
              'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
-            dtype=np.object).set_index('param')
+        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
         ad_data_sources = {
             'Ambitious Cases': {
                 '(PDS1) Based on ITDP/UCD (2015) A Global High Shift Cycling Scenario (with recent historical data included)': THISDIR.joinpath('ad', 'ad_PDS1_based_on_ITDPUCD_2015_A_Global_High_Shift_Cycling_Scenario_with_recent_historical_d_7e6e1325.csv'),

@@ -2,7 +2,7 @@
 
 import os
 import pandas as pd
-import factory
+from . import factory
 
 def test_all_solutions():
     result = factory.all_solutions()

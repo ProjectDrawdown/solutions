@@ -152,8 +152,7 @@ class Scenario:
                 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0],
-            dtype=np.object).set_index('param')
+        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
         tam_ref_data_sources = {
               'Baseline Cases': {
                   'Project Drawdown - Based on Data from Several Sources. (See HVFAC Links Sheet and HVFAC Material Availability Models)': THISDIR.joinpath('tam', 'tam_Project_Drawdown_based_on_Data_from_Several_Sources__See_HVFAC_Links_Sheet_and_HVFAC_Mat_2961774c.csv'),
@@ -186,15 +185,14 @@ class Scenario:
              'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
-            dtype=np.object).set_index('param')
+        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
         ad_data_sources = {
         }
         self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
             adconfig=adconfig)
 
         # Custom PDS Data
-        wb = openpyxl.load_workbook(filename=THISDIR.joinpath('data.xlsx'), data_only=True)
+        wb = openpyxl.load_workbook(filename=THISDIR.joinpath('data.xlsx'), data_only=True, keep_links=False)
         def isint(x):
             try:
                 int(x)
@@ -211,7 +209,8 @@ class Scenario:
         clinker_pct = self.ac.lookup_vma(vma_title='Clinker to Cement Ratio in Year 2')
 
         # Data Source 1
-        hvfac_mmt_pds1 = pd.read_excel(io=wb, sheet_name='HVFAC Links', header=0, index_col=0,
+        #breakpoint()
+        hvfac_mmt_pds1 = pd.read_excel(wb, sheet_name='HVFAC Links', header=0, index_col=0,
                 usecols='B:L', dtype='float', engine='openpyxl', skiprows=62, nrows=46
                 ).rename(mapper=demangle, axis='columns').rename(columns={
                     'Asia (sans Japan)': 'Asia (Sans Japan)',
@@ -222,7 +221,7 @@ class Scenario:
         ds1_df = hvfac_mmt_pds1.sort_index() / clinker_pct
 
         # Data Source 2
-        hvfac_mmt_pds2 = pd.read_excel(io=wb, sheet_name='HVFAC Links', header=0, index_col=0,
+        hvfac_mmt_pds2 = pd.read_excel(wb, sheet_name='HVFAC Links', header=0, index_col=0,
                 usecols='O:Y', dtype='float', engine='openpyxl', skiprows=62, nrows=46
                 ).rename(mapper=demangle, axis='columns').rename(columns={
                     'Asia (sans Japan)': 'Asia (Sans Japan)',
@@ -233,7 +232,7 @@ class Scenario:
         ds2_df = hvfac_mmt_pds2.sort_index() / clinker_pct
 
         # Data Source 3
-        hvfac_mmt_pds3 = pd.read_excel(io=wb, sheet_name='HVFAC Links', header=0, index_col=0,
+        hvfac_mmt_pds3 = pd.read_excel(wb, sheet_name='HVFAC Links', header=0, index_col=0,
                 usecols='AB:AL', dtype='float', engine='openpyxl', skiprows=62, nrows=46
                 ).rename(mapper=demangle, axis='columns').rename(columns={
                     'Asia (sans Japan)': 'Asia (Sans Japan)',

@@ -41,8 +41,7 @@ setup(
       '': recursive_get_package_data(),
   },
   packages=find_packages(
-    # This can be removed once the rest of the project is cleaned up
-    exclude = ['alembic', 'api', 'limbo', 'test'],
+    exclude = ['limbo', 'test'],
   ),
   install_requires=list_package_dependencies(),
   url='https://github.com/ProjectDrawdown/solutions',

@@ -155,8 +155,7 @@ class Scenario:
                 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0],
-            dtype=np.object).set_index('param')
+        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
         tam_ref_data_sources = {
               'Baseline Cases': {
                   'Based on IEA (2016), "Energy Technology Perspectives - 6DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD.csv'),
@@ -185,8 +184,7 @@ class Scenario:
              'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
-            dtype=np.object).set_index('param')
+        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
         ad_data_sources = {
             'Baseline Cases': {
                 'Based on IEA Reference Tech Scenario- 2017': THISDIR.joinpath('ad', 'ad_based_on_IEA_Reference_Tech_Scenario_2017.csv'),
@@ -208,7 +206,7 @@ class Scenario:
 
         # Data about EV Sales comes from sheets from the original Excel implementation
         wb = openpyxl.load_workbook(filename=THISDIR.joinpath('electricvehicledata.xlsx'), data_only=True)
-        raw_sales = pd.read_excel(io=wb, sheet_name='EV Sales', header=0, index_col=0,
+        raw_sales = pd.read_excel(wb, sheet_name='EV Sales', header=0, index_col=0,
                 usecols='A:K', dtype='float', engine='openpyxl', skiprows=7, nrows=43)
         ev_sales = raw_sales.rename(axis='columns', mapper={
             'World ': 'World',
@@ -239,7 +237,7 @@ class Scenario:
         ds1_df['World'] = world.clip(upper=tam_limit_pds2, axis=0)
 
         # Data Source 2
-        raw = pd.read_excel(io=wb, sheet_name='Vehicle Survival', header=0, index_col=None,
+        raw = pd.read_excel(wb, sheet_name='Vehicle Survival', header=0, index_col=None,
                 usecols='D:AR', dtype='float', engine='openpyxl', skiprows=8, nrows=5).T
         survival_ds2 = pd.concat([ev_stock.loc[:2019, 'World'], raw[3]])
         capture_pct_ds2 = raw[4]
