@@ -42,8 +42,8 @@ def annual_breakout(
     first_year = dd.CORE_START_YEAR
     last_year = report_end_year
     last_column = dd.CORE_END_YEAR
-    # last_row = 2139
-    breakout = pd.DataFrame(0, index=np.arange(first_year, last_year + 1),
+    last_row = 2139
+    breakout = pd.DataFrame(0, index=np.arange(first_year, last_row + 1),
                             columns=np.arange(first_year, last_column + 1), dtype='float')
     breakout.index.name = 'Year'
     breakout.index = breakout.index.astype(int)
@@ -66,7 +66,7 @@ def annual_breakout(
 
         # for each year, add in operating costs for equipment purchased in that
         # starting year through the year where it wears out.
-        for row in range(year, last_year + 1):
+        for row in range(year, last_row + 1):
             remaining_lifetime = np.clip(lifetime, 0, 1)
             val = total * remaining_lifetime
             breakout.loc[row, year] = val if math.fabs(val) > 0.01 else 0.0
@@ -389,8 +389,8 @@ class OperatingCost(DataHandler):
         first_year = dd.CORE_START_YEAR
         last_year = max(dd.CORE_END_YEAR,
                 dd.CORE_START_YEAR + self.ac.soln_lifetime_replacement_rounded)
-        # last_row = 2139
-        result = pd.Series(0, index=np.arange(first_year, last_year + 1), dtype='float')
+        last_row = 2139
+        result = pd.Series(0, index=np.arange(first_year, last_row+ 1), dtype='float')
         result.index.name = 'Year'
         result.index = result.index.astype(int)
         result.name = 'soln_vs_conv_single_iunit_cashflow'
@@ -500,8 +500,8 @@ class OperatingCost(DataHandler):
         first_year = dd.CORE_START_YEAR
         last_year = max(dd.CORE_END_YEAR,
                 dd.CORE_START_YEAR + self.ac.soln_lifetime_replacement_rounded)
-        # last_row = 2139
-        result = pd.Series(0, index=np.arange(first_year, last_year + 1), dtype='float')
+        last_row = 2139
+        result = pd.Series(0, index=np.arange(first_year, last_row + 1), dtype='float')
         result.index.name = 'Year'
         result.index = result.index.astype(int)
         result.name = 'soln_only_single_iunit_cashflow'
