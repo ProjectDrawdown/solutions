@@ -282,8 +282,8 @@ class VMAReader:
         col_names = list(df.columns)
         idx = 0
         skipcols = []
-        for c in range(16):
-            val = sheet.cell(row1, col1 + c).value
+        for c in range(col1, col1 + 16):
+            val = sheet.cell(row1, c).value
             if val is None or val == '' or idx >= len(col_names) or val == 'Battery Size':
                 # Electric Bikes added 'Battery Size' in the empty column
                 skipcols.append(c)
@@ -301,22 +301,21 @@ class VMAReader:
 
         max_sources = 140
         done = False
-        for r in range(max_sources):
+        for r in range(row1+1, row1 + max_sources):
             new_row = {}
             idx = 0
-            for c in range(16):
+            for c in range(col1, col1 + 16):
                 if c in skipcols:
                     continue
                 col_name = col_names[idx]
-                cell_val = sheet.cell(row1 + 1 + r, col1 + c).value  # get raw val
+                cell_val = sheet.cell(r, c).value  # get raw val
                 if cell_val == '**Add calc above':
                     done = True  # edge case where the table is filled with no extra rows
                     break
                 cell_val = COLUMN_DTYPE_MAP[col_name](tools.util.empty_to_nan(cell_val))  # conversions
                 new_row[col_name] = cell_val
                 idx += 1
-            if done or all(
-                pd.isna(v) for k, v in new_row.items() if k not in ['Common Units', 'Weight']):
+            if done or all(pd.isna(v) for k, v in new_row.items() if k not in ['Common Units', 'Weight']):
                 last_row = r
                 break  # assume an empty row (except for Common Units) indicates no more sources
             else:
@@ -325,34 +324,40 @@ class VMAReader:
             raise Exception(f"No blank row detected in table. Either there are {max_sources} " +
                     f"VMAs in table, the table is overfull, or there is some error in the code. "
                     f"Cell: {source_id_cell}")
+
         if (df['Weight'] == 0).all():
             # Sometimes all weights are set to 0 instead of blank. Change them to be NaN.
             df['Weight'] = df['Weight'].replace(0, np.nan)
 
-        for r in range(last_row, last_row + 100):  # look past last row
-            if sheet.cell(row1 + r, 18).value == 'Use weight?':
-                use_weight = tools.util.convert_bool(sheet.cell_value(row1 + r + 1, 18))
+        # find the "Use Weight parameter past the last row of the VMA"
+        # Denise 7/21:  This is a little bit fragile.  If one table was missing Use Weight,
+        # it could pick up the Use Weight of the next one.  Probably not a likely scenario.
+        for r in range(last_row+1, last_row + 100):
+            if sheet.cell(r, tools.util.co("R")).value == 'Use weight?':
+                use_weight = tools.util.convert_bool(sheet.cell(r+1, tools.util.co("R")).value)
                 break
-            if sheet.cell(row1 + r, 19) == 'Use weight?':
-                use_weight = tools.util.convert_bool(sheet.cell_value(row1 + r + 1, 19))
+            if sheet.cell(r, tools.util.co("S")).value == 'Use weight?':
+                use_weight = tools.util.convert_bool(sheet.cell(r+1, tools.util.co("S")).value)
                 break
         else:
-            raise ValueError(f"No 'Use weight?' cell found for VMA at {row1} last {last_row}")
+            raise ValueError(f"No 'Use weight?' cell found for VMA between {last_row} and {last_row+100}")
 
         if fixed_summary:
             # Find the Average, High, Low cells.
-            for r in range(last_row, last_row + 50):
+            for r in range(last_row+1, last_row + 50):
                 col = None
-                label = str(sheet.cell(row1 + r, 18).value).lower()
+                label = tools.util.xls(sheet, r, tools.util.co("R")).lower()
                 if label.startswith('average') or 'sum' in label:
-                    col = 21 if use_weight else 20
-                label = str(sheet.cell(row1 + r, 17).value).lower()
-                if label.startswith('average') or 'sum' in label:
-                    col = 20 if use_weight else 19
+                    col = tools.util.co("U") if use_weight else tools.util.co("T")
+                else:
+                    label = tools.util.xls(sheet, r, tools.util.co("Q")).lower()
+                    if label.startswith('average') or 'sum' in label:
+                        col = tools.util.co("T") if use_weight else tools.util.co("S")
+                
                 if col:
-                    average = float(sheet.cell(row1 + r, col).value)
-                    high = float(sheet.cell(row1 + r + 1, col).value)
-                    low = float(sheet.cell(row1 + r + 2, col).value)
+                    average = tools.util.xln(sheet, r, col)
+                    high = tools.util.xln(sheet, r + 1, col)
+                    low = tools.util.xln(sheet, r + 2, col)
                     break
             else:
                 raise ValueError(f"No 'Average' cell found for {source_id_cell}")
@@ -420,7 +425,7 @@ class VMAReader:
         for table_num in range(1, 36):
             found = False
             for rows_to_next_table in range(200):
-                title_from_cell = sheet.value(row + rows_to_next_table, col).value
+                title_from_cell = sheet.cell(row + rows_to_next_table, col).value
                 if title_from_cell is None or title_from_cell == '':
                     continue
                 title_from_cell = str(title_from_cell).strip()

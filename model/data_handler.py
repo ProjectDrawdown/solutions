@@ -15,9 +15,10 @@ class DataHandler:
         dataframe = dataframe.fillna(0)
         return dataframe
 
-    def to_json(self, regions: List[str], clean_nan=clean_nan):
+    def to_json(self, regions: List[str]=None, clean_nan=clean_nan):
         outputs = dict()
         obj_vars = dir(self)
+        limit_regions = (regions is not None)
         for k in obj_vars:
             func = getattr(self, k)
             if hasattr(func, 'data_func'):
@@ -25,7 +26,7 @@ class DataHandler:
                 if data is not None and (isinstance(data, pd.DataFrame) or isinstance(data, pd.Series)):
                     data_keys = data.keys()
                     for l in data.keys():
-                        if 'World' in data_keys and l not in regions:
+                        if limit_regions and 'World' in data_keys and l not in regions:
                             del data[l]
                         else:
                             if isinstance(l, np.int64):

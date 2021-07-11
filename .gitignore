@@ -8,6 +8,8 @@ __pycache__
 .DS_Store
 .coverage
 .ipynb_checkpoints
+*.out
+Untitled.ipynb
 
 .tox
 .vscode
