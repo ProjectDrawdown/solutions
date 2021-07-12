@@ -1,4 +1,4 @@
 fair
 numpy-financial
-pandas==1.2
-xlrd==1.2.0
+pandas==1.2.4
+openpyxl

@@ -625,8 +625,7 @@ def write_tam(f, wb, outputdir):
     f.write(xln(tm_tab, 15, 16) + ", " + xln(tm_tab, 18, 16) + ", " + xln(tm_tab, 21, 16) + ", ")
     f.write(xln(tm_tab, 24, 16) + ", " + xln(tm_tab, 27, 16) + ", " + xln(tm_tab, 30, 16) + ", ")
     f.write(xln(tm_tab, 33, 16) + ", " + xln(tm_tab, 36, 16) + ", " + xln(tm_tab, 39, 16) + "]]\n")
-    f.write("        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0],\n")
-    f.write("            dtype=np.object).set_index('param')\n")
+    f.write("        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')\n")
 
     tam_regions = {'World': 44, 'OECD90': 162, 'Eastern Europe': 226,
                    'Asia (Sans Japan)': 289, 'Middle East and Africa': 352, 'Latin America': 415,
@@ -900,8 +899,7 @@ def write_ad(f, wb, outputdir):
     else:
         sd = xln(a, 23, 1)
         f.write(f"{sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}, {sd}]]\n")
-    f.write("        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],\n")
-    f.write("            dtype=np.object).set_index('param')\n")
+    f.write("        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')\n")
     ad_regions = find_ad_regions(wb=wb)
     ad_outputdir = os.path.join(outputdir, 'ad')
     os.makedirs(ad_outputdir, exist_ok=True)

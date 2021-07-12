@@ -146,8 +146,7 @@ class Scenario:
              'NOTE', 'NOTE', 'NOTE'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
-            dtype=np.object).set_index('param')
+        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
         ad_data_sources = {
             'Raw Data for ALL LAND TYPES': {
                 'FAOSTAT 2016 + Literature (Exponential)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_Exponential.csv'),

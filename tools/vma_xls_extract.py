@@ -99,7 +99,7 @@ def df_approx(df1, df2):
 class VMAReader:
     def __init__(self, wb):
         """
-        wb: Workbook from an Excel file, as from xlrd.open_workbook
+        wb: Workbook from an Excel file, as from openpyxl.load_workbook
         """
         self.wb = wb
         self.df_template = make_vma_df_template()
@@ -271,7 +271,7 @@ class VMAReader:
         sheetname: typically 'Variable Meta-analysis' or 'Variable Meta-analysis-DD'
         fixed_summary: whether Average, High, and Low are fixed values to be extracted from Excel.
         """
-        sheet = self.wb.sheet_by_name(sheetname)
+        sheet = self.wb[sheetname]
         df = self.df_template.copy(deep=True)
         if isinstance(source_id_cell, str):  # for convenience + testing
             row1, col1 = tools.util.cell_to_offsets(source_id_cell)
@@ -283,8 +283,8 @@ class VMAReader:
         idx = 0
         skipcols = []
         for c in range(16):
-            val = str(sheet.cell_value(row1, col1 + c))
-            if not val or idx >= len(col_names) or val == 'Battery Size':
+            val = sheet.cell(row1, col1 + c).value
+            if val is None or val == '' or idx >= len(col_names) or val == 'Battery Size':
                 # Electric Bikes added 'Battery Size' in the empty column
                 skipcols.append(c)
                 continue    # skip blank columns
@@ -308,7 +308,7 @@ class VMAReader:
                 if c in skipcols:
                     continue
                 col_name = col_names[idx]
-                cell_val = sheet.cell_value(row1 + 1 + r, col1 + c)  # get raw val
+                cell_val = sheet.cell(row1 + 1 + r, col1 + c).value  # get raw val
                 if cell_val == '**Add calc above':
                     done = True  # edge case where the table is filled with no extra rows
                     break
@@ -330,11 +330,11 @@ class VMAReader:
             df['Weight'] = df['Weight'].replace(0, np.nan)
 
         for r in range(last_row, last_row + 100):  # look past last row
-            if sheet.cell_value(row1 + r, 17) == 'Use weight?':
-                use_weight = tools.util.convert_bool(sheet.cell_value(row1 + r + 1, 17))
-                break
-            if sheet.cell_value(row1 + r, 18) == 'Use weight?':
+            if sheet.cell(row1 + r, 18).value == 'Use weight?':
                 use_weight = tools.util.convert_bool(sheet.cell_value(row1 + r + 1, 18))
+                break
+            if sheet.cell(row1 + r, 19) == 'Use weight?':
+                use_weight = tools.util.convert_bool(sheet.cell_value(row1 + r + 1, 19))
                 break
         else:
             raise ValueError(f"No 'Use weight?' cell found for VMA at {row1} last {last_row}")
@@ -342,17 +342,17 @@ class VMAReader:
         if fixed_summary:
             # Find the Average, High, Low cells.
             for r in range(last_row, last_row + 50):
-                col = 0
-                label = str(sheet.cell_value(row1 + r, 17)).lower()
+                col = None
+                label = str(sheet.cell(row1 + r, 18).value).lower()
+                if label.startswith('average') or 'sum' in label:
+                    col = 21 if use_weight else 20
+                label = str(sheet.cell(row1 + r, 17).value).lower()
                 if label.startswith('average') or 'sum' in label:
                     col = 20 if use_weight else 19
-                label = str(sheet.cell_value(row1 + r, 16)).lower()
-                if label.startswith('average') or 'sum' in label:
-                    col = 19 if use_weight else 18
                 if col:
-                    average = float(sheet.cell_value(row1 + r, col))
-                    high = float(sheet.cell_value(row1 + r + 1, col))
-                    low = float(sheet.cell_value(row1 + r + 2, col))
+                    average = float(sheet.cell(row1 + r, col).value)
+                    high = float(sheet.cell(row1 + r + 1, col).value)
+                    low = float(sheet.cell(row1 + r + 2, col).value)
                     break
             else:
                 raise ValueError(f"No 'Average' cell found for {source_id_cell}")
@@ -415,34 +415,34 @@ class VMAReader:
         }
 
         table_locations = collections.OrderedDict()
-        sheet = self.wb.sheet_by_name(sheetname)
-        row, col = 40, 2
+        sheet = self.wb[sheetname]
+        row, col = 41, 3
         for table_num in range(1, 36):
             found = False
             for rows_to_next_table in range(200):
-                title_from_cell = str(sheet.cell_value(row + rows_to_next_table, col)).strip()
+                title_from_cell = sheet.value(row + rows_to_next_table, col).value
+                if title_from_cell is None or title_from_cell == '':
+                    continue
+                title_from_cell = str(title_from_cell).strip()
                 title_from_cell = normalize_vma_names.get(title_from_cell, title_from_cell)
                 if title_from_cell.startswith('VARIABLE'):
                     # if the table has a generic VARIABLE title assume no more variables to record
                     self.table_locations = table_locations
                     return  # search for tables ends here
-                elif not title_from_cell:
-                    continue
 
                 # Rather than recording titles we will check for vma number. We need to validate
                 # that this really is a Title, as VMAs are also numbered. We check that two rows
                 # down is "Number", the heading for the numbered VMAs.
-                table_num_on_sheet = sheet.cell_value(row + rows_to_next_table, col - 2)
+                table_num_on_sheet = sheet.cell(row + rows_to_next_table, col - 2).value
                 VMA_heading_check = False
                 for offset in [1, 2, 3]:
-                    cell_value = str(sheet.cell_value(row + rows_to_next_table + offset, col - 2))
+                    cell_value = str(sheet.cell(row + rows_to_next_table + offset, col - 2).value)
                     if cell_value == 'Number':
                         VMA_heading_check = True
                 if table_num_on_sheet == table_num and VMA_heading_check:  # if title cell of table
                     for space_after_title in range(10):
                         offset = rows_to_next_table + space_after_title
-                        if sheet.cell_value(row + offset,
-                                            col) == 'SOURCE ID: Author/Org, Date, Info':
+                        if sheet.cell(row + offset, col).value == 'SOURCE ID: Author/Org, Date, Info':
                             table_locations[title_from_cell] = (row + offset, col)
                             row += offset
                             found = True

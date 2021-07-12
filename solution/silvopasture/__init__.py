@@ -157,8 +157,7 @@ class Scenario:
              'NOTE', 'NOTE', 'NOTE'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
-            dtype=np.object).set_index('param')
+        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
         ad_data_sources = {
             'Raw Data for ALL LAND TYPES': {
                 'Nair 2012 & Lal et al. 2018': THISDIR.joinpath('ad', 'ad_Nair_2012_Lal_et_al__2018.csv'),

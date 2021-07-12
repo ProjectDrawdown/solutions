@@ -6,7 +6,8 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-import xlrd
+import openpyxl
+import warnings
 
 from model import adoptiondata
 from model import advanced_controls as ac
@@ -140,8 +141,7 @@ class Scenario:
                 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0],
-            dtype=np.object).set_index('param')
+        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
         tam_ref_data_sources = {
               'Baseline Cases': {
                   'Based on: IEA ETP 2014 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_6DS.csv'),
@@ -159,13 +159,17 @@ class Scenario:
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
         # Custom PDS Data
-        wb = xlrd.open_workbook(filename=THISDIR.joinpath('trucksdata.xlsx'))
-        adoption1 = pd.read_excel(io=wb, sheet_name='AdoptionFactoring1', header=0, index_col=0,
-                usecols='B:C', dtype='float', engine='xlrd', skiprows=11, nrows=51)
-        adoption2 = pd.read_excel(io=wb, sheet_name='AdoptionFactoring2', header=0, index_col=0,
-                usecols='B:H,J:M', dtype='float', engine='xlrd', skiprows=10, nrows=50)
-        adoption3 = pd.read_excel(io=wb, sheet_name='AdoptionFactoring3', header=0, index_col=0,
-                usecols='B:D', dtype='float', engine='xlrd', skiprows=9, nrows=51)
+        wb = None
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            wb = openpyxl.load_workbook(filename=THISDIR.joinpath('trucksdata.xlsx'), data_only=True)
+        
+        adoption1 = pd.read_excel(wb, sheet_name='AdoptionFactoring1', header=0, index_col=0,
+                usecols='B:C', dtype='float', engine='openpyxl', skiprows=11, nrows=51)
+        adoption2 = pd.read_excel(wb, sheet_name='AdoptionFactoring2', header=0, index_col=0,
+                usecols='B:H,J:M', dtype='float', engine='openpyxl', skiprows=10, nrows=50)
+        adoption3 = pd.read_excel(wb, sheet_name='AdoptionFactoring3', header=0, index_col=0,
+                usecols='B:D', dtype='float', engine='openpyxl', skiprows=9, nrows=51)
 
         ds1_df = pd.DataFrame(index=range(2012, 2061), columns=dd.REGIONS)
         ds1_df['World'] = adoption1.loc[2014:, 'Global']

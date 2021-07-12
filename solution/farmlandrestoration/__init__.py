@@ -132,8 +132,7 @@ class Scenario:
              'NOTE', 'NOTE', 'NOTE'],
             ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0],
-            dtype=np.object).set_index('param')
+        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
         ad_data_sources = {
             'Raw Data for ALL LAND TYPES': {
                 'Sum of regional prognostications below': THISDIR.joinpath('ad', 'ad_Sum_of_regional_prognostications_below.csv'),
