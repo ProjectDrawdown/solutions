@@ -1,6 +1,6 @@
 # Creating the expected.zip file
 
-The expected results zip file contains a dump of (most of) the contents of a solution Excel workbook and is used
+The expected zip file contains a dump of (most of) the contents of a solution Excel workbook and is used
 to run tests.  We do the dump this way for a couple of reasons:
 
  * The Excel workbook may contain proprietary data that we cannot publish with the code

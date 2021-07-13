@@ -1,4 +1,4 @@
-""" Creating the expected_zip.zip file is two steps.  The first step consists of running
+""" Creating the expected.zip file is two steps.  The first step consists of running
 a VBA macro inside of the spreadsheet to output all the CSV files.  The second step
 collects those CSV files into the format used by testing.  This code does that second step.
 It can be run as a script ala `python create_expected_zip.py <csv-file-directory>`"""
