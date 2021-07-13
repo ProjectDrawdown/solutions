@@ -24,12 +24,11 @@ etc.
 This step requires Excel to run, and thus must be done on a Windows or Mac machine.   It is run from within Excel itself.
 It is recommended to do this step with a copy of the Excel workbook in a clean, temporary directory.
 
-TODO: Minimum version(s) of Excel?
-
 ### Step 1: Unprotect and Macro-Enable the workbook
-TODO
 
-### Step 2: Insert the macro into the workbook.
+If it has not already been done, follow instructions 1-7 in [this document](https://docs.google.com/document/d/1OiKg3_OOGjYOUdnHTQuZggsko5n31qv_YV4h77E3LHk/edit?usp=sharing).
+
+### Step 2: Insert the export macro into the workbook.
 Open the Excel workbook and access the VBA Window:
     * Find and click on the "View Macros" command (on Windows it is by default to the far right of the View ribbon)
     * A popup like the following should appear.  Select _any_ of the indicated macros, then click on `Edit`
@@ -51,7 +50,7 @@ jump around between pages a lot.
 If it runs successfully, there should be no errors, and control should return to your cursor.
 
 At this point, you should be able to see that there are a number of csv files in your directory, and you can close the VBA editor and the
-Excel workbook.  (You don't need to save the macro with the workbook, though there is no harm in doing so)
+Excel workbook.  (You don't need to save the macro or the workbook, though there is no harm in doing so)
 
 ## Second Part: Build the expected.zip
 

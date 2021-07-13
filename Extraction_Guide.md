@@ -13,24 +13,31 @@ Please note that the Excel workbooks contain sensitive, non-public material that
 
 ## What's in a Model?
 
-A first look at one of the Excel Workbooks, or at the python code generated from one, can be overwhelming.  (Typical onboarding time to really
-understand these things is at least three months, and that is for research professionals in the field.)  The good news is that you can do a lot 
-of the work required without understanding all the details of what the inputs mean or what the analysis is doing.  You just need a bit of a holistic 
-grasp of the overall process and a good ability to "follow the code".
+A first look at one of the Excel Workbooks, or at the python code generated from one, can be overwhelming.  (Typical onboarding 
+time to really understand these things is at least three months, and that is for research professionals in the field.)
+The good news is that you can do a lot of the work required without understanding all the details of what the inputs mean or
+what the analysis is doing.  You just need a bit of a holistic grasp of the overall process and a good ability to "follow the code".
 
 TODO: Explain inputs, outputs, scenarios, ScenarioRecord.   LAND vs. RSS
 
 ## The Extraction Process
 
-The Jupyter Notebook `Extraction_Guide.ipynb` covers steps 3-6 below.
+The Jupyter Notebook `Extraction_Guide.ipynb` walks you through steps 4-7 below.
 
-  1. Obtain one of the Project Drawdown workbooks from PD, via hackathon, etc.
-  2. Set up a development environment following the instructions in `README.md`
-  3. Run the extraction step defined in `tools/extract/solution_xls_extract.py`
-  4. Verify that the resulting solution code can be loaded and run
-  5. Create the `expected_results.zip` file following the steps described in the Jupyter notebook or in `tools/extraction/expected_results.md`
-  6. Add a test case for the new solution to `tests/test_excel_integration.py` and run the result
-  7. Package up _all_ code changes (including your Jupyter notebook with output, if you used it) into your pull request.
+  1. Obtain one of the Project Drawdown workbooks from PD, via hackathon, etc. 
+  2. Prepare the workbook for extraction following the instructions below.
+  3. Set up a development environment following the instructions in `README.md`
+  4. Run the extraction step defined in `tools/solution_xls_extract.py`
+  5. Verify that the resulting solution code can be loaded and run
+  6. Create the `expected.zip` test file following the steps described in the Jupyter notebook and in `tools/CREATE_EXPECTED_ZIP.md`
+  7. Add a test case for the new solution to `tests/test_excel_integration.py` and run the result
+  8. Package up _all_ code changes (including your Jupyter notebook with output, if you used it) into your pull request.
+
+## Preparing an Excel Workbook for Extraction
+
+Make sure that you can open and run the Excel workbook:  on the `Basic Controls` tab, find the 'Scenario to Customize' dropdown at cell C5.  Select one of the scenarios from the dropdown (scroll up if the list appears empty), and then click the 'Load Scenario Inputs' button.  You should see numbers appear in the other fields, and a graph appear to the right.
+
+Several changes need to be made to the workbook to enable other extraction processes to work correctly.  Follow instructions 1-7 in [this document](https://docs.google.com/document/d/1OiKg3_OOGjYOUdnHTQuZggsko5n31qv_YV4h77E3LHk/edit?usp=sharing).
 
 ## Handling Issues that Come Up
 
@@ -68,4 +75,4 @@ Here's an example:
 
 When trying to debug code that you might not understand, it can be very helpful to have code that you know is already working to compare it to.  So we recommend working with (at least) two Excel workbooks at a time: one you are extracting and another one or more that have already been extracted.  That way you can compare the workbooks to each other to see if there are differences, and also compare the previously-extracted workbook to the result to see what the code was supposed to have produced.
 
-TODO: What else?
+You can use the tool `tools/expected_ghost.py` to create a light-weight spreadsheet version from an existing `expected.zip` test file for any of the solutions in the solution directory.  See the instructions in the file for how to do this.
