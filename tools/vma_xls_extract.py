@@ -38,14 +38,6 @@ def convert_year(x):
         return str(x)
 
 
-def convert_conversion_calculation(x):
-    if x == 'Removed due to Copyright':
-        return np.nan
-    if not pd.isna(x):
-        return float(x)
-    return x
-
-
 def try_float(x):
     if pd.isna(x):
         return x
@@ -66,7 +58,7 @@ COLUMN_DTYPE_MAP = {
     'License Code': lambda x: x,
     'Raw Data Input': lambda x: try_float(x),
     'Original Units': lambda x: x,
-    'Conversion calculation': lambda x: convert_conversion_calculation(x),
+    'Conversion calculation': lambda x: try_float(x),
     'Common Units': lambda x: x,
     'Weight': lambda x: x,
     'Assumptions': lambda x: x,
@@ -332,7 +324,7 @@ class VMAReader:
         # find the "Use Weight parameter past the last row of the VMA"
         # Denise 7/21:  This is a little bit fragile.  If one table was missing Use Weight,
         # it could pick up the Use Weight of the next one.  Probably not a likely scenario.
-        for r in range(last_row+1, last_row + 100):
+        for r in range(last_row, last_row + 100):
             if sheet.cell(r, tools.util.co("R")).value == 'Use weight?':
                 use_weight = tools.util.convert_bool(sheet.cell(r+1, tools.util.co("R")).value)
                 break
@@ -344,7 +336,7 @@ class VMAReader:
 
         if fixed_summary:
             # Find the Average, High, Low cells.
-            for r in range(last_row+1, last_row + 50):
+            for r in range(last_row, last_row + 50):
                 col = None
                 label = tools.util.xls(sheet, r, tools.util.co("R")).lower()
                 if label.startswith('average') or 'sum' in label:

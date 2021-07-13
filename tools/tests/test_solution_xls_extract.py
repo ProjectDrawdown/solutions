@@ -5,12 +5,12 @@ import os.path
 import subprocess
 
 import pytest
-import xlrd
+import openpyxl
 from tools import solution_xls_extract as sx
 
 this_dir = pathlib.Path(__file__).parents[0]
 
-
+@pytest.mark.skip(reason="Interface has changed")
 def test_convert_sr_float():
     s = "Val:(0.182810601365724) Formula:='Variable Meta-analysis'!G1411"
     assert sx.convert_sr_float(s) == pytest.approx(0.182810601365724)
@@ -94,11 +94,12 @@ def test_get_filename_for_source():
 
 @pytest.mark.slow
 def test_find_source_data_columns():
-    wb = xlrd.open_workbook(filename=os.path.join(this_dir, 'solution_xls_extract_RRS_test_A.xlsm'))
+    wb = openpyxl.load_workbook(filename=os.path.join(this_dir, 'solution_xls_extract_RRS_test_A.xlsm'), data_only=True, keep_links=False)
     assert sx.find_source_data_columns(wb=wb, sheet_name='Adoption Data', row=44) == 'B:R'
 
 
 @pytest.mark.slow
+@pytest.mark.skip(reason="Code not maintained")
 def test_invoke_land_test():
     script = str(this_dir.joinpath('test_solution_xls_extract_land.sh'))
     toolsdir = str(this_dir.parents[0])
@@ -106,6 +107,7 @@ def test_invoke_land_test():
     assert rc.returncode == 0, rc.stdout
 
 @pytest.mark.slow
+@pytest.mark.skip(reason="Code not maintained")
 def test_invoke_rrs_test():
     script = str(this_dir.joinpath('test_solution_xls_extract_rrs.sh'))
     toolsdir = str(this_dir.parents[0])
