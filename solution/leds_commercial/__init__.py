@@ -132,7 +132,7 @@ class Scenario:
        'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
+    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
           'IEA 2006 Lights Labours Lost for 2005 & GDP growth rate as future forecast, see IEA 2006 sheet': THISDIR.joinpath('tam', 'tam_IEA_2006_Lights_Labours_Lost_for_2005_GDP_growth_rate_as_future_forecast_see_IEA_2006_sheet.csv'),
@@ -289,7 +289,7 @@ class Scenario:
        'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
+    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
     ad_data_sources = {
       'Baseline Cases': {
           'US DOE 2015 SSL R&D Plan (original source: P. Smallwood, in Strategies in Light Conference, Las Vegas, February 2015), estimates 3% installed base penetration in 2014, 33% in 2020 and 88% in 2030. not sector specific but for all general lighting. Used as a proxy for commercial lighting. Interpolated, linear': THISDIR.joinpath('ad', 'ad_US_DOE_2015_SSL_RD_Plan_original_source_P__Smallwood_in_Strategies_in_Light_Conference_L_7315fa9a.csv'),

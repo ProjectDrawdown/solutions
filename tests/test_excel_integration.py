@@ -65,6 +65,15 @@ def verify_aez_data(obj, verify, cohort):
     return verify
 
 
+def flatten_mask(mask):
+    """If the mask has a 'Year' index, flatten it and replace the Year data with False
+    (meaning, do not mask the year data)"""
+    if mask.index.name == 'Year':
+        mask = mask.reset_index()
+        mask['Year'] = False
+    return mask
+
+
 def _get_interpolation_trend_masks(func):
     """If the TAM/Adoption data being analyzed is very close to linear, then the 2nd/3rd order
        polynomial and exponential curve fits degenerate to where only the x^1 and constant terms
@@ -474,8 +483,8 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
     # BikeInfra-RRSv1.1c-7Oct2019.xlsm catastrophic subtraction in one scenario,
     # Carpool-RRSv1.1b-Jan2020.xlsm also catastrophic cancellation in multiple scenarios.
     baseline = obj.ua.soln_net_annual_funits_adopted().mean() * 1e-6
-    s = obj.ua.soln_net_annual_funits_adopted().reset_index()
-    m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+    s = obj.ua.soln_net_annual_funits_adopted()
+    m = flatten_mask(s < baseline)
     soln_net_annual_funits_adopted_mask = (m | regional_mask) if regional_mask is not None else m
 
     verify['Unit Adoption Calculations'].extend([
@@ -495,32 +504,32 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
         # for a year and then bounce back. The ~0 results are the result of catastrophic
         # subtraction with only a few bits of precision, not close enough for pytest.approx.
         # Just mask those cells off.
-        s = obj.ua.soln_ref_cumulative_funits().reset_index()
-        soln_ref_cumulative_funits_mask = s.mask(s < 1e-11, other=True).where(s < 1e-11, other=False)
+        s = obj.ua.soln_ref_cumulative_funits()
+        soln_ref_cumulative_funits_mask = flatten_mask(s < 1e-11)
 
         baseline = obj.ua.soln_pds_cumulative_funits().mean() * 1e-6
-        s = obj.ua.soln_pds_cumulative_funits().reset_index()
-        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        s = obj.ua.soln_pds_cumulative_funits()
+        m = flatten_mask(s < baseline)
         soln_pds_cumulative_funits_mask = m | regional_mask if regional_mask is not None else m
 
         # Carpool-RRSv1.1b-Jan2020.xlsm catastrophic cancellation in multiple scenarios.
         baseline = obj.ua.conv_ref_annual_tot_iunits().mean() * 1e-6
-        s = obj.ua.conv_ref_annual_tot_iunits().reset_index()
-        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        s = obj.ua.conv_ref_annual_tot_iunits()
+        m = flatten_mask(s < baseline)
         conv_ref_annual_tot_iunits_mask = (m | regional_mask) if regional_mask is not None else m
         baseline = obj.ua.soln_pds_fuel_units_avoided().mean() * 1e-6
-        s = obj.ua.soln_pds_fuel_units_avoided().reset_index()
-        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        s = obj.ua.soln_pds_fuel_units_avoided()
+        m = flatten_mask(s < baseline)
         soln_pds_fuel_units_avoided_mask = (m | regional_mask) if regional_mask is not None else m
 
         # Alternative Cement
         baseline = obj.ua.conv_ref_new_iunits().mean() * 1e-6
-        s = obj.ua.conv_ref_new_iunits().reset_index()
-        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        s = obj.ua.conv_ref_new_iunits()
+        m = flatten_mask(s < baseline)
         conv_ref_new_iunits_mask = (m | regional_mask) if regional_mask is not None else m
         baseline = obj.ua.soln_pds_direct_co2_emissions_saved().mean() * 1e-6
-        s = obj.ua.soln_pds_direct_co2_emissions_saved().reset_index()
-        m = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+        s = obj.ua.soln_pds_direct_co2_emissions_saved()
+        m = flatten_mask(s < baseline)
         soln_pds_direct_co2_emissions_saved_mask = (m | regional_mask) if regional_mask is not None else m
 
         verify['Unit Adoption Calculations'].extend([
@@ -639,14 +648,14 @@ def verify_operating_cost(obj, verify):
     #
     # We mask off all cells where the value is less than one cent. We assert that being off by
     # a penny at the end of the equipment lifetime is acceptable.
-    s = obj.oc.soln_pds_annual_breakout().reset_index().abs()
-    soln_breakout_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
-    s = obj.oc.conv_ref_annual_breakout().reset_index().abs()
-    conv_breakout_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
+    s = obj.oc.soln_pds_annual_breakout().abs()
+    soln_breakout_mask = flatten_mask(s < 0.01)
+    s = obj.oc.conv_ref_annual_breakout().abs()
+    conv_breakout_mask = flatten_mask(s < 0.01)
 
     baseline = obj.oc.soln_pds_new_funits_per_year().loc[2015:, 'World'].mean() * 1e-6
     s = obj.oc.soln_pds_new_funits_per_year().loc[2015:, ['World']].reset_index(drop=True)
-    soln_pds_new_funits_per_year_mask = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+    soln_pds_new_funits_per_year_mask = (s < baseline)
 
     verify['Operating Cost'] = [
             ('B262:AV386', obj.oc.soln_pds_annual_breakout().reset_index(), soln_breakout_mask, None),
@@ -691,21 +700,21 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True,
 
     # similar to operating cost, some co2 calcs values are very slightly offset from zero due to
     # floating point errors. We mask the problematic tables when they are close to 0.
-    s = obj.c2.co2eq_mmt_reduced().reset_index().abs()
-    near_zero_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False)
+    s = obj.c2.co2eq_mmt_reduced().abs()
+    near_zero_mask = flatten_mask(s < 0.01)
     if regional_mask is not None:
         near_zero_mask = near_zero_mask | regional_mask
 
     # Alternative Cement
     baseline = obj.c2.co2eq_direct_reduced_emissions().loc[2015:].mean() * 1e-6
-    s = obj.c2.co2eq_direct_reduced_emissions().loc[2015:].reset_index()
-    mask = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+    s = obj.c2.co2eq_direct_reduced_emissions().loc[2015:]
+    mask = flatten_mask(s < baseline)
     if regional_mask is not None:
         mask = mask | regional_mask
     co2eq_direct_reduced_emissions_mask = mask
     baseline = obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].mean() * 1e-6
-    s = obj.c2.co2eq_reduced_fuel_emissions().loc[2015:].reset_index()
-    mask = s.mask(s < baseline, other=True).where(s < baseline, other=False)
+    s = obj.c2.co2eq_reduced_fuel_emissions().loc[2015:]
+    mask = flatten_mask(s < baseline)
     if regional_mask is not None:
         mask = mask | regional_mask
     co2eq_reduced_fuel_emissions_mask = mask
@@ -742,10 +751,10 @@ def verify_co2_calcs(obj, verify, shifted=False, include_regional_data=True,
                 ])
 
     else:
-        s = obj.c2.co2_ppm_calculator().loc[2015:].reset_index().abs()
-        ppm_near_zero_mask = s.mask(s < 1e-8, other=True).where(s < 1e-8, other=False)
-        s = obj.c2.co2_sequestered_global().loc[2015:].reset_index().abs()
-        seq_near_zero_mask = s.mask(s < 1e-8, other=True).where(s < 1e-8, other=False)
+        s = obj.c2.co2_ppm_calculator().loc[2015:].abs()
+        ppm_near_zero_mask = flatten_mask(s < 1e-8)
+        s = obj.c2.co2_sequestered_global().loc[2015:].abs()
+        seq_near_zero_mask = flatten_mask(s < 1e-8)
 
         co2_sequestered_global = obj.c2.co2_sequestered_global().copy().reset_index()
         co2_sequestered_global.drop(columns=['Global Arctic'], inplace=True)
@@ -990,7 +999,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
                     # instead of the zero which might otherwise be expected.
                     # Mask off absolute values less than one penny.
                     s = expected_df.abs()
-                    expected_mask = s.mask(s < 0.01, other=True).where(s < 0.01, other=False) | expected_df.isna()
+                    expected_mask = (s < 0.01) | expected_df.isna()
                     absignore = 0.01
             if actual_mask is not None and expected_mask is not None:
                 mask = actual_mask | expected_mask

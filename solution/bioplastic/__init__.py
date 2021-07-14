@@ -132,7 +132,7 @@ class Scenario:
        'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
+    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
           'Custom TAM based on PlasticsEurope (2015) & World Economic Forum (2016)': THISDIR.joinpath('tam', 'tam_Custom_TAM_based_on_PlasticsEurope_2015_World_Economic_Forum_2016.csv'),
@@ -159,7 +159,7 @@ class Scenario:
        'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
+    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
     ad_data_sources = {
       'Ambitious Cases': {
           'European Bioplastics (2013), 2nd Poly extrapolation': THISDIR.joinpath('ad', 'ad_European_Bioplastics_2013_2nd_Poly_extrapolation.csv'),

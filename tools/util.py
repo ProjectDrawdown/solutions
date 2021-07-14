@@ -6,6 +6,45 @@ def cell_to_offsets(cellref):
     """Convert an Excel reference like "C33" to (row, col) in 1-based notation"""
     return openpyxl.utils.cell.coordinate_to_tuple(cellref)
 
+def co(colref):
+    """Convert a column reference like "D" or "AA" to an indexed in 1-based notation"""
+    return openpyxl.utils.cell.column_index_from_string(colref)
+
+# The functions xls, xln and xli all take two forms of parameters
+#   xls(tab, ref)        # ref in "A3" format
+#   xls(tab, row, col)   # row and column in 1-based notation
+
+def xls(tab, row, col=None):
+    """Return a string value from tab(ref) or tab(row, col), where tab is a openpyxl sheet"""
+    if col is None:
+        (row, col) = cell_to_offsets(row)
+    val = tab.cell(row, col).value
+    if val is None or tab.cell(row, col).data_type == 'e':
+        return ''
+    return str(val).strip()
+
+def xln(tab, row, col=None, empty_is_nan=False):
+    """Return the floating point number read from tab(ref) or tab(row, col), where tab is a openpyxl sheet.
+    Returns NaN in case of error. """
+    if col is None:
+        (row, col) = cell_to_offsets(row)
+    if tab.cell(row, col).data_type == 'e': # error
+        return nan
+    val = tab.cell(row, col).value
+    if val is None or val == '':
+        return nan if empty_is_nan else 0.0
+    return float(val)
+
+
+def xli(tab, row, col=None):
+    """Return the integer read from tab(ref) or tab(row, col), where tab is a openpyxl sheet."""
+    if col is None:
+        (row, col) = cell_to_offsets(row)
+    val = tab.cell(row, col).value
+    if val is None or val == '' or tab.cell(row, col).data_type == 'e':
+        return 0
+    return int(val)
+
 
 def convert_bool(val):
     """Infer a boolean from common conventions in the spreadsheet."""

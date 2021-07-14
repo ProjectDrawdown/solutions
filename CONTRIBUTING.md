@@ -30,29 +30,18 @@ similar to the following:
 
     Now you can work on the changes you have planned.  We encourage you to reach out for assistance as you work.  One way to do this easily is to create a Work-In-Progress (WIP) pull request (see the next section).
 
-    While you are working on your changes, test frequently to ensure you are not breaking the existing code. The project uses pytest, and invoking pytest from the root directory will run the entire test suite. There is a [YouTube video describing the different levels of testing](https://www.youtube.com/watch?v=K6P56qUkCrw).  
+    While you are working on your changes, test frequently to ensure you are not breaking the existing code. See [TESTING.md](TESTING.md) for guidance.   New code should include tests to cover the new functionality (and _must_ include test
+    coverage for code that generates analytic results)
 
 1. **Submit a [pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).**  
 
     A new pull request for your changes should be created from your fork of the repository.  
   
-    Pull requests should be submitted early and often (please don't mix too many unrelated changes within one PR)! If your pull request is not yet ready to be merged, please also include the **[WIP]** prefix (you can remove it once your PR is ready to be merged). This tells the development team that your pull request is a "work-in-progress", and that you plan to continue working on it.  
+    Pull requests should be submitted early and often (please don't mix too many unrelated changes within one PR)! If your pull request is not yet ready to be merged, please mark it as a 'draft' pull request and please also include the **[WIP]** prefix (you can remove it once your PR is ready to be merged). This tells the development team that your pull request is a "work-in-progress", and that you plan to continue working on it.  
 
     Review and discussion on new code can begin well before the work is complete, and the more discussion the better. The development team may prefer a different path than you've outlined, so it's better to discuss it and get approval at the early stage of your work.  
 
     Once your PR is ready a member of the development team will review your changes to confirm that they can be merged into the main codebase.
-
-
-## Testing
-
-Test coverage is a key deliverable of this project. This code base must support the ongoing work of the Project Drawdown research 
-community, and good test coverage is essential to that.
-There is a [YouTube video describing the testing system used in this project](https://www.youtube.com/watch?v=K6P56qUkCrw0).
-New code should include test coverage that is consistent with this system.
-
-Bugs must include examples showing the bug behavior and the fixed behavior.
-
-If you're not sure what any of this means for your code, please ask in your pull request.
 
 ## Review Process
 

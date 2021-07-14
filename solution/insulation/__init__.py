@@ -156,7 +156,7 @@ class Scenario:
        'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
+    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
           'Project Drawdown Analysis of Several Sources.Click to see source.': THISDIR.joinpath('tam', 'tam_Project_Drawdown_Analysis_of_Several_Sources_Click_to_see_source_.csv'),

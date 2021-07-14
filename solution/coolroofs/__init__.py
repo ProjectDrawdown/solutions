@@ -138,7 +138,7 @@ class Scenario:
        'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
+    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
           'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam', 'tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolsmrvtoolmethodology_.csv'),
@@ -166,7 +166,7 @@ class Scenario:
        'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
+    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
     ad_data_sources = {
     }
     self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
@@ -183,7 +183,7 @@ class Scenario:
       ['India', 2014, 2050],
       ['EU', 2014, 2050],
       ['USA', 2014, 2050]]
-    sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0], dtype=np.object).set_index('region')
+    sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0]).set_index('region')
     sconfig['pds_tam_2050'] = pds_tam_per_region.loc[[2050]].T
     sc_regions, sc_percentages = zip(*self.ac.pds_base_adoption)
     sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))

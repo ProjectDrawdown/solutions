@@ -5,10 +5,10 @@ import numpy as np
 import pandas as pd
 import pytest
 import tools.vma_xls_extract
-import xlrd
+import openpyxl
 
 thisdir = pathlib.Path(__file__).parents[0]
-wb = xlrd.open_workbook(thisdir.joinpath('silvopasture_vma.xlsx'))
+wb = openpyxl.load_workbook(thisdir.joinpath('silvopasture_vma.xlsx'), data_only=True, keep_links=False)
 
 
 def test_make_vma_df_template():
@@ -111,7 +111,7 @@ def test_normalize_col_name():
 
 @pytest.mark.slow
 def test_rrs():
-    wb = xlrd.open_workbook(thisdir.joinpath('solarpvutil_vma.xlsm'))
+    wb = openpyxl.load_workbook(thisdir.joinpath('solarpvutil_vma.xlsm'), data_only=True, keep_links=False)
     vma_r = tools.vma_xls_extract.VMAReader(wb)
     vma_df = vma_r.read_xls(alt_vma=True)
     assert vma_df.loc[1, 'Title on xls'] == 'Current Adoption'

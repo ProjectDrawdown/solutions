@@ -136,7 +136,7 @@ class Scenario:
        'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0], dtype=np.object).set_index('param')
+    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
     tam_ref_data_sources = {
       'Baseline Cases': {
           '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
@@ -220,7 +220,7 @@ class Scenario:
        'Medium', 'Medium', 'Medium'],
       ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
       ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0], dtype=np.object).set_index('param')
+    adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
     ad_data_sources = {
       'Baseline Cases': {
           'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad', 'ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_defined_for_each_region_and_cou_45c9627f.csv'),
