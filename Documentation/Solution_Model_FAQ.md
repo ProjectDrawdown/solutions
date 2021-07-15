@@ -3,13 +3,15 @@
 This file is a quick and dirty introduction / glossary / FAQ to how the solution models work, both in the Excel and python.
 This needs to be extended and improved.  We welcome contributions!
 
+See also `Drawdown_Model_Platform_Proposal.pdf` and `Drawdown_First_Hackathon_Proposal.pdf` which are historical documents that have a great deal of useful information.
+
 
 ## What does a solution model do?
 
 Models calculate the economic cost and greenhouse gas impact of a technology under differing assumptions.  The most important assumption is an estimate of how much the technology is adopted over a time horizon (out to 2050).  Again, the _use_ of the technology is an _input_ to the model, not an output.
 
 The _core inputs_ to a solution are:
- * For RSS models, a "Total Addressable Market" (TAM) and for Land models a "Total Land Allocation" (TLA).  These express the total demand for the technoogy.  For exectricity generation models, it is something like anticipated need for electricity over time.
+ * For RRS models, a "Total Addressable Market" (TAM) and for Land models a "Total Land Allocation" (TLA).  These express the total demand for the technoogy.  For electricity generation models, it is something like anticipated need for electricity over time.
  * For all models, some form of Adoption is specified as an input.  Adoption is generally specified as a percentage of the TAM/TLA.  That is, the input might include the idea that "solar utilites generate 20% of all the required electricity in the year 2030".   More on how adoptions are modeled below.
 
 In addition to these inputs, each model has other parameters which are used to do the calculations.  For example, for a kind of power generation a parameter would be the cost of building a power plant.  These are captured in VMAs (see below).
@@ -26,13 +28,15 @@ The term VMA stands for Variable Meta Analysis.  The idea behind Variable Meta A
 
 Think of VMA as "parameter of the model".
 
-## RSS vs. Land
+Sometimes there are VMAs that have no sources listed.  Those really are "just parameters".
 
-RSS (Reduction and Replacement) solutions focus on reducing the demand for some GHG-producing product (e.g. electricity), or on replacing the production with a cleaner method or alternative.
+## RRS vs. Land
 
-Land solutions may perform RSS-like functions, but they also require land, and usually land of a certain type or climate.
+RRS (Reduction and Replacement) solutions focus on reducing the demand for some GHG-producing product (e.g. electricity), or on replacing the production with a cleaner method or alternative.
 
-The primary distinction in the models is that RSS models model adoption as a proportion of the TAM, while Land models model adoption as a
+Land solutions may perform RRS-like functions, but they also require land, and usually land of a certain type or climate.
+
+The primary distinction in the models is that RRS models model adoption as a proportion of the TAM, while Land models model adoption as a
 proportion of available (suitable) land.
 
 
@@ -50,7 +54,7 @@ It is also possible to specify a "Custom TAM" and/or "Custom Adoption", which am
 
 There are some other even more complex options available for Adoption.  The "Helper Tables" module/tab is the final step of selecting the actual, used Adoption based on all the choices made on other tabs. ==> This is where the actual REF and PDS Adoption are available.
 
-For a researcher using the solution, all the settings they have access to can be found on the 'Advanced Controls' tab (which in python translates to the settings in a scenario file in the ac subdirectory).  These include chosing from available TAM/Adoption options and any parameters that modify them.
+For a researcher using the solution, all the settings they have access to can be found on the 'Advanced Controls' tab (which in python translates to the settings in a scenario file in the ac subdirectory).  These include choosing from available TAM/Adoption options and any parameters that modify them.
 
 {Say something about Adoption as TAM % vs. Unit Adoption.  This is covered pretty well in the general PD docs.}
 
@@ -61,7 +65,8 @@ There are actually **two** TAMs and **two** Adoptions:  The "Ref" TAM/Adoption a
 ## Scenarios
 
 A scenario is a saved computation that includes all the inputs that went in to it, and the outputs that results from it.   It is a snapshot of 
-the solution with a certain set of assumptions.   In the python code, these are found in the `ac` subdirectory, in json format.
+the solution with a certain set of assumptions.   In the python code, these are found in the `ac` subdirectory, in json format.   In Excel, they are logged on the `ScenarioRecord` tab.
+
 Each solution includes a set of scenarios that have been designed by Project Drawdown researchers.  In the future, there will be more tools (both in this code and at the UI level) that support browsing/creating/analyzing scenarios.
 
 ## How do I change the parameters of the solution?

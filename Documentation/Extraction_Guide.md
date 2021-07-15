@@ -13,12 +13,13 @@ Please note that the Excel workbooks contain sensitive, non-public material that
 
 ## What's in a Model?
 
-A first look at one of the Excel Workbooks, or at the python code generated from one, can be overwhelming.  (Typical onboarding 
+The other files in this Documentation directory give an overview of what models are for and some of their
+moving parts.
+Even with that information, first look at one of the Excel Workbooks, or at the python code generated from one, can be overwhelming.  (Typical onboarding
 time to really understand these things is at least three months, and that is for research professionals in the field.)
 The good news is that you can do a lot of the work required without understanding all the details of what the inputs mean or
 what the analysis is doing.  You just need a bit of a holistic grasp of the overall process and a good ability to "follow the code".
 
-TODO: Explain inputs, outputs, scenarios, ScenarioRecord.   LAND vs. RSS
 
 ## The Extraction Process
 
@@ -48,18 +49,18 @@ For Excel Workbooks that follow the standard Project Drawdown templates, extract
  * Issues or variations in the Excel workbook itself
 
 Identifying and fixing these issues is part of the extraction process.  When doing this, please note the following:
- 1. **Do not make changes to the Excel workbooks without signoff from someone from Project Drawdown.**  Even if it is just a typo.
- We need "official signoff" both to verify accuracy and to make sure that the master copies of the workbooks are also upated.
+ 1. **Do not make changes to the Excel workbooks without signoff from someone from Project Drawdown.**  Even if you are convinced the Excel is incorrect.  Do document your findings (open a github issue).
+ We need "official signoff" from Project Drawdown both to verify accuracy and to make sure that the master copies of the workbooks are also upated.
  Instead of changing the Excel, consider solution-specific hacks to the extraction code (see next item).
- 2. **Do make changes to the extraction code.**  It is acceptable to put solution-specific code into `solution_xls_extract.py` or related files.
+ 2. **Do make changes to the generated __init__.py file**.  If there is a flaw in the generated code that makes it not match the Excel results, your first course of action should be to fix it in the `__init__.py` file.
+ 3. **Do make changes to the extraction code.**  It is also acceptable to put solution-specific code into `solution_xls_extract.py` or related files.
  Even hacky work-arounds are accepted here, since once extraction is complete, we will be done with it.
- 3. **Cautiously make changes to the model code.**  If you can find and fix bugs in code in the `/model` directory, or in the generated code
- for your solution, that is fantastic.  These fixes should stand the test of time, however, not be hacks.
- 4. **Changes to the test code accepted, but not necessary.** If the standardized tests fail on your model _and it is the test code that is at fault_,
+ 4. **Cautiously make changes to the model code.**  If you can find and fix bugs in code in the `/model`, `/tools` or `/data` directories, that is fantastic.  These fixes should stand the test of time, however, not be hacks.
+ 5. **Changes to the test code accepted, but not required.** If the standardized tests fail on your model _and it is the test code that is at fault_,
  you may fix the test code, or simply hack around it (e.g. commenting out failing tests) 
 
 In all cases if you make customizations to *any* code, be sure to add comments inline next to the changes with your name, a rough date, and the
-reason for the change, and include that changed code in your pull request.
+reason for the change, and include all changed code (and your Jupyter notebook if you are using one) in your pull request.
 We will use this information to determine which changes get into the code and which become issues that require further 
 investigation and fixes.
 
@@ -75,4 +76,4 @@ Here's an example:
 
 When trying to debug code that you might not understand, it can be very helpful to have code that you know is already working to compare it to.  So we recommend working with (at least) two Excel workbooks at a time: one you are extracting and another one or more that have already been extracted.  That way you can compare the workbooks to each other to see if there are differences, and also compare the previously-extracted workbook to the result to see what the code was supposed to have produced.
 
-You can use the tool `tools/expected_ghost.py` to create a light-weight spreadsheet version from an existing `expected.zip` test file for any of the solutions in the solution directory.  See the instructions in the file for how to do this.
+You can use the tool `tools/expected_ghost.py` to create a light-weight spreadsheet version from an existing `expected.zip` test file for any of the solutions in the solution directory.  This will let you see the data, but not the formulas that produced the results.  See the instructions in the file for how to do this.
