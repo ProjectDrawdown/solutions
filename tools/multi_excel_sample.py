@@ -105,7 +105,7 @@ if __name__ == "__main__":
         description='Sample the same region across multiple Excel workbooks')
     parser.add_argument('--sheet', help='Excel sheet to look at')
     parser.add_argument('--region', help='Region inside sheet to look at in Excel notation (e.g. B14:D15)')
-    parser.add_argument('--out', required=False, default="sample.xls", help='Where to put the output Excel; defaults to sample.out')
+    parser.add_argument('--out', required=False, default="sample.xlsx", help='Where to put the output Excel; defaults to sample.out')
     parser.add_argument('files', nargs='+', help='Excel files to search')
     args = parser.parse_args()
 
