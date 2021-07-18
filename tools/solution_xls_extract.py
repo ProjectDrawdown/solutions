@@ -1601,6 +1601,7 @@ def output_solution_python_file(outputdir, xl_filename):
     f.write('from model import helpertables\n')
     f.write('from model import operatingcost\n')
     f.write('from model import s_curve\n')
+    f.write('from model import scenario\n')
     f.write('from model import unitadoption\n')
     f.write('from model import vma\n')
 
@@ -1666,7 +1667,7 @@ def output_solution_python_file(outputdir, xl_filename):
         "directory=THISDIR.joinpath('ac'), vmas=VMAs)\n")
     f.write("\n\n")
 
-    f.write("class Scenario:\n")
+    f.write("class Scenario(scenario.Scenario):\n")
     f.write("    name = name\n")
     f.write("    units = units\n")
     f.write("    vmas = VMAs\n")
