@@ -69,6 +69,20 @@ the solution with a certain set of assumptions.   In the python code, these are 
 
 Each solution includes a set of scenarios that have been designed by Project Drawdown researchers.  In the future, there will be more tools (both in this code and at the UI level) that support browsing/creating/analyzing scenarios.
 
+## Interpreting levels and names
+
+There are two kinds of "levels" that are very similar (and highly correlated), but use two different sets of names, which can lead to confusion:
+
+TAM and Adoption _source data_ are always placed on a scale of four different kinds of _cases_:  baseline, conservative, ambitious and 100% (the name for this last one varies).
+
+Adoptions and Scenarios are sometimes but not always placed on a scale of three: 
+ * PD1, aka Plausible: solutions are adopted at a realistically vigorous rate
+ * PD2, aka Drawdown: adoption of solutions is optimized to achieve drawdown by 2050.
+ * PD3, aka Optimum: solutions achieve their maximum potential.
+
+This scale will appear somewhere within the name, e.g. you might see a Scenario named `PDS-7p2050-Plausible2020`, but it is not a formal attribute of the model.
+
+
 ## How do I change the parameters of the solution?
 
 **In the python system, this is not fully implemented**.  The python code doesn't yet have an interface that allows you to create a new scenario.  It can be faked by using this constructor found in factory_2.  The `j` argument would be a dictionary having the same structure as the scenario files.
