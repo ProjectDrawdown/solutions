@@ -43,15 +43,17 @@ def copy_xls_region(xlsfile, sheet, region, resultsheet, startrow, startcol, dat
 
 
 def copy_format(from_cell, to_cell):
-    to_cell.alignment = from_cell.alignment
-    to_cell.border = from_cell.border
-    to_cell.fill = from_cell.fill
-    to_cell.number_format = from_cell.number_format
+    if from_cell.alignment: to_cell.alignment = from_cell.alignment
+    if from_cell.border: to_cell.border = from_cell.border
+    if from_cell.fill: to_cell.fill = from_cell.fill
+    if from_cell.number_format: to_cell.number_format = from_cell.number_format
 
 def copy_formula(value):
     """If the value is a formula, put a single quote in front of it to turn it into a string"""
     if (str(value).startswith('=')):
         return "'" + str(value)
+    if value is None:
+        return ""
     return str(value)
 
 
@@ -62,7 +64,11 @@ def sample_regions(filelist, sheetname, region, copy_data=True, copy_formula=Tru
 
     wb = openpyxl.Workbook()
     wbsheet = wb[wb.sheetnames[0]] # get the first sheet
-    wbsheet.title = sheetname + " sample"
+    wbsheet.title = sheetname + " " + region.replace(":","-")
+
+    # remove any "open excel" files from the filelist
+    filelist = [ Path(x).resolve() for x in filelist ]
+    filelist = [ x for x in filelist if not x.name.startswith('~') ]
 
     (min_col, min_row, max_col, max_row) = openpyxl.utils.cell.range_boundaries(region)
     region_width = (max_col - min_col) + 1
@@ -73,10 +79,9 @@ def sample_regions(filelist, sheetname, region, copy_data=True, copy_formula=Tru
         print("DATA")
         startrow = 2
         for file in filelist:
-            fname = Path(file).name
-            print(fname)
+            print(file.name)
             # output file name
-            wbsheet.cell(startrow, 2).value = fname
+            wbsheet.cell(startrow, 2).value = file.name
             copy_xls_region(file, sheetname, region, wbsheet, startrow+1, startcol, data_mode=True, format_mode=True)
             startrow = startrow + region_height + 4
         
@@ -86,10 +91,9 @@ def sample_regions(filelist, sheetname, region, copy_data=True, copy_formula=Tru
         print("FORMULAS")
         startrow = 2
         for file in filelist:
-            fname = Path(file).name
-            print(fname)
+            print(file.name)
             if startcol == 2:  # there was no data column, so output file name now.
-                wbsheet.cell(startrow, 2).value = fname
+                wbsheet.cell(startrow, 2).value = file.name
             copy_xls_region(file, sheetname, region, wbsheet, startrow+1, startcol, data_mode=False, format_mode=False)
             startrow = startrow + region_height + 4
 
@@ -100,12 +104,13 @@ def sample_regions(filelist, sheetname, region, copy_data=True, copy_formula=Tru
 if __name__ == "__main__":
     import argparse
     import glob
+    import os
 
     parser = argparse.ArgumentParser(
         description='Sample the same region across multiple Excel workbooks')
     parser.add_argument('--sheet', help='Excel sheet to look at')
     parser.add_argument('--region', help='Region inside sheet to look at in Excel notation (e.g. B14:D15)')
-    parser.add_argument('--out', required=False, default="sample.xlsx", help='Where to put the output Excel; defaults to sample.out')
+    parser.add_argument('--out', required=False, default="sample.xlsx", help='Where to put the output Excel; defaults to sample.xlsx')
     parser.add_argument('files', nargs='+', help='Excel files to search')
     args = parser.parse_args()
 
@@ -113,6 +118,29 @@ if __name__ == "__main__":
     files = []
     for f in args.files:
         files.extend( glob.glob(f) )
+    if len(files) == 0:
+        print(f"**** No files matched {str(args.files)}")
+        sys.exit()
+    
+    # Do checks on output file first, because otherwise you may spend a lot of time making the extract and
+    # then lose it all at the end.
+    outfile = Path(args.out)
+    outdir = outfile.parent
+
+    if outfile.suffix != ".xlsx":
+        print("****  Setting extension of out file to .xlsx")
+        outfile = Path(outfile).with_suffix('.xlsx')
+
+    if not outdir.is_dir():
+        print(f"****  directory {outdir.resolve()} does not exist")
+        sys.exit(-1)
+    if outfile.is_file():
+        if not os.access(str(outfile), os.W_OK):
+            print(f"**** cannot overwrite {outfile}; pick another file location!")
+            sys.exit(-1)
+    elif not os.access(str(outdir), os.W_OK):
+        print(f"****  cannot write to directory {outdir}; pick another file location!")
+        sys.exit(-1)
 
     wb = sample_regions(files, args.sheet, args.region)
-    wb.save(args.out)
+    wb.save(outfile)

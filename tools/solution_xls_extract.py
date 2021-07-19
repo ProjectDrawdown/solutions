@@ -1556,12 +1556,20 @@ def output_solution_python_file(outputdir, xl_filename):
     """Extract relevant fields from Excel file and output a Python class.
 
        Arguments:
-         outputdir: filename to write to. None means stdout.
+         outputdir: directory to put output in.
          xl_filename: an Excel file to open, can be xls/xlsm/etc.
            Note that we cannot run Macros from xlsm files, only read values.
     """
     warn_counts['unknown_formula'] = 0 # reset counter
-    py_filename = '-' if outputdir is None else os.path.join(outputdir, '__init__.py')
+ 
+    # We may get arguments as strings or PATH objects; make them strings here.
+    outputdir = str(outputdir)
+    xl_filename = str(xl_filename)
+
+    if not os.path.exists(outputdir):
+        os.mkdir(outputdir)
+    py_filename = os.path.join(outputdir, '__init__.py')
+
     wb = openpyxl.load_workbook(filename=xl_filename,data_only=True,keep_links=False)
     ac_tab = wb['Advanced Controls']
 
@@ -1576,7 +1584,7 @@ def output_solution_python_file(outputdir, xl_filename):
         raise ValueError('Cannot determine solution category')
     has_tam = is_rrs
 
-    f = open(py_filename, 'w') if py_filename != '-' else sys.stdout
+    f = open(py_filename, 'w')
 
     solution_name = xls(ac_tab, 'C40')
     f.write('"""' + str(solution_name) + ' solution model.\n')
@@ -1819,4 +1827,4 @@ if __name__ == "__main__":
     excelfile = pathlib.Path(args.excelfile).resolve()
     outputdir = pathlib.Path(args.outputdir) if args.outputdir else excelfile.parent
 
-    output_solution_python_file(outputdir=str(outputdir), xl_filename=str(excelfile))
+    output_solution_python_file(outputdir=outputdir, xl_filename=excelfile)
