@@ -48,6 +48,10 @@ similar to the following:
 In addition to the normal code review which any pull request will undergo, changes which augment or modify the analytical functionality of the models will need to be approved by Project Drawdown research team before being accepted into the repository.   Advance discussion with the development team will help us set up
 the research review in a timely manner.
 
+## See Also
+
+There is a special guide for converting Excel models to python:  you can find that [here](link coming soon).
+
 ## Recognizing contributions
 
 We welcome and recognize all contributions from documentation to testing to code development.
