@@ -34,27 +34,53 @@ For a more detailed list, see the [Issues List](https://github.com/ProjectDrawdo
 
 ## Getting the source code
 
-1. Get a copy of this source code:
+
+You can [create your own fork of this repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
+using the `Fork` button at the top of the screen.  From there, follow the instructions to download your fork to your computer.
+
+
+If you are going to change the code, we recommend immediately making your own branch:
 ```sh
-      $ git clone https://github.com/ProjectDrawdown/solutions.git
-      $ cd solutions
-      $ git checkout develop
+      $ git checkout -b <your-branch-name-here>
 ```
 
-## Development/Deployment environment
+**Hackathon attendees:  we will be working from branch `hackathon`, so your steps would look like:**
+```sh
+      $ git checkout hackathon
+      $ git checkout -b <your branch-name-here>
+```
 
-There are two requirements files, depending on how you want to set up your environment:
+## Development Environment
 
-  1. `requirements.txt` is a [pip](https://pip.pypa.io/en/stable/user_guide/) requirements file with a minimal set of dependencies
+We recommend using [miniconda3](https://docs.conda.io/en/latest/miniconda.html) to create a development environment for this project.
+Once miniconda is installed, the following command will create a development environment named `pd-dev` that includes this code, all the
+dependencies it requires, and some useful tools such as [pytest](https://pytest.org) and [Jupyter Notebook](https://jupyter-notebook.readthedocs.io/en/stable/)
+
+```sh
+      $ conda env create -f environment.yml
+      $ conda activate pd-dev
+```
+
+A good way to explore the code is to start jupyter notebook
+
+```sh
+      $ jupyter notebook
+```
+
+then click on `Start_Here.ipynb` to try out a few things.
+Also, be sure to check out some of the documentation in the [Documentation](Documentation) folder.
+
+
+## Minimal Environment
+
+A more minimal environment is available for deployment using [pip](https://pip.pypa.io/en/stable/user_guide/).  This installs this project and its depencies in your current python environment, but no extra tools:
+
 ```sh
       $ pip install -r requirements.txt
 ```
-  2. `environment.yml` is a [conda](https://docs.conda.io/en/latest/miniconda.html) environment definition which includes a broader set of packages, notably including [Jupyter notebooks](https://jupyter-notebook.readthedocs.io/en/stable/):
-```sh
-      $ conda env create -f environment.yml
-```
 
-The conda environment is recommended for exploring the code and doing development, while the pip deployment is better for deployment as a package.
+(Only recent versions of python3 are supported.)
+
 
 ## Using Project Drawdown Solutions as a package
 
