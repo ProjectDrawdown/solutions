@@ -41,15 +41,21 @@ pd.set_option('display.width', 1000)
 
 # convert_sr_float parses the combined value + formula conent that occurs in the ScenarioRecord tab
 
-def convert_sr_float(tab, row, col):
+def convert_sr_float(tab, row=None, col=None):
     """Return floating point value from Excel ScenarioRecord tab.
 
        There are three main formats:
        + simple: 0.182810601365724
        + percentage: 20%
        + annotated: Val:(0.182810601365724) Formula:='Variable Meta-analysis'!G1411
+
+       Accepts either (tab, row, col) arguments or a single (value) argument
     """
-    val = xls(tab, row, col)
+    if row is not None:
+        val = xls(tab, row, col)
+    else:
+        val = tab
+    
     m = re.match(r'Val:\(([-+]?(\d+(\.\d*)?|\d+(\,\d*)?|\.\d+)([eE][-+]?\d+)?)\) Formula:=',
                  str(val))
     if m:
@@ -994,7 +1000,9 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     tam_or_tla = 'ref_tam_per_region' if not is_land else 'self.tla_per_region'
     f.write("        ht_ref_adoption_initial = pd.Series(\n")
     f.write("            list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)\n")
-    # even when the final_datapoint_year is 2018, the TAM initial year is hard-coded to 2014
+    # Denise, 7/21: Make the comment part of the output, because sometimes it is wrong.
+    f.write("        # even when the final_datapoint_year is 2018, the TAM initial year is usually hard-coded to 2014\n")
+    f.write("        # if that is wrong, change 2014 to 2018 below\n")
     f.write(f"        ht_ref_adoption_final = {tam_or_tla}.loc[{final_datapoint_year}] * (ht_ref_adoption_initial /\n")
     f.write(f"            {tam_or_tla}.loc[2014])\n")
     f.write("        ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)\n")
@@ -1017,13 +1025,16 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
     first_world_pds_yearly_result = xli(h, 'C91')
     use_first_pds_datapoint_main = (first_world_pds_datapoint == first_world_pds_yearly_result)
 
-    # sometimes the "actual" base year has been added above line 60; try that first.
-    adoption_base_year = xli(a, 'D59')
-    if adoption_base_year == 0:
-        # Denise 7/21.  The original code had 'D59' and 'D57', which doesn't make sense to me.
-        adoption_base_year = xli(a, 'D60')
-    if adoption_base_year == 0:
-        adoption_base_year = None
+    # Denise 7/21: changed logic to make clear why we are looking in different places, and allow
+    # for land models that do not have a secondary base year.
+    if is_land:
+        adoption_base_year = xli(a, 'D57')
+    else:
+        # The 'official' base year is in D60, but in some cases that is left at 2014 and
+        # a 'real' base year is inserted above it.  Try both cases, giving priority to the 'real' number if present.
+        breal = xls(a, 'D59')
+        bofficial = xls(a, 'D60')
+        adoption_base_year = int( breal or bofficial )
 
     copy_pds_to_ref = True
     for pds, ref in [('C91', 'C27'), ('C92', 'C28'), ('C93', 'C29'), ('C94', 'C30')]:
