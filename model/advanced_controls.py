@@ -507,6 +507,11 @@ class AdvancedControls:
     soln_pds_adoption_basis: str = None
     soln_pds_adoption_custom_name: str = None
 
+    # soln_pds_adoption_scenarios_included: the list of adoption scenarios to include in
+    # the fully customized adoption for this scenario.
+    # "Custom PDS Adoption"!S25:S34, as captured in ScenarioRecord row+260 E
+    soln_pds_adoption_scenarios_included: list[int] = None
+
     # soln_pds_adoption_custom_high_sd_mult & soln_pds_adoption_custom_low_sd_mult: multiples of
     #   one standard deviation to use when soln_pds_adoption_custom_name is "High of All Custom
     #   Scenarios" or "Low of All Custom Scenarios"

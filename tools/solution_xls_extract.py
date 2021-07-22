@@ -244,6 +244,12 @@ def get_rrs_scenarios(wb, solution_category):
                 s['soln_pds_adoption_custom_name'] = custom
                 if 'soln_pds_adoption_basis' not in s:  # sometimes row 164 is blank
                     s['soln_pds_adoption_basis'] = 'Fully Customized PDS'
+                try:
+                    values = xls(sr_tab, row + 196, co("E")).split(',')
+                    s['soln_pds_adoption_scenarios_included'] = [ int(x.strip())-1 for x in values if x.strip() != '' ]
+                except ValueError:
+                    # TODO: Warn?
+                    s['soln_pds_adoption_scenarios_included'] = list(range(10))
 
             assert xls(sr_tab, row + 198, co("B")) == 'REF ADOPTION SCENARIO INPUTS'
             adopt = xls(sr_tab, row + 199, co("E"))
@@ -349,6 +355,13 @@ def get_land_scenarios(wb, solution_category):
                 s['soln_pds_adoption_custom_name'] = custom
                 if 'soln_pds_adoption_basis' not in s:  # sometimes row 164 is blank
                     s['soln_pds_adoption_basis'] = 'Fully Customized PDS'
+                try:
+                    values = xls(sr_tab, row + 260, co("E")).split(',')
+                    s['soln_pds_adoption_scenarios_included'] = [ int(x.strip())-1 for x in values if x.strip() != '' ]
+                except ValueError:
+                    # TODO: Warn?
+                    s['soln_pds_adoption_scenarios_included'] = list(range(10))
+                
                 try:
                     high, low = xls(sr_tab, row + 260, co("H")).split(',')
                 except ValueError:
@@ -916,7 +929,6 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
 
     for s in scenarios:
         f.write(f"            {{'name': '{s['name'].strip()}',\n")
-        f.write(f"              'include': {str(s['include'])},\n")
         description = s['description'].replace("'", "")
         lines = textwrap.wrap(description, width=75)
         f.write(f"              'description': (\n")
@@ -927,6 +939,8 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
     f.write("        ]\n")
 
     if case == 'REF':
+        f.write("        # all sources are included in REF adoptions\n")
+        f.write("        for rs in ca_ref_data_sources: rs['include'] = True\n")
         f.write("        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,\n")
         f.write("            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,\n")
         f.write(f"            high_sd_mult={multipliers['high']}, low_sd_mult={multipliers['low']},\n")
@@ -935,6 +949,8 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
         else:
             f.write("            total_adoption_limit=ref_tam_per_region)\n")
     if case == 'PDS':
+        f.write("        for (i,rs) in enumerate(ca_pds_data_sources):\n")
+        f.write("            rs['include'] = (i in ca.soln_pds_adoption_scenarios_included)\n")
         f.write("        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
         f.write("            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
         f.write(f"            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,\n")
@@ -1397,7 +1413,6 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
          prefix: string to prepend to filenames
     """
     custom_ad_tab = wb[sheet_name]
-    defaultinclude = False if 'PDS' in sheet_name else True
 
     assert xls(custom_ad_tab, 'AN25') == 'High'
     multipliers = {'high': xli(custom_ad_tab, 'AO25'),
@@ -1408,8 +1423,6 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
         if not re.search(r"Scenario \d+", xls(custom_ad_tab, srow, co("N"))):
             continue
         name = normalize_source_name(xls(custom_ad_tab, srow, co("O")))
-        includestr = xls(custom_ad_tab, srow, co("S"))
-        include = convert_bool(includestr) if includestr else defaultinclude
         filename = get_filename_for_source(name, prefix=prefix)
         if not filename:   # This skips all the "[Type scenario name here]" lines
             continue
@@ -1430,13 +1443,14 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
                     df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
                     skip = False
                 for offset in range(0, 3):
+                    # TODO: deal with unicode on windows here.
                     # looking for the big yellow box.
                     description = xls(custom_ad_tab, row + offset, co("N"))
                     if description:
                         break
                 break
         if not skip:
-            scenarios.append({'name': name, 'filename': filename, 'include': include,
+            scenarios.append({'name': name, 'filename': filename,
                 'description': description})
     return scenarios, multipliers
 
