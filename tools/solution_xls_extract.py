@@ -940,7 +940,7 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
 
     if case == 'REF':
         f.write("        # all sources are included in REF adoptions\n")
-        f.write("        for rs in ca_ref_data_sources:\n)
+        f.write("        for rs in ca_ref_data_sources:\n")
         f.write("            rs['include'] = True\n")
         f.write("        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,\n")
         f.write("            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,\n")
