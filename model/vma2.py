@@ -6,7 +6,6 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-import xlrd
 
 import model.dd
 from tools.vma_xls_extract import VMAReader
