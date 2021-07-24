@@ -529,7 +529,7 @@ def json_dumps_default(obj):
 
 def write_scenario(filename, s):
     """Write out the advanced_controls entries for a given scenario."""
-    with filename.open(mode='w') as f:
+    with filename.open(mode='w', encoding='utf-8') as f:
         json.dump(obj=s, fp=f, indent=4, default=json_dumps_default)
 
 
@@ -1610,7 +1610,7 @@ def output_solution_python_file(outputdir, xl_filename):
         raise ValueError('Cannot determine solution category')
     has_tam = is_rrs
 
-    f = open(py_filename, 'w')
+    f = open(py_filename, 'w', encoding='utf-8')
 
     solution_name = xls(ac_tab, 'C40')
     f.write('"""' + str(solution_name) + ' solution model.\n')
