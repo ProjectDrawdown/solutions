@@ -977,12 +977,22 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None, absign
         raise AssertionError(description + '\nDataFrames differ:\n' + msg)
 
 
-def check_excel_against_object(obj, zip_f, scenario, verify):
+def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, test_only=None):
     print("Checking " + scenario)
     descr_base = "Solution: " + obj.name + " Scenario: " + scenario + " "
     for sheetname in verify.keys():
         print(sheetname)
+        skip_count=0
         for (cellrange, actual_df, actual_mask, expected_mask) in verify[sheetname]:
+            description = descr_base + sheetname + " " + cellrange
+
+            if test_only and not any( pattern in description for pattern in test_only ):
+                skip_count = skip_count + 1
+                continue
+            if test_skip and any( pattern in description for pattern in test_skip ):
+                skip_count = skip_count + 1
+                continue
+
             (usecols, skiprows, nrows) = get_pd_read_excel_args(cellrange)
             arcname = f'{scenario}/{sheetname}'
             zip_csv_f = zip_f.open(name=arcname)
@@ -1007,9 +1017,11 @@ def check_excel_against_object(obj, zip_f, scenario, verify):
                 mask = actual_mask
             else:
                 mask = expected_mask
-            description = descr_base + sheetname + " " + cellrange
+
             compare_dataframes(actual_df=actual_df, expected_df=expected_df,
                     description=description, mask=mask, absignore=absignore)
+        if skip_count > 0:
+            print(f"    **** Skipped {skip_count} tests")
 
 
 @pytest.mark.slow
@@ -1917,26 +1929,32 @@ def test_WaterEfficiency_RRS():
 
 
 @pytest.mark.slow
-def test_WaveAndTidal_RRS():
+def test_WaveAndTidal_RRS(scenario_skip=None, test_skip=None, test_only=None):
     from solution import waveandtidal
     zipfilename = str(solutiondir.joinpath(
         'waveandtidal', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
-    for scenario in waveandtidal.scenarios.keys():
+    for (i, scenario) in enumerate(waveandtidal.scenarios.keys()):
+        if scenario_skip and i in scenario_skip:
+            print(f"   *** Skipping scenario {scenario}")
+            continue
         obj = waveandtidal.Scenario(scenario=scenario)
         verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(
-            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify, test_skip=test_skip, test_only=test_only)
 
 
 @pytest.mark.slow
-def test_WomenSmallholders_LAND():
+def test_WomenSmallholders_LAND(scenario_skip=None, test_skip=None, test_only=None):
     from solution import womensmallholders
     zipfilename = str(solutiondir.joinpath(
         'womensmallholders', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
-    for scenario in womensmallholders.scenarios.keys():
+    for (i, scenario) in enumerate(womensmallholders.scenarios.keys()):
+        if scenario_skip and i in scenario_skip:
+            print(f"   *** Skipping scenario {scenario}")
+            continue
         obj = womensmallholders.Scenario(scenario=scenario)
         verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(
-            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify, test_skip=test_skip, test_only=test_only)
