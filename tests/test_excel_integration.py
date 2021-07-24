@@ -1958,3 +1958,19 @@ def test_WomenSmallholders_LAND(scenario_skip=None, test_skip=None, test_only=No
         verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(
             obj=obj, zip_f=zip_f, scenario=scenario, verify=verify, test_skip=test_skip, test_only=test_only)
+
+
+@pytest.mark.slow
+def test_PeatlandRestoration_LAND(scenario_skip=None, test_skip=None, test_only=None):
+    from solution import peatlandrestoration
+    zipfilename = str(solutiondir.joinpath(
+        'peatlandrestoration', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for (i, scenario) in enumerate(peatlandrestoration.scenarios.keys()):
+        if scenario_skip and i in scenario_skip:
+            print(f"   *** Skipping scenario {scenario}")
+            continue
+        obj = peatlandrestoration.Scenario(scenario=scenario)
+        verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(
+            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify, test_skip=test_skip, test_only=test_only)
