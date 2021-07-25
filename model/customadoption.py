@@ -49,7 +49,8 @@ class CustomAdoption(object, metaclass=MetaclassCache):
                 where ca_pds_columns = ['Year'] + dd.REGIONS
 
          soln_adoption_custom_name: from advanced_controls. Can be avg, high, low or a specific
-            source. For example: 'Average of All Custom PDS Scenarios'
+            source. For example: 'Average of All Custom PDS Scenarios'.  In case the name does not match
+            any of the 'known' cases or sources, it default to "High of all Custom Sources"
          low_sd_mult: std deviation multiplier for 'low' values
          high_sd_mult: std deviation multiplier for 'high' values
          total_adoption_limit: the total adoption possible, adoption can be no greater than this.
@@ -272,8 +273,10 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         elif self.soln_adoption_custom_name in self.scenarios:
             data = self.scenarios[self.soln_adoption_custom_name]
             result = data['df'].copy()
-        else:
-            raise ValueError('Unknown adoption name: ' + str(self.soln_adoption_custom_name))
+        else: # Denise 7/21:  The Excel actually defaults to the "High of All Custom" case when this happens
+            #raise ValueError('Unknown adoption name: ' + str(self.soln_adoption_custom_name))
+            (_, result, _) = self._avg_high_low()
+
         if self.total_adoption_limit is not None:
             idx = self.total_adoption_limit.first_valid_index()
             result.loc[idx:, :] = result.loc[idx:, :].combine(self.total_adoption_limit, np.minimum)
