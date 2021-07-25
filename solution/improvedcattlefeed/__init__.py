@@ -89,6 +89,8 @@ VMAs = {
     'SOLUTION Increased Milk Yield': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Increased_Milk_Yield.csv"),
         use_weight=False),
+    'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
+        filename=None, use_weight=False, fixed_summary=(1e-20, 1e-20, 1e-20)),
 }
 vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
 
