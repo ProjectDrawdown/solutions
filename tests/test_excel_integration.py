@@ -835,7 +835,6 @@ def excel_read_cell_any_scenario(zip_f, sheetname, cell):
         if sheetname in name:
             zip_csv_f = zip_f.open(name=name)
             (col, row) = cell_to_offsets(cell)
-
             try:
                 wb = openpyxl.load_workbook(zip_csv_f, data_only=True)
                 df = pd.read_excel(wb, header=None, index_col=None, usecols=[col], skiprows=row, nrows=1,
