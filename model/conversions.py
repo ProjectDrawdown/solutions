@@ -10,7 +10,15 @@ Provides useful conversions for the following:
 """
 
 
-def mha_to_ha():
+def mha_to_ha(mha):
     """Convert mega hectares to hectares
+        mha : the number of mega hectares
     """
-    return 1_000_000
+    return mha * 10**6
+
+
+def terawatt_to_kilowatt(tw):
+    """Convert terawatts to kilowatts
+        tw : the number of terawatt hours
+      """
+    return tw * 10**9
