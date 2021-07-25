@@ -1119,7 +1119,7 @@ def write_fc(f, wb):
     if xls(fc_tab, 'P36') == 'Implementation Units Installed Each Yr (CONVENTIONAL-REF)':
         f.write("            conv_ref_first_cost_uses_tot_units=True,\n")
     if xli(fc_tab, 'F15') == 1000000000 and xls(fc_tab, 'G15') == '$/kW TO $/TW':
-        f.write("            fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)\n")
+        f.write("            fc_convert_iunit_factor=conversions.terawatt_to_kilowatt())\n")
     elif xli(fc_tab, 'F16') == 1000000 and xls(fc_tab, 'F18') == 'million hectare':
         f.write("            fc_convert_iunit_factor=conversions.mha_to_ha())\n")
     else:
@@ -1148,9 +1148,9 @@ def write_oc(f, wb, is_land=False):
     conversion_factor_vom = xls(oc_tab,'E14')
 
     if conversion_factor_fom == '1000000000' and is_energy_units:
-        conversion_factor_fom = 'rrs.TERAWATT_TO_KILOWATT'
+        conversion_factor_fom = 'conversions.terawatt_to_kilowatt()'
     if conversion_factor_vom == '1000000000' and is_energy_units:
-        conversion_factor_vom = 'rrs.TERAWATT_TO_KILOWATT'
+        conversion_factor_vom = 'conversions.terawatt_to_kilowatt()'
     if is_land:
         conversion_factor_fom = conversion_factor_vom = 'conversions.mha_to_ha()'
 
