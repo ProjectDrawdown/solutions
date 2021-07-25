@@ -416,7 +416,7 @@ class VMAReader:
         row, col = 41, 3
         for table_num in range(1, 36):
             found = False
-            for rows_to_next_table in range(200):
+            for rows_to_next_table in range(220):
                 title_from_cell = sheet.cell(row + rows_to_next_table, col).value
                 if title_from_cell is None or title_from_cell == '':
                     continue
