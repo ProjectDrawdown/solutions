@@ -977,7 +977,7 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None, absign
         raise AssertionError(description + '\nDataFrames differ:\n' + msg)
 
 
-def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, test_only=None):
+def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, test_only=None, absignore=None):
     print("Checking " + scenario)
     descr_base = "Solution: " + obj.name + " Scenario: " + scenario + " "
     for sheetname in verify.keys():
@@ -1005,7 +1005,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, tes
             #expected_df = pd.read_csv(filepath_or_buffer=zip_csv_f, header=None,
             #    index_col=None, usecols=usecols, skiprows=skiprows, nrows=nrows)
 
-            absignore = None
+            local_absignore = absignore
             if expected_mask is not None:
                 if isinstance(expected_mask, str) and expected_mask == "Excel_NaN":
                     expected_mask = expected_df.isna()
@@ -1017,7 +1017,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, tes
                     # Mask off absolute values less than one penny.
                     s = expected_df.abs()
                     expected_mask = (s < 0.01) | expected_df.isna()
-                    absignore = 0.01
+                    local_absignore = 0.01
             if actual_mask is not None and expected_mask is not None:
                 mask = actual_mask | expected_mask
             elif actual_mask is not None:
@@ -1025,9 +1025,8 @@ def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, tes
             else:
                 mask = expected_mask
 
-            absignore = 0.01 # FIXME: Forcing comparison with precison
             compare_dataframes(actual_df=actual_df, expected_df=expected_df,
-                    description=description, mask=mask, absignore=absignore)
+                    description=description, mask=mask, absignore=local_absignore)
         if skip_count > 0:
             print(f"    **** Skipped {skip_count} tests")
 
@@ -2013,6 +2012,6 @@ def test_household_commercial_recycling(scenario_skip=None, test_skip=None, test
         obj = household_commercial_recycling.Scenario(scenario=scenario)
         verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(
-            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify, absignore=1e-6)
 
     # TODO: Use test_skip on the failing case?
