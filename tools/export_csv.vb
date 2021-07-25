@@ -37,7 +37,7 @@ Function Get_Index_Sheet() As Worksheet
 End Function
 
 
-Sub Save_Sheet_As_CSV(sheetname As String, filename As String)
+Sub Save_Sheet(sheetname As String, filename As String, fileformat As String)
     ' Make a CSV file for sheet in the same directory as the current workbook
     ' To save a single sheet without affecting the current workbook, we make a new
     ' workbook, copy the sheet to it, save that workbook, then close it.
@@ -61,7 +61,7 @@ Sub Save_Sheet_As_CSV(sheetname As String, filename As String)
 
     ' Save the temporary workbook, suppressing "Do you want to overwrite" dialog
     Application.DisplayAlerts = False
-    tmpbook.SaveAs filename:=outname, FileFormat:=xlCSVUTF8
+    tmpbook.SaveAs filename:=outname, FileFormat:=fileformat
     Application.DisplayAlerts = True
 
     ' Bye bye
@@ -70,7 +70,7 @@ Sub Save_Sheet_As_CSV(sheetname As String, filename As String)
 End Sub
 
 Sub test_save_sheet()
-    Call Save_Sheet_As_CSV("Detailed Results", "testout.csv")
+    Call Save_Sheet("Detailed Results", "testout.csv", xlCSVUTF8)
 End Sub
 
 ' This is the main macro.  Run this to save all sheets for all scenarios.
@@ -99,9 +99,10 @@ Sub Generate_Scenario_Records()
             For Each x In Worksheets
                 If Should_Export(x.Name) Then
                     counter = counter + 1
-                    fname = basename & "_" & counter & ".csv"
-                    
-                    Call Save_Sheet_As_CSV(x.Name, fname)
+                    fname = basename & "_" & counter & ".xlsx"
+                    fileformat = xlWorkbookDefault 'xlWorkbookDefault for xlsx, xlCSVUTF8 for csv
+
+                    Call Save_Sheet_As_Excel(x.Name, fname, fileformat)
                     
                     ' Add to index
                     index_sheet.Cells(counter, 1) = fname
