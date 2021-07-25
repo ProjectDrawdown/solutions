@@ -137,7 +137,8 @@ class VMA:
 
         Populates self.source_data and self.df
         """
-        csv_df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True)
+        csv_df = pd.read_csv(filename, index_col=False, skipinitialspace=True, skip_blank_lines=True,
+                             na_values=['#DIV/0!', '#REF!'])
         self._convert_from_human_readable(csv_df, filename)
 
     def _read_xls(self, filename, title):
