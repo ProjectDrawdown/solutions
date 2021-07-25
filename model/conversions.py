@@ -96,7 +96,7 @@ class EnergyConversion():
 
         """
         if self.convert_from == self.convert_to:
-            return self.quantityK
+            return self.quantity
         base_key_to_search = f'{self.convert_from}_to_{self._base_unit}'
         conversion_key_to_search = f'{self._base_unit}_to_{self.convert_to}'
         base_unit_quantity = self.conversion_rates.get(base_key_to_search)
