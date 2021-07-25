@@ -1138,7 +1138,7 @@ def write_fc(f, wb):
     if xli(fc_tab, 'F15') == 1000000000 and xls(fc_tab, 'G15') == '$/kW TO $/TW':
         f.write("            fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)\n")
     elif xli(fc_tab, 'F16') == 1000000 and xls(fc_tab, 'F18') == 'million hectare':
-        f.write("            fc_convert_iunit_factor=land.MHA_TO_HA)\n")
+        f.write("            fc_convert_iunit_factor=conversions.mha_to_ha())\n")
     else:
         f.write("            fc_convert_iunit_factor=" + xls(fc_tab, 'F15') + ")\n")
     f.write('\n')
@@ -1169,7 +1169,7 @@ def write_oc(f, wb, is_land=False):
     if conversion_factor_vom == '1000000000' and is_energy_units:
         conversion_factor_vom = 'rrs.TERAWATT_TO_KILOWATT'
     if is_land:
-        conversion_factor_fom = conversion_factor_vom = 'land.MHA_TO_HA'
+        conversion_factor_fom = conversion_factor_vom = 'conversions.mha_to_ha()'
 
     # In almost all cases the two conversion factors are equal. We only know of one solution where
     # they differ (Heatpumps). operatingcost.py accomodates this, if passed a single number it will
@@ -1649,7 +1649,7 @@ def output_solution_python_file(outputdir, xl_filename):
         solution_category = f'ac.SOLUTION_CATEGORY.{ac.solution_category_to_string(sc).upper()}'
         scenarios = get_rrs_scenarios(wb=wb, solution_category=sc)
     elif is_land:
-        f.write('from solution import land\n\n')
+        f.write('from model import conversions\n\n')
         sc = ac.string_to_solution_category('LAND')
         solution_category = 'ac.SOLUTION_CATEGORY.LAND'
         scenarios = get_land_scenarios(wb=wb, solution_category=sc)
