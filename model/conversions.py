@@ -8,3 +8,9 @@ Provides useful conversions for the following:
     land area conversions
     inflation-adjusted-dollars
 """
+
+
+def mha_to_ha():
+    """Convert mega hectares to hectares
+    """
+    return 1_000_000
