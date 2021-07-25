@@ -957,7 +957,7 @@ def compare_dataframes(actual_df, expected_df, description='', mask=None, absign
             act = actual_df.iloc[r, c]
             exp = expected_df.iloc[r, c]
             if isinstance(act, str) and isinstance(exp, str):
-                matches = (act == exp)
+                matches = (act == exp)                
             elif (pd.isna(act) or act == '' or act is None or act == 0 or act == pytest.approx(0.0)
                     or exp == pytest.approx(0.0)):
                 matches = (pd.isna(exp) or exp == '' or exp is None or exp == 0 or
@@ -1678,22 +1678,6 @@ def test_RegenerativeAgriculture_LAND():
 
 
 @pytest.mark.slow
-def test_ResidentialGlass_RRS(scenario_skip=None, test_skip=None, test_only=None):
-    from solution import residentialglass
-    zipfilename = str(solutiondir.joinpath(
-        'residentialglass', 'testdata', 'expected.zip'))
-    zip_f = zipfile.ZipFile(file=zipfilename)
-    for (i, scenario) in enumerate(residentialglass.scenarios.keys()):
-        if scenario_skip and i in scenario_skip:
-            print(f"   *** Skipping scenario {scenario}")
-            continue
-        obj = residentialglass.Scenario(scenario=scenario)
-        verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
-        check_excel_against_object(
-            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify, test_skip=test_skip, test_only=test_only)
-
-
-@pytest.mark.slow
 def test_RiceIntensification_LAND():
     from solution import riceintensification
     zipfilename = str(solutiondir.joinpath(
@@ -1975,18 +1959,21 @@ def test_WomenSmallholders_LAND(scenario_skip=None, test_skip=None, test_only=No
         check_excel_against_object(
             obj=obj, zip_f=zip_f, scenario=scenario, verify=verify, test_skip=test_skip, test_only=test_only)
 
-
 @pytest.mark.slow
-def test_PeatlandRestoration_LAND(scenario_skip=None, test_skip=None, test_only=None):
-    from solution import peatlandrestoration
+def test_SustainableClothing_RRS(scenario_skip=None, test_skip=None, test_only=None):
+    from solution import sustainableclothing
     zipfilename = str(solutiondir.joinpath(
-        'peatlandrestoration', 'testdata', 'expected.zip'))
+        'sustainableclothing', 'testdata', 'expected.zip'))
     zip_f = zipfile.ZipFile(file=zipfilename)
-    for (i, scenario) in enumerate(peatlandrestoration.scenarios.keys()):
+    for (i, scenario) in enumerate(sustainableclothing.scenarios.keys()):
         if scenario_skip and i in scenario_skip:
             print(f"   *** Skipping scenario {scenario}")
             continue
-        obj = peatlandrestoration.Scenario(scenario=scenario)
-        verify = LAND_solution_verify_list(obj=obj, zip_f=zip_f)
+        obj = sustainableclothing.Scenario(scenario=scenario)
+        verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
         check_excel_against_object(
             obj=obj, zip_f=zip_f, scenario=scenario, verify=verify, test_skip=test_skip, test_only=test_only)
+
+
+
+
