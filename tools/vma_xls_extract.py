@@ -291,7 +291,7 @@ class VMAReader:
             idx += 1
         assert idx == len(col_names), f'wrong columns: {idx} != {len(col_names)} at row {row1}'
 
-        max_sources = 140
+        max_sources = 210
         done = False
         for r in range(row1+1, row1 + max_sources):
             new_row = {}
