@@ -10,6 +10,7 @@ import functools
 import pathlib
 import re
 import numpy as np
+import openpyxl
 import pandas as pd
 import pytest
 import zipfile
@@ -834,8 +835,13 @@ def excel_read_cell_any_scenario(zip_f, sheetname, cell):
         if sheetname in name:
             zip_csv_f = zip_f.open(name=name)
             (col, row) = cell_to_offsets(cell)
-            df = pd.read_csv(filepath_or_buffer=zip_csv_f, header=None, index_col=None,
-                    usecols=[col], skiprows=row, nrows=1)
+            try:
+                wb = openpyxl.load_workbook(zip_csv_f, data_only=True)
+                df = pd.read_excel(wb, header=None, index_col=None, usecols=[col], skiprows=row, nrows=1,
+                                   engine='openpyxl')
+            except BaseException:
+                df = pd.read_csv(filepath_or_buffer=zip_csv_f, header=None, index_col=None, usecols=[col], skiprows=row,
+                                 nrows=1)
             return df.loc[0, col]
     return None
 
@@ -996,8 +1002,15 @@ def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, tes
             (usecols, skiprows, nrows) = get_pd_read_excel_args(cellrange)
             arcname = f'{scenario}/{sheetname}'
             zip_csv_f = zip_f.open(name=arcname)
-            expected_df = pd.read_csv(filepath_or_buffer=zip_csv_f, header=None,
-                index_col=None, usecols=usecols, skiprows=skiprows, nrows=nrows)
+            try:
+                wb = openpyxl.load_workbook(zip_csv_f, data_only=True)
+                expected_df = pd.read_excel(wb, header=None,
+                                          index_col=None, usecols=usecols, skiprows=skiprows, nrows=nrows,
+                                          na_values=['#DIV/0!', '#REF!'], engine='openpyxl')
+            except BaseException:
+                expected_df = pd.read_csv(filepath_or_buffer=zip_csv_f, header=None,
+                                          index_col=None, usecols=usecols, skiprows=skiprows, nrows=nrows,
+                                          na_values=['#DIV/0!', '#REF!'])
             absignore = None
             if expected_mask is not None:
                 if isinstance(expected_mask, str) and expected_mask == "Excel_NaN":
