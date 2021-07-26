@@ -1665,6 +1665,19 @@ def test_RecycledPaper_RRS():
 
 
 @pytest.mark.slow
+def test_RecycledPlastics_RRS():
+    from solution import recycledplastics
+    zipfilename = str(solutiondir.joinpath(
+        'recycledplastics', 'testdata', 'expected.zip'))
+    zip_f = zipfile.ZipFile(file=zipfilename)
+    for scenario in recycledplastics.scenarios.keys():
+        obj = recycledplastics.Scenario(scenario=scenario)
+        verify = RRS_solution_verify_list(obj=obj, zip_f=zip_f)
+        check_excel_against_object(
+            obj=obj, zip_f=zip_f, scenario=scenario, verify=verify)
+
+
+@pytest.mark.slow
 def test_Refrigerants_RRS():
     from solution import refrigerants
     zipfilename = str(solutiondir.joinpath(
