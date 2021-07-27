@@ -114,6 +114,7 @@ class Conversion(ABC):
 class EnergyConversion(Conversion):
     """
     Convert between 'tj', 'gcal', 'mtoe', 'mbtu', 'gwh', 'twh', 'kwh'
+    Source: http://www.iea.org/statistics/resources/unitconverter/
     """
     @property
     def accepted_names(self):
@@ -141,6 +142,36 @@ class EnergyConversion(Conversion):
         'tj_to_kwh': 277_777.778
     }
 
+
+class VolumeConversion(Conversion):
+    """
+       Convert between 'gal_us', 'gal_uk', 'bbl', 'cubic_ft', 'l', 'cubic_m'
+       Source: http://www.iea.org/statistics/resources/unitconverter/
+    """
+
+    @property
+    def accepted_names(self):
+        return ('gal_us', 'gal_uk', 'bbl', 'cubic_ft', 'l', 'cubic_m')
+
+    @property
+    def _base_unit(self):
+        return 'gal_us'
+
+    @property
+    def conversion_rates(self):
+        return {
+            'gal_us_to_gal_us': 1,
+            'gal_uk_to_gal_us': 1.20095,
+            'bbl_to_gal_us': 42,
+            'cubic_ft_to_gal_us': 7.48052,
+            'l_to_gal_us': 0.26417,
+            'cubic_m_to_gal_us': 264.17205,
+            'gal_us_to_gal_uk': 0.83267,
+            'gal_us_to_bbl': 0.02381,
+            'gal_us_to_cubic_ft': 0.13368,
+            'gal_us_to_l': 3.78541,
+            'gal_us_to_cubic_m': 0.00379
+        }
 
 
 #todo remove this

@@ -36,3 +36,12 @@ def test_wrong_energy_unit():
 def test_energy_conversion(convert_from, convert_to, expected_result, quantity):
     converted_result = conversions.EnergyConversion(convert_from, convert_to)(quantity)
     assert isclose(converted_result, expected_result, rel_tol=1e-3)
+
+
+@pytest.mark.parametrize('convert_from,convert_to,expected_result,quantity',
+                         [('bbl', 'l', 158.98730, 1),
+                          ('gal_uk', 'cubic_ft', 0.16054, 1),
+                          ('l', 'l', 10, 10)])
+def test_volume_conversion(convert_from, convert_to, expected_result, quantity):
+    converted_result = conversions.VolumeConversion(convert_from, convert_to)(quantity)
+    assert isclose(converted_result, expected_result, abs_tol=1e-4)
