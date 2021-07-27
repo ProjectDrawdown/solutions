@@ -54,6 +54,13 @@ class Conversion(ABC):
         self.quantity = quantity
         self._converted_quantity = None
 
+    def __call__(self, quantity=1):
+        return self.converted_quantity * quantity
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self.convert_from}, {self.convert_to}, ' \
+               f'{self.quantity})'
+
     @property
     @abstractmethod
     def accepted_names(self):
@@ -68,9 +75,6 @@ class Conversion(ABC):
     @abstractmethod
     def conversion_rates(self):
         pass
-
-    def __call__(self, quantity=1):
-        return self.converted_quantity * quantity
 
     @property
     def convert_from(self):
