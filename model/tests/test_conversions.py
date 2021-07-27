@@ -54,3 +54,12 @@ def test_volume_conversion(convert_from, convert_to, expected_result, quantity):
 def test_mass_conversion(convert_from, convert_to, expected_result, quantity):
     converted_result = conversions.MassConversion(convert_from, convert_to)(quantity)
     assert isclose(converted_result, expected_result, abs_tol=1e-4)
+
+
+@pytest.mark.parametrize('convert_from,convert_to,expected_result,quantity',
+                         [('mi', 'km', 1.609344, 1),
+                          ('km', 'mi', 0.621371, 1),
+                          ('mi', 'mi', 10, 10)])
+def test_distance_conversion(convert_from, convert_to, expected_result, quantity):
+    converted_result = conversions.DistanceConversion(convert_from, convert_to)(quantity)
+    assert isclose(converted_result, expected_result, abs_tol=1e-4)
