@@ -145,16 +145,10 @@ class EnergyConversion(Conversion):
 
 class VolumeConversion(Conversion):
     """
-
-    U.K. gallon (gal)
-    Barrel (bbl)
-    Cubic foot (ft3)
-    Litre (l)
-    Cubic meter (m3)
-           Convert between U.S gallon ('gal_us'), U,K gallon ('gal_uk',)
-           Barrel ('bbl'), Cubic foot ('cubic_ft'), litre('l'),
-           Cubic meter ('cubic_m')
-           Source: http://www.iea.org/statistics/resources/unitconverter/
+       Convert between U.S gallon ('gal_us'), U,K gallon ('gal_uk',)
+       Barrel ('bbl'), Cubic foot ('cubic_ft'), litre('l'),
+       Cubic meter ('cubic_m')
+       Source: http://www.iea.org/statistics/resources/unitconverter/
     """
 
     @property
@@ -181,6 +175,29 @@ class VolumeConversion(Conversion):
             'gal_us_to_cubic_m': 0.00379
         }
 
+
+class MassConversion(Conversion):
+    """
+        Convert between gram ('g'), kilogram ('kg') and tonne ('t')
+        """
+
+    @property
+    def accepted_names(self):
+        return ('g', 'kg', 't')
+
+    @property
+    def _base_unit(self):
+        return 'kg'
+
+    @property
+    def conversion_rates(self):
+        return {
+            'kg_to_kg': 1,
+            'g_to_kg': 1e-3,
+            't_to_kg': 1e3,
+            'kg_to_g': 1e3,
+            'kg_to_t': 1e-3
+        }
 
 #todo remove this
 if __name__ == "__main__":
