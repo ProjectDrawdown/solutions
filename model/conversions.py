@@ -145,8 +145,16 @@ class EnergyConversion(Conversion):
 
 class VolumeConversion(Conversion):
     """
-       Convert between 'gal_us', 'gal_uk', 'bbl', 'cubic_ft', 'l', 'cubic_m'
-       Source: http://www.iea.org/statistics/resources/unitconverter/
+
+    U.K. gallon (gal)
+    Barrel (bbl)
+    Cubic foot (ft3)
+    Litre (l)
+    Cubic meter (m3)
+           Convert between U.S gallon ('gal_us'), U,K gallon ('gal_uk',)
+           Barrel ('bbl'), Cubic foot ('cubic_ft'), litre('l'),
+           Cubic meter ('cubic_m')
+           Source: http://www.iea.org/statistics/resources/unitconverter/
     """
 
     @property
