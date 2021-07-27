@@ -1,4 +1,5 @@
 import pytest
+from math import isclose
 
 from model import conversions
 
@@ -21,3 +22,17 @@ def test_mha_to_ha(in_mha, expected_in_ha):
 def test_terawatt_to_kilowatt(in_tw, expected_in_kw):
     converted_result = conversions.terawatt_to_kilowatt(in_tw)
     assert converted_result == expected_in_kw
+
+
+def test_wrong_energy_unit():
+    with pytest.raises(ValueError):
+        conversions.EnergyConversion('made_up_unit', 'gcal')
+
+
+@pytest.mark.parametrize('convert_from,convert_to,expected_result,quantity',
+                         [('mbtu', 'twh', 2.93E-07, 1),
+                          ('kwh', 'gcal', 0.000860, 1),
+                          ('gwh', 'gwh', 10, 10)])
+def test_energy_conversion(convert_from, convert_to, expected_result, quantity):
+    converted_result = conversions.EnergyConversion(convert_from, convert_to)(quantity)
+    assert isclose(converted_result, expected_result, rel_tol=1e-3)
