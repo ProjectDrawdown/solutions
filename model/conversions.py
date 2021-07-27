@@ -9,6 +9,13 @@ Provides useful conversions for the following:
     inflation-adjusted-dollars
 """
 
+__all__ = ['mha_to_ha',
+           'terawatt_to_kilowatt',
+           'EnergyConversion',
+           'VolumeConversion',
+           'MassConversion',
+           'DistanceConversion'
+           ]
 
 from abc import ABC, abstractmethod
 
@@ -17,14 +24,14 @@ def mha_to_ha(mha=1):
     """Convert mega hectares to hectares
         mha : the number of mega hectares
     """
-    return mha * 10**6
+    return mha * 10 ** 6
 
 
 def terawatt_to_kilowatt(tw=1):
     """Convert terawatts to kilowatts
         tw : the number of terawatt hours
       """
-    return tw * 10**9
+    return tw * 10 ** 9
 
 
 class Conversion(ABC):
@@ -116,9 +123,10 @@ class EnergyConversion(Conversion):
     Convert between 'tj', 'gcal', 'mtoe', 'mbtu', 'gwh', 'twh', 'kwh'
     Source: http://www.iea.org/statistics/resources/unitconverter/
     """
+
     @property
     def accepted_names(self):
-        return ('tj', 'gcal', 'mtoe', 'mbtu', 'gwh', 'twh', 'kwh')
+        return 'tj', 'gcal', 'mtoe', 'mbtu', 'gwh', 'twh', 'kwh'
 
     @property
     def _base_unit(self):
@@ -127,20 +135,20 @@ class EnergyConversion(Conversion):
     @property
     def conversion_rates(self):
         return {
-        'tj_to_tj': 1,
-        'gcal_to_tj': 0.004187,
-        'mtoe_to_tj': 41_868,
-        'mbtu_to_tj': 0.001055,
-        'gwh_to_tj': 3.6,
-        'twh_to_tj': 3_600,
-        'kwh_to_tj': 3.60E-06,
-        'tj_to_gcal': 238.845897,
-        'tj_to_mtoe': 0.000024,
-        'tj_to_mbtu': 947.817120,
-        'tj_to_gwh': 0.277778,
-        'tj_to_twh': 0.000278,
-        'tj_to_kwh': 277_777.778
-    }
+            'tj_to_tj': 1,
+            'gcal_to_tj': 0.004187,
+            'mtoe_to_tj': 41_868,
+            'mbtu_to_tj': 0.001055,
+            'gwh_to_tj': 3.6,
+            'twh_to_tj': 3_600,
+            'kwh_to_tj': 3.60E-06,
+            'tj_to_gcal': 238.845897,
+            'tj_to_mtoe': 0.000024,
+            'tj_to_mbtu': 947.817120,
+            'tj_to_gwh': 0.277778,
+            'tj_to_twh': 0.000278,
+            'tj_to_kwh': 277_777.778
+        }
 
 
 class VolumeConversion(Conversion):
@@ -153,7 +161,7 @@ class VolumeConversion(Conversion):
 
     @property
     def accepted_names(self):
-        return ('gal_us', 'gal_uk', 'bbl', 'cubic_ft', 'l', 'cubic_m')
+        return 'gal_us', 'gal_uk', 'bbl', 'cubic_ft', 'l', 'cubic_m'
 
     @property
     def _base_unit(self):
@@ -183,7 +191,7 @@ class MassConversion(Conversion):
 
     @property
     def accepted_names(self):
-        return ('g', 'kg', 't')
+        return 'g', 'kg', 't'
 
     @property
     def _base_unit(self):
@@ -207,7 +215,7 @@ class DistanceConversion(Conversion):
 
     @property
     def accepted_names(self):
-        return ('mi', 'km')
+        return 'mi', 'km'
 
     @property
     def _base_unit(self):
