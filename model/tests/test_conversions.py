@@ -45,3 +45,12 @@ def test_energy_conversion(convert_from, convert_to, expected_result, quantity):
 def test_volume_conversion(convert_from, convert_to, expected_result, quantity):
     converted_result = conversions.VolumeConversion(convert_from, convert_to)(quantity)
     assert isclose(converted_result, expected_result, abs_tol=1e-4)
+
+
+@pytest.mark.parametrize('convert_from,convert_to,expected_result,quantity',
+                         [('g', 't', 1e-6, 1),
+                          ('t', 'g', 1e6, 1),
+                          ('t', 't', 10, 10)])
+def test_mass_conversion(convert_from, convert_to, expected_result, quantity):
+    converted_result = conversions.MassConversion(convert_from, convert_to)(quantity)
+    assert isclose(converted_result, expected_result, abs_tol=1e-4)
