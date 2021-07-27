@@ -199,6 +199,28 @@ class MassConversion(Conversion):
             'kg_to_t': 1e-3
         }
 
+
+class DistanceConversion(Conversion):
+    """
+        Convert between miles ('mi') and kilometres ('km')
+        """
+
+    @property
+    def accepted_names(self):
+        return ('mi', 'km')
+
+    @property
+    def _base_unit(self):
+        return 'km'
+
+    @property
+    def conversion_rates(self):
+        return {
+            'km_to_km': 1,
+            'km_to_mi': 0.621371,
+            'mi_to_km': 1.609344
+        }
+
 #todo remove this
 if __name__ == "__main__":
     would_pass = EnergyConversion('twh', 'gcal').converted_quantity
