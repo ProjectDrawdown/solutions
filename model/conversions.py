@@ -220,9 +220,3 @@ class DistanceConversion(Conversion):
             'km_to_mi': 0.621371,
             'mi_to_km': 1.609344
         }
-
-#todo remove this
-if __name__ == "__main__":
-    would_pass = EnergyConversion('twh', 'gcal').converted_quantity
-    ## or call it
-    print(EnergyConversion('twh', 'gcal')())
