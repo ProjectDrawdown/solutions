@@ -22,6 +22,7 @@ from model import unitadoption
 from model import vma
 from model import tam
 from solution import rrs
+from model import conversions
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
@@ -322,7 +323,7 @@ class Scenario:
             soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
             soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
             conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-            fc_convert_iunit_factor=rrs.TERAWATT_TO_KILOWATT)
+            fc_convert_iunit_factor=conversions.terawatt_to_kilowatt())
 
         self.oc = operatingcost.OperatingCost(ac=self.ac,
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -335,7 +336,7 @@ class Scenario:
             single_iunit_purchase_year=2017,
             soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
             conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-            conversion_factor=rrs.TERAWATT_TO_KILOWATT)
+            conversion_factor=conversions.terawatt_to_kilowatt())
 
         self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)

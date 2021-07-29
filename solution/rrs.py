@@ -4,7 +4,6 @@
 
 import pathlib
 
-TERAWATT_TO_KILOWATT = 10**9
 
 thisdir = pathlib.Path(__file__).parents[0]
 parentdir = pathlib.Path(__file__).parents[1]
