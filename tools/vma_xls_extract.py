@@ -67,6 +67,49 @@ COLUMN_DTYPE_MAP = {
     'Exclude Data?': lambda x: tools.util.convert_bool(x) if x is not np.nan else x,
 }
 
+# VMA name normalization 
+# Map known variations to standard form
+
+VMA_NAME_NORMALIZATION = {
+    'SOLUTION First Cost per Implementation Unit of the solution':
+        'SOLUTION First Cost per Implementation Unit',
+    'CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies':
+        'CONVENTIONAL First Cost per Implementation Unit',
+    'Yield  from CONVENTIONAL Practice': 'Yield from CONVENTIONAL Practice',
+    'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls':
+        'CONVENTIONAL Indirect CO2 Emissions per Unit',
+    'Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls)':
+        'SOLUTION Indirect CO2 Emissions per Unit',
+    'ALTERNATIVE APPROACH      Annual Energy Used UNDEGRADED LAND':
+        'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND',
+    'SOLUTION VARIABLE Operating Cost per Functional Unit':
+        'SOLUTION Variable Operating Cost (VOM) per Functional Unit',
+    'SOLUTION FIXED Operating Cost per Implementation Unit':
+        'SOLUTION Fixed Operating Cost (FOM)',
+    'CONVENTIONAL VARIABLE Operating Cost per Functional Unit':
+        'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit',
+    'CONVENTIONAL FIXED Operating Cost per Implementation Unit':
+        'CONVENTIONAL Fixed Operating Cost (FOM)',
+    'Fuel Consumed per Functional Unit - CONVENTIONAL':
+        'CONVENTIONAL Fuel Consumed per Functional Unit',
+    'Total Energy Used per functional unit - SOLUTION':
+        'SOLUTION Total Energy Used per Functional Unit',
+    'Electricity Consumed per Functional Unit - CONVENTIONAL':
+        'CONVENTIONAL Total Energy Used per Functional Unit',
+    'Electricty Consumed per Functional Unit - CONVENTIONAL':
+        'CONVENTIONAL Total Energy Used per Functional Unit',
+    'Fuel Efficiency Factor - SOLUTION': 'SOLUTION Fuel Efficiency Factor',
+    'Energy Efficiency Factor - SOLUTION': 'SOLUTION Energy Efficiency Factor',
+    'Direct Emissions per CONVENTIONAL Functional Unit':
+        'CONVENTIONAL Direct Emissions per Functional Unit',
+    'Direct Emissions per SOLUTION Functional Unit':
+        'SOLUTION Direct Emissions per Functional Unit',
+    'Lifetime Capacity - SOLUTION': 'SOLUTION Lifetime Capacity',
+    'Lifetime Capacity - CONVENTIONAL': 'CONVENTIONAL Lifetime Capacity',
+    'Average Annual Use - SOLUTION': 'SOLUTION Average Annual Use',
+    'Average Annual Use - CONVENTIONAL': 'CONVENTIONAL Average Annual Use',
+}
+
 
 def make_vma_df_template():
     """
@@ -371,84 +414,44 @@ class VMAReader:
                 'Variable Meta-analysis', public files use 'Variable Meta-analysis-DD'.
         """
 
-        normalize_vma_names = {
-            'SOLUTION First Cost per Implementation Unit of the solution':
-                'SOLUTION First Cost per Implementation Unit',
-            'CONVENTIONAL First Cost per Implementation Unit for replaced practices/technologies':
-                'CONVENTIONAL First Cost per Implementation Unit',
-            'Yield  from CONVENTIONAL Practice': 'Yield from CONVENTIONAL Practice',
-            'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE on Advanced Controls':
-                'CONVENTIONAL Indirect CO2 Emissions per Unit',
-            'Indirect CO2 Emissions per SOLUTION Implementation Unit (Select on Advanced Controls)':
-                'SOLUTION Indirect CO2 Emissions per Unit',
-            'ALTERNATIVE APPROACH      Annual Energy Used UNDEGRADED LAND':
-                'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND',
-            'SOLUTION VARIABLE Operating Cost per Functional Unit':
-                'SOLUTION Variable Operating Cost (VOM) per Functional Unit',
-            'SOLUTION FIXED Operating Cost per Implementation Unit':
-                'SOLUTION Fixed Operating Cost (FOM)',
-            'CONVENTIONAL VARIABLE Operating Cost per Functional Unit':
-                'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit',
-            'CONVENTIONAL FIXED Operating Cost per Implementation Unit':
-                'CONVENTIONAL Fixed Operating Cost (FOM)',
-            'Fuel Consumed per Functional Unit - CONVENTIONAL':
-                'CONVENTIONAL Fuel Consumed per Functional Unit',
-            'Total Energy Used per functional unit - SOLUTION':
-                'SOLUTION Total Energy Used per Functional Unit',
-            'Electricity Consumed per Functional Unit - CONVENTIONAL':
-                'CONVENTIONAL Total Energy Used per Functional Unit',
-            'Electricty Consumed per Functional Unit - CONVENTIONAL':
-                'CONVENTIONAL Total Energy Used per Functional Unit',
-            'Fuel Efficiency Factor - SOLUTION': 'SOLUTION Fuel Efficiency Factor',
-            'Energy Efficiency Factor - SOLUTION': 'SOLUTION Energy Efficiency Factor',
-            'Direct Emissions per CONVENTIONAL Functional Unit':
-                'CONVENTIONAL Direct Emissions per Functional Unit',
-            'Direct Emissions per SOLUTION Functional Unit':
-                'SOLUTION Direct Emissions per Functional Unit',
-            'Lifetime Capacity - SOLUTION': 'SOLUTION Lifetime Capacity',
-            'Lifetime Capacity - CONVENTIONAL': 'CONVENTIONAL Lifetime Capacity',
-            'Average Annual Use - SOLUTION': 'SOLUTION Average Annual Use',
-            'Average Annual Use - CONVENTIONAL': 'CONVENTIONAL Average Annual Use',
-        }
+        # Search for the "Source ID" header, which is very stable across models
+        search_header = "SOURCE ID: Author/Org, Date, Info"
 
         table_locations = collections.OrderedDict()
         sheet = self.wb[sheetname]
-        row, col = 41, 3
+        row = 41
         for table_num in range(1, 36):
             found = False
-            for rows_to_next_table in range(220):
-                title_from_cell = sheet.cell(row + rows_to_next_table, col).value
-                if title_from_cell is None or title_from_cell == '':
-                    continue
-                title_from_cell = str(title_from_cell).strip()
-                title_from_cell = normalize_vma_names.get(title_from_cell, title_from_cell)
-                if title_from_cell.startswith('VARIABLE'):
-                    # if the table has a generic VARIABLE title assume no more variables to record
-                    self.table_locations = table_locations
-                    return  # search for tables ends here
-
-                # Rather than recording titles we will check for vma number. We need to validate
-                # that this really is a Title, as VMAs are also numbered. We check that two rows
-                # down is "Number", the heading for the numbered VMAs.
-                table_num_on_sheet = sheet.cell(row + rows_to_next_table, col - 2).value
-                VMA_heading_check = False
-                for offset in [1, 2, 3]:
-                    cell_value = str(sheet.cell(row + rows_to_next_table + offset, col - 2).value)
-                    if cell_value == 'Number':
-                        VMA_heading_check = True
-                if table_num_on_sheet == table_num and VMA_heading_check:  # if title cell of table
-                    for space_after_title in range(10):
-                        offset = rows_to_next_table + space_after_title
-                        if sheet.cell(row + offset, col).value == 'SOURCE ID: Author/Org, Date, Info':
-                            table_locations[title_from_cell] = (row + offset, col)
-                            row += offset
-                            found = True
-                            break
-                    else:
-                        raise Exception('Cannot find SOURCE ID cell for {}'.format(title_from_cell))
-                if found:
+            # there is no specific limit on table size, but this effectively works
+            for search_row in range(row, row+300):
+                if search_header == tools.util.xls(sheet, search_row, tools.util.co("C")):
+                    # Find the title.  It should be two rows up, but we'll look in a range of 1-3
+                    title = None
+                    for offset in [1,2,3]:
+                        title = tools.util.xls(sheet, search_row-offset, tools.util.co("C"))
+                        if title:
+                            break;
+                    
+                    if title is None:
+                        print(table_locations)
+                        raise Exception(f"VMA find_tables got lost on row {search_row}")
+                        
+                    if title.startswith('VARIABLE'):
+                        # if the table has a generic VARIABLE title assume no more variables to record
+                        # this is the normal exit
+                        self.table_locations = table_locations
+                        return  # search for tables ends here
+                    
+                    # else, record this table and move on
+                    title = VMA_NAME_NORMALIZATION.get(title, title)
+                    table_locations[title] = (search_row, tools.util.co("C"))
+                    row = search_row + 1
+                    found = True
                     break
-            else:
+            
+            if not found:
                 print(table_locations)
-                raise Exception('Cannot find table number {}'.format(table_num))
+                raise Exception(f"VMA find_tables could not find table {table_num} up to row {search_row}")                
+
+        # if we had all 36 tables, we exit here.
         self.table_locations = table_locations
