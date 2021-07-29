@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 import math
+import types
 from io import StringIO
 
 import model.dd as dd
@@ -121,6 +122,8 @@ class OperatingCost(DataHandler):
         self.single_iunit_purchase_year = single_iunit_purchase_year
         self.soln_pds_install_cost_per_iunit = soln_pds_install_cost_per_iunit
         self.conv_ref_install_cost_per_iunit = conv_ref_install_cost_per_iunit
+        conversion_factor = conversion_factor(1) if isinstance(conversion_factor,
+                                                            types.FunctionType) else conversion_factor
         try:
             self.conversion_factor_fom = conversion_factor[0]
             self.conversion_factor_vom = conversion_factor[1]
