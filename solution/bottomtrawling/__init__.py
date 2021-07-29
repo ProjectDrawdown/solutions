@@ -22,7 +22,7 @@ from model.advanced_controls import SOLUTION_CATEGORY
 from model.dd import OCEAN_REGIONS
 
 from model import toa
-from solution import land
+from model import conversions
 
 DATADIR = str(pathlib.Path(__file__).parents[2].joinpath('data'))
 THISDIR = pathlib.Path(__file__).parents[0]
@@ -150,7 +150,7 @@ class Scenario:
             soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
             conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
             conv_ref_first_cost_uses_tot_units=True,
-            fc_convert_iunit_factor=land.MHA_TO_HA)
+            fc_convert_iunit_factor=conversions.mha_to_ha)
 
         self.oc = operatingcost.OperatingCost(
             ac=self.ac,
@@ -164,7 +164,7 @@ class Scenario:
             single_iunit_purchase_year=2017,
             soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
             conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-            conversion_factor=land.MHA_TO_HA)
+            conversion_factor=conversions.mha_to_ha)
 
         self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
                                     soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
