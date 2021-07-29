@@ -537,7 +537,7 @@ class Scenario:
             soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
             conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
             conv_ref_first_cost_uses_tot_units=True,
-            fc_convert_iunit_factor=conversions.mha_to_ha())
+            fc_convert_iunit_factor=conversions.mha_to_ha)
 
         self.oc = operatingcost.OperatingCost(ac=self.ac,
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -550,7 +550,7 @@ class Scenario:
             single_iunit_purchase_year=2017,
             soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
             conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-            conversion_factor=conversions.mha_to_ha())
+            conversion_factor=conversions.mha_to_ha)
 
         self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
             soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
