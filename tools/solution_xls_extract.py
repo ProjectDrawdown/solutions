@@ -1121,7 +1121,7 @@ def write_fc(f, wb):
     if xli(fc_tab, 'F15') == 1000000000 and xls(fc_tab, 'G15') == '$/kW TO $/TW':
         f.write("            fc_convert_iunit_factor=conversions.terawatt_to_kilowatt())\n")
     elif xli(fc_tab, 'F16') == 1000000 and xls(fc_tab, 'F18') == 'million hectare':
-        f.write("            fc_convert_iunit_factor=conversions.mha_to_ha())\n")
+        f.write("            fc_convert_iunit_factor=conversions.mha_to_ha)\n")
     else:
         f.write("            fc_convert_iunit_factor=" + xls(fc_tab, 'F15') + ")\n")
     f.write('\n')
