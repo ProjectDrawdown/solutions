@@ -57,7 +57,7 @@ Sub Save_Sheet_As_CSV(sheetname As String, filename As String)
     sht.Activate
     ' Copy over the Cells (not the Sheet) so that we don't get any of that pesky macro stuff.
     sht.Cells.Copy
-    tmpbook.Sheets(1).Cells.PasteSpecial Paste:=xlPasteValues
+    tmpbook.Sheets(1).Cells.PasteSpecial Paste:=xlPasteValuesAndNumberFormats 
 
     ' Save the temporary workbook, suppressing "Do you want to overwrite" dialog
     Application.DisplayAlerts = False
