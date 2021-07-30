@@ -115,3 +115,17 @@ def test_rrs():
     vma_r = tools.vma_xls_extract.VMAReader(wb)
     vma_df = vma_r.read_xls(alt_vma=True)
     assert vma_df.loc[1, 'Title on xls'] == 'Current Adoption'
+
+@pytest.mark.slow
+def test_large_vma():
+    wb = openpyxl.load_workbook(thisdir.joinpath('lg_vma.xlsx'), data_only=True, keep_links=False)
+    vma_r = tools.vma_xls_extract.VMAReader(wb)
+    tables = vma_r.xls_df_dict()
+    assert len(tables) == 26
+
+    # this is one of the large tables
+    assert 'CONVENTIONAL Direct Emissions per Functional Unit' in tables.keys()
+    (df, _, _) = tables['CONVENTIONAL Direct Emissions per Functional Unit']
+    assert (205,14) == df.shape
+    assert df.loc[204]['Raw Data Input'] == pytest.approx(24.8)
+
