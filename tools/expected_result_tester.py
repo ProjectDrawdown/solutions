@@ -915,14 +915,15 @@ def LAND_solution_verify_list(obj, zip_f):
 
 def approx_compare(val, expt, all_zero=True, thresh=None):
     """Return True if val is equal 'or very close to' expected value expt.
-    Values must be numeric or strings.
     If all_zero is True (the default), 0, NaN, None and the empty string are all treated as equal.
     If thresh is provided, it overrides the default threshold to compare two floating point numbers.    
     """
     # This implementation is derived from the old test_excel_integration.compare_dataframes,
     # but it is not 100% identical.  The differences might matter, TBD
 
-    pseudo_zero = lambda x : x == 0 or x == '' or x is None or x == 'NaN' or (isinstance(x,float) and np.isnan(x)) or x == pytest.approx(0.0)
+    thresh = thresh or 1e-4  # for the purposes of comparing to Excel, this is sufficient!
+
+    pseudo_zero = lambda x : x == 0 or x == '' or x is None or (isinstance(x,float) and np.isnan(x)) or x == pytest.approx(0.0, abs=thresh)
 
     if isinstance(val, str) and isinstance(expt, str):
         return (val == expt)
@@ -930,11 +931,10 @@ def approx_compare(val, expt, all_zero=True, thresh=None):
     if all_zero and pseudo_zero(val):
         return pseudo_zero(expt)
 
-    return (val == pytest.approx(expt) if thresh is None else
-            val == pytest.approx(expt, abs=thresh, rel=1e-6))
+    return (val == pytest.approx(expt, abs=thresh, rel=1e-6))
 
 
-def df_differ(val, expt, mask=None, all_zero=True, thresh=None):
+def dataframes_differ(val, expt, mask=None, all_zero=True, thresh=None):
     """Compare Dataframes val and expt using approximate comparison (see
     `approx_compare`).  The dataframes are compared by postition (index and column
     labels are ignored). If mask is provided, skip comparison for any mask cell that evals to
@@ -942,41 +942,16 @@ def df_differ(val, expt, mask=None, all_zero=True, thresh=None):
     If the dataframes do differ, return a list of tuples `(row, col, val.value, expt.value)`
     for each cell that differs.  Return False if they do not differ.
     """
-    if val.shape != expt.shape:
-        raise ValueError(f'Dataframes differ in shape ({val.shape} vs {expt.shape})')
-
     result = []   
     (nrows,ncols) = val.shape
     for r in range(nrows):
         for c in range(ncols):
             if mask is not None and mask.iloc[r,c]:
                 continue
-
             if not approx_compare(val.iloc[r,c], expt.iloc[r,c], all_zero=all_zero, thresh=thresh):
                 result.append( (r, c, val.iloc[r,c], expt.iloc[r,c]) )
     
     return result if len(result) else False
-
-
-def compare_dataframes(actual_df, expected_df, description='', mask=None, absignore=None):
-    """Compare two dataframes and print where they differ."""
-    if actual_df.shape != expected_df.shape:
-        raise AssertionError(description + '\nDataFrames differ in shape: ' +
-                str(actual_df.shape) + " versus " + str(expected_df.shape))
-
-    errs = df_differ(actual_df, expected_df, mask, thresh=absignore)
-    if errs:
-        # construct a list of at most 10 differences
-        msg = ""
-        for (i, x) in enumerate(errs):
-            if i >= 10: break
-            (r, c, actual, expected) = x
-            msg = msg + f"   [{r}, {c}]: actual {repr(actual)} vs expected {repr(expected)}\n"
-        if len(errs) > 10:
-            msg = msg + "   ...\n"
-        (rows,cols) = expected_df.shape
-
-        raise AssertionError(f"{description}\n{len(errs)}/{rows*cols} differ:\n"+msg)
 
 
 def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, test_only=None):
@@ -986,7 +961,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, tes
         print(sheetname)
         arcname = f'{scenario}/{sheetname}'
         with zip_f.open(name=arcname) as zip_csv_f:
-            sheet_df = pd.read_csv(zip_csv_f, header=None)
+            sheet_df = pd.read_csv(zip_csv_f, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
         
         skip_count=0
         for (cellrange, actual_df, actual_mask, expected_mask) in verify[sheetname]:
@@ -1000,6 +975,10 @@ def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, tes
                 continue
 
             expected_df = df_excel_range(sheet_df, cellrange)
+            if actual_df.shape != expected_df.shape:
+                raise AssertionError(description + '\nDataFrames differ in shape: ' +
+                        str(actual_df.shape) + " versus " + str(expected_df.shape))
+
             absignore = None
             if expected_mask is not None:
                 if isinstance(expected_mask, str) and expected_mask == "Excel_NaN":
@@ -1020,8 +999,18 @@ def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, tes
             else:
                 mask = expected_mask
 
-            compare_dataframes(actual_df=actual_df, expected_df=expected_df,
-                    description=description, mask=mask, absignore=absignore)
+
+            errs = dataframes_differ(actual_df, expected_df, mask, thresh=absignore)
+            if errs:  # prepare an error message with the first 10 errors
+                (rsize, csize) = actual_df.shape
+                difflist = ""
+                for (i, x) in enumerate(errs):
+                    if i>=10: break
+                    (r, c, actual, expected) = x
+                    difflist = difflist + f"   [{r}, {c}]: expected {repr(expected)} vs actual {repr(actual)}\n"
+                if len(errs) > 10:
+                    difflist = difflist + "   ....\n"
+                raise AssertionError(f"{description}\n{len(errs)}/{rsize*csize} values differ:\n" + difflist)
 
         if skip_count > 0:
             print(f"    **** Skipped {skip_count} tests")
