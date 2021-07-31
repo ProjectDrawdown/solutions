@@ -29,7 +29,7 @@ import pandas as pd
 import pytest
 from . import rrs
 
-from tools.util import convert_bool, xls, xli, xln, co, cell_to_offsets
+from tools.util import convert_bool, xls, xli, xln, co
 from tools.vma_xls_extract import VMAReader
 from model import advanced_controls as ac
 
@@ -626,7 +626,7 @@ def write_tam(f, wb, outputdir):
                                       outputdir=tamoutputdir, prefix='tam_pds_')
     if recursive_keys(pds_sources) == recursive_keys(rrs.energy_tam_1_pds_data_sources):
         # the source names are the same for energy_tam_1 & 2, distinguish them here.
-        plausible_2060 = float(tm_tab.cell(*cell_to_offsets('L152')).value)
+        plausible_2060 = xln(tm_tab, 'L152')
         if plausible_2060 == pytest.approx(54539.190092617995):
             arg_pds = 'rrs.energy_tam_2_pds_data_sources'
         elif plausible_2060 == pytest.approx(60153.728317538):
@@ -1827,6 +1827,28 @@ def link_vma(tab, row, col):
             #warnings.warn(f'formula "{formula}" in {col}:{str(row)} not recognised - using value')
             warn_counts['unknown_formula'] = warn_counts['unknown_formula'] + 1
             return {'value': float_val, 'xls cell formula': formula}
+
+
+def output_solution_test_file(solutionname, is_land=False, outputdir=None):
+    """Copy the template test file, substituting the solution name.
+    By default, writes to the solution / tests directory, but that can be overridden
+    by the `outputdir` argument."""
+    if not outputdir:
+        outputdir = pathlib.Path(__file__).parents[1] / 'solution' / solutionname / 'tests'
+    else:
+        outputdir = pathlib.Path( outputdir )
+    if not outputdir.is_dir():
+        outputdir.mkdir()
+
+    testfile = outputdir / f"test_{solutionname}.py"
+    templatefile = pathlib.Path(__file__).parents[0] / 'solution_test_template.py'
+    
+    with templatefile.open("r") as rd:
+        with testfile.open("w") as wt:
+            for line in rd:
+                line = line.replace('SOLUTION', solutionname)
+                line = line.replace('IS_LAND', str(is_land))
+                wt.write(line)
 
 
 if __name__ == "__main__":

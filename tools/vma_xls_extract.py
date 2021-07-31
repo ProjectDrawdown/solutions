@@ -301,7 +301,7 @@ class VMAReader:
         """
         Reads a single Variable Meta-analysis table (e.g. Current Adoption).
         source_id_cell: xls location or offsets of SOURCE ID cell of table
-        (e.g. 'C48' or cell_to_offsets('C48'), where C48 is the cell that starts 'SOURCE ID...')
+        (e.g. 'C48' or cell_to_indices('C48'), where C48 is the cell that starts 'SOURCE ID...')
 
         sheetname: typically 'Variable Meta-analysis' or 'Variable Meta-analysis-DD'
         fixed_summary: whether Average, High, and Low are fixed values to be extracted from Excel.
@@ -309,7 +309,7 @@ class VMAReader:
         sheet = self.wb[sheetname]
         df = self.df_template.copy(deep=True)
         if isinstance(source_id_cell, str):  # for convenience + testing
-            row1, col1 = tools.util.cell_to_offsets(source_id_cell)
+            row1, col1 = tools.util.cell_to_indices(source_id_cell)
         else:  # for use with read_xls
             row1, col1 = source_id_cell
 

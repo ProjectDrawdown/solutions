@@ -28,8 +28,9 @@ The Jupyter Notebook `Extraction_Guide.ipynb` walks you through steps 4-7 below.
   4. Run the extraction step defined in `tools/solution_xls_extract.py`
   5. Verify that the resulting solution code can be loaded and run
   6. Create the `expected.zip` test file following the steps described in the Jupyter notebook and in `tools/CREATE_EXPECTED_ZIP.md`
-  7. Add a test case for the new solution to `tests/test_excel_integration.py` and run the result
-  8. Package up _all_ code changes (including your Jupyter notebook with output, if you used it) into your pull request.
+  7. Generate a new solution test file with the function `output_solution_test_file` in `tools/solution_xls_extract.py`
+  8. Run the new solution tests and verify the results.
+  9. Package up _all_ code changes (including your Jupyter notebook with output, if you used it) into your pull request.
 
 ## Preparing an Excel Workbook for Extraction
 
