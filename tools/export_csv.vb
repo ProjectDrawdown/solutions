@@ -51,16 +51,19 @@ Sub Save_Sheet_As_CSV(sheetname As String, filename As String)
     dir = ActiveWorkbook.Path
     Set sht = Sheets(sheetname)
     Set tmpbook = Workbooks.Add
-    outname = dir & Application.PathSeparator & filename
     
     ' Activate the original sheet to make sure any activation macros have run (Detailed Results does some)
     sht.Activate
     ' Copy over the Cells (not the Sheet) so that we don't get any of that pesky macro stuff.
     sht.Cells.Copy
-    tmpbook.Sheets(1).Cells.PasteSpecial Paste:=xlPasteValuesAndNumberFormats 
+    tmpbook.Sheets(1).Cells.PasteSpecial Paste:=xlPasteValues
+
+    ' Fix up the formatting.  We want to display numbers with sufficient significant digits.
+    tmpbook.Sheets(1).UsedRange.NumberFormat = "0.########;@"  ' As many as 8 digits if number; unchanged if text
 
     ' Save the temporary workbook, suppressing "Do you want to overwrite" dialog
     Application.DisplayAlerts = False
+    outname = dir & Application.PathSeparator & filename
     tmpbook.SaveAs filename:=outname, FileFormat:=xlCSVUTF8
     Application.DisplayAlerts = True
 
