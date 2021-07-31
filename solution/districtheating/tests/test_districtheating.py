@@ -9,14 +9,14 @@ from solution import factory
 thisdir = Path(__file__).parents[0]
 expected_file = thisdir / 'expected.zip'
 
-solution_name = 'afforestation'
+solution_name = 'districtheating'
 
 # If there are long-running test failures that should be skipped, you can indicate them here.
 # Someday we'll have a scanner that will check for these
 SCENARIO_SKIP = None
 TEST_SKIP = None
 
-def test_afforestation_loader():
+def test_districtheating_loader():
     """Test that the solution can load a single scenario"""
     (constructor,scenarios) = factory.one_solution_scenarios(solution_name)
     assert len(scenarios) > 0
@@ -24,12 +24,12 @@ def test_afforestation_loader():
     assert ascenario is not None
 
 @pytest.mark.slow
-def test_afforestation_results(scenario_skip=None, test_skip=None, test_only=None):
+def test_districtheating_results(scenario_skip=None, test_skip=None, test_only=None):
     """Test computed results against stored Excel results"""
     scenario_skip = scenario_skip or SCENARIO_SKIP
     test_skip = test_skip or TEST_SKIP
     expected_result_tester.one_solution_tester(
         solution_name,
-        expected_file, is_land=True,
+        expected_file, is_land=False,
         scenario_skip=scenario_skip, test_skip=test_skip, test_only=test_only)
 
