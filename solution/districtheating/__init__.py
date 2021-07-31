@@ -21,6 +21,7 @@ from model import s_curve
 from model import unitadoption
 from model import vma
 from model import tam
+from model import conversions
 from solution import rrs
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
@@ -272,7 +273,7 @@ class Scenario:
         single_iunit_purchase_year=2017,
         soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
         conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-        conversion_factor=rrs.TERAWATT_TO_KILOWATT)
+        conversion_factor=conversions.terawatt_to_kilowatt())
 
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)

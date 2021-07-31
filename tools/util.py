@@ -21,7 +21,7 @@ def xls(tab, row, col=None):
     val = tab.cell(row, col).value
     if val is None or tab.cell(row, col).data_type == 'e':
         return ''
-    return str(val).strip()
+    return str(val).strip().replace("#DIV/0!", "nan")
 
 def xln(tab, row, col=None, empty_is_nan=False):
     """Return the floating point number read from tab(ref) or tab(row, col), where tab is a openpyxl sheet.

@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 import math
+import types
 import numpy as np
 
 import model.dd
@@ -54,7 +55,8 @@ class FirstCost(DataHandler):
         self.soln_pds_new_iunits_reqd = soln_pds_new_iunits_reqd
         self.soln_ref_new_iunits_reqd = soln_ref_new_iunits_reqd
         self.conv_ref_new_iunits = conv_ref_new_iunits
-        self.fc_convert_iunit_factor = fc_convert_iunit_factor
+        self.fc_convert_iunit_factor = fc_convert_iunit_factor(1) if \
+            isinstance(fc_convert_iunit_factor, types.FunctionType) else fc_convert_iunit_factor
         self.conv_ref_first_cost_uses_tot_units = conv_ref_first_cost_uses_tot_units
 
     @lru_cache()
