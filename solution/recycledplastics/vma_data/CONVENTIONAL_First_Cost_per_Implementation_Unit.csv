@@ -1,0 +1,12 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"average from Market Prices Chart, ptonline",,World,,5 - Not Verified,2011,,1.81,US$2011/kg,1810000000.0,US2014$/MMt Plastic Production,,Traditional Plastics,
+"average from Market Prices Chart, ptonline",,World,,5 - Not Verified,2014,,2.024,US$2014/kg,2024000000.0,US2014$/MMt Plastic Production,,Traditional Plastics,
+"Biron 2012, based on oil price $150/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2012,,1.8,US$2012/kg,1800000000.0,US2014$/MMt Plastic Production,,PP,
+"Biron 2012, based on oil price $300/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2012,,8.75,US$2012/kg,8750000000.0,US2014$/MMt Plastic Production,,"PP, Excluded due to excessive oil assumption input",
+"Biron 2012, historical modeling, low","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2012,,1.4,US$2012/kg,1399999999.9999998,US2014$/MMt Plastic Production,,PP,
+"Biron 2012, historical modeling, high","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2012,,2.2,US$2012/kg,2200000000.0,US2014$/MMt Plastic Production,,PP,
+Rorrer 2017 rPET,Rorrer et al. 2017,,,,2017,,0.51,US$2018/lb ,1124355975.511086,US2014$/MMt Plastic Production,,,
+Rorrer 2017 virgin PET resin,Rorrer et al. 2017,,,,2017,,0.81,US$2018/lb ,1785741843.4587834,US2014$/MMt Plastic Production,,,
+"Intaglia, C. 2012. Live Science",https://www.livescience.com/32231-does-recycling-plastic-cost-more-than-making-it.html,,,,2012,,0.83,US$2012/lb,1826000000.0000002,US2014$/MMt Plastic Production,,PET,
+"Recycling Today, 2021",http://magazine.recyclingtoday.com/article/march-2021/plastic-scrap-prices-inch-upward.aspx,,,,2021,,275.0,$/ton,275000000.0,US2014$/MMt Plastic Production,,PP,
+"More Recycling (Stina), 2020 ",https://nerc.org/documents/Webinars/Randell%20NERC%20Plastic%20Markets%202021.pdf,,,,2021,,,,,US2014$/MMt Plastic Production,,,
