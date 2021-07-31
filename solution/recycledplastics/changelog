@@ -1,0 +1,33 @@
+7/2021: initial conversion of Excel by Dylan Kenny
+
+After you generate the __init__.py file, you'll need to modify two lines in it. First, on line 221, please change:
+
+ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
+            ref_tam_per_region.loc[2014])
+to
+
+ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
+            ref_tam_per_region.loc[2018])
+and then add copy_pds_datapoint=False, into the HelperTables constructor like so on line 241, changing this:
+
+        self.ht = helpertables.HelperTables(ac=self.ac,
+            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+            pds_adoption_data_per_region=pds_adoption_data_per_region,
+            ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+            use_first_pds_datapoint_main=False,
+            adoption_base_year=2018,
+            copy_pds_to_ref=False,
+            pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+            pds_adoption_is_single_source=pds_adoption_is_single_source)
+to:
+
+        self.ht = helpertables.HelperTables(ac=self.ac,
+            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+            pds_adoption_data_per_region=pds_adoption_data_per_region,
+            ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+            use_first_pds_datapoint_main=False,
+            adoption_base_year=2018,
+            copy_pds_to_ref=False,
+            copy_pds_datapoint=False,
+            pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+            pds_adoption_is_single_source=pds_adoption_is_single_source)

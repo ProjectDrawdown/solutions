@@ -1,0 +1,32 @@
+July 2021
+
+I needed to add a line to data/land/aez/solution_aez_matrix.csv for this solution. 
+I copied the line for the other peatlands solution, assuming it would be the same.
+
+Test failure in verify_custom_adoption (1). The extraction code is assuming that a custom adoption has a fixed 
+set of sources with fixed 'include' parameters ("Custom Ref Adoption"!S25:S34). In peatland restoration, 
+these values vary by scenario.   General code enhancement fixed this.
+
+Test failure in verify_custom_adoption (2). Even with the fix above, the results are still wrong. Investigation 
+shows that the problem is that the data sources themselves are parameterized by scenario-specific factors. 
+For example, the value of `"Custom Ref Adoption"!B86" is 1.5068 when the workbook is initially opened, 
+but 1.826069903 when scenario "PDS-57p2050-PDS 2019 Plausible- Low of All" is loaded.
+I've stopped here because going from fixed CSV files for a custom adoption source to a parameterized value 
+is a pretty big change; I want to discuss with @chadfrisch what the right course of action is.
+
+    Denton notes:
+
+    A number of the Land solutions do this. The code generator doesn't handle it, but a number of the solutions 
+    have been constructed manually. For example:
+
+    Conservation Agriculture
+    Farmland Restoration
+    the existing Peatlands solution
+
+    All of those were done by hand, I never came up with a reasonable way for the code generator to handle 
+    arbitrary formulae created by the human researcher.
+
+    Subsequent updates of the solution involved re-running the code generator, then manually restoring 
+    the Custom PDS code which the code generator would overwrite, before git commit.
+
+So next steps are to do the same for this solution.
