@@ -1,0 +1,7 @@
+@nelsonkcheng did the initial investigation; results captured in the notebook in the notes/ folder.
+Note that the fixes, by setting specific values in __init__.py, are probably not the right way
+to address these issues.
+
+There were known bugs in code that generated the expected.zip files.  After correcting for that
+I find the first initial error in Helper Tables, which probably means it is in the same class of
+errors that is being investigated in Issue #362.
