@@ -97,6 +97,11 @@ The python code for the model engine is licensed under the GNU Affero General Pu
 
 Data supplied from Project Drawdown (mostly in the form of CSV files) is licensed under the [CC-BY-NC-2.0](https://creativecommons.org/licenses/by-nc/2.0/) license for non-commercial use. The code for the model can be used (under the terms of the AGPL) to process whatever data the user wishes under whatever license the data carries. The data supplied for the Project Drawdown solutions is CC-BY-NC-2.0.
 
+## Support
+Please use the [Issues List](https://github.com/ProjectDrawdown/solutions/issues) to report any bugs you find, or ask any
+questions you have.
+
+
 ## Contributing
 We would love to have your help.
 Please see [CONTRIBUTING.md](Contributing.md) for guidelines for contributing to this project.
