@@ -9,7 +9,8 @@ __pycache__
 .coverage
 .ipynb_checkpoints
 *.out
-Untitled.ipynb
+Untitled*.ipynb
+Local*.ipynb
 ~$*
 
 .tox
