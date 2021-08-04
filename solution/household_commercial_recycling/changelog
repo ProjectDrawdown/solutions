@@ -1,0 +1,38 @@
+
+Copied notes from the PR
+(https://github.com/ProjectDrawdown/solutions/pull/353)
+
+CHANGE original excel sheet
+Sheet: Variable Meta-analysis
+Cell: K779
+Old value: kg CO2/t
+New value: Original Units
+
+CHANGE original excel sheet
+Sheet: Custom PDS Adoption
+Cells: B56, B490,
+Old value: zh
+New value: copy-paste the formula from the adjacent cell
+
+REMOVE the following scenarios. They're missing from the 'Custom PDS Adoption' sheet.
+- PDS1-65p2050-Medium Prognostication (Book Ed.1)
+- PDS1-65p2050-Medium Prognostication (Updated)
+
+(Paraphrasing: the original conversation has images:
+They encountered issues with inconsistency between Excel and Python with the LINEST function)
+
+I think having 3 data points for this order 3 polynomial is asking a lot of precision from not a lot of data.
+
+We're open to any suggestions for the next steps.
+
+Denton's reply:
+I have notes from one other time this happened, while importing AlternativeCements_v1.1c_IntegrationJune2020.xlsm.
+I think I ended up pulling in an Excel file of data to sidestep the problem altogether: 
+https://github.com/ProjectDrawdown/solutions/blob/develop/solution/altcement/data.xlsx
+
+The notes from the time are that sklearn's linear regression least squares implementation produced closer 
+results to Excel, but still not within a floating point margin of error sufficient to produce the same
+result. My belief was that Excel's LINEST was also operating in an unstable region but just didn't say so.
+
+C Poe:
+It seems if we add one more row of data, our LINEST() and np.polyfit() functions compute the same coefficients.
