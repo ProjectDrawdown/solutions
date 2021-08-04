@@ -16,7 +16,7 @@ solution_name = 'sustainableclothing'
 SCENARIO_SKIP = None
 TEST_SKIP = None
 
-def test_smartthermostats_loader():
+def test_sustainableclothing_loader():
     """Test that the solution can load a single scenario"""
     (constructor,scenarios) = factory.one_solution_scenarios(solution_name)
     assert len(scenarios) > 0
@@ -24,7 +24,7 @@ def test_smartthermostats_loader():
     assert ascenario is not None
 
 @pytest.mark.slow
-def test_smartthermostats_results(scenario_skip=None, test_skip=None, test_only=None):
+def test_sustainableclothing_results(scenario_skip=None, test_skip=None, test_only=None):
     """Test computed results against stored Excel results"""
     scenario_skip = scenario_skip or SCENARIO_SKIP
     test_skip = test_skip or TEST_SKIP
