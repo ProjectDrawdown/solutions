@@ -1,3 +1,21 @@
+I have updated the tests to the new test format.
+The original PR (listed below) had an extensive list of tests that were skipped,
+but I am not reproducing that here.
+With the new tests in place, the first error I see is 
+AssertionError: Solution: Household & Commercial Recycling Scenario: PDS1-52p2050-Postint.Aug2019 TAM Data CI677:CM723
+229/235 values differ:
+ [0, 3]: expected 102.44152727 vs actual 98.13716006858265
+ [0, 4]: expected 102.44152727 vs actual 98.13716006858265
+ [1, 0]: expected -0.81258955 vs actual -0.09519501143043405
+ [1, 1]: expected 3.23840227 vs actual -1.0659649314173731
+ [1, 2]: expected 0.0 vs actual 7.891339874265168
+ [1, 3]: expected 102.44152727 vs actual 98.13716006858265
+ [2, 0]: expected -6.50071636 vs actual -0.7615600914434724
+ [2, 1]: expected 12.95360909 vs actual -4.263859725669493
+ [2, 2]: expected 0.0 vs actual 15.782679748530336
+ [2, 3]: expected 102.44152727 vs actual 98.13716006858265
+  ....
+
 
 Copied notes from the PR
 (https://github.com/ProjectDrawdown/solutions/pull/353)

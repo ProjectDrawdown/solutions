@@ -965,7 +965,6 @@ def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, tes
         
         skip_count=0
         for (cellrange, actual_df, actual_mask, expected_mask) in verify[sheetname]:
-            print('Cell range: {}\nActual DF:\n{}\nActual mask: {}\nExpected mask: {}\n'.format(cellrange, actual_df, actual_mask, expected_mask))
             description = descr_base + sheetname + " " + cellrange
 
             if test_only and not any( pattern in description for pattern in test_only ):
