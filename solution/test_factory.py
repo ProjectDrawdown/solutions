@@ -1,7 +1,5 @@
 """Test solution classes."""
 
-import os
-import pandas as pd
 from . import factory
 
 def test_all_solutions():
