@@ -1,18 +1,12 @@
 """Return objects for solutions."""
 import importlib
-import pathlib
-from functools import lru_cache
-
-import pandas as pd
-
+from pathlib import Path
 from model.advanced_controls import AdvancedControls
 
 
 def all_solutions():
-    path = pathlib.Path(__file__).parents[1].joinpath('data', 'overview', 'solutions.csv')
-    overview = pd.read_csv(path, index_col=False, skipinitialspace=True, header=0,
-            skip_blank_lines=True, comment='#')
-    return sorted(overview['DirName'].dropna().tolist())
+    candidates = [ d.name for d in Path(__file__).parent.glob('*') if d.is_dir() ]
+    return [ name for name in candidates if not name.startswith('_') and not name.startswith('test') ]
 
 def import_scenario(importname: str):
     # TODO: in some cases, the scenarios in the module is being

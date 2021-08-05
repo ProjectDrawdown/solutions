@@ -1,17 +1,13 @@
 """Return objects for solutions."""
 
 import importlib
-import pathlib
-
-import pandas as pd
-
+from pathlib import Path
 from functools import lru_cache
 
 def all_solutions():
-    path = pathlib.Path(__file__).parents[1].joinpath('data', 'overview', 'solutions.csv')
-    overview = pd.read_csv(path, index_col=False, skipinitialspace=True, header=0,
-            skip_blank_lines=True, comment='#')
-    return sorted(overview['DirName'].dropna().tolist())
+    candidates = [ d.name for d in Path(__file__).parent.glob('*') if d.is_dir() ]
+    return [ name for name in candidates if not name.startswith('_') and not name.startswith('test') ]
+
 
 @lru_cache()
 def one_solution_scenarios(solution):

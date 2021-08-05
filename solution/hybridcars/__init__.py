@@ -20,6 +20,7 @@ from model import helpertables
 from model import interpolation
 from model import operatingcost
 from model import s_curve
+from model import scenario
 from model import unitadoption
 from model import vma
 from model import tam
@@ -131,7 +132,7 @@ solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
 
-class Scenario:
+class Scenario(scenario.Scenario):
     name = name
     units = units
     vmas = VMAs
