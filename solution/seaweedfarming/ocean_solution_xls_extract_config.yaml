@@ -1,0 +1,8 @@
+Seaweed Farming: 
+    UsesTOA: True
+    UsesTLA: False
+    UsesTAM: False
+    SolutionType: Reduction
+    outputDir: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/seaweedfarming/
+    excelFile: /mnt/c/Users/neilm/Documents/Drawdown/Excel Files/Seaweed_Farming-FINAL_for_review_March2021.xlsm
+    

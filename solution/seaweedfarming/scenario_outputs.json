@@ -1,0 +1,989 @@
+{
+    "PDS-5p2050-PDS custom 2020-Avg of All": {
+        "Results": {
+            "Results": {
+                "Results shown for": [
+                    "2020-2050",
+                    "Marine Farms"
+                ]
+            },
+            "Adoption": {
+                "Adoption Unit Increase By Second Year (PDS vs REF)": [
+                    22.15811286638198,
+                    "Million hectare"
+                ],
+                "Global Units of Adoption in Second Year": [
+                    22.34552010321414,
+                    "Million hectare"
+                ],
+                "Global Percent Adoption - Base Year (2014)": [
+                    0.00039043174340033755,
+                    "%"
+                ],
+                "Global Percent Adoption in First Year": [
+                    0.00327560268954376,
+                    "%"
+                ],
+                "Global Percent Adoption in Second Year": [
+                    0.046553166881696126,
+                    "%"
+                ]
+            },
+            "Financial": {
+                "Marginal First Cost": [
+                    5052.4280430995705,
+                    "Billion USD"
+                ],
+                "Net Operating Savings": [
+                    "-",
+                    "Billion USD"
+                ],
+                "Lifetime Operating Savings": [
+                    "-",
+                    "Billion USD"
+                ],
+                "Cumulative First Cost": [
+                    5052.969027916494,
+                    "Billion USD"
+                ],
+                "Lifetime Cashflow Savings NPV - Single Implementation Unit": [
+                    0,
+                    "years (Adopt in 2017)"
+                ],
+                "Lifetime Cashflow Savings NPV - All Implementation Units": [
+                    "-",
+                    "Billion USD"
+                ],
+                "Abatement Cost": [
+                    "-",
+                    "USD / t CO2-eq"
+                ],
+                "Payback Period Solution Relative to Conventional": [
+                    1,
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Relative to Conventional": [
+                    1,
+                    "years (Adopt in 2017)"
+                ],
+                "Payback Period Solution Alone": [
+                    1,
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Alone": [
+                    1,
+                    "years (Adopt in 2017)"
+                ],
+                "Net Profit Margin": [
+                    "-",
+                    "Billion USD"
+                ],
+                "Lifetime Profit Margin": [
+                    "-",
+                    "Billion USD"
+                ]
+            },
+            "Climate": {
+                "Total Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Total Additional CO2-eq Sequestered": [
+                    4.891717116978988,
+                    "Gt CO2"
+                ],
+                "Max Annual Emissions Reduction": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Emissions Reduction in Second Year": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Approximate PPM Equivalent in Second Year": [
+                    0.4137750037194792,
+                    "ppm CO2-eq"
+                ],
+                "Approximate PPM rate in Second Year": [
+                    0.02309691226787436,
+                    "ppm CO2-eq / yr"
+                ],
+                "Max Annual CO2 Sequestered": [
+                    0.2981618052253865,
+                    "Gt CO2 / yr"
+                ],
+                "CO2 Sequestered in Second Year": [
+                    0.2981618052253865,
+                    "Gt CO2 / yr"
+                ],
+                "Total Atmospheric CO2-eq Reduction": [
+                    4.891717116978988,
+                    "Gt CO2"
+                ],
+                "Direct Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Indirect Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Direct Energy Use Reduction": [
+                    0,
+                    "EJ"
+                ]
+            },
+            "Productivity": {}
+        },
+        "Info": {
+            "Scenario Timestamp": "2020-03-28T12:29:26",
+            "Scenario Description": "Average of all custom PDS scenarios"
+        }
+    },
+    "PDS-4p2050- Plausible PDS custom- Avg of All": {
+        "Results": {
+            "Results": {
+                "Results shown for": [
+                    "2020-2050",
+                    "Marine Farms"
+                ]
+            },
+            "Adoption": {
+                "Adoption Unit Increase By Second Year (PDS vs REF)": [
+                    21.089432677205252,
+                    "Million hectare"
+                ],
+                "Global Units of Adoption in Second Year": [
+                    21.276839914037414,
+                    "Million hectare"
+                ],
+                "Global Percent Adoption - Base Year (2014)": [
+                    0.00039043174340033755,
+                    "%"
+                ],
+                "Global Percent Adoption in First Year": [
+                    0.0031364516232446986,
+                    "%"
+                ],
+                "Global Percent Adoption in Second Year": [
+                    0.044326749820911275,
+                    "%"
+                ]
+            },
+            "Financial": {
+                "Marginal First Cost": [
+                    300.0054590123867,
+                    "Billion USD"
+                ],
+                "Net Operating Savings": [
+                    -5498.803164683849,
+                    "Billion USD"
+                ],
+                "Lifetime Operating Savings": [
+                    -10683.389005671479,
+                    "Billion USD"
+                ],
+                "Cumulative First Cost": [
+                    300.5464438293101,
+                    "Billion USD"
+                ],
+                "Lifetime Cashflow Savings NPV - Single Implementation Unit": [
+                    -131.75249744927575,
+                    "years (Adopt in 2017)"
+                ],
+                "Lifetime Cashflow Savings NPV - All Implementation Units": [
+                    -773.5133133102795,
+                    "Billion USD"
+                ],
+                "Abatement Cost": [
+                    150.56672709887144,
+                    "USD / t CO2-eq"
+                ],
+                "Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Net Profit Margin": [
+                    6067.6849695780475,
+                    "Billion USD"
+                ],
+                "Lifetime Profit Margin": [
+                    11788.645083751635,
+                    "Billion USD"
+                ]
+            },
+            "Climate": {
+                "Total Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Total Additional CO2-eq Sequestered": [
+                    4.5728888241862276,
+                    "Gt CO2"
+                ],
+                "Max Annual Emissions Reduction": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Emissions Reduction in Second Year": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Approximate PPM Equivalent in Second Year": [
+                    0.386806318719664,
+                    "ppm CO2-eq"
+                ],
+                "Approximate PPM rate in Second Year": [
+                    0.021591520821289123,
+                    "ppm CO2-eq / yr"
+                ],
+                "Max Annual CO2 Sequestered": [
+                    0.2787284616646848,
+                    "Gt CO2 / yr"
+                ],
+                "CO2 Sequestered in Second Year": [
+                    0.2787284616646848,
+                    "Gt CO2 / yr"
+                ],
+                "Total Atmospheric CO2-eq Reduction": [
+                    4.5728888241862276,
+                    "Gt CO2"
+                ],
+                "Direct Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Indirect Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Direct Energy Use Reduction": [
+                    0,
+                    "EJ"
+                ]
+            },
+            "Productivity": {}
+        },
+        "Info": {
+            "Scenario Timestamp": "2020-07-29T18:20:20",
+            "Scenario Description": "Avg of All custom PDS scenarios"
+        }
+    },
+    "PDS-9p2050- Drawdown PDS custom- High of All": {
+        "Results": {
+            "Results": {
+                "Results shown for": [
+                    "2020-2050",
+                    "Marine Farms"
+                ]
+            },
+            "Adoption": {
+                "Adoption Unit Increase By Second Year (PDS vs REF)": [
+                    42.24722370476382,
+                    "Million hectare"
+                ],
+                "Global Units of Adoption in Second Year": [
+                    42.434630941595984,
+                    "Million hectare"
+                ],
+                "Global Percent Adoption - Base Year (2014)": [
+                    0.00039043174340033755,
+                    "%"
+                ],
+                "Global Percent Adoption in First Year": [
+                    0.005891372329958017,
+                    "%"
+                ],
+                "Global Percent Adoption in Second Year": [
+                    0.08840548112832497,
+                    "%"
+                ]
+            },
+            "Financial": {
+                "Marginal First Cost": [
+                    600.983342394313,
+                    "Billion USD"
+                ],
+                "Net Operating Savings": [
+                    -11015.429905706076,
+                    "Billion USD"
+                ],
+                "Lifetime Operating Savings": [
+                    -21401.406673943242,
+                    "Billion USD"
+                ],
+                "Cumulative First Cost": [
+                    601.5243272112364,
+                    "Billion USD"
+                ],
+                "Lifetime Cashflow Savings NPV - Single Implementation Unit": [
+                    -131.75249744927575,
+                    "years (Adopt in 2017)"
+                ],
+                "Lifetime Cashflow Savings NPV - All Implementation Units": [
+                    -1549.5338583172845,
+                    "Billion USD"
+                ],
+                "Abatement Cost": [
+                    150.56672709887164,
+                    "USD / t CO2-eq"
+                ],
+                "Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Net Profit Margin": [
+                    12155.037463708915,
+                    "Billion USD"
+                ],
+                "Lifetime Profit Margin": [
+                    23615.501358063048,
+                    "Billion USD"
+                ]
+            },
+            "Climate": {
+                "Total Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Total Additional CO2-eq Sequestered": [
+                    9.160600007093768,
+                    "Gt CO2"
+                ],
+                "Max Annual Emissions Reduction": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Emissions Reduction in Second Year": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Approximate PPM Equivalent in Second Year": [
+                    0.7748664142600887,
+                    "ppm CO2-eq"
+                ],
+                "Approximate PPM rate in Second Year": [
+                    0.043253027439163816,
+                    "ppm CO2-eq / yr"
+                ],
+                "Max Annual CO2 Sequestered": [
+                    0.5583603813847637,
+                    "Gt CO2 / yr"
+                ],
+                "CO2 Sequestered in Second Year": [
+                    0.5583603813847637,
+                    "Gt CO2 / yr"
+                ],
+                "Total Atmospheric CO2-eq Reduction": [
+                    9.160600007093768,
+                    "Gt CO2"
+                ],
+                "Direct Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Indirect Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Direct Energy Use Reduction": [
+                    0,
+                    "EJ"
+                ]
+            },
+            "Productivity": {}
+        },
+        "Info": {
+            "Scenario Timestamp": "2020-07-29T18:25:56",
+            "Scenario Description": "High of All custom PDS scenarios"
+        }
+    },
+    "PDS-14p2050- Optimum PDS scenario 8": {
+        "Results": {
+            "Results": {
+                "Results shown for": [
+                    "2020-2050",
+                    "Marine Farms"
+                ]
+            },
+            "Adoption": {
+                "Adoption Unit Increase By Second Year (PDS vs REF)": [
+                    67.01259276316857,
+                    "Million hectare"
+                ],
+                "Global Units of Adoption in Second Year": [
+                    67.20000000000073,
+                    "Million hectare"
+                ],
+                "Global Percent Adoption - Base Year (2014)": [
+                    0.00039043174340033755,
+                    "%"
+                ],
+                "Global Percent Adoption in First Year": [
+                    0.009116029759438031,
+                    "%"
+                ],
+                "Global Percent Adoption in Second Year": [
+                    0.1400000000000015,
+                    "%"
+                ]
+            },
+            "Financial": {
+                "Marginal First Cost": [
+                    953.2804395091348,
+                    "Billion USD"
+                ],
+                "Net Operating Savings": [
+                    -17472.687046630075,
+                    "Billion USD"
+                ],
+                "Lifetime Operating Savings": [
+                    -33946.934833452804,
+                    "Billion USD"
+                ],
+                "Cumulative First Cost": [
+                    953.8214243260581,
+                    "Billion USD"
+                ],
+                "Lifetime Cashflow Savings NPV - Single Implementation Unit": [
+                    -131.75249744927575,
+                    "years (Adopt in 2017)"
+                ],
+                "Lifetime Cashflow Savings NPV - All Implementation Units": [
+                    -2457.8723124106523,
+                    "Billion USD"
+                ],
+                "Abatement Cost": [
+                    150.56672709887232,
+                    "USD / t CO2-eq"
+                ],
+                "Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Net Profit Margin": [
+                    19280.333810070795,
+                    "Billion USD"
+                ],
+                "Lifetime Profit Margin": [
+                    37458.934259566224,
+                    "Billion USD"
+                ]
+            },
+            "Climate": {
+                "Total Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Total Additional CO2-eq Sequestered": [
+                    14.53055381891124,
+                    "Gt CO2"
+                ],
+                "Max Annual Emissions Reduction": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Emissions Reduction in Second Year": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Approximate PPM Equivalent in Second Year": [
+                    1.2290939595827695,
+                    "ppm CO2-eq"
+                ],
+                "Approximate PPM rate in Second Year": [
+                    0.06860799975413556,
+                    "ppm CO2-eq / yr"
+                ],
+                "Max Annual CO2 Sequestered": [
+                    0.8856718518193536,
+                    "Gt CO2 / yr"
+                ],
+                "CO2 Sequestered in Second Year": [
+                    0.8856718518193536,
+                    "Gt CO2 / yr"
+                ],
+                "Total Atmospheric CO2-eq Reduction": [
+                    14.53055381891124,
+                    "Gt CO2"
+                ],
+                "Direct Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Indirect Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Direct Energy Use Reduction": [
+                    0,
+                    "EJ"
+                ]
+            },
+            "Productivity": {}
+        },
+        "Info": {
+            "Scenario Timestamp": "2020-07-29T18:29:40",
+            "Scenario Description": "Scenario 8 of Custom PDS adoption sheet"
+        }
+    },
+    "PDS-5p2050-Plausible NEW 240 TOA": {
+        "Results": {
+            "Results": {
+                "Results shown for": [
+                    "2020-2050",
+                    "Marine Farms"
+                ]
+            },
+            "Adoption": {
+                "Adoption Unit Increase By Second Year (PDS vs REF)": [
+                    13.201920840047745,
+                    "Million hectare"
+                ],
+                "Global Units of Adoption in Second Year": [
+                    13.389328076879906,
+                    "Million hectare"
+                ],
+                "Global Percent Adoption - Base Year (2014)": [
+                    0.0007808634868006751,
+                    "%"
+                ],
+                "Global Percent Adoption in First Year": [
+                    0.004218863705563016,
+                    "%"
+                ],
+                "Global Percent Adoption in Second Year": [
+                    0.055788866986999607,
+                    "%"
+                ]
+            },
+            "Financial": {
+                "Marginal First Cost": [
+                    132.13729264926351,
+                    "Billion USD"
+                ],
+                "Net Operating Savings": [
+                    -2559.622235804866,
+                    "Billion USD"
+                ],
+                "Lifetime Operating Savings": [
+                    -4972.980343849447,
+                    "Billion USD"
+                ],
+                "Cumulative First Cost": [
+                    132.51792797906953,
+                    "Billion USD"
+                ],
+                "Lifetime Cashflow Savings NPV - Single Implementation Unit": [
+                    -97.55575936065439,
+                    "years (Adopt in 2017)"
+                ],
+                "Lifetime Cashflow Savings NPV - All Implementation Units": [
+                    -358.5721184428711,
+                    "Billion USD"
+                ],
+                "Abatement Cost": [
+                    127.77652984642461,
+                    "USD / t CO2-eq"
+                ],
+                "Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Net Profit Margin": [
+                    2736.6880946322653,
+                    "Billion USD"
+                ],
+                "Lifetime Profit Margin": [
+                    5316.994012428392,
+                    "Billion USD"
+                ]
+            },
+            "Climate": {
+                "Total Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Total Additional CO2-eq Sequestered": [
+                    2.497739129136793,
+                    "Gt CO2"
+                ],
+                "Max Annual Emissions Reduction": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Emissions Reduction in Second Year": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Approximate PPM Equivalent in Second Year": [
+                    0.2112759165614193,
+                    "ppm CO2-eq"
+                ],
+                "Approximate PPM rate in Second Year": [
+                    0.0117934173530898,
+                    "ppm CO2-eq / yr"
+                ],
+                "Max Annual CO2 Sequestered": [
+                    0.152243146918814,
+                    "Gt CO2 / yr"
+                ],
+                "CO2 Sequestered in Second Year": [
+                    0.15224314691881413,
+                    "Gt CO2 / yr"
+                ],
+                "Total Atmospheric CO2-eq Reduction": [
+                    2.497739129136793,
+                    "Gt CO2"
+                ],
+                "Direct Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Indirect Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Direct Energy Use Reduction": [
+                    0,
+                    "EJ"
+                ]
+            },
+            "Productivity": {}
+        },
+        "Info": {
+            "Scenario Timestamp": "2021-03-05T22:35:29",
+            "Scenario Description": "Average of all"
+        }
+    },
+    "PDS-10p2050-Drawdown New 240 TOA": {
+        "Results": {
+            "Results": {
+                "Results shown for": [
+                    "2020-2050",
+                    "Marine Farms"
+                ]
+            },
+            "Adoption": {
+                "Adoption Unit Increase By Second Year (PDS vs REF)": [
+                    24.957478284804996,
+                    "Million hectare"
+                ],
+                "Global Units of Adoption in Second Year": [
+                    25.144885521637157,
+                    "Million hectare"
+                ],
+                "Global Percent Adoption - Base Year (2014)": [
+                    0.0007808634868006751,
+                    "%"
+                ],
+                "Global Percent Adoption in First Year": [
+                    0.007280206790135071,
+                    "%"
+                ],
+                "Global Percent Adoption in Second Year": [
+                    0.10477035634015482,
+                    "%"
+                ]
+            },
+            "Financial": {
+                "Marginal First Cost": [
+                    249.79801438462428,
+                    "Billion USD"
+                ],
+                "Net Operating Savings": [
+                    -4838.819830946126,
+                    "Billion USD"
+                ],
+                "Lifetime Operating Savings": [
+                    -9401.135671552449,
+                    "Billion USD"
+                ],
+                "Cumulative First Cost": [
+                    250.1786497144303,
+                    "Billion USD"
+                ],
+                "Lifetime Cashflow Savings NPV - Single Implementation Unit": [
+                    -97.55575936065439,
+                    "years (Adopt in 2017)"
+                ],
+                "Lifetime Cashflow Savings NPV - All Implementation Units": [
+                    -677.860136263483,
+                    "Billion USD"
+                ],
+                "Abatement Cost": [
+                    127.77652984642452,
+                    "USD / t CO2-eq"
+                ],
+                "Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Net Profit Margin": [
+                    5173.552736877503,
+                    "Billion USD"
+                ],
+                "Lifetime Profit Margin": [
+                    10051.473888790557,
+                    "Billion USD"
+                ]
+            },
+            "Climate": {
+                "Total Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Total Additional CO2-eq Sequestered": [
+                    4.721833347723198,
+                    "Gt CO2"
+                ],
+                "Max Annual Emissions Reduction": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Emissions Reduction in Second Year": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Approximate PPM Equivalent in Second Year": [
+                    0.39940506866918213,
+                    "ppm CO2-eq"
+                ],
+                "Approximate PPM rate in Second Year": [
+                    0.022294782786502765,
+                    "ppm CO2-eq / yr"
+                ],
+                "Max Annual CO2 Sequestered": [
+                    0.2878069850040806,
+                    "Gt CO2 / yr"
+                ],
+                "CO2 Sequestered in Second Year": [
+                    0.2878069850040806,
+                    "Gt CO2 / yr"
+                ],
+                "Total Atmospheric CO2-eq Reduction": [
+                    4.721833347723198,
+                    "Gt CO2"
+                ],
+                "Direct Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Indirect Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Direct Energy Use Reduction": [
+                    0,
+                    "EJ"
+                ]
+            },
+            "Productivity": {}
+        },
+        "Info": {
+            "Scenario Timestamp": "2021-03-05T22:36:07",
+            "Scenario Description": "High of all"
+        }
+    },
+    "PDS-14p2050-Optimum New 240 TOA": {
+        "Results": {
+            "Results": {
+                "Results shown for": [
+                    "2020-2050",
+                    "Marine Farms"
+                ]
+            },
+            "Adoption": {
+                "Adoption Unit Increase By Second Year (PDS vs REF)": [
+                    33.412592763167744,
+                    "Million hectare"
+                ],
+                "Global Units of Adoption in Second Year": [
+                    33.59999999999991,
+                    "Million hectare"
+                ],
+                "Global Percent Adoption - Base Year (2014)": [
+                    0.0007808634868006751,
+                    "%"
+                ],
+                "Global Percent Adoption in First Year": [
+                    0.009482059518874545,
+                    "%"
+                ],
+                "Global Percent Adoption in Second Year": [
+                    0.13999999999999962,
+                    "%"
+                ]
+            },
+            "Financial": {
+                "Marginal First Cost": [
+                    334.4247857269658,
+                    "Billion USD"
+                ],
+                "Net Operating Savings": [
+                    -6478.119088024096,
+                    "Billion USD"
+                ],
+                "Lifetime Operating Savings": [
+                    -12586.059942446796,
+                    "Billion USD"
+                ],
+                "Cumulative First Cost": [
+                    334.8054210567719,
+                    "Billion USD"
+                ],
+                "Lifetime Cashflow Savings NPV - Single Implementation Unit": [
+                    -97.55575936065439,
+                    "years (Adopt in 2017)"
+                ],
+                "Lifetime Cashflow Savings NPV - All Implementation Units": [
+                    -907.5061360324385,
+                    "Billion USD"
+                ],
+                "Abatement Cost": [
+                    127.77652984642401,
+                    "USD / t CO2-eq"
+                ],
+                "Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Relative to Conventional": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Discounted Payback Period Solution Alone": [
+                    "Never",
+                    "years (Adopt in 2017)"
+                ],
+                "Net Profit Margin": [
+                    6926.253075868786,
+                    "Billion USD"
+                ],
+                "Lifetime Profit Margin": [
+                    13456.720261687902,
+                    "Billion USD"
+                ]
+            },
+            "Climate": {
+                "Total Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Total Additional CO2-eq Sequestered": [
+                    6.321499830336407,
+                    "Gt CO2"
+                ],
+                "Max Annual Emissions Reduction": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Emissions Reduction in Second Year": [
+                    0,
+                    "Gt CO2 / yr"
+                ],
+                "Approximate PPM Equivalent in Second Year": [
+                    0.5347158376619063,
+                    "ppm CO2-eq"
+                ],
+                "Approximate PPM rate in Second Year": [
+                    0.029847827151741058,
+                    "ppm CO2-eq / yr"
+                ],
+                "Max Annual CO2 Sequestered": [
+                    0.3853104658490783,
+                    "Gt CO2 / yr"
+                ],
+                "CO2 Sequestered in Second Year": [
+                    0.3853104658490783,
+                    "Gt CO2 / yr"
+                ],
+                "Total Atmospheric CO2-eq Reduction": [
+                    6.321499830336407,
+                    "Gt CO2"
+                ],
+                "Direct Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Indirect Emissions Reduction": [
+                    0,
+                    "Gt CO2"
+                ],
+                "Direct Energy Use Reduction": [
+                    0,
+                    "EJ"
+                ]
+            },
+            "Productivity": {}
+        },
+        "Info": {
+            "Scenario Timestamp": "2021-03-08T10:24:46",
+            "Scenario Description": "The highest single customized scenario nr 8"
+        }
+    }
+}
