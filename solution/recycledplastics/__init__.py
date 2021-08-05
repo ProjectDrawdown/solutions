@@ -236,10 +236,13 @@ class Scenario(scenario.Scenario):
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-            use_first_pds_datapoint_main=False,
-            adoption_base_year=2018,
+            # manually set options, validated from spreadsheet
+            copy_ref_datapoint=False,
             copy_pds_to_ref=False,
-            copy_pds_datapoint=False, # Defaults to True
+            copy_pds_datapoint='Ref Table',
+            use_first_pds_datapoint_main=True,
+            copy_datapoint_to_year=2014,
+            # end manually set options
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 

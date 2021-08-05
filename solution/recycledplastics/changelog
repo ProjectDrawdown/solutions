@@ -1,3 +1,12 @@
+8/5/2021: Updated helper table arguments to use the new variations,
+and set all values explicitly by comparison with the Excel formulas
+They are now:
+    copy_ref_datapoint=False,
+    copy_pds_to_ref=False,
+    copy_pds_datapoint='Ref Table',
+    use_first_pds_datapoint_main=True,
+    copy_datapoint_to_year=2014,
+
 7/2021: initial conversion of Excel by Dylan Kenny
 
 After you generate the __init__.py file, you'll need to modify two lines in it. First, on line 221, please change:
