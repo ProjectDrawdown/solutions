@@ -18,6 +18,7 @@ from model import firstcost
 from model import helpertables
 from model import operatingcost
 from model import s_curve
+from model import scenario
 from model import unitadoption
 from model import vma
 from model import tam
