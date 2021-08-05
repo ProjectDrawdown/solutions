@@ -14,6 +14,11 @@ import zipfile
 import importlib
 from tools.util import df_excel_range, cell_to_offsets
 
+# verbosity level 0: no "print"
+# verbosity level 1: print solutions and scenarios
+# verbosiyt level 2: print solutions, scenarios, and test sections
+
+_verbosity = 1
 
 
 def verify_aez_data(obj, verify, cohort):
@@ -954,11 +959,10 @@ def dataframes_differ(val, expt, mask=None, all_zero=True, thresh=None):
     return result if len(result) else False
 
 
-def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, test_only=None):
-    print("Checking " + scenario)
-    descr_base = "Solution: " + obj.name + " Scenario: " + scenario + " "
+def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, test_only=None):
+    descr_base = f"Solution: {obj.name} Scenario {i}: "
     for sheetname in verify.keys():
-        print(sheetname)
+        if _verbosity >= 2: print(sheetname)
         arcname = f'{scenario}/{sheetname}'
         with zip_f.open(name=arcname) as zip_csv_f:
             sheet_df = pd.read_csv(zip_csv_f, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
@@ -1013,7 +1017,7 @@ def check_excel_against_object(obj, zip_f, scenario, verify, test_skip=None, tes
                 raise AssertionError(f"{description}\n{len(errs)}/{rsize*csize} values differ:\n" + difflist)
 
         if skip_count > 0:
-            print(f"    **** Skipped {skip_count} tests")
+            if _verbosity >= 2: print(f"    **** Skipped {skip_count} tests")
 
 
 
@@ -1033,8 +1037,9 @@ def one_solution_tester(solution_name, expected_filename, is_land=False,
     with zipfile.ZipFile(expected_filename) as zf:
         for (i, scenario_name) in enumerate(m.scenarios.keys()):
             if scenario_skip and i in scenario_skip:
-                print(f"**** Skipped scenario '{scenario_name}'")
+                if _verbosity >= 1: print(f"**** Skipped scenario {i} '{scenario_name}'")
                 continue
+            if _verbosity >= 1: print(f"Checking scenario {i}: {scenario_name}")
 
             obj = m.Scenario(scenario=scenario_name)
             if is_land:
@@ -1042,6 +1047,6 @@ def one_solution_tester(solution_name, expected_filename, is_land=False,
             else:
                 to_verify = RRS_solution_verify_list(obj, zf)
             
-            check_excel_against_object(obj, zf, scenario_name, to_verify, 
+            check_excel_against_object(obj, zf, scenario_name, i, to_verify, 
                                        test_skip=test_skip, test_only=test_only)
 
