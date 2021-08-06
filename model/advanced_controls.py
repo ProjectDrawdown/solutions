@@ -811,9 +811,6 @@ class AdvancedControls:
     @property
     def soln_lifetime_replacement(self):
         if self.soln_lifetime_capacity is not None:  # RRS
-            # NOTE: Denise added 7/21; need to check if this is appropriate
-            if self.soln_avg_annual_use == 0:
-                return 0.0
             return self.soln_lifetime_capacity / self.soln_avg_annual_use
         elif self.soln_expected_lifetime is not None:  # LAND
             return self.soln_expected_lifetime
@@ -824,9 +821,6 @@ class AdvancedControls:
     @property
     def soln_lifetime_replacement_rounded(self):
         if self.soln_lifetime_capacity is not None:  # RRS
-            # NOTE: Denise added 7/21; need to check if this is appropriate
-            if self.soln_avg_annual_use == 0:
-                return 0
             # ROUND and decimal.quantize do not match Excel ROUND(), so we implemented one.
             return excel_math.round_away(self.soln_lifetime_capacity / self.soln_avg_annual_use)
         elif self.soln_expected_lifetime is not None:  # LAND
@@ -841,9 +835,6 @@ class AdvancedControls:
     @property
     def conv_lifetime_replacement(self):
         if self.conv_lifetime_capacity is not None:  # RRS
-            # NOTE: Denise added 7/21; need to check if this is appropriate
-            if self.conv_avg_annual_use == 0:
-                return 0.0
             return self.conv_lifetime_capacity / self.conv_avg_annual_use
         elif self.conv_expected_lifetime is not None:  # LAND
             return self.conv_expected_lifetime
@@ -854,9 +845,6 @@ class AdvancedControls:
     @property
     def conv_lifetime_replacement_rounded(self):
         if self.conv_lifetime_capacity is not None:  # RRS
-            # NOTE: Denise added 7/21; need to check if this is appropriate
-            if self.conv_avg_annual_use == 0:
-                return 0
             # ROUND and decimal.quantize do not match Excel ROUND(), so we implemented one.
             return excel_math.round_away(self.conv_lifetime_capacity / self.conv_avg_annual_use)
         elif self.conv_expected_lifetime is not None:  # LAND

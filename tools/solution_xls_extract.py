@@ -1066,10 +1066,17 @@ def write_ht(f, wb, has_custom_ref_ad, is_land):
         f.write("            ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,\n")
     if has_custom_ref_ad:
         f.write("            ref_adoption_data_per_region=ref_adoption_data_per_region,\n")
+    
     f.write(f"            use_first_pds_datapoint_main={use_first_pds_datapoint_main},\n")
     if adoption_base_year:
         f.write(f"            adoption_base_year={adoption_base_year},\n")
+    
     f.write(f"            copy_pds_to_ref={copy_pds_to_ref},\n")
+
+    # Denise 8/21 : these are wrong and should not be the default, ever again.  Make someone change it if they want it
+    # (Most models no longer do this, or if they do they don't have regional data to be affected.)
+    f.write("            copy_ref_datapoint=False, copy_pds_datapoint=False, \n")
+
     f.write("            pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
     f.write("            pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
     f.write("\n")

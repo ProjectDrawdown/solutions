@@ -253,7 +253,7 @@ class Scenario(scenario.Scenario):
         # even when the final_datapoint_year is 2018, the TAM initial year is usually hard-coded to 2014
         # if that is wrong, change 2014 to 2018 below
         ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
-            ref_tam_per_region.loc[2014])
+            ref_tam_per_region.loc[2018])
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
         ht_ref_datapoints.loc[2018] = ht_ref_adoption_initial
         ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
@@ -266,12 +266,17 @@ class Scenario(scenario.Scenario):
         ht_pds_datapoints.loc[2018] = ht_pds_adoption_initial
         ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
         self.ht = helpertables.HelperTables(ac=self.ac,
-            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+            ref_datapoints=ht_ref_datapoints, 
+            pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
-            ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-            use_first_pds_datapoint_main=False,
-            adoption_base_year=2018,
-            copy_pds_to_ref=True,
+            ref_adoption_limits=ref_tam_per_region, 
+            pds_adoption_limits=pds_tam_per_region,
+            use_first_pds_datapoint_main=True,
+            use_first_ref_datapoint_main=False,
+            copy_pds_to_ref=False,
+            copy_ref_datapoint=False,
+            copy_pds_datapoint='Ref Table',
+            copy_datapoint_to_year=2014,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
