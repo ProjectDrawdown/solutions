@@ -47,32 +47,10 @@ class OceanSolution:
         self.scenarios_file = config['ScenariosFile']
         self.required_version_minimum = tuple(int(st) for st in str.split(config['RequiredVersionMinimum'], '.'))
 
-    def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name, extra_adoption_info):
-
-        stream = open(adoption_input_file,'r')
-        adoption_dict = json.load(stream)
-
-        adoption_scenario_desc = [k for k, v in adoption_dict.items() if v['description'] == adoption_scenario_name]
-        
-        if len(adoption_scenario_desc) == 0:
-            raise ValueError(f'No matching adoption scenario for key {adoption_scenario_name}')
-        if len(adoption_scenario_desc) > 1:
-            raise ValueError(f'More than one matching adoption scenario for key {adoption_scenario_name}')
-
-        adoption_scenario_desc = adoption_scenario_desc.pop()
-
-        try:
-            adoption_scenario = adoption_dict[adoption_scenario_desc]
-        except ValueError as ex:
-            print(ex.args)
-            raise ValueError(f'Unable to find adoption scenario: {adoption_scenario_name} in input file: {adoption_input_file}')
+    def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name):
             
-        desc = adoption_scenario['description']
-        cols = adoption_scenario['columns']
-        data = adoption_scenario['data']
-
         try:
-            ad_scenario = UnitAdoption(desc, cols, data, self.base_year, **asdict(extra_adoption_info))
+            ad_scenario = UnitAdoption(self.base_year,adoption_scenario_name, adoption_input_file)
         except ValueError as ev:
             print(ev.args)
             raise ValueError(f"Unable to initialise {adoption_scenario_name}")
@@ -82,14 +60,23 @@ class OceanSolution:
     def _load_pds_scenario(self):
         
         self.pds_scenario = self._load_adoption_scenario(self.pds_adoption_file,
-                        self.scenario.ScenarioData.pds_scenario_name,
-                        self.scenario.SolutionData)
+                        self.scenario.pds_scenario_name)
+
+        self.pds_scenario.first_cost = self.scenario.soln_first_cost
+        self.pds_scenario.expected_lifetime = self.scenario.soln_expected_lifetime
+        self.pds_scenario.net_profit_margin = self.scenario.soln_net_profit_margin
+        self.pds_scenario.operating_cost = self.scenario.soln_operating_cost
+
         
     def _load_ref_scenario(self):
         
         self.ref_scenario = self._load_adoption_scenario(self.ref_adoption_file,
-                        self.scenario.ScenarioData.ref_scenario_name,
-                        self.scenario.SolutionData)
+                        self.scenario.ref_scenario_name)
+        
+        self.ref_scenario.first_cost = self.scenario.soln_first_cost
+        self.ref_scenario.expected_lifetime = self.scenario.soln_expected_lifetime
+        self.ref_scenario.net_profit_margin = self.scenario.soln_net_profit_margin
+        self.ref_scenario.operating_cost = self.scenario.soln_operating_cost
 
 
     # Initialize from configuration file:
@@ -122,9 +109,9 @@ class OceanSolution:
         self._load_ref_scenario()
 
         # Set scenario-specific data:
-        self.disturbance_rate = self.scenario.ScenarioData.disturbance_rate
-        self.sequestration_rate_all_ocean = self.scenario.ScenarioData.sequestration_rate_all_ocean
-        self.npv_discount_rate = self.scenario.ScenarioData.npv_discount_rate
+        self.disturbance_rate = self.scenario.disturbance_rate
+        self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
+        self.npv_discount_rate = self.scenario.npv_discount_rate
 
         # self.pds_scenario.operating_cost *= 1.1
         # self.ref_scenario.operating_cost *= 1.1

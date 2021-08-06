@@ -1,38 +1,46 @@
-
-from typing import List
-from dataclasses import dataclass
 import pandas as pd
 import numpy as np
 import math
+import json
 
-
-@dataclass()
 class UnitAdoption:
     description : str
-    columns : List[str]
-    data: List[List[float]]
-    base_year: int
-    _first_cost : float
-    _operating_cost :  float
-    _net_profit_margin :  float
-    _expected_lifetime : float
     
-    def _validate_inputs(self):
-        
-        if self.expected_lifetime is None:
-            raise ValueError(f'No expected lifetime specified for {self.description}')
-    
-    def __post_init__(self):
+    def _validate_inputs(self):        
+        pass
+
+    def __init__(self, base_year, adoption_scenario_to_load, adoption_input_file):
         self._validate_inputs()
 
-        df = pd.DataFrame.from_dict(self.data)
-        df.columns = self.columns
+        self.base_year = base_year
+
+        stream = open(adoption_input_file,'r')
+        json_dict = json.load(stream)
+
+        # TODO: Change the scenario data to use a short name as a key (such as "Average Scenario"),
+        # rather than a description (such as "Average of all Scenarios").
+        # Can only do this by updating the scenario data for all scenarios.
+        adoption_scenario_desc = [k for k, v in json_dict.items() if v['description'] == adoption_scenario_to_load]
+        
+        if len(adoption_scenario_desc) == 0:
+            raise ValueError(f'No matching adoption scenario for key {adoption_scenario_to_load} in input file: {adoption_input_file}')
+        if len(adoption_scenario_desc) > 1:
+            raise ValueError(f'More than one matching adoption scenario for key {adoption_scenario_to_load} in input file: {adoption_input_file}')
+
+        self.description = adoption_scenario_desc.pop()
+
+        df = pd.DataFrame.from_dict(json_dict[self.description]['data'])
+        df.columns = json_dict[self.description]['columns']
         df.set_index(df.columns[0], inplace=True)
 
         # ditch everything earlier than the base year.
         df = df.loc[self.base_year-1:]
 
         self.implementation_units = df
+        self.expected_lifetime = 0.0
+        self.first_cost = 0.0
+        self.net_profit_margin = 0.0
+        self.operating_cost = 0.0
 
     ##############
     

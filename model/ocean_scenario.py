@@ -2,17 +2,21 @@
 from dataclasses import dataclass, field
 from dateutil import parser
 import datetime
-
-@dataclass
-class AdoptionData:
-
-    _first_cost : float = field(metadata={'Units':  'US$2014/ha'})
-    _operating_cost :  float = field(metadata={'Units':  'US$2014/ha/year'})
-    _net_profit_margin :  float = field(metadata={'Units':  'US$2014/ha/year'})
-    _expected_lifetime :  float = field(metadata={'Units':  'years'})
     
 @dataclass
-class ScenarioData:
+class Scenario:
+
+    # Conventional Solution
+    conv_first_cost : float = field(metadata={'Units':  'US$2014/ha'})
+    conv_operating_cost :  float = field(metadata={'Units':  'US$2014/ha/year'})
+    conv_net_profit_margin :  float = field(metadata={'Units':  'US$2014/ha/year'})
+    conv_expected_lifetime :  float = field(metadata={'Units':  'years'})
+
+    # pds Solution
+    soln_first_cost : float = field(metadata={'Units':  'US$2014/ha'})
+    soln_operating_cost :  float = field(metadata={'Units':  'US$2014/ha/year'})
+    soln_net_profit_margin :  float = field(metadata={'Units':  'US$2014/ha/year'})
+    soln_expected_lifetime :  float = field(metadata={'Units':  'years'})
 
     # General:
     npv_discount_rate :  float = field(metadata={'Units':  'percentage'})
@@ -47,39 +51,11 @@ class ScenarioData:
     ref_base_custom_adoption_on : str
     ref_adoption_use_only_regional_data : bool
 
-class Scenario:
-
-    def __init__(self, SolutionData, ConventionalData, ScenarioData):
-        self.SolutionData = SolutionData
-        self.ConventionalData = ConventionalData
-        self.ScenarioData = ScenarioData
-
     @classmethod
     def from_dict(cls, scenario_dict):
-        
-        soln_dict = {}
-        conv_dict = {}
-
-        remove_keys = []
-
-        for k,v in scenario_dict.items():
-            if k.startswith('soln_'):
-                soln_dict['_' + k[5:]] = v
-                remove_keys.append(k)
-            elif k.startswith('conv_'):
-                conv_dict['_' + k[5:]] = v
-                remove_keys.append(k)
-        
-        for k in remove_keys:
-            del scenario_dict[k]
 
         timestamp = parser.parse(scenario_dict['scenario_timestamp'])
         scenario_dict['scenario_timestamp'] = timestamp
 
-        scen_data = ScenarioData(**scenario_dict)
-
-        soln_data = AdoptionData(**soln_dict)
-        conv_data = AdoptionData(**conv_dict)
-
-        return cls( soln_data, conv_data, scen_data)
+        return cls(**scenario_dict)
 
