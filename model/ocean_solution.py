@@ -68,12 +68,11 @@ class OceanSolution:
             raise ValueError(f'Unable to find adoption scenario: {adoption_scenario_name} in input file: {adoption_input_file}')
             
         desc = adoption_scenario['description']
-        cols = adoption_scenario['regions']
-        idx = adoption_scenario['time_periods']
+        cols = adoption_scenario['columns']
         data = adoption_scenario['data']
 
         try:
-            ad_scenario = UnitAdoption(desc, cols, idx, data, self.base_year, **asdict(extra_adoption_info))
+            ad_scenario = UnitAdoption(desc, cols, data, self.base_year, **asdict(extra_adoption_info))
         except ValueError as ev:
             print(ev.args)
             raise ValueError(f"Unable to initialise {adoption_scenario_name}")

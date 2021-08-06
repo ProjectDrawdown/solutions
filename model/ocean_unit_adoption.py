@@ -9,8 +9,7 @@ import math
 @dataclass()
 class UnitAdoption:
     description : str
-    regions : List[str]
-    time_periods: List[int]
+    columns : List[str]
     data: List[List[float]]
     base_year: int
     _first_cost : float
@@ -26,13 +25,9 @@ class UnitAdoption:
     def __post_init__(self):
         self._validate_inputs()
 
-        data_dict = {}
-        for col in range(len(self.regions)):
-            pts = [row[col] for row in self.data]
-            data_dict[self.regions[col]] = pts
-            data_dict['time_periods'] = self.time_periods
-        df = pd.DataFrame.from_dict(data_dict)
-        df.set_index('time_periods', inplace=True)
+        df = pd.DataFrame.from_dict(self.data)
+        df.columns = self.columns
+        df.set_index(df.columns[0], inplace=True)
 
         # ditch everything earlier than the base year.
         df = df.loc[self.base_year-1:]
