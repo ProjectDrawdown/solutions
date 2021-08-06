@@ -101,7 +101,7 @@ class OceanSolution:
         if scenario_name not in scen_dict.keys():
             raise ValueError(f"Unable to find {scenario_name} in scenario file: {self.scenarios_file}")
         
-        scenario = Scenario.from_dict(scen_dict[scenario_name])
+        scenario = Scenario(**scen_dict[scenario_name])
 
         self.scenario = scenario
 

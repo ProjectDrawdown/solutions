@@ -1,6 +1,5 @@
 
 from dataclasses import dataclass, field
-from dateutil import parser
 import datetime
     
 @dataclass
@@ -50,12 +49,3 @@ class Scenario:
     ref_scenario_name : str
     ref_base_custom_adoption_on : str
     ref_adoption_use_only_regional_data : bool
-
-    @classmethod
-    def from_dict(cls, scenario_dict):
-
-        timestamp = parser.parse(scenario_dict['scenario_timestamp'])
-        scenario_dict['scenario_timestamp'] = timestamp
-
-        return cls(**scenario_dict)
-
