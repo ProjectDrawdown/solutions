@@ -969,7 +969,7 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
         
         skip_count=0
         for (cellrange, actual_df, actual_mask, expected_mask) in verify[sheetname]:
-            description = descr_base + sheetname + " " + cellrange
+            description = descr_base + "\n" + sheetname + " " + cellrange
 
             if test_only and not any( pattern in description for pattern in test_only ):
                 skip_count = skip_count + 1
