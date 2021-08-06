@@ -12,7 +12,7 @@ def main():
 
 
     #scenario_names = list(swf.get_scenario_names())
-    error_threshold = 0.000_0001
+    
     scenario_names = ['PDS-5p2050-Plausible NEW 240 TOA']
 
     for sc in scenario_names:
@@ -70,10 +70,10 @@ def main():
         results['abatement_cost'] = [abatement_cost, 127.776530]
 
         net_profit_margin = swf.get_net_profit_margin('World')
-        results['net_profit_margin'] = [net_profit_margin, 2736.69]
+        results['net_profit_margin'] = [net_profit_margin, 2736.688095]
 
         lifetime_profit_margin = swf.get_lifetime_profit_margin('World')
-        results['lifetime_profit_margin'] = [lifetime_profit_margin, 5316.99]
+        results['lifetime_profit_margin'] = [lifetime_profit_margin, 5316.994012]
 
         total_co2_seq = swf.get_total_co2_seq('World')
         results['total_co2_seq'] = [total_co2_seq, 2.49773912913679]
