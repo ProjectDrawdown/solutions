@@ -340,15 +340,26 @@ class OceanSolution:
 
 
     def get_abatement_cost(self, region) -> np.float64:
-        fc = self.pds_scenario.get_annual_world_first_cost(region)
 
-        fc_clipped = fc.loc[self.start_year-1:self.end_year]
+        total_co2_reduction = self.get_total_co2_seq(region)
 
-        # TODO op_cost should be op_cost diff, so do the same thing for ref scenario and find diff.
-        op_cost = self.pds_scenario.get_lifetime_operating_savings(region, self.end_year) * (1+ self.disturbance_rate)
+        pds_fc = self.pds_scenario.get_annual_world_first_cost(region)
+        ref_fc = self.ref_scenario.get_annual_world_first_cost(region)
 
-        net_cash_flow = fc_clipped.add(op_cost, fill_value = 0.0)
+        # following should be [(ref_fc + conv_fc) - pds_fc], however haven't implemented conventional yet (not relevant for seaweed farming).
+        net_fc = ref_fc - pds_fc
 
+        # after executing this next line, fc_clipped should match time series in [Operating Cost]!$B$125
+        fc_clipped = net_fc.loc[self.start_year-1:self.end_year]
+
+        pds_op_cost = self.pds_scenario.get_lifetime_operating_savings(region, self.end_year)
+        ref_op_cost = self.ref_scenario.get_lifetime_operating_savings(region, self.end_year)
+
+        # after executing this next line, net_op_cost should match time series in [Operating Cost]!$C$125
+        net_op_cost = (ref_op_cost -pds_op_cost) * (1+ self.disturbance_rate)
+
+        net_cash_flow = fc_clipped.add(net_op_cost, fill_value = 0.0)
+        
         rate = self.npv_discount_rate
         discount_factor = 1/(1+rate)
 
@@ -359,9 +370,7 @@ class OceanSolution:
         npv = net_cash_flow.multiply(discount_factors)
         npv_summed = npv.loc[self.start_year: self.end_year].sum()
 
-        total_co2_reduction = self.get_total_co2_seq(region)
-
-        result = npv_summed/total_co2_reduction
+        result = -1 * npv_summed/total_co2_reduction
 
         return result / 1_000 # express in billions of USD
 
