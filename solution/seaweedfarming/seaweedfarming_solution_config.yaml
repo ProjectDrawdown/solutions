@@ -1,0 +1,10 @@
+
+
+ScenariosFile: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/seaweedfarming/scenario_inputs.json
+PDSAdoptionFile: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/seaweedfarming/unit_adoption_data/custom_pds_adoption.json
+REFAdoptionFile: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/seaweedfarming/unit_adoption_data/custom_ref_adoption.json
+BaseYear: 2015
+StartYear: 2020
+EndYear: 2050
+TotalArea: 240
+RequiredVersionMinimum: 3.9.5
