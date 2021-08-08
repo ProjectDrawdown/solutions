@@ -1,11 +1,10 @@
 import sys
 import yaml
-from dataclasses import asdict
 
 import numpy as np
 import pandas as pd
-from ocean_scenario import Scenario
-from ocean_unit_adoption import UnitAdoption
+from model.ocean_scenario import OceanScenario as Scenario
+from model.ocean_unit_adoption import UnitAdoption
 
 import json
 
@@ -23,15 +22,6 @@ class OceanSolution:
     required_version_minimum = ()
     
     ### End Config Data
- 
-    scenarios = {}
-    pds_scenarios = {}
-    ref_scenarios = {}
-
-    _pds_ref_scenarios_used = set()
-
-    loaded_scenario_name = ''
-
 
     def _load_config_file(self, file_name):
         
