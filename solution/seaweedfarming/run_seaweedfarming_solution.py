@@ -1,18 +1,11 @@
 
 import pandas as pd
-import ocean_solution as soln
+from seaweedfarming_solution import SeaweedFarmingSolution
 
 def main():
-    swf = soln.OceanSolution('/mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/seaweedfarming/seaweed_farming_config.yml')
-
-
-    #swf.load_scenario('PDS-5p2050-Plausible NEW 240 TOA')
-
-    #swf.print_scenario_info()
-
-
-    #scenario_names = list(swf.get_scenario_names())
     
+    swf = SeaweedFarmingSolution()
+
     scenario_names = ['PDS-5p2050-Plausible NEW 240 TOA']
 
     for sc in scenario_names:
