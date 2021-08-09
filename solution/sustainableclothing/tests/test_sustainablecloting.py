@@ -11,10 +11,14 @@ expected_file = thisdir / 'expected.zip'
 
 solution_name = 'sustainableclothing'
 
-# If there are long-running test failures that should be skipped, you can indicate them here.
-# Someday we'll have a scanner that will check for these
+# We skip the UA AT308 calculation and all CO2 Calcs (which depend on it) because there is a 
+# unresolvable contradiction:  this code loads values for conv_emissions_per_funit and soln_emissions_per_funit
+# correctly from the scenario record, but the Excel workbook overwrites those with values from another worksheet,
+# in effect destroying the historical record.
+# The net effect on results is small.
+
 SCENARIO_SKIP = None
-TEST_SKIP = None
+TEST_SKIP = ['AT308:BD354','CO2 Calcs']
 
 def test_sustainableclothing_loader():
     """Test that the solution can load a single scenario"""
