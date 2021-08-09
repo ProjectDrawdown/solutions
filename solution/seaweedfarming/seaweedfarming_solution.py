@@ -3,6 +3,8 @@ import os
 from model.ocean_solution import OceanSolution
 
 class SeaweedFarmingSolution(OceanSolution):
+    """ All calculations for seaweed farming currently implemented in the OceanSolution super class.
+    """
 
     # Initialize from configuration file:
     def __init__(self, configuration_file_name = None):

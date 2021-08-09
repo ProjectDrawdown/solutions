@@ -9,6 +9,9 @@ from model.ocean_unit_adoption import UnitAdoption
 import json
 
 class OceanSolution:
+    """ This is the base class that each Ocean solution should inherit from.
+    Contains all the calculations required for Ocean-based scenario results.
+    """
 
     ### Config data:
 

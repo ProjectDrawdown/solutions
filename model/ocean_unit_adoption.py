@@ -6,6 +6,9 @@ import json
 # Code originally based of seaweed farming solution, but is intended to be general.
 
 class UnitAdoption:
+    """This is the base class that contains the calculations for Ocean-related Unit Adoption scenarios.
+    Used for both PDS adoption and REF adoption.
+    """
     description : str
     
     def _validate_inputs(self):        
