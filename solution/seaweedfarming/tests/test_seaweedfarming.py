@@ -1,10 +1,12 @@
 
 import pytest
-from pathlib import Path
 
-thisdir = Path(__file__).parents[0]
+from solution.seaweedfarming.seaweedfarming_solution import SeaweedFarmingSolution
 
 solution_name = 'seaweedfarming'
+scenario_name = 'PDS-5p2050-Plausible NEW 240 TOA'
+swf = SeaweedFarmingSolution()
+swf.load_scenario(scenario_name)
 
 def test_adoption_unit_increase_final_year():
     au_inc = swf.get_adoption_unit_increase_final_year('World')
@@ -28,7 +30,7 @@ def test_get_percent_adoption_end_year():
 
 
 def test_marginal_first_cost():
-    get_marginal_first_cost('World')
+    first_cost = swf.get_marginal_first_cost('World')
     assert first_cost == pytest.approx(132.137293)
 
 def test_operating_cost():
@@ -53,13 +55,13 @@ def test_lifetime_cashflow_npv_all():
 
 def test_payback_period_soln_to_conv():
     payback_period_soln_to_conv = swf.get_payback_period_soln_to_conv('World', purchase_year = 2017)
-    payback_period_soln_only = max(payback_period_soln_to_conv, 0.0)
+    payback_period_soln_to_conv = max(payback_period_soln_to_conv, 0.0)
     assert payback_period_soln_to_conv == 0.0 # 0.0 = 'Never'
 
 def test_payback_period_soln_to_conv_npv():
     payback_period_soln_to_conv_npv = swf.get_payback_period_soln_to_conv_npv('World', purchase_year = 2017)
     payback_period_soln_to_conv_npv = max(payback_period_soln_to_conv_npv, 0.0)
-    assert payback_period_soln_only_npv == 0.0 # 0.0 = 'Never'
+    assert payback_period_soln_to_conv_npv == 0.0 # 0.0 = 'Never'
 
 def test_payback_period_soln_only():
     payback_period_soln_only = swf.get_payback_period_soln_only('World', purchase_year = 2017)
