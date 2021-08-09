@@ -29,8 +29,13 @@ The Jupyter Notebook `Extraction_Guide.ipynb` walks you through steps 4-7 below.
   5. Verify that the resulting solution code can be loaded and run
   6. Create the `expected.zip` test file following the steps described in the Jupyter notebook and in `tools/CREATE_EXPECTED_ZIP.md`
   7. Generate a new solution test file with the function `output_solution_test_file` in `tools/solution_xls_extract.py`
-  8. Run the new solution tests and verify the results.
-  9. Package up _all_ code changes (including your Jupyter notebook with output, if you used it) into your pull request.
+  8. Run the new solution tests and observe the results.
+  9. Document any modifications you had to make to solution code in a `changelog` file in the solution directory
+  10. Create a PR (Pull Request) for the results.
+
+Note: it is _not_ reqired that the tests in step (8) run clean in order to PR the results.  Some bugs that we are addressing are
+systematic, and it makes more sense to upload the extracted model so they can be considered together.
+You should, however, complete all the steps in the list.
 
 ## Preparing an Excel Workbook for Extraction
 
@@ -54,10 +59,10 @@ Identifying and fixing these issues is part of the extraction process.  When doi
  3. **Do make changes to the extraction code.**  It is also acceptable to put solution-specific code into `solution_xls_extract.py` or related files.
  Even hacky work-arounds are accepted here, since once extraction is complete, we will be done with it.
  4. **Cautiously make changes to the model code.**  If you can find and fix bugs in code in the `/model`, `/tools` or `/data` directories, that is fantastic.  These fixes should stand the test of time, however, not be hacks.
- 5. **Changes to the test code accepted, but not required.** If there are problems that you are certain _are in the tests_, commenting out those tests so that you can complete test runs is acceptable.  In this case, please open an issue describing the failing test, and why you believe the test is at fault.
+ 5. **Changes to the test code accepted, but not required.** If there are problems that you are certain _are in the tests_, skipping those tests is acceptable.  In this case, please open an issue describing the failing test, and why you believe the test is at fault.
 
 In all cases if you make customizations to *any* code, be sure to add comments inline next to the changes with your name, a date, and the
-reason for the change.  Include all changed code (and your Jupyter notebook if you are using one) in your pull request.
+reason for the change.  Include all changed code in your pull request.
 We will use this information to determine which changes get into the code and which become issues that require further 
 investigation and fixes.
 
@@ -71,6 +76,4 @@ Here's an example:
 
 ## Helpful Hints
 
-When trying to debug code that you might not understand, it can be very helpful to have code that you know is already working to compare it to.  So we recommend working with (at least) two Excel workbooks at a time: one you are extracting and another one that has already been extracted.  That way you can compare the workbooks to each other to see if there are differences, and also compare the previously-extracted workbook to the result to see what the code was supposed to have produced.
-
-You can use the tool `tools/expected_ghost.py` to create a light-weight spreadsheet version from an existing `expected.zip` test file for any of the solutions in the solution directory.  This will let you see the data, but not the formulas that produced the results.  See the instructions in the file for how to do this.
+The Jupyter Notebook contains additional helpful hints for finding and addressing issues in the models.
