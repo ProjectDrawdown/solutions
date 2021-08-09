@@ -3,6 +3,8 @@ import numpy as np
 import math
 import json
 
+# Code originally based of seaweed farming solution, but is intended to be general.
+
 class UnitAdoption:
     description : str
     
@@ -16,7 +18,7 @@ class UnitAdoption:
 
         stream = open(adoption_input_file,'r')
         json_dict = json.load(stream)
-
+ 
         # TODO: Change the scenario data to use a short name as a key (such as "Average Scenario"),
         # rather than a description (such as "Average of all Scenarios").
         # Can only do this by updating the scenario data for all scenarios.
@@ -79,16 +81,18 @@ class UnitAdoption:
     ##########
 
     def get_units_adopted(self, region):
-
+        # 'Unit Adoption Calculations'!C136:C182 = "Land Units Adopted" - PDS
+        # 'Unit Adoption Calculations'!C198:C244 = "Land Units Adopted" - REF
         return self.implementation_units.loc[:, region].copy()
 
 
     def annual_breakout(self, region, end_year):
 
-        # Following code based on annual_breakout function in model\operatingcost.py
-        
         """Breakout of operating cost per year, including replacements.
         """
+        
+        # Following code based on annual_breakout function in model\operatingcost.py
+        # See range starting in cell [Operating Cost]!$C$261. Also used by Net Profit Margin calculation.
 
         new_funits_per_year = self.implementation_units.loc[self.base_year:, region].diff()
 
@@ -121,6 +125,8 @@ class UnitAdoption:
         
     def get_operating_cost(self, region, end_year):
 
+        # After multiplying by (1+ disturbance_rate), this should equal the time series SUM($C266:$AV266) in [Operating Cost] worksheet 
+
         result = self.annual_breakout(region, end_year)
         result *= self.operating_cost
 
@@ -150,6 +156,9 @@ class UnitAdoption:
 
 
     def get_annual_world_first_cost(self, region):
+        
+        # For the custom pds scenario, this is the time series referred to by cell $E$36 in the spreadsheet.
+        # For the custom ref scenario, this is the time series referred to by cell $N$36 in the spreadsheet.
 
         #TODO - validate input params.
 
@@ -160,6 +169,8 @@ class UnitAdoption:
 
 
     def get_lifetime_operating_savings(self, region, end_year):
+
+        # After muliplying by (1 + disturbance_rate) this should match the time series in [Operating Cost]!$C$125
         
         matrix = self.annual_breakout(region, end_year)
         cost_series = matrix.sum(axis='columns') * self.operating_cost
@@ -169,6 +180,7 @@ class UnitAdoption:
 
     def get_lifetime_cashflow_npv(self, region, purchase_year, discount_rate):
         
+        # "result" should match time series in [Operating Cost]!$J$125 = "NPV of Single Cashflows (to 2014)"
         years_old_at_start =  purchase_year - self.base_year + 1
 
         discount_factor = 1/(1+discount_rate)
@@ -192,6 +204,11 @@ class UnitAdoption:
 
     def get_net_profit_margin(self, region, end_year):
 
+        # For PDS = [Net Profit Margin]!SUM(C266:AV266)
+        # For REF = [Net Profit Margin]!SUM(C403:AV403)
+
+        # (PDS - REF) = [Net Profit Margin]!$C$125 = "Difference in Net Profit Margin (PDS minus Reference)""
+
         matrix = self.annual_breakout(region, end_year)
 
         margin_series = matrix.sum(axis='columns')
@@ -207,5 +224,7 @@ class UnitAdoption:
         adoption = self.get_units_adopted(region)
         sequestration = adoption * sequestration_rate
         sequestration *= co2_mass_to_carbon_mass * (1 - disturbance_rate)
+
+        # When this function is netted out [pds - ref], sequestration should match the time series in [CO2 Calcs]!$B$L120
 
         return sequestration

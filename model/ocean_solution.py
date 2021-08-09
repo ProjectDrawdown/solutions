@@ -103,9 +103,6 @@ class OceanSolution:
         self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.npv_discount_rate = self.scenario.npv_discount_rate
 
-        # self.pds_scenario.operating_cost *= 1.1
-        # self.ref_scenario.operating_cost *= 1.1
-
     
     def print_scenario_info(self):
         print('Loaded scenario name:', self.scenario.description)
@@ -113,8 +110,8 @@ class OceanSolution:
     # Unit Adoption functions:
 
     def get_adoption_unit_increase_final_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted(region)
-        ref_series = self.ref_scenario.get_units_adopted(region)
+        pds_series = self.pds_scenario.get_units_adopted(region) 
+        ref_series = self.ref_scenario.get_units_adopted(region) 
 
         net_series = pds_series.subtract(ref_series)
 
@@ -122,12 +119,12 @@ class OceanSolution:
 
 
     def get_adoption_unit_pds_final_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted(region)
+        pds_series = self.pds_scenario.get_units_adopted(region) 
         return pds_series.loc[self.end_year]
 
 
     def get_global_percent_adoption_base_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted(region)
+        pds_series = self.pds_scenario.get_units_adopted(region) 
         result = pds_series.loc[self.base_year+1] / self.total_area
         return result
         
@@ -179,20 +176,25 @@ class OceanSolution:
 
         # TODO: confirm start_year-1 is desired. Why does it start in 2019?
 
+        # Each cell in pds_series should match SUM($C266:$AV266) in [Operating Cost] worksheet.
+
         pds_series = self.pds_scenario.get_operating_cost(region, self.end_year) * (1+ self.disturbance_rate)
         pds_result = pds_series.cumsum().loc[self.end_year] - pds_series.cumsum().loc[self.start_year]
 
+        # Each cell in ref_series should match SUM($C403:$AV403) in [Operating Cost] worksheet.
         ref_series = self.ref_scenario.get_operating_cost(region, self.end_year) * (1+self.disturbance_rate)
         ref_result = ref_series.cumsum().loc[self.end_year] - ref_series.cumsum().loc[self.start_year]
 
         result = (ref_result - pds_result) / 1000 # in billions
 
+        # result should match "Difference in Operating Cost (Reference - PDS)". [Operating Cost]!$C$125
+
         return result
 
     
     def get_lifetime_operating_savings(self, region) -> np.float64:
-
         
+        # pds_series should match [Operating Cost]!$C$125 = "Difference in Operating Cost (Reference minus PDS)"
         pds_series = self.pds_scenario.get_lifetime_operating_savings(region, self.end_year) * (1+ self.disturbance_rate)
 
         # TODO: subtract this from conventional.
@@ -208,7 +210,6 @@ class OceanSolution:
         discount_rate = self.npv_discount_rate
         pds_series = -1 * self.pds_scenario.get_lifetime_cashflow_npv(region, purchase_year, discount_rate)
 
-        # s/sht claims this is solution relative to conventional - is it? -seems like it's only soluion
         result = pds_series.sum()
 
         return result / 1_000 # express in billions of USD
@@ -420,7 +421,7 @@ class OceanSolution:
         factor = factor / (1.8 * 10**20)
         factor = factor * 10**6
         results = results * factor
-        return results
+        return results # results now matches the time series in [CO2 Calcs]!$B$172 = "PPM"
 
 
     def get_change_in_ppm_equiv(self,region) -> np.float64:
