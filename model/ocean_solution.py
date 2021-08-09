@@ -40,7 +40,7 @@ class OceanSolution:
     def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name):
             
         try:
-            ad_scenario = UnitAdoption(self.base_year,adoption_scenario_name, adoption_input_file)
+            ad_scenario = UnitAdoption(self.base_year, adoption_scenario_name, adoption_input_file)
         except ValueError as ev:
             print(ev.args)
             raise ValueError(f"Unable to initialise {adoption_scenario_name}")
@@ -410,7 +410,7 @@ class OceanSolution:
                 val += 0.186*np.exp(-(exponent)/1.186)
                 year_results.append(year_net_adoption * val)
 
-            year_results_series = pd.Series(index = range(iter_year, self.end_year+1))
+            year_results_series = pd.Series(index = range(iter_year, self.end_year+1), dtype=np.float64)
             year_results_series = year_results_series.fillna(0.0)
             year_results_series = year_results_series.add(year_results)
 
