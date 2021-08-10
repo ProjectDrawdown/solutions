@@ -1,6 +1,6 @@
 """CO2 Calcs module.
 
-Computes reductions in CO2-equivalent emissions.
+Computes reductions for CO2 and total GHGs in CO2-equivalent emissions.
 """
 
 from functools import lru_cache, wraps
@@ -11,6 +11,7 @@ import json
 from io import StringIO
 
 import fair
+from fair.RCPs import rcp3pd, rcp45, rcp6, rcp85
 import numpy as np
 import pandas as pd
 import model.advanced_controls
@@ -29,6 +30,10 @@ class NumpyEncoder(json.JSONEncoder):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
+
+
+###########----############----############----############----############
+# CO2-EQ CALCULATIONS AND PRIOR USE OF FAIR
 
 @lru_cache
 def fair_scm_cached(json_input: str):
@@ -89,11 +94,18 @@ def co2_ppm_calculator_cached(
     ppm_calculator.name = 'co2_ppm_calculator'
     return ppm_calculator
 
+
+
+###########----############----############----############----############
+# CO2 MODULE IMPORTS
+
 class CO2Calcs(DataHandler):
     """CO2 Calcs module.
         Arguments:
           ac: advanced_cost.py object, storing settings to control model operation.
           ch4_ppb_calculator:
+          ch4_megatons_avoided_or_reduced:
+          n2o_megatons_avoided_or_reduced:
           soln_pds_net_grid_electricity_units_saved:
           soln_pds_net_grid_electricity_units_used:
           soln_pds_direct_co2_emissions_saved:
@@ -111,6 +123,8 @@ class CO2Calcs(DataHandler):
       """
 
     def __init__(self, ac, soln_net_annual_funits_adopted=None, ch4_ppb_calculator=None,
+                 ch4_megatons_avoided_or_reduced=None,
+                 n2o_megatons_avoided_or_reduced=None,
                  soln_pds_net_grid_electricity_units_saved=None,
                  soln_pds_net_grid_electricity_units_used=None,
                  soln_pds_direct_co2eq_emissions_saved=None,
@@ -125,6 +139,8 @@ class CO2Calcs(DataHandler):
                  ref_protected_deg_land=None, regimes=None):
         self.ac = ac
         self.ch4_ppb_calculator = ch4_ppb_calculator
+        self.ch4_megatons_avoided_or_reduced = ch4_megatons_avoided_or_reduced
+        self.n2o_megatons_avoided_or_reduced = n2o_megatons_avoided_or_reduced
         self.soln_pds_net_grid_electricity_units_saved = soln_pds_net_grid_electricity_units_saved
         self.soln_pds_net_grid_electricity_units_used = soln_pds_net_grid_electricity_units_used
         self.soln_pds_direct_co2eq_emissions_saved = soln_pds_direct_co2eq_emissions_saved
@@ -159,6 +175,10 @@ class CO2Calcs(DataHandler):
 
         self.baseline = model.fairutil.baseline_emissions()
 
+
+
+###########----############----############----############----############
+# CO2 EMISSIONS CALCULATIONS
 
     @lru_cache()
     @data_func
@@ -249,6 +269,61 @@ class CO2Calcs(DataHandler):
             if self.co2eq_increased_grid_usage_emissions() is not None:
                 m = m.sub(self.co2eq_increased_grid_usage_emissions().loc[s:e], fill_value=0)
         m.name = "co2eq_mmt_reduced"
+        return m
+
+    @lru_cache()
+    @data_func
+    def co2only_mmt_reduced(self):
+        """CO2 MMT Reduced
+           Annual CO2 reductions by region are calculated by multiplying the estimated energy
+           unit savings by region by the emission factor of the energy unit in question by region
+           and year. In this sample the values used are the regional future grid BAU CO2-eq emission
+           intensity values (by year) from the AMPERE 3 MESSAGE Base model used in the IPCC 5th
+           Assessment Report WG3.
+
+           Reduced Grid MMT CO2 Emissions = NEU(t) * EF(e,t)
+
+           where
+              NEU(t) = Net Energy Units at time, t
+              EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
+           SolarPVUtil 'CO2 Calcs'!A64:K110
+        """
+        s = self.ac.report_start_year
+        e = self.ac.report_end_year
+        if (self.ac.solution_category != model.advanced_controls.SOLUTION_CATEGORY.LAND and
+                self.ac.solution_category != model.advanced_controls.SOLUTION_CATEGORY.OCEAN):
+            # RRS
+            co2eq_reduced_grid_emissions = self.co2eq_reduced_grid_emissions()
+            m = pd.DataFrame(0.0, columns=co2eq_reduced_grid_emissions.columns.copy(),
+                             index=co2eq_reduced_grid_emissions.index.copy(), dtype=np.float64)
+            m.index = m.index.astype(int)
+            m = m.add(co2eq_reduced_grid_emissions.loc[s:e], fill_value=0)
+            m = m.add(self.co2eq_replaced_grid_emissions().loc[s:e], fill_value=0)
+            m = m.sub(self.co2eq_increased_grid_usage_emissions().loc[s:e], fill_value=0)
+            m = m.add(self.co2only_direct_reduced_emissions().loc[s:e], fill_value=0)
+            m = m.add(self.co2eq_reduced_fuel_emissions().loc[s:e], fill_value=0)
+            m = m.sub(self.co2eq_net_indirect_emissions().loc[s:e], fill_value=0)
+        else:
+            # LAND/OCEAN
+            if self.ac.solution_category == model.advanced_controls.SOLUTION_CATEGORY.LAND:
+                regions = model.dd.REGIONS
+            else:
+                regions = model.dd.OCEAN_REGIONS
+            index = pd.Index(list(range(2015, 2061)), name='Year')
+            m = pd.DataFrame(0., columns=regions, index=index, dtype=np.float64)
+            if (self.soln_pds_direct_co2eq_emissions_saved is not None or
+                    self.soln_pds_direct_co2_emissions_saved is not None):
+                if self.ac.emissions_use_agg_co2eq is None or self.ac.emissions_use_agg_co2eq:
+                    m = m.add(self.soln_pds_direct_co2eq_emissions_saved.loc[s:e], fill_value=0)
+                else:
+                    m = m.add(self.soln_pds_direct_co2_emissions_saved.loc[s:e], fill_value=0)
+            if self.annual_land_area_harvested is not None:
+                m = m.sub(self.direct_emissions_from_harvesting().loc[s:e], fill_value=0)
+            if self.co2eq_reduced_grid_emissions() is not None:
+                m = m.add(self.co2eq_reduced_grid_emissions().loc[s:e], fill_value=0)
+            if self.co2eq_increased_grid_usage_emissions() is not None:
+                m = m.sub(self.co2eq_increased_grid_usage_emissions().loc[s:e], fill_value=0)
+        m.name = "co2only_mmt_reduced"
         return m
 
 
@@ -465,7 +540,6 @@ class CO2Calcs(DataHandler):
             return None
         return self.soln_pds_net_grid_electricity_units_used * self.conv_ref_grid_CO2eq_per_KWh
 
-
     @lru_cache()
     @data_func
     def co2eq_direct_reduced_emissions(self):
@@ -481,6 +555,19 @@ class CO2Calcs(DataHandler):
         return (self.soln_pds_direct_co2_emissions_saved / 1000000 +
                 self.soln_pds_direct_ch4_co2_emissions_saved / 1000000 +
                 self.soln_pds_direct_n2o_co2_emissions_saved / 1000000)
+    
+    @data_func
+    def co2only_direct_reduced_emissions(self):
+        """Direct MMT CO2-eq Emissions Reduced = [DEm(Con,t) - DEm(Sol,t)]  / 1000000
+
+           where
+              DEm(Con,t) = Direct Emissions of Conventional at time, t
+              DEm(Sol,t) = Direct Emissions of Solution at time, t
+
+              NOTE: Includes CH4-CO2-eq and N2O-CO2-eq
+           SolarPVUtil 'CO2 Calcs'!A344:K390
+        """
+        return (self.soln_pds_direct_co2_emissions_saved / 1000000)
 
 
     @lru_cache()
@@ -543,9 +630,14 @@ class CO2Calcs(DataHandler):
                 self.ac.seq_rate_global * self.ac.harvest_frequency -
                 self.ac.carbon_not_emitted_after_harvesting) * C_TO_CO2EQ
 
+
+
+###########----############----############----############----############
+# UTILIZATION OF THE FaIR SIMPLE CLIMATE MODEL
+
     @data_func
-    def FaIR_CFT_baseline(self):
-        """Return FaIR results for the baseline case.
+    def FaIR_CFT_baseline_co2eq(self):
+        """Return FaIR results for the baseline case in CO2eq emissions.
 
            Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
            https://github.com/OMS-NetZero/FAIR
@@ -554,18 +646,25 @@ class CO2Calcs(DataHandler):
              C: CO2 concentration in ppm for the World.
              F: Radiative forcing in watts per square meter
              T: Change in temperature since pre-industrial time in Kelvin
+
+           Assumes all methane and nitrous oxide emissions are first converted into 
+           CO2-eq emissions and then run FaIR in CO2-only mode. As a scientific note: 
+           this is very crude and a bad use of the FaIR model since CH4 and N2O have 
+           their own radiative forcings and lifetimes which CO2-eq poorly represents.
+
+           Assumes only one background emission of RCP4.5
         """
         kwargs = model.fairutil.fair_scm_kwargs()
         (C, F, T) = fair_scm(self.baseline.values, False, **kwargs)
         result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=self.baseline.index)
-        result.name = 'FaIR_CFT_baseline'
+        result.name = 'FaIR_CFT_baseline_co2eq'
         return result
 
 
     @lru_cache()
     @data_func
-    def FaIR_CFT(self):
-        """Return FaIR results for the baseline + Drawdown solution.
+    def FaIR_CFT_Drawdown_co2eq(self):
+        """Return FaIR results for the baseline + Drawdown solution in CO2eq emissions.
 
            Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
            https://github.com/OMS-NetZero/FAIR
@@ -588,28 +687,464 @@ class CO2Calcs(DataHandler):
         kwargs = model.fairutil.fair_scm_kwargs()
         (C, F, T) = fair_scm(emissions.values, False, **kwargs)
         result = pd.DataFrame({'C': C , 'F': F, 'T': T}, index=emissions.index)
-        result.name = 'FaIR_CFT'
+        result.name = 'FaIR_CFT_Drawdown_co2eq'
         return result
 
 
     @lru_cache()
     @data_func
-    def FaIR_CFT_RCP45(self):
-        """Return FaIR results for the RCP45 case.
+    def FaIR_CFT_baseline_RCP3(self):
+        """Return FaIR results for the baseline case of RCP3 (formerly rcp2.6).
 
            Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
            https://github.com/OMS-NetZero/FAIR
 
-           Returns DataFrame containing columns C, F, T:
-             C: CO2 concentration in ppm for the World.
-             F: Radiative forcing in watts per square meter
-             T: Change in temperature since pre-industrial time in Kelvin
+           Returns 4 DataFrames for years 1765-2500 containing:
+             1: Multigas concentrations for the World.
+                 CO2(ppm), CH4(ppb), N2O(ppb)
+             2: Radiative forcing in watts per square meter
+                 CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
+             3: Change in temperature since pre-industrial time in Celsius
+             4: RCP emissions (39 individual gases)
         """
-        kwargs = model.fairutil.fair_scm_kwargs()
-        (C, F, T) = fair_scm(fair.RCPs.rcp45.Emissions.emissions[:, 0],False, **kwargs)
-        result = pd.DataFrame({'C': C, 'F': F, 'T': T}, index=fair.RCPs.rcp45.Emissions.year)
-        result.name = 'FaIR_CFT_RCP45'
+        emissions = rcp3pd.Emissions.emissions
+        rcpemissions = pd.DataFrame(emissions, index = range(1765,2501),
+                                       columns=['Year', 'FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
+                                                'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
+                                                'NOx (Mt-N)', 'BC (Mt)', 'OC (Mt)', 'NH3 (Mt-N)', 'CF4 (kt)',
+                                                'C2F6 (kt)', 'C6F14 (kt)', 'HFC23 (kt)', 'HFC32 (kt)',
+                                                'HFC43_10 (kt)', 'HFC125 (kt)', 'HFC134a (kt)', 'HFC143a (kt)',
+                                                'HFC227ea (kt)', 'HFC245fa (kt)', 'SF6 (kt)', 'CFC_11 (kt)',
+                                                'CFC_12 (kt)', 'CFC_113 (kt)','CFC_114 (kt)','CFC_115 (kt)',
+                                                'CARB_TET (kt)', 'MCF (kt)', 'HCFC_22 (kt)', 'HCFC_141B (kt)',
+                                                'HCFC_142B (kt)', 'HALON1211 (kt)', 'HALON1202 (kt)', 
+                                                'HALON1301 (kt)', 'HALON2404 (kt)', 'CH3BR (kt)', 'CH3CL (kt)'])
+        rcpemissions.index.name="Year"
+        rcpemissions.name = 'FaIR_CFT_baseline_emis_rcp3'
+        
+        (C,F,T) = fair.forward.fair_scm(emissions=emissions)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp3pd.Emissions.year)
+        result1.index.name="Year"
+        result1.name = 'FaIR_CFT_baseline_conc_rcp3'
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp3pd.Emissions.year)
+        result2.index.name="Year"
+        result2.name = 'FaIR_CFT_baseline_forc_rcp3'
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp3pd.Emissions.year)
+        result3.index.name="Year"
+        result3.name = 'FaIR_CFT_baseline_temp_rcp3' 
+        return result1, result2, result3, rcpemissions
+
+    @lru_cache()
+    @data_func
+    def FaIR_CFT_baseline_RCP45(self):
+        """Return FaIR results for the baseline case of RCP4.5
+
+           Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
+           https://github.com/OMS-NetZero/FAIR
+
+           Returns 4 DataFrames for years 1765-2500 containing:
+             1: Multigas concentrations for the World.
+                 CO2(ppm), CH4(ppb), N2O(ppb)
+             2: Radiative forcing in watts per square meter
+                 CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
+             3: Change in temperature since pre-industrial time in Celsius
+             4: RCP emissions (39 individual gases)
+        """        
+        emissions = rcp45.Emissions.emissions
+        rcpemissions = pd.DataFrame(emissions, index = range(1765,2501),
+                                       columns=['Year', 'FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
+                                                'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
+                                                'NOx (Mt-N)', 'BC (Mt)', 'OC (Mt)', 'NH3 (Mt-N)', 'CF4 (kt)',
+                                                'C2F6 (kt)', 'C6F14 (kt)', 'HFC23 (kt)', 'HFC32 (kt)',
+                                                'HFC43_10 (kt)', 'HFC125 (kt)', 'HFC134a (kt)', 'HFC143a (kt)',
+                                                'HFC227ea (kt)', 'HFC245fa (kt)', 'SF6 (kt)', 'CFC_11 (kt)',
+                                                'CFC_12 (kt)', 'CFC_113 (kt)','CFC_114 (kt)','CFC_115 (kt)',
+                                                'CARB_TET (kt)', 'MCF (kt)', 'HCFC_22 (kt)', 'HCFC_141B (kt)',
+                                                'HCFC_142B (kt)', 'HALON1211 (kt)', 'HALON1202 (kt)', 
+                                                'HALON1301 (kt)', 'HALON2404 (kt)', 'CH3BR (kt)', 'CH3CL (kt)'])
+        rcpemissions.index.name="Year"
+        rcpemissions.name = 'FaIR_CFT_baseline_emis_rcp45'
+        
+        (C,F,T) = fair.forward.fair_scm(emissions=emissions)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp45.Emissions.year)
+        result1.index.name="Year"
+        result1.name = 'FaIR_CFT_baseline_conc_rcp45'
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp45.Emissions.year)
+        result2.index.name="Year"
+        result2.name = 'FaIR_CFT_baseline_forc_rcp45'
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp45.Emissions.year)
+        result3.index.name="Year"
+        result3.name = 'FaIR_CFT_baseline_temp_rcp45' 
+        return result1, result2, result3, rcpemissions
+
+    @lru_cache()
+    @data_func
+    def FaIR_CFT_baseline_RCP6(self):
+        """Return FaIR results for the baseline case of RCP6.0
+
+           Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
+           https://github.com/OMS-NetZero/FAIR
+
+           Returns 4 DataFrames for years 1765-2500 containing:
+             1: Multigas concentrations for the World.
+                 CO2(ppm), CH4(ppb), N2O(ppb)
+             2: Radiative forcing in watts per square meter
+                 CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
+             3: Change in temperature since pre-industrial time in Celsius
+             4: RCP emissions (39 individual gases)
+        """   
+        emissions = rcp6.Emissions.emissions
+        rcpemissions = pd.DataFrame(emissions, index = range(1765,2501),
+                                       columns=['Year', 'FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
+                                                'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
+                                                'NOx (Mt-N)', 'BC (Mt)', 'OC (Mt)', 'NH3 (Mt-N)', 'CF4 (kt)',
+                                                'C2F6 (kt)', 'C6F14 (kt)', 'HFC23 (kt)', 'HFC32 (kt)',
+                                                'HFC43_10 (kt)', 'HFC125 (kt)', 'HFC134a (kt)', 'HFC143a (kt)',
+                                                'HFC227ea (kt)', 'HFC245fa (kt)', 'SF6 (kt)', 'CFC_11 (kt)',
+                                                'CFC_12 (kt)', 'CFC_113 (kt)','CFC_114 (kt)','CFC_115 (kt)',
+                                                'CARB_TET (kt)', 'MCF (kt)', 'HCFC_22 (kt)', 'HCFC_141B (kt)',
+                                                'HCFC_142B (kt)', 'HALON1211 (kt)', 'HALON1202 (kt)', 
+                                                'HALON1301 (kt)', 'HALON2404 (kt)', 'CH3BR (kt)', 'CH3CL (kt)'])
+        rcpemissions.index.name="Year"
+        rcpemissions.name = 'FaIR_CFT_baseline_emis_rcp6'
+        
+        (C,F,T) = fair.forward.fair_scm(emissions=emissions)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp6.Emissions.year)
+        result1.index.name="Year"
+        result1.name = 'FaIR_CFT_baseline_conc_rcp6'
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp6.Emissions.year)
+        result2.index.name="Year"
+        result2.name = 'FaIR_CFT_baseline_forc_rcp6'
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp6.Emissions.year)
+        result3.index.name="Year"
+        result3.name = 'FaIR_CFT_baseline_temp_rcp6' 
+        return result1, result2, result3, rcpemissions
+    
+    @data_func
+    def FaIR_CFT_baseline_RCP85(self):
+        """Return FaIR results for the baseline case of RCP8.5
+
+           Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
+           https://github.com/OMS-NetZero/FAIR
+
+           Returns 4 DataFrames for years 1765-2500 containing:
+             1: Multigas concentrations for the World.
+                 CO2(ppm), CH4(ppb), N2O(ppb)
+             2: Radiative forcing in watts per square meter
+                 CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
+             3: Change in temperature since pre-industrial time in Celsius
+             4: RCP emissions (39 individual gases)
+        """   
+        emissions = rcp85.Emissions.emissions
+        rcpemissions = pd.DataFrame(emissions, index = range(1765,2501),
+                                       columns=['Year', 'FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
+                                                'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
+                                                'NOx (Mt-N)', 'BC (Mt)', 'OC (Mt)', 'NH3 (Mt-N)', 'CF4 (kt)',
+                                                'C2F6 (kt)', 'C6F14 (kt)', 'HFC23 (kt)', 'HFC32 (kt)',
+                                                'HFC43_10 (kt)', 'HFC125 (kt)', 'HFC134a (kt)', 'HFC143a (kt)',
+                                                'HFC227ea (kt)', 'HFC245fa (kt)', 'SF6 (kt)', 'CFC_11 (kt)',
+                                                'CFC_12 (kt)', 'CFC_113 (kt)','CFC_114 (kt)','CFC_115 (kt)',
+                                                'CARB_TET (kt)', 'MCF (kt)', 'HCFC_22 (kt)', 'HCFC_141B (kt)',
+                                                'HCFC_142B (kt)', 'HALON1211 (kt)', 'HALON1202 (kt)', 
+                                                'HALON1301 (kt)', 'HALON2404 (kt)', 'CH3BR (kt)', 'CH3CL (kt)'])
+        rcpemissions.index.name="Year"
+        rcpemissions.name = 'FaIR_CFT_baseline_emis_rcp85'
+        
+        (C,F,T) = fair.forward.fair_scm(emissions=emissions)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp85.Emissions.year)
+        result1.index.name="Year"
+        result1.name = 'FaIR_CFT_baseline_conc_rcp85'
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp85.Emissions.year)
+        result2.index.name="Year"
+        result2.name = 'FaIR_CFT_baseline_forc_rcp85'
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp85.Emissions.year)
+        result3.index.name="Year"
+        result3.name = 'FaIR_CFT_baseline_temp_rcp85' 
+        return result1, result2, result3, rcpemissions
+
+    @lru_cache()
+    @lru_cache()
+    @data_func
+    def ghg_emissions_reductions_global_annual(self):
+        """ Return annual emission reductions for 2014-2060.
+            Columns of CO2 (Gt-C), CH4 (Mt-CH4), N2O (Mt-N2O)
+        """
+        # N2O Emission reductions if applicable
+        if self.n2o_megatons_avoided_or_reduced is not None:
+            n2oreduction = self.n2o_megatons_avoided_or_reduced['World']
+        else:
+            n2oreduction = 0.0
+        # CH4 Emission reductions if applicable
+        if self.ch4_megatons_avoided_or_reduced is not None:
+            ch4reduction = self.ch4_megatons_avoided_or_reduced['World']
+        else:
+            ch4reduction = 0.0
+        
+        # CO2 Emission reductions from RRS of Squestered Land
+        co2only_mmt_reduced = self.co2only_mmt_reduced()
+        if co2only_mmt_reduced is not None:
+            co2reduction = (co2only_mmt_reduced['World'] / 1000.0) / C_TO_CO2EQ
+            
+        co2_sequestered_global = self.co2_sequestered_global()
+        if co2_sequestered_global is not None:
+            co2reduction = (co2_sequestered_global['All'] / 1000.0) / C_TO_CO2EQ
+       
+        co2reduction.loc[:self.ac.report_start_year - 1] = 0.0
+        co2reduction.loc[self.ac.report_end_year + 1:] = 0.0
+        
+        result = pd.DataFrame({'CO2 (Gt-C)': co2reduction , 'CH4 (Mt-CH4)': ch4reduction, 'N2O (Mt-N2O)': n2oreduction}, index=ch4reduction.index)
+        result.name = 'ghg_emissions_reductions_global_annual'
         return result
+    
+    
+    @lru_cache()
+    @data_func
+    def ghg_emissions_reductions_global_cummulative(self):
+        """ Return cummulative emission reductions for 2014-2060.
+            For CO2 (Gt-C), CH4 (Mt-CH4), N2O (Mt-N2O)
+        """
+        annual_reductions = self.ghg_emissions_reductions_global_annual()
+        result = annual_reductions.sum(axis=0)
+        result.name = 'ghg_emissions_reductions_global_cummulative'
+        return result
+ 
+
+    @lru_cache()
+    @data_func
+    def FaIR_CFT_Drawdown_RCP3(self):
+        """Return FaIR results for the baseline + Drawdown case of RCP3 (formerly RCP2.6)
+
+           Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
+           https://github.com/OMS-NetZero/FAIR
+
+           Returns 4 DataFrames for years 1765-2500 containing:
+             1: Multigas concentrations for the World.
+                 CO2(ppm), CH4(ppb), N2O(ppb)
+             2: Radiative forcing in watts per square meter
+                 CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
+             3: Change in temperature since pre-industrial time in Celsius
+             4: RCP emissions (39 individual gases)
+        """   
+        # Call on the solution emission reductions
+        annual_reductions = self.ghg_emissions_reductions_global_annual()
+        # Call on the RCP scenario
+        rcpemissions = rcp3pd.Emissions.emissions
+        rcpemissionsnew = pd.DataFrame(rcpemissions, index = range(1765,2501),
+                                       columns=['Year','FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
+                                                'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
+                                                'NOx (Mt-N)', 'BC (Mt)', 'OC (Mt)', 'NH3 (Mt-N)', 'CF4 (kt)',
+                                                'C2F6 (kt)', 'C6F14 (kt)', 'HFC23 (kt)', 'HFC32 (kt)',
+                                                'HFC43_10 (kt)', 'HFC125 (kt)', 'HFC134a (kt)', 'HFC143a (kt)',
+                                                'HFC227ea (kt)', 'HFC245fa (kt)', 'SF6 (kt)', 'CFC_11 (kt)',
+                                                'CFC_12 (kt)', 'CFC_113 (kt)','CFC_114 (kt)','CFC_115 (kt)',
+                                                'CARB_TET (kt)', 'MCF (kt)', 'HCFC_22 (kt)', 'HCFC_141B (kt)',
+                                                'HCFC_142B (kt)', 'HALON1211 (kt)', 'HALON1202 (kt)', 
+                                                'HALON1301 (kt)', 'HALON2404 (kt)', 'CH3BR (kt)', 'CH3CL (kt)'])
+        rcpemissionsnew.index.name="Year"
+        rcpemissionsnew.name = 'FaIR_CFT_Drawdown_emis_rcp3' 
+        rcpemissionschopped = rcpemissionsnew.iloc[249:296,:]
+        
+        # Replace the CO2 emissions
+        a0 = rcpemissionschopped.iloc[:,1]- annual_reductions.iloc[:,0]
+        rcpemissionsnew.iloc[249:296,1] = a0
+        # Replace the CH4 emissions
+        a1 = rcpemissionschopped.iloc[:,3]- annual_reductions.iloc[:,1]
+        rcpemissionsnew.iloc[249:296,3] = a1
+        # Replace the N2O emissions
+        a2 = rcpemissionschopped.iloc[:,4]- annual_reductions.iloc[:,2]
+        rcpemissionsnew.iloc[249:296,4] = a2
+        
+        emissionsnew = rcpemissionsnew.to_numpy()
+        (C,F,T) = fair.forward.fair_scm(emissions=emissionsnew)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp3pd.Emissions.year)
+        result1.index.name="Year"
+        result1.name = 'FaIR_CFT_Drawdown_conc_rcp3'
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp3pd.Emissions.year)
+        result2.index.name="Year"
+        result2.name = 'FaIR_CFT_Drawdown_forc_rcp3'
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp3pd.Emissions.year)
+        result3.index.name="Year"
+        result3.name = 'FaIR_CFT_Drawdown_temp_rcp3' 
+        return result1, result2, result3, rcpemissionsnew
+
+    @lru_cache()
+    @data_func
+    def FaIR_CFT_Drawdown_RCP45(self):
+        """Return FaIR results for the baseline + Drawdown case of RCP4.5
+
+           Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
+           https://github.com/OMS-NetZero/FAIR
+
+           Returns 4 DataFrames for years 1765-2500 containing:
+             1: Multigas concentrations for the World.
+                 CO2(ppm), CH4(ppb), N2O(ppb)
+             2: Radiative forcing in watts per square meter
+                 CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
+             3: Change in temperature since pre-industrial time in Celsius
+             4: RCP emissions (39 individual gases)
+        """   
+        # Call on the solution emission reductions
+        annual_reductions = self.ghg_emissions_reductions_global_annual()
+        # Call on the RCP scenario
+        rcpemissions = rcp45.Emissions.emissions
+        rcpemissionsnew = pd.DataFrame(rcpemissions, index = range(1765,2501),
+                                       columns=['Year','FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
+                                                'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
+                                                'NOx (Mt-N)', 'BC (Mt)', 'OC (Mt)', 'NH3 (Mt-N)', 'CF4 (kt)',
+                                                'C2F6 (kt)', 'C6F14 (kt)', 'HFC23 (kt)', 'HFC32 (kt)',
+                                                'HFC43_10 (kt)', 'HFC125 (kt)', 'HFC134a (kt)', 'HFC143a (kt)',
+                                                'HFC227ea (kt)', 'HFC245fa (kt)', 'SF6 (kt)', 'CFC_11 (kt)',
+                                                'CFC_12 (kt)', 'CFC_113 (kt)','CFC_114 (kt)','CFC_115 (kt)',
+                                                'CARB_TET (kt)', 'MCF (kt)', 'HCFC_22 (kt)', 'HCFC_141B (kt)',
+                                                'HCFC_142B (kt)', 'HALON1211 (kt)', 'HALON1202 (kt)', 
+                                                'HALON1301 (kt)', 'HALON2404 (kt)', 'CH3BR (kt)', 'CH3CL (kt)'])
+        rcpemissionsnew.index.name="Year"
+        rcpemissionsnew.name = 'FaIR_CFT_Drawdown_emis_rcp45' 
+        rcpemissionschopped = rcpemissionsnew.iloc[249:296,:]
+        
+        # Replace the CO2 emissions
+        a0 = rcpemissionschopped.iloc[:,1]- annual_reductions.iloc[:,0]
+        rcpemissionsnew.iloc[249:296,1] = a0
+        # Replace the CH4 emissions
+        a1 = rcpemissionschopped.iloc[:,3]- annual_reductions.iloc[:,1]
+        rcpemissionsnew.iloc[249:296,3] = a1
+        # Replace the N2O emissions
+        a2 = rcpemissionschopped.iloc[:,4]- annual_reductions.iloc[:,2]
+        rcpemissionsnew.iloc[249:296,4] = a2
+        
+        emissionsnew = rcpemissionsnew.to_numpy()
+        (C,F,T) = fair.forward.fair_scm(emissions=emissionsnew)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp45.Emissions.year)
+        result1.index.name="Year"
+        result1.name = 'FaIR_CFT_Drawdown_conc_rcp45'
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp45.Emissions.year)
+        result2.index.name="Year"
+        result2.name = 'FaIR_CFT_Drawdown_forc_rcp45'
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp45.Emissions.year)
+        result3.index.name="Year"
+        result3.name = 'FaIR_CFT_Drawdown_temp_rcp45' 
+        return result1, result2, result3, rcpemissionsnew
+    
+    @lru_cache()
+    @data_func
+    def FaIR_CFT_Drawdown_RCP6(self):
+        """Return FaIR results for the baseline + Drawdown case of RCP6.0
+
+           Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
+           https://github.com/OMS-NetZero/FAIR
+
+           Returns 4 DataFrames for years 1765-2500 containing:
+             1: Multigas concentrations for the World.
+                 CO2(ppm), CH4(ppb), N2O(ppb)
+             2: Radiative forcing in watts per square meter
+                 CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
+             3: Change in temperature since pre-industrial time in Celsius
+             4: RCP emissions (39 individual gases)
+        """   
+        # Call on the solution emission reductions
+        annual_reductions = self.ghg_emissions_reductions_global_annual()
+        # Call on the RCP scenario
+        rcpemissions = rcp6.Emissions.emissions
+        rcpemissionsnew = pd.DataFrame(rcpemissions, index = range(1765,2501),
+                                       columns=['Year','FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
+                                                'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
+                                                'NOx (Mt-N)', 'BC (Mt)', 'OC (Mt)', 'NH3 (Mt-N)', 'CF4 (kt)',
+                                                'C2F6 (kt)', 'C6F14 (kt)', 'HFC23 (kt)', 'HFC32 (kt)',
+                                                'HFC43_10 (kt)', 'HFC125 (kt)', 'HFC134a (kt)', 'HFC143a (kt)',
+                                                'HFC227ea (kt)', 'HFC245fa (kt)', 'SF6 (kt)', 'CFC_11 (kt)',
+                                                'CFC_12 (kt)', 'CFC_113 (kt)','CFC_114 (kt)','CFC_115 (kt)',
+                                                'CARB_TET (kt)', 'MCF (kt)', 'HCFC_22 (kt)', 'HCFC_141B (kt)',
+                                                'HCFC_142B (kt)', 'HALON1211 (kt)', 'HALON1202 (kt)', 
+                                                'HALON1301 (kt)', 'HALON2404 (kt)', 'CH3BR (kt)', 'CH3CL (kt)'])
+        rcpemissionsnew.index.name="Year"
+        rcpemissionsnew.name = 'FaIR_CFT_Drawdown_emis_rcp6' 
+        rcpemissionschopped = rcpemissionsnew.iloc[249:296,:]
+        
+        # Replace the CO2 emissions
+        a0 = rcpemissionschopped.iloc[:,1]- annual_reductions.iloc[:,0]
+        rcpemissionsnew.iloc[249:296,1] = a0
+        # Replace the CH4 emissions
+        a1 = rcpemissionschopped.iloc[:,3]- annual_reductions.iloc[:,1]
+        rcpemissionsnew.iloc[249:296,3] = a1
+        # Replace the N2O emissions
+        a2 = rcpemissionschopped.iloc[:,4]- annual_reductions.iloc[:,2]
+        rcpemissionsnew.iloc[249:296,4] = a2
+        
+        emissionsnew = rcpemissionsnew.to_numpy()
+        (C,F,T) = fair.forward.fair_scm(emissions=emissionsnew)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp6.Emissions.year)
+        result1.index.name="Year"
+        result1.name = 'FaIR_CFT_Drawdown_conc_rcp6'
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp6.Emissions.year)
+        result2.index.name="Year"
+        result2.name = 'FaIR_CFT_Drawdown_forc_rcp6'
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp6.Emissions.year)
+        result3.index.name="Year"
+        result3.name = 'FaIR_CFT_Drawdown_temp_rcp6' 
+        return result1, result2, result3, rcpemissionsnew 
+    
+    @lru_cache()
+    @data_func
+    def FaIR_CFT_Drawdown_RCP85(self):
+        """Return FaIR results for the baseline + Drawdown case of RCP8.5
+
+           Finite Amplitude Impulse-Response simple climate-carbon-cycle model.
+           https://github.com/OMS-NetZero/FAIR
+
+           Returns 4 DataFrames for years 1765-2500 containing:
+             1: Multigas concentrations for the World.
+                 CO2(ppm), CH4(ppb), N2O(ppb)
+             2: Radiative forcing in watts per square meter
+                 CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
+             3: Change in temperature since pre-industrial time in Celsius
+             4: RCP emissions (39 individual gases)
+        """   
+        # Call on the solution emission reductions
+        annual_reductions = self.ghg_emissions_reductions_global_annual()
+        # Call on the RCP scenario
+        rcpemissions = rcp85.Emissions.emissions
+        rcpemissionsnew = pd.DataFrame(rcpemissions, index = range(1765,2501),
+                                       columns=['Year','FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
+                                                'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
+                                                'NOx (Mt-N)', 'BC (Mt)', 'OC (Mt)', 'NH3 (Mt-N)', 'CF4 (kt)',
+                                                'C2F6 (kt)', 'C6F14 (kt)', 'HFC23 (kt)', 'HFC32 (kt)',
+                                                'HFC43_10 (kt)', 'HFC125 (kt)', 'HFC134a (kt)', 'HFC143a (kt)',
+                                                'HFC227ea (kt)', 'HFC245fa (kt)', 'SF6 (kt)', 'CFC_11 (kt)',
+                                                'CFC_12 (kt)', 'CFC_113 (kt)','CFC_114 (kt)','CFC_115 (kt)',
+                                                'CARB_TET (kt)', 'MCF (kt)', 'HCFC_22 (kt)', 'HCFC_141B (kt)',
+                                                'HCFC_142B (kt)', 'HALON1211 (kt)', 'HALON1202 (kt)', 
+                                                'HALON1301 (kt)', 'HALON2404 (kt)', 'CH3BR (kt)', 'CH3CL (kt)'])
+        rcpemissionsnew.index.name="Year"
+        rcpemissionsnew.name = 'FaIR_CFT_Drawdown_emis_rcp85' 
+        rcpemissionschopped = rcpemissionsnew.iloc[249:296,:]
+        
+        # Replace the CO2 emissions
+        a0 = rcpemissionschopped.iloc[:,1]- annual_reductions.iloc[:,0]
+        rcpemissionsnew.iloc[249:296,1] = a0
+        # Replace the CH4 emissions
+        a1 = rcpemissionschopped.iloc[:,3]- annual_reductions.iloc[:,1]
+        rcpemissionsnew.iloc[249:296,3] = a1
+        # Replace the N2O emissions
+        a2 = rcpemissionschopped.iloc[:,4]- annual_reductions.iloc[:,2]
+        rcpemissionsnew.iloc[249:296,4] = a2
+        
+        emissionsnew = rcpemissionsnew.to_numpy()
+        (C,F,T) = fair.forward.fair_scm(emissions=emissionsnew)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp85.Emissions.year)
+        result1.index.name="Year"
+        result1.name = 'FaIR_CFT_Drawdown_conc_rcp85'
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp85.Emissions.year)
+        result2.index.name="Year"
+        result2.name = 'FaIR_CFT_Drawdown_forc_rcp85'
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp85.Emissions.year)
+        result3.index.name="Year"
+        result3.name = 'FaIR_CFT_Drawdown_temp_rcp85' 
+        return result1, result2, result3, rcpemissionsnew
+
+
+###########----############----############----############----############
+## PRIOR RADIATIVE FORCING EQUATIONS USED FOR CO2-EQ CALCULATIONS
+
 
 # The following formulae come from the SolarPVUtil Excel implementation of 27Aug18.
 # There was no explanation of where they came from or what they really mean.
