@@ -950,7 +950,7 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
             f.write("            total_adoption_limit=ref_tam_per_region)\n")
     if case == 'PDS':
         f.write("        for (i,rs) in enumerate(ca_pds_data_sources):\n")
-        f.write("            rs['include'] = (i in ca.soln_pds_adoption_scenarios_included)\n")
+        f.write("            rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)\n")
         f.write("        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
         f.write("            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
         f.write(f"            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,\n")
