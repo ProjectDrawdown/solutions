@@ -99,7 +99,7 @@ class UnitAdoption(DataHandler):
         """Population by region for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!P16:Z63
         """
-        filename = os.path.join(self.datadir, 'unitadoption_ref_population.csv')
+        filename = os.path.join(self.datadir, 'population', 'ref_population.csv')
         result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
                              skip_blank_lines=True, comment='#')
         result.index = result.index.astype(int)
@@ -112,7 +112,7 @@ class UnitAdoption(DataHandler):
         """GDP by region for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!AB16:AL63
         """
-        filename = os.path.join(self.datadir, 'unitadoption_ref_gdp.csv')
+        filename = os.path.join(self.datadir, 'population', 'ref_gdp.csv')
         result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
                              skip_blank_lines=True, comment='#')
         result.index = result.index.astype(int)
@@ -164,7 +164,7 @@ class UnitAdoption(DataHandler):
         """Population by region for the Project Drawdown Solution case.
            SolarPVUtil 'Unit Adoption Calculations'!P68:Z115
         """
-        filename = os.path.join(self.datadir, 'unitadoption_pds_population.csv')
+        filename = os.path.join(self.datadir, 'population', 'pds_population.csv')
         result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
                              skip_blank_lines=True, comment='#')
         result.index = result.index.astype(int)
@@ -176,7 +176,7 @@ class UnitAdoption(DataHandler):
         """GDP by region for the Project Drawdown Solution case.
            SolarPVUtil 'Unit Adoption Calculations'!AB68:AL115
         """
-        filename = os.path.join(self.datadir, 'unitadoption_pds_gdp.csv')
+        filename = os.path.join(self.datadir, 'population', 'pds_gdp.csv')
         result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
                              skip_blank_lines=True, comment='#')
         result.index = result.index.astype(int)
