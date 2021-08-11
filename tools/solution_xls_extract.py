@@ -148,9 +148,9 @@ def get_rrs_scenarios(wb, solution_category):
 
             assert xls(sr_tab, row + 118, co("B")) == 'Optional Inputs'
             s['ch4_co2_per_funit'] = link_vma(sr_tab, row + 119, co("E"))
-            s['ch4_is_co2eq'] = (xls(sr_tab, row + 119, co("E")) == 't CH4-CO2eq per TWh')
+            s['ch4_is_co2eq'] = ("CO2eq" in xls(sr_tab, row + 119, co("F")))
             s['n2o_co2_per_funit'] = link_vma(sr_tab, row + 120, co("E"))
-            s['n2o_is_co2eq'] = (xls(sr_tab, row + 120, co("E")) == 't N2O-CO2eq per TWh')
+            s['n2o_is_co2eq'] = ("CO2eq" in xls(sr_tab, row + 120, co("F")))
             s['co2eq_conversion_source'] = xls(sr_tab, row + 121, co("E"))
 
             assert xls(sr_tab, row + 124, co("B")) == 'General Climate Inputs'

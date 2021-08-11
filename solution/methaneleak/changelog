@@ -1,0 +1,20 @@
+Initial Extraction Notes:
+
+In __init__.py, moved the CustomAdoption code block inside the "Fully Customized PDS" to
+avoid an error when self.ac.soln_pds_adoption_scenarios_included is missing.
+(Note to self: make this fix in the extractor)
+
+Stopped on this error:
+
+AssertionError: Solution: Oil and gas methane management Scenario 0: 
+Unit Adoption Calculations BF308:BP354
+1/517 values differ:
+   [0, 1]: expected 0.0 vs actual 28.0
+
+This corresponds to the function ua.soln_pds_direct_ch4_co2_emissions_saved(), and the
+error comes from the fact that in Excel, the value C252 is a hard 0 (rather than just
+a very small number), while in Python, the 2014 value of ua.soln_net_annual_funits_adopted()
+is 1e-6.
+
+This error appears to propagate downstream to First Cost, so stopping here to 
+continue investigation later.
