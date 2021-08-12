@@ -19,7 +19,7 @@ SCENARIO_SKIP = None
 # Exponential forecasts.
 TEST_SKIP = ['BT677:BV723','CA677:CD723','CR677:CT723']
 
-def test_hcr_loader():
+def test_hcrecycling_loader():
     """Test that the solution can load a single scenario"""
     (constructor,scenarios) = factory.one_solution_scenarios(solution_name)
     assert len(scenarios) > 0
@@ -27,7 +27,7 @@ def test_hcr_loader():
     assert ascenario is not None
 
 @pytest.mark.slow
-def test_hcr_results(scenario_skip=None, test_skip=None, test_only=None):
+def test_hcrecycling_results(scenario_skip=None, test_skip=None, test_only=None):
     """Test computed results against stored Excel results"""
     scenario_skip = scenario_skip or SCENARIO_SKIP
     test_skip = test_skip or TEST_SKIP
