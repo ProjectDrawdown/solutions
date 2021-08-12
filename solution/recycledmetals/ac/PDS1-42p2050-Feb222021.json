@@ -15,10 +15,7 @@
         "value": 1.0,
         "statistic": ""
     },
-    "conv_var_oper_cost_per_funit": {
-        "value": 1861006036.47336,
-        "statistic": ""
-    },
+    "conv_var_oper_cost_per_funit": 1861006036.47336,
     "conv_fixed_oper_cost_per_iunit": 0.0,
     "conv_fuel_cost_per_funit": 0.0,
     "pds_2014_cost": 0.0,
@@ -33,10 +30,7 @@
         "value": 1.0,
         "statistic": ""
     },
-    "soln_var_oper_cost_per_funit": {
-        "value": 660426260.243249,
-        "statistic": ""
-    },
+    "soln_var_oper_cost_per_funit":  660426260.243249,
     "soln_fixed_oper_cost_per_iunit": 0.0,
     "soln_fuel_cost_per_funit": 0.0,
     "npv_discount_rate": 0.0,
