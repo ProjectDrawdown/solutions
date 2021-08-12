@@ -39,6 +39,7 @@ class OceanSolution:
         self.ref_adoption_file = config['REFAdoptionFile']
         self.scenarios_file = config['ScenariosFile']
         self.required_version_minimum = tuple(int(st) for st in str.split(config['RequiredVersionMinimum'], '.'))
+        self.config = config
 
     def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name):
             
@@ -78,33 +79,16 @@ class OceanSolution:
         if sys.version_info < self.required_version_minimum:
             print(f'Warning - you are running python version {sys.version}. Version {self.required_version_minimum} or greater is required.')
 
-    
+    def set_tam(self):
+        # default implementation assumes flat total area across time (change = 0.0)
+        self.pds_scenario.set_tam_linear(self.total_area, change_per_period = 0.0, total_area_as_of_period = None, region = None )
+
     def get_scenario_names(self):
 
         input_stream = open(self.scenarios_file, 'r')
         scen_dict = json.load(input_stream)
         
         return list(scen_dict.keys())
-
-    def load_scenario(self, scenario_name):
-
-        input_stream = open(self.scenarios_file, 'r')
-        scen_dict = json.load(input_stream)
-
-        if scenario_name not in scen_dict.keys():
-            raise ValueError(f"Unable to find {scenario_name} in scenario file: {self.scenarios_file}")
-        
-        scenario = Scenario(**scen_dict[scenario_name])
-
-        self.scenario = scenario
-
-        self._load_pds_scenario()
-        self._load_ref_scenario()
-
-        # Set scenario-specific data:
-        self.disturbance_rate = self.scenario.disturbance_rate
-        self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
-        self.npv_discount_rate = self.scenario.npv_discount_rate
 
     
     def print_scenario_info(self):
@@ -127,19 +111,19 @@ class OceanSolution:
 
 
     def get_global_percent_adoption_base_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted(region) 
-        result = pds_series.loc[self.base_year+1] / self.total_area
+        pds_series = self.pds_scenario.get_units_adopted_percent_of_tam(region) 
+        result = pds_series.loc[self.base_year+1]
         return result
         
         
     def get_percent_adoption_start_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted(region)
-        result = pds_series.loc[self.start_year] / self.total_area
+        pds_series = self.pds_scenario.get_units_adopted_percent_of_tam(region)
+        result = pds_series.loc[self.start_year]
         return result
     
     def get_percent_adoption_end_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted(region)
-        result = pds_series.loc[self.end_year] / self.total_area
+        pds_series = self.pds_scenario.get_units_adopted_percent_of_tam(region)
+        result = pds_series.loc[self.end_year]
         return result
         
     # End of Unit Adoption functions

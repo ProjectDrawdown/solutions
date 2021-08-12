@@ -3,6 +3,7 @@
 # Extended this class with some properties that should be common to scenarios from most of the solutions.
 # OceanScenario subclasses this, adding extra properties.
 from dataclasses import dataclass, field
+import datetime
 
 @dataclass
 class Scenario:
@@ -25,3 +26,12 @@ class Scenario:
     # General Emissions Inputs:
     use_co2_equiv : bool
     use_aggregate_co2_equiv : bool
+
+    scenario_timestamp: datetime
+    scenario_description: str
+
+    # PDS Adoption Scenario Inputs:
+    pds_scenario_description : str
+    pds_scenario_name : str
+    pds_custom_scenarios_included : str
+    

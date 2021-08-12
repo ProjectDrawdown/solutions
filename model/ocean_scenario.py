@@ -1,6 +1,5 @@
 
 from dataclasses import dataclass, field
-import datetime
 from model.scenario import Scenario
     
 @dataclass
@@ -18,16 +17,6 @@ class OceanScenario(Scenario):
 
     ## Following not defaulted - may be added after initialisation.
 
-    scenario_timestamp: datetime
-    scenario_description: str
-
-    # PDS Adoption Scenario Inputs:
-    pds_scenario_description : str
-
-    # Fully Customized PDS:
-    pds_scenario_name : str
-    pds_custom_scenarios_included : str
-    
     # Ref Adoption Scenario Inputs:
     ref_scenario_name : str
     ref_base_custom_adoption_on : str

@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 import json
+import copy
 
 # Code originally based of seaweed farming solution, but is intended to be general.
 
@@ -10,6 +11,7 @@ class UnitAdoption:
     Used for both PDS adoption and REF adoption.
     """
     description : str
+    _tam_df: pd.DataFrame
     
     def _validate_inputs(self):        
         pass
@@ -38,7 +40,7 @@ class UnitAdoption:
         df.columns = json_dict[self.description]['columns']
         df.set_index(df.columns[0], inplace=True)
 
-        # ditch everything earlier than the base year.
+        # ditch everything earlier than the base year -1.
         df = df.loc[self.base_year-1:]
 
         self.implementation_units = df
@@ -46,6 +48,48 @@ class UnitAdoption:
         self.first_cost = 0.0
         self.net_profit_margin = 0.0
         self.operating_cost = 0.0
+        self._tam_df = None
+
+    def set_tam_linear(self, total_area, change_per_period, total_area_as_of_period = None, region = None):
+        # Sets up the TOA time series, such as that located in [TOA calculation]!$C$11 in Macroalgae protection.
+        
+        if self._tam_df is None:
+            # First time called, so set it up
+            df = self.implementation_units.copy(deep=True)
+            for col in df.columns:
+                df[col].values[:] = 0.0
+            self._tam_df = df
+
+        if region is None:
+            region = self._tam_df.columns[0]
+
+        if total_area_as_of_period is None:
+            total_area_as_of_period = self.base_year
+        
+        m = change_per_period
+        c = total_area - m * total_area_as_of_period
+
+        # self._tam_df[region] returns a series. Convert this to a dataframe. Then apply a function using straight line formula y = m*x +c.
+        # x.name returns index value (the year).
+        s = pd.DataFrame(self._tam_df[region]).apply(lambda x: m * x.name + c, axis='columns')
+        s = s.clip(upper = total_area)
+
+        self._tam_df[region] = pd.DataFrame(s)
+        
+
+    def get_skeleton(self):
+        # This is used to create empty unit adoption objects. Sometimes ref unit adoption is zero, often conventional unit adoption is also zero.
+        # Having zero unit adoption objects enables addition & subtraction without changing formulae.
+
+        new_obj = copy.deepcopy(self)
+        
+        df = new_obj.implementation_units
+        for col in df.columns:
+            df[col].values[:] = 0.0
+
+        new_obj.implementation_units = df
+
+        return new_obj
 
     ##############
     
@@ -87,6 +131,12 @@ class UnitAdoption:
         # 'Unit Adoption Calculations'!C136:C182 = "Land Units Adopted" - PDS
         # 'Unit Adoption Calculations'!C198:C244 = "Land Units Adopted" - REF
         return self.implementation_units.loc[:, region].copy()
+
+    def get_units_adopted_percent_of_tam(self, region):
+        numerator = self.implementation_units.loc[:,region]
+        denominator = self._tam_df.loc[:, region]
+        result = numerator.divide(denominator)
+        return result
 
 
     def annual_breakout(self, region, end_year):
