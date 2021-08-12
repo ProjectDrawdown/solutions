@@ -149,8 +149,6 @@ class Scenario(scenario.Scenario):
               'Region: USA': {
                   'Baseline Cases': {
                   'Drawdown TAM': THISDIR.joinpath('tam', 'tam_Drawdown_TAM.csv'),
-              },
-                  '': {
                   'USEPA SMM': THISDIR.joinpath('tam', 'tam_USEPA_SMM.csv'),
               },
             },
@@ -167,7 +165,10 @@ class Scenario(scenario.Scenario):
             },
         }
         self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_pds_data_sources)
+            tam_pds_data_sources=tam_pds_data_sources,
+            interpolation_overrides = {
+                'USA': THISDIR.joinpath('tam', 'tam_override_usa_region.csv')
+            })
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 

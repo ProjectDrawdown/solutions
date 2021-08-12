@@ -14,7 +14,10 @@ solution_name = 'household_commercial_recycling'
 # If there are long-running test failures that should be skipped, you can indicate them here.
 # Someday we'll have a scanner that will check for these
 SCENARIO_SKIP = None
-TEST_SKIP = None
+# We are skipping these tests because we are providing overridden TAM
+# trends for the 3rd poly case only, so skip Linear, Degree 2 and 
+# Exponential forecasts.
+TEST_SKIP = ['BT677:BV723','CA677:CD723','CR677:CT723']
 
 def test_hcr_loader():
     """Test that the solution can load a single scenario"""

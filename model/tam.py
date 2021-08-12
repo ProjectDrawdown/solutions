@@ -18,7 +18,7 @@ class TAM(DataHandler, object, metaclass=MetaclassCache):
     """Total Addressable Market module."""
 
     def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources,
-                 main_includes_regional=None):
+                 main_includes_regional=None, interpolation_overrides=None):
         """TAM module.
 
            Arguments
@@ -38,11 +38,17 @@ class TAM(DataHandler, object, metaclass=MetaclassCache):
            tam_pds_data_sources: as tam_ref_data_sources, for the PDS scenario.
            main_includes_regional: boolean of whether the global min/max/sd should include
              data from the primary regions.
+            
+           Quirks Arguments:
+           interpolation_override: a dictionary mapping regions to files with stored interpolations.  This is 
+             used to finesse cases of numerical instability by storing the result of the existing Excel interpolation.
+
         """
         self.tamconfig = tamconfig
         self.tam_ref_data_sources = tam_ref_data_sources
         self.tam_pds_data_sources = tam_pds_data_sources
         self.main_includes_regional = main_includes_regional
+        self.interpolation_overrides = interpolation_overrides or {}
         self._populate_forecast_data()
 
 
@@ -396,18 +402,22 @@ class TAM(DataHandler, object, metaclass=MetaclassCache):
            Linear: SolarPVUtil 'TAM Data'!BX677:BZ723     Degree2: SolarPVUtil 'TAM Data'!CE677:CH723
            Degree3: SolarPVUtil 'TAM Data'!CM677:CQ723    Exponential: SolarPVUtil 'TAM Data'!CV677:CX723
         """
-        main_region = dd.REGIONS[0]
-        if main_region in region and 'PDS' in region:
-            data_sources = self._get_data_sources(
-                    data_sources=self.tam_pds_data_sources, region=region)
+
+        if region in self.interpolation_overrides:
+            result = pd.read_csv(self.interpolation_overrides[region], index_col='Year' )
         else:
-            data_sources = self._get_data_sources(
-                    data_sources=self.tam_ref_data_sources, region=region)
-        growth = self.tamconfig.loc['growth', region]
-        trend = self._get_trend(trend=trend, tamconfig=self.tamconfig[region],
-                data_sources=data_sources)
-        data = self.forecast_low_med_high(region).loc[:, growth]
-        result = interpolation.trend_algorithm(data=data, trend=trend)
+            main_region = dd.REGIONS[0]
+            if main_region in region and 'PDS' in region:
+                data_sources = self._get_data_sources(
+                        data_sources=self.tam_pds_data_sources, region=region)
+            else:
+                data_sources = self._get_data_sources(
+                        data_sources=self.tam_ref_data_sources, region=region)
+            growth = self.tamconfig.loc['growth', region]
+            trend = self._get_trend(trend=trend, tamconfig=self.tamconfig[region],
+                    data_sources=data_sources)
+            data = self.forecast_low_med_high(region).loc[:, growth]
+            result = interpolation.trend_algorithm(data=data, trend=trend)
         result.name = 'forecast_trend_' + self._name_to_identifier(region) + '_' + str(trend).lower()
         return result
 
