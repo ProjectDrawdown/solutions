@@ -9,7 +9,7 @@ from solution import factory
 thisdir = Path(__file__).parents[0]
 expected_file = thisdir / 'expected.zip'
 
-solution_name = 'household_commercial_recycling'
+solution_name = 'hcrecycling'
 
 # If there are long-running test failures that should be skipped, you can indicate them here.
 # Someday we'll have a scanner that will check for these
