@@ -154,7 +154,7 @@ class UnitAdoption(DataHandler):
         """Growth in Total Addressable Market for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!BY16:CI63
         """
-        calc = self.ref_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
+        calc = self.ref_tam_per_region.fillna(0.0).rolling(2).apply(lambda x: x[1] - x[0], raw=True)
         calc.loc[2014] = [''] * calc.shape[1]  # empty row
         calc.name = "ref_tam_growth"
         return calc
@@ -215,7 +215,7 @@ class UnitAdoption(DataHandler):
         """Growth in Total Addressable Market for the Project Drawdown Solution case.
            SolarPVUtil 'Unit Adoption Calculations'!BY68:CI115
         """
-        calc = self.pds_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
+        calc = self.pds_tam_per_region.fillna(0.0).rolling(2).apply(lambda x: x[1] - x[0], raw=True)
         calc.loc[2014] = [''] * calc.shape[1]  # empty row
         calc.name = "pds_tam_growth"
         return calc
