@@ -374,9 +374,8 @@ class Scenario(scenario.Scenario):
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
             ref_adoption_data_per_region=ref_adoption_data_per_region,
-            use_first_pds_datapoint_main=False,
-            adoption_base_year=2018,
             copy_pds_to_ref=False,
+            copy_ref_datapoint=False, copy_pds_datapoint=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
@@ -387,7 +386,8 @@ class Scenario(scenario.Scenario):
             pds_total_adoption_units=pds_tam_per_region,
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-            bug_cfunits_double_count=False)
+            bug_cfunits_double_count=False,
+            replacement_period_offset=0)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
         conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
