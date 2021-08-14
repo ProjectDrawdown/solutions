@@ -59,7 +59,7 @@ class UnitAdoption(DataHandler):
          soln_pds_funits_adopted: Annual functional units adopted in the PDS scenario.
          ref_total_adoption_units: dataframe of TAM/TLA/TOA per region for the Reference scenario.
          pds_total_adoption_units: dataframe of TAM/TLA/TOA per region for the PDS scenario.
-         bug_cfunits_double_count (bool): enable bug-for-bug compatibility
+
          repeated_cost_for_iunits (bool): whether there is a repeated first cost to
            maintaining implementation units at a specified level in
            soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, & conv_ref_new_iunits.
@@ -67,11 +67,20 @@ class UnitAdoption(DataHandler):
            results by. For example, Land solutions typically multiply by 1e6 because their
            basic land unit is a million hectares but the electricity use (for irrigation, etc)
            is calculated per hectare.
+        
+        Excel matching options:
+         bug_cfunits_double_count (bool): enable bug-for-bug compatibility
+         replacement_period_offset:  I'm not sure why, but the existing code added '1' in a number of places
+           to replacement periods, and the resulting code passes tests for a number of solutions.
+           It does not match the current Excel spreadsheets I am looking at in 2021, and it doesn't make sense.
+           But I'm giving in and making it a parameter defaulting to 1 for backwards compatibility, and set to
+           0 for new models where it is breaking things.
     """
 
     def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted,
                  ref_total_adoption_units=None, pds_total_adoption_units=None,
-                 bug_cfunits_double_count=False, repeated_cost_for_iunits=False, electricity_unit_factor=1.0):
+                 repeated_cost_for_iunits=False, electricity_unit_factor=1.0,
+                 bug_cfunits_double_count=False, replacement_period_offset=1):
         self.ac = ac
         self.datadir = str(pathlib.Path(__file__).parents[1].joinpath('data'))
         self.ref_tam_per_region = ref_total_adoption_units
@@ -79,9 +88,10 @@ class UnitAdoption(DataHandler):
         self.total_area_per_region = pds_total_adoption_units  # ref and pds should be the same for TLA/TOA
         self.soln_ref_funits_adopted = soln_ref_funits_adopted
         self.soln_pds_funits_adopted = soln_pds_funits_adopted
-        self.bug_cfunits_double_count = bug_cfunits_double_count
         self.repeated_cost_for_iunits = repeated_cost_for_iunits
         self.electricity_unit_factor = electricity_unit_factor
+        self.bug_cfunits_double_count = bug_cfunits_double_count
+        self.replacement_period_offset = replacement_period_offset
 
     @lru_cache()
     @data_func
@@ -89,7 +99,7 @@ class UnitAdoption(DataHandler):
         """Population by region for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!P16:Z63
         """
-        filename = os.path.join(self.datadir, 'unitadoption_ref_population.csv')
+        filename = os.path.join(self.datadir, 'population', 'ref_population.csv')
         result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
                              skip_blank_lines=True, comment='#')
         result.index = result.index.astype(int)
@@ -102,7 +112,7 @@ class UnitAdoption(DataHandler):
         """GDP by region for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!AB16:AL63
         """
-        filename = os.path.join(self.datadir, 'unitadoption_ref_gdp.csv')
+        filename = os.path.join(self.datadir, 'population', 'ref_gdp.csv')
         result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
                              skip_blank_lines=True, comment='#')
         result.index = result.index.astype(int)
@@ -144,7 +154,7 @@ class UnitAdoption(DataHandler):
         """Growth in Total Addressable Market for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!BY16:CI63
         """
-        calc = self.ref_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
+        calc = self.ref_tam_per_region.fillna(0.0).rolling(2).apply(lambda x: x[1] - x[0], raw=True)
         calc.loc[2014] = [''] * calc.shape[1]  # empty row
         calc.name = "ref_tam_growth"
         return calc
@@ -154,7 +164,7 @@ class UnitAdoption(DataHandler):
         """Population by region for the Project Drawdown Solution case.
            SolarPVUtil 'Unit Adoption Calculations'!P68:Z115
         """
-        filename = os.path.join(self.datadir, 'unitadoption_pds_population.csv')
+        filename = os.path.join(self.datadir, 'population', 'pds_population.csv')
         result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
                              skip_blank_lines=True, comment='#')
         result.index = result.index.astype(int)
@@ -166,7 +176,7 @@ class UnitAdoption(DataHandler):
         """GDP by region for the Project Drawdown Solution case.
            SolarPVUtil 'Unit Adoption Calculations'!AB68:AL115
         """
-        filename = os.path.join(self.datadir, 'unitadoption_pds_gdp.csv')
+        filename = os.path.join(self.datadir, 'population', 'pds_gdp.csv')
         result = pd.read_csv(filename, index_col=0, skipinitialspace=True,
                              skip_blank_lines=True, comment='#')
         result.index = result.index.astype(int)
@@ -205,7 +215,7 @@ class UnitAdoption(DataHandler):
         """Growth in Total Addressable Market for the Project Drawdown Solution case.
            SolarPVUtil 'Unit Adoption Calculations'!BY68:CI115
         """
-        calc = self.pds_tam_per_region.rolling(2).apply(lambda x: x[1] - x[0], raw=True)
+        calc = self.pds_tam_per_region.fillna(0.0).rolling(2).apply(lambda x: x[1] - x[0], raw=True)
         calc.loc[2014] = [''] * calc.shape[1]  # empty row
         calc.name = "pds_tam_growth"
         return calc
@@ -414,11 +424,11 @@ class UnitAdoption(DataHandler):
             for year, value in column.iteritems():
                 # Add replacement units, if needed by adding the number of units
                 # added N * soln_lifetime_replacement ago, that now need replacement.
-                replacement_year = int(year - (self.ac.soln_lifetime_replacement_rounded + 1))
+                # replacement_period_offset is a backwards compatibility thing
+                replacement_year = year - (self.ac.soln_lifetime_replacement_rounded + self.replacement_period_offset)
+                fa = self.soln_pds_funits_adopted
                 if replacement_year in result.index:
-                    fa = self.soln_pds_funits_adopted
-                    prior_year = year - self.ac.soln_lifetime_replacement_rounded - 1
-                    if fa.loc[prior_year, region] <= fa.loc[year, region]:
+                    if fa.loc[replacement_year, region] <= fa.loc[year, region]:
                         result.at[year, region] += result.at[replacement_year, region]
         result.name = "soln_pds_new_iunits_reqd"
         return result
@@ -469,18 +479,25 @@ class UnitAdoption(DataHandler):
         """
         if self.repeated_cost_for_iunits:
             return self.soln_ref_tot_iunits_reqd().iloc[1:].copy(deep=True).clip(lower=0.0)
+        
+        # start with year-over-year diff
         result = self.soln_ref_tot_iunits_reqd().diff().clip(lower=0).iloc[1:]  # [0] NaN w/ diff
+
+        # NOTE: Excel allows for region-specific replacement periods, but this code does not.
+        # For each region, for each year, add replacement items if appropriate
         for region, column in result.iteritems():
             for year, value in column.iteritems():
                 # Add replacement units, if needed by adding the number of units
                 # added N * soln_lifetime_replacement ago, that now need replacement.
-                replacement_year = int(year - (self.ac.soln_lifetime_replacement_rounded + 1))
+                # replacement_period_offset is a backwards compatibility thing
+                replacement_year = year - (self.ac.soln_lifetime_replacement_rounded + self.replacement_period_offset)
+                fa = self.soln_ref_funits_adopted
+
                 if replacement_year in result.index:
-                    fa = self.soln_ref_funits_adopted
-                    prior_year = year - self.ac.soln_lifetime_replacement_rounded - 1
-                    if fa.loc[prior_year, region] <= fa.loc[year, region]:
+                    if fa.loc[replacement_year, region] <= fa.loc[year, region]:
                         result.at[year, region] += result.at[replacement_year, region]
         return result
+
 
     def soln_ref_new_iunits_reqd_LAND(self):
         """New implementation units required (includes replacement units), LAND version
@@ -491,7 +508,7 @@ class UnitAdoption(DataHandler):
             for year, value in column.iteritems():
                 # Add replacement units, if needed by adding the number of units
                 # added N * conv_lifetime_replacement ago, that now need replacement.
-                replacement_year = int(year - (self.ac.conv_lifetime_replacement_rounded + 1))
+                replacement_year = int(year - (self.ac.conv_lifetime_replacement_rounded + self.replacement_period_offset))
                 if replacement_year in result.index:
                     fa = self.soln_ref_funits_adopted
                     if fa.at[replacement_year, region] <= fa.at[year, region]:
@@ -611,12 +628,12 @@ class UnitAdoption(DataHandler):
 
         result = pd.DataFrame(growth_array.copy(), index=growth.index[1:], columns=growth.columns)
         result.name="conv_ref_new_iunits"
-
-        shift = self.ac.conv_lifetime_replacement_rounded + 1
-        current_shift = shift
-        while current_shift < growth_array.shape[0]:
-            result.iloc[current_shift:] += growth_array[:-current_shift]
-            current_shift += shift
+        shift = self.ac.conv_lifetime_replacement_rounded + self.replacement_period_offset
+        if shift > 0:
+            current_shift = shift
+            while current_shift < growth_array.shape[0]:
+                result.iloc[current_shift:] += growth_array[:-current_shift]
+                current_shift += shift
 
         return result
 

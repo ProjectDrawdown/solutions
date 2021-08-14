@@ -1,3 +1,41 @@
+
+8/9/2021: Notes for first complete extraction
+
+This is only a partial implementation of this model:  Sustainable Clothing has a lot
+of custom modeling done on tabs like 'Supply Chain Inputs' that is not reflected in the
+python code currently.  In the future, this model should probably have custom extensions
+to handle that functionality.
+
+The standard HT fixes were needed.  The settings for this solution ended up
+being:
+Change the start date for ht_ref_adoption_final from 2014 to 2018 (line 256)
+Set these HT flags:
+    copy_pds_to_ref=False,
+    copy_pds_datapoint=True,
+    copy_ref_datapoint=True,
+    copy_datapoint_to_year=2014,
+    use_first_pds_datapoint_main=True,
+    use_first_ref_datapoint_main=True,
+
+In __init__.py, I moved the block of code that creates a CustomAdoption inside the 
+if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS' condition.
+This avoids an error when ac.soln_pds_adoption_scenarios_included isn't set (which happens
+if the adoption is of a different kind).  This code structure seems more correct, and maybe
+it should default this way.
+
+A couple of values on the Advanced Controls tab are set from values on other tabs that are
+_not_ managed by ScenarioRecord.  This leads to a situation where when we load data from
+a scenario, we get the correct historical value, but the spreadsheet gets whatever happens
+to be on that other tab.  In this case, the values affected are conv_emissions_per_funit and 
+soln_emissions_per_funit, and in the Excel they are loaded from the Supply Chain Inputs tab.
+Dealt with this by disabling the affected tests.
+
+Finally, deleted scenario PDS3-56p2050-Dec20.  This scenario appears on the ScenarioRecord tab,
+but not in the Scenarios dropdown in the spreadsheet, and it is incomplete and cannot be 
+loaded properly.
+
+
+7/2021 original notes:
 @nelsonkcheng did the initial investigation; results captured in the notebook in the notes/ folder.
 Note that the fixes, by setting specific values in __init__.py, are probably not the right way
 to address these issues.

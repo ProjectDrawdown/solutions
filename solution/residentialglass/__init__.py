@@ -288,7 +288,8 @@ class Scenario(scenario.Scenario):
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
             repeated_cost_for_iunits=False,
-            bug_cfunits_double_count=False)
+            bug_cfunits_double_count=False,
+            replacement_period_offset=0)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
         conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()

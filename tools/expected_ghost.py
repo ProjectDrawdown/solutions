@@ -17,7 +17,7 @@ def locate_expected_zip(solution):
     path = Path(__file__).parents[1] / 'solution' / solution
     if not path.is_dir():
         raise ValueError(f"Cannot find solution {solution} at {path}")
-    path = path / 'testdata' / 'expected.zip'
+    path = path / 'tests' / 'expected.zip'
     if not path.is_file():
         raise ValueError(f"Solution {solution} does not have an expected.zip file at {path}")
     return path

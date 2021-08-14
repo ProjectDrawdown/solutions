@@ -1,0 +1,10 @@
+Initial Extraction Notes:
+
+In __init__.py, moved the CustomAdoption code block inside the "Fully Customized PDS" to
+avoid an error when self.ac.soln_pds_adoption_scenarios_included is missing.
+(Note to self: make this fix in the extractor)
+
+Set the Helper Tables parameters as follows:
+   copy_pds_to_ref=False,
+   copy_ref_datapoint=True, copy_pds_datapoint=True, 
+   use_first_ref_datapoint_main=True, use_first_pds_datapoint_main=True,

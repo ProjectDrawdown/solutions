@@ -32,10 +32,10 @@ If it has not already been done, follow instructions 1-7 in [this document](http
 Open the Excel workbook and access the VBA Window:
     * Find and click on the "View Macros" command (on Windows it is by default to the far right of the View ribbon)
     * A popup like the following should appear.  Select _any_ of the indicated macros, then click on `Edit`
-    ![Image of Excel Edit Macro popup](https://github.com/denised/solutions/blob/extracting/data/images/vb_macro.jpg)
+    ![Image of Excel Edit Macro popup](https://github.com/projectdrawdown/solutions/blob/extracting/Documentation/images/vb_macro.jpg)
     * The Visual Basic Editor should appear.  On the left are a list of macros for this workbook.  Towards the bottom of
     the list there is an entry labeled `Modules`.  Right click on the entry and select `Insert` > `New Module`.
-    ![Image showing Insert-Module menu](https://github.com/denised/solutions/blob/extracting/data/images/vb_insert.jpg)
+    ![Image showing Insert-Module menu](https://github.com/projectdrawdown/solutions/blob/extracting/Documentation/images/vb_insert.jpg)
     * You should see a blank page fill the main portion of the editor.
 
 Insert the entire contents of the file `export_csv.vb` into the blank page for the module.

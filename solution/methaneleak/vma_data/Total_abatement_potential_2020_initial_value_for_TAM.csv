@@ -1,0 +1,3 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+IEA 2021,https://www.iea.org/articles/methane-tracker-database,World,,1  - Peer Reviewed,2021,,50558.0,kt CH4 in 2020,50.558,Mt CH4 in 2020,,,
+EPA 2019,https://www.epa.gov/global-mitigation-non-co2-greenhouse-gases,World,,1  - Peer Reviewed,2019,,562.84,Mt CO2e in 2020,22.5136,Mt CH4 in 2020,,Conversion from Mt CO2e to Mt CH4 using GWP of 25 for consistency with source document,
