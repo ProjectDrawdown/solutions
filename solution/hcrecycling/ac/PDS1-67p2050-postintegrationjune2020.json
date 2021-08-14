@@ -1,0 +1,115 @@
+{
+    "name": "PDS1-67p2050-postintegrationjune2020",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "description": "Description:",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 272081195.3789954,
+        "statistic": ""
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 30.0,
+        "statistic": ""
+    },
+    "conv_avg_annual_use": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 130908599.89666723,
+        "statistic": ""
+    },
+    "conv_fixed_oper_cost_per_iunit": 0.0,
+    "conv_fuel_cost_per_funit": 0.0,
+    "pds_2014_cost": {
+        "value": 197990656.1121954,
+        "statistic": ""
+    },
+    "ref_2014_cost": {
+        "value": 197990656.1121954,
+        "statistic": ""
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 15.0,
+        "statistic": ""
+    },
+    "soln_avg_annual_use": {
+        "value": 1.0,
+        "statistic": ""
+    },
+    "soln_var_oper_cost_per_funit": {
+        "value": 136836176.04188812,
+        "statistic": ""
+    },
+    "soln_fixed_oper_cost_per_iunit": 0.0,
+    "soln_fuel_cost_per_funit": 0.0,
+    "npv_discount_rate": 0.064,
+    "conv_annual_energy_used": 0.0,
+    "soln_energy_efficiency_factor": 0.0,
+    "soln_annual_energy_used": 0.0,
+    "conv_fuel_consumed_per_funit": 0.0,
+    "soln_fuel_efficiency_factor": 0.0,
+    "conv_fuel_emissions_factor": 0.0,
+    "soln_fuel_emissions_factor": 0.0,
+    "conv_emissions_per_funit": {
+        "value": 274319.488888889,
+        "statistic": "mean"
+    },
+    "soln_emissions_per_funit": {
+        "value": 181285.98531276424,
+        "statistic": ""
+    },
+    "conv_indirect_co2_per_unit": 0.0,
+    "soln_indirect_co2_per_iunit": {
+        "value": -2004850.4383614731,
+        "statistic": ""
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": 0.0,
+    "ch4_is_co2eq": false,
+    "n2o_co2_per_funit": 0.0,
+    "n2o_is_co2eq": false,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "ALL SOURCES",
+    "pds_source_post_2014": "Drawdown TAM: Integration TAM PDS1",
+    "ref_base_adoption": {
+        "World": 292.606349656396,
+        "OECD90": 183.799865349289,
+        "Eastern Europe": 15.6000321302138,
+        "Asia (Sans Japan)": 53.4328488332733,
+        "Middle East and Africa": 26.4999977915056,
+        "Latin America": 13.2736055521137,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 62.2202
+    },
+    "soln_pds_adoption_basis": "Fully Customized PDS",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_custom_name": "PDS1 JUNE 2020 - post integration",
+    "soln_pds_adoption_scenarios_included": [],
+    "soln_ref_adoption_basis": "Custom",
+    "soln_ref_adoption_custom_name": "Custom REF 1: Adoption at Base Year levels (2014)",
+    "soln_ref_adoption_regional_data": false
+}

@@ -170,13 +170,7 @@ class Scenario:
                     ),
               'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_32_adoption_by_2040_based_on_Quantis_40_recycled_fibers.csv')},
         ]
-        for (i,rs) in enumerate(ca_pds_data_sources):
-            rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
+
 
         ref_adoption_data_per_region = None
 
@@ -185,6 +179,13 @@ class Scenario:
             # This 'if False' allows subsequent conditions to all be elif.
             pass
         elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
+            for (i,rs) in enumerate(ca_pds_data_sources):
+                rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
+            self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
+            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
+            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
+            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
+            total_adoption_limit=pds_tam_per_region)
             pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
             pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
             pds_adoption_is_single_source = None
@@ -202,7 +203,7 @@ class Scenario:
         # even when the final_datapoint_year is 2018, the TAM initial year is usually hard-coded to 2014
         # if that is wrong, change 2014 to 2018 below
         ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
-            ref_tam_per_region.loc[2014])
+            ref_tam_per_region.loc[2018])
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
         ht_ref_datapoints.loc[2018] = ht_ref_adoption_initial
         ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
@@ -218,21 +219,24 @@ class Scenario:
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-            use_first_pds_datapoint_main=True,
-            adoption_base_year=2018,
             copy_pds_to_ref=False,
+            copy_pds_datapoint=True,
+            copy_ref_datapoint=True,
+            copy_datapoint_to_year=2014,
+            use_first_pds_datapoint_main=True,
+            use_first_ref_datapoint_main=True,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        ''' NC/MM 2021-07-25
-        This is a 'solution-specific' hack to try and fix the Assertion Errors we are getting out of the Tests on the First Cost numbers.
-        Digging through the data vs workbook, we found that the 2014 number for "Custom PDS Adoption" in the workbook is pulling from an 2018 Adoption
-        Number from the Advanced Controls (C61), while the code is loading it from the data.
-        We are hardcoding this number into that value here to fix this calculation
-        See the Sustainable_Clothing_FirstCostChecks.ipynb for scripts and descriptions of our data investigation and reasoning
-        '''
-        # Fix the value for the 2014 World Data
-        self.ht.pds_adoption_data_per_region.loc[2014, "World"] = 0.050691647   
+        # ''' NC/MM 2021-07-25
+        # This is a 'solution-specific' hack to try and fix the Assertion Errors we are getting out of the Tests on the First Cost numbers.
+        # Digging through the data vs workbook, we found that the 2014 number for "Custom PDS Adoption" in the workbook is pulling from an 2018 Adoption
+        # Number from the Advanced Controls (C61), while the code is loading it from the data.
+        # We are hardcoding this number into that value here to fix this calculation
+        # See the Sustainable_Clothing_FirstCostChecks.ipynb for scripts and descriptions of our data investigation and reasoning
+        # '''
+        # # Fix the value for the 2014 World Data
+        # self.ht.pds_adoption_data_per_region.loc[2014, "World"] = 0.050691647   
                 
         self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
@@ -295,13 +299,13 @@ class Scenario:
 
 
 
-        ''' NC/MM 2021-07-25
-        Looking at this number for 2018 - This is our Adoption in 2018 number. Looks like somewhere in code, in the Model somewhere, is probably overwriting the number
-        read in from the Total Solution Implementation Units Required PDS (Unit Adoption Calculations AY140) and overwriting it with this number from Advanced Calculations C61
-        Putting in a hardcoded fix into __init__.py with the number from the sheet, but note, this will need to be scenario specific            
-        '''
-        if self.scenario == "PDS1-8p2050-Dec2020":
-            self.ua.soln_pds_funits_adopted.loc[2018, "World"] = 0.477787    
-        # Note: tried this but this still didn't fix the issue, I think the overwriting of this happens happens within  the ua.soln_pds_tot_iunits_reqd() function
+        # ''' NC/MM 2021-07-25
+        # Looking at this number for 2018 - This is our Adoption in 2018 number. Looks like somewhere in code, in the Model somewhere, is probably overwriting the number
+        # read in from the Total Solution Implementation Units Required PDS (Unit Adoption Calculations AY140) and overwriting it with this number from Advanced Calculations C61
+        # Putting in a hardcoded fix into __init__.py with the number from the sheet, but note, this will need to be scenario specific            
+        # '''
+        # if self.scenario == "PDS1-8p2050-Dec2020":
+        #     self.ua.soln_pds_funits_adopted.loc[2018, "World"] = 0.477787    
+        # # Note: tried this but this still didn't fix the issue, I think the overwriting of this happens happens within  the ua.soln_pds_tot_iunits_reqd() function
                     
 
