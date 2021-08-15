@@ -319,7 +319,8 @@ class Scenario(scenario.Scenario):
             },
         }
         self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
+            adconfig=adconfig,
+            groups_include_hundred_percent=False)
 
         ref_adoption_data_per_region = None
 

@@ -16,7 +16,8 @@ from model.decorators import data_func
 class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
     """Implements Adoption Data module."""
 
-    def __init__(self, ac, data_sources, adconfig, main_includes_regional=None):
+    def __init__(self, ac, data_sources, adconfig, main_includes_regional=None,
+                 groups_include_hundred_percent=True):
         """Arguments:
              ac: advanced_controls.py
              data_sources: a dict() of group names which contain dicts of data source names.
@@ -33,11 +34,16 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
                'Latin America', 'China', 'India', 'EU', 'USA'
              main_includes_regional: boolean of whether the global min/max/sd should include
                data from the primary regions.
+
+            Quirks parameters:
+                groups_include_hundred_percent.  Some models included the 100% / maximum case as
+                a group when computing S.D., others (Electricity Generation) do not.  Defaults to True
         """
         self.ac = ac
         self.data_sources = data_sources
         self.adconfig = adconfig
         self.main_includes_regional = main_includes_regional
+        self.groups_include_hundred_percent = groups_include_hundred_percent
         self._populate_adoption_data()
 
 
@@ -86,9 +92,27 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
             # Excel STDDEV.P is a whole population stddev, ddof=0
             result.loc[:, 'S.D'] = adoption_data.loc[:, columns].std(axis=1, ddof=0)
         else:
-            result.loc[:, 'S.D'] = adoption_data.std(axis=1, ddof=0)
+            # The need to do a quirks adjustment here means we have to hack is_group_name:
+            is_group = self.quirky_is_group_name(data_sources=data_sources, name=source)
+            
+            # Excel treats single named columns differently from groups containing only a single column.
+            # For a single named column, the SD is taken over all sources.  For a group, it is taken over
+            # the group, even though there is only a single member, yielding 0
+            # #EXCEL-BAD-BEHAVIOR
+            if is_group:
+                result.loc[:,'S.D'] = 0.0
+            else:
+                result.loc[:, 'S.D'] = adoption_data.std(axis=1, ddof=0)
         return result
 
+    def quirky_is_group_name(self, data_sources, name):
+        is_group = interpolation.is_group_name(data_sources, name)
+        if self.groups_include_hundred_percent or not is_group:
+            return is_group
+        # otherwise, we must exclude the 100% or maximum case.  Since we don't know what it will
+        # be named, we test for the standard groups instead
+        name = name.lower()
+        return ('conservative' in name) or ('baseline' in name) or ('ambitious' in name)
 
     def _low_med_high(self, adoption_data, min_max_sd, adconfig, source, data_sources, region):
         """Return the selected data sources as Medium, and N stddev away as Low and High."""
@@ -119,6 +143,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
                 # We're matching the Excel behavior in the initial product. This decision can
                 # be revisited later, when matching results from Excel is no longer required.
                 # To revert, use:    medium = adoption_data.loc[:, columns].mean(axis=1)
+                # EXCEL-BAD-BEHAVIOR
                 medium = adoption_data.loc[:, columns].mask(lambda f: f == 0.0, np.nan).mean(axis=1)
             else:
                 # if there is only a single source, Excel uses it directly without taking a Mean.

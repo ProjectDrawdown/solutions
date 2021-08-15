@@ -155,6 +155,29 @@ def test_adoption_min_max_sd_global_ambitious():
     expected.index.name = 'Year'
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
+def test_adoption_min_max_sd_max():
+    # Test that the quirk parameter groups_include_hundred_percent works properly
+    s = '100% RES2050 Case'
+    
+    ac = advanced_controls.AdvancedControls(soln_pds_adoption_prognostication_source=s)
+    ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig,
+            groups_include_hundred_percent=True)
+    result = ad.adoption_min_max_sd('World')
+    # With default groups_include_hundred_percent setting of True, the '100%' group is a group, and the 
+    # SD over 1 columns is zero.
+    assert( result['S.D'].eq( 0.0 ).all() )
+
+    # With groups_include_hundred_percent setting of False (the correct setting for this solution),
+    # 100% is not considered a group, and the SD is returned over all columns
+    ad = adoptiondata.AdoptionData(ac=ac, data_sources=g_data_sources, adconfig=g_adconfig,
+            groups_include_hundred_percent=False)
+    # compare the S.D columns only, since they are coming from different operations
+    result = ad.adoption_min_max_sd('World').loc[:,'S.D']
+    expected = pd.DataFrame(adoption_min_max_sd_global_list[1:],
+            columns=adoption_min_max_sd_global_list[0],
+            dtype=np.float64).loc[:,'S.D']
+    assert( np.allclose( result, expected ) )
+
 
 def test_adoption_low_med_high():
     s = 'Greenpeace AER'
@@ -451,9 +474,12 @@ def test_regional_data_sources():
 # SolarPVUtil 'Adoption Data'!X46:Z94
 adoption_min_max_sd_global_list = [
         ['Year', 'Min', 'Max', 'S.D'],
-        [2012, 58.200000, 58.200000, 0.000000], [2013, 81.060000, 81.060000, 0.000000],
-        [2014, 112.633033, 112.633033, 0.000000], [2015, 94.240258, 218.061459, 37.837223],
-        [2016, 115.457997, 272.031352, 50.912757], [2017, 139.360289, 383.309352, 70.927561],
+        [2012, 58.200000, 58.200000, 0.000000], 
+        [2013, 81.060000, 81.060000, 0.000000],
+        [2014, 112.633033, 112.633033, 0.000000], 
+        [2015, 94.240258, 218.061459, 37.837223],
+        [2016, 115.457997, 272.031352, 50.912757], 
+        [2017, 139.360289, 383.309352, 70.927561],
         [2018, 166.022587, 509.379474, 96.404783],
         [2019, 194.474873, 649.546273, 126.360959],
         [2020, 203.777863, 654.000000, 153.513406],
