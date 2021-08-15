@@ -127,16 +127,14 @@ class Scenario(scenario.Scenario):
             ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
         tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
         tam_ref_data_sources = {
-              'Baseline Cases': {
+            'Baseline Cases': {
                   'USGS (Historical) + Elshkaki et al. SF Scenario': THISDIR.joinpath('tam', 'tam_USGS_Historical_Elshkaki_et_al__SF_Scenario.csv'),
-            },
-              '': {
                   'Elshkaki et al. MW/TR Scenarios + USGS (Historical)': THISDIR.joinpath('tam', 'tam_Elshkaki_et_al__MWTR_Scenarios_USGS_Historical.csv'),
                   'USGS (Historical) + Linear extrapolation': THISDIR.joinpath('tam', 'tam_USGS_Historical_Linear_extrapolation.csv'),
-                  'OECD, 2018, Demand Scenarios': THISDIR.joinpath('tam', 'tam_OECD_2018_Demand_Scenarios.csv'),
             },
-              'Conservative Cases': {
+            'Conservative Cases': {
                   'Van der Voet + USGS Historical': THISDIR.joinpath('tam', 'tam_Van_der_Voet_USGS_Historical.csv'),
+                  'OECD, 2018, Demand Scenarios': THISDIR.joinpath('tam', 'tam_OECD_2018_Demand_Scenarios.csv'),
             },
               'Ambitious Cases': {
                   'Materials Economics Circular Economy Report (2018)': THISDIR.joinpath('tam', 'tam_Materials_Economics_Circular_Economy_Report_2018.csv'),
@@ -165,15 +163,13 @@ class Scenario(scenario.Scenario):
         ad_data_sources = {
             'Conservative Cases': {
                 'Elshkaki et al. 2018 (MW/TR)': THISDIR.joinpath('ad', 'ad_Elshkaki_et_al__2018_MWTR.csv'),
-            },
-            '': {
                 'Elshkaki et al. 2018 (SF)': THISDIR.joinpath('ad', 'ad_Elshkaki_et_al__2018_SF.csv'),
                 'Elshkaki et al. 2018 (EW)': THISDIR.joinpath('ad', 'ad_Elshkaki_et_al__2018_EW.csv'),
-                'Van der Voet, 2018 - Circular Scenario': THISDIR.joinpath('ad', 'ad_Van_der_Voet_2018_Circular_Scenario.csv'),
-                'OECD - increased recycling': THISDIR.joinpath('ad', 'ad_OECD_increased_recycling.csv'),
             },
             'Ambitious Cases': {
                 'Materials Economics Circular Scenario': THISDIR.joinpath('ad', 'ad_Materials_Economics_Circular_Scenario.csv'),
+                'Van der Voet, 2018 - Circular Scenario': THISDIR.joinpath('ad', 'ad_Van_der_Voet_2018_Circular_Scenario.csv'),
+                'OECD - increased recycling': THISDIR.joinpath('ad', 'ad_OECD_increased_recycling.csv'),
             },
             'Maximum Cases': {
                 'Materials Economics Availability Limitation (Steel + Al)': THISDIR.joinpath('ad', 'ad_Materials_Economics_Availability_Limitation_Steel_Al.csv'),
@@ -195,10 +191,9 @@ class Scenario(scenario.Scenario):
 
         ht_ref_adoption_initial = pd.Series(
             list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)
-        # even when the final_datapoint_year is 2018, the TAM initial year is usually hard-coded to 2014
-        # if that is wrong, change 2014 to 2018 below
+
         ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
-            ref_tam_per_region.loc[2014])
+            ref_tam_per_region.loc[2018])
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
         ht_ref_datapoints.loc[2018] = ht_ref_adoption_initial
         ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
@@ -210,14 +205,26 @@ class Scenario(scenario.Scenario):
         ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
         ht_pds_datapoints.loc[2018] = ht_pds_adoption_initial
         ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
+
+        # The Excel model does something unusual: in Helper Tables, the first row of 
+        # custom PDS adoption is copied from the REF table.  The Helper Tables class doesn't have that
+        # as a quirk option, but it *does* support ac.pds_adoption_use_ref_years, which can accomplish
+        # the same thing.  So we set that property here.  Time will tell if this is a good idea or
+        # a bad one.
+        if self.ac.pds_adoption_use_ref_years is None:
+            self.ac.pds_adoption_use_ref_years = []
+        if 2014 not in self.ac.pds_adoption_use_ref_years:
+            self.ac.pds_adoption_use_ref_years.insert(0, 2014)
+
+        # Also, the Ref adoption gets set from a VMA, which the ScenarioRecord ignores.
+        
         self.ht = helpertables.HelperTables(ac=self.ac,
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
             copy_pds_to_ref=False,
             copy_ref_datapoint=False, 
-            copy_pds_datapoint=True, 
-            use_first_pds_datapoint_main=True,
+            copy_pds_datapoint=False, 
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
