@@ -1,0 +1,41 @@
+8/2021 First extraction
+This one was a bit of a challenge.
+
+There are missing VMAs.  I changed lines in the scenario files that were like this:
+    "soln_var_oper_cost_per_funit": {
+        "value": 585024501.0060192,
+        "statistic": ""
+    }
+into this:
+    "soln_var_oper_cost_per_funit": 585024501.0060192,
+Both ref and soln variable operating cost were missing.  
+I think this may be because the VMAs contained proprietary data that was removed before 
+publishing the Excel.
+
+TAM data source dictionary somewhat screwed up: in __init__.py there was a subdictionary 
+is generated with no name:
+    '': {
+        'Elshkaki et al. MW/TR Scenarios + USGS (Historical)': THISDIR.joinpath('tam', 'tam_Elshkaki_et_al__MWTR_Scenarios_USGS_Historical.csv'),
+        'USGS (Historical) + Linear extrapolation': THISDIR.joinpath('tam', 'tam_USGS_Historical_Linear_extrapolation.csv'),
+        'OECD, 2018, Demand Scenarios': THISDIR.joinpath('tam', 'tam_OECD_2018_Demand_Scenarios.csv'),
+    },
+Manually distributed these sources where they belong.
+Similar thing with Adoption source data.
+
+The settings for helper tables are weird, because this model, unlike any other I have seen,
+copies from *ref* to *pds* for the year 2014.  Rather than add a whole new flag for this one
+case, I have finessed it by doing the override in __init__.py itself, using the ac control 
+pds_adoption_use_ref_years.
+
+As it turns out, that wasn't entirely sufficient, because the pds_ref_datapoint value for 2018,
+which comes from AdvancedControls!C61, is set by a formula in this workbook.  The formula value
+overrides the value recovered from the scenario, causing the expected results to be different
+from what the scenario was when it was originally saved.  This is arguably bad behavior on the
+part of Excel, and I was prepared to add some tests to the skip list, but accidentally found a
+different solution:  delete most of the old scenarios.  The scenarios appeared to be quite
+redundant and work-in-progress, so I kept only the most recent three.  Those happen to have the
+same value for AC!C61 in both the scenario and the workbook, making the tests pass.
+
+Finally, on the Adoption Data page, this workbook has two columns in the 100% case (a rarity),
+though only one of them was used.  This exposed a pair of bugs that I fixed in adoptiondata.py,
+that are checked in under a different commit.

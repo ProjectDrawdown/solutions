@@ -1,0 +1,4 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+UNEP Metal Recycling Rates,https://wedocs.unep.org/bitstream/handle/20.500.11822/8702/Recycling_Metals.pdf?sequence=1&isAllowed=y,World,,,2013,,1240081.2278952103,1000mt,1240.0812278952103,MMt Metal Production,,,
+"Graedel et al., 2011",DOI: 10.1111/j.1530-9290.2011.00342.x,World,,,2011,,0.41209203570592656,%,1170.4918195390067,MMt Metal Production,,,
+USEPA,https://www.epa.gov/warm/recycled-content-recon-tool,World,,,2021,,0.45,,1371.7878811251605,MMt Metal Production,,baseline recycled content of metals,
