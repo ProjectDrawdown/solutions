@@ -44,17 +44,30 @@ class AEZ(DataHandler, object, metaclass=MetaclassCache):
     """The most granular version of land allocation.  A dictionary mapping TMR names to
     Dataframes, which themselves are indexed by region and have AEZ zones as columns,
     and allocations for this solution as values.
+
+    'AEZ Data'!D353:AG610
     """
 
     soln_land_dist_df: pd.DataFrame = None
-    """Land allocation broken down by TMR and AEZ"""
+    """Land allocation broken down by TMR and AEZ.
+    
+    'AEZ Data'!A47:H58 in Cohort 2018
+    'AEZ Data'!A53:H64 in Cohort 2019
+    'AEZ Data'!A53:J64 in the 3/2020 update which split Temperate from Boreal to make 8 TMRs
+    """
 
     soln_land_alloc_df: pd.DataFrame = None
     """Land allocation broken down by region and TMR.  This is the result returned by `get_land_distribution` and
-    commonly referred to as the TLA."""
+    commonly referred to as the TLA.
+
+    'AEZ Data'!A63:AD70   
+    """
 
     applicable_zones: list[str] = None
-    """The AEZ zones in which this solution can be applied.  (Hard-coded list)"""
+    """The AEZ zones in which this solution can be applied.  (Hard-coded list)
+
+    'AEZ Data'!A2:AD29
+    """
 
 
     def __init__(self, solution_name, cohort=2018, regimes=dd.THERMAL_MOISTURE_REGIMES, max_tla=False):
@@ -90,10 +103,7 @@ class AEZ(DataHandler, object, metaclass=MetaclassCache):
         return re.sub(' +', '_', re.sub('[^a-zA-Z0-9' '\n]', ' ', name)).strip('_')
 
     def _populate_solution_land_allocation(self):
-        """Calculates solution specific land allocation using values from 'allocation' directory.
-
-           'AEZ Data'!A63:AD70
-        """
+        """Calculates `self.soln_land_alloc_df` from values in the 'allocation' directory."""
         df = pd.DataFrame(np.nan, columns=dd.AEZS, index=self.regimes)
         if self.ignore_allocation:
             self.soln_land_alloc_df = df.fillna(1)
@@ -116,11 +126,9 @@ class AEZ(DataHandler, object, metaclass=MetaclassCache):
 
 
     def _get_applicable_zones(self):
-        """Gathers list of AEZs applicable to solution from lookup matrix in 'aez' directory.
-
+        """Calculates `self.applicable_zones` from the lookup matrix in 'aez' directory.
            Note: DD land allocation already takes applicability into consideration, so
            applicable_zones will be redundant in solutions which use DD allocation.
-           'AEZ Data'!A2:AD29
         """
         row = pd.read_csv(LAND_CSV_PATH.joinpath('aez', 'solution_aez_matrix.csv'),
                 index_col=0).loc[self.solution_name]
@@ -128,11 +136,7 @@ class AEZ(DataHandler, object, metaclass=MetaclassCache):
 
 
     def _populate_world_land_allocation(self):
-        """Combines world land area data with Drawdown's land allocation values.
-
-           Creates a dict of DataFrames sorted by Thermal Moisture Region.
-           'AEZ Data'!D353:AG610
-        """
+        """calculates `self.world_land_alloc_dict`."""
         self.world_land_alloc_dict = {}
         subdir = '2020' if len(self.regimes) == 8 else '2018'
         for tmr in self.regimes:
@@ -144,12 +148,7 @@ class AEZ(DataHandler, object, metaclass=MetaclassCache):
 
 
     def _populate_solution_land_distribution(self):
-        """Calculates total land distribution for solution by region, currently fixed for all years.
-
-           'AEZ Data'!A47:H58 in Cohort 2018
-           'AEZ Data'!A53:H64 in Cohort 2019
-           'AEZ Data'!A53:J64 in the 3/2020 update which split Temperate from Boreal to make 8 TMRs
-        """
+        """Calculates `self.soln_land_dist_df`"""
         cols = self.regimes
         soln_df = pd.DataFrame(columns=cols, index=self.regions).fillna(0.)
         for reg in self.regions:

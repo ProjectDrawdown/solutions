@@ -88,13 +88,16 @@ class VMA:
          discard_multiplier: discard outlier values more than this many multiples of the
            stddev away from the mean.
          stat_correction: discard outliers more than discard_multiplier stddev away from the mean.
+         use_weight: if true, use weights provided with the VMA to bias the mean.
          fixed_summary: if present, should be a tuple to use for (mean, high, low) instead
            of calculating those values
+         description: optional description of what this VMA describes
+         notes: optional notes that add more details
     """
 
     def __init__(self, filename, title=None, low_sd=1.0, high_sd=1.0,
                  discard_multiplier=3, stat_correction=None, use_weight=False,
-                 fixed_summary=None):
+                 fixed_summary=None, description=None, notes=None):
         self.filename = filename
         self.title = title
         self.low_sd = low_sd
@@ -102,6 +105,10 @@ class VMA:
         self.discard_multiplier = discard_multiplier
         self.stat_correction = stat_correction
         self.use_weight = use_weight
+        # TODO notes exist in the Excel files and should be retrieved.
+        # TODO description does not exist, but it should!
+        self.description = description
+        self.notes = notes
         if stat_correction is None:
             # Excel does not discard outliers if weights are used, we do the same by default.
             self.stat_correction = not use_weight

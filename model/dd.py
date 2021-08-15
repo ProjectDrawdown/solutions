@@ -1,6 +1,10 @@
-""" To maintain consistency, we import these common variables where they occur in the model """
-
+"""Shared constant values"""
 import pandas.api.types
+
+# time ranges
+CORE_START_YEAR = 2015
+CORE_END_YEAR = 2060
+
 
 REGIONS = [
     'World',  # sum of main regions
@@ -17,7 +21,7 @@ THERMAL_MOISTURE_REGIMES = ['Tropical-Humid', 'Temperate/Boreal-Humid', 'Tropica
 THERMAL_MOISTURE_REGIMES8 = ['Tropical-Humid', 'Temperate-Humid', 'Boreal-Humid',
                              'Tropical-Semi-Arid', 'Temperate-Semi-Arid', 'Boreal-Semi-Arid',
                              'Global Arid', 'Global Arctic']
-
+CURRENT_TMR_COHORT=2020
 
 AEZS = ['AEZ1: Forest, prime, minimal', 'AEZ2: Forest, good, minimal', 'AEZ3: Forest, good, moderate',
         'AEZ4: Forest, good, steep', 'AEZ5: Forest, marginal, minimal', 'AEZ6: Forest, marginal, moderate',
@@ -32,9 +36,8 @@ AEZS = ['AEZ1: Forest, prime, minimal', 'AEZ2: Forest, good, minimal', 'AEZ3: Fo
         'AEZ25: Rainfed Cropland, good, steep', 'AEZ26: Rainfed Cropland, marginal, minimal',
         'AEZ27: Rainfed Cropland, marginal, moderate', 'AEZ28: Rainfed Cropland, marginal, steep',
         'AEZ29: All Barren Land']
+CURRENT_AEZ_ALLOCATION=2020
 
-AEZ_LAND_COVER_MAP = {'Forest': AEZS[:7], 'Grassland': AEZS[7:14], 'Irrigated Cropland': AEZS[14:21],
-                      'Rainfed Cropland': AEZS[21:28]}
 
 # Ocean
 OCEAN_REGIONS = ['World'] + MAIN_REGIONS + ['ABNJ'] + SPECIAL_COUNTRIES  # ocean model has one extra region
@@ -43,8 +46,3 @@ THERMAL_DYNAMICAL_REGIMES = ['Shallow', 'Slopes', 'Ice', 'Deserts', 'Blooms', 'E
 rgn_cat_dtype = pandas.api.types.CategoricalDtype(categories=OCEAN_REGIONS + [''], ordered=True)
 tmr_cat_dtype = pandas.api.types.CategoricalDtype(categories=THERMAL_MOISTURE_REGIMES + [''], ordered=True)
 tdr_cat_dtype = pandas.api.types.CategoricalDtype(categories=THERMAL_DYNAMICAL_REGIMES + [''], ordered=True)
-
-
-# time ranges
-CORE_START_YEAR = 2015
-CORE_END_YEAR = 2060
