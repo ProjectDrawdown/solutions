@@ -30,8 +30,6 @@ class Scenario:
     scenario_timestamp: datetime
     scenario_description: str
 
-    # PDS Adoption Scenario Inputs:
-    pds_scenario_description : str
+    # PDS Adoption Scenario Name, also acts as a key into the dictionary of pds scenarios (from custom_pds_adoption.json).
     pds_scenario_name : str
-    pds_custom_scenarios_included : str
     

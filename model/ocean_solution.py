@@ -1,9 +1,9 @@
+from model.ocean_tam import OceanTam
 import sys
 import yaml
 
 import numpy as np
 import pandas as pd
-from model.ocean_scenario import OceanScenario as Scenario
 from model.ocean_unit_adoption import UnitAdoption
 
 import json
@@ -13,19 +13,6 @@ class OceanSolution:
     Contains all the calculations required for Ocean-based scenario results.
     """
 
-    ### Config data:
-
-    start_year = None
-    end_year = None
-    base_year = None
-    total_area = None # millions of hectares
-    pds_adoption_file = ''
-    ref_adoption_file = ''
-    scenarios_file = ''
-    required_version_minimum = ()
-    
-    ### End Config Data
-
     def _load_config_file(self, file_name):
         
         stream = open(file_name, 'r')
@@ -33,13 +20,12 @@ class OceanSolution:
         self.start_year = config['StartYear']
         self.end_year = config['EndYear']
         self.base_year = config['BaseYear']
-        self.total_area = config['TotalArea']
 
         self.pds_adoption_file = config['PDSAdoptionFile']
         self.ref_adoption_file = config['REFAdoptionFile']
         self.scenarios_file = config['ScenariosFile']
         self.required_version_minimum = tuple(int(st) for st in str.split(config['RequiredVersionMinimum'], '.'))
-        self.config = config
+        self._config = config
 
     def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name):
             
@@ -74,14 +60,16 @@ class OceanSolution:
 
 
     # Initialize from configuration file:
-    def __init__(self, configuration_file_name):
+    def __init__(self, configuration_file_name, tam= None):
         self._load_config_file(configuration_file_name)
         if sys.version_info < self.required_version_minimum:
             print(f'Warning - you are running python version {sys.version}. Version {self.required_version_minimum} or greater is required.')
-
-    def set_tam(self):
-        # default implementation assumes flat total area across time (change = 0.0)
-        self.pds_scenario.set_tam_linear(self.total_area, change_per_period = 0.0, total_area_as_of_period = None, region = None )
+        
+        if tam is None:
+            #TODO Coded OceanTam's end_year as an offset here. How to set it dynamically?
+            self._tam = OceanTam(self.base_year, self.end_year + 10, regions= ['World'])
+        else:
+            self._tam = tam
 
     def get_scenario_names(self):
 
@@ -89,41 +77,56 @@ class OceanSolution:
         scen_dict = json.load(input_stream)
         
         return list(scen_dict.keys())
-
     
+
     def print_scenario_info(self):
         print('Loaded scenario name:', self.scenario.description)
         
     # Unit Adoption functions:
 
-    def get_adoption_unit_increase_final_year(self, region) -> np.float64:
+    def get_adoption_unit_increase_pds_vs_ref_final_year(self, region) -> np.float64:
         pds_series = self.pds_scenario.get_units_adopted(region) 
-        ref_series = self.ref_scenario.get_units_adopted(region) 
+        ref_series = self.ref_scenario.get_units_adopted(region)
 
         net_series = pds_series.subtract(ref_series)
 
         return net_series.loc[self.end_year]
-
-
-    def get_adoption_unit_pds_final_year(self, region) -> np.float64:
+        
+    def get_adoption_unit_increase_pds_final_year(self, region) -> np.float64:
         pds_series = self.pds_scenario.get_units_adopted(region) 
         return pds_series.loc[self.end_year]
 
 
     def get_global_percent_adoption_base_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted_percent_of_tam(region) 
-        result = pds_series.loc[self.base_year+1]
+        # Adoption for base year, as a percentage of TOA.
+        pds_series = self.pds_scenario.get_units_adopted(region)
+        tam_series = self._tam.get_tam_units(region)
+        pds_base_year = pds_series.loc[self.base_year+1]
+        tam_base_year = tam_series.loc[self.base_year+1]
+        result  = pds_base_year / tam_base_year
         return result
-        
-        
+
+
     def get_percent_adoption_start_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted_percent_of_tam(region)
-        result = pds_series.loc[self.start_year]
+
+        pds_series = self.pds_scenario.get_units_adopted(region)
+        tam_series = self._tam.get_tam_units(region)
+
+        pds_start_year = pds_series.loc[self.start_year]
+        tam_start_year = tam_series.loc[self.start_year]
+
+        result = pds_start_year / tam_start_year
         return result
     
+
     def get_percent_adoption_end_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted_percent_of_tam(region)
-        result = pds_series.loc[self.end_year]
+        pds_series = self.pds_scenario.get_units_adopted(region)
+        tam_series = self._tam.get_tam_units(region)
+        
+        pds_start_year = pds_series.loc[self.end_year]
+        tam_start_year = tam_series.loc[self.end_year]
+        
+        result = pds_start_year / tam_start_year
         return result
         
     # End of Unit Adoption functions

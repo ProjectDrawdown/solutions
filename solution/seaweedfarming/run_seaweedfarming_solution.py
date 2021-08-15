@@ -12,11 +12,12 @@ def main():
         print()
         print(sc)
         swf.load_scenario(sc)
+        swf.set_up_tam()
 
         results = {}
         
-        au_inc = swf.get_adoption_unit_increase_final_year('World')
-        gu_final = swf.get_adoption_unit_pds_final_year('World')
+        au_inc = swf.get_adoption_unit_increase_pds_vs_ref_final_year('World')
+        gu_final = swf.get_adoption_unit_increase_pds_final_year('World')
         gpa_base = swf.get_global_percent_adoption_base_year('World') #returns base year +1?
         gpa_start = swf.get_percent_adoption_start_year('World')
         gpa_end = swf.get_percent_adoption_end_year('World')
@@ -25,7 +26,7 @@ def main():
         results['Global Units of Adoption in Second Year'] = [gu_final, 13.389328]
         results['Global Percent Adoption - Base Year (2014)'] = [gpa_base, 0.07808635 / 100]
         results['Global Percent Adoption in First Year'] = [gpa_start, 0.42188637 / 100]
-        results['Global Percent Adoption in Second Year (2014)'] = [gpa_end, 5.57888670 / 100]
+        results['Global Percent Adoption in Second Year (2050)'] = [gpa_end, 5.57888670 / 100]
 
 
         first_cost = swf.get_marginal_first_cost('World')
