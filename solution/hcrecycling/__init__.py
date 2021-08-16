@@ -112,6 +112,11 @@ solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS1-67p2050-postintegrationjune2020"
+PDS2 = "PDS2-89p2050-postintegrationjune2020"
+PDS3 = "PDS3-100p2050-postintegrationjune2020"
 
 class Scenario(scenario.Scenario):
     name = name

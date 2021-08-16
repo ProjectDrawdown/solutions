@@ -124,6 +124,11 @@ solution_category = ac.SOLUTION_CATEGORY.NOT_APPLICABLE
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS1-15p2050_Low Growth (Book Ed.1)"
+PDS2 = "PDS2-20p2050_High Growth (Book Ed.1)"
+PDS3 = "PDS3-25p2050_Linear to 25% (Book Ed.1)"
 
 class Scenario(scenario.Scenario):
   name = name

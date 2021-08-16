@@ -123,6 +123,11 @@ solution_category = ac.SOLUTION_CATEGORY.REPLACEMENT
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS-13p2050-Plausible2020"
+PDS2 = "PDS-9p2050-Drawdown2020"
+PDS3 = "PDS-0p2050-Optimum2020"
 
 class Scenario(scenario.Scenario):
     name = name

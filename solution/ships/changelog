@@ -1,0 +1,3 @@
+Note 8/2021:
+There is a known test failure with the book edition scenarios.
+Leaving this as a failing test as a reminder to go look into what causes this.
