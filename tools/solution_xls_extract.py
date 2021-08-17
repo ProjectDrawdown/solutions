@@ -1705,7 +1705,13 @@ def output_solution_python_file(outputdir, xl_filename):
         write_scenario(filename=fname, s=s)
     f.write("scenarios = ac.load_scenarios_from_json("
         "directory=THISDIR.joinpath('ac'), vmas=VMAs)\n")
-    f.write("\n\n")
+    f.write("\n")
+
+    f.write('# These are the "default" scenarios to use for each of the drawdown categories.\n')
+    f.write('# They should be set to the most recent "official" set"\n')
+    f.write('PDS1 = "NOT SET"\n')
+    f.write('PDS2 = "NOT SET"\n')
+    f.write('PDS3 = "NOT SET"\n\n')
 
     f.write("class Scenario(scenario.Scenario):\n")
     f.write("    name = name\n")

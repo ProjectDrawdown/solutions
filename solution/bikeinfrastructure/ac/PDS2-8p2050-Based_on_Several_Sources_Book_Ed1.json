@@ -143,7 +143,7 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "(OPT2) Drawdown Team projections based on a weighted average of Several Sources",
+    "soln_pds_adoption_custom_name": "(PDS2) Drawdown Team projections based on a weighted average of Several Sources",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Drawdown Book Ed.1 Reference Scenario",
     "soln_ref_adoption_regional_data": false,

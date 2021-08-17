@@ -22,8 +22,29 @@ def one_solution_scenarios(solution):
     return (m.Scenario, list(m.scenarios.keys()))
 
 
+def solution_pds_type(solution, pds_type):
+    """Return the standard scenario for solution of type pds_type, where pds_type is one of
+    'PDS1', 'PDS2', 'PDS3'"""
+    importname = 'solution.' + solution
+    m = importlib.import_module(importname)       
+    if pds_type == "PDS1":
+        return m.Scenario(m.PDS1)
+    if pds_type == "PDS2":
+        return m.Scenario(m.PDS2)
+    if pds_type == "PDS3":
+        return m.Scenario(m.PDS3)
+    raise ValueError("Scenario type not one of 'PDS1', 'PDS2' or 'PDS3'")
+
+
 def all_solutions_scenarios():
     everything = {}
     for solution in all_solutions():
         everything[solution] = one_solution_scenarios(solution)
+    return everything
+
+
+def all_solutions_scenario_type(scenario_type):
+    everything = {}
+    for solution in all_solutions():
+        everything[solution] = solution_pds_type(scenario_type)
     return everything

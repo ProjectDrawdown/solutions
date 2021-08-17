@@ -128,9 +128,9 @@ scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=V
 
 # These are the "default" scenarios to use for each of the drawdown categories.
 # They should be set to the most recent "official" set"
-PDS1 = "PDS1-3p2050_Based on Navigant, Bloomberg (Book Ed.1)"
-PDS2 = "PDS2-5p2050_Based on ITDP/UCD (Book Ed.1)"
-PDS3 = "PDS3-6p2050_Growth to 6.5% (Book Ed.1)"
+PDS1 = "PDS1-16p2050-with IEA 2DS (Integrated)"
+PDS2 = "PDS2-23p2050-using IEA B2DS (Integrated)"
+PDS3 = "PDS3-18p2050-Survival Analysis (Integrated)"
 
 class Scenario(scenario.Scenario):
     name = name
