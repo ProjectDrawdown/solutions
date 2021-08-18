@@ -371,6 +371,11 @@ class Scenario(scenario.Scenario):
             soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
+        self.n2o = n2ocalcs.N2OCalcs(ac=self.ac,
+            soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
+
         self.c2 = co2calcs.CO2Calcs(ac=self.ac,
             ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
             ch4_megatons_avoided_or_reduced=self.c4.ch4_megatons_avoided_or_reduced(),
@@ -391,7 +396,5 @@ class Scenario(scenario.Scenario):
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
 
-        self.n2o = n2ocalcs.N2OCalcs(ac=self.ac,
-            soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),
-            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
 
