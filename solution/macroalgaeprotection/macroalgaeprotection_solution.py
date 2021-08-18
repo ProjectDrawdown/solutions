@@ -1,6 +1,8 @@
 
 import os
 import json
+import pandas as pd
+import numpy as np
 
 from model.ocean_solution import OceanSolution
 from solution.macroalgaeprotection.macroalgaeprotection_scenario import MacroalgaeProtectionScenario
@@ -24,10 +26,21 @@ class MacroalgaeProtectionSolution(OceanSolution):
         
         if not os.path.isfile(configuration_file_name):
             raise ValueError(f'Unable to find configuration file {configuration_file_name}.')
+
+        super().__init__(configuration_file_name, tam = None)
         
-        OceanSolution._load_config_file(self, configuration_file_name)
-        self.total_area_as_of_period = self.config['TotalAreaAsOfPeriod']
-        self.change_per_period = self.config['ChangePerPeriod']
+        # Now set macroalgaeprotection-specific config values:
+        self.total_area = self._config['TotalArea']
+        self.total_area_as_of_period = self._config['TotalAreaAsOfPeriod']
+        self.change_per_period = self._config['ChangePerPeriod']
+
+        # Delay Regrowth of Degraded Land by 1 Year?
+        self.delay_regrowth_by_one_year = True
+
+
+        self._tam.set_tam_linear(total_area = self.total_area, change_per_period = self.change_per_period, total_area_as_of_period = self.total_area_as_of_period)
+        self._tam.apply_clip(upper=self.total_area)
+        self._tam.apply_linear_regression()
         
 
     def load_scenario(self, scenario_name):
@@ -54,10 +67,63 @@ class MacroalgaeProtectionSolution(OceanSolution):
         
         self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.npv_discount_rate = self.scenario.npv_discount_rate
+        self.new_growth_harvested_every = self.scenario.new_growth_harvested_every
         self.disturbance_rate = 0.0
 
-    
-    def set_tam(self):
-        self.set_tam_linear(total_area = self.total_area, 
-            change_per_period = self.change_per_period, total_area_as_of_period = self.total_area_as_of_period, region = None)
+        self.tam_build_cumulative_unprotected_ocean_pds()
         return
+
+
+    def tam_build_cumulative_unprotected_ocean_pds(self):
+        tam_series = self._tam.get_tam_units()
+        pds_series = self.pds_scenario.get_units_adopted()
+        
+        pds_results = pd.Series(index = tam_series.index)
+        ref_results = pds_results.copy(deep=True)
+        
+        first_pass = True
+        for index, value in tam_series.loc[self.base_year:].iteritems():
+            if first_pass:
+                pds_results.loc[index] = 0.0
+                ref_results.loc[index] = 0.0
+                pds_prev_value = 0.0
+                ref_prev_value = 0.0
+                first_pass = False
+                continue
+
+            pds_val = pds_series.loc[index -1]
+
+            pds_result = (value - pds_val - pds_prev_value) * self.new_growth_harvested_every
+            pds_result = pds_prev_value + pds_result
+            pds_results.loc[index] = pds_result
+            pds_prev_value = pds_result
+
+            ref_result = (value - ref_prev_value) * self.new_growth_harvested_every
+            ref_result = ref_prev_value + ref_result
+            ref_results.loc[index] = ref_result
+            ref_prev_value = ref_result
+
+        df = pd.concat([pds_series, tam_series, pds_results, ref_results], axis='columns', ignore_index=True)
+        df.columns = ['pds_toa_units_adopted', 'tam', 'cum_unprotected_area_pds', 'cum_unprotected_area_ref']
+        df['total_undegraded_land_pds'] = df['tam'] - df['cum_unprotected_area_pds']
+        df['total_at_risk_land_ref'] = df['tam'] - df['cum_unprotected_area_ref']
+        df['cum_reduction_degraded_land'] = df['total_undegraded_land_pds'] - df['total_at_risk_land_ref']
+
+        self._tam.cum_unprotected_area_pds = df
+
+    def get_total_co2_seq(self) -> np.float64:
+        
+        df = self._tam.cum_unprotected_area_pds
+        df = df['cum_reduction_degraded_land'] * 3.666 * self.sequestration_rate_all_ocean
+
+        start = self.start_year
+        end = self.end_year
+
+        if self.delay_regrowth_by_one_year:
+            start -= 1
+            end -= 1
+
+        result = df.loc[start: end].sum()
+        return result / 1000
+
+

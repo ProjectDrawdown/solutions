@@ -96,19 +96,23 @@ class UnitAdoption:
     
     ##########
 
-    def get_units_adopted(self, region):
+    def get_units_adopted(self):
+        # Plan to extend to sub-regions later.
+        region = 'World'
         # 'Unit Adoption Calculations'!C136:C182 = "Land Units Adopted" - PDS
         # 'Unit Adoption Calculations'!C198:C244 = "Land Units Adopted" - REF
         return self.implementation_units.loc[:, region].copy()
 
 
-    def annual_breakout(self, region, end_year):
+    def annual_breakout(self, end_year):
 
         """Breakout of operating cost per year, including replacements.
         """
         
         # Following code based on annual_breakout function in model\operatingcost.py
         # See range starting in cell [Operating Cost]!$C$261. Also used by Net Profit Margin calculation.
+
+        region = 'World'
 
         new_funits_per_year = self.implementation_units.loc[self.base_year:, region].diff()
 
@@ -139,26 +143,26 @@ class UnitAdoption:
         return breakout
 
         
-    def get_operating_cost(self, region, end_year):
+    def get_operating_cost(self, end_year):
 
         # After multiplying by (1+ disturbance_rate), this should equal the time series SUM($C266:$AV266) in [Operating Cost] worksheet 
 
-        result = self.annual_breakout(region, end_year)
+        result = self.annual_breakout(end_year)
         result *= self.operating_cost
 
         cost_series = result.sum(axis='columns')
         return cost_series
 
 
-    def get_incremental_units_per_period(self, region):
+    def get_incremental_units_per_period(self):
 
-        incremented = self.implementation_units.loc[self.base_year-1:, region].diff()
+        incremented = self.implementation_units.loc[self.base_year-1:].diff()
         shifted = incremented.shift(self.expected_lifetime +1).fillna(0.0)
         
         return incremented + shifted
 
     
-    def get_install_cost_per_land_unit(self, region):
+    def get_install_cost_per_land_unit(self):
 
         # $C$37 (pds) and $L$37 (ref) on First Cost spreadsheet tab.
         learning_rate = 1.0 # 100%
@@ -166,43 +170,45 @@ class UnitAdoption:
         param_b = math.log10(learning_rate) / math.log10(how_fast)
 
         # For some solutions (e.g. seaweed farming), param_b == zero. So following will produce a static series of self.first_cost.
-        cost_series = self.implementation_units.loc[:,region].apply(lambda x: x**param_b) * self.first_cost
+        cost_series = self.implementation_units.loc[:].apply(lambda x: x**param_b) * self.first_cost
 
         return cost_series
 
 
-    def get_annual_world_first_cost(self, region):
+    def get_annual_world_first_cost(self):
+        region = 'World'
         
         # For the custom pds scenario, this is the time series referred to by cell $E$36 in the spreadsheet.
         # For the custom ref scenario, this is the time series referred to by cell $N$36 in the spreadsheet.
 
         #TODO - validate input params.
 
-        i_units = self.get_incremental_units_per_period(region)        
-        result = i_units * self._first_cost
+        i_units = self.get_incremental_units_per_period()        
+        result = i_units[region] * self._first_cost
 
         return result
 
 
-    def get_lifetime_operating_savings(self, region, end_year):
+    def get_lifetime_operating_savings(self, end_year):
 
         # After muliplying by (1 + disturbance_rate) this should match the time series in [Operating Cost]!$C$125
         
-        matrix = self.annual_breakout(region, end_year)
+        matrix = self.annual_breakout(end_year)
         cost_series = matrix.sum(axis='columns') * self.operating_cost
         
         return cost_series
 
 
-    def get_lifetime_cashflow_npv(self, region, purchase_year, discount_rate):
+    def get_lifetime_cashflow_npv(self, purchase_year, discount_rate):
         
+        region = 'World'
         # "result" should match time series in [Operating Cost]!$J$125 = "NPV of Single Cashflows (to 2014)"
         years_old_at_start =  purchase_year - self.base_year + 1
 
         discount_factor = 1/(1+discount_rate)
 
-        first_cost_series = self.get_install_cost_per_land_unit(region)
-        first_cost_series = first_cost_series.loc[self.base_year:]
+        first_cost_series = self.get_install_cost_per_land_unit()
+        first_cost_series = first_cost_series.loc[self.base_year:, region]
 
         first_val = first_cost_series.loc[self.base_year] + self.operating_cost
         first_val = first_val * discount_factor**(years_old_at_start)
@@ -218,29 +224,17 @@ class UnitAdoption:
         return result
 
 
-    def get_net_profit_margin(self, region, end_year):
+    def get_net_profit_margin(self, end_year):
 
         # For PDS = [Net Profit Margin]!SUM(C266:AV266)
         # For REF = [Net Profit Margin]!SUM(C403:AV403)
 
         # (PDS - REF) = [Net Profit Margin]!$C$125 = "Difference in Net Profit Margin (PDS minus Reference)""
 
-        matrix = self.annual_breakout(region, end_year)
+        matrix = self.annual_breakout(end_year)
 
         margin_series = matrix.sum(axis='columns')
         margin_series *= self.net_profit_margin
 
         return margin_series
 
-
-    def get_carbon_sequestration(self, region, sequestration_rate, disturbance_rate) ->pd.DataFrame:
-
-        co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
-
-        adoption = self.get_units_adopted(region)
-        sequestration = adoption * sequestration_rate
-        sequestration *= co2_mass_to_carbon_mass * (1 - disturbance_rate)
-
-        # When this function is netted out [pds - ref], sequestration should match the time series in [CO2 Calcs]!$B$L120
-
-        return sequestration

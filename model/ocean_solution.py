@@ -66,8 +66,8 @@ class OceanSolution:
             print(f'Warning - you are running python version {sys.version}. Version {self.required_version_minimum} or greater is required.')
         
         if tam is None:
-            #TODO Coded OceanTam's end_year as an offset here. How to set it dynamically?
-            self._tam = OceanTam(self.base_year, self.end_year + 10, regions= ['World'])
+            #TODO Coded OceanTam's base_year and end_year as an offset here. How to set it dynamically?
+            self._tam = OceanTam(self.base_year-2, self.end_year + 11)
         else:
             self._tam = tam
 
@@ -84,33 +84,33 @@ class OceanSolution:
         
     # Unit Adoption functions:
 
-    def get_adoption_unit_increase_pds_vs_ref_final_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted(region) 
-        ref_series = self.ref_scenario.get_units_adopted(region)
+    def get_adoption_unit_increase_pds_vs_ref_final_year(self) -> np.float64:
+        pds_series = self.pds_scenario.get_units_adopted() 
+        ref_series = self.ref_scenario.get_units_adopted()
 
         net_series = pds_series.subtract(ref_series)
 
         return net_series.loc[self.end_year]
         
-    def get_adoption_unit_increase_pds_final_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted(region) 
+    def get_adoption_unit_increase_pds_final_year(self) -> np.float64:
+        pds_series = self.pds_scenario.get_units_adopted() 
         return pds_series.loc[self.end_year]
 
 
-    def get_global_percent_adoption_base_year(self, region) -> np.float64:
+    def get_global_percent_adoption_base_year(self) -> np.float64:
         # Adoption for base year, as a percentage of TOA.
-        pds_series = self.pds_scenario.get_units_adopted(region)
-        tam_series = self._tam.get_tam_units(region)
+        pds_series = self.pds_scenario.get_units_adopted()
+        tam_series = self._tam.get_tam_units()
         pds_base_year = pds_series.loc[self.base_year+1]
         tam_base_year = tam_series.loc[self.base_year+1]
         result  = pds_base_year / tam_base_year
         return result
 
 
-    def get_percent_adoption_start_year(self, region) -> np.float64:
+    def get_percent_adoption_start_year(self) -> np.float64:
 
-        pds_series = self.pds_scenario.get_units_adopted(region)
-        tam_series = self._tam.get_tam_units(region)
+        pds_series = self.pds_scenario.get_units_adopted()
+        tam_series = self._tam.get_tam_units()
 
         pds_start_year = pds_series.loc[self.start_year]
         tam_start_year = tam_series.loc[self.start_year]
@@ -119,13 +119,13 @@ class OceanSolution:
         return result
     
 
-    def get_percent_adoption_end_year(self, region) -> np.float64:
-        pds_series = self.pds_scenario.get_units_adopted(region)
-        tam_series = self._tam.get_tam_units(region)
+    def get_percent_adoption_end_year(self) -> np.float64:
+        pds_series = self.pds_scenario.get_units_adopted()
+        tam_series = self._tam.get_tam_units()
         
         pds_start_year = pds_series.loc[self.end_year]
         tam_start_year = tam_series.loc[self.end_year]
-        
+
         result = pds_start_year / tam_start_year
         return result
         
@@ -133,28 +133,28 @@ class OceanSolution:
 
     ### Financial functions:
 
-    def get_marginal_first_cost(self, region) -> np.float64:
+    def get_marginal_first_cost(self) -> np.float64:
         
         # pds_awfc corresponds to the "Annual World First Cost" column (solution-pds)
         # in [First Cost]!$E$36 in the spreadsheet.
 
-        pds_awfc = self.pds_scenario.get_annual_world_first_cost(region)
+        pds_awfc = self.pds_scenario.get_annual_world_first_cost()
         
         # ref_awfc corresponds to the "Annual World First Cost" column (solution-ref)
         # in [First Cost]!$N$36 in the spreadsheet.
 
-        ref_awfc = self.ref_scenario.get_annual_world_first_cost(region)
+        ref_awfc = self.ref_scenario.get_annual_world_first_cost()
         years = list(range(self.base_year, self.end_year +1))
         result = (pds_awfc - ref_awfc).loc[years]
         
         return result.sum() / 1000  # in billions
 
     
-    def get_cumulative_first_cost_pds(self, region) -> np.float64:
+    def get_cumulative_first_cost_pds(self) -> np.float64:
 
         years = list(range(self.base_year, self.end_year +1))
 
-        pds_fc = self.pds_scenario.get_annual_world_first_cost(region)
+        pds_fc = self.pds_scenario.get_annual_world_first_cost()
 
         result = pds_fc.loc[years]
 
@@ -162,17 +162,17 @@ class OceanSolution:
 
 
     
-    def get_operating_cost(self, region) -> np.float64:
+    def get_operating_cost(self) -> np.float64:
 
         # TODO: confirm start_year-1 is desired. Why does it start in 2019?
 
         # Each cell in pds_series should match SUM($C266:$AV266) in [Operating Cost] worksheet.
 
-        pds_series = self.pds_scenario.get_operating_cost(region, self.end_year) * (1+ self.disturbance_rate)
+        pds_series = self.pds_scenario.get_operating_cost( self.end_year) * (1+ self.disturbance_rate)
         pds_result = pds_series.cumsum().loc[self.end_year] - pds_series.cumsum().loc[self.start_year]
 
         # Each cell in ref_series should match SUM($C403:$AV403) in [Operating Cost] worksheet.
-        ref_series = self.ref_scenario.get_operating_cost(region, self.end_year) * (1+self.disturbance_rate)
+        ref_series = self.ref_scenario.get_operating_cost( self.end_year) * (1+self.disturbance_rate)
         ref_result = ref_series.cumsum().loc[self.end_year] - ref_series.cumsum().loc[self.start_year]
 
         result = (ref_result - pds_result) / 1000 # in billions
@@ -182,10 +182,10 @@ class OceanSolution:
         return result
 
     
-    def get_lifetime_operating_savings(self, region) -> np.float64:
+    def get_lifetime_operating_savings(self) -> np.float64:
         
         # pds_series should match [Operating Cost]!$C$125 = "Difference in Operating Cost (Reference minus PDS)"
-        pds_series = self.pds_scenario.get_lifetime_operating_savings(region, self.end_year) * (1+ self.disturbance_rate)
+        pds_series = self.pds_scenario.get_lifetime_operating_savings(self.end_year) * (1+ self.disturbance_rate)
 
         # TODO: subtract this from conventional.
 
@@ -195,19 +195,19 @@ class OceanSolution:
 
 
 
-    def get_lifetime_cashflow_npv_single(self, region, purchase_year) -> np.float64:
+    def get_lifetime_cashflow_npv_single(self, purchase_year) -> np.float64:
 
         discount_rate = self.npv_discount_rate
-        pds_series = -1 * self.pds_scenario.get_lifetime_cashflow_npv(region, purchase_year, discount_rate)
+        pds_series = -1 * self.pds_scenario.get_lifetime_cashflow_npv(purchase_year, discount_rate)
 
         result = pds_series.sum()
 
         return result / 1_000 # express in billions of USD
 
-    def get_payback_period_soln_only(self, region, purchase_year) -> np.float64:
+    def get_payback_period_soln_only(self, purchase_year) -> np.float64:
 
         discount_rate = self.npv_discount_rate
-        pds_series = -1 * self.pds_scenario.get_lifetime_cashflow_npv(region, purchase_year, discount_rate)
+        pds_series = -1 * self.pds_scenario.get_lifetime_cashflow_npv(purchase_year, discount_rate)
 
         cumulative_sum = pds_series.cumsum()
 
@@ -217,11 +217,11 @@ class OceanSolution:
         return max_val
 
 
-    def get_payback_period_soln_only_npv(self, region, purchase_year) -> np.float64:
+    def get_payback_period_soln_only_npv(self, purchase_year) -> np.float64:
 
         discount_rate = self.npv_discount_rate
 
-        pds_series = -1 * self.pds_scenario.get_lifetime_cashflow_npv(region, purchase_year, discount_rate)
+        pds_series = -1 * self.pds_scenario.get_lifetime_cashflow_npv(purchase_year, discount_rate)
 
         cumulative_sum = pds_series.cumsum()
 
@@ -231,7 +231,7 @@ class OceanSolution:
         return max_val
 
 
-    def get_payback_period_soln_to_conv(self, region, purchase_year) -> np.float64:
+    def get_payback_period_soln_to_conv(self, purchase_year) -> np.float64:
 
         #$K$122 on Operating Cost spreadsheet tab.
 
@@ -241,7 +241,7 @@ class OceanSolution:
         # Don't use ref_series here, use "conventional" series instead.
         # Since the "conventional" concept isn't applicable for seaweed farming, just use a zero timeseries.
 
-        pds_series = self.pds_scenario.get_lifetime_cashflow_npv(region, purchase_year, discount_rate)
+        pds_series = self.pds_scenario.get_lifetime_cashflow_npv(purchase_year, discount_rate)
 
         net_series = -pds_series
 
@@ -253,14 +253,14 @@ class OceanSolution:
         return max_val
 
 
-    def get_payback_period_soln_to_conv_npv(self, region, purchase_year) -> np.float64:
+    def get_payback_period_soln_to_conv_npv(self, purchase_year) -> np.float64:
 
         discount_rate = self.npv_discount_rate
 
         # Don't use ref_series here, use "conventional" series instead.
         # Since the "conventional" concept isn't applicable for seaweed farming, just use a zero timeseries.
 
-        pds_series = self.pds_scenario.get_lifetime_cashflow_npv(region, purchase_year, discount_rate)
+        pds_series = self.pds_scenario.get_lifetime_cashflow_npv(purchase_year, discount_rate)
 
         net_series =  -pds_series
 
@@ -272,13 +272,13 @@ class OceanSolution:
         return max_val
 
 
-    def get_lifetime_cashflow_npv_all(self, region) -> np.float64:
-
+    def get_lifetime_cashflow_npv_all(self) -> np.float64:
+        region = 'World'
         # calculation matches "NPV" timeseries from [Operating Cost]!$E$125
 
         # TODO fc should be fc diff, so do the same thing for ref scenario and find diff.
-        ref_fc = self.ref_scenario.get_annual_world_first_cost(region)
-        pds_fc = self.pds_scenario.get_annual_world_first_cost(region)
+        ref_fc = self.ref_scenario.get_annual_world_first_cost()
+        pds_fc = self.pds_scenario.get_annual_world_first_cost()
 
         net_fc = ref_fc - pds_fc
 
@@ -288,7 +288,7 @@ class OceanSolution:
         # TODO op_cost should be op_cost diff, so do the same thing for ref scenario and find diff.
         # op_cost matches "Difference in Operating Cost (ref - pds)"" timeseries from [Operating Cost]!$C$125
 
-        op_cost = - self.pds_scenario.get_lifetime_operating_savings(region, self.end_year) * (1+ self.disturbance_rate)
+        op_cost = - self.pds_scenario.get_lifetime_operating_savings(self.end_year) * (1+ self.disturbance_rate)
 
         net_cash_flow = fc_clipped.add(op_cost, fill_value = 0.0)
 
@@ -299,19 +299,19 @@ class OceanSolution:
 
         discount_factors = [discount_factor**(row+1) for row in range(num_rows)]
 
-        npv = net_cash_flow.multiply(discount_factors)
+        npv = net_cash_flow.multiply(discount_factors, axis = 'index')
         
         result = npv.sum()
         
         return result / 1_000 # express in billions of USD
 
 
-    def get_abatement_cost(self, region) -> np.float64:
+    def get_abatement_cost(self) -> np.float64:
 
-        total_co2_reduction = self.get_total_co2_seq(region)
+        total_co2_reduction = self.get_total_co2_seq()
 
-        pds_fc = self.pds_scenario.get_annual_world_first_cost(region)
-        ref_fc = self.ref_scenario.get_annual_world_first_cost(region)
+        pds_fc = self.pds_scenario.get_annual_world_first_cost()
+        ref_fc = self.ref_scenario.get_annual_world_first_cost()
 
         # following should be [(ref_fc + conv_fc) - pds_fc], however haven't implemented conventional yet (not relevant for seaweed farming).
         net_fc = ref_fc - pds_fc
@@ -319,13 +319,13 @@ class OceanSolution:
         # after executing this next line, fc_clipped should match time series in [Operating Cost]!$B$125
         fc_clipped = net_fc.loc[self.start_year-1:self.end_year]
 
-        pds_op_cost = self.pds_scenario.get_lifetime_operating_savings(region, self.end_year)
-        ref_op_cost = self.ref_scenario.get_lifetime_operating_savings(region, self.end_year)
+        pds_op_cost = self.pds_scenario.get_lifetime_operating_savings(self.end_year)
+        ref_op_cost = self.ref_scenario.get_lifetime_operating_savings(self.end_year)
 
         # after executing this next line, net_op_cost should match time series in [Operating Cost]!$C$125
         net_op_cost = (ref_op_cost -pds_op_cost) * (1+ self.disturbance_rate)
 
-        net_cash_flow = fc_clipped.add(net_op_cost, fill_value = 0.0)
+        net_cash_flow = fc_clipped.add(net_op_cost).fillna(0.0)
         
         rate = self.npv_discount_rate
         discount_factor = 1/(1+rate)
@@ -334,7 +334,7 @@ class OceanSolution:
 
         discount_factors = [discount_factor**(row+1) for row in range(num_rows)]
 
-        npv = net_cash_flow.multiply(discount_factors)
+        npv = net_cash_flow.multiply(discount_factors, axis='index')
         npv_summed = npv.loc[self.start_year: self.end_year].sum()
 
         result = -1 * npv_summed/total_co2_reduction
@@ -342,9 +342,9 @@ class OceanSolution:
         return result / 1_000 # express in billions of USD
 
 
-    def get_net_profit_margin(self, region):
+    def get_net_profit_margin(self):
 
-        margin_series = self.pds_scenario.get_net_profit_margin(region, self.end_year) * (1- self.disturbance_rate)
+        margin_series = self.pds_scenario.get_net_profit_margin(self.end_year) * (1- self.disturbance_rate)
         margin_series_cum = margin_series.cumsum()
 
         end_year_val = margin_series_cum.loc[self.end_year]
@@ -355,19 +355,19 @@ class OceanSolution:
         return result / 1_000 # express in billions of USD
 
 
-    def get_lifetime_profit_margin(self, region) -> np.float64:
+    def get_lifetime_profit_margin(self) -> np.float64:
 
-        margin_series = self.pds_scenario.get_net_profit_margin(region, self.end_year) * (1- self.disturbance_rate)
+        margin_series = self.pds_scenario.get_net_profit_margin(self.end_year) * (1- self.disturbance_rate)
 
         result  = margin_series.sum()
 
         return result / 1_000 # express in billions of USD
 
 
-    def get_total_co2_seq(self, region) -> np.float64:
-
-        pds_sequestration = self.pds_scenario.get_carbon_sequestration(region, self.sequestration_rate_all_ocean, self.disturbance_rate)
-        ref_sequestration = self.ref_scenario.get_carbon_sequestration(region, self.sequestration_rate_all_ocean, self.disturbance_rate)
+    def get_total_co2_seq(self) -> np.float64:
+        
+        pds_sequestration = self.get_carbon_sequestration_pds(self.sequestration_rate_all_ocean, self.disturbance_rate)
+        ref_sequestration = self.get_carbon_sequestration_ref(self.sequestration_rate_all_ocean, self.disturbance_rate)
 
         net_sequestration = (pds_sequestration - ref_sequestration)
 
@@ -375,11 +375,36 @@ class OceanSolution:
 
         return result / 1_000 # express in billions of USD
 
+    
+    def get_carbon_sequestration_pds(self, sequestration_rate, disturbance_rate) ->pd.DataFrame:
 
-    def get_change_in_ppm_equiv_series(self, region) -> np.float64:
+        co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
 
-        pds_sequestration = self.pds_scenario.get_carbon_sequestration(region, self.sequestration_rate_all_ocean, self.disturbance_rate)
-        ref_sequestration = self.ref_scenario.get_carbon_sequestration(region, self.sequestration_rate_all_ocean, self.disturbance_rate)
+        adoption = self.pds_scenario.get_units_adopted()
+        sequestration = adoption * sequestration_rate
+        sequestration *= co2_mass_to_carbon_mass * (1 - disturbance_rate)
+
+        # When this function is netted out [pds - ref], sequestration should match the time series in [CO2 Calcs]!$B$L120
+
+        return sequestration
+
+    def get_carbon_sequestration_ref(self, sequestration_rate, disturbance_rate) ->pd.DataFrame:
+
+        co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
+
+        adoption = self.ref_scenario.get_units_adopted()
+        sequestration = adoption * sequestration_rate
+        sequestration *= co2_mass_to_carbon_mass * (1 - disturbance_rate)
+
+        # When this function is netted out [pds - ref], sequestration should match the time series in [CO2 Calcs]!$B$L120
+
+        return sequestration
+
+
+    def get_change_in_ppm_equiv_series(self) -> np.float64:
+
+        pds_sequestration = self.get_carbon_sequestration_pds(self.sequestration_rate_all_ocean, self.disturbance_rate)
+        ref_sequestration = self.get_carbon_sequestration_ref(self.sequestration_rate_all_ocean, self.disturbance_rate)
 
         net_sequestration = (pds_sequestration - ref_sequestration)
 
@@ -414,21 +439,21 @@ class OceanSolution:
         return results # results now matches the time series in [CO2 Calcs]!$B$172 = "PPM"
 
 
-    def get_change_in_ppm_equiv(self,region) -> np.float64:
-        series = self.get_change_in_ppm_equiv_series(region)
+    def get_change_in_ppm_equiv(self) -> np.float64:
+        series = self.get_change_in_ppm_equiv_series()
         return series.loc[self.end_year]
 
 
 
-    def get_change_in_ppm_equiv_final_year(self, region) -> np.float64:
-        series = self.get_change_in_ppm_equiv_series(region)
+    def get_change_in_ppm_equiv_final_year(self) -> np.float64:
+        series = self.get_change_in_ppm_equiv_series()
         return series.loc[self.end_year] - series.loc[self.end_year-1]
         
 
-    def get_max_annual_co2_sequestered(self, region) -> np.float64:
+    def get_max_annual_co2_sequestered(self) -> np.float64:
 
-        pds_sequestration = self.pds_scenario.get_carbon_sequestration(region, self.sequestration_rate_all_ocean, self.disturbance_rate)
-        ref_sequestration = self.ref_scenario.get_carbon_sequestration(region, self.sequestration_rate_all_ocean, self.disturbance_rate)
+        pds_sequestration = self.get_carbon_sequestration_pds(self.sequestration_rate_all_ocean, self.disturbance_rate)
+        ref_sequestration = self.get_carbon_sequestration_ref(self.sequestration_rate_all_ocean, self.disturbance_rate)
 
         net_sequestration = (pds_sequestration - ref_sequestration)
 
@@ -437,10 +462,10 @@ class OceanSolution:
         return result / 1_000
 
 
-    def get_co2_sequestered_final_year(self, region) -> np.float64:
+    def get_co2_sequestered_final_year(self) -> np.float64:
 
-        pds_sequestration = self.pds_scenario.get_carbon_sequestration(region, self.sequestration_rate_all_ocean, self.disturbance_rate)
-        ref_sequestration = self.ref_scenario.get_carbon_sequestration(region, self.sequestration_rate_all_ocean, self.disturbance_rate)
+        pds_sequestration = self.get_carbon_sequestration_pds(self.sequestration_rate_all_ocean, self.disturbance_rate)
+        ref_sequestration = self.get_carbon_sequestration_ref(self.sequestration_rate_all_ocean, self.disturbance_rate)
 
         net_sequestration = (pds_sequestration - ref_sequestration)
 

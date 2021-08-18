@@ -3,10 +3,10 @@
 ScenariosFile: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/macroalgaeprotection/scenario_inputs.json
 PDSAdoptionFile: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/macroalgaeprotection/unit_adoption_data/custom_pds_adoption.json
 REFAdoptionFile: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/macroalgaeprotection/unit_adoption_data/custom_ref_adoption.json
-BaseYear: 2015
+BaseYear: 2014
 StartYear: 2020
 EndYear: 2050
 TotalArea: 355
-TotalAreaAsOfPeriod: 2014
+TotalAreaAsOfPeriod: 2016
 ChangePerPeriod: -0.0074812968
 RequiredVersionMinimum: 3.9.5

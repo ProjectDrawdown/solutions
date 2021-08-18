@@ -26,13 +26,12 @@ class SeaweedFarmingSolution(OceanSolution):
         if not os.path.isfile(configuration_file_name):
             raise ValueError(f'Unable to find configuration file {configuration_file_name}.')
 
-        
         super().__init__(configuration_file_name, tam = None)
+
         # Now set seaweed_farming-specific config values:
-        
         self.total_area = self._config['TotalArea']
 
-        self._tam.set_tam_linear(total_area =  self.total_area, change_per_period= 0.0, total_area_as_of_period=None, regions = ['World'])
+        self._tam.set_tam_linear(total_area =  self.total_area, change_per_period= 0.0, total_area_as_of_period=None)
 
 
     def load_scenario(self, scenario_name):
