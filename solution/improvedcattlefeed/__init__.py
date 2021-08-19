@@ -89,6 +89,11 @@ VMAs = {
     'SOLUTION Increased Milk Yield': vma.VMA(
         filename=THISDIR.joinpath("vma_data", "SOLUTION_Increased_Milk_Yield.csv"),
         use_weight=False),
+
+    # This is a manually added VMA to get around an issue with importing this solution module: During import, function
+    # _substitute_vma() in model/advanced_controls.py throws an exception because this VMA is not generated here by
+    # the model extraction notebook Improved_Cattle_Feed_Extraction.ipynb. The source of that issue should be found so
+    # that this potentially dangerous work-around can be removed.
     'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
         filename=None, use_weight=False, fixed_summary=(1e-20, 1e-20, 1e-20)),
 }
@@ -116,6 +121,8 @@ class Scenario:
     def __init__(self, scenario=None):
         if scenario is None:
             scenario = list(scenarios.keys())[0]
+        import pdb
+        pdb.set_trace()
         self.scenario = scenario
         self.ac = scenarios[scenario]
 
@@ -170,6 +177,8 @@ class Scenario:
                     'Drawdown TAM: Optimum': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Optimum.csv'),
             },
         }
+        print('p1')
+        print(self.ac.pds_source_post_2014)
         self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
             main_includes_regional=True,
             tam_pds_data_sources=tam_pds_data_sources)
