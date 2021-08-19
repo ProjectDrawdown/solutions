@@ -1,15 +1,28 @@
-"""
-AEZ Data module.
-Mostly reproduces the corresponding xls sheet, with a few simplifications:
-- All breakdowns by year have been removed as the TLA is assumed fixed for all years on all solutions.
-- 'Solution land data' table has not been replicated as it has no function in the model.
+"""Project Drawdown Land Utilities for Solutions.
+There are three kinds of land divisions recognized within Project Drawdown:
+ * Regions:  these are the geo-political regions such as OECD90 and Latin America
+ * Thermal-Moisture Regimes, aka TMR: designations such as Boreal-Humid, etc.
+ * AEZs: this is a custom PD analysis of land areas combining land type, soil quality and slope steepness
+ 
+Geographical analysis to create a cross-correlation between these three dimensions has been done,
+and the original work is available at [https://github.com/ProjectDrawdown/spatial-aez].
 
-Areas are pulled from CSVs in the 'land/world' directory, and allocations from the 'land/allocation'
-directory. These in turn are generated from their corresponding spreadsheets in the 'land' directory. These
-values are fixed across all solutions but if they do need updating the xls sheets can be changed and the CSVs
-can be updated by running the relevant script in the 'tools' directory.
-"""
+Land-type solutions are usually only applicable within certain TMRs.  Within a given TMR, multiple
+land solutions might compete for the same land.  PD has established a priority between multiple solutions
+within AEZ types, and from that prioritization, determined a maximum available land allocation for each
+solution within each political region/TMR area.  This is known as the "Total Land Allocation" or TLA,
+and it works analagously to the "Total Available Market" in other solutions.
 
+The TLA is established by the integration process in `integrations\aez_land_integration.py`.  The integration
+process is run periodically to create updated TLAs which are stored in the `data` directory.
+Individuals may run the integration process themselves to replicate that work, or experiment with alternatives.
+
+Currently PD models land types as unchanging over time.  Future research may include forecasts of land
+changes over time, e.g. due to climate change modeling.
+
+This module contains the classes for solution-specific land allocations.
+See the module `world_land` for global land data.
+"""
 import pathlib
 import re
 
@@ -25,16 +38,34 @@ LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land')
 
 
 class AEZ(DataHandler, object, metaclass=MetaclassCache):
-    """AEZ Data module.
-       Args:
-         solution_name: <soln file>.name
-         ignore_allocation: optionally turn off land allocation to use max tla values
-         cohort: whether to use 2018 or 2019 land allocations.
-         regimes: list of string names of thermal moisture regimes
+    """The AEZ object holds various land-based information applicable to a solution, including the allocated TLA"""
+
+    world_land_alloc_dict: dict[str, pd.DataFrame] = None
+    """The most granular version of land allocation.  A dictionary mapping TMR names to
+    Dataframes, which themselves are indexed by region and have AEZ zones as columns,
+    and allocations for this solution as values.
     """
 
-    def __init__(self, solution_name, ignore_allocation=False, cohort=2018,
-            regimes=dd.THERMAL_MOISTURE_REGIMES):
+    soln_land_dist_df: pd.DataFrame = None
+    """Land allocation broken down by TMR and AEZ"""
+
+    soln_land_alloc_df: pd.DataFrame = None
+    """Land allocation broken down by region and TMR.  This is the result returned by `get_land_distribution` and
+    commonly referred to as the TLA."""
+
+    applicable_zones: list[str] = None
+    """The AEZ zones in which this solution can be applied.  (Hard-coded list)"""
+
+
+    def __init__(self, solution_name, cohort=2018, regimes=dd.THERMAL_MOISTURE_REGIMES, max_tla=False):
+            # TODO: check if these are the right defaults?  We need the Excel tests to pass, which would
+            # need the data at that time, but in normal cases we also want the most "up to date" data possible.
+        """
+        solution_name: full name of the solution (as returned by scenario.name)
+        cohort: which land allocation series to use, defaults to most recent
+        regimes: list of string names of thermal moisture regimes to use, defaults to standard
+        max_tla: If true, the maximum suitable land available is returned, instead of the allocated land
+        """
         self.solution_name = solution_name
         self.cohort = cohort
         self.regimes = regimes
@@ -43,7 +74,7 @@ class AEZ(DataHandler, object, metaclass=MetaclassCache):
         # is in line with the xls version but should be changed later to keep regions consistent
         self.regions = dd.MAIN_REGIONS + ['Global'] + dd.SPECIAL_COUNTRIES
 
-        self.ignore_allocation = ignore_allocation
+        self.ignore_allocation = max_tla
         self._populate_solution_land_allocation()
         self._get_applicable_zones()
         self._populate_world_land_allocation()
