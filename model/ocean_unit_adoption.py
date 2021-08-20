@@ -4,6 +4,8 @@ import math
 import json
 import copy
 
+import model.interpolation as interp
+
 # Code originally based of seaweed farming solution, but is intended to be general.
 
 class UnitAdoption:
@@ -11,15 +13,20 @@ class UnitAdoption:
     Used for both PDS adoption and REF adoption.
     """
     description : str
+    _tam: pd.Series
+    disturbance_rate: np.float64
+    sequestration_rate_all_ocean: np.float64
+    use_tam_for_co2_calcs: bool = False
     
     def _validate_inputs(self):        
         pass
 
-    def __init__(self, base_year, adoption_scenario_to_load, adoption_input_file):
+    def __init__(self, base_year, end_year, adoption_scenario_to_load, adoption_input_file):
         self._validate_inputs()
 
         self.base_year = base_year
-
+        self.end_year = end_year
+        
         stream = open(adoption_input_file,'r')
         json_dict = json.load(stream)
 
@@ -30,21 +37,26 @@ class UnitAdoption:
             raise ValueError(f'Unable to find scenario name {adoption_scenario_to_load} in {adoption_input_file} keys - {json_dict.keys()}')
  
         adoption_scenario_desc = json_dict[adoption_scenario_to_load]['description']
-        
+                
         self.description = adoption_scenario_desc
 
-        df = pd.DataFrame.from_dict(json_dict[adoption_scenario_to_load]['data'])
-        df.columns = json_dict[adoption_scenario_to_load]['columns']
-        df.set_index(df.columns[0], inplace=True)
+        idx, vals = zip(*json_dict[adoption_scenario_to_load]['data']) # list of two-element lists
+        adoption_series = pd.Series(data=vals, index=idx)
 
         # ditch everything earlier than the base year -1.
-        df = df.loc[self.base_year-1:]
+        adoption_series = adoption_series.loc[self.base_year-1:]
 
-        self.implementation_units = df
+        self.implementation_units = adoption_series
         self.expected_lifetime = 0.0
         self.first_cost = 0.0
         self.net_profit_margin = 0.0
-        self.operating_cost = 0.0        
+        self.operating_cost = 0.0
+
+        tam_series = pd.Series(index= adoption_series.index, dtype= np.float64)
+        self._tam = tam_series # values are initialised to NaNs
+
+    def get_tam_units(self) -> pd.Series:
+        return self._tam.copy()
 
     def get_skeleton(self):
         # This is used to create empty unit adoption objects. Sometimes ref unit adoption is zero, often conventional unit adoption is also zero.
@@ -52,11 +64,10 @@ class UnitAdoption:
 
         new_obj = copy.deepcopy(self)
         
-        df = new_obj.implementation_units
-        for col in df.columns:
-            df[col].values[:] = 0.0
-
-        new_obj.implementation_units = df
+        series = new_obj.implementation_units
+        series[:] = 0.0
+        
+        new_obj.implementation_units = series
 
         return new_obj
 
@@ -97,11 +108,9 @@ class UnitAdoption:
     ##########
 
     def get_units_adopted(self):
-        # Plan to extend to sub-regions later.
-        region = 'World'
         # 'Unit Adoption Calculations'!C136:C182 = "Land Units Adopted" - PDS
         # 'Unit Adoption Calculations'!C198:C244 = "Land Units Adopted" - REF
-        return self.implementation_units.loc[:, region].copy()
+        return self.implementation_units.copy()
 
 
     def annual_breakout(self, end_year):
@@ -112,9 +121,7 @@ class UnitAdoption:
         # Following code based on annual_breakout function in model\operatingcost.py
         # See range starting in cell [Operating Cost]!$C$261. Also used by Net Profit Margin calculation.
 
-        region = 'World'
-
-        new_funits_per_year = self.implementation_units.loc[self.base_year:, region].diff()
+        new_funits_per_year = self.implementation_units.loc[self.base_year:].diff()
 
         breakout = pd.DataFrame(0, index=np.arange(self.base_year, end_year),
                                 columns=np.arange(self.base_year, new_funits_per_year.index[-1]), dtype='float')
@@ -176,7 +183,6 @@ class UnitAdoption:
 
 
     def get_annual_world_first_cost(self):
-        region = 'World'
         
         # For the custom pds scenario, this is the time series referred to by cell $E$36 in the spreadsheet.
         # For the custom ref scenario, this is the time series referred to by cell $N$36 in the spreadsheet.
@@ -184,7 +190,7 @@ class UnitAdoption:
         #TODO - validate input params.
 
         i_units = self.get_incremental_units_per_period()        
-        result = i_units[region] * self._first_cost
+        result = i_units * self._first_cost
 
         return result
 
@@ -201,14 +207,13 @@ class UnitAdoption:
 
     def get_lifetime_cashflow_npv(self, purchase_year, discount_rate):
         
-        region = 'World'
         # "result" should match time series in [Operating Cost]!$J$125 = "NPV of Single Cashflows (to 2014)"
         years_old_at_start =  purchase_year - self.base_year + 1
 
         discount_factor = 1/(1+discount_rate)
 
         first_cost_series = self.get_install_cost_per_land_unit()
-        first_cost_series = first_cost_series.loc[self.base_year:, region]
+        first_cost_series = first_cost_series.loc[self.base_year:]
 
         first_val = first_cost_series.loc[self.base_year] + self.operating_cost
         first_val = first_val * discount_factor**(years_old_at_start)
@@ -238,3 +243,109 @@ class UnitAdoption:
 
         return margin_series
 
+###########
+    
+    def set_tam_linear(self, total_area, change_per_period, total_area_as_of_period = None) -> None:
+        
+        if total_area_as_of_period is None:
+            total_area_as_of_period = self.base_year
+        
+        m = change_per_period
+        c = total_area - m * total_area_as_of_period
+
+        # self.tam_df[region] is a series. Convert this to a dataframe. Then apply a function using straight line formula y = m*x +c.
+        # x.name returns index value (the year).
+        series = pd.DataFrame(self._tam).apply(lambda x: m * x.name + c, axis='columns')
+
+        self._tam = series
+        return 
+
+    def apply_linear_regression(self) -> None:
+
+        df = interp.linear_trend(self._tam)
+
+        self._tam = df['adoption']
+
+        return
+    
+    def apply_clip(self, lower = None, upper = None) -> None:
+        if lower == None and upper == None:
+            print('Warning : Neither lower nor upper parameter supplied. No action taken.')
+        self._tam.clip(lower=lower, upper=upper, inplace=True)
+
+    
+    def tam_build_cumulative_unprotected_area(self, new_growth_harvested_every: np.float64) -> None:
+        
+        results = pd.Series(index = self._tam.index, dtype=float)
+        
+        first_pass = True
+        for index, value in self._tam.loc[self.base_year:].iteritems():
+            if first_pass:
+                results.loc[index] = 0.0
+                prev_value = 0.0
+                first_pass = False
+                continue
+
+            val = self.implementation_units.loc[index -1]
+
+            result = (value - val - prev_value) * new_growth_harvested_every
+            result = prev_value + result
+            results.loc[index] = result
+            prev_value = result
+
+        series = pd.Series(results, index=self.implementation_units.index)
+        self.cumulative_unprotected_area = series
+
+        # "total_at_risk_area" = "total_undegraded_area" for pds; "total_at_risk_area" for ref scenario
+        self.total_at_risk_area = self._tam - self.cumulative_unprotected_area
+
+####
+    def get_carbon_sequestration(self, sequestration_rate, disturbance_rate) ->pd.DataFrame:
+        
+        co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
+
+        if self.use_tam_for_co2_calcs:
+            adoption = self.total_at_risk_area
+        else:
+            adoption = self.get_units_adopted()
+        
+        sequestration = adoption * sequestration_rate
+        sequestration *= co2_mass_to_carbon_mass * (1 - disturbance_rate)
+
+        # When this function is netted out [pds - ref], sequestration should match the time series in [CO2 Calcs]!$B$120
+
+        return sequestration
+
+    def get_change_in_ppm_equiv_series(self) -> np.float64:
+
+        sequestration = self.get_carbon_sequestration(self.sequestration_rate_all_ocean, self.disturbance_rate)
+
+        result_years = list(range(self.base_year-1, self.end_year+1))
+        results = pd.Series(index = result_years, dtype=np.float64)
+        results = results.fillna(0.0)
+        # (0.217 + 0.259*EXP(-(A173-$A$173+1)/172.9) + 0.338*EXP(-(A173-$A$173+1)/18.51) + 0.186*EXP(-(A173-$A$173+1)/1.186))
+        # (0.217 + 0.259*EXP(-(current_year-year_zero+1)/172.9) + 0.338*EXP(-(current_year-year_zero+1)/18.51) + 0.186*EXP(-(current_year-year_zero+1)/1.186))
+
+        for iter_year in result_years:
+            year_results = []
+            exponent= 0
+
+            for _ in range(iter_year, result_years[-1] +1):
+                year_net_adoption = sequestration.loc[iter_year]
+                exponent += 1
+                val =  0.217 + 0.259*np.exp(-(exponent)/172.9) 
+                val += 0.338*np.exp(-(exponent)/18.51) 
+                val += 0.186*np.exp(-(exponent)/1.186)
+                year_results.append(year_net_adoption * val)
+
+            year_results_series = pd.Series(index = range(iter_year, self.end_year+1), dtype=np.float64)
+            year_results_series = year_results_series.fillna(0.0)
+            year_results_series = year_results_series.add(year_results)
+
+            results = results.add(year_results_series, fill_value=0.0)
+
+        factor = (1_000_000 * 10**6 ) / 44.01
+        factor = factor / (1.8 * 10**20)
+        factor = factor * 10**6
+        results = results * factor
+        return results

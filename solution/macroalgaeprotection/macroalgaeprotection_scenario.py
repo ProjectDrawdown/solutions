@@ -19,3 +19,4 @@ class MacroalgaeProtectionScenario(Scenario):
     # Ref Adoption Scenario Inputs:
     ref_scenario_name : str    
     ref_adoption_use_only_regional_data : bool
+
