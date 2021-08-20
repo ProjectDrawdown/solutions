@@ -26,9 +26,9 @@ class OceanTam():
 
         # self.tam_df[region] is a series. Convert this to a dataframe. Then apply a function using straight line formula y = m*x +c.
         # x.name returns index value (the year).
-        s = pd.DataFrame(self._tam).apply(lambda x: m * x.name + c, axis='columns')
+        series = pd.DataFrame(self._tam).apply(lambda x: m * x.name + c, axis='columns')
 
-        self._tam = s
+        self._tam = series
         return 
 
     def apply_linear_regression(self):

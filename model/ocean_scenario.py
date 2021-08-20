@@ -21,3 +21,5 @@ class OceanScenario(Scenario):
     ref_scenario_name : str
     ref_base_custom_adoption_on : str
     ref_adoption_use_only_regional_data : bool
+
+    disturbance_rate : float = field(default=0.0)

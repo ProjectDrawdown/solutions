@@ -12,7 +12,6 @@ def main():
         print()
         print(sc)
         swf.load_scenario(sc)
-        swf.set_up_tam()
 
         results = {}
         
