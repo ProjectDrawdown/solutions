@@ -11,6 +11,7 @@ from model import adoptiondata
 from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
+from model import n2ocalcs
 from model import customadoption
 from model import dd
 from model import emissionsfactors
@@ -432,8 +433,13 @@ class Scenario(scenario.Scenario):
     self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
         soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
+    self.n2o = n2ocalcs.N2OCalcs(ac=self.ac,
+        soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
     self.c2 = co2calcs.CO2Calcs(ac=self.ac,
         ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+        ch4_megatons_avoided_or_reduced=self.c4.ch4_megatons_avoided_or_reduced(),
+        n2o_megatons_avoided_or_reduced=self.n2o.n2o_megatons_avoided_or_reduced(),
         soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
         soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
         soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),

@@ -891,21 +891,21 @@ class CO2Calcs(DataHandler):
        
         co2reduction.loc[:self.ac.report_start_year - 1] = 0.0
         co2reduction.loc[self.ac.report_end_year + 1:] = 0.0
-        
-        result = pd.DataFrame({'CO2 (Gt-C)': co2reduction , 'CH4 (Mt-CH4)': ch4reduction, 'N2O (Mt-N2O)': n2oreduction}, index=ch4reduction.index)
+
+        result = pd.DataFrame({'CO2 (Gt-C)': co2reduction , 'CH4 (Mt-CH4)': ch4reduction, 'N2O (Mt-N2O)': n2oreduction})
         result.name = 'ghg_emissions_reductions_global_annual'
         return result
     
     
     @lru_cache()
     @data_func
-    def ghg_emissions_reductions_global_cummulative(self):
-        """ Return cummulative emission reductions for 2014-2060.
+    def ghg_emissions_reductions_global_cumulative(self):
+        """ Return cumulative emission reductions for 2014-2060.
             For CO2 (Gt-C), CH4 (Mt-CH4), N2O (Mt-N2O)
         """
         annual_reductions = self.ghg_emissions_reductions_global_annual()
         result = annual_reductions.sum(axis=0)
-        result.name = 'ghg_emissions_reductions_global_cummulative'
+        result.name = 'ghg_emissions_reductions_global_cumulative'
         return result
  
 
