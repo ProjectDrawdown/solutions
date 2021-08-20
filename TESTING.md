@@ -10,7 +10,7 @@ you can test the entire project with the following command:
     $ python -m pytest
 ```
 For this project, it is better to invoke pytest via python (as above) than directly, because it will
-add the top-level directory to the path, allows all the import statements to work.   (Alternatively,
+add the top-level directory to the path, which allows all the import statements to work.   (Alternatively,
 if you add the root directory to your `$PYTHONPATH` environment variable, you should be able to use
 pytest directly from anywhere within this project.)
 

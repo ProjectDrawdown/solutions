@@ -106,6 +106,11 @@ solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS1-57p2050-Avg_EEOI"
+PDS2 = "PDS2-78p2050-1StDev_below_Mean_EEOI"
+PDS3 = "PDS3-97p2050-Lowest_EEOI"
 
 class Scenario(scenario.Scenario):
     name = name
@@ -138,7 +143,7 @@ class Scenario(scenario.Scenario):
             ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
         tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
         tam_ref_data_sources = {
-              'Conservative Cases': {
+              'Baseline Cases': {
                   'Based on Smith et al (2014) 3rd IMO GHG Study - from Fig 82, 83 on P138, P139 (Max range) combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_Smith_et_al_2014_3rd_IMO_GHG_Study_from_Fig_82_83_on_P138_P139_Max_range_combin_1bc1c897.csv'),
                   'Based on Buhaug et al, (2009) 2nd IMO GHG Study - Table 7.4-7.6 pg 94-95 (Max Values) combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_Buhaug_et_al_2009_2nd_IMO_GHG_Study_Table_7_47_6_pg_9495_Max_Values_combined_wi_6529c612.csv'),
                   'Based on  RACE Project (2013) Current Transport Demand and Global Transport Outlook. Report D5.1, Table 30 pg 126, EU FP7 314753 (Max range) Table 30 pg 126 combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_RACE_Project_2013_Current_Transport_Demand_and_Global_Transport_Outlook__Report_b60b435c.csv'),

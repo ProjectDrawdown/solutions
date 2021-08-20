@@ -148,9 +148,9 @@ def get_rrs_scenarios(wb, solution_category):
 
             assert xls(sr_tab, row + 118, co("B")) == 'Optional Inputs'
             s['ch4_co2_per_funit'] = link_vma(sr_tab, row + 119, co("E"))
-            s['ch4_is_co2eq'] = (xls(sr_tab, row + 119, co("E")) == 't CH4-CO2eq per TWh')
+            s['ch4_is_co2eq'] = ("CO2eq" in xls(sr_tab, row + 119, co("F")))
             s['n2o_co2_per_funit'] = link_vma(sr_tab, row + 120, co("E"))
-            s['n2o_is_co2eq'] = (xls(sr_tab, row + 120, co("E")) == 't N2O-CO2eq per TWh')
+            s['n2o_is_co2eq'] = ("CO2eq" in xls(sr_tab, row + 120, co("F")))
             s['co2eq_conversion_source'] = xls(sr_tab, row + 121, co("E"))
 
             assert xls(sr_tab, row + 124, co("B")) == 'General Climate Inputs'
@@ -950,7 +950,7 @@ def write_custom_ad(case, f, wb, outputdir, is_land):
             f.write("            total_adoption_limit=ref_tam_per_region)\n")
     if case == 'PDS':
         f.write("        for (i,rs) in enumerate(ca_pds_data_sources):\n")
-        f.write("            rs['include'] = (i in ca.soln_pds_adoption_scenarios_included)\n")
+        f.write("            rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)\n")
         f.write("        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,\n")
         f.write("            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,\n")
         f.write(f"            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,\n")
@@ -1705,7 +1705,13 @@ def output_solution_python_file(outputdir, xl_filename):
         write_scenario(filename=fname, s=s)
     f.write("scenarios = ac.load_scenarios_from_json("
         "directory=THISDIR.joinpath('ac'), vmas=VMAs)\n")
-    f.write("\n\n")
+    f.write("\n")
+
+    f.write('# These are the "default" scenarios to use for each of the drawdown categories.\n')
+    f.write('# They should be set to the most recent "official" set"\n')
+    f.write('PDS1 = "NOT SET"\n')
+    f.write('PDS2 = "NOT SET"\n')
+    f.write('PDS3 = "NOT SET"\n\n')
 
     f.write("class Scenario(scenario.Scenario):\n")
     f.write("    name = name\n")

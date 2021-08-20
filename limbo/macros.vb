@@ -1,3 +1,7 @@
+' This is the macros that are in one of the Excel Model workbooks.  It contains the code for how scenarios
+' are loaded and stored, among other things.  This is here for reference purposes only.
+
+
 'Set Global input variables used in:
 'Prepare4Public, StoreScenario, DeleteScenario_Click, LoadScenario_Click, ScrollScenario_Click
 Public Const gFirstRow = 11  'First scenario record row,

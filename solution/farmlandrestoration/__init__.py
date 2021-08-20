@@ -98,6 +98,11 @@ solution_category = ac.SOLUTION_CATEGORY.LAND
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS-51p2050-Plauisble-customPDS-avg-29Jan2020"
+PDS2 = "PDS-80p2050-Drawdown-customPDS-high-29Jan2020"
+PDS3 = "PDS-92p2050-Optimum-PDSCustom-high-Nov2019"
 
 class Scenario(scenario.Scenario):
     name = name
