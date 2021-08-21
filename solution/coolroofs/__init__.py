@@ -115,11 +115,25 @@ PDS1 = "PDS1-61p2050-Integrated-EE8.72%-FE-2.81% (Book)"
 PDS2 = "PDS2-89p2050-Integrated-EE8.51%-FE-2.67% (Book)"
 PDS3 = "PDS3-93p2050-Integrated-EE8.42%-FE-2.62% (Book)"
 
-class Scenario(scenario.Scenario):
+
+class Scenario(scenario.RRSScenario):
   name = name
   units = units
   vmas = VMAs
   solution_category = solution_category
+
+  tam_ref_data_sources = {
+    'Baseline Cases': {
+        'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam', 'tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolsmrvtoolmethodology_.csv'),
+        'Based on GBPN - BEST PRACTICE POLICIES FOR LOW CARBON & ENERGY BUILDINGS BASED ON SCENARIO ANALYSIS May 2012': THISDIR.joinpath('tam', 'tam_based_on_GBPN_BEST_PRACTICE_POLICIES_FOR_LOW_CARBON_ENERGY_BUILDINGS_BASED_ON_SCENARIO_A_c7e92439.csv'),
+        'IEA (2013)': THISDIR.joinpath('tam', 'tam_IEA_2013.csv'),
+    },
+    'Conservative Cases': {
+        'Based on McKinsey': THISDIR.joinpath('tam', 'tam_based_on_McKinsey.csv'),
+        'Navigant (2014)': THISDIR.joinpath('tam', 'tam_Navigant_2014.csv'),
+    }
+  }
+  tam_pds_data_sources = tam_ref_data_sources
 
   def __init__(self, scenario=None):
     if isinstance(scenario, ac.AdvancedControls):
@@ -130,36 +144,7 @@ class Scenario(scenario.Scenario):
         self.ac = scenarios[self.scenario]
 
     # TAM
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    tam_ref_data_sources = {
-      'Baseline Cases': {
-          'Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.': THISDIR.joinpath('tam', 'tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolsmrvtoolmethodology_.csv'),
-          'Based on GBPN - BEST PRACTICE POLICIES FOR LOW CARBON & ENERGY BUILDINGS BASED ON SCENARIO ANALYSIS May 2012': THISDIR.joinpath('tam', 'tam_based_on_GBPN_BEST_PRACTICE_POLICIES_FOR_LOW_CARBON_ENERGY_BUILDINGS_BASED_ON_SCENARIO_A_c7e92439.csv'),
-          'IEA (2013)': THISDIR.joinpath('tam', 'tam_IEA_2013.csv'),
-      },
-      'Conservative Cases': {
-          'Based on McKinsey': THISDIR.joinpath('tam', 'tam_based_on_McKinsey.csv'),
-          'Navigant (2014)': THISDIR.joinpath('tam', 'tam_Navigant_2014.csv'),
-      },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_ref_data_sources)
+    self.set_tam()
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 

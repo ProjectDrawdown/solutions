@@ -403,6 +403,7 @@ class TAM(DataHandler, object, metaclass=MetaclassCache):
            Degree3: SolarPVUtil 'TAM Data'!CM677:CQ723    Exponential: SolarPVUtil 'TAM Data'!CV677:CX723
         """
 
+        # #BAD EXCEL Remove this condition when we aren't trying to match Excel.
         if region in self.interpolation_overrides:
             result = pd.read_csv(self.interpolation_overrides[region], index_col='Year' )
         else:

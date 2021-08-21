@@ -735,6 +735,27 @@ class AdvancedControls:
         'tooltip': ("t C storage in Protected Landtype"),
         'excelref': '',
         })
+    
+    # NEW ADDITIONS
+    # These do not represent quantities that were part of the original spreadsheets, but are used in 
+    # for communication from external sources
+
+    # Value is a URI that will return a csv for a custom source to use in place of the REF TAM,
+    # overriding whatever else is defined for this solution/scenario
+    ref_tam_custom_source: str = None
+
+    # Value is a URI that will return a csv for a custom source to use in place of the PDS TAM,
+    # overriding whatever else is defined for this solution/scenario
+    pds_tam_custom_source: str = None
+
+    # Value is a URI that will return a csv for a custom source to use in place of the REF Adoption (as a Fully Custom Adoption),
+    # overriding whatever else is defined for this solution/scenario
+    ref_adoption_custom_source: str = None
+
+    # Value is a URI that will return a csv for a custom source to use in place of the PDS Adoption (as a Fully Custom Adoption),
+    # overriding whatever else is defined for this solution/scenario   
+    pds_adoption_custom_source: str = None
+
 
     def __post_init__(self):
         object.__setattr__(self, 'incorrect_cached_values', {})
