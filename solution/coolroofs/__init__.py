@@ -116,7 +116,7 @@ PDS2 = "PDS2-89p2050-Integrated-EE8.51%-FE-2.67% (Book)"
 PDS3 = "PDS3-93p2050-Integrated-EE8.42%-FE-2.62% (Book)"
 
 
-class Scenario(scenario.RRSScenario):
+class Scenario(scenario.Scenario):
   name = name
   units = units
   vmas = VMAs
