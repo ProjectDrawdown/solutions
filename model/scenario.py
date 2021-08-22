@@ -32,5 +32,5 @@ class Scenario:
 
     # PDS Adoption Scenario Name, also acts as a key into the dictionary of pds scenarios (from custom_pds_adoption.json).
     pds_scenario_name : str
-    disturbance_rate : float = field(default = 0.0, init= False) # Set init=False so that subclasses can have non-defaulted fields.
+    disturbance_rate : float = field(default = 0.0, init= False) # Set init= False so that subclasses can have non-defaulted fields.
     

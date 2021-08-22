@@ -81,6 +81,22 @@ class MacroalgaeProtectionSolution(OceanSolution):
         
         return
 
+    
+    def get_reduced_land_degradation(self):
+        
+        # reduction degraded area = (total at risk area pds) - (total at risk area ref)
+        
+        tara_pds = self.pds_scenario.total_at_risk_area
+        tara_ref = self.ref_scenario.total_at_risk_area
+
+        tara = tara_pds - tara_ref
+        start = tara.loc[self.start_year-1]
+        end = tara.loc[self.end_year]
+
+        reduction = end - start
+
+        return reduction
+
 
     def get_total_co2_seq(self) -> np.float64:
 
