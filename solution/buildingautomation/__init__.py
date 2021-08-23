@@ -287,7 +287,8 @@ class Scenario(scenario.Scenario):
         pds_adoption_data_per_region=pds_adoption_data_per_region,
         ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
         pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        pds_adoption_is_single_source=pds_adoption_is_single_source,
+        use_first_ref_datapoint_main=True)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
