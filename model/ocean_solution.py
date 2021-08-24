@@ -4,10 +4,11 @@ import yaml
 
 import numpy as np
 from model.ocean_unit_adoption import UnitAdoption
+from model.solution import Solution
 
 import json
 
-class OceanSolution:
+class OceanSolution(Solution):
     """ This is the base class that each Ocean solution should inherit from.
     Contains all the calculations required for Ocean-based scenario results.
     """
@@ -380,7 +381,6 @@ class OceanSolution:
         pds_sequestration = self.pds_scenario.get_change_in_ppm_equiv_series()
         ref_sequestration = self.ref_scenario.get_change_in_ppm_equiv_series()
 
-        
         net_sequestration = (pds_sequestration - ref_sequestration)
         # net_sequestration should now equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
 

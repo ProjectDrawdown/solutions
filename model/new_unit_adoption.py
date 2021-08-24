@@ -8,7 +8,7 @@ import model.interpolation as interp
 
 # Code originally based of seaweed farming solution, but is intended to be general.
 
-class UnitAdoption:
+class NewUnitAdoption:
     """This is the base class that contains the calculations for Ocean-related Unit Adoption scenarios.
     Used for both PDS adoption and REF adoption.
     """
@@ -301,6 +301,9 @@ class UnitAdoption:
 
 ####
     def get_carbon_sequestration(self, sequestration_rate, disturbance_rate) ->pd.DataFrame:
+
+        if sequestration_rate == 0.0:
+            print('Warning, sequestration rate is zero. All members of sequestration series will be zero.')
         
         co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
 

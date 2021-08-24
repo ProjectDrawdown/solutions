@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 import datetime
 
 @dataclass
-class Scenario:
+class NewScenario:
     
     # Conventional Solution
     conv_first_cost : float = field(metadata={'Units':  'US$2014/ha'})

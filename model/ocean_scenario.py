@@ -1,9 +1,9 @@
 
 from dataclasses import dataclass, field
-from model.scenario import Scenario
+from model.new_scenario import Scenario
     
 @dataclass
-class OceanScenario(Scenario):
+class OceanScenario(NewScenario):
 
     sequestration_rate_all_ocean : float  = field(metadata={'Units': 't C/ha/year'})
     disturbance_rate : float = field(metadata={'Units': 'percentage lost annually'})
