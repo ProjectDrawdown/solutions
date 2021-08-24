@@ -18,9 +18,9 @@ TEST_SKIP = None
 
 def test_altcement_loader():
     """Test that the solution can load the defined scenarios"""
-    pds1 = factory.solution_pds_type(solution_name,"PDS1")
-    pds2 = factory.solution_pds_type(solution_name,"PDS2")
-    pds3 = factory.solution_pds_type(solution_name, "PDS3")
+    pds1 = factory.load_scenario(solution_name,"PDS1")
+    pds2 = factory.load_scenario(solution_name,"PDS2")
+    pds3 = factory.load_scenario(solution_name, "PDS3")
     assert pds1 and pds2 and pds3
 
 @pytest.mark.slow
