@@ -133,11 +133,100 @@ PDS1 = "PDS1-22p2050-Based on IEA 2DS"
 PDS2 = "PDS2-35p2050-Based on ITDP/UCDavis"
 PDS3 = "PDS3-45p2050-Linear to 45%"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
+
+    tam_ref_data_sources = {
+            'Baseline Cases': {
+                'Based on ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
+                'Based on ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv'),
+        },
+            'Conservative Cases': {
+                'Based on ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
+                'Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario': THISDIR.joinpath('tam', 'tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_Baseline_Scenario.csv'),
+        },
+            'Ambitious Cases': {
+                'Based on ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
+                'Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario': THISDIR.joinpath('tam', 'tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_HighShift_Scenario.csv'),
+        },
+            'Region: OECD90': {
+                'Baseline Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
+            },
+                'Ambitious Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
+            },
+        },
+            'Region: Eastern Europe': {
+                'Baseline Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
+            },
+                'Ambitious Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
+            },
+        },
+            'Region: Asia (Sans Japan)': {
+                'Baseline Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
+            },
+                'Ambitious Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
+            },
+        },
+            'Region: Middle East and Africa': {
+                'Baseline Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
+            },
+                'Ambitious Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
+            },
+        },
+            'Region: Latin America': {
+                'Baseline Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
+            },
+                'Ambitious Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
+            },
+        },
+            'Region: China': {
+                'Baseline Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
+            },
+                'Ambitious Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
+            },
+        },
+            'Region: India': {
+                'Baseline Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
+            },
+                'Ambitious Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
+            },
+        },
+            'Region: EU': {
+                'Baseline Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
+            },
+                'Ambitious Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
+            },
+        },
+            'Region: USA': {
+                'Baseline Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
+            },
+                'Ambitious Cases': {
+                'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
+            },
+        },
+    }
+    tam_pds_data_sources=tam_ref_data_sources
+
 
     def __init__(self, scenario=None):
         if isinstance(scenario, ac.AdvancedControls):
@@ -148,111 +237,7 @@ class Scenario(scenario.Scenario):
             self.ac = scenarios[self.scenario]
 
         # TAM
-        tamconfig_list = [
-            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-            ['trend', '3rd Poly', '3rd Poly',
-                '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-                '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-                'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-        tam_ref_data_sources = {
-              'Baseline Cases': {
-                  'Based on ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
-                  'Based on ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv'),
-            },
-              'Conservative Cases': {
-                  'Based on ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
-                  'Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario': THISDIR.joinpath('tam', 'tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_Baseline_Scenario.csv'),
-            },
-              'Ambitious Cases': {
-                  'Based on ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
-                  'Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario': THISDIR.joinpath('tam', 'tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_HighShift_Scenario.csv'),
-            },
-              'Region: OECD90': {
-                  'Baseline Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
-              },
-                  'Ambitious Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
-              },
-            },
-              'Region: Eastern Europe': {
-                  'Baseline Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
-              },
-                  'Ambitious Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
-              },
-            },
-              'Region: Asia (Sans Japan)': {
-                  'Baseline Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
-              },
-                  'Ambitious Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
-              },
-            },
-              'Region: Middle East and Africa': {
-                  'Baseline Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
-              },
-                  'Ambitious Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
-              },
-            },
-              'Region: Latin America': {
-                  'Baseline Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
-              },
-                  'Ambitious Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
-              },
-            },
-              'Region: China': {
-                  'Baseline Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
-              },
-                  'Ambitious Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
-              },
-            },
-              'Region: India': {
-                  'Baseline Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
-              },
-                  'Ambitious Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
-              },
-            },
-              'Region: EU': {
-                  'Baseline Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
-              },
-                  'Ambitious Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
-              },
-            },
-              'Region: USA': {
-                  'Baseline Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - URBAN MOBILITY- Baseline': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_d1c13e61.csv'),
-              },
-                  'Ambitious Cases': {
-                  'ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data -URBAN MOBILITY- High shift': THISDIR.joinpath('tam', 'tam_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_URBAN_MOBILI_f5a37b66.csv'),
-              },
-            },
-        }
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_ref_data_sources)
+        self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 

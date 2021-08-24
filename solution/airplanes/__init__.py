@@ -131,39 +131,13 @@ PDS1 = "PDS1-80p2050-13.2%Efficiency"
 PDS2 = "PDS2-85p2050-18%Efficiency"
 PDS3 = "PDS3-100p2050-20%Efficiency"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
-
-        # TAM
-        tamconfig_list = [
-            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-            ['trend', '3rd Poly', '3rd Poly',
-                '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-                '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-                'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-        tam_ref_data_sources = {
+    tam_ref_data_sources = {
               'Baseline Cases': {
                   'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_6DS.csv'),
                   'ICCT (2012) Global Roadmap Model': THISDIR.joinpath('tam', 'tam_ICCT_2012_Global_Roadmap_Model.csv'),
@@ -175,8 +149,18 @@ class Scenario(scenario.Scenario):
                   'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_2DS.csv'),
             },
         }
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_ref_data_sources)
+    tam_pds_data_sources = tam_ref_data_sources
+
+    def __init__(self, scenario=None):
+        if isinstance(scenario, ac.AdvancedControls):
+            self.scenario = scenario.name
+            self.ac = scenario
+        else:
+            self.scenario = scenario or PDS2
+            self.ac = scenarios[self.scenario]
+
+        # TAM
+        self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 

@@ -63,12 +63,23 @@ class RRSScenario(Scenario):
     tam_pds_data_sources = None
 
 
-    def set_tam(self):
+    def set_tam(self, config_values=None, **args):
+        """Create the self.tm object based on the information in self._tamconfig_list, self.tam_ref_data_sources
+        and self.tam_pds_data_sources.  
+        
+        Overrides to individual values in the tamconfig can also be specified
+        in the config_values argument, which should be a list of tuples (rowname, columname, value)
+
+        Other configuration values may be passed directly to tam.TAM via **args.
+        """
         tamconfig = pd.DataFrame(self._tamconfig_list[1:], columns=self._tamconfig_list[0]).set_index('param')
         tamconfig.loc['source_until_2014','World']     = self.ac.source_until_2014
         tamconfig.loc['source_until_2014','PDS World'] = self.ac.source_until_2014
         tamconfig.loc['source_after_2014','World']     = self.ac.ref_source_post_2014
         tamconfig.loc['source_after_2014','PDS World'] = self.ac.pds_source_post_2014
+        if config_values is not None:
+            for (row,col,val) in config_values:
+                tamconfig.loc[row,col] = val
         
         if self.ac.ref_tam_custom_source:
             # completely override the tam_ref_data_sources field
@@ -92,8 +103,11 @@ class RRSScenario(Scenario):
                                         }}
             tamconfig.loc['source_after_2014','PDS World'] = 'Custom Cases'
 
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=self.tam_ref_data_sources,
-            tam_pds_data_sources=self.tam_pds_data_sources)
+        self.tm = tam.TAM(
+            tamconfig=tamconfig, 
+            tam_ref_data_sources=self.tam_ref_data_sources,
+            tam_pds_data_sources=self.tam_pds_data_sources,
+            **args)
 
 
 

@@ -104,11 +104,24 @@ PDS1 = "PDS1-93p2050-Individual Banks (Book Ed.1)"
 PDS2 = "PDS2/3-100p2050-Combined Banks (Book Ed.1)"
 PDS3 = "PDS2/3-100p2050-Combined Banks (Book Ed.1)"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
   name = name
   units = units
   vmas = VMAs
   solution_category = solution_category
+
+  tam_ref_data_sources = {
+      'Baseline Cases': {
+          'Drawdown Calculations - High Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_High_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Pro_3a9477d3.csv'),
+      },
+      'Conservative Cases': {
+          'Drawdown Calculations - Medium Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_Medium_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__P_557e4efd.csv'),
+      },
+      'Ambitious Cases': {
+          'Drawdown Calculations - Low Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_Low_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Proj_5ee67131.csv'),
+      },
+  }
+  tam_pds_data_sources=tam_ref_data_sources
 
   def __init__(self, scenario=None):
     if isinstance(scenario, ac.AdvancedControls):
@@ -119,36 +132,7 @@ class Scenario(scenario.Scenario):
         self.ac = scenarios[self.scenario]
 
     # TAM
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    tam_ref_data_sources = {
-      'Baseline Cases': {
-          'Drawdown Calculations - High Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_High_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Pro_3a9477d3.csv'),
-      },
-      'Conservative Cases': {
-          'Drawdown Calculations - Medium Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_Medium_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__P_557e4efd.csv'),
-      },
-      'Ambitious Cases': {
-          'Drawdown Calculations - Low Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_Low_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Proj_5ee67131.csv'),
-      },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_ref_data_sources)
+    self.set_tam()
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 

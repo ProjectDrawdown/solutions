@@ -130,11 +130,69 @@ PDS1 = "PDS1-15p2050_Low Growth (Book Ed.1)"
 PDS2 = "PDS2-20p2050_High Growth (Book Ed.1)"
 PDS3 = "PDS3-25p2050_Linear to 25% (Book Ed.1)"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
   name = name
   units = units
   vmas = VMAs
   solution_category = solution_category
+
+  tam_ref_data_sources = {
+    'Baseline Cases': {
+        'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
+        'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
+        'Drawdown Summation: Regional Sum': THISDIR.joinpath('tam', 'tam_Drawdown_Summation_Regional_Sum.csv'),
+    },
+    'Conservative Cases': {
+        'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
+    },
+    'Region: Asia (Sans Japan)': {
+      'Baseline Cases': {
+        'Calculated  from summing India and China from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_summing_India_and_China_from_2_sources_World_Bank_2015_The_State_of_the__778b8aac.csv'),
+        'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
+        'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
+      },
+      'Conservative Cases': {
+        'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
+      },
+    },
+    'Region: Middle East and Africa': {
+      'Baseline Cases': {
+        'Based on Ibitoye, F. I. (2013). The millennium development goals and household energy requirements in Nigeria. SpringerPlus, 2(1), 529.': THISDIR.joinpath('tam', 'tam_based_on_Ibitoye_F__I__2013__The_millennium_development_goals_and_household_energy_requi_26c73895.csv'),
+        'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
+        'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
+      },
+      'Conservative Cases': {
+        'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
+      },
+    },
+    'Region: China': {
+      'Baseline Cases': {
+        'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
+        'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
+      },
+      'Conservative Cases': {
+        'Based on Yuan, Y., & Zhao, I. (2013). Energy in Rural Areas of Northern China. Journal of Applied Sciences, 13(9), 1449-1454.': THISDIR.joinpath('tam', 'tam_based_on_Yuan_Y__Zhao_I__2013__Energy_in_Rural_Areas_of_Northern_China__Journal_of_Appli_91a28afa.csv'),
+      },
+      'Ambitious Cases': {
+        'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
+        'Based on Mainali, B., Pachauri, S., & Nagai, Y. (2012). Analyzing cooking fuel and stove choices in China till 2030. Journal of Renewable and Sustainable Energy, 4(3), 031805.': THISDIR.joinpath('tam', 'tam_based_on_Mainali_B__Pachauri_S__Nagai_Y__2012__Analyzing_cooking_fuel_and_stove_choices__e3f8fc59.csv'),
+      },
+    },
+    'Region: India': {
+      'Baseline Cases': {
+        'Based on Nakagami, H., Murakoshi, C., & Iwafune, Y. (2008). International comparison of household energy consumption and its indicator. Proceedings of the 2008 ACEEE Summer Study on Energy Efficiency in Buildings, 214-224.': THISDIR.joinpath('tam', 'tam_based_on_Nakagami_H__Murakoshi_C__Iwafune_Y__2008__International_comparison_of_household_58b0d8c2.csv'),
+        'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
+        'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
+      },
+      'Conservative Cases': {
+        'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
+      },
+      'Maximum Cases': {
+        'Based on Venkataraman, C., Sagar, A. D., Habib, G., Lam, N., & Smith, K. R. (2010). The Indian national initiative for advanced biomass cookstoves: the benefits of clean combustion. Energy for Sustainable Development, 14(2), 63-72.': THISDIR.joinpath('tam', 'tam_based_on_Venkataraman_C__Sagar_A__D__Habib_G__Lam_N__Smith_K__R__2010__The_Indian_nation_114cfe53.csv'),
+      },
+    },
+  }
+  tam_pds_data_sources=tam_ref_data_sources
 
   def __init__(self, scenario=None):
     if isinstance(scenario, ac.AdvancedControls):
@@ -145,81 +203,7 @@ class Scenario(scenario.Scenario):
         self.ac = scenarios[self.scenario]
 
     # TAM
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    tam_ref_data_sources = {
-      'Baseline Cases': {
-          'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
-          'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
-          'Drawdown Summation: Regional Sum': THISDIR.joinpath('tam', 'tam_Drawdown_Summation_Regional_Sum.csv'),
-      },
-      'Conservative Cases': {
-          'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
-      },
-      'Region: Asia (Sans Japan)': {
-        'Baseline Cases': {
-          'Calculated  from summing India and China from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_summing_India_and_China_from_2_sources_World_Bank_2015_The_State_of_the__778b8aac.csv'),
-          'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
-          'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
-        },
-        'Conservative Cases': {
-          'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
-        },
-      },
-      'Region: Middle East and Africa': {
-        'Baseline Cases': {
-          'Based on Ibitoye, F. I. (2013). The millennium development goals and household energy requirements in Nigeria. SpringerPlus, 2(1), 529.': THISDIR.joinpath('tam', 'tam_based_on_Ibitoye_F__I__2013__The_millennium_development_goals_and_household_energy_requi_26c73895.csv'),
-          'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
-          'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
-        },
-        'Conservative Cases': {
-          'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
-        },
-      },
-      'Region: China': {
-        'Baseline Cases': {
-          'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
-          'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
-        },
-        'Conservative Cases': {
-          'Based on Yuan, Y., & Zhao, I. (2013). Energy in Rural Areas of Northern China. Journal of Applied Sciences, 13(9), 1449-1454.': THISDIR.joinpath('tam', 'tam_based_on_Yuan_Y__Zhao_I__2013__Energy_in_Rural_Areas_of_Northern_China__Journal_of_Appli_91a28afa.csv'),
-        },
-        'Ambitious Cases': {
-          'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
-          'Based on Mainali, B., Pachauri, S., & Nagai, Y. (2012). Analyzing cooking fuel and stove choices in China till 2030. Journal of Renewable and Sustainable Energy, 4(3), 031805.': THISDIR.joinpath('tam', 'tam_based_on_Mainali_B__Pachauri_S__Nagai_Y__2012__Analyzing_cooking_fuel_and_stove_choices__e3f8fc59.csv'),
-        },
-      },
-      'Region: India': {
-        'Baseline Cases': {
-          'Based on Nakagami, H., Murakoshi, C., & Iwafune, Y. (2008). International comparison of household energy consumption and its indicator. Proceedings of the 2008 ACEEE Summer Study on Energy Efficiency in Buildings, 214-224.': THISDIR.joinpath('tam', 'tam_based_on_Nakagami_H__Murakoshi_C__Iwafune_Y__2008__International_comparison_of_household_58b0d8c2.csv'),
-          'Calculated  from 2 sources - World Bank (2015) The State of the global Clean and Improved Cooking Sector, https://openknowledge.worldbank.org/bitstream/handle/10986/21878/96499.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_World_Bank_2015_The_State_of_the_global_Clean_and_Improved_Coo_bef286f6.csv'),
-          'Calculated  from 2 sources - REN21 (2015) Renewables 2015 - Global Status Report, http://www.ren21.net/wp-content/uploads/2015/07/REN12-GSR2015_Onlinebook_low1.pdf AND Daioglou, V., Van Ruijven, B. J., & Van Vuuren, D. P. (2012). Model projections for household energy use in developing countries. Energy, 37(1), 601-615.': THISDIR.joinpath('tam', 'tam_Calculated_from_2_sources_REN21_2015_Renewables_2015_Global_Status_Report_httpwww_ren21__ee9a59ea.csv'),
-        },
-        'Conservative Cases': {
-          'Based on IEA (2013) World Energy Outlook': THISDIR.joinpath('tam', 'tam_based_on_IEA_2013_World_Energy_Outlook.csv'),
-        },
-        'Maximum Cases': {
-          'Based on Venkataraman, C., Sagar, A. D., Habib, G., Lam, N., & Smith, K. R. (2010). The Indian national initiative for advanced biomass cookstoves: the benefits of clean combustion. Energy for Sustainable Development, 14(2), 63-72.': THISDIR.joinpath('tam', 'tam_based_on_Venkataraman_C__Sagar_A__D__Habib_G__Lam_N__Smith_K__R__2010__The_Indian_nation_114cfe53.csv'),
-        },
-      },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_ref_data_sources)
+    self.set_tam()
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 
