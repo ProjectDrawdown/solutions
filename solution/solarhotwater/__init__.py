@@ -120,11 +120,55 @@ PDS1 = "PDS1-25p2050-Low of Custom Scen. (Book Ed.1)"
 PDS2 = "PDS2-44p2050-Mean of Custom Scen. (Book Ed.1)"
 PDS3 = "PDS3-62p2050-High of Custom Scen. (Book Ed.1)"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
   name = name
   units = units
   vmas = VMAs
   solution_category = solution_category
+
+  tam_ref_data_sources = {
+    'Baseline Cases': {
+        'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
+        'IEA 6DS (2016), Residential & Commercial Water Heating': THISDIR.joinpath('tam', 'tam_IEA_6DS_2016_Residential_Commercial_Water_Heating.csv'),
+        'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
+    },
+    'Conservative Cases': {
+        'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
+        'IEA 4DS (2016), Residential & Commercial Water Heating': THISDIR.joinpath('tam', 'tam_IEA_4DS_2016_Residential_Commercial_Water_Heating.csv'),
+    },
+    'Region: OECD90': {
+      'Baseline Cases': {
+        'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
+        'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
+        'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
+      },
+    },
+    'Region: Eastern Europe': {
+      'Baseline Cases': {
+        'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
+        'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
+        'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
+      },
+    },
+    'Region: Asia (Sans Japan)': {
+      'Baseline Cases': {
+        'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
+        'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
+        'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
+      },
+    },
+  }
+  tam_pds_data_sources = {
+    'Baseline Cases': {
+        'Drawdown TAM: PDS1 - post-Low-Flow': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_PDS1_postLowFlow.csv'),
+    },
+    'Conservative Cases': {
+        'Drawdown TAM: PDS2 - post-Low-Flow': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_PDS2_postLowFlow.csv'),
+    },
+    'Ambitious Cases': {
+        'Drawdown TAM: PDS3 - post-Low-Flow': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_PDS3_postLowFlow.csv'),
+    },
+  }
 
   def __init__(self, scenario=None):
     if isinstance(scenario, ac.AdvancedControls):
@@ -135,68 +179,7 @@ class Scenario(scenario.Scenario):
         self.ac = scenarios[self.scenario]
 
     # TAM
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    tam_ref_data_sources = {
-      'Baseline Cases': {
-          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
-          'IEA 6DS (2016), Residential & Commercial Water Heating': THISDIR.joinpath('tam', 'tam_IEA_6DS_2016_Residential_Commercial_Water_Heating.csv'),
-          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
-      },
-      'Conservative Cases': {
-          'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
-          'IEA 4DS (2016), Residential & Commercial Water Heating': THISDIR.joinpath('tam', 'tam_IEA_4DS_2016_Residential_Commercial_Water_Heating.csv'),
-      },
-      'Region: OECD90': {
-        'Baseline Cases': {
-          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
-          'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
-          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
-        },
-      },
-      'Region: Eastern Europe': {
-        'Baseline Cases': {
-          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
-          'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
-          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
-        },
-      },
-      'Region: Asia (Sans Japan)': {
-        'Baseline Cases': {
-          'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
-          'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
-          'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
-        },
-      },
-    }
-    tam_pds_data_sources = {
-      'Baseline Cases': {
-          'Drawdown TAM: PDS1 - post-Low-Flow': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_PDS1_postLowFlow.csv'),
-      },
-      'Conservative Cases': {
-          'Drawdown TAM: PDS2 - post-Low-Flow': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_PDS2_postLowFlow.csv'),
-      },
-      'Ambitious Cases': {
-          'Drawdown TAM: PDS3 - post-Low-Flow': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_PDS3_postLowFlow.csv'),
-      },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_pds_data_sources)
+    self.set_tam()
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 
