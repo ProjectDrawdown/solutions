@@ -3,7 +3,7 @@ import sys
 import yaml
 
 import numpy as np
-from model.ocean_unit_adoption import UnitAdoption
+from model.new_unit_adoption import NewUnitAdoption
 from model.solution import Solution
 
 import json
@@ -30,7 +30,7 @@ class OceanSolution(Solution):
     def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name):
             
         try:
-            ad_scenario = UnitAdoption(self.base_year, self.end_year, adoption_scenario_name, adoption_input_file)
+            ad_scenario = NewUnitAdoption(self.base_year, self.end_year, adoption_scenario_name, adoption_input_file)
         except ValueError as ev:
             print(ev.args)
             raise ValueError(f"Unable to initialise {adoption_scenario_name}")

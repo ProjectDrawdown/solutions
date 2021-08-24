@@ -1,4 +1,4 @@
-from model.ocean_unit_adoption import UnitAdoption
+from model.new_unit_adoption import NewUnitAdoption
 import os
 import json
 import numpy as np
@@ -63,7 +63,7 @@ class SeaweedFarmingSolution(OceanSolution):
         self.set_up_tam(self.ref_scenario)
     
 
-    def set_up_tam(self, unit_adoption: UnitAdoption) -> None:
+    def set_up_tam(self, unit_adoption: NewUnitAdoption) -> None:
         unit_adoption.set_tam_linear(total_area = self.total_area, change_per_period = 0.0) # This should produce a flat line with y = constant = self.total_area
         unit_adoption.apply_clip(lower=None, upper=self.total_area)
         return

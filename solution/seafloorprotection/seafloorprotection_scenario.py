@@ -1,6 +1,6 @@
 
 from dataclasses import dataclass, field
-from model.scenario import Scenario
+from model.new_scenario import NewScenario
     
 @dataclass
 class SeafloorProtectionScenario(Scenario):

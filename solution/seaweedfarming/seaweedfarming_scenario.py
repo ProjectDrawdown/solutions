@@ -1,9 +1,9 @@
 
 from dataclasses import dataclass, field
-from model.scenario import Scenario
+from model.new_scenario import NewScenario
     
 @dataclass
-class SeaweedFarmingScenario(Scenario):
+class SeaweedFarmingScenario(NewScenario):
 
     # Current Adoption:
     adoption_value_world : float = field(metadata={'Units': 'Millions of Ha'})

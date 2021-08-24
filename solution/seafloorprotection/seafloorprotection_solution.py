@@ -3,7 +3,7 @@ import os
 import json
 
 from model.ocean_solution import OceanSolution
-from model.ocean_unit_adoption import UnitAdoption
+from model.new_unit_adoption import NewUnitAdoption
 from solution.seafloorprotection.seafloorprotection_scenario import SeafloorProtectionScenario
 
 class SeafloorProtectionSolution(OceanSolution):
@@ -36,7 +36,7 @@ class SeafloorProtectionSolution(OceanSolution):
         # Delay Regrowth of Degraded Land by 1 Year?
         self.delay_regrowth_by_one_year = True
 
-    def set_up_tam(self, unit_adoption: UnitAdoption) -> None:
+    def set_up_tam(self, unit_adoption: NewUnitAdoption) -> None:
         # This should produce a flat line with y = constant = self.total_area
         unit_adoption.set_tam_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
         unit_adoption.apply_clip(lower= None, upper= self.total_area)
