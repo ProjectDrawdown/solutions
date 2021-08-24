@@ -11,8 +11,8 @@ See also `Drawdown_Model_Platform_Proposal.pdf` and `Drawdown_First_Hackathon_Pr
 Models calculate the economic cost and greenhouse gas impact of a technology under differing assumptions.  The most important assumption is an estimate of how much the technology is adopted over a time horizon (out to 2050).  Again, the _use_ of the technology is an _input_ to the model, not an output.
 
 The _core inputs_ to a solution are:
- * For RRS models, a "Total Addressable Market" (TAM) and for Land models a "Total Land Allocation" (TLA).  These express the total demand for the technoogy.  For electricity generation models, it is something like anticipated need for electricity over time.
- * For all models, some form of Adoption is specified as an input.  Adoption is generally specified as a percentage of the TAM/TLA.  That is, the input might include the idea that "solar utilites generate 20% of all the required electricity in the year 2030".   More on how adoptions are modeled below.
+ * For "Reduction and Replacement Solutions" (RRS) models, a "Total Addressable Market" (TAM) and for Land models a "Total Land Allocation" (TLA).  These express the total demand for the technology.  For electricity generation models, it is something like anticipated need for electricity over time.
+ * For all models, some form of Adoption is specified as an input.  Adoption is generally specified as a percentage of the TAM/TLA.  That is, the input might include the idea that "solar utilities generate 20% of all the required electricity in the year 2030".   More on how adoptions are modeled below.
 
 In addition to these inputs, each model has other parameters which are used to do the calculations.  For example, for a kind of power generation a parameter would be the cost of building a power plant.  These are captured in VMAs (see below).
 
@@ -46,13 +46,13 @@ Probably the most complex set of interactions in the system take place around de
 
  * Sources may be global or regional.  Some sources may contain only global data or only regional, or even only for one specific region.  There's magickery about how to integrate these.   Many solutions have only global data.
  * Sources may publish data for specific time intervals (e.g. an estimate for each decade).  Interpolation is used to turn this into a per-year estimation.  (This is a one-time process that then gets copied into the source data.)
- * Sources are categorized into 'Base', 'Conservative' and 'Ambitous' cases.  This determination is made by whomever enters the data.  Then, during analysis, the researcher can elect to use average data from one of those specific categories, or the average of all of them (ALL SOURCES).
+ * Sources are categorized into 'Base', 'Conservative' and 'Ambitious' cases.  This determination is made by whomever enters the data.  Then, during analysis, the researcher can elect to use average data from one of those specific categories, or the average of all of them (ALL SOURCES).
 
 In python these sources will appear in `tam` or `ad` subfolders of the solutions.
 
-It is also possible to specify a "Custom TAM" and/or "Custom Adoption", which amount to simply specifiying the table of data (in python the custom adoptions are stored in the `ca_*` directories.
+It is also possible to specify a "Custom TAM" and/or "Custom Adoption", which amount to simply specifying the table of data (in python the custom adoptions are stored in the `ca_*` directories).
 
-There are some other even more complex options available for Adoption.  The "Helper Tables" module/tab is the final step of selecting the actual, used Adoption based on all the choices made on other tabs. ==> This is where the actual REF and PDS Adoption are available.
+There are some other, even more complex, options available for Adoption.  The "Helper Tables" module/tab is the final step of selecting the actual, used Adoption based on all the choices made on other tabs. ==> This is where the actual REF and PDS Adoption are available.
 
 For a researcher using the solution, all the settings they have access to can be found on the 'Advanced Controls' tab (which in python translates to the settings in a scenario file in the ac subdirectory).  These include choosing from available TAM/Adoption options and any parameters that modify them.
 
@@ -88,13 +88,13 @@ This scale will appear somewhere within the name, e.g. you might see a Scenario 
 **In the python system, this is not fully implemented**.  The python code doesn't yet have an interface that allows you to create a new scenario.  It can be faked by using this constructor found in factory_2.  The `j` argument would be a dictionary having the same structure as the scenario files.
 
 ```python
-        def one_solution_scenarios(solution, j=None):
-            """Load the scenarios for a single solution, optionally overriding
-            the advanced controls for a single scenario"""
+def one_solution_scenarios(solution, j=None):
+    """Load the scenarios for a single solution, optionally overriding
+    the advanced controls for a single scenario"""
 ```
 
 Even so, there are scenario parameters that will have no effect because they are solution-specific VMAs that have not been implemented yet.
 
 ## Integrations
 
-You may encounter the phrase "integrations" in documentation or, for example, in the names of some scenarios or TAM sources.  Integration is a process theat Project Drawdown uses to model the interactions between multiple solutions.  For example, increased use of bicycles decreases the demand for cars.  We have not yet implemented any of the integration functionality in python yet.
+You may encounter the phrase "integrations" in documentation or, for example, in the names of some scenarios or TAM sources.  Integration is a process that Project Drawdown uses to model the interactions between multiple solutions.  For example, increased use of bicycles decreases the demand for cars.  We have not yet implemented any of the integration functionality in python yet.
