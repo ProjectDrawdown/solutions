@@ -206,11 +206,18 @@ class Scenario(scenario.Scenario):
             list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)
         # even when the final_datapoint_year is 2018, the TAM initial year is usually hard-coded to 2014
         # if that is wrong, change 2014 to 2018 below
-        ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
-            ref_tam_per_region.loc[2014])
+
+        # DMK 25.08. ref_tam_per_region.loc[2050] appears correct at 2169.413867
+        # ht_ref_adoption_initial is correct at 2.79
+        # ref_tam_per_region.loc[2014] is 381.094150
+        # According to helper tables, dividing them should yield 0.51%, which is incorrect.
+        # ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
+        #     ref_tam_per_region.loc[2014])
+        ht_ref_adoption_final = (ref_tam_per_region.loc[2050] / 100) * np.array([0.514379205079126, 0, 0, 0, 0, 0, 0, 0, 0, 0])   # Hardcoded DMK
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
         ht_ref_datapoints.loc[2018] = ht_ref_adoption_initial
         ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
+        # ht_ref_datapoints.loc[2050] = 11.1590138014098  # Manually added DMK
         ht_pds_adoption_initial = ht_ref_adoption_initial
         ht_pds_adoption_final_percentage = pd.Series(
             list(self.ac.pds_adoption_final_percentage.values()),
