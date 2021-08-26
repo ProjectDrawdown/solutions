@@ -116,55 +116,45 @@ solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS1-29p2050-EE21.3% based on Navigant (Book Ed.1)"
+PDS2 = "PDS2-48p2050-EE21.3% based on Navigant (Book Ed.1)"
+PDS3 = "PDS3-75p2050-EE21.3% based on Navigant (Book Ed.1)"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
   name = name
   units = units
   vmas = VMAs
   solution_category = solution_category
 
+  tam_ref_data_sources = {
+    'Baseline Cases': {
+        'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+        'Ürge-Vorsatz et al. (2015) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
+    },
+    'Region: USA': {
+      'Baseline Cases': {
+        'Annual Energy Outlook 2016, U.S. Energy Information Administration, 2016.': THISDIR.joinpath('tam', 'tam_Annual_Energy_Outlook_2016_U_S__Energy_Information_Administration_2016_.csv'),
+      },
+    },
+  }
+  tam_pds_data_sources = {
+    'Baseline Cases': {
+        'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Adjusted_GBPN_Data_Commercial_Floor_Area.csv'),
+    },
+  }
+
   def __init__(self, scenario=None):
-    if scenario is None:
-      scenario = list(scenarios.keys())[0]
-    self.scenario = scenario
-    self.ac = scenarios[scenario]
+    if isinstance(scenario, ac.AdvancedControls):
+        self.scenario = scenario.name
+        self.ac = scenario
+    else:
+        self.scenario = scenario or PDS2
+        self.ac = scenarios[self.scenario]
 
     # TAM
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    tam_ref_data_sources = {
-      'Baseline Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Ürge-Vorsatz et al. (2015) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
-      },
-      'Region: USA': {
-        'Baseline Cases': {
-          'Annual Energy Outlook 2016, U.S. Energy Information Administration, 2016.': THISDIR.joinpath('tam', 'tam_Annual_Energy_Outlook_2016_U_S__Energy_Information_Administration_2016_.csv'),
-        },
-      },
-    }
-    tam_pds_data_sources = {
-      'Baseline Cases': {
-          'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Adjusted_GBPN_Data_Commercial_Floor_Area.csv'),
-      },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_pds_data_sources)
+    self.set_tam()
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 

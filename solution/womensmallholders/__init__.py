@@ -108,6 +108,11 @@ solution_category = ac.SOLUTION_CATEGORY.LAND
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS-68p2050-Plausible-PDScustom-avg-Bookedition1"
+PDS2 = "PDS-91p2050-Drawdown-PDScustom-high-Bookedition1"
+PDS3 = "PDS-100p2050-Optimum-PDScustom-max-Bookedition1"
 
 class Scenario(scenario.Scenario):
   name = name
@@ -116,10 +121,12 @@ class Scenario(scenario.Scenario):
   solution_category = solution_category
 
   def __init__(self, scenario=None):
-    if scenario is None:
-      scenario = list(scenarios.keys())[0]
-    self.scenario = scenario
-    self.ac = scenarios[scenario]
+    if isinstance(scenario, ac.AdvancedControls):
+        self.scenario = scenario.name
+        self.ac = scenario
+    else:
+        self.scenario = scenario or PDS2
+        self.ac = scenarios[self.scenario]
 
     # TLA
     self.ae = aez.AEZ(solution_name=self.name)

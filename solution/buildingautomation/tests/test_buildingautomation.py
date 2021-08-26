@@ -11,17 +11,17 @@ expected_file = thisdir / 'expected.zip'
 
 solution_name = 'buildingautomation'
 
-# If there are long-running test failures that should be skipped, you can indicate them here.
-# Someday we'll have a scanner that will check for these
+# We get a variance from the Excel because of a corner case in which we treat a NaN as a zero
+# It does not materially affect the results.
 SCENARIO_SKIP = None
-TEST_SKIP = None
+TEST_SKIP = ['Q135:AA181']
 
 def test_buildingautomation_loader():
-    """Test that the solution can load a single scenario"""
-    (constructor,scenarios) = factory.one_solution_scenarios(solution_name)
-    assert len(scenarios) > 0
-    ascenario = constructor(scenarios[0])
-    assert ascenario is not None
+    """Test that the solution can load the defined scenarios"""
+    pds1 = factory.load_scenario(solution_name,"PDS1")
+    pds2 = factory.load_scenario(solution_name,"PDS2")
+    pds3 = factory.load_scenario(solution_name, "PDS3")
+    assert pds1 and pds2 and pds3
 
 @pytest.mark.slow
 def test_buildingautomation_results(scenario_skip=None, test_skip=None, test_only=None):

@@ -112,60 +112,53 @@ solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS1-67p2050-postintegrationjune2020"
+PDS2 = "PDS2-89p2050-postintegrationjune2020"
+PDS3 = "PDS3-100p2050-postintegrationjune2020"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
 
+    tam_ref_data_sources = {
+        'Baseline Cases': {
+                'Drawdown TAM': THISDIR.joinpath('tam', 'tam_Drawdown_TAM.csv'),
+        },
+            'Region: USA': {
+                'Baseline Cases': {
+                'Drawdown TAM': THISDIR.joinpath('tam', 'tam_Drawdown_TAM.csv'),
+                'USEPA SMM': THISDIR.joinpath('tam', 'tam_USEPA_SMM.csv'),
+            },
+        },
+    }
+    tam_pds_data_sources = {
+        'Baseline Cases': {
+                'Drawdown TAM: Integration TAM PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integration_TAM_PDS1.csv'),
+        },
+        'Conservative Cases': {
+                'Drawdown TAM: Integration TAM PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integration_TAM_PDS2.csv'),
+        },
+        'Ambitious Cases': {
+                'Drawdown TAM: Integration TAM PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integration_TAM_PDS3.csv'),
+        },
+    }
+
     def __init__(self, scenario=None):
-        if scenario is None:
-            scenario = list(scenarios.keys())[0]
-        self.scenario = scenario
-        self.ac = scenarios[scenario]
+        if isinstance(scenario, ac.AdvancedControls):
+            self.scenario = scenario.name
+            self.ac = scenario
+        else:
+            self.scenario = scenario or PDS2
+            self.ac = scenarios[self.scenario]
 
         # TAM
-        tamconfig_list = [
-            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-              '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-              'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-        tam_ref_data_sources = {
-              'Baseline Cases': {
-                  'Drawdown TAM': THISDIR.joinpath('tam', 'tam_Drawdown_TAM.csv'),
-            },
-              'Region: USA': {
-                  'Baseline Cases': {
-                  'Drawdown TAM': THISDIR.joinpath('tam', 'tam_Drawdown_TAM.csv'),
-                  'USEPA SMM': THISDIR.joinpath('tam', 'tam_USEPA_SMM.csv'),
-              },
-            },
-        }
-        tam_pds_data_sources = {
-            'Baseline Cases': {
-                    'Drawdown TAM: Integration TAM PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integration_TAM_PDS1.csv'),
-            },
-            'Conservative Cases': {
-                    'Drawdown TAM: Integration TAM PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integration_TAM_PDS2.csv'),
-            },
-            'Ambitious Cases': {
-                    'Drawdown TAM: Integration TAM PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integration_TAM_PDS3.csv'),
-            },
-        }
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_pds_data_sources,
+
+
+        self.set_tam(
             interpolation_overrides = {
                 'USA': THISDIR.joinpath('tam', 'tam_override_usa_region.csv')
             })

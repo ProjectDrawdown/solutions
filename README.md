@@ -104,7 +104,7 @@ questions you have.
 
 ## Contributing
 We would love to have your help.
-Please see [CONTRIBUTING.md](Contributing.md) for guidelines for contributing to this project.
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines for contributing to this project.
 
 ## Acknowledgements
 

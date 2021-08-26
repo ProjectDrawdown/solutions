@@ -176,7 +176,7 @@ class HelperTables:
             adoption.iloc[0, 1:] = self.ref_datapoints.iloc[0, 1:]
             #print(f"REF B: {adoption.loc[2014,'World']}")
         elif self.copy_ref_datapoint:
-            copy_year = self.copy_datapoint_to_year or self.adoption_base_year()
+            copy_year = self.copy_datapoint_to_year or self.ref_datapoints.first_valid_index()
             override = self.ref_datapoints.iloc[0]
             if not self.use_first_ref_datapoint_main:
                 override = override[1:]  # Remove main region (World) from series

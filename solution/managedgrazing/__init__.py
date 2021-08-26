@@ -105,6 +105,11 @@ solution_category = ac.SOLUTION_CATEGORY.LAND
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS-43p2050-Plausible-customPDS-avg-Jan2020"
+PDS2 = "PDS-65p2050-Drawdown-customPDS-high-Jan2020"
+PDS3 = "PDS-100p2050-Optimum-PDSCustom-futuremax-Nov2019"
 
 class Scenario(scenario.Scenario):
     name = name
@@ -113,10 +118,12 @@ class Scenario(scenario.Scenario):
     solution_category = solution_category
 
     def __init__(self, scenario=None):
-        if scenario is None:
-            scenario = list(scenarios.keys())[0]
-        self.scenario = scenario
-        self.ac = scenarios[scenario]
+        if isinstance(scenario, ac.AdvancedControls):
+            self.scenario = scenario.name
+            self.ac = scenario
+        else:
+            self.scenario = scenario or PDS2
+            self.ac = scenarios[self.scenario]
 
         # TLA
         self.ae = aez.AEZ(solution_name=self.name, cohort=2020,
@@ -391,6 +398,7 @@ class Scenario(scenario.Scenario):
 
         self.c2 = co2calcs.CO2Calcs(ac=self.ac,
             ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+            ch4_megatons_avoided_or_reduced=self.c4.ch4_megatons_avoided_or_reduced(),
             soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
             soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
             soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),

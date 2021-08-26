@@ -31,6 +31,9 @@ class CO2Equiv:
         if self.conversion_source == CO2EQ_SOURCE.AR5_WITH_FEEDBACK:
             self.CH4multiplier = 34
             self.N2Omultiplier = 298
+        elif self.conversion_source == CO2EQ_SOURCE.AR5_WITHOUT_FEEDBACK:
+            self.CH4multiplier = 28
+            self.N2Omultiplier = 265
         elif self.conversion_source == CO2EQ_SOURCE.AR4:
             self.CH4multiplier = 25
             self.N2Omultiplier = 298

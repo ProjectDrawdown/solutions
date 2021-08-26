@@ -1,3 +1,12 @@
+August 2021
+
+Fixed "by accident":  Removing older scenarios means that the remaining scenarios have the same values
+as the Excel workbook when it was saved.... so the calculated adoptions and the stored adoptions are
+the same.
+
+This falls under the category of "OK for now but needs additional work" in order to implement the 
+custom code for calculating adoptions.
+
 July 2021
 
 I needed to add a line to data/land/aez/solution_aez_matrix.csv for this solution. 

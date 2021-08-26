@@ -41,7 +41,7 @@ def test_populate_solution_land_distribution():
 
 
 def test_ignore_allocation():
-    trr_aez = aez.AEZ('Tropical Forest Restoration', ignore_allocation=True)
+    trr_aez = aez.AEZ('Tropical Forest Restoration', max_tla=True)
     res = trr_aez.soln_land_dist_df
     assert res[res == 1].all().all()
 

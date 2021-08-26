@@ -1,0 +1,8 @@
+Note 8/2021:
+There is a known test failure with this solution in the TAM module.
+The root cause is probably that in the spreadsheet the Baseline Cases are 
+empty after the historical years, which causes the SD calculation to croak.
+
+I am not going to fix this because the next version of the ship model has 
+different data and different scenarios, and I suspect those will fix
+the issue. 
