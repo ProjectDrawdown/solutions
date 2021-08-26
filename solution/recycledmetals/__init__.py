@@ -102,54 +102,41 @@ PDS1 = "PDS1-41p2050-UpdatedJune2021"
 PDS2 = "PDS2-48p2050-UpdatedJune2021"
 PDS3 = "PDS3-68p2050-UpdatedJune2021"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
 
+    tam_ref_data_sources = {
+        'Baseline Cases': {
+                'USGS (Historical) + Elshkaki et al. SF Scenario': THISDIR.joinpath('tam', 'tam_USGS_Historical_Elshkaki_et_al__SF_Scenario.csv'),
+                'Elshkaki et al. MW/TR Scenarios + USGS (Historical)': THISDIR.joinpath('tam', 'tam_Elshkaki_et_al__MWTR_Scenarios_USGS_Historical.csv'),
+                'USGS (Historical) + Linear extrapolation': THISDIR.joinpath('tam', 'tam_USGS_Historical_Linear_extrapolation.csv'),
+        },
+        'Conservative Cases': {
+                'Van der Voet + USGS Historical': THISDIR.joinpath('tam', 'tam_Van_der_Voet_USGS_Historical.csv'),
+                'OECD, 2018, Demand Scenarios': THISDIR.joinpath('tam', 'tam_OECD_2018_Demand_Scenarios.csv'),
+        },
+            'Ambitious Cases': {
+                'Materials Economics Circular Economy Report (2018)': THISDIR.joinpath('tam', 'tam_Materials_Economics_Circular_Economy_Report_2018.csv'),
+        },
+            'Maximum Cases': {
+                'USGS (Historical) + S-Curve': THISDIR.joinpath('tam', 'tam_USGS_Historical_SCurve.csv'),
+        },
+    }
+    tam_pds_data_sources=tam_ref_data_sources
+
     def __init__(self, scenario=None):
-        if scenario is None:
-            scenario = list(scenarios.keys())[0]
-        self.scenario = scenario
-        self.ac = scenarios[scenario]
+        if isinstance(scenario, ac.AdvancedControls):
+            self.scenario = scenario.name
+            self.ac = scenario
+        else:
+            self.scenario = scenario or PDS2
+            self.ac = scenarios[self.scenario]
 
         # TAM
-        tamconfig_list = [
-            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-              '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-              'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-        tam_ref_data_sources = {
-            'Baseline Cases': {
-                  'USGS (Historical) + Elshkaki et al. SF Scenario': THISDIR.joinpath('tam', 'tam_USGS_Historical_Elshkaki_et_al__SF_Scenario.csv'),
-                  'Elshkaki et al. MW/TR Scenarios + USGS (Historical)': THISDIR.joinpath('tam', 'tam_Elshkaki_et_al__MWTR_Scenarios_USGS_Historical.csv'),
-                  'USGS (Historical) + Linear extrapolation': THISDIR.joinpath('tam', 'tam_USGS_Historical_Linear_extrapolation.csv'),
-            },
-            'Conservative Cases': {
-                  'Van der Voet + USGS Historical': THISDIR.joinpath('tam', 'tam_Van_der_Voet_USGS_Historical.csv'),
-                  'OECD, 2018, Demand Scenarios': THISDIR.joinpath('tam', 'tam_OECD_2018_Demand_Scenarios.csv'),
-            },
-              'Ambitious Cases': {
-                  'Materials Economics Circular Economy Report (2018)': THISDIR.joinpath('tam', 'tam_Materials_Economics_Circular_Economy_Report_2018.csv'),
-            },
-              'Maximum Cases': {
-                  'USGS (Historical) + S-Curve': THISDIR.joinpath('tam', 'tam_USGS_Historical_SCurve.csv'),
-            },
-        }
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_ref_data_sources)
+        self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 

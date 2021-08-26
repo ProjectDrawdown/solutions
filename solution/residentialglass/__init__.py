@@ -123,42 +123,29 @@ PDS1 = "PDS1-73p2050-2.75% Retrofit Rate (Integrated)"
 PDS2 = "PDS2-87p2050-5% Retrofit Rate (Integrated)"
 PDS3 = "PDS3-95p2050-8% Retrofit Rate (Integrated)"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
 
+    tam_ref_data_sources = {
+            'Baseline Cases': {
+                'Drawdown Buildings Sector Integrated TAM - Residential Average': THISDIR.joinpath('tam', 'tam_Drawdown_Buildings_Sector_Integrated_TAM_Residential_Average.csv'),
+        },
+    }
+    tam_pds_data_sources=tam_ref_data_sources
+
     def __init__(self, scenario=None):
-        if scenario is None:
-            scenario = list(scenarios.keys())[0]
-        self.scenario = scenario
-        self.ac = scenarios[scenario]
+        if isinstance(scenario, ac.AdvancedControls):
+            self.scenario = scenario.name
+            self.ac = scenario
+        else:
+            self.scenario = scenario or PDS2
+            self.ac = scenarios[self.scenario]
 
         # TAM
-        tamconfig_list = [
-            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-              '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-              'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-        tam_ref_data_sources = {
-              'Baseline Cases': {
-                  'Drawdown Buildings Sector Integrated TAM - Residential Average': THISDIR.joinpath('tam', 'tam_Drawdown_Buildings_Sector_Integrated_TAM_Residential_Average.csv'),
-            },
-        }
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_ref_data_sources)
+        self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 

@@ -133,53 +133,38 @@ PDS1 = "PDS1-40p2050-Linear Low (Book Ed.1)"
 PDS2 = "PDS2-50p2050-Linear Medium (Book Ed.1)"
 PDS3 = "PDS3-66p2050-Linear High (Book Ed.1)"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
   name = name
   units = units
   vmas = VMAs
   solution_category = solution_category
 
+  tam_ref_data_sources = {
+    'Baseline Cases': {
+        'Drawdown Custom projection 1': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_projection_1.csv'),
+        'Drawdown Custom Projection 2': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_Projection_2.csv'),
+    },
+  }
+  tam_pds_data_sources = {
+    'Conservative Cases': {
+        'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Plausible_Scenario_Reduc_f47a5b4e.csv'),
+    },
+    'Ambitious Cases': {
+        'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Drawdown Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Drawdown_Scenario_Reduce_a7c36895.csv'),
+        'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Optimum Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Optimum_Scenario_Reduces_2beea6a5.csv'),
+    },
+  }
+
   def __init__(self, scenario=None):
-    if scenario is None:
-      scenario = list(scenarios.keys())[0]
-    self.scenario = scenario
-    self.ac = scenarios[scenario]
+    if isinstance(scenario, ac.AdvancedControls):
+        self.scenario = scenario.name
+        self.ac = scenario
+    else:
+        self.scenario = scenario or PDS2
+        self.ac = scenarios[self.scenario]
 
     # TAM
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    tam_ref_data_sources = {
-      'Baseline Cases': {
-          'Drawdown Custom projection 1': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_projection_1.csv'),
-          'Drawdown Custom Projection 2': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_Projection_2.csv'),
-      },
-    }
-    tam_pds_data_sources = {
-      'Conservative Cases': {
-          'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Plausible_Scenario_Reduc_f47a5b4e.csv'),
-      },
-      'Ambitious Cases': {
-          'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Drawdown Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Drawdown_Scenario_Reduce_a7c36895.csv'),
-          'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Optimum Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Optimum_Scenario_Reduces_2beea6a5.csv'),
-      },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_pds_data_sources)
+    self.set_tam()
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 

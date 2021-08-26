@@ -109,178 +109,164 @@ PDS1 = "PDS1-82p2050-E18.8% (Book Ed.1)"
 PDS2 = "PDS2-90p2050-E18.2%-Linear 90% (Book Ed.1)"
 PDS3 = "PDS3-95p2050-E17.3%-Linear 95% (Book Ed.1)"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
   name = name
   units = units
   vmas = VMAs
   solution_category = solution_category
 
-  def __init__(self, scenario=None):
-    if scenario is None:
-      scenario = list(scenarios.keys())[0]
-    self.scenario = scenario
-    self.ac = scenarios[scenario]
-
-    # TAM
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    tam_ref_data_sources = {
+  tam_ref_data_sources = {
+    'Baseline Cases': {
+        'IEA 2006 Lights Labours Lost for 2005 & GDP growth rate as future forecast, see IEA 2006 sheet': THISDIR.joinpath('tam', 'tam_IEA_2006_Lights_Labours_Lost_for_2005_GDP_growth_rate_as_future_forecast_see_IEA_2006_sheet.csv'),
+        'IEA 2006 Lights Labours Lost for 2030 (current policy) & GDP growth rate as past estimate/future forecast, see IEA 2006 sheet': THISDIR.joinpath('tam', 'tam_IEA_2006_Lights_Labours_Lost_for_2030_current_policy_GDP_growth_rate_as_past_estimatefut_0d9e2767.csv'),
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
+    },
+    'Conservative Cases': {
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+        'EIA IEO energy; average efficacy estimated, interpolated': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated.csv'),
+        'EIA IEO electricity; average efficacy estimated, interpolated, 2nd order polynomial': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_order_polynomial.csv'),
+    },
+    'Ambitious Cases': {
+        'IEA 2006 Lights Labours Lost for 2030 (least life cycle cost scenario)& GDP growth rate as past estimate/future forecast, see IEA 2006 sheet': THISDIR.joinpath('tam', 'tam_IEA_2006_Lights_Labours_Lost_for_2030_least_life_cycle_cost_scenario_GDP_growth_rate_as__a7eda2ee.csv'),
+        'Floor space :Urge Vorsats et al. 2015; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_Urge_Vorsats_et_al__2015_Average_illuminance_see_Lux_lm_per_m2_Average_opera_7fac112b.csv'),
+    },
+    'Maximum Cases': {
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
+    },
+    'Region: OECD90': {
       'Baseline Cases': {
-          'IEA 2006 Lights Labours Lost for 2005 & GDP growth rate as future forecast, see IEA 2006 sheet': THISDIR.joinpath('tam', 'tam_IEA_2006_Lights_Labours_Lost_for_2005_GDP_growth_rate_as_future_forecast_see_IEA_2006_sheet.csv'),
-          'IEA 2006 Lights Labours Lost for 2030 (current policy) & GDP growth rate as past estimate/future forecast, see IEA 2006 sheet': THISDIR.joinpath('tam', 'tam_IEA_2006_Lights_Labours_Lost_for_2030_current_policy_GDP_growth_rate_as_past_estimatefut_0d9e2767.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
       },
       'Conservative Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-          'EIA IEO energy; average efficacy estimated, interpolated': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated.csv'),
-          'EIA IEO electricity; average efficacy estimated, interpolated, 2nd order polynomial': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_order_polynomial.csv'),
-      },
-      'Ambitious Cases': {
-          'IEA 2006 Lights Labours Lost for 2030 (least life cycle cost scenario)& GDP growth rate as past estimate/future forecast, see IEA 2006 sheet': THISDIR.joinpath('tam', 'tam_IEA_2006_Lights_Labours_Lost_for_2030_least_life_cycle_cost_scenario_GDP_growth_rate_as__a7eda2ee.csv'),
-          'Floor space :Urge Vorsats et al. 2015; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_Urge_Vorsats_et_al__2015_Average_illuminance_see_Lux_lm_per_m2_Average_opera_7fac112b.csv'),
+        'EIA IEO energy; average efficacy estimated, interpolated, 2nd order': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_order.csv'),
+        'EIA IEO electricity; average efficacy estimated, interpolated, 2nd order': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_order.csv'),
       },
       'Maximum Cases': {
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
       },
-      'Region: OECD90': {
-        'Baseline Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-        },
-        'Conservative Cases': {
-          'EIA IEO energy; average efficacy estimated, interpolated, 2nd order': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_order.csv'),
-          'EIA IEO electricity; average efficacy estimated, interpolated, 2nd order': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_order.csv'),
-        },
-        'Maximum Cases': {
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
-        },
+    },
+    'Region: Eastern Europe': {
+      'Baseline Cases': {
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+        'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
+        'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
       },
-      'Region: Eastern Europe': {
-        'Baseline Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-          'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-          'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-        },
-        'Maximum Cases': {
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data, 2nd order': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_7c1f094c.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-        },
+      'Maximum Cases': {
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data, 2nd order': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_7c1f094c.csv'),
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
       },
-      'Region: Asia (Sans Japan)': {
-        'Baseline Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-          'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-        },
-        'Conservative Cases': {
-          'EIA IEO electricity; average efficacy estimated, interpolated': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated.csv'),
-        },
-        'Ambitious Cases': {
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-        },
-        'Maximum Cases': {
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data, 2nd poly': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_0f701d19.csv'),
-        },
+    },
+    'Region: Asia (Sans Japan)': {
+      'Baseline Cases': {
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+        'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
       },
-      'Region: Middle East and Africa': {
-        'Baseline Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-          'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-        },
-        'Conservative Cases': {
-          'EIA IEO electricity; average efficacy estimated, interpolated': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated.csv'),
-        },
-        'Ambitious Cases': {
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-        },
-        'Maximum Cases': {
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
-        },
+      'Conservative Cases': {
+        'EIA IEO electricity; average efficacy estimated, interpolated': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated.csv'),
       },
-      'Region: Latin America': {
-        'Baseline Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-          'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-        },
-        'Conservative Cases': {
-          'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-        },
-        'Maximum Cases': {
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
-        },
+      'Ambitious Cases': {
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
       },
-      'Region: China': {
-        'Baseline Cases': {
-          'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-          'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-        },
-        'Conservative Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-        },
-        'Ambitious Cases': {
-          'Floor space: Hong et al.; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_Hong_et_al__Average_illuminance_see_Lux_lm_per_m2_Average_operating_hours_ha_cd4d6751.csv'),
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data, 2nd poly (declines at the end)': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_14adb205.csv'),
-        },
+      'Maximum Cases': {
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data, 2nd poly': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_0f701d19.csv'),
       },
-      'Region: India': {
-        'Baseline Cases': {
-          'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-          'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-        },
-        'Conservative Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-        },
-        'Maximum Cases': {
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
-        },
+    },
+    'Region: Middle East and Africa': {
+      'Baseline Cases': {
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+        'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
       },
-      'Region: EU': {
-        'Baseline Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data, 2nd poly': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_0f701d19.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-        },
-        'Conservative Cases': {
-          'EIA IEO energy; average efficacy estimated, interpolated': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated.csv'),
-          'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-        },
+      'Conservative Cases': {
+        'EIA IEO electricity; average efficacy estimated, interpolated': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated.csv'),
       },
-      'Region: USA': {
-        'Baseline Cases': {
-          'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
-          'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
-          'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-        },
-        'Conservative Cases': {
-          'US DOE/ Navigant 2014 , No LED scenario, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_US_DOE_Navigant_2014_No_LED_scenario_interpolated_2nd_poly.csv'),
-          'US DOE /Navigant 2012 (2010 US lighting market characterization), interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_US_DOE_Navigant_2012_2010_US_lighting_market_characterization_interpolated_2nd_poly.csv'),
-          'US EIA Annual energy outlook 2015': THISDIR.joinpath('tam', 'tam_US_EIA_Annual_energy_outlook_2015.csv'),
-        },
-        'Ambitious Cases': {
-          'Floor space: EIA AEO 2016; Average illuminance see Lux (lm per m2); Average operating hours (h/a)': THISDIR.joinpath('tam', 'tam_Floor_space_EIA_AEO_2016_Average_illuminance_see_Lux_lm_per_m2_Average_operating_hours_ha.csv'),
-          'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
-        },
+      'Ambitious Cases': {
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
       },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_ref_data_sources)
+      'Maximum Cases': {
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
+      },
+    },
+    'Region: Latin America': {
+      'Baseline Cases': {
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+        'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
+      },
+      'Conservative Cases': {
+        'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
+      },
+      'Maximum Cases': {
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
+      },
+    },
+    'Region: China': {
+      'Baseline Cases': {
+        'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
+        'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
+      },
+      'Conservative Cases': {
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+      },
+      'Ambitious Cases': {
+        'Floor space: Hong et al.; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_Hong_et_al__Average_illuminance_see_Lux_lm_per_m2_Average_operating_hours_ha_cd4d6751.csv'),
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data, 2nd poly (declines at the end)': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_14adb205.csv'),
+      },
+    },
+    'Region: India': {
+      'Baseline Cases': {
+        'EIA IEO energy; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated_2nd_poly.csv'),
+        'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
+      },
+      'Conservative Cases': {
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+      },
+      'Maximum Cases': {
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
+      },
+    },
+    'Region: EU': {
+      'Baseline Cases': {
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data, 2nd poly': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_0f701d19.csv'),
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
+      },
+      'Conservative Cases': {
+        'EIA IEO energy; average efficacy estimated, interpolated': THISDIR.joinpath('tam', 'tam_EIA_IEO_energy_average_efficacy_estimated_interpolated.csv'),
+        'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
+      },
+    },
+    'Region: USA': {
+      'Baseline Cases': {
+        'IEA 2006 (Mlmh/capita and population data) and GDP growth': THISDIR.joinpath('tam', 'tam_IEA_2006_Mlmhcapita_and_population_data_and_GDP_growth.csv'),
+        'EIA IEO electricity; average efficacy estimated, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_EIA_IEO_electricity_average_efficacy_estimated_interpolated_2nd_poly.csv'),
+        'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
+      },
+      'Conservative Cases': {
+        'US DOE/ Navigant 2014 , No LED scenario, interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_US_DOE_Navigant_2014_No_LED_scenario_interpolated_2nd_poly.csv'),
+        'US DOE /Navigant 2012 (2010 US lighting market characterization), interpolated, 2nd poly': THISDIR.joinpath('tam', 'tam_US_DOE_Navigant_2012_2010_US_lighting_market_characterization_interpolated_2nd_poly.csv'),
+        'US EIA Annual energy outlook 2015': THISDIR.joinpath('tam', 'tam_US_EIA_Annual_energy_outlook_2015.csv'),
+      },
+      'Ambitious Cases': {
+        'Floor space: EIA AEO 2016; Average illuminance see Lux (lm per m2); Average operating hours (h/a)': THISDIR.joinpath('tam', 'tam_Floor_space_EIA_AEO_2016_Average_illuminance_see_Lux_lm_per_m2_Average_operating_hours_ha.csv'),
+        'Floor space: IEA floor space data; Average illuminance see Lux (lm per m2); Average operating hours (h/a); interpolated data': THISDIR.joinpath('tam', 'tam_Floor_space_IEA_floor_space_data_Average_illuminance_see_Lux_lm_per_m2_Average_operating_05cb930f.csv'),
+      },
+    },
+  }
+  tam_pds_data_sources = tam_ref_data_sources
+
+  def __init__(self, scenario=None):
+    if isinstance(scenario, ac.AdvancedControls):
+        self.scenario = scenario.name
+        self.ac = scenario
+    else:
+        self.scenario = scenario or PDS2
+        self.ac = scenarios[self.scenario]
+
+    # TAM
+    self.set_tam()
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 

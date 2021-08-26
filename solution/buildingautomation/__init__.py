@@ -136,68 +136,60 @@ PDS2 = "PDS2-70p2050-Linear (Book Ed.1)"
 PDS3 = "PDS3-72p2050-Linear (Book Ed.1)"
 
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
   name = name
   units = units
   vmas = VMAs
   solution_category = solution_category
 
+  tam_ref_data_sources = {
+    'Ambitious Cases': {
+        'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+        'Ürge-Vorsatz et al. (2015) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
+    },
+    'Region: China': {
+      'Ambitious Cases': {
+        'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+        'Hong et al. (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Hong_et_al__2014_see_TAM_Factoring.csv'),
+      },
+    },
+    'Region: India': {
+      'Ambitious Cases': {
+        'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+        'Chaturvedi et al (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Chaturvedi_et_al_2014_see_TAM_Factoring.csv'),
+      },
+    },
+    'Region: EU': {
+      'Ambitious Cases': {
+        'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
+        'Boermans et al. (2012); BPIE (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Boermans_et_al__2012_BPIE_2014_see_TAM_Factoring.csv'),
+      },
+    },
+    'Region: USA': {
+      'Baseline Cases': {
+        'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case': THISDIR.joinpath('tam', 'tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case.csv'),
+        'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case w/o CPP': THISDIR.joinpath('tam', 'tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case_wo_CPP.csv'),
+      },
+    },
+  }
+  tam_pds_data_sources=tam_ref_data_sources
+
   def __init__(self, scenario=None):
-    if scenario is None:
-      scenario = list(scenarios.keys())[0]
-    self.scenario = scenario
-    self.ac = scenarios[scenario]
+    if isinstance(scenario, ac.AdvancedControls):
+        self.scenario = scenario.name
+        self.ac = scenario
+    else:
+        self.scenario = scenario or PDS2
+        self.ac = scenarios[self.scenario]
 
     # TAM
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'High', 'High', 'High', 'High'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    tam_ref_data_sources = {
-      'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Ürge-Vorsatz et al. (2015) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
-      },
-      'Region: China': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Hong et al. (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Hong_et_al__2014_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: India': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Chaturvedi et al (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Chaturvedi_et_al_2014_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: EU': {
-        'Ambitious Cases': {
-          'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-          'Boermans et al. (2012); BPIE (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Boermans_et_al__2012_BPIE_2014_see_TAM_Factoring.csv'),
-        },
-      },
-      'Region: USA': {
-        'Baseline Cases': {
-          'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case': THISDIR.joinpath('tam', 'tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case.csv'),
-          'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case w/o CPP': THISDIR.joinpath('tam', 'tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case_wo_CPP.csv'),
-        },
-      },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_ref_data_sources)
+    tam_config_values=[
+      ('growth','China','High'),
+      ('growth','India','High'),
+      ('growth','EU','High'),
+      ('growth','USA','High')
+    ]
+    self.set_tam(config_values=tam_config_values)
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 
@@ -287,7 +279,8 @@ class Scenario(scenario.Scenario):
         pds_adoption_data_per_region=pds_adoption_data_per_region,
         ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
         pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-        pds_adoption_is_single_source=pds_adoption_is_single_source)
+        pds_adoption_is_single_source=pds_adoption_is_single_source,
+        use_first_ref_datapoint_main=True)
 
     self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 

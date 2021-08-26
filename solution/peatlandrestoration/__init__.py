@@ -105,10 +105,12 @@ class Scenario(scenario.Scenario):
     solution_category = solution_category
 
     def __init__(self, scenario=None):
-        if scenario is None:
-            scenario = list(scenarios.keys())[0]
-        self.scenario = scenario
-        self.ac = scenarios[scenario]
+        if isinstance(scenario, ac.AdvancedControls):
+            self.scenario = scenario.name
+            self.ac = scenario
+        else:
+            self.scenario = scenario or PDS2
+            self.ac = scenarios[self.scenario]
 
         # TLA
         self.ae = aez.AEZ(solution_name=self.name, cohort=2020,

@@ -122,45 +122,31 @@ PDS1 = "PDS1-28p2050-cs Low-E12.84, F8.89 (Book Ed.1)"
 PDS2 = "PDS2-39p2050-cs-Avg E11.65, F8.06 (Book Ed.1)"
 PDS3 = "PDS3-50p2050-cs-High E10.96, F7.59 (Book Ed.1)"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
   name = name
   units = units
   vmas = VMAs
   solution_category = solution_category
 
+  tam_ref_data_sources = {
+    'Baseline Cases': {
+        'Based on: CES ITU AMPERE Baseline': THISDIR.joinpath('tam', 'tam_based_on_CES_ITU_AMPERE_Baseline.csv'),
+        'Based on: CES ITU AMPERE 550': THISDIR.joinpath('tam', 'tam_based_on_CES_ITU_AMPERE_550.csv'),
+        'Based on: CES ITU AMPERE 450': THISDIR.joinpath('tam', 'tam_based_on_CES_ITU_AMPERE_450.csv'),
+    },
+  }
+  tam_pds_data_sources=tam_ref_data_sources
+
   def __init__(self, scenario=None):
-    if scenario is None:
-      scenario = list(scenarios.keys())[0]
-    self.scenario = scenario
-    self.ac = scenarios[scenario]
+    if isinstance(scenario, ac.AdvancedControls):
+        self.scenario = scenario.name
+        self.ac = scenario
+    else:
+        self.scenario = scenario or PDS2
+        self.ac = scenarios[self.scenario]
 
     # TAM
-    tamconfig_list = [
-      ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-       'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-      ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-       'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-      ['trend', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-       '3rd Poly', '3rd Poly', '3rd Poly'],
-      ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-       'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-      ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-      ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-    tam_ref_data_sources = {
-      'Baseline Cases': {
-          'Based on: CES ITU AMPERE Baseline': THISDIR.joinpath('tam', 'tam_based_on_CES_ITU_AMPERE_Baseline.csv'),
-          'Based on: CES ITU AMPERE 550': THISDIR.joinpath('tam', 'tam_based_on_CES_ITU_AMPERE_550.csv'),
-          'Based on: CES ITU AMPERE 450': THISDIR.joinpath('tam', 'tam_based_on_CES_ITU_AMPERE_450.csv'),
-      },
-    }
-    self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-      tam_pds_data_sources=tam_ref_data_sources)
+    self.set_tam()
     ref_tam_per_region=self.tm.ref_tam_per_region()
     pds_tam_per_region=self.tm.pds_tam_per_region()
 

@@ -118,94 +118,83 @@ PDS1 = "PDS1-26p2050-May2020"
 PDS2 = "PDS2-37p2050-May2020"
 PDS3 = "PDS3-73p2050-May2020"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
 
+    tam_ref_data_sources = {
+            'Baseline Cases': {
+                'Organic Fraction of MSW - From Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_From_Waste_TAM.csv'),
+        },
+            'Region: OECD90': {
+                'Baseline Cases': {
+                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+            },
+        },
+            'Region: Eastern Europe': {
+                'Baseline Cases': {
+                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+            },
+        },
+            'Region: Asia (Sans Japan)': {
+                'Baseline Cases': {
+                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+            },
+        },
+            'Region: Middle East and Africa': {
+                'Baseline Cases': {
+                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+            },
+        },
+            'Region: Latin America': {
+                'Baseline Cases': {
+                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+            },
+        },
+            'Region: China': {
+                'Baseline Cases': {
+                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+            },
+        },
+            'Region: India': {
+                'Baseline Cases': {
+                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+            },
+        },
+            'Region: EU': {
+                'Baseline Cases': {
+                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+                'European Commission DG Environment - Arcadis': THISDIR.joinpath('tam', 'tam_European_Commission_DG_Environment_Arcadis.csv'),
+            },
+        },
+            'Region: USA': {
+                'Baseline Cases': {
+                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+            },
+        },
+    }
+    tam_pds_data_sources = {
+        'Baseline Cases': {
+                'Drawdown TAM: Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Organic_Fraction_of_MSW_Waste_TAM.csv'),
+        },
+    }
+
     def __init__(self, scenario=None):
-        if scenario is None:
-            scenario = list(scenarios.keys())[0]
-        self.scenario = scenario
-        self.ac = scenarios[scenario]
+        if isinstance(scenario, ac.AdvancedControls):
+            self.scenario = scenario.name
+            self.ac = scenario
+        else:
+            self.scenario = scenario or PDS2
+            self.ac = scenarios[self.scenario]
 
         # TAM
-        tamconfig_list = [
-            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-            ['trend', '3rd Poly', '3rd Poly',
-                '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-                '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', 'Low', 'Low', 'Medium', 'Medium',
-                'Low', 'Medium', 'Medium', 'Low', 'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-        tam_ref_data_sources = {
-              'Baseline Cases': {
-                  'Organic Fraction of MSW - From Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_From_Waste_TAM.csv'),
-            },
-              'Region: OECD90': {
-                  'Baseline Cases': {
-                  'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-              },
-            },
-              'Region: Eastern Europe': {
-                  'Baseline Cases': {
-                  'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-              },
-            },
-              'Region: Asia (Sans Japan)': {
-                  'Baseline Cases': {
-                  'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-              },
-            },
-              'Region: Middle East and Africa': {
-                  'Baseline Cases': {
-                  'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-              },
-            },
-              'Region: Latin America': {
-                  'Baseline Cases': {
-                  'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-              },
-            },
-              'Region: China': {
-                  'Baseline Cases': {
-                  'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-              },
-            },
-              'Region: India': {
-                  'Baseline Cases': {
-                  'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-              },
-            },
-              'Region: EU': {
-                  'Baseline Cases': {
-                  'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-                  'European Commission DG Environment - Arcadis': THISDIR.joinpath('tam', 'tam_European_Commission_DG_Environment_Arcadis.csv'),
-              },
-            },
-              'Region: USA': {
-                  'Baseline Cases': {
-                  'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-              },
-            },
-        }
-        tam_pds_data_sources = {
-            'Baseline Cases': {
-                    'Drawdown TAM: Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        }
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_pds_data_sources)
+        tam_config_values = [
+            ('growth','World','Low'),
+            ('growth','PDS World','Low')
+        ]
+        self.set_tam(config_values=tam_config_values)
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 

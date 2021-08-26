@@ -97,49 +97,36 @@ PDS1 = "PDS1-8p2050-Dec2020"
 PDS2 = "PDS2-32p2050-Jan2021"
 PDS3 = "PDS3-56p2050-Jan2021"
 
-class Scenario:
+class Scenario(scenario.RRSScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
 
+    tam_ref_data_sources = {
+            'Baseline Cases': {
+                'Ellen Macarthur Foundation. 3% Growth to 160 in 2050': THISDIR.joinpath('tam', 'tam_Ellen_Macarthur_Foundation__3_Growth_to_160_in_2050.csv'),
+        },
+            '': {
+                'Global Fashion Agenda - Pulse of Fashion Industry 102 in 2030': THISDIR.joinpath('tam', 'tam_Global_Fashion_Agenda_Pulse_of_Fashion_Industry_102_in_2030.csv'),
+                'Quantis, Measuring Fashion, Apparel': THISDIR.joinpath('tam', 'tam_Quantis_Measuring_Fashion_Apparel.csv'),
+        },
+            'Conservative Cases': {
+                'Textile Exchange 2019,2020 (Assume 60% of Fibers for Clothing)': THISDIR.joinpath('tam', 'tam_Textile_Exchange_20192020_Assume_60_of_Fibers_for_Clothing.csv'),
+        },
+    }
+    tam_pds_data_sources=tam_ref_data_sources
+
     def __init__(self, scenario=None):
-        if scenario is None:
-            scenario = list(scenarios.keys())[0]
-        self.scenario = scenario
-        self.ac = scenarios[scenario]
+        if isinstance(scenario, ac.AdvancedControls):
+            self.scenario = scenario.name
+            self.ac = scenario
+        else:
+            self.scenario = scenario or PDS2
+            self.ac = scenarios[self.scenario]
 
         # TAM
-        tamconfig_list = [
-            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-              '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-              'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-        tam_ref_data_sources = {
-              'Baseline Cases': {
-                  'Ellen Macarthur Foundation. 3% Growth to 160 in 2050': THISDIR.joinpath('tam', 'tam_Ellen_Macarthur_Foundation__3_Growth_to_160_in_2050.csv'),
-            },
-              '': {
-                  'Global Fashion Agenda - Pulse of Fashion Industry 102 in 2030': THISDIR.joinpath('tam', 'tam_Global_Fashion_Agenda_Pulse_of_Fashion_Industry_102_in_2030.csv'),
-                  'Quantis, Measuring Fashion, Apparel': THISDIR.joinpath('tam', 'tam_Quantis_Measuring_Fashion_Apparel.csv'),
-            },
-              'Conservative Cases': {
-                  'Textile Exchange 2019,2020 (Assume 60% of Fibers for Clothing)': THISDIR.joinpath('tam', 'tam_Textile_Exchange_20192020_Assume_60_of_Fibers_for_Clothing.csv'),
-            },
-        }
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_ref_data_sources)
+        self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
