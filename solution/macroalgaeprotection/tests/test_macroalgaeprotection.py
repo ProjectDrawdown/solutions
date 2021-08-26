@@ -35,17 +35,17 @@ def test_total_co2_seq():
     assert total_co2_seq == pytest.approx(3.85598888)
 
 def test_change_in_ppm_equiv():
-    change_in_ppm_equiv = maps.get_change_in_ppm_equiv(delay_period=1)
+    change_in_ppm_equiv = maps.get_change_in_ppm_equiv()
     assert change_in_ppm_equiv == pytest.approx(0.339684712828728)
 
 def test_change_in_ppm_equiv_final():
-    change_in_ppm_equiv_final = maps.get_change_in_ppm_equiv_final_year(delay_period=1)
+    change_in_ppm_equiv_final = maps.get_change_in_ppm_equiv_final_year()
     assert change_in_ppm_equiv_final == pytest.approx(0.027045695545894)
 
 def test_max_annual_co2_sequestered():
-    max_annual_co2_sequestered = maps.get_max_annual_co2_sequestered(delay_period=1)
+    max_annual_co2_sequestered = maps.get_max_annual_co2_sequestered()
     assert max_annual_co2_sequestered == pytest.approx(0.326041958295943)
 
 def test_co2_sequestered_final_year():
-    co2_sequestered_final_year = maps.get_co2_sequestered_final_year(delay_period=1)
+    co2_sequestered_final_year = maps.get_co2_sequestered_final_year()
     assert co2_sequestered_final_year == pytest.approx(0.326041958295943)

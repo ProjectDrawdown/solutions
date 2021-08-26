@@ -33,15 +33,15 @@ class MacroalgaeRestorationSolution(OceanSolution):
         self.total_area_as_of_period = self._config['TotalAreaAsOfPeriod']
         self.change_per_period = self._config['ChangePerPeriod']
 
-        # Delay Regrowth of Degraded Land by 1 Year?
-        self.delay_regrowth_by_one_year = True
+        self.delay_impact_of_protection_by_one_year= self._config['DelayImpactOfProtectionByOneYear']
+        self.delay_regrowth_of_degraded_land_by_one_year= self._config['DelayRegrowthOfDegradedLandByOneYear']
 
     def set_up_tam(self, unit_adoption: NewUnitAdoption) -> None:
         # This should produce a flat line with y = constant = self.total_area
         unit_adoption.set_tam_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
         unit_adoption.apply_clip(lower= None, upper= self.total_area)
         unit_adoption.apply_linear_regression()
-        unit_adoption.tam_build_cumulative_unprotected_area(self.new_growth_harvested_every)
+        
 
 
     def load_scenario(self, scenario_name: str) -> None:
@@ -69,6 +69,7 @@ class MacroalgaeRestorationSolution(OceanSolution):
 
         # Set scenario-specific data:        
         self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
+        self.growth_rate_of_ocean_degradation = self.scenario.growth_rate_of_ocean_degradation
         self.npv_discount_rate = self.scenario.npv_discount_rate
         self.new_growth_harvested_every = self.scenario.new_growth_harvested_every
         self.disturbance_rate = 0.0

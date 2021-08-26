@@ -69,7 +69,7 @@ class MacroalgaeProtectionSolution(OceanSolution):
         self.pds_scenario.use_tam_for_co2_calcs = True
         self.ref_scenario.use_tam_for_co2_calcs = True
 
-        # Set scenario-specific data:        
+        # Set scenario-specific data:
         self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.npv_discount_rate = self.scenario.npv_discount_rate
         self.growth_rate_of_ocean_degradation = self.scenario.growth_rate_of_ocean_degradation
@@ -181,4 +181,3 @@ class MacroalgaeProtectionSolution(OceanSolution):
         result = net_sequestration.loc[end] - net_sequestration.loc[end-1]
 
         return result
-        
