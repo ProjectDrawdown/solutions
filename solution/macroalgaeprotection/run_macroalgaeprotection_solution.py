@@ -35,16 +35,16 @@ def main():
         results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 3.85598888]
 
         ### Other Climate Results ###
-        change_in_ppm_equiv = maps.get_change_in_ppm_equiv(delay_period=1)
+        change_in_ppm_equiv = maps.get_change_in_ppm_equiv()
         results['Approximate PPM Equivalent Change'] = [change_in_ppm_equiv, 0.339684712828728]
 
-        change_in_ppm_equiv_final = maps.get_change_in_ppm_equiv_final_year(delay_period= 1)
+        change_in_ppm_equiv_final = maps.get_change_in_ppm_equiv_final_year()
         results['Approximate PPM rate in 2050'] = [change_in_ppm_equiv_final, 0.027045695545894]
 
-        max_annual_co2_sequestered = maps.get_max_annual_co2_sequestered(delay_period= 1)
+        max_annual_co2_sequestered = maps.get_max_annual_co2_sequestered()
         results['Max Annual CO2 Sequestered'] = [max_annual_co2_sequestered, 0.326041958295943]
 
-        co2_sequestered_final_year = maps.get_co2_sequestered_final_year(delay_period= 1)
+        co2_sequestered_final_year = maps.get_co2_sequestered_final_year()
         results['CO2 Sequestered in 2050'] = [co2_sequestered_final_year, 0.326041958295943]
 
         total_atmos_co2_reduction = total_emissions_reduction + total_co2_seq

@@ -12,7 +12,7 @@ class MacroalgaeProtectionScenario(NewScenario):
     
 
     # General Ocean Inputs
-    new_growth_harvested_every : float = field(metadata={'Units': 'years'})
+    growth_rate_of_ocean_degradation : float = field(metadata={'Units': 'years'})
     
     ## Following not defaulted - may be added after initialisation.
 

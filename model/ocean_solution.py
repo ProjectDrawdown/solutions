@@ -3,7 +3,7 @@ import sys
 import yaml
 
 import numpy as np
-from model.new_unit_adoption import NewUnitAdoption
+from model.new_unit_adoption import NewUnitAdoption as UnitAdoption
 from model.solution import Solution
 
 import json
@@ -30,7 +30,7 @@ class OceanSolution(Solution):
     def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name):
             
         try:
-            ad_scenario = NewUnitAdoption(self.base_year, self.end_year, adoption_scenario_name, adoption_input_file)
+            ad_scenario = UnitAdoption(self.base_year, self.end_year, adoption_scenario_name, adoption_input_file)
         except ValueError as ev:
             print(ev.args)
             raise ValueError(f"Unable to initialise {adoption_scenario_name}")
@@ -48,6 +48,7 @@ class OceanSolution(Solution):
         self.pds_scenario.operating_cost = self.scenario.soln_operating_cost
         self.pds_scenario.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.pds_scenario.disturbance_rate = self.scenario.disturbance_rate
+        self.pds_scenario.growth_rate_of_ocean_degradation = self.scenario.growth_rate_of_ocean_degradation
 
         
     def _load_ref_scenario(self):
@@ -61,6 +62,7 @@ class OceanSolution(Solution):
         self.ref_scenario.operating_cost = self.scenario.soln_operating_cost
         self.ref_scenario.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.ref_scenario.disturbance_rate = self.scenario.disturbance_rate
+        self.ref_scenario.growth_rate_of_ocean_degradation = self.scenario.growth_rate_of_ocean_degradation
 
 
     # Initialize from configuration file:
@@ -363,6 +365,11 @@ class OceanSolution(Solution):
 
         return result / 1_000 # express in billions of USD
 
+    def get_total_emissions_reduction(self):
+        series = self.pds_scenario.total_at_risk_area
+
+        return
+
 
     def get_total_co2_seq(self) -> np.float64:
         
@@ -404,35 +411,53 @@ class OceanSolution(Solution):
         return result
         
 
-    def get_max_annual_co2_sequestered(self, delay_period = 0) -> np.float64:
+    def get_max_annual_co2_sequestered(self) -> np.float64:
 
-        pds_sequestration = self.pds_scenario.get_carbon_sequestration(self.sequestration_rate_all_ocean, self.disturbance_rate)
-        ref_sequestration = self.ref_scenario.get_carbon_sequestration(self.sequestration_rate_all_ocean, self.disturbance_rate)
+        pds_sequestration = self.pds_scenario.get_carbon_sequestration(
+            self.sequestration_rate_all_ocean,
+            self.disturbance_rate,
+            self.growth_rate_of_ocean_degradation,
+            self.delay_impact_of_protection_by_one_year)
+
+        ref_sequestration = self.ref_scenario.get_carbon_sequestration(
+            self.sequestration_rate_all_ocean,
+            self.disturbance_rate,
+            self.growth_rate_of_ocean_degradation,
+            self.delay_impact_of_protection_by_one_year)
 
         # sequestration should match the time series in [CO2 Calcs]!$B$120
         net_sequestration = (pds_sequestration - ref_sequestration)
 
         start = self.start_year
         end = self.end_year
-        if delay_period > 0:
-            end -= delay_period
-            start -= delay_period
+        if self.delay_regrowth_of_degraded_land_by_one_year:
+            end -= 1
+            start -= 1
         
         result = max(net_sequestration.loc[start:end])
 
         return result / 1_000
 
 
-    def get_co2_sequestered_final_year(self, delay_period = 0) -> np.float64:
+    def get_co2_sequestered_final_year(self) -> np.float64:
 
-        pds_sequestration = self.pds_scenario.get_carbon_sequestration(self.sequestration_rate_all_ocean, self.disturbance_rate)
-        ref_sequestration = self.ref_scenario.get_carbon_sequestration(self.sequestration_rate_all_ocean, self.disturbance_rate)
+        pds_sequestration = self.pds_scenario.get_carbon_sequestration(
+            self.sequestration_rate_all_ocean,
+            self.disturbance_rate,
+            self.growth_rate_of_ocean_degradation,
+            self.delay_impact_of_protection_by_one_year)
+
+        ref_sequestration = self.ref_scenario.get_carbon_sequestration(
+            self.sequestration_rate_all_ocean,
+            self.disturbance_rate,
+            self.growth_rate_of_ocean_degradation,
+            self.delay_impact_of_protection_by_one_year)
         
         net_sequestration = (pds_sequestration - ref_sequestration)
 
         end = self.end_year
-        if delay_period > 0:
-            end -= delay_period
+        if self.delay_regrowth_of_degraded_land_by_one_year:
+            end -= 1
         
         result = net_sequestration.loc[end]
 

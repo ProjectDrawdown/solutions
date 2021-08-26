@@ -4,6 +4,8 @@ import math
 import json
 import copy
 
+from pandas.core.series import Series
+
 import model.interpolation as interp
 
 # Code originally based of seaweed farming solution, but is intended to be general.
@@ -273,34 +275,146 @@ class NewUnitAdoption:
             print('Warning : Neither lower nor upper parameter supplied. No action taken.')
         self._tam.clip(lower=lower, upper=upper, inplace=True)
 
-    
-    def tam_build_cumulative_unprotected_area(self, new_growth_harvested_every: np.float64) -> None:
+
+    def get_cumulative_degraded_unprotected_area(self, delay_impact_of_protection_by_one_year: bool = True,
+                     growth_rate_of_ocean_degradation: np.float64 = 1.0) -> pd.Series:
+        """
+        This represents the total degraded area.
+        Calculation uses the rate supplied by the degradation_rate parameter.
+        This rate is applied only to the area that is not covered by the solution (ie not protected) and that is not degraded.
+        Units: Millions ha
+            Calculation:
+            Area Degraded in Previous Year + (Total Area - Protected Area - Area Degraded in Previous Year) * Degradation Rate 
+        """
+
+        # [Unit Adoption Calculations]!$CG$135 (for solution adoption)
+        # [Unit Adoption Calculations]!$CG$197 (for reference adoption)
+
+        if delay_impact_of_protection_by_one_year:
+            delay = 1
+        else:
+            delay = 0
         
         results = pd.Series(index = self._tam.index, dtype=float)
         
         first_pass = True
-        for index, value in self._tam.loc[self.base_year:].iteritems():
+        for year, tam_total_area in self._tam.loc[self.base_year:].iteritems():
             if first_pass:
-                results.loc[index] = 0.0
-                prev_value = 0.0
+                results.loc[year] = 0.0
+                area_degraded_previous_year = 0.0 # prev_value = Area Degraded in Previous Year
+                first_pass = False
+                continue
+            
+            # units_adopted = protected area
+            units_adopted = self.implementation_units.loc[year-delay]
+
+            result = (tam_total_area - units_adopted - area_degraded_previous_year) * growth_rate_of_ocean_degradation
+            result = area_degraded_previous_year + result
+
+            results.loc[year] = min(result, tam_total_area)
+            area_degraded_previous_year = result
+        
+        return results
+
+    def get_total_at_risk_area(self, growth_rate_of_ocean_degradation: np.float64, 
+                delay_impact_of_protection_by_one_year: bool) -> pd.Series:
+
+        """
+        This represents the total area at risk of degradation by anthropogenic or other means.
+        It is calculated by identifying how much land is degraded, and how much remains undegraded.
+        Units: Millions ha
+        Calculation:
+            Total Area - Area Protected in Current Year - Area Degraded in Current Year
+
+        """
+
+        # [Unit Adoption Calculations]!$CZ$135 (for solution adoption)
+        # [Unit Adoption Calculations]!$CZ$197 (for reference adoption)
+
+        cumulative_unprotected_area = self.get_cumulative_degraded_unprotected_area(
+                delay_impact_of_protection_by_one_year= delay_impact_of_protection_by_one_year,
+                growth_rate_of_ocean_degradation= growth_rate_of_ocean_degradation)
+
+        total_at_risk_area = self._tam - cumulative_unprotected_area - self.implementation_units
+        total_at_risk_area = total_at_risk_area.clip(lower=0.0)
+
+        return total_at_risk_area
+
+
+    def get_cumulative_degraded_area_under_protection(self, delay_impact_of_protection_by_one_year: bool = True, disturbance_rate: np.float64 = 1.0) -> pd.Series:
+        """
+        Even protected areas suffer from degradation via disturbances (e.g. natural degradation, logging, storms, fires or human settlement).
+        The disturbance rate is usually equal in the PDS adoption and reference adoption.
+        This disturbance rate represents the degradation of protected area, and is expected to be much less than the
+        degradation rate of unprotected area.
+        This function is used to calculate the carbon sequestration, direct emissions, fuel and grid emissions, 
+        indirect emissions and total reduction in area degradation result.
+        Units: Millions ha
+        Calculation:
+            Protected area that was degraded in Previous Year + (area protected by soln - protected area degraded in previous year) * disturbance tate
+        """
+
+        # [Unit Adoption Calculations]!$EI$135 (for solution adoption)
+        # [Unit Adoption Calculations]!$EI$197 (for reference adoption)
+
+        if delay_impact_of_protection_by_one_year:
+            delay = 1
+        else:
+            delay = 0
+        
+        results = pd.Series(index = self._tam.index, dtype=float)
+        
+        first_pass = True
+        for year, _ in self.implementation_units.loc[self.base_year:].iteritems():
+            if first_pass:
+                results.loc[year] = 0.0
+                area_degraded_previous_year = 0.0 # prev_value = Area Degraded in Previous Year
                 first_pass = False
                 continue
 
-            val = self.implementation_units.loc[index -1]
+            protected_area = self.implementation_units.loc[year - delay]
 
-            result = (value - val - prev_value) * new_growth_harvested_every
-            result = prev_value + result
-            results.loc[index] = result
-            prev_value = result
-
+            result = area_degraded_previous_year + (protected_area - area_degraded_previous_year) * disturbance_rate
+            result = min(result, protected_area)
+            results.loc[year] = result
+            area_degraded_previous_year = result
+        
         series = pd.Series(results, index=self.implementation_units.index)
-        self.cumulative_unprotected_area = series
 
-        # "total_at_risk_area" = "total_undegraded_area" for pds; "total_at_risk_area" for ref scenario
-        self.total_at_risk_area = self._tam - self.cumulative_unprotected_area
+        return series
+
+
+    def get_total_undegraded_area(self, growth_rate_of_ocean_degradation,
+                disturbance_rate: np.float64 = 1.0, 
+                delay_impact_of_protection_by_one_year: bool = True) -> pd.Series:
+
+        """
+        This represents the total area that is not degraded in any particular year. It takes the Total Area and removes the degraded area,
+        which is the same as summing the undegraded area and At Risk area.
+        Units: Millions ha
+        Calculation:
+            Total Area - Area Degraded that was Unprotected - Protected Land that is Degraded (via a Disturbance) in Current Year
+
+        """
+        # Returns:
+        # [Unit Adoption Calculations]!$DS$135 (for solution adoption)
+        # [Unit Adoption Calculations]!$DS$197 (for reference adoption)
+
+        # [Unit Adoption Calculations]!$CH$135 :
+        cumulative_degraded_unprotected_area = self.get_cumulative_degraded_unprotected_area(delay_impact_of_protection_by_one_year, growth_rate_of_ocean_degradation)
+
+        cumulative_degraded_area_under_protection = self.get_cumulative_degraded_area_under_protection(
+                                                                    delay_impact_of_protection_by_one_year,
+                                                                    disturbance_rate
+                                                                    )
+
+        result = self._tam - cumulative_degraded_unprotected_area - cumulative_degraded_area_under_protection
+
+        return result.clip(lower = 0.0)
 
 ####
-    def get_carbon_sequestration(self, sequestration_rate, disturbance_rate) ->pd.DataFrame:
+    def get_carbon_sequestration(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation,
+                             delay_impact_of_protection_by_one_year) ->pd.Series:
 
         if sequestration_rate == 0.0:
             print('Warning, sequestration rate is zero. All members of sequestration series will be zero.')
@@ -308,7 +422,7 @@ class NewUnitAdoption:
         co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
 
         if self.use_tam_for_co2_calcs:
-            adoption = self.total_at_risk_area
+            adoption = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
         else:
             adoption = self.get_units_adopted()
         
@@ -319,9 +433,14 @@ class NewUnitAdoption:
 
         return sequestration
 
-    def get_change_in_ppm_equiv_series(self) -> np.float64:
+    def get_change_in_ppm_equiv_series(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year) -> np.float64:
 
-        sequestration = self.get_carbon_sequestration(self.sequestration_rate_all_ocean, self.disturbance_rate)
+        # [CO2 Calcs]!$B$120
+        sequestration = self.get_carbon_sequestration(
+                sequestration_rate, 
+                disturbance_rate, 
+                growth_rate_of_ocean_degradation,
+                delay_impact_of_protection_by_one_year)
 
         result_years = list(range(self.base_year-1, self.end_year+1))
         results = pd.Series(index = result_years, dtype=np.float64)

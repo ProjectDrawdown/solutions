@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from model.new_scenario import NewScenario
     
 @dataclass
-class SeafloorProtectionScenario(Scenario):
+class SeafloorProtectionScenario(NewScenario):
 
     # Current Adoption:
     adoption_value_world : float = field(metadata={'Units': 'Millions of Ha'})

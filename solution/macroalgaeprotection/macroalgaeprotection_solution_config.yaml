@@ -9,4 +9,6 @@ EndYear: 2050
 TotalArea: 355
 TotalAreaAsOfPeriod: 2016
 ChangePerPeriod: -0.0074812968
+DelayImpactOfProtectionByOneYear: True
+DelayRegrowthOfDegradedLandByOneYear: True
 RequiredVersionMinimum: 3.9.5
