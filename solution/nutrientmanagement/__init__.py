@@ -12,6 +12,7 @@ from model import advanced_controls as ac
 from model import aez
 from model import ch4calcs
 from model import co2calcs
+from model import n2ocalcs
 from model import customadoption
 from model import dd
 from model import emissionsfactors
@@ -365,8 +366,13 @@ class Scenario(scenario.Scenario):
             soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
+        self.n2o = n2ocalcs.N2OCalcs(ac=self.ac,
+            soln_pds_direct_n2o_co2_emissions_saved=self.ua.direct_n2o_co2_emissions_saved_land(),
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+
         self.c2 = co2calcs.CO2Calcs(ac=self.ac,
             ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+            n2o_megatons_avoided_or_reduced=self.n2o.n2o_megatons_avoided_or_reduced(),
             soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
             soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
             soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
@@ -382,4 +388,3 @@ class Scenario(scenario.Scenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-

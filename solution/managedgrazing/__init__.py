@@ -398,6 +398,7 @@ class Scenario(scenario.Scenario):
 
         self.c2 = co2calcs.CO2Calcs(ac=self.ac,
             ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+            ch4_megatons_avoided_or_reduced=self.c4.ch4_megatons_avoided_or_reduced(),
             soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
             soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
             soln_pds_direct_co2eq_emissions_saved=self.ua.direct_co2eq_emissions_saved_land(),
