@@ -57,6 +57,9 @@ class SeaweedFarmingSolution(OceanSolution):
         self.disturbance_rate = self.scenario.disturbance_rate
         self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.npv_discount_rate = self.scenario.npv_discount_rate
+        self.growth_rate_of_ocean_degradation = self.scenario.__dict__.get('growth_rate_of_ocean_degradation', 0.0)
+        self.delay_impact_of_protection_by_one_year = self.scenario.__dict__.get('delay_impact_of_protection_by_one_year', False)
+        self.delay_regrowth_of_degraded_land_by_one_year = self.scenario.__dict__.get('delay_regrowth_of_degraded_land_by_one_year', False)
 
         # PDS and REF have a similar TAM structure:
         self.set_up_tam(self.pds_scenario)

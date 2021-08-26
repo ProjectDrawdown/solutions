@@ -48,7 +48,6 @@ class OceanSolution(Solution):
         self.pds_scenario.operating_cost = self.scenario.soln_operating_cost
         self.pds_scenario.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.pds_scenario.disturbance_rate = self.scenario.disturbance_rate
-        self.pds_scenario.growth_rate_of_ocean_degradation = self.scenario.growth_rate_of_ocean_degradation
 
         
     def _load_ref_scenario(self):
@@ -62,7 +61,6 @@ class OceanSolution(Solution):
         self.ref_scenario.operating_cost = self.scenario.soln_operating_cost
         self.ref_scenario.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.ref_scenario.disturbance_rate = self.scenario.disturbance_rate
-        self.ref_scenario.growth_rate_of_ocean_degradation = self.scenario.growth_rate_of_ocean_degradation
 
 
     # Initialize from configuration file:
