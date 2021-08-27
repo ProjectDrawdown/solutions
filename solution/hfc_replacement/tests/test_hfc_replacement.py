@@ -18,11 +18,12 @@ TEST_SKIP = ['First Cost', 'Operating Cost', 'Net Profit Margin', 'Unit Adoption
 # 'S-Curve', 'Unit Adoption Calculations', 
 
 def test_hfc_replacement_loader():
-    """Test that the solution can load a single scenario"""
-    (constructor,scenarios) = factory.one_solution_scenarios(solution_name)
-    assert len(scenarios) > 0
-    ascenario = constructor(scenarios[0])
-    assert ascenario is not None
+    """Test that the solution can load the defined scenarios"""
+    #pds1 = factory.load_scenario(solution_name,"PDS1")
+    #pds2 = factory.load_scenario(solution_name,"PDS2")
+    pds3 = factory.load_scenario(solution_name, "PDS3")
+    #assert pds1 and pds2 and pds3
+    assert pds3
 
 @pytest.mark.slow
 def test_hfc_replacement_results(scenario_skip=None, test_skip=None, test_only=None):

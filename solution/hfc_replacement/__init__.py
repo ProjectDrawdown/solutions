@@ -92,49 +92,42 @@ solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 
 scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
 
+# These are the "default" scenarios to use for each of the drawdown categories.
+# They should be set to the most recent "official" set"
+PDS1 = "PDS1-67p2050-LowerLowGWP Adoption"
+PDS2 = "PDS2-82p2050-Median"
+PDS3 = "PDS3-97p2050-Upper"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
 
+    tam_ref_data_sources = {
+            'Baseline Cases': {
+                'Mean of Velders 2015 Upper and Lower HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Mean_of_Velders_2015_Upper_and_Lower_HFC_Emissions_Scenarios.csv'),
+        },
+            'Conservative Cases': {
+                'Velders 2015 Upper  HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Velders_2015_Upper_HFC_Emissions_Scenarios.csv'),
+        },
+            'Ambitious Cases': {
+                'Velders 2015 Lower  HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Velders_2015_Lower_HFC_Emissions_Scenarios.csv'),
+        },
+    }
+    tam_pds_data_sources=tam_ref_data_sources
+
     def __init__(self, scenario=None):
-        if scenario is None:
-            scenario = list(scenarios.keys())[0]
-        self.scenario = scenario
-        self.ac = scenarios[scenario]
+        if isinstance(scenario, ac.AdvancedControls):
+            self.scenario = scenario.name
+            self.ac = scenario
+        else:
+            self.scenario = scenario or PDS2
+            self.ac = scenarios[self.scenario]
 
         # TAM
-        tamconfig_list = [
-            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-              '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', 'High', 'High', 'High', 'High', 'High',
-              'High', 'High', 'High', 'High', 'High', 'High'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-        tam_ref_data_sources = {
-              'Baseline Cases': {
-                  'Mean of Velders 2015 Upper and Lower HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Mean_of_Velders_2015_Upper_and_Lower_HFC_Emissions_Scenarios.csv'),
-            },
-              'Conservative Cases': {
-                  'Velders 2015 Upper  HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Velders_2015_Upper_HFC_Emissions_Scenarios.csv'),
-            },
-              'Ambitious Cases': {
-                  'Velders 2015 Lower  HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Velders_2015_Lower_HFC_Emissions_Scenarios.csv'),
-            },
-        }
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_ref_data_sources)
+        tam_overrides = zip(['high_sd_mult']*11, dd.REGIONS+['PDS World'], [0.5]*11)   # hi_sd_mult = 0.5 for all regions
+        self.set_tam(config_values=tam_overrides)
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
