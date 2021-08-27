@@ -126,8 +126,9 @@ class Scenario(scenario.RRSScenario):
             self.ac = scenarios[self.scenario]
 
         # TAM
-        tam_overrides = zip(['high_sd_mult']*11, dd.REGIONS+['PDS World'], [0.5]*11)   # hi_sd_mult = 0.5 for all regions
-        self.set_tam(config_values=tam_overrides)
+        high_multi_override = list(zip(['high_sd_mult']*11, dd.REGIONS+['PDS World'], [0.5]*11))  # hi_sd_mult = 0.5 for all regions
+        growth_override     = list(zip(['growth']*11, dd.REGIONS+['PDS World'], ['High']*11))     # growth = 'High' for all regions
+        self.set_tam( config_values = high_multi_override + growth_override )
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
