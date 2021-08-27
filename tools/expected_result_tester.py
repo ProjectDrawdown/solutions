@@ -852,9 +852,11 @@ def RRS_solution_verify_list(obj, zip_f):
         obj, verify, include_regional_data=include_regional_data)
     verify_emissions_factors(obj, verify)
     verify_unit_adoption_calculations(obj, verify, include_regional_data=include_regional_data,
-                    soln_type='RRS')
+                     soln_type='RRS')
     verify_first_cost(obj, verify)
-    verify_operating_cost(obj, verify)
+    # DMK 25.08. hfc_replacement does not support financial analysis. 
+    if not obj.name == 'Refrigerant Management - HFC Replacement':
+        verify_operating_cost(obj, verify)
 
     cell = excel_read_cell_any_scenario(
         zip_f=zip_f, sheetname='CO2 Calcs', cell='S343')
@@ -1046,7 +1048,7 @@ def one_solution_tester(solution_name, expected_filename, is_land=False,
                 to_verify = LAND_solution_verify_list(obj, zf)
             else:
                 to_verify = RRS_solution_verify_list(obj, zf)
-            
+
             check_excel_against_object(obj, zf, scenario_name, i, to_verify, 
                                        test_skip=test_skip, test_only=test_only)
 
