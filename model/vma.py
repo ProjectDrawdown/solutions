@@ -141,7 +141,7 @@ class VMA:
                              na_values=['#DIV/0!', '#REF!'])
         self._convert_from_human_readable(csv_df, filename)
 
-    def _read_xls(self, filename, title):
+    def _read_xls(self, filename, title, sheetname=None, read_fixed_summary=None):
         """
         Read a properly formatted xlsx/xlsm file (with a Variable
         Meta-analysis sheet) to instantiate this VMA.
@@ -149,25 +149,23 @@ class VMA:
         Arguments:
             filename: pathlib.Path to an Excel file
             title: string matching VMA name in the Variable Meta-analysis sheet
+            sheetname: sheet to read VMA from, if not one of the standard ones
+            read_fixed_summary: whether to include the fixed summaries from the file or not
 
         Populates self.source_data, self.df, and self.fixed_summary if the
         required values are present.
         """
         workbook = openpyxl.load_workbook(filename=filename,data_only=True,keep_links=False)
         vma_reader = VMAReader(workbook)
-        if 'Variable Meta-analysis-DD' in workbook.sheetnames:
-            alt_vma = True
-        else:
-            alt_vma = False
 
         # Pull the desired table from this workbook
         try:
             (xl_df, use_weight, summary) = \
-                vma_reader.xls_df_dict(alt_vma=alt_vma, title=title)[title]
+                vma_reader.xls_df_dict(sheetname=sheetname, title=title, fixed_summary=read_fixed_summary)[title]
         except KeyError:
             # The title wasn't available in the given workbook. Read all titles
             # to give the user a hint.
-            full_dict = vma_reader.xls_df_dict(alt_vma=alt_vma)
+            full_dict = vma_reader.xls_df_dict(sheetname=sheetname)
             raise ValueError(
                 f"Title {title!r} not available in {filename}\nOptions\n\t" + \
                 "\n\t".join(full_dict.keys())

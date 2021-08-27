@@ -11,6 +11,7 @@ thisdir = pathlib.Path(__file__).parents[0]
 wb = openpyxl.load_workbook(thisdir.joinpath('silvopasture_vma.xlsx'), data_only=True, keep_links=False)
 
 
+
 def test_make_vma_df_template():
     df = tools.vma_xls_extract.make_vma_df_template()
     expected_cols = {'SOURCE ID: Author/Org, Date, Info', 'Link', 'World / Drawdown Region',
@@ -102,6 +103,16 @@ def test_xls_df_dict():
     assert sum([value[0] is None for value in df_dict.values()]) == 13
 
 
+@pytest.mark.slow
+def test_explicit_fixed_summaries():
+    """Check that when fixed summaries are requested, they are provided"""
+    wb = openpyxl.load_workbook(thisdir.joinpath('solution_xls_extract_RRS_test_A.xlsm'), data_only=True, keep_links=False)
+    vma_r = tools.vma_xls_extract.VMAReader(wb)
+    tables = vma_r.xls_df_dict(fixed_summary=True)
+    (_,_,summary) = tables['CONVENTIONAL First Cost per Implementation Unit'] 
+    assert summary == pytest.approx((2010.0317085196398, 3373.5568673016687, 646.5065497376106))
+
+
 def test_normalize_col_name():
     vma_r = tools.vma_xls_extract.VMAReader(wb)
     assert vma_r.normalize_col_name('Conedition calculation') == 'Conversion calculation'
@@ -113,8 +124,9 @@ def test_normalize_col_name():
 def test_rrs():
     wb = openpyxl.load_workbook(thisdir.joinpath('solarpvutil_vma.xlsm'), data_only=True, keep_links=False)
     vma_r = tools.vma_xls_extract.VMAReader(wb)
-    vma_df = vma_r.read_xls(alt_vma=True)
+    vma_df = vma_r.read_xls()
     assert vma_df.loc[1, 'Title on xls'] == 'Current Adoption'
+
 
 @pytest.mark.slow
 def test_large_vma():
