@@ -1495,10 +1495,7 @@ def extract_vmas(f, wb, outputdir):
     if not os.path.exists(vma_dir_path):
         os.mkdir(vma_dir_path)
     vma_r = VMAReader(wb)
-    if 'Variable Meta-analysis-DD' in wb.sheetnames:
-        vmas = vma_r.read_xls(csv_path=vma_dir_path, alt_vma=True)
-    else:
-        vmas = vma_r.read_xls(csv_path=vma_dir_path)
+    vmas = vma_r.read_xls(csv_path=vma_dir_path)
     f.write("VMAs = {\n")
     for _, row in vmas.iterrows():
         f.write(f"    '{row['Title on xls']}': vma.VMA(\n")

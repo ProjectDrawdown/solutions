@@ -162,7 +162,7 @@ class VMAReader:
                 return filename
         return None
 
-    def xls_df_dict(self, alt_vma=False, title=None):
+    def xls_df_dict(self, sheetname=None, title=None, fixed_summary=None):
         """
         Finds tables in self.wb, reads them into dataframes, then returns a
         dictionary keyed by the table title. If a title is given, return a
@@ -171,9 +171,10 @@ class VMAReader:
         Raises KeyError if the title is not available.
 
         Arguments:
-            alt_vma: False = process the primary VMA sheet 'Variable Meta-analysis',
-                     True = process the alternate VMA sheet 'Variable Meta-analysis-DD' with fixed
-                        values for Average, High, and Low.
+            sheetname: sheet to read from.  By default will read from 'Variable Meta-analysis-DD'
+                    if it is available, or 'Variable Meta-analysis' otherwise
+            fixed_summary: if True, read the stored high, low and average as well.  If False,
+                    these will be recomputed.  If None, default behavior for the sheet will be done.
 
         Returns:
             Returns a dictionary of tuples, of the form: {
@@ -184,12 +185,13 @@ class VMAReader:
                 )
             }
         """
-        if alt_vma:
-            sheetname = 'Variable Meta-analysis-DD'
-            fixed_summary = True
-        else:
-            sheetname = 'Variable Meta-analysis'
-            fixed_summary = False
+        if sheetname is None:
+            if 'Variable Meta-analysis-DD' in self.wb.sheetnames:
+                sheetname = 'Variable Meta-analysis-DD'
+            else:
+                sheetname = 'Variable Meta-analysis'
+        if fixed_summary is None:
+            fixed_summary = (sheetname == 'Variable Meta-analysis-DD')
 
         # Extract VMA table locations
         self._find_tables(sheetname=sheetname)
@@ -218,7 +220,7 @@ class VMAReader:
 
         return df_dict
 
-    def read_xls(self, csv_path=None, alt_vma=False):
+    def read_xls(self, csv_path=None, sheetname=None):
         """
         Reads the whole Variable Meta-analysis xls sheet. If a CSV path is
         given, writes out a series of CSVs, of the form <table title>.csv and
@@ -227,14 +229,14 @@ class VMAReader:
         Arguments:
             csv_path: (pathlib path object or str) If specified, will write
                 CSVs to path for each table
-            alt_vma: See docstring for xls_df_dict
+            sheet to read from, if not the default
 
         Returns a sort of "directory dataframe", pointing to each created CSV,
         noting the VMA title for that CSV, along with a couple of boolean
         values.
         """
 
-        df_dict = self.xls_df_dict(alt_vma)
+        df_dict = self.xls_df_dict(sheetname)
 
         vma_df = pd.DataFrame(
             columns=['Filename', 'Title on xls', 'Has data?', 'Use weight?'],
