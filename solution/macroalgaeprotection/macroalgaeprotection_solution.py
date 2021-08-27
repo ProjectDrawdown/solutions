@@ -138,13 +138,15 @@ class MacroalgaeProtectionSolution(OceanSolution):
                 self.sequestration_rate_all_ocean, 
                 self.disturbance_rate, 
                 self.growth_rate_of_ocean_degradation, 
-                self.delay_impact_of_protection_by_one_year)
+                self.delay_impact_of_protection_by_one_year,
+                emissions_reduced_per_land_unit=0.0)
 
         ref_sequestration = self.ref_scenario.get_change_in_ppm_equiv_series(
                 self.sequestration_rate_all_ocean, 
                 self.disturbance_rate, 
                 self.growth_rate_of_ocean_degradation, 
-                self.delay_impact_of_protection_by_one_year)
+                self.delay_impact_of_protection_by_one_year,
+                emissions_reduced_per_land_unit=0.0)
 
         net_sequestration = (pds_sequestration - ref_sequestration)
         # net_sequestration should now equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
@@ -163,13 +165,15 @@ class MacroalgaeProtectionSolution(OceanSolution):
                 self.sequestration_rate_all_ocean, 
                 self.disturbance_rate, 
                 self.growth_rate_of_ocean_degradation, 
-                self.delay_impact_of_protection_by_one_year)
+                self.delay_impact_of_protection_by_one_year,
+                emissions_reduced_per_land_unit=0.0)
 
         ref_sequestration = self.ref_scenario.get_change_in_ppm_equiv_series(
                 self.sequestration_rate_all_ocean, 
                 self.disturbance_rate, 
                 self.growth_rate_of_ocean_degradation, 
-                self.delay_impact_of_protection_by_one_year)
+                self.delay_impact_of_protection_by_one_year,
+                emissions_reduced_per_land_unit=0.0)
 
         # net_sequestration should equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
         net_sequestration = (pds_sequestration - ref_sequestration)

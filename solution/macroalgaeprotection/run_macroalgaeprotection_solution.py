@@ -52,8 +52,8 @@ def main():
 
         ### Protection Results ###
         # The following three metrics are not output in the scenario results, but are present in the [Advanced Controls] results.
-        reduced_land_degradation = maps.get_reduced_land_degradation()
-        results['Reduced Land Degradation from 2020-2050'] = [reduced_land_degradation, 104.4085339059]
+        reduced_area_degradation = maps.get_reduced_area_degradation()
+        results['Reduced Land Degradation from 2020-2050'] = [reduced_area_degradation, 104.4085339059]
 
         # t C storage in Protected Landtype = 4.593456
         carbon_storage = 4.593456294
