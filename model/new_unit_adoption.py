@@ -413,11 +413,52 @@ class NewUnitAdoption:
         return result.clip(lower = 0.0)
 
 ####
+        
+    def get_annual_reduction_in_total_degraded_area(self, disturbance_rate, growth_rate_of_ocean_degradation,
+                             delay_impact_of_protection_by_one_year):
+        """
+        This is the change in total degraded area in the adoption each year, added to the total undegraded area for t-1.
+        Used to combine two adoptions, usually pds and reference solution (PDS - REF) like this:
+            annual_reduction_in_total_degraded_area (REF) - annual_reduction_in_total_degraded_area (PDS).
+        This is equivalent to:
+            Cumulative Land Degraded in REF Scenario for year x  - Cumulative Land Degraded in PDS Scenario for year x - Cumulative Degradation Change (PDS - REF) for Year [x-1]
+
+        Units: Millions ha.
+
+        """
+
+        #[Unit Adoption Calculations]!$CG$249
+        # (cumulative degraded land unprotected + cumulative degraded land under protection + total undegraded land [t-1])
+
+        cumulative_degraded_unprotected_area = self.get_cumulative_degraded_unprotected_area(
+                                delay_impact_of_protection_by_one_year,
+                                growth_rate_of_ocean_degradation
+                                )
+
+        cumulative_degraded_area_under_protection = self.get_cumulative_degraded_area_under_protection(
+                                delay_impact_of_protection_by_one_year,
+                                disturbance_rate
+                                )
+
+        total_undegraded_area = self.get_total_undegraded_area(
+                                growth_rate_of_ocean_degradation,
+                                disturbance_rate,
+                                delay_impact_of_protection_by_one_year
+                                )
+
+        cumulative_degraded_area = cumulative_degraded_unprotected_area + cumulative_degraded_area_under_protection + total_undegraded_area.shift(1)
+
+        return cumulative_degraded_area
+        
+
+    def get_total_emissions_reduction(self, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_land_unit) -> pd.Series:
+        annual_reduction_in_total_degraded_area = self.get_annual_reduction_in_total_degraded_area(disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year)
+        result = annual_reduction_in_total_degraded_area * emissions_reduced_per_land_unit
+        return result
+        
+
     def get_carbon_sequestration(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation,
                              delay_impact_of_protection_by_one_year) ->pd.Series:
-
-        if sequestration_rate == 0.0:
-            print('Warning, sequestration rate is zero. All members of sequestration series will be zero.')
         
         co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
 
@@ -433,7 +474,7 @@ class NewUnitAdoption:
 
         return sequestration
 
-    def get_change_in_ppm_equiv_series(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year) -> np.float64:
+    def get_change_in_ppm_equiv_series(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_land_unit ) -> np.float64:
 
         # [CO2 Calcs]!$B$120
         sequestration = self.get_carbon_sequestration(
@@ -441,6 +482,10 @@ class NewUnitAdoption:
                 disturbance_rate, 
                 growth_rate_of_ocean_degradation,
                 delay_impact_of_protection_by_one_year)
+        
+        total_emissions_reduction = self.get_total_emissions_reduction(disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_land_unit)
+
+        reduction_plus_sequestration = total_emissions_reduction + sequestration
 
         result_years = list(range(self.base_year-1, self.end_year+1))
         results = pd.Series(index = result_years, dtype=np.float64)
@@ -453,7 +498,7 @@ class NewUnitAdoption:
             exponent= 0
 
             for _ in range(iter_year, result_years[-1] +1):
-                year_net_adoption = sequestration.loc[iter_year]
+                year_net_adoption = reduction_plus_sequestration.loc[iter_year]
                 exponent += 1
                 val =  0.217 + 0.259*np.exp(-(exponent)/172.9) 
                 val += 0.338*np.exp(-(exponent)/18.51) 

@@ -9,5 +9,5 @@ TotalArea: 490
 TotalAreaAsOfPeriod: 2014
 ChangePerPeriod: 0.0
 DelayImpactOfProtectionByOneYear: True
-DelayRegrowthOfDegradedLandByOneYear: True
+DelayRegrowthOfDegradedLandByOneYear: False
 RequiredVersionMinimum: 3.9.5
