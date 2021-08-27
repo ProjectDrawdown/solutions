@@ -30,11 +30,11 @@ def main():
         total_emissions_reduction = sps.get_total_emissions_reduction()
         results['Total Emissions Reduction'] = [ total_emissions_reduction, 5.9101139397]
 
-        # total_co2_seq = sps.get_total_co2_seq()
-        # results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 0.00000]
+        total_co2_seq = sps.get_total_co2_seq()
+        results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 0.00000]
 
-        # change_in_ppm_equiv = sps.get_change_in_ppm_equiv()
-        # results['Approximate PPM Equivalent Change'] = [change_in_ppm_equiv, 0.4607453935]
+        change_in_ppm_equiv = sps.get_change_in_ppm_equiv()
+        results['Approximate PPM Equivalent Change'] = [change_in_ppm_equiv, 0.4607453935]
 
         # change_in_ppm_equiv_final = sps.get_change_in_ppm_equiv_final_year()
         # results['Approximate PPM rate in 2050'] = [change_in_ppm_equiv_final,  0.01195646244]

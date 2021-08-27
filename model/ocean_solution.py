@@ -363,11 +363,6 @@ class OceanSolution(Solution):
 
         return result / 1_000 # express in billions of USD
 
-    def get_total_emissions_reduction(self):
-        series = self.pds_scenario.total_at_risk_area
-
-        return
-
 
     def get_total_co2_seq(self) -> np.float64:
         

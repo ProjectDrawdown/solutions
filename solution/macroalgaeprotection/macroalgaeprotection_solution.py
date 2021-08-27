@@ -82,7 +82,7 @@ class MacroalgaeProtectionSolution(OceanSolution):
         return
 
     
-    def get_reduced_land_degradation(self):
+    def get_reduced_area_degradation(self):
         
         # reduction degraded area = (total at risk area pds) - (total at risk area ref)
         

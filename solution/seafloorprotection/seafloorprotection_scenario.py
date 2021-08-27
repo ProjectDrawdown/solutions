@@ -9,10 +9,10 @@ class SeafloorProtectionScenario(NewScenario):
     adoption_value_world : float = field(metadata={'Units': 'Millions of Ha'})
 
     sequestration_rate_all_ocean : float  = field(metadata={'Units': 't C/ha/year'})
+    emissions_reduced_per_land_unit : float  = field(metadata={'Units': 't CO2-eq/ha'})
     
-
     # General Ocean Inputs
-    new_growth_harvested_every : float = field(metadata={'Units': 'years'})
+    growth_rate_of_ocean_degradation : float = field(metadata={'Units': 'years'})
     
     ## Following not defaulted - may be added after initialisation.
 
