@@ -1,7 +1,7 @@
 
-ScenariosFile: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/macroalgaerestoration/scenario_inputs.json
-PDSAdoptionFile: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/macroalgaerestoration/unit_adoption_data/custom_pds_adoption.json
-REFAdoptionFile: /mnt/c/Users/neilm/Documents/Drawdown/glass-wing/solutions/solution/macroalgaerestoration/unit_adoption_data/custom_ref_adoption.json
+ScenariosFile: scenario_inputs.json
+PDSAdoptionFile: custom_pds_adoption.json
+REFAdoptionFile: custom_ref_adoption.json
 BaseYear: 2014
 StartYear: 2020
 EndYear: 2050
@@ -10,4 +10,4 @@ TotalAreaAsOfPeriod: 2018
 ChangePerPeriod: 0.0
 DelayImpactOfProtectionByOneYear: True
 DelayRegrowthOfDegradedLandByOneYear: False
-RequiredVersionMinimum: 3.9.5
+RequiredPythonVersionMinimum: 3.9.5
