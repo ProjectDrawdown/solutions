@@ -3,6 +3,7 @@
 import importlib
 from pathlib import Path
 from functools import lru_cache
+from model import advanced_controls as ac
 
 def all_solutions():
     # Find all the directories containing an __init__.py
@@ -24,9 +25,13 @@ def load_scenario(solution, scenario=None):
      * None (the default): return the PDS2 scenario for this solution
      * `PDS`, `PDS2` or `PDS3`:  get the most recent scenario of the requested type
      * a scenario name:  load the scenario with that name
-     * an Advanced_Controls object:  load a completely custom scenario based on the data in the object"""
+     * an AdvancedControl object: load a scenario with completely custom values
+     * a json dictionary representing an AdvancedControl object:  load a completely custom scenario based on the data in the object
+     * the format should be the same as the sceanrios stored with the solution."""
     m = _load_module(solution)
-    if scenario in ['PDS1','PDS2','PDS3']:
+    if isinstance(scenario, dict):
+        scenario = ac.ac_from_dict(scenario, m.VMAs)
+    elif scenario in ['PDS1','PDS2','PDS3']:
         md = {'PDS1': m.PDS1, 'PDS2': m.PDS2, 'PDS3': m.PDS3}
         scenario = md[scenario]
     return m.Scenario(scenario)

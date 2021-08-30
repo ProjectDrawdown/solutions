@@ -971,7 +971,8 @@ class AdvancedControls:
     def write_to_json_file(self):
         jsfilenew = self.jsfile + '.new'
         d = dataclasses.asdict(self)
-        for rem in ['vmas', 'js', 'jsfile']:
+        #for rem in ['vmas', 'js', 'jsfile']:
+        for rem in ['vmas', 'jsfile']:
             del d[rem]
         with open(jsfilenew, 'w') as f:
             json.dump(d, f)
@@ -1005,14 +1006,18 @@ def load_scenarios_from_json(directory, vmas):
     result = {}
     for filename in glob.glob(str(directory.joinpath('*.json'))):
         with open(filename, 'r') as fid:
-            j = json.loads(fid.read())
-            js = j.copy()
-            js['vmas'] = vmas
-            js['js'] = j
-            js['jsfile'] = str(filename)
-            a = AdvancedControls(**js)
+            jd = json.loads(fid.read())
+            a = ac_from_dict(jd, vmas, filename)
             result[a.name] = a
     return result
+
+def ac_from_dict(data: dict, vmas, filename="") -> AdvancedControls:
+    """Create an AdvancedControls object from a dictionary of values, as retrieved from a scenario json file."""
+    d = data.copy()
+    d['vmas'] = vmas
+    d['jsfile'] = str(filename)
+    return AdvancedControls(**d)
+
 
 def get_vma_for_param(param):
     for field in dataclasses.fields(AdvancedControls):
