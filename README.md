@@ -79,7 +79,7 @@ A more minimal environment is available for deployment using [pip](https://pip.p
       $ pip install -r requirements.txt
 ```
 
-(Only recent versions of python3 are supported.)
+Python 3.9 is recommended.
 
 
 ## Using Project Drawdown Solutions as a package
