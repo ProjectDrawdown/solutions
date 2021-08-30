@@ -1,0 +1,14 @@
+{
+    "region_cases": {
+        "World": {
+            "Base Cases": [ "S1" ]
+        }
+    },
+    "sources": [
+        {
+            "title": "Total Plastics TAM updated June 2020",
+            "shortname": "S1",
+            "filename": "plastics_worldwide_sma_S1.csv"
+        }
+    ]
+}
