@@ -35,6 +35,8 @@ class Scenario:
     def set_pds_adoption(self):
         pass
 
+    
+
 
 class RRSScenario(Scenario):
 
@@ -108,6 +110,35 @@ class RRSScenario(Scenario):
             tam_ref_data_sources=self.tam_ref_data_sources,
             tam_pds_data_sources=self.tam_pds_data_sources,
             **args)
+
+    def implementation_unit_adoption_increase(self, year=2050):
+        return (self.pds_ca.adoption_data_per_region().loc[year] / self.ac.soln_avg_annual_use - 
+            self.ref_ca.adoption_data_per_region().loc[year] / self.ac.soln_avg_annual_use)
+
+    def functional_unit_adoption_increase(self, year=2050):
+        # Incrase in functional units adopted compared to REF scenario
+        # In 2050
+        return (self.pds_ca.adoption_data_per_region().loc[year] - 
+            self.ref_ca.adoption_data_per_region().loc[year])
+
+    def marginal_first_cost(self, year=2050):
+        return (self.fc.soln_pds_annual_world_first_cost().loc[:year].sum() -
+            self.fc.soln_ref_annual_world_first_cost().loc[:year].sum() -
+            self.fc.conv_ref_annual_world_first_cost().loc[:year].sum()) / 10**9
+
+    def net_operating_savings(self, year=2050):
+        return (
+            (self.oc.conv_ref_cumulative_operating_cost().loc[ year ] -
+            self.oc.conv_ref_cumulative_operating_cost().loc[ year ]) -
+            (self.oc.soln_pds_cumulative_operating_cost().loc[ year ] -
+            self.oc.soln_pds_cumulative_operating_cost().loc[ year ])   
+            ) / 10**9
+
+    def lifetime_operating_savings(self, year=2050):
+        return self.oc.soln_marginal_operating_cost_savings().sum() / 10**9
+
+    def cumulative_emissions_reduced(self, year=2050):
+        return self.c2.co2eq_mmt_reduced().loc[2020:2050, 'World'].sum() / 1000
 
 
 
