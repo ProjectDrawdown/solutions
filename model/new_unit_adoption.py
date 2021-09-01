@@ -60,7 +60,7 @@ class NewUnitAdoption:
     def get_tam_units(self) -> pd.Series:
         return self._tam.copy()
 
-    def get_skeleton(self):
+    def get_skeleton(self) -> pd.Series:
         # This is used to create empty unit adoption objects. Sometimes ref unit adoption is zero, often conventional unit adoption is also zero.
         # Having zero unit adoption objects enables addition & subtraction without changing formulae.
 
@@ -109,13 +109,13 @@ class NewUnitAdoption:
     
     ##########
 
-    def get_units_adopted(self):
+    def get_units_adopted(self) -> pd.Series:
         # 'Unit Adoption Calculations'!C136:C182 = "Land Units Adopted" - PDS
         # 'Unit Adoption Calculations'!C198:C244 = "Land Units Adopted" - REF
         return self.implementation_units.copy()
 
 
-    def annual_breakout(self, end_year):
+    def annual_breakout(self, end_year) -> pd.Series:
 
         """Breakout of operating cost per year, including replacements.
         """
@@ -152,7 +152,7 @@ class NewUnitAdoption:
         return breakout
 
         
-    def get_operating_cost(self, end_year):
+    def get_operating_cost(self, end_year) -> pd.Series:
 
         # After multiplying by (1+ disturbance_rate), this should equal the time series SUM($C266:$AV266) in [Operating Cost] worksheet 
 
@@ -163,7 +163,7 @@ class NewUnitAdoption:
         return cost_series
 
 
-    def get_incremental_units_per_period(self):
+    def get_incremental_units_per_period(self) -> pd.Series:
 
         incremented = self.implementation_units.loc[self.base_year-1:].diff()
         shifted = incremented.shift(self.expected_lifetime +1).fillna(0.0)
@@ -171,7 +171,7 @@ class NewUnitAdoption:
         return incremented + shifted
 
     
-    def get_install_cost_per_land_unit(self):
+    def get_install_cost_per_land_unit(self) -> pd.Series:
 
         # $C$37 (pds) and $L$37 (ref) on First Cost spreadsheet tab.
         learning_rate = 1.0 # 100%
@@ -184,7 +184,7 @@ class NewUnitAdoption:
         return cost_series
 
 
-    def get_annual_world_first_cost(self):
+    def get_annual_world_first_cost(self) -> pd.Series:
         
         # For the custom pds scenario, this is the time series referred to by cell $E$36 in the spreadsheet.
         # For the custom ref scenario, this is the time series referred to by cell $N$36 in the spreadsheet.
@@ -197,7 +197,7 @@ class NewUnitAdoption:
         return result
 
 
-    def get_lifetime_operating_savings(self, end_year):
+    def get_lifetime_operating_savings(self, end_year) -> pd.Series:
 
         # After muliplying by (1 + disturbance_rate) this should match the time series in [Operating Cost]!$C$125
         
@@ -207,7 +207,7 @@ class NewUnitAdoption:
         return cost_series
 
 
-    def get_lifetime_cashflow_npv(self, purchase_year, discount_rate):
+    def get_lifetime_cashflow_npv(self, purchase_year, discount_rate) -> pd.Series:
         
         # "result" should match time series in [Operating Cost]!$J$125 = "NPV of Single Cashflows (to 2014)"
         years_old_at_start =  purchase_year - self.base_year + 1
@@ -287,8 +287,8 @@ class NewUnitAdoption:
             Area Degraded in Previous Year + (Total Area - Protected Area - Area Degraded in Previous Year) * Degradation Rate 
         """
 
-        # [Unit Adoption Calculations]!$CG$135 (for solution adoption)
-        # [Unit Adoption Calculations]!$CG$197 (for reference adoption)
+        # [Unit Adoption Calculations]!$CH$135 (for solution adoption)
+        # [Unit Adoption Calculations]!$CH$197 (for reference adoption)
 
         if delay_impact_of_protection_by_one_year:
             delay = 1
@@ -298,20 +298,25 @@ class NewUnitAdoption:
         results = pd.Series(index = self._tam.index, dtype=float)
         
         first_pass = True
-        for year, tam_total_area in self._tam.loc[self.base_year:].iteritems():
+        for year, tam_total_area in self._tam.loc[self.base_year - 1:].iteritems():
             if first_pass:
                 results.loc[year] = 0.0
                 area_degraded_previous_year = 0.0 # prev_value = Area Degraded in Previous Year
                 first_pass = False
                 continue
             
+            # area_degraded_previous_year = results.loc[year-1]
+            # if np.isnan(area_degraded_previous_year):
+            #     area_degraded_previous_year = 0.0
+
             # units_adopted = protected area
             units_adopted = self.implementation_units.loc[year-delay]
 
             result = (tam_total_area - units_adopted - area_degraded_previous_year) * growth_rate_of_ocean_degradation
             result = area_degraded_previous_year + result
+            result = min(result, tam_total_area)
 
-            results.loc[year] = min(result, tam_total_area)
+            results.loc[year] = result
             area_degraded_previous_year = result
         
         return results
@@ -341,7 +346,7 @@ class NewUnitAdoption:
         return total_at_risk_area
 
 
-    def get_cumulative_degraded_area_under_protection(self, delay_impact_of_protection_by_one_year: bool = True, disturbance_rate: np.float64 = 1.0) -> pd.Series:
+    def get_cumulative_degraded_area_under_protection(self, delay_impact_of_protection_by_one_year: bool, disturbance_rate: np.float64) -> pd.Series:
         """
         Even protected areas suffer from degradation via disturbances (e.g. natural degradation, logging, storms, fires or human settlement).
         The disturbance rate is usually equal in the PDS adoption and reference adoption.
@@ -354,8 +359,8 @@ class NewUnitAdoption:
             Protected area that was degraded in Previous Year + (area protected by soln - protected area degraded in previous year) * disturbance tate
         """
 
-        # [Unit Adoption Calculations]!$EI$135 (for solution adoption)
-        # [Unit Adoption Calculations]!$EI$197 (for reference adoption)
+        # [Unit Adoption Calculations]!$EJ$135 (for PDS adoption)
+        # [Unit Adoption Calculations]!$EJ$197 (for reference adoption)
 
         if delay_impact_of_protection_by_one_year:
             delay = 1
@@ -390,17 +395,17 @@ class NewUnitAdoption:
 
         """
         This represents the total area that is not degraded in any particular year. It takes the Total Area and removes the degraded area,
-        which is the same as summing the undegraded area and At Risk area.
+        which is the same as summing the undegraded area and at-risk area.
         Units: Millions ha
         Calculation:
             Total Area - Area Degraded that was Unprotected - Protected Land that is Degraded (via a Disturbance) in Current Year
 
         """
         # Returns:
-        # [Unit Adoption Calculations]!$DS$135 (for solution adoption)
+        # [Unit Adoption Calculations]!$DS$135 (for PDS adoption)
         # [Unit Adoption Calculations]!$DS$197 (for reference adoption)
 
-        # [Unit Adoption Calculations]!$CH$135 :
+        # [Unit Adoption Calculations]!$CH$135 (PDS):
         cumulative_degraded_unprotected_area = self.get_cumulative_degraded_unprotected_area(delay_impact_of_protection_by_one_year, growth_rate_of_ocean_degradation)
 
         cumulative_degraded_area_under_protection = self.get_cumulative_degraded_area_under_protection(
@@ -415,21 +420,21 @@ class NewUnitAdoption:
 ####
         
     def get_annual_reduction_in_total_degraded_area(self, disturbance_rate, growth_rate_of_ocean_degradation,
-                             delay_impact_of_protection_by_one_year):
+                             delay_impact_of_protection_by_one_year) -> pd.Series:
         """
         This is the change in total degraded area in the adoption each year, added to the total undegraded area for t-1.
         Used to combine two adoptions, usually pds and reference solution (PDS - REF) like this:
             annual_reduction_in_total_degraded_area (REF) - annual_reduction_in_total_degraded_area (PDS).
         This is equivalent to:
-            Cumulative Land Degraded in REF Scenario for year x  - Cumulative Land Degraded in PDS Scenario for year x - Cumulative Degradation Change (PDS - REF) for Year [x-1]
+            Cumulative Area Degraded in REF Scenario for year x  - Cumulative Area Degraded in PDS Scenario for year x - Cumulative Degradation Change (PDS - REF) for Year [x-1]
 
         Units: Millions ha.
 
         """
 
-        #[Unit Adoption Calculations]!$CG$249
-        # (cumulative degraded land unprotected + cumulative degraded land under protection + total undegraded land [t-1])
-
+        # [Unit Adoption Calculations]!$CG$249
+        # (cumulative degraded area unprotected + cumulative degraded area under protection + total undegraded area [t-1])
+        # ( CG135 + EJ135 + DS135 )
         cumulative_degraded_unprotected_area = self.get_cumulative_degraded_unprotected_area(
                                 delay_impact_of_protection_by_one_year,
                                 growth_rate_of_ocean_degradation
@@ -451,39 +456,65 @@ class NewUnitAdoption:
         return cumulative_degraded_area
         
 
-    def get_total_emissions_reduction(self, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_land_unit) -> pd.Series:
-        annual_reduction_in_total_degraded_area = self.get_annual_reduction_in_total_degraded_area(disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year)
-        result = annual_reduction_in_total_degraded_area * emissions_reduced_per_land_unit
+    def get_total_emissions_reduction(self, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area) -> pd.Series:
+
+        # CO2-eq MMT Reduced
+        # [CO2 Calcs]!B64
+
+        total_undegraded_area = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
+        result = total_undegraded_area * emissions_reduced_per_unit_area
+        
         return result
         
 
     def get_carbon_sequestration(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation,
-                             delay_impact_of_protection_by_one_year) ->pd.Series:
+                             delay_impact_of_protection_by_one_year, delay_regrowth_of_degraded_land_by_one_year) ->pd.Series:
         
         co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
 
-        if self.use_tam_for_co2_calcs:
-            adoption = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
-        else:
-            adoption = self.get_units_adopted()
+        total_undegraded_area = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
         
-        sequestration = adoption * sequestration_rate
+
+        #adoption = 'Unit Adoption Calculations'! [DS258 + EJ142 - EJ204]
+        
+        sequestration = total_undegraded_area * sequestration_rate
         sequestration *= co2_mass_to_carbon_mass * (1 - disturbance_rate)
+
+        if delay_regrowth_of_degraded_land_by_one_year:
+            sequestration = sequestration.shift(1)
 
         # When this function is netted out [pds - ref], sequestration should match the time series in [CO2 Calcs]!$B$120
 
         return sequestration
 
-    def get_change_in_ppm_equiv_series(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_land_unit ) -> np.float64:
+    def get_change_in_ppm_equivalent_series(self, 
+                    sequestration_rate,
+                    disturbance_rate,
+                    growth_rate_of_ocean_degradation,
+                    delay_impact_of_protection_by_one_year,
+                    emissions_reduced_per_unit_area,
+                    delay_regrowth_of_degraded_land_by_one_year ) -> pd.Series:
+        """
+            Each yearly reduction in CO2 (in million metric ton - MMT) is modeled as a discrete avoided pulse.
+            A Simplified atmospheric lifetime function for CO2 is taken from Myhrvald and Caldeira (2012) based on the Bern Carbon Cycle model.
+            Atmospheric tons of CO2 are converted to parts per million CO2 based on the molar mass of CO2 and the moles of atmosphere.
+            CO2-eq emissions are treated as CO2 for simplicity and due to the lack of detailed information on emissions of other GHGs.
+            If these other GHGs are a significant part of overall reductions, this model may not be appropriate.
 
-        # [CO2 Calcs]!$B$120
+        """
+        # This is the implementation of the CO2 PPM Calculator in [CO2 Calcs]!A169
+
+        # get_carbon_sequestration returns series used to build [CO2 Calcs]!$B$120
+        # to match [CO2 Calcs]!$B$120, need to combine pds and ref at the ocean_solution level.
         sequestration = self.get_carbon_sequestration(
                 sequestration_rate, 
                 disturbance_rate, 
                 growth_rate_of_ocean_degradation,
-                delay_impact_of_protection_by_one_year)
+                delay_impact_of_protection_by_one_year,
+                delay_regrowth_of_degraded_land_by_one_year)
         
-        total_emissions_reduction = self.get_total_emissions_reduction(disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_land_unit)
+        
+        total_emissions_reduction = self.get_total_emissions_reduction(disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area)
 
         reduction_plus_sequestration = total_emissions_reduction + sequestration
 

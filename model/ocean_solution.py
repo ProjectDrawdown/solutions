@@ -5,6 +5,7 @@ import yaml
 import numpy as np
 from model.new_unit_adoption import NewUnitAdoption as UnitAdoption
 from model.solution import Solution
+import pandas as pd
 
 import json
 
@@ -24,7 +25,8 @@ class OceanSolution(Solution):
         self.pds_adoption_file = config['PDSAdoptionFile']
         self.ref_adoption_file = config['REFAdoptionFile']
         self.scenarios_file = config['ScenariosFile']
-        self.required_version_minimum = tuple(int(st) for st in str.split(config['RequiredVersionMinimum'], '.'))
+        self.use_aggregate_CO2_equivalent_instead_of_individual_GHG = config['UseAggregateCO2EquivalentInsteadOfIndividualGHG']
+        self.required_version_minimum = tuple(int(st) for st in str.split(config['RequiredPythonVersionMinimum'], '.'))
         self._config = config
 
     def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name):
@@ -47,6 +49,7 @@ class OceanSolution(Solution):
         self.pds_scenario.net_profit_margin = self.scenario.soln_net_profit_margin
         self.pds_scenario.operating_cost = self.scenario.soln_operating_cost
         self.pds_scenario.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
+        self.emissions_reduced_per_unit_area = self.scenario.emissions_reduced_per_unit_area
         self.pds_scenario.disturbance_rate = self.scenario.disturbance_rate
 
         
@@ -60,6 +63,7 @@ class OceanSolution(Solution):
         self.ref_scenario.net_profit_margin = self.scenario.soln_net_profit_margin
         self.ref_scenario.operating_cost = self.scenario.soln_operating_cost
         self.ref_scenario.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
+        self.emissions_reduced_per_unit_area = self.scenario.emissions_reduced_per_unit_area
         self.ref_scenario.disturbance_rate = self.scenario.disturbance_rate
 
 
@@ -100,7 +104,7 @@ class OceanSolution(Solution):
         # Adoption for base year, as a percentage of TOA.
         pds_series = self.pds_scenario.get_units_adopted()
         
-        tam_series = self.pds_scenario.get_tam_units()
+        tam_series = self.pds_scenario.get_tam_units() 
         pds_base_year = pds_series.loc[self.base_year+1]
         tam_base_year = tam_series.loc[self.base_year+1]
         result  = pds_base_year / tam_base_year
@@ -364,61 +368,125 @@ class OceanSolution(Solution):
         return result / 1_000 # express in billions of USD
 
 
+    def get_total_emissions_reduction_series(self) -> pd.Series:
+
+        if self.use_aggregate_CO2_equivalent_instead_of_individual_GHG:
+            # The following two series are not represented in the spreadsheet, only their difference is $CH$251.
+            annual_reduction_in_total_degraded_area_pds = self.pds_scenario.get_annual_reduction_in_total_degraded_area(
+                            self.disturbance_rate,
+                            self.growth_rate_of_ocean_degradation,
+                            self.delay_impact_of_protection_by_one_year
+                            )
+
+            annual_reduction_in_total_degraded_area_ref = self.ref_scenario.get_annual_reduction_in_total_degraded_area(
+                            self.disturbance_rate,
+                            self.growth_rate_of_ocean_degradation,
+                            self.delay_impact_of_protection_by_one_year
+                            )
+
+            annual_reduction_in_total_degraded_area = annual_reduction_in_total_degraded_area_ref - annual_reduction_in_total_degraded_area_pds
+
+            annual_reduction_in_total_degraded_area *= self.emissions_reduced_per_unit_area
+            result = annual_reduction_in_total_degraded_area.loc[self.start_year:self.end_year]
+        else:
+            # Direct Emissions Saved - CO2 (from Reduced Land Degradation)
+            # [Unit Adoption Calculations]!BG307
+
+            total_undegraded_area_pds = self.pds_scenario.get_total_undegraded_area(self.growth_rate_of_ocean_degradation, self.disturbance_rate, self.delay_impact_of_protection_by_one_year)
+            total_undegraded_area_ref = self.ref_scenario.get_total_undegraded_area(self.growth_rate_of_ocean_degradation, self.disturbance_rate, self.delay_impact_of_protection_by_one_year)
+
+            direct_emissions_saved = total_undegraded_area_pds - total_undegraded_area_ref
+
+            direct_emissions_saved *= self.emissions_reduced_per_unit_area
+            result = direct_emissions_saved.loc[self.start_year:self.end_year]
+        
+        return result
+
+
+    def get_total_emissions_reduction(self):
+
+        total_emissions_reduction = self.get_total_emissions_reduction_series()
+        result = total_emissions_reduction.sum()
+
+        return result / 1000
+
+
+    def get_emissions_reduction_final_year(self):
+
+        total_emissions_reduction = self.get_total_emissions_reduction_series()
+        result = total_emissions_reduction.loc[self.end_year]
+        
+        return result / 1000
+
+
     def get_total_co2_seq(self) -> np.float64:
         
-        pds_sequestration = self.pds_scenario.get_carbon_sequestration(self.sequestration_rate_all_ocean, self.disturbance_rate, self.growth_rate_of_ocean_degradation, self.delay_impact_of_protection_by_one_year)
-        ref_sequestration = self.ref_scenario.get_carbon_sequestration(self.sequestration_rate_all_ocean, self.disturbance_rate, self.growth_rate_of_ocean_degradation, self.delay_impact_of_protection_by_one_year)
+        pds_sequestration = self.pds_scenario.get_carbon_sequestration(
+                    self.sequestration_rate_all_ocean,
+                    self.disturbance_rate,
+                    self.growth_rate_of_ocean_degradation,
+                    self.delay_impact_of_protection_by_one_year,
+                    self.delay_regrowth_of_degraded_land_by_one_year)
+
+        ref_sequestration = self.ref_scenario.get_carbon_sequestration(
+                    self.sequestration_rate_all_ocean,
+                    self.disturbance_rate,
+                    self.growth_rate_of_ocean_degradation,
+                    self.delay_impact_of_protection_by_one_year,
+                    self.delay_regrowth_of_degraded_land_by_one_year)
         
         # net_sequestration should equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
         net_sequestration = (pds_sequestration - ref_sequestration)
 
-        result = net_sequestration.loc[self.start_year+1 : self.end_year].sum()
+        result = net_sequestration.loc[self.start_year : self.end_year].sum()
 
         return result / 1_000 # express in billions of USD
 
 
-    def get_change_in_ppm_equiv(self, delay_period = 0) -> np.float64:
-        
-        pds_sequestration = self.pds_scenario.get_change_in_ppm_equiv_series(
+    def get_change_in_ppm_equivalent(self) -> np.float64:
+
+        pds_sequestration = self.pds_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
                         self.disturbance_rate,
                         self.growth_rate_of_ocean_degradation,
                         self.delay_impact_of_protection_by_one_year,
-                        emissions_reduced_per_land_unit= 0.0)
-        ref_sequestration = self.ref_scenario.get_change_in_ppm_equiv_series(
+                        self.emissions_reduced_per_unit_area,
+                        self.delay_regrowth_of_degraded_land_by_one_year)
+
+        ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
                         self.disturbance_rate,
                         self.growth_rate_of_ocean_degradation,
                         self.delay_impact_of_protection_by_one_year,
-                        emissions_reduced_per_land_unit=0.0)
+                        self.emissions_reduced_per_unit_area,
+                        self.delay_regrowth_of_degraded_land_by_one_year)
 
         net_sequestration = (pds_sequestration - ref_sequestration)
         # net_sequestration should now equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
 
-        end = self.end_year
-        if delay_period > 0:
-            end -= delay_period
-        result = net_sequestration.loc[end]
+        result = net_sequestration.loc[self.end_year]
 
         return result
 
 
-    def get_change_in_ppm_equiv_final_year(self) -> np.float64:
+    def get_change_in_ppm_equivalent_final_year(self) -> np.float64:
                 
-        pds_sequestration = self.pds_scenario.get_change_in_ppm_equiv_series(
+        pds_sequestration = self.pds_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
                         self.disturbance_rate,
                         self.growth_rate_of_ocean_degradation,
                         self.delay_impact_of_protection_by_one_year,
-                        emissions_reduced_per_land_unit=0.0)
+                        self.emissions_reduced_per_unit_area,
+                        self.delay_regrowth_of_degraded_land_by_one_year)
 
-        ref_sequestration = self.ref_scenario.get_change_in_ppm_equiv_series(
+        ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
                         self.disturbance_rate,
                         self.growth_rate_of_ocean_degradation,
                         self.delay_impact_of_protection_by_one_year,
-                        emissions_reduced_per_land_unit=0.0)
-                        
+                        self.emissions_reduced_per_unit_area,
+                        self.delay_regrowth_of_degraded_land_by_one_year)
+
         # net_sequestration should equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
         net_sequestration = (pds_sequestration - ref_sequestration)
         
@@ -428,29 +496,25 @@ class OceanSolution(Solution):
         
 
     def get_max_annual_co2_sequestered(self) -> np.float64:
-
+        
         pds_sequestration = self.pds_scenario.get_carbon_sequestration(
             self.sequestration_rate_all_ocean,
             self.disturbance_rate,
             self.growth_rate_of_ocean_degradation,
-            self.delay_impact_of_protection_by_one_year)
+            self.delay_impact_of_protection_by_one_year,
+            self.delay_regrowth_of_degraded_land_by_one_year)
 
         ref_sequestration = self.ref_scenario.get_carbon_sequestration(
             self.sequestration_rate_all_ocean,
             self.disturbance_rate,
             self.growth_rate_of_ocean_degradation,
-            self.delay_impact_of_protection_by_one_year)
+            self.delay_impact_of_protection_by_one_year,
+            self.delay_regrowth_of_degraded_land_by_one_year)
 
-        # sequestration should match the time series in [CO2 Calcs]!$B$120
+        # net_sequestration contains the sequestration time series in [CO2 Calcs]!$B$120
         net_sequestration = (pds_sequestration - ref_sequestration)
-
-        start = self.start_year
-        end = self.end_year
-        if self.delay_regrowth_of_degraded_land_by_one_year:
-            end -= 1
-            start -= 1
         
-        result = max(net_sequestration.loc[start:end])
+        result = max(net_sequestration.loc[self.start_year:self.end_year])
 
         return result / 1_000
 
@@ -461,20 +525,62 @@ class OceanSolution(Solution):
             self.sequestration_rate_all_ocean,
             self.disturbance_rate,
             self.growth_rate_of_ocean_degradation,
-            self.delay_impact_of_protection_by_one_year)
+            self.delay_impact_of_protection_by_one_year,
+            self.delay_regrowth_of_degraded_land_by_one_year)
 
         ref_sequestration = self.ref_scenario.get_carbon_sequestration(
             self.sequestration_rate_all_ocean,
             self.disturbance_rate,
             self.growth_rate_of_ocean_degradation,
-            self.delay_impact_of_protection_by_one_year)
+            self.delay_impact_of_protection_by_one_year,
+            self.delay_regrowth_of_degraded_land_by_one_year)
         
         net_sequestration = (pds_sequestration - ref_sequestration)
-
-        end = self.end_year
-        if self.delay_regrowth_of_degraded_land_by_one_year:
-            end -= 1
         
-        result = net_sequestration.loc[end]
+        result = net_sequestration.loc[self.end_year]
 
         return result / 1_000
+
+    def get_reduced_area_degradation(self) -> np.float64:
+        total_undegraded_area_pds = self.pds_scenario.get_total_undegraded_area(self.growth_rate_of_ocean_degradation, self.disturbance_rate, self.delay_impact_of_protection_by_one_year)
+        total_undegraded_area_ref = self.ref_scenario.get_total_undegraded_area(self.growth_rate_of_ocean_degradation, self.disturbance_rate, self.delay_impact_of_protection_by_one_year)
+ 
+        total_undegraded_area = total_undegraded_area_pds - total_undegraded_area_ref
+
+        result = total_undegraded_area.loc[self.end_year] - total_undegraded_area.loc[self.start_year - 1]
+
+        return result
+
+    def get_carbon_under_protection_final_year(self) -> np.float64:
+
+        cumulative_degraded_area_under_protection_pds = self.pds_scenario.get_cumulative_degraded_area_under_protection(self.delay_impact_of_protection_by_one_year, self.disturbance_rate)
+        degraded_area_under_protection_end_year = cumulative_degraded_area_under_protection_pds.loc[self.end_year]
+
+        adoption_unit_increase_pds_final_year = self.get_adoption_unit_increase_pds_final_year()
+        
+        result = adoption_unit_increase_pds_final_year + degraded_area_under_protection_end_year
+
+        result *= self.carbon_storage_in_protected_area_type
+
+        return result / 1_000
+
+
+    def get_co2_under_protection_final_year(self) -> np.float64:
+        carbon_to_co2_ratio = 3.664
+        result = self.get_carbon_under_protection_final_year()
+        result *= carbon_to_co2_ratio
+        return result
+
+
+    def get_max_annual_emissions_reduction(self) -> np.float64:
+        total_emissions_reduction = self.get_total_emissions_reduction_series()
+        result = total_emissions_reduction.max()
+        
+        return result / 1000
+
+
+    def get_annual_emissions_reduction_final_year(self) -> np.float64:
+        total_emissions_reduction = self.get_total_emissions_reduction_series()
+        result = total_emissions_reduction.loc[self.end_year]
+        
+        return result / 1000
