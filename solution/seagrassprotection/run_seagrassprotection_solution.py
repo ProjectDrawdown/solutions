@@ -16,15 +16,18 @@ def main():
         results = {}
         
         au_inc = sps.get_adoption_unit_increase_pds_vs_ref_final_year()
-        gu_final = sps.get_adoption_unit_increase_pds_final_year()
-        gpa_base = sps.get_global_percent_adoption_base_year() #returns base year +1?
-        gpa_start = sps.get_percent_adoption_start_year()
-        gpa_end = sps.get_percent_adoption_end_year()
-
         results['Adoption Unit Increase in 2050 (PDS vs REF)'] = [au_inc,  11.9209315305]
+
+        gu_final = sps.get_adoption_unit_increase_pds_final_year()
         results['Global Units of Adoption in 2050'] = [gu_final, 17.865258686292]
+
+        gpa_base = sps.get_global_percent_adoption_base_year() #returns base year +1?
         results['Global Percent Adoption - Base Year (2014)'] = [gpa_base, 23.1025 / 100]
+        
+        gpa_start = sps.get_percent_adoption_start_year()
         results['Global Percent Adoption in First Year'] = [gpa_start, 31.3385777675664 / 100]
+
+        gpa_end = sps.get_percent_adoption_end_year()
         results['Global Percent Adoption in Second Year'] = [gpa_end, 69.4329447185686 / 100]
 
         total_emissions_reduction = sps.get_total_emissions_reduction()

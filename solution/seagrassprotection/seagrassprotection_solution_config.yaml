@@ -1,7 +1,7 @@
 
-ScenariosFile: scenario_inputs.json
-PDSAdoptionFile: unit_adoption_data/custom_pds_adoption.json
-REFAdoptionFile: unit_adoption_data/custom_ref_adoption.json
+ScenariosFile: solution/seagrassprotection/scenario_inputs.json
+PDSAdoptionFile: solution/seagrassprotection/unit_adoption_data/custom_pds_adoption.json
+REFAdoptionFile: solution/seagrassprotection/unit_adoption_data/custom_ref_adoption.json
 BaseYear: 2015
 StartYear: 2020
 EndYear: 2050
