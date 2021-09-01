@@ -1,0 +1,15 @@
+{
+    "region_cases": {
+        "World": {
+            "Base Cases": [ "S1" ]
+        }
+    },
+    "sources": [
+        {
+            "title": "Percent Plastic Compostable",
+            "shortname": "S1",
+            "filename": "percent_plastic_compostable_sma_S1.csv",
+            "description": "Copied from Excel Integration."
+        }
+    ]
+}
