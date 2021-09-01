@@ -4,8 +4,6 @@ import math
 import json
 import copy
 
-from pandas.core.series import Series
-
 import model.interpolation as interp
 
 # Code originally based of seaweed farming solution, but is intended to be general.
@@ -15,10 +13,10 @@ class NewUnitAdoption:
     Used for both PDS adoption and REF adoption.
     """
     description : str
-    _tam: pd.Series
+    _area_units: pd.Series
     disturbance_rate: np.float64
     sequestration_rate_all_ocean: np.float64
-    use_tam_for_co2_calcs: bool = False
+    use_area_units_for_co2_calcs: bool = False
     
     def _validate_inputs(self):        
         pass
@@ -54,11 +52,11 @@ class NewUnitAdoption:
         self.net_profit_margin = 0.0
         self.operating_cost = 0.0
 
-        tam_series = pd.Series(index= adoption_series.index, dtype= np.float64)
-        self._tam = tam_series # values are initialised to NaNs
+        area_units_series = pd.Series(index= adoption_series.index, dtype= np.float64) # a.k.a. land unit adoption, ocean unit adoption.
+        self._area_units = area_units_series # values are initialised to NaNs
 
-    def get_tam_units(self) -> pd.Series:
-        return self._tam.copy()
+    def get_area_units_units(self) -> pd.Series:
+        return self._area_units.copy()
 
     def get_skeleton(self) -> pd.Series:
         # This is used to create empty unit adoption objects. Sometimes ref unit adoption is zero, often conventional unit adoption is also zero.
@@ -247,7 +245,7 @@ class NewUnitAdoption:
 
 ###########
     
-    def set_tam_linear(self, total_area, change_per_period, total_area_as_of_period = None) -> None:
+    def set_area_units_linear(self, total_area, change_per_period, total_area_as_of_period = None) -> None:
         
         if total_area_as_of_period is None:
             total_area_as_of_period = self.base_year
@@ -255,25 +253,25 @@ class NewUnitAdoption:
         m = change_per_period
         c = total_area - m * total_area_as_of_period
 
-        # self.tam_df[region] is a series. Convert this to a dataframe. Then apply a function using straight line formula y = m*x +c.
+        # self.area_units_df[region] is a series. Convert this to a dataframe. Then apply a function using straight line formula y = m*x +c.
         # x.name returns index value (the year).
-        series = pd.DataFrame(self._tam).apply(lambda x: m * x.name + c, axis='columns')
+        series = pd.DataFrame(self._area_units).apply(lambda x: m * x.name + c, axis='columns')
 
-        self._tam = series
+        self._area_units = series
         return 
 
     def apply_linear_regression(self) -> None:
 
-        df = interp.linear_trend(self._tam)
+        df = interp.linear_trend(self._area_units)
 
-        self._tam = df['adoption']
+        self._area_units = df['adoption']
 
         return
     
     def apply_clip(self, lower = None, upper = None) -> None:
         if lower == None and upper == None:
             print('Warning : Neither lower nor upper parameter supplied. No action taken.')
-        self._tam.clip(lower=lower, upper=upper, inplace=True)
+        self._area_units.clip(lower=lower, upper=upper, inplace=True)
 
 
     def get_cumulative_degraded_unprotected_area(self, delay_impact_of_protection_by_one_year: bool = True,
@@ -295,10 +293,10 @@ class NewUnitAdoption:
         else:
             delay = 0
         
-        results = pd.Series(index = self._tam.index, dtype=float)
+        results = pd.Series(index = self._area_units.index, dtype=float)
         
         first_pass = True
-        for year, tam_total_area in self._tam.loc[self.base_year - 1:].iteritems():
+        for year, area_units_total_area in self._area_units.loc[self.base_year - 1:].iteritems():
             if first_pass:
                 results.loc[year] = 0.0
                 area_degraded_previous_year = 0.0 # prev_value = Area Degraded in Previous Year
@@ -312,9 +310,9 @@ class NewUnitAdoption:
             # units_adopted = protected area
             units_adopted = self.implementation_units.loc[year-delay]
 
-            result = (tam_total_area - units_adopted - area_degraded_previous_year) * growth_rate_of_ocean_degradation
+            result = (area_units_total_area - units_adopted - area_degraded_previous_year) * growth_rate_of_ocean_degradation
             result = area_degraded_previous_year + result
-            result = min(result, tam_total_area)
+            result = min(result, area_units_total_area)
 
             results.loc[year] = result
             area_degraded_previous_year = result
@@ -340,7 +338,7 @@ class NewUnitAdoption:
                 delay_impact_of_protection_by_one_year= delay_impact_of_protection_by_one_year,
                 growth_rate_of_ocean_degradation= growth_rate_of_ocean_degradation)
 
-        total_at_risk_area = self._tam - cumulative_unprotected_area - self.implementation_units
+        total_at_risk_area = self._area_units - cumulative_unprotected_area - self.implementation_units
         total_at_risk_area = total_at_risk_area.clip(lower=0.0)
 
         return total_at_risk_area
@@ -367,7 +365,7 @@ class NewUnitAdoption:
         else:
             delay = 0
         
-        results = pd.Series(index = self._tam.index, dtype=float)
+        results = pd.Series(index = self._area_units.index, dtype=float)
         
         first_pass = True
         for year, _ in self.implementation_units.loc[self.base_year:].iteritems():
@@ -413,7 +411,7 @@ class NewUnitAdoption:
                                                                     disturbance_rate
                                                                     )
 
-        result = self._tam - cumulative_degraded_unprotected_area - cumulative_degraded_area_under_protection
+        result = self._area_units - cumulative_degraded_unprotected_area - cumulative_degraded_area_under_protection
 
         return result.clip(lower = 0.0)
 

@@ -104,33 +104,33 @@ class OceanSolution(Solution):
         # Adoption for base year, as a percentage of TOA.
         pds_series = self.pds_scenario.get_units_adopted()
         
-        tam_series = self.pds_scenario.get_tam_units() 
+        area_units_series = self.pds_scenario.get_area_units_units() 
         pds_base_year = pds_series.loc[self.base_year+1]
-        tam_base_year = tam_series.loc[self.base_year+1]
-        result  = pds_base_year / tam_base_year
+        area_units_base_year = area_units_series.loc[self.base_year+1]
+        result  = pds_base_year / area_units_base_year
         return result
 
 
     def get_percent_adoption_start_year(self) -> np.float64:
 
         pds_series = self.pds_scenario.get_units_adopted()
-        tam_series = self.pds_scenario.get_tam_units()
+        area_units_series = self.pds_scenario.get_area_units_units()
 
         pds_start_year = pds_series.loc[self.start_year]
-        tam_start_year = tam_series.loc[self.start_year]
+        area_units_start_year = area_units_series.loc[self.start_year]
 
-        result = pds_start_year / tam_start_year
+        result = pds_start_year / area_units_start_year
         return result
     
 
     def get_percent_adoption_end_year(self) -> np.float64:
         pds_series = self.pds_scenario.get_units_adopted()
-        tam_series = self.pds_scenario.get_tam_units()
+        area_units_series = self.pds_scenario.get_area_units_units()
         
         pds_start_year = pds_series.loc[self.end_year]
-        tam_start_year = tam_series.loc[self.end_year]
+        area_units_start_year = area_units_series.loc[self.end_year]
 
-        result = pds_start_year / tam_start_year
+        result = pds_start_year / area_units_start_year
         return result
 
 

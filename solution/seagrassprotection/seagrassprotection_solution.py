@@ -37,9 +37,9 @@ class SeagrassProtectionSolution(OceanSolution):
         self.delay_regrowth_of_degraded_land_by_one_year= self._config['DelayRegrowthOfDegradedLandByOneYear']
 
 
-    def set_up_tam(self, unit_adoption: NewUnitAdoption) -> None:
+    def set_up_area_units(self, unit_adoption: NewUnitAdoption) -> None:
         # This should produce a flat line with y = constant = self.total_area
-        unit_adoption.set_tam_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
+        unit_adoption.set_area_units_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
         unit_adoption.apply_clip(lower= None, upper= self.total_area)
         unit_adoption.apply_linear_regression()
 
@@ -64,8 +64,8 @@ class SeagrassProtectionSolution(OceanSolution):
             # creates a ref scenario with zeroes.
             self.ref_scenario = self.pds_scenario.get_skeleton()
 
-        self.pds_scenario.use_tam_for_co2_calcs = False
-        self.ref_scenario.use_tam_for_co2_calcs = False
+        self.pds_scenario.use_area_units_for_co2_calcs = False
+        self.ref_scenario.use_area_units_for_co2_calcs = False
 
         # Set scenario-specific data:        
         self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
@@ -74,8 +74,8 @@ class SeagrassProtectionSolution(OceanSolution):
         self.disturbance_rate = 0.0
         self.carbon_storage_in_protected_area_type = self.scenario.carbon_storage_in_protected_area_type
 
-        # PDS and REF have a similar TAM structure. For MARS tam is flat ocean area:
-        self.set_up_tam(self.pds_scenario)
-        self.set_up_tam(self.ref_scenario)
+        # PDS and REF have a similar area_units structure. For MARS area_units is flat ocean area:
+        self.set_up_area_units(self.pds_scenario)
+        self.set_up_area_units(self.ref_scenario)
         
         return
