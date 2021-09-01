@@ -14,6 +14,8 @@ class OceanSolution(Solution):
     Contains all the calculations required for Ocean-based scenario results.
     """
 
+    config : dict
+
     def _load_config_file(self, file_name):
         
         stream = open(file_name, 'r')
@@ -25,7 +27,9 @@ class OceanSolution(Solution):
         self.pds_adoption_file = config['PDSAdoptionFile']
         self.ref_adoption_file = config['REFAdoptionFile']
         self.scenarios_file = config['ScenariosFile']
-        self.use_aggregate_CO2_equivalent_instead_of_individual_GHG = config['UseAggregateCO2EquivalentInsteadOfIndividualGHG']
+        self.use_aggregate_CO2_equivalent_instead_of_individual_GHG = config.get('UseAggregateCO2EquivalentInsteadOfIndividualGHG', False)
+        self.use_adoption_for_carbon_sequestration_calculation = config.get('UseAdoptionForCarbonSequestrationCalculation', False)
+
         self.required_version_minimum = tuple(int(st) for st in str.split(config['RequiredPythonVersionMinimum'], '.'))
         self._config = config
 
@@ -426,19 +430,21 @@ class OceanSolution(Solution):
                     self.disturbance_rate,
                     self.growth_rate_of_ocean_degradation,
                     self.delay_impact_of_protection_by_one_year,
-                    self.delay_regrowth_of_degraded_land_by_one_year)
+                    self.delay_regrowth_of_degraded_land_by_one_year,
+                    self.use_adoption_for_carbon_sequestration_calculation)
 
         ref_sequestration = self.ref_scenario.get_carbon_sequestration(
                     self.sequestration_rate_all_ocean,
                     self.disturbance_rate,
                     self.growth_rate_of_ocean_degradation,
                     self.delay_impact_of_protection_by_one_year,
-                    self.delay_regrowth_of_degraded_land_by_one_year)
+                    self.delay_regrowth_of_degraded_land_by_one_year,
+                    self.use_adoption_for_carbon_sequestration_calculation)
         
         # net_sequestration should equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
         net_sequestration = (pds_sequestration - ref_sequestration)
 
-        result = net_sequestration.loc[self.start_year : self.end_year].sum()
+        result = net_sequestration.loc[self.start_year + 1 : self.end_year].sum()
 
         return result / 1_000 # express in billions of USD
 
@@ -451,7 +457,8 @@ class OceanSolution(Solution):
                         self.growth_rate_of_ocean_degradation,
                         self.delay_impact_of_protection_by_one_year,
                         self.emissions_reduced_per_unit_area,
-                        self.delay_regrowth_of_degraded_land_by_one_year)
+                        self.delay_regrowth_of_degraded_land_by_one_year,
+                        self.use_adoption_for_carbon_sequestration_calculation)
 
         ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
@@ -459,7 +466,8 @@ class OceanSolution(Solution):
                         self.growth_rate_of_ocean_degradation,
                         self.delay_impact_of_protection_by_one_year,
                         self.emissions_reduced_per_unit_area,
-                        self.delay_regrowth_of_degraded_land_by_one_year)
+                        self.delay_regrowth_of_degraded_land_by_one_year,
+                        self.use_adoption_for_carbon_sequestration_calculation)
 
         net_sequestration = (pds_sequestration - ref_sequestration)
         # net_sequestration should now equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
@@ -477,7 +485,8 @@ class OceanSolution(Solution):
                         self.growth_rate_of_ocean_degradation,
                         self.delay_impact_of_protection_by_one_year,
                         self.emissions_reduced_per_unit_area,
-                        self.delay_regrowth_of_degraded_land_by_one_year)
+                        self.delay_regrowth_of_degraded_land_by_one_year,
+                        self.use_adoption_for_carbon_sequestration_calculation)
 
         ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
@@ -485,7 +494,8 @@ class OceanSolution(Solution):
                         self.growth_rate_of_ocean_degradation,
                         self.delay_impact_of_protection_by_one_year,
                         self.emissions_reduced_per_unit_area,
-                        self.delay_regrowth_of_degraded_land_by_one_year)
+                        self.delay_regrowth_of_degraded_land_by_one_year,
+                        self.use_adoption_for_carbon_sequestration_calculation)
 
         # net_sequestration should equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
         net_sequestration = (pds_sequestration - ref_sequestration)
@@ -502,14 +512,16 @@ class OceanSolution(Solution):
             self.disturbance_rate,
             self.growth_rate_of_ocean_degradation,
             self.delay_impact_of_protection_by_one_year,
-            self.delay_regrowth_of_degraded_land_by_one_year)
+            self.delay_regrowth_of_degraded_land_by_one_year,
+            self.use_adoption_for_carbon_sequestration_calculation)
 
         ref_sequestration = self.ref_scenario.get_carbon_sequestration(
             self.sequestration_rate_all_ocean,
             self.disturbance_rate,
             self.growth_rate_of_ocean_degradation,
             self.delay_impact_of_protection_by_one_year,
-            self.delay_regrowth_of_degraded_land_by_one_year)
+            self.delay_regrowth_of_degraded_land_by_one_year,
+            self.use_adoption_for_carbon_sequestration_calculation)
 
         # net_sequestration contains the sequestration time series in [CO2 Calcs]!$B$120
         net_sequestration = (pds_sequestration - ref_sequestration)
@@ -526,14 +538,16 @@ class OceanSolution(Solution):
             self.disturbance_rate,
             self.growth_rate_of_ocean_degradation,
             self.delay_impact_of_protection_by_one_year,
-            self.delay_regrowth_of_degraded_land_by_one_year)
+            self.delay_regrowth_of_degraded_land_by_one_year,
+            self.use_adoption_for_carbon_sequestration_calculation)
 
         ref_sequestration = self.ref_scenario.get_carbon_sequestration(
             self.sequestration_rate_all_ocean,
             self.disturbance_rate,
             self.growth_rate_of_ocean_degradation,
             self.delay_impact_of_protection_by_one_year,
-            self.delay_regrowth_of_degraded_land_by_one_year)
+            self.delay_regrowth_of_degraded_land_by_one_year,
+            self.use_adoption_for_carbon_sequestration_calculation)
         
         net_sequestration = (pds_sequestration - ref_sequestration)
         

@@ -90,12 +90,12 @@ def test_total_co2_seq():
     assert total_co2_seq == pytest.approx(2.49773912913679)
 
 def test_change_in_ppm_equiv():
-    change_in_ppm_equiv = swf.get_change_in_ppm_equiv()
-    assert change_in_ppm_equiv == pytest.approx(0.21127592)
+    change_in_ppm_equivalent = swf.get_change_in_ppm_equivalent()
+    assert change_in_ppm_equivalent == pytest.approx(0.21127592)
 
 def test_change_in_ppm_equiv_final():
-    change_in_ppm_equiv_final = swf.get_change_in_ppm_equiv_final_year()
-    assert change_in_ppm_equiv_final == pytest.approx(0.0117934173530898)
+    change_in_ppm_equivalent_final = swf.get_change_in_ppm_equivalent_final_year()
+    assert change_in_ppm_equivalent_final == pytest.approx(0.0117934173530898)
 
 def test_max_annual_co2_sequestered():
     max_annual_co2_sequestered = swf.get_max_annual_co2_sequestered()

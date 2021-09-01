@@ -466,13 +466,15 @@ class NewUnitAdoption:
         
 
     def get_carbon_sequestration(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation,
-                             delay_impact_of_protection_by_one_year, delay_regrowth_of_degraded_land_by_one_year) ->pd.Series:
+                             delay_impact_of_protection_by_one_year, delay_regrowth_of_degraded_land_by_one_year, use_adoption = True) ->pd.Series:
         
         co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
 
-        total_undegraded_area = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
+        if use_adoption:
+            total_undegraded_area = self.get_units_adopted()
+        else:
+            total_undegraded_area = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
         
-
         #adoption = 'Unit Adoption Calculations'! [DS258 + EJ142 - EJ204]
         
         sequestration = total_undegraded_area * sequestration_rate
@@ -491,7 +493,8 @@ class NewUnitAdoption:
                     growth_rate_of_ocean_degradation,
                     delay_impact_of_protection_by_one_year,
                     emissions_reduced_per_unit_area,
-                    delay_regrowth_of_degraded_land_by_one_year ) -> pd.Series:
+                    delay_regrowth_of_degraded_land_by_one_year,
+                    use_adoption_for_carbon_sequestration_calculation ) -> pd.Series:
         """
             Each yearly reduction in CO2 (in million metric ton - MMT) is modeled as a discrete avoided pulse.
             A Simplified atmospheric lifetime function for CO2 is taken from Myhrvald and Caldeira (2012) based on the Bern Carbon Cycle model.
@@ -509,7 +512,8 @@ class NewUnitAdoption:
                 disturbance_rate, 
                 growth_rate_of_ocean_degradation,
                 delay_impact_of_protection_by_one_year,
-                delay_regrowth_of_degraded_land_by_one_year)
+                delay_regrowth_of_degraded_land_by_one_year,
+                use_adoption_for_carbon_sequestration_calculation)
         
         
         total_emissions_reduction = self.get_total_emissions_reduction(disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area)

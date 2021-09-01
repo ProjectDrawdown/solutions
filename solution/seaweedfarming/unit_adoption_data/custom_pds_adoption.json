@@ -1,6 +1,6 @@
 {			
-	"Average_Scenario": {		
-		"description": "Average of All Custom Scenarios",	
+	"AverageOfAllCustomScenarios": {
+		"description": "Average of All Custom Scenarios",
 		"columns": ["Year", "World"],	
 		"data": [	
 			[2012, 0.146879058603491],

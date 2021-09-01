@@ -29,5 +29,5 @@ class NewScenario:
     # General:
     npv_discount_rate :  float = field(default=0.1, metadata={'Units':  'percentage'})
 
-    disturbance_rate : float = field(default = 0.0, init= False) # Set init= False so that subclasses can have non-defaulted fields.
+    disturbance_rate : float = field(default= 0.0, metadata={'Units': 'Percent, annually'})
     

@@ -42,11 +42,11 @@ def main():
         emissions_reduction_final_year = sps.get_emissions_reduction_final_year()
         results['Emissions Reduction in 2050'] = [emissions_reduction_final_year, 0.19064883676]
 
-        change_in_ppm_equiv = sps.get_change_in_ppm_equiv()
-        results['Approximate PPM Equivalent Change'] = [change_in_ppm_equiv, 0.4607453935]
+        change_in_ppm_equivalent = sps.get_change_in_ppm_equivalent()
+        results['Approximate PPM Equivalent Change'] = [change_in_ppm_equivalent, 0.4607453935]
 
-        change_in_ppm_equiv_final = sps.get_change_in_ppm_equiv_final_year()
-        results['Approximate PPM rate in 2050'] = [change_in_ppm_equiv_final,  0.01195646244]
+        change_in_ppm_equivalent_final = sps.get_change_in_ppm_equivalent_final_year()
+        results['Approximate PPM rate in 2050'] = [change_in_ppm_equivalent_final,  0.01195646244]
 
         max_annual_co2_sequestered = sps.get_max_annual_co2_sequestered()
         results['Max Annual CO2 Sequestered'] = [max_annual_co2_sequestered, 0.000]

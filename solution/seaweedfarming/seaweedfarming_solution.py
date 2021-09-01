@@ -34,6 +34,8 @@ class SeaweedFarmingSolution(OceanSolution):
 
     def load_scenario(self, scenario_name) -> None:
 
+        print('Loading scenario file from ', os.getcwd(), self.scenarios_file)
+
         input_stream = open(self.scenarios_file, 'r')
         scen_dict = json.load(input_stream)
 
@@ -61,12 +63,12 @@ class SeaweedFarmingSolution(OceanSolution):
         self.delay_impact_of_protection_by_one_year = self.scenario.__dict__.get('delay_impact_of_protection_by_one_year', False)
         self.delay_regrowth_of_degraded_land_by_one_year = self.scenario.__dict__.get('delay_regrowth_of_degraded_land_by_one_year', False)
 
-        # PDS and REF have a similar TAM structure:
-        self.set_up_tam(self.pds_scenario)
-        self.set_up_tam(self.ref_scenario)
+        # PDS and REF have a similar area_units structure:
+        self.set_up_area_units(self.pds_scenario)
+        self.set_up_area_units(self.ref_scenario)
     
 
-    def set_up_tam(self, unit_adoption: NewUnitAdoption) -> None:
-        unit_adoption.set_tam_linear(total_area = self.total_area, change_per_period = 0.0) # This should produce a flat line with y = constant = self.total_area
+    def set_up_area_units(self, unit_adoption: NewUnitAdoption) -> None:
+        unit_adoption.set_area_units_linear(total_area = self.total_area, change_per_period = 0.0) # This should produce a flat line with y = constant = self.total_area
         unit_adoption.apply_clip(lower=None, upper=self.total_area)
         return

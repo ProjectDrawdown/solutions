@@ -1,7 +1,7 @@
 
-ScenariosFile: scenario_inputs.json
-PDSAdoptionFile: unit_adoption_data/custom_pds_adoption.json
-REFAdoptionFile: unit_adoption_data/custom_ref_adoption.json
+ScenariosFile: solution/seafloorprotection/scenario_inputs.json
+PDSAdoptionFile: solution/seafloorprotection/unit_adoption_data/custom_pds_adoption.json
+REFAdoptionFile: solution/seafloorprotection/unit_adoption_data/custom_ref_adoption.json
 BaseYear: 2014
 StartYear: 2020
 EndYear: 2050
@@ -10,4 +10,5 @@ TotalAreaAsOfPeriod: 2014
 ChangePerPeriod: 0.0
 DelayImpactOfProtectionByOneYear: True
 DelayRegrowthOfDegradedLandByOneYear: False
-RequiredVersionMinimum: 3.9.5
+UseAdoptionForCarbonSequestrationCalculation: False
+RequiredPythonVersionMinimum: 3.9.5

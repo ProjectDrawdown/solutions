@@ -1,10 +1,13 @@
 
-
-ScenariosFile: scenario_inputs.json
-PDSAdoptionFile: unit_adoption_data/custom_pds_adoption.json
-REFAdoptionFile: unit_adoption_data/custom_ref_adoption.json
+ScenariosFile: solution/seaweedfarming/scenario_inputs.json
+PDSAdoptionFile: solution/seaweedfarming/unit_adoption_data/custom_pds_adoption.json
+REFAdoptionFile: solution/seaweedfarming/unit_adoption_data/custom_ref_adoption.json
 BaseYear: 2015
 StartYear: 2020
 EndYear: 2050
 TotalArea: 240
+DelayImpactOfProtectionByOneYear: True
+DelayRegrowthOfDegradedLandByOneYear: True
+UseAggregateCO2EquivalentInsteadOfIndividualGHG: False
+UseAdoptionForCarbonSequestrationCalculation: True
 RequiredPythonVersionMinimum: 3.9.5
