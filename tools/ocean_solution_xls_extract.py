@@ -243,10 +243,10 @@ def json_dumps_default(obj):
 def main():
     # Usually run this from inside the VS Code IDE.
 
-    soln_name = 'Seafloor Protection' # Should match top-level key in ocean_solution_xls_extract_config.yaml
+    soln_name = 'Seagrass Protection' # Should match top-level key in ocean_solution_xls_extract_config.yaml
 
     path_to_here = pathlib.Path(__file__).parent.parent
-    config_file = os.path.join(path_to_here,'solution/seafloorprotection/ocean_solution_xls_extract_config.yaml')
+    config_file = os.path.join(path_to_here,'solution/seagrassprotection/ocean_solution_xls_extract_config.yaml')
     #config_file = 'ocean_solution_xls_extract_config.yaml'
     print('Using config file:', config_file)
     stream = open(config_file, 'r')
@@ -256,7 +256,7 @@ def main():
     outputDir = cfg['outputDir']
     excelFile = cfg['excelFile']
 
-    import_spec_path = os.path.join(path_to_here,'solution/seafloorprotection/ocean_solution_xls_extract_spec.yaml')
+    import_spec_path = os.path.join(path_to_here,'solution/seagrassprotection/ocean_solution_xls_extract_spec.yaml')
     #import_spec_path = 'solution/macroalgaerestoration/ocean_solution_xls_extract_spec.yaml'
     print('Using import spec:', import_spec_path)
     import_specs = open(import_spec_path, 'r')

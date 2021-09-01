@@ -2,12 +2,14 @@
 ScenariosFile: scenario_inputs.json
 PDSAdoptionFile: unit_adoption_data/custom_pds_adoption.json
 REFAdoptionFile: unit_adoption_data/custom_ref_adoption.json
-BaseYear: 2014
+BaseYear: 2015
 StartYear: 2020
 EndYear: 2050
-TotalArea: 198
+TotalArea: 25.7302333333333
 TotalAreaAsOfPeriod: 2018
 ChangePerPeriod: 0.0
 DelayImpactOfProtectionByOneYear: True
-DelayRegrowthOfDegradedLandByOneYear: False
+DelayRegrowthOfDegradedLandByOneYear: True
+UseAggregateCO2EquivalentInsteadOfIndividualGHG: False
+
 RequiredPythonVersionMinimum: 3.9.5

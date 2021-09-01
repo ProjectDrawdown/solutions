@@ -4,17 +4,17 @@ import json
 
 from model.ocean_solution import OceanSolution
 from model.new_unit_adoption import NewUnitAdoption
-from solution.macroalgaerestoration.macroalgaerestoration_scenario import MacroalgaeRestorationScenario
+from solution.seagrassprotection.seagrassprotection_scenario import SeagrassProtectionScenario
 
-class MacroalgaeRestorationSolution(OceanSolution):
-    """ All calculations for Macroalgae Restoration currently implemented in the OceanSolution base class.
+class SeagrassProtectionSolution(OceanSolution):
+    """ All calculations for Seagrass Protection currently implemented in the OceanSolution base class.
     """
 
     # Initialize from configuration file:
     def __init__(self, configuration_file_name = None):
         """
-            Constructor requires a configuration file named 'macroalgaerestoration_solution_config.yaml'.
-            This should be located in the same directory as the 'macroalgaerestoration_solution.py' module
+            Constructor requires a configuration file named 'seagrassprotection_solution_config.yaml'.
+            This should be located in the same directory as the 'seagrassprotection_solution.py' module
 
         """
 
@@ -32,16 +32,16 @@ class MacroalgaeRestorationSolution(OceanSolution):
         self.total_area = self._config['TotalArea']
         self.total_area_as_of_period = self._config['TotalAreaAsOfPeriod']
         self.change_per_period = self._config['ChangePerPeriod']
+        
+        self.delay_impact_of_protection_by_one_year= self._config['DelayImpactOfProtectionByOneYear']
+        self.delay_regrowth_of_degraded_land_by_one_year= self._config['DelayRegrowthOfDegradedLandByOneYear']
 
-        # Delay Regrowth of Degraded Land by 1 Year?
-        self.delay_regrowth_by_one_year = True
 
     def set_up_tam(self, unit_adoption: NewUnitAdoption) -> None:
         # This should produce a flat line with y = constant = self.total_area
         unit_adoption.set_tam_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
         unit_adoption.apply_clip(lower= None, upper= self.total_area)
         unit_adoption.apply_linear_regression()
-        unit_adoption.tam_build_cumulative_unprotected_area(self.new_growth_harvested_every)
 
 
     def load_scenario(self, scenario_name: str) -> None:
@@ -52,7 +52,7 @@ class MacroalgaeRestorationSolution(OceanSolution):
         if scenario_name not in scen_dict.keys():
             raise ValueError(f"Unable to find {scenario_name} in scenario file: {self.scenarios_file}")
         
-        scenario = MacroalgaeRestorationScenario(**scen_dict[scenario_name])
+        scenario = SeagrassProtectionScenario(**scen_dict[scenario_name])
 
         self.scenario = scenario
 
@@ -70,8 +70,9 @@ class MacroalgaeRestorationSolution(OceanSolution):
         # Set scenario-specific data:        
         self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.npv_discount_rate = self.scenario.npv_discount_rate
-        self.new_growth_harvested_every = self.scenario.new_growth_harvested_every
+        self.growth_rate_of_ocean_degradation = self.scenario.growth_rate_of_ocean_degradation
         self.disturbance_rate = 0.0
+        self.carbon_storage_in_protected_area_type = self.scenario.carbon_storage_in_protected_area_type
 
         # PDS and REF have a similar TAM structure. For MARS tam is flat ocean area:
         self.set_up_tam(self.pds_scenario)

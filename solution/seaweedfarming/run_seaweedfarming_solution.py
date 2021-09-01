@@ -72,7 +72,7 @@ def main():
         results['total_co2_seq'] = [total_co2_seq, 2.49773912913679]
 
         change_in_ppm_equiv = swf.get_change_in_ppm_equiv()
-        results['change_in_ppm_equiv'] = [change_in_ppm_equiv, 0.21127592]
+        results['Approximate PPM Equivalent Change'] = [change_in_ppm_equiv, 0.21127592]
 
         change_in_ppm_equiv_final = swf.get_change_in_ppm_equiv_final_year()
         results['change_in_ppm_equiv_final'] = [change_in_ppm_equiv_final, 0.0117934173530898]
