@@ -40,7 +40,7 @@ class MacroalgaeProtectionSolution(OceanSolution):
 
     def set_up_tam(self, unit_adoption: NewUnitAdoption) -> None:
         # This should produce a flat line with y = constant = self.total_area
-        unit_adoption.set_tam_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
+        unit_adoption.set_area_units_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
         unit_adoption.apply_clip(lower= None, upper= self.total_area)
         unit_adoption.apply_linear_regression()
         #unit_adoption.tam_build_cumulative_unprotected_area(self.new_growth_harvested_every)
@@ -134,19 +134,25 @@ class MacroalgaeProtectionSolution(OceanSolution):
 
     def get_change_in_ppm_equiv(self) -> np.float64:
         
-        pds_sequestration = self.pds_scenario.get_change_in_ppm_equiv_series(
+        pds_sequestration = self.pds_scenario.get_change_in_ppm_equivalent_series(
                 self.sequestration_rate_all_ocean, 
                 self.disturbance_rate, 
                 self.growth_rate_of_ocean_degradation, 
                 self.delay_impact_of_protection_by_one_year,
-                emissions_reduced_per_land_unit=0.0)
+                self.emissions_reduced_per_unit_area,
+                self.delay_regrowth_of_degraded_land_by_one_year,
+                self.use_adoption_for_carbon_sequestration_calculation,
+                self.direct_emissions_are_annual)
 
-        ref_sequestration = self.ref_scenario.get_change_in_ppm_equiv_series(
+        ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
                 self.sequestration_rate_all_ocean, 
                 self.disturbance_rate, 
                 self.growth_rate_of_ocean_degradation, 
                 self.delay_impact_of_protection_by_one_year,
-                emissions_reduced_per_land_unit=0.0)
+                self.emissions_reduced_per_unit_area,
+                self.delay_regrowth_of_degraded_land_by_one_year,
+                self.use_adoption_for_carbon_sequestration_calculation,
+                self.direct_emissions_are_annual)
 
         net_sequestration = (pds_sequestration - ref_sequestration)
         # net_sequestration should now equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
@@ -159,21 +165,27 @@ class MacroalgaeProtectionSolution(OceanSolution):
         return result
 
 
-    def get_change_in_ppm_equiv_final_year(self) -> np.float64:
+    def get_change_in_ppm_equivalent_final_year(self) -> np.float64:
                 
-        pds_sequestration = self.pds_scenario.get_change_in_ppm_equiv_series(
+        pds_sequestration = self.pds_scenario.get_change_in_ppm_equivalent_series(
                 self.sequestration_rate_all_ocean, 
                 self.disturbance_rate, 
                 self.growth_rate_of_ocean_degradation, 
                 self.delay_impact_of_protection_by_one_year,
-                emissions_reduced_per_land_unit=0.0)
+                self.emissions_reduced_per_unit_area,
+                self.delay_regrowth_of_degraded_land_by_one_year,
+                self.use_adoption_for_carbon_sequestration_calculation,
+                self.direct_emissions_are_annual)
 
-        ref_sequestration = self.ref_scenario.get_change_in_ppm_equiv_series(
+        ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
                 self.sequestration_rate_all_ocean, 
                 self.disturbance_rate, 
                 self.growth_rate_of_ocean_degradation, 
                 self.delay_impact_of_protection_by_one_year,
-                emissions_reduced_per_land_unit=0.0)
+                self.emissions_reduced_per_unit_area,
+                self.delay_regrowth_of_degraded_land_by_one_year,
+                self.use_adoption_for_carbon_sequestration_calculation,
+                self.direct_emissions_are_annual)
 
         # net_sequestration should equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
         net_sequestration = (pds_sequestration - ref_sequestration)

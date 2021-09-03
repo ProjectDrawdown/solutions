@@ -38,8 +38,8 @@ def main():
         change_in_ppm_equiv = maps.get_change_in_ppm_equiv()
         results['Approximate PPM Equivalent Change'] = [change_in_ppm_equiv, 0.339684712828728]
 
-        change_in_ppm_equiv_final = maps.get_change_in_ppm_equiv_final_year()
-        results['Approximate PPM rate in 2050'] = [change_in_ppm_equiv_final, 0.027045695545894]
+        change_in_ppm_equivalent_final = maps.get_change_in_ppm_equivalent_final_year()
+        results['Approximate PPM rate in 2050'] = [change_in_ppm_equivalent_final, 0.027045695545894]
 
         max_annual_co2_sequestered = maps.get_max_annual_co2_sequestered()
         results['Max Annual CO2 Sequestered'] = [max_annual_co2_sequestered, 0.326041958295943]

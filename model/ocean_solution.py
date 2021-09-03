@@ -461,7 +461,7 @@ class OceanSolution(Solution):
                         self.emissions_reduced_per_unit_area,
                         self.delay_regrowth_of_degraded_land_by_one_year,
                         self.use_adoption_for_carbon_sequestration_calculation,
-                        self.direct_emissions_are_annual)
+                        self.use_aggregate_CO2_equivalent_instead_of_individual_GHG)
 
         ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
@@ -471,9 +471,9 @@ class OceanSolution(Solution):
                         self.emissions_reduced_per_unit_area,
                         self.delay_regrowth_of_degraded_land_by_one_year,
                         self.use_adoption_for_carbon_sequestration_calculation,
-                        self.direct_emissions_are_annual)
+                        self.use_aggregate_CO2_equivalent_instead_of_individual_GHG)
         
-        if self.direct_emissions_are_annual:
+        if self.use_aggregate_CO2_equivalent_instead_of_individual_GHG:
             net_sequestration = (pds_sequestration - ref_sequestration)
         else:
             net_sequestration = (ref_sequestration - pds_sequestration)

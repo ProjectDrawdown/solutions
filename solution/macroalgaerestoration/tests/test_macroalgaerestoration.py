@@ -34,13 +34,13 @@ def test_total_co2_seq():
     total_co2_seq = mars.get_total_co2_seq()
     assert total_co2_seq == pytest.approx(1.952028234)
 
-def test_change_in_ppm_equiv():
-    change_in_ppm_equiv = mars.get_change_in_ppm_equiv()
-    assert change_in_ppm_equiv == pytest.approx(0.1651159440)
+def test_change_in_ppm_equivalent():
+    change_in_ppm_equivalent = mars.get_change_in_ppm_equivalent()
+    assert change_in_ppm_equivalent == pytest.approx(0.1651159440)
 
-def test_change_in_ppm_equiv_final():
-    change_in_ppm_equiv_final = mars.get_change_in_ppm_equiv_final_year()
-    assert change_in_ppm_equiv_final == pytest.approx(0.0092167686)
+def test_change_in_ppm_equivalent_final():
+    change_in_ppm_equivalent_final = mars.get_change_in_ppm_equivalent_final_year()
+    assert change_in_ppm_equivalent_final == pytest.approx(0.0092167686)
 
 def test_max_annual_co2_sequestered():
     max_annual_co2_sequestered = mars.get_max_annual_co2_sequestered()

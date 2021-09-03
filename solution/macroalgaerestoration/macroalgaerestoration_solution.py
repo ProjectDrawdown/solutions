@@ -38,7 +38,7 @@ class MacroalgaeRestorationSolution(OceanSolution):
 
     def set_up_tam(self, unit_adoption: NewUnitAdoption) -> None:
         # This should produce a flat line with y = constant = self.total_area
-        unit_adoption.set_tam_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
+        unit_adoption.set_area_units_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
         unit_adoption.apply_clip(lower= None, upper= self.total_area)
         unit_adoption.apply_linear_regression()
         
@@ -71,7 +71,6 @@ class MacroalgaeRestorationSolution(OceanSolution):
         self.sequestration_rate_all_ocean = self.scenario.sequestration_rate_all_ocean
         self.growth_rate_of_ocean_degradation = self.scenario.growth_rate_of_ocean_degradation
         self.npv_discount_rate = self.scenario.npv_discount_rate
-        self.new_growth_harvested_every = self.scenario.new_growth_harvested_every
         self.disturbance_rate = 0.0
 
         # PDS and REF have a similar TAM structure. For MARS tam is flat ocean area:

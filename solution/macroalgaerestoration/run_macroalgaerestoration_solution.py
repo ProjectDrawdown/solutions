@@ -30,11 +30,11 @@ def main():
         total_co2_seq = mars.get_total_co2_seq()
         results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 1.952028234]
 
-        change_in_ppm_equiv = mars.get_change_in_ppm_equiv()
-        results['Approximate PPM Equivalent Change'] = [change_in_ppm_equiv, 0.1651159440]
+        change_in_ppm_equivalent = mars.get_change_in_ppm_equivalent()
+        results['Approximate PPM Equivalent Change'] = [change_in_ppm_equivalent, 0.1651159440]
 
-        change_in_ppm_equiv_final = mars.get_change_in_ppm_equiv_final_year()
-        results['Approximate PPM rate in 2050'] = [change_in_ppm_equiv_final,  0.0092167686]
+        change_in_ppm_equivalent_final = mars.get_change_in_ppm_equivalent_final_year()
+        results['Approximate PPM rate in 2050'] = [change_in_ppm_equivalent_final,  0.0092167686]
 
         max_annual_co2_sequestered = mars.get_max_annual_co2_sequestered()
         results['Max Annual CO2 Sequestered'] = [max_annual_co2_sequestered, 0.1189807685]

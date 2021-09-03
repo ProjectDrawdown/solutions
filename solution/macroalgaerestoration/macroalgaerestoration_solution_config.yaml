@@ -1,7 +1,7 @@
 
-ScenariosFile: scenario_inputs.json
-PDSAdoptionFile: unit_adoption_data/custom_pds_adoption.json
-REFAdoptionFile: unit_adoption_data/custom_ref_adoption.json
+ScenariosFile: solution/macroalgaerestoration/scenario_inputs.json
+PDSAdoptionFile: solution/macroalgaerestoration/unit_adoption_data/custom_pds_adoption.json
+REFAdoptionFile: solution/macroalgaerestoration/unit_adoption_data/custom_ref_adoption.json
 BaseYear: 2014
 StartYear: 2020
 EndYear: 2050
