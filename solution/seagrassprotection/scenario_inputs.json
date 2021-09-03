@@ -1,0 +1,47 @@
+{
+    "PDS-59p2050-Plausible JULY2021": {
+        "npv_discount_rate": 0.1,
+        "emissions_reduced_per_unit_area": 3.67578190745064,
+        "sequestration_rate_all_ocean": 1.3376312541982,
+        "growth_rate_of_ocean_degradation": 0.0218,
+        "carbon_storage_in_protected_area_type": 224.468482757286,
+		"current_adoption_world": 5.94432715583333,
+		"current_area_world": 25.7302333333333,
+		"future_ref_area": 25.7302333333333,
+		"future_pds_area": 25.7302333333333,
+        "pds_scenario_name": "OneStandardDeviationOfAverage",
+        "ref_scenario_name": "DefaultRefInterpolationAdoption",
+        "scenario_timestamp": "2021-07-26T10:48:19",
+        "scenario_description": "High of all custom PDS scenarios"
+    },
+    "PDS-65p2050-Ambitious JULY2021": {
+        "npv_discount_rate": 0.1,
+        "emissions_reduced_per_unit_area": 3.67578190745064,
+        "sequestration_rate_all_ocean": 1.3376312541982,
+        "growth_rate_of_ocean_degradation": 0.0218,
+        "carbon_storage_in_protected_area_type": 224.468482757286,
+		"current_adoption_world": 5.94432715583333,
+		"current_area_world": 25.7302333333333,
+		"future_ref_area": 25.7302333333333,
+		"future_pds_area": 25.7302333333333,
+        "pds_scenario_name": "OneStandardDeviationOfAverage",
+        "ref_scenario_name": "DefaultRefInterpolationAdoption",
+        "scenario_timestamp": "2021-07-26T10:49:57",
+        "scenario_description": "Custom PDS scenario 7"
+    },
+    "PDS-69p2050-Maximum JULY2021": {
+        "npv_discount_rate": 0.1,
+        "emissions_reduced_per_unit_area": 3.67578190745064,
+        "sequestration_rate_all_ocean": 1.3376312541982,
+        "growth_rate_of_ocean_degradation": 0.0218,
+        "carbon_storage_in_protected_area_type": 224.468482757286,
+		"current_adoption_world": 5.94432715583333,
+		"current_area_world": 25.7302333333333,
+		"future_ref_area": 25.7302333333333,
+		"future_pds_area": 25.7302333333333,
+        "pds_scenario_name": "TwoStandardDeviationsOfAverage",
+        "ref_scenario_name": "DefaultRefInterpolationAdoption",
+        "scenario_timestamp": "2021-07-26T10:52:27",
+        "scenario_description": "High of all using two standard deviations"
+    }
+}
