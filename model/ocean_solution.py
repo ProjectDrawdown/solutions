@@ -579,6 +579,7 @@ class OceanSolution(Solution):
 
         return result
 
+
     def get_carbon_under_protection_final_year(self) -> np.float64:
 
         cumulative_degraded_area_under_protection_pds = self.pds_scenario.get_cumulative_degraded_area_under_protection(self.delay_impact_of_protection_by_one_year, self.disturbance_rate)

@@ -50,13 +50,13 @@ def test_emissions_reduction_final_year():
     emissions_reduction_final_year = sps.get_emissions_reduction_final_year()
     assert emissions_reduction_final_year == pytest.approx(0.19064883676)
 
-def test_change_in_ppm_equiv():
-    change_in_ppm_equiv = sps.get_change_in_ppm_equiv()
-    assert change_in_ppm_equiv == pytest.approx(0.4607453935)
+def test_change_in_ppm_equivalent():
+    change_in_ppm_equivalent = sps.get_change_in_ppm_equivalent()
+    assert change_in_ppm_equivalent == pytest.approx(0.4607453935)
 
-def test_change_in_ppm_equiv_final():
-    change_in_ppm_equiv_final = sps.get_change_in_ppm_equiv_final_year()
-    assert change_in_ppm_equiv_final == pytest.approx(0.01195646244)
+def test_change_in_ppm_equivalent_final():
+    change_in_ppm_equivalent_final = sps.get_change_in_ppm_equivalent_final_year()
+    assert change_in_ppm_equivalent_final == pytest.approx(0.01195646244)
 
 def test_max_annual_co2_sequestered():
     max_annual_co2_sequestered = sps.get_max_annual_co2_sequestered()
