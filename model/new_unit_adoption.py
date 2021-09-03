@@ -274,8 +274,8 @@ class NewUnitAdoption:
         self._area_units.clip(lower=lower, upper=upper, inplace=True)
 
 
-    def get_cumulative_degraded_unprotected_area(self, delay_impact_of_protection_by_one_year: bool = True,
-                     growth_rate_of_ocean_degradation: np.float64 = 1.0) -> pd.Series:
+    def get_cumulative_degraded_unprotected_area(self, delay_impact_of_protection_by_one_year: bool,
+                     growth_rate_of_ocean_degradation: np.float64) -> pd.Series:
         """
         This represents the total degraded area.
         Calculation uses the rate supplied by the degradation_rate parameter.
@@ -303,10 +303,6 @@ class NewUnitAdoption:
                 first_pass = False
                 continue
             
-            # area_degraded_previous_year = results.loc[year-1]
-            # if np.isnan(area_degraded_previous_year):
-            #     area_degraded_previous_year = 0.0
-
             # units_adopted = protected area
             units_adopted = self.implementation_units.loc[year-delay]
 
@@ -405,7 +401,8 @@ class NewUnitAdoption:
 
         # [Unit Adoption Calculations]!$CH$135 (PDS):
         cumulative_degraded_unprotected_area = self.get_cumulative_degraded_unprotected_area(delay_impact_of_protection_by_one_year, growth_rate_of_ocean_degradation)
-
+        
+        # [Unit Adoption Calculations]!$EJ$135 (PDS):
         cumulative_degraded_area_under_protection = self.get_cumulative_degraded_area_under_protection(
                                                                     delay_impact_of_protection_by_one_year,
                                                                     disturbance_rate
@@ -454,19 +451,26 @@ class NewUnitAdoption:
         return cumulative_degraded_area
         
 
-    def get_total_emissions_reduction(self, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area) -> pd.Series:
+    def get_total_emissions_reduction(self, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area, direct_emissions_are_annual: bool) -> pd.Series:
 
         # CO2-eq MMT Reduced
-        # [CO2 Calcs]!B64
+        # Used to calculate [CO2 Calcs]!$B64
 
-        total_undegraded_area = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
-        result = total_undegraded_area * emissions_reduced_per_unit_area
+        # For PDS, total_undegraded_area will equal ['Unit Adoption Calculations']!DS135
+        # For REF, total_undegraded_area will equal ['Unit Adoption Calculations']!DS197
+
+        if direct_emissions_are_annual:
+            area = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
+        else:
+            area = self.get_cumulative_degraded_unprotected_area(delay_impact_of_protection_by_one_year, growth_rate_of_ocean_degradation)
+            
+        result = area * emissions_reduced_per_unit_area
         
         return result
         
 
     def get_carbon_sequestration(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation,
-                             delay_impact_of_protection_by_one_year, delay_regrowth_of_degraded_land_by_one_year, use_adoption = True) ->pd.Series:
+                             delay_impact_of_protection_by_one_year, delay_regrowth_of_degraded_land_by_one_year, use_adoption) ->pd.Series:
         
         co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
 
@@ -487,14 +491,16 @@ class NewUnitAdoption:
 
         return sequestration
 
+
     def get_change_in_ppm_equivalent_series(self, 
-                    sequestration_rate,
-                    disturbance_rate,
-                    growth_rate_of_ocean_degradation,
-                    delay_impact_of_protection_by_one_year,
-                    emissions_reduced_per_unit_area,
-                    delay_regrowth_of_degraded_land_by_one_year,
-                    use_adoption_for_carbon_sequestration_calculation ) -> pd.Series:
+                    sequestration_rate: float,
+                    disturbance_rate: float,
+                    growth_rate_of_ocean_degradation: float,
+                    delay_impact_of_protection_by_one_year: bool,
+                    emissions_reduced_per_unit_area: float,
+                    delay_regrowth_of_degraded_land_by_one_year: bool,
+                    use_adoption_for_carbon_sequestration_calculation: bool,
+                    direct_emissions_are_annual: bool ) -> pd.Series:
         """
             Each yearly reduction in CO2 (in million metric ton - MMT) is modeled as a discrete avoided pulse.
             A Simplified atmospheric lifetime function for CO2 is taken from Myhrvald and Caldeira (2012) based on the Bern Carbon Cycle model.
@@ -507,6 +513,7 @@ class NewUnitAdoption:
 
         # get_carbon_sequestration returns series used to build [CO2 Calcs]!$B$120
         # to match [CO2 Calcs]!$B$120, need to combine pds and ref at the ocean_solution level.
+        # If ref_scenario.get_carbon_sequestration(...) is zero, then this function returns [CO2 Calcs]!$B$120.
         sequestration = self.get_carbon_sequestration(
                 sequestration_rate, 
                 disturbance_rate, 
@@ -515,8 +522,8 @@ class NewUnitAdoption:
                 delay_regrowth_of_degraded_land_by_one_year,
                 use_adoption_for_carbon_sequestration_calculation)
         
-        
-        total_emissions_reduction = self.get_total_emissions_reduction(disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area)
+        # following this function call, total_emissions_reduction should correspond to 'CO2-eq MMT Reduced', [CO2 Calcs]!$B$64.
+        total_emissions_reduction = self.get_total_emissions_reduction(disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area, direct_emissions_are_annual)
 
         reduction_plus_sequestration = total_emissions_reduction + sequestration
 

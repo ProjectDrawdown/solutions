@@ -11,4 +11,5 @@ ChangePerPeriod: 0.0
 DelayImpactOfProtectionByOneYear: True
 DelayRegrowthOfDegradedLandByOneYear: False
 UseAdoptionForCarbonSequestrationCalculation: False
+DirectEmissionsAreAnnual : False # Set False for one-time.
 RequiredPythonVersionMinimum: 3.9.5

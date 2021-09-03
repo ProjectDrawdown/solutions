@@ -27,8 +27,9 @@ class OceanSolution(Solution):
         self.pds_adoption_file = config['PDSAdoptionFile']
         self.ref_adoption_file = config['REFAdoptionFile']
         self.scenarios_file = config['ScenariosFile']
-        self.use_aggregate_CO2_equivalent_instead_of_individual_GHG = config.get('UseAggregateCO2EquivalentInsteadOfIndividualGHG', False)
-        self.use_adoption_for_carbon_sequestration_calculation = config.get('UseAdoptionForCarbonSequestrationCalculation', False)
+        self.use_aggregate_CO2_equivalent_instead_of_individual_GHG = config.get('UseAggregateCO2EquivalentInsteadOfIndividualGHG', True)
+        self.use_adoption_for_carbon_sequestration_calculation = config.get('UseAdoptionForCarbonSequestrationCalculation', True)
+        self.direct_emissions_are_annual = config.get('DirectEmissionsAreAnnual', True)
 
         self.required_version_minimum = tuple(int(st) for st in str.split(config['RequiredPythonVersionMinimum'], '.'))
         self._config = config
@@ -450,7 +451,8 @@ class OceanSolution(Solution):
 
 
     def get_change_in_ppm_equivalent(self) -> np.float64:
-
+        
+        
         pds_sequestration = self.pds_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
                         self.disturbance_rate,
@@ -458,7 +460,8 @@ class OceanSolution(Solution):
                         self.delay_impact_of_protection_by_one_year,
                         self.emissions_reduced_per_unit_area,
                         self.delay_regrowth_of_degraded_land_by_one_year,
-                        self.use_adoption_for_carbon_sequestration_calculation)
+                        self.use_adoption_for_carbon_sequestration_calculation,
+                        self.direct_emissions_are_annual)
 
         ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
@@ -467,11 +470,15 @@ class OceanSolution(Solution):
                         self.delay_impact_of_protection_by_one_year,
                         self.emissions_reduced_per_unit_area,
                         self.delay_regrowth_of_degraded_land_by_one_year,
-                        self.use_adoption_for_carbon_sequestration_calculation)
-
-        net_sequestration = (pds_sequestration - ref_sequestration)
-        # net_sequestration should now equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
-
+                        self.use_adoption_for_carbon_sequestration_calculation,
+                        self.direct_emissions_are_annual)
+        
+        if self.direct_emissions_are_annual:
+            net_sequestration = (pds_sequestration - ref_sequestration)
+        else:
+            net_sequestration = (ref_sequestration - pds_sequestration)
+            net_sequestration = net_sequestration.diff()
+        
         result = net_sequestration.loc[self.end_year]
 
         return result
@@ -486,7 +493,8 @@ class OceanSolution(Solution):
                         self.delay_impact_of_protection_by_one_year,
                         self.emissions_reduced_per_unit_area,
                         self.delay_regrowth_of_degraded_land_by_one_year,
-                        self.use_adoption_for_carbon_sequestration_calculation)
+                        self.use_adoption_for_carbon_sequestration_calculation,
+                        self.direct_emissions_are_annual)
 
         ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
                         self.sequestration_rate_all_ocean,
@@ -495,10 +503,16 @@ class OceanSolution(Solution):
                         self.delay_impact_of_protection_by_one_year,
                         self.emissions_reduced_per_unit_area,
                         self.delay_regrowth_of_degraded_land_by_one_year,
-                        self.use_adoption_for_carbon_sequestration_calculation)
-
+                        self.use_adoption_for_carbon_sequestration_calculation,
+                        self.direct_emissions_are_annual)
+                        
+        if self.direct_emissions_are_annual:
+            net_sequestration = (pds_sequestration - ref_sequestration)
+        else:
+            net_sequestration = (ref_sequestration - pds_sequestration)
+            net_sequestration = net_sequestration.diff()
+        
         # net_sequestration should equal 'CO2-eq PPM Calculator' on tab [CO2 Calcs]!$B$224
-        net_sequestration = (pds_sequestration - ref_sequestration)
         
         result = net_sequestration.loc[self.end_year] - net_sequestration.loc[self.end_year-1]
 
