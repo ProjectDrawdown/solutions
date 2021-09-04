@@ -724,6 +724,8 @@ def normalize_source_name(sourcename):
         'FAO 2015 (Sum of all regions)': 'FAO 2015',  # Afforestation Drawdown 2020
         'FAO 2010 (Sum of all regions)': 'FAO 2010',  # Bamboo Drawdown 2020
     }
+    if not sourcename:  # don't do anything with empty data
+        return sourcename
     normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
     if normalized in special_cases:
         return special_cases[normalized]
