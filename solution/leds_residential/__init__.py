@@ -148,7 +148,7 @@ class Scenario(scenario.RRSScenario):
   vmas = VMAs
   solution_category = solution_category
 
-  tam_ref_data_sources = {
+  _ref_tam_sources = {
       'Baseline Cases': {
           'Calculations, see sheet "IEA 2006 TAM" for details': THISDIR.joinpath('tam', 'tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
           'Calculations on the basis of floor space (m2, Urge-Vorsats et al. 2013 data), average illuminance (lm/m2) and annual operating time (constant 1000 h/a)': THISDIR.joinpath('tam', 'tam_Calculations_on_the_basis_of_floor_space_m2_UrgeVorsats_et_al__2013_data_average_illumin_66d3beb0.csv'),
@@ -179,15 +179,15 @@ class Scenario(scenario.RRSScenario):
       },
       },
   }
-  tam_pds_data_sources = tam_ref_data_sources
+  _pds_tam_sources = _ref_tam_sources
 
 
-  def __init__(self, scenario=None):
-    if isinstance(scenario, ac.AdvancedControls):
-        self.scenario = scenario.name
-        self.ac = scenario
+  def __init__(self, scen=None):
+    if isinstance(scen, ac.AdvancedControls):
+        self.scenario = scen.name
+        self.ac = scen
     else:
-        self.scenario = scenario or PDS2
+        self.scenario = scen or PDS2
         self.ac = scenarios[self.scenario]
 
     # TAM

@@ -130,7 +130,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
+    _ref_tam_sources = {
             'Baseline Cases': {
                 'Based on IEA (2016), "Energy Technology Perspectives - 6DS", IEA/OECD + Telepresence Adjustment': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD_Telepresence_Adjustment.csv'),
                 'Based on ICCT (2012) "Global Transport Roadmap Model", http://www.theicct.org/global-transportation-roadmap-model + Telepresence Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ICCT_2012_Global_Transport_Roadmap_Model_httpwww_theicct_orgglobaltransportatio_b659d6b7.csv'),
@@ -142,14 +142,14 @@ class Scenario(scenario.RRSScenario):
                 'Based on IEA (2016), "Energy Technology Perspectives - 2DS", IEA/OECD + Telepresence Adjustment': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_2DS_IEAOECD_Telepresence_Adjustment.csv'),
         },
     }
-    tam_pds_data_sources=tam_ref_data_sources
+    _pds_tam_sources=_ref_tam_sources
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM

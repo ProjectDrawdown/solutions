@@ -110,7 +110,7 @@ class Scenario(scenario.RRSScenario):
   vmas = VMAs
   solution_category = solution_category
 
-  tam_ref_data_sources = {
+  _ref_tam_sources = {
       'Baseline Cases': {
           'Drawdown Calculations - High Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_High_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Pro_3a9477d3.csv'),
       },
@@ -121,14 +121,14 @@ class Scenario(scenario.RRSScenario):
           'Drawdown Calculations - Low Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_Low_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Proj_5ee67131.csv'),
       },
   }
-  tam_pds_data_sources=tam_ref_data_sources
+  _pds_tam_sources=_ref_tam_sources
 
-  def __init__(self, scenario=None):
-    if isinstance(scenario, ac.AdvancedControls):
-        self.scenario = scenario.name
-        self.ac = scenario
+  def __init__(self, scen=None):
+    if isinstance(scen, ac.AdvancedControls):
+        self.scenario = scen.name
+        self.ac = scen
     else:
-        self.scenario = scenario or PDS2
+        self.scenario = scen or PDS2
         self.ac = scenarios[self.scenario]
 
     # TAM

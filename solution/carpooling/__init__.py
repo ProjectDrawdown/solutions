@@ -123,7 +123,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
+    _ref_tam_sources = {
             'Baseline Cases': {
                 'Based on ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
                 'Based on ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv'),
@@ -137,7 +137,7 @@ class Scenario(scenario.RRSScenario):
                 'Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario': THISDIR.joinpath('tam', 'tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_HighShift_Scenario.csv'),
         },
     }
-    tam_pds_data_sources = {
+    _pds_tam_sources = {
         'Ambitious Cases': {
                 'Drawdown TAM: Integrated Urban TAM post Non-Car Solutions for PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Urban_TAM_post_NonCar_Solutions_for_PDS1.csv'),
                 'Drawdown TAM: Integrated Urban TAM post Non-Car Solutions for PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Urban_TAM_post_NonCar_Solutions_for_PDS2.csv'),
@@ -147,12 +147,12 @@ class Scenario(scenario.RRSScenario):
         },
     }
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM

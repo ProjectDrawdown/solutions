@@ -137,7 +137,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
+    _ref_tam_sources = {
               'Baseline Cases': {
                   'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_6DS.csv'),
                   'ICCT (2012) Global Roadmap Model': THISDIR.joinpath('tam', 'tam_ICCT_2012_Global_Roadmap_Model.csv'),
@@ -149,14 +149,14 @@ class Scenario(scenario.RRSScenario):
                   'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_2DS.csv'),
             },
         }
-    tam_pds_data_sources = tam_ref_data_sources
+    _pds_tam_sources = _ref_tam_sources
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM

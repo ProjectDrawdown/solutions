@@ -119,7 +119,7 @@ class Scenario(scenario.RRSScenario):
   vmas = VMAs
   solution_category = solution_category
 
-  tam_ref_data_sources = {
+  _ref_tam_sources = {
     'Baseline Cases': {
         '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
         'See sheet FAO 2009, annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045) from RISI': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009_annual_growth_rates_in_Drawdown_regions_20152020_20202030_and_2030204_01422925.csv'),
@@ -185,14 +185,14 @@ class Scenario(scenario.RRSScenario):
       },
     },
   }
-  tam_pds_data_sources=tam_ref_data_sources
+  _pds_tam_sources=_ref_tam_sources
 
-  def __init__(self, scenario=None):
-    if isinstance(scenario, ac.AdvancedControls):
-        self.scenario = scenario.name
-        self.ac = scenario
+  def __init__(self, scen=None):
+    if isinstance(scen, ac.AdvancedControls):
+        self.scenario = scen.name
+        self.ac = scen
     else:
-        self.scenario = scenario or PDS2
+        self.scenario = scen or PDS2
         self.ac = scenarios[self.scenario]
 
     # TAM

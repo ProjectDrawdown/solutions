@@ -139,13 +139,13 @@ class Scenario(scenario.RRSScenario):
   vmas = VMAs
   solution_category = solution_category
 
-  tam_ref_data_sources = {
+  _ref_tam_sources = {
     'Baseline Cases': {
         'Drawdown Custom projection 1': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_projection_1.csv'),
         'Drawdown Custom Projection 2': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_Projection_2.csv'),
     },
   }
-  tam_pds_data_sources = {
+  _pds_tam_sources = {
     'Conservative Cases': {
         'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Plausible_Scenario_Reduc_f47a5b4e.csv'),
     },
@@ -155,12 +155,12 @@ class Scenario(scenario.RRSScenario):
     },
   }
 
-  def __init__(self, scenario=None):
-    if isinstance(scenario, ac.AdvancedControls):
-        self.scenario = scenario.name
-        self.ac = scenario
+  def __init__(self, scen=None):
+    if isinstance(scen, ac.AdvancedControls):
+        self.scenario = scen.name
+        self.ac = scen
     else:
-        self.scenario = scenario or PDS2
+        self.scenario = scen or PDS2
         self.ac = scenarios[self.scenario]
 
     # TAM

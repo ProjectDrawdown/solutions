@@ -107,18 +107,18 @@ PDS1 = "PDS-68p2050-Plausible-PDSCustom-avg-Nov2019"
 PDS2 = "PDS-76p2050-Drawdown-PDSCustom-high-Nov2019"
 PDS3 = "PDS-72p2050-Optimim-PDSCustom-vdg100%2030-Nov2019"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.LandScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TLA

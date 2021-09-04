@@ -124,7 +124,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
+    _ref_tam_sources = {
             'Baseline Cases': {
                 'Organic Fraction of MSW - From Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_From_Waste_TAM.csv'),
         },
@@ -175,18 +175,18 @@ class Scenario(scenario.RRSScenario):
             },
         },
     }
-    tam_pds_data_sources = {
+    _pds_tam_sources = {
         'Baseline Cases': {
                 'Drawdown TAM: Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Organic_Fraction_of_MSW_Waste_TAM.csv'),
         },
     }
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM

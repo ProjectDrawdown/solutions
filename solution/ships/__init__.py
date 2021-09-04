@@ -118,7 +118,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
+    _ref_tam_sources = {
             'Baseline Cases': {
                 'Based on Smith et al (2014) 3rd IMO GHG Study - from Fig 82, 83 on P138, P139 (Max range) combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_Smith_et_al_2014_3rd_IMO_GHG_Study_from_Fig_82_83_on_P138_P139_Max_range_combin_1bc1c897.csv'),
                 'Based on Buhaug et al, (2009) 2nd IMO GHG Study - Table 7.4-7.6 pg 94-95 (Max Values) combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_Buhaug_et_al_2009_2nd_IMO_GHG_Study_Table_7_47_6_pg_9495_Max_Values_combined_wi_6529c612.csv'),
@@ -133,14 +133,14 @@ class Scenario(scenario.RRSScenario):
                 'OPRF (2008) Study On Worlds Changing Maritime Industry Pg 30 Appdx 1 combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_OPRF_2008_Study_On_Worlds_Changing_Maritime_Industry_Pg_30_Appdx_1_combined_with_UNCTAD__8deff703.csv'),
         },
     }
-    tam_pds_data_sources=tam_ref_data_sources
+    _pds_tam_sources=_ref_tam_sources
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM

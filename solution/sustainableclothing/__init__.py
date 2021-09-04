@@ -103,7 +103,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
+    _ref_tam_sources = {
             'Baseline Cases': {
                 'Ellen Macarthur Foundation. 3% Growth to 160 in 2050': THISDIR.joinpath('tam', 'tam_Ellen_Macarthur_Foundation__3_Growth_to_160_in_2050.csv'),
         },
@@ -115,14 +115,14 @@ class Scenario(scenario.RRSScenario):
                 'Textile Exchange 2019,2020 (Assume 60% of Fibers for Clothing)': THISDIR.joinpath('tam', 'tam_Textile_Exchange_20192020_Assume_60_of_Fibers_for_Clothing.csv'),
         },
     }
-    tam_pds_data_sources=tam_ref_data_sources
+    _pds_tam_sources=_ref_tam_sources
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM

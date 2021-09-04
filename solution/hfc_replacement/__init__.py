@@ -104,7 +104,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
+    _ref_tam_sources = {
             'Baseline Cases': {
                 'Mean of Velders 2015 Upper and Lower HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Mean_of_Velders_2015_Upper_and_Lower_HFC_Emissions_Scenarios.csv'),
         },
@@ -115,14 +115,14 @@ class Scenario(scenario.RRSScenario):
                 'Velders 2015 Lower  HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Velders_2015_Lower_HFC_Emissions_Scenarios.csv'),
         },
     }
-    tam_pds_data_sources=tam_ref_data_sources
+    _pds_tam_sources=_ref_tam_sources
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM

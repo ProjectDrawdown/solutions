@@ -1,0 +1,25 @@
+{
+  "Baseline Cases": {
+    "Based on: IEA ETP 2016 6DS": "tam_based_on_IEA_ETP_2016_6DS.csv",
+    "Based on: AMPERE 2014 MESSAGE MACRO Reference": "tam_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv",
+    "Based on: AMPERE 2014 GEM E3 Reference": "tam_based_on_AMPERE_2014_GEM_E3_Reference.csv",
+    "Based on: AMPERE 2014 IMAGE TIMER Reference": "tam_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+  },
+  "Conservative Cases": {
+    "Based on: IEA ETP 2016 4DS": "tam_based_on_IEA_ETP_2016_4DS.csv",
+    "Based on: AMPERE 2014 MESSAGE MACRO 550": "tam_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+    "Based on: AMPERE 2014 GEM E3 550": "tam_based_on_AMPERE_2014_GEM_E3_550.csv",
+    "Based on: AMPERE 2014 IMAGE TIMER 550": "tam_based_on_AMPERE_2014_IMAGE_TIMER_550.csv",
+    "Based on: Greenpeace 2015 Reference": "tam_based_on_Greenpeace_2015_Reference.csv"
+  },
+  "Ambitious Cases": {
+    "Based on: IEA ETP 2016 2DS": "tam_based_on_IEA_ETP_2016_2DS.csv",
+    "Based on: AMPERE 2014 MESSAGE MACRO 450": "tam_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+    "Based on: AMPERE 2014 GEM E3 450": "tam_based_on_AMPERE_2014_GEM_E3_450.csv",
+    "Based on: AMPERE 2014 IMAGE TIMER 450": "tam_based_on_AMPERE_2014_IMAGE_TIMER_450.csv",
+    "Based on: Greenpeace 2015 Energy Revolution": "tam_based_on_Greenpeace_2015_Energy_Revolution.csv"
+  },
+  "100% RES2050 Case": {
+    "Based on: Greenpeace 2015 Advanced Revolution": "tam_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+  }
+}

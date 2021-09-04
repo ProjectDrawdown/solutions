@@ -110,7 +110,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
+    _ref_tam_sources = {
             'Baseline Cases': {
                 'Drawdown TAM PDS 1- Plastics Available after Reduction and Replacement': THISDIR.joinpath('tam', 'tam_Drawdown_TAM_PDS_1_Plastics_Available_after_Reduction_and_Replacement.csv'),
         },
@@ -119,7 +119,7 @@ class Scenario(scenario.RRSScenario):
                 'Drawdown TAM PDS 3- Plastics Available after Reduction and Replacement': THISDIR.joinpath('tam', 'tam_Drawdown_TAM_PDS_3_Plastics_Available_after_Reduction_and_Replacement.csv'),
         },
     }
-    tam_pds_data_sources = {
+    _pds_tam_sources = {
         'Baseline Cases': {
                 'Drawdown TAM: Integrated Drawdown TAM - Recycled Plastics Allocation PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Drawdown_TAM_Recycled_Plastics_Allocation_PDS1.csv'),
         },
@@ -129,12 +129,12 @@ class Scenario(scenario.RRSScenario):
         },
     }
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM

@@ -133,19 +133,19 @@ class Scenario(scenario.RRSScenario):
   vmas = VMAs
   solution_category = solution_category
 
-  tam_ref_data_sources = {
+  _ref_tam_sources = {
     'Baseline Cases': {
         'Project Drawdown Estimated based on World Bank and WHO. Water Use Regression against GDP/capita used to estimate GL of water used for populations with at least US$10,000 GDP capita assuming Gini distribution of wealth.': THISDIR.joinpath('tam', 'tam_Project_Drawdown_Estimated_based_on_World_Bank_and_WHO__Water_Use_Regression_against_GDP_f76a56c1.csv'),
     },
   }
-  tam_pds_data_sources=tam_ref_data_sources
+  _pds_tam_sources=_ref_tam_sources
 
-  def __init__(self, scenario=None):
-    if isinstance(scenario, ac.AdvancedControls):
-        self.scenario = scenario.name
-        self.ac = scenario
+  def __init__(self, scen=None):
+    if isinstance(scen, ac.AdvancedControls):
+        self.scenario = scen.name
+        self.ac = scen
     else:
-        self.scenario = scenario or PDS2
+        self.scenario = scen or PDS2
         self.ac = scenarios[self.scenario]
 
     # TAM

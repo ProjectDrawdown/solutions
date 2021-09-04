@@ -108,7 +108,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
+    _ref_tam_sources = {
         'Baseline Cases': {
                 'USGS (Historical) + Elshkaki et al. SF Scenario': THISDIR.joinpath('tam', 'tam_USGS_Historical_Elshkaki_et_al__SF_Scenario.csv'),
                 'Elshkaki et al. MW/TR Scenarios + USGS (Historical)': THISDIR.joinpath('tam', 'tam_Elshkaki_et_al__MWTR_Scenarios_USGS_Historical.csv'),
@@ -125,14 +125,14 @@ class Scenario(scenario.RRSScenario):
                 'USGS (Historical) + S-Curve': THISDIR.joinpath('tam', 'tam_USGS_Historical_SCurve.csv'),
         },
     }
-    tam_pds_data_sources=tam_ref_data_sources
+    _pds_tam_sources=_ref_tam_sources
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM

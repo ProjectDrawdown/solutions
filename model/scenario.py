@@ -1,39 +1,127 @@
 """Base classes of all scenario objects"""
-from pathlib import Path
-
-import numpy as np
+import json
 import pandas as pd
-
+from pathlib import Path
 from model import adoptiondata
 from model import advanced_controls
-from model import ch4calcs
-from model import co2calcs
 from model import customadoption
-from model import dd
-from model import emissionsfactors
-from model import firstcost
 from model import helpertables
-from model import operatingcost
 from model import s_curve
-from model import scenario
-from model import unitadoption
-from model import vma
 from model import tam
-from model import conversions
-from solution import rrs
 
-# This class is currently a stub, because the code was not oritinally designed with a common Scenario base class.
-# We expect to add new functionality, and probably migrate some shared functionality, to this class.
+
+# A note on how the Scenario inheritance structure works:
+# Solutions have a great deal of code in common, but also may differ in details to almost
+# an arbitrary degree: they may have unique settings of common parameters, or a completely custom
+# implementation of a whole segment of the model.
+# In order to support this variety of implementations while minimizing the amount of repeated
+# boilerplate code, the base Scenario class (and RSSSenario and LandScenario classes) support a kind
+# of inverted initialization.  These base classes don't implement __init__ themselves; the ground
+# solution classes themselves must do that.  However the base classes implement functions (like 
+# initialize_adoption_bases) that do large chunks of common initialization.  The ground class
+# passes parameters that control the initialization functions in various `_` fields, and the
+# initialization puts the results into the official (no `_`) fields.
+# The ground class can also modify the results, or even completely replace the initialization 
+# if it needs to.
 
 class Scenario:
 
-    ac : advanced_controls.AdvancedControls = None
+    ac: advanced_controls.AdvancedControls = None
+    """The parameters that define this scenario"""
 
-    def set_ref_adoption(self):
-        pass
+    # Adoption is a common concept across all scenarios
+    # Adoption state
+    ht: helpertables.HelperTables = None
+    """The ref and pds adoptions of this scenario"""
+    ad: adoptiondata.AdoptionData = None
+    """The base pds adoption, if this scenario uses an Existing Prognostication pds adoption (otherwise None)"""
+    pds_ca: customadoption.CustomAdoption = None
+    """The base pds adoption, if this scenario uses a Fully Customized PDS Adoption (otherwise None)"""
+    ref_ca: customadoption.CustomAdoption = None
+    """The base ref adoption, if this scenario uses a Fully Customized reference adoption (otherwise None)"""
+    sc: s_curve.SCurve = None
+    """The base s-curve adoption, if this scenario uses an s-curve adoption (otherwise None)."""
 
-    def set_pds_adoption(self):
-        pass
+
+    # Control of adoption initialization is a combination of the contents of the ac parameters,
+    # and the settings of these fields by the ground class
+    _ref_ca_sources = None  
+    _pds_ca_sources = None 
+    _pds_ca_settings = { 'high_sd_mult' : 1.0, 'low_sd_mult' : 1.0 }
+    _pds_ad_sources = None
+    _pds_ad_settings = { 'main_includes_regional' : True, 'groups_include_hundred_percent': True,
+        'config_overrides' : None }
+
+    def initialize_adoption_bases(self):
+        """Initialize the pds and ref adoption bases for this scenario to one of 
+        several different types, depending on the parameters of the scenario.
+        Note this function only initializes the base ref and pds adoptions: the HelperTables
+        object ht still needs to be initialized after."""
+
+        # ###  Reference Adoption
+
+        # handle the inline-override case
+        if self.ac.ref_adoption_custom_source:
+            self.ref_ca = customadoption.CustomAdoption(
+                data_sources = [ {'name': 'Inline Ref Adoption', 'include': True, 'filename': self.ac.ref_adoption_custom_source}],
+                soln_adoption_custom_name ='Inline Ref Adoption',
+                total_adoption_limit= self.adoption_limit()
+            )
+        elif self.ac.soln_ref_adoption_basis == "Custom":
+            if not self._ref_ca_sources:
+                raise ValueError("Custom Ref Adoption requires reference data sources")
+            self.ref_ca = customadoption.CustomAdoption(
+                data_sources = self._ref_ca_sources,
+                soln_adoption_custom_name = self.ac.soln_ref_adoption_custom_name,
+                total_adoption_limit = self.adoption_limit()
+            )
+        # For default reference adoption, we do nothing; HelperTables will
+        # do all the work.
+
+        # ###  PDS Adoption        
+
+        # handle the inline-override case 
+        if self.ac.pds_adoption_custom_source:
+            sources = [ {'name': 'Inline PDS Adoption', 'include': True, 'filename': self.ac.ref_adoption_custom_source}],
+            self.pds_ca = customadoption.CustomAdoption(
+               data_sources = sources,
+               soln_adoption_custom_name = 'Inline PDS Adoption',
+               total_adoption_limit = self.adoption_limit()
+            )
+        elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
+            # scenarios can paramaterize which solutions should be included in the customized PDS
+            sources = self._pds_ca_sources
+            if self.ac.soln_pds_adoption_scenarios_included:
+                sources = sources.copy()
+                for (i,s) in enumerate(sources):
+                    s['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
+            
+            self.pds_ca = customadoption.CustomAdoption(
+                data_sources = sources,
+                soln_adoption_custom_name = self.ac.soln_pds_adoption_custom_name,
+                high_sd_mult = self._pds_ca_settings['high_sd_mult'],
+                low_sd_mult = self._pds_ca_settings['low_sd_mult'],
+                total_adoption_limit = self.adoption_limit()
+            )
+        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+            overrides = [('trend','World',self.ac.soln_pds_adoption_prognostication_trend),
+                         ('growth','World',self.ac.soln_pds_adoption_prognostication_growth)]
+            overrides.extend(self._pds_ad_settings['config_overrides'] or [])
+            adconfig = adoptiondata.make_adoption_config(overrides=overrides)
+            self.ad = adoptiondata.AdoptionData(
+                ac = self.ac,
+                data_sources = self._pds_ad_sources,
+                adconfig = adconfig,
+                main_includes_regional = self._pds_ad_settings['main_includes_regional'],
+                groups_include_hundred_percent = self._pds_ad_settings['groups_include_hundred_percent']
+            )
+        # else PASS
+        # for now, classes are responsible for initializing s-curves themselves.
+
+
+    def adoption_limit(self):
+        """Returns the tam or aez limitations on adoption."""
+        raise NotImplemented("Subclass must implement")
 
     def key_results(self, year=2050, region='World'):
         if self.solution_category == self.solution_category.REDUCTION or self.solution_category == self.solution_category.REPLACEMENT:
@@ -148,56 +236,61 @@ class Scenario:
 class RRSScenario(Scenario):
 
     tm: tam.TAM = None
+    """The total addressable market for this solution."""
 
     # These must be set by each class
-    tam_ref_data_sources = None
-    tam_pds_data_sources = None
-
+    _ref_tam_sources = None
+    _pds_tam_sources = None
 
     def set_tam(self, config_values=None, **args):
-        """Create the self.tm object based on the information in self._tamconfig_list, self.tam_ref_data_sources
-        and self.tam_pds_data_sources.  
+        """Create the self.tm object based on the information in self._ref_tam_sources
+        and self._pds_tam_sources.  
         
         Overrides to individual values in the tamconfig can also be specified
         in the config_values argument, which should be a list of tuples (param_name, region, value)
 
         Other configuration values may be passed directly to tam.TAM via **args.
         """
-        tamconfig = tam.make_tam_config()
+        tamconfig = tam.make_tam_config(overrides=config_values)
         tamconfig.loc['source_until_2014','World']     = self.ac.source_until_2014
         tamconfig.loc['source_until_2014','PDS World'] = self.ac.source_until_2014
         tamconfig.loc['source_after_2014','World']     = self.ac.ref_source_post_2014
         tamconfig.loc['source_after_2014','PDS World'] = self.ac.pds_source_post_2014
-        if config_values is not None:
-            for (row,col,val) in config_values:
-                tamconfig.loc[row,col] = val
+
+        ref_data_sources = self._ref_tam_sources
+        pds_data_sources = self._pds_tam_sources
         
+        # Handle the inline override case by completely overriding the relevant fields
         if self.ac.ref_tam_custom_source:
-            # completely override the tam_ref_data_sources field
-            # #HACK
+            #  Create a custom source structure for an inline source
+            # HACK        
             # TAM doesn't auto-interpolate single sources.  But it does auto-interpolate groups.
-            # So we use the sneaky hack of duplicating the source get TAM to do this work for us.
+            # So we use the sneaky hack of duplicating the source get TAM to do this work for us,
+            # and as a result we can accept a TAM that doesn't have data at every point.
             # It keeps the code changes less invasive for now, but should be refactored later.
-            self.tam_ref_data_sources = { 'Custom Cases' : { 
-                                            'Custom Ref Tam' : self.ac.ref_tam_custom_source,
-                                            'Custom Ref Dup' : self.ac.ref_tam_custom_source
-                                        }}
+            name = 'Inline Tam'
+            ref_data_sources = { 'Custom Cases' : { 
+                    name : self.ac.ref_tam_custom_source,
+                    name + 'dup' : self.ac.ref_tam_custom_source,
+                    'include': True
+                }}
             # set 'source_after_2014' for 'World' and all regions (everything except 'PDS World')
             pdsworld = tamconfig.loc['source_after_2014', 'PDS World']
             tamconfig.loc['source_after_2014',:] = 'Custom Cases'
             tamconfig.loc['source_after_2014','PDS World'] = pdsworld
         if self.ac.pds_tam_custom_source:
-            # completely override the pds_ref_data_sources field
-            self.tam_pds_data_sources = { 'Custom Cases' : { 
-                                            'Custom PDS Tam' : self.ac.ref_tam_custom_source,
-                                            'Custom PDS Dup' : self.ac.ref_tam_custom_source
-                                        }}
+            name = 'Inline Tam'
+            pds_data_sources = { 'Custom Cases' : { 
+                    name : self.ac.pds_tam_custom_source,
+                    name + 'dup' : self.ac.pds_tam_custom_source,
+                    'include': True
+                }}
             tamconfig.loc['source_after_2014','PDS World'] = 'Custom Cases'
 
         self.tm = tam.TAM(
             tamconfig=tamconfig, 
-            tam_ref_data_sources=self.tam_ref_data_sources,
-            tam_pds_data_sources=self.tam_pds_data_sources,
+            tam_ref_data_sources = ref_data_sources,
+            tam_pds_data_sources = pds_data_sources,
             **args)
     """
     def key_results(self, year=2050, region='World'):
@@ -266,6 +359,9 @@ class RRSScenario(Scenario):
 
     def lifetime_operating_savings(self):
         return self.oc.soln_marginal_operating_cost_savings().sum() / 1e9
+    
+    def adoption_limit(self):
+        return self.tm.pds_tam_per_region()
 
     def cumulative_emissions_reduced(self, year=2050, region='World'):
         return self.c2.co2eq_mmt_reduced().loc[2020:year, region].sum() / 1e3
@@ -273,5 +369,51 @@ class RRSScenario(Scenario):
 
 
 class LandScenario(Scenario):
+
+    tla_per_region: pd.DataFrame = None
+    """Total land area per region, by year.
+    (Land area remains constant over time; this format is used because it is consistent with TAM)"""
+
+    def adoption_limit(self):
+        return self.tla_per_region
+
+
+
     
-    pass
+def load_and_root(jsonfile, fieldname='filename'):
+    """Load the named jsonfile, and replace relative filenames within it with absolute ones based on the same directory.
+    Works for tam, ad, configs.  By default, replaces fields named 'filename'.  If the special
+    field name '*' is given, then _any_ string-valued dictionary value is replaced."""
+
+    def rootstruct(struct, rootdir, fieldname):
+        if isinstance(struct, list):
+            for i in range(len(struct)):
+                struct[i] = rootstruct(struct[i], rootdir, fieldname)
+        elif isinstance(struct, dict):
+            for k in struct.keys():
+                if k == fieldname or (fieldname == '*' and isinstance(struct[k],str)):
+                    f = Path(struct[k])
+                    if not f.is_absolute():
+                        struct[k] = str(rootdir / f)
+                elif isinstance(struct[k],dict) or isinstance(struct[k], list):
+                    rootstruct(struct[k], rootdir, fieldname)
+
+    jsonfile = Path(jsonfile).resolve()
+    struct = json.loads( jsonfile.read_text(encoding='utf-8') )
+    rootstruct(struct, jsonfile.parent, fieldname)
+    return struct
+
+def deroot(struct, fieldname):
+    result = struct.copy()
+    if isinstance(result, list):
+        for i in range(len(result)):
+            result[i] = deroot(result[i], fieldname)
+    elif isinstance(result, dict):
+        for k in result.keys():
+            if k == fieldname or (fieldname == '*' and isinstance(result[k], str) or isinstance(result[k], Path)):
+                f = Path(result[k])
+                if f.is_file():
+                    result[k] = str(f.name)
+            elif isinstance(struct[k], dict) or isinstance(struct[k], list):
+                result[k] = deroot(result[k], fieldname)
+    return result
