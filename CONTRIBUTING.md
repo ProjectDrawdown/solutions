@@ -41,14 +41,9 @@ assign yourself.  It is a good idea to request feedback (via comments on your ne
 
 Discussing the change first is especially important for changes to be made in the analytic models in the `model` directory. The Drawdown methodology has been published and undergone substantial peer review. Changes to the model have to be vetted to ensure that they fit within the reviewed methodology.
 
-## Please Work in your own Branch of your own Fork
+## Please Work in your own Branch, and use Draft Pull Requests for Collaboration
 
-* On Github, [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the develop branch. This will give you your own repo with the same 'develop' branch.
-* [Clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository) your fork to your local workstation.
-* Create a branch in your local repo: 'git checkout -b $NAME' where $NAME can be anything, it will be private to your repo.
-* ...Commit changes to your local repo...
-* Push local commits back to your fork on the github server: git push origin $NAME
-* When you have commits in your github fork, the github UI will magically give you a button to request that your changes be integrated into the main repo's 'develop' branch; but there are [other ways](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request#creating-the-pull-request) to make the request too.
+It is much easier to manage collaboration if your work is in its own branch.  By making a draft pull request, you can share your current work in progress with the core team and also with other developers who might be interested in helping out.
 
 ## Excel Import and NDAs
 
