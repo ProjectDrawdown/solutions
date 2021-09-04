@@ -120,17 +120,49 @@ class RRSScenario(Scenario):
                 'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region)}
 
     def implementation_unit_adoption_increase(self, year=2050, region='World'):
-        return (self.pds_ca.adoption_data_per_region().loc[year][region] / self.ac.soln_avg_annual_use - 
-            self.ref_ca.adoption_data_per_region().loc[year][region] / self.ac.soln_avg_annual_use)
+        if hasattr(self, 'pds_ca'):
+            if self.pds_ca.soln_adoption_custom_name:
+                pds_adoption = self.pds_ca.adoption_data_per_region()
+            else:
+                pds_adoption = self.ht.soln_pds_funits_adopted()
+        else:
+            pds_adoption = self.ht.soln_pds_funits_adopted()
+
+        if hasattr(self, 'ref_ca'):
+            if self.ref_ca.soln_adoption_custom_name:
+                ref_adoption = self.ref_ca.adoption_data_per_region()
+            else:
+                ref_adoption = self.ht.soln_ref_funits_adopted()
+        else:
+            ref_adoption = self.ht.soln_ref_funits_adopted()
+
+        return (pds_adoption.loc[year][region] / self.ac.soln_avg_annual_use - 
+            ref_adoption.loc[year][region] / self.ac.soln_avg_annual_use)
 
     def functional_unit_adoption_increase(self, year=2050, region='World'):
+        if hasattr(self, 'pds_ca'):
+            if self.pds_ca.soln_adoption_custom_name:
+                pds_adoption = self.pds_ca.adoption_data_per_region()
+            else:
+                pds_adoption = self.ht.soln_pds_funits_adopted()
+        else:
+            pds_adoption = self.ht.soln_pds_funits_adopted()
+
+        if hasattr(self, 'ref_ca'):
+            if self.ref_ca.soln_adoption_custom_name:
+                ref_adoption = self.ref_ca.adoption_data_per_region()
+            else:
+                ref_adoption = self.ht.soln_ref_funits_adopted()
+        else:
+            ref_adoption = self.ht.soln_ref_funits_adopted()
+
         return (
-            self.pds_ca.adoption_data_per_region().loc[year] - 
-            self.ref_ca.adoption_data_per_region().loc[year]
+            pds_adoption.loc[year] - 
+            ref_adoption.loc[year]
             )[region]
 
     def marginal_first_cost(self, year=2050):
-        return -(self.fc.soln_pds_annual_world_first_cost().loc[:year].sum()-
+        return (self.fc.soln_pds_annual_world_first_cost().loc[:year].sum()-
             self.fc.soln_ref_annual_world_first_cost().loc[:year].sum()-
             self.fc.conv_ref_annual_world_first_cost().loc[:year].sum()
             ) / 1e9
