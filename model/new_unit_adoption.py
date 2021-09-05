@@ -451,24 +451,22 @@ class NewUnitAdoption:
         return cumulative_degraded_area
         
 
-    def get_total_emissions_reduction(self, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area, use_aggregate_CO2_equivalent_instead_of_individual_GHG: bool) -> pd.Series:
+    def get_emissions_reduction_series(self, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area, use_aggregate_CO2_equivalent_instead_of_individual_GHG: bool) -> pd.Series:
 
         # CO2-eq MMT Reduced
         # Used to calculate [CO2 Calcs]!$B64
 
-
         if use_aggregate_CO2_equivalent_instead_of_individual_GHG:
         # For PDS, total_undegraded_area will equal ['Unit Adoption Calculations']!DS135
         # For REF, total_undegraded_area will equal ['Unit Adoption Calculations']!DS197
-            area = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
+            area = self.get_annual_reduction_in_total_degraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
         else:
-            area = self.get_cumulative_degraded_unprotected_area(delay_impact_of_protection_by_one_year, growth_rate_of_ocean_degradation)
-            
-        result = area * emissions_reduced_per_unit_area
-        
-        return result
-        
+            area = self.get_total_undegraded_area(growth_rate_of_ocean_degradation, disturbance_rate, delay_impact_of_protection_by_one_year)
 
+        result = area * emissions_reduced_per_unit_area
+            
+        return result
+    
     def get_carbon_sequestration(self, sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation,
                              delay_impact_of_protection_by_one_year, delay_regrowth_of_degraded_land_by_one_year, use_adoption) ->pd.Series:
         
@@ -492,15 +490,17 @@ class NewUnitAdoption:
         return sequestration
 
 
-    def get_change_in_ppm_equivalent_series(self, 
-                    sequestration_rate: float,
-                    disturbance_rate: float,
-                    growth_rate_of_ocean_degradation: float,
-                    delay_impact_of_protection_by_one_year: bool,
-                    emissions_reduced_per_unit_area: float,
-                    delay_regrowth_of_degraded_land_by_one_year: bool,
-                    use_adoption_for_carbon_sequestration_calculation: bool,
-                    use_aggregate_CO2_equivalent_instead_of_individual_GHG: bool ) -> pd.Series:
+    def get_change_in_ppm_equivalent_series(
+            self, 
+            sequestration_rate: float,
+            disturbance_rate: float,
+            growth_rate_of_ocean_degradation: float,
+            delay_impact_of_protection_by_one_year: bool,
+            emissions_reduced_per_unit_area: float,
+            delay_regrowth_of_degraded_land_by_one_year: bool,
+            use_adoption_for_carbon_sequestration_calculation: bool,
+            use_aggregate_CO2_equivalent_instead_of_individual_GHG: bool ) -> pd.Series:
+
         """
             Each yearly reduction in CO2 (in million metric ton - MMT) is modeled as a discrete avoided pulse.
             A Simplified atmospheric lifetime function for CO2 is taken from Myhrvald and Caldeira (2012) based on the Bern Carbon Cycle model.
@@ -515,15 +515,20 @@ class NewUnitAdoption:
         # to match [CO2 Calcs]!$B$120, need to combine pds and ref at the ocean_solution level.
         # If ref_scenario.get_carbon_sequestration(...) is zero, then this function returns [CO2 Calcs]!$B$120.
         sequestration = self.get_carbon_sequestration(
-                sequestration_rate, 
-                disturbance_rate, 
-                growth_rate_of_ocean_degradation,
-                delay_impact_of_protection_by_one_year,
-                delay_regrowth_of_degraded_land_by_one_year,
-                use_adoption_for_carbon_sequestration_calculation)
+            sequestration_rate, 
+            disturbance_rate, 
+            growth_rate_of_ocean_degradation,
+            delay_impact_of_protection_by_one_year,
+            delay_regrowth_of_degraded_land_by_one_year,
+            use_adoption_for_carbon_sequestration_calculation)
         
         # following this function call, total_emissions_reduction should correspond to 'CO2-eq MMT Reduced', [CO2 Calcs]!$B$64.
-        total_emissions_reduction = self.get_total_emissions_reduction(disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area, use_aggregate_CO2_equivalent_instead_of_individual_GHG)
+        total_emissions_reduction = self.get_emissions_reduction_series(
+            disturbance_rate, 
+            growth_rate_of_ocean_degradation, 
+            delay_impact_of_protection_by_one_year, 
+            emissions_reduced_per_unit_area, 
+            use_aggregate_CO2_equivalent_instead_of_individual_GHG)
 
         reduction_plus_sequestration = total_emissions_reduction + sequestration
 
