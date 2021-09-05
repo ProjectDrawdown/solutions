@@ -30,8 +30,8 @@ def test_get_percent_adoption_end_year():
 
 ######
 
-def test_total_co2_seq():
-    total_co2_seq = mars.get_total_co2_seq()
+def test_total_co2_sequestered():
+    total_co2_seq = mars.get_total_co2_sequestered()
     assert total_co2_seq == pytest.approx(1.952028234)
 
 def test_change_in_ppm_equivalent():

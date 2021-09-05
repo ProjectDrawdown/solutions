@@ -59,7 +59,7 @@ def main():
         # total_emissions_reduction = sps.get_total_emissions_reduction()
         # results['Total Emissions Reduction'] = [ total_emissions_reduction, 0.288891735240484]
 
-        # total_co2_seq = sps.get_total_co2_seq()
+        # total_co2_seq = sps.get_total_co2_sequestered()
         # results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 0.359513049174938]
  
         # max_annual_co2_sequestered = sps.get_max_annual_co2_sequestered()

@@ -34,8 +34,8 @@ def test_total_emissions_reduction():
     total_emissions_reduction = sps.get_total_emissions_reduction()
     assert total_emissions_reduction == pytest.approx(5.91011393970)
 
-def test_total_co2_seq():
-    total_co2_seq = sps.get_total_co2_seq()
+def test_total_co2_sequestered():
+    total_co2_seq = sps.get_total_co2_sequestered()
     assert total_co2_seq == 0.0
 
 def test_reduced_area_degradation():
@@ -50,7 +50,6 @@ def test_emissions_reduction_final_year():
     emissions_reduction_final_year = sps.get_emissions_reduction_final_year()
     assert emissions_reduction_final_year == pytest.approx(0.19064883676)
     
-@pytest.mark.skip(reason="currently fails, under investigation")
 def test_change_in_ppm_equivalent():
     change_in_ppm_equivalent = sps.get_change_in_ppm_equivalent()
     assert change_in_ppm_equivalent == pytest.approx(0.4607453935)

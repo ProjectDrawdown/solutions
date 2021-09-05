@@ -31,7 +31,7 @@ def main():
         total_emissions_reduction = 0.0
         results['Total Emissions Reduction'] = [total_emissions_reduction, 0.0] # Equals zero on s/sht. Code not implemented.
 
-        total_co2_seq = maps.get_total_co2_seq()
+        total_co2_seq = maps.get_total_co2_sequestered()
         results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 3.85598888]
 
         ### Other Climate Results ###

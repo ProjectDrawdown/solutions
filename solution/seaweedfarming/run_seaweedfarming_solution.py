@@ -70,7 +70,7 @@ def main():
         lifetime_profit_margin = swf.get_lifetime_profit_margin()
         results['Lifetime Profit Margin'] = [lifetime_profit_margin, 5316.994012]
 
-        total_co2_seq = swf.get_total_co2_seq()
+        total_co2_seq = swf.get_total_co2_sequestered()
         results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 2.49773912913679]
 
         change_in_ppm_equivalent = swf.get_change_in_ppm_equivalent()

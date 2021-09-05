@@ -30,7 +30,7 @@ def main():
         total_emissions_reduction = sps.get_total_emissions_reduction()
         results['Total Emissions Reduction'] = [ total_emissions_reduction, 5.9101139397]
 
-        total_co2_seq = sps.get_total_co2_seq()
+        total_co2_seq = sps.get_total_co2_sequestered()
         results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 0.00000]
 
         reduced_area_degradation = sps.get_reduced_area_degradation()

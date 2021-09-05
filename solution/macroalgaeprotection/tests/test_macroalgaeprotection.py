@@ -30,15 +30,14 @@ def test_get_percent_adoption_end_year():
 
 ######
 
-def test_total_co2_seq():
-    total_co2_seq = maps.get_total_co2_seq()
+def test_total_co2_sequestered():
+    total_co2_seq = maps.get_total_co2_sequestered()
     assert total_co2_seq == pytest.approx(3.85598888)
 
 def test_change_in_ppm_equivalent():
     change_in_ppm_equivalent = maps.get_change_in_ppm_equivalent()
     assert change_in_ppm_equivalent == pytest.approx(0.339684712828728)
 
-@pytest.mark.skip(reason="currently fails, under investigation")
 def test_change_in_ppm_equivalent_final():
     change_in_ppm_equivalent_final = maps.get_change_in_ppm_equivalent_final_year()
     assert change_in_ppm_equivalent_final == pytest.approx(0.027045695545894)

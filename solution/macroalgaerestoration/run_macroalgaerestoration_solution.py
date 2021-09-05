@@ -27,7 +27,7 @@ def main():
         results['Global Percent Adoption in First Year'] = [gpa_start, 1.0609895265/ 100]
         results['Global Percent Adoption in Second Year'] = [gpa_end, 16.9758324240/ 100]
 
-        total_co2_seq = mars.get_total_co2_seq()
+        total_co2_seq = mars.get_total_co2_sequestered()
         results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 1.952028234]
 
         change_in_ppm_equivalent = mars.get_change_in_ppm_equivalent()

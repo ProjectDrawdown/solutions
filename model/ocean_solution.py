@@ -317,7 +317,7 @@ class OceanSolution(Solution):
 
     def get_abatement_cost(self) -> np.float64:
 
-        total_co2_reduction = self.get_total_co2_seq()
+        total_co2_reduction = self.get_total_co2_sequestered()
 
         pds_fc = self.pds_scenario.get_annual_world_first_cost()
         ref_fc = self.ref_scenario.get_annual_world_first_cost()

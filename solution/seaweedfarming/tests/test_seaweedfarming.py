@@ -85,11 +85,10 @@ def test_lifetime_profit_margin():
     lifetime_profit_margin = swf.get_lifetime_profit_margin()
     assert lifetime_profit_margin == pytest.approx(5316.994012)
 
-def test_total_co2_seq():
-    total_co2_seq = swf.get_total_co2_seq()
+def test_total_co2_sequestered():
+    total_co2_seq = swf.get_total_co2_sequestered()
     assert total_co2_seq == pytest.approx(2.49773912913679)
 
-@pytest.mark.skip(reason="currently fails, under investigation")
 def test_change_in_ppm_equiv():
     change_in_ppm_equivalent = swf.get_change_in_ppm_equivalent()
     assert change_in_ppm_equivalent == pytest.approx(0.21127592)
