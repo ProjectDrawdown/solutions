@@ -1,0 +1,27 @@
+[
+  {
+    "name": "PDS1 - Projected Based on Published and Estimated Rates of Refrigerant Recovery and Destruction (With HFC Sectors Summed)",
+    "include": true,
+    "filename": "custom_pds_ad_PDS1_Projected_based_on_Published_and_Estimated_Rates_of_Refrigerant_Recovery_and_Destru_80b1ed21.csv"
+  },
+  {
+    "name": "PDS2 - Projected Based on Published and Estimated Rates of Refrigerant Recovery and Destruction (With Averages for HFC Banks used)",
+    "include": true,
+    "filename": "custom_pds_ad_PDS2_Projected_based_on_Published_and_Estimated_Rates_of_Refrigerant_Recovery_and_Destru_ee48c99e.csv"
+  },
+  {
+    "name": "PDS3 - Same as PDS2 (Maximum Adoption Obtained)",
+    "include": true,
+    "filename": "custom_pds_ad_PDS3_Same_as_PDS2_Maximum_Adoption_Obtained.csv"
+  },
+  {
+    "name": "Drawdown Book Edition 1 Scenario 1",
+    "include": true,
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv"
+  },
+  {
+    "name": "Drawdown Book Edition 1 Scenario 2 and Scenario 3",
+    "include": true,
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_2_and_Scenario_3.csv"
+  }
+]

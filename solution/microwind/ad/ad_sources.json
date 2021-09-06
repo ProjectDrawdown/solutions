@@ -1,0 +1,22 @@
+{
+  "Baseline Cases": {
+    "Based on IEA, WEO-2018, Current Policies Scenario (CPS)": "ad_based_on_IEA_WEO2018_Current_Policies_Scenario_CPS.csv",
+    "Based on: IEA ETP 2017 Ref Tech": "ad_based_on_IEA_ETP_2017_Ref_Tech.csv",
+    "Based on: Grantham Institute and Carbon Tracker (2017), Nationally Determined Contributions (NDC) Scenario, PVEV medium scenario": "ad_based_on_Grantham_Institute_and_Carbon_Tracker_2017_Nationally_Determined_Contributions__30307e8e.csv",
+    "Based on IEEJ Outlook - 2019, Ref Scenario": "ad_based_on_IEEJ_Outlook_2019_Ref_Scenario.csv"
+  },
+  "Conservative Cases": {
+    "Based on IEA, WEO-2018, New Policies Scenario (NPS)": "ad_based_on_IEA_WEO2018_New_Policies_Scenario_NPS.csv",
+    "Based on Equinor (2018), Reform Scenario": "ad_based_on_Equinor_2018_Reform_Scenario.csv",
+    "Based on IEEJ Outlook - 2019, Advanced Tech Scenario": "ad_based_on_IEEJ_Outlook_2019_Advanced_Tech_Scenario.csv"
+  },
+  "Ambitious Cases": {
+    "Based on IEA, WEO-2018, SDS Scenario": "ad_based_on_IEA_WEO2018_SDS_Scenario.csv",
+    "Based on: IEA ETP 2017 2DS": "ad_based_on_IEA_ETP_2017_2DS.csv",
+    "Based on: IEA ETP 2017 B2DS": "ad_based_on_IEA_ETP_2017_B2DS.csv",
+    "Based on: Grantham Institute and Carbon Tracker (2017), Strong PVEV medium scenario": "ad_based_on_Grantham_Institute_and_Carbon_Tracker_2017_Strong_PVEV_medium_scenario.csv"
+  },
+  "100% RES2050 Case": {
+    "Based on: LUT/EWG (2019) -100% RES": "ad_based_on_LUTEWG_2019_100_RES.csv"
+  }
+}

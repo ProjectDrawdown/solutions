@@ -1,0 +1,11 @@
+{
+  "Baseline Cases": {
+    "Project Drawdown Assumption of all Regions Growing to Asias Current Percent Adoption": "ad_Project_Drawdown_Assumption_of_all_Regions_Growing_to_Asias_Current_Percent_Adoption.csv"
+  },
+  "Ambitious Cases": {
+    "Project Drawdown Assumption of all Regions Growing to Chinas Current Percent Adoption": "ad_Project_Drawdown_Assumption_of_all_Regions_Growing_to_Chinas_Current_Percent_Adoption.csv"
+  },
+  "Maximum Cases": {
+    "Project Drawdown Assumption of all Regions Growing to 100 Percent Adoption": "ad_Project_Drawdown_Assumption_of_all_Regions_Growing_to_100_Percent_Adoption.csv"
+  }
+}

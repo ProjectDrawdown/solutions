@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Reference Based on Historical Aircraft Deliveries of Airbus, Boeing",
+    "include": true,
+    "description": "Historical deliveries of efficient aircraft have been collected from the aircraft manufacturers themselves and the delivery data each year are used to estimate adoption assuming certain work done by each aircraft (single aisle and twin aisle estimated separately). The historical data from 2014 and mid-2019 (assumed to apply to 2018) are used and the adoption of the TAM in 2018 (in percentage terms) is assumed to continue fixed for the future. ",
+    "filename": "custom_ref_ad_Reference_based_on_Historical_Aircraft_Deliveries_of_Airbus_Boeing.csv"
+  }
+]

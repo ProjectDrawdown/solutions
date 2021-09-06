@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Custom REF 1: Adoption at Base Year levels (2014)",
+    "description": "Assume adoption % in 2014 remains constant ",
+    "filename": "custom_ref_ad_Custom_REF_1_Adoption_at_Base_Year_levels_2014.csv",
+    "include": true
+  }
+]

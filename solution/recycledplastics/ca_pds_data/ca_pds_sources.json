@@ -1,0 +1,20 @@
+[
+  {
+    "name": "PDS1",
+    "description": "PDS 1 uses the historical growth of plastic recycling in the US from 1990 to 2018 and extrapolates that rate globally ",
+    "filename": "custom_pds_ad_PDS1.csv",
+    "include": true
+  },
+  {
+    "name": "PDS2",
+    "description": "PDS2 is based on Ellen Macarthur Foundation Projections that 53% of non- durable plastics could be recycled by 2050; and a 70% yield ",
+    "filename": "custom_pds_ad_PDS2.csv",
+    "include": true
+  },
+  {
+    "name": "PDS3",
+    "description": "PDS3 is based on the McKinsey prediction that 60% of plastic production could be met with recycled plastics by 2050 ",
+    "filename": "custom_pds_ad_PDS3.csv",
+    "include": true
+  }
+]

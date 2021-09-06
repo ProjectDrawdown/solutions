@@ -1,0 +1,14 @@
+[
+  {
+    "name": "PDS2 - Density remains Constant and is the key driver of walking in cities.",
+    "include": true,
+    "description": "We project the amount of walking that would happen in 1,737 cities worldwide representing 57% of the global urban population then we scale the total amount of walking to 100% of the world\u2019s urban population. The background calculations of this scenario use the population and density of each of the 1737 cities from Demographia\u2019s report and projects the fraction of each country\u2019s urban population in that city. We assume that that fraction is constant and then project the city\u2019s population each year to 2050 using UN projections of each country\u2019s urban population to 2050. With the TAM and total urban population projections, we estimate the mobility per urban resident each year and then apply 6.5% to walking in each city in each year when the density is over the \"dense city threshold\" (~3,000 p/sqkm) and 2% otherwise. Each year is scaled to the global urban population. ",
+    "filename": "custom_pds_ad_PDS2_Density_remains_Constant_and_is_the_key_driver_of_walking_in_cities_.csv"
+  },
+  {
+    "name": "PDS2 - Increasing Urban Density with Density Driving Urban Walking (Book Ed.1)",
+    "include": true,
+    "description": "We project the amount of walking that would happen in 1,737 cities worldwide representing 57% of the global urban population then we scale the total amount of walking to 100% of the world\u2019s urban population. The background calculations of this scenario use the population and density of each of the 1737 cities from Demographia\u2019s report and projects the fraction of each country\u2019s urban population in that city. We assume that that fraction is constant and then project the city\u2019s population each year to 2050 using UN projections of each country\u2019s urban population to 2050. With the TAM and total urban population projections, we estimate the mobility per urban resident each year and then apply 7% to walking in each city in each year when the density is over the \"dense city threshold\" (~3,000 p/sqkm) and 2% otherwise. Each year is scaled to the global urban population. City densities are assumed to increased by around 2.4% annually which reverses historical declines of around 2%. This scenario was calculated for the Drawdown book Edition 1. Some variables may have been updated. ",
+    "filename": "custom_pds_ad_PDS2_Increasing_Urban_Density_with_Density_Driving_Urban_Walking_Book_Ed_1.csv"
+  }
+]

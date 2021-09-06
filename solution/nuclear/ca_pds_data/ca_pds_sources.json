@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Project Drawdown High Growth, Ambitious Cases, adjusted",
+    "include": true,
+    "filename": "custom_pds_ad_Project_Drawdown_High_Growth_Ambitious_Cases_adjusted.csv"
+  },
+  {
+    "name": "Project Drawdown High Growth, Conservative Cases, adjusted, smoothed curve",
+    "include": true,
+    "filename": "custom_pds_ad_Project_Drawdown_High_Growth_Conservative_Cases_adjusted_smoothed_curve.csv"
+  },
+  {
+    "name": "Optimum Nuclear reduces to 0% of TAM by 2050, based on AMPERE RefPol Scenario (2014) till peaking",
+    "include": true,
+    "filename": "custom_pds_ad_Optimum_Nuclear_reduces_to_0_of_TAM_by_2050_based_on_AMPERE_RefPol_Scenario_2014_till_peaking.csv"
+  }
+]

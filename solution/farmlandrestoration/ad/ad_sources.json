@@ -1,0 +1,20 @@
+{
+  "Raw Data for ALL LAND TYPES": {
+    "Sum of regional prognostications below": "ad_Sum_of_regional_prognostications_below.csv"
+  },
+  "Region: Asia (Sans Japan)": {
+    "Raw Data for ALL LAND TYPES": {
+      "Dara et al. 2018; Kazakshstan recultivation": "ad_Dara_et_al__2018_Kazakshstan_recultivation.csv"
+    }
+  },
+  "Region: China": {
+    "Tropical-Humid Land": {
+      "Lin, L, et al 2018, Wenzhou province only": "ad_Lin_L_et_al_2018_Wenzhou_province_only.csv"
+    }
+  },
+  "Region: EU": {
+    "Tropical-Humid Land": {
+      "Estel et al. 2015, 2nd Poly, capped at 94.7mha": "ad_Estel_et_al__2015_2nd_Poly_capped_at_94_7mha.csv"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Drawdown Book Edition 1 Scenario 1",
+    "include": true,
+    "description": "This scenario fits a linear curve to data from the IEA 2DS projection of mass transit adoption. The scenario was used in the Drawdown book edition 1, and has been updated. ",
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv"
+  },
+  {
+    "name": "Drawdown Book Edition 1 Scenario 2",
+    "include": true,
+    "description": "This scenario fits a 3rd degree polynomial curve to data from the ITDP/UCDavis Global High Shift projection of mass transit adoption. The scenario was used in the Drawdown book edition 1, and has been updated. ",
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_2.csv"
+  }
+]

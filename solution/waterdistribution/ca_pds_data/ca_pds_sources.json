@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Low Linear Growth in the Annual Adoption",
+    "include": true,
+    "filename": "custom_pds_ad_Low_Linear_Growth_in_the_Annual_Adoption.csv"
+  },
+  {
+    "name": "Medium Linear Growth in the Annual Adoption",
+    "include": true,
+    "filename": "custom_pds_ad_Medium_Linear_Growth_in_the_Annual_Adoption.csv"
+  },
+  {
+    "name": "High Linear Growth in the Annual Adoption",
+    "include": true,
+    "filename": "custom_pds_ad_High_Linear_Growth_in_the_Annual_Adoption.csv"
+  }
+]

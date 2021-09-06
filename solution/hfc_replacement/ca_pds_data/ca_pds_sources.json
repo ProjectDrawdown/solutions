@@ -1,0 +1,17 @@
+[
+  {
+    "name": "PDS 2 Median Adoption of LowGWP",
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS_2_Median_Adoption_of_LowGWP.csv"
+  },
+  {
+    "name": "PDS 1 Lower Adoption LowGWP",
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS_1_Lower_Adoption_LowGWP.csv"
+  },
+  {
+    "name": "PDS 3 Upper Adoption of LowGWP",
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS_3_Upper_Adoption_of_LowGWP.csv"
+  }
+]

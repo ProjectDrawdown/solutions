@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Trajectory Adapted from REF Scenario Greenpeace (2015)",
+    "include": true,
+    "filename": "custom_pds_ad_Trajectory_Adapted_from_REF_Scenario_Greenpeace_2015.csv"
+  },
+  {
+    "name": "Based on: Greenpeace 2015 Energy Revolution",
+    "include": true,
+    "filename": "custom_pds_ad_based_on_Greenpeace_2015_Energy_Revolution.csv"
+  },
+  {
+    "name": "Based on: Greenpeace 2015 Advanced Revolution",
+    "include": true,
+    "filename": "custom_pds_ad_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+  }
+]

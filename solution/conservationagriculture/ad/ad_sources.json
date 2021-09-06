@@ -1,0 +1,42 @@
+{
+  "Raw Data for ALL LAND TYPES": {
+    "FAOSTAT (Sum of all Regions)": "ad_FAOSTAT_Sum_of_all_Regions.csv",
+    "Prestele baseline and Topdown (moderate growth) projection": "ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv",
+    "Prestele baseline and BottoUp: (maximum)": "ad_Prestele_baseline_and_BottoUp_maximum.csv"
+  },
+  "Region: OECD90": {
+    "Raw Data for ALL LAND TYPES": {
+      "FAOSTAT": "ad_FAOSTAT.csv",
+      "Prestele baseline and Topdown (moderate growth) projection": "ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv",
+      "Prestele baseline and BottoUp: (maximum)": "ad_Prestele_baseline_and_BottoUp_maximum.csv"
+    }
+  },
+  "Region: Eastern Europe": {
+    "Raw Data for ALL LAND TYPES": {
+      "FAOSTAT": "ad_FAOSTAT.csv",
+      "Prestele baseline and Topdown (moderate growth) projection": "ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv",
+      "Prestele baseline and BottoUp: (maximum)": "ad_Prestele_baseline_and_BottoUp_maximum.csv"
+    }
+  },
+  "Region: Asia (Sans Japan)": {
+    "Raw Data for ALL LAND TYPES": {
+      "FAOSTAT": "ad_FAOSTAT.csv",
+      "Prestele baseline and Topdown (moderate growth) projection": "ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv",
+      "Prestele baseline and BottoUp: (maximum)": "ad_Prestele_baseline_and_BottoUp_maximum.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Raw Data for ALL LAND TYPES": {
+      "FAOSTAT": "ad_FAOSTAT.csv",
+      "Prestele baseline and Topdown (moderate growth) projection": "ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv",
+      "Prestele baseline and BottoUp: (maximum)": "ad_Prestele_baseline_and_BottoUp_maximum.csv"
+    }
+  },
+  "Region: Latin America": {
+    "Raw Data for ALL LAND TYPES": {
+      "FAOSTAT": "ad_FAOSTAT.csv",
+      "Prestele baseline and Topdown (moderate growth) projection": "ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv",
+      "Prestele baseline and BottoUp: (maximum)": "ad_Prestele_baseline_and_BottoUp_maximum.csv"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "Baseline Cases": {
+    "Based on IEA (2016), \"Energy Technology Perspectives - 6DS\", IEA/OECD": "tam_based_on_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD.csv",
+    "Based on ICCT (2012) \"Global Transport Roadmap Model\", http://www.theicct.org/global-transportation-roadmap-model": "tam_based_on_ICCT_2012_Global_Transport_Roadmap_Model_httpwww_theicct_orgglobaltransportatio_8916596a.csv"
+  },
+  "Conservative Cases": {
+    "Based on IEA (2016), \"Energy Technology Perspectives - 4DS\", IEA/OECD": "tam_based_on_IEA_2016_Energy_Technology_Perspectives_4DS_IEAOECD.csv"
+  },
+  "Ambitious Cases": {
+    "Based on IEA (2016), \"Energy Technology Perspectives - 2DS\", IEA/OECD": "tam_based_on_IEA_2016_Energy_Technology_Perspectives_2DS_IEAOECD.csv"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "Baseline Cases": {
+    "Organic Fraction of MSW - From Waste TAM": "tam_Organic_Fraction_of_MSW_From_Waste_TAM.csv"
+  },
+  "Region: OECD90": {
+    "Baseline Cases": {
+      "Organic Fraction of MSW - Waste TAM": "tam_Organic_Fraction_of_MSW_Waste_TAM.csv"
+    }
+  },
+  "Region: Eastern Europe": {
+    "Baseline Cases": {
+      "Organic Fraction of MSW - Waste TAM": "tam_Organic_Fraction_of_MSW_Waste_TAM.csv"
+    }
+  },
+  "Region: Asia (Sans Japan)": {
+    "Baseline Cases": {
+      "Organic Fraction of MSW - Waste TAM": "tam_Organic_Fraction_of_MSW_Waste_TAM.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Baseline Cases": {
+      "Organic Fraction of MSW - Waste TAM": "tam_Organic_Fraction_of_MSW_Waste_TAM.csv"
+    }
+  },
+  "Region: Latin America": {
+    "Baseline Cases": {
+      "Organic Fraction of MSW - Waste TAM": "tam_Organic_Fraction_of_MSW_Waste_TAM.csv"
+    }
+  },
+  "Region: China": {
+    "Baseline Cases": {
+      "Organic Fraction of MSW - Waste TAM": "tam_Organic_Fraction_of_MSW_Waste_TAM.csv"
+    }
+  },
+  "Region: India": {
+    "Baseline Cases": {
+      "Organic Fraction of MSW - Waste TAM": "tam_Organic_Fraction_of_MSW_Waste_TAM.csv"
+    }
+  },
+  "Region: EU": {
+    "Baseline Cases": {
+      "Organic Fraction of MSW - Waste TAM": "tam_Organic_Fraction_of_MSW_Waste_TAM.csv",
+      "European Commission DG Environment - Arcadis": "tam_European_Commission_DG_Environment_Arcadis.csv"
+    }
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "Organic Fraction of MSW - Waste TAM": "tam_Organic_Fraction_of_MSW_Waste_TAM.csv"
+    }
+  }
+}

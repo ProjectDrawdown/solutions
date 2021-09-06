@@ -1,0 +1,35 @@
+{
+  "Baseline Cases": {
+    "Based on IEA, WEO-2018, Current Policies Scenario (CPS)": "ad_based_on_IEA_WEO2018_Current_Policies_Scenario_CPS.csv",
+    "Based on: IEA ETP 2017 Ref Tech": "ad_based_on_IEA_ETP_2017_Ref_Tech.csv",
+    "Based on Equinor (2018), Rivalry Scenario": "ad_based_on_Equinor_2018_Rivalry_Scenario.csv",
+    "Based on IEEJ Outlook - 2019, Ref Scenario": "ad_based_on_IEEJ_Outlook_2019_Ref_Scenario.csv"
+  },
+  "Conservative Cases": {
+    "Based on IEA, WEO-2018, New Policies Scenario (NPS)": "ad_based_on_IEA_WEO2018_New_Policies_Scenario_NPS.csv",
+    "Based on Equinor (2018), Reform Scenario": "ad_based_on_Equinor_2018_Reform_Scenario.csv",
+    "Based on: Grantham Institute and Carbon Tracker (2017) Strong_PVEV_Med. Scenario": "ad_based_on_Grantham_Institute_and_Carbon_Tracker_2017_Strong_PVEV_Med__Scenario.csv",
+    "Based on IEEJ Outlook - 2019, Advanced Tech Scenario": "ad_based_on_IEEJ_Outlook_2019_Advanced_Tech_Scenario.csv"
+  },
+  "Ambitious Cases": {
+    "Based on IEA, WEO-2018, SDS Scenario": "ad_based_on_IEA_WEO2018_SDS_Scenario.csv",
+    "Based on: IEA ETP 2017 2DS": "ad_based_on_IEA_ETP_2017_2DS.csv",
+    "Based on: IEA ETP 2017 B2DS": "ad_based_on_IEA_ETP_2017_B2DS.csv",
+    "Based on Equinor (2018), Renewal Scenario": "ad_based_on_Equinor_2018_Renewal_Scenario.csv"
+  },
+  "100% RES2050 Case": {
+    "Based on: Greenpeace 2015 Advanced Revolution": "ad_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+  },
+  "Region: OECD90": {
+    "Conservative Cases": {
+      "Based on: AMPERE 2014 GEM E3 550": "ad_based_on_AMPERE_2014_GEM_E3_550.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 550": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: AMPERE 2014 GEM E3 450": "ad_based_on_AMPERE_2014_GEM_E3_450.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 450": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  }
+}

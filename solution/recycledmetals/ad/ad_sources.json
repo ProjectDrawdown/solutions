@@ -1,0 +1,15 @@
+{
+  "Conservative Cases": {
+    "Elshkaki et al. 2018 (MW/TR)": "ad_Elshkaki_et_al__2018_MWTR.csv",
+    "Elshkaki et al. 2018 (SF)": "ad_Elshkaki_et_al__2018_SF.csv",
+    "Elshkaki et al. 2018 (EW)": "ad_Elshkaki_et_al__2018_EW.csv"
+  },
+  "Ambitious Cases": {
+    "Materials Economics Circular Scenario": "ad_Materials_Economics_Circular_Scenario.csv",
+    "Van der Voet, 2018 - Circular Scenario": "ad_Van_der_Voet_2018_Circular_Scenario.csv",
+    "OECD - increased recycling": "ad_OECD_increased_recycling.csv"
+  },
+  "Maximum Cases": {
+    "Materials Economics Availability Limitation (Steel + Al)": "ad_Materials_Economics_Availability_Limitation_Steel_Al.csv"
+  }
+}

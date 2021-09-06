@@ -1,0 +1,12 @@
+[
+  {
+    "name": "PDS1 ~10% CAGR",
+    "description": "Based on projected market value growth of ethical and sustainable fashion (as a percent of Total Market $784B), at between 9-10% CAGR ",
+    "filename": "custom_pds_ad_PDS1_10_CAGR.csv"
+  },
+  {
+    "name": "PDS2 - 32% adoption by 2040 (Based on Quantis 40% recycled fibers)",
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS2_32_adoption_by_2040_based_on_Quantis_40_recycled_fibers.csv"
+  }
+]
