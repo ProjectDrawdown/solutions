@@ -25,9 +25,26 @@ def df_excel_range(df, rangeref, to_numeric=True):
         result = result.apply(pd.to_numeric,errors='ignore')
     return result
 
+def find_in_column(ws, col, val, start_row=1):
+    """Return the first row number (1-based) beginning with start_row where val is 
+    found in the indicated column."""
+    x = start_row
+    while x <= ws.max_row:
+        if ws.cell(x,col).value == val:
+            return x
+        x = x+1
+    return None
+
+def read_row(ws, row_num, start_col=1, end_col=None):
+    """Return a list of values from ws for the given row"""
+    end_col = end_col or ws.max_column
+    return [x[0] for x in ws.iter_cols(min_col=start_col, max_col=end_col, min_row=row_num, max_row=row_num, values_only=True)]
+
+
 def co(colref):
-    """Convert a column reference like "D" or "AA" to an index in 1-based notation"""
-    return openpyxl.utils.cell.column_index_from_string(colref)
+    """Convert a column reference like "D" or "AA" to an index in 1-based notation.
+    If colref is already an integer, passes it on unchanged."""
+    return colref if isinstance(colref, int) else openpyxl.utils.cell.column_index_from_string(colref)
 
 # The functions xls, xln and xli all take two forms of parameters
 #   xls(tab, ref)        # ref in "A3" format

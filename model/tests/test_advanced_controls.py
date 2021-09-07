@@ -322,7 +322,7 @@ def test_from_json():
 
 
 def test_to_json():
-    (f, jsfile) = tempfile.mkstemp()
+    (fd, jsfile) = tempfile.mkstemp()
     ac = advanced_controls.AdvancedControls(
         soln_lifetime_capacity=1.0, soln_avg_annual_use=2.0,
         conv_lifetime_capacity=3.0, conv_avg_annual_use=4.0,
@@ -330,6 +330,7 @@ def test_to_json():
     ac.write_to_json_file()
     with open(jsfile, 'r') as fid:
         js = json.loads(fid.read())
+    os.close(fd)
     os.unlink(jsfile)
     assert js['soln_lifetime_capacity'] == 1.0
     assert js['soln_avg_annual_use'] == 2.0

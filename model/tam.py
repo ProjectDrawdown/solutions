@@ -14,6 +14,34 @@ import pandas as pd
 from model.data_handler import DataHandler
 from model.decorators import data_func
 
+
+default_tam_config_array =  [
+        ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+            'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+        ['source_until_2014'] + ['ALL SOURCES'] * 11,
+        ['source_after_2014'] + ['ALL SOURCES'] * 11,
+        ['trend'] + ['3rd Poly'] * 11,
+        ['growth'] + ['Medium'] * 11,
+        ['low_sd_mult'] + [1.0] * 11,
+        ['high_sd_mult'] + [1.0] * 11
+    ]
+def make_tam_config(tam_config_array=None, overrides=None) -> pd.DataFrame:
+    """Create a tam configuration.
+    Overrides, if provided, should be in the form of a list of tuples
+    `(param, region, value)`
+    If override region is None, the value is applied to all regions."""
+    
+    tam_config_array = tam_config_array or default_tam_config_array
+    tamconfig = pd.DataFrame(tam_config_array[1:], columns=tam_config_array[0]).set_index('param')
+    if overrides is not None:
+        for (param,region,val) in overrides:
+            if region is None:
+                tamconfig.loc[param] = val
+            else:
+                tamconfig.loc[param,region] = val
+    return tamconfig
+
+
 class TAM(DataHandler, object, metaclass=MetaclassCache):
     """Total Addressable Market module."""
 
@@ -22,9 +50,9 @@ class TAM(DataHandler, object, metaclass=MetaclassCache):
         """TAM module.
 
            Arguments
-           tamconfig: Pandas dataframe with columns:
+           tamconfig: Pandas dataframe with rows:
               'source_until_2014', 'source_after_2014', 'trend', 'growth', 'low_sd_mult', 'high_sd_mult'
-              and rows for each region:
+              and columns for each region:
               'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
               'Latin America', 'China', 'India', 'EU', 'USA'
            tam_ref_data_sources: a dict() of group names which contain dicts of data source names.
@@ -78,11 +106,14 @@ class TAM(DataHandler, object, metaclass=MetaclassCache):
 
                 for name, filename in sources.items():
                     df = pd.read_csv(filename, header=0, index_col="Year", skipinitialspace=True,
-                            skip_blank_lines=True, comment='#', usecols=["Year"] + regions)
+                            skip_blank_lines=True, comment='#').reindex(columns=regions)
                     for region in regions:
                         df_per_region[region][name] = df[region]
 
         for (groupname, group) in self.tam_pds_data_sources.items():
+            # At this time, PDS TAM does not have regional data.
+            if groupname.startswith("Region: "):
+                continue
             for (name, value) in group.items():
                 sources = {name: value} if self._is_path(value) else value
 

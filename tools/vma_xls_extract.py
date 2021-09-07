@@ -12,7 +12,7 @@
 import collections
 import os
 import pathlib
-
+import warnings
 import numpy as np
 import pandas as pd
 import tools.util
@@ -162,7 +162,8 @@ class VMAReader:
                 return filename
         return None
 
-    def xls_df_dict(self, sheetname=None, title=None, fixed_summary=None):
+    def xls_df_dict(self, sheetname=None, title=None, fixed_summary=None,
+                    start_row=41, max_tables=36):
         """
         Finds tables in self.wb, reads them into dataframes, then returns a
         dictionary keyed by the table title. If a title is given, return a
@@ -175,10 +176,14 @@ class VMAReader:
                     if it is available, or 'Variable Meta-analysis' otherwise
             fixed_summary: if True, read the stored high, low and average as well.  If False,
                     these will be recomputed.  If None, default behavior for the sheet will be done.
+            start_row: 1-based row to start looking for tables.  The default value matches the
+                    standard Variable Meta-Analysis sheet
+            max_tables: Maximum number of tables to search for.  36 is the default for the standard
+                    VMA sheet.  Note, xls_df_dict will exit earlier if tables without names are found.
 
         Returns:
             Returns a dictionary of tuples, of the form: {
-                "title of the VMA, found by _find_tables": (
+                "title of the VMA, as found by _find_tables": (
                     VMA dataframe,
                     Boolean value from the table on whether to "Use weight?" 
                     Float tuple, fixed summary values: (mean, high, low)
@@ -194,7 +199,7 @@ class VMAReader:
             fixed_summary = (sheetname == 'Variable Meta-analysis-DD')
 
         # Extract VMA table locations
-        self._find_tables(sheetname=sheetname)
+        self._find_tables(sheetname=sheetname, start_row=start_row ,max_tables=max_tables)
 
         # Either extract all titles or the desired one
         if title is None:
@@ -220,6 +225,7 @@ class VMAReader:
 
         return df_dict
 
+
     def read_xls(self, csv_path=None, sheetname=None):
         """
         Reads the whole Variable Meta-analysis xls sheet. If a CSV path is
@@ -232,8 +238,11 @@ class VMAReader:
             sheet to read from, if not the default
 
         Returns a sort of "directory dataframe", pointing to each created CSV,
-        noting the VMA title for that CSV, along with a couple of boolean
-        values.
+        noting the VMA title for that CSV, along with two booleans: use_weight
+        and has_data.
+
+        This function only reads the standard excel tabs and assumes the standard
+        spacing, number of entries, etc.
         """
 
         df_dict = self.xls_df_dict(sheetname)
@@ -404,9 +413,9 @@ class VMAReader:
         return df, use_weight, (average, high, low)
 
 
-    def _find_tables(self, sheetname):
+    def _find_tables(self, sheetname, start_row, max_tables):
         """
-        Finds locations of all tables from the Variable Meta-analysis tab. They are not
+        Finds locations of tables on a Variable Meta-analysis tab. They are not
         evenly spaced due to missing or extra rows, so to be safe we comb the following
         N rows from each table title. We also comb 10 rows ahead of each title to find
         the SOURCE ID cell, as this is also a varying spacing.
@@ -421,8 +430,8 @@ class VMAReader:
 
         table_locations = collections.OrderedDict()
         sheet = self.wb[sheetname]
-        row = 41
-        for table_num in range(1, 36):
+        row = start_row
+        for table_num in range(max_tables):
             found = False
             # there is no specific limit on table size, but this effectively works
             for search_row in range(row, row+300):
@@ -439,8 +448,8 @@ class VMAReader:
                         raise Exception(f"VMA find_tables got lost on row {search_row}")
                         
                     if title.startswith('VARIABLE'):
-                        # if the table has a generic VARIABLE title assume no more variables to record
-                        # this is the normal exit
+                        # If the table has a generic VARIABLE title assume no more variables to record.
+                        # This is the normal exit
                         self.table_locations = table_locations
                         return  # search for tables ends here
                     
@@ -452,8 +461,7 @@ class VMAReader:
                     break
             
             if not found:
-                print(table_locations)
-                raise Exception(f"VMA find_tables could not find table {table_num} up to row {search_row}")                
+                warnings.warn(f"VMA find_tables found fewer than {max_tables} tables (found {table_num} up to row {search_row})")
+                break            
 
-        # if we had all 36 tables, we exit here.
         self.table_locations = table_locations

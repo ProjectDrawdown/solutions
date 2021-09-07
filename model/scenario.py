@@ -149,24 +149,6 @@ class RRSScenario(Scenario):
 
     tm: tam.TAM = None
 
-    # This may be overridden by a class if they don't use the standard configuration
-    _tamconfig_list = [
-        ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-            'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-        ['source_until_2014', None, None, # These will be substituted from the scenario
-            'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-            'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-        ['source_after_2014', None, None, # These will be substituted from the scenario
-            'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-            'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES'],
-        ['trend', '3rd Poly', '3rd Poly',
-            '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-            '3rd Poly', '3rd Poly', '3rd Poly'],
-        ['growth', 'Medium', 'Medium', 'Medium', 'Medium',
-            'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-        ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-        ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    
     # These must be set by each class
     tam_ref_data_sources = None
     tam_pds_data_sources = None
@@ -177,11 +159,11 @@ class RRSScenario(Scenario):
         and self.tam_pds_data_sources.  
         
         Overrides to individual values in the tamconfig can also be specified
-        in the config_values argument, which should be a list of tuples (rowname, columname, value)
+        in the config_values argument, which should be a list of tuples (param_name, region, value)
 
         Other configuration values may be passed directly to tam.TAM via **args.
         """
-        tamconfig = pd.DataFrame(self._tamconfig_list[1:], columns=self._tamconfig_list[0]).set_index('param')
+        tamconfig = tam.make_tam_config()
         tamconfig.loc['source_until_2014','World']     = self.ac.source_until_2014
         tamconfig.loc['source_until_2014','PDS World'] = self.ac.source_until_2014
         tamconfig.loc['source_after_2014','World']     = self.ac.ref_source_post_2014
