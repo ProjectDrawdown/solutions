@@ -608,8 +608,18 @@ class OceanSolution(Solution):
         return result / 1000
 
 
-    def get_annual_emissions_reduction_final_year(self) -> np.float64:
+    def get_total_emissions_reduction(self) -> np.float64:
         total_emissions_reduction = self.get_total_emissions_reduction_series()
         result = total_emissions_reduction.loc[self.end_year]
         
         return result / 1000
+
+
+    def key_results(self) -> dict:
+        """Define key results for ocean scenarios."""
+        return {'adoption_unit_increase': self.get_adoption_unit_increase_pds_vs_ref_final_year(),
+                'marginal_first_cost': self.get_marginal_first_cost(),
+                'net_operating_savings': None,  # TODO
+                'lifetime_operating_savings': self.get_lifetime_operating_savings(),
+                'cumulative_emissions_reduced': self.get_total_emissions_reduction(),
+                'total_additional_co2eq_sequestered': self.get_total_co2_seq()}
