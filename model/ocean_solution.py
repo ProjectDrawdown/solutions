@@ -608,7 +608,7 @@ class OceanSolution(Solution):
         return result / 1000
 
 
-    def get_total_emissions_reduction(self) -> np.float64:
+    def get_total_emissions_reduction_final_year(self) -> np.float64:
         total_emissions_reduction = self.get_total_emissions_reduction_series()
         result = total_emissions_reduction.loc[self.end_year]
         
