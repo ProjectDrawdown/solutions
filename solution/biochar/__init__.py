@@ -131,17 +131,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                'Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. Alpha Scenario': THISDIR.joinpath('tam', 'tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_and_Woolf_et_al_2010_method_144eca81.csv'),
-        },
-            'Conservative Cases': {
-                'Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. Beta Scenario': THISDIR.joinpath('tam', 'tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_and_Woolf_et_al_2010_method_2a78e935.csv'),
-        },
-            'Maximum Cases': {
-                'Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. MSTP Scenario': THISDIR.joinpath('tam', 'tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_and_Woolf_et_al_2010_method_a5bf52aa.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = _ref_tam_sources
 
     def __init__(self, scen=None):
@@ -299,4 +289,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

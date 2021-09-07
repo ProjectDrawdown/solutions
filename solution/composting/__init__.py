@@ -124,62 +124,8 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                'Organic Fraction of MSW - From Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_From_Waste_TAM.csv'),
-        },
-            'Region: OECD90': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: Eastern Europe': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: Asia (Sans Japan)': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: Middle East and Africa': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: Latin America': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: China': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: India': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: EU': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-                'European Commission DG Environment - Arcadis': THISDIR.joinpath('tam', 'tam_European_Commission_DG_Environment_Arcadis.csv'),
-            },
-        },
-            'Region: USA': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-    }
-    _pds_tam_sources = {
-        'Baseline Cases': {
-                'Drawdown TAM: Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -474,4 +420,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

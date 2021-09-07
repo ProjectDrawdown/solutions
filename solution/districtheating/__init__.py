@@ -129,26 +129,8 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-        'Baseline Cases': {
-                'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_6DS.csv'),
-        },
-        'Conservative Cases': {
-                'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_4DS.csv'),
-        },
-        'Ambitious Cases': {
-                'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_2DS.csv'),
-        },
-    }
-    _pds_tam_sources = {
-            'Ambitious Cases': {
-                    'Drawdown TAM: Drawdown Integrated TAM - PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS1.csv'),
-                    'Drawdown TAM: Drawdown Integrated TAM - PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS2.csv'),
-            },
-            'Maximum Cases': {
-                    'Drawdown TAM: Drawdown Integrated TAM - PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integrated_TAM_PDS3.csv'),
-            },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -288,4 +270,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

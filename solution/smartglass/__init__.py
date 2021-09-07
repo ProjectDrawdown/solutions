@@ -128,22 +128,8 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-        'Baseline Cases': {
-                'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-                'Ürge-Vorsatz et al. (2015) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
-        },
-        'Region: USA': {
-            'Baseline Cases': {
-                'Annual Energy Outlook 2016, U.S. Energy Information Administration, 2016.': THISDIR.joinpath('tam', 'tam_Annual_Energy_Outlook_2016_U_S__Energy_Information_Administration_2016_.csv'),
-            },
-        },
-    }
-    _pds_tam_sources = {
-        'Baseline Cases': {
-                'Drawdown TAM: Adjusted GBPN Data - Commercial Floor Area': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Adjusted_GBPN_Data_Commercial_Floor_Area.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -285,4 +271,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

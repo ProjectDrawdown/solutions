@@ -124,17 +124,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                'Based on: IEA ETP 2014 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_6DS.csv'),
-        },
-            'Conservative Cases': {
-                'Based on: IEA ETP 2014 4DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_4DS.csv'),
-        },
-            'Ambitious Cases': {
-                'Based on: IEA ETP 2014 2DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_2DS.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
 
     def __init__(self, scen=None):
@@ -346,4 +336,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

@@ -110,24 +110,8 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                'Drawdown TAM PDS 1- Plastics Available after Reduction and Replacement': THISDIR.joinpath('tam', 'tam_Drawdown_TAM_PDS_1_Plastics_Available_after_Reduction_and_Replacement.csv'),
-        },
-            '': {
-                'Drawdown TAM PDS 2- Plastics Available after Reduction and Replacement': THISDIR.joinpath('tam', 'tam_Drawdown_TAM_PDS_2_Plastics_Available_after_Reduction_and_Replacement.csv'),
-                'Drawdown TAM PDS 3- Plastics Available after Reduction and Replacement': THISDIR.joinpath('tam', 'tam_Drawdown_TAM_PDS_3_Plastics_Available_after_Reduction_and_Replacement.csv'),
-        },
-    }
-    _pds_tam_sources = {
-        'Baseline Cases': {
-                'Drawdown TAM: Integrated Drawdown TAM - Recycled Plastics Allocation PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Drawdown_TAM_Recycled_Plastics_Allocation_PDS1.csv'),
-        },
-        '': {
-                'Drawdown TAM: Integrated Drawdown TAM - Recycled Plastics Allocation PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Drawdown_TAM_Recycled_Plastics_Allocation_PDS2.csv'),
-                'Drawdown TAM: Integrated Drawdown TAM - Recycled Plastics Allocation PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Drawdown_TAM_Recycled_Plastics_Allocation_PDS3.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -295,4 +279,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

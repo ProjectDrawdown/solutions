@@ -123,29 +123,8 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                'Based on ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
-                'Based on ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv'),
-        },
-            'Conservative Cases': {
-                'Based on ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
-                'Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario': THISDIR.joinpath('tam', 'tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_Baseline_Scenario.csv'),
-        },
-            'Ambitious Cases': {
-                'Based on ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
-                'Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario': THISDIR.joinpath('tam', 'tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_HighShift_Scenario.csv'),
-        },
-    }
-    _pds_tam_sources = {
-        'Ambitious Cases': {
-                'Drawdown TAM: Integrated Urban TAM post Non-Car Solutions for PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Urban_TAM_post_NonCar_Solutions_for_PDS1.csv'),
-                'Drawdown TAM: Integrated Urban TAM post Non-Car Solutions for PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Urban_TAM_post_NonCar_Solutions_for_PDS2.csv'),
-        },
-        'Maximum Cases': {
-                'Drawdown TAM: Integrated Urban TAM post Non-Car Solutions for PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Urban_TAM_post_NonCar_Solutions_for_PDS3.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -378,4 +357,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

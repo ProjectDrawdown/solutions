@@ -110,17 +110,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                    'Drawdown Calculations - High Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_High_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Pro_3a9477d3.csv'),
-            },
-            'Conservative Cases': {
-                    'Drawdown Calculations - Medium Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_Medium_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__P_557e4efd.csv'),
-            },
-            'Ambitious Cases': {
-                    'Drawdown Calculations - Low Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. Öko-Recherche.': THISDIR.joinpath('tam', 'tam_Drawdown_Calculations_Low_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Proj_5ee67131.csv'),
-            },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
 
     def __init__(self, scen=None):
@@ -264,4 +254,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

@@ -104,17 +104,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                'Mean of Velders 2015 Upper and Lower HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Mean_of_Velders_2015_Upper_and_Lower_HFC_Emissions_Scenarios.csv'),
-        },
-            'Conservative Cases': {
-                'Velders 2015 Upper  HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Velders_2015_Upper_HFC_Emissions_Scenarios.csv'),
-        },
-            'Ambitious Cases': {
-                'Velders 2015 Lower  HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Velders_2015_Lower_HFC_Emissions_Scenarios.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
 
     def __init__(self, scen=None):
@@ -289,4 +279,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

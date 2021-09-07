@@ -139,21 +139,8 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-        'Baseline Cases': {
-                'Drawdown Custom projection 1': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_projection_1.csv'),
-                'Drawdown Custom Projection 2': THISDIR.joinpath('tam', 'tam_Drawdown_Custom_Projection_2.csv'),
-        },
-    }
-    _pds_tam_sources = {
-        'Conservative Cases': {
-                'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Plausible Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Plausible_Scenario_Reduc_f47a5b4e.csv'),
-        },
-        'Ambitious Cases': {
-                'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Drawdown Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Drawdown_Scenario_Reduce_a7c36895.csv'),
-                'Drawdown TAM: Drawdown Integration Assumptions (Water Saving Home /Optimum Scenario Reduces Demand for Municipal Water Pumping), 2018': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Drawdown_Integration_Assumptions_Water_Saving_Home_Optimum_Scenario_Reduces_2beea6a5.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -292,4 +279,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

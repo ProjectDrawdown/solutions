@@ -118,21 +118,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                'Based on Smith et al (2014) 3rd IMO GHG Study - from Fig 82, 83 on P138, P139 (Max range) combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_Smith_et_al_2014_3rd_IMO_GHG_Study_from_Fig_82_83_on_P138_P139_Max_range_combin_1bc1c897.csv'),
-                'Based on Buhaug et al, (2009) 2nd IMO GHG Study - Table 7.4-7.6 pg 94-95 (Max Values) combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_Buhaug_et_al_2009_2nd_IMO_GHG_Study_Table_7_47_6_pg_9495_Max_Values_combined_wi_6529c612.csv'),
-                'Based on  RACE Project (2013) Current Transport Demand and Global Transport Outlook. Report D5.1, Table 30 pg 126, EU FP7 314753 (Max range) Table 30 pg 126 combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_RACE_Project_2013_Current_Transport_Demand_and_Global_Transport_Outlook__Report_b60b435c.csv'),
-        },
-            'Ambitious Cases': {
-                'Based on Smith et al (2014) 3rd IMO GHG Study - from Fig 82, 83 on P138, P139 (Min range) combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_Smith_et_al_2014_3rd_IMO_GHG_Study_from_Fig_82_83_on_P138_P139_Min_range_combin_c6961745.csv'),
-                'Based on Buhaug et al, (2009) 2nd IMO GHG Study - Table 7.4-7.6 pg 94-95 (Min Values) combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_Buhaug_et_al_2009_2nd_IMO_GHG_Study_Table_7_47_6_pg_9495_Min_Values_combined_wi_6f2a6b89.csv'),
-                'Based on  RACE Project (2013) Current Transport Demand and Global Transport Outlook. Report D5.1, Table 30 pg 126, EU FP7 314753 (Min range) Table 30 pg 126 combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_based_on_RACE_Project_2013_Current_Transport_Demand_and_Global_Transport_Outlook__Report_40df86b5.csv'),
-        },
-            'Maximum Cases': {
-                'OPRF (2008) Study On Worlds Changing Maritime Industry Pg 30 Appdx 1 combined with UNCTAD 2018 International Maritime Data to 2018': THISDIR.joinpath('tam', 'tam_OPRF_2008_Study_On_Worlds_Changing_Maritime_Industry_Pg_30_Appdx_1_combined_with_UNCTAD__8deff703.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
 
     def __init__(self, scen=None):
@@ -342,4 +328,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

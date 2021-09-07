@@ -133,11 +133,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-        'Baseline Cases': {
-                'Project Drawdown Estimated based on World Bank and WHO. Water Use Regression against GDP/capita used to estimate GL of water used for populations with at least US$10,000 GDP capita assuming Gini distribution of wealth.': THISDIR.joinpath('tam', 'tam_Project_Drawdown_Estimated_based_on_World_Bank_and_WHO__Water_Use_Regression_against_GDP_f76a56c1.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
 
     def __init__(self, scen=None):
@@ -281,4 +277,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

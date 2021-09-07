@@ -1081,7 +1081,7 @@ def one_solution_tester(solution_name, expected_filename, is_land=False,
                     is_land=is_land,
                     scenario_skip=scenario_skip)
 
-            obj = m.Scenario(scenario=scenario_name)
+            obj = m.Scenario(scen=scenario_name)
             if is_land:
                 to_verify = LAND_solution_verify_list(obj, zf)
             else:

@@ -135,22 +135,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                'Project Drawdown - Based on Data from Several Sources. (See HVFAC Links Sheet and HVFAC Material Availability Models)': THISDIR.joinpath('tam', 'tam_Project_Drawdown_based_on_Data_from_Several_Sources__See_HVFAC_Links_Sheet_and_HVFAC_Mat_2961774c.csv'),
-        },
-            'Conservative Cases': {
-                'IEA 2018 Low-Variability': THISDIR.joinpath('tam', 'tam_IEA_2018_LowVariability.csv'),
-                'Farfan et al. 2019': THISDIR.joinpath('tam', 'tam_Farfan_et_al__2019.csv'),
-                'van Ruijven et al. 2016': THISDIR.joinpath('tam', 'tam_van_Ruijven_et_al__2016.csv'),
-        },
-            'Ambitious Cases': {
-                'IEA 2018 High-Variability': THISDIR.joinpath('tam', 'tam_IEA_2018_HighVariability.csv'),
-        },
-            'Maximum Cases': {
-                'WBCSD Cement 2002': THISDIR.joinpath('tam', 'tam_WBCSD_Cement_2002.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = _ref_tam_sources
 
     def __init__(self, scen=None):
@@ -540,4 +525,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

@@ -103,18 +103,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                'Ellen Macarthur Foundation. 3% Growth to 160 in 2050': THISDIR.joinpath('tam', 'tam_Ellen_Macarthur_Foundation__3_Growth_to_160_in_2050.csv'),
-        },
-            '': {
-                'Global Fashion Agenda - Pulse of Fashion Industry 102 in 2030': THISDIR.joinpath('tam', 'tam_Global_Fashion_Agenda_Pulse_of_Fashion_Industry_102_in_2030.csv'),
-                'Quantis, Measuring Fashion, Apparel': THISDIR.joinpath('tam', 'tam_Quantis_Measuring_Fashion_Apparel.csv'),
-        },
-            'Conservative Cases': {
-                'Textile Exchange 2019,2020 (Assume 60% of Fibers for Clothing)': THISDIR.joinpath('tam', 'tam_Textile_Exchange_20192020_Assume_60_of_Fibers_for_Clothing.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
 
     def __init__(self, scen=None):
@@ -300,4 +289,3 @@ class Scenario(scenario.RRSScenario):
         #     self.ua.soln_pds_funits_adopted.loc[2018, "World"] = 0.477787    
         # # Note: tried this but this still didn't fix the issue, I think the overwriting of this happens happens within  the ua.soln_pds_tot_iunits_reqd() function
                     
-

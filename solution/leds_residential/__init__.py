@@ -148,37 +148,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                    'Calculations, see sheet "IEA 2006 TAM" for details': THISDIR.joinpath('tam', 'tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-                    'Calculations on the basis of floor space (m2, Urge-Vorsats et al. 2013 data), average illuminance (lm/m2) and annual operating time (constant 1000 h/a)': THISDIR.joinpath('tam', 'tam_Calculations_on_the_basis_of_floor_space_m2_UrgeVorsats_et_al__2013_data_average_illumin_66d3beb0.csv'),
-                    'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-            },
-            'Region: China': {
-            'Baseline Cases': {
-                    'Calculations, see sheet "IEA 2006 TAM" for details': THISDIR.joinpath('tam', 'tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-                    'Calculations on the basis of floor space (m2, Hong et al. 2014 data), average illuminance (lm/m2) and annual operating time (constant 1000 h/a)': THISDIR.joinpath('tam', 'tam_Calculations_on_the_basis_of_floor_space_m2_Hong_et_al__2014_data_average_illuminance_lm_d069a17b.csv'),
-                    'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-            },
-            },
-            'Region: EU': {
-            'Baseline Cases': {
-                    'VITO 2015 Task 7, corrected': THISDIR.joinpath('tam', 'tam_VITO_2015_Task_7_corrected.csv'),
-                    'Calculations, see sheet "IEA 2006 TAM" for details': THISDIR.joinpath('tam', 'tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-                    'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-            },
-            },
-            'Region: USA': {
-            'Baseline Cases': {
-                    'Navigant Consulting 2010 http://apps1.eere.energy.gov/buildings/publications/pdfs/ssl/ssl_energy-savings-report_10-30.pdf, growth rate 1.31% in http://apps1.eere.energy.gov/buildings/publications/pdfs/ssl/energysavingsforecast14.pdf': THISDIR.joinpath('tam', 'tam_Navigant_Consulting_2010_httpapps1_eere_energy_govbuildingspublicationspdfssslssl_energy_95d1ca30.csv'),
-                    'US DOE 2014 Energy saving forecast (total Tlmh lighting in Figure 3.2) & US DOE 2012 (2010 US Lighting Market) for 8% residential lighting, assumed to be constant': THISDIR.joinpath('tam', 'tam_US_DOE_2014_Energy_saving_forecast_total_Tlmh_lighting_in_Figure_3_2_US_DOE_2012_2010_US_0abbe87d.csv'),
-                    'ETP2016 6 DS; average efficacy flat at 2014 level; interpolated, 2nd poly; see ETP2016 TAM sheet': THISDIR.joinpath('tam', 'tam_ETP2016_6_DS_average_efficacy_flat_at_2014_level_interpolated_2nd_poly_see_ETP2016_TAM_sheet.csv'),
-            },
-            'Conservative Cases': {
-                    'Calculations, see sheet "IEA 2006 TAM" for details': THISDIR.joinpath('tam', 'tam_Calculations_see_sheet_IEA_2006_TAM_for_details.csv'),
-            },
-            },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = _ref_tam_sources
 
 
@@ -309,4 +279,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

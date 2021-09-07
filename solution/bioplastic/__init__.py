@@ -115,16 +115,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                    'Custom TAM based on PlasticsEurope (2015) & World Economic Forum (2016)': THISDIR.joinpath('tam', 'tam_Custom_TAM_based_on_PlasticsEurope_2015_World_Economic_Forum_2016.csv'),
-                    'Custom TAM based on PlasticsEurope (2015) & 3.6% growth rate': THISDIR.joinpath('tam', 'tam_Custom_TAM_based_on_PlasticsEurope_2015_3_6_growth_rate.csv'),
-            },
-            'Ambitious Cases': {
-                    'Custom TAM based on Mosko (2012) assuming 5.3% growth from 2013-2020': THISDIR.joinpath('tam', 'tam_Custom_TAM_based_on_Mosko_2012_assuming_5_3_growth_from_20132020.csv'),
-                    'PlasticsEurope (PEMRG) (2015), for historic values / Mosko (2012) est. 385MMt in 2050': THISDIR.joinpath('tam', 'tam_PlasticsEurope_PEMRG_2015_for_historic_values_Mosko_2012_est__385MMt_in_2050.csv'),
-            },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = _ref_tam_sources
 
     def __init__(self, scen=None):
@@ -278,4 +269,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

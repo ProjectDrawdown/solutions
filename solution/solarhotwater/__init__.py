@@ -126,49 +126,8 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-        'Baseline Cases': {
-                'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
-                'IEA 6DS (2016), Residential & Commercial Water Heating': THISDIR.joinpath('tam', 'tam_IEA_6DS_2016_Residential_Commercial_Water_Heating.csv'),
-                'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
-        },
-        'Conservative Cases': {
-                'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
-                'IEA 4DS (2016), Residential & Commercial Water Heating': THISDIR.joinpath('tam', 'tam_IEA_4DS_2016_Residential_Commercial_Water_Heating.csv'),
-        },
-        'Region: OECD90': {
-            'Baseline Cases': {
-                'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
-                'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
-                'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
-            },
-        },
-        'Region: Eastern Europe': {
-            'Baseline Cases': {
-                'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
-                'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
-                'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
-            },
-        },
-        'Region: Asia (Sans Japan)': {
-            'Baseline Cases': {
-                'Custom calculated from (GBPN, Urge-Vorsatz Factored by IEA Building  Data)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_UrgeVorsatz_Factored_by_IEA_Building_Data.csv'),
-                'Custom calculated from (GBPN and Urge-Vorsatz)': THISDIR.joinpath('tam', 'tam_Custom_calculated_from_GBPN_and_UrgeVorsatz.csv'),
-                'GBPN Energy for water heating, Urban & Rural / All buildings, All Vintages, Frozen efficiency (Water Heating Thermal energy use in TWHth)': THISDIR.joinpath('tam', 'tam_GBPN_Energy_for_water_heating_Urban_Rural_All_buildings_All_Vintages_Frozen_efficiency_W_e86b69eb.csv'),
-            },
-        },
-    }
-    _pds_tam_sources = {
-        'Baseline Cases': {
-                'Drawdown TAM: PDS1 - post-Low-Flow': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_PDS1_postLowFlow.csv'),
-        },
-        'Conservative Cases': {
-                'Drawdown TAM: PDS2 - post-Low-Flow': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_PDS2_postLowFlow.csv'),
-        },
-        'Ambitious Cases': {
-                'Drawdown TAM: PDS3 - post-Low-Flow': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_PDS3_postLowFlow.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -326,4 +285,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

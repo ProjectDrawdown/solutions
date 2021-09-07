@@ -108,23 +108,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-        'Baseline Cases': {
-                'USGS (Historical) + Elshkaki et al. SF Scenario': THISDIR.joinpath('tam', 'tam_USGS_Historical_Elshkaki_et_al__SF_Scenario.csv'),
-                'Elshkaki et al. MW/TR Scenarios + USGS (Historical)': THISDIR.joinpath('tam', 'tam_Elshkaki_et_al__MWTR_Scenarios_USGS_Historical.csv'),
-                'USGS (Historical) + Linear extrapolation': THISDIR.joinpath('tam', 'tam_USGS_Historical_Linear_extrapolation.csv'),
-        },
-        'Conservative Cases': {
-                'Van der Voet + USGS Historical': THISDIR.joinpath('tam', 'tam_Van_der_Voet_USGS_Historical.csv'),
-                'OECD, 2018, Demand Scenarios': THISDIR.joinpath('tam', 'tam_OECD_2018_Demand_Scenarios.csv'),
-        },
-            'Ambitious Cases': {
-                'Materials Economics Circular Economy Report (2018)': THISDIR.joinpath('tam', 'tam_Materials_Economics_Circular_Economy_Report_2018.csv'),
-        },
-            'Maximum Cases': {
-                'USGS (Historical) + S-Curve': THISDIR.joinpath('tam', 'tam_USGS_Historical_SCurve.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
 
     def __init__(self, scen=None):
@@ -278,4 +262,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

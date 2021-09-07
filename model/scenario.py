@@ -380,7 +380,7 @@ class LandScenario(Scenario):
 
 
     
-def load_and_root(jsonfile, fieldname='filename'):
+def load_sources(jsonfile, fieldname='filename'):
     """Load the named jsonfile, and replace relative filenames within it with absolute ones based on the same directory.
     Works for tam, ad, configs.  By default, replaces fields named 'filename'.  If the special
     field name '*' is given, then _any_ string-valued dictionary value is replaced."""

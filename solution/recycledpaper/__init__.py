@@ -119,72 +119,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-        'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
-                'See sheet FAO 2009, annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045) from RISI': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009_annual_growth_rates_in_Drawdown_regions_20152020_20202030_and_2030204_01422925.csv'),
-        },
-        'Ambitious Cases': {
-                'See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%': THISDIR.joinpath('tam', 'tam_See_McKinnsey_Co_2013_sheet_annual_growth_after_2030_27.csv'),
-        },
-        'Maximum Cases': {
-                'See McKinnsey & Co 2013 sheet (annual growth after 2030 2,2%': THISDIR.joinpath('tam', 'tam_See_McKinnsey_Co_2013_sheet_annual_growth_after_2030_22.csv'),
-        },
-        'Region: OECD90': {
-            'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
-                'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
-            },
-        },
-        'Region: Eastern Europe': {
-            'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
-                'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
-            },
-        },
-        'Region: Asia (Sans Japan)': {
-            'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
-                'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
-            },
-        },
-        'Region: Middle East and Africa': {
-            'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
-                'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
-            },
-        },
-        'Region: Latin America': {
-            'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__651dff99.csv'),
-                'See sheet FAO 2009': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_2009.csv'),
-            },
-        },
-        'Region: China': {
-            'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__f4ea722f.csv'),
-            },
-            'Ambitious Cases': {
-                'See sheet PÖYRY 2013. Linear interpolation 2011-2025 is used. After 2025 annual growth rate of 3,6% is used according to FAO 2009 Asia and the Pacific region annual growth rate 2020-2030.': THISDIR.joinpath('tam', 'tam_See_sheet_PÖYRY_2013__Linear_interpolation_20112025_is_used__After_2025_annual_growth_ra_5f611a03.csv'),
-            },
-        },
-        'Region: India': {
-            'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__f4ea722f.csv'),
-            },
-        },
-        'Region: EU': {
-            'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__f4ea722f.csv'),
-            },
-        },
-        'Region: USA': {
-            'Baseline Cases': {
-                '[FAO Stat 2014] Original data from webpage FAO Stat 2014. See RIGI data on the same sheet for annual growth rates in Drawdown regions and countries (2015-2020, 2020-2030 and 2030-2045).': THISDIR.joinpath('tam', 'tam_FAO_Stat_2014_Original_data_from_webpage_FAO_Stat_2014__See_RIGI_data_on_the_same_sheet__f4ea722f.csv'),
-                'See sheet FAO 2015-2020, prognostication based on RIGI -0.9% annum growth': THISDIR.joinpath('tam', 'tam_See_sheet_FAO_20152020_prognostication_based_on_RIGI_0_9_annum_growth.csv'),
-            },
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
 
     def __init__(self, scen=None):
@@ -337,4 +272,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

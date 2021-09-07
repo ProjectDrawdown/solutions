@@ -139,11 +139,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-            'Baseline Cases': {
-                            'Project Drawdown Analysis of Several Sources.Click to see source.': THISDIR.joinpath('tam', 'tam_Project_Drawdown_Analysis_of_Several_Sources_Click_to_see_source_.csv'),
-            },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = _ref_tam_sources
 
     def __init__(self, scen=None):
@@ -281,4 +277,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

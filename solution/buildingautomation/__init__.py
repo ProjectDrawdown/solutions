@@ -142,36 +142,7 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    _ref_tam_sources = {
-        'Ambitious Cases': {
-                'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-                'Ürge-Vorsatz et al. (2015) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_ÜrgeVorsatz_et_al__2015_see_TAM_Factoring.csv'),
-        },
-        'Region: China': {
-            'Ambitious Cases': {
-                'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-                'Hong et al. (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Hong_et_al__2014_see_TAM_Factoring.csv'),
-            },
-        },
-        'Region: India': {
-            'Ambitious Cases': {
-                'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-                'Chaturvedi et al (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Chaturvedi_et_al_2014_see_TAM_Factoring.csv'),
-            },
-        },
-        'Region: EU': {
-            'Ambitious Cases': {
-                'IEA, 2013, "Transition to Sustainable Buildings" – see TAM Factoring': THISDIR.joinpath('tam', 'tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv'),
-                'Boermans et al. (2012); BPIE (2014) – see TAM Factoring': THISDIR.joinpath('tam', 'tam_Boermans_et_al__2012_BPIE_2014_see_TAM_Factoring.csv'),
-            },
-        },
-        'Region: USA': {
-            'Baseline Cases': {
-                'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case': THISDIR.joinpath('tam', 'tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case.csv'),
-                'EIA, 2016, "Annual Energy Outlook 2016" – Reference Case w/o CPP': THISDIR.joinpath('tam', 'tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case_wo_CPP.csv'),
-            },
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
 
     def __init__(self, scen=None):
@@ -339,4 +310,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
                 soln_avg_annual_use=self.ac.soln_avg_annual_use,
                 conv_avg_annual_use=self.ac.conv_avg_annual_use)
-
