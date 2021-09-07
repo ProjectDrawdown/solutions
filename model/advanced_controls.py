@@ -8,7 +8,7 @@ import glob
 import json
 import os
 import typing
-
+from pathlib import Path
 import pandas as pd
 import pytest
 from model import emissionsfactors as ef
@@ -968,15 +968,13 @@ class AdvancedControls:
             key = key ^ self._hash_item(field)
         return key
 
-    def write_to_json_file(self):
-        jsfilenew = self.jsfile + '.new'
+    def write_to_json_file(self, newname=None):
+        newname = newname or self.jsfile
         d = dataclasses.asdict(self)
-        #for rem in ['vmas', 'js', 'jsfile']:
-        for rem in ['vmas', 'jsfile']:
-            del d[rem]
-        with open(jsfilenew, 'w') as f:
-            json.dump(d, f)
-            os.replace(jsfilenew, self.jsfile)
+        for rem in ['vmas', 'js', 'jsfile']:
+            if rem in d:
+                del d[rem]
+        Path(newname).write_text(json.dumps(d, indent=2), encoding='utf-8')
 
 
 def fill_missing_regions_from_world(data):
