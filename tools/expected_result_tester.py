@@ -1035,25 +1035,25 @@ def key_results_tester(solution_name, expected_filename, is_land=False,
 
             obj = m.Scenario(scenario=scenario_name)
             ac_file = zf.open(scenario_name + "/" + 'Advanced Controls')
-            df = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
+            df_expected = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
             key_results = obj.key_results()
 
-            decimal_precision = 7
+            desired_precision = 7
             aae = np.testing.assert_almost_equal
             if is_land:
-                aae(key_results['adoption_unit_increase'], float(df.loc[3, 0]), decimal=7)
-                aae(key_results['marginal_first_cost'], float(df.loc[3, 1]), decimal=7)
-                aae(key_results['net_operating_savings'], float(df.loc[3, 2]), decimal=7)
-                aae(key_results['lifetime_operating_savings'], float(df.loc[3, 3]), decimal=7)
-                aae(key_results['cumulative_emissions_reduced'], float(df.loc[3, 4]), decimal=7)
-                aae(key_results['total_additional_co2eq_sequestered'], float(df.loc[3, 5]), decimal=7)
+                aae(key_results['adoption_unit_increase'], float(df_expected.loc[3, 0]), decimal=desired_precision)
+                aae(key_results['marginal_first_cost'], float(df_expected.loc[3, 1]), decimal=desired_precision)
+                aae(key_results['net_operating_savings'], float(df_expected.loc[3, 2]), decimal=desired_precision)
+                aae(key_results['lifetime_operating_savings'], float(df_expected.loc[3, 3]), decimal=desired_precision)
+                aae(key_results['cumulative_emissions_reduced'], float(df_expected.loc[3, 4]), decimal=desired_precision)
+                aae(key_results['total_additional_co2eq_sequestered'], float(df_expected.loc[3, 5]), decimal=desired_precision)
             else:
-                aae(key_results['implementation_unit_adoption_increase'], float(df.loc[3, 0]), decimal=7)
-                aae(key_results['functional_unit_adoption_increase'], float(df.loc[3, 1]), decimal=7)
-                aae(key_results['marginal_first_cost'], float(df.loc[3, 2]), decimal=7)
-                aae(key_results['net_operating_savings'], float(df.loc[3, 3]), decimal=7)
-                aae(key_results['lifetime_operating_savings'], float(df.loc[3, 4]), decimal=7)
-                aae(key_results['cumulative_emissions_reduced'], float(df.loc[3, 5]), decimal=7)
+                aae(key_results['implementation_unit_adoption_increase'], float(df_expected.loc[3, 0]), decimal=desired_precision)
+                aae(key_results['functional_unit_adoption_increase'], float(df_expected.loc[3, 1]), decimal=desired_precision)
+                aae(key_results['marginal_first_cost'], float(df_expected.loc[3, 2]), decimal=desired_precision)
+                aae(key_results['net_operating_savings'], float(df_expected.loc[3, 3]), decimal=desired_precision)
+                aae(key_results['lifetime_operating_savings'], float(df_expected.loc[3, 4]), decimal=desired_precision)
+                aae(key_results['cumulative_emissions_reduced'], float(df_expected.loc[3, 5]), decimal=desired_precision)
 
 def one_solution_tester(solution_name, expected_filename, is_land=False,
                         scenario_skip=None, test_skip=None, test_only=None):
@@ -1081,8 +1081,6 @@ def one_solution_tester(solution_name, expected_filename, is_land=False,
                     is_land=is_land,
                     scenario_skip=scenario_skip)
 
-            # Ignore all other testing while troubleshooting key results
-            """
             obj = m.Scenario(scenario=scenario_name)
             if is_land:
                 to_verify = LAND_solution_verify_list(obj, zf)
@@ -1091,5 +1089,3 @@ def one_solution_tester(solution_name, expected_filename, is_land=False,
 
             check_excel_against_object(obj, zf, scenario_name, i, to_verify, 
                                        test_skip=test_skip, test_only=test_only)
-
-            """

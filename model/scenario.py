@@ -74,7 +74,6 @@ class Scenario:
             ref_adoption.loc[year][region] / self.ac.soln_avg_annual_use)
 
     def adoption_unit_increase_LAND(self, year=2050, region='World'):
-        # TODO implement
         if hasattr(self, 'pds_ca'):
             if self.pds_ca.soln_adoption_custom_name:
                 pds_adoption = self.pds_ca.adoption_data_per_region()
