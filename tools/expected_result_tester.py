@@ -14,6 +14,7 @@ import zipfile
 import importlib
 from tools.util import df_excel_range, cell_to_offsets
 
+
 # verbosity level 0: no "print"
 # verbosity level 1: print solutions and scenarios
 # verbosiyt level 2: print solutions, scenarios, and test sections
@@ -1021,7 +1022,38 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
         if skip_count > 0:
             if _verbosity >= 2: print(f"    **** Skipped {skip_count} tests")
 
+def key_results_tester(solution_name, expected_filename, is_land=False,
+                       scenario_skip=None):
+    importname = 'solution.' + solution_name
+    m = importlib.import_module(importname)
+    with zipfile.ZipFile(expected_filename) as zf:
+        for (i, scenario_name) in enumerate(m.scenarios.keys()):
+            if scenario_skip and i in scenario_skip:
+                if _verbosity >= 1: print(f"**** Skipped scenario {i} '{scenario_name}'")
+                continue
+            if _verbosity >= 1: print(f"Checking scenario {i}: {scenario_name}")
 
+            obj = m.Scenario(scenario=scenario_name)
+            ac_file = zf.open(scenario_name + "/" + 'Advanced Controls')
+            df_expected = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
+            key_results = obj.key_results()
+
+            desired_precision = 7
+            aae = np.testing.assert_almost_equal
+            if is_land:
+                aae(key_results['adoption_unit_increase'], float(df_expected.loc[3, 0]), decimal=desired_precision)
+                aae(key_results['marginal_first_cost'], float(df_expected.loc[3, 1]), decimal=desired_precision)
+                aae(key_results['net_operating_savings'], float(df_expected.loc[3, 2]), decimal=desired_precision)
+                aae(key_results['lifetime_operating_savings'], float(df_expected.loc[3, 3]), decimal=desired_precision)
+                aae(key_results['cumulative_emissions_reduced'], float(df_expected.loc[3, 4]), decimal=desired_precision)
+                aae(key_results['total_additional_co2eq_sequestered'], float(df_expected.loc[3, 5]), decimal=desired_precision)
+            else:
+                aae(key_results['implementation_unit_adoption_increase'], float(df_expected.loc[3, 0]), decimal=desired_precision)
+                aae(key_results['functional_unit_adoption_increase'], float(df_expected.loc[3, 1]), decimal=desired_precision)
+                aae(key_results['marginal_first_cost'], float(df_expected.loc[3, 2]), decimal=desired_precision)
+                aae(key_results['net_operating_savings'], float(df_expected.loc[3, 3]), decimal=desired_precision)
+                aae(key_results['lifetime_operating_savings'], float(df_expected.loc[3, 4]), decimal=desired_precision)
+                aae(key_results['cumulative_emissions_reduced'], float(df_expected.loc[3, 5]), decimal=desired_precision)
 
 def one_solution_tester(solution_name, expected_filename, is_land=False,
                         scenario_skip=None, test_skip=None, test_only=None):
@@ -1043,6 +1075,12 @@ def one_solution_tester(solution_name, expected_filename, is_land=False,
                 continue
             if _verbosity >= 1: print(f"Checking scenario {i}: {scenario_name}")
 
+            key_results_tester(
+                    solution_name,
+                    expected_filename,
+                    is_land=is_land,
+                    scenario_skip=scenario_skip)
+
             obj = m.Scenario(scenario=scenario_name)
             if is_land:
                 to_verify = LAND_solution_verify_list(obj, zf)
@@ -1051,4 +1089,3 @@ def one_solution_tester(solution_name, expected_filename, is_land=False,
 
             check_excel_against_object(obj, zf, scenario_name, i, to_verify, 
                                        test_skip=test_skip, test_only=test_only)
-
