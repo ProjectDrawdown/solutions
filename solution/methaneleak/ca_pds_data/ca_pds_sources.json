@@ -1,0 +1,17 @@
+[
+  {
+    "name": "PDS1 - Linear increase to 50% TAM by 2030, then continued linear increase to meet and follow TAM",
+    "description": "PDS1 - Low ambition scenario. Note: this scenario should be combined with TAM1, copy and past from sheet \"Pre-TAM\". Adoption is a linear increase from 0% to 50% of the TAM in 2030, then a continued linear increase on the same trajectory until 100% of TAM is addressed, after which point 100% of TAM is maintained. ",
+    "filename": "custom_pds_ad_PDS1_Linear_increase_to_50_TAM_by_2030_then_continued_linear_increase_to_meet_and_follow_TAM.csv"
+  },
+  {
+    "name": "PDS2 - Linear increase to 75% TAM by 2030, then continued linear increase to meet and follow TAM",
+    "description": "PDS2 - Mid ambition scenario. Note: this scenario should be combined with TAM2, copy and past from sheet \"Pre-TAM\". Adoption is a linear increase from 0% to 75% of the TAM in 2030, then a continued linear increase on the same trajectory until 100% of TAM is addressed, after which point 100% of TAM is maintained. ",
+    "filename": "custom_pds_ad_PDS2_Linear_increase_to_75_TAM_by_2030_then_continued_linear_increase_to_meet_and_follow_TAM.csv"
+  },
+  {
+    "name": "PDS3 - Linear increase to 100% TAM in 2030, then remaining at 100% TAM",
+    "description": "PDS3 - High ambition scenario. Note: this scenario should be combined with TAM3, copy and past from sheet \"Pre-TAM\". Adoption is a linear increase from 0% to 100% of the TAM in 2030, after which point 100% of TAM is maintained. ",
+    "filename": "custom_pds_ad_PDS3_Linear_increase_to_100_TAM_in_2030_then_remaining_at_100_TAM.csv"
+  }
+]

@@ -138,26 +138,17 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
-        'Baseline Cases': {
-            'Based on IEA (2016), "Energy Technology Perspectives - 6DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD.csv'),
-            'Based on ICCT (2012) "Global Transport Roadmap Model", http://www.theicct.org/global-transportation-roadmap-model': THISDIR.joinpath('tam', 'tam_based_on_ICCT_2012_Global_Transport_Roadmap_Model_httpwww_theicct_orgglobaltransportatio_8916596a.csv'),
-        },
-        'Conservative Cases': {
-            'Based on IEA (2016), "Energy Technology Perspectives - 4DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_4DS_IEAOECD.csv'),
-        },
-        'Ambitious Cases': {
-            'Based on IEA (2016), "Energy Technology Perspectives - 2DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_2DS_IEAOECD.csv'),
-        },
-    }
-    tam_pds_data_sources=tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM
@@ -165,34 +156,6 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                'Based on IEA Reference Tech Scenario- 2017': THISDIR.joinpath('ad', 'ad_based_on_IEA_Reference_Tech_Scenario_2017.csv'),
-            },
-            'Conservative Cases': {
-                'Based on OPEC World Energy Outlook 2016': THISDIR.joinpath('ad', 'ad_based_on_OPEC_World_Energy_Outlook_2016.csv'),
-                'Based on The Paris Declaration as Cited in (IEA, 2017- EV Outlook)': THISDIR.joinpath('ad', 'ad_based_on_The_Paris_Declaration_as_Cited_in_IEA_2017_EV_Outlook.csv'),
-            },
-            'Ambitious Cases': {
-                'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
-                'Based on Bloomberg New Energy Finance - EV Outlook 2017': THISDIR.joinpath('ad', 'ad_based_on_Bloomberg_New_Energy_Finance_EV_Outlook_2017.csv'),
-                'Based on IEA Beyond 2DS/B2DS Scenario': THISDIR.joinpath('ad', 'ad_based_on_IEA_Beyond_2DSB2DS_Scenario.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
         # Custom PDS Data
 
@@ -245,70 +208,17 @@ class Scenario(scenario.RRSScenario):
         ds2_df = pd.DataFrame(0, columns=dd.REGIONS, index=range(2012, 2061))
         ds2_df['World'] = adoption_ds2.clip(upper=tam_limit_pds3, axis=0)
 
-        ca_pds_data_sources = [
-            {'name': 'PDS2-Based on IEA (2017) B2DS', 'include': True,
-                'description': (
-                    'In this Scenario, we incorporate the highest published stock scenario of '
-                    "EV's currently in the literature: the IEA B2DS scenario of 2017. We take the "
-                    "Beyond 2 Degree Scenario projections from the IEA of number of EV's in the "
-                    'global fleet, convert to estimated passenger-km with a fixed factor and we '
-                    'interpolate and extrapolate to estimate missing years with a 3rd degree '
-                    'polynomial curve fit. We then limit this to the total projected TAM each '
-                    'year after higher priority solutions have supplied their full projection in '
-                    'PDS2 (Higher priority solutions are: Walkable Cities, Bike Infrastructure, '
-                    'E-Bikes, Mass Transit and Carsharing/Ridesharing) '
-                    ),
-                'dataframe': ds1_df},
-            {'name': 'PDS3-Based on Replacing All Retired Cars from Survival Analysis', 'include': True,
-                'description': (
-                    'In this Optimum Scenario, to estimate the Fastest that a New Car Technology '
-                    'can Diffuse into the Global Fleet - assuming that from time of car '
-                    'replacement, new technology is used. Weibull distributions are assumed '
-                    'using the Weibull Survival data from ICCT Global Roadmap model v1.0 for 6 '
-                    'countries (China, USA, Canada, Brazil, Mexico and India). Using these, we '
-                    'estimate the proportion of cars in each country that are scrapped or '
-                    'retired X years after purchase date (0 <= X <= 40). Combining this with '
-                    'vehicle sales data for each of the selected countries (mainly from OICA '
-                    'database), we estimate how many cars should be retiring each year. Assuming '
-                    'the average retiring rate of these selected countries applies to entire '
-                    'world, we scale up the retired cars to global fleet and then convert from '
-                    'cars to pass-km. We then limit this to the total projected TAM each year '
-                    'after higher priority solutions have supplied their full projection in PDS3 '
-                    '(Higher priority solutions are: Walkable Cities, Bike Infrastructure, '
-                    'E-Bikes, Mass Transit and Carsharing/Ridesharing) '
-                    ),
-                'dataframe': ds2_df},
-            {'name': 'Book Ed.1 Scenario 1', 'include': False,
-                'description': (
-                    'Starting with the IEA 2DS Projection of EV in the Global stock, we '
-                    'interpolate and apply a fixed car occupancy to 2050. Minor adjustments are '
-                    'made to early years to ensure smoothness of the adoption curve. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Book_Ed_1_Scenario_1.csv')},
-            {'name': 'Book Ed.1 Scenario 2', 'include': False,
-                'description': (
-                    "Using the IEA's Energy Technology Perspectives 2012 projections of EV "
-                    "sales' growth, we project the sales and then global EV stock. Assuming the "
-                    "ICCT's global car occupancy average and a 50% growth in this occupancy by "
-                    '2050, we estimate the total passenger-km of EV during the period of '
-                    'analysis. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Book_Ed_1_Scenario_2.csv')},
-            {'name': 'Book Ed.1 Scenario 3', 'include': False,
-                'description': (
-                    "Using the IEA's Energy Technology Perspectives 2012 projections of EV "
-                    "sales' growth, we project the sales and then global EV stock. Assuming "
-                    "twice the ICCT's global car occupancy average, we estimate the total "
-                    "passenger-km of EV during the period of analysis. "
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Book_Ed_1_Scenario_3.csv')},
-        ]
+        ca_pds_data_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+        ca_pds_data_sources[0]['dataframe'] = ds1_df
+        ca_pds_data_sources[1]['dataframe'] = ds2_df
+        
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
             low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
             total_adoption_limit=pds_tam_per_region)
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -406,4 +316,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

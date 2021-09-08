@@ -135,30 +135,15 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Project Drawdown - Based on Data from Several Sources. (See HVFAC Links Sheet and HVFAC Material Availability Models)': THISDIR.joinpath('tam', 'tam_Project_Drawdown_based_on_Data_from_Several_Sources__See_HVFAC_Links_Sheet_and_HVFAC_Mat_2961774c.csv'),
-        },
-            'Conservative Cases': {
-                'IEA 2018 Low-Variability': THISDIR.joinpath('tam', 'tam_IEA_2018_LowVariability.csv'),
-                'Farfan et al. 2019': THISDIR.joinpath('tam', 'tam_Farfan_et_al__2019.csv'),
-                'van Ruijven et al. 2016': THISDIR.joinpath('tam', 'tam_van_Ruijven_et_al__2016.csv'),
-        },
-            'Ambitious Cases': {
-                'IEA 2018 High-Variability': THISDIR.joinpath('tam', 'tam_IEA_2018_HighVariability.csv'),
-        },
-            'Maximum Cases': {
-                'WBCSD Cement 2002': THISDIR.joinpath('tam', 'tam_WBCSD_Cement_2002.csv'),
-        },
-    }
-    tam_pds_data_sources = tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = _ref_tam_sources
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM
@@ -166,22 +151,6 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
         # Custom PDS Data
         wb = openpyxl.load_workbook(filename=THISDIR.joinpath('data.xlsx'), data_only=True, keep_links=False)
@@ -241,116 +210,11 @@ class Scenario(scenario.RRSScenario):
         book_mmt.index = book_mmt.index.astype(int)
         ds4_df = book_mmt / clinker_pct
 
-        ca_pds_data_sources = [
-            {'name': 'Adoption Based on Fly Ash Availability Analysis/ PDS 1', 'include': True,
-                'description': (
-                    'Fly Ash (FA) is a waste product of coal fired power stations. FA that is '
-                    'not reused, is disposed in dry landfills or wet ponds. FA is valuable '
-                    'because it can be used to replace Ordinary Portland Cement (OPC) in the '
-                    'cement mix (up to a certain percentage) and hence it can be used to reduce '
-                    'the CO2 footprint of concrete. The separate HVFAC model evaluates the total '
-                    'amount of FA available in a market based on projected coal demand and '
-                    "coal's fly ash concentration. The model divides the total FA supply into "
-                    "three streams (i) landfill; (ii)  'other uses' (i.e. reuse but not cement); "
-                    'and (iii) cement mixes. The total addressable market for cement '
-                    'production/demand is initially defined as the total cement demand (assumed '
-                    'OPC) plus that portion of FA that is reused for cement. A higher ratio of '
-                    'FA:OPC (e.g. 45%:55%) for the cement mix is the adopted solution for CO2 '
-                    'mitigation. The target FA:OPC ratio is input into the model to define the '
-                    'PDS scenario. The model calculates the annual mass of OPC that can be '
-                    'avoided, the energy saved, and the CO2 emissions avoided.  There are two '
-                    'factors (cement demand and FA supply) that have the potential to limit OPC '
-                    'replacement with FA. Model input includes the PDS transition period (e.g. 5 '
-                    'years) to implement the new policy for cement production, concrete '
-                    'standards, and FA reuse infrastructure. The model allows an addtional '
-                    'policy option: to utilise FA in landfill when the 100% of FA waste stream '
-                    'is utilised in cement production and other uses. For this scenario, '
-                    'reduction of coal demand for electricity generation in the PDS1 affects the '
-                    'total amount of fly ash available. '
-                    ),
-                'dataframe': ds1_df},
-            {'name': 'Adoption Based on Fly Ash Availability Analysis/ PDS 2', 'include': True,
-                'description': (
-                    'Fly Ash (FA) is a waste product of coal fired power stations. FA that is '
-                    'not reused, is disposed in dry landfills or wet ponds. FA is valuable '
-                    'because it can be used to replace Ordinary Portland Cement (OPC) in the '
-                    'cement mix (up to a certain percentage) and hence it can be used to reduce '
-                    'the CO2 footprint of concrete. The separate HVFAC model evaluates the total '
-                    'amount of FA available in a market based on projected coal demand and '
-                    "coal's fly ash concentration. The model divides the total FA supply into "
-                    "three streams (i) landfill; (ii)  'other uses' (i.e. reuse but not cement); "
-                    'and (iii) cement mixes. The total addressable market for cement '
-                    'production/demand is initially defined as the total cement demand (assumed '
-                    'OPC) plus that portion of FA that is reused for cement. A higher ratio of '
-                    'FA:OPC (e.g. 45%:55%) for the cement mix is the adopted solution for CO2 '
-                    'mitigation. The target FA:OPC ratio is input into the model to define the '
-                    'PDS scenario. The model calculates the annual mass of OPC that can be '
-                    'avoided, the energy saved, and the CO2 emissions avoided.  There are two '
-                    'factors (cement demand and FA supply) that have the potential to limit OPC '
-                    'replacement with FA. Model input includes the PDS transition period (e.g. 5 '
-                    'years) to implement the new policy for cement production, concrete '
-                    'standards, and FA reuse infrastructure. The model allows an addtional '
-                    'policy option: to utilise FA in landfill when the 100% of FA waste stream '
-                    'is utilised in cement production and other uses. For this scenario, '
-                    'reduction of coal demand for electricity generation in the PDS2 affects the '
-                    'total amount of fly ash available. '
-                    ),
-                'dataframe': ds2_df},
-            {'name': 'Adoption Based on Fly Ash Availability Analysis/ PDS 3', 'include': True,
-                'description': (
-                    'Fly Ash (FA) is a waste product of coal fired power stations. FA that is '
-                    'not reused, is disposed in dry landfills or wet ponds. FA is valuable '
-                    'because it can be used to replace Ordinary Portland Cement (OPC) in the '
-                    'cement mix (up to a certain percentage) and hence it can be used to reduce '
-                    'the CO2 footprint of concrete. The separate HVFAC model evaluates the total '
-                    'amount of FA available in a market based on projected coal demand and '
-                    "coal's fly ash concentration. The model divides the total FA supply into "
-                    "three streams (i) landfill; (ii)  'other uses' (i.e. reuse but not cement); "
-                    'and (iii) cement mixes. The total addressable market for cement '
-                    'production/demand is initially defined as the total cement demand (assumed '
-                    'OPC) plus that portion of FA that is reused for cement. A higher ratio of '
-                    'FA:OPC (e.g. 45%:55%) for the cement mix is the adopted solution for CO2 '
-                    'mitigation. The target FA:OPC ratio is input into the model to define the '
-                    'PDS scenario. The model calculates the annual mass of OPC that can be '
-                    'avoided, the energy saved, and the CO2 emissions avoided.  There are two '
-                    'factors (cement demand and FA supply) that have the potential to limit OPC '
-                    'replacement with FA. Model input includes the PDS transition period (e.g. 5 '
-                    'years) to implement the new policy for cement production, concrete '
-                    'standards, and FA reuse infrastructure. The model allows an addtional '
-                    'policy option: to utilise FA in landfill when the 100% of FA waste stream '
-                    'is utilised in cement production and other uses. For this scenario, '
-                    'reduction of coal demand for electricity generation in the PDS3 affects the '
-                    'total amount of fly ash available. '
-                    ),
-                'dataframe': ds3_df},
-            {'name': 'Drawdown Book Edition 1 PDS 1, 2 and 3', 'include': True,
-                'description': (
-                    'Fly Ash (FA) is a waste product of coal fired power stations. FA that is '
-                    'not reused, is disposed in dry landfills or wet ponds. FA is valuable '
-                    'because it can be used to replace Ordinary Portland Cement (OPC) in the '
-                    'cement mix (up to a certain percentage) and hence it can be used to reduce '
-                    'the CO2 footprint of concrete. The separate HVFAC model evaluates the total '
-                    'amount of FA available in a market based on projected coal demand and '
-                    "coal's fly ash concentration. The model divides the total FA supply into "
-                    "three streams (i) landfill; (ii)  'other uses' (i.e. reuse but not cement); "
-                    'and (iii) cement mixes. The total addressable market for cement '
-                    'production/demand is initially defined as the total cement demand (assumed '
-                    'OPC) plus that portion of FA that is reused for cement. A higher ratio of '
-                    'FA:OPC (e.g. 45%:55%) for the cement mix is the adopted solution for CO2 '
-                    'mitigation. The target FA:OPC ratio is input into the model to define the '
-                    'PDS scenario. The model calculates the annual mass of OPC that can be '
-                    'avoided, the energy saved, and the CO2 emissions avoided.  There are two '
-                    'factors (cement demand and FA supply) that have the potential to limit OPC '
-                    'replacement with FA. Model input includes the PDS transition period (e.g. 5 '
-                    'years) to implement the new policy for cement production, concrete '
-                    'standards, and FA reuse infrastructure. The model allows an addtional '
-                    'policy option: to utilise FA in landfill when the 100% of FA waste stream '
-                    'is utilised in cement production and other uses. This scenario uses inputs '
-                    'calculated for the Drawdown book edition 1, some of which have been updated '
-                    'with newer data. '
-                    ),
-                'dataframe': ds4_df},
-        ]
+        ca_pds_data_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+        ca_pds_data_sources[0]['dataframe'] = ds1_df
+        ca_pds_data_sources[1]['dataframe'] = ds2_df
+        ca_pds_data_sources[2]['dataframe'] = ds3_df
+        ca_pds_data_sources[3]['dataframe'] = ds4_df
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
@@ -376,65 +240,15 @@ class Scenario(scenario.RRSScenario):
         book_ref_mmt.index = book_ref_mmt.index.astype(int)
         ref2_df = book_ref_mmt / clinker_pct
 
-        ca_ref_data_sources = [
-            {'name': 'REF Custom Adoption Based on Fly Ash Availability Analysis', 'include': True,
-                'description': (
-                    'Fly Ash (FA) is a waste product of coal fired power stations. FA that is '
-                    'not reused, is disposed in dry landfills or wet ponds. FA is valuable '
-                    'because it can be used to replace Ordinary Portland Cement (OPC) in the '
-                    'cement mix (up to a certain percentage) and hence it can be used to reduce '
-                    'the CO2 footprint of concrete. The separate HVFAC model evaluates the total '
-                    'amount of FA available in a market based on projected coal demand and '
-                    "coal's fly ash concentration. The model divides the total FA supply into "
-                    "three streams (i) landfill; (ii)  'other uses' (i.e. reuse but not cement); "
-                    'and (iii) cement mixes. The total addressable market for cement '
-                    'production/demand is initially defined as the total cement demand (assumed '
-                    'OPC) plus that portion of FA that is reused for cement. A higher ratio of '
-                    'FA:OPC (e.g. 45%:55%) for the cement mix is the adopted solution for CO2 '
-                    'mitigation. The target FA:OPC ratio is input into the model to define the '
-                    'PDS scenario. The model calculates the annual mass of OPC that can be '
-                    'avoided, the energy saved, and the CO2 emissions avoided.  There are two '
-                    'factors (cement demand and FA supply) that have the potential to limit OPC '
-                    'replacement with FA. Model input includes the PDS transition period (e.g. 5 '
-                    'years) to implement the new policy for cement production, concrete '
-                    'standards, and FA reuse infrastructure. The model allows an addtional '
-                    'policy option: to utilise FA in landfill when the 100% of FA waste stream '
-                    'is utilised in cement production and other uses. '
-                    ),
-                'dataframe': ref1_df},
-            {'name': 'Drawdown Book Edition 1 Scenario REF Adoption', 'include': True,
-                'description': (
-                    'Fly Ash (FA) is a waste product of coal fired power stations. FA that is '
-                    'not reused, is disposed in dry landfills or wet ponds. FA is valuable '
-                    'because it can be used to replace Ordinary Portland Cement (OPC) in the '
-                    'cement mix (up to a certain percentage) and hence it can be used to reduce '
-                    'the CO2 footprint of concrete. The separate HVFAC model evaluates the total '
-                    'amount of FA available in a market based on projected coal demand and '
-                    "coal's fly ash concentration. The model divides the total FA supply into "
-                    "three streams (i) landfill; (ii)  'other uses' (i.e. reuse but not cement); "
-                    'and (iii) cement mixes. The total addressable market for cement '
-                    'production/demand is initially defined as the total cement demand (assumed '
-                    'OPC) plus that portion of FA that is reused for cement. A higher ratio of '
-                    'FA:OPC (e.g. 45%:55%) for the cement mix is the adopted solution for CO2 '
-                    'mitigation. The target FA:OPC ratio is input into the model to define the '
-                    'PDS scenario. The model calculates the annual mass of OPC that can be '
-                    'avoided, the energy saved, and the CO2 emissions avoided.  There are two '
-                    'factors (cement demand and FA supply) that have the potential to limit OPC '
-                    'replacement with FA. Model input includes the PDS transition period (e.g. 5 '
-                    'years) to implement the new policy for cement production, concrete '
-                    'standards, and FA reuse infrastructure. The model allows an addtional '
-                    'policy option: to utilise FA in landfill when the 100% of FA waste stream '
-                    'is utilised in cement production and other uses. This scenario uses inputs '
-                    'calculated for the Drawdown book edition 1, some of which have been updated '
-                    'with newer data. '
-                    ),
-                'dataframe': ref2_df},
-        ]
+        ca_ref_data_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+        ca_ref_data_sources[0]['dataframe'] = ref1_df
+        ca_ref_data_sources[1]['dataframe'] = ref2_df
         self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
             soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
             high_sd_mult=1.0, low_sd_mult=1.0,
             total_adoption_limit=ref_tam_per_region)
 
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:
@@ -540,4 +354,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

@@ -1,0 +1,24 @@
+[
+  {
+    "name": "PDS2-Transition to EVs in Cities",
+    "include": true,
+    "description": "Considering that Electric Vehicles (BEV or PHEV)  are a better technology from a lifetime emissions perspective, HEV are considered as a transition technology in the PDS2  where the target is drawdown by 2050 particularly within cities where there is minimal range anxiety. In this Drawdown scenario, then, the focus is on growing EV after all higher priority solutions (like non-motorized transportation) in cities are grown to their maximum potential. For HEV's then, the adoption is projected to only occur where BEV or PHEV cars cannot easily be used, such as for long distance intercity trips until perhaps around 2025 when EV battery technology can be assumed to be adequate enough to eliminate all range anxiety. The HEV adoption is projected to continue its growth until around 2025 when it starts to decline and trend to zero by or before 2050. Sales data for multiple key countries and regions were used to estimate the actual global sales. Using the model's lifetime data, the older HEVs are removed from the fleet while aggregating the total sales to get the total stock per year. With these, the projected sales from IEA are used to project increments to the existing stock to 2050 (latest data vailable). Stock data are converted to usage with model's Advanced Controls input.  All scenarios are limited by integrated TAM after removing adoptions of higher priority solutions. "
+  },
+  {
+    "name": "PDS3-Transition to EVs",
+    "include": true,
+    "description": "Considering that Electric Vehicles (BEV or PHEV)  are a better technology from a lifetime emissions perspective, HEV are considered as a transition technology in the PDS3  where the target is maximizing emissions reduction. In this scenario, then, the focus is on growing EV after all higher priority solutions (like non-motorized transportation)  are grown to their maximum potential. As soon as possible, HEV sales will rapidly decline. Sales data for multiple key countries and regions were used to estimate the actual global sales. Using the model's lifetime data, the older HEVs are removed from the fleet while aggregating the total sales to get the total stock per year.  Stock data are converted to usage with model's Advanced Controls input.  All scenarios are limited by integrated TAM after removing adoptions of higher priority solutions. "
+  },
+  {
+    "name": "Drawdown Book - Edition 1- Quick Doubling of Hybrid Car Occupancy",
+    "include": true,
+    "description": "We take the Average of two Ambitious adoption scenarios (on Adoption Data tab): Interpolation of IEA 2016 ETP 2DS(2016), and World Energy Council (2011) (both with annual use of ICCT Roadmap Model). We then double the HEV car occupancy from 2017 and interpolate back to current adoption for 2014. ",
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Quick_Doubling_of_Hybrid_Car_Occupancy.csv"
+  },
+  {
+    "name": "PDS1 - Aggressive Growth from Existing Stock  based on  IEA 2DS",
+    "include": true,
+    "description": "Sales data for multiple key countries and regions were used to estimate the global sales. Using the model's lifetime data, the older HEVs are removed from the fleet while aggregating the total sales to get the total stock per year. With these, the projected sales from IEA are used to project increments to the existing stock to 2050 (latest data vailable). Stock data are converted to usage with model's Advanced Controls input. All scenarios are limited by integrated TAM after removing adoptions of higher priority solutions. ",
+    "filename": "custom_pds_ad_PDS1_Aggressive_Growth_from_Existing_Stock_based_on_IEA_2DS.csv"
+  }
+]

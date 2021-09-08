@@ -118,18 +118,20 @@ PDS1 = "PDS-18p2050-Plausible-customPDS-low-Jan2020"
 PDS2 = "PDS-43p2050-Drawdown-customPDS-avg-Jan2020"
 PDS3 = "PDS-67p2050-Optimum-customPDS-high-Jan2020"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.LandScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
+
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TLA
@@ -143,56 +145,11 @@ class Scenario(scenario.Scenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
-             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
-             'NOTE', 'NOTE', 'NOTE'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Raw Data for ALL LAND TYPES': {
-                'FAOSTAT 2016 + Literature (Exponential)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_Exponential.csv'),
-                'FAOSTAT 2016 + Literature (2nd order)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_2nd_order.csv'),
-                'FAOSTAT 2016 + Literature (linear)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_linear.csv'),
-            },
-            'Region: OECD90': {
-                'Raw Data for ALL LAND TYPES': {
-                  'FAOSTAT 2016 + Literature (Exponential)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_Exponential.csv'),
-                  'FAOSTAT 2016 + Literature (2nd order)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_2nd_order.csv'),
-                  'FAOSTAT 2016 + Literature (3rd order)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_3rd_order.csv'),
-              },
-            },
-            'Region: Asia (Sans Japan)': {
-                'Raw Data for ALL LAND TYPES': {
-                  'FAOSTAT 2016 + Literature (Exponential)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_Exponential.csv'),
-                  'FAOSTAT 2016 + Literature (2nd order)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_2nd_order.csv'),
-                  'FAOSTAT 2016 + Literature (3rd order)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_3rd_order.csv'),
-              },
-            },
-            'Region: Middle East and Africa': {
-                'Raw Data for ALL LAND TYPES': {
-                  'FAOSTAT 2016 + Literature (Exponential)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_Exponential.csv'),
-                  'FAOSTAT 2016 + Literature (2nd order)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_2nd_order.csv'),
-                  'FAOSTAT 2016 + Literature (3rd order)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_3rd_order.csv'),
-              },
-            },
-            'Region: Latin America': {
-                'Raw Data for ALL LAND TYPES': {
-                  'FAOSTAT 2016 + Literature (Exponential)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_Exponential.csv'),
-                  'FAOSTAT 2016 + Literature (2nd order)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_2nd_order.csv'),
-                  'FAOSTAT 2016 + Literature (3rd order)': THISDIR.joinpath('ad', 'ad_FAOSTAT_2016_Literature_3rd_order.csv'),
-              },
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
+        # Set this ourselves, since we use it below
+        adconfig = adoptiondata.make_adoption_config = [
+            ('trend','World',self.ac.soln_pds_adoption_prognostication_trend),
+            ('growth','World',self.ac.soln_pds_adoption_prognostication_growth)]
+        self.ad = adoptiondata.AdoptionData(self.ac, self._pds_ad_sources, adconfig)
 
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
@@ -343,6 +300,7 @@ class Scenario(scenario.Scenario):
             for y in range(2012, 2019):
                 df.loc[y] = [0.0001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -442,4 +400,3 @@ class Scenario(scenario.Scenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-

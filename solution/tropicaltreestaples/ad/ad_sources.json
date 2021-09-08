@@ -1,0 +1,35 @@
+{
+  "Raw Data for ALL LAND TYPES": {
+    "FAOSTAT 2016 + Literature (Exponential)": "ad_FAOSTAT_2016_Literature_Exponential.csv",
+    "FAOSTAT 2016 + Literature (2nd order)": "ad_FAOSTAT_2016_Literature_2nd_order.csv",
+    "FAOSTAT 2016 + Literature (linear)": "ad_FAOSTAT_2016_Literature_linear.csv"
+  },
+  "Region: OECD90": {
+    "Raw Data for ALL LAND TYPES": {
+      "FAOSTAT 2016 + Literature (Exponential)": "ad_FAOSTAT_2016_Literature_Exponential.csv",
+      "FAOSTAT 2016 + Literature (2nd order)": "ad_FAOSTAT_2016_Literature_2nd_order.csv",
+      "FAOSTAT 2016 + Literature (3rd order)": "ad_FAOSTAT_2016_Literature_3rd_order.csv"
+    }
+  },
+  "Region: Asia (Sans Japan)": {
+    "Raw Data for ALL LAND TYPES": {
+      "FAOSTAT 2016 + Literature (Exponential)": "ad_FAOSTAT_2016_Literature_Exponential.csv",
+      "FAOSTAT 2016 + Literature (2nd order)": "ad_FAOSTAT_2016_Literature_2nd_order.csv",
+      "FAOSTAT 2016 + Literature (3rd order)": "ad_FAOSTAT_2016_Literature_3rd_order.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Raw Data for ALL LAND TYPES": {
+      "FAOSTAT 2016 + Literature (Exponential)": "ad_FAOSTAT_2016_Literature_Exponential.csv",
+      "FAOSTAT 2016 + Literature (2nd order)": "ad_FAOSTAT_2016_Literature_2nd_order.csv",
+      "FAOSTAT 2016 + Literature (3rd order)": "ad_FAOSTAT_2016_Literature_3rd_order.csv"
+    }
+  },
+  "Region: Latin America": {
+    "Raw Data for ALL LAND TYPES": {
+      "FAOSTAT 2016 + Literature (Exponential)": "ad_FAOSTAT_2016_Literature_Exponential.csv",
+      "FAOSTAT 2016 + Literature (2nd order)": "ad_FAOSTAT_2016_Literature_2nd_order.csv",
+      "FAOSTAT 2016 + Literature (3rd order)": "ad_FAOSTAT_2016_Literature_3rd_order.csv"
+    }
+  }
+}

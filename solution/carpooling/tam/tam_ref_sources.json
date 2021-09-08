@@ -1,0 +1,14 @@
+{
+  "Baseline Cases": {
+    "Based on ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment": "tam_based_on_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv",
+    "Based on ICCT, 2012, \"Global Transportation Roadmap Model\" + Non-motorized Travel Adjustment": "tam_based_on_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv"
+  },
+  "Conservative Cases": {
+    "Based on ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment": "tam_based_on_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv",
+    "Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario": "tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_Baseline_Scenario.csv"
+  },
+  "Ambitious Cases": {
+    "Based on ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment": "tam_based_on_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv",
+    "Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario": "tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_HighShift_Scenario.csv"
+  }
+}

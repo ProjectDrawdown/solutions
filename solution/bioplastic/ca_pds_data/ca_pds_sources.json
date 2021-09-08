@@ -1,0 +1,42 @@
+[
+  {
+    "name": "ConservativeLow Based on CAGR 29.3% with continued trend to 2060",
+    "include": false,
+    "filename": "custom_pds_ad_ConservativeLow_based_on_CAGR_29_3_with_continued_trend_to_2060.csv"
+  },
+  {
+    "name": "ConservativeHigh, continued 3rd poly trend to 2060",
+    "include": true,
+    "filename": "custom_pds_ad_ConservativeHigh_continued_3rd_poly_trend_to_2060.csv"
+  },
+  {
+    "name": "AggressiveMed, 40% by 2050, 3rd Poly",
+    "include": false,
+    "filename": "custom_pds_ad_AggressiveMed_40_by_2050_3rd_Poly.csv"
+  },
+  {
+    "name": "ConservativeHigh, 75% by 2045, 3rd Poly",
+    "include": false,
+    "filename": "custom_pds_ad_ConservativeHigh_75_by_2045_3rd_Poly.csv"
+  },
+  {
+    "name": "ConservativeLow, 25% by 2050, 3rd Poly",
+    "include": true,
+    "filename": "custom_pds_ad_ConservativeLow_25_by_2050_3rd_Poly.csv"
+  },
+  {
+    "name": "AggressiveLow, 50% by 2050, 3rd Poly",
+    "include": true,
+    "filename": "custom_pds_ad_AggressiveLow_50_by_2050_3rd_Poly.csv"
+  },
+  {
+    "name": "AggressiveMax, 30% by 2030, 3rd Poly",
+    "include": false,
+    "filename": "custom_pds_ad_AggressiveMax_30_by_2030_3rd_Poly.csv"
+  },
+  {
+    "name": "AggressiveMax, 90 % by 2030, 90% by 2050",
+    "include": true,
+    "filename": "custom_pds_ad_AggressiveMax_90_by_2030_90_by_2050.csv"
+  }
+]

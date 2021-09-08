@@ -124,69 +124,17 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Organic Fraction of MSW - From Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_From_Waste_TAM.csv'),
-        },
-            'Region: OECD90': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: Eastern Europe': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: Asia (Sans Japan)': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: Middle East and Africa': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: Latin America': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: China': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: India': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-            'Region: EU': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-                'European Commission DG Environment - Arcadis': THISDIR.joinpath('tam', 'tam_European_Commission_DG_Environment_Arcadis.csv'),
-            },
-        },
-            'Region: USA': {
-                'Baseline Cases': {
-                'Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-            },
-        },
-    }
-    tam_pds_data_sources = {
-        'Baseline Cases': {
-                'Drawdown TAM: Organic Fraction of MSW - Waste TAM': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Organic_Fraction_of_MSW_Waste_TAM.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM
@@ -198,186 +146,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                'Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
-            },
-            'Conservative Cases': {
-                'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
-            },
-            'Ambitious Cases': {
-                'Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
-            },
-            'Region: OECD90': {
-                'Baseline Cases': {
-                  'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('ad', 'ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
-              },
-                'Conservative Cases': {
-                  'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
-              },
-                'Ambitious Cases': {
-                  'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW).1': THISDIR.joinpath('ad', 'ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW_1.csv'),
-              },
-            },
-            'Region: Asia (Sans Japan)': {
-                'Baseline Cases': {
-                  'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
-              },
-                'Conservative Cases': {
-                  'Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
-              },
-                'Ambitious Cases': {
-                  'Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
-              },
-            },
-            'Region: Middle East and Africa': {
-                'Baseline Cases': {
-                  'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
-                  'Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
-              },
-                'Ambitious Cases': {
-                  'Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Adoption_Factoring.csv'),
-              },
-            },
-            'Region: China': {
-                'Baseline Cases': {
-                  'Song, L. et al. Study on the Current Situation of Municipal Solid Waste Composting in China and Development Trend. 2012': THISDIR.joinpath('ad', 'ad_Song_L__et_al__Study_on_the_Current_Situation_of_Municipal_Solid_Waste_Composting_in_Chi_f57570b9.csv'),
-              },
-                'Conservative Cases': {
-                  'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
-              },
-            },
-            'Region: India': {
-                'Baseline Cases': {
-                  'Kharvel, R. Sustainable Solid Waste Management in Inidia. SEAS, Columbia Thesis. 2012': THISDIR.joinpath('ad', 'ad_Kharvel_R__Sustainable_Solid_Waste_Management_in_Inidia__SEAS_Columbia_Thesis__2012.csv'),
-              },
-            },
-            'Region: EU': {
-                'Baseline Cases': {
-                  'EUROSTAT, 2016. http://ec.europa.eu/eurostat/statistics-explained/index.php/Municipal_waste_statistics': THISDIR.joinpath('ad', 'ad_EUROSTAT_2016__httpec_europa_eueurostatstatisticsexplainedindex_phpMunicipal_waste_statistics.csv'),
-                  'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('ad', 'ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
-              },
-            },
-            'Region: USA': {
-                'Baseline Cases': {
-                  'EPA, MSW trends, 2012 https://www.epa.gov/sites/production/files/2015-09/documents/2012_msw_fs.pdf': THISDIR.joinpath('ad', 'ad_EPA_MSW_trends_2012_httpswww_epa_govsitesproductionfiles201509documents2012_msw_fs_pdf.csv'),
-                  'IPCC, 2006 Calculated': THISDIR.joinpath('ad', 'ad_IPCC_2006_Calculated.csv'),
-                  'OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)': THISDIR.joinpath('ad', 'ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv'),
-              },
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'Drawdown Customized Scenario 1', 'include': True,
-                'description': (
-                    'This scenario uses mainly the high growth prognostication from existing '
-                    'sources, (See Adoption Data sheet for the Mean+1 SD projection). The '
-                    'adoption is limited for later years by feedstocks however. This is a result '
-                    'of integration with other solutions in Project Drawdown. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Customized_Scenario_1.csv')},
-            {'name': 'Drawdown Customized Scenario 2', 'include': True,
-                'description': (
-                    'This scenario uses mainly the high growth prognostication from existing '
-                    'sources until 2029, (See Adoption Data sheet for the Mean+1 SD projection) '
-                    'then is optimized to approach 98% of the organic feedstock by 2060 (using '
-                    'integrated data across all Materials and Food solutions in Project '
-                    "Drawdown's Solution Set). "
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Customized_Scenario_2.csv')},
-            {'name': 'Drawdown Customized Scenario 3', 'include': True,
-                'description': (
-                    'This scenario considers the total current USA portion of solid waste as '
-                    'calculated by taking the reliable EPA data from 2014 and dividing it by the '
-                    "2014 TAM derived from the multiple TAM sources on 'TAM Data.'  This USA "
-                    'percentage is considered the "optimistic and plausible ceiling" for '
-                    'adoption of composting of MSW and for each region, the current 2014 % '
-                    'adoption of compost of organic MSW is taken as the base and a linear '
-                    'increase in adoption is forecast until it reaches the USA percentage in '
-                    '2050.  The resulting percentages for each year are multiplied against the '
-                    'TAM (Organic fraction MSW) to derive a schedule of forecast values of MMT '
-                    'of  Composted MSW for each Drawdown region and summed for the World.  This '
-                    'provides another projection which is more conservative than the EU ceiling '
-                    'scenario. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Customized_Scenario_3.csv')},
-            {'name': 'Drawdown Customized Scenario 4', 'include': True,
-                'description': (
-                    'This scenario considers the total current EU portion of solid waste as '
-                    'calculated by taking the reliable Eurostat data from 2014 and dividing it '
-                    "by the 2014 TAM derived from the multiple TAM sources on 'TAM Data.'  This "
-                    'EU percentage is considered the "optimistic and plausible ceiling" for '
-                    'adoption of composting of MSW and for each region the current 2014 % '
-                    'adoption of compost of organic MSW is taken as the base and a linear '
-                    'increase in adoption is forecast until it reaches the EU percentage in '
-                    '2050.  The resulting percentages for each year are multiplied against the '
-                    'TAM (Organic fraction MSW) to derive a schedule of forecast values of MMT '
-                    'of  Composted MSW for each Drawdown region and summed for the World. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Customized_Scenario_4.csv')},
-            {'name': 'PDS 1 Post Integration Aug 2019', 'include': True,
-                'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS_1_Post_Integration_Aug_2019.csv')},
-            {'name': 'PDS 2 Post Integration Aug 2019', 'include': True,
-                'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS_2_Post_Integration_Aug_2019.csv')},
-            {'name': 'PDS 3 Post Integration Aug 2019', 'include': True,
-                'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS_3_Post_Integration_Aug_2019.csv')},
-            {'name': 'PDS1-US Growth Path, May2020', 'include': True,
-                'description': (
-                    'All regions follow the growth path of the US starting with their 2016 '
-                    'adoption % rate '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1US_Growth_Path_May2020.csv')},
-            {'name': 'PDS2-EU Growth Path, May 2020', 'include': True,
-                'description': (
-                    'All regions follow the EU growth path starting with their 2016 adoption '
-                    'percent '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2EU_Growth_Path_May_2020.csv')},
-            {'name': 'PDS3-Austria Growth Path, May 2020', 'include': True,
-                'description': (
-                    'OECD follows EU pledge (met by Austria in 2008) to reduce to 35% the amount '
-                    'of organic matter in landfills in 20 years (65% increase in diversion to '
-                    'composting from current level). All other regions increase at the same '
-                    "rate. Bounded by OECD max in 2036 (73%), which is the same as Austria's "
-                    'current composting rate. - Note that not all organic matter can be '
-                    'composted as some will end up processed by AD, even in the optimum scenario '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3Austria_Growth_Path_May_2020.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -474,4 +244,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

@@ -152,15 +152,16 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources=rrs.energy_tam_2_ref_data_sources
-    tam_pds_data_sources=rrs.energy_tam_2_pds_data_sources
+    _ref_tam_sources = scenario.load_sources(DATADIR/'energy'/'ref_tam_2_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(DATADIR/'energy'/'pds_tam_2_sources.json','*')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM
@@ -168,122 +169,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                'Based on IEA, WEO-2018, Current Policies Scenario (CPS)': THISDIR.joinpath('ad', 'ad_based_on_IEA_WEO2018_Current_Policies_Scenario_CPS.csv'),
-                'Based on: IEA ETP 2017 Ref Tech': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2017_Ref_Tech.csv'),
-                'Based on Equinor (2018), Rivalry Scenario': THISDIR.joinpath('ad', 'ad_based_on_Equinor_2018_Rivalry_Scenario.csv'),
-                'Based on IEEJ Outlook - 2019, Ref Scenario': THISDIR.joinpath('ad', 'ad_based_on_IEEJ_Outlook_2019_Ref_Scenario.csv'),
-            },
-            'Conservative Cases': {
-                'Based on IEA, WEO-2018, New Policies Scenario (NPS)': THISDIR.joinpath('ad', 'ad_based_on_IEA_WEO2018_New_Policies_Scenario_NPS.csv'),
-                'Based on IEEJ Outlook - 2019, Advanced Tech Scenario': THISDIR.joinpath('ad', 'ad_based_on_IEEJ_Outlook_2019_Advanced_Tech_Scenario.csv'),
-                'Based on Equinor (2018), Reform Scenario': THISDIR.joinpath('ad', 'ad_based_on_Equinor_2018_Reform_Scenario.csv'),
-                'Based on IEEJ Outlook - 2019, No Coal Plants Scenario': THISDIR.joinpath('ad', 'ad_based_on_IEEJ_Outlook_2019_No_Coal_Plants_Scenario.csv'),
-                'Based on IRENA. 2018) Roadmap-2050, REmap Case': THISDIR.joinpath('ad', 'ad_based_on_IRENA__2018_Roadmap2050_REmap_Case.csv'),
-            },
-            'Ambitious Cases': {
-                'Based on IEA, WEO-2018, SDS Scenario': THISDIR.joinpath('ad', 'ad_based_on_IEA_WEO2018_SDS_Scenario.csv'),
-                'Based on: IEA ETP 2017 B2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2017_B2DS.csv'),
-                'Based on: IEA ETP 2017 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2017_2DS.csv'),
-                'Based on Equinor (2018), Renewal Scenario': THISDIR.joinpath('ad', 'ad_based_on_Equinor_2018_Renewal_Scenario.csv'),
-            },
-            '100% RES2050 Case': {
-                'Based on: Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Advanced_Revolution.csv'),
-            },
-            'Region: OECD90': {
-                'Baseline Cases': {
-                  'Based on: IRENA (2016)': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2016.csv'),
-              },
-            },
-            'Region: Eastern Europe': {
-                'Baseline Cases': {
-                  'Based on: IRENA (2016)': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2016.csv'),
-              },
-            },
-            'Region: Asia (Sans Japan)': {
-                'Baseline Cases': {
-                  'Based on: IRENA (2016)': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2016.csv'),
-              },
-            },
-            'Region: Middle East and Africa': {
-                'Baseline Cases': {
-                  'Based on: IRENA (2016)': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2016.csv'),
-              },
-            },
-            'Region: Latin America': {
-                'Baseline Cases': {
-                  'Based on: IRENA (2016)': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2016.csv'),
-              },
-            },
-            'Region: China': {
-                'Baseline Cases': {
-                  'Based on: IRENA (2016)': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2016.csv'),
-                  'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_6DS.csv'),
-              },
-                'Conservative Cases': {
-                  'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_4DS.csv'),
-                  'Based on: Greenpeace (2015) - Reference Scenario': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Reference_Scenario.csv'),
-              },
-                'Ambitious Cases': {
-                  'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
-                  'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-              },
-            },
-            'Region: India': {
-                'Baseline Cases': {
-                  'Based on: IRENA (2016)': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2016.csv'),
-                  'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_6DS.csv'),
-              },
-                'Conservative Cases': {
-                  'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_4DS.csv'),
-                  'Based on: Greenpeace (2015) - Reference Scenario': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Reference_Scenario.csv'),
-              },
-                'Ambitious Cases': {
-                  'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
-                  'Based on: Greenpeace 2015 Energy Revolution': THISDIR.joinpath('ad', 'ad_based_on_Greenpeace_2015_Energy_Revolution.csv'),
-              },
-            },
-            'Region: EU': {
-                'Baseline Cases': {
-                  'Based on: IRENA (2016)': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2016.csv'),
-                  'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_6DS.csv'),
-              },
-                'Conservative Cases': {
-                  'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_4DS.csv'),
-              },
-                'Ambitious Cases': {
-                  'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
-              },
-            },
-            'Region: USA': {
-                'Baseline Cases': {
-                  'Based on: IRENA (2016)': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2016.csv'),
-                  'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_6DS.csv'),
-              },
-                'Conservative Cases': {
-                  'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_4DS.csv'),
-              },
-                'Ambitious Cases': {
-                  'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
-              },
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -374,4 +261,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

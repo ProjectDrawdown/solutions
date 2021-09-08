@@ -137,24 +137,17 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Based on: IEA ETP 2016 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_6DS.csv'),
-                'Based on Airbus (2015) Global Market Forecast BUSINESS  Air Travel 2016-2035 with projections extended + Telepresence Adjustment': THISDIR.joinpath('tam', 'tam_based_on_Airbus_2015_Global_Market_Forecast_BUSINESS_Air_Travel_20162035_with_projection_3f506404.csv'),
-                'Based on Boeing (2017) Current Market Outlook BUSINESS  Air Travel 2017-2036 + Telepresence Adjustment': THISDIR.joinpath('tam', 'tam_based_on_Boeing_2017_Current_Market_Outlook_BUSINESS_Air_Travel_20172036_Telepresence_Adjustment.csv'),
-        },
-            'Ambitious Cases': {
-                'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2016_2DS.csv'),
-        },
-    }
-    tam_pds_data_sources=tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM
@@ -162,82 +155,7 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS1 - Bass diffusion Adoption Curve - 16% Adoption in 2050', 'include': True,
-                'description': (
-                    "Using Excel's Goal Seek, we fitted a Bass Diffusion Curve's parameters to "
-                    'fit this adoption for 2050 - 20%. Some parameter constraints were added as '
-                    'guided by the literature on parameter estimations. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Bass_diffusion_Adoption_Curve_16_Adoption_in_2050.csv')},
-            {'name': 'PDS2 - Bass diffusion Adoption Curve - 30% Adoption in 2050', 'include': True,
-                'description': (
-                    "Using Excel's Goal Seek, we fitted a Bass Diffusion Curve's parameters to "
-                    'fit the adoption for 2050 at 30%. Some parameter constraints were added as '
-                    'guided by the literature on parameter estimations. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Bass_diffusion_Adoption_Curve_30_Adoption_in_2050.csv')},
-            {'name': 'PDS3 - Bass diffusion Adoption Curve - 50% Adoption in 2050', 'include': True,
-                'description': (
-                    "Using Excel's Goal Seek, we fitted a Bass Diffusion Curve's parameters to "
-                    'fit the maximum potential we believe for Telepresence - 50% of business air '
-                    'trips. Some parameter constraints were added as guided by the literature on '
-                    'parameter estimations. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Bass_diffusion_Adoption_Curve_50_Adoption_in_2050.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'Book Ed.1 Reference Scenario', 'include': True,
-                'description': (
-                    'The reference adoption used for the Book First Edition is, as most '
-                    'solutions, based on a fixed percentage of the Total Addressable Market '
-                    '(TAM), hence if the TAM data chane, the reference adoption also change. For '
-                    'this update, new TAM data were added resulting a different reference '
-                    'adoption scenario, so this former reference scenario is stored here for use '
-                    'in the Book Ed.1 scenario results. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Book_Ed_1_Reference_Scenario.csv')},
-            {'name': 'Telepresence Share of Business Aviation Market is Fixed', 'include': True,
-                'description': (
-                    'Drawdown calculations for REF adoption of Telepresence based on market '
-                    'estimates collected for 2011-2014 (linearly extrapolated to 2015-2018). We '
-                    'reproduce the calculations in this model for REF adoption estimation. For '
-                    'future years, the standard Drawdown assumption of fixed adoption (from '
-                    '2018) in percentage of TAM is applied. The TAM used is the average of '
-                    "Baseline TAM's. "
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Telepresence_Share_of_Business_Aviation_Market_is_Fixed.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:
@@ -338,4 +256,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

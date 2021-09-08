@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Drawdown Customized Scenario 1",
+    "include": true,
+    "description": "This scenario uses mainly the high growth prognostication from existing sources, (See Adoption Data sheet for the Mean+1 SD projection). The adoption is limited for later years by feedstocks however. This is a result of integration with other solutions in Project Drawdown. ",
+    "filename": "custom_pds_ad_Drawdown_Customized_Scenario_1.csv"
+  },
+  {
+    "name": "Drawdown Customized Scenario 2",
+    "include": true,
+    "description": "This scenario uses mainly the high growth prognostication from existing sources until 2029, (See Adoption Data sheet for the Mean+1 SD projection) then is optimized to approach 98% of the organic feedstock by 2060 (using integrated data across all Materials and Food solutions in Project Drawdown's Solution Set). ",
+    "filename": "custom_pds_ad_Drawdown_Customized_Scenario_2.csv"
+  },
+  {
+    "name": "Drawdown Customized Scenario 3",
+    "include": true,
+    "description": "This scenario considers the total current USA portion of solid waste as calculated by taking the reliable EPA data from 2014 and dividing it by the 2014 TAM derived from the multiple TAM sources on 'TAM Data.'  This USA percentage is considered the \"optimistic and plausible ceiling\" for adoption of composting of MSW and for each region, the current 2014 % adoption of compost of organic MSW is taken as the base and a linear increase in adoption is forecast until it reaches the USA percentage in 2050.  The resulting percentages for each year are multiplied against the TAM (Organic fraction MSW) to derive a schedule of forecast values of MMT of  Composted MSW for each Drawdown region and summed for the World.  This provides another projection which is more conservative than the EU ceiling scenario. ",
+    "filename": "custom_pds_ad_Drawdown_Customized_Scenario_3.csv"
+  },
+  {
+    "name": "Drawdown Customized Scenario 4",
+    "include": true,
+    "description": "This scenario considers the total current EU portion of solid waste as calculated by taking the reliable Eurostat data from 2014 and dividing it by the 2014 TAM derived from the multiple TAM sources on 'TAM Data.'  This EU percentage is considered the \"optimistic and plausible ceiling\" for adoption of composting of MSW and for each region the current 2014 % adoption of compost of organic MSW is taken as the base and a linear increase in adoption is forecast until it reaches the EU percentage in 2050.  The resulting percentages for each year are multiplied against the TAM (Organic fraction MSW) to derive a schedule of forecast values of MMT of  Composted MSW for each Drawdown region and summed for the World. ",
+    "filename": "custom_pds_ad_Drawdown_Customized_Scenario_4.csv"
+  },
+  {
+    "name": "PDS 1 Post Integration Aug 2019",
+    "include": true,
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS_1_Post_Integration_Aug_2019.csv"
+  },
+  {
+    "name": "PDS 2 Post Integration Aug 2019",
+    "include": true,
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS_2_Post_Integration_Aug_2019.csv"
+  },
+  {
+    "name": "PDS 3 Post Integration Aug 2019",
+    "include": true,
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS_3_Post_Integration_Aug_2019.csv"
+  },
+  {
+    "name": "PDS1-US Growth Path, May2020",
+    "include": true,
+    "description": "All regions follow the growth path of the US starting with their 2016 adoption % rate ",
+    "filename": "custom_pds_ad_PDS1US_Growth_Path_May2020.csv"
+  },
+  {
+    "name": "PDS2-EU Growth Path, May 2020",
+    "include": true,
+    "description": "All regions follow the EU growth path starting with their 2016 adoption percent ",
+    "filename": "custom_pds_ad_PDS2EU_Growth_Path_May_2020.csv"
+  },
+  {
+    "name": "PDS3-Austria Growth Path, May 2020",
+    "include": true,
+    "description": "OECD follows EU pledge (met by Austria in 2008) to reduce to 35% the amount of organic matter in landfills in 20 years (65% increase in diversion to composting from current level). All other regions increase at the same rate. Bounded by OECD max in 2036 (73%), which is the same as Austria's current composting rate. - Note that not all organic matter can be composted as some will end up processed by AD, even in the optimum scenario ",
+    "filename": "custom_pds_ad_PDS3Austria_Growth_Path_May_2020.csv"
+  }
+]

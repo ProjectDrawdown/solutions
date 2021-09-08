@@ -1,0 +1,143 @@
+{
+  "Region: OECD90": {
+    "Baseline Cases": {
+      "Monni et al Methodology,Decreasing Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_MethodologyDecreasing_Cap_Customized_Prognostication_by_Erika_Boeing_2016_Se_e9ca4246.csv"
+    },
+    "Conservative Cases": {
+      "Monni et al Methodology, 48.2% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_48_2_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_was_85599acc.csv"
+    },
+    "Ambitious Cases": {
+      "Monni et al Methodology, 75% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_75_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_waste_8d463c6a.csv"
+    }
+  },
+  "Region: Eastern Europe": {
+    "Baseline Cases": {
+      "Monni et al Methodology,Decreasing Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_MethodologyDecreasing_Cap_Customized_Prognostication_by_Erika_Boeing_2016_Se_e9ca4246.csv"
+    },
+    "Conservative Cases": {
+      "Monni et al Methodology, 48.2% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_48_2_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_was_85599acc.csv"
+    },
+    "Ambitious Cases": {
+      "Monni et al Methodology, 75% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_75_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_waste_8d463c6a.csv"
+    }
+  },
+  "Region: Asia (Sans Japan)": {
+    "Baseline Cases": {
+      "Monni et al Methodology,Decreasing Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_MethodologyDecreasing_Cap_Customized_Prognostication_by_Erika_Boeing_2016_Se_e9ca4246.csv"
+    },
+    "Conservative Cases": {
+      "Monni et al Methodology, 48.2% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_48_2_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_was_85599acc.csv"
+    },
+    "Ambitious Cases": {
+      "Monni et al Methodology, 75% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_75_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_waste_8d463c6a.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Baseline Cases": {
+      "Monni et al Methodology,Decreasing Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_MethodologyDecreasing_Cap_Customized_Prognostication_by_Erika_Boeing_2016_Se_e9ca4246.csv"
+    },
+    "Conservative Cases": {
+      "Monni et al Methodology, 48.2% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_48_2_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_was_85599acc.csv",
+      "Based on Greenpeace (2015) Reference Scen- CHP Electricity Included - Modified to include Renewable and NonRenewable Waste by Erika Boeing, 2016 - See Adoption Factoring!": "ad_based_on_Greenpeace_2015_Reference_Scen_CHP_Electricity_Included_Modified_to_include_Ren_ceb5044c.csv"
+    },
+    "Ambitious Cases": {
+      "Monni et al Methodology, 75% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_75_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_waste_8d463c6a.csv",
+      "Based on: Greenpeace 2015 Energy Revolution": "ad_based_on_Greenpeace_2015_Energy_Revolution.csv"
+    },
+    "100% RES2050 Case": {
+      "Based on: Greenpeace 2015 Advanced Revolution": "ad_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+    }
+  },
+  "Region: Latin America": {
+    "Baseline Cases": {
+      "Monni et al Methodology,Decreasing Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_MethodologyDecreasing_Cap_Customized_Prognostication_by_Erika_Boeing_2016_Se_e9ca4246.csv"
+    },
+    "Conservative Cases": {
+      "Monni et al Methodology, 48.2% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_48_2_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_was_85599acc.csv",
+      "Based on: Greenpeace 2015 Energy Revolution": "ad_based_on_Greenpeace_2015_Energy_Revolution.csv"
+    },
+    "Ambitious Cases": {
+      "Monni et al Methodology, 75% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_75_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_waste_8d463c6a.csv",
+      "Based on: Greenpeace 2015 Advanced Revolution": "ad_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+    },
+    "100% RES2050 Case": {
+      "Based on: Greenpeace 2015 Advanced Revolution.1": "ad_based_on_Greenpeace_2015_Advanced_Revolution_1.csv"
+    }
+  },
+  "Region: China": {
+    "Baseline Cases": {
+      "Monni et al Methodology,Decreasing Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_MethodologyDecreasing_Cap_Customized_Prognostication_by_Erika_Boeing_2016_Se_e9ca4246.csv",
+      "Based on: IEA ETP 2016 6DS": "ad_based_on_IEA_ETP_2016_6DS.csv"
+    },
+    "Conservative Cases": {
+      "Monni et al Methodology, 48.2% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_48_2_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_was_85599acc.csv",
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: Greenpeace 2015 Energy Revolution": "ad_based_on_Greenpeace_2015_Energy_Revolution.csv"
+    },
+    "Ambitious Cases": {
+      "Monni et al Methodology, 75% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_75_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_waste_8d463c6a.csv",
+      "Based on IEA (2016) 2DS  Modified to include Renewable and NonRenewable Waste by Erika Boeing, 2016, see Adoption_Factoring!": "ad_based_on_IEA_2016_2DS_Modified_to_include_Renewable_and_NonRenewable_Waste_by_Erika_Boei_c94b414a.csv",
+      "Based on: Greenpeace 2015 Advanced Revolution": "ad_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+    },
+    "100% RES2050 Case": {
+      "Based on: Greenpeace 2015 Advanced Revolution.1": "ad_based_on_Greenpeace_2015_Advanced_Revolution_1.csv"
+    }
+  },
+  "Region: India": {
+    "Baseline Cases": {
+      "Monni et al Methodology,Decreasing Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_MethodologyDecreasing_Cap_Customized_Prognostication_by_Erika_Boeing_2016_Se_e9ca4246.csv",
+      "Based on: IEA ETP 2016 6DS": "ad_based_on_IEA_ETP_2016_6DS.csv"
+    },
+    "Conservative Cases": {
+      "Monni et al Methodology, 48.2% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_48_2_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_was_85599acc.csv",
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: Greenpeace 2015 Energy Revolution": "ad_based_on_Greenpeace_2015_Energy_Revolution.csv"
+    },
+    "Ambitious Cases": {
+      "Monni et al Methodology, 75% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_75_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_waste_8d463c6a.csv",
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+      "Based on: Greenpeace 2015 Advanced Revolution": "ad_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+    },
+    "100% RES2050 Case": {
+      "Based on: Greenpeace 2015 Advanced Revolution.1": "ad_based_on_Greenpeace_2015_Advanced_Revolution_1.csv"
+    }
+  },
+  "Region: EU": {
+    "Baseline Cases": {
+      "Monni et al Methodology,Decreasing Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_MethodologyDecreasing_Cap_Customized_Prognostication_by_Erika_Boeing_2016_Se_e9ca4246.csv",
+      "Based on: IEA ETP 2016 6DS": "ad_based_on_IEA_ETP_2016_6DS.csv"
+    },
+    "Conservative Cases": {
+      "Monni et al Methodology, 48.2% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_48_2_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_was_85599acc.csv",
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: Greenpeace 2015 Energy Revolution": "ad_based_on_Greenpeace_2015_Energy_Revolution.csv"
+    },
+    "Ambitious Cases": {
+      "Monni et al Methodology, 75% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_75_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_waste_8d463c6a.csv",
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+      "Based on: Greenpeace 2015 Advanced Revolution": "ad_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+    },
+    "100% RES2050 Case": {
+      "Based on: Greenpeace 2015 Advanced Revolution.1": "ad_based_on_Greenpeace_2015_Advanced_Revolution_1.csv"
+    }
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "Monni et al Methodology,Decreasing Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_MethodologyDecreasing_Cap_Customized_Prognostication_by_Erika_Boeing_2016_Se_e9ca4246.csv",
+      "Based on: IEA ETP 2016 6DS": "ad_based_on_IEA_ETP_2016_6DS.csv"
+    },
+    "Conservative Cases": {
+      "Monni et al Methodology, 48.2% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_48_2_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_was_85599acc.csv",
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: Greenpeace 2015 Energy Revolution": "ad_based_on_Greenpeace_2015_Energy_Revolution.csv"
+    },
+    "Ambitious Cases": {
+      "Monni et al Methodology, 75% Cap, Customized Prognostication by Erika Boeing, 2016, See waste_toWTE and wte_electricity tabs": "ad_Monni_et_al_Methodology_75_Cap_Customized_Prognostication_by_Erika_Boeing_2016_See_waste_8d463c6a.csv",
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+      "Based on: Greenpeace 2015 Advanced Revolution": "ad_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+    },
+    "100% RES2050 Case": {
+      "Based on: Greenpeace 2015 Advanced Revolution.1": "ad_based_on_Greenpeace_2015_Advanced_Revolution_1.csv"
+    }
+  }
+}

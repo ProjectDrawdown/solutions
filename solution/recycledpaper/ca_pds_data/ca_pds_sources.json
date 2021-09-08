@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Custom Scenario No.1 - Using Medium Trend of Prognostications",
+    "include": true,
+    "filename": "custom_pds_ad_Custom_Scenario_No_1_Using_Medium_Trend_of_Prognostications.csv"
+  },
+  {
+    "name": "Custom Scenario No.2 - Using High Trend of Existing Prognostications",
+    "include": true,
+    "filename": "custom_pds_ad_Custom_Scenario_No_2_Using_High_Trend_of_Existing_Prognostications.csv"
+  }
+]

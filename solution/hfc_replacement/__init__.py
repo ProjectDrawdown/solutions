@@ -104,83 +104,27 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Mean of Velders 2015 Upper and Lower HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Mean_of_Velders_2015_Upper_and_Lower_HFC_Emissions_Scenarios.csv'),
-        },
-            'Conservative Cases': {
-                'Velders 2015 Upper  HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Velders_2015_Upper_HFC_Emissions_Scenarios.csv'),
-        },
-            'Ambitious Cases': {
-                'Velders 2015 Lower  HFC Emissions Scenarios': THISDIR.joinpath('tam', 'tam_Velders_2015_Lower_HFC_Emissions_Scenarios.csv'),
-        },
-    }
-    tam_pds_data_sources=tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM
-        high_multi_override = list(zip(['high_sd_mult']*11, dd.REGIONS+['PDS World'], [0.5]*11))  # hi_sd_mult = 0.5 for all regions
-        growth_override     = list(zip(['growth']*11, dd.REGIONS+['PDS World'], ['High']*11))     # growth = 'High' for all regions
-        self.set_tam( config_values = high_multi_override + growth_override )
+        config_values = [('high_sd_mult',None,0.5), ('growth',None,'High')] 
+        self.set_tam(config_values=config_values)
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'World': {
-                'lowGWP-lower': THISDIR.joinpath('ad', 'ad_lowGWPlower_Velders_et_al_2015.csv'),
-                'lowGWP-upper': THISDIR.joinpath('ad', 'ad_lowGWPupper_Velders_et_al_2015.csv'),
-                'Mean lowGWP': THISDIR.joinpath('ad', 'ad_Mean_lowGWP_Velders_et_al_2015.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS 2 Median Adoption of LowGWP',
-              'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS_2_Median_Adoption_of_LowGWP.csv')},
-            {'name': 'PDS 1 Lower Adoption LowGWP',
-              'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS_1_Lower_Adoption_LowGWP.csv')},
-            {'name': 'PDS 3 Upper Adoption of LowGWP',
-              'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS_3_Upper_Adoption_of_LowGWP.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -289,4 +233,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

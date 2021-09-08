@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Halfway to Passive House",
+    "include": true,
+    "filename": "custom_pds_ad_Halfway_to_Passive_House.csv"
+  },
+  {
+    "name": "Almost Passive House",
+    "include": true,
+    "filename": "custom_pds_ad_Almost_Passive_House.csv"
+  },
+  {
+    "name": "Passive House",
+    "include": true,
+    "filename": "custom_pds_ad_Passive_House.csv"
+  },
+  {
+    "name": "Drawdown Book Edition 1 PDS 1 Scenario",
+    "include": true,
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_PDS_1_Scenario.csv"
+  },
+  {
+    "name": "Drawdown Book Edition 1 PDS 2 Scenario",
+    "include": true,
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_PDS_2_Scenario.csv"
+  },
+  {
+    "name": "Drawdown Book Edition 1 PDS 3 Scenario",
+    "include": true,
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_PDS_3_Scenario.csv"
+  }
+]

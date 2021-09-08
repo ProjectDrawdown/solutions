@@ -1,0 +1,65 @@
+{
+  "Baseline Cases": {
+    "Calculated based on What a Waste and EU as PDS Benchmark and OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_and_OECD_ceiling.csv"
+  },
+  "": {
+    "Calculated based on What a Waste and Austria as PDS Benchmark and OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_Austria_as_PDS_Benchmark_and_OECD_ceiling.csv",
+    "Calculated based on What a Waste and USA as PDS Benchmark ceiling and EU as OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_ceiling_and_EU_as_OECD_ceiling.csv"
+  },
+  "Region: OECD90": {
+    "Baseline Cases": {
+      "Data from (Hoornweg & Bhata-Tata What a Waste World Bank 2012, Table 12, page 24)": "ad_Data_from_Hoornweg_BhataTata_What_a_Waste_World_Bank_2012_Table_12_page_24.csv"
+    },
+    "": {
+      "Calculated based on What a Waste and EU as PDS Benchmark and OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_and_OECD_ceiling.csv",
+      "Calculated based on What a Waste and Austria as PDS Benchmark and OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_Austria_as_PDS_Benchmark_and_OECD_ceiling.csv"
+    },
+    "Ambitious Cases": {
+      "OECD.Stats, MSW Treated - Recycled (retrieved on 7/16/16)": "ad_OECD_Stats_MSW_Treated_Recycled_retrieved_on_71616.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Baseline Cases": {
+      "Calculated based on What a Waste and EU as PDS Benchmark and OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_and_OECD_ceiling.csv"
+    },
+    "": {
+      "Calculated based on What a Waste and Austria as PDS Benchmark and OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_Austria_as_PDS_Benchmark_and_OECD_ceiling.csv"
+    },
+    "Conservative Cases": {
+      "Calculated based on What a Waste and USA as PDS Benchmark ceiling and EU as OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_ceiling_and_EU_as_OECD_ceiling.csv"
+    }
+  },
+  "Region: China": {
+    "Baseline Cases": {
+      "PDS % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all other regions at current OECD90 Adoption": "ad_PDS_Recycled_of_Recycleable_Benchmarked_OEACD90_EU_2020_Target_and_all_other_regions_at__8a8e45f0.csv"
+    }
+  },
+  "Region: India": {
+    "Baseline Cases": {
+      "PDS % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all other regions at current OECD90 Adoption": "ad_PDS_Recycled_of_Recycleable_Benchmarked_OEACD90_EU_2020_Target_and_all_other_regions_at__8a8e45f0.csv"
+    }
+  },
+  "Region: EU": {
+    "Baseline Cases": {
+      "PDS % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all other regions at current OECD90 Adoption": "ad_PDS_Recycled_of_Recycleable_Benchmarked_OEACD90_EU_2020_Target_and_all_other_regions_at__8a8e45f0.csv"
+    },
+    "": {
+      "PDS % Recycled of Recycleable Benchmarked Target at current Austria Adoption": "ad_PDS_Recycled_of_Recycleable_Benchmarked_Target_at_current_Austria_Adoption.csv",
+      "EuroStat 2015": "ad_EuroStat_2015.csv"
+    },
+    "Conservative Cases": {
+      "OECD.stats": "ad_OECD_stats.csv"
+    }
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "OECD.Stats, MSW Treated - Recycled (retrieved on 7/16/16)": "ad_OECD_Stats_MSW_Treated_Recycled_retrieved_on_71616.csv"
+    },
+    "Conservative Cases": {
+      "Calculated based on What a Waste and EU as PDS Benchmark and OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_and_OECD_ceiling.csv"
+    },
+    "": {
+      "Calculated based on What a Waste and Austria as PDS Benchmark and OECD ceiling": "ad_Calculated_based_on_What_a_Waste_and_Austria_as_PDS_Benchmark_and_OECD_ceiling.csv"
+    }
+  }
+}

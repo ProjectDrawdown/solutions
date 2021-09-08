@@ -1,0 +1,83 @@
+{
+  "Baseline Cases": {
+    "US DOE 2015 SSL R&D Plan (original source: P. Smallwood, in Strategies in Light Conference, Las Vegas, February 2015), estimates 3% installed base penetration in 2014, 33% in 2020 and 88% in 2030. not sector specific but for all general lighting. Used as a proxy for commercial lighting. Interpolated, linear": "ad_US_DOE_2015_SSL_RD_Plan_original_source_P__Smallwood_in_Strategies_in_Light_Conference_L_7315fa9a.csv",
+    "US DOE 2013 (MYPP) http://apps1.eere.energy.gov/buildings/publications/pdfs/ssl/ssl_mypp2013_web.pdf": "ad_US_DOE_2013_MYPP_httpapps1_eere_energy_govbuildingspublicationspdfssslssl_mypp2013_web_pdf.csv",
+    "Navigant / US DOE 2015: http://energy.gov/sites/prod/files/2015/07/f24/led-adoption-report_2015.pdf": "ad_Navigant_US_DOE_2015_httpenergy_govsitesprodfiles201507f24ledadoptionreport_2015_pdf.csv"
+  },
+  "Conservative Cases": {
+    "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv",
+    "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+  },
+  "Region: OECD90": {
+    "Baseline Cases": {
+      "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv"
+    },
+    "Conservative Cases": {
+      "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+    }
+  },
+  "Region: Eastern Europe": {
+    "Baseline Cases": {
+      "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv"
+    },
+    "Conservative Cases": {
+      "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+    }
+  },
+  "Region: Asia (Sans Japan)": {
+    "Baseline Cases": {
+      "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv"
+    },
+    "Conservative Cases": {
+      "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Baseline Cases": {
+      "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv"
+    },
+    "Conservative Cases": {
+      "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+    }
+  },
+  "Region: Latin America": {
+    "Baseline Cases": {
+      "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv"
+    },
+    "Conservative Cases": {
+      "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+    }
+  },
+  "Region: China": {
+    "Baseline Cases": {
+      "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv"
+    },
+    "Conservative Cases": {
+      "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+    }
+  },
+  "Region: India": {
+    "Baseline Cases": {
+      "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv"
+    },
+    "Conservative Cases": {
+      "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+    }
+  },
+  "Region: EU": {
+    "Baseline Cases": {
+      "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv"
+    },
+    "Conservative Cases": {
+      "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+    }
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "Bergesen et al. HighLED scenario (currently likely)": "ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv"
+    },
+    "Conservative Cases": {
+      "Bergesen et al. Likely LED (currently conservative)": "ad_Bergesen_et_al__Likely_LED_currently_conservative.csv"
+    }
+  }
+}

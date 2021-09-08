@@ -1,0 +1,171 @@
+{
+  "Baseline Cases": {
+    "Based on BP Energy Outlook 2019 (Evolving transition Scenario)": "ad_based_on_BP_Energy_Outlook_2019_Evolving_transition_Scenario.csv",
+    "Based on IEEJ Outlook - 2019, Ref Scenario": "ad_based_on_IEEJ_Outlook_2019_Ref_Scenario.csv",
+    "Based on IEA, WEO-2018, Current Policies Scenario (CPS)": "ad_based_on_IEA_WEO2018_Current_Policies_Scenario_CPS.csv",
+    "Based on: IEA ETP 2017 Ref Tech": "ad_based_on_IEA_ETP_2017_Ref_Tech.csv"
+  },
+  "Conservative Cases": {
+    "Based on Equinor (2018), Reform Scenario": "ad_based_on_Equinor_2018_Reform_Scenario.csv",
+    "Based on IEA, WEO-2018, New Policies Scenario (NPS)": "ad_based_on_IEA_WEO2018_New_Policies_Scenario_NPS.csv"
+  },
+  "Ambitious Cases": {
+    "Based on Equinor (2018), Renewal Scenario": "ad_based_on_Equinor_2018_Renewal_Scenario.csv",
+    "Based on IEEJ Outlook - 2019, Advanced Tech Scenario": "ad_based_on_IEEJ_Outlook_2019_Advanced_Tech_Scenario.csv",
+    "Based on: Grantham Institute and Carbon Tracker (2017), Strong Scenario, Original, Medium": "ad_based_on_Grantham_Institute_and_Carbon_Tracker_2017_Strong_Scenario_Original_Medium.csv",
+    "Based on IEA, WEO-2018, SDS Scenario": "ad_based_on_IEA_WEO2018_SDS_Scenario.csv",
+    "Based on: IEA ETP 2017 B2DS": "ad_based_on_IEA_ETP_2017_B2DS.csv",
+    "Based on: IEA ETP 2017 2DS": "ad_based_on_IEA_ETP_2017_2DS.csv"
+  },
+  "100% RES2050 Case": {
+    "Based on average of: LUT/EWG 2019 100% RES, Ecofys 2018 1.5C and Greenpeace 2015 Advanced Revolution": "ad_based_on_average_of_LUTEWG_2019_100_RES_Ecofys_2018_1_5C_and_Greenpeace_2015_Advanced_Revolution.csv"
+  },
+  "Region: OECD90": {
+    "Baseline Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO Reference": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER Reference": "ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+    },
+    "Conservative Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO 550": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+      "Based on: AMPERE 2014 GEM E3 550": "ad_based_on_AMPERE_2014_GEM_E3_550.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO 450": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+      "Based on: AMPERE 2014 GEM E3 450": "ad_based_on_AMPERE_2014_GEM_E3_450.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  },
+  "Region: Eastern Europe": {
+    "Baseline Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO Reference": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv",
+      "Based on: AMPERE 2014 GEM E3 Reference": "ad_based_on_AMPERE_2014_GEM_E3_Reference.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER Reference": "ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+    },
+    "Conservative Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO 550": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+      "Based on: AMPERE 2014 GEM E3 550": "ad_based_on_AMPERE_2014_GEM_E3_550.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO 450": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+      "Based on: AMPERE 2014 GEM E3 450": "ad_based_on_AMPERE_2014_GEM_E3_450.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  },
+  "Region: Asia (Sans Japan)": {
+    "Baseline Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO Reference": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER Reference": "ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+    },
+    "Conservative Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO 550": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO 450": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Baseline Cases": {
+      "Based on: AMPERE 2014 IMAGE TIMER Reference": "ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+    },
+    "Conservative Cases": {
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  },
+  "Region: Latin America": {
+    "Baseline Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO Reference": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER Reference": "ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+    },
+    "Conservative Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO 550": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO 450": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  },
+  "Region: China": {
+    "Baseline Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO Reference": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv",
+      "Based on: AMPERE 2014 GEM E3 Reference": "ad_based_on_AMPERE_2014_GEM_E3_Reference.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER Reference": "ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+    },
+    "Conservative Cases": {
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 550": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+      "Based on: AMPERE 2014 GEM E3 550": "ad_based_on_AMPERE_2014_GEM_E3_550.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 450": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+      "Based on: AMPERE 2014 GEM E3 450": "ad_based_on_AMPERE_2014_GEM_E3_450.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  },
+  "Region: India": {
+    "Baseline Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO Reference": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv",
+      "Based on: AMPERE 2014 GEM E3 Reference": "ad_based_on_AMPERE_2014_GEM_E3_Reference.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER Reference": "ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+    },
+    "Conservative Cases": {
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 550": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+      "Based on: AMPERE 2014 GEM E3 550": "ad_based_on_AMPERE_2014_GEM_E3_550.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 450": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+      "Based on: AMPERE 2014 GEM E3 450": "ad_based_on_AMPERE_2014_GEM_E3_450.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  },
+  "Region: EU": {
+    "Baseline Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO Reference": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv",
+      "Based on: AMPERE 2014 GEM E3 Reference": "ad_based_on_AMPERE_2014_GEM_E3_Reference.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER Reference": "ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+    },
+    "Conservative Cases": {
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 550": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+      "Based on: AMPERE 2014 GEM E3 550": "ad_based_on_AMPERE_2014_GEM_E3_550.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 450": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+      "Based on: AMPERE 2014 GEM E3 450": "ad_based_on_AMPERE_2014_GEM_E3_450.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "Based on: AMPERE 2014 MESSAGE MACRO Reference": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_Reference.csv",
+      "Based on: AMPERE 2014 GEM E3 Reference": "ad_based_on_AMPERE_2014_GEM_E3_Reference.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER Reference": "ad_based_on_AMPERE_2014_IMAGE_TIMER_Reference.csv"
+    },
+    "Conservative Cases": {
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 550": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv",
+      "Based on: AMPERE 2014 GEM E3 550": "ad_based_on_AMPERE_2014_GEM_E3_550.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 550": "ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+      "Based on: AMPERE 2014 MESSAGE MACRO 450": "ad_based_on_AMPERE_2014_MESSAGE_MACRO_450.csv",
+      "Based on: AMPERE 2014 GEM E3 450": "ad_based_on_AMPERE_2014_GEM_E3_450.csv",
+      "Based on: AMPERE 2014 IMAGE TIMER 450": "ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv"
+    }
+  }
+}

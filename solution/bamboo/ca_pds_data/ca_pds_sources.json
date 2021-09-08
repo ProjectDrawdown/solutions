@@ -1,0 +1,31 @@
+[
+  {
+    "name": "Low growth, linear trend",
+    "include": true,
+    "datapoints_degree": 1,
+    "description": "\nThis scenario projects the future adoption of bamboo based on historical regional\ngrowth reported for the 1990-2010 period in the Global Forest Resource Assessment\n2010 report, published by the FAO."
+  },
+  {
+    "name": "Medium growth, linear trend",
+    "include": true,
+    "description": "\nThis scenario projects the future adoption of bamboo based on the highest\nhistorical regional annual growth rate, based on 1990-2010 FAO data. The highest\nannual growth rate was reported in the Asia region (0.0974 Mha/year). Thus, it\nwas assumed that bamboo plantation in other regions will grow by half of the\ngrowth rate calculated in Asia (0.05 Mha/year), while bamboo plantation in Asia\ncontinues to grow with the same rate.",
+    "filename": "custom_pds_ad_Medium_growth_linear_trend.csv"
+  },
+  {
+    "name": "High growth, linear trend",
+    "include": true,
+    "description": "\nThis scenario projects the future adoption of bamboo based on the highest\nhistorical regional annual growth rate, based on 1990-2010 FAO data. The highest\nannual growth rate was reported in the Asia region. Thus, it was assumed that\nbamboo plantation in other regions will grow at the same growth rate calculated\nin Asia (0.0974 Mha/year), while bamboo plantation in Asia continues to grow at\ndouble this rate (0.19 Mha/year).",
+    "filename": "custom_pds_ad_High_growth_linear_trend.csv"
+  },
+  {
+    "name": "Max growth, linear trend",
+    "include": true,
+    "description": "\nConsidering the limited total land available for bamboo, this scenario\nprojects an aggressive adoption of bamboo plantation and projects a worldwide\n85% adoption of bamboo plantation by 2050."
+  },
+  {
+    "name": "Song et al. 2013",
+    "include": true,
+    "description": "\nAnnual increase in global bamboo forests based on a global historical annual\nexpansion of bamboo forests of 3%, as reported in Song et al. 2013 (see p.7\nof publication).",
+    "filename": "custom_pds_ad_Song_et_al__2013.csv"
+  }
+]

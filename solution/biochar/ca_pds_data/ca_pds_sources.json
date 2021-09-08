@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Linear, low growth",
+    "include": true,
+    "filename": "custom_pds_ad_Linear_low_growth.csv"
+  },
+  {
+    "name": "High Growth, 2nd Poly, based on International Biochar Initiative (2015)",
+    "include": true,
+    "filename": "custom_pds_ad_High_Growth_2nd_Poly_based_on_International_Biochar_Initiative_2015.csv"
+  },
+  {
+    "name": "Linear, high growth",
+    "include": true,
+    "filename": "custom_pds_ad_Linear_high_growth.csv"
+  },
+  {
+    "name": "Linear, max growth",
+    "include": true,
+    "filename": "custom_pds_ad_Linear_max_growth.csv"
+  }
+]

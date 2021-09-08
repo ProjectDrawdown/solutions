@@ -1,0 +1,47 @@
+[
+  {
+    "name": "PDS 1 Baseline _Integrated with Waste Model on feedstock availability",
+    "include": true,
+    "filename": "custom_pds_ad_PDS_1_Baseline__Integrated_with_Waste_Model_on_feedstock_availability.csv"
+  },
+  {
+    "name": "PDS 2 Baseline _Integrated with Waste Model on feedstock availability",
+    "include": true,
+    "filename": "custom_pds_ad_PDS_2_Baseline__Integrated_with_Waste_Model_on_feedstock_availability.csv"
+  },
+  {
+    "name": "PDS 3 Baseline _Integrated with Waste Model on feedstock availability",
+    "include": true,
+    "filename": "custom_pds_ad_PDS_3_Baseline__Integrated_with_Waste_Model_on_feedstock_availability.csv"
+  },
+  {
+    "name": "PDS 1 - CONSERVATIVE LANDFILL METHANE IF. CONSERVATIVE W2E (Integrated in Waste Model)",
+    "include": true,
+    "filename": "custom_pds_ad_PDS_1_CONSERVATIVE_LANDFILL_METHANE_IF__CONSERVATIVE_W2E_Integrated_in_Waste_Model.csv"
+  },
+  {
+    "name": "PDS 2 - CONSERVATIVE LANDFILL METHANE IF. CONSERVATIVE W2E (Integrated in Waste Model)",
+    "include": true,
+    "filename": "custom_pds_ad_PDS_2_CONSERVATIVE_LANDFILL_METHANE_IF__CONSERVATIVE_W2E_Integrated_in_Waste_Model.csv"
+  },
+  {
+    "name": "PDS 3 - CONSERVATIVE LANDFILL METHANE IF. CONSERVATIVE W2E (Integrated in Waste Model)",
+    "include": true,
+    "filename": "custom_pds_ad_PDS_3_CONSERVATIVE_LANDFILL_METHANE_IF__CONSERVATIVE_W2E_Integrated_in_Waste_Model.csv"
+  },
+  {
+    "name": "PDS 1 - AMBITIOUS LANDFILL METHANE IF AMBITIOUS W2E (Integrated in Waste Model)",
+    "include": true,
+    "filename": "custom_pds_ad_PDS_1_AMBITIOUS_LANDFILL_METHANE_IF_AMBITIOUS_W2E_Integrated_in_Waste_Model.csv"
+  },
+  {
+    "name": "PDS 2 - AMBITIOUS LANDFILL METHANE IF AMBITIOUS W2E (Integrated in Waste Model)",
+    "include": true,
+    "filename": "custom_pds_ad_PDS_2_AMBITIOUS_LANDFILL_METHANE_IF_AMBITIOUS_W2E_Integrated_in_Waste_Model.csv"
+  },
+  {
+    "name": "PDS 3 - AMBITIOUS LANDFILL METHANE IF AMBITIOUS W2E (Integrated in Waste Model)",
+    "include": true,
+    "filename": "custom_pds_ad_PDS_3_AMBITIOUS_LANDFILL_METHANE_IF_AMBITIOUS_W2E_Integrated_in_Waste_Model.csv"
+  }
+]

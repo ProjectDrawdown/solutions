@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Custom Scenario 1 (PDS2) - High of Existing Prognostications",
+    "description": "The high growth of existing prognostications (Mean + 1 Standard deviation each year) is used for this scenario. ",
+    "filename": "custom_pds_ad_Custom_Scenario_1_PDS2_High_of_Existing_Prognostications.csv",
+    "include": false
+  },
+  {
+    "name": "Custom Scenario 2 (PDS3) - High of Existing Prognostications with Integration Constraints",
+    "description": "The high growth of existing prognostications (Mean + 1 Standard deviation each year) is used for this scenario. At higher years, restrictions are applied due to reduction in Municipal Solid Waste Feedstocks caused by other higher priority solutions (such as Reduced Food Waste and Compost). ",
+    "filename": "custom_pds_ad_Custom_Scenario_2_PDS3_High_of_Existing_Prognostications_with_Integration_Constraints.csv",
+    "include": false
+  },
+  {
+    "name": "PDS 1 Plausible Scenario Post Integration August 2019",
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS_1_Plausible_Scenario_Post_Integration_August_2019.csv",
+    "include": false
+  },
+  {
+    "name": "PDS 2 Drawdown Scenario Post Integration August 2019",
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS_2_Drawdown_Scenario_Post_Integration_August_2019.csv",
+    "include": false
+  },
+  {
+    "name": "PDS 3 Optimum Scenario Post Integration August 2019",
+    "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] ",
+    "filename": "custom_pds_ad_PDS_3_Optimum_Scenario_Post_Integration_August_2019.csv",
+    "include": false
+  },
+  {
+    "name": "PDS1 JUNE 2020 - post integration",
+    "description": "PDS1 % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all other regions at current US adoption. Global adoption is limited by the post-integration TAM. Regional adoption have not been updated. ",
+    "filename": "custom_pds_ad_PDS1_JUNE_2020_post_integration.csv",
+    "include": false
+  },
+  {
+    "name": "PDS2 JUNE 2020 - post-integration",
+    "description": "PDS2 % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all other regions at current OECD90 Adoption (approximately Germany & Austria adoption). Global adoption is limited by the post-integration TAM. Regional adoption have not been updated. ",
+    "filename": "custom_pds_ad_PDS2_JUNE_2020_postintegration.csv",
+    "include": false
+  },
+  {
+    "name": "PDS3 JUNE 2020 - Post-integration",
+    "description": "PDS3 % Recycled of Recycleable Benchmarked OECD90 @ 80, all other regions at 70%. Global adoption is limited by the post-integration TAM. Regional adoption have not been updated. ",
+    "filename": "custom_pds_ad_PDS3_JUNE_2020_Postintegration.csv",
+    "include": false
+  }
+]

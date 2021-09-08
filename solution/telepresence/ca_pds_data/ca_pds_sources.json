@@ -1,0 +1,20 @@
+[
+  {
+    "name": "PDS1 - Bass diffusion Adoption Curve - 16% Adoption in 2050",
+    "include": true,
+    "description": "Using Excel's Goal Seek, we fitted a Bass Diffusion Curve's parameters to fit this adoption for 2050 - 20%. Some parameter constraints were added as guided by the literature on parameter estimations. ",
+    "filename": "custom_pds_ad_PDS1_Bass_diffusion_Adoption_Curve_16_Adoption_in_2050.csv"
+  },
+  {
+    "name": "PDS2 - Bass diffusion Adoption Curve - 30% Adoption in 2050",
+    "include": true,
+    "description": "Using Excel's Goal Seek, we fitted a Bass Diffusion Curve's parameters to fit the adoption for 2050 at 30%. Some parameter constraints were added as guided by the literature on parameter estimations. ",
+    "filename": "custom_pds_ad_PDS2_Bass_diffusion_Adoption_Curve_30_Adoption_in_2050.csv"
+  },
+  {
+    "name": "PDS3 - Bass diffusion Adoption Curve - 50% Adoption in 2050",
+    "include": true,
+    "description": "Using Excel's Goal Seek, we fitted a Bass Diffusion Curve's parameters to fit the maximum potential we believe for Telepresence - 50% of business air trips. Some parameter constraints were added as guided by the literature on parameter estimations. ",
+    "filename": "custom_pds_ad_PDS3_Bass_diffusion_Adoption_Curve_50_Adoption_in_2050.csv"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "name": "(PDS2) Drawdown Team projections based on a weighted average of Several Sources",
+    "include": true,
+    "description": "Taking Published projections for each of Project Drawdown's five regions, we estimate the regional growth in bike infrastructure usage and then sum each year after interpolations. These sources exclude the ITDP data which are used for the Plausible (PDS1) Scenario ",
+    "filename": "custom_pds_ad_PDS2_Drawdown_Team_projections_based_on_a_weighted_average_of_Several_Sources.csv"
+  },
+  {
+    "name": "(PDS3) Drawdown Theoretical linear growth until 10% urban transport adoption in 2050",
+    "include": true,
+    "description": "This scenario was developed for the Drawdown Book Edition 1 and differs slightly to the updated adoption scenarios. This scenario uses a linear projeciton to 10% adoption in 2050 to estimate an adoption curve. ",
+    "filename": "custom_pds_ad_PDS3_Drawdown_Theoretical_linear_growth_until_10_urban_transport_adoption_in_2050.csv"
+  },
+  {
+    "name": "Drawdown Book Edition 1 Scenario 1",
+    "include": false,
+    "description": "This scenario was developed for the Drawdown Book Edition 1 and differs slightly to the updated adoption scenarios. This scenario uses ITDP/UCDavis Global High Shift Cycling Scenario (2015) data (with interpolation) to estimate an adoption. ",
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv"
+  }
+]

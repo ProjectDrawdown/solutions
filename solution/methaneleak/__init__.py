@@ -119,19 +119,16 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Copy and paste TAM from sheet "Pre-TAM"': THISDIR.joinpath('tam', 'tam_Copy_and_paste_TAM_from_sheet_PreTAM.csv'),
-        },
-    }
-    tam_pds_data_sources=tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM
@@ -139,53 +136,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS1 - Linear increase to 50% TAM by 2030, then continued linear increase to meet and follow TAM',
-              'description': (
-                    'PDS1 - Low ambition scenario. Note: this scenario should be combined with '
-                    'TAM1, copy and past from sheet "Pre-TAM". Adoption is a linear increase '
-                    'from 0% to 50% of the TAM in 2030, then a continued linear increase on the '
-                    'same trajectory until 100% of TAM is addressed, after which point 100% of '
-                    'TAM is maintained. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Linear_increase_to_50_TAM_by_2030_then_continued_linear_increase_to_meet_and_follow_TAM.csv')},
-            {'name': 'PDS2 - Linear increase to 75% TAM by 2030, then continued linear increase to meet and follow TAM',
-              'description': (
-                    'PDS2 - Mid ambition scenario. Note: this scenario should be combined with '
-                    'TAM2, copy and past from sheet "Pre-TAM". Adoption is a linear increase '
-                    'from 0% to 75% of the TAM in 2030, then a continued linear increase on the '
-                    'same trajectory until 100% of TAM is addressed, after which point 100% of '
-                    'TAM is maintained. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Linear_increase_to_75_TAM_by_2030_then_continued_linear_increase_to_meet_and_follow_TAM.csv')},
-            {'name': 'PDS3 - Linear increase to 100% TAM in 2030, then remaining at 100% TAM',
-              'description': (
-                    'PDS3 - High ambition scenario. Note: this scenario should be combined with '
-                    'TAM3, copy and past from sheet "Pre-TAM". Adoption is a linear increase '
-                    'from 0% to 100% of the TAM in 2030, after which point 100% of TAM is '
-                    'maintained. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Linear_increase_to_100_TAM_in_2030_then_remaining_at_100_TAM.csv')},
-        ]
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -193,14 +145,6 @@ class Scenario(scenario.RRSScenario):
             # This 'if False' allows subsequent conditions to all be elif.
             pass
         elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-            for (i,rs) in enumerate(ca_pds_data_sources):
-                rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-            self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
             pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
             pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
             pds_adoption_is_single_source = None
@@ -295,4 +239,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

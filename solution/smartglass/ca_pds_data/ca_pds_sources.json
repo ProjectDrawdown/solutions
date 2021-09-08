@@ -1,0 +1,22 @@
+[
+  {
+    "name": "PDS1 - Adoption based on Navigant Sales and World Green Buildings Council Targets",
+    "include": true,
+    "filename": "custom_pds_ad_PDS1_Adoption_based_on_Navigant_Sales_and_World_Green_Buildings_Council_Targets.csv"
+  },
+  {
+    "name": "PDS2 - Adoption based on Navigant Sales and World Green Buildings Council Targets",
+    "include": true,
+    "filename": "custom_pds_ad_PDS2_Adoption_based_on_Navigant_Sales_and_World_Green_Buildings_Council_Targets.csv"
+  },
+  {
+    "name": "PDS3 - Adoption based on Navigant Sales and World Green Buildings Council Targets",
+    "include": true,
+    "filename": "custom_pds_ad_PDS3_Adoption_based_on_Navigant_Sales_and_World_Green_Buildings_Council_Targets.csv"
+  },
+  {
+    "name": "Drawdown Book (Edition 1) Scenario 3",
+    "include": true,
+    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_3.csv"
+  }
+]

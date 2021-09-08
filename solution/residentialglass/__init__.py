@@ -129,19 +129,16 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Drawdown Buildings Sector Integrated TAM - Residential Average': THISDIR.joinpath('tam', 'tam_Drawdown_Buildings_Sector_Integrated_TAM_Residential_Average.csv'),
-        },
-    }
-    tam_pds_data_sources=tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM
@@ -149,82 +146,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': '2.75% building stock retrofit rate',
-              'description': (
-                    'This model is for Residential buildings in all countries. The difficulty in '
-                    'collecting data for non-OECD countries raises the need for some '
-                    'assumptions. In this case, we take the latest data from available '
-                    'developing countries (China and India), and apply those adoption rate '
-                    'estimates to Asia (Sans Japan), Middle East and Africa, and Latin America. '
-                    'We then assume that the adoption rate is fixed for all the historical years '
-                    'in the analysis (2014- current year). The future years have been projected '
-                    'by splitting the current unadopted (single pane) Market (TAM) each year '
-                    'into 1. the existing area from the previous years , 2. new growth in the '
-                    'TAM. The existing area is assumed to be converted to High performance '
-                    'windows at the rate of retrofit, the new growth is converted at a higher '
-                    'rate according to data on sales. Click to Jump to the Custom PDS Adoption. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_2_75_building_stock_retrofit_rate.csv')},
-            {'name': '5.0% building stock retrofit rate',
-              'description': (
-                    'This model is for Residential buildings in all countries. The difficulty in '
-                    'collecting data for non-OECD countries raises the need for some '
-                    'assumptions. In this case, we take the latest data from available '
-                    'developing countries (China and India), and apply those adoption rate '
-                    'estimates to Asia (Sans Japan), Middle East and Africa, and Latin America. '
-                    'We then assume that the adoption rate is fixed for all the historical years '
-                    'in the analysis (2014- current year). The future years have been projected '
-                    'by splitting the current unadopted (single pane) Market (TAM) each year '
-                    'into 1. the existing area from the previous years , 2. new growth in the '
-                    'TAM. The existing area is assumed to be converted to High performance '
-                    'windows at the rate of retrofit, the new growth is converted at a higher '
-                    'rate according to data on sales. Click to Jump to the Custom PDS Adoption. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_5_0_building_stock_retrofit_rate.csv')},
-            {'name': '8.0% building stock retrofit rate',
-              'description': (
-                    'This model is for Residential buildings in all countries. The difficulty in '
-                    'collecting data for non-OECD countries raises the need for some '
-                    'assumptions. In this case, we take the latest data from available '
-                    'developing countries (China and India), and apply those adoption rate '
-                    'estimates to Asia (Sans Japan), Middle East and Africa, and Latin America. '
-                    'We then assume that the adoption rate is fixed for all the historical years '
-                    'in the analysis (2014- current year). The future years have been projected '
-                    'by splitting the current unadopted (single pane) Market (TAM) each year '
-                    'into 1. the existing area from the previous years , 2. new growth in the '
-                    'TAM. The existing area is assumed to be converted to High performance '
-                    'windows at the rate of retrofit, the new growth is converted at a higher '
-                    'rate according to data on sales. Click to Jump to the Custom PDS Adoption. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_8_0_building_stock_retrofit_rate.csv')},
-        ]
-        for (i,rs) in enumerate(ca_pds_data_sources):
-            rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -331,4 +254,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

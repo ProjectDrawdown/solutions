@@ -140,28 +140,18 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
-                'ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv'),
-        },
-            'Conservative Cases': {
-                'ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
-                'ITDP/UC Davis 2014 Global High Shift Baseline': THISDIR.joinpath('tam', 'tam_ITDPUC_Davis_2014_Global_High_Shift_Baseline.csv'),
-        },
-            'Ambitious Cases': {
-                'ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
-                'ITDP/UC Davis 2014 Global High Shift HighShift': THISDIR.joinpath('tam', 'tam_ITDPUC_Davis_2014_Global_High_Shift_HighShift.csv'),
-        },
-    }
-    tam_pds_data_sources = tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = _ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
 
         # TAM
@@ -169,122 +159,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Ambitious Cases': {
-                'ITDP/UCD (2015) A Global High Shift Cycling Scenario - High Shift Scenario  - Early Years replaced with Recent Historical Data': THISDIR.joinpath('ad', 'ad_ITDPUCD_2015_A_Global_High_Shift_Cycling_Scenario_High_Shift_Scenario_Early_Years_replac_b131f9f6.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS2 - Density remains Constant and is the key driver of walking in cities.', 'include': True,
-                'description': (
-                    'We project the amount of walking that would happen in 1,737 cities '
-                    'worldwide representing 57% of the global urban population then we scale the '
-                    'total amount of walking to 100% of the world’s urban population. The '
-                    'background calculations of this scenario use the population and density of '
-                    'each of the 1737 cities from Demographia’s report and projects the fraction '
-                    'of each country’s urban population in that city. We assume that that '
-                    'fraction is constant and then project the city’s population each year to '
-                    '2050 using UN projections of each country’s urban population to 2050. With '
-                    'the TAM and total urban population projections, we estimate the mobility '
-                    'per urban resident each year and then apply 6.5% to walking in each city in '
-                    'each year when the density is over the "dense city threshold" (~3,000 '
-                    'p/sqkm) and 2% otherwise. Each year is scaled to the global urban '
-                    'population. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Density_remains_Constant_and_is_the_key_driver_of_walking_in_cities_.csv')},
-            {'name': 'PDS2 - Increasing Urban Density with Density Driving Urban Walking (Book Ed.1)', 'include': True,
-                'description': (
-                    'We project the amount of walking that would happen in 1,737 cities '
-                    'worldwide representing 57% of the global urban population then we scale the '
-                    'total amount of walking to 100% of the world’s urban population. The '
-                    'background calculations of this scenario use the population and density of '
-                    'each of the 1737 cities from Demographia’s report and projects the fraction '
-                    'of each country’s urban population in that city. We assume that that '
-                    'fraction is constant and then project the city’s population each year to '
-                    '2050 using UN projections of each country’s urban population to 2050. With '
-                    'the TAM and total urban population projections, we estimate the mobility '
-                    'per urban resident each year and then apply 7% to walking in each city in '
-                    'each year when the density is over the "dense city threshold" (~3,000 '
-                    'p/sqkm) and 2% otherwise. Each year is scaled to the global urban '
-                    'population. City densities are assumed to increased by around 2.4% annually '
-                    'which reverses historical declines of around 2%. This scenario was '
-                    'calculated for the Drawdown book Edition 1. Some variables may have been '
-                    'updated. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Increasing_Urban_Density_with_Density_Driving_Urban_Walking_Book_Ed_1.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'Custom REF Scenario 1: Fixed Passenger-km Annual after 2014', 'include': True,
-                'description': (
-                    'Taking the estimated passenger-km adoption value from 2014, we hold that '
-                    'constant out to 2050 which assumes that the total amount of walking remains '
-                    'constant despite increasing populations. The rapid rise in populations '
-                    'generally happens in developing countries, and as these countries urbanise '
-                    'and get wealthier, there is a large trend towards increased motorization '
-                    'following the historical patterns of Western Nations. This then, although a '
-                    'pessimistic case, is not unrealistic. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Custom_REF_Scenario_1_Fixed_Passengerkm_Annual_after_2018.csv')},
-            {'name': 'Reference Growth in Walking', 'include': True,
-                'description': (
-                    'Here the Drawdown Model of Urban density for 1,737 cities across the world '
-                    'in the Demographia Dataset was used to develop a reasonable Reference '
-                    'Scenario for Walking out to the end of the analysis period. While full '
-                    'details are described in the [Mobility Output] sheet, here is the summary: '
-                    'The urban density of these cities (representing 57% of the world urban '
-                    'population), was obtained from the data source and projected out to 2050 '
-                    'using an assumed global urban density change as listed below. Research on '
-                    'walking in cities indicates that higher density is correlated with more '
-                    'walking, so an assumed walking mode share in cities with at least the '
-                    'minimum threshold urban density, and another assumed walking mode share for '
-                    'cities below this threshold were together used to estimate the average '
-                    'walking for each city in each year (considering that density change is '
-                    'assumed). The total walking mobility in these cities was summed and then '
-                    'scaled linearly to 100% of the global urban population. This projection to '
-                    '2050 was then interpolated and extrapolated to develop a smooth curve for '
-                    'the entire analysis period. Also taken into account: increasing urban '
-                    'population, assumed fixed total mobility per capita, recent historical '
-                    'walking estimates have been used (2012-2018) instead of curve fit. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Reference_Growth_in_Walking.csv')},
-            {'name': 'ITDP/ UCDavis (2015) Global Highshift Cycling Scenario - Baseline Case for Walking', 'include': True,
-                'description': (
-                    'The Source listed below estimated a Baseline Walking Case which generally '
-                    'shows an increae in walking, but not in line with total mobility increase, '
-                    'so the walking mode share declines over time. The source published data in '
-                    '5-year increments, these have been interpolated for missing years (on Data- '
-                    'Interpolator) and pasted here. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_ITDP_UCDavis_2015_Global_Highshift_Cycling_Scenario_Baseline_Case_for_Walking.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
         if False:
@@ -386,4 +262,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

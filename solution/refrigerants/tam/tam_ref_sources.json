@@ -1,0 +1,11 @@
+{
+  "Baseline Cases": {
+    "Drawdown Calculations - High Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. \u00d6ko-Recherche.": "tam_Drawdown_Calculations_High_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Pro_3a9477d3.csv"
+  },
+  "Conservative Cases": {
+    "Drawdown Calculations - Medium Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. \u00d6ko-Recherche.": "tam_Drawdown_Calculations_Medium_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__P_557e4efd.csv"
+  },
+  "Ambitious Cases": {
+    "Drawdown Calculations - Low Projection Based on Data from Gschrey, B., & Schwarz, W. (2009). Projections of global emissions of fluorinated greenhouse gases in 2050. \u00d6ko-Recherche.": "tam_Drawdown_Calculations_Low_Projection_based_on_Data_from_Gschrey_B__Schwarz_W__2009__Proj_5ee67131.csv"
+  }
+}

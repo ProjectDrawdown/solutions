@@ -143,26 +143,18 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Based on IEA (2016), "Energy Technology Perspectives - 6DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD.csv'),
-                'Based on ICCT (2012) "Global Transport Roadmap Model", http://www.theicct.org/global-transportation-roadmap-model': THISDIR.joinpath('tam', 'tam_based_on_ICCT_2012_Global_Transport_Roadmap_Model_httpwww_theicct_orgglobaltransportatio_8916596a.csv'),
-        },
-            'Conservative Cases': {
-                'Based on IEA (2016), "Energy Technology Perspectives - 4DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_4DS_IEAOECD.csv'),
-        },
-            'Ambitious Cases': {
-                'Based on IEA (2016), "Energy Technology Perspectives - 2DS", IEA/OECD': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_2DS_IEAOECD.csv'),
-        },
-    }
-    tam_pds_data_sources=tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
+    def __init__(self, scen=None):
+        if isinstance(scen, ac.AdvancedControls):
+            self.scenario = scen.name
+            self.ac = scen
         else:
-            self.scenario = scenario or PDS2
+            self.scenario = scen or PDS2
             self.ac = scenarios[self.scenario]
             
         # TAM
@@ -170,31 +162,6 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Conservative Cases': {
-                'Navigant Research': THISDIR.joinpath('ad', 'ad_Navigant_Research.csv'),
-                'Based on: IEA ETP 2016 4DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_4DS.csv'),
-                'Based on Clean Energy Manufacturing Analysis Center': THISDIR.joinpath('ad', 'ad_based_on_Clean_Energy_Manufacturing_Analysis_Center.csv'),
-            },
-            'Ambitious Cases': {
-                'Based on: IEA ETP 2016 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2016_2DS.csv'),
-                'Interpolation Based on World Energy Council 2011 - Global Transport Scenarios 2050': THISDIR.joinpath('ad', 'ad_Interpolation_based_on_World_Energy_Council_2011_Global_Transport_Scenarios_2050.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
         # Custom PDS Data
         wb = openpyxl.load_workbook(filename=THISDIR.joinpath('hybridcarsdata.xlsx'), data_only=True)
@@ -242,88 +209,17 @@ class Scenario(scenario.RRSScenario):
         ds2_df = pd.DataFrame(0, columns=dd.REGIONS, index=range(2012, 2061))
         ds2_df['World'] = world.clip(upper=tam_limit_pds3, lower=0.0, axis=0)
 
-        ca_pds_data_sources = [
-            {'name': 'PDS2-Transition to EVs in Cities', 'include': True,
-                'description': (
-                    'Considering that Electric Vehicles (BEV or PHEV)  are a better technology '
-                    'from a lifetime emissions perspective, HEV are considered as a transition '
-                    'technology in the PDS2  where the target is drawdown by 2050 particularly '
-                    'within cities where there is minimal range anxiety. In this Drawdown '
-                    'scenario, then, the focus is on growing EV after all higher priority '
-                    'solutions (like non-motorized transportation) in cities are grown to their '
-                    "maximum potential. For HEV's then, the adoption is projected to only occur "
-                    'where BEV or PHEV cars cannot easily be used, such as for long distance '
-                    'intercity trips until perhaps around 2025 when EV battery technology can be '
-                    'assumed to be adequate enough to eliminate all range anxiety. The HEV '
-                    'adoption is projected to continue its growth until around 2025 when it '
-                    'starts to decline and trend to zero by or before 2050. Sales data for '
-                    'multiple key countries and regions were used to estimate the actual global '
-                    "sales. Using the model's lifetime data, the older HEVs are removed from the "
-                    'fleet while aggregating the total sales to get the total stock per year. '
-                    'With these, the projected sales from IEA are used to project increments to '
-                    'the existing stock to 2050 (latest data vailable). Stock data are converted '
-                    "to usage with model's Advanced Controls input.  All scenarios are limited "
-                    'by integrated TAM after removing adoptions of higher priority solutions. '
-                    ),
-                'dataframe': ds1_df},
-            {'name': 'PDS3-Transition to EVs', 'include': True,
-                'description': (
-                    'Considering that Electric Vehicles (BEV or PHEV)  are a better technology '
-                    'from a lifetime emissions perspective, HEV are considered as a transition '
-                    'technology in the PDS3  where the target is maximizing emissions reduction. '
-                    'In this scenario, then, the focus is on growing EV after all higher '
-                    'priority solutions (like non-motorized transportation)  are grown to their '
-                    'maximum potential. As soon as possible, HEV sales will rapidly decline. '
-                    'Sales data for multiple key countries and regions were used to estimate the '
-                    "actual global sales. Using the model's lifetime data, the older HEVs are "
-                    'removed from the fleet while aggregating the total sales to get the total '
-                    "stock per year.  Stock data are converted to usage with model's Advanced "
-                    'Controls input.  All scenarios are limited by integrated TAM after removing '
-                    'adoptions of higher priority solutions. '
-                    ),
-                'dataframe': ds2_df},
-            {'name': 'Drawdown Book - Edition 1- Quick Doubling of Hybrid Car Occupancy', 'include': True,
-                'description': (
-                    'We take the Average of two Ambitious adoption scenarios (on Adoption Data '
-                    'tab): Interpolation of IEA 2016 ETP 2DS(2016), and World Energy Council '
-                    '(2011) (both with annual use of ICCT Roadmap Model). We then double the HEV '
-                    'car occupancy from 2017 and interpolate back to current adoption for 2014. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Quick_Doubling_of_Hybrid_Car_Occupancy.csv')},
-            {'name': 'PDS1 - Aggressive Growth from Existing Stock  based on  IEA 2DS', 'include': True,
-                'description': (
-                    'Sales data for multiple key countries and regions were used to estimate the '
-                    "global sales. Using the model's lifetime data, the older HEVs are removed "
-                    'from the fleet while aggregating the total sales to get the total stock per '
-                    'year. With these, the projected sales from IEA are used to project '
-                    'increments to the existing stock to 2050 (latest data vailable). Stock data '
-                    "are converted to usage with model's Advanced Controls input. All scenarios "
-                    'are limited by integrated TAM after removing adoptions of higher priority '
-                    'solutions. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Aggressive_Growth_from_Existing_Stock_based_on_IEA_2DS.csv')},
-        ]
+        # #BEGIN COMMENT BLOCK
+        ca_pds_data_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+        ca_pds_data_sources[0]['dataframe'] = ds1_df
+        ca_pds_data_sources[1]['dataframe'] = ds2_df
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
             low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
             total_adoption_limit=pds_tam_per_region)
 
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'Default REF Projection with Adjustment for Recent Historical Adoptions', 'include': True,
-                'description': (
-                    'We take the Default Project Drawdown REF adoption using Average Baseline '
-                    'TAM data and then adjust the years 2012-2018 to be the estimated historical '
-                    'adoptions from the HEV Pass-Km tab. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Default_REF_Projection_with_Adjustment_for_Recent_Historical_Adoptions.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:
@@ -425,4 +321,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

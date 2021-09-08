@@ -1,0 +1,22 @@
+[
+  {
+    "name": "[Type Scenario 1 Name Here (REF CASE)...]",
+    "include": true,
+    "filename": "custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv"
+  },
+  {
+    "name": "[Type Scenario 2 Name Here (REF CASE)...]",
+    "include": true,
+    "filename": "custom_ref_ad_Type_Scenario_2_Name_Here_REF_CASE_.csv"
+  },
+  {
+    "name": "[Type Scenario 3 Name Here (REF CASE)...]",
+    "include": true,
+    "filename": "custom_ref_ad_Type_Scenario_3_Name_Here_REF_CASE_.csv"
+  },
+  {
+    "name": "[Type Scenario 4 Name Here (REF CASE)...]",
+    "include": true,
+    "filename": "custom_ref_ad_Type_Scenario_4_Name_Here_REF_CASE_.csv"
+  }
+]

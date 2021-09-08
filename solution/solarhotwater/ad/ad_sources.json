@@ -1,0 +1,8 @@
+{
+  "Conservative Cases": {
+    "IEA (2012) Technology Roadmap Solar Heating and Cooling - Cons": "ad_IEA_2012_Technology_Roadmap_Solar_Heating_and_Cooling_Cons.csv"
+  },
+  "Ambitious Cases": {
+    "Solar Heat Worldwide http://www.iea-shc.org/solar-heat-worldwide": "ad_Solar_Heat_Worldwide_httpwww_ieashc_orgsolarheatworldwide.csv"
+  }
+}
