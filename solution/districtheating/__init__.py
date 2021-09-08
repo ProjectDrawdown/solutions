@@ -131,6 +131,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -145,37 +146,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-                adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'Trajectory Adapted from REF Scenario Greenpeace (2015)', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Trajectory_Adapted_from_REF_Scenario_Greenpeace_2015.csv')},
-            {'name': 'Based on: Greenpeace 2015 Energy Revolution', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_based_on_Greenpeace_2015_Energy_Revolution.csv')},
-            {'name': 'Based on: Greenpeace 2015 Advanced Revolution', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_based_on_Greenpeace_2015_Advanced_Revolution.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-                soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-                high_sd_mult=1.0, low_sd_mult=1.0,
-                total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

@@ -142,23 +142,6 @@ class Scenario(scenario.LandScenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
-             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
-             'NOTE', 'NOTE', 'NOTE'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
 
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
@@ -252,6 +235,7 @@ class Scenario(scenario.LandScenario):
             for y in range(2012, 2019):
                 df.loc[y, 'World'] = 0.0001
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -351,4 +335,3 @@ class Scenario(scenario.LandScenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-

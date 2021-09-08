@@ -110,6 +110,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -124,36 +125,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Conservative Cases': {
-                'Elshkaki et al. 2018 (MW/TR)': THISDIR.joinpath('ad', 'ad_Elshkaki_et_al__2018_MWTR.csv'),
-                'Elshkaki et al. 2018 (SF)': THISDIR.joinpath('ad', 'ad_Elshkaki_et_al__2018_SF.csv'),
-                'Elshkaki et al. 2018 (EW)': THISDIR.joinpath('ad', 'ad_Elshkaki_et_al__2018_EW.csv'),
-            },
-            'Ambitious Cases': {
-                'Materials Economics Circular Scenario': THISDIR.joinpath('ad', 'ad_Materials_Economics_Circular_Scenario.csv'),
-                'Van der Voet, 2018 - Circular Scenario': THISDIR.joinpath('ad', 'ad_Van_der_Voet_2018_Circular_Scenario.csv'),
-                'OECD - increased recycling': THISDIR.joinpath('ad', 'ad_OECD_increased_recycling.csv'),
-            },
-            'Maximum Cases': {
-                'Materials Economics Availability Limitation (Steel + Al)': THISDIR.joinpath('ad', 'ad_Materials_Economics_Availability_Limitation_Steel_Al.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

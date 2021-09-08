@@ -117,6 +117,8 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = _ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -131,50 +133,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Ambitious Cases': {
-                    'European Bioplastics (2013), 2nd Poly extrapolation': THISDIR.joinpath('ad', 'ad_European_Bioplastics_2013_2nd_Poly_extrapolation.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-                adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'ConservativeLow Based on CAGR 29.3% with continued trend to 2060', 'include': False,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeLow_based_on_CAGR_29_3_with_continued_trend_to_2060.csv')},
-            {'name': 'ConservativeHigh, continued 3rd poly trend to 2060', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeHigh_continued_3rd_poly_trend_to_2060.csv')},
-            {'name': 'AggressiveMed, 40% by 2050, 3rd Poly', 'include': False,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_AggressiveMed_40_by_2050_3rd_Poly.csv')},
-            {'name': 'ConservativeHigh, 75% by 2045, 3rd Poly', 'include': False,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeHigh_75_by_2045_3rd_Poly.csv')},
-            {'name': 'ConservativeLow, 25% by 2050, 3rd Poly', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_ConservativeLow_25_by_2050_3rd_Poly.csv')},
-            {'name': 'AggressiveLow, 50% by 2050, 3rd Poly', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_AggressiveLow_50_by_2050_3rd_Poly.csv')},
-            {'name': 'AggressiveMax, 30% by 2030, 3rd Poly', 'include': False,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_AggressiveMax_30_by_2030_3rd_Poly.csv')},
-            {'name': 'AggressiveMax, 90 % by 2030, 90% by 2050', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_AggressiveMax_90_by_2030_90_by_2050.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-                soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-                high_sd_mult=1.0, low_sd_mult=1.0,
-                total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

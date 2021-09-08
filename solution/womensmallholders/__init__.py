@@ -119,6 +119,8 @@ class Scenario(scenario.LandScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -132,24 +134,8 @@ class Scenario(scenario.LandScenario):
         self.ae = aez.AEZ(solution_name=self.name)
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'Low, Linear Trend', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Low_Linear_Trend.csv')},
-            {'name': 'Medium, Linear Trend', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Medium_Linear_Trend.csv')},
-            {'name': 'High, Linear Trend', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_High_Linear_Trend.csv')},
-            {'name': 'High early growth, linear trend', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_High_early_growth_linear_trend.csv')},
-            {'name': 'Max, early growth, linear trend', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Max_early_growth_linear_trend.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-                soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-                high_sd_mult=1.0, low_sd_mult=1.0,
-                total_adoption_limit=self.tla_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
 
         if False:
             # One may wonder why this is here. This file was code generated.
@@ -239,4 +225,3 @@ class Scenario(scenario.LandScenario):
                 soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                 annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
                 regime_distribution=self.ae.get_land_distribution())
-

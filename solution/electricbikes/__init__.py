@@ -151,6 +151,9 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -165,170 +168,9 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                'ITDP and UCD (2015) "A Global Highshift Cycling Scenario" - Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_and_UCD_2015_A_Global_Highshift_Cycling_Scenario_Baseline_Scenario.csv'),
-            },
-            'Conservative Cases': {
-                'Drawdown Team based on Data from Navigant, Bloomberg and other Sources': THISDIR.joinpath('ad', 'ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv'),
-            },
-            'Ambitious Cases': {
-                'ITDP and UCD (2015) "A Global Highshift Cycling Scenario" - Highshift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_and_UCD_2015_A_Global_Highshift_Cycling_Scenario_Highshift_Scenario.csv'),
-            },
-            'Region: OECD90': {
-                'Baseline Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
-              },
-                'Conservative Cases': {
-                  'Drawdown Team based on Data from Navigant, Bloomberg and other Sources': THISDIR.joinpath('ad', 'ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv'),
-              },
-                'Ambitious Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
-              },
-            },
-            'Region: Eastern Europe': {
-                'Baseline Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
-              },
-                'Conservative Cases': {
-                  'Drawdown Team based on Data from Navigant, Bloomberg and other Sources': THISDIR.joinpath('ad', 'ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv'),
-              },
-                'Ambitious Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
-              },
-            },
-            'Region: Asia (Sans Japan)': {
-                'Baseline Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
-              },
-                'Conservative Cases': {
-                  'Drawdown Team based on Data from Navigant, Bloomberg and other Sources': THISDIR.joinpath('ad', 'ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv'),
-              },
-                'Ambitious Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
-              },
-            },
-            'Region: Middle East and Africa': {
-                'Baseline Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
-              },
-                'Conservative Cases': {
-                  'Drawdown Team based on Data from Navigant, Bloomberg and other Sources': THISDIR.joinpath('ad', 'ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv'),
-              },
-                'Ambitious Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
-              },
-            },
-            'Region: Latin America': {
-                'Baseline Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
-              },
-                'Conservative Cases': {
-                  'Drawdown Team based on Data from Navigant, Bloomberg and other Sources': THISDIR.joinpath('ad', 'ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv'),
-              },
-                'Ambitious Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
-              },
-            },
-            'Region: China': {
-                'Baseline Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
-              },
-                'Ambitious Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
-              },
-            },
-            'Region: India': {
-                'Baseline Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
-              },
-                'Ambitious Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
-              },
-            },
-            'Region: EU': {
-                'Baseline Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
-              },
-                'Ambitious Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
-              },
-            },
-            'Region: USA': {
-                'Baseline Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv'),
-              },
-                'Ambitious Cases': {
-                  'ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario': THISDIR.joinpath('ad', 'ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv'),
-              },
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'Book Ed.1 Scenario 1', 'include': True,
-                'description': (
-                    'Using estimated projections of e-bike sales from Navigant, and Bloomberg, '
-                    'along with estimated growth rates of sales for missing years, and assumed '
-                    'bike lifetimes (really battery lifetimes as these dominate), estimated '
-                    'e-bike stocks are developed for each Drawdown region (OECD90, Eastern '
-                    'Europe, Asia sans Japan, Middle East and Africa and Latin America). These '
-                    'are assumed to each have a fixed number of passenger-km per year based on '
-                    '10 km per workday and 5km per weekend day with a ridership of 1.05 '
-                    'considering the popularity of multiple riders on Chinese e-bikes. the '
-                    'resulting passenger-km are summed for global results. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Book_Ed_1_Scenario_1.csv')},
-            {'name': 'Book Ed.1 Scenario 2', 'include': True,
-                'description': (
-                    'Using estimated projections of e-bike pass-km of ITDP/UCD, best fit curves '
-                    'were developed using 3rd degree polynomial functions. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Book_Ed_1_Scenario_2.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'Book Reference Scenario', 'include': True,
-                'description': (
-                    'The previously developed Reference scenario, as with most Drawdown models, '
-                    'is based on the TAM data and modeling. Therefore as thse inputs have '
-                    'changed in the new model, the Reference adoption is also different. The '
-                    'previous reference adoption is recorded here for the Book Scenarios. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Book_Reference_Scenario.csv')},
-            {'name': 'Default REF Projection with Adjustment for Recent Historical Adoptions', 'include': True,
-                'description': (
-                    'We take the Default Project Drawdown REF adoption using Average Baseline '
-                    'TAM data and then adjust the years 2012-2018 to be the estimated historical '
-                    'adoptions from the Modeshare URBAN tab. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Default_REF_Projection_with_Adjustment_for_Recent_Historical_Adoptions.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
         if False:

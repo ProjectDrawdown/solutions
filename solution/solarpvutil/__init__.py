@@ -128,6 +128,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(DATADIR/'energy'/'ref_tam_2_sources.json','*')
     _pds_tam_sources = scenario.load_sources(DATADIR/'energy'/'pds_tam_2_sources.json','*')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -142,44 +143,10 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                'Based on IEA, WEO-2018, Current Policies Scenario (CPS)': THISDIR.joinpath('ad', 'ad_based_on_IEA_WEO2018_Current_Policies_Scenario_CPS.csv'),
-                'Based on: IEA ETP 2017 Ref Tech': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2017_Ref_Tech.csv'),
-                'Based on IEEJ Outlook - 2019, Ref Scenario': THISDIR.joinpath('ad', 'ad_based_on_IEEJ_Outlook_2019_Ref_Scenario.csv'),
-                'Based on IRENA (2018), Roadmap-2050, Reference Case': THISDIR.joinpath('ad', 'ad_based_on_IRENA_2018_Roadmap2050_Reference_Case.csv'),
-            },
-            'Conservative Cases': {
-                'Based on IEA, WEO-2018, New Policies Scenario (NPS)': THISDIR.joinpath('ad', 'ad_based_on_IEA_WEO2018_New_Policies_Scenario_NPS.csv'),
-                'Based on IEEJ Outlook - 2019, Advanced Tech Scenario': THISDIR.joinpath('ad', 'ad_based_on_IEEJ_Outlook_2019_Advanced_Tech_Scenario.csv'),
-            },
-            'Ambitious Cases': {
-                'Based on IEA, WEO-2018, SDS Scenario': THISDIR.joinpath('ad', 'ad_based_on_IEA_WEO2018_SDS_Scenario.csv'),
-                'Based on: IEA ETP 2017 B2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2017_B2DS.csv'),
-                'Based on Grantham Institute and Carbon Tracker (2017) Strong PV Scenario': THISDIR.joinpath('ad', 'ad_based_on_Grantham_Institute_and_Carbon_Tracker_2017_Strong_PV_Scenario.csv'),
-                'Based on IRENA. 2018) Roadmap-2050, REmap Case': THISDIR.joinpath('ad', 'ad_based_on_IRENA__2018_Roadmap2050_REmap_Case.csv'),
-                'Based on: IEA ETP 2017 2DS': THISDIR.joinpath('ad', 'ad_based_on_IEA_ETP_2017_2DS.csv'),
-            },
-            '100% RES2050 Case': {
-                'Based on average of: LUT/EWG 2019 100% RES, Ecofys 2018 1.5C and Greenpeace 2015 Advanced Revolution': THISDIR.joinpath('ad', 'ad_based_on_average_of_LUTEWG_2019_100_RES_Ecofys_2018_1_5C_and_Greenpeace_2015_Advanced_Revolution.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig,
-            groups_include_hundred_percent=False)
-
+         # ADOPTION
+        self._pds_ad_settings['groups_include_hundred_percent'] = False
+        self._pds_ad_settings['main_includes_regional'] = False
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

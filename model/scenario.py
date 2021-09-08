@@ -16,13 +16,18 @@ from model import tam
 # implementation of a whole segment of the model.
 # In order to support this variety of implementations while minimizing the amount of repeated
 # boilerplate code, the base Scenario class (and RSSSenario and LandScenario classes) support a kind
-# of inverted initialization.  These base classes don't implement __init__ themselves; the ground
-# solution classes themselves must do that.  However the base classes implement functions (like 
-# initialize_adoption_bases) that do large chunks of common initialization.  The ground class
+# of inverted initialization.  The base classes in this file don't implement __init__ themselves; 
+# subclasses must do that themselves.  However the base classes implement functions (like 
+# initialize_adoption_bases) that do large chunks of common initialization.  The subclass
 # passes parameters that control the initialization functions in various `_` fields, and the
 # initialization puts the results into the official (no `_`) fields.
-# The ground class can also modify the results, or even completely replace the initialization 
-# if it needs to.
+# Also, the subclass can itself set the results (pds_ca, etc.) in which case the code here
+# will leave it be (usually).
+#
+# This is all unpleasantly spaghetti, but will hopefully get cleaner as we continue to migrate code
+# "upwards" to the base classes and in to the functional classes (like TAM) themselves, and as
+# we simplify and generalize the kinds of parameterization these classes support.
+
 
 class Scenario:
 
@@ -67,7 +72,9 @@ class Scenario:
                 soln_adoption_custom_name ='Inline Ref Adoption',
                 total_adoption_limit= self.adoption_limit()
             )
-        elif self.ac.soln_ref_adoption_basis == "Custom":
+            self.ac.soln_ref_adoption_basis = "Custom"
+        
+        elif self.ac.soln_ref_adoption_basis == "Custom" and not self.ref_ca:
             if not self._ref_ca_sources:
                 raise ValueError("Custom Ref Adoption requires reference data sources")
             self.ref_ca = customadoption.CustomAdoption(
@@ -88,7 +95,10 @@ class Scenario:
                soln_adoption_custom_name = 'Inline PDS Adoption',
                total_adoption_limit = self.adoption_limit()
             )
-        elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
+            # override the AC setting, so the rest of the code will use this adoption.
+            self.ac.soln_pds_adoption_basis='Fully Customized PDS'      
+        
+        elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS' and not self.pds_ca:
             # scenarios can paramaterize which solutions should be included in the customized PDS
             sources = self._pds_ca_sources
             if self.ac.soln_pds_adoption_scenarios_included:
@@ -103,7 +113,8 @@ class Scenario:
                 low_sd_mult = self._pds_ca_settings['low_sd_mult'],
                 total_adoption_limit = self.adoption_limit()
             )
-        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+        
+        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications' and not self.ad:
             overrides = [('trend','World',self.ac.soln_pds_adoption_prognostication_trend),
                          ('growth','World',self.ac.soln_pds_adoption_prognostication_growth)]
             overrides.extend(self._pds_ad_settings['config_overrides'] or [])
@@ -388,7 +399,7 @@ def load_sources(jsonfile, fieldname='filename'):
     def rootstruct(struct, rootdir, fieldname):
         if isinstance(struct, list):
             for i in range(len(struct)):
-                struct[i] = rootstruct(struct[i], rootdir, fieldname)
+                rootstruct(struct[i], rootdir, fieldname)
         elif isinstance(struct, dict):
             for k in struct.keys():
                 if k == fieldname or (fieldname == '*' and isinstance(struct[k],str)):

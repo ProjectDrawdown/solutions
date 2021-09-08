@@ -125,6 +125,8 @@ class Scenario(scenario.LandScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -138,23 +140,8 @@ class Scenario(scenario.LandScenario):
         self.ae = aez.AEZ(solution_name=self.name)
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'Low growth', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Low_growth.csv')},
-            {'name': 'High growth', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_High_growth.csv')},
-            {'name': 'Aggressive High Growth', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Aggressive_High_Growth.csv')},
-            {'name': 'Aggressive Max Growth', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Aggressive_Max_Growth.csv')},
-            {'name': 'Aggressive Max Early Growth', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Aggressive_Max_Early_Growth.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-                soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-                high_sd_mult=1.0, low_sd_mult=1.0,
-                total_adoption_limit=self.tla_per_region)
+        # ADOPTION
+        self.initialize_adoption_bases()
 
 
         if False:
@@ -245,4 +232,3 @@ class Scenario(scenario.LandScenario):
                 soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                 annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
                 regime_distribution=self.ae.get_land_distribution())
-

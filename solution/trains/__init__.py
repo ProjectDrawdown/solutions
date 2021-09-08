@@ -125,6 +125,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -194,28 +195,7 @@ class Scenario(scenario.RRSScenario):
             low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
             total_adoption_limit=pds_tam_per_region)
 
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'Drawdown Book Reference Scenario', 'include': True,
-                'description': (
-                    'This scenario uses the inputs that were used for the Scenario developed for '
-                    'the Drawdown Book Edition 1. The scenario assumes a fixed percent of the '
-                    'TAM is adopted for Efficient trucks as the TAM grows. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Drawdown_Book_Reference_Scenario.csv')},
-            {'name': 'Default REF Projection with Adjustment for Recent Historical Adoptions', 'include': True,
-                'description': (
-                    'We take the Default Project Drawdown REF adoption using Average Baseline '
-                    'TAM data and then adjust the years 2012-2018 to be the estimated historical '
-                    'adoptions from the Adoption1. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Default_REF_Projection_with_Adjustment_for_Recent_Historical_Adoptions.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
         if False:

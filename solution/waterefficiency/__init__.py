@@ -135,6 +135,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -171,6 +172,7 @@ class Scenario(scenario.RRSScenario):
                 adconfig=adconfig)
 
         # Custom PDS Data
+        # #BEGIN COMMENT BLOCK
         ca_pds_data_sources = [
             {'name': 'Rapid Conversion of Old Fixtures and 70% Maximum Adoption', 'include': True,
                     'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Rapid_Conversion_of_Old_Fixtures_and_70_Maximum_Adoption.csv')},
@@ -183,7 +185,9 @@ class Scenario(scenario.RRSScenario):
                 soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
                 high_sd_mult=1.0, low_sd_mult=1.0,
                 total_adoption_limit=pds_tam_per_region)
+        # #END COMMENT BLOCK
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

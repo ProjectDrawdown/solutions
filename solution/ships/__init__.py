@@ -120,6 +120,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -134,104 +135,9 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS1 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - Mean of projected EEOI values', 'include': True,
-                'description': (
-                    'We take the mean estimates of EEOI (Energy Efficiency Operations Index in '
-                    'gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG '
-                    'IMO Study (Smith et al, 2014), interpolate for missing years and convert '
-                    'them to Estimated ton-nautical mile adoptions assuming that an efficient '
-                    'ship is one that adopts a fixed set of 17 technologies and slow steaming, '
-                    'and a conventional (non-efficient) ship is one that has average efficiency '
-                    'in 2014. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Drawdown_Team_Calculations_based_on_Projections_from_Smith_et_al_2014_3rd_GHG_Repor_3eb1a907.csv')},
-            {'name': 'PDS2 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - 1 StDev more Ambitious than mean in EEOI terms', 'include': True,
-                'description': (
-                    'We take (1 standard deviation below the mean of) the estimates of EEOI '
-                    '(Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by '
-                    'several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), '
-                    'interpolate for missing years and convert them to Estimated ton-nautical '
-                    'mile adoptions assuming that an efficient ship is one that adopts a fixed '
-                    'set of 17 technologies and slow steaming, and a conventional (non- '
-                    'efficient) ship is one that has average efficiency in 2014. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Drawdown_Team_Calculations_based_on_Projections_from_Smith_et_al_2014_3rd_GHG_Repor_e1bf2fbd.csv')},
-            {'name': 'PDS3 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - most ambitious values from all scenarios', 'include': True,
-                'description': (
-                    'We take the lowest estimates of EEOI (Energy Efficiency Operations Index in '
-                    'gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG '
-                    'IMO Study (Smith et al, 2014), interpolate for missing years and convert '
-                    'them to Estimated ton-nautical mile adoptions assuming that an efficient '
-                    'ship is one that adopts a fixed set of 17 technologies and slow steaming, '
-                    'and a conventional (non-efficient) ship is one that has average efficiency '
-                    'in 2014. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Drawdown_Team_Calculations_based_on_Projections_from_Smith_et_al_2014_3rd_GHG_Repor_40d75a6d.csv')},
-            {'name': 'Drawdown Book Edition 1 Scenario 1', 'include': False,
-                'description': (
-                    'We take the mean estimates of EEOI (Energy Efficiency Operations Index in '
-                    'gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG '
-                    'IMO Study (Smith et al, 2014), interpolate for missing years and convert '
-                    'them to Estimated ton-nautical mile adoptions assuming that an efficient '
-                    'ship is one that adopts a fixed set of 17 technologies and slow steaming, '
-                    'and a conventional (non-efficient) ship is one that has average efficiency '
-                    'in 2008. This scenario follows the same process as PDS 1 above, but uses '
-                    'the inputs from the model of the Drawdown Book edition 1, hence gets '
-                    'different results. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv')},
-            {'name': 'Drawdown Book Edition 1 Scenario 2', 'include': False,
-                'description': (
-                    'We take (1 standard deviation below the mean of) the estimates of EEOI '
-                    '(Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by '
-                    'several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), '
-                    'interpolate for missing years and convert them to Estimated ton-nautical '
-                    'mile adoptions assuming that an efficient ship is one that adopts a fixed '
-                    'set of 17 technologies and slow steaming, and a conventional (non- '
-                    'efficient) ship is one that has average efficiency in 2008. This scenario '
-                    'follows the same process as PDS 1 above, but uses the inputs from the model '
-                    'of the Drawdown Book edition 1, hence gets different results. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_2.csv')},
-            {'name': 'Drawdown Book Edition 1 Scenario 3', 'include': False,
-                'description': (
-                    'We take the lowest estimates of EEOI (Energy Efficiency Operations Index in '
-                    'gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG '
-                    'IMO Study (Smith et al, 2014), interpolate for missing years and convert '
-                    'them to Estimated ton-nautical mile adoptions assuming that an efficient '
-                    'ship is one that adopts a fixed set of 17 technologies and slow steaming, '
-                    'and a conventional (non-efficient) ship is one that has average efficiency '
-                    'in 2008. This scenario follows the same process as PDS 1 above, but uses '
-                    'the inputs from the model of the Drawdown Book edition 1, hence gets '
-                    'different results. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_3.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

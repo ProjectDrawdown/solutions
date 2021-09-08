@@ -139,6 +139,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -153,32 +154,7 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Low', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                    'No Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad', 'ad_No_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakings_2016.csv'),
-            },
-            'Conservative Cases': {
-                    'Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad', 'ad_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakings_2016.csv'),
-            },
-            'Ambitious Cases': {
-                    'Aggressive Standards Case (David Siap, 2016, based on US Federal Rulemakings, 2016)': THISDIR.joinpath('ad', 'ad_Aggressive_Standards_Case_David_Siap_2016_based_on_US_Federal_Rulemakings_2016.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-                adconfig=adconfig)
-
+        # ADOPTION
         sconfig_list = [['region', 'base_year', 'last_year'],
             ['World', 2014, 2050],
             ['OECD90', 2014, 2050],
@@ -205,6 +181,7 @@ class Scenario(scenario.RRSScenario):
             sconfig['imitation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
         self.sc = s_curve.SCurve(transition_period=16, sconfig=sconfig)
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

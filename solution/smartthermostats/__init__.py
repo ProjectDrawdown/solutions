@@ -130,6 +130,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -144,45 +145,9 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-                adconfig=adconfig)
 
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'Aggressive, Low', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Aggressive_Low.csv')},
-            {'name': 'Conservative, Low', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Conservative_Low.csv')},
-            {'name': 'Aggressive, high', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Aggressive_high.csv')},
-            {'name': 'Aggressive, high, early', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Aggressive_high_early.csv')},
-            {'name': 'Drawdown Book Ed.1 Scenario 1', 'include': False,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Ed_1_Scenario_1.csv')},
-            {'name': 'Drawdown Book Ed.1 Scenario 2', 'include': False,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Ed_1_Scenario_2.csv')},
-            {'name': 'Drawdown Book Ed.1 Scenario 3', 'include': False,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Ed_1_Scenario_3.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-                soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-                high_sd_mult=1.0, low_sd_mult=1.0,
-                total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

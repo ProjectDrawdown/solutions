@@ -111,6 +111,9 @@ class Scenario(scenario.LandScenario):
     vmas = VMAs
     solution_category = solution_category
 
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
+
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
             self.scenario = scen.name
@@ -133,26 +136,6 @@ class Scenario(scenario.LandScenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
-             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
-             'NOTE', 'NOTE', 'NOTE'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Raw Data for ALL LAND TYPES': {
-                'RR 2018, https://rightsandresources.org/wp-content/uploads/2018/09/At-A-Crossroads_RRI_Sept-2018.pdf': THISDIR.joinpath('ad', 'ad_RR_2018_httpsrightsandresources_orgwpcontentuploads201809AtACrossroads_RRI_Sept2018_pdf.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
 
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
@@ -332,19 +315,8 @@ class Scenario(scenario.LandScenario):
             df.loc[2017, 'World'] = 486.074210468988
             df.loc[2018, 'World'] = 496.809418409265
 
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': '[Type Scenario 1 Name Here (REF CASE)...]', 'include': True,
-                'description': (
-                    'Reference adoption wrt change in current adoption from 2014 to 2018 '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=self.tla_per_region)
 
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:
@@ -450,4 +422,3 @@ class Scenario(scenario.LandScenario):
             ref_protected_deg_land=self.ua.ref_cumulative_degraded_land_protected(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-

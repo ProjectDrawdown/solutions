@@ -112,6 +112,8 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -126,55 +128,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                '53% recovery - 70%yield': THISDIR.joinpath('ad', 'ad_53_recovery_70yield.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS1',
-              'description': (
-                    'PDS 1 uses the historical growth of plastic recycling in the US from 1990 '
-                    'to 2018 and extrapolates that rate globally '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1.csv')},
-            {'name': 'PDS2',
-              'description': (
-                    'PDS2 is based on Ellen Macarthur Foundation Projections that 53% of non- '
-                    'durable plastics could be recycled by 2050; and a 70% yield '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2.csv')},
-            {'name': 'PDS3',
-              'description': (
-                    'PDS3 is based on the McKinsey prediction that 60% of plastic production '
-                    'could be met with recycled plastics by 2050 '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3.csv')},
-        ]
-        for (i,rs) in enumerate(ca_pds_data_sources):
-            rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

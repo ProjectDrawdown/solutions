@@ -139,6 +139,8 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = _ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -153,131 +155,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS1 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 13%', 'include': True,
-                'description': (
-                    'Taking the production rate of aircraft  by the two major suppliers - Airbus '
-                    'and Boeing, we project the production of "efficient model" aircraft over '
-                    'the future. We also assume that a third manufacturer enters the market '
-                    '(possibly COMAC or UAC) in 2025 and produces first single aisle then twin '
-                    'aisle aircraft of competitive quality. 100 aircraft per year are '
-                    'retrofitted to equivalent new-aircraft efficiency. Each aircraft in the '
-                    'fleet is assumed to work around  an average number of passenger-km per year '
-                    'according to an estimate for each of single aisle and twin aisle from our '
-                    'brief schedule calculations including downtime for maintenance checks, and '
-                    'new models are 1SD below the average estimated efficiency improvement '
-                    '(~13%). We assume that the production rate of the big players remains '
-                    'constant, but that the newcomer increases production annually. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Drawdown_Projection_of_Production_of_Efficient_Aircraft_of_Airbus_and_Boeing_and_Th_0625227c.csv')},
-            {'name': 'PDS2 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 18%', 'include': True,
-                'description': (
-                    'Taking the production rate of aircraft  by the two major suppliers - Airbus '
-                    'and Boeing, we project the production of "efficient model" aircraft over '
-                    'the future. We also assume that a third manufacturer enters the market '
-                    '(possibly COMAC or UAC) in 2025 and produces first single aisle then twin '
-                    'aisle aircraft of competitive quality.  100 aircraft per year are '
-                    'retrofitted to equivalent new-aircraft efficiency. Each aircraft in the '
-                    'fleet is assumed to work around  an average number of passenger-km per year '
-                    'according to an estimate for each of single aisle and twin aisle from our '
-                    'brief schedule calculations including downtime for maintenance checks, and '
-                    'new models are 18% more efficient). We assume that the production rate of '
-                    'the big players remains constant, but that the newcomer increases '
-                    'production annually. Global Load factor of solution aircraft increases to '
-                    '83% (current US average). '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Drawdown_Projection_of_Production_of_Efficient_Aircraft_of_Airbus_and_Boeing_and_Th_c6a70599.csv')},
-            {'name': 'PDS3 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 20%', 'include': True,
-                'description': (
-                    'Taking the production rate of aircraft  by the two major suppliers - Airbus '
-                    'and Boeing, we project the production of "efficient model" aircraft over '
-                    'the future. We also assume that a third manufacturer enters the market '
-                    '(possibly COMAC or UAC) in 2025 and produces first single aisle then twin '
-                    'aisle aircraft of competitive quality.  1000 aircraft per year are '
-                    'retrofitted to equivalent new-aircraft efficiency. Each aircraft in the '
-                    'fleet is assumed to work around  an average number of passenger-km per year '
-                    'according to an estimate for each of single aisle and twin aisle from our '
-                    'brief schedule calculations including downtime for maintenance checks, and '
-                    'new models are 20% more efficient). We assume that the production rate of '
-                    'the big players remains constant, but that the newcomer increases '
-                    'production annually. Global Load factor of solution aircraft increases to '
-                    '83%. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Drawdown_Projection_of_Production_of_Efficient_Aircraft_of_Airbus_and_Boeing_and_Th_42d0f286.csv')},
-            {'name': 'Book Ed.1 Scenario 1', 'include': False,
-                'description': (
-                    'Taking the production rate of aircraft  by the two major suppliers - Airbus '
-                    'and Boeing, we project the production of aircraft switching to 100% '
-                    '"efficient models" over the short future. Aircraft older than a certain '
-                    'number of years (around 25) are retired. Each aircraft in the fleet is '
-                    'assumed to work around  an average number of passenger-km per year '
-                    'according to an estimate for each of single aisle and twin aisle from our '
-                    'brief schedule calculations including downtime for maintenance checks. We '
-                    'assume that the production rate of these players remains constant. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Book_Ed_1_Scenario_1.csv')},
-            {'name': 'Book Ed.1 Scenario 2', 'include': False,
-                'description': (
-                    'Taking the production rate of aircraft, and the estimated number of orders '
-                    'for aircraft by the two major suppliers - Airbus and Boeing, we project the '
-                    'production of aircraft switching to 100% "efficient models" over the short '
-                    'future. We include a small number of retrofits which would be for engines, '
-                    'lightweighting and other adjustments to make up the 15% efficiency '
-                    'improvement expected from a whole new aircraft. Aircraft older than a '
-                    'certain number of years (around 25) are retired. Each aircraft in the fleet '
-                    'is assumed to work around  an average number of passenger-km per year '
-                    'according to an estimate for each of single aisle and twin aisle from our '
-                    'brief schedule calculations including downtime for maintenance checks. We '
-                    'assume that the production rate of these players remains constant, but that '
-                    'an additional competitive manufacturer is able to add to production later '
-                    'in 2025(for single aisle)/2035(for twin aisle) and produce comparable '
-                    'aircraft. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Book_Ed_1_Scenario_2.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'Reference Based on Historical Aircraft Deliveries of Airbus, Boeing', 'include': True,
-                'description': (
-                    'Historical deliveries of efficient aircraft have been collected from the '
-                    'aircraft manufacturers themselves and the delivery data each year are used '
-                    'to estimate adoption assuming certain work done by each aircraft (single '
-                    'aisle and twin aisle estimated separately). The historical data from 2014 '
-                    'and mid-2019 (assumed to apply to 2018) are used and the adoption of the '
-                    'TAM in 2018 (in percentage terms) is assumed to continue fixed for the '
-                    'future. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Reference_based_on_Historical_Aircraft_Deliveries_of_Airbus_Boeing.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:

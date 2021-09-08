@@ -121,6 +121,8 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -136,49 +138,10 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                    'See sheet FAO Stat 2014, recycling target rates specially defined for each region and country based on current recycling rate and EU target 2030 recycling rate of 70% or closest best country/region recycling rate': THISDIR.joinpath('ad', 'ad_See_sheet_FAO_Stat_2014_recycling_target_rates_specially_defined_for_each_region_and_cou_45c9627f.csv'),
-            },
-            'Conservative Cases': {
-                    'See PÖYRY 2013 sheet': THISDIR.joinpath('ad', 'ad_See_PÖYRY_2013_sheet.csv'),
-                    'See McKinsey and Co. 2013 (adoption doubles every 25 years), 3rd Polynomial prognostication': THISDIR.joinpath('ad', 'ad_See_McKinsey_and_Co__2013_adoption_doubles_every_25_years_3rd_Polynomial_prognostication.csv'),
-            },
-            'Ambitious Cases': {
-                    'Sheet FAO Stat 2014, ceiling 75%': THISDIR.joinpath('ad', 'ad_Sheet_FAO_Stat_2014_ceiling_75.csv'),
-            },
-            'Maximum Cases': {
-                    'Sheet FAO Stat 2014, ceiling 81%': THISDIR.joinpath('ad', 'ad_Sheet_FAO_Stat_2014_ceiling_81.csv'),
-                    'See McKinsey and Co. 2013 (adoption doubles every 15 years), 3rd Polynomial prognostication': THISDIR.joinpath('ad', 'ad_See_McKinsey_and_Co__2013_adoption_doubles_every_15_years_3rd_Polynomial_prognostication.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-                adconfig=adconfig)
 
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'Custom Scenario No.1 - Using Medium Trend of Prognostications', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Custom_Scenario_No_1_Using_Medium_Trend_of_Prognostications.csv')},
-            {'name': 'Custom Scenario No.2 - Using High Trend of Existing Prognostications', 'include': True,
-                    'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Custom_Scenario_No_2_Using_High_Trend_of_Existing_Prognostications.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-                soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-                high_sd_mult=1.0, low_sd_mult=1.0,
-                total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self._pds_ad_settings['main_includes_regional'] = False
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

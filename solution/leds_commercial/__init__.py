@@ -117,6 +117,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = _ref_tam_sources
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -131,104 +132,9 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Low', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                    'US DOE 2015 SSL R&D Plan (original source: P. Smallwood, in Strategies in Light Conference, Las Vegas, February 2015), estimates 3% installed base penetration in 2014, 33% in 2020 and 88% in 2030. not sector specific but for all general lighting. Used as a proxy for commercial lighting. Interpolated, linear': THISDIR.joinpath('ad', 'ad_US_DOE_2015_SSL_RD_Plan_original_source_P__Smallwood_in_Strategies_in_Light_Conference_L_7315fa9a.csv'),
-                    'US DOE 2013 (MYPP) http://apps1.eere.energy.gov/buildings/publications/pdfs/ssl/ssl_mypp2013_web.pdf': THISDIR.joinpath('ad', 'ad_US_DOE_2013_MYPP_httpapps1_eere_energy_govbuildingspublicationspdfssslssl_mypp2013_web_pdf.csv'),
-                    'Navigant / US DOE 2015: http://energy.gov/sites/prod/files/2015/07/f24/led-adoption-report_2015.pdf': THISDIR.joinpath('ad', 'ad_Navigant_US_DOE_2015_httpenergy_govsitesprodfiles201507f24ledadoptionreport_2015_pdf.csv'),
-            },
-            'Conservative Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-            },
-            'Region: OECD90': {
-                'Baseline Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                },
-                'Conservative Cases': {
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-                },
-            },
-            'Region: Eastern Europe': {
-                'Baseline Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                },
-                'Conservative Cases': {
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-                },
-            },
-            'Region: Asia (Sans Japan)': {
-                'Baseline Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                },
-                'Conservative Cases': {
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-                },
-            },
-            'Region: Middle East and Africa': {
-                'Baseline Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                },
-                'Conservative Cases': {
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-                },
-            },
-            'Region: Latin America': {
-                'Baseline Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                },
-                'Conservative Cases': {
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-                },
-            },
-            'Region: China': {
-                'Baseline Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                },
-                'Conservative Cases': {
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-                },
-            },
-            'Region: India': {
-                'Baseline Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                },
-                'Conservative Cases': {
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-                },
-            },
-            'Region: EU': {
-                'Baseline Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                },
-                'Conservative Cases': {
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-                },
-            },
-            'Region: USA': {
-                'Baseline Cases': {
-                    'Bergesen et al. HighLED scenario (currently likely)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__HighLED_scenario_currently_likely.csv'),
-                },
-                'Conservative Cases': {
-                    'Bergesen et al. Likely LED (currently conservative)': THISDIR.joinpath('ad', 'ad_Bergesen_et_al__Likely_LED_currently_conservative.csv'),
-                },
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-                adconfig=adconfig)
-
+        self._pds_ad_settings['config_overrides'] = [('growth','Asia (Sans Japan)','Low')]
+        self._pds_ad_settings['main_includes_regional'] = False
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

@@ -121,6 +121,9 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -135,83 +138,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Ambitious Cases': {
-                '(PDS1) Based on ITDP/UCD (2015) A Global High Shift Cycling Scenario (with recent historical data included)': THISDIR.joinpath('ad', 'ad_PDS1_based_on_ITDPUCD_2015_A_Global_High_Shift_Cycling_Scenario_with_recent_historical_d_7e6e1325.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': '(PDS2) Drawdown Team projections based on a weighted average of Several Sources', 'include': True,
-                'description': (
-                    "Taking Published projections for each of Project Drawdown's five regions, "
-                    "we estimate the regional growth in bike infrastructure usage and then sum "
-                    "each year after interpolations. These sources exclude the ITDP data which "
-                    "are used for the Plausible (PDS1) Scenario "
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Drawdown_Team_projections_based_on_a_weighted_average_of_Several_Sources.csv')},
-            {'name': '(PDS3) Drawdown Theoretical linear growth until 10% urban transport adoption in 2050', 'include': True,
-                'description': (
-                    'This scenario was developed for the Drawdown Book Edition 1 and differs '
-                    'slightly to the updated adoption scenarios. This scenario uses a linear '
-                    'projeciton to 10% adoption in 2050 to estimate an adoption curve. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Drawdown_Theoretical_linear_growth_until_10_urban_transport_adoption_in_2050.csv')},
-            {'name': 'Drawdown Book Edition 1 Scenario 1', 'include': False,
-                'description': (
-                    'This scenario was developed for the Drawdown Book Edition 1 and differs '
-                    'slightly to the updated adoption scenarios. This scenario uses ITDP/UCDavis '
-                    'Global High Shift Cycling Scenario (2015) data (with interpolation) to '
-                    'estimate an adoption. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'Drawdown Book Ed.1 Reference Scenario', 'include': True,
-                'description': (
-                    'As the reference adoption case assumes (like most Drawdown solution) that '
-                    'the reference adoption remains fixed in percentage terms of the TAM, if the '
-                    'TAM calculationschange, the reference adoption also changes. The original '
-                    'reference adoption used for the models developed for the Drawdown book '
-                    '(edition 1) are stored here for those scenarios. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Drawdown_Book_Ed_1_Reference_Scenario.csv')},
-            {'name': 'Linear REF Growth Integrated with Recent Historical Adoption', 'include': True,
-                'description': (
-                    'We take the Default Project Drawdown REF adoption using Average Baseline '
-                    'TAM data and then adjust the years 2012-2018 to be the estimated historical '
-                    'adoptions from the Modeshare URBAN tab (with each year calculated by '
-                    'changing the current year input). '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Linear_REF_Growth_Integrated_with_Recent_Historical_Adoption.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
         if False:

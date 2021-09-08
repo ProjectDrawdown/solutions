@@ -105,6 +105,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -119,40 +120,9 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS1 ~10% CAGR',
-              'description': (
-                    'Based on projected market value growth of ethical and sustainable fashion '
-                    '(as a percent of Total Market $784B), at between 9-10% CAGR '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_10_CAGR.csv')},
-            {'name': 'PDS2 - 32% adoption by 2040 (Based on Quantis 40% recycled fibers)',
-              'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_32_adoption_by_2040_based_on_Quantis_40_recycled_fibers.csv')},
-        ]
-
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -160,13 +130,6 @@ class Scenario(scenario.RRSScenario):
             # This 'if False' allows subsequent conditions to all be elif.
             pass
         elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-            for (i,rs) in enumerate(ca_pds_data_sources):
-                rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-            self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
             pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
             pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
             pds_adoption_is_single_source = None

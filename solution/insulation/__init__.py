@@ -141,6 +141,8 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = _ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -155,38 +157,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        # Custom PDS Data
-        ca_pds_data_sources = [
-                {'name': 'Halfway to Passive House', 'include': True,
-                                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Halfway_to_Passive_House.csv')},
-                {'name': 'Almost Passive House', 'include': True,
-                                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Almost_Passive_House.csv')},
-                {'name': 'Passive House', 'include': True,
-                                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Passive_House.csv')},
-                {'name': 'Drawdown Book Edition 1 PDS 1 Scenario', 'include': True,
-                                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_PDS_1_Scenario.csv')},
-                {'name': 'Drawdown Book Edition 1 PDS 2 Scenario', 'include': True,
-                                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_PDS_2_Scenario.csv')},
-                {'name': 'Drawdown Book Edition 1 PDS 3 Scenario', 'include': True,
-                                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Drawdown_Book_Edition_1_PDS_3_Scenario.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-                        soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-                        high_sd_mult=1.0, low_sd_mult=1.0,
-                        total_adoption_limit=pds_tam_per_region)
-
-        # Custom REF Data
-        ca_ref_data_sources = [
-                {'name': 'Frozen Efficiency - Natural Rate of Insulation (1.4%)', 'include': False,
-                                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Frozen_Efficiency_Natural_Rate_of_Insulation_1_4.csv')},
-                {'name': 'Drawdown Book Edition 1 REF Scenario', 'include': False,
-                                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Drawdown_Book_Edition_1_REF_Scenario.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-                        soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-                        high_sd_mult=1.0, low_sd_mult=1.0,
-                        total_adoption_limit=ref_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
         if False:

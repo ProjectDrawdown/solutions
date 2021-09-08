@@ -110,6 +110,8 @@ class Scenario(scenario.LandScenario):
     vmas = VMAs
     solution_category = solution_category
 
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
+
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
             self.scenario = scen.name
@@ -129,41 +131,6 @@ class Scenario(scenario.LandScenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
-             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
-             'NOTE', 'NOTE', 'NOTE'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Raw Data for ALL LAND TYPES': {
-                'Sum of regional prognostications below': THISDIR.joinpath('ad', 'ad_Sum_of_regional_prognostications_below.csv'),
-            },
-            'Region: Asia (Sans Japan)': {
-                'Raw Data for ALL LAND TYPES': {
-                  'Dara et al. 2018; Kazakshstan recultivation': THISDIR.joinpath('ad', 'ad_Dara_et_al__2018_Kazakshstan_recultivation.csv'),
-              },
-            },
-            'Region: China': {
-                'Tropical-Humid Land': {
-                  'Lin, L, et al 2018, Wenzhou province only': THISDIR.joinpath('ad', 'ad_Lin_L_et_al_2018_Wenzhou_province_only.csv'),
-              },
-            },
-            'Region: EU': {
-                'Tropical-Humid Land': {
-                  'Estel et al. 2015, 2nd Poly, capped at 94.7mha': THISDIR.joinpath('ad', 'ad_Estel_et_al__2015_2nd_Poly_capped_at_94_7mha.csv'),
-              },
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
 
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
@@ -232,6 +199,7 @@ class Scenario(scenario.LandScenario):
                 df.loc[year] = [20.029602999999, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
             df.sort_index(inplace=True)
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -331,4 +299,3 @@ class Scenario(scenario.LandScenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-

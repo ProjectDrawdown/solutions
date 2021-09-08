@@ -111,6 +111,9 @@ class Scenario(scenario.LandScenario):
     vmas = VMAs
     solution_category = solution_category
 
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
+
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
             self.scenario = scen.name
@@ -124,68 +127,13 @@ class Scenario(scenario.LandScenario):
                 regimes=dd.THERMAL_MOISTURE_REGIMES8)
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
-             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
-             'NOTE', 'NOTE', 'NOTE'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Raw Data for ALL LAND TYPES': {
-                'Organic annual cropland estimate (sum of low growth by regions)': THISDIR.joinpath('ad', 'ad_Organic_annual_cropland_estimate_sum_of_low_growth_by_regions.csv'),
-                'Organic annual cropland estimate (sum of medium growth by region)': THISDIR.joinpath('ad', 'ad_Organic_annual_cropland_estimate_sum_of_medium_growth_by_region.csv'),
-                'Organic annual cropland estimate (sum of high growth by region)': THISDIR.joinpath('ad', 'ad_Organic_annual_cropland_estimate_sum_of_high_growth_by_region.csv'),
-            },
-            'Region: OECD90': {
-                'Raw Data for ALL LAND TYPES': {
-                  'Willer 2018 SEI calc RA lin': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_lin.csv'),
-                  'Willer 2018 SEI calc RA exp': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_exp.csv'),
-                  'Willer 2018 SEI calc RA 3rd poly': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_3rd_poly.csv'),
-              },
-            },
-            'Region: Eastern Europe': {
-                'Raw Data for ALL LAND TYPES': {
-                  'Willer 2018 SEI calc RA lin': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_lin.csv'),
-                  'Willer 2018 SEI calc RA 3rd poly': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_3rd_poly.csv'),
-                  'Willer 2018 SEI calc RA exp': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_exp.csv'),
-              },
-            },
-            'Region: Asia (Sans Japan)': {
-                'Raw Data for ALL LAND TYPES': {
-                  'Willer 2018 SEI calc RA lin': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_lin.csv'),
-                  'Willer 2018 SEI calc RA exp': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_exp.csv'),
-                  'Willer 2018 SEI calc RA 3rd poly': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_3rd_poly.csv'),
-              },
-            },
-            'Region: Middle East and Africa': {
-                'Raw Data for ALL LAND TYPES': {
-                  'Willer 2018 SEI calc RA lin': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_lin.csv'),
-                  'Willer 2018 SEI calc RA 3rd poly': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_3rd_poly.csv'),
-                  'Willer 2018 SEI calc RA exp': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_exp.csv'),
-              },
-            },
-            'Region: Latin America': {
-                'Raw Data for ALL LAND TYPES': {
-                  'Willer 2018 SEI calc RA lin': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_lin.csv'),
-                  'Willer 2018 SEI calc RA exp': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_exp.csv'),
-                  'Willer 2018 SEI calc RA 3rd poly': THISDIR.joinpath('ad', 'ad_Willer_2018_SEI_calc_RA_3rd_poly.csv'),
-              },
-            },
-            'Region: USA': {
-                'Tropical-Humid Land': {
-                  'USDA NASS Organic Surv; Cropland area 2016, 2008 summaries': THISDIR.joinpath('ad', 'ad_USDA_NASS_Organic_Surv_Cropland_area_2016_2008_summaries.csv'),
-              },
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
+        # ADOPTION
+        # Do the initialization ourself b/c we use it in the custom PDS initialization below
+        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=self._pds_ad_sources,
             main_includes_regional=True,
-            adconfig=adconfig)
+            adconfig=adoptiondata.make_adoption_config(overrides=[
+                ('trend','World',self.ac.soln_pds_adoption_prognostication_trend),
+                ('growth','World',self.ac.soln_pds_adoption_prognostication_growth)]))
 
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
@@ -463,20 +411,7 @@ class Scenario(scenario.LandScenario):
             df.loc[2018] = [11.8009, 6.946491121632, 1.839133620034, 2.006885018162,
                     0.438513174434, 0.373269709916, 0.0, 0.0, 0.0, 0.0]
 
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': '[Type Scenario 1 Name Here (REF CASE)...]', 'include': True,
-                'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=self.tla_per_region)
-
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:
@@ -581,4 +516,3 @@ class Scenario(scenario.LandScenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-

@@ -125,6 +125,7 @@ class Scenario(scenario.RRSScenario):
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -139,25 +140,8 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
         # Custom PDS Data
-        ca_pds_columns = ['Year'] + dd.REGIONS
         car_occ = self.ac.lookup_vma(vma_title='Current Average Car Occupancy')
         ride_occ = self.ac.lookup_vma(vma_title='Average Ridesharing Car Occupancy')
         ad_2018 = (car_occ - 1) / (ride_occ - 1)
@@ -186,77 +170,17 @@ class Scenario(scenario.RRSScenario):
         ds6_ad_2050 = (3.0 - 1) / (ride_occ - 1)
         ds6_df = global_load_df(ad_2018=ad_2018, ad_2050=ds6_ad_2050)
 
-        ca_pds_data_sources = [
-            {'name': 'PDS1 (15%) - Drawdown Book Edition 1', 'include': True,
-                'description': (
-                    'PDS1 - Drawdown Team Calculations based on: 15% adoption by Car commuters '
-                    'in 2050 '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_15_Drawdown_Book_Edition_1.csv')},
-            {'name': 'PDS2 (20%) - Drawdown Book Edition 1', 'include': True,
-                'description': (
-                    'PDS2 - Drawdown Team Calculations based on: 20% adoption by Car commuters '
-                    'in 2050 '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_20_Drawdown_Book_Edition_1.csv')},
-            {'name': 'PDS3 (30%) - Drawdown Book Edition 1', 'include': True,
-                'description': (
-                    'PDS3 -  Drawdown Team Calculations based on: 30% adoption by Car commuters '
-                    'in 2050 '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_30_Drawdown_Book_Edition_1.csv')},
-            {'name': 'PDS1 - With Global Load Factor of 1.75 person per vehicle per trip by 2050', 'include': True,
-                'description': (
-                    'We take a relatively high average car load factor from data from several '
-                    'countries and assume that it can be the 2050 global average load factor. We '
-                    'assume that that figure is out of a maximum as entered on Advanced Controls '
-                    '(~3 persons per trip) and estimate what effective adoption share the target '
-                    'load factor represents (assuming that all trips are either single occupancy '
-                    'or the maximum entered. This load factor in 2050 and that in 2014 (current '
-                    'value) are interpolated to get the load factor each year which is used to '
-                    'estimate the adoption. Recent Historical adoptions were estimated by '
-                    'assuming that the average load factors calculated from the weighted '
-                    'available data are applied to the total urban mobility each year after '
-                    'applying the car mode share (assumed fixed) '
-                    ),
-                'dataframe': ds4_df},
-            {'name': 'PDS2 - With Global Load Factor of 2 person per vehicle per trip by 2050', 'include': True,
-                'description': (
-                    'We take a relatively high average car load factor from data from several '
-                    'countries and assume that it can be the 2050 global average load factor. We '
-                    'assume that that figure is out of a maximum as entered on Advanced Controls '
-                    '(~3 persons per trip) and estimate what effective adoption share the target '
-                    'load factor represents (assuming that all trips are either single occupancy '
-                    'or the maximum entered. This load factor in 2050 and that in 2014 (current '
-                    'value) are interpolated to get the load factor each year which is used to '
-                    'estimate the adoption. Recent Historical adoptions were estimated by '
-                    'assuming that the average load factors calculated from the weighted '
-                    'available data are applied to the total urban mobility each year after '
-                    'applying the car mode share (assumed fixed) '
-                    ),
-                'dataframe': ds5_df},
-            {'name': 'PDS3- With Global Load Factor of 3 person per vehicle per trip by 2050', 'include': True,
-                'description': (
-                    'We take a very high load factor average, which is close to the maximum and '
-                    'assume that it can be the 2050 global average load factor. We assume that '
-                    'that figure is out of a maximum as entered on Advanced Controls (~3 persons '
-                    'per trip) and estimate what effective adoption share the target load factor '
-                    'represents (assuming that all trips are either single occupancy or the '
-                    'maximum entered. This load factor in 2050 and that in 2014 (current value) '
-                    'are interpolated to get the load factor each year which is used to estimate '
-                    'the adoption. Recent Historical adoptions were estimated by assuming that '
-                    'the average load factors calculated from the weighted available data are '
-                    'applied to the total urban mobility each year after applying the car mode '
-                    'share (assumed fixed) '
-                    ),
-                'dataframe': ds6_df},
-        ]
+        ca_pds_data_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+        ca_pds_data_sources[3]['dataframe'] = ds4_df
+        ca_pds_data_sources[4]['dataframe'] = ds5_df
+        ca_pds_data_sources[5]['dataframe'] = ds6_df
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
             low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
             total_adoption_limit=pds_tam_per_region)
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:

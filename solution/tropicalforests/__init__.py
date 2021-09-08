@@ -111,6 +111,7 @@ class Scenario(scenario.LandScenario):
     vmas = VMAs
     solution_category = solution_category
 
+
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
                 self.scenario = scen.name
@@ -396,6 +397,8 @@ class Scenario(scenario.LandScenario):
                 high_sd_mult=1.0, low_sd_mult=1.0,
                 total_adoption_limit=self.tla_per_region)
 
+        self.initialize_adoption_bases()
+
 
         if False:
             # One may wonder why this is here. This file was code generated.
@@ -485,4 +488,3 @@ class Scenario(scenario.LandScenario):
                 soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
                 annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
                 regime_distribution=self.ae.get_land_distribution())
-

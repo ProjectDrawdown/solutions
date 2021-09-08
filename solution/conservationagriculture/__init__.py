@@ -113,6 +113,8 @@ class Scenario(scenario.LandScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
         if isinstance(scen, ac.AdvancedControls):
@@ -127,64 +129,7 @@ class Scenario(scenario.LandScenario):
                 regimes=dd.THERMAL_MOISTURE_REGIMES8)
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
-             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
-             'NOTE', 'NOTE', 'NOTE'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Raw Data for ALL LAND TYPES': {
-                'FAOSTAT (Sum of all Regions)': THISDIR.joinpath('ad', 'ad_FAOSTAT_Sum_of_all_Regions.csv'),
-                'Prestele baseline and Topdown (moderate growth) projection': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv'),
-                'Prestele baseline and BottoUp: (maximum)': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_BottoUp_maximum.csv'),
-            },
-            'Region: OECD90': {
-                'Raw Data for ALL LAND TYPES': {
-                  'FAOSTAT': THISDIR.joinpath('ad', 'ad_FAOSTAT.csv'),
-                  'Prestele baseline and Topdown (moderate growth) projection': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv'),
-                  'Prestele baseline and BottoUp: (maximum)': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_BottoUp_maximum.csv'),
-              },
-            },
-            'Region: Eastern Europe': {
-                'Raw Data for ALL LAND TYPES': {
-                  'FAOSTAT': THISDIR.joinpath('ad', 'ad_FAOSTAT.csv'),
-                  'Prestele baseline and Topdown (moderate growth) projection': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv'),
-                  'Prestele baseline and BottoUp: (maximum)': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_BottoUp_maximum.csv'),
-              },
-            },
-            'Region: Asia (Sans Japan)': {
-                'Raw Data for ALL LAND TYPES': {
-                  'FAOSTAT': THISDIR.joinpath('ad', 'ad_FAOSTAT.csv'),
-                  'Prestele baseline and Topdown (moderate growth) projection': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv'),
-                  'Prestele baseline and BottoUp: (maximum)': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_BottoUp_maximum.csv'),
-              },
-            },
-            'Region: Middle East and Africa': {
-                'Raw Data for ALL LAND TYPES': {
-                  'FAOSTAT': THISDIR.joinpath('ad', 'ad_FAOSTAT.csv'),
-                  'Prestele baseline and Topdown (moderate growth) projection': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv'),
-                  'Prestele baseline and BottoUp: (maximum)': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_BottoUp_maximum.csv'),
-              },
-            },
-            'Region: Latin America': {
-                'Raw Data for ALL LAND TYPES': {
-                  'FAOSTAT': THISDIR.joinpath('ad', 'ad_FAOSTAT.csv'),
-                  'Prestele baseline and Topdown (moderate growth) projection': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_Topdown_moderate_growth_projection.csv'),
-                  'Prestele baseline and BottoUp: (maximum)': THISDIR.joinpath('ad', 'ad_Prestele_baseline_and_BottoUp_maximum.csv'),
-              },
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
-
+ 
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
         tla_2050 = self.tla_per_region.loc[2050]
@@ -427,20 +372,8 @@ class Scenario(scenario.LandScenario):
             df.loc[2018] = [147.991284075603000, 57.694564283758300, 14.386574660765900,
                     15.295431110007600, 2.175066509986860, 58.439647511084400, 0.0, 0.0, 0.0, 0.0]
 
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': '[Type Scenario 1 Name Here (REF CASE)...]', 'include': True,
-                'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=self.tla_per_region)
 
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:
@@ -544,4 +477,3 @@ class Scenario(scenario.LandScenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-
