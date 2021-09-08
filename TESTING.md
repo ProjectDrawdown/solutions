@@ -1,31 +1,11 @@
-## Test Framework
-
-This project uses [pytest](https://docs.pytest.org/en/6.2.x/contents.html) for testing.  
-
 ## Running Tests
 
-Usually you will want to invoke pytest from the root directory of the project.  There,
-you can test the entire project with the following command:
-```sh
-    $ python -m pytest
-```
-For this project, it is better to invoke pytest via python (as above) than directly, because it will
-add the top-level directory to the path, which allows all the import statements to work.   (Alternatively,
-if you add the root directory to your `$PYTHONPATH` environment variable, you should be able to use
-pytest directly from anywhere within this project.)
+This project uses [pytest](https://docs.pytest.org/en/6.2.x/contents.html) for testing.  You can test the entire project simply by running the command `pytest` from the project root directory.
 
-The full test suite is lengthy, and takes some time to run.  You may find it worthwhile to focus testing on specific parts of the code that you are working with.
-
-Tests for a directory are found in a subdiretory `/tests` within that directory (e.g. `/model/tests`).
-To test just the model directory, you would use the following command:
+The full test suite is lengthy, and takes some time to run.  You may find it worthwhile to focus testing on specific parts of the code that you are working with.  For example, to test just the model directory, or just a single solution, you would use the following commands&mdash;pytest automatically knows to search for the tests within the directory you select.
 ```sh
-    $ python -m pytest model
-```
-Pytest automatically knows to search for the `tests` subdirectories within the diretory you select
-
-To test just a single solution, say afforestation, you would use
-```sh
-    $ python -m pytest solution/afforestation
+    $ pytest model
+    $ pytest solution/afforestation
 ```
 
 You can also execute test functions directly in python (or jupyter notebook), which can be more convenient in some cases.
