@@ -9,17 +9,22 @@ The full test suite is lengthy, and takes some time to run.  You may find it wor
 ```
 
 You can also execute test functions directly in python (or jupyter notebook), which can be more convenient in some cases.
-For example, to compare the computed results for the afforestation solution to the saved excel results,
-you can execute
+In particular, each solution's tests consists of three functions: `test_loader`, `test_key_results` and `test_deep_results`.
+So if you want to manually run the deep result tester for afforestation, you would do this:
 ```python
     import solution.afforestation.tests.test_afforestation as taff
-    taff.test_afforestation_results()
+    taff.test_deep_results()
+```
+One of the advantages of doing this is that you can set _which_ deep tests you want to run or skip as an argument to the `test_deep_results`
+function. See the documentation for `tools.expected_results_tester.one_solution_tester` for details.
+
+The `test_deep_results` functions test many intermediate results of the solution code against the Excel, as well as final results.
+This should be done when working on something that changes anything in `model`, and for a given solution if working on that solution.
+But it doesn't need to be done for all solutions all the time.  You can skip it with the mark functionality of pytest:
+```sh
+   $ pytest -m "not deep"
 ```
 
-The `test_`_solution_`_results` functions take arguments that let you select which subtests to run.  See the 
-documentation for `tools.expected_result_tester.one_solution_tester` for the details.  Currently this customization is
-only available via direct execution from python, not via pytest.  (If someone would like to convert into a fixture pytest can use,
-that would be great!)
 
 ## Writing Tests
 

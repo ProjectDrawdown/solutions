@@ -29,7 +29,7 @@ The Jupyter Notebook `Extraction_Guide.ipynb` walks you through steps 4-9 below.
   5. Clean up the generated scenarios.  See the guidance in the Jupyter Notebook for more information.
   5. Verify that the resulting solution code can be loaded and run
   6. Create the `expected.zip` test file following the steps described in the Jupyter notebook and in `tools/CREATE_EXPECTED_ZIP.md`
-  7. Generate a new solution test file with the function `output_solution_test_file` in `tools/solution_xls_extract.py`
+  7. Copy the template test file to your `solution\tests` directory
   8. Run the new solution tests and observe the results.
   9. Document any modifications you had to make to solution code in a `changelog` file in the solution directory
   10. Create a PR (Pull Request) for the results.

@@ -31,10 +31,12 @@ from model import tam
 
 class Scenario:
 
+        
+    # Public Fields common across all scenarios
+
     ac: advanced_controls.AdvancedControls = None
     """The parameters that define this scenario"""
 
-    # Adoption is a common concept across all scenarios
     # Adoption state
     ht: helpertables.HelperTables = None
     """The ref and pds adoptions of this scenario"""
@@ -47,15 +49,18 @@ class Scenario:
     sc: s_curve.SCurve = None
     """The base s-curve adoption, if this scenario uses an s-curve adoption (otherwise None)."""
 
+    
+    # Initialization
 
     # Control of adoption initialization is a combination of the contents of the ac parameters,
-    # and the settings of these fields by the ground class
+    # and the settings of these fields by the subclass
     _ref_ca_sources = None  
     _pds_ca_sources = None 
     _pds_ca_settings = { 'high_sd_mult' : 1.0, 'low_sd_mult' : 1.0 }
     _pds_ad_sources = None
     _pds_ad_settings = { 'main_includes_regional' : True, 'groups_include_hundred_percent': True,
         'config_overrides' : None }
+    
 
     def initialize_adoption_bases(self):
         """Initialize the pds and ref adoption bases for this scenario to one of 
@@ -132,7 +137,11 @@ class Scenario:
 
     def adoption_limit(self):
         """Returns the tam or aez limitations on adoption."""
-        raise NotImplemented("Subclass must implement")
+        raise NotImplementedError("Subclass must implement")
+
+    
+    # Common top-level functionality
+    # Key Results
 
     def key_results(self, year=2050, region='World'):
         if self.solution_category == self.solution_category.REDUCTION or self.solution_category == self.solution_category.REPLACEMENT:
@@ -153,19 +162,13 @@ class Scenario:
             raise NotImplementedError("key_results only implemented for REDUCTION, REPLACEMENT and LAND")
 
     def implementation_unit_adoption_increase(self, year=2050, region='World'):
-        if hasattr(self, 'pds_ca'):
-            if self.pds_ca.soln_adoption_custom_name:
-                pds_adoption = self.pds_ca.adoption_data_per_region()
-            else:
-                pds_adoption = self.ht.soln_pds_funits_adopted()
+        if self.pds_ca and self.pds_ca.soln_adoption_custom_name:
+            pds_adoption = self.pds_ca.adoption_data_per_region()
         else:
             pds_adoption = self.ht.soln_pds_funits_adopted()
 
-        if hasattr(self, 'ref_ca'):
-            if self.ref_ca.soln_adoption_custom_name:
-                ref_adoption = self.ref_ca.adoption_data_per_region()
-            else:
-                ref_adoption = self.ht.soln_ref_funits_adopted()
+        if self.ref_ca and self.ref_ca.soln_adoption_custom_name:
+            ref_adoption = self.ref_ca.adoption_data_per_region()
         else:
             ref_adoption = self.ht.soln_ref_funits_adopted()
 
@@ -173,19 +176,13 @@ class Scenario:
             ref_adoption.loc[year][region] / self.ac.soln_avg_annual_use)
 
     def adoption_unit_increase_LAND(self, year=2050, region='World'):
-        if hasattr(self, 'pds_ca'):
-            if self.pds_ca.soln_adoption_custom_name:
-                pds_adoption = self.pds_ca.adoption_data_per_region()
-            else:
-                pds_adoption = self.ht.soln_pds_funits_adopted()
+        if self.pds_ca and self.pds_ca.soln_adoption_custom_name: 
+            pds_adoption = self.pds_ca.adoption_data_per_region()
         else:
             pds_adoption = self.ht.soln_pds_funits_adopted()
 
-        if hasattr(self, 'ref_ca'):
-            if self.ref_ca.soln_adoption_custom_name:
-                ref_adoption = self.ref_ca.adoption_data_per_region()
-            else:
-                ref_adoption = self.ht.soln_ref_funits_adopted()
+        if self.ref_ca and self.ref_ca.soln_adoption_custom_name:
+            ref_adoption = self.ref_ca.adoption_data_per_region()
         else:
             ref_adoption = self.ht.soln_ref_funits_adopted()
 
@@ -199,19 +196,13 @@ class Scenario:
         return (self.c2.co2_sequestered_global().loc[2021:year,'All'] / 1000).sum()
 
     def functional_unit_adoption_increase(self, year=2050, region='World'):
-        if hasattr(self, 'pds_ca'):
-            if self.pds_ca.soln_adoption_custom_name:
-                pds_adoption = self.pds_ca.adoption_data_per_region()
-            else:
-                pds_adoption = self.ht.soln_pds_funits_adopted()
+        if self.pds_ca and self.pds_ca.soln_adoption_custom_name:
+            pds_adoption = self.pds_ca.adoption_data_per_region()
         else:
             pds_adoption = self.ht.soln_pds_funits_adopted()
 
-        if hasattr(self, 'ref_ca'):
-            if self.ref_ca.soln_adoption_custom_name:
-                ref_adoption = self.ref_ca.adoption_data_per_region()
-            else:
-                ref_adoption = self.ht.soln_ref_funits_adopted()
+        if self.ref_ca and self.ref_ca.soln_adoption_custom_name:
+            ref_adoption = self.ref_ca.adoption_data_per_region()
         else:
             ref_adoption = self.ht.soln_ref_funits_adopted()
 
@@ -246,9 +237,11 @@ class Scenario:
 
 class RRSScenario(Scenario):
 
+    # State
     tm: tam.TAM = None
     """The total addressable market for this solution."""
 
+    # Initialization
     # These must be set by each class
     _ref_tam_sources = None
     _pds_tam_sources = None
@@ -303,80 +296,10 @@ class RRSScenario(Scenario):
             tam_ref_data_sources = ref_data_sources,
             tam_pds_data_sources = pds_data_sources,
             **args)
-    """
-    def key_results(self, year=2050, region='World'):
-        return {'implementation_unit_adoption_increase': self.implementation_unit_adoption_increase(year=year),
-                'functional_unit_adoption_increase': self.functional_unit_adoption_increase(year=year),
-                'marginal_first_cost': self.marginal_first_cost(year=year),
-                'net_operating_savings': self.net_operating_savings(year=year),
-                'lifetime_operating_savings': self.lifetime_operating_savings(),
-                'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region)}
-
-    def implementation_unit_adoption_increase(self, year=2050, region='World'):
-        if hasattr(self, 'pds_ca'):
-            if self.pds_ca.soln_adoption_custom_name:
-                pds_adoption = self.pds_ca.adoption_data_per_region()
-            else:
-                pds_adoption = self.ht.soln_pds_funits_adopted()
-        else:
-            pds_adoption = self.ht.soln_pds_funits_adopted()
-
-        if hasattr(self, 'ref_ca'):
-            if self.ref_ca.soln_adoption_custom_name:
-                ref_adoption = self.ref_ca.adoption_data_per_region()
-            else:
-                ref_adoption = self.ht.soln_ref_funits_adopted()
-        else:
-            ref_adoption = self.ht.soln_ref_funits_adopted()
-
-        return (pds_adoption.loc[year][region] / self.ac.soln_avg_annual_use - 
-            ref_adoption.loc[year][region] / self.ac.soln_avg_annual_use)
-
-    def functional_unit_adoption_increase(self, year=2050, region='World'):
-        if hasattr(self, 'pds_ca'):
-            if self.pds_ca.soln_adoption_custom_name:
-                pds_adoption = self.pds_ca.adoption_data_per_region()
-            else:
-                pds_adoption = self.ht.soln_pds_funits_adopted()
-        else:
-            pds_adoption = self.ht.soln_pds_funits_adopted()
-
-        if hasattr(self, 'ref_ca'):
-            if self.ref_ca.soln_adoption_custom_name:
-                ref_adoption = self.ref_ca.adoption_data_per_region()
-            else:
-                ref_adoption = self.ht.soln_ref_funits_adopted()
-        else:
-            ref_adoption = self.ht.soln_ref_funits_adopted()
-
-        return (
-            pds_adoption.loc[year] - 
-            ref_adoption.loc[year]
-            )[region]
-
-    def marginal_first_cost(self, year=2050):
-        return (self.fc.soln_pds_annual_world_first_cost().loc[:year].sum()-
-            self.fc.soln_ref_annual_world_first_cost().loc[:year].sum()-
-            self.fc.conv_ref_annual_world_first_cost().loc[:year].sum()
-            ) / 1e9
-
-    def net_operating_savings(self, year=2050):
-        return (
-            (self.oc.conv_ref_cumulative_operating_cost().loc[year] -
-            self.oc.conv_ref_cumulative_operating_cost().loc[2020]) -
-            (self.oc.soln_pds_cumulative_operating_cost().loc[year]  -
-            self.oc.soln_pds_cumulative_operating_cost().loc[2020])
-            ) / 1e9
-
-    def lifetime_operating_savings(self):
-        return self.oc.soln_marginal_operating_cost_savings().sum() / 1e9
-    
+        
     def adoption_limit(self):
         return self.tm.pds_tam_per_region()
-
-    def cumulative_emissions_reduced(self, year=2050, region='World'):
-        return self.c2.co2eq_mmt_reduced().loc[2020:year, region].sum() / 1e3
-    """
+    
 
 
 class LandScenario(Scenario):

@@ -1856,28 +1856,6 @@ def link_vma(tab, row, col):
             return {'value': float_val, 'xls cell formula': formula}
 
 
-def output_solution_test_file(solutionname, is_land=False, outputdir=None):
-    """Copy the template test file, substituting the solution name.
-    By default, writes to the solution / tests directory, but that can be overridden
-    by the `outputdir` argument."""
-    if not outputdir:
-        outputdir = pathlib.Path(__file__).parents[1] / 'solution' / solutionname / 'tests'
-    else:
-        outputdir = pathlib.Path( outputdir )
-    if not outputdir.is_dir():
-        outputdir.mkdir()
-
-    testfile = outputdir / f"test_{solutionname}.py"
-    templatefile = pathlib.Path(__file__).parents[0] / 'solution_test_template.py'
-    
-    with templatefile.open("r") as rd:
-        with testfile.open("w") as wt:
-            for line in rd:
-                line = line.replace('SOLUTION', solutionname)
-                line = line.replace('IS_LAND', str(is_land))
-                wt.write(line)
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Create python Drawdown solution from Excel version.')
     parser.add_argument('excelfile', help='Excel filename to process.')
