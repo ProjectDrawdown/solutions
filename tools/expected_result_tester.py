@@ -1069,19 +1069,17 @@ def key_results_tester(solution_name, expected_filename, scenario_skip=None):
             df_expected = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
             key_results = obj.key_results()
 
-            desired_precision = 7
-            aae = np.testing.assert_almost_equal
             if isinstance(obj, scenario.LandScenario):
-                aae(key_results['adoption_unit_increase'], float(df_expected.loc[3, 0]), decimal=desired_precision)
-                aae(key_results['marginal_first_cost'], float(df_expected.loc[3, 1]), decimal=desired_precision)
-                aae(key_results['net_operating_savings'], float(df_expected.loc[3, 2]), decimal=desired_precision)
-                aae(key_results['lifetime_operating_savings'], float(df_expected.loc[3, 3]), decimal=desired_precision)
-                aae(key_results['cumulative_emissions_reduced'], float(df_expected.loc[3, 4]), decimal=desired_precision)
-                aae(key_results['total_additional_co2eq_sequestered'], float(df_expected.loc[3, 5]), decimal=desired_precision)
+                assert(key_results['adoption_unit_increase'] == pytest.approx(float(df_expected.loc[3, 0])))
+                assert(key_results['marginal_first_cost'] == pytest.approx(float(df_expected.loc[3, 1])))
+                assert(key_results['net_operating_savings'] == pytest.approx(float(df_expected.loc[3, 2])))
+                assert(key_results['lifetime_operating_savings'] == pytest.approx(float(df_expected.loc[3, 3])))
+                assert(key_results['cumulative_emissions_reduced'] == pytest.approx(float(df_expected.loc[3, 4])))
+                assert(key_results['total_additional_co2eq_sequestered'] == pytest.approx(float(df_expected.loc[3, 5])))
             else:
-                aae(key_results['implementation_unit_adoption_increase'], float(df_expected.loc[3, 0]), decimal=desired_precision)
-                aae(key_results['functional_unit_adoption_increase'], float(df_expected.loc[3, 1]), decimal=desired_precision)
-                aae(key_results['marginal_first_cost'], float(df_expected.loc[3, 2]), decimal=desired_precision)
-                aae(key_results['net_operating_savings'], float(df_expected.loc[3, 3]), decimal=desired_precision)
-                aae(key_results['lifetime_operating_savings'], float(df_expected.loc[3, 4]), decimal=desired_precision)
-                aae(key_results['cumulative_emissions_reduced'], float(df_expected.loc[3, 5]), decimal=desired_precision)
+                assert(key_results['implementation_unit_adoption_increase'] == pytest.approx(float(df_expected.loc[3, 0])))
+                assert(key_results['functional_unit_adoption_increase'] == pytest.approx(float(df_expected.loc[3, 1])))
+                assert(key_results['marginal_first_cost'] == pytest.approx(float(df_expected.loc[3, 2])))
+                assert(key_results['net_operating_savings'] == pytest.approx(float(df_expected.loc[3, 3])))
+                assert(key_results['lifetime_operating_savings'] == pytest.approx(float(df_expected.loc[3, 4])))
+                assert(key_results['cumulative_emissions_reduced'] == pytest.approx(float(df_expected.loc[3, 5])))
