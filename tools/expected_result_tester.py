@@ -1067,7 +1067,7 @@ def key_results_tester(solution_name, expected_filename, scenario_skip=None):
             obj = m.Scenario(scen=scenario_name)
             ac_file = zf.open(scenario_name + "/" + 'Advanced Controls')
             df_expected = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
-            key_results = obj.key_results()
+            key_results = obj.get_key_results()
 
             if isinstance(obj, scenario.LandScenario):
                 assert(key_results['adoption_unit_increase'] == pytest.approx(float(df_expected.loc[3, 0])))

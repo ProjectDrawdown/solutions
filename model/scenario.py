@@ -143,7 +143,7 @@ class Scenario:
     # Common top-level functionality
     # Key Results
 
-    def key_results(self, year=2050, region='World'):
+    def get_key_results(self, year=2050, region='World'):
         if self.solution_category == self.solution_category.REDUCTION or self.solution_category == self.solution_category.REPLACEMENT:
             return {'implementation_unit_adoption_increase': self.implementation_unit_adoption_increase(year=year),
                     'functional_unit_adoption_increase': self.functional_unit_adoption_increase(year=year),
