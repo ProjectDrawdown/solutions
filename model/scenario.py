@@ -144,14 +144,17 @@ class Scenario:
     # Key Results
 
     def get_key_results(self, year=2050, region='World'):
-        if self.solution_category == self.solution_category.REDUCTION or self.solution_category == self.solution_category.REPLACEMENT:
+        if (self.solution_category == self.solution_category.REDUCTION or 
+            self.solution_category == self.solution_category.REPLACEMENT or
+            isinstance(self, RRSScenario)):
             return {'implementation_unit_adoption_increase': self.implementation_unit_adoption_increase(year=year),
                     'functional_unit_adoption_increase': self.functional_unit_adoption_increase(year=year),
                     'marginal_first_cost': self.marginal_first_cost(year=year),
                     'net_operating_savings': self.net_operating_savings(year=year),
                     'lifetime_operating_savings': self.lifetime_operating_savings(),
                     'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region)}
-        elif self.solution_category == self.solution_category.LAND:
+        elif (self.solution_category == self.solution_category.LAND or
+              isinstance(self,LandScenario)):
             return {'adoption_unit_increase': self.adoption_unit_increase_LAND(year=year),
                     'marginal_first_cost': self.marginal_first_cost(year=year),
                     'net_operating_savings': self.net_operating_savings(year=year),
@@ -159,57 +162,7 @@ class Scenario:
                     'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region),
                     'total_additional_co2eq_sequestered': self.total_additional_co2eq_sequestered(year)}
         else:
-            raise NotImplementedError("key_results only implemented for REDUCTION, REPLACEMENT and LAND")
-
-    def implementation_unit_adoption_increase(self, year=2050, region='World'):
-        if self.pds_ca and self.pds_ca.soln_adoption_custom_name:
-            pds_adoption = self.pds_ca.adoption_data_per_region()
-        else:
-            pds_adoption = self.ht.soln_pds_funits_adopted()
-
-        if self.ref_ca and self.ref_ca.soln_adoption_custom_name:
-            ref_adoption = self.ref_ca.adoption_data_per_region()
-        else:
-            ref_adoption = self.ht.soln_ref_funits_adopted()
-
-        return (pds_adoption.loc[year][region] / self.ac.soln_avg_annual_use - 
-            ref_adoption.loc[year][region] / self.ac.soln_avg_annual_use)
-
-    def adoption_unit_increase_LAND(self, year=2050, region='World'):
-        if self.pds_ca and self.pds_ca.soln_adoption_custom_name: 
-            pds_adoption = self.pds_ca.adoption_data_per_region()
-        else:
-            pds_adoption = self.ht.soln_pds_funits_adopted()
-
-        if self.ref_ca and self.ref_ca.soln_adoption_custom_name:
-            ref_adoption = self.ref_ca.adoption_data_per_region()
-        else:
-            ref_adoption = self.ht.soln_ref_funits_adopted()
-
-        return (pds_adoption.loc[year][region]  - 
-            ref_adoption.loc[year][region])
-        pass
-
-    def total_additional_co2eq_sequestered(self, year=2050):
-        # farmlandrestoration starts in year 2021 in Advanced Control excel
-        # Not sure if this is a bug or intended. Excel also says it should start at 2020
-        return (self.c2.co2_sequestered_global().loc[2021:year,'All'] / 1000).sum()
-
-    def functional_unit_adoption_increase(self, year=2050, region='World'):
-        if self.pds_ca and self.pds_ca.soln_adoption_custom_name:
-            pds_adoption = self.pds_ca.adoption_data_per_region()
-        else:
-            pds_adoption = self.ht.soln_pds_funits_adopted()
-
-        if self.ref_ca and self.ref_ca.soln_adoption_custom_name:
-            ref_adoption = self.ref_ca.adoption_data_per_region()
-        else:
-            ref_adoption = self.ht.soln_ref_funits_adopted()
-
-        return (
-            pds_adoption.loc[year] - 
-            ref_adoption.loc[year]
-            )[region]
+            raise NotImplementedError("key_results only implemented for REDUCTION, REPLACEMENT, LAND and OCEAN.")
 
     def marginal_first_cost(self, year=2050):
         return (self.fc.soln_pds_annual_world_first_cost().loc[:year].sum()-
@@ -230,9 +183,6 @@ class Scenario:
 
     def cumulative_emissions_reduced(self, year=2050, region='World'):
         return self.c2.co2eq_mmt_reduced().loc[2020:year, region].sum() / 1e3
-
-
-    
 
 
 class RRSScenario(Scenario):
@@ -299,7 +249,43 @@ class RRSScenario(Scenario):
         
     def adoption_limit(self):
         return self.tm.pds_tam_per_region()
-    
+
+    def get_key_results(self, year=2050, region='World'):
+        return {'implementation_unit_adoption_increase': self.implementation_unit_adoption_increase(year=year),
+                'functional_unit_adoption_increase': self.functional_unit_adoption_increase(year=year),
+                'marginal_first_cost': self.marginal_first_cost(year=year),
+                'net_operating_savings': self.net_operating_savings(year=year),
+                'lifetime_operating_savings': self.lifetime_operating_savings(),
+                'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region)}
+
+    def implementation_unit_adoption_increase(self, year=2050, region='World'):
+        if self.pds_ca and self.pds_ca.soln_adoption_custom_name:
+            pds_adoption = self.pds_ca.adoption_data_per_region()
+        else:
+            pds_adoption = self.ht.soln_pds_funits_adopted()
+
+        if self.ref_ca and self.ref_ca.soln_adoption_custom_name:
+            ref_adoption = self.ref_ca.adoption_data_per_region()
+        else:
+            ref_adoption = self.ht.soln_ref_funits_adopted()
+
+        return (pds_adoption.loc[year][region] / self.ac.soln_avg_annual_use - 
+            ref_adoption.loc[year][region] / self.ac.soln_avg_annual_use)
+
+    def functional_unit_adoption_increase(self, year=2050, region='World'):
+        if self.pds_ca and self.pds_ca.soln_adoption_custom_name:
+            pds_adoption = self.pds_ca.adoption_data_per_region()
+        else:
+            pds_adoption = self.ht.soln_pds_funits_adopted()
+
+        if self.ref_ca and self.ref_ca.soln_adoption_custom_name:
+            ref_adoption = self.ref_ca.adoption_data_per_region()
+        else:
+            ref_adoption = self.ht.soln_ref_funits_adopted()
+
+        return (pds_adoption.loc[year] - 
+                ref_adoption.loc[year]
+                )[region]
 
 
 class LandScenario(Scenario):
@@ -310,6 +296,33 @@ class LandScenario(Scenario):
 
     def adoption_limit(self):
         return self.tla_per_region
+
+    def get_key_results(self, year=2050, region='World'):
+        return {'adoption_unit_increase': self.adoption_unit_increase(year=year),
+                'marginal_first_cost': self.marginal_first_cost(year=year),
+                'net_operating_savings': self.net_operating_savings(year=year),
+                'lifetime_operating_savings': self.lifetime_operating_savings(),
+                'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region),
+                'total_additional_co2eq_sequestered': self.total_additional_co2eq_sequestered(year)}
+        
+    def adoption_unit_increase(self, year=2050, region='World'):
+        if self.pds_ca and self.pds_ca.soln_adoption_custom_name: 
+            pds_adoption = self.pds_ca.adoption_data_per_region()
+        else:
+            pds_adoption = self.ht.soln_pds_funits_adopted()
+
+        if self.ref_ca and self.ref_ca.soln_adoption_custom_name:
+            ref_adoption = self.ref_ca.adoption_data_per_region()
+        else:
+            ref_adoption = self.ht.soln_ref_funits_adopted()
+
+        return (pds_adoption.loc[year][region]  - 
+            ref_adoption.loc[year][region])
+
+    def total_additional_co2eq_sequestered(self, year=2050):
+        # farmlandrestoration starts in year 2021 in Advanced Control excel
+        # Not sure if this is a bug or intended. Excel also says it should start at 2020
+        return (self.c2.co2_sequestered_global().loc[2021:year,'All'] / 1000).sum()
 
 
 
