@@ -74,6 +74,7 @@ class OceanSolution(Solution):
 
     # Initialize from configuration file:
     def __init__(self, configuration_file_name):
+        print('ocean_solution initializing...')
         self._load_config_file(configuration_file_name)
         if sys.version_info < self.required_version_minimum:
             print(f'Warning - you are running python version {sys.version}. Version {self.required_version_minimum} or greater is required.')
@@ -87,8 +88,8 @@ class OceanSolution(Solution):
         return list(scen_dict.keys())
     
 
-    def print_scenario_info(self):
-        print('Loaded scenario name:', self.scenario.description)
+    def get_loaded_scenario_name(self):
+        return self.scenario.description
         
     # Unit Adoption functions:
 
@@ -544,7 +545,7 @@ class OceanSolution(Solution):
         #     net_sequestration = (ref_sequestration - pds_sequestration)
             
         
-        return net_sequestration
+        return net_sequestration.loc[self.start_year:self.end_year]
 
     def get_change_in_ppm_equivalent(self) -> np.float64:
         
