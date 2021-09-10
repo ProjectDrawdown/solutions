@@ -38,7 +38,7 @@ class SeafloorProtectionSolution(OceanSolution):
         self.delay_regrowth_of_degraded_land_by_one_year= self._config['DelayRegrowthOfDegradedLandByOneYear']
 
 
-    def set_up_tam(self, unit_adoption: NewUnitAdoption) -> None:
+    def set_up_area_units(self, unit_adoption: NewUnitAdoption) -> None:
         # This should produce a flat line with y = constant = self.total_area
         unit_adoption.set_area_units_linear(total_area= self.total_area, change_per_period= self.change_per_period, total_area_as_of_period= self.total_area_as_of_period)
         unit_adoption.apply_clip(lower= None, upper= self.total_area)
@@ -76,7 +76,7 @@ class SeafloorProtectionSolution(OceanSolution):
         self.disturbance_rate = 0.0
 
         # PDS and REF have a similar TAM structure.
-        self.set_up_tam(self.pds_scenario)
-        self.set_up_tam(self.ref_scenario)
+        self.set_up_area_units(self.pds_scenario)
+        self.set_up_area_units(self.ref_scenario)
         
         return

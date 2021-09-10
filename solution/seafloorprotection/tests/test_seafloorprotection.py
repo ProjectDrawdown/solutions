@@ -1,14 +1,27 @@
 
 import pytest
 
+pytest.mark.oceans
+
 from solution.seafloorprotection.seafloorprotection_solution import SeafloorProtectionSolution
+scenario_names = ['PDS-48p2050-Optimum']
 
-solution_name = 'seafloorprotection'
-scenario_name = 'PDS-48p2050-Optimum'
-sps = SeafloorProtectionSolution()
-sps.load_scenario(scenario_name)
+# @pytest.fixture
+# def scenario_solutions():
+#     scenario_solution_dict = {}
+#     for scenario_name in scenario_names:
+#         sps = SeafloorProtectionSolution()
+#         sps.load_scenario(scenario_name)
+#         scenario_solution_dict[scenario_name, sps]
+    
+#     return scenario_solution_dict
 
-def test_adoption_unit_increase_pds_vs_ref_final_year():
+# @pytest.fixture
+# def scenario_outputs():
+#     scenario_outputs_dict = {}
+#     scenario_outputs_dict[]
+
+def test_adoption_unit_increase_pds_vs_ref_final_year(scenario_solutions):
     au_inc = sps.get_adoption_unit_increase_pds_vs_ref_final_year()
     assert au_inc == pytest.approx(441.00)
     
