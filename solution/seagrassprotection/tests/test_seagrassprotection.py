@@ -1,5 +1,7 @@
 from os import path
 import json
+
+from _pytest import mark
 from solution.seagrassprotection.seagrassprotection_solution import SeagrassProtectionSolution
 solution = SeagrassProtectionSolution()
 scenarios_to_test = solution.get_scenario_names()
