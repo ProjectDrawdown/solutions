@@ -9,7 +9,7 @@
 		"current_area_world": 25.7302333333333,
 		"future_ref_area": 25.7302333333333,
 		"future_pds_area": 25.7302333333333,
-        "pds_scenario_name": "OneStandardDeviationOfAverage",
+        "pds_scenario_name": "HighOfAllCustomScenariosStdDevOne",
         "ref_scenario_name": "DefaultRefInterpolationAdoption",
         "scenario_timestamp": "2021-07-26T10:48:19",
         "scenario_description": "High of all custom PDS scenarios"
@@ -24,7 +24,7 @@
 		"current_area_world": 25.7302333333333,
 		"future_ref_area": 25.7302333333333,
 		"future_pds_area": 25.7302333333333,
-        "pds_scenario_name": "OneStandardDeviationOfAverage",
+        "pds_scenario_name": "VariableDegradation100PctAdoptionLinear",
         "ref_scenario_name": "DefaultRefInterpolationAdoption",
         "scenario_timestamp": "2021-07-26T10:49:57",
         "scenario_description": "Custom PDS scenario 7"
@@ -39,7 +39,7 @@
 		"current_area_world": 25.7302333333333,
 		"future_ref_area": 25.7302333333333,
 		"future_pds_area": 25.7302333333333,
-        "pds_scenario_name": "TwoStandardDeviationsOfAverage",
+        "pds_scenario_name": "HighOfAllCustomScenariosStdDevTwo",
         "ref_scenario_name": "DefaultRefInterpolationAdoption",
         "scenario_timestamp": "2021-07-26T10:52:27",
         "scenario_description": "High of all using two standard deviations"

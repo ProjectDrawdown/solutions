@@ -46,6 +46,8 @@ class SeagrassProtectionSolution(OceanSolution):
 
     def load_scenario(self, scenario_name: str) -> None:
 
+        print(f'Loading scenario {scenario_name}')
+
         input_stream = open(self.scenarios_file, 'r')
         scen_dict = json.load(input_stream)
 
