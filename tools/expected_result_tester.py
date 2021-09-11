@@ -966,16 +966,18 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
         arcname = f'{scenario}/{sheetname}'
         with zip_f.open(name=arcname) as zip_csv_f:
             sheet_df = pd.read_csv(zip_csv_f, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
-        
+
         skip_count=0
         for (cellrange, actual_df, actual_mask, expected_mask) in verify[sheetname]:
             description = descr_base + "\n" + sheetname + " " + cellrange
 
-            if test_only and not any( pattern in description for pattern in test_only ):
-                skip_count = skip_count + 1
+            if test_only and all(
+                pattern not in description for pattern in test_only
+            ):
+                skip_count += 1
                 continue
             if test_skip and any( pattern in description for pattern in test_skip ):
-                skip_count = skip_count + 1
+                skip_count += 1
                 continue
 
             expected_df = df_excel_range(sheet_df, cellrange)
@@ -984,10 +986,10 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
                         str(actual_df.shape) + " versus " + str(expected_df.shape))
 
             absignore = None
-            if expected_mask is not None:
-                if isinstance(expected_mask, str) and expected_mask == "Excel_NaN":
+            if expected_mask is not None and isinstance(expected_mask, str):
+                if expected_mask == "Excel_NaN":
                     expected_mask = expected_df.isna()
-                elif isinstance(expected_mask, str) and expected_mask == "Excel_one_cent":
+                elif expected_mask == "Excel_one_cent":
                     # Due to floating point precision, sometimes subtracting ~identical values for
                     # unit adoption is not zero it is 0.000000000000007105427357601000 which,
                     # when multiplied by a large unit cost, can result in a First Cost of (say) 2.5e-6
@@ -1011,13 +1013,13 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
                 for (i, x) in enumerate(errs):
                     if i>=10: break
                     (r, c, actual, expected) = x
-                    difflist = difflist + f"   [{r}, {c}]: expected {repr(expected)} vs actual {repr(actual)}\n"
+                    difflist += f"   [{r}, {c}]: expected {repr(expected)} vs actual {repr(actual)}\n"
+
                 if len(errs) > 10:
-                    difflist = difflist + "   ....\n"
+                    difflist += "   ....\n"
                 raise AssertionError(f"{description}\n{len(errs)}/{rsize*csize} values differ:\n" + difflist)
 
-        if skip_count > 0:
-            if _verbosity >= 2: print(f"    **** Skipped {skip_count} tests")
+        if skip_count > 0 and _verbosity >= 2: print(f"    **** Skipped {skip_count} tests")
 
 def one_solution_tester(solution_name, expected_filename,
                         scenario_skip=None, test_skip=None, test_only=None):
