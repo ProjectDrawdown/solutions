@@ -143,10 +143,7 @@ if __name__ == '__main__':
     args = parser.parse_args(sys.argv[1:])
 
     if args.outputdir is None:
-        if args.key == 'land':
-            args.outputdir = LAND_CSV_PATH
-        else:
-            args.outputdir = OCEAN_CSV_PATH
+        args.outputdir = LAND_CSV_PATH if args.key == 'land' else OCEAN_CSV_PATH
     else:
         args.outputdir = pathlib.Path(args.outputdir)
 
