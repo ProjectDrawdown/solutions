@@ -83,9 +83,8 @@ def get_rrs_scenarios(wb, solution_category):
             scenario_name = col_e
             if 'broken' in scenario_name:
                 continue
-            s = {}
+            s = {'name': scenario_name}
 
-            s['name'] = scenario_name
             s['solution_category'] = solution_category
             s['vmas'] = 'VMAs'
 
@@ -140,7 +139,7 @@ def get_rrs_scenarios(wb, solution_category):
             s['conv_indirect_co2_per_unit'] = link_vma(sr_tab, row + 112, co("E"))
             s['soln_indirect_co2_per_iunit'] = link_vma(sr_tab, row + 113, co("E"))
             i_vs_f = xls(sr_tab, row + 114, co("E")).lower()
-            s['conv_indirect_co2_is_iunits'] = False if i_vs_f == 'functional' else True
+            s['conv_indirect_co2_is_iunits'] = i_vs_f != 'functional'
 
             assert xls(sr_tab, row + 118, co("B")) == 'Optional Inputs'
             s['ch4_co2_per_funit'] = link_vma(sr_tab, row + 119, co("E"))
@@ -225,11 +224,11 @@ def get_rrs_scenarios(wb, solution_category):
             adopt = normalize_case_name(adopt)
             if adopt: 
                 s['soln_pds_adoption_prognostication_source'] = adopt
-            
+
             adopt = xls(sr_tab, row + 185, co("E"))
             if adopt: 
                 s['soln_pds_adoption_prognostication_trend'] = adopt
-            
+
             adopt = xls(sr_tab, row + 186, co("E"))
             if adopt: 
                 s['soln_pds_adoption_prognostication_growth'] = adopt
@@ -251,7 +250,7 @@ def get_rrs_scenarios(wb, solution_category):
             adopt = xls(sr_tab, row + 199, co("E"))
             if adopt: 
                 s['soln_ref_adoption_basis'] = adopt
-            
+
             custom = xls(sr_tab, row + 200, co("E"))
             if custom: 
                 s['soln_ref_adoption_custom_name'] = custom
