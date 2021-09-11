@@ -118,10 +118,10 @@ if __name__ == "__main__":
     files = []
     for f in args.files:
         files.extend( glob.glob(f) )
-    if len(files) == 0:
+    if not files:
         print(f"**** No files matched {str(args.files)}")
         sys.exit()
-    
+
     # Do checks on output file first, because otherwise you may spend a lot of time making the extract and
     # then lose it all at the end.
     outfile = Path(args.out)
