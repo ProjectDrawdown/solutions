@@ -18,14 +18,14 @@ def create_expected_zip(directory):
 
     if not directory.is_dir():
         raise ValueError(f"Argument '{fullname}' does not appear to be a valid directory")
-    
+
     # Find the index file
     matches = list(directory.glob('*_index.csv'))
-    if len(matches) == 0:
+    if not matches:
         raise ValueError(f"Directory {fullname} does not appear to have a file matching *_index.csv file in it.  Did you run the Excel macro?")
     if len(matches) > 1:
         raise ValueError(f"Directory {fullname} has multiple files matching *_index.csv.  Please clean up and try again.")
-    
+
     # Read the index file
     filedata = pd.read_csv(matches[0], header=None, names=['file','scenario','tab'])
 
@@ -40,7 +40,7 @@ def create_expected_zip(directory):
         filename = directory / row['file']
         arcname = row['scenario'] + '/' + row['tab']
         zip_f.write(filename=filename, arcname=arcname)
-    
+
     zip_f.close()
 
 
