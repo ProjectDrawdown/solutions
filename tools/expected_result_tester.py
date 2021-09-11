@@ -892,11 +892,7 @@ def LAND_solution_verify_list(obj, zip_f):
         cell = str(excel_read_cell_any_scenario(zip_f=zip_f, sheetname='AEZ Data', cell='A52'))
         assert cell.startswith('2014 Land Distribution')
         cell = str(excel_read_cell_any_scenario(zip_f=zip_f, sheetname='AEZ Data', cell='D52'))
-        if cell == 'Boreal-Humid':
-            cohort = 2020
-        else:
-            cohort = 2019
-
+        cohort = 2020 if cell == 'Boreal-Humid' else 2019
     verify_aez_data(obj, verify, cohort=cohort)
 
     if obj.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
