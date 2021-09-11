@@ -86,11 +86,11 @@ def xli(tab, row, col=None):
 def convert_bool(val):
     """Infer a boolean from common conventions in the spreadsheet."""
     if val is None:
-        raise ValueError('Cannot convert empty value to boolean')       
+        raise ValueError('Cannot convert empty value to boolean')
     v = str(val).lower()
-    if v == 'y' or v == 'yes':
+    if v in ['y', 'yes']:
         return True
-    if v == 'n' or v == 'no':
+    if v in ['n', 'no']:
         return False
     raise ValueError('Unknown boolean format: ' + str(val))
 
