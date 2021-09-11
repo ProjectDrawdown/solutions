@@ -83,9 +83,11 @@ class WorldDataReader:
 
         df = self.df_template.copy(deep=True)
         for i in range(self.num_zones):
-            col = []
-            for j in self.row_nums:  # skip blank row
-                col.append(tools.util.convert_float(self.sheet.cell_value(row1 + j, col1 + i)))
+            col = [
+                tools.util.convert_float(self.sheet.cell_value(row1 + j, col1 + i))
+                for j in self.row_nums  # skip blank row
+            ]
+
             df[self.columns[i]] = col
         return df.fillna(0.)
 
@@ -102,20 +104,15 @@ class WorldDataReader:
 
     def _make_df_template(self):
         """ Makes template of adoption table to feed data into """
-        index = []
         row, col = self.first_cell
         if self.key == 'land':
             self.row_nums = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]  # skip blank row
-            self.num_zones = 29
-            row_offset = 3
-            self.columns = ['Total Area (km2)']
+            row_offset = self._extracted_from__make_df_template_7(29, 3, 'Total Area (km2)')
+
         else:
             self.row_nums = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11]  # skip blank row
-            self.num_zones = 6
-            row_offset = 9
-            self.columns = ['Total Area (Mha)']
-        for i in self.row_nums:
-            index.append(self.sheet.cell_value(row + i, col - 1))
+            row_offset = self._extracted_from__make_df_template_7(6, 9, 'Total Area (Mha)')
+        index = [self.sheet.cell_value(row + i, col - 1) for i in self.row_nums]
         for i in range(self.num_zones):
             zone = str(self.sheet.cell_value(row - row_offset, col + 1 + i)).strip()
             zone = " ".join(zone.split())  # collapse multiple spaces into one.
@@ -123,6 +120,12 @@ class WorldDataReader:
                 assert zone in self.valid_zones
             self.columns.append(zone)
         self.df_template = pd.DataFrame(columns=self.columns, index=index)
+
+    def _extracted_from__make_df_template_7(self, arg0, arg1, arg2):
+        self.num_zones = arg0
+        result = arg1
+        self.columns = [arg2]
+        return result
 
 
 if __name__ == '__main__':
