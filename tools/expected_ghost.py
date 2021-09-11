@@ -26,12 +26,10 @@ def locate_expected_zip(solution):
 def typeit(val):
     """Given a string val from csv, try to convert it to a number"""
     try:
-        out = int(val)
-        return out
+        return int(val)
     except ValueError:
         try:
-            out = float(val)
-            return out
+            return float(val)
         except ValueError:
             return val
 
