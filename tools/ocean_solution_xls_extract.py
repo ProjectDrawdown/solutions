@@ -142,13 +142,13 @@ def process_block(scenario_block : pd.DataFrame, import_spec):
     data_dict = {}
     scenario_block = scenario_block.loc[:,['D','E']].dropna(how='all')
     import_spec_copy = import_spec.copy()
-    
+
     skipping_row = False
     for row in scenario_block.itertuples(index=False):
 
         if (len(import_spec_copy) == 0) and (spec_item is None):
             break
-        
+
         if not skipping_row:
             spec_item = import_spec_copy.pop(0)
 
@@ -165,10 +165,10 @@ def process_block(scenario_block : pd.DataFrame, import_spec):
             continue
 
         row_D = (row.D).strip()
-    
+
         if isinstance(row_E, str):
             row_E = (row.E).strip()
-    
+
         # Now read the individual statistics.
         stat_name, stat_value = row_D, row_E
 
@@ -179,22 +179,22 @@ def process_block(scenario_block : pd.DataFrame, import_spec):
 
         # If it's in ('yes','y','n','no'), set it to a boolean.
         if isinstance(stat_value, str):
-            if (stat_value.casefold() ==  'n'.casefold()) or (stat_value.casefold() ==  'no'.casefold()):
+            if stat_value.casefold() in ['n'.casefold(), 'no'.casefold()]:
                 stat_value = False
-            elif (stat_value.casefold() == 'y'.casefold()) or (stat_value.casefold() ==  'yes'.casefold()):
+            elif stat_value.casefold() in ['y'.casefold(), 'yes'.casefold()]:
                 stat_value = True
-            
+
         if not pd.isna(stat_name): # if not empty.
-            
+
             spec_vals_dict = list(spec_item.values())[0]
             if len(spec_vals_dict) > 0:
-                
+
                 # Is there a rename_to specified?
                 if 'rename_to' in spec_vals_dict:
                     stat_name = spec_vals_dict['rename_to']
 
                 # Is there a regex substitution string specified?
-                
+
                 if stat_value and 'value_regex_match' in spec_vals_dict:
                     value_regex_match = spec_vals_dict['value_regex_match']
                 else:
