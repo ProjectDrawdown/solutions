@@ -1,4 +1,4 @@
-fair
+fair  # conda install -c chrisroadmap fair
 numpy-financial
 pandas==1.2.4
 openpyxl
