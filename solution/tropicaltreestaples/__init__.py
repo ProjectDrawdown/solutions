@@ -146,9 +146,9 @@ class Scenario(scenario.LandScenario):
             custom_world_values=custom_world_vals)
 
         # Set this ourselves, since we use it below
-        adconfig = adoptiondata.make_adoption_config = [
+        adconfig = adoptiondata.make_adoption_config(overrides=[
             ('trend','World',self.ac.soln_pds_adoption_prognostication_trend),
-            ('growth','World',self.ac.soln_pds_adoption_prognostication_growth)]
+            ('growth','World',self.ac.soln_pds_adoption_prognostication_growth)])
         self.ad = adoptiondata.AdoptionData(self.ac, self._pds_ad_sources, adconfig)
 
         # Custom PDS Data
