@@ -100,7 +100,7 @@ def test_xls_df_dict():
     assert 'Disturbance Rate' in df_dict.keys()
 
     # A known number of VMAs are empty in the example xlsx
-    assert sum([value[0] is None for value in df_dict.values()]) == 13
+    assert sum(value[0] is None for value in df_dict.values()) == 13
 
 
 @pytest.mark.slow
