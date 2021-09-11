@@ -91,7 +91,7 @@ def get_scenario_data(cfg):
     scen_info = {}
     scen_results = {}
     scen_inputs = {}
-    for i in range(0, len(scen_rows)-1): # iterate through the list of start/end row boundaries
+    for i in range(len(scen_rows)-1): # iterate through the list of start/end row boundaries
 
         # Scenario data forms a series of "blocks" (both inputs and results)
         # Note: using loc here, not iloc, so we're using the index, which tracks the original Excel row id.
