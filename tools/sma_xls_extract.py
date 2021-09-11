@@ -16,7 +16,7 @@ def extract_sma(wb, sheet_name, year_col, start_row=1, end_row=None, has_regions
     """use_functional_unit:  Use the presence of the cell with the content "Functional Unit" to find
     the right edge of the table, instead of using merged cells in the case header."""
     ws = wb[sheet_name]
-    
+
     if has_regions:
         regionlist = find_sma_blocks(ws, year_col, start_row=start_row, end_row=end_row, find_titles=has_regions)
     else:
@@ -41,13 +41,13 @@ def extract_sma(wb, sheet_name, year_col, start_row=1, end_row=None, has_regions
         min_column = co(year_col)
         max_column = max(case_map.keys())
         source_titles = [ normalize_source_name(x) for x in read_row(ws, start+1, min_column+1, max_column) ]
-         
+
         # read the table of data values, not including the header row
         # min_column, max_column, skiprows : shift from 1-base to 0-base.
         region_table = pd.read_excel(wb, engine='openpyxl', sheet_name=sheet_name, usecols=range(min_column-1, max_column), index_col=0,
                                      header=None, skiprows=start+1, nrows=(end-start)-1)
         region_table.index.name = "Year"
-    
+
         # assemble case_data and source_data from the pieces
         case_data = {}
         for (i, title) in enumerate(source_titles):
@@ -63,7 +63,7 @@ def extract_sma(wb, sheet_name, year_col, start_row=1, end_row=None, has_regions
                 shortname = source_data[title].shortname
             else:
                 shortname = f"S{source_counter}"
-                source_counter = source_counter+1
+                source_counter += 1
                 source_data[title] = SMA.Source(title, shortname, data={})
             # add column to source's data.  Note that the column is associated with the region name           
             source_data[title].data[region_name] = source_col
@@ -74,7 +74,7 @@ def extract_sma(wb, sheet_name, year_col, start_row=1, end_row=None, has_regions
             else:
                 case_data[case_map[source_col_number]].append(shortname)
         # end for
-        
+
         region_data[region_name] = case_data
     # end for
 
@@ -83,7 +83,7 @@ def extract_sma(wb, sheet_name, year_col, start_row=1, end_row=None, has_regions
     for source in source_data.values():
         source.data = pd.concat( source.data, axis=1, copy=False )
         real_source_data[ source.shortname ] = source
-    
+
     return SMA(region_data, real_source_data)
 
 
