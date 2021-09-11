@@ -91,9 +91,11 @@ class AllocationReader:
 
         df = self.df_template.copy(deep=True)
         for i in range(5):
-            col = []
-            for j in range(self.nsolutions):
-                col.append(tools.util.convert_float(self.sheet.cell_value(row1 + j, col1 + i)))
+            col = [
+                tools.util.convert_float(self.sheet.cell_value(row1 + j, col1 + i))
+                for j in range(self.nsolutions)
+            ]
+
             df[self.columns[i]] = col
         return df
 
