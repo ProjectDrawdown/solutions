@@ -106,11 +106,11 @@ class WorldDataReader:
         """ Makes template of adoption table to feed data into """
         row, col = self.first_cell
         if self.key == 'land':
-            self.row_nums = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]  # skip blank row
+            self.row_nums = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]  # skip blank row 6
             row_offset = self._extracted_from__make_df_template_7(29, 3, 'Total Area (km2)')
 
         else:
-            self.row_nums = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11]  # skip blank row
+            self.row_nums = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11]  # skip blank row 7
             row_offset = self._extracted_from__make_df_template_7(6, 9, 'Total Area (Mha)')
         index = [self.sheet.cell_value(row + i, col - 1) for i in self.row_nums]
         for i in range(self.num_zones):
