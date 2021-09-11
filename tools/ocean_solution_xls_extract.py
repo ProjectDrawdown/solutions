@@ -69,7 +69,7 @@ def get_scenario_data(cfg):
     process_results = False
 
     df = xl_tools.get_from_excel(cfg["excelFile"], sheet='ScenarioRecord', excel_range='A:K', column_names = list("ABCDEFGHIJK"))
-    
+
     filterForScenarioNames  = df["D"] == 'Name of Scenario:'
     filterOutTemplate = ~df["E"].str.contains('TEMPLATE', na=False)
     filter = filterForScenarioNames & filterOutTemplate 
@@ -111,7 +111,7 @@ def get_scenario_data(cfg):
         start_position = results_start
         end_position = inputs_start-1
         results_block = scen_block.iloc[start_position:end_position]
-        
+
         start_position = inputs_start
         end_position = scen_rows[i+1]-1
         inputs_block = scen_block.iloc[start_position:end_position]
@@ -120,21 +120,21 @@ def get_scenario_data(cfg):
         # Assumption 3: Column D contains the data keys
         # Assumption 4: Column E contains the data values
         # Assumption 5: Column F contains the data units
-        
+
         scen_info = {'scenario_timestamp': scenario_time_stamp, 'scenario_description': scenario_description}
 
-        if process_results == True:    
+        if process_results:    
             results = process_block(results_block, scenario_name, scenario_outputs_spec)
             scen_results[scenario_name] = results
             scen_results[scenario_name].update(scen_info)
-        
+
         # Now process the scenario inputs
         # Copy the Info section from the scen_results dict:
-        
+
         results = process_block(inputs_block, scenario_inputs_spec)
         scen_inputs[scenario_name] = results
         scen_inputs[scenario_name].update(scen_info)
-                
+
     return [scen_inputs, scen_results]
 
 
