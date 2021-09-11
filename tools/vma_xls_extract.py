@@ -118,9 +118,8 @@ def make_vma_df_template():
     input to the VMA python class. A researcher can thus use this function to create
     a new VMA table in python to populate with data if they want.
     """
-    df = pd.read_csv(CSV_TEMPLATE_PATH, index_col=False, skipinitialspace=True,
+    return pd.read_csv(CSV_TEMPLATE_PATH, index_col=False, skipinitialspace=True,
             skip_blank_lines=True, comment='#', dtype="object")
-    return df
 
 
 def df_approx(df1, df2):
