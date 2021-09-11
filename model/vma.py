@@ -315,7 +315,7 @@ class VMA:
             raise ValueError(f"invalid key: {key}. key must be 'mean', 'high', 'low' or None")
 
     def write_to_file(self, new_df):
-        new_df.to_csv(path_or_buf=self.filename, index=False)
+        new_df.to_csv(path_or_buf=self.filename, index=False, encoding='utf-8')
         self._read_csv(filename=self.filename)
 
     def reload_from_file(self):
