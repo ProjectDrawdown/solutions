@@ -44,7 +44,4 @@ def _load_module(solution):
     return m
 
 def all_solutions_scenarios():
-    everything = {}
-    for solution in all_solutions():
-        everything[solution] = list_scenarios(solution)
-    return everything
+    return {solution: list_scenarios(solution) for solution in all_solutions()}
