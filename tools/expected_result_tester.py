@@ -856,8 +856,8 @@ def RRS_solution_verify_list(obj, zip_f):
     verify_unit_adoption_calculations(obj, verify, include_regional_data=include_regional_data,
                      soln_type='RRS')
     verify_first_cost(obj, verify)
-    # DMK 25.08. hfc_replacement does not support financial analysis. 
-    if not obj.name == 'Refrigerant Management - HFC Replacement':
+    # DMK 25.08. hfc_replacement does not support financial analysis.
+    if obj.name != 'Refrigerant Management - HFC Replacement':
         verify_operating_cost(obj, verify)
 
     cell = excel_read_cell_any_scenario(
