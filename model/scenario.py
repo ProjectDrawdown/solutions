@@ -147,7 +147,7 @@ class Scenario:
                 self.ht.soln_ref_funits_adopted().loc[year][region])
 
     def marginal_first_cost(self, year=2050):
-        if self.ac.soln_lifetime_replacement == 0.0 or self.ac.soln_lifetime_replacement != 0.0:
+        if self.ac.soln_lifetime_replacement == 0.0 or self.ac.conv_lifetime_replacement == 0.0:
             return 0.0
         return (self.fc.soln_pds_annual_world_first_cost().loc[:year].sum()-
             self.fc.soln_ref_annual_world_first_cost().loc[:year].sum()-
@@ -155,7 +155,7 @@ class Scenario:
             ) / 1e9
 
     def net_operating_savings(self, year=2050):
-        if self.ac.soln_lifetime_replacement == 0.0 or self.ac.soln_lifetime_replacement != 0.0:
+        if self.ac.soln_lifetime_replacement == 0.0 or self.ac.conv_lifetime_replacement == 0.0:
             return 0.0
         return (
             (self.oc.conv_ref_cumulative_operating_cost().loc[year] -
@@ -165,7 +165,7 @@ class Scenario:
             ) / 1e9
 
     def lifetime_operating_savings(self):
-        if self.ac.soln_lifetime_replacement == 0.0 or self.ac.soln_lifetime_replacement != 0.0:
+        if self.ac.soln_lifetime_replacement == 0.0 or self.ac.conv_lifetime_replacement == 0.0:
             return 0.0
         return self.oc.soln_marginal_operating_cost_savings().sum() / 1e9
 
