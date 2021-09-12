@@ -87,15 +87,14 @@ class SMA:
     def read(directory, base_name, read_data=True) -> SMA:
         directory = Path(directory)
         jsonfile = directory / f"{base_name}.json"
-        with jsonfile.open() as f:
-            jsondat = json.loads(f.read())
+        jsondat = json.loads(jsonfile.read_text(encoding='utf-8'))
         
         sources = {}
         for source_info in jsondat['sources']:
             smax = SMA.Source(**source_info)
             if read_data:
                 smax.data = pd.read_csv( directory / source_info['filename'], index_col="Year",
-                                skipinitialspace=True, skip_blank_lines=True, comment='#')
+                                skipinitialspace=True, skip_blank_lines=True, comment='#', encoding='utf-8')
             sources[source_info['shortname']] = smax
         return SMA(jsondat['region_cases'], sources)
 

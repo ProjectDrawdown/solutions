@@ -1,6 +1,9 @@
 """Base classes of all scenario objects"""
+import os
 import json
 import pandas as pd
+import warnings
+import numbers
 from pathlib import Path
 from model import adoptiondata
 from model import advanced_controls
@@ -8,6 +11,7 @@ from model import customadoption
 from model import helpertables
 from model import s_curve
 from model import tam
+from solution import factory
 
 
 # A note on how the Scenario inheritance structure works:
@@ -19,8 +23,8 @@ from model import tam
 # of inverted initialization.  The base classes in this file don't implement __init__ themselves; 
 # subclasses must do that themselves.  However the base classes implement functions (like 
 # initialize_adoption_bases) that do large chunks of common initialization.  The subclass
-# passes parameters that control the initialization functions in various `_` fields, and the
-# initialization puts the results into the official (no `_`) fields.
+# passes parameters that control the initialization functions in various private `_` fields, and the
+# initialization puts the results into the public (no `_`) fields.
 # Also, the subclass can itself set the results (pds_ca, etc.) in which case the code here
 # will leave it be (usually).
 #
@@ -31,8 +35,13 @@ from model import tam
 
 class Scenario:
 
-        
-    # Public Fields common across all scenarios
+    # Public Fields common across all scenarios.
+    name: str
+    """The name of the solution (in English, e.g. 'Household & Commercial Recycling')"""
+    module_name: str
+    """The name of the solution module (e.g. 'hcrecycling')"""
+    scenario: str
+    """The name of the scenario """
 
     ac: advanced_controls.AdvancedControls = None
     """The parameters that define this scenario"""
@@ -52,7 +61,29 @@ class Scenario:
     
     # Initialization
 
-    # Control of adoption initialization is a combination of the contents of the ac parameters,
+    def initialize_ac(self, scenario_name_or_ac, scenario_list, default_scenario_name):
+        """Initialize the advanced controls object for this scenario based on the various cases.
+        The first argument may be an instantiated advanced controls argument, or a string naming
+        the requested scenario, or None.  The second argument is a list of all the available named scenarios,
+        and the last is the default scenario to use if None is given."""
+        
+        if isinstance(scenario_name_or_ac, advanced_controls.AdvancedControls):
+            self.scenario = scenario_name_or_ac.name
+            self.ac = scenario_name_or_ac
+        else:
+            self.scenario = scenario_name_or_ac or default_scenario_name
+
+            # If we are in the middle of integrations, check to see if the integration version of the scenario
+            # exists, and if so, use that instead.
+            if "DDINTEGRATE" in os.environ:
+                alternate_scenario = self._integration_name(self.scenario)
+                if alternate_scenario in scenario_list:
+                    self.scenario = alternate_scenario
+
+            self.ac = scenario_list[self.scenario]
+
+    # Initialize Adoption
+    # Control of adoption initialization is a combination of the contents of the ac parameters
     # and the settings of these fields by the subclass
     _ref_ca_sources = None  
     _pds_ca_sources = None 
@@ -161,6 +192,91 @@ class Scenario:
 
     def cumulative_emissions_reduced(self, year=2050, region='World'):
         return self.c2.co2eq_mmt_reduced().loc[2020:year, region].sum() / 1e3
+
+    # Integration support.  This is limited and hacky at this time.
+
+    @classmethod
+    def scenario_path(cls):
+        return Path(__file__).parents[1]/"solution"/cls.module_name
+    
+    @classmethod
+    def _integration_name(cls, name):
+        if "DDINTEGRATE" in os.environ and not (name.endswith("_" + os.environ["DDINTEGRATE"])):
+            return name + "_" + os.environ["DDINTEGRATE"]
+        return name
+    
+    @classmethod
+    def _pds_ca_lookup(cls, name):
+        """Return the filename associated with a specific custom adoption, if we know it"""
+        if cls._pds_ca_sources:
+            for x in cls._pds_ca_sources:
+                if x['name'] == name:
+                    return x['filename'] if 'filename' in x else None
+        return None
+
+    @classmethod
+    def update_adoptions(cls, scenario_names, newadoptions : pd.DataFrame):
+        for (i, scenario_name) in enumerate(scenario_names):
+
+            ca_pds_dir = cls.scenario_path()/"ca_pds_data"
+            if not ca_pds_dir.is_dir():
+                warnings.warn(f"Updating adoption has no affect on {cls.module_name} solution, since it does not implement file-based custom adoptions")
+                return
+
+            # get the existing scenario ac
+            oldac : advanced_controls.AdvancedControls = factory.load_scenario(cls.module_name, scenario_name).ac 
+
+            # define new adoption name and data file
+            new_adoption_name = None
+            new_file_name = None
+            if oldac.soln_pds_adoption_basis == 'Fully Customized PDS':
+                old_adoption_name = oldac.soln_pds_adoption_custom_name
+                # Look up the adoption in _pds_ca.  If it is there, we'll use a modified version
+                # of the adoption and filenames.  This fails for adoptions that don't have files, or
+                # for adoptions of the form "Average of all..."
+                old_file_name = cls._pds_ca_lookup(old_adoption_name)
+                if old_file_name:
+                    new_adoption_name = cls._integration_name(old_adoption_name)
+                    new_file_name = integration_version(old_file_name)
+            if not new_adoption_name:
+                # just generate one
+                new_adoption_name = cls._integration_name(f"new updated adoption {i}")
+                new_file_name = integration_version(f"new_updated_adoption_{i}")
+            
+            # Write or overwrite the data file
+            colname = newadoptions.columns[i]
+            new_data = newadoptions[[colname]].rename(columns={colname: "World"})
+            new_data.to_csv(ca_pds_dir/new_file_name, encoding="utf-8")
+
+            # update or add this source to the custom adoption directory 
+            sources = cls._pds_ca_sources or []
+            for x in sources:
+                if x['name'] == new_adoption_name: # update it
+                    x['filename'] = new_file_name
+                    break;
+            else: # add it
+                sources.append({
+                    'name' : new_adoption_name,
+                    'filename': new_file_name,
+                    'include': True,
+                    'description': f"updated integration adoption {i}"
+                })
+            # overwrite the directory file
+            write_sources(sources, cls.scenario_path(), "pds_ca")
+
+            # if necessary, update the scenario object as well.
+            new_scenario_name = cls._integration_name(oldac.name)
+            if new_scenario_name == oldac.name and new_adoption_name == oldac.soln_pds_adoption_custom_name:
+                # we've already updated this scenario before; don't need to do it again
+                return
+
+            new_scenario_file = Path(oldac.jsfile).name if oldac.jsfile else f"updated_integration_{i}.json"
+            new_scenario_file = integration_version(new_scenario_file)
+            ac_data = oldac.as_dict()
+            ac_data['name'] = new_scenario_name
+            ac_data['soln_pds_adoption_basis'] = 'Fully Customized PDS'
+            ac_data['soln_pds_adoption_custom_name'] = new_adoption_name
+            (cls.scenario_path()/"ac"/new_scenario_file).write_text(json.dumps(ac_data,indent=2), encoding="utf-8") 
 
 
 class RRSScenario(Scenario):
@@ -273,12 +389,27 @@ class LandScenario(Scenario):
         return (self.c2.co2_sequestered_global().loc[2021:year,'All'] / 1000).sum()
 
 
+def integration_version(filename):
+    """If we are doing an integration, return the integration version of this file name.
+    If we are not doing an integration, returns the filename unchanged."""
+    filename = Path(filename)
+    if "DDINTEGRATE" in os.environ:
+        if filename.stem.endswith("_" + os.environ["DDINTEGRATE"]):
+            # it's already there, return as is
+            return filename
+        # else add it.
+        return filename.with_stem(filename.stem + "_" + os.environ["DDINTEGRATE"])
+    # not an integration, don't make an alternate.
+    return filename
 
     
 def load_sources(jsonfile, fieldname='filename'):
     """Load the named jsonfile, and replace relative filenames within it with absolute ones based on the same directory.
     Works for tam, ad, configs.  By default, replaces fields named 'filename'.  If the special
-    field name '*' is given, then _any_ string-valued dictionary value is replaced."""
+    field name '*' is given, then _any_ string-valued dictionary value is replaced.
+
+    Now with added super-powers: detects if we are doing an integration, and if so, checks for the integration
+    version of the same json file."""
 
     def rootstruct(struct, rootdir, fieldname):
         if isinstance(struct, list):
@@ -293,22 +424,47 @@ def load_sources(jsonfile, fieldname='filename'):
                 elif isinstance(struct[k],dict) or isinstance(struct[k], list):
                     rootstruct(struct[k], rootdir, fieldname)
 
+    # if we are supposed to use an alternate version, and that version exists, use it.
     jsonfile = Path(jsonfile).resolve()
+    alternatejsonfile = integration_version(jsonfile)
+    if alternatejsonfile.is_file():
+        jsonfile = alternatejsonfile
+
     struct = json.loads( jsonfile.read_text(encoding='utf-8') )
     rootstruct(struct, jsonfile.parent, fieldname)
     return struct
 
-def deroot(struct, fieldname):
-    result = struct.copy()
-    if isinstance(result, list):
-        for i in range(len(result)):
-            result[i] = deroot(result[i], fieldname)
-    elif isinstance(result, dict):
-        for k in result.keys():
-            if k == fieldname or (fieldname == '*' and isinstance(result[k], str) or isinstance(result[k], Path)):
-                f = Path(result[k])
-                if f.is_file():
-                    result[k] = str(f.name)
-            elif isinstance(struct[k], dict) or isinstance(struct[k], list):
-                result[k] = deroot(result[k], fieldname)
-    return result
+def write_sources(struct, solution_path, source_type):
+    """Write a data sources structure out to its standard location for solution_name.  Processes filename
+    fields to write only the relative file name.  Also remove any fields that have values that are not simple.
+    This is rather hacky, and we should implement more careful control later.
+    """
+    def clean(struct, fieldname):
+        result = struct.copy()
+        if isinstance(result, list):
+            for i in range(len(result)):
+                result[i] = clean(result[i], fieldname)
+        elif isinstance(result, dict):
+            for k in list(result.keys()):
+                if k == fieldname or (fieldname == '*' and isinstance(result[k], str) or isinstance(result[k], Path)):
+                    result[k] = str(Path(result[k]).name)
+                elif isinstance(struct[k], dict) or isinstance(struct[k], list):
+                    result[k] = clean(result[k], fieldname)
+                elif not (isinstance(result[k], str) or isinstance(result[k],numbers.Number)):
+                    del result[k]
+        return result
+
+    # map source_type onto the standard directory and name.
+    dirs = {'pds_tam': 'tam', 'ref_tam': 'tam', 
+            'pds_ca': 'ca_pds_data', 'ref_ca': 'ca_ref_data', 'ad': 'ad'}
+    filenames = {'pds_tam': 'tam_pds_sources.json', 'ref_tam': 'tam_ref_sources.json',
+                 'pds_ca': 'ca_pds_sources.json', 'ref_ca': 'ref_pds_sources.json', 'ad': 'ad_sources.json'}
+    
+    fieldname = 'filename' if source_type in ['ca_pds','ca_ref'] else '*'
+    cleaned = clean(struct, fieldname)
+    thedir = solution_path/dirs[source_type]
+    thedir.mkdir(exist_ok=True)
+    filename = integration_version(filenames[source_type])
+    (thedir/filename).write_text( json.dumps(cleaned, indent=2), encoding='utf-8')
+
+

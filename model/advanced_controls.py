@@ -2,6 +2,7 @@
    but can be overridden to fit particular needs.
 """
 
+from __future__ import annotations
 import dataclasses
 import enum
 import glob
@@ -14,6 +15,7 @@ import pytest
 from model import emissionsfactors as ef
 from model import excel_math
 from model.dd import REGIONS, MAIN_REGIONS
+from model.vma import VMA
 
 SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND OCEAN')
 translate_adoption_bases = {"DEFAULT Linear": "Linear", "DEFAULT S-Curve": "Logistic S-Curve"}
@@ -800,6 +802,27 @@ class AdvancedControls:
                     + str(intersect))
             raise ValueError(err)
 
+    def as_dict(self):
+        """Return a dictionary data structure that is the serializable form of this object.
+        This is used both for saving to files and for creating new instances."""
+        # Basically, reverse post_init
+        if self.js:
+            return json.loads(self.js)
+        else:
+            d = dataclasses.asdict(self)
+            for rem in ['vmas', 'js', 'jsfile', 'vma_values']:
+                if rem in d:
+                    del d[rem]
+            for (k, v) in d.items():
+                if isinstance(v, enum.Enum):
+                    d[k] = v.name
+            # TODO: actually set, and reverse, vma_values field
+            # finally, delete empty fields
+            return { k: v for (k,v) in d.items() if v is not None }
+
+    def __str__(self):
+        return "AdvancedControls(**" + str(self.as_dict()) + ")"
+
     @property
     def yield_coeff(self):
         """ Returns coeffecient that converts funits to yield for LAND solutions """
@@ -968,13 +991,15 @@ class AdvancedControls:
             key = key ^ self._hash_item(field)
         return key
 
+
     def write_to_json_file(self, newname=None):
         newname = newname or self.jsfile
-        d = dataclasses.asdict(self)
-        for rem in ['vmas', 'js', 'jsfile']:
-            if rem in d:
-                del d[rem]
+        d = self.as_dict()
         Path(newname).write_text(json.dumps(d, indent=2), encoding='utf-8')
+    
+    def copy(self) -> AdvancedControls:
+        """Return a new advanced control object with the same values."""
+        return AdvancedControls(**self.as_dict())
 
 
 def fill_missing_regions_from_world(data):

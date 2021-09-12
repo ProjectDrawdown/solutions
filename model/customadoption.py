@@ -13,13 +13,18 @@ pd.set_option('display.expand_frame_repr', False)
 YEARS = list(range(2012, 2061))
 
 
-def generate_df_template():
+def generate_df_template() -> pd.DataFrame :
     """ Returns DataFrame to be populated by adoption data """
     df = pd.DataFrame(index=YEARS, columns=dd.REGIONS, dtype=np.float64)
     df.index = df.index.astype(int)
     df.index.name = 'Year'
     return df
 
+def inflate_csv_data(df: pd.DataFrame) -> pd.DataFrame :
+    """Take csv data that may have missing columns or rows, and pad it out to the full array."""
+    result = generate_df_template().combine(df, lambda _, s2: s2)
+    # re-establish the column ordering
+    return result[dd.REGIONS]
 
 class CustomAdoption(object, metaclass=MetaclassCache):
     """
@@ -115,9 +120,12 @@ class CustomAdoption(object, metaclass=MetaclassCache):
                          skip_blank_lines=True, comment='#', dtype=np.float64)
         df.index = df.index.astype(int)
         df.index.name = 'Year'
-        assert list(df.columns) == dd.REGIONS, f"unknown columns: {list(df.columns)}"
-        assert list(df.index) == YEARS, f"unknown index: {list(df.index)}"
-        return df
+
+        if not set(dd.REGIONS).intersection(df.columns.tolist()):
+            raise ValueError(f"CSV file {filename} has no recognized columns")
+        if not set(YEARS).intersection(df.index):
+            raise ValueError(f"CSV file {filename} doesn't have proper Year index")
+        return inflate_csv_data(df)
 
 
     def _linear_forecast(self, datapoints, start_year, end_year):
