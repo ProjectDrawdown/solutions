@@ -1,5 +1,6 @@
 """Code shared by all integrations."""
 
+import os
 import numpy as np
 import pandas as pd
 from solution import factory
@@ -8,15 +9,16 @@ from solution import factory
 #
 # Set up integrations
 
-suffix = "int"
+integration_suffix = "int2021"
 """Suffix to add to scenario and other names when saving updated versions."""
 
-# #######################################################################################################
-#
-# Updating Solutions
+def integration_start():
+    os.environ["DDINTEGRATE"] = integration_suffix
 
-def update_solution(solution_name, scenarios_names, tam, adoptions):
-    pass
+
+def integration_stop():
+    if "DDINTEGRATE" in os.environ:
+        del os.environ["DDINTEGRATE"]
 
 # #######################################################################################################
 #

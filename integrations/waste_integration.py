@@ -3,10 +3,10 @@ import pandas as pd
 from model import sma
 from model import tam
 from model import dd
-from .integrations import *
+from .integration_base import *
 
 THISDIR = Path(__file__).parent
-DATADIR = THISDIR / "data" / "msw"
+DATADIR = THISDIR/"data"/"msw"
 
 # Excel notes: Excel references refer to the Sheet MSW Integration Calcs (PDS1, 2 or 3) unless
 # otherwise noted.  Also, not all Integration Calcs tables are implemented, if their results
@@ -320,8 +320,7 @@ def update_feedstock_limited_adoptions(maxtries=5):
             if "composting" in solns:
                 global compost_adoption
                 feedstock = get_updated_organic_waste()
-                # read this as "where compost_adoption < feedstock, use compost_adoption, else feedstock"
-                compost_adoption = compost_adoption.where( compost_adoption<feedstock, feedstock )
+                compost_adoption = compost_adoption.combine(feedstock, np.minimum)
         else:
             return
     
@@ -330,10 +329,10 @@ def update_feedstock_limited_adoptions(maxtries=5):
         #raise ValueError()  dunno yet if this should be an error or not.
 
 
-def update_solutions(which_solutions=None):
-    """Create updated scenarios for all solutions affected by this integration.
-    If `which_solutions` is provided, only the listed solutions will be updated."""
-    updates = {
-        "composting": "foo"
-    }
+def update_solutions():
+    """Create updated scenarios for all solutions affected by this integration."""
+
+    from solution import composting
+    composting.Scenario.update_adoptions(composting_scenario_names, compost_adoption)
+    
 
