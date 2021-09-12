@@ -147,12 +147,16 @@ class Scenario:
                 self.ht.soln_ref_funits_adopted().loc[year][region])
 
     def marginal_first_cost(self, year=2050):
+        if self.ac.soln_lifetime_replacement == 0.0 or self.ac.soln_lifetime_replacement != 0.0:
+            return 0.0
         return (self.fc.soln_pds_annual_world_first_cost().loc[:year].sum()-
             self.fc.soln_ref_annual_world_first_cost().loc[:year].sum()-
             self.fc.conv_ref_annual_world_first_cost().loc[:year].sum()
             ) / 1e9
 
     def net_operating_savings(self, year=2050):
+        if self.ac.soln_lifetime_replacement == 0.0 or self.ac.soln_lifetime_replacement != 0.0:
+            return 0.0
         return (
             (self.oc.conv_ref_cumulative_operating_cost().loc[year] -
             self.oc.conv_ref_cumulative_operating_cost().loc[2020]) -
@@ -161,6 +165,8 @@ class Scenario:
             ) / 1e9
 
     def lifetime_operating_savings(self):
+        if self.ac.soln_lifetime_replacement == 0.0 or self.ac.soln_lifetime_replacement != 0.0:
+            return 0.0
         return self.oc.soln_marginal_operating_cost_savings().sum() / 1e9
 
     def cumulative_emissions_reduced(self, year=2050, region='World'):
@@ -241,6 +247,8 @@ class RRSScenario(Scenario):
                 'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region)}
 
     def implementation_unit_adoption_increase(self, year=2050, region='World'):
+        if self.ac.soln_avg_annual_use == 0.0:
+            return 0.0
         return (self.ht.soln_pds_funits_adopted().loc[year][region] / self.ac.soln_avg_annual_use - 
             self.ht.soln_ref_funits_adopted().loc[year][region] / self.ac.soln_avg_annual_use)
 
