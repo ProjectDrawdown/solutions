@@ -142,6 +142,10 @@ class Scenario:
     
     # Common top-level functionality
     # Key Results
+    def adoption_unit_increase(self, year=2050, region='World'):
+        return (self.ht.soln_pds_funits_adopted().loc[year][region]  - 
+                self.ht.soln_ref_funits_adopted().loc[year][region])
+
     def marginal_first_cost(self, year=2050):
         return (self.fc.soln_pds_annual_world_first_cost().loc[:year].sum()-
             self.fc.soln_ref_annual_world_first_cost().loc[:year].sum()-
@@ -230,7 +234,7 @@ class RRSScenario(Scenario):
 
     def get_key_results(self, year=2050, region='World'):
         return {'implementation_unit_adoption_increase': self.implementation_unit_adoption_increase(year=year),
-                'functional_unit_adoption_increase': self.functional_unit_adoption_increase(year=year),
+                'functional_unit_adoption_increase': self.adoption_unit_increase(year=year),
                 'marginal_first_cost': self.marginal_first_cost(year=year),
                 'net_operating_savings': self.net_operating_savings(year=year),
                 'lifetime_operating_savings': self.lifetime_operating_savings(),
@@ -244,7 +248,6 @@ class RRSScenario(Scenario):
         return (self.ht.soln_pds_funits_adopted().loc[year] - 
                 self.ht.soln_ref_funits_adopted().loc[year]
                 )[region]
-
 
 class LandScenario(Scenario):
 
@@ -262,10 +265,6 @@ class LandScenario(Scenario):
                 'lifetime_operating_savings': self.lifetime_operating_savings(),
                 'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region),
                 'total_additional_co2eq_sequestered': self.total_additional_co2eq_sequestered(year)}
-        
-    def adoption_unit_increase(self, year=2050, region='World'):
-        return (self.ht.soln_pds_funits_adopted().loc[year][region]  - 
-                self.ht.soln_ref_funits_adopted().loc[year][region])
 
     def total_additional_co2eq_sequestered(self, year=2050):
         # farmlandrestoration starts in year 2021 in Advanced Control excel
