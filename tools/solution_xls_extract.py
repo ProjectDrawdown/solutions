@@ -1370,7 +1370,7 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
             df.replace(to_replace=0.0, value=np.nan, inplace=True)
 
         outputfile = os.path.join(outputdir, filename)
-        df.to_csv(outputfile, header=True)
+        df.to_csv(outputfile, header=True, encoding='utf-8')
         sources[source_name] = filename
 
     tmp_cases = {}
@@ -1449,7 +1449,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
                           'Asia (sans Japan)': 'Asia (Sans Japan)'},
                           axis='columns', inplace=True)
                 if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
-                    df.to_csv(os.path.join(outputdir, filename), index=True, header=True)
+                    df.to_csv(os.path.join(outputdir, filename), index=True, header=True, encoding='utf-8')
                     skip = False
                 for offset in range(0, 3):
                     # TODO: deal with unicode on windows here.
@@ -1483,7 +1483,7 @@ def extract_custom_tla(wb, outputdir):
     if df.empty:
         raise ValueError('Custom TLA is selected but there is no Custom TLA Data')
     else:
-        df.to_csv(os.path.join(outputdir, 'custom_tla_data.csv'), index=True, header=True)
+        df.to_csv(os.path.join(outputdir, 'custom_tla_data.csv'), index=True, header=True, encoding='utf-8')
 
 
 def extract_vmas(f, wb, outputdir):

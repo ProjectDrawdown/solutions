@@ -1,0 +1,15 @@
+{
+    "region_cases": {
+        "World": {
+            "Base Cases": [ "S1" ]
+        }
+    },
+    "sources": [
+        {
+            "title": "Interpolated and Extrapolated (s-curve)  from What a Waste 1.0 & 2.0 data",
+            "shortname": "S1",
+            "filename": "organic_compost_sma_S1.csv",
+            "description": "Updated June 2020 From Newest Compost Model: TAM %"
+        }
+    ]
+}

@@ -137,6 +137,7 @@ class Scenario(scenario.RRSScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
     _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
     _pds_tam_sources=_ref_tam_sources
@@ -144,12 +145,8 @@ class Scenario(scenario.RRSScenario):
     _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
     def __init__(self, scen=None):
-        if isinstance(scen, ac.AdvancedControls):
-            self.scenario = scen.name
-            self.ac = scen
-        else:
-            self.scenario = scen or PDS2
-            self.ac = scenarios[self.scenario]
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
         self.set_tam()

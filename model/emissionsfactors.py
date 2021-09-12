@@ -70,15 +70,9 @@ def string_to_emissions_grid_source(text):
        to the enumerated type defined in this module.
        "Advanced Controls"!C189
     """
-    if str(text).lower() == "meta-analysis":
+    if "meta" in str(text).lower():
         return GRID_SOURCE.META
-    elif str(text).lower() == "meta_analysis":
-        return GRID_SOURCE.META
-    elif str(text).lower() == "meta analysis":
-        return GRID_SOURCE.META
-    elif str(text).lower() == "ipcc only":
-        return GRID_SOURCE.IPCC
-    elif str(text).lower() == "ipcc_only":
+    elif "ipcc" in str(text).lower():
         return GRID_SOURCE.IPCC
     else:
         raise ValueError("invalid grid source name=" + str(text))

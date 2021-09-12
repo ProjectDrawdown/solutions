@@ -1,0 +1,15 @@
+{
+    "region_cases": {
+        "World": {
+            "Base Cases": [ "S1" ]
+        }
+    },
+    "sources": [
+        {
+            "title": "Percentage Recyclable Waste",
+            "shortname": "S1",
+            "filename": "hc_percent_recyclable_sma_S1.csv",
+            "description": "Updated June 2020 From Newest Recycling Model: TAM %.\nBase value 35% @ 2016, decreasing 0.19% per year."
+        }
+    ]
+}

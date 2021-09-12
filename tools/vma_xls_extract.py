@@ -262,7 +262,7 @@ class VMAReader:
                 if existing is None:
                     path_friendly_title = tools.util.to_filename(title) + '.csv'
                     if csv_path is not None:
-                        table_df.to_csv(os.path.join(csv_path, path_friendly_title), index=False)
+                        table_df.to_csv(os.path.join(csv_path, path_friendly_title), index=False, encoding='utf-8')
                 else:
                     # This CSV already exists in the data directory because multiple solutions
                     # use it. Reference the common file in all of those solutions.
