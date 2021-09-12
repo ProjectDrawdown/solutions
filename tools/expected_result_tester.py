@@ -1068,18 +1068,23 @@ def key_results_tester(solution_name, expected_filename, scenario_skip=None):
             ac_file = zf.open(scenario_name + "/" + 'Advanced Controls')
             df_expected = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
             key_results = obj.get_key_results()
+            row_expected_values = 3
+            cols_expected_values = range(0,6)
+            expected_values = [df_expected.loc[row_expected_values, col] for col in cols_expected_values]
+            rel_tol = 1e-6
+            abs_tol = 1e-7
 
-            if isinstance(obj, scenario.LandScenario):
-                assert(key_results['adoption_unit_increase'] == pytest.approx(float(df_expected.loc[3, 0])))
-                assert(key_results['marginal_first_cost'] == pytest.approx(float(df_expected.loc[3, 1])))
-                assert(key_results['net_operating_savings'] == pytest.approx(float(df_expected.loc[3, 2])))
-                assert(key_results['lifetime_operating_savings'] == pytest.approx(float(df_expected.loc[3, 3])))
-                assert(key_results['cumulative_emissions_reduced'] == pytest.approx(float(df_expected.loc[3, 4])))
-                assert(key_results['total_additional_co2eq_sequestered'] == pytest.approx(float(df_expected.loc[3, 5])))
-            else:
-                assert(key_results['implementation_unit_adoption_increase'] == pytest.approx(float(df_expected.loc[3, 0])))
-                assert(key_results['functional_unit_adoption_increase'] == pytest.approx(float(df_expected.loc[3, 1])))
-                assert(key_results['marginal_first_cost'] == pytest.approx(float(df_expected.loc[3, 2])))
-                assert(key_results['net_operating_savings'] == pytest.approx(float(df_expected.loc[3, 3])))
-                assert(key_results['lifetime_operating_savings'] == pytest.approx(float(df_expected.loc[3, 4])))
-                assert(key_results['cumulative_emissions_reduced'] == pytest.approx(float(df_expected.loc[3, 5])))
+            # Return 0 if expected value cannot be cast to float
+            for idx, value in enumerate(expected_values):
+                try:
+                    expected_values[idx] = float(value)
+                except:
+                    expected_values[idx] = 0.0
+                expected_values[idx] = pytest.approx(expected_values[idx], rel=rel_tol, abs=abs_tol)
+
+            # This for loop looks nicer but it also means that the order in which items are inserted
+            # into key_results and the order of key_results in the expected excel matters at testing!
+            for idx, item in enumerate(key_results.items()):
+                name, actual = item
+                expected = expected_values[idx]
+                assert actual == expected, f"EXPECTED: {expected}\nACTUAL: {actual}\n IN {name}"
