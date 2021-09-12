@@ -142,11 +142,15 @@ class Scenario:
     
     # Common top-level functionality
     # Key Results
-    def adoption_unit_increase(self, year=2050, region='World'):
+    def adoption_unit_increase(self, year=None, region='World'):
+        if year is None:
+            year = self.ac.report_end_year
         return (self.ht.soln_pds_funits_adopted().loc[year][region]  - 
                 self.ht.soln_ref_funits_adopted().loc[year][region])
 
-    def marginal_first_cost(self, year=2050):
+    def marginal_first_cost(self, year=None):
+        if year is None:
+            year = self.ac.report_end_year
         if self.ac.soln_lifetime_replacement == 0.0 or self.ac.conv_lifetime_replacement == 0.0:
             return 0.0
         return (self.fc.soln_pds_annual_world_first_cost().loc[:year].sum()-
@@ -154,14 +158,18 @@ class Scenario:
             self.fc.conv_ref_annual_world_first_cost().loc[:year].sum()
             ) / 1e9
 
-    def net_operating_savings(self, year=2050):
+    def net_operating_savings(self, start_year=None, end_year=None):
+        if start_year is None:
+            start_year = self.ac.report_start_year
+        if end_year is None:
+            end_year = self.ac.report_end_year
         if self.ac.soln_lifetime_replacement == 0.0 or self.ac.conv_lifetime_replacement == 0.0:
             return 0.0
         return (
-            (self.oc.conv_ref_cumulative_operating_cost().loc[year] -
-            self.oc.conv_ref_cumulative_operating_cost().loc[2020]) -
-            (self.oc.soln_pds_cumulative_operating_cost().loc[year]  -
-            self.oc.soln_pds_cumulative_operating_cost().loc[2020])
+            (self.oc.conv_ref_cumulative_operating_cost().loc[end_year] -
+            self.oc.conv_ref_cumulative_operating_cost().loc[start_year]) -
+            (self.oc.soln_pds_cumulative_operating_cost().loc[end_year]  -
+            self.oc.soln_pds_cumulative_operating_cost().loc[start_year])
             ) / 1e9
 
     def lifetime_operating_savings(self):
@@ -169,8 +177,12 @@ class Scenario:
             return 0.0
         return self.oc.soln_marginal_operating_cost_savings().sum() / 1e9
 
-    def cumulative_emissions_reduced(self, year=2050, region='World'):
-        return self.c2.co2eq_mmt_reduced().loc[2020:year, region].sum() / 1e3
+    def cumulative_emissions_reduced(self, start_year=None, end_year=None, region='World'):
+        if start_year is None:
+            start_year = self.ac.report_start_year
+        if end_year is None:
+            end_year = self.ac.report_end_year
+        return self.c2.co2eq_mmt_reduced().loc[start_year:end_year, region].sum() / 1e3
 
 
 class RRSScenario(Scenario):
@@ -238,13 +250,13 @@ class RRSScenario(Scenario):
     def adoption_limit(self):
         return self.tm.pds_tam_per_region()
 
-    def get_key_results(self, year=2050, region='World'):
-        return {'implementation_unit_adoption_increase': self.implementation_unit_adoption_increase(year=year),
-                'functional_unit_adoption_increase': self.adoption_unit_increase(year=year),
-                'marginal_first_cost': self.marginal_first_cost(year=year),
-                'net_operating_savings': self.net_operating_savings(year=year),
+    def get_key_results(self):
+        return {'implementation_unit_adoption_increase': self.implementation_unit_adoption_increase(),
+                'functional_unit_adoption_increase': self.adoption_unit_increase(),
+                'marginal_first_cost': self.marginal_first_cost(),
+                'net_operating_savings': self.net_operating_savings(),
                 'lifetime_operating_savings': self.lifetime_operating_savings(),
-                'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region)}
+                'cumulative_emissions_reduced': self.cumulative_emissions_reduced()}
 
     def implementation_unit_adoption_increase(self, year=2050, region='World'):
         if self.ac.soln_avg_annual_use == 0.0:
@@ -266,18 +278,21 @@ class LandScenario(Scenario):
     def adoption_limit(self):
         return self.tla_per_region
 
-    def get_key_results(self, year=2050, region='World'):
-        return {'adoption_unit_increase': self.adoption_unit_increase(year=year),
-                'marginal_first_cost': self.marginal_first_cost(year=year),
-                'net_operating_savings': self.net_operating_savings(year=year),
+    def get_key_results(self):
+        return {'adoption_unit_increase': self.adoption_unit_increase(),
+                'marginal_first_cost': self.marginal_first_cost(),
+                'net_operating_savings': self.net_operating_savings(),
                 'lifetime_operating_savings': self.lifetime_operating_savings(),
-                'cumulative_emissions_reduced': self.cumulative_emissions_reduced(year=year, region=region),
-                'total_additional_co2eq_sequestered': self.total_additional_co2eq_sequestered(year)}
+                'cumulative_emissions_reduced': self.cumulative_emissions_reduced(),
+                'total_additional_co2eq_sequestered': self.total_additional_co2eq_sequestered()}
 
-    def total_additional_co2eq_sequestered(self, year=2050):
+    def total_additional_co2eq_sequestered(self, end_year=None):
         # farmlandrestoration starts in year 2021 in Advanced Control excel
         # Not sure if this is a bug or intended. Excel also says it should start at 2020
-        return (self.c2.co2_sequestered_global().loc[2021:year,'All'] / 1000).sum()
+        if end_year is None:
+            end_year = self.ac.report_end_year
+
+        return (self.c2.co2_sequestered_global().loc[2021:end_year,'All'] / 1000).sum()
 
 
 
