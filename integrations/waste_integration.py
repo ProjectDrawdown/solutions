@@ -1,8 +1,7 @@
+from dataclasses import dataclass
 from pathlib import Path
 import pandas as pd
-from model import sma
-from model import tam
-from model import dd
+from model import integration
 from .integration_base import *
 
 THISDIR = Path(__file__).parent
@@ -13,326 +12,274 @@ DATADIR = THISDIR/"data"/"msw"
 # are used in only one location, or if their results are not used by the integration results or
 # other featured calculations.
 
+# TEMPORARY SNAPSHOT identifies inputs that are obtained from local data files that
+# should be fetched from other models, but we either don't have the model at all (the food model),
+# or we haven't implemented that part of the model.  When we do get those implemented, we should
+# replace the snapshot a live data fetch.
+
 # ########################################################################################################################
 #                                              INPUTS
-# These values are writable, so experimentation may be done by setting them to other values before calling the
-# integration functions.  Values initialized to None here are set to default values by the function 
-# load_default_values().
 
-waste_tam : pd.DataFrame = None
-"""Total addressable market for waste products.  Years x Regions df
-Units: Million tonnes generated."""
-# Excel Table 1
-
-# COMPOST
-
-compost_adoption : pd.DataFrame = None
-"""Worldwide compost adoption for three scenarios.  Years x (PDS1,PDS2,PDS3).
-Retrieved from composting model.
-Units: Million tonnes waste composted."""
-# Excel Compost!B
-composting_scenario_names = ["PDS1","PDS2","PDS3"]
-"""Scenarios to use for composting solution."""
-
-compostable_proportion : pd.Series = None
-"""Estimate of proportion of waste worldwide that is compostable. Years series.
-Units: % (i.e fraction * 100)"""
-# Excel Compost!J
-
-regional_organic_fraction = pd.Series({
-    'OECD90': 0.39236288,
-    'Eastern Europe': 0.02820816,
-    'Asia (Sans Japan)': 0.16053698,
-    'Middle East and Africa': 0.28956111,
-    'Latin America': 0.12904009,
-    'China': 0.13109840,
-    'India': 0.16185183,
-    'EU': 0.12005864,
-    'USA': 0.07888291
-})
-"""Regional proportion of organic waste.  Regions series.
-Derived the Intergovernmental Panel on Climate Change (IPCC), 2006 and Hoornweg & Bhada-Tata (2012).
-Units: fraction"""
-# Excel P5:X5
-# Note the regional waste values are not actually used.  They are provided for informational value only.
-
-# RECYCLING
-
-recyclable_proportion: pd.Series = None
-"""Estimate of proportion of waste worldwide that is recyclable.  Years series.
-Units: % (i.e fraction * 100)"""
-# Excel 'H&C Recycling'!K
-
-regional_recyclable_fraction = pd.Series({
-    'OECD90': 0.295212,
-    'Eastern Europe': 0.047083,
-    'Asia (Sans Japan)': 0.144916,
-    'Middle East and Africa': 0.395601,
-    'Latin America': 0.117187,
-})
-"""Regional portion of recyclable waste.  Regions series.
-Units: fraction"""
-# Excel AC5:AG5
-# Note the regional waste values are not actually used.  They are provided for informational value only.
-
-# PLASTICS
-
-plastics_tam : pd.Series = None
-"""Total plastics market worldwide. Years series.
-From bioplastics model.
-Units: Million tonnes."""
-# Excel Table 5
-
-proportion_plastics_in_waste = 0.69
-"""Proportion of yearly plastic production that ends up in waste.
-Estimated from waste TAM, plastics TAM and What a Waste 2.0 estimate that 12% of waste in 2016 is plastic.
-(1932.45927 * 0.12) / 335 = 0.6922
-Units: fraction"""
-# Excel Bioplastics!AI12
-# Note: the excel had a mistake here: while the text clearly indicates an intent to divide by the Waste TAM[2016],
-# the Excel divides by the Waste TAM[2014].  I have corrected that mistake.  This drops the estimate from 78% to 69%
-# If you want to match the Excel behavior, substitute 0.78 for this value.
-
-bioplastics_adoption : pd.DataFrame = None
-"""Worldwide bioplastics adoption for three scenarios.  Years x (PDS1,PDS2,PDS3) df.
-Units: Million tonnes"""
-# Excel Table 10
+# By default, the standard PDS scenrios are used, but they can be replaced here with whichever 
+# scenarios you want to use for the PDS1, 2, and 3 cases.
 bioplastics_scenario_names = ["PDS1","PDS2","PDS3"]
-"""Scenarios to use for bioplastic solution"""
-
-proportion_bioplastics_compostable : pd.Series = None
-"""Proportion of bioplastics that are compostable worldwide.  Years series.
-Units: fraction."""
-# Excel Table 11
-
-# FOOD
-
-food_waste : pd.DataFrame = None
-"""Food waste worldwide for three scenarios.  Years x (PDS1,PDS2,PDS3) df.
-Units: Million tonnes."""
-# Excel 'Food System Summary'!G, E, H
-
-food_waste_reduction : pd.DataFrame = None
-"""Worldwide food waste reduction for three scenarios.  Years x (PDS1,PDS2,PDS3) df.
-Includes only food waste reduction in 'Distribution' and 'Consumption' stages of Food System.
-Units: Million tonnes"""
-# Excel Table 7.
-
-
-# WASTE TO ENERGY
-
-waste_to_energy_adoption : pd.DataFrame = None
-"""Adoption of waste to energy technologies for three scenarios.  Years x (PDS1,PDS2,PDS3) df.
-Units: """
+composting_scenario_names = ["PDS1","PDS2","PDS3"]
+insulation_scenario_names = ["PDS1","PDS2","PDS3"]
+landfill_methane_scenario_names = ["PDS1","PDS2","PDS3"]
+recycling_scenario_names = ["PDS1","PDS2","PDS3"]
+paper_scenario_names = ["PDS1","PDS2","PDS3"]
 waste_to_energy_scenario_names = ["PDS1","PDS2","PDS3"]
-"""Names of the scenarios to use for wastetoenergy solution."""
-
-# END INPUTS ----------------------------
-
-def load_default_values(forceAll=False):
-    """Load values for inputs.  
-    If the input is already set to a value, it is not overwritten, unless forceAll is True"""
-
-    global waste_tam
-    if waste_tam is None or forceAll:
-        # NOTE: should be obtained from waste model when we have it.
-        tamconfig = tam.make_tam_config()
-        tamsources = sma.SMA.read( DATADIR, "waste_tam", read_data=False ).as_tamsources( DATADIR )
-        waste_tam = tam.TAM(tamconfig, tamsources, tamsources).ref_tam_per_region()
 
 
-    global compost_adoption
-    if compost_adoption is None or forceAll:
-        compost_adoption = load_solution_adoptions("composting", composting_scenario_names)
+# ########################################################################################################################
+#                                              State tracking
+
+audit = start_audit("waste")
+# The audit log stores results that are computed throughout the process.  It is *append only*.  
+# It is never read or modified by this code.  Enables debugging and analysis by users.
+
+@dataclass
+class waste_integration_state:
+    # This data class holds global variables that are shared between steps.  Embedding it in a class
+    # enables us to avoid having to declare 'global' anytime we want to change something.
+
+    # The main state: available waste material for variety of uses
+    waste_tam : pd.DataFrame = None      # original, not adjusted
+    organic_msw: pd.DataFrame = None     # "used up" as we go along
+    recyclable_msw: pd.DataFrame = None  # "used up" as we do along
+    remainder_msw: pd.DataFrame = None   # "used up" as we go along
+    total_waste_msw: pd.DataFrame = None  # in step5, we revert to considering all waste streams together
+
+    # adoptions may be adjusted
+    compost_adoption: pd.DataFrame = None
+    paper_adoption: pd.DataFrame = None
+    paper_consumption: pd.DataFrame = None
+    recycling_adoption: pd.DataFrame = None
+    waste_to_energy_adoption: pd.DataFrame = None
+    landfill_methane_adoption: pd.DataFrame = None
+
+    effective_lhv: pd.DataFrame = None
+    effective_doc: pd.DataFrame = None
+
+    # these are set in step5 and used in step6 and valid only during that period
+    organic_proportion: pd.DataFrame = None   # organic proportion of total_waste_msw
+    recyclable_proportion: pd.DataFrame = None   # recyclable proportion of total_waste_msw
+    remainder_proportion:pd.DataFrame = None   # remainder proportion of total_waste_msw
     
-    global compostable_proportion
-    if compostable_proportion is None or forceAll:
-        compostable_proportion = sma.SMA.read( DATADIR, "organic_compost_sma" ).summary(case='S1')['World']
+ws = waste_integration_state()
+
+# ########################################################################################################################
+#                                              CALCULATION
+ 
+def integrate():
+    """Perform all steps of the integration together."""
+    ws_step1()
+    ws_step2()
+    ws_step3()
+    ws_step4()
+    ws_step5()
+    ws_step6()
+    ws_step7()
 
 
-    global recyclable_proportion
-    if recyclable_proportion is None or forceAll:
-        recyclable_proportion = sma.SMA.read( DATADIR, "hc_percent_recyclable_sma" ).summary(case='S1')['World']
+def ws_step1():
+    """Step one of the integration divides the waste stream into organic, recyclable and remainder categories"""
+    # Start with the global amount of waste
+    # TEMPORARY SNAPSHOT, Excel Table1, "Waste Model"
+    ws.waste_tam = pd.read_csv(DATADIR/"garbage_tam.csv", index_col="Year", squeeze=False)
+    ws.waste_tam = pdsify(ws.waste_tam['World']).loc[2014:]
+    audit("waste tam", ws.waste_tam)
 
+    # TEMPORARY SNAPSHOTs Excel Compost!J, composting
+    organic_proportion = read_as_series( DATADIR, "organic_compost_sma_S1.csv" ).loc[2014:]
+    # TEMPORARY SNAPSHOTs Excel 'H&C Recycling'!K, hcrecycling
+    recyclable_proportion = read_as_series( DATADIR, "hc_percent_recyclable_sma_S1.csv" ).loc[2014:]
 
-    global plastics_tam
-    if plastics_tam is None or forceAll:
-        # Load from bioplastics model
-        plastics_tam = load_solution_tam("bioplastic", bioplastics_scenario_names[1])
+    # Break into three streams: ORGANIC, RECYCLABLE, REMAINDER
+    # PAPER is included in the REMAINDER stream, not the recyclable stream
 
-    global bioplastics_adoption
-    if bioplastics_adoption is None or forceAll:
-        # Load from bioplastics model
-        # NOTE: bioplastic is currently failing adoption tests, so these results are suspect.
-        bioplastics_adoption = load_solution_adoptions("bioplastic", bioplastics_scenario_names)
+    ws.organic_msw = df_mult_series(ws.waste_tam, organic_proportion / 100)
+    ws.recyclable_msw = df_mult_series(ws.waste_tam, recyclable_proportion /100)
+    ws.remainder_msw = ws.waste_tam - ws.organic_msw - ws.recyclable_msw
+    audit("base organic", ws.organic_msw)           # Excel Table 2, column 1
+    audit("base recyclable", ws.recyclable_msw)     # Excel Table 3, column 1
+    audit("base remainder", ws.remainder_msw)       # Excel Table 4
+
+def ws_step2():
+    """Step two adjusts the waste stream to account for reductions in food waste and the increase of 
+    compostible plastics."""
+
+    # TEMPORARY SNAPSHOT 'Food System Summary'!G, E, H, food model
+    food_waste_reduction = pd.read_csv( DATADIR / "food_waste_reduction.csv", index_col="Year" )
+    ws.organic_msw -= food_waste_reduction
+    audit("organic less reduced food", ws.organic_msw) # Excel table 9
+
+    # TEMPORARY SNAPSHOT Excel Table 11, bioplastic model
+    compostable_proportion = read_as_series( DATADIR, "percent_plastic_compostable_sma_S1.csv" )
     
-    global proportion_bioplastics_compostable
-    if proportion_bioplastics_compostable is None or forceAll:
-        # The excel claims this comes from the bioplastics model, but I don't see it there.
-        # Even if it were there that would be a part of the model we haven't implemented yet.
-        # NOTE: should be obtained from bioplastics model, if/when it is implemented there.
-        ppc_sma = sma.SMA.read( DATADIR, "percent_plastic_compostable_sma" )
-        proportion_bioplastics_compostable = ppc_sma.summary(case='S1')['World']
+    # Adjust organic waste upwards for the portion of bioplastics that is compostible.
+    # Remove same amount from recyclable (where we assume plastic would have been otherwise)
+    bioplastics_adoption = load_solution_adoptions("bioplastic", bioplastics_scenario_names)
+    compostable_bioplastics = df_mult_series(bioplastics_adoption, compostable_proportion)
+    ws.organic_msw += compostable_bioplastics
+    ws.recyclable_msw -= compostable_bioplastics
+    audit("organic plus compostable bp", ws.organic_msw)  # Excel table 13
+    audit("recylable less compostable bp", ws.recyclable_msw) # Excel table 14
 
+    # There is considerable additional stuff going on in the bioplastics part of the workbork that
+    # could in theory limit bioplastic adoption (?), but doesn't for now.  I have punted on this.
 
-    global food_waste
-    if food_waste is None or forceAll:
-        # NOTE: should be obtained from food model when we have it.
-        food_waste = pd.read_csv( DATADIR / "food_waste.csv", index_col="Year" )
     
-    global food_waste_reduction
-    if food_waste_reduction is None or forceAll:
-        # NOTE: should be obtained from food model when we have it.
-        food_waste_reduction = pd.read_csv( DATADIR / "food_waste_reduction.csv", index_col="Year" )
+def ws_step3():
+    """Step three adjusts the adoptions of composting and recycling to reflect availability of feedstock, 
+    and subtracts those uses from their respective waste streams."""
 
+    ws.compost_adoption = load_solution_adoptions("composting", composting_scenario_names)
+    audit("base compost adoption", ws.compost_adoption)
+    ws.compost_adoption = demand_adjustment("compost adoption", ws.compost_adoption, ws.organic_msw)
+    audit("adjusted compost adoption", ws.compost_adoption) # Excel Compost!E
+    ws.organic_msw -= ws.compost_adoption
+    audit("organics msw less compost", ws.organic_msw) # Excel Table 22 column 2
 
-    global waste_to_energy_adoption
-    if waste_to_energy_adoption is None or forceAll:
-        waste_to_energy_adoption = load_solution_adoptions("wastetoenergy", waste_to_energy_scenario_names)
+    ws.recycling_adoption = load_solution_adoptions("hcrecycling", recycling_scenario_names)
+    audit("base recycling adoption", ws.recycling_adoption)
+    ws.recycling_adoption = demand_adjustment("recycling adjustment", ws.recycling_adoption, ws.recyclable_msw)
+    audit("adjusted recycling adoption", ws.recycling_adoption) # Excel H&C Recycling!E
+    ws.recyclable_msw -= ws.recycling_adoption
+    audit("recyclable msw less recycling", ws.recyclable_msw) # Excel Table 20 column 3
 
+def ws_step4():
+    """Step four subtracts the use of recycled paper and insulation from the remainder waste stream."""
+    # Calculate the maximum amount of paper available to recycle as the minimum between
+    # the recycledpaper TAM and the remainder_MSW
+    #       comment: this is slightly wrong: we're adjusting a new paper amount by a soiled paper amount.
+    #       but it is what the spreadsheet does.  There could be a corner case in which the adoption was 
+    #       less than tam but greater than msw due to the recycling ratio.
+    paper_collected = pdsify(load_solution_tam("recycledpaper", paper_scenario_names[1]))
+    feedstock = demand_adjustment("paper available feedstock", paper_collected, ws.remainder_msw)
+    audit("paper feedstock", feedstock) # Excel Paper!E 
+   
+    # TEMPORARY SNAPSHOT, Excel Paper!G3, G58, G113,  recycledpaper
+    paper_recycling_ratio = pd.Series({'PDS1': 1.29666666666667, 'PDS2': 1.29666666666667, 'PDS3': 1.1154056516757})
 
+    # The adoption is the amount of recycled paper produced
+    # The consumption is the amount of waste paper required to produce that adoption amount
+    ws.paper_adoption = load_solution_adoptions("recycledpaper", recycling_scenario_names)
+    ws.paper_consumption = ws.paper_adoption * paper_recycling_ratio
+    audit("paper consumption", ws.paper_consumption) # Excel Paper!G
+    ws.paper_consumption = demand_adjustment("paper consumption", ws.paper_consumption, feedstock)
+    audit("adjusted paper consumption", ws.paper_consumption) # Excel Paper!E
 
-# #########################################################################################################################
-#  
-#                                            Intermediate Calculations
-# 
+    # Update the paper adoption to match the available consumption
+    ws.paper_adoption = ws.paper_consumption / paper_recycling_ratio
+    audit("adjusted paper adoption", ws.paper_adoption)  # Excel doesn't compute this??
 
-def get_base_organic_waste() -> pd.DataFrame:
-    """Total amount of organic waste.  Years x Regions df.
-    Using waste fraction data from the Intergovernmental
-    Panel on Climate Change (IPCC), 2006 and Hoornweg & Bhada-Tata (2012) a forecast for the
-    organic fraction of MSW is devloped for Drawdown regions and the World. Food waste and
-    "green material" is considered organic fraction. Soiled paper may be considered "green
-    material" in some regions, but paper waste is allocated elsewhere. Green material includes
-    landscape waste and certain debris. This forecast becomes the TAM for Composting and is
-    directly affected by reductions in food waste and an increase in Bioplastics production and
-    a simulataneous, but distinct forecast in compostability of bioplastic. When bioplastic is
-    considered compostable it moves to the organic fraction.
-    Units: Million tonnes."""
-    # Excel Table 2
-    # Note the regional waste values are not actually used.  They are provided for informational value only.
+    # remainder msw after accounting for paper recycling
+    ws.remainder_msw -= ws.paper_consumption
+    audit("remainder msw after paper", ws.remainder_msw) # Excel Paper!H
+
+    # for insulation we can get the consumption from the model
+    # pds1 = factory.load_scenario("insulation",insulation_scenario_names[0])
+    # pds2 = factory.load_scenario("insulation",insulation_scenario_names[1])
+    # pds3 = factory.load_scenario("insulation",insulation_scenario_names[2])
+    # # This also seems really weird.
+    # # Why do we assume that the total amount of insulation would be derived from recycled materials?
+    # # I'm not sure I implemented the right thing....
+    # insulation_consumption = pd.DataFrame({'PDS1': pds1.adoption_as_material_mass(),
+    #                                        'PDS2': pds2.adoption_as_material_mass(),
+    #                                        'PDS3': pds3.adoption_as_material_mass()})
+    # TEMPORARY SNAPSHOT Paper!I, insulation
+    insulation_consumption = pd.read_csv( DATADIR / "insulation_mass_demand.csv", index_col="Year" )
+    audit("insulation consumption", insulation_consumption) 
+
+    # don't consume any more than there is.
+    insulation_consumption = demand_adjustment("insulation consumption", insulation_consumption, ws.remainder_msw)
+    audit("adjusted insulation consumption", insulation_consumption) # Excel not stored
+
+    # Final cellulose-based adjustment of remainder msw
+    ws.remainder_msw -= insulation_consumption
+    audit("remainder msw after insulation", ws.remainder_msw) # Excel Paper!J or Table 22 col 3
+
+def ws_step5():
+    """Step five subtracts the waste material used by Waste to Energy"""
+    # To determine the amount of energy that will be generated by burning waste, we need to know its LHV
+    # The LHV varies depending on the type of waste.  The Excel workbook did calcs to estimate an LHV for
+    # the types of waste tracked here: organic, recyclable and remainder.  So the first step is to 
+    # calculate an overall LHV based on the proportions of waste in our waste stream.
+
+    weighted_average_LHV = {'organic': 1.499261376, 'recyclable': 3.549477827, 'remainder': 2.120720855} 
+    waste_to_energy_efficiency_factor = 0.2367
+    # TEMPORARY SNAPSHOT Excel WTE Tonnes & Composition D62, WTE model
+
+    ws.total_waste_msw = ws.organic_msw + ws.recyclable_msw + ws.remainder_msw
+    ws.organic_proportion = ws.organic_msw / ws.total_waste_msw
+    ws.recyclable_proportion = ws.recyclable_msw / ws.total_waste_msw
+    ws.remainder_proportion = ws.remainder_msw / ws.total_waste_msw
+    audit("total waste msw for burning", ws.total_waste_msw) # Table 22 column 1
     
-    # column A:
-    compost_organic_fraction_world = waste_tam['World'] * compostable_proportion / 100
-    # the regional columns are an outer product with regional_organic_fraction
-    op = series_outer_product(compost_organic_fraction_world, regional_organic_fraction)
-    return pd.concat([compost_organic_fraction_world,op], axis=1).loc[2014:]
+    ws.effective_lhv = ((ws.organic_proportion * weighted_average_LHV['organic']) +
+                     (ws.recyclable_proportion * weighted_average_LHV['recyclable']) +
+                     (ws.remainder_proportion * weighted_average_LHV['remainder']))
+    audit("effective lhv", ws.effective_lhv) # Excel Table 23 Column 5
 
+    false_lhv = pdsify(ws.effective_lhv['PDS1'])  # use PDS2 for all scenarios
 
-def get_base_recyclable_waste() -> pd.DataFrame:
-    """Total amount of recyclable waste, excluding paper.  Years x Regions df.
-    This is developed from multiple sources including  the Intergovernmental
-    Panel on Climate Change (IPCC), 2006; Hoornweg & Bhada-Tata (2012);Bahor, et al(2009);
-    Hoornweg et al (2015).
-    Units: Million tonnes."""
-    # Excel Table 3
-    # Note the regional waste values are not actually used.  They are provided for informational value only.
-
-    # table 3, column A
-    recyclable_portion_world = waste_tam['World'] * recyclable_proportion / 100
-    # the regional columns are an outer product with regional_recyclable_fraction
-    op = series_outer_product(recyclable_portion_world, regional_recyclable_fraction)
-    return pd.concat([recyclable_portion_world,op], axis=1).loc[2014:]
-
-def get_waste_remainder_1() -> pd.DataFrame:
-    """Waste TAM less organics and recyclables.  Years x Regions df.
-    This includes paper.
-    Units: Million tonnes."""
-    # Excel Table 4
-    # Note the regional waste values are not actually used.  They are provided for informational value only.
-    remainder = waste_tam - get_base_organic_waste() - get_base_recyclable_waste()
-    return remainder.reindex(columns=dd.REGIONS)
-
-def get_base_plastic_waste() -> pd.Series:
-    """Amount of worldwide plastic waste per year.  Years series.
-    Not all plastic produced each year enters MSW.  This estimates
-    plastic in MSW based on benchmark from World Bank 2018. 12% of MSW is plastics.
-    Units: million tonnes."""
-    # Excel Table 5
-    return plastics_tam * proportion_plastics_in_waste
-
-def get_waste_less_food_reduction() -> pd.DataFrame:
-    """The worldwide waste tam corrected for food waste reduction for three scenarios.
-    Year x (PDS1,PDS2,PDS3) df.
-    Units: Million tonnes."""
-    # Excel Table 8, 12
-    return series_sub_df(waste_tam['World'], food_waste_reduction)
-
-def get_updated_organic_waste() -> pd.DataFrame:
-    """Total World Organic MSW after reduction in Food Waste and with addition of a % of
-    bioplastics for three scenarios.  Years x (PDS1,PDS2,PDS3) df
-    This impacts the TAM for Composting.
-    Units: Million tonnes."""
-    # Excel Table 13 (including computation for Table 9)
-    organic_waste_portion = get_base_organic_waste()['World']
-    organic_msw_less_food_reduction = series_sub_df(organic_waste_portion, food_waste_reduction)
-    compostable_bioplastics = df_mult_series(bioplastics_adoption, proportion_bioplastics_compostable)
-    return  organic_msw_less_food_reduction + compostable_bioplastics
-
-def get_updated_recyclable_waste() -> pd.DataFrame:
-    """Total World Recyclable MSW after reduction of compostible share of bioplastics for three
-    scenarios.  Years x (PDS1,PDS2,PDS3) df.
-    Assumes that all bioplastics would have been categorized as recyclable.
-    Units: Million tonnes."""
-    # Excel Table 14
-    compostable_msw = get_base_recyclable_waste()['World']
-    compostable_bioplastics = df_mult_series(bioplastics_adoption, proportion_bioplastics_compostable)
-    return series_sub_df(compostable_msw, compostable_bioplastics)
-
-def get_waste_remainder_2() -> pd.DataFrame:
-    """Total World Remainder MSW after subtraction of reduced food waste and fraction mix change due
-    to bioplastics (not Organics and Not Recyclables) for three scenarios. DOES include Paper.
-    Years x (PDS1,PDS2,PDS3) df.
-    Units: Million tonnes."""
-    # Excel Table 15
-    x = get_waste_less_food_reduction()
-    y = get_updated_organic_waste()
-    z = get_updated_recyclable_waste()
-    return x - y - z
-
-
-# #########################################################################################################################
-#  
-#                                                Integration Steps
-# 
-
-def get_feedstock_limited_solutions() -> dict:
-    """Return a dictionary mapping solutions to their overshoot (the degree to which their adoption exceeds
-    available feedstock)."""
-    pairs = {"composting" : (compost_adoption, get_updated_organic_waste())}
-    result = {}
-    for solution in pairs:
-        (adoption, feedstock) = pairs[solution]
-        overshoot = (adoption-feedstock)
-        if (overshoot > 0).any(axis=None):
-            result[solution] = overshoot.clip(lower=0.0)
-    return result
-
-
-def update_feedstock_limited_adoptions(maxtries=5):
-    """Update the _in memory_ adoptions of any feedstock limited solutions to max out at the feedstock
-    limitation.  Does not affect actual solution scenarios."""
-    for _ in range(maxtries):
-        solns = get_feedstock_limited_solutions()
-        if len(solns) > 0:
-            print("These solutions exceed their feedstock and will be adjusted: " + ", ".join(list(solns.keys())))
-
-            if "composting" in solns:
-                global compost_adoption
-                feedstock = get_updated_organic_waste()
-                compost_adoption = compost_adoption.combine(feedstock, np.minimum)
-        else:
-            return
+    # adoption is the amount of TwH produced.  consumption is the amount of MSW required to produce the adoption
+    ws.waste_to_energy_adoption = load_solution_adoptions('wastetoenergy', waste_to_energy_scenario_names)
+    #waste_to_energy_consumption = ws.waste_to_energy_adoption / (ws.effective_lhv * waste_to_energy_efficiency_factor)
+    waste_to_energy_consumption = ws.waste_to_energy_adoption / (false_lhv * waste_to_energy_efficiency_factor)
+    audit("wte base consumption", waste_to_energy_consumption) # Excel WTE Tonnes and Composition!G 
+                                                               # Only *one* of the PDS is calculated at a time.
     
-    if len(get_feedstock_limited_solutions() > 0):
-        print(f"Feedstock balancing not successful after {maxtries} rounds.  Terminating.")
-        #raise ValueError()  dunno yet if this should be an error or not.
+    adjusted_consumption = demand_adjustment("wte consumption", ws.total_waste_msw, waste_to_energy_consumption)
+    audit("wte adjusted consumption", adjusted_consumption)    # Excel Table 24 column 1 (only one PDS...)
+
+    adjusted_adoption = adjusted_consumption * ws.effective_lhv * waste_to_energy_efficiency_factor
+    audit("wte adjusted adoption", adjusted_adoption) # Excel WTE Tonnes and Composition!L, R, Y
+
+    ws.total_waste_msw -= adjusted_consumption
+    audit("landfilled waste", ws.total_waste_msw)
+
+def ws_step6():
+    """Step six determines adjusts landfill methane adoption based on achievability"""
+    tonnage_conversion_factor = 199042.708333333   # Excel Landfill Methane ! D4
+    possible_tw = ws.total_waste_msw * tonnage_conversion_factor
+    audit("possible twh from lm", possible_tw)
+    ws.landfill_methane_adoption = load_solution_adoptions('landfillmethane', landfill_methane_scenario_names)
+    ws.landfill_methane_adoption = demand_adjustment('lm adoption', ws.landfill_methane_adoption, possible_tw)
+    audit('adjusted lm adoption', ws.landfill_methane_adoption)
+
+    # We also compute a DOC (Degradable Carbon) factor that (does something...), which we will save late
+    # similar to the LHV computation above, it is calculated as the weighted average over time
+    weighted_average_DOC_fraction = {'organic': 0.198253844, 'recyclable': 0.280060046, 'remainder': 0.342912545}
+    ws.effective_doc = ((ws.total_waste_msw * ws.organic_proportion * weighted_average_DOC_fraction['organic']) +
+                        (ws.total_waste_msw * ws.recyclable_proportion * weighted_average_DOC_fraction['recyclable']) +
+                        (ws.total_waste_msw * ws.remainder_proportion * weighted_average_DOC_fraction['remainder']))
+    audit('effective doc', ws.effective_doc)
 
 
-def update_solutions():
-    """Create updated scenarios for all solutions affected by this integration."""
+def ws_step7():
+    """Step seven updates the affected scenarios with new adoptions reflecting available waste feedstock and/or efficiency."""
+    # Currently we always write out new values, even if they have not changed.  We might want to change this to
+    # do a comparison against the original and only update if needed.
 
+    print("updating composting adoption")
     from solution import composting
-    composting.Scenario.update_adoptions(composting_scenario_names, compost_adoption)
-    
+    composting.Scenario.update_adoptions(composting_scenario_names, ws.compost_adoption)
 
+    print("updating recycling adoption")
+    from solution import hcrecycling
+    hcrecycling.Scenario.update_adoptions(recycling_scenario_names, ws.recycling_adoption)
+
+    # The instructions do not say that we should update recycledpaper or insulation, but we could.
+
+    print("updating waste to energy LHV values")
+    # The instructions do say to update the effective LVH and the DOC to the "Emissions Factoring" sheet
+    # of the WTE model, but that sheet does not exist.  I haven't yet found where in the system it is used
+    # but for now, I am saving them to a data file in the data directory as if we used them somewhere.
+    lhvfile = integration.integration_alt_file(DATADIR/"waste_to_energy_lhv.csv")
+    ws.effective_lhv.to_csv(lhvfile)
+
+    print("updating landfill methane DOC values")
+    docfile = integration.integration_alt_file(DATADIR/"waste_to_energy_doc.csv")
+    ws.effective_doc.to_csv(docfile)

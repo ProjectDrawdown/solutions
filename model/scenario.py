@@ -5,6 +5,7 @@ import pandas as pd
 import warnings
 import numbers
 from pathlib import Path
+from model import integration
 from model import adoptiondata
 from model import advanced_controls
 from model import customadoption
@@ -72,13 +73,9 @@ class Scenario:
             self.ac = scenario_name_or_ac
         else:
             self.scenario = scenario_name_or_ac or default_scenario_name
-
-            # If we are in the middle of integrations, check to see if the integration version of the scenario
-            # exists, and if so, use that instead.
-            if "DDINTEGRATE" in os.environ:
-                alternate_scenario = self._integration_name(self.scenario)
-                if alternate_scenario in scenario_list:
-                    self.scenario = alternate_scenario
+            alt_scenario = integration.integration_alt_name(self.scenario)
+            if alt_scenario in scenario_list:
+                self.scenario = alt_scenario
 
             self.ac = scenario_list[self.scenario]
 
@@ -220,13 +217,7 @@ class Scenario:
     @classmethod
     def scenario_path(cls):
         return Path(__file__).parents[1]/"solution"/cls.module_name
-    
-    @classmethod
-    def _integration_name(cls, name):
-        if "DDINTEGRATE" in os.environ and not (name.endswith("_" + os.environ["DDINTEGRATE"])):
-            return name + "_" + os.environ["DDINTEGRATE"]
-        return name
-    
+        
     @classmethod
     def _pds_ca_lookup(cls, name):
         """Return the filename associated with a specific custom adoption, if we know it"""
@@ -258,12 +249,12 @@ class Scenario:
                 # for adoptions of the form "Average of all..."
                 old_file_name = cls._pds_ca_lookup(old_adoption_name)
                 if old_file_name:
-                    new_adoption_name = cls._integration_name(old_adoption_name)
-                    new_file_name = integration_version(old_file_name)
+                    new_adoption_name = integration.integration_alt_name(old_adoption_name)
+                    new_file_name = integration.integration_alt_file(old_file_name)
             if not new_adoption_name:
                 # just generate one
-                new_adoption_name = cls._integration_name(f"new updated adoption {i}")
-                new_file_name = integration_version(f"new_updated_adoption_{i}")
+                new_adoption_name = integration.integration_alt_name(f"new updated adoption {i}")
+                new_file_name = integration.integration_alt_file(f"new_updated_adoption_{i}")
             
             # Write or overwrite the data file
             colname = newadoptions.columns[i]
@@ -287,13 +278,13 @@ class Scenario:
             write_sources(sources, cls.scenario_path(), "pds_ca")
 
             # if necessary, update the scenario object as well.
-            new_scenario_name = cls._integration_name(oldac.name)
+            new_scenario_name = integration.integration_alt_name(oldac.name)
             if new_scenario_name == oldac.name and new_adoption_name == oldac.soln_pds_adoption_custom_name:
                 # we've already updated this scenario before; don't need to do it again
                 return
 
             new_scenario_file = Path(oldac.jsfile).name if oldac.jsfile else f"updated_integration_{i}.json"
-            new_scenario_file = integration_version(new_scenario_file)
+            new_scenario_file = integration.integration_alt_file(new_scenario_file)
             ac_data = oldac.as_dict()
             ac_data['name'] = new_scenario_name
             ac_data['soln_pds_adoption_basis'] = 'Fully Customized PDS'
@@ -411,19 +402,6 @@ class LandScenario(Scenario):
         return (self.c2.co2_sequestered_global().loc[2021:end_year,'All'] / 1000).sum()
 
 
-def integration_version(filename):
-    """If we are doing an integration, return the integration version of this file name.
-    If we are not doing an integration, returns the filename unchanged."""
-    filename = Path(filename)
-    if "DDINTEGRATE" in os.environ:
-        if filename.stem.endswith("_" + os.environ["DDINTEGRATE"]):
-            # it's already there, return as is
-            return filename
-        # else add it.
-        return filename.with_stem(filename.stem + "_" + os.environ["DDINTEGRATE"])
-    # not an integration, don't make an alternate.
-    return filename
-
     
 def load_sources(jsonfile, fieldname='filename'):
     """Load the named jsonfile, and replace relative filenames within it with absolute ones based on the same directory.
@@ -448,7 +426,7 @@ def load_sources(jsonfile, fieldname='filename'):
 
     # if we are supposed to use an alternate version, and that version exists, use it.
     jsonfile = Path(jsonfile).resolve()
-    alternatejsonfile = integration_version(jsonfile)
+    alternatejsonfile = integration.integration_alt_file(jsonfile)
     if alternatejsonfile.is_file():
         jsonfile = alternatejsonfile
 
@@ -486,7 +464,7 @@ def write_sources(struct, solution_path, source_type):
     cleaned = clean(struct, fieldname)
     thedir = solution_path/dirs[source_type]
     thedir.mkdir(exist_ok=True)
-    filename = integration_version(filenames[source_type])
+    filename = integration.integration_alt_file(filenames[source_type])
     (thedir/filename).write_text( json.dumps(cleaned, indent=2), encoding='utf-8')
 
 

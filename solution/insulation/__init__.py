@@ -276,6 +276,7 @@ class Scenario(scenario.RRSScenario):
             # The calculations for biomass columns D, E, F
             netfactor = factor1*factor2*factor3*factor4*factor5 / 10**3
 
+            # NOTE: the "diff" leaves the first row empty, which matches the Excel, but seems wrong.
             return (self.ht.soln_pds_funits_adopted()['World'] * netfactor).diff()
 
 
