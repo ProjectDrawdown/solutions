@@ -123,17 +123,18 @@ PDS1 = "PDS1-89p2050-Based on 2.75% Retrofit Rate"
 PDS2 = "PDS2-95p2050-Based on 5% Retrofit Rate"
 PDS3 = "PDS3-98p2050-Based on 8% Retrofit Rate"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.RRSScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
-
-    def __init__(self, scenario=None):
-        if scenario is None:
-            scenario = list(scenarios.keys())[0]
-        self.scenario = scenario
-        self.ac = scenarios[scenario]
+    module_name = THISDIR.stem
+    
+    def __init__(self, scen=None):
+        if scen is None:
+            scen = list(scens.keys())[0]
+        self.scenario = scen
+        self.ac = scenarios[scen]
 
         # TAM
         tamconfig_list = [
@@ -264,7 +265,7 @@ class Scenario(scenario.Scenario):
         # even when the final_datapoint_year is 2018, the TAM initial year is usually hard-coded to 2014
         # if that is wrong, change 2014 to 2018 below
         ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
-            ref_tam_per_region.loc[2014])
+            ref_tam_per_region.loc[2018])
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
         ht_ref_datapoints.loc[2018] = ht_ref_adoption_initial
         ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
@@ -280,10 +281,11 @@ class Scenario(scenario.Scenario):
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-            use_first_pds_datapoint_main=False,
-            adoption_base_year=2018,
+            use_first_pds_datapoint_main=True,
+            use_first_ref_datapoint_main=False,                                 
             copy_pds_to_ref=False,
-            copy_ref_datapoint=False, copy_pds_datapoint=False, 
+            copy_ref_datapoint=False, copy_pds_datapoint='Ref Table',
+            copy_datapoint_to_year=2014,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
@@ -295,7 +297,8 @@ class Scenario(scenario.Scenario):
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
             repeated_cost_for_iunits=False,
-            bug_cfunits_double_count=False)
+                                            bug_cfunits_double_count=False,
+                                            replacement_period_offset=0)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
         conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
