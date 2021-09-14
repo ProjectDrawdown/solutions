@@ -16,7 +16,6 @@ class NewUnitAdoption:
     _area_units: pd.Series
     disturbance_rate: np.float64
     sequestration_rate_all_ocean: np.float64
-    use_area_units_for_co2_calcs: bool = False
     
     def _validate_inputs(self):        
         pass
