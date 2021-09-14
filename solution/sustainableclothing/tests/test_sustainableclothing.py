@@ -15,8 +15,9 @@ solution_name = thisdir.parents[0].name
 # correctly from the scenario record, but the Excel workbook overwrites those with values from another worksheet,
 # in effect destroying the historical record.
 # The net effect on results is small.
-SCENARIO_SKIP = None
+SCENARIO_SKIP = [None]
 TEST_SKIP = ['AT308:BD354','CO2 Calcs']
+KEY_RESULTS_SKIP = ['cumulative_emissions_reduced',]
 
 def test_loader():
     """Test that the solution can load the defined scenarios"""
@@ -25,13 +26,15 @@ def test_loader():
     pds3 = factory.load_scenario(solution_name, "PDS3")
     assert pds1 and pds2 and pds3
 
-def test_key_results(scenario_skip=None):
+def test_key_results(scenario_skip=None, key_results_skip=None):
     """Test the computed key results against the stored Excel results"""
     scenario_skip = scenario_skip or SCENARIO_SKIP
+    key_results_skip = key_results_skip or KEY_RESULTS_SKIP
     expected_result_tester.key_results_tester(
         solution_name,
         expected_file,
-        scenario_skip=scenario_skip
+        scenario_skip=scenario_skip,
+        key_results_skip=key_results_skip
     )
 
 @pytest.mark.slow

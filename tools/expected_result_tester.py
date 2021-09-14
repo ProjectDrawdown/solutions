@@ -1054,7 +1054,7 @@ def one_solution_tester(solution_name, expected_filename,
                                        test_skip=test_skip, test_only=test_only)
 
 
-def key_results_tester(solution_name, expected_filename, scenario_skip=None):
+def key_results_tester(solution_name, expected_filename, scenario_skip=None, key_results_skip=[]):
     importname = 'solution.' + solution_name
     m = importlib.import_module(importname)
     with zipfile.ZipFile(expected_filename) as zf:
@@ -1086,5 +1086,7 @@ def key_results_tester(solution_name, expected_filename, scenario_skip=None):
             # into key_results and the order of key_results in the expected excel matters at testing!
             for idx, item in enumerate(key_results.items()):
                 name, actual = item
+                if name in key_results_skip:
+                    continue
                 expected = expected_values[idx]
                 assert actual == expected, f"EXPECTED: {expected}\nACTUAL: {actual}\n IN {name}"
