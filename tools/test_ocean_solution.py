@@ -2,12 +2,12 @@ import pandas as pd
 from numpy import int64
 import pytest
 
-class TestOceanSolutionFinancials():
+class TestOceanSolutionFinancialResults():
 
     def test_load(self, solution, scenario_name, scenario_results):
         print('\nloading', scenario_name)
         solution.load_scenario(scenario_name)
-        
+
     ### Start Financial Calculation tests ###
 
     def test_get_marginal_first_cost(self, solution, scenario_name, scenario_results):
@@ -324,8 +324,13 @@ class TestOceanSolution():
 
     ## End PPM Equivalent tests ##
 
-    ## Start Unit Area tests ##
+class TestOceanSolutionProtectionResults():
+    ## Start protection tests ##
 
+    def test_load(self, solution, scenario_name, scenario_results):
+        print('\nloading', scenario_name)
+        solution.load_scenario(scenario_name)
+        
     def test_reduced_area_degradation(self, solution, scenario_name, scenario_results):
         result = solution.get_reduced_area_degradation()
         result = max(result, 0.0) # If not relevant for the solution, this will return a negative number.

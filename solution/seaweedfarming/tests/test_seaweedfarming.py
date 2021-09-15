@@ -9,7 +9,7 @@ results_file = path.join('solution','seaweedfarming', 'tests', 'scenario_results
 stream = open(results_file,'r')
 results = json.load(stream)
 
-from tools.test_ocean_solution  import TestOceanSolutionFinancials
+from tools.test_ocean_solution  import TestOceanSolutionFinancialResults
 from tools.test_ocean_solution  import TestOceanSolution
 
 def pytest_generate_tests(metafunc):

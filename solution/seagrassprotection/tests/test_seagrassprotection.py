@@ -12,6 +12,7 @@ stream = open(results_file,'r')
 results = json.load(stream)
 
 from tools.test_ocean_solution  import TestOceanSolution
+from tools.test_ocean_solution import TestOceanSolutionProtectionResults
 
 def pytest_generate_tests(metafunc):
     argkeys = ['solution', 'scenario_name', 'scenario_results']
