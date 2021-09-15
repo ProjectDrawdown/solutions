@@ -1,16 +1,15 @@
+required_python_version_minimum: 3.9.5
 
-ScenariosFile: solution/seafloorprotection/scenario_inputs.json
-PDSAdoptionFile: solution/seafloorprotection/unit_adoption_data/custom_pds_adoption.json
-REFAdoptionFile: solution/seafloorprotection/unit_adoption_data/custom_ref_adoption.json
-BaseYear: 2014
-StartYear: 2020
-EndYear: 2050
-TotalArea: 490
-TotalAreaAsOfPeriod: 2014
-ChangePerPeriod: 0.0
-DelayImpactOfProtectionByOneYear: True
-DelayRegrowthOfDegradedLandByOneYear: False
-UseAdoptionForCarbonSequestrationCalculation: False
-DirectEmissionsAreAnnual : False # Set False for one-time.
-
-RequiredPythonVersionMinimum: 3.9.5
+scenarios_file: solution/seafloorprotection/scenario_inputs.json
+PDS_adoption_file: solution/seafloorprotection/unit_adoption_data/custom_pds_adoption.json
+REF_adoption_file: solution/seafloorprotection/unit_adoption_data/custom_ref_adoption.json
+base_year: 2014
+start_year: 2020
+end_year: 2050
+total_area: 490
+total_area_as_of_period: 2014
+change_per_period: 0.0
+delay_impact_of_protection_by_one_year: True
+delay_regrowth_of_degraded_land_by_one_year: False
+use_adoption_for_carbon_sequestration_calculation: False
+direct_emissions_are_annual : False # Set False for one-time.

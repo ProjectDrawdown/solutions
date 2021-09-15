@@ -6,8 +6,6 @@ from model.new_scenario import NewScenario
 class SeafloorProtectionScenario(NewScenario):
 
     # General Ocean Inputs
-
-    # General Ocean Inputs
     emissions_reduced_per_unit_area : float  = field(default=0.0, metadata={'Units': 't CO2-eq/ha'})
     growth_rate_of_ocean_degradation : float = field(default=0.0, metadata={'Units': 'years'})
     sequestration_rate_all_ocean : float  = field(default=0.0, metadata={'Units': 't C/ha/year'})

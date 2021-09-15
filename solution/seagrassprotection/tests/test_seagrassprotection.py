@@ -1,10 +1,11 @@
 from os import path
 import json
 
-from _pytest import mark
 from solution.seagrassprotection.seagrassprotection_solution import SeagrassProtectionSolution
 solution = SeagrassProtectionSolution()
 scenarios_to_test = solution.get_scenario_names()
+
+print('Here are the scenarios to test:', scenarios_to_test)
 
 results_file = path.join('solution','seagrassprotection', 'tests', 'scenario_results.json')
 stream = open(results_file,'r')

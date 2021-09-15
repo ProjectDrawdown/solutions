@@ -1,17 +1,8 @@
+required_python_version_minimum: 3.9.5
 
-ScenariosFile: solution/seagrassprotection/scenario_inputs.json
-PDSAdoptionFile: solution/seagrassprotection/unit_adoption_data/custom_pds_adoption.json
-REFAdoptionFile: solution/seagrassprotection/unit_adoption_data/custom_ref_adoption.json
-BaseYear: 2015
-StartYear: 2020
-EndYear: 2050
-TotalArea: 25.7302333333333
-TotalAreaAsOfPeriod: 2018
-ChangePerPeriod: 0.0
-DelayImpactOfProtectionByOneYear: True
-DelayRegrowthOfDegradedLandByOneYear: True
-UseAggregateCO2EquivalentInsteadOfIndividualGHG: False
-UseAdoptionForCarbonSequestrationCalculation: False
-DirectEmissionsAreAnnual : False # Set False for one-time.
-
-RequiredPythonVersionMinimum: 3.9.5
+scenarios_file: solution/seagrassprotection/scenario_inputs.json
+PDS_adoption_file: solution/seagrassprotection/unit_adoption_data/custom_pds_adoption.json
+REF_adoption_file: solution/seagrassprotection/unit_adoption_data/custom_ref_adoption.json
+base_year: 2015
+start_year: 2020
+end_year: 2050

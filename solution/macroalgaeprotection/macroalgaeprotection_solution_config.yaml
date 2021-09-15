@@ -1,15 +1,14 @@
+required_python_version_minimum: 3.9.5
 
-
-ScenariosFile: solution/macroalgaeprotection/scenario_inputs.json
-PDSAdoptionFile: solution/macroalgaeprotection/unit_adoption_data/custom_pds_adoption.json
-REFAdoptionFile: solution/macroalgaeprotection/unit_adoption_data/custom_ref_adoption.json
-BaseYear: 2014
-StartYear: 2020
-EndYear: 2050
-TotalArea: 355
-TotalAreaAsOfPeriod: 2016
-ChangePerPeriod: -0.0074812968
-DelayImpactOfProtectionByOneYear: True
-DelayRegrowthOfDegradedLandByOneYear: True
-UseAdoptionForCarbonSequestrationCalculation: False
-RequiredPythonVersionMinimum: 3.9.5
+scenarios_file: solution/macroalgaeprotection/scenario_inputs.json
+PDS_adoption_file: solution/macroalgaeprotection/unit_adoption_data/custom_pds_adoption.json
+REF_adoption_file: solution/macroalgaeprotection/unit_adoption_data/custom_ref_adoption.json
+base_year: 2015
+start_year: 2020
+end_year: 2050
+total_area: 355
+total_area_as_of_period: 2016
+change_per_period: -0.0074812968
+delay_impact_of_protection_by_one_year: True
+delay_regrowth_of_degraded_land_by_one_year: True
+use_adoption_for_carbon_sequestration_calculation: False

@@ -14,6 +14,7 @@
 		"Approximate PPM Equivalent Change":0.296063208328178,
 		"Approximate PPM rate in Final Year":0.00768291702866009,
 		"Reduced Area Degradation Across Reporting Period":274.519844490021,
+		"Total CO2 Under Protection by End Year":0.0,
 		"Emissions Reduction Series": {
 			"2020":122.506067490314,
 			"2021":122.506067490318,
@@ -113,9 +114,7 @@
 			"2049":0.288380291299536,
 			"2050":0.296063208328175
 		}
-	}
-
-
+	},
 	"PDS-42p2050-Drawdown": {
 		"Adoption Unit Increase in Final Year (PDS vs REF)":383.652613974732,
 		"Global Units of Adoption in Final Year":383.652613974732,
@@ -131,6 +130,7 @@
 		"Approximate PPM Equivalent Change":0.400830327906647,
 		"Approximate PPM rate in Final Year":0.0104016509488929,
 		"Reduced Area Degradation Across Reporting Period":371.663469788022,
+		"Total CO2 Under Protection by End Year":0.0,
 		"Emissions Reduction Series": {
 			"2020":165.856971827007,
 			"2021":165.856971827011,
@@ -246,6 +246,7 @@
 		"Approximate PPM Equivalent Change":0.460745393535888,
 		"Approximate PPM rate in Final Year":0.0119564624388317,
 		"Reduced Area Degradation Across Reporting Period":427.21875,
+		"Total CO2 Under Protection by End Year":0.0,
 		"Emissions Reduction Series": {
 			"2020":190.648836763895,
 			"2021":190.648836763895,
