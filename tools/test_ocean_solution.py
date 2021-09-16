@@ -2,142 +2,6 @@ import pandas as pd
 from numpy import int64
 import pytest
 
-class TestOceanSolutionFinancialResults():
-
-    def test_load(self, solution, scenario_name, scenario_results):
-        print('\nloading', scenario_name)
-        solution.load_scenario(scenario_name)
-
-    ### Start Financial Calculation tests ###
-
-    def test_get_marginal_first_cost(self, solution, scenario_name, scenario_results):
-        result = solution.get_marginal_first_cost()
-        expected_result = scenario_results['Marginal First Cost Across Reporting Period']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-
-    def test_get_operating_cost(self, solution, scenario_name, scenario_results):
-        result = solution.get_operating_cost()
-        expected_result = scenario_results['Net Operating Savings Across Reporting Period']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-
-    def test_get_lifetime_operating_savings(self, solution, scenario_name, scenario_results):
-        result = solution.get_lifetime_operating_savings()
-        expected_result = scenario_results['Lifetime Operating Savings Across Reporting Period']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-        
-    def test_get_cumulative_first_cost_pds(self, solution, scenario_name, scenario_results):
-        result = solution.get_cumulative_first_cost_pds()
-        expected_result = scenario_results['Cumulative First Cost Across Reporting Period']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-
-    def test_get_lifetime_cashflow_npv_single(self, solution, scenario_name, scenario_results):
-        result = solution.get_lifetime_cashflow_npv_single(purchase_year = 2017)
-        expected_result = scenario_results['Lifetime Cashflow NPV of Single Implementation Unit (PDS vs REF)']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-
-        
-    def test_get_lifetime_cashflow_npv_all(self, solution, scenario_name, scenario_results):
-        result = solution.get_lifetime_cashflow_npv_all()
-        expected_result = scenario_results['Lifetime Cashflow NPV of All Implementation Units (PDS vs REF)']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-        
-    def test_get_payback_period_soln_to_conv(self, solution, scenario_name, scenario_results):
-        result = solution.get_payback_period_soln_to_conv(purchase_year = 2017)
-        result = max(result, -1)
-        expected_result = scenario_results['Payback Period Solution Relative to Conventional']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-        
-    def test_get_payback_period_soln_to_conv_npv(self, solution, scenario_name, scenario_results):
-        result = solution.get_payback_period_soln_to_conv_npv(purchase_year = 2017)
-        result = max(result, -1)
-        expected_result = scenario_results['Discounted Payback Period Solution Relative to Conventional']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-        
-    def test_get_payback_period_soln_only(self, solution, scenario_name, scenario_results):
-        result = solution.get_payback_period_soln_only(purchase_year = 2017)
-        result = max(result, -1)
-        expected_result = scenario_results['Payback Period Solution Alone']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-
-    def test_get_payback_period_soln_only_npv(self, solution, scenario_name, scenario_results):
-        result = solution.get_payback_period_soln_only_npv(purchase_year = 2017)
-        result = max(result, -1)
-        expected_result = scenario_results['Discounted Payback Period Solution Alone']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-
-    def test_get_abatement_cost(self, solution, scenario_name, scenario_results):
-        result = solution.get_abatement_cost()
-        expected_result = scenario_results['Average Abatement Cost Across Reporting Period']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-
-    def test_get_net_profit_margin(self, solution, scenario_name, scenario_results):
-        result = solution.get_net_profit_margin()
-        expected_result = scenario_results['Net Profit Margin Across Reporting Period']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-
-    def test_get_lifetime_profit_margin(self, solution, scenario_name, scenario_results):
-        result = solution.get_lifetime_profit_margin()
-        expected_result = scenario_results['Lifetime Profit Margin']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
-        
-
-    ### End Financial Calculation tests ###
-
-
-
-
 class TestOceanSolution():
 
     def test_load(self, solution, scenario_name, scenario_results):
@@ -324,13 +188,147 @@ class TestOceanSolution():
 
     ## End PPM Equivalent tests ##
 
+class TestOceanSolutionFinancialResults():
+
+    def test_load(self, solution, scenario_name, scenario_results):
+        print('\nloading', scenario_name)
+        solution.load_scenario(scenario_name)
+
+    ### Start Financial Calculation tests ###
+
+    def test_get_marginal_first_cost(self, solution, scenario_name, scenario_results):
+        result = solution.get_marginal_first_cost()
+        expected_result = scenario_results['Marginal First Cost Across Reporting Period']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+
+    def test_get_operating_cost(self, solution, scenario_name, scenario_results):
+        result = solution.get_operating_cost()
+        expected_result = scenario_results['Net Operating Savings Across Reporting Period']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+
+    def test_get_lifetime_operating_savings(self, solution, scenario_name, scenario_results):
+        result = solution.get_lifetime_operating_savings()
+        expected_result = scenario_results['Lifetime Operating Savings Across Reporting Period']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+        
+    def test_get_cumulative_first_cost_pds(self, solution, scenario_name, scenario_results):
+        result = solution.get_cumulative_first_cost_pds()
+        expected_result = scenario_results['Cumulative First Cost Across Reporting Period']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+
+    def test_get_lifetime_cashflow_npv_single(self, solution, scenario_name, scenario_results):
+        result = solution.get_lifetime_cashflow_npv_single(purchase_year = 2017)
+        expected_result = scenario_results['Lifetime Cashflow NPV of Single Implementation Unit (PDS vs REF)']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+
+        
+    def test_get_lifetime_cashflow_npv_all(self, solution, scenario_name, scenario_results):
+        result = solution.get_lifetime_cashflow_npv_all()
+        expected_result = scenario_results['Lifetime Cashflow NPV of All Implementation Units (PDS vs REF)']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+        
+    def test_get_payback_period_soln_to_conv(self, solution, scenario_name, scenario_results):
+        result = solution.get_payback_period_soln_to_conv(purchase_year = 2017)
+        result = max(result, -1)
+        expected_result = scenario_results['Payback Period Solution Relative to Conventional']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+        
+    def test_get_payback_period_soln_to_conv_npv(self, solution, scenario_name, scenario_results):
+        result = solution.get_payback_period_soln_to_conv_npv(purchase_year = 2017)
+        result = max(result, -1)
+        expected_result = scenario_results['Discounted Payback Period Solution Relative to Conventional']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+        
+    def test_get_payback_period_soln_only(self, solution, scenario_name, scenario_results):
+        result = solution.get_payback_period_soln_only(purchase_year = 2017)
+        result = max(result, -1)
+        expected_result = scenario_results['Payback Period Solution Alone']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+
+    def test_get_payback_period_soln_only_npv(self, solution, scenario_name, scenario_results):
+        result = solution.get_payback_period_soln_only_npv(purchase_year = 2017)
+        result = max(result, -1)
+        expected_result = scenario_results['Discounted Payback Period Solution Alone']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+
+    def test_get_abatement_cost(self, solution, scenario_name, scenario_results):
+        result = solution.get_abatement_cost()
+        expected_result = scenario_results['Average Abatement Cost Across Reporting Period']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+
+    def test_get_net_profit_margin(self, solution, scenario_name, scenario_results):
+        result = solution.get_net_profit_margin()
+        expected_result = scenario_results['Net Profit Margin Across Reporting Period']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+
+    def test_get_lifetime_profit_margin(self, solution, scenario_name, scenario_results):
+        result = solution.get_lifetime_profit_margin()
+        expected_result = scenario_results['Lifetime Profit Margin']
+        try:
+            assert result == pytest.approx(expected_result)
+        except AssertionError as ae:
+            msg = f'Failed on scenario {scenario_name}'
+            raise AssertionError(msg) from ae
+        
+
+    ### End Financial Calculation tests ###
+
+
 class TestOceanSolutionProtectionResults():
     ## Start protection tests ##
 
     def test_load(self, solution, scenario_name, scenario_results):
         print('\nloading', scenario_name)
         solution.load_scenario(scenario_name)
-        
+
     def test_reduced_area_degradation(self, solution, scenario_name, scenario_results):
         result = solution.get_reduced_area_degradation()
         result = max(result, 0.0) # If not relevant for the solution, this will return a negative number.

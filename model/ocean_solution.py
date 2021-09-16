@@ -129,12 +129,12 @@ class OceanSolution(Solution):
 
     def get_global_percent_adoption_base_year(self) -> np.float64:
         # Adoption for base year, as a percentage of TOA.
-        pds_series = self.pds_scenario.get_units_adopted()
         
-        area_units_series = self.pds_scenario.get_area_units_units() 
-        pds_base_year = pds_series.loc[self.base_year+1]
+        adoption_base_year = self.scenario.current_adoption_world
+        
+        area_units_series = self.pds_scenario.get_area_units_units()
         area_units_base_year = area_units_series.loc[self.base_year+1]
-        result  = pds_base_year / area_units_base_year
+        result  = adoption_base_year / area_units_base_year
         return result
 
 

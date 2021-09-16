@@ -538,7 +538,7 @@ class NewUnitAdoption:
 
         reduction_plus_sequestration = total_emissions_reduction + sequestration
 
-        result_years = list(range(self.base_year-1, self.end_year+1))
+        result_years = list(range(self.base_year, self.end_year+1))
         results = pd.Series(index = result_years, dtype=np.float64)
         results = results.fillna(0.0)
         # (0.217 + 0.259*EXP(-(A173-$A$173+1)/172.9) + 0.338*EXP(-(A173-$A$173+1)/18.51) + 0.186*EXP(-(A173-$A$173+1)/1.186))
@@ -548,6 +548,7 @@ class NewUnitAdoption:
             year_results = []
             exponent= 0
 
+            # When comparing to the CO2 Calcs tab on the spreadsheet, the following loop runs down each column.
             for _ in range(iter_year, result_years[-1] +1):
                 year_net_adoption = reduction_plus_sequestration.loc[iter_year]
                 exponent += 1
