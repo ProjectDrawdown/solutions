@@ -40,7 +40,7 @@ class TestOceanSolution():
         result = solution.get_percent_adoption_start_year()
         expected_result = scenario_results['Global Percent Adoption in Start Year']
         try:
-            assert result == pytest.approx(expected_result)
+            assert result == pytest.approx(expected_result, rel=1e-5)
         except AssertionError as ae:
             msg = f'Failed on scenario {scenario_name}'
             raise AssertionError(msg) from ae
@@ -49,7 +49,7 @@ class TestOceanSolution():
         result = solution.get_percent_adoption_end_year()
         expected_result = scenario_results['Global Percent Adoption in Final Year']
         try:
-            assert result == pytest.approx(expected_result)
+            assert result == pytest.approx(expected_result, rel=1e-5)
         except AssertionError as ae:
             msg = f'Failed on scenario {scenario_name}'
             raise AssertionError(msg) from ae
@@ -349,4 +349,4 @@ class TestOceanSolutionProtectionResults():
             msg = f'Failed on scenario {scenario_name}'
             raise AssertionError(msg) from ae
 
-    ## End Unit Area tests ##
+#     ## End Unit Area tests ##

@@ -67,6 +67,7 @@ class OceanSolution(Solution):
 
         unit_adoption.apply_clip(lower= None, upper= self.scenario.current_area_world)
         unit_adoption.apply_linear_regression()
+        return
 
     def load_scenario(self, scenario_name: str) -> None:
 
@@ -132,8 +133,9 @@ class OceanSolution(Solution):
         
         adoption_base_year = self.scenario.current_adoption_world
         
-        area_units_series = self.pds_scenario.get_area_units_units()
+        area_units_series = self.pds_scenario.get_area_units()
         area_units_base_year = area_units_series.loc[self.base_year+1]
+
         result  = adoption_base_year / area_units_base_year
         return result
 
@@ -141,9 +143,9 @@ class OceanSolution(Solution):
     def get_percent_adoption_start_year(self) -> np.float64:
 
         pds_series = self.pds_scenario.get_units_adopted()
-        area_units_series = self.pds_scenario.get_area_units_units()
-
         pds_start_year = pds_series.loc[self.start_year]
+
+        area_units_series = self.pds_scenario.get_area_units()
         area_units_start_year = area_units_series.loc[self.start_year]
 
         result = pds_start_year / area_units_start_year
@@ -152,9 +154,9 @@ class OceanSolution(Solution):
 
     def get_percent_adoption_end_year(self) -> np.float64:
         pds_series = self.pds_scenario.get_units_adopted()
-        area_units_series = self.pds_scenario.get_area_units_units()
-        
         pds_start_year = pds_series.loc[self.end_year]
+
+        area_units_series = self.pds_scenario.get_area_units()
         area_units_start_year = area_units_series.loc[self.end_year]
 
         result = pds_start_year / area_units_start_year

@@ -51,7 +51,7 @@ class NewUnitAdoption:
         area_units_series = pd.Series(index= adoption_series.index, dtype= np.float64) # a.k.a. land unit adoption, ocean unit adoption.
         self._area_units = area_units_series # values are initialised to NaNs
 
-    def get_area_units_units(self) -> pd.Series:
+    def get_area_units(self) -> pd.Series:
         return self._area_units.copy()
 
     def get_skeleton(self) -> pd.Series:
@@ -258,7 +258,7 @@ class NewUnitAdoption:
 
     def apply_linear_regression(self) -> None:
 
-        df = interp.linear_trend(self._area_units)
+        df = interp.linear_trend(self.get_area_units())
 
         self._area_units = df['adoption']
 
