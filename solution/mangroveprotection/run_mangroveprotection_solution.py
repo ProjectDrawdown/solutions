@@ -15,17 +15,17 @@ def main():
 
         results = {}
         
-        # au_inc = maps.get_adoption_unit_increase_pds_vs_ref_final_year()
-        # gu_final = maps.get_adoption_unit_increase_pds_final_year()
-        # gpa_base = maps.get_global_percent_adoption_base_year() #returns base year +1?
-        # gpa_start = maps.get_percent_adoption_start_year()
-        # gpa_end = maps.get_percent_adoption_end_year()
+        au_inc = maps.get_adoption_unit_increase_pds_vs_ref_final_year()
+        gu_final = maps.get_adoption_unit_increase_pds_final_year()
+        gpa_base = maps.get_global_percent_adoption_base_year() #returns base year +1?
+        gpa_start = maps.get_percent_adoption_start_year()
+        gpa_end = maps.get_percent_adoption_end_year()
 
-        # results['Adoption Unit Increase in 2050 (PDS vs REF)'] = [au_inc,  265.0]
-        # results['Global Units of Adoption in 2050'] = [gu_final, 265.0]
-        # # results['Global Percent Adoption - Base Year (2014)'] = [gpa_base, 0.00 / 100]
-        # results['Global Percent Adoption in First Year'] = [gpa_start, 6.2506050207 / 100]
-        # results['Global Percent Adoption in Second Year (2014)'] = [gpa_end, 74.7012373290 / 100]
+        results['Adoption Unit Increase in 2050 (PDS vs REF)'] = [au_inc,  265.0]
+        results['Global Units of Adoption in 2050'] = [gu_final, 265.0]
+        # results['Global Percent Adoption - Base Year (2014)'] = [gpa_base, 0.00 / 100]
+        results['Global Percent Adoption in First Year'] = [gpa_start, 6.2506050207 / 100]
+        results['Global Percent Adoption in Second Year (2014)'] = [gpa_end, 74.7012373290 / 100]
 
         # ### Key Climate Results ###
         # total_emissions_reduction = 0.0
@@ -47,8 +47,8 @@ def main():
         co2_sequestered_final_year = maps.get_co2_sequestered_final_year()
         results['CO2 Sequestered in 2050'] = [co2_sequestered_final_year, 0.326041958295943]
 
-        total_atmos_co2_reduction = total_emissions_reduction + total_co2_seq
-        results['Total Atmospheric CO2-eq Reduction'] = [total_atmos_co2_reduction, 3.855988881]
+        # total_atmos_co2_reduction = total_emissions_reduction + total_co2_seq
+        # results['Total Atmospheric CO2-eq Reduction'] = [total_atmos_co2_reduction, 3.855988881]
 
         ### Protection Results ###
         # The following three metrics are not output in the scenario results, but are present in the [Advanced Controls] results.
