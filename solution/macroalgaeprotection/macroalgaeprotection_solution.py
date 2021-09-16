@@ -1,12 +1,8 @@
 
 import os
-import json
-import pandas as pd
-import numpy as np
 
 from model.ocean_solution import OceanSolution
-from model.new_unit_adoption import NewUnitAdoption
-from solution.macroalgaeprotection.macroalgaeprotection_scenario import MacroalgaeProtectionScenario
+
 
 class MacroalgaeProtectionSolution(OceanSolution):
     """ All calculations for Macroalgae protection currently implemented in the OceanSolution base class.

@@ -2,7 +2,7 @@
 import os
 
 from model.ocean_solution import OceanSolution
-from solution.macroalgaerestoration.macroalgaerestoration_scenario import MacroalgaeRestorationScenario
+
 
 class MacroalgaeRestorationSolution(OceanSolution):
     """ All calculations for Macroalgae Restoration currently implemented in the OceanSolution base class.
