@@ -4,6 +4,7 @@ from os import path
 import json
 
 from solution.mangroveprotection.mangroveprotection_solution import MangroveProtectionSolution
+
 solution = MangroveProtectionSolution()
 scenarios_to_test = solution.get_scenario_names()
 
@@ -13,7 +14,8 @@ results_file = path.join('solution','mangroveprotection', 'tests', 'scenario_res
 stream = open(results_file,'r')
 results = json.load(stream)
 
-from tools.test_ocean_solution  import TestOceanSolution
+from tools.test_ocean_solution  import TestOceanSolution, TestOceanSolutionProtectionResults
+
 
 def pytest_generate_tests(metafunc):
     argkeys = ['solution', 'scenario_name', 'scenario_results']
