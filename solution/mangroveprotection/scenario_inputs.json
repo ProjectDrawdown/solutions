@@ -1,0 +1,25 @@
+{	
+	"PDS-74p2050-Plausible JULY2021": {
+		"npv_discount_rate": 0.1,
+		"sequestration_rate_all_ocean": 1.82406087327512,
+		"disturbance_rate": 0.0,
+		"growth_rate_of_ocean_degradation": 0.00991428571428571,
+		"carbon_storage_in_protected_area_type": 553.312109833778,
+		"current_adoption_world": 3.22248272302866,
+		"current_area_world": 13.2223792855807,
+		"future_ref_area": 13.2223792855807,
+		"future_pds_area": 13.2223792855807,
+		"total_area_as_of_period": 2016,
+		"change_per_period": 0.0,
+		"delay_impact_of_protection_by_one_year": true,
+		"delay_regrowth_of_degraded_land_by_one_year": true,
+		"use_aggregate_CO2_equivalent_instead_of_individual_GHG": false,
+		"use_adoption_for_carbon_sequestration_calculation": false,
+		"emissions_reduced_per_unit_area" : 29.8828206067695,
+		"direct_emissions_are_annual" : false,
+		"pds_scenario_name": "AverageOfAllCustomScenarios",
+		"ref_scenario_name": "DefaultRefInterpolation",
+		"scenario_timestamp": "2021-07-22T20:17:15",
+		"scenario_description": "Average of all custom adoption scenarios"
+	}
+}
