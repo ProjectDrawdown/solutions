@@ -112,6 +112,10 @@ VMAs = {
         'Discount Rate - Households': vma.VMA(
                         filename=THISDIR.joinpath("vma_data", "Discount_Rate_Households.csv"),
                         use_weight=False),
+        # Denise 9/2021: Added VMAs from new model to enable integration calcs
+        'Envelope Surface Area per Floor Area Ratio': vma.VMA(
+            filename=THISDIR.joinpath("vma_data", "Envelope_Surface_Area_per_Floor_Area_Ratio.csv"),
+            use_weight=False),
 }
 vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
 
@@ -246,3 +250,33 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
+
+    def adoption_as_material_mass(self):
+            """Calculate the mass of insulation material required each year by adoption in this scenario.
+            Units: million tonnes insulating material.  Assumes cellulose density."""
+            # Excel Biomass tab, column G
+            
+            (factor1,_,_) = self.vmas['Envelope Surface Area per Floor Area Ratio'].avg_high_low()
+            
+            # This is a calculated value in the workbook.  I am short circuiting to a simple value for now:
+            # Biomass!B12 "Average % of Solution Low-EC"
+            factor2 = 0.17955112
+            
+            # This is a calculated value in the workbook.  I am short circuiting to a simple value for now:
+            # Biomass!B13 "Thickness of material (m) based on Conductivity"
+            factor3 = 0.0256596
+
+            # This is a simple value from the workbook.  VMA!M756 "Density of Final Material (kg/m3)"
+            factor4 = 50
+
+            #This is a simple value from the workbook.  Biomass!B15 
+            # "Assumed Ratio of Raw Material to Final Material by Mass (production efficiency)"
+            factor5 = 1/0.85
+
+            # The calculations for biomass columns D, E, F
+            netfactor = factor1*factor2*factor3*factor4*factor5 / 10**3
+
+            # NOTE: the "diff" leaves the first row empty, which matches the Excel, but seems wrong.
+            return (self.ht.soln_pds_funits_adopted()['World'] * netfactor).diff()
+
+
