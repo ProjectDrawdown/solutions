@@ -35,7 +35,7 @@ class OceanSolution(Solution):
     def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name):
             
         try:
-            ad_scenario = UnitAdoption(self.base_year,self.start_year, self.end_year, adoption_scenario_name, adoption_input_file)
+            ad_scenario = UnitAdoption(self.base_year, self.start_year, self.end_year, adoption_scenario_name, adoption_input_file)
         except ValueError as ev:
             print(ev.args)
             raise ValueError(f"Unable to initialise {adoption_scenario_name}")
