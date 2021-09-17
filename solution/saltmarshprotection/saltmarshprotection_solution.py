@@ -1,16 +1,18 @@
 
 import os
+
 from model.ocean_solution import OceanSolution
 
-class SeaweedFarmingSolution(OceanSolution):
-    """ All calculations for seaweed farming currently implemented in the OceanSolution base class.
+
+class SaltmarshProtectionSolution(OceanSolution):
+    """ All calculations for Macroalgae protection currently implemented in the OceanSolution base class.
     """
 
     # Initialize from configuration file:
     def __init__(self, configuration_file_name = None):
         """
-            Configuration file name defaults to './seaweedfarming_solution_config.yaml'.
-            This should be located in the same directory as the 'seaweedfarming_solution.py' module
+            Constructor requires a configuration file named 'saltmarshprotection_solution_config.yaml'.
+            This should be located in the same directory as the 'saltmarshprotection_solution.py' module
 
         """
 
@@ -23,5 +25,4 @@ class SeaweedFarmingSolution(OceanSolution):
             raise ValueError(f'Unable to find configuration file {configuration_file_name}.')
 
         super().__init__(configuration_file_name)
-
-
+        

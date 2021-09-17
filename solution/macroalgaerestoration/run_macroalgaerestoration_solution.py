@@ -6,7 +6,7 @@ def main():
     
     mars = MacroalgaeRestorationSolution()
 
-    scenario_names = ['PDS-16p2050-Optimum 20August2021']
+    scenario_names = ['PDS-12p2050-Drawdown 20August2021']
 
     for sc in scenario_names:
         print()
@@ -15,19 +15,19 @@ def main():
 
         results = {}
         
-        au_inc = mars.get_adoption_unit_increase_pds_vs_ref_final_year()
-        gu_final = mars.get_adoption_unit_increase_pds_final_year()
+        # au_inc = mars.get_adoption_unit_increase_pds_vs_ref_final_year()
+        # gu_final = mars.get_adoption_unit_increase_pds_final_year()
         gpa_base = mars.get_global_percent_adoption_base_year() #returns base year +1?
-        gpa_start = mars.get_percent_adoption_start_year()
-        gpa_end = mars.get_percent_adoption_end_year()
+        # gpa_start = mars.get_percent_adoption_start_year()
+        # gpa_end = mars.get_percent_adoption_end_year()
 
-        results['Adoption Unit Increase in 2050 (PDS vs REF)'] = [au_inc, 33.61214819960]
-        results['Global Units of Adoption in 2050'] = [gu_final, 33.61214819960]
-        results['Global Percent Adoption - Base Year (2014)'] = [gpa_base, 0.00 / 100]
-        results['Global Percent Adoption in First Year'] = [gpa_start, 1.0609895265/ 100]
-        results['Global Percent Adoption in Second Year'] = [gpa_end, 16.9758324240/ 100]
+        # results['Adoption Unit Increase in 2050 (PDS vs REF)'] = [au_inc, 33.61214819960]
+        # results['Global Units of Adoption in 2050'] = [gu_final, 33.61214819960]
+        # results['Global Percent Adoption - Base Year (2014)'] = [gpa_base, 0.00 / 100]
+        # results['Global Percent Adoption in First Year'] = [gpa_start, 1.0609895265/ 100]
+        # results['Global Percent Adoption in Second Year'] = [gpa_end, 16.9758324240/ 100]
 
-        total_co2_seq = mars.get_total_co2_seq()
+        total_co2_seq = mars.get_total_co2_sequestered()
         results['Total Additional CO2-eq Sequestered'] = [total_co2_seq, 1.952028234]
 
         change_in_ppm_equivalent = mars.get_change_in_ppm_equivalent()

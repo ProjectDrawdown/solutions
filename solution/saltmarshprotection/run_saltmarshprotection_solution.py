@@ -1,12 +1,12 @@
 
 import pandas as pd
-from solution.macroalgaeprotection.macroalgaeprotection_solution import MacroalgaeProtectionSolution
+from solution.saltmarshprotection.saltmarshprotection_solution import SaltmarshProtectionSolution
 
 def main():
     
-    maps = MacroalgaeProtectionSolution()
+    maps = SaltmarshProtectionSolution()
 
-    scenario_names = ['PDS-24p2050-Plausible July2021']
+    scenario_names = ['PDS-86p2050-Maximum JULY2021']
 
     for sc in scenario_names:
         print()
@@ -15,17 +15,17 @@ def main():
 
         results = {}
         
-        # au_inc = maps.get_adoption_unit_increase_pds_vs_ref_final_year()
-        # gu_final = maps.get_adoption_unit_increase_pds_final_year()
-        # gpa_base = maps.get_global_percent_adoption_base_year() #returns base year +1?
-        # gpa_start = maps.get_percent_adoption_start_year()
-        # gpa_end = maps.get_percent_adoption_end_year()
+        au_inc = maps.get_adoption_unit_increase_pds_vs_ref_final_year()
+        gu_final = maps.get_adoption_unit_increase_pds_final_year()
+        gpa_base = maps.get_global_percent_adoption_base_year() #returns base year +1?
+        gpa_start = maps.get_percent_adoption_start_year()
+        gpa_end = maps.get_percent_adoption_end_year()
 
-        # results['Adoption Unit Increase in 2050 (PDS vs REF)'] = [au_inc,  265.0]
-        # results['Global Units of Adoption in 2050'] = [gu_final, 265.0]
-        # # results['Global Percent Adoption - Base Year (2014)'] = [gpa_base, 0.00 / 100]
-        # results['Global Percent Adoption in First Year'] = [gpa_start, 6.2506050207 / 100]
-        # results['Global Percent Adoption in Second Year (2014)'] = [gpa_end, 74.7012373290 / 100]
+        results['Adoption Unit Increase in 2050 (PDS vs REF)'] = [au_inc,  265.0]
+        results['Global Units of Adoption in 2050'] = [gu_final, 265.0]
+        # results['Global Percent Adoption - Base Year (2014)'] = [gpa_base, 0.00 / 100]
+        results['Global Percent Adoption in First Year'] = [gpa_start, 6.2506050207 / 100]
+        results['Global Percent Adoption in Second Year (2014)'] = [gpa_end, 74.7012373290 / 100]
 
         # ### Key Climate Results ###
         # total_emissions_reduction = 0.0

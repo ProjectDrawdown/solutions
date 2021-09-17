@@ -1,13 +1,8 @@
+required_python_version_minimum: 3.9.5
 
-ScenariosFile: solution/macroalgaerestoration/scenario_inputs.json
-PDSAdoptionFile: solution/macroalgaerestoration/unit_adoption_data/custom_pds_adoption.json
-REFAdoptionFile: solution/macroalgaerestoration/unit_adoption_data/custom_ref_adoption.json
-BaseYear: 2014
-StartYear: 2020
-EndYear: 2050
-TotalArea: 198
-TotalAreaAsOfPeriod: 2018
-ChangePerPeriod: 0.0
-DelayImpactOfProtectionByOneYear: True
-DelayRegrowthOfDegradedLandByOneYear: False
-RequiredPythonVersionMinimum: 3.9.5
+scenarios_file: solution/macroalgaerestoration/scenario_inputs.json
+PDS_adoption_file: solution/macroalgaerestoration/unit_adoption_data/custom_pds_adoption.json
+REF_adoption_file: solution/macroalgaerestoration/unit_adoption_data/custom_ref_adoption.json
+base_year: 2014
+start_year: 2020
+end_year: 2050
