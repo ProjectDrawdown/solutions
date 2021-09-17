@@ -1,0 +1,17 @@
+{
+    "PDS-100p2050-Optimum-PDSCustom-100%2030-Dec2019": {
+		"direct_emissions_are_annual" : false,
+		"use_aggregate_CO2_equivalent_instead_of_individual_GHG": true,
+        "sequestration_rate_all_ocean": 0.996733333333333,
+		"use_adoption_for_carbon_sequestration_calculation": true,
+        "current_area_world": 5.1,
+		"future_ref_area": 5.1,
+		"future_pds_area": 5.1,
+		"total_area_as_of_period": 2030,
+		"change_per_period": 0.0,
+        "pds_scenario_name": "100PctOfTotalAreaBy2030",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2021-08-20T19:39:57",
+        "scenario_description": "Average of all"
+    }
+}
