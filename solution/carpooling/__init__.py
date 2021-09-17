@@ -122,63 +122,23 @@ class Scenario(scenario.RRSScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Based on ETP 2016, URBAN 6 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_6_DS_Nonmotorized_Travel_Adjustment.csv'),
-                'Based on ICCT, 2012, "Global Transportation Roadmap Model" + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ICCT_2012_Global_Transportation_Roadmap_Model_Nonmotorized_Travel_Adjustment.csv'),
-        },
-            'Conservative Cases': {
-                'Based on ETP 2016, URBAN 4 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_4_DS_Nonmotorized_Travel_Adjustment.csv'),
-                'Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - Baseline Scenario': THISDIR.joinpath('tam', 'tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_Baseline_Scenario.csv'),
-        },
-            'Ambitious Cases': {
-                'Based on ETP 2016, URBAN 2 DS + Non-motorized Travel Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ETP_2016_URBAN_2_DS_Nonmotorized_Travel_Adjustment.csv'),
-                'Based on ITDP/UC Davis (2014)  A Global High Shift Scenario Updated Report Data - HighShift Scenario': THISDIR.joinpath('tam', 'tam_based_on_ITDPUC_Davis_2014_A_Global_High_Shift_Scenario_Updated_Report_Data_HighShift_Scenario.csv'),
-        },
-    }
-    tam_pds_data_sources = {
-        'Ambitious Cases': {
-                'Drawdown TAM: Integrated Urban TAM post Non-Car Solutions for PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Urban_TAM_post_NonCar_Solutions_for_PDS1.csv'),
-                'Drawdown TAM: Integrated Urban TAM post Non-Car Solutions for PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Urban_TAM_post_NonCar_Solutions_for_PDS2.csv'),
-        },
-        'Maximum Cases': {
-                'Drawdown TAM: Integrated Urban TAM post Non-Car Solutions for PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Urban_TAM_post_NonCar_Solutions_for_PDS3.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
+    def __init__(self, scen=None):
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
         # Custom PDS Data
-        ca_pds_columns = ['Year'] + dd.REGIONS
         car_occ = self.ac.lookup_vma(vma_title='Current Average Car Occupancy')
         ride_occ = self.ac.lookup_vma(vma_title='Average Ridesharing Car Occupancy')
         ad_2018 = (car_occ - 1) / (ride_occ - 1)
@@ -207,77 +167,17 @@ class Scenario(scenario.RRSScenario):
         ds6_ad_2050 = (3.0 - 1) / (ride_occ - 1)
         ds6_df = global_load_df(ad_2018=ad_2018, ad_2050=ds6_ad_2050)
 
-        ca_pds_data_sources = [
-            {'name': 'PDS1 (15%) - Drawdown Book Edition 1', 'include': True,
-                'description': (
-                    'PDS1 - Drawdown Team Calculations based on: 15% adoption by Car commuters '
-                    'in 2050 '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_15_Drawdown_Book_Edition_1.csv')},
-            {'name': 'PDS2 (20%) - Drawdown Book Edition 1', 'include': True,
-                'description': (
-                    'PDS2 - Drawdown Team Calculations based on: 20% adoption by Car commuters '
-                    'in 2050 '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_20_Drawdown_Book_Edition_1.csv')},
-            {'name': 'PDS3 (30%) - Drawdown Book Edition 1', 'include': True,
-                'description': (
-                    'PDS3 -  Drawdown Team Calculations based on: 30% adoption by Car commuters '
-                    'in 2050 '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_30_Drawdown_Book_Edition_1.csv')},
-            {'name': 'PDS1 - With Global Load Factor of 1.75 person per vehicle per trip by 2050', 'include': True,
-                'description': (
-                    'We take a relatively high average car load factor from data from several '
-                    'countries and assume that it can be the 2050 global average load factor. We '
-                    'assume that that figure is out of a maximum as entered on Advanced Controls '
-                    '(~3 persons per trip) and estimate what effective adoption share the target '
-                    'load factor represents (assuming that all trips are either single occupancy '
-                    'or the maximum entered. This load factor in 2050 and that in 2014 (current '
-                    'value) are interpolated to get the load factor each year which is used to '
-                    'estimate the adoption. Recent Historical adoptions were estimated by '
-                    'assuming that the average load factors calculated from the weighted '
-                    'available data are applied to the total urban mobility each year after '
-                    'applying the car mode share (assumed fixed) '
-                    ),
-                'dataframe': ds4_df},
-            {'name': 'PDS2 - With Global Load Factor of 2 person per vehicle per trip by 2050', 'include': True,
-                'description': (
-                    'We take a relatively high average car load factor from data from several '
-                    'countries and assume that it can be the 2050 global average load factor. We '
-                    'assume that that figure is out of a maximum as entered on Advanced Controls '
-                    '(~3 persons per trip) and estimate what effective adoption share the target '
-                    'load factor represents (assuming that all trips are either single occupancy '
-                    'or the maximum entered. This load factor in 2050 and that in 2014 (current '
-                    'value) are interpolated to get the load factor each year which is used to '
-                    'estimate the adoption. Recent Historical adoptions were estimated by '
-                    'assuming that the average load factors calculated from the weighted '
-                    'available data are applied to the total urban mobility each year after '
-                    'applying the car mode share (assumed fixed) '
-                    ),
-                'dataframe': ds5_df},
-            {'name': 'PDS3- With Global Load Factor of 3 person per vehicle per trip by 2050', 'include': True,
-                'description': (
-                    'We take a very high load factor average, which is close to the maximum and '
-                    'assume that it can be the 2050 global average load factor. We assume that '
-                    'that figure is out of a maximum as entered on Advanced Controls (~3 persons '
-                    'per trip) and estimate what effective adoption share the target load factor '
-                    'represents (assuming that all trips are either single occupancy or the '
-                    'maximum entered. This load factor in 2050 and that in 2014 (current value) '
-                    'are interpolated to get the load factor each year which is used to estimate '
-                    'the adoption. Recent Historical adoptions were estimated by assuming that '
-                    'the average load factors calculated from the weighted available data are '
-                    'applied to the total urban mobility each year after applying the car mode '
-                    'share (assumed fixed) '
-                    ),
-                'dataframe': ds6_df},
-        ]
+        ca_pds_data_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+        ca_pds_data_sources[3]['dataframe'] = ds4_df
+        ca_pds_data_sources[4]['dataframe'] = ds5_df
+        ca_pds_data_sources[5]['dataframe'] = ds6_df
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
             low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
             total_adoption_limit=pds_tam_per_region)
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -378,4 +278,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

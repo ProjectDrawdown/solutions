@@ -123,27 +123,15 @@ class Scenario(scenario.RRSScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Based on: IEA ETP 2014 6DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_6DS.csv'),
-        },
-            'Conservative Cases': {
-                'Based on: IEA ETP 2014 4DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_4DS.csv'),
-        },
-            'Ambitious Cases': {
-                'Based on: IEA ETP 2014 2DS': THISDIR.joinpath('tam', 'tam_based_on_IEA_ETP_2014_2DS.csv'),
-        },
-    }
-    tam_pds_data_sources=tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
+    def __init__(self, scen=None):
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
             
         # TAM
         self.set_tam()
@@ -230,28 +218,7 @@ class Scenario(scenario.RRSScenario):
             low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
             total_adoption_limit=pds_tam_per_region)
 
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'Drawdown Book Reference Scenario', 'include': True,
-                'description': (
-                    'This scenario uses the inputs that were used for the Scenario developed for '
-                    'the Drawdown Book Edition 1. The scenario assumes a fixed percent of the '
-                    'TAM is adopted for Efficient trucks as the TAM grows. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Drawdown_Book_Reference_Scenario.csv')},
-            {'name': 'Efficient Truck Share of Market is Fixed', 'include': True,
-                'description': (
-                    'Drawdown calculations for REF adoption of Efficient Trucks based on fixed '
-                    'percent of growth of trucking. The 2014 - 2018 values are taken from '
-                    'estimates of historical data '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Efficient_Truck_Share_of_Market_is_Fixed.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
 
         if False:
@@ -346,4 +313,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

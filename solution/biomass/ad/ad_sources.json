@@ -1,0 +1,101 @@
+{
+  "Baseline Cases": {
+    "Based on IEA, WEO-2018, Current Policies Scenario (CPS)": "ad_based_on_IEA_WEO2018_Current_Policies_Scenario_CPS.csv",
+    "Based on: IEA ETP 2017 Ref Tech": "ad_based_on_IEA_ETP_2017_Ref_Tech.csv",
+    "Based on Equinor (2018), Rivalry Scenario": "ad_based_on_Equinor_2018_Rivalry_Scenario.csv",
+    "Based on IEEJ Outlook - 2019, Ref Scenario": "ad_based_on_IEEJ_Outlook_2019_Ref_Scenario.csv"
+  },
+  "Conservative Cases": {
+    "Based on IEA, WEO-2018, New Policies Scenario (NPS)": "ad_based_on_IEA_WEO2018_New_Policies_Scenario_NPS.csv",
+    "Based on IEEJ Outlook - 2019, Advanced Tech Scenario": "ad_based_on_IEEJ_Outlook_2019_Advanced_Tech_Scenario.csv",
+    "Based on Equinor (2018), Reform Scenario": "ad_based_on_Equinor_2018_Reform_Scenario.csv",
+    "Based on IEEJ Outlook - 2019, No Coal Plants Scenario": "ad_based_on_IEEJ_Outlook_2019_No_Coal_Plants_Scenario.csv",
+    "Based on IRENA. 2018) Roadmap-2050, REmap Case": "ad_based_on_IRENA__2018_Roadmap2050_REmap_Case.csv"
+  },
+  "Ambitious Cases": {
+    "Based on IEA, WEO-2018, SDS Scenario": "ad_based_on_IEA_WEO2018_SDS_Scenario.csv",
+    "Based on: IEA ETP 2017 B2DS": "ad_based_on_IEA_ETP_2017_B2DS.csv",
+    "Based on: IEA ETP 2017 2DS": "ad_based_on_IEA_ETP_2017_2DS.csv",
+    "Based on Equinor (2018), Renewal Scenario": "ad_based_on_Equinor_2018_Renewal_Scenario.csv"
+  },
+  "100% RES2050 Case": {
+    "Based on: Greenpeace 2015 Advanced Revolution": "ad_based_on_Greenpeace_2015_Advanced_Revolution.csv"
+  },
+  "Region: OECD90": {
+    "Baseline Cases": {
+      "Based on: IRENA (2016)": "ad_based_on_IRENA_2016.csv"
+    }
+  },
+  "Region: Eastern Europe": {
+    "Baseline Cases": {
+      "Based on: IRENA (2016)": "ad_based_on_IRENA_2016.csv"
+    }
+  },
+  "Region: Asia (Sans Japan)": {
+    "Baseline Cases": {
+      "Based on: IRENA (2016)": "ad_based_on_IRENA_2016.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Baseline Cases": {
+      "Based on: IRENA (2016)": "ad_based_on_IRENA_2016.csv"
+    }
+  },
+  "Region: Latin America": {
+    "Baseline Cases": {
+      "Based on: IRENA (2016)": "ad_based_on_IRENA_2016.csv"
+    }
+  },
+  "Region: China": {
+    "Baseline Cases": {
+      "Based on: IRENA (2016)": "ad_based_on_IRENA_2016.csv",
+      "Based on: IEA ETP 2016 6DS": "ad_based_on_IEA_ETP_2016_6DS.csv"
+    },
+    "Conservative Cases": {
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: Greenpeace (2015) - Reference Scenario": "ad_based_on_Greenpeace_2015_Reference_Scenario.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+      "Based on: Greenpeace 2015 Energy Revolution": "ad_based_on_Greenpeace_2015_Energy_Revolution.csv"
+    }
+  },
+  "Region: India": {
+    "Baseline Cases": {
+      "Based on: IRENA (2016)": "ad_based_on_IRENA_2016.csv",
+      "Based on: IEA ETP 2016 6DS": "ad_based_on_IEA_ETP_2016_6DS.csv"
+    },
+    "Conservative Cases": {
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+      "Based on: Greenpeace (2015) - Reference Scenario": "ad_based_on_Greenpeace_2015_Reference_Scenario.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+      "Based on: Greenpeace 2015 Energy Revolution": "ad_based_on_Greenpeace_2015_Energy_Revolution.csv"
+    }
+  },
+  "Region: EU": {
+    "Baseline Cases": {
+      "Based on: IRENA (2016)": "ad_based_on_IRENA_2016.csv",
+      "Based on: IEA ETP 2016 6DS": "ad_based_on_IEA_ETP_2016_6DS.csv"
+    },
+    "Conservative Cases": {
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv"
+    }
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "Based on: IRENA (2016)": "ad_based_on_IRENA_2016.csv",
+      "Based on: IEA ETP 2016 6DS": "ad_based_on_IEA_ETP_2016_6DS.csv"
+    },
+    "Conservative Cases": {
+      "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv"
+    },
+    "Ambitious Cases": {
+      "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv"
+    }
+  }
+}

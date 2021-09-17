@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Aggressive, Low",
+    "include": true,
+    "filename": "custom_pds_ad_Aggressive_Low.csv"
+  },
+  {
+    "name": "Conservative, Low",
+    "include": true,
+    "filename": "custom_pds_ad_Conservative_Low.csv"
+  },
+  {
+    "name": "Aggressive, high",
+    "include": true,
+    "filename": "custom_pds_ad_Aggressive_high.csv"
+  },
+  {
+    "name": "Aggressive, high, early",
+    "include": true,
+    "filename": "custom_pds_ad_Aggressive_high_early.csv"
+  },
+  {
+    "name": "Drawdown Book Ed.1 Scenario 1",
+    "include": false,
+    "filename": "custom_pds_ad_Drawdown_Book_Ed_1_Scenario_1.csv"
+  },
+  {
+    "name": "Drawdown Book Ed.1 Scenario 2",
+    "include": false,
+    "filename": "custom_pds_ad_Drawdown_Book_Ed_1_Scenario_2.csv"
+  },
+  {
+    "name": "Drawdown Book Ed.1 Scenario 3",
+    "include": false,
+    "filename": "custom_pds_ad_Drawdown_Book_Ed_1_Scenario_3.csv"
+  }
+]

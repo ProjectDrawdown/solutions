@@ -1,0 +1,17 @@
+{
+  "Baseline Cases": {
+    "USGS (Historical) + Elshkaki et al. SF Scenario": "tam_USGS_Historical_Elshkaki_et_al__SF_Scenario.csv",
+    "Elshkaki et al. MW/TR Scenarios + USGS (Historical)": "tam_Elshkaki_et_al__MWTR_Scenarios_USGS_Historical.csv",
+    "USGS (Historical) + Linear extrapolation": "tam_USGS_Historical_Linear_extrapolation.csv"
+  },
+  "Conservative Cases": {
+    "Van der Voet + USGS Historical": "tam_Van_der_Voet_USGS_Historical.csv",
+    "OECD, 2018, Demand Scenarios": "tam_OECD_2018_Demand_Scenarios.csv"
+  },
+  "Ambitious Cases": {
+    "Materials Economics Circular Economy Report (2018)": "tam_Materials_Economics_Circular_Economy_Report_2018.csv"
+  },
+  "Maximum Cases": {
+    "USGS (Historical) + S-Curve": "tam_USGS_Historical_SCurve.csv"
+  }
+}

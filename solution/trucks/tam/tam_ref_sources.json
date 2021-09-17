@@ -1,0 +1,11 @@
+{
+  "Baseline Cases": {
+    "Based on: IEA ETP 2014 6DS": "tam_based_on_IEA_ETP_2014_6DS.csv"
+  },
+  "Conservative Cases": {
+    "Based on: IEA ETP 2014 4DS": "tam_based_on_IEA_ETP_2014_4DS.csv"
+  },
+  "Ambitious Cases": {
+    "Based on: IEA ETP 2014 2DS": "tam_based_on_IEA_ETP_2014_2DS.csv"
+  }
+}

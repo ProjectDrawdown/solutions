@@ -1,0 +1,11 @@
+{
+  "Baseline Cases": {
+    "Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Highest Ranges": "tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Highest_Ranges.csv"
+  },
+  "Conservative Cases": {
+    "Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Middle Ranges": "tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Middle_Ranges.csv"
+  },
+  "Ambitious Cases": {
+    "Combined from IEA ETP 2016, ICAO 2014, Boeing 2013, Airbus 2014, Lowest Ranges": "tam_Combined_from_IEA_ETP_2016_ICAO_2014_Boeing_2013_Airbus_2014_Lowest_Ranges.csv"
+  }
+}

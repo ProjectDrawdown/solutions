@@ -1,0 +1,98 @@
+{
+  "Baseline Cases": {
+    "ITDP and UCD (2015) \"A Global Highshift Cycling Scenario\" - Baseline Scenario": "ad_ITDP_and_UCD_2015_A_Global_Highshift_Cycling_Scenario_Baseline_Scenario.csv"
+  },
+  "Conservative Cases": {
+    "Drawdown Team based on Data from Navigant, Bloomberg and other Sources": "ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv"
+  },
+  "Ambitious Cases": {
+    "ITDP and UCD (2015) \"A Global Highshift Cycling Scenario\" - Highshift Scenario": "ad_ITDP_and_UCD_2015_A_Global_Highshift_Cycling_Scenario_Highshift_Scenario.csv"
+  },
+  "Region: OECD90": {
+    "Baseline Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv"
+    },
+    "Conservative Cases": {
+      "Drawdown Team based on Data from Navigant, Bloomberg and other Sources": "ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv"
+    },
+    "Ambitious Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv"
+    }
+  },
+  "Region: Eastern Europe": {
+    "Baseline Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv"
+    },
+    "Conservative Cases": {
+      "Drawdown Team based on Data from Navigant, Bloomberg and other Sources": "ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv"
+    },
+    "Ambitious Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv"
+    }
+  },
+  "Region: Asia (Sans Japan)": {
+    "Baseline Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv"
+    },
+    "Conservative Cases": {
+      "Drawdown Team based on Data from Navigant, Bloomberg and other Sources": "ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv"
+    },
+    "Ambitious Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Baseline Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv"
+    },
+    "Conservative Cases": {
+      "Drawdown Team based on Data from Navigant, Bloomberg and other Sources": "ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv"
+    },
+    "Ambitious Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv"
+    }
+  },
+  "Region: Latin America": {
+    "Baseline Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv"
+    },
+    "Conservative Cases": {
+      "Drawdown Team based on Data from Navigant, Bloomberg and other Sources": "ad_Drawdown_Team_based_on_Data_from_Navigant_Bloomberg_and_other_Sources.csv"
+    },
+    "Ambitious Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv"
+    }
+  },
+  "Region: China": {
+    "Baseline Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv"
+    },
+    "Ambitious Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv"
+    }
+  },
+  "Region: India": {
+    "Baseline Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv"
+    },
+    "Ambitious Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv"
+    }
+  },
+  "Region: EU": {
+    "Baseline Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv"
+    },
+    "Ambitious Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv"
+    }
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, Baseline Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Baseline_Scenario.csv"
+    },
+    "Ambitious Cases": {
+      "ITDP, UC Davis (2015) A Global High Shift Cycling Scenario, High shift Scenario": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv"
+    }
+  }
+}

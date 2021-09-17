@@ -1,0 +1,11 @@
+{
+  "Baseline Cases": {
+    "Drawdown TAM": "tam_Drawdown_TAM.csv"
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "Drawdown TAM": "tam_Drawdown_TAM.csv",
+      "USEPA SMM": "tam_USEPA_SMM.csv"
+    }
+  }
+}

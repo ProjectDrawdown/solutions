@@ -1,0 +1,12 @@
+{
+  "Baseline Cases": {
+    "Ellen Macarthur Foundation. 3% Growth to 160 in 2050": "tam_Ellen_Macarthur_Foundation__3_Growth_to_160_in_2050.csv"
+  },
+  "": {
+    "Global Fashion Agenda - Pulse of Fashion Industry 102 in 2030": "tam_Global_Fashion_Agenda_Pulse_of_Fashion_Industry_102_in_2030.csv",
+    "Quantis, Measuring Fashion, Apparel": "tam_Quantis_Measuring_Fashion_Apparel.csv"
+  },
+  "Conservative Cases": {
+    "Textile Exchange 2019,2020 (Assume 60% of Fibers for Clothing)": "tam_Textile_Exchange_20192020_Assume_60_of_Fibers_for_Clothing.csv"
+  }
+}

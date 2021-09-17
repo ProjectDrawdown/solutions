@@ -107,69 +107,23 @@ class Scenario(scenario.RRSScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
-    tam_ref_data_sources = {
-        'Baseline Cases': {
-                'USGS (Historical) + Elshkaki et al. SF Scenario': THISDIR.joinpath('tam', 'tam_USGS_Historical_Elshkaki_et_al__SF_Scenario.csv'),
-                'Elshkaki et al. MW/TR Scenarios + USGS (Historical)': THISDIR.joinpath('tam', 'tam_Elshkaki_et_al__MWTR_Scenarios_USGS_Historical.csv'),
-                'USGS (Historical) + Linear extrapolation': THISDIR.joinpath('tam', 'tam_USGS_Historical_Linear_extrapolation.csv'),
-        },
-        'Conservative Cases': {
-                'Van der Voet + USGS Historical': THISDIR.joinpath('tam', 'tam_Van_der_Voet_USGS_Historical.csv'),
-                'OECD, 2018, Demand Scenarios': THISDIR.joinpath('tam', 'tam_OECD_2018_Demand_Scenarios.csv'),
-        },
-            'Ambitious Cases': {
-                'Materials Economics Circular Economy Report (2018)': THISDIR.joinpath('tam', 'tam_Materials_Economics_Circular_Economy_Report_2018.csv'),
-        },
-            'Maximum Cases': {
-                'USGS (Historical) + S-Curve': THISDIR.joinpath('tam', 'tam_USGS_Historical_SCurve.csv'),
-        },
-    }
-    tam_pds_data_sources=tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
+    def __init__(self, scen=None):
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Conservative Cases': {
-                'Elshkaki et al. 2018 (MW/TR)': THISDIR.joinpath('ad', 'ad_Elshkaki_et_al__2018_MWTR.csv'),
-                'Elshkaki et al. 2018 (SF)': THISDIR.joinpath('ad', 'ad_Elshkaki_et_al__2018_SF.csv'),
-                'Elshkaki et al. 2018 (EW)': THISDIR.joinpath('ad', 'ad_Elshkaki_et_al__2018_EW.csv'),
-            },
-            'Ambitious Cases': {
-                'Materials Economics Circular Scenario': THISDIR.joinpath('ad', 'ad_Materials_Economics_Circular_Scenario.csv'),
-                'Van der Voet, 2018 - Circular Scenario': THISDIR.joinpath('ad', 'ad_Van_der_Voet_2018_Circular_Scenario.csv'),
-                'OECD - increased recycling': THISDIR.joinpath('ad', 'ad_OECD_increased_recycling.csv'),
-            },
-            'Maximum Cases': {
-                'Materials Economics Availability Limitation (Steel + Al)': THISDIR.joinpath('ad', 'ad_Materials_Economics_Availability_Limitation_Steel_Al.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -278,4 +232,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

@@ -98,19 +98,18 @@ PDS1 = "PDS-71p2050-Plausible-customPDS-low-Apr2020"
 PDS2 = "PDS-84p2050-drawdown-customPDS-avg-Apr2020"
 PDS3 = "PDS-97p2050-Scenario3_CustomPDS_high_Jun2020"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.LandScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+
+    def __init__(self, scen=None):
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TLA
         self.ae = aez.AEZ(solution_name=self.name, cohort=2020,
@@ -126,83 +125,8 @@ class Scenario(scenario.Scenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
-             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
-             'NOTE', 'NOTE', 'NOTE'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': '65% TLA by 2040',
-              'description': (
-                    'Scenario 1 is based on Indonesia and the UK comitments on peatland '
-                    'restoration. In the case of Indonesia, the comitment is to restore 2 Mha of '
-                    'degraded peatland by 2020 which represents 49% of degraded peatland area. '
-                    'The Uks Peatland strategy aims for Two million hectares of peatland in '
-                    'good condition, under restoration or being sustainably managed by 2040. '
-                    'representing 96% of degraded peatland area. The weighted average of both '
-                    'comitments is 65% of degraded peatland area. We take a conservative '
-                    'approach and assume it will be achieved in 2040 and scale up the 65% '
-                    'comitment to the world. See page TLA- Adoption Calc for more info '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_65_TLA_by_2040.csv')},
-            {'name': '70% TLA by 2050',
-              'description': (
-                    'Linear increase to 70% of TLA by 2050 '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_70_TLA_by_2050.csv')},
-            {'name': '80% TLA by 2050',
-              'description': (
-                    'Linear increase to 80% of TLA by 2050 '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_80_TLA_by_2050.csv')},
-            {'name': '90% TLA by 2050',
-              'description': (
-                    'Linear increase to 90% of TLA by 2050 '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_90_TLA_by_2050.csv')},
-            {'name': '100% TLA by 2050',
-              'description': (
-                    'Linear increase to 100% TLA by 2050 '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_100_TLA_by_2050.csv')},
-            {'name': 'UK 2040 restoration target scaled worldwide',
-              'description': (
-                    'UKs peatland target of restoring 2 Mha of peatlands by 2040 represents 96% '
-                    'of degraded peatland area. This scenario applies this percentage to the TLA '
-                    'assuming a linear increase up to 2040 '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_UK_2040_restoration_target_scaled_worldwide.csv')},
-            {'name': 'Indonesia national commitment scaled worldwide',
-              'description': (
-                    'Indonesias restoration target of 2 Mha by 2020 represents 49% total '
-                    'degraded area. Given the ambitous target we assume a more conservative time '
-                    'frame and scale up a linear increase up to 49% restored TLA by 2040 '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Indonesia_national_commitment_scaled_worldwide.csv')},
-            ]
-        # select sources to include; defaults to False
-        for (i,rs) in enumerate(ca_pds_data_sources): 
-            rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=self.tla_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -304,4 +228,3 @@ class Scenario(scenario.Scenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-

@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Legacy Book Scenario - High Ambitious, double growth by 2030 & 2050",
+    "include": true,
+    "filename": "custom_pds_ad_Legacy_Book_Scenario_High_Ambitious_double_growth_by_2030_2050.csv"
+  },
+  {
+    "name": "Legacy Book Scenario - Conservative Growth of 2.5% annum",
+    "include": true,
+    "filename": "custom_pds_ad_Legacy_Book_Scenario_Conservative_Growth_of_2_5_annum.csv"
+  },
+  {
+    "name": "Legacy Book Scenario. Low Ambitious Growth, 10% higher compared to REF case",
+    "include": true,
+    "filename": "custom_pds_ad_Legacy_Book_Scenario__Low_Ambitious_Growth_10_higher_compared_to_REF_case.csv"
+  },
+  {
+    "name": "Ambitious Cases (Legacy Book and February 2019 Update)",
+    "include": true,
+    "filename": "custom_pds_ad_Ambitious_Cases_Legacy_Book_and_February_2019_Update.csv"
+  },
+  {
+    "name": "Conservative Cases (Legacy Book and February 2019 Update)",
+    "include": true,
+    "filename": "custom_pds_ad_Conservative_Cases_Legacy_Book_and_February_2019_Update.csv"
+  },
+  {
+    "name": "Baseline Cases (Legacy Book and February 2019 Update)",
+    "include": true,
+    "filename": "custom_pds_ad_Baseline_Cases_Legacy_Book_and_February_2019_Update.csv"
+  },
+  {
+    "name": "100% RE Cases",
+    "include": true,
+    "filename": "custom_pds_ad_100_RE_Cases.csv"
+  },
+  {
+    "name": "High growth  Scenario @ 1.6% per annum (Feb 2019 update)",
+    "include": true,
+    "filename": "custom_pds_ad_High_growth_Scenario_1_6_per_annum_Feb_2019_update.csv"
+  },
+  {
+    "name": "Medium Growth Scenario @ 1.33% per annum (Feb 2019 update)",
+    "include": true,
+    "filename": "custom_pds_ad_Medium_Growth_Scenario_1_33_per_annum_Feb_2019_update.csv"
+  },
+  {
+    "name": "Low Growth Scenario @ 10.8% per annum (Feb 2019 update)",
+    "include": true,
+    "filename": "custom_pds_ad_Low_Growth_Scenario_10_8_per_annum_Feb_2019_update.csv"
+  }
+]

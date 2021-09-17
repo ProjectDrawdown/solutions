@@ -11,6 +11,7 @@ Top-level Instructions:
 
 Core extraction code:
  * allocation_xls_extract.py
+ * sma_xls_extract.py
  * solution_xls_extract.py
  * vma_xls_extract.py
  * world_data_xls_extract.py

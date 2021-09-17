@@ -123,41 +123,19 @@ class Scenario(scenario.RRSScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
-    tam_ref_data_sources = {
-        'Baseline Cases': {
-                'Drawdown TAM': THISDIR.joinpath('tam', 'tam_Drawdown_TAM.csv'),
-        },
-            'Region: USA': {
-                'Baseline Cases': {
-                'Drawdown TAM': THISDIR.joinpath('tam', 'tam_Drawdown_TAM.csv'),
-                'USEPA SMM': THISDIR.joinpath('tam', 'tam_USEPA_SMM.csv'),
-            },
-        },
-    }
-    tam_pds_data_sources = {
-        'Baseline Cases': {
-                'Drawdown TAM: Integration TAM PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integration_TAM_PDS1.csv'),
-        },
-        'Conservative Cases': {
-                'Drawdown TAM: Integration TAM PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integration_TAM_PDS2.csv'),
-        },
-        'Ambitious Cases': {
-                'Drawdown TAM: Integration TAM PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integration_TAM_PDS3.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
+    def __init__(self, scen=None):
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
-
-
         self.set_tam(
             interpolation_overrides = {
                 'USA': THISDIR.joinpath('tam', 'tam_override_usa_region.csv')
@@ -165,168 +143,9 @@ class Scenario(scenario.RRSScenario):
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '2nd Poly', '2nd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'High',
-             'High', 'High', 'High', 'High', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                'Calculated based on What a Waste and EU as PDS Benchmark and OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_and_OECD_ceiling.csv'),
-            },
-            '': {
-                'Calculated based on What a Waste and Austria as PDS Benchmark and OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_Austria_as_PDS_Benchmark_and_OECD_ceiling.csv'),
-                'Calculated based on What a Waste and USA as PDS Benchmark ceiling and EU as OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_ceiling_and_EU_as_OECD_ceiling.csv'),
-            },
-            'Region: OECD90': {
-                'Baseline Cases': {
-                  'Data from (Hoornweg & Bhata-Tata What a Waste World Bank 2012, Table 12, page 24)': THISDIR.joinpath('ad', 'ad_Data_from_Hoornweg_BhataTata_What_a_Waste_World_Bank_2012_Table_12_page_24.csv'),
-              },
-                '': {
-                  'Calculated based on What a Waste and EU as PDS Benchmark and OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_and_OECD_ceiling.csv'),
-                  'Calculated based on What a Waste and Austria as PDS Benchmark and OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_Austria_as_PDS_Benchmark_and_OECD_ceiling.csv'),
-              },
-                'Ambitious Cases': {
-                  'OECD.Stats, MSW Treated - Recycled (retrieved on 7/16/16)': THISDIR.joinpath('ad', 'ad_OECD_Stats_MSW_Treated_Recycled_retrieved_on_71616.csv'),
-              },
-            },
-            'Region: Middle East and Africa': {
-                'Baseline Cases': {
-                  'Calculated based on What a Waste and EU as PDS Benchmark and OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_and_OECD_ceiling.csv'),
-              },
-                '': {
-                  'Calculated based on What a Waste and Austria as PDS Benchmark and OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_Austria_as_PDS_Benchmark_and_OECD_ceiling.csv'),
-              },
-                'Conservative Cases': {
-                  'Calculated based on What a Waste and USA as PDS Benchmark ceiling and EU as OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_ceiling_and_EU_as_OECD_ceiling.csv'),
-              },
-            },
-            'Region: China': {
-                'Baseline Cases': {
-                  'PDS % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all other regions at current OECD90 Adoption': THISDIR.joinpath('ad', 'ad_PDS_Recycled_of_Recycleable_Benchmarked_OEACD90_EU_2020_Target_and_all_other_regions_at__8a8e45f0.csv'),
-              },
-            },
-            'Region: India': {
-                'Baseline Cases': {
-                  'PDS % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all other regions at current OECD90 Adoption': THISDIR.joinpath('ad', 'ad_PDS_Recycled_of_Recycleable_Benchmarked_OEACD90_EU_2020_Target_and_all_other_regions_at__8a8e45f0.csv'),
-              },
-            },
-            'Region: EU': {
-                'Baseline Cases': {
-                  'PDS % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all other regions at current OECD90 Adoption': THISDIR.joinpath('ad', 'ad_PDS_Recycled_of_Recycleable_Benchmarked_OEACD90_EU_2020_Target_and_all_other_regions_at__8a8e45f0.csv'),
-              },
-                '': {
-                  'PDS % Recycled of Recycleable Benchmarked Target at current Austria Adoption': THISDIR.joinpath('ad', 'ad_PDS_Recycled_of_Recycleable_Benchmarked_Target_at_current_Austria_Adoption.csv'),
-                  'EuroStat 2015': THISDIR.joinpath('ad', 'ad_EuroStat_2015.csv'),
-              },
-                'Conservative Cases': {
-                  'OECD.stats': THISDIR.joinpath('ad', 'ad_OECD_stats.csv'),
-              },
-            },
-            'Region: USA': {
-                'Baseline Cases': {
-                  'OECD.Stats, MSW Treated - Recycled (retrieved on 7/16/16)': THISDIR.joinpath('ad', 'ad_OECD_Stats_MSW_Treated_Recycled_retrieved_on_71616.csv'),
-              },
-                'Conservative Cases': {
-                  'Calculated based on What a Waste and EU as PDS Benchmark and OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_and_OECD_ceiling.csv'),
-              },
-                '': {
-                  'Calculated based on What a Waste and Austria as PDS Benchmark and OECD ceiling': THISDIR.joinpath('ad', 'ad_Calculated_based_on_What_a_Waste_and_Austria_as_PDS_Benchmark_and_OECD_ceiling.csv'),
-              },
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
 
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'Custom Scenario 1 (PDS2) - High of Existing Prognostications',
-              'description': (
-                    'The high growth of existing prognostications (Mean + 1 Standard deviation '
-                    'each year) is used for this scenario. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Custom_Scenario_1_PDS2_High_of_Existing_Prognostications.csv')},
-            {'name': 'Custom Scenario 2 (PDS3) - High of Existing Prognostications with Integration Constraints',
-              'description': (
-                    'The high growth of existing prognostications (Mean + 1 Standard deviation '
-                    'each year) is used for this scenario. At higher years, restrictions are '
-                    'applied due to reduction in Municipal Solid Waste Feedstocks caused by '
-                    'other higher priority solutions (such as Reduced Food Waste and Compost). '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Custom_Scenario_2_PDS3_High_of_Existing_Prognostications_with_Integration_Constraints.csv')},
-            {'name': 'PDS 1 Plausible Scenario Post Integration August 2019',
-              'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS_1_Plausible_Scenario_Post_Integration_August_2019.csv')},
-            {'name': 'PDS 2 Drawdown Scenario Post Integration August 2019',
-              'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS_2_Drawdown_Scenario_Post_Integration_August_2019.csv')},
-            {'name': 'PDS 3 Optimum Scenario Post Integration August 2019',
-              'description': (
-                    '[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE '
-                    'SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED] '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS_3_Optimum_Scenario_Post_Integration_August_2019.csv')},
-            {'name': 'PDS1 JUNE 2020 - post integration',
-              'description': (
-                    'PDS1 % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all '
-                    'other regions at current US adoption. Global adoption is limited by the '
-                    'post-integration TAM. Regional adoption have not been updated. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_JUNE_2020_post_integration.csv')},
-            {'name': 'PDS2 JUNE 2020 - post-integration',
-              'description': (
-                    'PDS2 % Recycled of Recycleable Benchmarked OEACD90 @ EU 2020 Target and all '
-                    'other regions at current OECD90 Adoption (approximately Germany & Austria '
-                    'adoption). Global adoption is limited by the post-integration TAM. Regional '
-                    'adoption have not been updated. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_JUNE_2020_postintegration.csv')},
-            {'name': 'PDS3 JUNE 2020 - Post-integration',
-              'description': (
-                    'PDS3 % Recycled of Recycleable Benchmarked OECD90 @ 80, all other regions '
-                    'at 70%. Global adoption is limited by the post-integration TAM. Regional '
-                    'adoption have not been updated. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_JUNE_2020_Postintegration.csv')},
-        ]
-        for (i,rs) in enumerate(ca_pds_data_sources):
-            rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'Custom REF 1: Adoption at Base Year levels (2014)',
-              'description': (
-                    'Assume adoption % in 2014 remains constant '
-                    ),
-              'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Custom_REF_1_Adoption_at_Base_Year_levels_2014.csv')},
-        ]
-        # all sources are included in REF adoptions
-        for rs in ca_ref_data_sources:
-            rs['include'] = True
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1, low_sd_mult=1,
-            total_adoption_limit=ref_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:
@@ -430,4 +249,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

@@ -1,0 +1,11 @@
+{
+  "Conservative Cases": {
+    "Navigant Research": "ad_Navigant_Research.csv",
+    "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv",
+    "Based on Clean Energy Manufacturing Analysis Center": "ad_based_on_Clean_Energy_Manufacturing_Analysis_Center.csv"
+  },
+  "Ambitious Cases": {
+    "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+    "Interpolation Based on World Energy Council 2011 - Global Transport Scenarios 2050": "ad_Interpolation_based_on_World_Energy_Council_2011_Global_Transport_Scenarios_2050.csv"
+  }
+}

@@ -13,6 +13,31 @@ import pandas as pd
 from model.data_handler import DataHandler
 from model.decorators import data_func
 
+default_adoption_config_array = [
+    ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
+        'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
+        ['trend'] + ['3rd Poly'] * 10,
+        ['growth'] + ['Medium'] * 10,
+        ['low_sd_mult'] + [1.0] * 10,
+        ['high_sd_mult'] + [1.0] * 10
+    ]
+def make_adoption_config(adoption_config_array=None, overrides=None) -> pd.DataFrame:
+    """Create an adoption configuration.
+    Overrides, if provided, should be in the form of a list of tuples
+    `(param, region, value)`
+    If override region is None, the value is applied to all regions."""
+
+    ad_config_array = adoption_config_array or default_adoption_config_array
+    adconfig = pd.DataFrame(ad_config_array[1:], columns=ad_config_array[0]).set_index('param')
+    if overrides is not None:
+        for (param,region,val) in overrides:
+            if region is None:
+                adconfig.loc[param] = val
+            else:
+                adconfig.loc[param,region] = val
+    return adconfig
+
+
 class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
     """Implements Adoption Data module."""
 
@@ -27,11 +52,9 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
                  'Baseline Cases': {'Study Name C': 'filename C', 'Study Name D': 'filename D', ...}
                  'Conservative Cases': {'Study Name E': 'filename E', 'Study Name F': 'filename F', ...}
                }
-             adconfig: Pandas dataframe with columns:
+             adconfig: Pandas dataframe with rows:
                'trend', 'growth', 'low_sd_mult', 'high_sd_mult'
-               and rows for each region:
-               'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)', 'Middle East and Africa',
-               'Latin America', 'China', 'India', 'EU', 'USA'
+               and colums for each region
              main_includes_regional: boolean of whether the global min/max/sd should include
                data from the primary regions.
 

@@ -1,0 +1,68 @@
+{
+  "Baseline Cases": {
+    "Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)": "ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Adoption_Factoring.csv"
+  },
+  "Conservative Cases": {
+    "IPCC, 2006 Calculated": "ad_IPCC_2006_Calculated.csv"
+  },
+  "Ambitious Cases": {
+    "Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)": "ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Adoption_Factoring.csv"
+  },
+  "Region: OECD90": {
+    "Baseline Cases": {
+      "OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)": "ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv"
+    },
+    "Conservative Cases": {
+      "IPCC, 2006 Calculated": "ad_IPCC_2006_Calculated.csv"
+    },
+    "Ambitious Cases": {
+      "OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW).1": "ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW_1.csv"
+    }
+  },
+  "Region: Asia (Sans Japan)": {
+    "Baseline Cases": {
+      "IPCC, 2006 Calculated": "ad_IPCC_2006_Calculated.csv"
+    },
+    "Conservative Cases": {
+      "Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)": "ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Adoption_Factoring.csv"
+    },
+    "Ambitious Cases": {
+      "Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)": "ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Adoption_Factoring.csv"
+    }
+  },
+  "Region: Middle East and Africa": {
+    "Baseline Cases": {
+      "IPCC, 2006 Calculated": "ad_IPCC_2006_Calculated.csv",
+      "Calculated based on What a Waste and USA as PDS Benchmark (See Adoption Factoring)": "ad_Calculated_based_on_What_a_Waste_and_USA_as_PDS_Benchmark_See_Adoption_Factoring.csv"
+    },
+    "Ambitious Cases": {
+      "Calculated based on What a Waste and EU as PDS Benchmark (See Adoption Factoring)": "ad_Calculated_based_on_What_a_Waste_and_EU_as_PDS_Benchmark_See_Adoption_Factoring.csv"
+    }
+  },
+  "Region: China": {
+    "Baseline Cases": {
+      "Song, L. et al. Study on the Current Situation of Municipal Solid Waste Composting in China and Development Trend. 2012": "ad_Song_L__et_al__Study_on_the_Current_Situation_of_Municipal_Solid_Waste_Composting_in_Chi_f57570b9.csv"
+    },
+    "Conservative Cases": {
+      "IPCC, 2006 Calculated": "ad_IPCC_2006_Calculated.csv"
+    }
+  },
+  "Region: India": {
+    "Baseline Cases": {
+      "Kharvel, R. Sustainable Solid Waste Management in Inidia. SEAS, Columbia Thesis. 2012": "ad_Kharvel_R__Sustainable_Solid_Waste_Management_in_Inidia__SEAS_Columbia_Thesis__2012.csv"
+    }
+  },
+  "Region: EU": {
+    "Baseline Cases": {
+      "EUROSTAT, 2016. http://ec.europa.eu/eurostat/statistics-explained/index.php/Municipal_waste_statistics": "ad_EUROSTAT_2016__httpec_europa_eueurostatstatisticsexplainedindex_phpMunicipal_waste_statistics.csv",
+      "OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)": "ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv"
+    }
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "EPA, MSW trends, 2012 https://www.epa.gov/sites/production/files/2015-09/documents/2012_msw_fs.pdf": "ad_EPA_MSW_trends_2012_httpswww_epa_govsitesproductionfiles201509documents2012_msw_fs_pdf.csv",
+      "IPCC, 2006 Calculated": "ad_IPCC_2006_Calculated.csv",
+      "OECD.stat (http://stats.oecd.org/Index.aspx?DataSetCode=MUNW)": "ad_OECD_stat_httpstats_oecd_orgIndex_aspxDataSetCodeMUNW.csv"
+    }
+  }
+}

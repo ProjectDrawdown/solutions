@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Constant degradation rate, 100% adoption by 2050, linear",
+    "include": true,
+    "description": "The TLA_Envelope sheet was used to compute the annual degradation of the wetland.  The annual protection rate was adjusted so that 100% of the remaining wetlands in 2050 were protected.  This adoption is less than 100% of the wetlands in 2014. ",
+    "filename": "custom_pds_ad_Constant_degradation_rate_100_adoption_by_2050_linear.csv"
+  },
+  {
+    "name": "Constant degradation rate, 80% adoption by 2050, linear",
+    "include": true,
+    "description": "The TLA_Envelope sheet was used to compute the annual degradation of the wetland.  The annual protection rate was adjusted so that 80% of the remaining wetlands in 2050 were protected.  This is the same as Scenario 1 except for a smaller percentage protected by 2050. ",
+    "filename": "custom_pds_ad_Constant_degradation_rate_80_adoption_by_2050_linear.csv"
+  },
+  {
+    "name": "Constant degradation rate, 100% adoption by 2030, linear",
+    "include": true,
+    "description": "The TLA_Envelope sheet was used to compute the annual degradation of the wetland.  The annual protection rate was adjusted so that 100% of the remaining wetlands in 2030 were protected.  Because there is 100% protection in 2030, all values after that are constant. ",
+    "filename": "custom_pds_ad_Constant_degradation_rate_100_adoption_by_2030_linear.csv"
+  },
+  {
+    "name": "Constant degradation rate, 80% adoption by 2030, linear",
+    "include": true,
+    "description": "The TLA_Envelope sheet was used to compute the annual degradation of the wetland.  The annual protection rate was adjusted so that 80% of the remaining wetlands in 2030 were protected.  Because there is only 80% protection in 2030 linear interpolation was used to bridge the 2014, 2030, and 2050 values. ",
+    "filename": "custom_pds_ad_Constant_degradation_rate_80_adoption_by_2030_linear.csv"
+  },
+  {
+    "name": "Variable degradation rate, 100% adoption by 2050, linear",
+    "include": true,
+    "description": "The TLA_Envelope sheet was used to compute the annual degradation of the wetland.  The annual protection rate was adjusted so that 100% of the remaining wetlands in 2050 were protected.  This adoption is less than 100% of the wetlands in 2014.  This is the same as Scenario 1 except an annual reduction in degradation rate is applied. ",
+    "filename": "custom_pds_ad_Variable_degradation_rate_100_adoption_by_2050_linear.csv"
+  },
+  {
+    "name": "Variable degradation rate, 80% adoption by 2050, linear",
+    "include": true,
+    "description": "The TLA_Envelope sheet was used to compute the annual degradation of the wetland.  The annual protection rate was adjusted so that 80% of the remaining wetlands in 2050 were protected.  This is the same as Scenario 5 except for a smaller percentage protected by 2050. ",
+    "filename": "custom_pds_ad_Variable_degradation_rate_80_adoption_by_2050_linear.csv"
+  },
+  {
+    "name": "Variable degradation rate, 100% adoption by 2030, linear",
+    "include": true,
+    "description": "The TLA_Envelope sheet was used to compute the annual degradation of the wetland.  The annual protection rate was adjusted so that 100% of the remaining wetlands in 2030 were protected.  Because there is 100% protection in 2030, all values after that are constant. This is the same as Scenario 3 except a variable degradation rate is used. ",
+    "filename": "custom_pds_ad_Variable_degradation_rate_100_adoption_by_2030_linear.csv"
+  },
+  {
+    "name": "Variable degradation rate, 80% adoption by 2030, linear",
+    "include": true,
+    "description": "The TLA_Envelope sheet was used to compute the annual degradation of the wetland.  The annual protection rate was adjusted so that 80% of the remaining wetlands in 2030 were protected.  Because there is only 80% protection in 2030 linear interpolation was used to bridge the 2014, 2030, and 2050 values.  This scenario is the same as Scenario 4 except a variable degradation rate is used. ",
+    "filename": "custom_pds_ad_Variable_degradation_rate_80_adoption_by_2030_linear.csv"
+  }
+]

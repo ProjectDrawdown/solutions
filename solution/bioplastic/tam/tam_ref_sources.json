@@ -1,0 +1,10 @@
+{
+  "Baseline Cases": {
+    "Custom TAM based on PlasticsEurope (2015) & World Economic Forum (2016)": "tam_Custom_TAM_based_on_PlasticsEurope_2015_World_Economic_Forum_2016.csv",
+    "Custom TAM based on PlasticsEurope (2015) & 3.6% growth rate": "tam_Custom_TAM_based_on_PlasticsEurope_2015_3_6_growth_rate.csv"
+  },
+  "Ambitious Cases": {
+    "Custom TAM based on Mosko (2012) assuming 5.3% growth from 2013-2020": "tam_Custom_TAM_based_on_Mosko_2012_assuming_5_3_growth_from_20132020.csv",
+    "PlasticsEurope (PEMRG) (2015), for historic values / Mosko (2012) est. 385MMt in 2050": "tam_PlasticsEurope_PEMRG_2015_for_historic_values_Mosko_2012_est__385MMt_in_2050.csv"
+  }
+}

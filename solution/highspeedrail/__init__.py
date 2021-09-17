@@ -129,108 +129,24 @@ class Scenario(scenario.RRSScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Based on IEA (2016), "Energy Technology Perspectives - 6DS", IEA/OECD + Telepresence Adjustment': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_6DS_IEAOECD_Telepresence_Adjustment.csv'),
-                'Based on ICCT (2012) "Global Transport Roadmap Model", http://www.theicct.org/global-transportation-roadmap-model + Telepresence Adjustment': THISDIR.joinpath('tam', 'tam_based_on_ICCT_2012_Global_Transport_Roadmap_Model_httpwww_theicct_orgglobaltransportatio_b659d6b7.csv'),
-        },
-            'Conservative Cases': {
-                'Based on IEA (2016), "Energy Technology Perspectives - 4DS", IEA/OECD + Telepresence Adjustment': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_4DS_IEAOECD_Telepresence_Adjustment.csv'),
-        },
-            'Ambitious Cases': {
-                'Based on IEA (2016), "Energy Technology Perspectives - 2DS", IEA/OECD + Telepresence Adjustment': THISDIR.joinpath('tam', 'tam_based_on_IEA_2016_Energy_Technology_Perspectives_2DS_IEAOECD_Telepresence_Adjustment.csv'),
-        },
-    }
-    tam_pds_data_sources=tam_ref_data_sources
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
+    def __init__(self, scen=None):
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS1 - Projecting HSR Travel based on announced Track building plans', 'include': True,
-                'description': (
-                    'Taking the announcements of HSR track projects, and estimated completion '
-                    'date, we use a regionally- appropriate travel density estimation to '
-                    'determine how much travel will occur on built tracks. We include a 1% '
-                    'annual growth in this travel density and interpolate the adoption over '
-                    'study period. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1_Projecting_HSR_Travel_based_on_announced_Track_building_plans.csv')},
-            {'name': 'PDS2 - Projecting HSR Travel based on announced Track building plans', 'include': True,
-                'description': (
-                    'Taking the announcements of HSR track projects, and estimated completion '
-                    'date, we use a regionally- appropriate travel density estimation to '
-                    'determine how much travel will occur on built tracks. We include a 2.5% '
-                    'annual growth in this travel density and interpolate the adoption over '
-                    'study period. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2_Projecting_HSR_Travel_based_on_announced_Track_building_plans.csv')},
-            {'name': 'PDS3 - Projecting HSR Travel based on announced Track building plans', 'include': True,
-                'description': (
-                    'Taking the announcements of HSR track projects, and estimated completion '
-                    'date, we use a regionally- appropriate travel density estimation to '
-                    'determine how much travel will occur on built tracks. We use the maximum '
-                    'travel density found worldwide as the theoretical maximum usage. '
-                    ),
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3_Projecting_HSR_Travel_based_on_announced_Track_building_plans.csv')},
-        ]
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': 'HSR Share of Passenger Rail Market is Fixed', 'include': True,
-                'description': (
-                    'Drawdown calculations for REF adoption of HSR based on fixed percent of '
-                    'growth of all Rail in IEA (2017) RTS Scenario. We reproduce the '
-                    'calculations in this model for REF adoption estimation but instead of using '
-                    'the Total Nonurban mobility, we use the Total Rail mobility as projected by '
-                    'IEA (2017) ETP. This is more realistic as HSR growth in the REF is guided '
-                    'by the reference Rail growth (which is more conservative than the growth in '
-                    'the entire nonurban market which includes aviation). The 2018 value of Rail '
-                    'demand in interpolated from the available IEA data then that value is '
-                    'linearly scaled to each year. Values are then interpolated on the Data '
-                    'Interpolator using a 3rd Degree Polynomial. '
-                    ),
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_HSR_Share_of_Passenger_Rail_Market_is_Fixed.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:
@@ -331,4 +247,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

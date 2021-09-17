@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Rapid Conversion of Old Fixtures and 70% Maximum Adoption",
+    "include": true,
+    "filename": "custom_pds_ad_Rapid_Conversion_of_Old_Fixtures_and_70_Maximum_Adoption.csv"
+  },
+  {
+    "name": "Very Rapid Conversion of Old Fixtures and 80% Maximum Adoption",
+    "include": true,
+    "filename": "custom_pds_ad_Very_Rapid_Conversion_of_Old_Fixtures_and_80_Maximum_Adoption.csv"
+  },
+  {
+    "name": "Very Rapid Conversion of Old Fixtures and 95% Maximum Adoption",
+    "include": true,
+    "filename": "custom_pds_ad_Very_Rapid_Conversion_of_Old_Fixtures_and_95_Maximum_Adoption.csv"
+  }
+]

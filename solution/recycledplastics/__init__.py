@@ -109,88 +109,24 @@ class Scenario(scenario.RRSScenario):
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
-    tam_ref_data_sources = {
-            'Baseline Cases': {
-                'Drawdown TAM PDS 1- Plastics Available after Reduction and Replacement': THISDIR.joinpath('tam', 'tam_Drawdown_TAM_PDS_1_Plastics_Available_after_Reduction_and_Replacement.csv'),
-        },
-            '': {
-                'Drawdown TAM PDS 2- Plastics Available after Reduction and Replacement': THISDIR.joinpath('tam', 'tam_Drawdown_TAM_PDS_2_Plastics_Available_after_Reduction_and_Replacement.csv'),
-                'Drawdown TAM PDS 3- Plastics Available after Reduction and Replacement': THISDIR.joinpath('tam', 'tam_Drawdown_TAM_PDS_3_Plastics_Available_after_Reduction_and_Replacement.csv'),
-        },
-    }
-    tam_pds_data_sources = {
-        'Baseline Cases': {
-                'Drawdown TAM: Integrated Drawdown TAM - Recycled Plastics Allocation PDS1': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Drawdown_TAM_Recycled_Plastics_Allocation_PDS1.csv'),
-        },
-        '': {
-                'Drawdown TAM: Integrated Drawdown TAM - Recycled Plastics Allocation PDS2': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Drawdown_TAM_Recycled_Plastics_Allocation_PDS2.csv'),
-                'Drawdown TAM: Integrated Drawdown TAM - Recycled Plastics Allocation PDS3': THISDIR.joinpath('tam', 'tam_pds_Drawdown_TAM_Integrated_Drawdown_TAM_Recycled_Plastics_Allocation_PDS3.csv'),
-        },
-    }
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
+    def __init__(self, scen=None):
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Baseline Cases': {
-                '53% recovery - 70%yield': THISDIR.joinpath('ad', 'ad_53_recovery_70yield.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': 'PDS1',
-              'description': (
-                    'PDS 1 uses the historical growth of plastic recycling in the US from 1990 '
-                    'to 2018 and extrapolates that rate globally '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS1.csv')},
-            {'name': 'PDS2',
-              'description': (
-                    'PDS2 is based on Ellen Macarthur Foundation Projections that 53% of non- '
-                    'durable plastics could be recycled by 2050; and a 70% yield '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS2.csv')},
-            {'name': 'PDS3',
-              'description': (
-                    'PDS3 is based on the McKinsey prediction that 60% of plastic production '
-                    'could be met with recycled plastics by 2050 '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_PDS3.csv')},
-        ]
-        for (i,rs) in enumerate(ca_pds_data_sources):
-            rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -295,4 +231,3 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
-

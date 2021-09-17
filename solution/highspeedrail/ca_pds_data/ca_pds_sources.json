@@ -1,0 +1,20 @@
+[
+  {
+    "name": "PDS1 - Projecting HSR Travel based on announced Track building plans",
+    "include": true,
+    "description": "Taking the announcements of HSR track projects, and estimated completion date, we use a regionally- appropriate travel density estimation to determine how much travel will occur on built tracks. We include a 1% annual growth in this travel density and interpolate the adoption over study period. ",
+    "filename": "custom_pds_ad_PDS1_Projecting_HSR_Travel_based_on_announced_Track_building_plans.csv"
+  },
+  {
+    "name": "PDS2 - Projecting HSR Travel based on announced Track building plans",
+    "include": true,
+    "description": "Taking the announcements of HSR track projects, and estimated completion date, we use a regionally- appropriate travel density estimation to determine how much travel will occur on built tracks. We include a 2.5% annual growth in this travel density and interpolate the adoption over study period. ",
+    "filename": "custom_pds_ad_PDS2_Projecting_HSR_Travel_based_on_announced_Track_building_plans.csv"
+  },
+  {
+    "name": "PDS3 - Projecting HSR Travel based on announced Track building plans",
+    "include": true,
+    "description": "Taking the announcements of HSR track projects, and estimated completion date, we use a regionally- appropriate travel density estimation to determine how much travel will occur on built tracks. We use the maximum travel density found worldwide as the theoretical maximum usage. ",
+    "filename": "custom_pds_ad_PDS3_Projecting_HSR_Travel_based_on_announced_Track_building_plans.csv"
+  }
+]

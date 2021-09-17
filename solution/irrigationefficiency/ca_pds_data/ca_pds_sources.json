@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Low growth",
+    "include": true,
+    "filename": "custom_pds_ad_Low_growth.csv"
+  },
+  {
+    "name": "High growth",
+    "include": true,
+    "filename": "custom_pds_ad_High_growth.csv"
+  },
+  {
+    "name": "Aggressive High Growth",
+    "include": true,
+    "filename": "custom_pds_ad_Aggressive_High_Growth.csv"
+  },
+  {
+    "name": "Aggressive Max Growth",
+    "include": true,
+    "filename": "custom_pds_ad_Aggressive_Max_Growth.csv"
+  },
+  {
+    "name": "Aggressive Max Early Growth",
+    "include": true,
+    "filename": "custom_pds_ad_Aggressive_Max_Early_Growth.csv"
+  }
+]

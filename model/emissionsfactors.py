@@ -12,7 +12,7 @@ import pandas as pd
 from model.data_handler import DataHandler
 from model.decorators import data_func
 
-CO2EQ_SOURCE = enum.Enum('CO2EQ_SOURCE', 'AR5_WITH_FEEDBACK AR4 SAR')
+CO2EQ_SOURCE = enum.Enum('CO2EQ_SOURCE', 'AR5_WITH_FEEDBACK AR5_WITHOUT_FEEDBACK AR4 SAR')
 GRID_SOURCE = enum.Enum('GRID_SOURCE', 'META IPCC')
 GRID_RANGE = enum.Enum('GRID_RANGE', 'MEAN HIGH LOW')
 
@@ -53,6 +53,10 @@ def string_to_conversion_source(text):
         return CO2EQ_SOURCE.AR5_WITH_FEEDBACK
     elif str(text).lower() == "ar5_with_feedback":
         return CO2EQ_SOURCE.AR5_WITH_FEEDBACK
+    elif str(text).lower() == "ar5 without feedback":
+        return CO2EQ_SOURCE.AR5_WITHOUT_FEEDBACK
+    elif str(text).lower() == "ar5_without_feedback":
+        return CO2EQ_SOURCE.AR5_WITHOUT_FEEDBACK
     elif str(text).lower() == "ar4":
         return CO2EQ_SOURCE.AR4
     elif str(text).lower() == "sar":
@@ -66,15 +70,9 @@ def string_to_emissions_grid_source(text):
        to the enumerated type defined in this module.
        "Advanced Controls"!C189
     """
-    if str(text).lower() == "meta-analysis":
+    if "meta" in str(text).lower():
         return GRID_SOURCE.META
-    elif str(text).lower() == "meta_analysis":
-        return GRID_SOURCE.META
-    elif str(text).lower() == "meta analysis":
-        return GRID_SOURCE.META
-    elif str(text).lower() == "ipcc only":
-        return GRID_SOURCE.IPCC
-    elif str(text).lower() == "ipcc_only":
+    elif "ipcc" in str(text).lower():
         return GRID_SOURCE.IPCC
     else:
         raise ValueError("invalid grid source name=" + str(text))

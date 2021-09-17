@@ -124,19 +124,16 @@ PDS1 = "PDS-40p2050-Plausible-customPDS-avg-30Jan2020"
 PDS2 = "PDS-72p2050-Drawdown-customPDS-high-30Jan2020"
 PDS3 = "PDS-100p2050-Optimum-PDSCustom-max-aug2019"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.LandScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
+    def __init__(self, scen=None):
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TLA
         self.ae = aez.AEZ(solution_name=self.name, cohort=2020,
@@ -149,23 +146,6 @@ class Scenario(scenario.Scenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
-             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
-             'NOTE', 'NOTE', 'NOTE'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
 
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
@@ -222,6 +202,7 @@ class Scenario(scenario.Scenario):
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=1.0, low_sd_mult=1.0, total_adoption_limit=None)
 
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -326,4 +307,3 @@ class Scenario(scenario.Scenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-

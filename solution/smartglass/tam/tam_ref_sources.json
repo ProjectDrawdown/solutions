@@ -1,0 +1,11 @@
+{
+  "Baseline Cases": {
+    "IEA, 2013, \"Transition to Sustainable Buildings\" \u2013 see TAM Factoring": "tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv",
+    "\u00dcrge-Vorsatz et al. (2015) \u2013 see TAM Factoring": "tam_\u00dcrgeVorsatz_et_al__2015_see_TAM_Factoring.csv"
+  },
+  "Region: USA": {
+    "Baseline Cases": {
+      "Annual Energy Outlook 2016, U.S. Energy Information Administration, 2016.": "tam_Annual_Energy_Outlook_2016_U_S__Energy_Information_Administration_2016_.csv"
+    }
+  }
+}

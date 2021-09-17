@@ -1,0 +1,11 @@
+{
+  "Baseline Cases": {
+    "Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. Alpha Scenario": "tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_and_Woolf_et_al_2010_method_144eca81.csv"
+  },
+  "Conservative Cases": {
+    "Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. Beta Scenario": "tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_and_Woolf_et_al_2010_method_2a78e935.csv"
+  },
+  "Maximum Cases": {
+    "Project Drawdown extrapolated Biochar data, based on Lal 2005 and Woolf et al 2010 methods. MSTP Scenario": "tam_Project_Drawdown_extrapolated_Biochar_data_based_on_Lal_2005_and_Woolf_et_al_2010_method_a5bf52aa.csv"
+  }
+}

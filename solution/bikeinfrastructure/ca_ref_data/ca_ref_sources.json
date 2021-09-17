@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Drawdown Book Ed.1 Reference Scenario",
+    "include": true,
+    "description": "As the reference adoption case assumes (like most Drawdown solution) that the reference adoption remains fixed in percentage terms of the TAM, if the TAM calculationschange, the reference adoption also changes. The original reference adoption used for the models developed for the Drawdown book (edition 1) are stored here for those scenarios. ",
+    "filename": "custom_ref_ad_Drawdown_Book_Ed_1_Reference_Scenario.csv"
+  },
+  {
+    "name": "Linear REF Growth Integrated with Recent Historical Adoption",
+    "include": true,
+    "description": "We take the Default Project Drawdown REF adoption using Average Baseline TAM data and then adjust the years 2012-2018 to be the estimated historical adoptions from the Modeshare URBAN tab (with each year calculated by changing the current year input). ",
+    "filename": "custom_ref_ad_Linear_REF_Growth_Integrated_with_Recent_Historical_Adoption.csv"
+  }
+]

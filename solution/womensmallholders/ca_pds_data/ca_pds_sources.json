@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Low, Linear Trend",
+    "include": true,
+    "filename": "custom_pds_ad_Low_Linear_Trend.csv"
+  },
+  {
+    "name": "Medium, Linear Trend",
+    "include": true,
+    "filename": "custom_pds_ad_Medium_Linear_Trend.csv"
+  },
+  {
+    "name": "High, Linear Trend",
+    "include": true,
+    "filename": "custom_pds_ad_High_Linear_Trend.csv"
+  },
+  {
+    "name": "High early growth, linear trend",
+    "include": true,
+    "filename": "custom_pds_ad_High_early_growth_linear_trend.csv"
+  },
+  {
+    "name": "Max, early growth, linear trend",
+    "include": true,
+    "filename": "custom_pds_ad_Max_early_growth_linear_trend.csv"
+  }
+]

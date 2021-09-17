@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Default REF Projection with Adjustment for Recent Historical Adoptions",
+    "include": true,
+    "description": "We take the Default Project Drawdown REF adoption using Average Baseline TAM data and then adjust the years 2012-2018 to be the estimated historical adoptions from the HEV Pass-Km tab. ",
+    "filename": "custom_ref_ad_Default_REF_Projection_with_Adjustment_for_Recent_Historical_Adoptions.csv"
+  }
+]

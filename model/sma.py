@@ -87,15 +87,14 @@ class SMA:
     def read(directory, base_name, read_data=True) -> SMA:
         directory = Path(directory)
         jsonfile = directory / f"{base_name}.json"
-        with jsonfile.open() as f:
-            jsondat = json.loads(f.read())
+        jsondat = json.loads(jsonfile.read_text(encoding='utf-8'))
         
         sources = {}
         for source_info in jsondat['sources']:
             smax = SMA.Source(**source_info)
             if read_data:
                 smax.data = pd.read_csv( directory / source_info['filename'], index_col="Year",
-                                skipinitialspace=True, skip_blank_lines=True, comment='#')
+                                skipinitialspace=True, skip_blank_lines=True, comment='#', encoding='utf-8')
             sources[source_info['shortname']] = smax
         return SMA(jsondat['region_cases'], sources)
 
@@ -111,14 +110,13 @@ class SMA:
             # even if we had a filename before, we update it with the current base
             source.filename = f"{base_name}_{source.shortname}.csv"
             outputfile = directory / source.filename
-            source.data.to_csv(outputfile)
+            source.data.to_csv(outputfile, encoding='utf-8')
         
         # for the top-level structure, create a json-dumpable dict
         jdd = { 'region_cases' : self.region_cases, 
                 'sources':  [ v.short_form() for v in self.sources.values() ] }
         toplevelfile = directory / f"{base_name}.json"
-        with toplevelfile.open("w") as f:
-            f.write(json.dumps(jdd))
+        toplevelfile.write_text(json.dumps(jdd, indent=2), encoding='utf-8')
     
 
     def as_tamsources(self, directory):

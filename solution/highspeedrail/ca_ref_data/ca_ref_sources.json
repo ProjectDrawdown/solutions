@@ -1,0 +1,8 @@
+[
+  {
+    "name": "HSR Share of Passenger Rail Market is Fixed",
+    "include": true,
+    "description": "Drawdown calculations for REF adoption of HSR based on fixed percent of growth of all Rail in IEA (2017) RTS Scenario. We reproduce the calculations in this model for REF adoption estimation but instead of using the Total Nonurban mobility, we use the Total Rail mobility as projected by IEA (2017) ETP. This is more realistic as HSR growth in the REF is guided by the reference Rail growth (which is more conservative than the growth in the entire nonurban market which includes aviation). The 2018 value of Rail demand in interpolated from the available IEA data then that value is linearly scaled to each year. Values are then interpolated on the Data Interpolator using a 3rd Degree Polynomial. ",
+    "filename": "custom_ref_ad_HSR_Share_of_Passenger_Rail_Market_is_Fixed.csv"
+  }
+]

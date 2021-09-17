@@ -113,19 +113,18 @@ PDS1 = "PDS-28p2050-Plausible-customPDS-avg-Jan2020"
 PDS2 = "PDS-57p2050-Drawdown-customPDS-high-Jan2020"
 PDS3 = "PDS-85p2050-Optimum-PDSCustom-max-Nov2019"
 
-class Scenario(scenario.Scenario):
+class Scenario(scenario.LandScenario):
     name = name
     units = units
     vmas = VMAs
     solution_category = solution_category
+    module_name = THISDIR.stem
 
-    def __init__(self, scenario=None):
-        if isinstance(scenario, ac.AdvancedControls):
-            self.scenario = scenario.name
-            self.ac = scenario
-        else:
-            self.scenario = scenario or PDS2
-            self.ac = scenarios[self.scenario]
+    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+
+    def __init__(self, scen=None):
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TLA
         self.ae = aez.AEZ(solution_name=self.name, cohort=2020,
@@ -138,79 +137,27 @@ class Scenario(scenario.Scenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'NOTE',
-             'NOTE', 'NOTE', 'NOTE', 'NOTE', 'NOTE',
-             'NOTE', 'NOTE', 'NOTE'],
-            ['low_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            ['high_sd_mult', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-            'Raw Data for ALL LAND TYPES': {
-                'FAO 2010': THISDIR.joinpath('ad', 'ad_FAO_2010.csv'),
-            },
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            main_includes_regional=True,
-            adconfig=adconfig)
-
         # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
         adoption_2014 = self.ac.ref_base_adoption['World']
         tla_2050 = self.tla_per_region.loc[2050, 'World']
         ds4_percent_adoption_2050 = 0.85
         ds4_adoption_2050 = ds4_percent_adoption_2050 * tla_2050
-        ca_pds_data_sources = [
-            {'name': 'Low growth, linear trend', 'include': True, 'datapoints_degree': 1,
-                # This scenario projects the future adoption of bamboo based on historical regional
-                # growth reported for the 1990-2010 period in the Global Forest Resource Assessment
-                # 2010 report, published by the FAO.
-                'datapoints': pd.DataFrame([
+        ca_pds_data_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+        ca_pds_data_sources[0]['datapoints'] = pd.DataFrame([
                    [1990, np.nan, 0.0, 0.0, 15.412, 3.688, 10.399, 0.0, 0.0, 0.0, 0.0],
                    [2000, np.nan, 0.0, 0.0, 16.311, 3.656, 10.399, 0.0, 0.0, 0.0, 0.0],
                    [2005, np.nan, 0.0, 0.0, 16.943, 3.640, 10.399, 0.0, 0.0, 0.0, 0.0],
                    [2010, np.nan, 0.0, 0.0, 17.360, 3.627, 10.399, 0.0, 0.0, 0.0, 0.0],
-                ], columns=ca_pds_columns).set_index('Year')},
-            {'name': 'Medium growth, linear trend', 'include': True,
-                # This scenario projects the future adoption of bamboo based on the highest
-                # historical regional annual growth rate, based on 1990-2010 FAO data. The highest
-                # annual growth rate was reported in the Asia region (0.0974 Mha/year). Thus, it
-                # was assumed that bamboo plantation in other regions will grow by half of the
-                # growth rate calculated in Asia (0.05 Mha/year), while bamboo plantation in Asia
-                # continues to grow with the same rate.
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Medium_growth_linear_trend.csv')},
-            {'name': 'High growth, linear trend', 'include': True,
-                # This scenario projects the future adoption of bamboo based on the highest
-                # historical regional annual growth rate, based on 1990-2010 FAO data. The highest
-                # annual growth rate was reported in the Asia region. Thus, it was assumed that
-                # bamboo plantation in other regions will grow at the same growth rate calculated
-                # in Asia (0.0974 Mha/year), while bamboo plantation in Asia continues to grow at
-                # double this rate (0.19 Mha/year).
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_High_growth_linear_trend.csv')},
-            {'name': 'Max growth, linear trend', 'include': True,
-                # Considering the limited total land available for bamboo, this scenario
-                # projects an aggressive adoption of bamboo plantation and projects a worldwide
-                # 85% adoption of bamboo plantation by 2050.
-                'datapoints': pd.DataFrame([
+                ], columns=ca_pds_columns).set_index('Year')
+        ca_pds_data_sources[3]['datapoints'] = pd.DataFrame([
                    [2014, adoption_2014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                    [2050, ds4_adoption_2050, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                ], columns=ca_pds_columns).set_index('Year')},
-            {'name': 'Song et al. 2013', 'include': True,
-                # "Annual increase in global bamboo forests based on a global historical annual
-                # expansion of bamboo forests of 3%, as reported in Song et al. 2013 (see p.7
-                # of publication).
-                'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_Song_et_al__2013.csv')},
-        ]
+                ], columns=ca_pds_columns).set_index('Year')
         self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
             soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
             high_sd_mult=1.0, low_sd_mult=1.0,
             total_adoption_limit=self.tla_per_region)
-
         # Manual adjustment made in spreadsheet for Drawdown 2020.
         for s in self.pds_ca.scenarios.values():
             df = s['df']
@@ -225,16 +172,8 @@ class Scenario(scenario.Scenario):
             df.loc[2018] = [33.5198404377181000, 0.0, 0.0, 18.5566299788448000, 4.0283711184431500,
                     10.9348393404302000, 0.0, 0.0, 0.0, 0.0]
 
-        # Custom REF Data
-        ca_ref_data_sources = [
-            {'name': '[Type Scenario 1 Name Here (REF CASE)...]', 'include': True,
-                'filename': THISDIR.joinpath('ca_ref_data', 'custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv')},
-        ]
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=self.tla_per_region)
 
+        self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
         else:
@@ -339,4 +278,3 @@ class Scenario(scenario.Scenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
-
