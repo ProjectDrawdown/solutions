@@ -41,8 +41,8 @@ class OceanScenario():
     ##
 
     # General Land/Ocean Inputs #
-    delay_impact_of_protection_by_one_year: bool = field(default=True, metadata={'Description': 'Newly implemented policies take approximately one year to have an effect.'})
-    delay_regrowth_of_degraded_land_by_one_year: bool = field(default=True, metadata={'Description': 'Regrowth takes approximately one year to have an effect.'})
+    delay_impact_of_protection_by_one_year: bool = field(default=False, metadata={'Description': 'Newly implemented policies take approximately one year to have an effect.'})
+    delay_regrowth_of_degraded_land_by_one_year: bool = field(default=False, metadata={'Description': 'Regrowth takes approximately one year to have an effect.'})
     ##
 
     # Total Land Area / Total Ocean Area #
