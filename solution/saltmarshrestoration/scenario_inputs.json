@@ -1,0 +1,47 @@
+{
+	"PDS-100p2050-Optimum-PDSCustom-100%2030-Dec2019" : {
+		"direct_emissions_are_annual" : false,
+		"use_aggregate_CO2_equivalent_instead_of_individual_GHG": true,
+        "sequestration_rate_all_ocean": 0.928891314895682,
+		"use_adoption_for_carbon_sequestration_calculation": true,
+        "current_area_world": 1.40433448584077,
+		"future_ref_area": 1.40433448584077,
+		"future_pds_area": 1.40433448584077,
+		"total_area_as_of_period": 2030,
+		"change_per_period": 0.0,
+        "pds_scenario_name": "100PctOfTotalAreaBy2030",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2019-12-01T17:50:44",
+        "scenario_description": "100% of total area restored by 2030"
+    },
+	"PDS-83p2050-Plausible-PDSCustom-avg-Dec2019" : {
+		"direct_emissions_are_annual" : false,
+		"use_aggregate_CO2_equivalent_instead_of_individual_GHG": true,
+        "sequestration_rate_all_ocean": 0.928891314895682,
+		"use_adoption_for_carbon_sequestration_calculation": true,
+        "current_area_world": 1.40433448584077,
+		"future_ref_area": 1.40433448584077,
+		"future_pds_area": 1.40433448584077,
+		"total_area_as_of_period": 2030,
+		"change_per_period": 0.0,
+        "pds_scenario_name": "AverageOfAllCustomScenarios",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2019-12-01T17:49:24",
+        "scenario_description": "Average of all custom scenarios"
+    },
+	"PDS-99p2050-Drawdown-PDSCustom-high-Dec2019" : {
+		"direct_emissions_are_annual" : false,
+		"use_aggregate_CO2_equivalent_instead_of_individual_GHG": true,
+        "sequestration_rate_all_ocean": 0.928891314895682,
+		"use_adoption_for_carbon_sequestration_calculation": true,
+        "current_area_world": 1.40433448584077,
+		"future_ref_area": 1.40433448584077,
+		"future_pds_area": 1.40433448584077,
+		"total_area_as_of_period": 2030,
+		"change_per_period": 0.0,
+        "pds_scenario_name": "HighOfAllCustomScenarios",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2019-12-01T17:50:11",
+        "scenario_description": "High of all custom scenarios"
+    }
+}
