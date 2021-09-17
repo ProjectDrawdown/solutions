@@ -179,7 +179,8 @@ class Scenario(scenario.RRSScenario):
             use_first_pds_datapoint_main=False,
             copy_pds_to_ref=False, copy_ref_datapoint=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-            pds_adoption_is_single_source=pds_adoption_is_single_source)
+            pds_adoption_is_single_source=pds_adoption_is_single_source,
+            copy_pds_datapoint=False)
 
         self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=3)
 
