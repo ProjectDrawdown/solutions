@@ -35,11 +35,6 @@ def test_key_results(scenario_skip=None):
 @pytest.mark.deep
 def test_deep_results(scenario_skip=None, test_skip=None, test_only=None):
     """Test computed results against stored Excel results"""
-    # These currently fail for PDS1/2/3 with the error:
-    #  First Cost E37:E82
-    #          26/46 values differ:
-    #              [4, 0]: expected 122813000000.0 vs actual 122813340101.58003
-    # aka, the python is calculating with lower precision than the Excel.
     scenario_skip = scenario_skip or SCENARIO_SKIP
     test_skip = test_skip or TEST_SKIP
     expected_result_tester.one_solution_tester(
