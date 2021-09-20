@@ -48,3 +48,8 @@ def all_solutions_scenarios():
     for solution in all_solutions():
         everything[solution] = list_scenarios(solution)
     return everything
+
+
+def solution_path(solution):
+    """Return the root directory where solution is located"""
+    return Path(__file__).parent/solution

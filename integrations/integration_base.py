@@ -3,7 +3,6 @@
 import os
 import numpy as np
 import pandas as pd
-from model import integration
 from solution import factory
 from pathlib import Path
 
@@ -16,8 +15,8 @@ integration_suffix = "int2021"
 Make it sufficiently unique that it will not conflict with any existing filename suffixes."""
 
 testmode = False
-"""If True, integration will try to load data from snapshots first, and only use live data if snapshots are unavailable.
-This mode is intended for testing against original Excel."""
+"""If True, integration will try to load data from testmode snapshots first, and only use live data 
+if testmode snapshots are unavailable. This mode is intended for testing against original Excel."""
 
 def integration_start(settestmode=False):
     os.environ["DDINTEGRATE"] = integration_suffix
@@ -35,6 +34,70 @@ def integration_clean():
     for f in (root/'integrations').glob(f'**/*_{integration_suffix}.*'):
         f.unlink()
 
+# #######################################################################################################
+#
+# Solution PDS1, PDS2, PDS3
+# 
+# The scenarios to use for each solution.  These should be reviewed and set before 
+# starting an integration.  By default, the PDS1, PDS2 and PDS3 scenarios are used for 
+# each solution
+#
+# TODO: this doesn't currently load ocean scenarios (and they don't have PDS1/2/3 scenarios yet either)
+
+standard_scenarios = ["PDS1","PDS2","PDS3"]
+scenario_names = { s : standard_scenarios.copy() for s in factory.all_solutions() }
+
+# #######################################################################################################
+#
+# Reading Solution Data
+# Including testmode.  If testmode is set, look first for a snapshot for the current integration
+# in the testmodedata directory
+
+testdir = Path(__file__).parent/"testmodedata"
+rootdir = Path(__file__).parents[1]
+
+def load_solution_adoptions(solution_name) -> pd.DataFrame :
+    """Return the adoption of solution in three scenarios, labeled PDS1, PDS2 and PDS3.
+    Returns Year x (PDS1,PDS2,PDS3) dataframe."""
+    if testmode: # look for a saved snapshot
+        filename = testdir/f"{integration_name}_{solution_name}_adoption.csv"
+        if filename.is_file():
+            return pd.read_csv(filename, index_col="Year")
+    # else
+    pds1 = factory.load_scenario(solution_name, scenario_names[solution_name][0]).ht.soln_pds_funits_adopted()['World']
+    pds2 = factory.load_scenario(solution_name, scenario_names[solution_name][1]).ht.soln_pds_funits_adopted()['World']
+    pds3 = factory.load_scenario(solution_name, scenario_names[solution_name][2]).ht.soln_pds_funits_adopted()['World']
+    return pd.DataFrame({"PDS1": pds1, "PDS2": pds2, "PDS3": pds3})
+
+
+def load_solution_tam(solution_name) -> pd.Series:
+    """Return the Total Addressable Market for solution as a series"""
+    if testmode: # look for a saved snapshot
+        filename = testdir/f"{integration_name}_{solution_name}_tam.csv"
+        if filename.is_file():
+            return pd.read_csv(filename, index_col="Year")['World']
+    # else
+    return factory.load_scenario(solution_name, scenario_names[solution_name][0]).tm.pds_tam_per_region()['World']
+
+
+def load_solution_file(solution_name, file_relative_name):
+    """Return the contents of a file in a solution directory as a string"""
+    if testmode: # Look for a saved snapshot
+        filename = testdir/f"{integration_name}_{solution_name}_{file_relative_name}"
+        if filename.is_file():
+            return filename.read_text(encoding="utf-8")
+    # else
+    return (rootdir/"solution"/solution_name/file_relative_name).read_text(encoding="utf-8")
+
+def load_testmode_snapshot(snapshot_name):
+    """Use a testmode snapshot to load other live model interaction data that isn't a tam, adoption, or solution file.
+    Any data may be stored with a unique snapshot_name, and will be retrieved if testmode is true.
+    If testmode is false, None is returned"""
+    if testmode:
+        filename = testdir/f"{integration_name}_{snapshot_name}"
+        if filename.is_file():
+            return filename.read_text(encoding="utf-8")
+    return None
 
 # #######################################################################################################
 #
@@ -121,30 +184,3 @@ def demand_adjustment(title, demand, supply):
         print(f"{title} adjusted for {(overshoot>0).sum().sum()}/{overshoot.size} items by max {overshoot.max().max()}")
     return newdemand
 
-# #######################################################################################################
-#
-# Reading data
-
-testdir = Path(__file__).parent/"testmodedata"
-
-def load_solution_adoptions(solution_name, scenario_names) -> pd.DataFrame :
-    """Return the adoption of solution in three scenarios, labeled PDS1, PDS2 and PDS3.
-    Returns Year x (PDS1,PDS2,PDS3) dataframe."""
-    if testmode: # look for a saved snapshot
-        filename = testdir/f"{integration_name}_{solution_name}_adoption.csv"
-        if filename.is_file():
-            return pd.read_csv(filename, index_col="Year")
-    # else
-    pds1 = factory.load_scenario(solution_name, scenario_names[0]).ht.soln_pds_funits_adopted()['World']
-    pds2 = factory.load_scenario(solution_name, scenario_names[1]).ht.soln_pds_funits_adopted()['World']
-    pds3 = factory.load_scenario(solution_name, scenario_names[2]).ht.soln_pds_funits_adopted()['World']
-    return pd.DataFrame({"PDS1": pds1, "PDS2": pds2, "PDS3": pds3})
-
-def load_solution_tam(solution_name, scenario_name) -> pd.Series:
-    """Return the Total Addressable Market for solution as a series"""
-    if testmode: # look for a saved snapshot
-        filename = testdir/f"{integration_name}_{solution_name}_tam.csv"
-        if filename.is_file():
-            return pd.read_csv(filename, index_col="Year")['World']
-    # else
-    return factory.load_scenario(solution_name, scenario_name).tm.pds_tam_per_region()['World']
