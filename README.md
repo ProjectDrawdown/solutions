@@ -17,15 +17,14 @@ Whilst this repo covers the model and analytics in the form of a python library,
 ## Status
 
 Conversion Status:
-  * Most of the solutions (technologies) have been converted.  The remaining include some technologies (such as those related to Food systems and Oceans) that use different methodology.
+  * Almost all of the solutions (technologies) have been converted.
   * New solutions are converted as they become released from Project Drawdown research.
-  * Almost all of the "core calculations" (which generate the main results) have been completed.
+  * Core calculations (used to generate the core results) are completed
   * Most of the "secondary calculations" (which are used to do solution-specific generation of, e.g. emissions factors or adoption estimates) are _not_ yet implemented.
-  * The overall integration between multiple solution models (used to model, for example, the impact of adopton of one solution on demand for another) has not yet been implemented.
+  * The overall integration between multiple solution models (used to model, for example, the impact of adopton of one solution on demand for another) is work in progress.
 
 Other work in progress:
   * Continuing work to make the interfaces more accessible to folks outside the Project Drawdown community, both in terms of code improvements and documentation.
-  * Additional and upgraded analytics for some areas (e.g. greenhouse-gas calculation updates)
 
 For a more detailed list, see the [Issues List](https://github.com/ProjectDrawdown/solutions/issues).
 
@@ -44,11 +43,6 @@ If you are going to change the code, we recommend immediately making your own br
       $ git checkout -b <your-branch-name-here>
 ```
 
-**Hackathon attendees:  we will be working from branch `hackathon`, so your steps would look like:**
-```sh
-      $ git checkout hackathon
-      $ git checkout -b <your branch-name-here>
-```
 
 ## Development Environment
 
