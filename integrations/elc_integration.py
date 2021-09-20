@@ -1,44 +1,62 @@
 import pandas as pd
 from pathlib import Path
 from model import vma
+from solution.factory import solution_path
+from model.integration import integration_alt_file
+from integrations.integration_base import *
 
-conventional_plus_hydro = ["coal", "natural gas", "hydro", "oil products"]
+THISDIR=Path(__file__).parent
+DATADIR=THISDIR/"data"/"elc"
+
+
+# ########################################################################################################################
+#                                              State tracking
+
+audit = start_audit("elc")
+# The audit log stores results that are computed throughout the process.  It is *append only*.  
+# It is never read or modified by this code.  Enables debugging and analysis by users.
+
+
+# The energy solutions.  If any new energy solutions are added, be sure to add them to the list below.
+
+conventional_plus_hydro = ["coal", "natural gas", "large hydro", "oil products"]
 energy_solutions=["onshorewind","offshorewind","solarpvutil","solarpvroof","concentratedsolar","geothermal","waveandtidal",
                   "biomass","microwind","instreamhydro","nuclear","wastetoenergy","landfillmethane","biogas"]
 
 
-# Tab 2A: Emissions_Factors_VMA
-# From the Excel: "The Solutions  tables below should be similar to the ones availablle  on the VMA 
-# tables on emissions of each model. 1) update on each solution model and then copy the final versions 
-# here before integration.
-# We have also saved the emissions factors for conventional sources in this folder.
-
-THISDIR=Path(__file__).parent
-DATADIR=THISDIR / "data" / "elc"
 
 
-def gather_emissions_factors_vmas():
-    """
-    Gather VMA data from the individual sources.
-    Also load emissions factors for the conventional sources
-    """
+# ########################################################################################################################
+#                                              Data Collection
 
+
+def get_emissions_factors():
+    """Return a dictionary of emissions factors (average, high, low) for each energy type, including conventional sources"""
+
+    testdata = load_testmode_snapshot("emissions_factors")
+    if testdata:
+        return { x[0] : x[1:] for x in [y.split(',') for y in testdata.splitlines()] }
+
+    # else, collect the data from the VMAs
     emissions_factors = {
         # conventional
-        'coal':         vma.VMA( filename=DATADIR/"COAL_Emissions_Factor.csv",fixed_summary=(1028.25, 1250.948609519274, 805.551390480726)),
-        'natural gas':  vma.VMA( filename=DATADIR/"NATURAL_GAS_Emissions_Factor.csv", fixed_summary=(574.0743333333334, 746.9153177801815, 401.23334888648526)),
-        'hydro':        vma.VMA( filename=DATADIR/"HYDRO_Indirect_CO2_Emissions.csv", fixed_summary=(202.26478260869567, 703.9449847283984, 0.0)),
-        'oil products': vma.VMA( filename=DATADIR/"OIL_Emissions_Factor.csv", fixed_summary=(828.22, 1047.5515152913504, 608.8884847086497)),
+        'coal':         vma.VMA( DATADIR/"COAL_Emissions_Factor.csv" ),
+        'natural gas':  vma.VMA( DATADIR/"NATURAL_GAS_Emissions_Factor.csv" ),
+        'large hydro':  vma.VMA( DATADIR/"HYDRO_Indirect_CO2_Emissions.csv" ),
+        'oil products': vma.VMA( DATADIR/"OIL_Emissions_Factor.csv" ),
     }
     for soln in energy_solutions:
-        emissions_factors[soln] = standard_solution_emissions_vma(soln)
+        filename = solution_path(soln)/"vma_data/SOLUTION_Indirect_CO2_Emissions_per_Unit.csv"
+        emissions_factors[soln] = vma.VMA( filename )
     
-    return emissions_factors
+    # replace each VMA with it's summary
+    return { k : v.avg_high_low() for (k,v) in emissions_factors.items() }
 
 
 
-def SOLN_VMA_PATH(soln):
-    return THISDIR.parents[2] / "solution" / soln / "vma_data"
+def gather_adoptions():
+    """Gather adoptions for all sources, including conventional sources"""
 
-def standard_solution_emissions_vma(solution):
-    return vma.VMA( filename=SOLN_VMA_PATH(solution)/"SOLUTION_Indirect_CO2_Emissions_per_Unit.csv")
+    adoptions = {
+
+    }

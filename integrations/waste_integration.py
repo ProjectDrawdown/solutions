@@ -15,20 +15,8 @@ DATADIR = THISDIR/"data"/"msw"
 # TEMPORARY SNAPSHOT identifies inputs that are obtained from local data files that
 # should be fetched from other models, but we either don't have the model at all (the food model),
 # or we haven't implemented that part of the model.  When we do get those implemented, we should
-# replace the snapshot a live data fetch.
-
-# ########################################################################################################################
-#                                              INPUTS
-
-# By default, the standard PDS scenrios are used, but they can be replaced here with whichever 
-# scenarios you want to use for the PDS1, 2, and 3 cases.
-bioplastics_scenario_names = ["PDS1","PDS2","PDS3"]
-composting_scenario_names = ["PDS1","PDS2","PDS3"]
-insulation_scenario_names = ["PDS1","PDS2","PDS3"]
-landfill_methane_scenario_names = ["PDS1","PDS2","PDS3"]
-recycling_scenario_names = ["PDS1","PDS2","PDS3"]
-paper_scenario_names = ["PDS1","PDS2","PDS3"]
-waste_to_energy_scenario_names = ["PDS1","PDS2","PDS3"]
+# replace the snapshot a live data fetch.   Note these are _not_ the same as testmode snapshots,
+# which are meant to be used in place of live data for testing purposes only.
 
 
 # ########################################################################################################################
@@ -119,7 +107,7 @@ def ws_step2():
     
     # Adjust organic waste upwards for the portion of bioplastics that is compostible.
     # Remove same amount from recyclable (where we assume plastic would have been otherwise)
-    bioplastics_adoption = load_solution_adoptions("bioplastic", bioplastics_scenario_names)
+    bioplastics_adoption = load_solution_adoptions("bioplastic")
     compostable_bioplastics = df_mult_series(bioplastics_adoption, compostable_proportion)
     ws.organic_msw += compostable_bioplastics
     ws.recyclable_msw -= compostable_bioplastics
@@ -134,14 +122,14 @@ def ws_step3():
     """Step three adjusts the adoptions of composting and recycling to reflect availability of feedstock, 
     and subtracts those uses from their respective waste streams."""
 
-    ws.compost_adoption = load_solution_adoptions("composting", composting_scenario_names)
+    ws.compost_adoption = load_solution_adoptions("composting")
     audit("base compost adoption", ws.compost_adoption)
     ws.compost_adoption = demand_adjustment("compost adoption", ws.compost_adoption, ws.organic_msw)
     audit("adjusted compost adoption", ws.compost_adoption) # Excel Compost!E
     ws.organic_msw -= ws.compost_adoption
     audit("organics msw less compost", ws.organic_msw) # Excel Table 22 column 2
 
-    ws.recycling_adoption = load_solution_adoptions("hcrecycling", recycling_scenario_names)
+    ws.recycling_adoption = load_solution_adoptions("hcrecycling")
     audit("base recycling adoption", ws.recycling_adoption)
     ws.recycling_adoption = demand_adjustment("recycling adjustment", ws.recycling_adoption, ws.recyclable_msw)
     audit("adjusted recycling adoption", ws.recycling_adoption) # Excel H&C Recycling!E
@@ -155,7 +143,7 @@ def ws_step4():
     #       comment: this is slightly wrong: we're adjusting a new paper amount by a soiled paper amount.
     #       but it is what the spreadsheet does.  There could be a corner case in which the adoption was 
     #       less than tam but greater than msw due to the recycling ratio.
-    paper_collected = pdsify(load_solution_tam("recycledpaper", paper_scenario_names[1]))
+    paper_collected = pdsify(load_solution_tam("recycledpaper"))
     feedstock = demand_adjustment("paper available feedstock", paper_collected, ws.remainder_msw)
     audit("paper feedstock", feedstock) # Excel Paper!E 
    
@@ -164,7 +152,7 @@ def ws_step4():
 
     # The adoption is the amount of recycled paper produced
     # The consumption is the amount of waste paper required to produce that adoption amount
-    ws.paper_adoption = load_solution_adoptions("recycledpaper", recycling_scenario_names)
+    ws.paper_adoption = load_solution_adoptions("recycledpaper")
     ws.paper_consumption = ws.paper_adoption * paper_recycling_ratio
     audit("paper consumption", ws.paper_consumption) # Excel Paper!G
     ws.paper_consumption = demand_adjustment("paper consumption", ws.paper_consumption, feedstock)
@@ -225,7 +213,7 @@ def ws_step5():
     false_lhv = pdsify(ws.effective_lhv['PDS1'])  # use PDS2 for all scenarios
 
     # adoption is the amount of TwH produced.  consumption is the amount of MSW required to produce the adoption
-    ws.waste_to_energy_adoption = load_solution_adoptions('wastetoenergy', waste_to_energy_scenario_names)
+    ws.waste_to_energy_adoption = load_solution_adoptions('wastetoenergy')
     #waste_to_energy_consumption = ws.waste_to_energy_adoption / (ws.effective_lhv * waste_to_energy_efficiency_factor)
     waste_to_energy_consumption = ws.waste_to_energy_adoption / (false_lhv * waste_to_energy_efficiency_factor)
     audit("wte base consumption", waste_to_energy_consumption) # Excel WTE Tonnes and Composition!G 
@@ -245,7 +233,7 @@ def ws_step6():
     tonnage_conversion_factor = 199042.708333333   # Excel Landfill Methane ! D4
     possible_tw = ws.total_waste_msw * tonnage_conversion_factor
     audit("possible twh from lm", possible_tw)
-    ws.landfill_methane_adoption = load_solution_adoptions('landfillmethane', landfill_methane_scenario_names)
+    ws.landfill_methane_adoption = load_solution_adoptions('landfillmethane')
     ws.landfill_methane_adoption = demand_adjustment('lm adoption', ws.landfill_methane_adoption, possible_tw)
     audit('adjusted lm adoption', ws.landfill_methane_adoption)
 
@@ -265,11 +253,11 @@ def ws_step7():
 
     print("updating composting adoption")
     from solution import composting
-    composting.Scenario.update_adoptions(composting_scenario_names, ws.compost_adoption)
+    composting.Scenario.update_adoptions(scenario_names['composting'], ws.compost_adoption)
 
     print("updating recycling adoption")
     from solution import hcrecycling
-    hcrecycling.Scenario.update_adoptions(recycling_scenario_names, ws.recycling_adoption)
+    hcrecycling.Scenario.update_adoptions(scenario_names['hcrecycling'], ws.recycling_adoption)
 
     # The instructions do not say that we should update recycledpaper or insulation, but we could.
 
