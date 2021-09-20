@@ -161,9 +161,10 @@ def test_pds_cumulative_degraded_land_protected():
     ac = advanced_controls.AdvancedControls(disturbance_rate=0.0000157962432447763,
             delay_protection_1yr=True, degradation_rate=1)
     datadir = this_dir.parents[0].joinpath('data')
+    tla_per_reg = pd.read_csv(datadir.joinpath('fp_tla_per_reg.csv'), index_col=0)
     units_adopted = pd.read_csv(datadir.joinpath('fp_units_adopted.csv'), index_col=0)
     ua = unitadoption.UnitAdoption(ac=ac, soln_ref_funits_adopted=None,
-            soln_pds_funits_adopted=units_adopted)
+            soln_pds_funits_adopted=units_adopted, pds_total_adoption_units=tla_per_reg)
     expected_world = pd.read_csv(datadir.joinpath('fp_pds_deg_protected_land.csv'),
             squeeze=True, index_col=0)
     result = ua.pds_cumulative_degraded_land_protected()
@@ -188,9 +189,10 @@ def test_ref_cumulative_degraded_land_protected():
     ac = advanced_controls.AdvancedControls(disturbance_rate=0.0000157962432447763,
             delay_protection_1yr=True, degradation_rate=1)
     datadir = this_dir.parents[0].joinpath('data')
+    tla_per_reg = pd.read_csv(datadir.joinpath('fp_tla_per_reg.csv'), index_col=0)
     units_adopted = pd.read_csv(datadir.joinpath('fp_units_adopted.csv'), index_col=0)
     ua = unitadoption.UnitAdoption(ac=ac, soln_pds_funits_adopted=None,
-            soln_ref_funits_adopted=units_adopted)
+            soln_ref_funits_adopted=units_adopted, pds_total_adoption_units=tla_per_reg)
     expected_world = pd.read_csv(datadir.joinpath('fp_pds_deg_protected_land.csv'),
             squeeze=True, index_col=0)
     result = ua.ref_cumulative_degraded_land_protected()
@@ -400,8 +402,7 @@ def test_soln_ref_cumulative_funits():
          [2017, 477.16, 303.75, 1.36, 90.81, 7.11, 63.20, 62.65, 12.92, 224.01, 53.05]]
     expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
     expected.name = "soln_ref_cumulative_funits"
-    pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False,
-            check_less_precise=2)
+    pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False, atol=0.1)
 
 
 def test_soln_ref_cumulative_funits_with_NaN():
@@ -426,8 +427,7 @@ def test_soln_ref_cumulative_funits_with_NaN():
          [2017, 477.16, 303.75, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
     expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
     expected.name = "soln_ref_cumulative_funits"
-    pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False,
-            check_less_precise=2)
+    pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
 
 
 def test_soln_net_annual_funits_adopted():

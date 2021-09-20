@@ -23,14 +23,15 @@ def test_scenarios():
     assert ca.scenarios['scenario 1']['data_basis'] == ['tabular']
     assert ca.scenarios['scenario 2']['data_basis'] == ['tabular']
 
-
-def test_bad_CSV_file():
-    path1 = str(datadir.joinpath('ca_scenario_no_world_trr.csv'))
-    data_sources = [
-        {'name': 'scenario no world', 'filename': path1, 'include': True},
-    ]
-    with pytest.raises(AssertionError):  # test validation
-        ca = customadoption.CustomAdoption(data_sources=data_sources, soln_adoption_custom_name='')
+# We have changed the semantics to allow for incomplete and/or extra columns, so this test is no longer
+# correct.
+# def test_bad_CSV_file():
+#     path1 = str(datadir.joinpath('ca_scenario_no_world_trr.csv'))
+#     data_sources = [
+#         {'name': 'scenario no world', 'filename': path1, 'include': True},
+#     ]
+#     with pytest.raises(AssertionError):  # test validation
+#         ca = customadoption.CustomAdoption(data_sources=data_sources, soln_adoption_custom_name='')
 
 
 def test_avg_high_low_one_scenario():
