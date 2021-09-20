@@ -125,8 +125,6 @@ class Scenario(scenario.LandScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
@@ -142,6 +140,8 @@ class Scenario(scenario.LandScenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
+        # ADOPTION
+        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
         # Set this ourselves, since we use it below
         adconfig = adoptiondata.make_adoption_config(overrides=[
             ('trend','World',self.ac.soln_pds_adoption_prognostication_trend),

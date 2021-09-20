@@ -138,20 +138,19 @@ class Scenario(scenario.RRSScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
-    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
-    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
+        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+        self._pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
         # ADOPTION
+        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
         sconfig_list = [['region', 'base_year', 'last_year'],
             ['World', 2014, 2050],
             ['OECD90', 2014, 2050],

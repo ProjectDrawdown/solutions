@@ -124,21 +124,20 @@ class Scenario(scenario.RRSScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
-    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
-    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
+        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+        self._pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
 
-        # Custom PDS Data
+        # ADOPTION
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
         car_occ = self.ac.lookup_vma(vma_title='Current Average Car Occupancy')
         ride_occ = self.ac.lookup_vma(vma_title='Average Ridesharing Car Occupancy')
         ad_2018 = (car_occ - 1) / (ride_occ - 1)

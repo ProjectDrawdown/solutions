@@ -115,9 +115,6 @@ class Scenario(scenario.LandScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
-    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
@@ -127,8 +124,10 @@ class Scenario(scenario.LandScenario):
                 regimes=dd.THERMAL_MOISTURE_REGIMES8)
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
+        # ADOPTION
+        self._ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-        # Custom PDS Data
         ca_pds_columns = ['Year'] + dd.REGIONS
         tla_world_2050 = self.tla_per_region.loc[2050, 'World']
         irin_sri_adopt_fname = THISDIR.joinpath('ca_pds_data', 'IRIN_SRI_Adoption.csv')

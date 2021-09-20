@@ -126,8 +126,6 @@ class Scenario(scenario.LandScenario):
     vmas = VMAs
     solution_category = solution_category
     module_name = THISDIR.stem
-    
-    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
 
     def __init__(self, scen=None):
         # AC
@@ -138,6 +136,7 @@ class Scenario(scenario.LandScenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
         # ADOPTION
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
         self.initialize_adoption_bases()
 
 
