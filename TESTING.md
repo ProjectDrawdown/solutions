@@ -30,4 +30,8 @@ But it doesn't need to be done for all solutions all the time.  You can skip it 
 
 New code should include tests to cover the new functionality, and _must_ include test
 coverage for code that generates analytic results.  Please conform to the existing pattern of putting tests in a `/tests` subdirectory.
+
+## Test Policy
+
+At this time, there are a number of failing tests in the system, so we don't have a 'check in clean' policy.  However, we do ask that you check that your tests aren't causing any additional regressions: no new test failures outside of your own code.  We have started including a test result log with each release (you can find it by clicking on the 'latest' release label on the main github page, or look at other releases in the system as appropriate).  There's a new tool in tools called `diff_testruns.py` that will highlight the changes between two test runs.
  

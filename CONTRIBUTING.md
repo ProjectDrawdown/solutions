@@ -41,15 +41,19 @@ assign yourself.  It is a good idea to request feedback (via comments on your ne
 
 Discussing the change first is especially important for changes to be made in the analytic models in the `model` directory. The Drawdown methodology has been published and undergone substantial peer review. Changes to the model have to be vetted to ensure that they fit within the reviewed methodology.
 
-## Please Work in your own Branch of your own Fork
+## Working on a Project: General Git Workflow
 
-* On Github, [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the develop branch. This will give you your own repo with the same 'develop' branch.
+* On Github, [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the the project repository (or repo, for short). This will give you your own repo with the same 'develop' branch.
 * [Clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository) your fork to your local workstation.
-* Create a branch in your local repo: 'git checkout -b $NAME' where $NAME can be anything, it will be private to your repo (but fyi it will show up on the eventual pull request).  You probably want the branch name to relate to the change you plan to make, in case you end up having multiple branches at the same time.
-* ...Commit changes to your local repo...
-* Push local commits back to your fork on the github server: git push origin $NAME
-* When you have commits in your github fork, the github UI will magically give you a button to request that your changes be integrated into the main repo's 'develop' branch; but there are [other ways](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request#creating-the-pull-request) to make the request too.
-* Note that the pull request is tied to the latest commit on the branch, so if you make more commits and push them to the server, the pull request will update to include them too. If you instead want to make additional changes that will end up in a new pull request, do them on a new local branch.
+* Create a branch in your local repo: `git checkout -b <name>` where `<name>` can be anything, it will be private to your repo (but fyi it will show up on the eventual pull request).  You probably want the branch name to relate to the change you plan to make, in case you end up having multiple branches at the same time.
+* ...Code madly and commit changes to your local repo...
+* If the project repo has changed while you have been doing your work, please [refresh your repo](https://docs.github.com/en/github/collaborating-with-pull-requests/working-with-forks/syncing-a-fork), and resolve any conflicts.
+* Run pytest to be sure things things are working as expected (see [TESTING.md](TESTING.md) for help with this).
+* Push your local commits back to your fork on the github server: `git push origin <name>`
+* Now you are ready to create a "PR" (Pull Request), which is how you request that your changes get added to the main project repo.  Once you have pushed your local commits to your fork, the github UI will magically give you a button create a PR, but there are [other ways](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request#creating-the-pull-request) as well.
+* Note that if you make more commits on that same branch and push them to your gitub repo, your PR will automatically include those changes. This is very convenient if you want to modify the PR (its a great way to resolve conflicts or respond to change requests, for example).  But if you instead want to start working on a new project that will be a different PR, you need to create a new local branch.
+
+If you have any issues or questions with this process, please contact us&mdash;we are happy to help.
 
 ## Excel Import and NDAs
 

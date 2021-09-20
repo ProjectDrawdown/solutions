@@ -29,8 +29,14 @@ Tools that are helpful for debugging:
  * multi_excel_sample.py:  Copy the same section from multiple workbooks; used to get a cross-cutting sample of how different Excel models are coded.
  * expected_ghost.py: Reconstruct Excel files from the expected.zip result set.
 
-
 # Testing
 
  * expected_result_tester.py:  The workhorse that powers testing solutions against their expected results
  * solution_test_template.py:  The standard test file for solutions
+ * diff_testruns.py:  Utility to exctract just the changed success/failure cases from two test runs.
+
+# Oceans
+Oceans models have a completely different code base, so they also have some parallel tools:
+ * ocean_solution_xls_extract.py
+ * test_ocean_solution.py
+ * excel_tools.py:  This is a parallel version of util.py.  We should merge these.

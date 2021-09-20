@@ -4,6 +4,7 @@ import subprocess
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent))
+from datetime import datetime
 
 # Copied from numpy code by way of https://stackoverflow.com/a/63775093/1539989 and altered.
 # Add git version / branch info to header
@@ -29,4 +30,4 @@ def pytest_report_header(config=None):
     except OSError:
         git_info = ""
     
-    return "Git: " + git_info + " (" + git_branch + ")"
+    return "Date: " + str(datetime.now()) + "\nGit: " + git_info + " (" + git_branch + ")"
