@@ -23,7 +23,7 @@ Updating files won't update the in-memory solution models, so if new scenario ca
 
 It is very tempting to just implement the python to match the structure of the Excel.  The problem is, Excel is hard to edit, so the structure and order of things in the workbook is not necessarily a good indication of anything.  Plus the Excel may have lots of calculations in it that are part of the researchers' work, but not required for the integration.  I found it essential to follow the _instructions_ for the integration, which placed more emphasis on the inputs and outputs, which (eventually) allowed me to understand what the model was accomplishing.  Once I had done that, I was able to create the structure of the code that I needed only vaguely looking at the workbook, then refer back to the workbook for the details.
 
-Also be on the lookout for elaborate sections of the workbook that calculate some result, and the result is used in the integration.  Just put the result in a csv file;&emdash;we can worry about whether we need to reproduce the calculations some other time.
+Also be on the lookout for elaborate sections of the workbook that calculate some result, and the result is used in the integration.  Just put the result in a csv file--we can worry about whether we need to reproduce the calculations some other time.
 
 Integration_base.py provides a audit log feature, which will make copies of whatever intermediate results you tell it to.  This is very, very helpful for debugging.
 
@@ -34,9 +34,6 @@ At this point we're missing some of the core models (esp. the food model), so so
 Also some inputs come from parts of models that aren't implemented yet (since they are unique to that model, not part of the core calcs).  For both of these, we are subsituting fixed sources derived from the values in the integration workbook itself.  But as more stuff gets implemented, we would want to fetch these values from the live model instead.  (And even before that, we'll need to update our fixed snapshots if/when the underlying models are updated, which will be a pain to remember to do).
 
 Kind of in the same vein, I'm seeing a bunch of calcs in the integration I'm working on that I think should be pushed *into* their respective models.  E.g. the calculation of how much waste paper is required to produce a certain amount of recycled paper is something the recycled paper model should implement.  Ditto expected LHV for waste compostition.  If we ever get to that point, pushing a bunch of the very domain-specific stuff into the relevant domain would be the way to go.
-
-...Sort of to repeat the point: I'm coding things alongside the formulas in situ, but many of them would be better off as more general purpose functions that
-would be applied to _an_ adoption, not coded to _the_ adoption.
 
 ## Testing
 

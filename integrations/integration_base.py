@@ -98,13 +98,6 @@ def df_mult_series(df, series) -> pd.DataFrame :
     """Compute df*series by column (that is, each column of df is multiplied by series)"""
     return df.mul(series, axis=0)
 
-def load_solution_tam(solution_name, scenario_name=None) -> pd.Series :
-    """Return the REF TAM for the solution, using PDS2 unless otherwise specified.
-    Returns Worldwide data only."""
-    if scenario_name is None:
-        scenario_name = "PDS2"
-    return factory.load_scenario(solution_name, scenario_name).tm.ref_tam_per_region()['World']
-
 def pdsify(df) -> pd.DataFrame:
     """Take a df or series and replicate it to PDS1, PDS2, PDS3 dims"""
     return pd.concat({'PDS1':df, 'PDS2':df, 'PDS3':df}, axis=1)
