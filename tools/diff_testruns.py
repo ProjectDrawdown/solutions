@@ -24,6 +24,7 @@ def got_worse(d1, d2):
             for i in range(common):
                 if dots2[i] == 'F' and dots1[i] != 'F':
                     result.append(k)
+                    break
     return result
 
 
