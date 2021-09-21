@@ -129,122 +129,21 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
     module_name = THISDIR.stem
-    
+
+    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+    _pds_tam_sources=_ref_tam_sources
+    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
     def __init__(self, scen=None):
-        if scen is None:
-            scen = list(scens.keys())[0]
-        self.scenario = scen
-        self.ac = scenarios[scen]
+        # AC
+        self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
-        tamconfig_list = [
-            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES',
-                'ALL SOURCES', 'ALL SOURCES', 'ALL SOURCES' ],
-            ['trend', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-              '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-              'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')
-        tam_ref_data_sources = {
-              'Baseline Cases': {
-                  'Drawdown Buildings Sector Integrated TAM - Commercial Average': THISDIR.joinpath('tam', 'tam_Drawdown_Buildings_Sector_Integrated_TAM_Commercial_Average.csv'),
-            },
-              '': {
-                  'Drawdown Buildings Sector Integrated TAM - Commercial Average without OECD90 Region': THISDIR.joinpath('tam', 'tam_Drawdown_Buildings_Sector_Integrated_TAM_Commercial_Average_without_OECD90_Region.csv'),
-            },
-        }
-        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=tam_ref_data_sources,
-            tam_pds_data_sources=tam_ref_data_sources)
+        self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        adconfig_list = [
-            ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
-             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-            ['trend', self.ac.soln_pds_adoption_prognostication_trend, '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly', '3rd Poly',
-             '3rd Poly', '3rd Poly', '3rd Poly'],
-            ['growth', self.ac.soln_pds_adoption_prognostication_growth, 'Medium',
-             'Medium', 'Medium', 'Medium', 'Medium', 'Medium',
-             'Medium', 'Medium', 'Medium'],
-            ['low_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ['high_sd_mult', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        adconfig = pd.DataFrame(adconfig_list[1:], columns=adconfig_list[0]).set_index('param')
-        ad_data_sources = {
-        }
-        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,
-            adconfig=adconfig)
-
-        # Custom PDS Data
-        ca_pds_data_sources = [
-            {'name': '2.75% building stock retrofit rate',
-              'description': (
-                    'This model is for Commercial buildings in the non-OECD countries since the '
-                    'OECD countries already have a high adoption of high performance static '
-                    'glass, and is included in the Smart Glass model only. The difficulty in '
-                    'collecting data for non-OECD countries raises the need for some '
-                    'assumptions. In this case, we take the latest data from available countries '
-                    '(China and India), and assume that the adoption rate is fixed for all the '
-                    'historical years in the analysis (2014- current year). The future years '
-                    'have been projected by splitting the current unadopted (single pane) Market '
-                    '(TAM) each year into 1. the existing area from the previous years , 2. new '
-                    'growth in the TAM. The existing area is assumed to be converted to High '
-                    'performance at the rate of retrofit, the new growth is converted at a '
-                    'higher rate according to data on sales. Click to Jump to the Custom PDS '
-                    'Adoption. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_2_75_building_stock_retrofit_rate.csv')},
-            {'name': '5.0% building stock retrofit rate',
-              'description': (
-                    'This model is for Commercial buildings in the non-OECD countries since the '
-                    'OECD countries already have a high adoption of high performance static '
-                    'glass, and is included in the Smart Glass model only. The difficulty in '
-                    'collecting data for non-OECD countries raises the need for some '
-                    'assumptions. In this case, we take the latest data from available countries '
-                    '(China and India), and assume that the adoption rate is fixed for all the '
-                    'historical years in the analysis (2014- current year). The future years '
-                    'have been projected by splitting the current unadopted (single pane) Market '
-                    '(TAM) each year into 1. the existing area from the previous years , 2. new '
-                    'growth in the TAM. The existing area is assumed to be converted to High '
-                    'performance at the rate of retrofit, the new growth is converted at a '
-                    'higher rate according to data on sales. Click to Jump to the Custom PDS '
-                    'Adoption. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_5_0_building_stock_retrofit_rate.csv')},
-            {'name': '8.0% building stock retrofit rate',
-              'description': (
-                    'This model is for Commercial buildings in the non-OECD countries since the '
-                    'OECD countries already have a high adoption of high performance static '
-                    'glass, and is included in the Smart Glass model only. The difficulty in '
-                    'collecting data for non-OECD countries raises the need for some '
-                    'assumptions. In this case, we take the latest data from available countries '
-                    '(China and India), and assume that the adoption rate is fixed for all the '
-                    'historical years in the analysis (2014- current year). The future years '
-                    'have been projected by splitting the current unadopted (single pane) Market '
-                    '(TAM) each year into 1. the existing area from the previous years , 2. new '
-                    'growth in the TAM. The existing area is assumed to be converted to High '
-                    'performance at the rate of retrofit, the new growth is converted at a '
-                    'higher rate according to data on sales. Click to Jump to the Custom PDS '
-                    'Adoption. '
-                    ),
-              'filename': THISDIR.joinpath('ca_pds_data', 'custom_pds_ad_8_0_building_stock_retrofit_rate.csv')},
-        ]
-        for (i,rs) in enumerate(ca_pds_data_sources):
-            rs['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
+        # ADOPTION
+        self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
         if False:
@@ -278,13 +177,16 @@ class Scenario(scenario.RRSScenario):
         ht_pds_datapoints.loc[2018] = ht_pds_adoption_initial
         ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
         self.ht = helpertables.HelperTables(ac=self.ac,
-            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+            ref_datapoints=ht_ref_datapoints,
+            pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
-            ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+            ref_adoption_limits=ref_tam_per_region,
+            pds_adoption_limits=pds_tam_per_region,
             use_first_pds_datapoint_main=True,
             use_first_ref_datapoint_main=False,                                 
             copy_pds_to_ref=False,
-            copy_ref_datapoint=False, copy_pds_datapoint='Ref Table',
+            copy_ref_datapoint=False,
+            copy_pds_datapoint='Ref Table',
             copy_datapoint_to_year=2014,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
@@ -297,8 +199,8 @@ class Scenario(scenario.RRSScenario):
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
             repeated_cost_for_iunits=False,
-                                            bug_cfunits_double_count=False,
-                                            replacement_period_offset=0)
+            bug_cfunits_double_count=False,
+            replacement_period_offset=0)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
         conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
