@@ -69,7 +69,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         self.low_sd_mult = low_sd_mult
         self.high_sd_mult = high_sd_mult
         self.total_adoption_limit = total_adoption_limit
-        self.custom_pds_scenarios = {}
+        self.scenarios = {}
         for d in data_sources:
             name = d.get('name', 'noname')
             include = d.get('include', True)
@@ -109,7 +109,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
                 data_basis.append('dataframe')
             if maximum is not None:
                 df = df.clip(upper=maximum)
-            self.custom_pds_scenarios[name] = {'df': df, 'include': include, 'bug_no_limit': bug_no_limit,
+            self.scenarios[name] = {'df': df, 'include': include, 'bug_no_limit': bug_no_limit,
                     'data_basis': data_basis}
         self.soln_adoption_custom_name = soln_adoption_custom_name
 
@@ -243,10 +243,10 @@ class CustomAdoption(object, metaclass=MetaclassCache):
     def _avg_high_low(self):
         """ Returns DataFrames of average, high and low scenarios. """
         regions_to_avg = {}
-        for name, pds_scen in self.custom_pds_scenarios.items():
-            if pds_scen['include']:
-                scen_df = pds_scen['df'].dropna(axis=1, how='all').copy()  # ignore null columns (i.e. blank regional data)
-                if self.total_adoption_limit is not None and not pds_scen['bug_no_limit']:
+        for name, scen in self.scenarios.items():
+            if scen['include']:
+                scen_df = scen['df'].dropna(axis=1, how='all').copy()  # ignore null columns (i.e. blank regional data)
+                if self.total_adoption_limit is not None and not scen['bug_no_limit']:
                     tal = self.total_adoption_limit
                     idx = tal.first_valid_index()
                     scen_df.loc[idx:, :] = scen_df.loc[idx:, :].combine(tal, np.minimum)
@@ -277,8 +277,8 @@ class CustomAdoption(object, metaclass=MetaclassCache):
             (_, result, _) = self._avg_high_low()
         elif self.soln_adoption_custom_name.startswith('Low of All Custom'):
             (_, _, result) = self._avg_high_low()
-        elif self.soln_adoption_custom_name in self.custom_pds_scenarios:
-            data = self.custom_pds_scenarios[self.soln_adoption_custom_name]
+        elif self.soln_adoption_custom_name in self.scenarios:
+            data = self.scenarios[self.soln_adoption_custom_name]
             result = data['df'].copy()
         else:
             raise ValueError('Unknown adoption name: ' + str(self.soln_adoption_custom_name))
@@ -320,11 +320,11 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         report_data = {}  # dict of dataframes of detailed results
         report_summary = pd.DataFrame(
             columns=['Has regional data', 'Exceeds limits', 'Regions exceed world', 'World exceeds regions'])
-        for name, pds_scen in self.custom_pds_scenarios.items():
+        for name, scen in self.scenarios.items():
             report_data[name] = {}
-            if not pds_scen['include']:
+            if not scen['include']:
                 continue  # no need to check excluded scenarios
-            df = pds_scen['df'].loc[2020:, :]
+            df = scen['df'].loc[2020:, :]
 
             # check if any regional data
             has_regional_data = df.loc[2020:, dd.MAIN_REGIONS].any().any()
