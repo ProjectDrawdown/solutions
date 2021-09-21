@@ -25,6 +25,27 @@ But it doesn't need to be done for all solutions all the time.  You can skip it 
    $ pytest -m "not deep"
 ```
 
+## Executing and debugging unit tests from the vs code environment
+
+Problems can occur when using VS Code with pytest and anaconda. The unit testing framework within VS Code either takes a few minutes to collect all the tests, or just hangs.
+
+The following solution should work on a set-up using Windows10 and WSL (Ubuntu):
+
+In the project directory, create .vscode/conda-pytest.sh:
+
+#!/usr/bin/env bash
+. /path/to/miniconda3/etc/profile.d/conda.sh
+conda activate my_env && pytest "$@"
+
+and then, in the project's .vscode/settings.json:
+{
+    "python.testing.pytestPath": "/path/to/project/.vscode/conda-pytest.sh"
+}
+Remember to set conda-pytest.sh as executable.
+
+For a pure Windows setup, perhaps an equivalent batch/powershell script could be written in place of conda-pytest.sh.
+
+To reduce collection time further, consider adding a entry to Pytest Args such as ./solution/mysolution/. Note however that this would need to be changed when switching between solutions.
 
 ## Writing Tests
 
