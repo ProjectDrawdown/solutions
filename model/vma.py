@@ -12,7 +12,7 @@ import model.dd
 from tools.vma_xls_extract import VMAReader
 
 
-VMA_columns = ['Value', 'Units', 'Raw', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
+VMA_columns = ['Value', 'Raw', 'Raw Units', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
 
 
 def populate_fixed_summaries(vma_dict, filename):
@@ -69,10 +69,24 @@ def convert_NaN(val):
         return np.nan
     return val
 
+def normalize_units(val):
+    # We'll build a table later...
+    return val
+
 
 class VMA:
-    """Meta-analysis of multiple data sources to a summary result.
-       Arguments:
+    """Meta-analysis of multiple data sources to a summary result."""
+
+    title : str = None
+    filename : str = None
+    df : pd.DataFrame = None
+    """The source data for this VMA."""
+    units : str = None
+
+    def __init__(self, filename, title=None, low_sd=1.0, high_sd=1.0,
+                 discard_multiplier=3, stat_correction=None, use_weight=False,
+                 fixed_summary=None, description=None, notes=None, units=None):
+        """Arguments:
          filename: (string, pathlib.Path, or io.StringIO) Can be either
            * Path to a CSV file containing data sources. The CSV file must
              contain columns named "Raw Data Input", "Weight", and "Original
@@ -93,11 +107,8 @@ class VMA:
            of calculating those values
          description: optional description of what this VMA describes
          notes: optional notes that add more details
-    """
-
-    def __init__(self, filename, title=None, low_sd=1.0, high_sd=1.0,
-                 discard_multiplier=3, stat_correction=None, use_weight=False,
-                 fixed_summary=None, description=None, notes=None):
+         units: the units to use for this VMA; retrieved from datafile by default
+        """
         self.filename = filename
         self.title = title
         self.low_sd = low_sd
@@ -109,11 +120,25 @@ class VMA:
         # TODO description does not exist, but it should!
         self.description = description
         self.notes = notes
+        self.units = normalize_units(units)
+
+        # COMMENT: this initialization condition below is weird, since it defaults to making stat_correction True
+        # if neither stat_correction nor use_weight are specified.  This isn't an abvious conclusion from the 
+        # argument definitions, and also doesn't match the default setting for stat_correction in the Excel VMA template.
+        # I would simplify this to just:    self.stat_correction = stat_correction
+        # since if use_weight is specified as True, then the default (False) state of stat_correction is what you 
+        # will get anyway. 
+        #
+        # The reason I don't simply make this change is because it would mean reviewing every single 
+        # VMA initialization in the existing code to determine if they are using the "trick" to set stat_correction 
+        # to True, instead of explicitly setting stat_correction directly.  (Given that I never see stat_correction
+        # in initializers, I expect this is happening a lot.)
         if stat_correction is None:
             # Excel does not discard outliers if weights are used, we do the same by default.
             self.stat_correction = not use_weight
         else:
             self.stat_correction = stat_correction
+
         self.fixed_summary = fixed_summary
         self.df = pd.DataFrame(columns=VMA_columns)
 
@@ -207,8 +232,15 @@ class VMA:
             assert not all(pd.isnull(readable_df['Weight'])), err
         self.df['Weight'] = readable_df['Weight'].apply(convert_percentages)
         self.df['Raw'] = readable_df['Raw Data Input'].apply(convert_percentages)
-        self.df['Units'] = readable_df['Original Units']
+        self.df['Raw Units'] = readable_df['Original Units']
+        
         self.df['Value'] = readable_df['Conversion calculation'].apply(convert_NaN)
+        self.df['Value'].fillna(self.df['Raw'], inplace=True)
+        if self.units is None:
+            aunit = readable_df['Common Units'].first_valid_index()
+            if aunit is not None:
+                self.units = normalize_units( readable_df['Common Units'].loc[ aunit ] )
+ 
         self.df['Exclude?'] = readable_df['Exclude Data?'].fillna(False)
         # correct some common typos and capitalization differences from Excel files.
         normalized_region = (readable_df['World / Drawdown Region']
@@ -224,7 +256,7 @@ class VMA:
             dft = readable_df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
             readable_df['Thermal-Moisture Regime'] = dft
             self.df['TMR'] = readable_df['Thermal-Moisture Regime'].fillna('')
-        self.df['Value'].fillna(self.df['Raw'], inplace=True)
+
 
     def _validate_readable_df(self, readable_df):
         if readable_df is None:

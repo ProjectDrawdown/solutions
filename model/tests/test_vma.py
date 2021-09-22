@@ -117,7 +117,7 @@ def test_check_fixed_summary():
 
 
 def test_source_data():
-    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
         Check that this text is present, 0%, %, 0, 0
         """
     f = io.StringIO(s)
@@ -126,7 +126,7 @@ def test_source_data():
 
 
 def test_invalid_discards():
-    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
         a, 10000, ,
         b, 10000, ,
         c, 10000, ,
@@ -158,24 +158,24 @@ def test_invalid_discards():
 
 def test_no_discards_if_weights():
     """Same test as test_invalid_discards but with weights, so there should be no discards."""
-    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-        a, 10000, , , 1.0,
-        b, 10000, , , 1.0,
-        c, 10000, , , 1.0,
-        d, 10000, , , 1.0,
-        e, 10000, , , 1.0,
-        f, 10000, , , 1.0,
-        g, 10000, , , 1.0,
-        h, 10000, , , 1.0,
-        i, 10000, , , 1.0,
-        j, 10000, , , 1.0,
-        k, 10000, , , 1.0,
-        l, 10000, , , 1.0,
-        m, 10000, , , 1.0,
-        n, 10000, , , 1.0,
-        o, 10000, , , 1.0,
-        p, 10000000000, , , 1.0,
-        q, 1, , , 1.0,
+    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+        a, 10000, , , , 1.0,
+        b, 10000, , , , 1.0,
+        c, 10000, , , , 1.0,
+        d, 10000, , , , 1.0,
+        e, 10000, , , , 1.0,
+        f, 10000, , , , 1.0,
+        g, 10000, , , , 1.0,
+        h, 10000, , , , 1.0,
+        i, 10000, , , , 1.0,
+        j, 10000, , , , 1.0,
+        k, 10000, , , , 1.0,
+        l, 10000, , , , 1.0,
+        m, 10000, , , , 1.0,
+        n, 10000, , , , 1.0,
+        o, 10000, , , , 1.0,
+        p, 10000000000, , , , 1.0,
+        q, 1, , , , 1.0,
     """
     f = io.StringIO(s)
     v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0, use_weight=True)
@@ -185,10 +185,10 @@ def test_no_discards_if_weights():
 
 
 def test_excluded_data():
-    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-        a, 10000, , , 1.0, False
-        b, 10000, , , 1.0, False
-        c, 40000, , , 1.0, True
+    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+        a, 10000, , , , 1.0, False
+        b, 10000, , , , 1.0, False
+        c, 40000, , , , 1.0, True
     """
     f = io.StringIO(s)
     v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
@@ -198,10 +198,10 @@ def test_excluded_data():
 
 
 def test_excluded_data_weights_are_incorrect():
-    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-        a, 10000, , , 0.5, False
-        b, 10000, , , 0.5, False
-        c, 40000, , , 1.0, True
+    s = """Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+        a, 10000, , , , 0.5, False
+        b, 10000, , , , 0.5, False
+        c, 40000, , , , 1.0, True
     """
     f = io.StringIO(s)
     v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0, use_weight=True)
@@ -216,7 +216,7 @@ def test_excluded_data_weights_are_incorrect():
 
 
 def test_single_study():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 39%, %,
       """)
     v = vma.VMA(filename=f)
@@ -226,7 +226,7 @@ def test_single_study():
 
 
 def test_missing_columns():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 1000
       """)
     v = vma.VMA(filename=f)
@@ -265,10 +265,10 @@ def test_populate_fixed_summary():
 
 
 def test_avg_high_low_by_regime():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-      A, 0.4, Mha,, 1.0, False, Temperate/Boreal-Humid
-      B, 0.5, Mha,, 1.0, False, Temperate/Boreal-Humid
-      C, 0.6, Mha,, 1.0, False, Tropical-Humid
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 0.4, Mha,,, 1.0, False, Temperate/Boreal-Humid
+      B, 0.5, Mha,,, 1.0, False, Temperate/Boreal-Humid
+      C, 0.6, Mha,,, 1.0, False, Tropical-Humid
       """)
     v = vma.VMA(filename=f)
     result = v.avg_high_low()
@@ -278,10 +278,10 @@ def test_avg_high_low_by_regime():
 
 
 def test_avg_high_low_by_region():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-      A, 0.4, Mha,, 1.0, False, Temperate/Boreal-Humid, OECD90
-      B, 0.5, Mha,, 1.0, False, Temperate/Boreal-Humid, OECD90
-      C, 0.6, Mha,, 1.0, False, Tropical-Humid, Latin America
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 0.4, Mha,,, 1.0, False, Temperate/Boreal-Humid, OECD90
+      B, 0.5, Mha,,, 1.0, False, Temperate/Boreal-Humid, OECD90
+      C, 0.6, Mha,,, 1.0, False, Tropical-Humid, Latin America
       """)
     v = vma.VMA(filename=f)
     result = v.avg_high_low()
@@ -291,10 +291,10 @@ def test_avg_high_low_by_region():
 
 
 def test_avg_high_low_by_region_with_special_countries():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-      A, 0.4, Mha,, 1.0, False, Temperate/Boreal-Humid, OECD90
-      B, 0.5, Mha,, 1.0, False, Temperate/Boreal-Humid, USA
-      C, 0.6, Mha,, 1.0, False, Tropical-Humid, Latin America
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 0.4, Mha,,, 1.0, False, Temperate/Boreal-Humid, OECD90
+      B, 0.5, Mha,,, 1.0, False, Temperate/Boreal-Humid, USA
+      C, 0.6, Mha,,, 1.0, False, Tropical-Humid, Latin America
       """)
     v = vma.VMA(filename=f)
     result = v.avg_high_low()
@@ -306,10 +306,10 @@ def test_avg_high_low_by_region_with_special_countries():
 
 
 def test_no_warnings_in_avg_high_low():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-      A, 1.0, Mha,, 0.0, False
-      B, 1.0, Mha,, 0.0, False
-      C, 1.0, Mha,, 0.0, False
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 1.0, Mha,,, 0.0, False
+      B, 1.0, Mha,,, 0.0, False
+      C, 1.0, Mha,,, 0.0, False
       """)
     with pytest.warns(None) as warnings:
         v = vma.VMA(filename=f)
@@ -320,7 +320,7 @@ def test_no_warnings_in_avg_high_low():
 @pytest.mark.skip(reason="failing on windows; will be rewriting soon")
 def test_write_to_file():
     f = tempfile.NamedTemporaryFile(mode='w', suffix='.csv')
-    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       A, 1.0,,,,
       B, 1.0,,,,
       C, 1.0,,,,
@@ -336,7 +336,7 @@ def test_write_to_file():
 @pytest.mark.skip(reason="failing on windows; will be rewriting soon")
 def test_reload_from_file():
     f = tempfile.NamedTemporaryFile(mode='w', suffix='.csv')
-    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       original source ID, 1.0,,,,
       """)
     f.flush()
@@ -344,7 +344,7 @@ def test_reload_from_file():
     df = v.source_data.copy(deep=True)
     assert df.loc[0, 'Source ID'] == 'original source ID'
     f.seek(0)
-    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+    f.write(r"""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
       updated source ID, 1.0,,,,
       """)
     f.flush()
@@ -353,19 +353,19 @@ def test_reload_from_file():
     assert df.loc[0, 'Source ID'] == 'updated source ID'
 
 def test_spelling_correction():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-      A, 1.0, Mha,, 0.0, False,, Asia (sans Japan)
-      B, 1.0, Mha,, 0.0, False,, Middle East & Africa
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 1.0, Mha,,, 0.0, False,, Asia (sans Japan)
+      B, 1.0, Mha,,, 0.0, False,, Middle East & Africa
       """)
     v = vma.VMA(filename=f)
     assert v.df.loc[0, 'Region'] == 'Asia (Sans Japan)'
     assert v.df.loc[1, 'Region'] == 'Middle East and Africa'
 
 def test_categorical_validation():
-    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
-      A, 1.0, Mha,, 0.0, False, Global Arid, Invalid Region
-      B, 1.0, Mha,, 0.0, False,, USA
-      C, 1.0, Mha,, 0.0, False, Invalid TMR, China
+    f = io.StringIO("""Source ID, Raw Data Input, Original Units, Conversion calculation, Common Units, Weight, Exclude Data?, Thermal-Moisture Regime, World / Drawdown Region
+      A, 1.0, Mha,,, 0.0, False, Global Arid, Invalid Region
+      B, 1.0, Mha,,, 0.0, False,, USA
+      C, 1.0, Mha,,, 0.0, False, Invalid TMR, China
       """)
     v = vma.VMA(filename=f)
     assert pd.isna(v.df.loc[0, 'Region'])
@@ -438,3 +438,25 @@ def test_invalid_float_range():
     assert not np.isinf(mean)
     assert not pd.isna(high)
     assert not pd.isna(low)
+
+
+def test_units():
+    f = io.StringIO("""Source ID,Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+        A,,World,,,2011,,0.1,kg,100,g,,,
+        B,,World,,,2012,,0.1,kg,100,g,,,
+        """)
+    v = vma.VMA(filename=f)
+    assert v.units == 'g'
+
+    f = io.StringIO("""Source ID,Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+        A,,World,,,2011,,0.1,kg,,,,,
+        B,,World,,,2012,,0.1,kg,100,g,,,
+        """)
+    v = vma.VMA(filename=f)
+    assert v.units == 'g'
+    f = io.StringIO("""Source ID,Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+        A,,World,,,2011,,0.1,kg,,,,,
+        B,,World,,,2012,,0.1,kg,,,,,
+        """)
+    v = vma.VMA(filename=f)
+    assert v.units is None

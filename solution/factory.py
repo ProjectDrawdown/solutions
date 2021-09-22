@@ -4,6 +4,8 @@ import importlib
 from pathlib import Path
 from functools import lru_cache
 from model import advanced_controls as ac
+from model import scenario
+from model import vma
 
 def all_solutions():
     # Find all the directories containing an __init__.py
@@ -20,7 +22,7 @@ def list_scenarios(solution):
     m = _load_module(solution)
     return list(m.scenarios.keys())
 
-def load_scenario(solution, scenario=None):
+def load_scenario(solution, scenario=None) -> scenario.Scenario :
     """Load a scenario for the requested solution.  Scenario may be one of the following:
      * None (the default): return the PDS2 scenario for this solution
      * `PDS`, `PDS2` or `PDS3`:  get the most recent scenario of the requested type
@@ -53,3 +55,8 @@ def all_solutions_scenarios():
 def solution_path(solution):
     """Return the root directory where solution is located"""
     return Path(__file__).parent/solution
+
+
+def solution_vma(solution, vma_title) -> vma.VMA:
+    m = _load_module(solution)
+    return m.VMAs.get(vma_title,None)
