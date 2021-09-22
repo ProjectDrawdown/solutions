@@ -14,6 +14,23 @@ from tools.vma_xls_extract import VMAReader
 
 VMA_columns = ['Value', 'Raw', 'Raw Units', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
 
+# Stuff I'd like to change:
+# (1) Get rid of fixed summaries.  This is just a bad idea!  Never hardwire storage of cached results
+# away from the results they are caching, it is bound to produce errors.
+# (2) Get rid of the to/from xls code.  We don't need it.
+# (3) Switch to a json-directory format, like we did for TAM and adoption
+# (4) Store the "Explanation" metadata into the "Notes" field
+#
+# More fanciful
+# (5) Instead of mean/+sd/-sd, it seems like what we really want is median/80-percentile/20-percentile
+# Then you don't need all this standard deviation and outlier management?   Weighting is still possible.
+# (6) Add all the Excel columns into the python datastructure, and create a decent in-python (in-Jupyter) browsing/editing
+# experience for it.
+# (7) Along with ^^^, allow the attachment of real conversion functions.
+# (8) Enable automatic conversion of standard types units
+# (9) Enable caching of computed conversions and summaries (with save)
+
+
 
 def populate_fixed_summaries(vma_dict, filename):
     """
