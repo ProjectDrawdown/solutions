@@ -111,8 +111,6 @@ class Scenario(scenario.LandScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
@@ -128,8 +126,8 @@ class Scenario(scenario.LandScenario):
         self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
             custom_world_values=custom_world_vals)
 
-
-        # Custom PDS Data
+        # ADOPTION
+        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
         ca_pds_columns = ['Year'] + dd.REGIONS
         growth_initial = pd.DataFrame([[2018] + list(self.ac.ref_base_adoption.values())],
                 columns=ca_pds_columns).set_index('Year')
