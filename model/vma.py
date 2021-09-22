@@ -3,7 +3,7 @@
 import io
 import math
 import pathlib
-
+import re
 import numpy as np
 import pandas as pd
 import openpyxl
@@ -70,7 +70,13 @@ def convert_NaN(val):
     return val
 
 def normalize_units(val):
-    # We'll build a table later...
+    # There's lots to do here, potentially, but just build this out as needed
+    if val:
+        val = str(val).strip()
+        val = re.sub(r'\s+',' ', val)         # collapse multiple spaces
+        val = re.sub(r'\s*/\s*', '/', val)    # normalize to no spaces aroud '/'
+    
+    # Probably end up splitting on '/' and normalizing each part individually then putting the result back together
     return val
 
 
@@ -85,7 +91,8 @@ class VMA:
 
     def __init__(self, filename, title=None, low_sd=1.0, high_sd=1.0,
                  discard_multiplier=3, stat_correction=None, use_weight=False,
-                 fixed_summary=None, description=None, notes=None, units=None):
+                 bound_correction=None, fixed_summary=None, 
+                 description=None, notes=None, units=None):
         """Arguments:
          filename: (string, pathlib.Path, or io.StringIO) Can be either
            * Path to a CSV file containing data sources. The CSV file must
@@ -103,6 +110,8 @@ class VMA:
            stddev away from the mean.
          stat_correction: discard outliers more than discard_multiplier stddev away from the mean.
          use_weight: if true, use weights provided with the VMA to bias the mean.
+         bound_correction: if true, and the low value calculated with standard deviation would be negative, 
+         use min instead of sd on on the lower value.
          fixed_summary: if present, should be a tuple to use for (mean, high, low) instead
            of calculating those values
          description: optional description of what this VMA describes
@@ -116,6 +125,7 @@ class VMA:
         self.discard_multiplier = discard_multiplier
         self.stat_correction = stat_correction
         self.use_weight = use_weight
+        self.bound_correction = bound_correction
         # TODO notes exist in the Excel files and should be retrieved.
         # TODO description does not exist, but it should!
         self.description = description
@@ -266,31 +276,42 @@ class VMA:
                 source = f"\n\tFile: {self.filename}\n\tTitle: {self.title!r}\n"
             raise ValueError("Dataframe from" + source + "is None, is that VMA empty?")
 
-    def _discard_outliers(self):
+    def _discard_outliers(self, discard_multiplier):
         """Discard outlier values beyond a multiple of the stddev."""
         df = self.df
         mean = df['Value'].astype('float64').mean(skipna=True)
         sd = df['Value'].std(ddof=0)
         if pd.isna(mean) or pd.isna(sd):
             return df
-        valid = df['Value'] <= (mean + (self.discard_multiplier * sd))
+        valid = df['Value'] <= (mean + (discard_multiplier * sd))
         df = df[valid]
-        valid = df['Value'] >= (mean - (self.discard_multiplier * sd))
+        valid = df['Value'] >= (mean - (discard_multiplier * sd))
         df = df[valid]
         return df
 
-    def avg_high_low(self, key=None, regime=None, region=None):
+    def avg_high_low(self, key=None, regime=None, region=None,
+                    low_sd=None, high_sd=None, discard_multiplier=None, 
+                    stat_correction=None, use_weight=None, bound_correction=None):
         """
         Args:
           key: (optional) specify 'mean', 'high' or 'low' to get single value
           regime: string name of the thermal moisture regime to select sources for.
           region: string name of the world region to select sources for.
+          Other parameters: explicitly override the default parameters for this VMA.
 
         Returns:
           By default returns (mean, high, low) using low_sd/high_sd.
           If key is specified will return associated value only
         """
-        if self.use_weight:
+        # Use the parameters if provided, our defaults if not.
+        low_sd = self.low_sd if low_sd is None else low_sd
+        high_sd = self.high_sd if high_sd is None else high_sd
+        discard_multiplier = self.discard_multiplier if discard_multiplier is None else discard_multiplier
+        stat_correction = self.stat_correction if stat_correction is None else stat_correction
+        use_weight = self.use_weight if use_weight is None else use_weight
+        bound_correction = self.bound_correction if bound_correction is None else bound_correction
+
+        if use_weight:
             # Sum the weights before discarding outliers, to match Excel.
             # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.qkdzs364y2t2
             # Once reproducing Excel results is no longer essential, total_weight computation
@@ -306,7 +327,7 @@ class VMA:
         elif self.df.empty:
             mean = high = low = np.nan
         else:
-            df = self._discard_outliers() if self.stat_correction else self.df
+            df = self._discard_outliers(discard_multiplier) if stat_correction else self.df
             df = df.loc[df['Exclude?'] == False]
             if regime:
                 df = df.loc[df['TMR'] == regime]
@@ -316,7 +337,7 @@ class VMA:
                 # include values for special countries in corresponding main regions' statistics
                 df = df.loc[df['Main Region'] == region]
 
-            if self.use_weight:
+            if use_weight:
                 weights = df['Weight'].fillna(1.0)
                 mean = (df['Value'] * weights).sum(skipna=True) / total_weights
                 if M == 0.0:
@@ -332,8 +353,10 @@ class VMA:
                 # whole population stddev, ddof=0
                 sd = df['Value'].std(ddof=0)
 
-            high = mean + (self.high_sd * sd)
-            low = mean - (self.low_sd * sd)
+            high = mean + (high_sd * sd)
+            low = mean - (low_sd * sd)
+            if low < 0 and bound_correction:
+                low = min( df['Value'] )
 
         if key is None:
             return mean, high, low
