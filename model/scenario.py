@@ -60,6 +60,7 @@ class Scenario:
     """The base s-curve adoption, if this scenario uses an s-curve adoption (otherwise None)."""
 
     
+    ##############################################################################################################
     # Initialization
 
     def initialize_ac(self, scenario_name_or_ac, scenario_list, default_scenario_name):
@@ -167,9 +168,20 @@ class Scenario:
         """Returns the tam or aez limitations on adoption."""
         raise NotImplementedError("Subclass must implement")
 
-    
-    # Common top-level functionality
-    # Key Results
+    ##############################################################################################################
+    #   
+    # Functionality
+    #
+    # Commentary: Currently here's no clear line between which functionality we adopt at the top scenario level, 
+    # vs. which is deferred to the subordinate objects like ua, ht, etc.  Things tend to get added at this top level
+    # either because (a) we want to unify the functionality across multiple scenario types, or (b) we want a 
+    # nice shorthand for something that is commonly used, or (c) its new stuff.  But at some point we should 
+    # revisit and decide if there's a more clear-cut dividing line we can use.
+    # 
+    # "Key Results"   These reproduce the summary results that appeared in the top left corder of the
+    # Advanced Controls tab in Excel.  They are a general way of characterizing the overall impact of a
+    # scenario, and used to compare across multiple scenarios and/or solutions.
+    #
     def adoption_unit_increase(self, year=None, region='World'):
         if year is None:
             year = self.ac.report_end_year
@@ -212,6 +224,22 @@ class Scenario:
             end_year = self.ac.report_end_year
         return self.c2.co2eq_mmt_reduced().loc[start_year:end_year, region].sum() / 1e3
 
+    # Additional Added Calculations
+
+    def soln_net_energy_grid_impact(self) -> pd.DataFrame :
+        """The net impact of this solution on the energy grid over time relative to the reference case.  
+        This result may be positive (if the solution requires additional electricity to operate), negative (if the 
+        adoption of this technology lowers energy use) or zero (if this solution doesn't impact the grid at all).
+        Units: TWh"""
+        # Chose between Excel tables Unit Adoption Calculations!B305 and Unit Adoption Calculations!Q305,
+        # depending on the circumstance.
+        result = (self.ua.soln_pds_net_grid_electricity_units_saved() *-1.0 
+                    if self.ac.soln_energy_efficiency_factor else 
+                  self.ua.soln_pds_net_grid_electricity_units_used())
+        result.name = "soln_net_grid_energy_impact"
+        return result
+    
+    
     # Integration support.  This is limited and hacky at this time.
 
     @classmethod

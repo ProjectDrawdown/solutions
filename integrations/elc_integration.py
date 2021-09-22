@@ -26,7 +26,7 @@ energy_solutions=["onshorewind","offshorewind","solarpvutil","solarpvroof","conc
 #                                              Data Collection
 
 
-def get_emissions_factors():
+def gather_emissions_factors():
     """Return a dictionary of emissions factors (average, high, low) for each energy type, including conventional sources"""
 
     testdata = load_testmode_snapshot("emissions_factors")
@@ -57,9 +57,20 @@ def get_emissions_factors():
     return emissions_factors
 
 
-def gather_adoptions():
-    """Gather adoptions for all sources, including conventional sources"""
+def gather_net_grid_use() -> pd.DataFrame:
+    """Gather net electricity grid use from all solutions for all PDS1/2/3 scenarios.
+    Returns a DataFrame with years index and (solutions) x (pds1/2/3) columns"""
 
-    adoptions = {
+    collect = {}
+    for x in ["electricvehicles","residentialglass"]:
+        s1 = factory.load_scenario(x, scenario_names[x][0])
+        s2 = factory.load_scenario(x, scenario_names[x][1])
+        s3 = factory.load_scenario(x, scenario_names[x][2])
+        collect[x] = pd.DataFrame({
+            "PDS1": s1.soln_net_energy_grid_impact()['World'],
+            "PDS2": s2.soln_net_energy_grid_impact()['World'],
+            "PDS3": s3.soln_net_energy_grid_impact()['World']})
+    
+    return collect
 
-    }
+
