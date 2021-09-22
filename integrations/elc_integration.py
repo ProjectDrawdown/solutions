@@ -1,8 +1,6 @@
 import pandas as pd
 from pathlib import Path
 from model import vma
-from solution.factory import solution_path
-from model.integration import integration_alt_file
 from integrations.integration_base import *
 
 THISDIR=Path(__file__).parent
@@ -24,8 +22,6 @@ energy_solutions=["onshorewind","offshorewind","solarpvutil","solarpvroof","conc
                   "biomass","microwind","instreamhydro","nuclear","wastetoenergy","landfillmethane","biogas"]
 
 
-
-
 # ########################################################################################################################
 #                                              Data Collection
 
@@ -40,18 +36,25 @@ def get_emissions_factors():
     # else, collect the data from the VMAs
     emissions_factors = {
         # conventional
-        'coal':         vma.VMA( DATADIR/"COAL_Emissions_Factor.csv" ),
-        'natural gas':  vma.VMA( DATADIR/"NATURAL_GAS_Emissions_Factor.csv" ),
-        'large hydro':  vma.VMA( DATADIR/"HYDRO_Indirect_CO2_Emissions.csv" ),
-        'oil products': vma.VMA( DATADIR/"OIL_Emissions_Factor.csv" ),
+        'coal':         vma.VMA( DATADIR/"COAL_Emissions_Factor.csv", stat_correction=False, bound_correction=True).avg_high_low(),
+        'natural gas':  vma.VMA( DATADIR/"NATURAL_GAS_Emissions_Factor.csv", stat_correction=False, bound_correction=True).avg_high_low(),
+        'large hydro':  vma.VMA( DATADIR/"HYDRO_Indirect_CO2_Emissions.csv", stat_correction=True, bound_correction=True).avg_high_low(),
+        'oil products': vma.VMA( DATADIR/"OIL_Emissions_Factor.csv", stat_correction=False, bound_correction=True).avg_high_low(),
     }
     for soln in energy_solutions:
-        filename = solution_path(soln)/"vma_data/SOLUTION_Indirect_CO2_Emissions_per_Unit.csv"
-        emissions_factors[soln] = vma.VMA( filename )
+        v = factory.solution_vma(soln, 'SOLUTION Indirect CO2 Emissions per Unit')
+        if v:
+            # See if we have to correct the units; our standardized units are g CO2-eq/kWh
+            if v.units == 't CO2-eq/TWh':
+                unit_factor = 1e-3
+            else:
+                unit_factor = 1
+        
+            emissions_factors[soln] = [ x*unit_factor for x in v.avg_high_low(bound_correction=True) ]
+        else:
+            print(f"Solution {soln} missing 'Indirect CO2 Emissions' VMA; skipping for emissions factor analysis")
     
-    # replace each VMA with it's summary
-    return { k : v.avg_high_low() for (k,v) in emissions_factors.items() }
-
+    return emissions_factors
 
 
 def gather_adoptions():
