@@ -62,7 +62,7 @@ def gather_net_grid_use() -> pd.DataFrame:
     Returns a DataFrame with years index and (solutions) x (pds1/2/3) columns"""
 
     collect = {}
-    for x in ["electricvehicles","residentialglass"]:
+    for x in factory.all_solutions():
         s1 = factory.load_scenario(x, scenario_names[x][0])
         s2 = factory.load_scenario(x, scenario_names[x][1])
         s3 = factory.load_scenario(x, scenario_names[x][2])
@@ -71,6 +71,12 @@ def gather_net_grid_use() -> pd.DataFrame:
             "PDS2": s2.soln_net_energy_grid_impact()['World'],
             "PDS3": s3.soln_net_energy_grid_impact()['World']})
     
-    return collect
+        # drop no-op solutions
+        if collect[x].sum().sum() == 0:
+            del(collect[x])
+
+    return pd.concat(collect, axis=1)
+
+
 
 
