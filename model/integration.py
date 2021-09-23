@@ -7,6 +7,8 @@
 import os
 from pathlib import Path
 
+# NOTE: when you are writing *to* something, use the integration_alt form
+# when you are reading *from* something, check to see if the integration_alt_form exists first.
 
 def integration_alt_file(filename):
     """If we are doing an integration, return the integration version of this file name.
