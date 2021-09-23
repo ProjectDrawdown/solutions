@@ -114,6 +114,8 @@ def load_historical_grid_mix():
             filename = altfilename
 
     df = pd.read_csv(filename, index_col="technology")
+    # replace string column headers with integers to avoid confusion later
+    df.columns = [ int(c) for c in df.columns ]
     elc.historical_grid_mix = calc_grid_mix_percentages(df)
     audit("historical grid mix", elc.historical_grid_mix)
 
@@ -147,7 +149,7 @@ def calc_grid_mix_percentages(df):
 def grid_mix_for_year(year) -> pd.DataFrame:
     """Return the grid mix for a particular year"""
     df = elc.historical_grid_mix.swaplevel(axis=1)
-    return df[str(year)]
+    return df[year]
 
 
 # ########################################################################################################################
@@ -163,8 +165,10 @@ def phase1_setup(integration_year=None):
         elc.current_grid_mix = cymix
         print(f"Previously defined grid mix loaded for year {elc.integration_year}")
     except:
-        # TODO: calculate this
-        print(f"Grid mix initialized to extrapolation from previous years")
+        message = """The current grid mix must be set before continuing.  The most recent grid mix is available as 
+        grid_mix_for_year(YEAR), and a projection from that mix as TODO"""
+        message.replace("YEAR", max(elc.historical_grid_mix['total']).columns)
+        print(message)
 
 
 def set_as_current_grid_mix(newmix: pd.DataFrame):
@@ -180,7 +184,7 @@ def set_as_current_grid_mix(newmix: pd.DataFrame):
     histmix[elc.integration_year] = newmix['total']
     histfile = integration.integration_alt_file(DATADIR/"GridMix.csv")
     histmix.to_csv(histfile)
-    print(f"Updated grid mix saved to {histfile}")
+    print(f"Updated grid mix saved to {histfile.resolve()}")
 
     # and finally, make our in-memory version consistent
     elc.historical_grid_mix = calc_grid_mix_percentages(histmix)
