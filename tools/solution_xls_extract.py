@@ -100,6 +100,7 @@ def get_rrs_scenarios(wb, solution_category):
             s['creation_date'] = xls(sr_tab, row, co("B"))  
             # Throw an exception if the date is not in the expected format.
             datetime.datetime.strptime(s['creation_date'], "%Y-%m-%d %H:%M:%S")
+            
             s['description'] = xls(sr_tab, row + 1, co("D"))
             report_years = xls(sr_tab, row + 2, co("E"))  # E:2 from top of scenario
             (start, end) = report_years.split('-')
@@ -305,6 +306,11 @@ def get_land_scenarios(wb, solution_category):
             s['solution_category'] = solution_category
             s['vmas'] = 'VMAs'
 
+            # Note this is hidden text.
+            s['creation_date'] = xls(sr_tab, row, co("B"))  
+            # Throw an exception if the date is not in the expected format.
+            datetime.datetime.strptime(s['creation_date'], "%Y-%m-%d %H:%M:%S")
+            
             s['description'] = xls(sr_tab, row + 1, co("E"))
             report_years = xls(sr_tab, row + 2, co("E"))
             (start, end) = report_years.split('-')
