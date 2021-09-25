@@ -13,6 +13,7 @@
 """
 
 import argparse
+import datetime
 import hashlib
 import json
 import os.path
@@ -39,7 +40,7 @@ pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
 
-# convert_sr_float parses the combined value + formula conent that occurs in the ScenarioRecord tab
+# convert_sr_float parses the combined value + formula content that occurs in the ScenarioRecord tab
 
 def convert_sr_float(tab, row=None, col=None):
     """Return floating point value from Excel ScenarioRecord tab.
@@ -76,6 +77,8 @@ def get_rrs_scenarios(wb, solution_category):
        Arguments:
          wb: Excel workbook as returned by openpyxl.
          solution_category: to populate in the scenario
+       Returns:
+         dict of scenario name to advanced controls dict, suitable for writing to ac/*.json files.
     """
     sr_tab = wb['ScenarioRecord']
     scenarios = {}
@@ -93,7 +96,12 @@ def get_rrs_scenarios(wb, solution_category):
             s['solution_category'] = solution_category
             s['vmas'] = 'VMAs'
 
+            # Note this is hidden text.
+            s['creation_date'] = xls(sr_tab, row, co("B"))  
+            # Throw an exception if the date is not in the expected format.
+            datetime.datetime.strptime(s['creation_date'], "%Y-%m-%d %H:%M:%S")
             s['description'] = xls(sr_tab, row + 1, co("E"))
+
             report_years = xls(sr_tab, row + 2, co("E"))  # E:2 from top of scenario
             (start, end) = report_years.split('-')
             s['report_start_year'] = int(start)
@@ -279,6 +287,8 @@ def get_land_scenarios(wb, solution_category):
        Arguments:
          wb: Excel workbook returned by openpyxl.
          solution_category: to populate in the scenario
+       Return:
+         dict of scenario name to advanced controls dict, suitable for writing to ac/*.json files.
     """
     sr_tab = wb['ScenarioRecord']
     scenarios = {}
@@ -296,6 +306,11 @@ def get_land_scenarios(wb, solution_category):
             s['solution_category'] = solution_category
             s['vmas'] = 'VMAs'
 
+            # Note this is hidden text.
+            s['creation_date'] = xls(sr_tab, row, co("B"))  
+            # Throw an exception if the date is not in the expected format.
+            datetime.datetime.strptime(s['creation_date'], "%Y-%m-%d %H:%M:%S")
+            
             s['description'] = xls(sr_tab, row + 1, co("E"))
             report_years = xls(sr_tab, row + 2, co("E"))
             (start, end) = report_years.split('-')
