@@ -1,11 +1,17 @@
 """Template for extracting data from the expected csv's back into scenario json.
 """
+import datetime
 import glob
 import os
 import json
+import pathlib
+
 import pandas as pd
 import zipfile
 import importlib
+
+from solution import factory
+from tools import solution_xls_extract as sxe
 
 # Note that this timestamp could be one second off from the original Excel because our exported 
 # float precision is a bit too low. We export floats like
@@ -28,16 +34,6 @@ def find_scenario_in_record(df_expected, scenario_name):
             break
     return scenario_start_row
 
-def all_solutions(solution_basedir):
-    """Return all solutions with a solution/ subdir."""
-    solution_pys = glob.glob(os.path.join(solution_basedir, '*', '__init__.py'))
-    solutions = []
-    for solution_py in solution_pys:
-        solution_dirname = os.path.dirname(solution_py)
-        solutions.append(os.path.split(solution_dirname)[-1])
-    return sorted(solutions)
-
-
 def copy_expected_to_ac_json(solution_basedir, solution_name):
     solution_dir = os.path.join(solution_basedir, solution_name)
     expected_filename = os.path.join(solution_dir, 'tests', 'expected.zip')
@@ -46,12 +42,14 @@ def copy_expected_to_ac_json(solution_basedir, solution_name):
     with zipfile.ZipFile(expected_filename) as zf:
         for ac_json in ac_jsons:
             print(ac_json)
-            jsonfile = Path(ac_json).resolve()
+            jsonfile = pathlib.Path(ac_json).resolve()
             d = json.loads( jsonfile.read_text(encoding='utf-8') )
             scenario_name = d['name']
 
             # Read exported tab for the scenario from expected.zip. Note that the ScenarioRecord tab is especially
-            # confusing: there's a separate exported file for each scenario, and each one holds _all_ the scenarios.
+            # confusing: there's a separate exported file for each scenario, and each one holds _all_ the scenarios. We conservatively read only scenario x's
+            # rows from scenario x's ScenarioRecord in case the exports happened
+            # at different times.
             sr_file = zf.open(scenario_name + "/" + 'ScenarioRecord')
             df_expected = pd.read_csv(sr_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
 
@@ -73,12 +71,14 @@ def copy_expected_to_ac_json(solution_basedir, solution_name):
             sxe.write_scenario(jsonfile, d)
     return ac_jsons
 
-# Run over all solutions. 
-solution_basedir = f'/Users/jpalex/dd/solutions/solution'  # Modify this as needed.
-all_jsons_modified = []
-for solution_name in all_solutions(solution_basedir):
-    if solution_name == 'hfc_replacement':
-        # subdir PDS2-82p2050-Median\ has a space at the end.
-        continue
-    all_jsons_modified.extend(copy_expected_to_ac_json(solution_basedir, solution_name))
-print('Rewrote', len(all_jsons_modified), 'json files.')
+if __name__ == "__main__":
+    # Run over all solutions. 
+    solution_basedir = pathlib.Path(__file__).parents[1]/"solution"
+    all_jsons_modified = []
+    for solution_name in sorted(factory.all_solutions()):
+        if solution_name == 'hfc_replacement':
+            # subdir PDS2-82p2050-Median\ has a space at the end. TODO
+            continue
+        all_jsons_modified.extend(copy_expected_to_ac_json(solution_basedir, solution_name))
+    print('Rewrote', len(all_jsons_modified), 'json files.')
+
