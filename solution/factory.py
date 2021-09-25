@@ -22,7 +22,7 @@ def list_scenarios(solution):
     m = _load_module(solution)
     return list(m.scenarios.keys())
 
-def load_scenario(solution, scenario=None) -> scenario.Scenario :
+def load_scenario(solution, scenario=None):
     """Load a scenario for the requested solution.  Scenario may be one of the following:
      * None (the default): return the PDS2 scenario for this solution
      * `PDS`, `PDS2` or `PDS3`:  get the most recent scenario of the requested type
