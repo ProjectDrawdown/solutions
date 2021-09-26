@@ -53,6 +53,9 @@ class AdvancedControls:
     # description: freeform text describing the construction or intention for this scenario.
     description: str = None
 
+    # Creation date of this scenario, in %Y-%m-%d %H:%M:%S format.
+    creation_date: str = None
+
     # js: JSON this AdvancedControls object was created from (if any)
     # jsfile: the filename containing the JSON (if any)
     js: str = None
