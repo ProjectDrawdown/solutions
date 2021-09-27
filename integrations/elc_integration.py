@@ -73,6 +73,7 @@ class elc_integration_state:
 
 es = elc_integration_state()
 
+
 # ########################################################################################################################
 #                                       Data Collection and Supporting Functions
 #
@@ -371,4 +372,5 @@ def step3_calculate_emissions():
 
     es.pds_grid_emissions = es.pds_adoption.mul(es.emissions_factors['avg']).sum(axis=1)
     audit("pds grid emissions", es.pds_grid_emissions)
+
 
