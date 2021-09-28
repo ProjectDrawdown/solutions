@@ -239,9 +239,11 @@ class Scenario:
         result.name = "soln_net_grid_energy_impact"
         return result
     
-    
+    ##############################################################################################################
+    #   
     # Integration support.  This is limited and hacky at this time.
-
+    # 
+  
     @classmethod
     def scenario_path(cls):
         return Path(__file__).parents[1]/"solution"/cls.module_name
@@ -254,6 +256,19 @@ class Scenario:
                 if x['name'] == name:
                     return x['filename'] if 'filename' in x else None
         return None
+
+
+    @classmethod
+    def update_ac(cls, ac, **newvals):
+        # name comes from newvals or the ac, if not provided
+        new_scenario_name = integration.integration_alt_name(newvals.get('name', ac.name))
+        new_scenario_file = ac.jsfile or cls.scenario_path()/advanced_controls.mangle_name_to_filename(ac.name)
+        new_scenario_file = integration.integration_alt_file(new_scenario_file)
+
+        newvals['name'] = new_scenario_name
+        newac = ac.with_modifications(**newvals)
+        newac.write_to_json_file(new_scenario_file)
+
 
     @classmethod
     def update_adoptions(cls, scenario_names, newadoptions : pd.DataFrame):
@@ -281,8 +296,8 @@ class Scenario:
                     new_file_name = integration.integration_alt_file(old_file_name)
             if not new_adoption_name:
                 # just generate one
-                new_adoption_name = integration.integration_alt_name(f"new updated adoption {i}")
-                new_file_name = integration.integration_alt_file(f"new_updated_adoption_{i}")
+                new_adoption_name = integration.integration_alt_name(f"new updated adoption {i+1}")
+                new_file_name = integration.integration_alt_file(f"new_updated_adoption_{i+1}")
             
             # Write or overwrite the data file
             colname = newadoptions.columns[i]
@@ -305,19 +320,11 @@ class Scenario:
             # overwrite the directory file
             write_sources(sources, cls.scenario_path(), "pds_ca")
 
-            # if necessary, update the scenario object as well.
-            new_scenario_name = integration.integration_alt_name(oldac.name)
-            if new_scenario_name == oldac.name and new_adoption_name == oldac.soln_pds_adoption_custom_name:
-                # we've already updated this scenario before; don't need to do it again
-                return
+            # update the scenario object as well.
+            cls.update_ac(oldac, 
+                soln_pds_adoption_basis="Fully Customized PDS", 
+                soln_pds_adoption_custom_name=new_adoption_name)
 
-            new_scenario_file = Path(oldac.jsfile).name if oldac.jsfile else f"updated_integration_{i}.json"
-            new_scenario_file = integration.integration_alt_file(new_scenario_file)
-            ac_data = oldac.as_dict()
-            ac_data['name'] = new_scenario_name
-            ac_data['soln_pds_adoption_basis'] = 'Fully Customized PDS'
-            ac_data['soln_pds_adoption_custom_name'] = new_adoption_name
-            (cls.scenario_path()/"ac"/new_scenario_file).write_text(json.dumps(ac_data,indent=2), encoding="utf-8") 
 
 
 class RRSScenario(Scenario):

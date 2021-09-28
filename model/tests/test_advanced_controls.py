@@ -382,12 +382,38 @@ def test_as_dict_with_stats():
     ac = l['ac_with_stats']
     d = ac.as_dict()
     assert d['pds_2014_cost']['statistic'] == "mean"
-    assert d['pds_2014_cost']['value'] == pytest.approx(10.0)
+    assert d['pds_2014_cost']['value'] == 10
     assert d['ref_2014_cost']['statistic'] == "high"
-    assert d['ref_2014_cost']['value'] == pytest.approx(20.0)
-    assert d['vma_values']['MY VMA HAS A FIRST NAME'] == pytest.approx(-1)
+    assert d['ref_2014_cost']['value'] == 20
+    assert d['vma_values']['MY VMA HAS A FIRST NAME'] == -1
     assert d['vma_values']['ITS OSCAR']['statistic'] == 'low'
-    assert d['conv_2014_cost'] == pytest.approx(15.0)  # null statistic not added back
+    assert d['conv_2014_cost'] == 15  # null statistic not added back
+
+
+def test_with_modifications():
+    class fakeVMA:
+        df = pd.DataFrame(0, index=[0, 1], columns=vma.VMA_columns)
+        def avg_high_low(self, key):
+            if key == 'mean': return 10
+            if key == 'high': return 20
+            if key == 'low': return -10
+            return (10, 20, 30)
+    vmas = {
+       'SOLUTION First Cost per Implementation Unit': fakeVMA(),
+       'CONVENTIONAL First Cost per Implementation Unit': fakeVMA(),
+       'ITS OSCAR': fakeVMA()  
+    }
+    l = advanced_controls.load_scenarios_from_json(directory=datadir.joinpath('ac'), vmas=vmas)
+    ac = l['ac_with_stats']
+    ac2 = ac.with_modifications(pds_2014_cost=-2, soln_fixed_oper_cost_per_iunit=10) 
+    assert ac2.pds_2014_cost == -2
+    assert 'pds_2014_cost' not in ac2.vma_statistics
+    assert ac2.soln_fixed_oper_cost_per_iunit == 10
+    assert ac2.soln_first_cost_efficiency_rate == 4
+    assert ac2.lookup_vma("ITS OSCAR") == -10
+    # no hiccups occur
+    ac2_as_json = json.dumps(ac2.as_dict())
+
 
 
 def test_vma_to_param_names():

@@ -8,6 +8,7 @@ import enum
 import glob
 import json
 import typing
+import re
 from pathlib import Path
 import pandas as pd
 import pytest
@@ -943,19 +944,11 @@ class AdvancedControls:
             raise ValueError('Must input either lifetime capacity (RRS) or ' +
                              'expected lifetime (LAND) for conventional')
 
-    def ac_field_from_vma(self, vma_title):
-        """Return the name of the field that is set by this VMA, if there is one, else None.
-        (Translate from VMA titles to field names)."""
-        for field in dataclasses.fields(self):
-             vma_titles = field.metadata.get('vma_titles', None)
-             if vma_titles is not None and vma_title in vma_titles:
-                 return field.name
-        return None          
-
+        
     def lookup_vma(self, vma_title):
         """Look up a VMA value, using the value from the Advanced Controls, if any."""
         # The value might be in a field, or it might be in the vma_values dictionary
-        fieldname = self.ac_field_from_vma(vma_title)
+        fieldname = get_param_for_vma_name(vma_title)
         if fieldname:
             return getattr(self, fieldname)
         elif self.vma_values is not None:
@@ -1044,6 +1037,13 @@ class AdvancedControls:
             key = key ^ self._hash_item(field)
         return key
 
+    def with_modifications(self, **mods):
+        """Return a new Advanced Controls object that is the same as this one, but with the
+        requested fields modified.  Note: the name is not changed unless it is specifically
+        included in the modifications"""
+        d = self.as_dict()
+        d.update(mods)
+        return ac_from_dict(d, self.vmas)
 
     def write_to_json_file(self, newname=None):
         newname = newname or self.jsfile
@@ -1106,6 +1106,14 @@ def get_param_for_vma_name(name):
             if name == vma_name:
                 return field.name
     return None
+
+def mangle_name_to_filename(name, suffix="json"):
+    """Create a filename from a scenario (or any other) title"""
+    # Copied from solution_xls_extract.py for consisency
+    name = re.sub(r"['\"\n()\\/\.]", "", name).replace(' ', '_').strip()
+    if suffix:
+        name = name + "." + suffix
+    return name
 
 def solution_category_to_string(cat):
     if cat == SOLUTION_CATEGORY.REPLACEMENT:
