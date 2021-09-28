@@ -17,6 +17,7 @@ Core extraction code:
  * world_data_xls_extract.py
 
 Support code:
+ * copy_expected_to_scenario.py: Template for adding additional datapoints to scenarios via extracting from expected.zip
  * util<area>.py:  Utilities for reading Excel workbooks
  * rrs<area>.py: Copied here from ../solution/rrs.py because python hates relative dependencies.
 
