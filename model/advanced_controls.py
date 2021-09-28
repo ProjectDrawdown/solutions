@@ -846,7 +846,7 @@ class AdvancedControls:
             if name in d:
                 val = getattr(self, name)
                 d[name] = { 'value': val, 'statistic': stat }
-            elif name in self.vma_values:
+            elif self.vma_values and name in self.vma_values:
                 val = self.vma_values[name]
                 d['vma_values'][name] = { 'value': val, 'statistic': stat }
         return d
