@@ -262,7 +262,7 @@ class Scenario:
     def update_ac(cls, ac, **newvals):
         # name comes from newvals or the ac, if not provided
         new_scenario_name = integration.integration_alt_name(newvals.get('name', ac.name))
-        new_scenario_file = ac.jsfile or cls.scenario_path()/advanced_controls.mangle_name_to_filename(ac.name)
+        new_scenario_file = ac.jsfile or cls.scenario_path()/"ac"/advanced_controls.mangle_name_to_filename(ac.name)
         new_scenario_file = integration.integration_alt_file(new_scenario_file)
 
         newvals['name'] = new_scenario_name
