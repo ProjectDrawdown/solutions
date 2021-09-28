@@ -248,6 +248,11 @@ def test_lookup_vma():
     assert ac.lookup_vma('VMA1') == 2.0
 
 
+def test_lookup_field_vma():
+    ac = advanced_controls.AdvancedControls(vmas={}, conv_annual_energy_used=2.4)
+    assert ac.lookup_vma('CONVENTIONAL Total Energy Used per Functional Unit') == pytest.approx(2.4)
+
+
 def test_substitute_vma_regional_statistics():
     vals = {'World': 0, 'OECD90': 1, 'Eastern Europe': 2, 'Asia (Sans Japan)': 3,
             'Middle East and Africa': 4, 'Latin America': 5, 'China': 0, 'India': 0,
@@ -311,14 +316,36 @@ def test_fill_missing_regions_from_world_passthru():
 
 
 def test_from_json():
-    l = advanced_controls.load_scenarios_from_json(directory=datadir.joinpath('ac'), vmas=None)
-    assert len(l) == 1
-    ac = l['ac_dataclass']
+    with open(datadir.joinpath('ac').joinpath('ac_dataclass.json')) as f:
+        jsondata = json.load(f)
+    assert len(jsondata) >= 5
+    ac = advanced_controls.AdvancedControls(**jsondata)
     assert ac.pds_2014_cost == pytest.approx(1.0)
     assert ac.ref_2014_cost == pytest.approx(2.0)
     assert ac.conv_2014_cost == pytest.approx(3.0)
     assert ac.soln_first_cost_efficiency_rate == pytest.approx(4.0)
     assert ac.conv_first_cost_efficiency_rate == pytest.approx(5.0)
+
+def test_from_json_with_stats():
+    class fakeVMA:
+        df = pd.DataFrame(0, index=[0, 1], columns=vma.VMA_columns)
+        def avg_high_low(self, key):
+            if key == 'mean': return 10
+            if key == 'high': return 20
+            if key == 'low': return -10
+            return (10, 20, 30)
+    vmas = {
+       'SOLUTION First Cost per Implementation Unit': fakeVMA(),
+       'CONVENTIONAL First Cost per Implementation Unit': fakeVMA(),
+       'ITS OSCAR': fakeVMA()  
+    }
+    l = advanced_controls.load_scenarios_from_json(directory=datadir.joinpath('ac'), vmas=vmas)
+    ac = l['ac_with_stats']
+    assert ac.pds_2014_cost == pytest.approx(10.0)
+    assert ac.ref_2014_cost == pytest.approx(20.0)
+    assert ac.conv_2014_cost == pytest.approx(15.0)
+    assert ac.lookup_vma("MY VMA HAS A FIRST NAME") == pytest.approx(-1.0)
+    assert ac.lookup_vma("ITS OSCAR") == pytest.approx(-10.0)
 
 
 def test_to_json():
@@ -336,6 +363,31 @@ def test_to_json():
     assert js['soln_avg_annual_use'] == 2.0
     assert js['conv_lifetime_capacity'] == 3.0
     assert js['conv_avg_annual_use'] == 4.0
+
+
+def test_as_dict_with_stats():
+    class fakeVMA:
+        df = pd.DataFrame(0, index=[0, 1], columns=vma.VMA_columns)
+        def avg_high_low(self, key):
+            if key == 'mean': return 10
+            if key == 'high': return 20
+            if key == 'low': return -10
+            return (10, 20, 30)
+    vmas = {
+       'SOLUTION First Cost per Implementation Unit': fakeVMA(),
+       'CONVENTIONAL First Cost per Implementation Unit': fakeVMA(),
+       'ITS OSCAR': fakeVMA()  
+    }
+    l = advanced_controls.load_scenarios_from_json(directory=datadir.joinpath('ac'), vmas=vmas)
+    ac = l['ac_with_stats']
+    d = ac.as_dict()
+    assert d['pds_2014_cost']['statistic'] == "mean"
+    assert d['pds_2014_cost']['value'] == pytest.approx(10.0)
+    assert d['ref_2014_cost']['statistic'] == "high"
+    assert d['ref_2014_cost']['value'] == pytest.approx(20.0)
+    assert d['vma_values']['MY VMA HAS A FIRST NAME'] == pytest.approx(-1)
+    assert d['vma_values']['ITS OSCAR']['statistic'] == 'low'
+    assert d['conv_2014_cost'] == pytest.approx(15.0)  # null statistic not added back
 
 
 def test_vma_to_param_names():
