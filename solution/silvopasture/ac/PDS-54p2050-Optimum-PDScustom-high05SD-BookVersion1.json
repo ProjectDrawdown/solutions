@@ -114,5 +114,6 @@
         "value": 0.0,
         "statistic": ""
     },
-    "harvest_frequency": 100.0
+    "harvest_frequency": 100.0,
+    "creation_date": "2018-08-03 14:31:30"
 }

@@ -206,5 +206,6 @@
     "soln_pds_adoption_custom_name": "Drawdown Book Edition 1 PDS 2 Scenario",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Drawdown Book Edition 1 REF Scenario",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2018-08-27 18:15:32"
 }

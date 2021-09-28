@@ -111,5 +111,6 @@
         "value": 0.0,
         "statistic": ""
     },
-    "harvest_frequency": 100.0
+    "harvest_frequency": 100.0,
+    "creation_date": "2020-01-16 13:15:49"
 }
