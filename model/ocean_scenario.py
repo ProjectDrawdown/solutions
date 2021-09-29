@@ -30,12 +30,19 @@ class OceanScenario():
     npv_discount_rate: float=field(default=0.0, metadata={'Units': 'US$2014/ha', 'Description': 'Discount rate applied to capture cost of financing.'})
 
     # Direct Emissions
-    emissions_reduced_per_unit_area : float  = field(default=0.0, metadata={'Units': 't CO2-eq/ha'}) # AC: "t CO2 Reduced per land/ocean unit"
+    emissions_reduced_per_unit_area: float  = field(default=0.0, metadata={'Units': 't CO2-eq/ha'}) # AC: "t CO2 Reduced per land/ocean unit"
     direct_emissions_are_annual: bool = field(default=True, metadata={'Description': 'Set to False for a one-time effect, set to True to repeat emssion each year.'})
     conventional_direct_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per million tons of live weight'})
     conventional_indirect_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per ton'})
     solution_direct_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per million tons of live weight'})
     solution_indirect_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per ton'})
+    ##
+
+    # Fuel Emissions
+    conventional_fuel_consumed: float=field(default=0.0, metadata={'Units': 'Liters per ton landings'})
+    conventional_fuel_emissions_factor: float=field(default=0.0, metadata={'Units': 'percentage saved'})
+    solution_fuel_emissions_factor: float=field(default=0.0, metadata={'Units': 't CO2 equivalent per liter'})
+    solution_fuel_efficiency_factor: float=field(default=0.0, metadata={'Units': 't CO2 equivalent per liter'})
     ##
 
     ## General Emissions Inputs
