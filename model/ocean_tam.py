@@ -1,20 +1,25 @@
 
+import json
 from numpy import float64
 import pandas as pd
-from pandas.core.indexes.range import RangeIndex
 
 import model.interpolation as interp
 
 class OceanTam():
-    _tam: pd.Series
+    _tam_series: pd.Series
 
-    def __init__(self, base_year, last_year) -> None:
+    def __init__(self, base_year, start_year, end_year, tam_input_file) -> None:
         
         self.base_year = base_year
-        self.last_year = last_year
+        self.start_year = start_year
+        self.end_year = end_year
+
+        stream = open(tam_input_file,'r')
+        json_dict = json.load(stream)
         
-        series = pd.Series(index= RangeIndex(base_year, last_year), dtype=float64)
-        self._tam = series
+        idx, vals = zip(*json_dict['data']) # list of two-element lists
+        self._tam_series = pd.Series(data=vals, index=idx)
+        return
     
     def set_tam_linear(self, total_area, change_per_period, total_area_as_of_period = None) -> None:
         
@@ -47,16 +52,20 @@ class OceanTam():
 
         # # Write regressed values to the tam
         #column = self._tam.columns[0]
-        self._tam = df['adoption'] # self._tam.assign(**{column:y_predicted})
+        self._tam_series = df['adoption'] # self._tam.assign(**{column:y_predicted})
 
         return
         
-    
-    def apply_clip(self, lower = None, upper = None):
+    def apply_3d_poly(self):
+        df = interp.poly_degree3_trend(self._tam_series)
+        self._tam_series = df['adoption']
+
+
+    def apply_clip(self, lower = None, upper = None) -> None:
         if lower == None and upper == None:
             print('Warning : Neither lower nor upper parameter supplied. No action taken.')
-        self._tam.clip(lower=lower, upper=upper, inplace=True)
+        self._tam_series.clip(lower=lower, upper=upper, inplace=True)
 
-    def get_tam_units(self) -> pd.Series:
-        return self._tam.copy()
+    def get_tam_series(self) -> pd.Series:
+        return self._tam_series.copy()
 

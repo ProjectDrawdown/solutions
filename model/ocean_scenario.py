@@ -12,21 +12,28 @@ class OceanScenario():
     ##
 
     # Financial Inputs
-    conventional_first_cost: float=field(default=0.0, metadata={'Units': 'US$2014/ha', 'Description': 'Set-up cost of the conventional technology.'}),
-    conventional_operating_cost: float=field(default=0.0, metadata={'Units': 'US$2014/ha/year', 'Description': 'Operating cost of the conventional technology.'}),
-    conventional_net_profit_margin: float=field(default=0.0, metadata={'Units': 'US$2014/ha/year', 'Description': 'Net profit margin of the conventional technology.'}),
-    conventional_expected_lifetime: float=field(default=0.0, metadata={'Units': 'years', 'Description': 'Expected lifetime of one unit of conventional technology.'}),
+    conventional_first_cost: float=field(default=0.0, metadata={'Units': 'US$2014/ha', 'Description': 'Set-up cost of the conventional technology.'})
+    conventional_lifetime_capacity: float=field(default=0.0, metadata={'Units': 'million tons of live weight per facility for million tons of live weight'})
+    conventional_average_annual_use: float=field(default=1.0, metadata={'Units': 'million tons of live weight per facility for million tons of live weight'})
+    conventional_operating_cost: float=field(default=0.0, metadata={'Units': 'US$2014/ha/year', 'Description': 'Operating cost of the conventional technology.'})
+    conventional_net_profit_margin: float=field(default=0.0, metadata={'Units': 'US$2014/ha/year', 'Description': 'Net profit margin of the conventional technology.'})
+    conventional_expected_lifetime: float=field(default=0.0, metadata={'Units': 'years', 'Description': 'Expected lifetime of one unit of conventional technology.'})
     
-    solution_first_cost: float=field(default=0.0, metadata={'Units': 'US$2014/ha', 'Description': 'Set-up cost of the solution\'s technology.'}),
-    solution_operating_cost: float=field(default=0.0, metadata={'Units': 'US$2014/ha/year', 'Description': 'Operating cost of the solution\'s technology.'}),
-    solution_net_profit_margin: float=field(default=0.0, metadata={'Units': 'US$2014/ha/year', 'Description': 'Net profit margin of the solution\'s technology.'}),
-    solution_expected_lifetime: float=field(default=0.0, metadata={'Units': 'years', 'Description': 'Expected lifetime of one unit of the solution\'s technology.'}),
+    solution_first_cost: float=field(default=0.0, metadata={'Units': 'US$2014/ha', 'Description': 'Set-up cost of the solution\'s technology.'})
+    solution_lifetime_capacity: float=field(default=0.0, metadata={'Units': 'million tons of live weight per facility for million tons of live weight'})
+    solution_average_annual_use: float=field(default=1.0, metadata={'Units': 'million tons of live weight per facility for million tons of live weight'})
+    solution_operating_cost: float=field(default=0.0, metadata={'Units': 'US$2014/ha/year', 'Description': 'Operating cost of the solution\'s technology.'})
+    solution_net_profit_margin: float=field(default=0.0, metadata={'Units': 'US$2014/ha/year', 'Description': 'Net profit margin of the solution\'s technology.'})
+    solution_expected_lifetime: float=field(default=0.0, metadata={'Units': 'years', 'Description': 'Expected lifetime of one unit of the solution\'s technology.'})
 
-    npv_discount_rate: float=field(default=0.0, metadata={'Units': 'US$2014/ha', 'Description': 'Discount rate applied to capture cost of financing.'}),
+    unit_converting_factor: float=field(default=1.0, metadata={'Description': 'Convert between units, e.g. million hectares to hectares.'})
+    npv_discount_rate: float=field(default=0.0, metadata={'Units': 'US$2014/ha', 'Description': 'Discount rate applied to capture cost of financing.'})
 
     # Direct Emissions
     emissions_reduced_per_unit_area : float  = field(default=0.0, metadata={'Units': 't CO2-eq/ha'}) # AC: "t CO2 Reduced per land/ocean unit"
     direct_emissions_are_annual: bool = field(default=True, metadata={'Description': 'Set to False for a one-time effect, set to True to repeat emssion each year.'})
+    conventional_direct_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per million tons of live weight'})
+    solution_direct_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per million tons of live weight'})
     ##
 
     ## General Emissions Inputs

@@ -42,6 +42,10 @@ def test_carbon_sequestration_series(solution, scenario_name, expected_results):
 
     carbon_sequestration_series = solution.get_carbon_sequestration_series()
 
+    min_idx = expected_result.index.min()
+    max_idx = expected_result.index.max()
+    carbon_sequestration_series = carbon_sequestration_series.loc[min_idx:max_idx]
+
     # Assume negative sequestration is noise.
     expected_result.clip(lower=0.0, inplace=True)
     carbon_sequestration_series.clip(lower=0.0, inplace=True)

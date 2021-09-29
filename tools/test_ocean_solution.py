@@ -117,6 +117,9 @@ class TestOceanSolution():
         expected_result.clip(lower=0.0, inplace=True)
         carbon_sequestration_series.clip(lower=0.0, inplace=True)
 
+        min_idx = expected_result.index.min()
+        max_idx = expected_result.index.max()
+        carbon_sequestration_series = carbon_sequestration_series.loc[min_idx:max_idx]
         try:
             pd.testing.assert_series_equal(carbon_sequestration_series, expected_result, check_names = False)
         except AssertionError as ae:
@@ -164,6 +167,9 @@ class TestOceanSolution():
         expected_result.index = expected_result.index.map(int64) # index is read with string datatype so convert to int64.
         
         change_in_ppm_equivalent_series = solution.get_change_in_ppm_equivalent_series()
+        min_idx = expected_result.index.min()
+        max_idx = expected_result.index.max()
+        change_in_ppm_equivalent_series = change_in_ppm_equivalent_series.loc[min_idx:max_idx]
         
         try:
             pd.testing.assert_series_equal(change_in_ppm_equivalent_series, expected_result, check_names = False)
@@ -228,8 +234,8 @@ class TestOceanSolutionFinancialResults():
             msg = f'Failed on scenario {scenario_name}'
             raise AssertionError(msg) from ae
         
-    def test_get_cumulative_first_cost_pds(self, solution, scenario_name, expected_results):
-        result = solution.get_cumulative_first_cost_pds()
+    def test_get_cumulative_first_cost_solution(self, solution, scenario_name, expected_results):
+        result = solution.get_cumulative_first_cost_solution()
         expected_result = expected_results['Cumulative First Cost Across Reporting Period']
         try:
             assert result == pytest.approx(expected_result)
@@ -256,8 +262,8 @@ class TestOceanSolutionFinancialResults():
             msg = f'Failed on scenario {scenario_name}'
             raise AssertionError(msg) from ae
         
-    def test_get_payback_period_soln_to_conv(self, solution, scenario_name, expected_results):
-        result = solution.get_payback_period_soln_to_conv(purchase_year = 2017)
+    def test_get_payback_period_solution_vs_conventional(self, solution, scenario_name, expected_results):
+        result = solution.get_payback_period_solution_vs_conventional(purchase_year = 2017)
         result = max(result, -1)
         expected_result = expected_results['Payback Period Solution Relative to Conventional']
         try:
@@ -266,8 +272,8 @@ class TestOceanSolutionFinancialResults():
             msg = f'Failed on scenario {scenario_name}'
             raise AssertionError(msg) from ae
         
-    def test_get_payback_period_soln_to_conv_npv(self, solution, scenario_name, expected_results):
-        result = solution.get_payback_period_soln_to_conv_npv(purchase_year = 2017)
+    def test_get_payback_period_solution_vs_conventional_npv(self, solution, scenario_name, expected_results):
+        result = solution.get_payback_period_solution_vs_conventional_npv(purchase_year = 2017)
         result = max(result, -1)
         expected_result = expected_results['Discounted Payback Period Solution Relative to Conventional']
         try:
@@ -276,8 +282,8 @@ class TestOceanSolutionFinancialResults():
             msg = f'Failed on scenario {scenario_name}'
             raise AssertionError(msg) from ae
         
-    def test_get_payback_period_soln_only(self, solution, scenario_name, expected_results):
-        result = solution.get_payback_period_soln_only(purchase_year = 2017)
+    def test_get_payback_period_solution_only(self, solution, scenario_name, expected_results):
+        result = solution.get_payback_period_solution_only(purchase_year = 2017)
         result = max(result, -1)
         expected_result = expected_results['Payback Period Solution Alone']
         try:
@@ -286,8 +292,8 @@ class TestOceanSolutionFinancialResults():
             msg = f'Failed on scenario {scenario_name}'
             raise AssertionError(msg) from ae
 
-    def test_get_payback_period_soln_only_npv(self, solution, scenario_name, expected_results):
-        result = solution.get_payback_period_soln_only_npv(purchase_year = 2017)
+    def test_get_payback_period_solution_only_npv(self, solution, scenario_name, expected_results):
+        result = solution.get_payback_period_solution_only_npv(purchase_year = 2017)
         result = max(result, -1)
         expected_result = expected_results['Discounted Payback Period Solution Alone']
         try:
