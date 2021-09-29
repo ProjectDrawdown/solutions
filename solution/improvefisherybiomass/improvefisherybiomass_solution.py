@@ -2,15 +2,15 @@
 import os
 from model.ocean_solution import OceanSolution
 
-class ImproveAquacultureSolution(OceanSolution):
+class ImproveFisheryBiomassSolution(OceanSolution):
     """ All calculations for improve aquaculture currently implemented in the OceanSolution base class.
     """
 
     # Initialize from configuration file:
     def __init__(self, configuration_file_name = None):
         """
-            Configuration file name defaults to './improveaquaculture_solution_config.yaml'.
-            This should be located in the same directory as the 'improveaquaculture_solution.py' module
+            Configuration file name defaults to './improvefisherybiomass_solution_config.yaml'.
+            This should be located in the same directory as the 'fisherybiomass_solution.py' module
 
         """
 

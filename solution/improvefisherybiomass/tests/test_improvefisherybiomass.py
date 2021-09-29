@@ -1,16 +1,16 @@
 from os import path
 import json
 
-from solution.improveaquaculture.improveaquaculture_solution import ImproveAquacultureSolution
-solution = ImproveAquacultureSolution()
+from solution.improvefisherybiomass.improvefisherybiomass_solution import ImproveFisheryBiomassSolution
+solution = ImproveFisheryBiomassSolution()
 scenarios_to_test = solution.get_scenario_names()
 
-results_file = path.join('solution','improveaquaculture', 'tests', 'expected_results.json')
+results_file = path.join('solution','improvefisherybiomass', 'tests', 'expected_results.json')
 stream = open(results_file,'r')
 results = json.load(stream)
 
+# No financials for this solution
 from tools.tests.test_ocean_improve_solution  import TestOceanImproveSolutionAdoption
-from tools.tests.test_ocean_improve_solution  import TestOceanImproveSolutionFinancials
 from tools.tests.test_ocean_improve_solution  import TestOceanImproveSolutionClimate
 
 def pytest_generate_tests(metafunc):
