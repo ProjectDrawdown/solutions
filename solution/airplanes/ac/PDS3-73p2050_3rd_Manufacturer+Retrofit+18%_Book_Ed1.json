@@ -131,7 +131,9 @@
     },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [ 2014 ],
+    "pds_adoption_use_ref_years": [
+        2014
+    ],
     "pds_adoption_final_percentage": {
         "World": 0.0,
         "OECD90": 0.0,
@@ -146,5 +148,6 @@
     },
     "soln_pds_adoption_custom_name": "Book Ed.1 Scenario 2",
     "soln_ref_adoption_basis": "Default",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2018-12-05 09:27:41"
 }

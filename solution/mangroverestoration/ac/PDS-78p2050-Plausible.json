@@ -35,7 +35,9 @@
     "soln_pds_adoption_custom_name": "Average of All Custom Scenarios",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [ 2014 ],
+    "pds_adoption_use_ref_years": [
+        2014
+    ],
     "conv_2014_cost": {
         "value": 0.0,
         "statistic": ""
@@ -117,5 +119,6 @@
     },
     "delay_protection_1yr": true,
     "delay_regrowth_1yr": true,
-    "include_unprotected_land_in_regrowth_calcs": false
+    "include_unprotected_land_in_regrowth_calcs": false,
+    "creation_date": "2019-04-12 12:15:40"
 }

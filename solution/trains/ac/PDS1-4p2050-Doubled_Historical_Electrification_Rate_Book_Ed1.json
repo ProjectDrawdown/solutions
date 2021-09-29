@@ -146,5 +146,6 @@
     "soln_pds_adoption_custom_name": "PDS2 - Doubling of Historical Electrification Rate (UIC data)",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Drawdown Book Reference Scenario",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2018-03-27 17:15:43"
 }

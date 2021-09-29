@@ -146,5 +146,6 @@
     "soln_pds_adoption_custom_name": "PDS2 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 18%",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Reference Based on Historical Aircraft Deliveries of Airbus, Boeing",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2019-10-02 12:04:08"
 }

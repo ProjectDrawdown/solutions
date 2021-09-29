@@ -105,5 +105,6 @@
         "USA": 0.0
     },
     "soln_ref_adoption_basis": "Default",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2020-12-04 21:38:52"
 }

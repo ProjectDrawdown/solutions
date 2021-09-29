@@ -35,7 +35,9 @@
     "soln_pds_adoption_custom_name": "Low of All Custom Scenarios",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [ 2014 ],
+    "pds_adoption_use_ref_years": [
+        2014
+    ],
     "conv_2014_cost": {
         "value": 0.0,
         "statistic": ""
@@ -117,5 +119,6 @@
         "value": 0.0,
         "statistic": ""
     },
-    "harvest_frequency": 100.0
+    "harvest_frequency": 100.0,
+    "creation_date": "2018-08-03 15:48:27"
 }

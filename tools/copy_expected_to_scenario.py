@@ -72,13 +72,14 @@ def copy_expected_to_ac_json(solution_basedir, solution_name):
     return ac_jsons
 
 if __name__ == "__main__":
-    # Run over all solutions. 
+    # Run over all solutions.
+    # Note: in order to get this to run on the hfc_replacement solution,
+    # I had to remove the space at the end of the PDS2-82p2050-Median/ subdir
+    # in its expected.zip, and from the two references in
+    # PDS2-82p2050-Median/ScenarioRecord (also in that zip file).
     solution_basedir = pathlib.Path(__file__).parents[1]/"solution"
     all_jsons_modified = []
     for solution_name in sorted(factory.all_solutions()):
-        if solution_name == 'hfc_replacement':
-            # subdir PDS2-82p2050-Median\ has a space at the end. TODO
-            continue
         all_jsons_modified.extend(copy_expected_to_ac_json(solution_basedir, solution_name))
     print('Rewrote', len(all_jsons_modified), 'json files.')
 
