@@ -10,6 +10,7 @@ import json
 import typing
 import re
 from pathlib import Path
+from datetime import datetime
 import pandas as pd
 import pytest
 from model import emissionsfactors as ef
@@ -1042,6 +1043,7 @@ class AdvancedControls:
         requested fields modified.  Note: the name is not changed unless it is specifically
         included in the modifications"""
         d = self.as_dict()
+        d['creation_date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         d.update(mods)
         return ac_from_dict(d, self.vmas)
 
