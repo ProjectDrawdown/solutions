@@ -568,7 +568,10 @@ class OceanSolution(Solution):
 
         direct_co2_emissions_saved = net_units * (self.scenario.conventional_direct_emissions - self.scenario.solution_direct_emissions) / 1_000_000
         indirect_co2_emissions = net_units * (self.scenario.solution_indirect_emissions - self.scenario.conventional_indirect_emissions) / 1_000_000
-        emissions_reduction_series = emissions_reduction_series + direct_co2_emissions_saved - indirect_co2_emissions
+        reduced_fuel_emissions = net_units * self.scenario.conventional_fuel_consumed * \
+            (self.scenario.conventional_fuel_emissions_factor - self.scenario.solution_fuel_emissions_factor * (1-self.scenario.solution_fuel_efficiency_factor)) / 1_000_000
+
+        emissions_reduction_series = emissions_reduction_series + direct_co2_emissions_saved - indirect_co2_emissions + reduced_fuel_emissions
 
         result = emissions_reduction_series.loc[self.start_year: self.end_year]
         

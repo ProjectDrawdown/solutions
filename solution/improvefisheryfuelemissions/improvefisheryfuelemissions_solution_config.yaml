@@ -1,0 +1,9 @@
+required_python_version_minimum: 3.9.5
+
+scenarios_file: solution/improvefisheryfuelemissions/scenario_inputs.json
+PDS_adoption_file: solution/improvefisheryfuelemissions/unit_adoption_data/custom_pds_adoption.json
+REF_adoption_file: solution/improvefisheryfuelemissions/unit_adoption_data/custom_ref_adoption.json
+TAM_data_file: solution/improvefisheryfuelemissions/unit_adoption_data/total_addressable_market.json
+base_year: 2015
+start_year: 2020
+end_year: 2050
