@@ -1,0 +1,32 @@
+{
+    "PDS-63p2050-plausible": {
+		"conventional_indirect_emissions":0.0,
+		"solution_indirect_emissions":-0.335640252011257,
+		"current_area_world": 8546446.38087473,
+		"future_pds_area": 9072742.76188804,
+        "pds_scenario_name": "AverageOfAllCustomScenarios",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2021-02-22T20:24:45",
+        "scenario_description": "Average of all"
+    },
+	"PDS-88p2050-drawdown": {
+		"conventional_indirect_emissions":0.0,
+		"solution_indirect_emissions":-0.335640252011257,
+		"current_area_world": 8546446.38087473,
+		"future_pds_area": 9072742.76188804,
+        "pds_scenario_name": "HighOfAllCustomScenarios",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2021-02-22T20:25:21",
+        "scenario_description": "High of all"
+    },
+	"PDS-100p2050-optimum":{
+		"conventional_indirect_emissions":0.0,
+		"solution_indirect_emissions":-0.335640252011257,
+		"current_area_world": 8546446.38087473,
+		"future_pds_area": 9072742.76188804,
+        "pds_scenario_name": "WorldBankModerate",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2021-02-22T20:26:15",
+        "scenario_description": "The highest customized scenario"
+	}
+}

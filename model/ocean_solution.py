@@ -533,7 +533,10 @@ class OceanSolution(Solution):
 ### Start Emissions Reduction Calculations ###
 
     def get_emissions_reduction_series(self) -> pd.Series:
-        
+
+        # CO2-eq MMT Reduced
+        # Used to calculate [CO2 Calcs]!$B64
+
         emissions_reduction_series_pds =self.pds_scenario.get_emissions_reduction_series(
             self.scenario.disturbance_rate,
             self.scenario.growth_rate_of_ocean_degradation,
@@ -550,16 +553,22 @@ class OceanSolution(Solution):
 
         emissions_reduction_series = emissions_reduction_series_pds - emissions_reduction_series_ref
 
+        pds_units = self.pds_scenario.get_units_adopted()
+        
+        if self.has_tam:
+            # find element-wise min of pds_units and tam:
+            pds_units = pd.concat([pds_units, self._tam.get_tam_series()]).min(level=0)
+
+        ref_units = self.ref_scenario.get_units_adopted()
+        net_units = pds_units - ref_units
+
         if self.has_grid_emissions_factors:
-            pds_units = self.pds_scenario.get_units_adopted()
-            ref_units = self.ref_scenario.get_units_adopted()
-            net_units = pds_units - ref_units
-
             replaced_grid_emissions = net_units * self._grid_emissions_factors
-            direct_co2_emissions_saved = net_units * (self.scenario.conventional_direct_emissions - self.scenario.solution_direct_emissions) / 1_000_000
+            emissions_reduction_series += replaced_grid_emissions
 
-            emissions_reduction_series = emissions_reduction_series + replaced_grid_emissions + direct_co2_emissions_saved
-
+        direct_co2_emissions_saved = net_units * (self.scenario.conventional_direct_emissions - self.scenario.solution_direct_emissions) / 1_000_000
+        indirect_co2_emissions = net_units * (self.scenario.solution_indirect_emissions - self.scenario.conventional_indirect_emissions) / 1_000_000
+        emissions_reduction_series = emissions_reduction_series + direct_co2_emissions_saved - indirect_co2_emissions
 
         result = emissions_reduction_series.loc[self.start_year: self.end_year]
         
@@ -701,30 +710,6 @@ class OceanSolution(Solution):
         factor = factor * 10**6
         results = results * factor
         return results
-        
-        # pds_sequestration = self.pds_scenario.get_change_in_ppm_equivalent_series(
-        #     self.scenario.sequestration_rate_all_ocean,
-        #     self.scenario.disturbance_rate,
-        #     self.scenario.growth_rate_of_ocean_degradation,
-        #     self.scenario.delay_impact_of_protection_by_one_year,
-        #     self.scenario.emissions_reduced_per_unit_area,
-        #     self.scenario.delay_regrowth_of_degraded_land_by_one_year,
-        #     self.scenario.use_adoption_for_carbon_sequestration_calculation,
-        #     self.scenario.use_aggregate_CO2_equivalent_instead_of_individual_GHG)
-
-        # ref_sequestration = self.ref_scenario.get_change_in_ppm_equivalent_series(
-        #     self.scenario.sequestration_rate_all_ocean,
-        #     self.scenario.disturbance_rate,
-        #     self.scenario.growth_rate_of_ocean_degradation,
-        #     self.scenario.delay_impact_of_protection_by_one_year,
-        #     self.scenario.emissions_reduced_per_unit_area,
-        #     self.scenario.delay_regrowth_of_degraded_land_by_one_year,
-        #     self.scenario.use_adoption_for_carbon_sequestration_calculation,
-        #     self.scenario.use_aggregate_CO2_equivalent_instead_of_individual_GHG)
-        
-        # net_sequestration = (pds_sequestration - ref_sequestration)
-    
-        # return net_sequestration.loc[self.start_year:self.end_year]
 
     def get_change_in_ppm_equivalent(self) -> np.float64:
         

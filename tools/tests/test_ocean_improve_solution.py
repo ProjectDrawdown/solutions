@@ -2,21 +2,24 @@ import pandas as pd
 from numpy import int64
 import pytest
 
-class TestOceanImproveSolution():
+class TestOceanImproveSolutionAdoption():
 
     def test_load(self, solution, scenario_name, expected_results):
         print('\nloading', scenario_name)
         solution.load_scenario(scenario_name)
 
     ### Start - Unit Adoption tests ###
-    def test_get_implementation_unit_adoption_increase_final_year(self, solution, scenario_name, expected_results):
-        result = solution.get_adoption_unit_increase_pds_vs_ref_final_year()
-        expected_result = expected_results['Implementation Unit Adoption Increase in Final Year (PDS vs REF)']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
+
+# Following test errors in spreadsheet for improve fishery biomass. Commenting out until resolved in spreadsheet.
+
+    # def test_get_implementation_unit_adoption_increase_final_year(self, solution, scenario_name, expected_results):
+    #     result = solution.get_adoption_unit_increase_pds_vs_ref_final_year()
+    #     expected_result = expected_results['Implementation Unit Adoption Increase in Final Year (PDS vs REF)']
+    #     try:
+    #         assert result == pytest.approx(expected_result)
+    #     except AssertionError as ae:
+    #         msg = f'Failed on scenario {scenario_name}'
+    #         raise AssertionError(msg) from ae
 
     def test_get_functional_unit_adoption_increase_final_year(self, solution, scenario_name, expected_results):
         result = solution.get_adoption_unit_increase_pds_vs_ref_final_year()
@@ -27,14 +30,16 @@ class TestOceanImproveSolution():
             msg = f'Failed on scenario {scenario_name}'
             raise AssertionError(msg) from ae
 
-    def test_get_global_solution_implementation_units_final_year(self, solution, scenario_name, expected_results):
-        result = solution.get_adoption_unit_increase_pds_final_year()
-        expected_result = expected_results['Global Solution Implementation Units in Final Year']
-        try:
-            assert result == pytest.approx(expected_result)
-        except AssertionError as ae:
-            msg = f'Failed on scenario {scenario_name}'
-            raise AssertionError(msg) from ae
+# Following test errors in spreadsheet for improve fishery biomass. Commenting out until resolved in spreadsheet.
+
+    # def test_get_global_solution_implementation_units_final_year(self, solution, scenario_name, expected_results):
+    #     result = solution.get_adoption_unit_increase_pds_final_year()
+    #     expected_result = expected_results['Global Solution Implementation Units in Final Year']
+    #     try:
+    #         assert result == pytest.approx(expected_result)
+    #     except AssertionError as ae:
+    #         msg = f'Failed on scenario {scenario_name}'
+    #         raise AssertionError(msg) from ae
 
     def test_get_global_solution_functional_units_final_year(self, solution, scenario_name, expected_results):
         result = solution.get_adoption_unit_increase_pds_final_year()
@@ -74,6 +79,11 @@ class TestOceanImproveSolution():
 
     ### End - Unit Adoption tests ###
 
+class TestOceanImproveSolutionFinancials():
+
+    def test_load(self, solution, scenario_name, expected_results):
+        print('\nloading', scenario_name)
+        solution.load_scenario(scenario_name)
 
     ### Start Financial Calculation tests ###
 
@@ -174,6 +184,12 @@ class TestOceanImproveSolution():
 
     ## End Financial Calculations
 
+class TestOceanImproveSolutionClimate():
+    
+    def test_load(self, solution, scenario_name, expected_results):
+        print('\nloading', scenario_name)
+        solution.load_scenario(scenario_name)
+        
     ## Start Emissions Reduction tests ##
     # Should match "CO2-eq MMT Reduced" on "CO2 Calcs" worksheet.
     def test_get_emissions_reduction_series(self, solution, scenario_name, expected_results):

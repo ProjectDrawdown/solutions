@@ -33,7 +33,9 @@ class OceanScenario():
     emissions_reduced_per_unit_area : float  = field(default=0.0, metadata={'Units': 't CO2-eq/ha'}) # AC: "t CO2 Reduced per land/ocean unit"
     direct_emissions_are_annual: bool = field(default=True, metadata={'Description': 'Set to False for a one-time effect, set to True to repeat emssion each year.'})
     conventional_direct_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per million tons of live weight'})
+    conventional_indirect_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per ton'})
     solution_direct_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per million tons of live weight'})
+    solution_indirect_emissions: float = field(default=0.0, metadata={'Units': 't CO2-eq per ton'})
     ##
 
     ## General Emissions Inputs
