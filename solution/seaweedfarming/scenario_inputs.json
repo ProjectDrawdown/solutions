@@ -1,6 +1,6 @@
 {
     "PDS-5p2050-Plausible NEW 240 TOA": {
-        "conventional_first_cost": 9705.64312711705,
+        "conventional_first_cost": 0.0,
         "conventional_operating_cost": 0.0,
         "conventional_net_profit_margin": 0.0,
         "conventional_expected_lifetime": 30,
@@ -8,6 +8,7 @@
         "solution_operating_cost": 11585.8860579587,
         "solution_net_profit_margin": 12892.9642297685,
         "solution_expected_lifetime": 30,
+		"unit_converting_factor": 1000000,
         "npv_discount_rate": 0.1,
 		"direct_emissions_are_annual" : false,
 		"use_aggregate_CO2_equivalent_instead_of_individual_GHG": false,
@@ -24,7 +25,7 @@
         "scenario_description": "Average of all"
     },
     "PDS-10p2050-Drawdown New 240 TOA": {
-        "conventional_first_cost": 9705.64312711705,
+        "conventional_first_cost": 0.0,
         "conventional_operating_cost": 0.0,
         "conventional_net_profit_margin": 0.0,
         "conventional_expected_lifetime": 30,
@@ -32,6 +33,7 @@
         "solution_operating_cost": 11585.8860579587,
         "solution_net_profit_margin": 12892.9642297685,
         "solution_expected_lifetime": 30,
+		"unit_converting_factor": 1000000,
         "npv_discount_rate": 0.1,
 		"direct_emissions_are_annual" : false,
 		"use_aggregate_CO2_equivalent_instead_of_individual_GHG": false,
@@ -48,7 +50,7 @@
         "scenario_description": "High of all"
     },
     "PDS-14p2050-Optimum New 240 TOA": {
-        "conventional_first_cost": 9705.64312711705,
+        "conventional_first_cost": 0.0,
         "conventional_operating_cost": 0.0,
         "conventional_net_profit_margin": 0.0,
         "conventional_expected_lifetime": 30,
@@ -56,6 +58,7 @@
         "solution_operating_cost": 11585.8860579587,
         "solution_net_profit_margin": 12892.9642297685,
         "solution_expected_lifetime": 30,
+		"unit_converting_factor": 1000000,
         "npv_discount_rate": 0.1,
 		"direct_emissions_are_annual" : false,
 		"use_aggregate_CO2_equivalent_instead_of_individual_GHG": false,

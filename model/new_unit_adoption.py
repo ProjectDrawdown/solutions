@@ -1,3 +1,4 @@
+from bdb import effective
 import pandas as pd
 import numpy as np
 import math
@@ -136,10 +137,14 @@ class NewUnitAdoption:
 
             # for each year, add in values for equipment purchased in that
             # starting year through the year where it wears out.
-            for row in range(year, self.end_year + expected_lifetime): # iterates over rows
+            for row in range(year, self.end_year + math.ceil(expected_lifetime)): # iterates over rows
                 remaining_lifetime = np.clip(lifetime, 0, 1)
                 val = total * remaining_lifetime
-                breakout.loc[row, year] = val if math.fabs(val) > 0.01 else 0.0
+                if np.isnan(val):
+                    val = 0.0
+
+                breakout.loc[row, year] = val
+
                 lifetime -= 1
                 if lifetime <= 0:
                     break
@@ -160,8 +165,9 @@ class NewUnitAdoption:
     def get_incremental_units_per_period(self, expected_lifetime) -> pd.Series:
 
         incremented = self.implementation_units.loc[self.base_year-1:].diff()
-        shifted = incremented.shift(expected_lifetime +1).fillna(0.0)
-        
+        lifetime = math.floor(0.5 + expected_lifetime)
+        shifted = incremented.shift(lifetime +1).fillna(0.0)
+                
         return incremented + shifted
 
     
@@ -201,14 +207,14 @@ class NewUnitAdoption:
         return cost_series
 
 
-    def get_lifetime_cashflow_npv(self, purchase_year, discount_rate, expected_lifetime, operating_cost, first_cost) -> pd.Series:
+    def get_lifetime_cashflow_npv(self, purchase_year, discount_rate, conventional_expected_lifetime, solution_expected_lifetime, operating_cost, conventional_first_cost, solution_first_cost) -> pd.Series:
         
         # "result" should match time series in [Operating Cost]!$J$125 = "NPV of Single Cashflows (to 2014)"
         years_old_at_start =  purchase_year - self.base_year + 1
 
         discount_factor = 1/(1+discount_rate)
 
-        first_cost_series = self.get_install_cost_per_land_unit(first_cost)
+        first_cost_series = self.get_install_cost_per_land_unit(solution_first_cost)
         first_cost_series = first_cost_series.loc[self.base_year:]
 
         first_val = first_cost_series.loc[self.base_year] + operating_cost
@@ -216,11 +222,24 @@ class NewUnitAdoption:
 
         results = [first_val]
         
-        for row in range(expected_lifetime-1):
-            to_append = operating_cost * discount_factor**(years_old_at_start + row+1)
+        solution_lifetime = math.ceil(solution_expected_lifetime)
+
+        for year in range(math.ceil(solution_lifetime)-1):
+            to_append = 0.0
+            effective_operating_cost = operating_cost
+            remaining_solution_life = solution_expected_lifetime - year - 1
+            remaining_conventional_life = conventional_expected_lifetime - year - 1
+            if remaining_conventional_life < 1.0 and remaining_conventional_life > 0.0:
+                to_append += conventional_first_cost * min(1.0, (solution_expected_lifetime - year - 1) / conventional_expected_lifetime)
+                results.append(to_append - effective_operating_cost)
+                continue
+                
+            if remaining_solution_life < 1.0:
+                effective_operating_cost *= remaining_solution_life
+            to_append += effective_operating_cost * discount_factor**(years_old_at_start + year + 1)
             results.append(to_append)
 
-        result = pd.Series(results,index=first_cost_series[:expected_lifetime].index)
+        result = pd.Series(results,index=first_cost_series[:solution_lifetime].index)
         
         return result
 
@@ -518,7 +537,7 @@ class NewUnitAdoption:
         # This is the implementation of the CO2 PPM Calculator in [CO2 Calcs]!A169
 
         # get_carbon_sequestration returns series used to build [CO2 Calcs]!$B$120
-        # to match [CO2 Calcs]!$B$120, need to combine pds and ref at the ocean_solution level.
+        # to match [CO2 Calcs]!$B$120 ("Carbon Sequestration Calculations"), need to combine pds and ref at the ocean_solution level.
         # If ref_scenario.get_carbon_sequestration(...) is zero, then this function returns [CO2 Calcs]!$B$120.
         sequestration = self.get_carbon_sequestration(
             sequestration_rate, 
