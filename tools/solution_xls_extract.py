@@ -542,10 +542,10 @@ def json_dumps_default(obj):
 
 
 
-def write_scenario(filename, s):
-    """Write out the advanced_controls entries for a given scenario."""
+def write_json(filename, d):
+    """Write out the given dict to the given Path."""
     with filename.open(mode='w', encoding='utf-8') as f:
-        json.dump(obj=s, fp=f, indent=4, default=json_dumps_default)
+        json.dump(obj=d, fp=f, indent=4, default=json_dumps_default)
 
 
 
@@ -912,6 +912,7 @@ def write_ad(f, wb, outputdir):
                     f.write("                  '" + source + "': THISDIR.joinpath('ad', '" + filename + "'),\n")
                 f.write("              },\n")
         f.write("            },\n")
+    
     f.write("        }\n")
     f.write("        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,\n")
     regional = convert_bool(xls(a, 'B30')) and convert_bool(xls(a, 'B31'))
@@ -1425,6 +1426,13 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
                 cases[region_name] = sources
     else:
         cases = tmp_cases
+    if cases:
+        out_prefix = prefix
+        # The prefixes come in as 'tam_' or 'tam_pds'.
+        if out_prefix == 'tam_':
+            out_prefix = 'tam_ref_'
+        write_json(filename=pathlib.Path(outputdir) /
+                   f'{out_prefix}sources.json', d=cases)
     return cases
 
 
@@ -1476,6 +1484,11 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
         if not skip:
             scenarios.append({'name': name, 'filename': filename,
                 'description': description})
+    if scenarios:
+        assert prefix == 'custom_pds_ad_', prefix
+        out_prefix = 'ca_pds_'
+        write_json(filename=pathlib.Path(outputdir) /
+                   f'{out_prefix}sources.json', d=scenarios)
     return scenarios, multipliers
 
 
@@ -1754,7 +1767,7 @@ def output_solution_python_file(outputdir, xl_filename):
                       'scenarios.')
                 continue
         fname = p.joinpath(re.sub(r"['\"\n()\\/\.]", "", name).replace(' ', '_').strip() + '.json')
-        write_scenario(filename=fname, s=s)
+        write_json(filename=fname, d=s)
     f.write("scenarios = ac.load_scenarios_from_json("
         "directory=THISDIR.joinpath('ac'), vmas=VMAs)\n")
     f.write("\n")
