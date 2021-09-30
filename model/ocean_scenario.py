@@ -7,7 +7,7 @@ import datetime
 @dataclass
 class OceanScenario():
     # Info
-    scenario_timestamp : datetime
+    scenario_timestamp : datetime.datetime
     scenario_description : str
     ##
 
