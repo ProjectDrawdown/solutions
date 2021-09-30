@@ -11,6 +11,7 @@ from pathlib import Path
 
 from model.data_handler import DataHandler
 from model.decorators import data_func
+from model.integration import integration_alt_file
 
 CO2EQ_SOURCE = enum.Enum('CO2EQ_SOURCE', 'AR5_WITH_FEEDBACK AR5_WITHOUT_FEEDBACK AR4 SAR')
 GRID_SOURCE = enum.Enum('GRID_SOURCE', 'META IPCC')
@@ -116,16 +117,9 @@ class ElectricityGenOnGrid(DataHandler):
         result.index.name = "Year"
         if self.ac.emissions_grid_source == GRID_SOURCE.IPCC:
             grid = get_grid_emissions_data("ipcc")
-        elif self.ac.emissions_grid_source == GRID_SOURCE.META and self.grid_emissions_version == 1:
-            grid = get_grid_emissions_data("meta_1")
-        elif self.ac.emissions_grid_source == GRID_SOURCE.META and self.grid_emissions_version == 2:
-            grid = get_grid_emissions_data("meta_2")
-        elif self.ac.emissions_grid_source == GRID_SOURCE.META and self.grid_emissions_version == 3:
-            grid = get_grid_emissions_data("meta_3")
-        elif self.ac.emissions_grid_source == GRID_SOURCE.META and self.grid_emissions_version == 4:
-            grid = get_grid_emissions_data("meta_4")
         else:
-            raise ValueError(f"Invalid self.ac.emissions_grid_source {self.ac.emissions_grid_source}")
+            grid = get_grid_emissions_data("meta", self.grid_emissions_version)
+
 
         if self.ac.emissions_grid_range == GRID_RANGE.HIGH:
             result.loc[:, "World"] = grid.loc[:, "high"].values
@@ -176,7 +170,12 @@ class ElectricityGenOnGrid(DataHandler):
         return result
 
 @lru_cache
-def get_grid_emissions_data(grid_id):
+def get_grid_emissions_data(emissions_type, emissions_version=None):
     datadir = Path(__file__).parents[1]/"data"/"emissions"
-    filename = grid_id + ".csv"
+    if emissions_version is None:
+        emissions_version = "current"
+    filename = f"{emissions_type}_{emissions_version}.csv"
+    altname = integration_alt_file(filename)
+    if altname.is_file():
+        filename = altname
     return pd.read_csv(datadir/filename)
