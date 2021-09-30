@@ -1,7 +1,7 @@
-from bdb import effective
+
 import pandas as pd
-import numpy as np
-import math
+from math import exp, ceil, floor, log10
+from numpy import arange, clip, isnan
 import json
 import copy
 
@@ -15,13 +15,13 @@ class NewUnitAdoption:
     """
     description : str
     _area_units: pd.Series
-    disturbance_rate: np.float64
-    sequestration_rate_all_ocean: np.float64
+    disturbance_rate: float
+    sequestration_rate_all_ocean: float
     
     def _validate_inputs(self):        
         pass
 
-    def __init__(self, base_year, start_year, end_year, adoption_scenario_to_load, adoption_input_file):
+    def __init__(self, base_year: int, start_year: int, end_year: int, adoption_scenario_to_load: str, adoption_input_file: str):
         self._validate_inputs()
 
         self.base_year = base_year
@@ -49,7 +49,7 @@ class NewUnitAdoption:
 
         self.implementation_units = adoption_series
         
-        area_units_series = pd.Series(index= adoption_series.index, dtype= np.float64) # a.k.a. land unit adoption, ocean unit adoption.
+        area_units_series = pd.Series(index= adoption_series.index, dtype= float) # a.k.a. land unit adoption, ocean unit adoption.
         self._area_units = area_units_series # values are initialised to NaNs
 
     def get_area_units(self) -> pd.Series:
@@ -120,8 +120,8 @@ class NewUnitAdoption:
 
         new_funits_per_year = self.implementation_units.loc[self.base_year:].diff()
 
-        breakout = pd.DataFrame(0, index=np.arange(self.base_year, self.end_year),
-                                columns=np.arange(self.base_year, new_funits_per_year.index[-1]), dtype='float')
+        breakout = pd.DataFrame(0, index=arange(self.base_year, self.end_year),
+                                columns=arange(self.base_year, new_funits_per_year.index[-1]), dtype='float')
         breakout.index.name = 'Year'
         breakout.index = breakout.index.astype(int)
 
@@ -130,17 +130,17 @@ class NewUnitAdoption:
             # within the years of interest, assume replacement of worn out equipment.
             lifetime = expected_lifetime
             assert lifetime != 0, 'Cannot have a lifetime replacement of 0 and non-zero costs'
-            while math.ceil(lifetime) <= (self.end_year - year):
+            while ceil(lifetime) <= (self.end_year - year):
                 lifetime += expected_lifetime # This usually doubles the lifetime for the first year or two.
 
             total = new_funits_per_year.loc[year]
 
             # for each year, add in values for equipment purchased in that
             # starting year through the year where it wears out.
-            for row in range(year, self.end_year + math.ceil(expected_lifetime)): # iterates over rows
-                remaining_lifetime = np.clip(lifetime, 0, 1)
+            for row in range(year, self.end_year + ceil(expected_lifetime)): # iterates over rows
+                remaining_lifetime = clip(lifetime, 0, 1)
                 val = total * remaining_lifetime
-                if np.isnan(val):
+                if isnan(val):
                     val = 0.0
 
                 breakout.loc[row, year] = val
@@ -165,7 +165,7 @@ class NewUnitAdoption:
     def get_incremental_units_per_period(self, expected_lifetime) -> pd.Series:
 
         incremented = self.implementation_units.loc[self.base_year-1:].diff()
-        lifetime = math.floor(0.5 + expected_lifetime)
+        lifetime = floor(0.5 + expected_lifetime)
         shifted = incremented.shift(lifetime +1).fillna(0.0)
                 
         return incremented + shifted
@@ -176,7 +176,7 @@ class NewUnitAdoption:
         # $C$37 (pds) and $L$37 (ref) on First Cost spreadsheet tab.
         learning_rate = 1.0 # 100%
         how_fast = 2 # If double enter 2, if every 4 x increase, then enter 4
-        param_b = math.log10(learning_rate) / math.log10(how_fast)
+        param_b = log10(learning_rate) / log10(how_fast)
 
         # For some solutions (e.g. seaweed farming), param_b == zero. So following will produce a static series of self.first_cost.
         cost_series = self.implementation_units.loc[:].apply(lambda x: x**param_b) * first_cost
@@ -222,9 +222,9 @@ class NewUnitAdoption:
 
         results = [first_val]
         
-        solution_lifetime = math.ceil(solution_expected_lifetime)
+        solution_lifetime = ceil(solution_expected_lifetime)
 
-        for year in range(math.ceil(solution_lifetime)-1):
+        for year in range(ceil(solution_lifetime)-1):
             to_append = 0.0
             effective_operating_cost = operating_cost
             remaining_solution_life = solution_expected_lifetime - year - 1
@@ -290,7 +290,7 @@ class NewUnitAdoption:
 
 
     def get_cumulative_degraded_unprotected_area(self, delay_impact_of_protection_by_one_year: bool,
-                     growth_rate_of_ocean_degradation: np.float64) -> pd.Series:
+                     growth_rate_of_ocean_degradation: float) -> pd.Series:
         """
         This represents the total degraded area.
         Calculation uses the rate supplied by the degradation_rate parameter.
@@ -330,7 +330,7 @@ class NewUnitAdoption:
         
         return results
 
-    def get_total_at_risk_area(self, growth_rate_of_ocean_degradation: np.float64, 
+    def get_total_at_risk_area(self, growth_rate_of_ocean_degradation: float, 
                 delay_impact_of_protection_by_one_year: bool) -> pd.Series:
 
         """
@@ -355,7 +355,7 @@ class NewUnitAdoption:
         return total_at_risk_area
 
 
-    def get_cumulative_degraded_area_under_protection(self, delay_impact_of_protection_by_one_year: bool, disturbance_rate: np.float64) -> pd.Series:
+    def get_cumulative_degraded_area_under_protection(self, delay_impact_of_protection_by_one_year: bool, disturbance_rate: float) -> pd.Series:
         """
         Even protected areas suffer from degradation via disturbances (e.g. natural degradation, logging, storms, fires or human settlement).
         The disturbance rate is usually equal in the PDS adoption and reference adoption.
@@ -399,7 +399,7 @@ class NewUnitAdoption:
 
 
     def get_total_undegraded_area(self, growth_rate_of_ocean_degradation,
-                disturbance_rate: np.float64 = 1.0, 
+                disturbance_rate: float = 1.0, 
                 delay_impact_of_protection_by_one_year: bool = True) -> pd.Series:
 
         """
@@ -558,7 +558,7 @@ class NewUnitAdoption:
         reduction_plus_sequestration = total_emissions_reduction + sequestration
 
         result_years = list(range(self.base_year, self.end_year+1))
-        results = pd.Series(index = result_years, dtype=np.float64)
+        results = pd.Series(index = result_years, dtype=float)
         results = results.fillna(0.0)
         # (0.217 + 0.259*EXP(-(A173-$A$173+1)/172.9) + 0.338*EXP(-(A173-$A$173+1)/18.51) + 0.186*EXP(-(A173-$A$173+1)/1.186))
         # (0.217 + 0.259*EXP(-(current_year-year_zero+1)/172.9) + 0.338*EXP(-(current_year-year_zero+1)/18.51) + 0.186*EXP(-(current_year-year_zero+1)/1.186))
@@ -571,12 +571,12 @@ class NewUnitAdoption:
             for _ in range(iter_year, result_years[-1] +1):
                 year_net_adoption = reduction_plus_sequestration.loc[iter_year]
                 exponent += 1
-                val =  0.217 + 0.259*np.exp(-(exponent)/172.9) 
-                val += 0.338*np.exp(-(exponent)/18.51) 
-                val += 0.186*np.exp(-(exponent)/1.186)
+                val =  0.217 + 0.259*exp(-(exponent)/172.9) 
+                val += 0.338*exp(-(exponent)/18.51) 
+                val += 0.186*exp(-(exponent)/1.186)
                 year_results.append(year_net_adoption * val)
 
-            year_results_series = pd.Series(index = range(iter_year, self.end_year+1), dtype=np.float64)
+            year_results_series = pd.Series(index = range(iter_year, self.end_year+1), dtype=float)
             year_results_series = year_results_series.fillna(0.0)
             year_results_series = year_results_series.add(year_results)
 

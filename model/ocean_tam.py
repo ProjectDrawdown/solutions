@@ -1,14 +1,14 @@
 
 import json
-from numpy import float64
 import pandas as pd
+from typing import Optional
 
 import model.interpolation as interp
 
 class OceanTam():
     _tam_series: pd.Series
 
-    def __init__(self, base_year, start_year, end_year, tam_input_file) -> None:
+    def __init__(self, base_year: int, start_year: int, end_year: int, tam_input_file: str) -> None:
         
         self.base_year = base_year
         self.start_year = start_year
@@ -21,7 +21,7 @@ class OceanTam():
         self._tam_series = pd.Series(data=vals, index=idx)
         return
     
-    def set_tam_linear(self, total_area, change_per_period, total_area_as_of_period = None) -> None:
+    def set_tam_linear(self, total_area: float, change_per_period: float, total_area_as_of_period: Optional[int] = None) -> None:
         
         if total_area_as_of_period is None:
             total_area_as_of_period = self.base_year
@@ -31,28 +31,15 @@ class OceanTam():
 
         # self.tam_df[region] is a series. Convert this to a dataframe. Then apply a function using straight line formula y = m*x +c.
         # x.name returns index value (the year).
-        series = pd.DataFrame(self._tam).apply(lambda x: m * x.name + c, axis='columns')
+        series = pd.DataFrame(self._tam_series).apply(lambda x: m * x.name + c, axis='columns')
 
-        self._tam = series
+        self._tam_series = series
         return 
 
     def apply_linear_regression(self):
 
         df = interp.linear_trend(self._tam)
-
-        # #TODO copied the s/sht here to match results. Get agreement on how to set base date.
-        # x = np.array(self._tam.index-self.base_year-2).reshape(-1, 1)
-        
-        # y = np.array(self._tam)
-
-        # model = LinearRegression()
-        # model.fit(x, y)
-
-        # y_predicted = model.predict(x)
-
-        # # Write regressed values to the tam
-        #column = self._tam.columns[0]
-        self._tam_series = df['adoption'] # self._tam.assign(**{column:y_predicted})
+        self._tam_series = df['adoption']
 
         return
         

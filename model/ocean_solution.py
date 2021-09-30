@@ -2,7 +2,8 @@
 import os
 import sys
 from math import floor, ceil
-from unittest import result
+from typing import Optional
+
 import pandas as pd
 import numpy as np
 import json
@@ -24,7 +25,7 @@ class OceanSolution(Solution):
     has_tam: bool
     has_grid_emissions_factors: bool
 
-    def _load_config_file(self, file_name):
+    def _load_config_file(self, file_name: str):
         
         stream = open(file_name, 'r')
         config = yaml.load(stream, Loader=yaml.FullLoader)
@@ -39,7 +40,7 @@ class OceanSolution(Solution):
         self.required_version_minimum = tuple(int(st) for st in str.split(config['required_python_version_minimum'], '.'))
         self._config = config
 
-    def _load_adoption_scenario(self, adoption_input_file, adoption_scenario_name):
+    def _load_adoption_scenario(self, adoption_input_file: str, adoption_scenario_name: str):
             
         try:
             ad_scenario = UnitAdoption(self.base_year, self.start_year, self.end_year, adoption_scenario_name, adoption_input_file)
@@ -58,7 +59,7 @@ class OceanSolution(Solution):
                         self.scenario.ref_scenario_name)
 
     # Initialize from configuration file:
-    def __init__(self, configuration_file_name):
+    def __init__(self, configuration_file_name: str):
         print('ocean_solution initializing...')
         self._load_config_file(configuration_file_name)
         if sys.version_info < self.required_version_minimum:
@@ -151,7 +152,7 @@ class OceanSolution(Solution):
         
     # Unit Adoption functions:
 
-    def get_adoption_unit_increase_pds_vs_ref_final_year(self) -> np.float64:
+    def get_adoption_unit_increase_pds_vs_ref_final_year(self) -> float:
         pds_series = self.pds_scenario.get_units_adopted() 
         ref_series = self.ref_scenario.get_units_adopted()
 
@@ -159,12 +160,12 @@ class OceanSolution(Solution):
 
         return net_series.loc[self.end_year]
         
-    def get_adoption_unit_increase_pds_final_year(self) -> np.float64:
+    def get_adoption_unit_increase_pds_final_year(self) -> float:
         pds_series = self.pds_scenario.get_units_adopted() 
         return pds_series.loc[self.end_year]
 
 
-    def get_global_percent_adoption_base_year(self) -> np.float64:
+    def get_global_percent_adoption_base_year(self) -> float:
         # Adoption for base year, as a percentage of TOA.
         
         adoption_base_year = self.scenario.current_adoption_world
@@ -176,7 +177,7 @@ class OceanSolution(Solution):
         return result
 
 
-    def get_percent_adoption_start_year(self) -> np.float64:
+    def get_percent_adoption_start_year(self) -> float:
 
         pds_series = self.pds_scenario.get_units_adopted()
         pds_start_year = pds_series.loc[self.start_year]
@@ -192,7 +193,7 @@ class OceanSolution(Solution):
         return result
     
 
-    def get_percent_adoption_end_year(self) -> np.float64:
+    def get_percent_adoption_end_year(self) -> float:
         pds_series = self.pds_scenario.get_units_adopted()
         pds_start_year = pds_series.loc[self.end_year]
 
@@ -239,7 +240,7 @@ class OceanSolution(Solution):
 
         return first_cost_awfc.loc[:self.end_year]
 
-    def get_marginal_first_cost(self) -> np.float64:
+    def get_marginal_first_cost(self) -> float:
 
         annual_world_first_cost_series = self.get_annual_world_first_cost_series()
         
@@ -248,7 +249,7 @@ class OceanSolution(Solution):
         return result  # in billions
 
     
-    def get_cumulative_first_cost_solution(self) -> np.float64:
+    def get_cumulative_first_cost_solution(self) -> float:
 
         years = list(range(self.base_year, self.end_year +1))
 
@@ -264,14 +265,10 @@ class OceanSolution(Solution):
     
     def get_operating_cost_series(self) -> pd.Series:
 
-        # TODO: confirm start_year-1 is desired. Why does it start in 2019?
-
         pds_solution_series = self.pds_scenario.get_operating_cost(
                 self.scenario.solution_expected_lifetime,
                 self.scenario.solution_operating_cost
                 ) * (1+ self.scenario.disturbance_rate)
-
-        #pds_result = pds_series.cumsum().loc[self.end_year] - pds_series.cumsum().loc[self.start_year]
 
         # Each cell in ref_series should match SUM($C403:$AV403) in [Operating Cost] worksheet.
         ref_solution_series = self.ref_scenario.get_operating_cost(
@@ -293,14 +290,12 @@ class OceanSolution(Solution):
                 ) * (1+self.scenario.disturbance_rate)
 
         net_conventional_series = pds_conventional_series - ref_conventional_series
-
         result = net_conventional_series - net_solution_series
-
         result = result * self.scenario.unit_converting_factor
         
         return result
 
-    def get_operating_cost(self) -> np.float64:
+    def get_operating_cost(self) -> float:
         operating_cost_series = self.get_operating_cost_series()
         cumulative = operating_cost_series.cumsum()
         result = cumulative.loc[self.end_year] - cumulative.loc[self.start_year]
@@ -308,7 +303,7 @@ class OceanSolution(Solution):
         return result
 
     
-    def get_lifetime_operating_savings(self) -> np.float64:
+    def get_lifetime_operating_savings(self) -> float:
         operating_cost_series = self.get_operating_cost_series()
         result = operating_cost_series.sum()
         result = result / 1e9 # in billions
@@ -323,7 +318,7 @@ class OceanSolution(Solution):
         return conventional_install_cost_per_unit
 
 
-    def get_lifetime_cashflow_npv_single_series(self, purchase_year, discount_rate, solution_only = False) -> pd.Series:
+    def get_lifetime_cashflow_npv_single_series(self, purchase_year: int, discount_rate: float, solution_only: Optional[bool] = False) -> pd.Series:
 
         discount_factor = 1/(1+discount_rate)
         
@@ -337,7 +332,7 @@ class OceanSolution(Solution):
 
         first_val = first_val * discount_factor**(years_old_at_start)
 
-        results = []
+        results : list[float] = []
         to_append = first_val
         
         solution_lifetime = ceil(self.scenario.solution_expected_lifetime)
@@ -367,7 +362,7 @@ class OceanSolution(Solution):
        
         return result * self.scenario.unit_converting_factor
 
-    def get_lifetime_cashflow_npv_single(self, purchase_year = None) -> np.float64:
+    def get_lifetime_cashflow_npv_single(self, purchase_year: Optional[int] = None) -> float:
 
         if purchase_year is None:
             purchase_year = self.start_year -3 # apply default
@@ -397,13 +392,13 @@ class OceanSolution(Solution):
 
         return npv
 
-    def get_lifetime_cashflow_npv_all(self) -> np.float64:
+    def get_lifetime_cashflow_npv_all(self) -> float:
         lifetime_cashflow_npv_series = self.get_lifetime_cashflow_npv_series()
         result_sum = lifetime_cashflow_npv_series.sum()
         return result_sum / 1e9
 
 
-    def get_payback_period_solution_only(self, purchase_year = None) -> np.float64:
+    def get_payback_period_solution_only(self, purchase_year: Optional[int] = None) -> int:
 
         if purchase_year is None:
             purchase_year = self.start_year-3 # Apply default
@@ -411,16 +406,16 @@ class OceanSolution(Solution):
         lifetime_cashflow_npv_series = self.get_lifetime_cashflow_npv_single_series(purchase_year, discount_rate=0.0, solution_only=True)
         cumulative_lifetime_cashflow_npv_series = lifetime_cashflow_npv_series.cumsum()
 
-        result=-1
-        for idx, val in cumulative_lifetime_cashflow_npv_series.items():
+        result: int =-1
+        for year, val in cumulative_lifetime_cashflow_npv_series.items():
             if val>0.0:
-                result = idx - self.base_year + 1
+                result = year - self.base_year + 1
                 break
 
         return result
 
 
-    def get_payback_period_solution_only_npv(self, purchase_year = None) -> np.float64:
+    def get_payback_period_solution_only_npv(self, purchase_year: Optional[int] = None) -> int:
         
         if purchase_year is None:
             purchase_year = self.start_year-3 # Apply default
@@ -428,7 +423,7 @@ class OceanSolution(Solution):
         lifetime_cashflow_npv_single_series = self.get_lifetime_cashflow_npv_single_series(purchase_year, self.scenario.npv_discount_rate, solution_only=True)
         cumulative_lifetime_cashflow_npv_series = lifetime_cashflow_npv_single_series.cumsum()
 
-        result=-1
+        result: int =-1
         for idx, val in cumulative_lifetime_cashflow_npv_series.items():
             if val>0.0:
                 result = idx - self.base_year + 1
@@ -437,7 +432,7 @@ class OceanSolution(Solution):
         return result
 
 
-    def get_payback_period_solution_vs_conventional(self, purchase_year = None) -> np.float64:
+    def get_payback_period_solution_vs_conventional(self, purchase_year: Optional[int]  = None) -> int:
 
         #$K$122 on Operating Cost spreadsheet tab.
 
@@ -447,7 +442,7 @@ class OceanSolution(Solution):
         lifetime_cashflow_npv_series = self.get_lifetime_cashflow_npv_single_series(purchase_year, discount_rate=0.0)
         cumulative_lifetime_cashflow_npv_series = lifetime_cashflow_npv_series.cumsum()
 
-        result=-1
+        result: int =-1
         for idx, val in cumulative_lifetime_cashflow_npv_series.items():
             if val>0.0:
                 result = idx - self.base_year + 1
@@ -456,7 +451,7 @@ class OceanSolution(Solution):
         return result
 
 
-    def get_payback_period_solution_vs_conventional_npv(self, purchase_year = None) -> np.float64:
+    def get_payback_period_solution_vs_conventional_npv(self, purchase_year: Optional[int] = None) -> int:
 
         if purchase_year is None:
             purchase_year = self.start_year - 3 # apply default
@@ -469,7 +464,7 @@ class OceanSolution(Solution):
         lifetime_cashflow_npv_series = self.get_lifetime_cashflow_npv_single_series(purchase_year, discount_rate=self.scenario.npv_discount_rate)
         cumulative_lifetime_cashflow_npv_series = lifetime_cashflow_npv_series.cumsum()
 
-        result=-1
+        result:int =-1
         for idx, val in cumulative_lifetime_cashflow_npv_series.items():
             if val>0.0:
                 result = idx - self.base_year + 1
@@ -477,7 +472,7 @@ class OceanSolution(Solution):
 
         return result
 
-    def get_abatement_cost(self) -> np.float64:
+    def get_abatement_cost(self) -> float:
 
         total_co2_sequestered = self.get_total_co2_sequestered()
         emissions_reduction_series = self.get_emissions_reduction_series()
@@ -509,7 +504,7 @@ class OceanSolution(Solution):
         return net_margin_series
 
 
-    def get_net_profit_margin(self) -> np.float64:
+    def get_net_profit_margin(self) -> float:
         net_profit_margin_series = self.get_net_profit_margin_series()
 
         margin_series_cum = net_profit_margin_series.cumsum()
@@ -522,7 +517,7 @@ class OceanSolution(Solution):
         return result / 1_000 # express in billions of USD
 
 
-    def get_lifetime_profit_margin(self) -> np.float64:
+    def get_lifetime_profit_margin(self) -> float:
 
         net_profit_margin_series = self.get_net_profit_margin_series()
         result  = net_profit_margin_series.sum()
@@ -594,7 +589,7 @@ class OceanSolution(Solution):
         return result / 1000
 
 
-    def get_max_annual_emissions_reduction(self) -> np.float64:
+    def get_max_annual_emissions_reduction(self) -> float:
         total_emissions_reduction = self.get_emissions_reduction_series()
         result = total_emissions_reduction.max()
         
@@ -629,7 +624,7 @@ class OceanSolution(Solution):
 
         return net_sequestration
 
-    def get_total_co2_sequestered(self) -> np.float64:
+    def get_total_co2_sequestered(self) -> float:
         
         carbon_sequestration_series = self.get_carbon_sequestration_series()
 
@@ -637,7 +632,7 @@ class OceanSolution(Solution):
 
         return result / 1_000 # express in billions of USD
 
-    def get_max_annual_co2_sequestered(self) -> np.float64:
+    def get_max_annual_co2_sequestered(self) -> float:
 
         carbon_sequestration_series = self.get_carbon_sequestration_series()
         
@@ -646,7 +641,7 @@ class OceanSolution(Solution):
         return result / 1_000
 
     
-    def get_co2_sequestered_final_year(self) -> np.float64:
+    def get_co2_sequestered_final_year(self) -> float:
 
         carbon_sequestration_series = self.get_carbon_sequestration_series()
         
@@ -684,7 +679,7 @@ class OceanSolution(Solution):
 
         start_year = reduction_plus_sequestration.index.min()
         result_years = list(range(start_year, self.end_year+1))
-        results = pd.Series(index = result_years, dtype=np.float64)
+        results = pd.Series(index = result_years, dtype=float)
         results = results.fillna(0.0)
         # (0.217 + 0.259*EXP(-(A173-$A$173+1)/172.9) + 0.338*EXP(-(A173-$A$173+1)/18.51) + 0.186*EXP(-(A173-$A$173+1)/1.186))
         # (0.217 + 0.259*EXP(-(current_year-year_zero+1)/172.9) + 0.338*EXP(-(current_year-year_zero+1)/18.51) + 0.186*EXP(-(current_year-year_zero+1)/1.186))
@@ -702,7 +697,7 @@ class OceanSolution(Solution):
                 val += 0.186*np.exp(-(exponent)/1.186)
                 year_results.append(year_net_adoption * val)
 
-            year_results_series = pd.Series(index = range(iter_year, self.end_year+1), dtype=np.float64)
+            year_results_series = pd.Series(index = range(iter_year, self.end_year+1), dtype=float)
             year_results_series = year_results_series.fillna(0.0)
             year_results_series = year_results_series.add(year_results)
 
@@ -714,7 +709,7 @@ class OceanSolution(Solution):
         results = results * factor
         return results
 
-    def get_change_in_ppm_equivalent(self) -> np.float64:
+    def get_change_in_ppm_equivalent(self) -> float:
         
         change_in_ppm_equivalent_series = self.get_change_in_ppm_equivalent_series()
 
@@ -722,7 +717,7 @@ class OceanSolution(Solution):
 
         return result
 
-    def get_change_in_ppm_equivalent_final_year(self) -> np.float64:
+    def get_change_in_ppm_equivalent_final_year(self) -> float:
                 
         change_in_ppm_equivalent_series = self.get_change_in_ppm_equivalent_series()
 
@@ -735,7 +730,7 @@ class OceanSolution(Solution):
 
 ### Start Area Calculations ###
 
-    def get_reduced_area_degradation(self) -> np.float64:
+    def get_reduced_area_degradation(self) -> float:
         total_undegraded_area_pds = self.pds_scenario.get_total_undegraded_area(
             self.scenario.growth_rate_of_ocean_degradation,
             self.scenario.disturbance_rate,
@@ -754,7 +749,7 @@ class OceanSolution(Solution):
         return result
 
 
-    def get_carbon_under_protection_final_year(self) -> np.float64:
+    def get_carbon_under_protection_final_year(self) -> float:
 
         cumulative_degraded_area_under_protection_pds = self.pds_scenario.get_cumulative_degraded_area_under_protection(
             self.scenario.delay_impact_of_protection_by_one_year,
@@ -772,7 +767,7 @@ class OceanSolution(Solution):
         return result / 1_000
 
     
-    def get_co2_under_protection_final_year(self) -> np.float64:
+    def get_co2_under_protection_final_year(self) -> float:
         carbon_to_co2_ratio = 3.664
         result = self.get_carbon_under_protection_final_year()
         result *= carbon_to_co2_ratio
@@ -785,4 +780,4 @@ class OceanSolution(Solution):
                 'net_operating_savings': self.get_operating_cost(),  # TODO
                 'lifetime_operating_savings': self.get_lifetime_operating_savings(),
                 'cumulative_emissions_reduced': self.get_total_emissions_reduction(),
-                'total_additional_co2eq_sequestered': self.get_total_co2_seq()}
+                'total_additional_co2eq_sequestered': self.get_total_co2_sequestered()}
