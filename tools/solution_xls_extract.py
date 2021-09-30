@@ -99,7 +99,7 @@ def get_rrs_scenarios(wb, solution_category):
             # Note this is hidden text.
             s['creation_date'] = xls(sr_tab, row, co("B"))  
             # Throw an exception if the date is not in the expected format.
-            datetime.datetime.strptime(s['creation_date'], "%Y-%m-%d %H:%M:%S")
+            _scenario_creation_date_from_str(s['creation_date'])
             s['description'] = xls(sr_tab, row + 1, co("E"))
 
             report_years = xls(sr_tab, row + 2, co("E"))  # E:2 from top of scenario
@@ -309,7 +309,7 @@ def get_land_scenarios(wb, solution_category):
             # Note this is hidden text.
             s['creation_date'] = xls(sr_tab, row, co("B"))  
             # Throw an exception if the date is not in the expected format.
-            datetime.datetime.strptime(s['creation_date'], "%Y-%m-%d %H:%M:%S")
+            _scenario_creation_date_from_str(s['creation_date'])
             
             s['description'] = xls(sr_tab, row + 1, co("E"))
             report_years = xls(sr_tab, row + 2, co("E"))
@@ -1592,6 +1592,32 @@ def find_RRS_solution_category(wb):
     return None
 
 
+def _scenario_creation_date_from_str(s):
+  date_format = "%Y-%m-%d %H:%M:%S"
+  return datetime.datetime.strptime(s, date_format)
+
+    
+def _scenarios_from_ac_dir(ac_path):
+    """Returns all scenarios in ac_path, and earliest creation date."""
+    names = []
+    creation_dates = []
+    for jsonfile in ac_path.glob('*.json'):
+        d = json.loads( jsonfile.read_text(encoding='utf-8') )
+        if 'name' not in d:
+            # Not in expected ac format.
+            continue
+        names.append(d['name'])
+
+        if 'creation_date' not in d:
+            # Not in expected ac format.
+            continue
+        creation_dates.append(_scenario_creation_date_from_str(
+            d['creation_date']))
+
+    if names:
+        return names, min(creation_dates)
+    else:
+        return [], None
 
 
 warn_counts = {
@@ -1599,7 +1625,7 @@ warn_counts = {
 }
 
 def output_solution_python_file(outputdir, xl_filename):
-    """Extract relevant fields from Excel file and output a Python class.
+    """Excel file -> generated Python code + many data files.
 
        Arguments:
          outputdir: directory to put output in.
@@ -1615,6 +1641,10 @@ def output_solution_python_file(outputdir, xl_filename):
     if not os.path.exists(outputdir):
         os.mkdir(outputdir)
     py_filename = os.path.join(outputdir, '__init__.py')
+    if os.path.exists(py_filename):
+        py_filename = os.path.join(outputdir, '__init__.py.UPDATED')
+        print(f'Generating new code at {py_filename} - please merge by '
+              'hand with __init__.py')
 
     wb = openpyxl.load_workbook(filename=xl_filename,data_only=True,keep_links=False)
     ac_tab = wb['Advanced Controls']
@@ -1713,8 +1743,16 @@ def output_solution_python_file(outputdir, xl_filename):
             has_harvest = True
 
     p = pathlib.Path(f'{outputdir}/ac')
+
     p.mkdir(parents=False, exist_ok=True)
+    prev_scenarios, min_creation_date = _scenarios_from_ac_dir(p)
     for name, s in scenarios.items():
+        if min_creation_date:
+            creation_date = _scenario_creation_date_from_str(s['creation_date'])
+            if creation_date < min_creation_date:
+                print(f'Skipping scenario {name}, earlier than existing '
+                      'scenarios.')
+                continue
         fname = p.joinpath(re.sub(r"['\"\n()\\/\.]", "", name).replace(' ', '_').strip() + '.json')
         write_scenario(filename=fname, s=s)
     f.write("scenarios = ac.load_scenarios_from_json("
