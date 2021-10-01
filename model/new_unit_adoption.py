@@ -8,7 +8,6 @@ import copy
 import model.interpolation as interp
 
 # Code originally based of seaweed farming solution, but is intended to be general.
-
 class NewUnitAdoption:
     """This is the base class that contains the calculations for Ocean-related Unit Adoption scenarios.
     Used for both PDS adoption and REF adoption.
@@ -18,12 +17,13 @@ class NewUnitAdoption:
     disturbance_rate: float
     sequestration_rate_all_ocean: float
     
-    def _validate_inputs(self):        
-        pass
-
     def __init__(self, base_year: int, start_year: int, end_year: int, adoption_scenario_to_load: str, adoption_input_file: str):
-        self._validate_inputs()
-
+        """Initialise with base year, start year, end year, the name of the adoption scenario to load, and the adoption input file (either pds scenario or reference scenario).
+        
+        "base year" specifies the year the time series should start. Start year is the start of the reporting period, end year specifies the end of the reporting period.
+        adoption_scenario_to_load is a string used to load the relevant scenario - e.g. for the pds scenario "AverageOfAllScenarios".
+        adoption_input_file is a path to the file used to store the data for this adoption_scenario_to_load.
+        """
         self.base_year = base_year
         self.start_year = start_year
         self.end_year = end_year
@@ -37,10 +37,8 @@ class NewUnitAdoption:
         if adoption_scenario_to_load not in json_dict.keys():
             raise ValueError(f'Unable to find scenario name {adoption_scenario_to_load} in {adoption_input_file} keys - {json_dict.keys()}')
  
-        adoption_scenario_desc = json_dict[adoption_scenario_to_load]['description']
-                
+        adoption_scenario_desc = json_dict[adoption_scenario_to_load]['description']                
         self.description = adoption_scenario_desc
-
         idx, vals = zip(*json_dict[adoption_scenario_to_load]['data']) # list of two-element lists
         adoption_series = pd.Series(data=vals, index=idx)
 
@@ -53,29 +51,46 @@ class NewUnitAdoption:
         self._area_units = area_units_series # values are initialised to NaNs
 
     def get_area_units(self) -> pd.Series:
+        """Return a copy of the total land or ocean area time series."""
         return self._area_units.copy()
 
     def get_skeleton(self) -> pd.Series:
+        """Return a deep copy of the unit adoption time series with all values replaced with zeroes."""
         # This is used to create empty unit adoption objects. Sometimes ref unit adoption is zero, often conventional unit adoption is also zero.
         # Having zero unit adoption objects enables addition & subtraction without changing formulae.
-
-        new_obj = copy.deepcopy(self)
-        
+        new_obj = copy.deepcopy(self)        
         series = new_obj.implementation_units
         series[:] = 0.0
-        
         new_obj.implementation_units = series
-
         return new_obj
 
     def get_units_adopted(self) -> pd.Series:
+        """Return a copy of the implementation units adopted."""
         # 'Unit Adoption Calculations'!C136:C182 = "Land Units Adopted" - PDS
         # 'Unit Adoption Calculations'!C198:C244 = "Land Units Adopted" - REF
         return self.implementation_units.copy()
 
     def annual_breakout(self, expected_lifetime) -> pd.Series:
+        """Return a time series breakout of new units per year, including replacements. Use to calculate operating cost, lifetime operating savings, and net profit margin.
 
-        """Breakout of operating cost per year, including replacements.
+        Calculate the number of new sets of SOLUTION implementation units installed over the lifetime of the units,
+        but only for new or replacement units installed during the analysis period. Fixed and Variable costs are not applied here, but can then be applied by the function caller.
+
+        This calculation assumes that:
+        1. No units installed after the end year are included
+        2. Only units installed in year X are accounted for in year X.
+
+        Note:
+        1. Each column represents the sum of all units (and their replacements) initially installed in the year at top of column.
+        2. Each row represents a particular year of attribution
+        3. Number of units depends on year of installation, and restarts for replacement units
+        4. For the last year, calculates the fraction of a year remaining in the lifetime
+        
+        Implementation:
+        Include installed units for this column in this row year if all are true:
+        1. row year >= Initial Installation Year + delay years required until start of period
+        2. row year < final lifetime year of all initial and replacement units  for this column (=period of analysis + # years this column expected to last past end of period)
+
         """
         
         # Following code based on annual_breakout function in model\operatingcost.py
@@ -88,7 +103,6 @@ class NewUnitAdoption:
         breakout.index = breakout.index.astype(int)
 
         for year in range(self.base_year, self.end_year + 1): # iterates over columns (fewer columns than rows)
-
             # within the years of interest, assume replacement of worn out equipment.
             lifetime = expected_lifetime
             assert lifetime != 0, 'Cannot have a lifetime replacement of 0 and non-zero costs'
@@ -96,7 +110,6 @@ class NewUnitAdoption:
                 lifetime += expected_lifetime # This usually doubles the lifetime for the first year or two.
 
             total = new_funits_per_year.loc[year]
-
             # for each year, add in values for equipment purchased in that
             # starting year through the year where it wears out.
             for row in range(year, self.end_year + ceil(expected_lifetime)): # iterates over rows
@@ -104,36 +117,30 @@ class NewUnitAdoption:
                 val = total * remaining_lifetime
                 if isnan(val):
                     val = 0.0
-
                 breakout.loc[row, year] = val
-
                 lifetime -= 1
                 if lifetime <= 0:
                     break
         return breakout
-
         
     def get_operating_cost(self, expected_lifetime, operating_cost) -> pd.Series:
+        """Return a time series of the operating costs, summed by year."""
 
         # After multiplying by (1+ disturbance_rate), this should equal the time series SUM($C266:$AV266) in [Operating Cost] worksheet 
-
         result = self.annual_breakout(expected_lifetime)
         result *= operating_cost
-
         cost_series = result.sum(axis='columns')
         return cost_series
 
-
     def get_incremental_units_per_period(self, expected_lifetime) -> pd.Series:
-
+        """Return a time series of implementation units for each year"""
         incremented = self.implementation_units.loc[self.base_year-1:].diff()
         lifetime = floor(0.5 + expected_lifetime)
-        shifted = incremented.shift(lifetime +1).fillna(0.0)
-                
+        shifted = incremented.shift(lifetime +1).fillna(0.0)                
         return incremented + shifted
 
     def get_install_cost_per_land_unit(self, first_cost) -> pd.Series:
-
+        """Return a time series of installation costs per year."""
         # $C$37 (pds) and $L$37 (ref) on First Cost spreadsheet tab.
         learning_rate = 1.0 # 100%
         how_fast = 2 # If double enter 2, if every 4 x increase, then enter 4
@@ -144,7 +151,7 @@ class NewUnitAdoption:
         return cost_series
 
     def get_annual_world_first_cost(self, expected_lifetime, first_cost) -> pd.Series:
-        
+        """Return a time series of the number of units implemented per year multiplied by the first cost"""
         # For the custom pds scenario, this is the time series referred to by cell $E$36 in the spreadsheet.
         # For the custom ref scenario, this is the time series referred to by cell $N$36 in the spreadsheet.
         i_units = self.get_incremental_units_per_period(expected_lifetime)
@@ -153,14 +160,14 @@ class NewUnitAdoption:
 
 
     def get_lifetime_operating_savings(self, expected_lifetime, operating_cost) -> pd.Series:
-
+        """Return a time series of operating savings over the reporting period by year, multiplied by the operating cost."""
         # After muliplying by (1 + disturbance_rate) this should match the time series in [Operating Cost]!$C$125
         matrix = self.annual_breakout(expected_lifetime)
         cost_series = matrix.sum(axis='columns') * operating_cost
         return cost_series
 
     def get_lifetime_cashflow_npv(self, purchase_year, discount_rate, conventional_expected_lifetime, solution_expected_lifetime, operating_cost, conventional_first_cost, solution_first_cost) -> pd.Series:
-        
+        """Return a time series of discounted cash flows for the solution expected lifetime. Calculate using first cost and operating cost."""
         # "result" should match time series in [Operating Cost]!$J$125 = "NPV of Single Cashflows (to 2014)"
         years_old_at_start =  purchase_year - self.base_year + 1
         discount_factor = 1/(1+discount_rate)
@@ -169,9 +176,7 @@ class NewUnitAdoption:
         first_cost_series = first_cost_series.loc[self.base_year:]
         first_val = first_cost_series.loc[self.base_year] + operating_cost
         first_val = first_val * discount_factor**(years_old_at_start)
-
         results = [first_val]
-        
         solution_lifetime = ceil(solution_expected_lifetime)
 
         for year in range(ceil(solution_lifetime)-1):
@@ -194,8 +199,8 @@ class NewUnitAdoption:
         return result
 
 
-    def get_net_profit_margin(self, expected_lifetime, net_profit_margin):
-
+    def get_net_profit_margin(self, expected_lifetime, net_profit_margin) -> pd.Series:
+        """Return a time series breakdown of net profit margin per year over the reporting period."""
         # For PDS = [Net Profit Margin]!SUM(C266:AV266)
         # For REF = [Net Profit Margin]!SUM(C403:AV403)
 
@@ -209,7 +214,7 @@ class NewUnitAdoption:
 ###########
     
     def set_area_units_linear(self, total_area, change_per_period, total_area_as_of_period = None) -> None:
-        
+        """Apply a straight line formula to the time series representing the total land/ocean area."""
         if total_area_as_of_period is None:
             total_area_as_of_period = self.base_year
         
@@ -224,25 +229,25 @@ class NewUnitAdoption:
         return 
 
     def apply_linear_regression(self) -> None:
-
+        """Apply a linear regression to the time series representing the total land/ocean area."""
         df = interp.linear_trend(self.get_area_units())
         self._area_units = df['adoption']
         return
     
     def apply_clip(self, lower = None, upper = None) -> None:
+        """Apply upper and lower bounds to the time series representing the total land/ocean area."""
         if lower == None and upper == None:
             print('Warning : Neither lower nor upper parameter supplied. No action taken.')
         self._area_units.clip(lower=lower, upper=upper, inplace=True)
 
-
     def get_cumulative_degraded_unprotected_area(self, delay_impact_of_protection_by_one_year: bool,
                      growth_rate_of_ocean_degradation: float) -> pd.Series:
-        """
-        This represents the total degraded area.
+        """Return a time series representing the total degraded area. (Millions ha)
+
         Calculation uses the rate supplied by the degradation_rate parameter.
         This rate is applied only to the area that is not covered by the solution (ie not protected) and that is not degraded.
-        Units: Millions ha
-            Calculation:
+        
+        Calculation:
             Area Degraded in Previous Year + (Total Area - Protected Area - Area Degraded in Previous Year) * Degradation Rate 
         """
 
@@ -278,10 +283,10 @@ class NewUnitAdoption:
     def get_total_at_risk_area(self, growth_rate_of_ocean_degradation: float, 
                 delay_impact_of_protection_by_one_year: bool) -> pd.Series:
 
-        """
-        This represents the total area at risk of degradation by anthropogenic or other means.
-        It is calculated by identifying how much land is degraded, and how much remains undegraded.
-        Units: Millions ha
+        """Return a time series representing the total area at risk of degradation by anthropogenic or other means. (Millions ha.)
+
+        Calculated by identifying how much land is degraded, and how much remains undegraded.
+        
         Calculation:
             Total Area - Area Protected in Current Year - Area Degraded in Current Year
 
@@ -301,14 +306,13 @@ class NewUnitAdoption:
 
 
     def get_cumulative_degraded_area_under_protection(self, delay_impact_of_protection_by_one_year: bool, disturbance_rate: float) -> pd.Series:
-        """
+        """Return a time series representing the cumulative degraded area under protection. (Millions ha)
+
         Even protected areas suffer from degradation via disturbances (e.g. natural degradation, logging, storms, fires or human settlement).
         The disturbance rate is usually equal in the PDS adoption and reference adoption.
-        This disturbance rate represents the degradation of protected area, and is expected to be much less than the
-        degradation rate of unprotected area.
-        This function is used to calculate the carbon sequestration, direct emissions, fuel and grid emissions, 
-        indirect emissions and total reduction in area degradation result.
-        Units: Millions ha
+        This disturbance rate represents the degradation of protected area, and is expected to be much less than the degradation rate of unprotected area.
+        Use this to calculate the carbon sequestration, direct emissions, fuel and grid emissions, indirect emissions and total reduction in area degradation result.
+        
         Calculation:
             Protected area that was degraded in Previous Year + (area protected by soln - protected area degraded in previous year) * disturbance tate
         """
@@ -347,10 +351,10 @@ class NewUnitAdoption:
                 disturbance_rate: float = 1.0, 
                 delay_impact_of_protection_by_one_year: bool = True) -> pd.Series:
 
-        """
-        This represents the total area that is not degraded in any particular year. It takes the Total Area and removes the degraded area,
-        which is the same as summing the undegraded area and at-risk area.
-        Units: Millions ha
+        """ Return a time series representing the total area that is not degraded in any particular year. (Millions ha)
+        
+        Calculated by taking the Total Area and removing the degraded area, which is the same as summing the undegraded area and at-risk area.
+        
         Calculation:
             Total Area - Area Degraded that was Unprotected - Protected Land that is Degraded (via a Disturbance) in Current Year
 
@@ -376,14 +380,12 @@ class NewUnitAdoption:
         
     def get_annual_reduction_in_total_degraded_area(self, disturbance_rate, growth_rate_of_ocean_degradation,
                              delay_impact_of_protection_by_one_year) -> pd.Series:
-        """
-        This is the change in total degraded area in the adoption each year, added to the total undegraded area for t-1.
+        """Return a time series representing the change in total degraded area in the adoption each year, added to the total undegraded area for t-1. (Millions ha.)
+
         Used to combine two adoptions, usually pds and reference solution (PDS - REF) like this:
             annual_reduction_in_total_degraded_area (REF) - annual_reduction_in_total_degraded_area (PDS).
         This is equivalent to:
             Cumulative Area Degraded in REF Scenario for year x  - Cumulative Area Degraded in PDS Scenario for year x - Cumulative Degradation Change (PDS - REF) for Year [x-1]
-
-        Units: Millions ha.
 
         """
 
@@ -412,7 +414,10 @@ class NewUnitAdoption:
         
 
     def get_emissions_reduction_series(self, disturbance_rate, growth_rate_of_ocean_degradation, delay_impact_of_protection_by_one_year, emissions_reduced_per_unit_area, use_aggregate_CO2_equivalent_instead_of_individual_GHG: bool) -> pd.Series:
-
+        """Return a time series representing the amount of emissions reduced for each year in the reporting period. (MMT CO2 equivalent).
+        
+        Calculated by taking the total undegraded area and muliplying by the emissions reduced per unit area.
+        """
         # CO2-eq MMT Reduced
         # Used to calculate [CO2 Calcs]!$B64
 
@@ -437,9 +442,10 @@ class NewUnitAdoption:
             use_adoption
             ) ->pd.Series:
 
-        # print('debug carbon sequestration', sequestration_rate, disturbance_rate, growth_rate_of_ocean_degradation,
-        #                      delay_impact_of_protection_by_one_year, delay_regrowth_of_degraded_land_by_one_year, use_adoption
-                            #  )
+        """Return a time series representing the total carbon sequestered by year across the reporting period.
+        
+        Calculates the total undegraded area and muliplying by sequestration rate multiplied by (1-disturbance rate)"""
+
         co2_mass_to_carbon_mass = 3.666 # carbon weighs 12, oxygen weighs 16 => (12+16+16)/12
 
         if use_adoption:
