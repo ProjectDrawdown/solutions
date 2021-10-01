@@ -49,9 +49,10 @@ class elc_integration_state:
 
     # Energy TAMs, Units TWh
     
-    ref_tam_sources : dict = None                   # TAM data structrue (SMA)in
+    ref_tam_sources : dict = None                   # TAM data structrue (SMA)
     reference_tam : pd.DataFrame = None             # year series, Units TWh.    Excel Tab 3D column X
     integrated_tam : pd.DataFrame = None            # year x PDS123, Units TWh.  Excel Tab 5B, columns AW:AY
+    old_integrated_tam : pd.DataFrame = None
 
     # Adoption of energy sources
     # Raw adoption units are TWh, the final adoption table units are % TAM
@@ -63,13 +64,16 @@ class elc_integration_state:
     es_raw_adoption : pd.DataFrame = None           # year x (all solution sources x PDS123)  
                                                     #          Excel Tabs 5B, 5C, 5D, columns BF:CF
     
+    conventional_adoption_profile : pd.DataFrame = None   # year x (PDS123 x source x (total,%))
+                                                    # Excel tabs 5B, 5C, 5D, colums CO:DB
+    
     ref_adoption : pd.DataFrame = None              # year x source, Units % ref TAM   Excel 
     pds_adoption: pd.DataFrame = None               # year x (source x PDS123), Units % integrated TAM 
 
     # Emissions
 
-    ref_grid_emissions : pd.DataFrame = None        # year series, Units ??, Excel tab 2E, columns A#:AH
-    pds_grid_emissions:  pd.DataFrame = None        # year x PDS123, Units ??, Excel tab 2E, columns AK:Az
+    ref_grid_emissions : pd.DataFrame = None        # year x (medium,high,low), Units ??, Excel tab 2E, columns A#:AH
+    #pds_grid_emissions:  pd.DataFrame = None        # year x PDS123, Units g CO2-eq/kWh, Excel tab 2E, columns AK:Az
 
 es = elc_integration_state()
 
@@ -78,6 +82,23 @@ es = elc_integration_state()
 #                                       Data Collection and Supporting Functions
 #
 #  Grid Mix
+
+def check_grid_mix():
+    # Make sure grid mix has been specified, and complain otherwise
+    load_historical_grid_mix()
+    try:
+        cymix = grid_mix_for_year(es.integration_year)
+        es.current_grid_mix = cymix
+        audit("current grid mix", es.current_grid_mix)
+        print(f"Previously defined grid mix loaded for year {es.integration_year}")
+    except:
+        message = """The grid mix for YEAR1 must be set before continuing.  The most recent grid mix is available as 
+        grid_mix_for_year(YEAR2), and a projection from that mix as TODO.
+        When you are have a satisfactory mix, set it as the current grid mix with set_as_current_grid_mix(newmix).
+        Then re-execute this step."""
+        message = message.replace("YEAR2", max(es.historical_grid_mix['total']).columns).replace("YEAR1",es.integration_year)
+        print(message)
+
 
 def load_historical_grid_mix():
     testdata = load_testmode_snapshot("GridMix.csv")
@@ -94,6 +115,7 @@ def load_historical_grid_mix():
     df.columns = [ int(c) for c in df.columns ]
     es.historical_grid_mix = calc_grid_mix_percentages(df)
     audit("historical grid mix", es.historical_grid_mix)
+    return es.historical_grid_mix
 
 
 def calc_grid_mix_percentages(df):
@@ -127,7 +149,6 @@ def grid_mix_for_year(year) -> pd.DataFrame:
     df = es.historical_grid_mix.swaplevel(axis=1)
     return df[year]
 
-
 def set_as_current_grid_mix(newmix: pd.DataFrame):
     """Save the new grid mix as the accepted grid mix for this year.  Percentages will be updated automatically."""
     
@@ -147,29 +168,80 @@ def set_as_current_grid_mix(newmix: pd.DataFrame):
     es.historical_grid_mix = calc_grid_mix_percentages(histmix)
 
 
-
 def load_reference_tam_sources():
     testdata = load_testmode_snapshot("reference_tam_sources.json")
     if testdata:
         es.ref_tam_sources = json.loads(testdata)
     else:
-        es.ref_tam_sources = scenario.load_sources(public_datadir/"ref_tam_2_sources.json", '*')
+        es.ref_tam_sources = scenario.load_sources(public_datadir/"ref_tam_sources_current.json", '*')
+    print("Reference TAM sources loaded")
+ 
+    # While we're at it, also load the old integrated TAM, so we have it to compare to, and before 
+    # we potentially overwrite it.  Note we're skipping the TAM module and just loading the csvs
+    es.old_integrated_tam = pd.concat({
+        'PDS1' : pd.read_csv(public_datadir/"PDS_plausible_scenario_current.csv", index_col="Year")['World'],
+        'PDS2' : pd.read_csv(public_datadir/"PDS_drawdown_scenario_current.csv", index_col="Year")['World'],
+        'PDS3' : pd.read_csv(public_datadir/"PDS_optimum_scenario_current.csv", index_col="Year")['World']
+    }, axis=1)
 
 
 def calc_energy_tam(case):
-    """Reutrn the TAM represented by the case"""
     tamconfig = tam.make_tam_config(overrides=[
         ('source_until_2014','World',"Baseline Cases"),
         ('source_after_2014','World',case)
         ])
     tam_object = tam.TAM(tamconfig, es.ref_tam_sources, es.ref_tam_sources)
     return tam_object.ref_tam_per_region()['World']
+
+
+def integrated_tam_comparision():
+    if es.integrated_tam is None:
+        print("Cannot compare TAM until it has been calculated")
+        return
+    makedelta = lambda x, y, col: pd.concat({'old': x[col], 'new': y[col], 'delta': y[col].sub(x[col],axis=0)}, axis=1)
+    old = es.old_integrated_tam
+    new = es.integrated_tam
+    return pd.concat({
+        'PDS1': makedelta(old, new, 'PDS1'),
+        'PDS2': makedelta(old, new, 'PDS2'),
+        'PDS3': makedelta(old, new, 'PDS3')
+    }, axis=1)
+
+
+def load_conventional_adoption_profile():
+    testdata = load_testmode_snapshot("conventional_pds_adoption.csv")
+    source = StringIO(testdata) if testdata else datadir/"conventional_pds_adoption.csv"
+    es.conventional_adoption_profile = pd.read_csv(source,index_col=0,header=[0,1,2])
+    audit("conventional adoption profile loaded", es.conventional_adoption_profile)
+    print("Current conventional adoption profile loaded")
+    return es.conventional_adoption_profile
+
+def use_conventional_adoption_profile(new_profile):
+    es.conventional_adoption_profile = new_profile
+    audit("conventional adoption profile set", new_profile)
+    print("New conventional adoption profile set")
     
+
+def compare_adoption_to_tam(segment):
+    segments = ['reference', 'PDS1', 'PDS2', 'PDS3']
+    if segment not in segments:
+        print("Error: segment argument must be one of " + str(segments))
+        return
+
+    if segment == "reference":
+        adoption_sum = es.ref_adoption.sum(axis=1)
+        tam = es.reference_tam
+    else:
+        adoption_sum = es.pds_adoption[segment].sum(axis=1)
+        tam = es.integrated_tam[segment]
+    return pd.concat({"Adoption Total": adoption_sum, "TAM": tam, "Delta": tam.sub(adoption_sum, axis=0)}, axis=1)
+\
 
 def load_net_grid_use() -> pd.DataFrame:
     """Gather net electricity grid use from all solutions for all PDS1/2/3 scenarios.
     Returns a DataFrame with years index and (solutions) x (pds1/2/3) columns"""
 
+    print("Loading net energy deltas for all solutions; this takes some time")
     testdata = load_testmode_snapshot("grid_impact_pds1.csv")
     if testdata:
         # stored in three files for easier cut-pasting from Excel
@@ -198,15 +270,16 @@ def load_net_grid_use() -> pd.DataFrame:
         df = pd.concat(collect, axis=1)
     es.net_grid_use = df
     audit("net grid use", es.net_grid_use)
+    print("*** done.")
 
 # Emissions
 
 def load_emissions_factors():
     """Load (average, high, low) emissions factors for each energy type, including conventional sources"""
 
-    testdata = load_testmode_snapshot("emissions_factors")
+    testdata = load_testmode_snapshot("emissions_factors.csv")
     if testdata:
-        basedata = { x[0] : x[1:] for x in [y.split(',') for y in testdata.splitlines()] }
+        basedata = { x[0] : [float(z) for z in x[1:]] for x in [y.split(',') for y in testdata.splitlines()] }
 
     else:
         basedata = {
@@ -244,27 +317,19 @@ def load_emissions_factors():
 
 def setup(year):
     es.integration_year = year
-    print(f"Integration year set to {year}")
 
-    # Get current grid mix, or let the user know we need it.
-    load_historical_grid_mix()
-    try:
-        cymix = grid_mix_for_year(es.integration_year)
-        es.current_grid_mix = cymix
-        audit("current grid mix", es.current_grid_mix)
-        print(f"Previously defined grid mix loaded for year {es.integration_year}")
-    except:
-        message = """The grid mix for YEAR1 must be set before continuing.  The most recent grid mix is available as 
-        grid_mix_for_year(YEAR2), and a projection from that mix as TODO.
-        When you are have a satisfactory mix, set it as the current grid mix with set_as_current_grid_mix(newmix).
-        Then re-execute this step."""
-        message = message.replace("YEAR2", max(es.historical_grid_mix['total']).columns).replace("YEAR1",es.integration_year)
-        print(message)
-        return
+
+def integrate():
+    step1_calculate_tams()
+    step2_calculate_adoptions()
+    step3_calculate_emissions()
+    step4_update()
 
 
 def step1_calculate_tams():
     """Calculate the energy TAMs"""
+
+    check_grid_mix()
  
     load_reference_tam_sources()
     es.reference_tam = calc_energy_tam("Baseline Cases")
@@ -290,6 +355,7 @@ def step1_calculate_tams():
     opttam = calc_energy_tam("100% RES2050 Case")
     es.integrated_tam = pd.concat({'PDS1': pds_tam['PDS1'], 'PDS2': opttam, 'PDS3': opttam}, axis=1)
     audit("integrated tam", es.integrated_tam)  # Excel TAb 5B, columns AW:AY
+    print("integrated TAM calculated")
 
 
 def step2_calculate_adoptions():
@@ -315,45 +381,51 @@ def step2_calculate_adoptions():
         'natural gas' : es.ng_raw_adoption['Baseline Cases'],
         'large hydro' : es.hydro_raw_adoption['Baseline Cases'],
         'oil products' : es.oil_raw_adoption['Baseline Cases']}, axis=1)
-    percents = conventional.div(es.reference_tam, axis=0)
 
-    # for solution sources, we take the current grid mix and assume that it will be unchanged over time
-    pcnt = lambda s : es.current_grid_mix.loc[s,'percent']
-    for soln in energy_solutions:
-        percents[soln] = pcnt(soln)
-    
+    # for solution sources, we take the current grid mix and assume that it will be unchanged over time,
+    # so we multiply the percentage times the reference tam.
+    solutional = pd.concat({
+        soln: es.reference_tam * es.current_grid_mix.loc[soln,'percent'] for soln in energy_solutions
+    }, axis=1)
     # Finally, add a column for "other biomass", which is the remainder after taking into
     # account the solutions in the biomass sector
     # We need this because we know that the biomass sector consists of more than just
     # the solutions we model, by a significant degree.
-    percents['other biomass'] = pcnt('biomass and waste') - (
-            pcnt('biogas') + pcnt('biomass') + pcnt('landfillmethane') + 
-            pcnt('wastetoenergy'))
-
-    es.ref_adoption = percents
+    pcnt = lambda s : es.current_grid_mix.loc[s,'percent']
+    remainder_pcnt = pcnt('biomass and waste') - (pcnt('biogas') + pcnt('biomass') + pcnt('landfillmethane') + pcnt('wastetoenergy'))
+    solutional['other biomass'] = es.reference_tam * remainder_pcnt
+    
+    es.ref_adoption = pd.concat([conventional, solutional],axis=1)
     audit("ref adoption (of energy sources)", es.ref_adoption)
 
     # PDS adoption: use PDS solution values and integrated TAM.
     # Conventional PDS values are complicated; they involve adjusting "buffer" sources 
-    # natural gas and hydro to fit declining TAM, and also some overrides that I don't 
-    # understand. So for now:
-    # TEMPORARY SNAPSHOT: load the % values from columns CO:DB for the PDS
-    # (also includes values for "other biomass")
-    conventional = pd.read_csv(datadir/"conventional_pds_adoption.csv",index_col=0,header=[0,1])
+    # and such, so we make the user do this work, and save it in the conventional profile
+    if es.conventional_adoption_profile is not None:
+        print("using loaded conventional adoption profile")
+    else:
+        print("loading previously-saved conventional adoption profile")
+        load_conventional_adoption_profile()
+    
+    # remove the percentages, which we will recalculate later.
+    conventional = es.conventional_adoption_profile.xs('total',level=2,axis=1)
 
-    solutional = pd.concat( {
-        soln : load_solution_adoptions(soln) for soln in energy_solutions
-    }, axis=1).swaplevel(axis=1)
-    # I'm sure there's a clever way to do this with only one pandas operation, but this works too.
-    solutional = pd.concat( {
-        'PDS1' : solutional['PDS1'].div(es.integrated_tam['PDS1'], axis=0),
-        'PDS2' : solutional['PDS2'].div(es.integrated_tam['PDS2'], axis=0),
-        'PDS3' : solutional['PDS3'].div(es.integrated_tam['PDS3'], axis=0)
-    }, axis=1)
+    # Get the solution adoption from the solutions themselves.
+    maybedata = load_testmode_snapshot("solution_adoptions.csv")
+    if maybedata:
+        solutional = pd.read_csv(StringIO(maybedata), header=[0,1], index_col=0)
+        solutional.rename(columns=factory.find_solution_by_name, level=1)
+    else:
+        solutional = pd.concat({
+            soln : load_solution_adoptions(soln) for soln in energy_solutions
+        }, axis=1).swaplevel(axis=1)
 
-    es.pds_adoption = pd.concat([conventional, solutional], axis=1)
+    es.pds_adoption = pd.concat([conventional, solutional], axis=1).sort_index(axis=1,level=[0])
+    
+    # TODO: recalculate the percents and put them back?
+
     audit("pds adoption", es.pds_adoption)
-
+    print("Adoptions calculated")
 
 
 def step3_calculate_emissions():
@@ -367,10 +439,44 @@ def step3_calculate_emissions():
     
     load_emissions_factors()
 
-    es.ref_grid_emissions = es.ref_adoption.mul(es.emissions_factors['avg']).sum(axis=1)
+    es.ref_grid_emissions = pd.concat( {
+        'medium': es.ref_adoption.mul(es.emissions_factors['avg']).sum(axis=1),
+        'high': es.ref_adoption.mul(es.emissions_factors['high']).sum(axis=1),
+        'low': es.ref_adoption.mul(es.emissions_factors['low']).sum(axis=1) }, axis=1)
     audit("ref grid emissions", es.ref_grid_emissions)
 
-    es.pds_grid_emissions = es.pds_adoption.mul(es.emissions_factors['avg']).sum(axis=1)
-    audit("pds grid emissions", es.pds_grid_emissions)
+    # The Excel integration computes mean/high/low values for all three PDS, but if it uses
+    # them for anything, I haven't figure out what yet, so I'm skipping that for now.
+    # 
+    # es.pds_grid_emissions = es.pds_adoption.mul(es.emissions_factors['avg']).sum(axis=1)
+    # audit("pds grid emissions", es.pds_grid_emissions)
+    print("Grid Emissions factors calculated")
 
 
+def step4_update():
+    version = str(es.integration_year)
+
+    # Update emissions data
+    emissions_file = thisdir.parent/"data"/"emissions"/"meta.csv"
+    update_to_version(emissions_file, version, df_to_csv_string(es.ref_grid_emissions))
+    print("Grid Emissions Data saved")
+
+    # PDS TAM data
+    # Create updated versions of each of the data files, and then also the updated json file
+    munge = lambda x: df_to_csv_string(x.set_axis(['World'],axis=1))
+    update_to_version(public_datadir/"PDS_plausible_scenario.csv", version, munge(es.integrated_tam[['PDS1']]))
+    update_to_version(public_datadir/"PDS_drawdown_scenario.csv", version, munge(es.integrated_tam[['PDS2']]))
+    update_to_version(public_datadir/"PDS_optimum_scenario.csv", version, munge(es.integrated_tam[['PDS3']]))
+
+    # We don't have to update the "current" version of the json file, because it already points to the 
+    # current versions of the csvs.  So we update only the versioned version of the json file,
+    content = {
+        "Ambitious Cases": {
+        "Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario": "PDS_plausible_scenario_VERSION.csv",
+        "Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario": "PDS_drawdown_scenario_VERSION.csv",
+        "Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario": "PDS_optimum_scenario_VERSION.csv"
+    }}
+    contentstring = json.dumps(content,indent=2).replace("VERSION",version)
+    filename = integration.integration_alt_file(public_datadir/f"pds_tam_sources_{version}.csv")
+    filename.write_text(contentstring, encoding='utf-8')
+    print("PDS (Integrated) TAM saved")

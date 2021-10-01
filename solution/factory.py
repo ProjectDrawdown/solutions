@@ -33,9 +33,7 @@ def load_scenario(solution, scenario=None):
     m = _load_module(solution)
     if isinstance(scenario, dict):
         scenario = ac.ac_from_dict(scenario, m.VMAs)
-    elif scenario in ['PDS1','PDS2','PDS3']:
-        md = {'PDS1': m.PDS1, 'PDS2': m.PDS2, 'PDS3': m.PDS3}
-        scenario = md[scenario]
+    scenario = pds_truename(solution,scenario)
     return m.Scenario(scenario)
 
 @lru_cache()
@@ -51,6 +49,16 @@ def all_solutions_scenarios():
         everything[solution] = list_scenarios(solution)
     return everything
 
+def pds_scenarios(solution):
+    """Return the names of the PDS scenarios for a given solution"""
+    m = _load_module(solution)
+    return {'PDS1': m.PDS1, 'PDS2': m.PDS2, 'PDS3': m.PDS3}
+
+def pds_truename(solution, scenario_name):
+    """Return the true name of PDS1/2/3 scenarios"""
+    if scenario_name in ['PDS1','PDS2','PDS3']:
+        return pds_scenarios(solution)[scenario_name]
+    return scenario_name
 
 def solution_path(solution):
     """Return the root directory where solution is located"""
