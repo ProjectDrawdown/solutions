@@ -11,6 +11,7 @@ class ImproveAquacultureSolution(OceanSolution):
     # Initialize from configuration file:
     def __init__(self, configuration_file_name: Optional[str] = None):
         """
+            Initialize the 
             Configuration file name defaults to './improveaquaculture_solution_config.yaml'.
             This should be located in the same directory as the 'improveaquaculture_solution.py' module
 
