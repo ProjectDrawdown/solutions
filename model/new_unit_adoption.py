@@ -68,47 +68,10 @@ class NewUnitAdoption:
 
         return new_obj
 
-    ##############
-    
-    @property
-    def expected_lifetime(self):
-        return self._expected_lifetime
-    
-    @expected_lifetime.setter
-    def expected_lifetime(self, value):
-        self._expected_lifetime = value
-    
-    @property
-    def first_cost(self):
-        return self._first_cost
-    
-    @first_cost.setter
-    def first_cost(self, value):
-        self._first_cost = value
-
-    @property
-    def operating_cost(self):
-        return self._operating_cost
-    
-    @operating_cost.setter
-    def operating_cost(self, value):
-        self._operating_cost = value
-
-    @property
-    def net_profit_margin(self):
-        return self._net_profit_margin
-    
-    @net_profit_margin.setter
-    def net_profit_margin(self, value):
-        self._net_profit_margin = value
-    
-    ##########
-
     def get_units_adopted(self) -> pd.Series:
         # 'Unit Adoption Calculations'!C136:C182 = "Land Units Adopted" - PDS
         # 'Unit Adoption Calculations'!C198:C244 = "Land Units Adopted" - REF
         return self.implementation_units.copy()
-
 
     def annual_breakout(self, expected_lifetime) -> pd.Series:
 
@@ -119,7 +82,6 @@ class NewUnitAdoption:
         # See range starting in cell [Operating Cost]!$C$261. Also used by Net Profit Margin calculation.
 
         new_funits_per_year = self.implementation_units.loc[self.base_year:].diff()
-
         breakout = pd.DataFrame(0, index=arange(self.base_year, self.end_year),
                                 columns=arange(self.base_year, new_funits_per_year.index[-1]), dtype='float')
         breakout.index.name = 'Year'
@@ -170,7 +132,6 @@ class NewUnitAdoption:
                 
         return incremented + shifted
 
-    
     def get_install_cost_per_land_unit(self, first_cost) -> pd.Series:
 
         # $C$37 (pds) and $L$37 (ref) on First Cost spreadsheet tab.
@@ -180,43 +141,32 @@ class NewUnitAdoption:
 
         # For some solutions (e.g. seaweed farming), param_b == zero. So following will produce a static series of self.first_cost.
         cost_series = self.implementation_units.loc[:].apply(lambda x: x**param_b) * first_cost
-
         return cost_series
-
 
     def get_annual_world_first_cost(self, expected_lifetime, first_cost) -> pd.Series:
         
         # For the custom pds scenario, this is the time series referred to by cell $E$36 in the spreadsheet.
         # For the custom ref scenario, this is the time series referred to by cell $N$36 in the spreadsheet.
-
-        #TODO - validate input params.
-
         i_units = self.get_incremental_units_per_period(expected_lifetime)
         result = i_units * first_cost
-
         return result
 
 
     def get_lifetime_operating_savings(self, expected_lifetime, operating_cost) -> pd.Series:
 
         # After muliplying by (1 + disturbance_rate) this should match the time series in [Operating Cost]!$C$125
-        
         matrix = self.annual_breakout(expected_lifetime)
         cost_series = matrix.sum(axis='columns') * operating_cost
-        
         return cost_series
-
 
     def get_lifetime_cashflow_npv(self, purchase_year, discount_rate, conventional_expected_lifetime, solution_expected_lifetime, operating_cost, conventional_first_cost, solution_first_cost) -> pd.Series:
         
         # "result" should match time series in [Operating Cost]!$J$125 = "NPV of Single Cashflows (to 2014)"
         years_old_at_start =  purchase_year - self.base_year + 1
-
         discount_factor = 1/(1+discount_rate)
 
         first_cost_series = self.get_install_cost_per_land_unit(solution_first_cost)
         first_cost_series = first_cost_series.loc[self.base_year:]
-
         first_val = first_cost_series.loc[self.base_year] + operating_cost
         first_val = first_val * discount_factor**(years_old_at_start)
 
@@ -250,9 +200,7 @@ class NewUnitAdoption:
         # For REF = [Net Profit Margin]!SUM(C403:AV403)
 
         # (PDS - REF) = [Net Profit Margin]!$C$125 = "Difference in Net Profit Margin (PDS minus Reference)""
-
         matrix = self.annual_breakout(expected_lifetime)
-
         margin_series = matrix.sum(axis='columns')
         margin_series *= net_profit_margin
 
@@ -278,9 +226,7 @@ class NewUnitAdoption:
     def apply_linear_regression(self) -> None:
 
         df = interp.linear_trend(self.get_area_units())
-
         self._area_units = df['adoption']
-
         return
     
     def apply_clip(self, lower = None, upper = None) -> None:
@@ -308,8 +254,7 @@ class NewUnitAdoption:
         else:
             delay = 0
         
-        results = pd.Series(index = self._area_units.index, dtype=float)
-        
+        results = pd.Series(index = self._area_units.index, dtype=float)        
         first_pass = True
         for year, area_units_total_area in self._area_units.loc[self.base_year - 1:].iteritems():
             if first_pass:
@@ -511,79 +456,4 @@ class NewUnitAdoption:
             sequestration = sequestration.shift(1)
 
         # When this function is netted out [pds - ref], sequestration should match the time series in [CO2 Calcs]!$B$120
-
         return sequestration
-
-
-    def get_change_in_ppm_equivalent_series(
-            self, 
-            sequestration_rate: float,
-            disturbance_rate: float,
-            growth_rate_of_ocean_degradation: float,
-            delay_impact_of_protection_by_one_year: bool,
-            emissions_reduced_per_unit_area: float,
-            delay_regrowth_of_degraded_land_by_one_year: bool,
-            use_adoption_for_carbon_sequestration_calculation: bool,
-            use_aggregate_CO2_equivalent_instead_of_individual_GHG: bool ) -> pd.Series:
-
-        """
-            Each yearly reduction in CO2 (in million metric ton - MMT) is modeled as a discrete avoided pulse.
-            A Simplified atmospheric lifetime function for CO2 is taken from Myhrvald and Caldeira (2012) based on the Bern Carbon Cycle model.
-            Atmospheric tons of CO2 are converted to parts per million CO2 based on the molar mass of CO2 and the moles of atmosphere.
-            CO2-eq emissions are treated as CO2 for simplicity and due to the lack of detailed information on emissions of other GHGs.
-            If these other GHGs are a significant part of overall reductions, this model may not be appropriate.
-
-        """
-        # This is the implementation of the CO2 PPM Calculator in [CO2 Calcs]!A169
-
-        # get_carbon_sequestration returns series used to build [CO2 Calcs]!$B$120
-        # to match [CO2 Calcs]!$B$120 ("Carbon Sequestration Calculations"), need to combine pds and ref at the ocean_solution level.
-        # If ref_scenario.get_carbon_sequestration(...) is zero, then this function returns [CO2 Calcs]!$B$120.
-        sequestration = self.get_carbon_sequestration(
-            sequestration_rate, 
-            disturbance_rate, 
-            growth_rate_of_ocean_degradation,
-            delay_impact_of_protection_by_one_year,
-            delay_regrowth_of_degraded_land_by_one_year,
-            use_adoption_for_carbon_sequestration_calculation)
-        
-        # following this function call, total_emissions_reduction should correspond to 'CO2-eq MMT Reduced', [CO2 Calcs]!$B$64.
-        total_emissions_reduction = self.get_emissions_reduction_series(
-            disturbance_rate, 
-            growth_rate_of_ocean_degradation, 
-            delay_impact_of_protection_by_one_year, 
-            emissions_reduced_per_unit_area, 
-            use_aggregate_CO2_equivalent_instead_of_individual_GHG)
-
-        reduction_plus_sequestration = total_emissions_reduction + sequestration
-
-        result_years = list(range(self.base_year, self.end_year+1))
-        results = pd.Series(index = result_years, dtype=float)
-        results = results.fillna(0.0)
-        # (0.217 + 0.259*EXP(-(A173-$A$173+1)/172.9) + 0.338*EXP(-(A173-$A$173+1)/18.51) + 0.186*EXP(-(A173-$A$173+1)/1.186))
-        # (0.217 + 0.259*EXP(-(current_year-year_zero+1)/172.9) + 0.338*EXP(-(current_year-year_zero+1)/18.51) + 0.186*EXP(-(current_year-year_zero+1)/1.186))
-
-        for iter_year in result_years:
-            year_results = []
-            exponent= 0
-
-            # When comparing to the CO2 Calcs tab on the spreadsheet, the following loop runs down each column.
-            for _ in range(iter_year, result_years[-1] +1):
-                year_net_adoption = reduction_plus_sequestration.loc[iter_year]
-                exponent += 1
-                val =  0.217 + 0.259*exp(-(exponent)/172.9) 
-                val += 0.338*exp(-(exponent)/18.51) 
-                val += 0.186*exp(-(exponent)/1.186)
-                year_results.append(year_net_adoption * val)
-
-            year_results_series = pd.Series(index = range(iter_year, self.end_year+1), dtype=float)
-            year_results_series = year_results_series.fillna(0.0)
-            year_results_series = year_results_series.add(year_results)
-
-            results = results.add(year_results_series, fill_value=0.0)
-
-        factor = (1_000_000 * 10**6 ) / 44.01
-        factor = factor / (1.8 * 10**20)
-        factor = factor * 10**6
-        results = results * factor
-        return results
