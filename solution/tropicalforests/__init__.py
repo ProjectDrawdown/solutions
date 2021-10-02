@@ -112,7 +112,6 @@ class Scenario(scenario.LandScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)

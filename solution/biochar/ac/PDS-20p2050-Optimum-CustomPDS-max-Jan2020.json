@@ -176,5 +176,6 @@
     "soln_pds_adoption_custom_name": "Linear, max growth",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Average of All Custom REF Scenarios",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2020-01-14 23:38:58"
 }

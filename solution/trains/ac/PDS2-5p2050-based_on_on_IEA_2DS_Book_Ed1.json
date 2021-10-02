@@ -146,5 +146,6 @@
     "soln_pds_adoption_custom_name": "PDS1 - Linear projection of Electricity-powered rail freight from 27% of rail freight in 2014 to 40% in 2050 (IEA 2DS projection)",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Drawdown Book Reference Scenario",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2018-03-27 17:16:56"
 }

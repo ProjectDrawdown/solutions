@@ -1,15 +1,16 @@
 
-import os
+from os import path
 
 from model.ocean_solution import OceanSolution
+from typing import Optional
 
 
 class MangroveProtectionSolution(OceanSolution):
-    """ All calculations for Macroalgae protection currently implemented in the OceanSolution base class.
+    """ All calculations for Mangrove protection currently implemented in the OceanSolution base class.
     """
 
     # Initialize from configuration file:
-    def __init__(self, configuration_file_name = None):
+    def __init__(self, configuration_file_name: Optional[str] = None):
         """
             Constructor requires a configuration file named 'mangroveprotection_solution_config.yaml'.
             This should be located in the same directory as the 'mangroveprotection_solution.py' module
@@ -17,11 +18,11 @@ class MangroveProtectionSolution(OceanSolution):
         """
 
         if configuration_file_name is None:
-            filename = os.path.basename(__file__)
+            filename = path.basename(__file__)
             filename = filename.split('.')[0]
-            configuration_file_name = os.path.join(os.path.dirname(__file__), filename + '_config.yaml')
+            configuration_file_name = path.join(path.dirname(__file__), filename + '_config.yaml')
         
-        if not os.path.isfile(configuration_file_name):
+        if not path.isfile(configuration_file_name):
             raise ValueError(f'Unable to find configuration file {configuration_file_name}.')
 
         super().__init__(configuration_file_name)

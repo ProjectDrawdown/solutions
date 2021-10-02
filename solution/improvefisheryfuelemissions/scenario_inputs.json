@@ -1,0 +1,38 @@
+{
+    "PDS-63p2050-Plausible": {
+		"conventional_fuel_consumed": 608.253181366627,
+		"solution_fuel_efficiency_factor": 0.513194620654656,
+		"conventional_fuel_emissions_factor": 0.00268891857,
+		"solution_fuel_emissions_factor": 0.00268891857,
+		"current_area_world": 94435871.6118754,
+		"future_pds_area": 100251301.236332,
+        "pds_scenario_name": "AverageOfAllCustomScenarios",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2021-03-04T07:55:44",
+        "scenario_description": "Average of all"
+    },
+	"PDS-88p2050-Drawdown": {
+		"conventional_fuel_consumed": 608.253181366627,
+		"solution_fuel_efficiency_factor": 0.513194620654656,
+		"conventional_fuel_emissions_factor": 0.00268891857,
+		"solution_fuel_emissions_factor": 0.00268891857,
+		"current_area_world": 94435871.6118754,
+		"future_pds_area": 100251301.236332,
+        "pds_scenario_name": "HighOfAllCustomScenarios",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2021-03-04T07:57:08",
+        "scenario_description": "High of all custom scenarios"
+    },
+	"PDS-100p2050-Optimum": {
+		"conventional_fuel_consumed": 608.253181366627,
+		"solution_fuel_efficiency_factor": 0.513194620654656,
+		"conventional_fuel_emissions_factor": 0.00268891857,
+		"solution_fuel_emissions_factor": 0.00268891857,
+		"current_area_world": 94435871.6118754,
+		"future_pds_area": 100251301.236332,
+        "pds_scenario_name": "WorldBankModerate",
+        "ref_scenario_name": "",
+        "scenario_timestamp": "2021-03-04T08:00:41",
+        "scenario_description": "Based on the World Bank Sunken Billions report - 5% reduction in effort until it reaches 44%  below current levels."
+    }
+}

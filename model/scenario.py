@@ -60,6 +60,7 @@ class Scenario:
     """The base s-curve adoption, if this scenario uses an s-curve adoption (otherwise None)."""
 
     
+    ##############################################################################################################
     # Initialization
 
     def initialize_ac(self, scenario_name_or_ac, scenario_list, default_scenario_name):
@@ -167,9 +168,20 @@ class Scenario:
         """Returns the tam or aez limitations on adoption."""
         raise NotImplementedError("Subclass must implement")
 
-    
-    # Common top-level functionality
-    # Key Results
+    ##############################################################################################################
+    #   
+    # Functionality
+    #
+    # Commentary: Currently here's no clear line between which functionality we adopt at the top scenario level, 
+    # vs. which is deferred to the subordinate objects like ua, ht, etc.  Things tend to get added at this top level
+    # either because (a) we want to unify the functionality across multiple scenario types, or (b) we want a 
+    # nice shorthand for something that is commonly used, or (c) its new stuff.  But at some point we should 
+    # revisit and decide if there's a more clear-cut dividing line we can use.
+    # 
+    # "Key Results"   These reproduce the summary results that appeared in the top left corder of the
+    # Advanced Controls tab in Excel.  They are a general way of characterizing the overall impact of a
+    # scenario, and used to compare across multiple scenarios and/or solutions.
+    #
     def adoption_unit_increase(self, year=None, region='World'):
         if year is None:
             year = self.ac.report_end_year
@@ -212,8 +224,26 @@ class Scenario:
             end_year = self.ac.report_end_year
         return self.c2.co2eq_mmt_reduced().loc[start_year:end_year, region].sum() / 1e3
 
-    # Integration support.  This is limited and hacky at this time.
+    # Additional Added Calculations
 
+    def soln_net_energy_grid_impact(self) -> pd.DataFrame :
+        """The net impact of this solution on the energy grid over time relative to the reference case.  
+        This result may be positive (if the solution requires additional electricity to operate), negative (if the 
+        adoption of this technology lowers energy use) or zero (if this solution doesn't impact the grid at all).
+        Units: TWh"""
+        # Chose between Excel tables Unit Adoption Calculations!B305 and Unit Adoption Calculations!Q305,
+        # depending on the circumstance.
+        result = (self.ua.soln_pds_net_grid_electricity_units_saved() *-1.0 
+                    if self.ac.soln_energy_efficiency_factor else 
+                  self.ua.soln_pds_net_grid_electricity_units_used())
+        result.name = "soln_net_grid_energy_impact"
+        return result
+    
+    ##############################################################################################################
+    #   
+    # Integration support.  This is limited and hacky at this time.
+    # 
+  
     @classmethod
     def scenario_path(cls):
         return Path(__file__).parents[1]/"solution"/cls.module_name
@@ -226,6 +256,19 @@ class Scenario:
                 if x['name'] == name:
                     return x['filename'] if 'filename' in x else None
         return None
+
+
+    @classmethod
+    def update_ac(cls, ac, **newvals):
+        # name comes from newvals or the ac, if not provided
+        new_scenario_name = integration.integration_alt_name(newvals.get('name', ac.name))
+        new_scenario_file = ac.jsfile or cls.scenario_path()/"ac"/advanced_controls.mangle_name_to_filename(ac.name)
+        new_scenario_file = integration.integration_alt_file(new_scenario_file)
+
+        newvals['name'] = new_scenario_name
+        newac = ac.with_modifications(**newvals)
+        newac.write_to_json_file(new_scenario_file)
+
 
     @classmethod
     def update_adoptions(cls, scenario_names, newadoptions : pd.DataFrame):
@@ -253,8 +296,8 @@ class Scenario:
                     new_file_name = integration.integration_alt_file(old_file_name)
             if not new_adoption_name:
                 # just generate one
-                new_adoption_name = integration.integration_alt_name(f"new updated adoption {i}")
-                new_file_name = integration.integration_alt_file(f"new_updated_adoption_{i}")
+                new_adoption_name = integration.integration_alt_name(f"new updated adoption {i+1}")
+                new_file_name = integration.integration_alt_file(f"new_updated_adoption_{i+1}")
             
             # Write or overwrite the data file
             colname = newadoptions.columns[i]
@@ -277,19 +320,11 @@ class Scenario:
             # overwrite the directory file
             write_sources(sources, cls.scenario_path(), "pds_ca")
 
-            # if necessary, update the scenario object as well.
-            new_scenario_name = integration.integration_alt_name(oldac.name)
-            if new_scenario_name == oldac.name and new_adoption_name == oldac.soln_pds_adoption_custom_name:
-                # we've already updated this scenario before; don't need to do it again
-                return
+            # update the scenario object as well.
+            cls.update_ac(oldac, 
+                soln_pds_adoption_basis="Fully Customized PDS", 
+                soln_pds_adoption_custom_name=new_adoption_name)
 
-            new_scenario_file = Path(oldac.jsfile).name if oldac.jsfile else f"updated_integration_{i}.json"
-            new_scenario_file = integration.integration_alt_file(new_scenario_file)
-            ac_data = oldac.as_dict()
-            ac_data['name'] = new_scenario_name
-            ac_data['soln_pds_adoption_basis'] = 'Fully Customized PDS'
-            ac_data['soln_pds_adoption_custom_name'] = new_adoption_name
-            (cls.scenario_path()/"ac"/new_scenario_file).write_text(json.dumps(ac_data,indent=2), encoding="utf-8") 
 
 
 class RRSScenario(Scenario):

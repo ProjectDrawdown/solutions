@@ -5,9 +5,10 @@ from . import rrs
 
 
 def test_rrs():
-    assert 'Baseline Cases' in rrs.energy_tam_1_ref_data_sources
-    assert 'Conservative Cases' in rrs.energy_tam_2_ref_data_sources
-    assert 'Ambitious Cases' in rrs.energy_tam_1_pds_data_sources
+    tam_data = rrs.energy_ref_tam().read_text(encoding='utf-8')
+    assert 'Baseline Cases' in tam_data
+    assert 'Conservative Cases' in tam_data
+    assert 'Ambitious Cases' in tam_data
 
 
 def test_rrs_vma():

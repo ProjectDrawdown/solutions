@@ -136,23 +136,22 @@ class Scenario(scenario.RRSScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-    _ref_tam_sources = scenario.load_sources(DATADIR/'energy'/'ref_tam_2_sources.json','*')
-    _pds_tam_sources = scenario.load_sources(DATADIR/'energy'/'pds_tam_2_sources.json','*')
-    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
-    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
-    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
+        self._ref_tam_sources = scenario.load_sources(rrs.energy_ref_tam(2),'*')
+        self._pds_tam_sources = scenario.load_sources(rrs.energy_pds_tam(2),'*')
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
 
         # ADOPTION
+        self._ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
         self._pds_ad_settings['main_includes_regional'] = False
         self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':

@@ -144,23 +144,22 @@ class Scenario(scenario.RRSScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
-    _pds_tam_sources=_ref_tam_sources
-    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
-    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
-    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
             
         # TAM
+        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+        self._pds_tam_sources = self._ref_tam_sources
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
+        # ADOPTION
+        self._ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
 
-        # Custom PDS Data
         wb = openpyxl.load_workbook(filename=THISDIR.joinpath('hybridcarsdata.xlsx'), data_only=True)
         raw_sales = pd.read_excel(wb, sheet_name='HEV Sales', header=0, index_col=0,
                 usecols='A:K', dtype='float', engine='openpyxl', skiprows=7, nrows=43)

@@ -6,7 +6,7 @@
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": true,
-    "custom_tla_fixed_value": 360.046392050580,
+    "custom_tla_fixed_value": 360.04639205058,
     "ref_base_adoption": {
         "World": 0.0,
         "OECD90": 0.0,
@@ -113,5 +113,6 @@
         "value": 0.0,
         "statistic": ""
     },
-    "harvest_frequency": 100.0
+    "harvest_frequency": 100.0,
+    "creation_date": "2020-01-16 13:36:27"
 }

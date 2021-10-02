@@ -3,7 +3,7 @@
 import io
 import math
 import pathlib
-
+import re
 import numpy as np
 import pandas as pd
 import openpyxl
@@ -12,7 +12,24 @@ import model.dd
 from tools.vma_xls_extract import VMAReader
 
 
-VMA_columns = ['Value', 'Units', 'Raw', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
+VMA_columns = ['Value', 'Raw', 'Raw Units', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
+
+# Stuff I'd like to change:
+# (1) Get rid of fixed summaries.  This is just a bad idea!  Never hardwire storage of cached results
+# away from the results they are caching, it is bound to produce errors.
+# (2) Get rid of the to/from xls code.  We don't need it.
+# (3) Switch to a json-directory format, like we did for TAM and adoption
+# (4) Store the "Explanation" metadata into the "Notes" field
+#
+# More fanciful
+# (5) Instead of mean/+sd/-sd, it seems like what we really want is median/80-percentile/20-percentile
+# Then you don't need all this standard deviation and outlier management?   Weighting is still possible.
+# (6) Add all the Excel columns into the python datastructure, and create a decent in-python (in-Jupyter) browsing/editing
+# experience for it.
+# (7) Along with ^^^, allow the attachment of real conversion functions.
+# (8) Enable automatic conversion of standard types units
+# (9) Enable caching of computed conversions and summaries (with save)
+
 
 
 def populate_fixed_summaries(vma_dict, filename):
@@ -69,10 +86,31 @@ def convert_NaN(val):
         return np.nan
     return val
 
+def normalize_units(val):
+    # There's lots to do here, potentially, but just build this out as needed
+    if val:
+        val = str(val).strip()
+        val = re.sub(r'\s+',' ', val)         # collapse multiple spaces
+        val = re.sub(r'\s*/\s*', '/', val)    # normalize to no spaces aroud '/'
+    
+    # Probably end up splitting on '/' and normalizing each part individually then putting the result back together
+    return val
+
 
 class VMA:
-    """Meta-analysis of multiple data sources to a summary result.
-       Arguments:
+    """Meta-analysis of multiple data sources to a summary result."""
+
+    title : str = None
+    filename : str = None
+    df : pd.DataFrame = None
+    """The source data for this VMA."""
+    units : str = None
+
+    def __init__(self, filename, title=None, low_sd=1.0, high_sd=1.0,
+                 discard_multiplier=3, stat_correction=None, use_weight=False,
+                 bound_correction=None, fixed_summary=None, 
+                 description=None, notes=None, units=None):
+        """Arguments:
          filename: (string, pathlib.Path, or io.StringIO) Can be either
            * Path to a CSV file containing data sources. The CSV file must
              contain columns named "Raw Data Input", "Weight", and "Original
@@ -89,15 +127,14 @@ class VMA:
            stddev away from the mean.
          stat_correction: discard outliers more than discard_multiplier stddev away from the mean.
          use_weight: if true, use weights provided with the VMA to bias the mean.
+         bound_correction: if true, and the low value calculated with standard deviation would be negative, 
+         use min instead of sd on on the lower value.
          fixed_summary: if present, should be a tuple to use for (mean, high, low) instead
            of calculating those values
          description: optional description of what this VMA describes
          notes: optional notes that add more details
-    """
-
-    def __init__(self, filename, title=None, low_sd=1.0, high_sd=1.0,
-                 discard_multiplier=3, stat_correction=None, use_weight=False,
-                 fixed_summary=None, description=None, notes=None):
+         units: the units to use for this VMA; retrieved from datafile by default
+        """
         self.filename = filename
         self.title = title
         self.low_sd = low_sd
@@ -105,15 +142,30 @@ class VMA:
         self.discard_multiplier = discard_multiplier
         self.stat_correction = stat_correction
         self.use_weight = use_weight
+        self.bound_correction = bound_correction
         # TODO notes exist in the Excel files and should be retrieved.
         # TODO description does not exist, but it should!
         self.description = description
         self.notes = notes
+        self.units = normalize_units(units)
+
+        # COMMENT: this initialization condition below is weird, since it defaults to making stat_correction True
+        # if neither stat_correction nor use_weight are specified.  This isn't an abvious conclusion from the 
+        # argument definitions, and also doesn't match the default setting for stat_correction in the Excel VMA template.
+        # I would simplify this to just:    self.stat_correction = stat_correction
+        # since if use_weight is specified as True, then the default (False) state of stat_correction is what you 
+        # will get anyway. 
+        #
+        # The reason I don't simply make this change is because it would mean reviewing every single 
+        # VMA initialization in the existing code to determine if they are using the "trick" to set stat_correction 
+        # to True, instead of explicitly setting stat_correction directly.  (Given that I never see stat_correction
+        # in initializers, I expect this is happening a lot.)
         if stat_correction is None:
             # Excel does not discard outliers if weights are used, we do the same by default.
             self.stat_correction = not use_weight
         else:
             self.stat_correction = stat_correction
+
         self.fixed_summary = fixed_summary
         self.df = pd.DataFrame(columns=VMA_columns)
 
@@ -207,8 +259,15 @@ class VMA:
             assert not all(pd.isnull(readable_df['Weight'])), err
         self.df['Weight'] = readable_df['Weight'].apply(convert_percentages)
         self.df['Raw'] = readable_df['Raw Data Input'].apply(convert_percentages)
-        self.df['Units'] = readable_df['Original Units']
+        self.df['Raw Units'] = readable_df['Original Units']
+        
         self.df['Value'] = readable_df['Conversion calculation'].apply(convert_NaN)
+        self.df['Value'].fillna(self.df['Raw'], inplace=True)
+        if self.units is None:
+            aunit = readable_df['Common Units'].first_valid_index()
+            if aunit is not None:
+                self.units = normalize_units( readable_df['Common Units'].loc[ aunit ] )
+ 
         self.df['Exclude?'] = readable_df['Exclude Data?'].fillna(False)
         # correct some common typos and capitalization differences from Excel files.
         normalized_region = (readable_df['World / Drawdown Region']
@@ -224,7 +283,7 @@ class VMA:
             dft = readable_df['Thermal-Moisture Regime'].astype(model.dd.tmr_cat_dtype)
             readable_df['Thermal-Moisture Regime'] = dft
             self.df['TMR'] = readable_df['Thermal-Moisture Regime'].fillna('')
-        self.df['Value'].fillna(self.df['Raw'], inplace=True)
+
 
     def _validate_readable_df(self, readable_df):
         if readable_df is None:
@@ -234,31 +293,42 @@ class VMA:
                 source = f"\n\tFile: {self.filename}\n\tTitle: {self.title!r}\n"
             raise ValueError("Dataframe from" + source + "is None, is that VMA empty?")
 
-    def _discard_outliers(self):
+    def _discard_outliers(self, discard_multiplier):
         """Discard outlier values beyond a multiple of the stddev."""
         df = self.df
         mean = df['Value'].astype('float64').mean(skipna=True)
         sd = df['Value'].std(ddof=0)
         if pd.isna(mean) or pd.isna(sd):
             return df
-        valid = df['Value'] <= (mean + (self.discard_multiplier * sd))
+        valid = df['Value'] <= (mean + (discard_multiplier * sd))
         df = df[valid]
-        valid = df['Value'] >= (mean - (self.discard_multiplier * sd))
+        valid = df['Value'] >= (mean - (discard_multiplier * sd))
         df = df[valid]
         return df
 
-    def avg_high_low(self, key=None, regime=None, region=None):
+    def avg_high_low(self, key=None, regime=None, region=None,
+                    low_sd=None, high_sd=None, discard_multiplier=None, 
+                    stat_correction=None, use_weight=None, bound_correction=None):
         """
         Args:
           key: (optional) specify 'mean', 'high' or 'low' to get single value
           regime: string name of the thermal moisture regime to select sources for.
           region: string name of the world region to select sources for.
+          Other parameters: explicitly override the default parameters for this VMA.
 
         Returns:
           By default returns (mean, high, low) using low_sd/high_sd.
           If key is specified will return associated value only
         """
-        if self.use_weight:
+        # Use the parameters if provided, our defaults if not.
+        low_sd = self.low_sd if low_sd is None else low_sd
+        high_sd = self.high_sd if high_sd is None else high_sd
+        discard_multiplier = self.discard_multiplier if discard_multiplier is None else discard_multiplier
+        stat_correction = self.stat_correction if stat_correction is None else stat_correction
+        use_weight = self.use_weight if use_weight is None else use_weight
+        bound_correction = self.bound_correction if bound_correction is None else bound_correction
+
+        if use_weight:
             # Sum the weights before discarding outliers, to match Excel.
             # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.qkdzs364y2t2
             # Once reproducing Excel results is no longer essential, total_weight computation
@@ -274,7 +344,7 @@ class VMA:
         elif self.df.empty:
             mean = high = low = np.nan
         else:
-            df = self._discard_outliers() if self.stat_correction else self.df
+            df = self._discard_outliers(discard_multiplier) if stat_correction else self.df
             df = df.loc[df['Exclude?'] == False]
             if regime:
                 df = df.loc[df['TMR'] == regime]
@@ -284,7 +354,7 @@ class VMA:
                 # include values for special countries in corresponding main regions' statistics
                 df = df.loc[df['Main Region'] == region]
 
-            if self.use_weight:
+            if use_weight:
                 weights = df['Weight'].fillna(1.0)
                 mean = (df['Value'] * weights).sum(skipna=True) / total_weights
                 if M == 0.0:
@@ -300,8 +370,10 @@ class VMA:
                 # whole population stddev, ddof=0
                 sd = df['Value'].std(ddof=0)
 
-            high = mean + (self.high_sd * sd)
-            low = mean - (self.low_sd * sd)
+            high = mean + (high_sd * sd)
+            low = mean - (low_sd * sd)
+            if low < 0 and bound_correction:
+                low = min( df['Value'] )
 
         if key is None:
             return mean, high, low

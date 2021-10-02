@@ -20,7 +20,9 @@
     },
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [ 2014 ],
+    "pds_adoption_use_ref_years": [
+        2014
+    ],
     "pds_adoption_final_percentage": {
         "World": 0.0,
         "OECD90": 0.0,
@@ -110,5 +112,6 @@
         "value": 0.0,
         "statistic": ""
     },
-    "harvest_frequency": 100.0
+    "harvest_frequency": 100.0,
+    "creation_date": "2018-08-02 10:26:27"
 }

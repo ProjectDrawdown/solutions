@@ -125,17 +125,13 @@ class Scenario(scenario.RRSScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-    _ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
-    _pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
-    _ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
-    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
-    _pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
+        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+        self._pds_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_pds_sources.json','*')
         self.set_tam(
             interpolation_overrides = {
                 'USA': THISDIR.joinpath('tam', 'tam_override_usa_region.csv')
@@ -145,6 +141,9 @@ class Scenario(scenario.RRSScenario):
 
 
         # ADOPTION
+        self._ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
+        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
         self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()

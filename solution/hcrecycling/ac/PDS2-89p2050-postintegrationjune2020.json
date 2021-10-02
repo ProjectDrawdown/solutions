@@ -111,5 +111,6 @@
     "soln_pds_adoption_scenarios_included": [],
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Custom REF 1: Adoption at Base Year levels (2014)",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2020-06-19 12:58:30"
 }

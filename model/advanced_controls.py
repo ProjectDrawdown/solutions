@@ -7,9 +7,10 @@ import dataclasses
 import enum
 import glob
 import json
-import os
 import typing
+import re
 from pathlib import Path
+from datetime import datetime
 import pandas as pd
 import pytest
 from model import emissionsfactors as ef
@@ -35,17 +36,28 @@ class AdvancedControls:
     #   emissions, or NOT_APPLICABLE for something else entirely.  'Advanced Controls'!A159
     solution_category: typing.Any = None
 
-    # vmas: dict of VMA objects required for calculation of certain values.
-    #    dict keys should be the VMA title (found in VMA_info.csv in solution dir).
+    # vmas: dict of all VMA objects required for calculation of VMA values.
+    #    dict keys should be the VMA title.
     #    Example:
     #    {'Sequestration Rates': vma.VMA('path_to_soln_vmas' + 'Sequestration_Rates.csv')}
     vmas: typing.Dict = None
 
-    # vma_values: dict of values for VMAs which have been manually set in this scenario.
-    #    dict keys should be the VMA title (found in VMA_info.csv in solution dir).
-    #    Example:
+    # vma_values: dict of values for VMAs that are not of the standard set of 
+    # Advanced Control fields.  The key should be the VMA title and the value should
+    # be either a simple value, or a structure with an optional value and a statistic, which
+    # is the setting used to retrieve the value from the VMA.
+    # Example:
     #    {'Sequestration Rates':  {"value": 1.0, "statistic": "mean"}}
     vma_values: typing.Dict = None
+    
+    # For _all_ VMA fields, this dictionary will hold the name of the statistic used to
+    # determine the field value, if it is used.  Kye is field name or VMA Title.
+    # This field is set during initialization to enable round-trip saving of 
+    # advanced control objects, and should _not_ be set by the user.
+    vma_statistics: typing.Dict = None
+
+    # Commentary:  It would be nice to clean up the above.  The distinction between fields 
+    # and VMAs is complex and kind of arbitrary.  
 
     # name: string name of this scenario.
     name: str = None
@@ -53,9 +65,10 @@ class AdvancedControls:
     # description: freeform text describing the construction or intention for this scenario.
     description: str = None
 
-    # js: JSON this AdvancedControls object was created from (if any)
-    # jsfile: the filename containing the JSON (if any)
-    js: str = None
+    # Creation date of this scenario, in %Y-%m-%d %H:%M:%S format.
+    creation_date: str = None
+
+    # jsfile: the filename containing the JSON (if known)
     jsfile: str = None
 
     # pds_2014_cost: US$2014 cost to acquire + install, per implementation
@@ -760,14 +773,21 @@ class AdvancedControls:
 
 
     def __post_init__(self):
+        object.__setattr__(self, 'vma_statistics', {})
         object.__setattr__(self, 'incorrect_cached_values', {})
         for field in dataclasses.fields(self):
             vma_titles = field.metadata.get('vma_titles', None)
             if vma_titles is not None and self.vmas is not None:
                 val = getattr(self, field.name)
-                newval = self._substitute_vma(val=val, vma_titles=vma_titles)
+                newval = self._substitute_vma(val=val, vma_titles=vma_titles, name=field.name)
                 if newval is not None:
                     object.__setattr__(self, field.name, newval)
+        if self.vma_values is not None:
+            for (title, val) in self.vma_values.items():
+                if isinstance(val, dict):
+                    newval = self._substitute_vma(val=val, vma_titles=[title], name=title)
+                    if newval is not None:
+                        self.vma_values[title] = newval
 
         if isinstance(self.solution_category, str):
             object.__setattr__(self, 'solution_category',
@@ -802,23 +822,36 @@ class AdvancedControls:
                     + str(intersect))
             raise ValueError(err)
 
+
     def as_dict(self):
         """Return a dictionary data structure that is the serializable form of this object.
         This is used both for saving to files and for creating new instances."""
-        # Basically, reverse post_init
-        if self.js:
-            return json.loads(self.js)
-        else:
-            d = dataclasses.asdict(self)
-            for rem in ['vmas', 'js', 'jsfile', 'vma_values']:
-                if rem in d:
-                    del d[rem]
-            for (k, v) in d.items():
-                if isinstance(v, enum.Enum):
-                    d[k] = v.name
-            # TODO: actually set, and reverse, vma_values field
-            # finally, delete empty fields
-            return { k: v for (k,v) in d.items() if v is not None }
+        
+        d = dataclasses.asdict(self)
+
+        # delete fields we shouldn't save
+        for rem in ['vmas', 'js', 'jsfile','vma_statistics', 'incorrect_cached_values']:
+            if rem in d:
+                del d[rem]
+        
+        # delete empty fields
+        d = { k: v for (k,v) in d.items() if v is not None }
+        
+        # de-enumify enumerated values
+        for (k, v) in d.items():
+            if isinstance(v, enum.Enum):
+                d[k] = v.name
+        
+        # go through vma_statistics and add them back to the corresponding items
+        for name, stat in self.vma_statistics.items():
+            if name in d:
+                val = getattr(self, name)
+                d[name] = { 'value': val, 'statistic': stat }
+            elif self.vma_values and name in self.vma_values:
+                val = self.vma_values[name]
+                d['vma_values'][name] = { 'value': val, 'statistic': stat }
+        return d
+
 
     def __str__(self):
         return "AdvancedControls(**" + str(self.as_dict()) + ")"
@@ -912,13 +945,19 @@ class AdvancedControls:
             raise ValueError('Must input either lifetime capacity (RRS) or ' +
                              'expected lifetime (LAND) for conventional')
 
+        
     def lookup_vma(self, vma_title):
         """Look up a VMA value, using the value from the Advanced Controls, if any."""
-        if self.vma_values is None:
-            return None
-        return self.vma_values.get(vma_title, None)
+        # The value might be in a field, or it might be in the vma_values dictionary
+        fieldname = get_param_for_vma_name(vma_title)
+        if fieldname:
+            return getattr(self, fieldname)
+        elif self.vma_values is not None:
+            return self.vma_values.get(vma_title, None)
+        return None
+    
 
-    def _substitute_vma(self, val, vma_titles):
+    def _substitute_vma(self, val, vma_titles, name):
         """
         If val is 'mean', 'high' or 'low', returns the corresponding statistic from the
         VMA object in self.vmas with the corresponding title.
@@ -930,14 +969,16 @@ class AdvancedControls:
                 - a number
                 - a string ('mean', 'high' or 'low') or ('mean per region', 'high per region'
                   or 'low per region')
-                - a dict containing a 'value' key
+                - a dict containing a 'value' and/or 'statistic' key
           vma_titles: list of titles of VMA tables to check. The first one which exists
             will be used.
         """
         raw_val_from_excel = None  # the raw value from the scenario record tab
         return_regional_series = False
+        longstat = None
         if isinstance(val, str):
             if val.endswith('per region'):
+                longstat = val
                 stat = val.split()[0]
                 return_regional_series = True
             else:
@@ -945,12 +986,14 @@ class AdvancedControls:
         elif isinstance(val, dict):
             if 'statistic' not in val:  # if there is no statistic to link we return the value
                 return val['value']
-            raw_val_from_excel = val['value']
+            raw_val_from_excel = val.get('value',None)
             stat = val['statistic']
             if not stat:
                 return val['value']
         else:
             return val
+
+        # fall through if we have to look stat up in the VMA
 
         for vma_title in vma_titles:
             v = self.vmas.get(vma_title, None)
@@ -960,12 +1003,16 @@ class AdvancedControls:
             raise KeyError(f'"{vma_titles}" must be included in vmas to calculate mean/high/low.'
                     f'vmas included: {self.vmas.keys()}')
 
+        stat = stat.lower()
+        self.vma_statistics[name] = longstat or stat
         if return_regional_series:
-            result = pd.Series(name='regional values')
+            result = pd.Series(name='regional values',dtype=float)
             for reg in REGIONS:
-                result[reg] = self.vmas[vma_title].avg_high_low(key=stat.lower(), region=reg)
+                result[reg] = self.vmas[vma_title].avg_high_low(key=stat, region=reg)
         else:
-            result = self.vmas[vma_title].avg_high_low(key=stat.lower())
+            result = self.vmas[vma_title].avg_high_low(key=stat)     
+
+        # Check for values different from the VMA.  Nothing is done with this info currently.
         if raw_val_from_excel is not None and result != pytest.approx(raw_val_from_excel):
             # pylint: disable=no-member
             self.incorrect_cached_values[vma_title] = (raw_val_from_excel, result)
@@ -991,15 +1038,22 @@ class AdvancedControls:
             key = key ^ self._hash_item(field)
         return key
 
+    def with_modifications(self, **mods):
+        """Return a new Advanced Controls object that is the same as this one, but with the
+        requested fields modified.  Note: the name is not changed unless it is specifically
+        included in the modifications"""
+        d = self.as_dict()
+        d['creation_date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        d.update(mods)
+        return ac_from_dict(d, self.vmas)
 
     def write_to_json_file(self, newname=None):
         newname = newname or self.jsfile
+        if not newname:
+            raise ValueError("No saved filename to write to.")
         d = self.as_dict()
         Path(newname).write_text(json.dumps(d, indent=2), encoding='utf-8')
-    
-    def copy(self) -> AdvancedControls:
-        """Return a new advanced control object with the same values."""
-        return AdvancedControls(**self.as_dict())
+
 
 
 def fill_missing_regions_from_world(data):
@@ -1054,6 +1108,14 @@ def get_param_for_vma_name(name):
             if name == vma_name:
                 return field.name
     return None
+
+def mangle_name_to_filename(name, suffix="json"):
+    """Create a filename from a scenario (or any other) title"""
+    # Copied from solution_xls_extract.py for consisency
+    name = re.sub(r"['\"\n()\\/\.]", "", name).replace(' ', '_').strip()
+    if suffix:
+        name = name + "." + suffix
+    return name
 
 def solution_category_to_string(cat):
     if cat == SOLUTION_CATEGORY.REPLACEMENT:

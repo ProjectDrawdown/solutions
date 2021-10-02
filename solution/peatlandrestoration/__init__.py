@@ -105,8 +105,6 @@ class Scenario(scenario.LandScenario):
     solution_category = solution_category
     module_name = THISDIR.stem
 
-    _pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
-
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
@@ -126,6 +124,7 @@ class Scenario(scenario.LandScenario):
             custom_world_values=custom_world_vals)
 
         # ADOPTION
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
         self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 

@@ -53,8 +53,9 @@ class CustomAdoption(object, metaclass=MetaclassCache):
                 ]
                 where ca_pds_columns = ['Year'] + dd.REGIONS
 
-         soln_adoption_custom_name: from advanced_controls. Can be avg, high, low or a specific
-            source. For example: 'Average of All Custom PDS Scenarios'
+         soln_adoption_custom_name: from advanced_controls. Can be avg, high,
+            low or a specific custom PDS scenario name. For example: 
+            'Average of All Custom PDS Scenarios'
          low_sd_mult: std deviation multiplier for 'low' values
          high_sd_mult: std deviation multiplier for 'high' values
          total_adoption_limit: the total adoption possible, adoption can be no greater than this.
@@ -69,6 +70,8 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         self.low_sd_mult = low_sd_mult
         self.high_sd_mult = high_sd_mult
         self.total_adoption_limit = total_adoption_limit
+        # Note these are dicts keyed by Custom PDS Scenario names, not scenario
+        # names nor Scenario objects.
         self.scenarios = {}
         for d in data_sources:
             name = d.get('name', 'noname')

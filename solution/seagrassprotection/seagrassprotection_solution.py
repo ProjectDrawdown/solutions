@@ -1,6 +1,5 @@
-
-import os
-import json
+from os import path
+from typing import Optional
 
 from model.ocean_solution import OceanSolution
 from model.new_unit_adoption import NewUnitAdoption
@@ -11,7 +10,7 @@ class SeagrassProtectionSolution(OceanSolution):
     """
 
     # Initialize from configuration file:
-    def __init__(self, configuration_file_name = None):
+    def __init__(self, configuration_file_name: Optional[str] = None):
         """
             Constructor requires a configuration file named 'seagrassprotection_solution_config.yaml'.
             This should be located in the same directory as the 'seagrassprotection_solution.py' module
@@ -19,11 +18,11 @@ class SeagrassProtectionSolution(OceanSolution):
         """
 
         if configuration_file_name is None:
-            filename = os.path.basename(__file__)
+            filename = path.basename(__file__)
             filename = filename.split('.')[0]
-            configuration_file_name = os.path.join(os.path.dirname(__file__), filename + '_config.yaml')
+            configuration_file_name = path.join(path.dirname(__file__), filename + '_config.yaml')
         
-        if not os.path.isfile(configuration_file_name):
+        if not path.isfile(configuration_file_name):
             raise ValueError(f'Unable to find configuration file {configuration_file_name}.')
 
         super().__init__(configuration_file_name)

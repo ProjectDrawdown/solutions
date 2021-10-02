@@ -178,5 +178,6 @@
     "soln_pds_adoption_prognostication_growth": "High",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Custom REF Adoption mirroring decline in nuclear in Plausible SCenario",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2018-07-14 16:27:19"
 }

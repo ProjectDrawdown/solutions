@@ -146,5 +146,6 @@
     "soln_pds_adoption_custom_name": "PDS1 - Based on ICCT+RMI Freight Work Adoption estimates",
     "soln_ref_adoption_basis": "Custom",
     "soln_ref_adoption_custom_name": "Efficient Truck Share of Market is Fixed",
-    "soln_ref_adoption_regional_data": false
+    "soln_ref_adoption_regional_data": false,
+    "creation_date": "2019-10-22 16:55:53"
 }
