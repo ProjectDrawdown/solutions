@@ -13,9 +13,67 @@ from model import dd
 from dataclasses import dataclass
 from typing import Dict
 
-# I started from solution_xls_extract.extract_source_data, but kept finding that there
-# were inappropriate assumptions or requirements built in.... so I've ended up basically rewriting it.
+"""
+    Format of the SMA metadata file
+    {
+        title: string (optional)
+        description: string (optional)
+        units: string (optional)
 
+        # fixed_data, if present, should be a single source file with data
+        # covering all used regions and a subset of the years.  Where fixed_data
+        # is provided, it always supersedes all other data.  It is intended for the
+        # provision of historical data to override previous predictions.
+        fixed_data: shortname (optional)
+
+        # region_cases provides a two-level breakdown for source data applicability.
+        # Generally the regions are one of the dd.REGION areas, and 
+        # cases are one of "Baseline", "Convervative", "Ambitious" or "100%"
+        # There is no hard requirement, however, that these be the labels used.
+        # It is required that both levels be present.  By convention, if only a single
+        # label is required for regions, make it 'World', and if only a single label
+        # is required for cases, make it 'All'
+
+        # Note: we might want to extend this to cover the Thermal-Moisture Regimes, and
+        # other region-like subdivisions...?
+        
+        # Sources are specified by shortname to avoid having to repeat a bunch of the
+        # same metadata multiple times in the case where the same data source provides
+        # data in multiple categories.
+
+        region_cases: {
+            <regionname>: {
+                <casename>: [
+                    shortname*
+                ]
+            }
+        }
+
+        # Sources have titles and may have descriptions.
+        # The location is either a filename (in which case it must be a filename relative to the
+        # location of the SMA file itself), or an identifier that can be used to locate the associated
+        # data (in the case of a mediated data system, which we haven't implemented yet.)
+        #
+        # Data format: The source must have a year column, and one or more data columns.  If there are multiple
+        # data columns, they must be labeled with regions (sources may not specify cases).
+        # 
+        # If a source is used in a particular region, then one of these cases must hold
+        #    * the source has multiple data columns, and one of the columns has the same label as the region
+        #    * the source has only a single data column (in which case the column label, if any, is ignored)
+        # 
+        # If a source has data for only some regions, it need only have columns for those regions; columns of 
+        # NaNs for missing data are not required.  Similarly, it need only have rows for years where it has
+        # data.
+        
+        sources: {
+            <shortname>: {
+                title: string (required)
+                location: string (required)
+                description: optional
+            }
+        }
+    }
+"""
 
 class SMA:
 
@@ -46,11 +104,11 @@ class SMA:
     sources: Dict[str, Source] = None
     """Map of shortnames to source data"""
 
-    # TODO:  Add optional metadata:
-    # Title
-    # Units
-    # Description
-    # Version, date or something?
+    fixed_year_data: pd.DataFrame = None
+    """If supplied, fixed_year_data must be a data set for a number of years covering all regions and cases.
+    It overrides all other sources within this the corresponding year range.  The intent is have a different
+    dataset for representing historical data that overrides (previous) predictions."""
+
 
     def __init__(self, region_cases=None, sources=None):
         self.region_cases = region_cases or {}
@@ -101,7 +159,7 @@ class SMA:
     def write(self, directory, base_name):
         """
         Write to directory.  Written as a set of csv files, one per data source,
-        and a json file for the top_level hierarchy.
+        and a json file for the top_level hierarchy and metadata.
         """
         directory = Path(directory)
         directory.mkdir(exist_ok=True)
@@ -118,6 +176,16 @@ class SMA:
         toplevelfile = directory / f"{base_name}.json"
         toplevelfile.write_text(json.dumps(jdd, indent=2), encoding='utf-8')
     
+
+    def as_df(self, squeeze=True) -> pd.DataFrame:
+        """Return the entire dataset as a single dataframe, with dimensions years x (regions x cases x sources).
+        If squeeze is True, then any of the levels that are singular are omitted.
+        Sources are identified by their shortnames."""
+        pass
+
+    def select_data(self, region=None, case=None, source=None):
+        pass
+
 
     def as_tamsources(self, directory):
         """Translate the region_cases structure into the format expected by model.tam.TAM and model.adoptiondata.AdoptionData.
