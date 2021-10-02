@@ -3,15 +3,47 @@ from pathlib import Path
 import pandas as pd
 from model import integration
 from integration_base import *
+from solution import factory
 
 THISDIR = Path(__file__).parent
 DATADIR = THISDIR/"data"/"building"
+
+audit = start_audit("building")
+
+building_solutions = {
+    "Insulation (Residential Only)": "insulation",
+    "Cool Roofs": "coolroofs",
+    "Green Roofs": "greenroofs",
+    "High Performance Glass-Residential Model": "residentialglass",
+    "High Performance Glass- Commercial Model": "commercialglass",
+    "Dynamic Glass (Commercial Only)": "smartglass",
+    "Building Automation (Commercial Only)": "buildingautomation",
+    "Smart Thermostats (Residential Only)": "smartthermostats",
+    "Heat Pumps": "heatpumps",
+    "District Heat": "districtheating",
+    "Residential LED (Excludes Commercial LED)": "leds_residential",
+    "Commercial LED (Excludes Household LED)": "leds_commercial",
+    "Water Saving - Home (WaSH)": "waterefficiency",
+    "Solar Hot Water (SHW)": "solarhotwater",
+    "Biogas for Cooking": "biogas",
+    "Clean Cookstoves":  "improvedcookstoves"
+    }
+
+# Load adoption data from solutions
 
 @dataclass
 class building_integration_state:
     # This data class holds global variables that are shared between steps.  Embedding it in a class
     # enables us to avoid having to declare 'global' anytime we want to change something.
 
+    # In testmode, test data is loaded to check against calculations.
+    # Turning testmode off reduces load time
+
+
+    # All solutions that take part in the building integration
+    # Key is the full name from excel sheet, value is the name in Python repo
+
+    pds : str = 'pds1'
     cooking_global_tam : pd.DataFrame = pd.read_csv(DATADIR/"cooking_global_tam.csv", index_col="year", squeeze=False)
     floor_area_global_tam : pd.DataFrame = pd.read_csv(DATADIR/"floor_area_global_tam.csv", index_col="year", squeeze=False)
     households_global_tam : pd.DataFrame = pd.read_csv(DATADIR/"households_global_tam.csv", index_col="year", squeeze=False)
@@ -21,7 +53,24 @@ class building_integration_state:
     space_heating_global_tam : pd.DataFrame = pd.read_csv(DATADIR/"space_heating_global_tam.csv", index_col="year", squeeze=False)
     water_heating_global_tam : pd.DataFrame = pd.read_csv(DATADIR/"water_heating_global_tam.csv", index_col="year", squeeze=False)
 
-data_state = building_integration_state()
+    adoption_dict = {}
+    for key, value in building_solutions.items():
+        adoption_dict[key] = load_solution_adoptions(value)[pds.upper()]
+    testmode = False
+    adoption : pd.DataFrame = pd.DataFrame(data=adoption_dict)
+
+    # Load test data
+    if testmode:
+        adoption_test : pd.DataFrame = pd.read_csv(DATADIR/f"adoption_{pds}.csv", index_col="year", squeeze=False)
+        fuel_avoided_test : pd.DataFrame = pd.read_csv(DATADIR/f"fuel_avoided_{pds}.csv", index_col="year", squeeze=False)
+        net_grid_electricity_test : pd.DataFrame = pd.read_csv(DATADIR/f"net_grid_electricity_{pds}.csv", index_col="year", squeeze=False)
+
+    TWh_to_EJ = 3.6e-3
+    EJ_to_TWh = 1/TWh_to_EJ
+    TJ_to_EJ = 1e-6
+    TJ_to_TWh = 1/3600
+
+ds = building_integration_state()
 
 def integrate():
     """Perform all steps of the integration together."""
@@ -30,12 +79,99 @@ def integrate():
 def insulation_integration():
     """Step 1 in integration chain. Calculate the total energy saved and split
     saved energy into cooling and heating usage. Result does not affect other
-    integration steps."""
-    pass
+    integration steps.
+    
+    Columns in Excel
+    ----------------
+    Adoption - Million m2 of Res Floor Area
+        Copy pasted from the solution.
+    Net Grid Electricity - TWh
+        Copy pasted from the solution.
+    Fuel Avoided - TJ
+        Copy pasted from the solution.
+    Total FINAL Energy Saved - EJ
+        Calculated from the avoided fuel and the grid electricity used.
+    Space Heating FINAL energy Saved - EJ
+        Calculated from Total FINAL Energy Saved and several conversion factors.
+    Space Cooling FINAL energy Saved - EJ
+        Calculated from Total FINAL Energy Saved and several conversion factors.
+    """
+    insulation = factory.load_scenario('insulation')
+    total_final_energy_saved = (ds.fuel_avoided_excel_port['Insulation (Residential Only)'] * ds.TJ_to_EJ -
+                                ds.net_grid_electricity_excel_port['Insulation (Residential Only)'] * ds.TWh_to_EJ)
+    return total_final_energy_saved
 
-def roofs_integration():
-    """Step 2. Combines calculations for cool and green roofs."""
-    pass
+def cool_roofs_integration():
+    """Step 2. Combines calculations for cool and green roofs.
+    
+    Columns in Excel
+    ----------------
+    Adoption - Residential and Commercial roof area, m2
+        Copy pasted from solution.
+    Estimated Adoption Overlap with Insulation - Residential and Commercial roof area, m2
+        Calculated based on Insulation adoption, Cool Roofs adoption, TAM Roof Area & TAM Floor Area.
+    Electricity Consumption - TWh/m2 INTEGRATION PARAMETER
+        This is a scalar paramter that is integrated. Integration is based on the pre-integration value,
+        the adoption and the adoption overlap with insulation. 
+    Thermal/Cooling Efficiency Factor - Percentage INTEGRATION PARAMETER
+        This is a scalar parameter that is integrated.  Integration is based on the pre-integration value,
+        the adoption and the adoption overlap with insulation
+    INTEGRATION STEP
+        Post-integration values from Electricity Consumption and Thermal/Cooling Efficiency Factor are inserted
+        into the solution excel sheet. The resulting calculations of Net Grid Electricity Used and Fuel Avoided
+        are copy pasted from the solution sheet to the integration sheet.
+    Net Grid Electricity Used - TWh POST INTEGRATION
+        Net grid electricity used after integration of Electricity consumption and Thermal/Cooling Efficiency
+    Fuel Avoided - TJ POST INTEGRATION
+        Fueld avoided after integration of Electricity consumption and Themrla/Cooling Efficiency
+    Net EJ Reduction from Cool Roofs - EJ
+        Calculated from Net Grid Electricity Used and Fuel Avoided.
+
+    - Load scenario through the factory.
+    - Get it's .ac as a dictionary
+    - Change values to post-integration values
+    - load scenario again through factory passing the changed dictionary as second argument
+
+    Audit saves things in an audit log. 
+    """
+    coolroofs = factory.load_scenario('coolroofs', ds.pds.upper())
+    insulation_overlap = (ds.adoption['Cool Roofs'] * ds.roof_area_global_tam['Roof Area - Residential - Case 1 - Average'] /
+                                     ds.roof_area_global_tam['Roof Area - Total - Case 1 - Average'] * ds.adoption['Insulation (Residential Only)']  /
+                                     ds.floor_area_global_tam['Residential - Average'])
+
+    # Hardcoded into the integration excel sheet
+    insulation_reduces_cool_roofs_heating_penalty = 0.75
+    insulation_reduces_cool_roofs_electricity_impact = 0.5
+
+    avg_reduction_fuel_impact_2020_to_2050 = ((insulation_overlap.loc[2020:2050] / ds.adoption['Cool Roofs'].loc[2020:2050]).mean() * 
+                                            insulation_reduces_cool_roofs_heating_penalty)
+    
+
+    """
+    net_ej_reduction_cool_roofs = ds.fuel_avoided['Cool Roofs'] * ds.TJ_to_EJ - ds.net_grid_electricity['Cool Roofs'] * ds.TWh_to_EJ
+    insulation_reduces_cool_roofs_heating_penalty = 0.75
+    insulation_reduces_cool_roofs_electricity_impact = 0.5
+    avg_reduction_fuel_impact_cool_roofs_2020_to_2050 = ((cool_roofs_insulation_overlap.loc[2020:2050] / ds.adoption['Cool Roofs'].loc[2020:2050]).mean() * 
+                                             insulation_reduces_cool_roofs_heating_penalty)
+    avg_reduction_fuel_impact_cool_roofs_2014_to_2060 = ((cool_roofs_insulation_overlap.loc[2014:2060] / ds.adoption['Cool Roofs'].loc[2014:2060]).mean() * 
+                                             insulation_reduces_cool_roofs_heating_penalty)
+    avg_reduction_electricity_impact_cool_roofs = ((cool_roofs_insulation_overlap.loc[2020:2050] / ds.adoption['Cool Roofs'].loc[2020:2050]).mean() * 
+                                            insulation_reduces_cool_roofs_electricity_impact)
+    thermal_efficiency_factor = -0.0921934293090346
+    electricity_consumption_conventional = 5.43521713960423e-8
+    electricity_consumption_pre_integration = 4.91803773281803e-08
+
+    thermal_efficiency_factor_integrated = thermal_efficiency_factor * (1-avg_reduction_fuel_impact_cool_roofs_2020_to_2050)
+
+    electricity_consumption_post_integration = (electricity_consumption_conventional -
+        (electricity_consumption_conventional - electricity_consumption_pre_integration)*
+        (1-avg_reduction_electricity_impact_cool_roofs))
+
+    solution_efficiency = ((electricity_consumption_conventional - electricity_consumption_pre_integration)/
+        electricity_consumption_conventional*(1-avg_reduction_electricity_impact_cool_roofs))
+    """
+
+    return 
 
 def high_performance_glass_integration():
     """Step 3. Combines calculation for residential and commercial high performance
