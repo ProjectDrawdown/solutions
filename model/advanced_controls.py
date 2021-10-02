@@ -823,39 +823,6 @@ class AdvancedControls:
             raise ValueError(err)
 
 
-    def as_dict(self):
-        """Return a dictionary data structure that is the serializable form of this object.
-        This is used both for saving to files and for creating new instances."""
-        
-        d = dataclasses.asdict(self)
-
-        # delete fields we shouldn't save
-        for rem in ['vmas', 'js', 'jsfile','vma_statistics', 'incorrect_cached_values']:
-            if rem in d:
-                del d[rem]
-        
-        # delete empty fields
-        d = { k: v for (k,v) in d.items() if v is not None }
-        
-        # de-enumify enumerated values
-        for (k, v) in d.items():
-            if isinstance(v, enum.Enum):
-                d[k] = v.name
-        
-        # go through vma_statistics and add them back to the corresponding items
-        for name, stat in self.vma_statistics.items():
-            if name in d:
-                val = getattr(self, name)
-                d[name] = { 'value': val, 'statistic': stat }
-            elif self.vma_values and name in self.vma_values:
-                val = self.vma_values[name]
-                d['vma_values'][name] = { 'value': val, 'statistic': stat }
-        return d
-
-
-    def __str__(self):
-        return "AdvancedControls(**" + str(self.as_dict()) + ")"
-
     @property
     def yield_coeff(self):
         """ Returns coeffecient that converts funits to yield for LAND solutions """
@@ -945,115 +912,7 @@ class AdvancedControls:
             raise ValueError('Must input either lifetime capacity (RRS) or ' +
                              'expected lifetime (LAND) for conventional')
 
-        
-    def lookup_vma(self, vma_title):
-        """Look up a VMA value, using the value from the Advanced Controls, if any."""
-        # The value might be in a field, or it might be in the vma_values dictionary
-        fieldname = get_param_for_vma_name(vma_title)
-        if fieldname:
-            return getattr(self, fieldname)
-        elif self.vma_values is not None:
-            return self.vma_values.get(vma_title, None)
-        return None
-    
-
-    def _substitute_vma(self, val, vma_titles, name):
-        """
-        If val is 'mean', 'high' or 'low', returns the corresponding statistic from the
-        VMA object in self.vmas with the corresponding title.
-        If val is 'mean per region', 'high per region' or 'low per region', returns a Series
-        of regions and corresponding stats. Note that 'World' region will be NaN, as these will
-        be calculated by summing the main regions throughout the model.
-        Args:
-          val: input can be:
-                - a number
-                - a string ('mean', 'high' or 'low') or ('mean per region', 'high per region'
-                  or 'low per region')
-                - a dict containing a 'value' and/or 'statistic' key
-          vma_titles: list of titles of VMA tables to check. The first one which exists
-            will be used.
-        """
-        raw_val_from_excel = None  # the raw value from the scenario record tab
-        return_regional_series = False
-        longstat = None
-        if isinstance(val, str):
-            if val.endswith('per region'):
-                longstat = val
-                stat = val.split()[0]
-                return_regional_series = True
-            else:
-                stat = val
-        elif isinstance(val, dict):
-            if 'statistic' not in val:  # if there is no statistic to link we return the value
-                return val['value']
-            raw_val_from_excel = val.get('value',None)
-            stat = val['statistic']
-            if not stat:
-                return val['value']
-        else:
-            return val
-
-        # fall through if we have to look stat up in the VMA
-
-        for vma_title in vma_titles:
-            v = self.vmas.get(vma_title, None)
-            if v and not pd.isna(v.avg_high_low(key='mean')):
-                break
-        else:
-            raise KeyError(f'"{vma_titles}" must be included in vmas to calculate mean/high/low.'
-                    f'vmas included: {self.vmas.keys()}')
-
-        stat = stat.lower()
-        self.vma_statistics[name] = longstat or stat
-        if return_regional_series:
-            result = pd.Series(name='regional values',dtype=float)
-            for reg in REGIONS:
-                result[reg] = self.vmas[vma_title].avg_high_low(key=stat, region=reg)
-        else:
-            result = self.vmas[vma_title].avg_high_low(key=stat)     
-
-        # Check for values different from the VMA.  Nothing is done with this info currently.
-        if raw_val_from_excel is not None and result != pytest.approx(raw_val_from_excel):
-            # pylint: disable=no-member
-            self.incorrect_cached_values[vma_title] = (raw_val_from_excel, result)
-            result = raw_val_from_excel
-        return result
-
-    def _hash_item(self, item):
-        if isinstance(item, pd.DataFrame) or isinstance(item, pd.Series):
-            item = tuple(pd.util.hash_pandas_object(item))
-        try:
-            return hash(item)
-        except TypeError:
-            pass
-        try:
-            return hash(tuple(item))
-        except TypeError as e:
-            raise e
-
-    def __hash__(self):
-        key = 0x811c9dc5
-        key = key ^ id(self)
-        for field in dataclasses.fields(self):
-            key = key ^ self._hash_item(field)
-        return key
-
-    def with_modifications(self, **mods):
-        """Return a new Advanced Controls object that is the same as this one, but with the
-        requested fields modified.  Note: the name is not changed unless it is specifically
-        included in the modifications"""
-        d = self.as_dict()
-        d['creation_date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        d.update(mods)
-        return ac_from_dict(d, self.vmas)
-
-    def write_to_json_file(self, newname=None):
-        newname = newname or self.jsfile
-        if not newname:
-            raise ValueError("No saved filename to write to.")
-        d = self.as_dict()
-        Path(newname).write_text(json.dumps(d, indent=2), encoding='utf-8')
-
+ 
 
 
 def fill_missing_regions_from_world(data):
@@ -1078,44 +937,7 @@ def fill_missing_regions_from_world(data):
         return data
 
 
-def load_scenarios_from_json(directory, vmas):
-    """Load scenarios from JSON files in directory."""
-    result = {}
-    for filename in glob.glob(str(directory.joinpath('*.json'))):
-        with open(filename, 'r') as fid:
-            jd = json.loads(fid.read())
-            a = ac_from_dict(jd, vmas, filename)
-            result[a.name] = a
-    return result
 
-def ac_from_dict(data: dict, vmas, filename="") -> AdvancedControls:
-    """Create an AdvancedControls object from a dictionary of values, as retrieved from a scenario json file."""
-    d = data.copy()
-    d['vmas'] = vmas
-    d['jsfile'] = str(filename)
-    return AdvancedControls(**d)
-
-
-def get_vma_for_param(param):
-    for field in dataclasses.fields(AdvancedControls):
-        if field.name == param:
-            return field.metadata.get('vma_titles', [])
-    return []
-
-def get_param_for_vma_name(name):
-    for field in dataclasses.fields(AdvancedControls):
-        for vma_name in field.metadata.get('vma_titles', []):
-            if name == vma_name:
-                return field.name
-    return None
-
-def mangle_name_to_filename(name, suffix="json"):
-    """Create a filename from a scenario (or any other) title"""
-    # Copied from solution_xls_extract.py for consisency
-    name = re.sub(r"['\"\n()\\/\.]", "", name).replace(' ', '_').strip()
-    if suffix:
-        name = name + "." + suffix
-    return name
 
 def solution_category_to_string(cat):
     if cat == SOLUTION_CATEGORY.REPLACEMENT:
