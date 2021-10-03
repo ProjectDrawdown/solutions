@@ -28,6 +28,9 @@ energy_sectors = {
 }
 
 
+trim_year = 2014    # Remove years before this from results.
+
+
 # ########################################################################################################################
 #                                              State tracking
 
@@ -182,14 +185,15 @@ def load_reference_tam_sources():
         'PDS1' : pd.read_csv(public_datadir/"PDS_plausible_scenario_current.csv", index_col="Year")['World'],
         'PDS2' : pd.read_csv(public_datadir/"PDS_drawdown_scenario_current.csv", index_col="Year")['World'],
         'PDS3' : pd.read_csv(public_datadir/"PDS_optimum_scenario_current.csv", index_col="Year")['World']
-    }, axis=1)
+    }, axis=1).loc[trim_year:]
 
 
 def calc_energy_tam(case):
+    # The spreadsheet actually does a simple average, so if we could figure out how to get the @#$#EF
+    # raw data out of the TAM, we would too.
     tamconfig = tam.make_tam_config(overrides=[
-        ('source_until_2014','World',"Baseline Cases"),
-        ('source_after_2014','World',case)
-        ])
+        ('trend','World','Linear'),
+        ('source_after_2014','World',case)])
     tam_object = tam.TAM(tamconfig, es.ref_tam_sources, es.ref_tam_sources)
     return tam_object.ref_tam_per_region()['World']
 
@@ -267,7 +271,7 @@ def load_net_grid_use() -> pd.DataFrame:
             if collect[x].sum().sum() == 0:
                 del(collect[x])
         
-        df = pd.concat(collect, axis=1)
+        df = pd.concat(collect, axis=1).loc[trim_year:]
     es.net_grid_use = df
     audit("net grid use", es.net_grid_use)
     print("*** done.")
@@ -353,7 +357,7 @@ def step1_calculate_tams():
     # For the integrated TAM, we take the the PDS1 tam for the PDS1 case, but the 100% RES
     # TAM for the PDS2 and PDS3 cases
     opttam = calc_energy_tam("100% RES2050 Case")
-    es.integrated_tam = pd.concat({'PDS1': pds_tam['PDS1'], 'PDS2': opttam, 'PDS3': opttam}, axis=1)
+    es.integrated_tam = pd.concat({'PDS1': pds_tam['PDS1'], 'PDS2': opttam, 'PDS3': opttam}, axis=1).loc[trim_year:]
     audit("integrated tam", es.integrated_tam)  # Excel TAb 5B, columns AW:AY
     print("integrated TAM calculated")
 
@@ -395,7 +399,7 @@ def step2_calculate_adoptions():
     remainder_pcnt = pcnt('biomass and waste') - (pcnt('biogas') + pcnt('biomass') + pcnt('landfillmethane') + pcnt('wastetoenergy'))
     solutional['other biomass'] = es.reference_tam * remainder_pcnt
     
-    es.ref_adoption = pd.concat([conventional, solutional],axis=1)
+    es.ref_adoption = pd.concat([conventional, solutional],axis=1).loc[trim_year:]
     audit("ref adoption (of energy sources)", es.ref_adoption)
 
     # PDS adoption: use PDS solution values and integrated TAM.
@@ -414,13 +418,13 @@ def step2_calculate_adoptions():
     maybedata = load_testmode_snapshot("solution_adoptions.csv")
     if maybedata:
         solutional = pd.read_csv(StringIO(maybedata), header=[0,1], index_col=0)
-        solutional.rename(columns=factory.find_solution_by_name, level=1)
+        solutional = solutional.rename(columns=factory.find_solution_by_name, level=1)
     else:
         solutional = pd.concat({
             soln : load_solution_adoptions(soln) for soln in energy_solutions
         }, axis=1).swaplevel(axis=1)
 
-    es.pds_adoption = pd.concat([conventional, solutional], axis=1).sort_index(axis=1,level=[0])
+    es.pds_adoption = pd.concat([conventional, solutional], axis=1).sort_index(axis=1, level=0).loc[trim_year:]
     
     # TODO: recalculate the percents and put them back?
 
