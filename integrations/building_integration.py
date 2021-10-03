@@ -79,7 +79,10 @@ ds = building_integration_state()
 
 def integrate():
     """Perform all steps of the integration together."""
-    pass
+    insulation_integration()
+    cool_roofs_energy_saving = cool_roofs_integration()
+    green_roofs_integration()
+    # high_performance_glass_residential_integration()
 
 def insulation_integration():
     """Step 1 in integration chain. Calculate the total energy saved and split
@@ -102,9 +105,8 @@ def insulation_integration():
         Calculated from Total FINAL Energy Saved and several conversion factors.
     """
     insulation = factory.load_scenario('insulation')
-    total_final_energy_saved = (ds.fuel_avoided_excel_port['Insulation (Residential Only)'] * ds.TJ_to_EJ -
-                                ds.net_grid_electricity_excel_port['Insulation (Residential Only)'] * ds.TWh_to_EJ)
-    return total_final_energy_saved
+
+    return insulation.total_energy_saving()
 
 def cool_roofs_integration():
     """Step 2. Cool roofs calculation.
@@ -153,8 +155,6 @@ def cool_roofs_integration():
     avg_reduction_electricity_impact = ((insulation_overlap.loc[2020:2050] / ds.adoption['Cool Roofs'].loc[2020:2050]).mean() * 
                                         insulation_reduces_cool_roofs_electricity_impact)
 
-    # TODO These are hardcoded for now but should be taken from solution.ac at some point
-    # Currently the numbers we have in Python are clearly outdated though
     thermal_efficiency_factor = coolroofs.ac.soln_energy_efficiency_factor
     electricity_consumption_conventional = coolroofs.ac.conv_annual_energy_used
     electricity_consumption_pre_integration = coolroofs.ac.soln_annual_energy_used
@@ -179,7 +179,8 @@ def cool_roofs_integration():
                         soln_fuel_efficiency_factor=thermal_efficiency_factor_integrated)
 
 
-    return coolroofs
+
+    return coolroofs.total_energy_saving()
 
 def green_roofs_integration():
     """Step 3. Green roofs calculation
@@ -221,13 +222,13 @@ def green_roofs_integration():
                                      ds.floor_area_global_tam['Residential - Average'])
 
     # Hardcoded into the integration excel sheet
-    insulation_reduces_cool_roofs_heating_penalty = 0.5
-    insulation_reduces_cool_roofs_electricity_impact = 0.5
+    insulation_reduces_green_roofs_heating_penalty = 0.5
+    insulation_reduces_green_roofs_electricity_impact = 0.5
 
     avg_reduction_fuel_impact = ((insulation_overlap.loc[2020:2050] / ds.adoption['Green Roofs'].loc[2020:2050]).mean() * 
-                                            insulation_reduces_cool_roofs_heating_penalty)
+                                            insulation_reduces_green_roofs_heating_penalty)
     avg_reduction_electricity_impact = ((insulation_overlap.loc[2020:2050] / ds.adoption['Green Roofs'].loc[2020:2050]).mean() * 
-                                        insulation_reduces_cool_roofs_electricity_impact)
+                                        insulation_reduces_green_roofs_electricity_impact)
 
     # TODO These are hardcoded for now but should be taken from solution.ac at some point
     # Currently the numbers we have in Python are clearly outdated though
@@ -249,11 +250,44 @@ def green_roofs_integration():
                         soln_fuel_efficiency_factor=thermal_efficiency_factor_integrated)
 
 
-    return greenroofs
+    return greenroofs.total_energy_saving()
 
-def high_performance_glass_integration():
+def high_performance_glass_residential_integration():
     """Step 4. Combines calculation for residential and commercial high performance
     glass. """
+    hpgr = factory.load_scenario('residentialglass', ds.pds.upper())
+    
+    insulation_overlap = ds.adoption['Insulation (Residential Only)'] / ds.floor_area_global_tam * ds.adoption["High Performance Glass-Residential Model"] 
+
+    insulation_reduces_glass_electricity_impact = 0.5
+    insulation_reduces_glass_fuel_impact = 0.5
+
+    average_reduction_electricity_efficiency = ((insulation_overlap.loc[2020:2050] / ds.adoption["High Performance Glass-Residential Model"].loc[2020:2050]).mean() * 
+                                        insulation_reduces_glass_electricity_impact)
+
+    average_reduction_fuel_efficiency = ((insulation_overlap.loc[2020:2050] / ds.adoption["High Performance Glass-Residential Model"].loc[2020:2050]).mean() * 
+                                        insulation_reduces_glass_fuel_impact)
+
+    fuel_inputs_conv = hpgr.ac.conv_fuel_consumed_per_funit
+    fuel_inputs_soln_efficiency = hpgr.ac.soln_fuel_efficiency_factor
+    thermal_efficiency_factor = hpgr.ac.soln_energy_efficiency_factor
+    electricity_consumption_conventional = hpgr.ac.conv_annual_energy_used
+    electricity_consumption_pre_integration = hpgr.ac.soln_annual_energy_used
+
+    # goes to total_energy_used_per_functional_unit solution
+    electricity_inputs_integrated = (electricity_consumption_conventional -
+        (electricity_consumption_conventional - electricity_consumption_pre_integration)*
+        (1-average_reduction_electricity_efficiency))
+
+    # goes to fuel_inputs_soln_efficiency
+    fuel_inputs_integrated = fuel_inputs_soln_efficiency * (1 - average_reduction_fuel_efficiency)
+
+    hpgr.update_ac(hpgr.ac,
+                    soln_annual_energy_used=electricity_inputs_integrated,
+                    soln_fuel_efficiency_factor=fuel_inputs_integrated)
+
+def high_performance_glass_commercial_integration():
+    """No integration needed because insulation is defined only for residential buildings."""
     pass
 
 def led_integration():
