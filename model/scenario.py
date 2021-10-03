@@ -242,7 +242,14 @@ class Scenario:
     ##############################################################################################################
     #   
     # Integration support.  This is limited and hacky at this time.
-    # 
+    #
+
+    def total_energy_saving(self) -> pd.DataFrame:
+        """Total energy saved by solution in EJ"""
+        TWh_to_EJ = 3.6e-3
+        TJ_to_EJ = 1e-6
+
+        return self.ua.soln_pds_fuel_units_avoided() * TJ_to_EJ + self.soln_net_energy_grid_impact() * TWh_to_EJ
   
     @classmethod
     def scenario_path(cls):
