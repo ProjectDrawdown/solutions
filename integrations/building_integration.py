@@ -70,19 +70,28 @@ class building_integration_state:
     if test_adoption:
         adoption = adoption_test
 
-    TWh_to_EJ = 3.6e-3
-    EJ_to_TWh = 1/TWh_to_EJ
-    TJ_to_EJ = 1e-6
-    TJ_to_TWh = 1/3600
+    TWh_to_EJ : float = 3.6e-3
+    EJ_to_TWh : float = 1/TWh_to_EJ
+    TJ_to_EJ : float = 1e-6
+    TJ_to_TWh : float = 1/3600
 
 ds = building_integration_state()
 
 def integrate():
     """Perform all steps of the integration together."""
-    insulation_integration()
-    cool_roofs_energy_saving = cool_roofs_integration()
-    green_roofs_integration()
-    # high_performance_glass_residential_integration()
+    insulation_energy_saving = insulation_integration()
+    coolroofs_energy_saving = cool_roofs_integration()
+    greenroofs_energy_saving = green_roofs_integration()
+    residentialglass_energy_saving = high_performance_glass_residential_integration()
+    commercialglass_energy_saving = high_performance_glass_commercial_integration()
+    space_heating_cooling_energy_saving = (
+        insulation_energy_saving +
+        coolroofs_energy_saving +
+        greenroofs_energy_saving +
+        residentialglass_energy_saving +
+        commercialglass_energy_saving
+        )
+    return space_heating_cooling_energy_saving
 
 def insulation_integration():
     """Step 1 in integration chain. Calculate the total energy saved and split
@@ -255,9 +264,9 @@ def green_roofs_integration():
 def high_performance_glass_residential_integration():
     """Step 4. Combines calculation for residential and commercial high performance
     glass. """
-    hpgr = factory.load_scenario('residentialglass', ds.pds.upper())
+    residentialglass = factory.load_scenario('residentialglass', ds.pds.upper())
     
-    insulation_overlap = ds.adoption['Insulation (Residential Only)'] / ds.floor_area_global_tam * ds.adoption["High Performance Glass-Residential Model"] 
+    insulation_overlap = ds.adoption['Insulation (Residential Only)'] / ds.floor_area_global_tam['Residential - Average'] * ds.adoption["High Performance Glass-Residential Model"] 
 
     insulation_reduces_glass_electricity_impact = 0.5
     insulation_reduces_glass_fuel_impact = 0.5
@@ -268,11 +277,11 @@ def high_performance_glass_residential_integration():
     average_reduction_fuel_efficiency = ((insulation_overlap.loc[2020:2050] / ds.adoption["High Performance Glass-Residential Model"].loc[2020:2050]).mean() * 
                                         insulation_reduces_glass_fuel_impact)
 
-    fuel_inputs_conv = hpgr.ac.conv_fuel_consumed_per_funit
-    fuel_inputs_soln_efficiency = hpgr.ac.soln_fuel_efficiency_factor
-    thermal_efficiency_factor = hpgr.ac.soln_energy_efficiency_factor
-    electricity_consumption_conventional = hpgr.ac.conv_annual_energy_used
-    electricity_consumption_pre_integration = hpgr.ac.soln_annual_energy_used
+    fuel_inputs_conv = residentialglass.ac.conv_fuel_consumed_per_funit
+    fuel_inputs_soln_efficiency = residentialglass.ac.soln_fuel_efficiency_factor
+    thermal_efficiency_factor = residentialglass.ac.soln_energy_efficiency_factor
+    electricity_consumption_conventional = residentialglass.ac.conv_annual_energy_used
+    electricity_consumption_pre_integration = residentialglass.ac.soln_annual_energy_used
 
     # goes to total_energy_used_per_functional_unit solution
     electricity_inputs_integrated = (electricity_consumption_conventional -
@@ -282,13 +291,18 @@ def high_performance_glass_residential_integration():
     # goes to fuel_inputs_soln_efficiency
     fuel_inputs_integrated = fuel_inputs_soln_efficiency * (1 - average_reduction_fuel_efficiency)
 
-    hpgr.update_ac(hpgr.ac,
+    # pdb.set_trace()
+
+    residentialglass.update_ac(residentialglass.ac,
                     soln_annual_energy_used=electricity_inputs_integrated,
                     soln_fuel_efficiency_factor=fuel_inputs_integrated)
 
+    return residentialglass.total_energy_saving()
+
 def high_performance_glass_commercial_integration():
     """No integration needed because insulation is defined only for residential buildings."""
-    pass
+    commercialglass = factory.load_scenario('commercialglass', ds.pds.upper())
+    return commercialglass.total_energy_saving()
 
 def led_integration():
     """Step 5. LED integration."""
