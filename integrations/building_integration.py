@@ -358,8 +358,10 @@ def building_automation_integration():
                 soln_fuel_efficiency_factor=fuel_efficiency_factor_integrated,
                 soln_energy_efficiency_factor=electrical_efficiency_factor_integrated)
 
+    pdb.set_trace()
+
     # TODO take care of the sign change in net_impact!
-    return - buildingautomation.total_energy_saving(electricity_negative_means='penalty')
+    return buildingautomation.total_energy_saving()
 
 def smart_thermostat_integration():
     """Step 8. Smart thermostat. Depends on building automation"""
