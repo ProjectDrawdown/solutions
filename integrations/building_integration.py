@@ -187,8 +187,6 @@ def cool_roofs_integration():
                         soln_annual_energy_used=electricity_consumption_post_integration,
                         soln_fuel_efficiency_factor=thermal_efficiency_factor_integrated)
 
-
-
     return coolroofs.total_energy_saving()
 
 def green_roofs_integration():
@@ -301,8 +299,8 @@ def high_performance_glass_residential_integration():
 
 def high_performance_glass_commercial_integration():
     """No integration needed because insulation is defined only for residential buildings."""
-    commercialglass = factory.load_scenario('commercialglass', ds.pds.upper())
-    return commercialglass.total_energy_saving()
+    smartglass = factory.load_scenario('smartglass', ds.pds.upper())
+    return smartglass.total_energy_saving()
 
 def led_integration():
     """Step 5. LED integration."""
@@ -311,11 +309,57 @@ def led_integration():
 def dynamic_glass_integration():
     """Step 6. Dynamic glass integration. Depends on both high performance glass
     and LED. Commercial only."""
-    pass
+    commercialglass = factory.load_scenario('commercialglass', ds.pds.upper())
 
 def building_automation_integration():
     """Step 7. Building automation. Depends on dynamic glass."""
-    pass
+
+    buildingautomation = factory.load_scenario('buildingautomation', ds.pds.upper())
+
+    numstories_comm = 1.58
+
+    possible_overlap = ((ds.adoption['Cool Roofs'] + ds.adoption['Green Roofs']) / 1e6 * 
+        ds.roof_area_global_tam['Roof Area - Residential - Case 1 - Average'] / ds.roof_area_global_tam['Roof Area - Residential - Case 1 - Average'] * numstories_comm
+        )
+    columns_max = pd.DataFrame({'col1':possible_overlap, 
+                                'col2': ds.adoption['High Performance Glass- Commercial Model'],
+                                'col3': ds.adoption['Insulation (Residential Only)']}).max(axis=1)
+    adoption_overlap = columns_max / ds.floor_area_global_tam['Residential - Average'] * ds.adoption['Building Automation (Commercial Only)']
+
+    roof_glass_electricity_impact = 0.5
+    roof_glass_fuel_impact = 0.5
+
+    average_change_heating_electricity_efficiency = (
+        (adoption_overlap.loc[2020:2050] / ds.adoption['Building Automation (Commercial Only)'].loc[2020:2050]).mean() * 
+        roof_glass_electricity_impact
+        )
+
+    average_change_fuel_efficiency = (
+        (adoption_overlap.loc[2020:2050] / ds.adoption['Building Automation (Commercial Only)'].loc[2020:2050]).mean() * 
+        roof_glass_fuel_impact)
+
+    fuel_efficiency_factor = buildingautomation.ac.soln_fuel_efficiency_factor
+    electrical_efficiency_factor = buildingautomation.ac.soln_energy_efficiency_factor
+
+    # TODO Locate these in the sollutions!
+    electricity_end_use_shares_heating_cooling = 0.296
+    electricity_end_use_shares_lighting = 0.236
+    lighting_energy_impact = 0.326
+
+    electrical_efficiency_factor_integrated = (
+        electrical_efficiency_factor * ((1 - electricity_end_use_shares_heating_cooling - electricity_end_use_shares_lighting)) + 
+        electricity_end_use_shares_heating_cooling * (1 - average_change_heating_electricity_efficiency) + 
+        electricity_end_use_shares_lighting * (1 - lighting_energy_impact)
+    )
+
+    fuel_efficiency_factor_integrated = fuel_efficiency_factor * (1 - average_change_fuel_efficiency)
+
+    buildingautomation.update_ac(buildingautomation.ac,
+                soln_fuel_efficiency_factor=fuel_efficiency_factor_integrated,
+                soln_energy_efficiency_factor=electrical_efficiency_factor_integrated)
+
+    # TODO take care of the sign change in net_impact!
+    return - buildingautomation.total_energy_saving(electricity_negative_means='penalty')
 
 def smart_thermostat_integration():
     """Step 8. Smart thermostat. Depends on building automation"""

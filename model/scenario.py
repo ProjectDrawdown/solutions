@@ -244,12 +244,17 @@ class Scenario:
     # Integration support.  This is limited and hacky at this time.
     #
 
-    def total_energy_saving(self) -> pd.DataFrame:
+    def total_energy_saving(self, electricity_negative_means='saved') -> pd.DataFrame:
         """Total energy saved by solution in EJ"""
         TWh_to_EJ = 3.6e-3
         TJ_to_EJ = 1e-6
+        if electricity_negative_means=='saved':
+            return self.ua.soln_pds_fuel_units_avoided() * TJ_to_EJ - self.soln_net_energy_grid_impact() * TWh_to_EJ
+        elif electricity_negative_means=='penalty':
+            return self.soln_net_energy_grid_impact() * TWh_to_EJ + self.ua.soln_pds_fuel_units_avoided() * TJ_to_EJ
+        else:
+            raise ValueError("electricity_negative_means must be 'saved' or 'penalty'")
 
-        return self.ua.soln_pds_fuel_units_avoided() * TJ_to_EJ + self.soln_net_energy_grid_impact() * TWh_to_EJ
   
     @classmethod
     def scenario_path(cls):
