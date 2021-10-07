@@ -18,8 +18,7 @@ import model.advanced_controls
 import model.dd
 import model.fairutil
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.json_mixin import JsonMixin, json_func
 
 C_TO_CO2EQ = 3.666
 # Note: a different value of 3.64 is sometimes used for certain results in Excel
@@ -99,7 +98,7 @@ def co2_ppm_calculator_cached(
 ###########----############----############----############----############
 # CO2 MODULE IMPORTS
 
-class CO2Calcs(DataHandler):
+class CO2Calcs(JsonMixin):
     """CO2 Calcs module.
         Arguments:
           ac: advanced_cost.py object, storing settings to control model operation.
@@ -181,7 +180,7 @@ class CO2Calcs(DataHandler):
 # CO2 EMISSIONS CALCULATIONS
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2_mmt_reduced(self):
         """CO2 MMT Reduced
            Annual CO2 reductions by region and year are calculated by adding reduced emissions
@@ -215,7 +214,7 @@ class CO2Calcs(DataHandler):
         return m
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2eq_mmt_reduced(self):
         """CO2-eq MMT Reduced
            Annual CO2-eq reductions by region are calculated by multiplying the estimated energy
@@ -272,7 +271,7 @@ class CO2Calcs(DataHandler):
         return m
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2only_mmt_reduced(self):
         """CO2 MMT Reduced
            Annual CO2 reductions by region are calculated by multiplying the estimated energy
@@ -328,7 +327,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2_sequestered_global(self):
         """
         Total Carbon Sequestration (World section only)
@@ -400,7 +399,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2_ppm_calculator(self):
         """CO2 parts per million reduction over time calculator.
 
@@ -430,7 +429,7 @@ class CO2Calcs(DataHandler):
         return co2_ppm_calculator_cached(co2_vals.to_csv(), self.ac.solution_category, self.ac.report_start_year)
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2eq_ppm_calculator(self):
         """PPM calculations for CO2, CH4, and CO2-eq from other sources.
            RRS: SolarPVUtil 'CO2 Calcs'!A171:F217
@@ -451,7 +450,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2_reduced_grid_emissions(self):
         """Reduced Grid Emissions = NE(t) * EF(e,t)
 
@@ -463,7 +462,7 @@ class CO2Calcs(DataHandler):
         return self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2_per_KWh
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2_replaced_grid_emissions(self):
         """CO2 Replaced Grid Emissions = NAFU(Sol,t) * EF(e,t)  (i.e. only direct emissions)
            where
@@ -478,7 +477,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2_increased_grid_usage_emissions(self):
         """Increased Grid Emissions (MMT CO2e) = NEU(t) * EF(e,t)
 
@@ -491,7 +490,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2eq_reduced_grid_emissions(self):
         """Reduced Grid MMT CO2-eq Emissions = NEU(t) * EF(e,t)
 
@@ -508,7 +507,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2eq_replaced_grid_emissions(self):
         """CO2-equivalent replaced Grid MMT CO2-eq Emissions = NAFU(Sol,t) * EF(e,t)
 
@@ -525,7 +524,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2eq_increased_grid_usage_emissions(self):
         """Increased Grid Emissions (MMT CO2e) = NEU(t) * EF(e,t)
 
@@ -541,7 +540,7 @@ class CO2Calcs(DataHandler):
         return self.soln_pds_net_grid_electricity_units_used * self.conv_ref_grid_CO2eq_per_KWh
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2eq_direct_reduced_emissions(self):
         """Direct MMT CO2-eq Emissions Reduced = [DEm(Con,t) - DEm(Sol,t)]  / 1000000
 
@@ -556,7 +555,7 @@ class CO2Calcs(DataHandler):
                 self.soln_pds_direct_ch4_co2_emissions_saved / 1000000 +
                 self.soln_pds_direct_n2o_co2_emissions_saved / 1000000)
     
-    @data_func
+    @json_func
     def co2only_direct_reduced_emissions(self):
         """Direct MMT CO2-eq Emissions Reduced = [DEm(Con,t) - DEm(Sol,t)]  / 1000000
 
@@ -571,7 +570,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2eq_reduced_fuel_emissions(self):
         """Reduced Fuel Emissions MMT CO2-eq =
             NAFU(Con,t) * Fuel(Con,t) * [Em(cf) -  (1 - FRF) * Em(sf) * if(Fuel Units are Same,
@@ -598,7 +597,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def co2eq_net_indirect_emissions(self):
         """Net Indirect Emissions MMT CO2-eq by implementation unit (t) =
               [NIU (Sol,t) * IEm (Sol,t)] - [NIU (Cont.) * IEm (Con,t)]  /  1000000
@@ -635,7 +634,7 @@ class CO2Calcs(DataHandler):
 ###########----############----############----############----############
 # UTILIZATION OF THE FaIR SIMPLE CLIMATE MODEL
 
-    @data_func
+    @json_func
     def FaIR_CFT_baseline_co2eq(self):
         """Return FaIR results for the baseline case in CO2eq emissions.
 
@@ -662,7 +661,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def FaIR_CFT_Drawdown_co2eq(self):
         """Return FaIR results for the baseline + Drawdown solution in CO2eq emissions.
 
@@ -692,7 +691,7 @@ class CO2Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def FaIR_CFT_baseline_RCP3(self):
         """Return FaIR results for the baseline case of RCP3 (formerly rcp2.6).
 
@@ -735,7 +734,7 @@ class CO2Calcs(DataHandler):
         return result1, result2, result3, rcpemissions
 
     @lru_cache()
-    @data_func
+    @json_func
     def FaIR_CFT_baseline_RCP45(self):
         """Return FaIR results for the baseline case of RCP4.5
 
@@ -778,7 +777,7 @@ class CO2Calcs(DataHandler):
         return result1, result2, result3, rcpemissions
 
     @lru_cache()
-    @data_func
+    @json_func
     def FaIR_CFT_baseline_RCP6(self):
         """Return FaIR results for the baseline case of RCP6.0
 
@@ -820,7 +819,7 @@ class CO2Calcs(DataHandler):
         result3.name = 'FaIR_CFT_baseline_temp_rcp6' 
         return result1, result2, result3, rcpemissions
     
-    @data_func
+    @json_func
     def FaIR_CFT_baseline_RCP85(self):
         """Return FaIR results for the baseline case of RCP8.5
 
@@ -864,7 +863,7 @@ class CO2Calcs(DataHandler):
 
     @lru_cache()
     @lru_cache()
-    @data_func
+    @json_func
     def ghg_emissions_reductions_global_annual(self):
         """ Return annual emission reductions for 2014-2060.
             Columns of CO2 (Gt-C), CH4 (Mt-CH4), N2O (Mt-N2O)
@@ -898,7 +897,7 @@ class CO2Calcs(DataHandler):
     
     
     @lru_cache()
-    @data_func
+    @json_func
     def ghg_emissions_reductions_global_cumulative(self):
         """ Return cumulative emission reductions for 2014-2060.
             For CO2 (Gt-C), CH4 (Mt-CH4), N2O (Mt-N2O)
@@ -910,7 +909,7 @@ class CO2Calcs(DataHandler):
  
 
     @lru_cache()
-    @data_func
+    @json_func
     def FaIR_CFT_Drawdown_RCP3(self):
         """Return FaIR results for the baseline + Drawdown case of RCP3 (formerly RCP2.6)
 
@@ -968,7 +967,7 @@ class CO2Calcs(DataHandler):
         return result1, result2, result3, rcpemissionsnew
 
     @lru_cache()
-    @data_func
+    @json_func
     def FaIR_CFT_Drawdown_RCP45(self):
         """Return FaIR results for the baseline + Drawdown case of RCP4.5
 
@@ -1026,7 +1025,7 @@ class CO2Calcs(DataHandler):
         return result1, result2, result3, rcpemissionsnew
     
     @lru_cache()
-    @data_func
+    @json_func
     def FaIR_CFT_Drawdown_RCP6(self):
         """Return FaIR results for the baseline + Drawdown case of RCP6.0
 
@@ -1084,7 +1083,7 @@ class CO2Calcs(DataHandler):
         return result1, result2, result3, rcpemissionsnew 
     
     @lru_cache()
-    @data_func
+    @json_func
     def FaIR_CFT_Drawdown_RCP85(self):
         """Return FaIR results for the baseline + Drawdown case of RCP8.5
 

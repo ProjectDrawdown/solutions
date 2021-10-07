@@ -4,7 +4,14 @@ import numpy as np
 import copy
 from typing import List
 
-class DataHandler:
+
+def json_func(method):
+    """Decorator to indicate that a method should be output as data for to_json()"""
+    method.json_func = True
+    return method
+
+class JsonMixin:
+    """Utility to help translate data object to JSON"""
 
     def clean_nan(dataframe):
         """ It replaces NaN values by 0 """
@@ -21,7 +28,7 @@ class DataHandler:
         limit_regions = (regions is not None)
         for k in obj_vars:
             func = getattr(self, k)
-            if hasattr(func, 'data_func'):
+            if hasattr(func, 'json_func'):
                 data = func()
                 if data is not None and (isinstance(data, pd.DataFrame) or isinstance(data, pd.Series)):
                     data_keys = data.keys()

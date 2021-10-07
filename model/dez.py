@@ -16,14 +16,12 @@ import re
 import pandas as pd
 from model import dd
 from model.metaclass_cache import MetaclassCache
-
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.json_mixin import JsonMixin, json_func
 
 OCEAN_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean')
 
 
-class DEZ(DataHandler, object, metaclass=MetaclassCache):
+class DEZ(JsonMixin, object, metaclass=MetaclassCache):
     """ DEZ Data module """
 
     def __init__(self, solution_name):
@@ -39,7 +37,7 @@ class DEZ(DataHandler, object, metaclass=MetaclassCache):
         self._populate_world_ocean_allocation()
         self._populate_solution_ocean_distribution()
 
-    @data_func
+    @json_func
     def get_ocean_distribution(self):
         """ Returns relevant ocean data for Unit Adoption module"""
         return self.soln_ocean_dist_df

@@ -7,13 +7,12 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.json_mixin import JsonMixin, json_func
 from model import emissionsfactors
 
 
 
-class CH4Calcs(DataHandler):
+class CH4Calcs(JsonMixin):
     """CH4 Calcs module.
          Arguments:
            ac: advanced_cost.py object, storing settings to control model operation.
@@ -44,7 +43,7 @@ class CH4Calcs(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def ch4_co2eq_tons_reduced(self):
         """CH4 reduced, in tons of CO2eq per year.
         """

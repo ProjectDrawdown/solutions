@@ -3,7 +3,7 @@ import json
 import pandas as pd
 from pathlib import Path
 from dataclasses import dataclass
-from model import integration
+from meta_model import integration
 from model import scenario
 from model import tam
 from model import vma

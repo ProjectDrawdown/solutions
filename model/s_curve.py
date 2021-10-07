@@ -3,8 +3,7 @@ import math
 import numpy as np
 import pandas as pd
 import model.dd as dd
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.json_mixin import JsonMixin, json_func
 
 def make_scurve_config(base_year, tamdata, configdict, last_year=2050, use_tam_2014=False):
     """Create a configuration for a standard S-Curve or Bass Diffusion S-Curve.  Configdict should contain required parameters
@@ -27,7 +26,8 @@ def make_scurve_config(base_year, tamdata, configdict, last_year=2050, use_tam_2
         sconfig['base_adoption'] = sconfig['base_percent'] *  tamdata.loc[2014]
     return sconfig
 
-class SCurve(DataHandler):
+
+class SCurve(JsonMixin):
     def __init__(self, sconfig, transition_period=16):
         """S-Curve (sigmoid adoption forecast) implementation.
          Arguments:
@@ -42,7 +42,7 @@ class SCurve(DataHandler):
         self.transition_period = transition_period
         self.sconfig = sconfig
 
-    @data_func
+    @json_func
     def _sigmoid_logistic(self, base_year, last_year, base_percent, last_percent,
                           base_adoption, last_pds_tam):
         """Logistic sigmoid for market growth estimation.
@@ -132,7 +132,7 @@ class SCurve(DataHandler):
         result.index.name = 'Year'
         return result
 
-    @data_func
+    @json_func
     def logistic_adoption(self):
         """Calculate Logistic S-Curve for a solution."""
         result = pd.DataFrame()
@@ -163,7 +163,7 @@ class SCurve(DataHandler):
         result.index.name = 'Year'
         return result
 
-    @data_func
+    @json_func
     def bass_diffusion_adoption(self):
         """Calculate Bass Diffusion S-Curve for a solution."""
         result = pd.DataFrame()

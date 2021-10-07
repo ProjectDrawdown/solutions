@@ -3,15 +3,13 @@
 from functools import lru_cache
 import pathlib
 import re
-
+from meta_model.json_mixin import JsonMixin, json_func
+from meta_model.metaclass_cache import MetaclassCache
 from model import interpolation
 from model import dd
-from model.metaclass_cache import MetaclassCache
 import numpy as np
 import pandas as pd
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
 
 default_adoption_config_array = [
     ['param', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
@@ -38,7 +36,7 @@ def make_adoption_config(adoption_config_array=None, overrides=None) -> pd.DataF
     return adconfig
 
 
-class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
+class AdoptionData(JsonMixin, object, metaclass=MetaclassCache):
     """Implements Adoption Data module."""
 
     def __init__(self, ac, data_sources, adconfig, main_includes_regional=None,
@@ -211,7 +209,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def adoption_data_main_with_regional(self):
         """Return adoption data for the 'World' region with regional data added in.
            SolarPVUtil 'Adoption Data'!B45:R94 when B30:B31 are both 'Y' """
@@ -349,7 +347,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def adoption_is_single_source(self):
         """Whether the source data selected is one source or multiple."""
         return not interpolation.is_group_name(data_sources=self.data_sources,
@@ -361,7 +359,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         result.loc[first_year, region] = adoption_low_med_high.loc[first_year, 'Medium']
 
     @lru_cache()
-    @data_func
+    @json_func
     def adoption_data_per_region(self):
         """Return a dataframe of adoption data, one column per region."""
         growth = self.ac.soln_pds_adoption_prognostication_growth
@@ -377,7 +375,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         return df
 
     @lru_cache()
-    @data_func
+    @json_func
     def adoption_trend_per_region(self):
         """Return a dataframe of adoption trends, one column per region."""
         df = pd.DataFrame(columns=dd.REGIONS)

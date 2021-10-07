@@ -1,17 +1,11 @@
 """N2O Calcs module.
-
 """
-
 from functools import lru_cache
-import numpy as np
-import pandas as pd
-
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.json_mixin import JsonMixin
 from model import emissionsfactors
 
 
-class N2OCalcs(DataHandler):
+class N2OCalcs(JsonMixin):
     """N2O Calcs module.
          Arguments:
            ac: advanced_cost.py object, storing settings to control model operation.

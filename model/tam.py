@@ -5,14 +5,11 @@ import pathlib
 import re
 
 from model import dd
-from model.metaclass_cache import MetaclassCache
+from meta_model.metaclass_cache import MetaclassCache
+from meta_model.json_mixin import JsonMixin, json_func
 from model import interpolation
 import numpy as np
 import pandas as pd
-
-
-from model.data_handler import DataHandler
-from model.decorators import data_func
 
 
 default_tam_config_array =  [
@@ -45,7 +42,7 @@ def make_tam_config(tam_config_array=None, overrides=None) -> pd.DataFrame:
     return tamconfig
 
 
-class TAM(DataHandler, object, metaclass=MetaclassCache):
+class TAM(JsonMixin, object, metaclass=MetaclassCache):
     """Total Addressable Market module."""
 
     def __init__(self, tamconfig, tam_ref_data_sources, tam_pds_data_sources,
@@ -465,7 +462,7 @@ class TAM(DataHandler, object, metaclass=MetaclassCache):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def ref_tam_per_region(self):
         """Compiles the TAM for each of the major regions into a single dataframe.
 
@@ -482,7 +479,7 @@ class TAM(DataHandler, object, metaclass=MetaclassCache):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def pds_tam_per_region(self):
         """Compiles the PDS TAM for each of the major regions into a single dataframe.
 

@@ -11,10 +11,8 @@ import numpy as np
 import numpy_financial
 import pandas as pd
 #from numba import jit
-import model
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.json_mixin import JsonMixin, json_func
 
 @lru_cache
 def annual_breakout(
@@ -79,7 +77,7 @@ def annual_breakout(
                 break
     return breakout
 
-class OperatingCost(DataHandler):
+class OperatingCost(JsonMixin):
     """Implementation for the Operating Cost module.
 
       Arguments:
@@ -136,7 +134,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def soln_pds_annual_operating_cost(self):
         """Total operating cost per year.
            SolarPVUtil 'Operating Cost'!D19:D64
@@ -147,7 +145,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def soln_pds_cumulative_operating_cost(self):
         """Cumulative operating cost.
            SolarPVUtil 'Operating Cost'!E19:E64
@@ -158,7 +156,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def conv_ref_annual_operating_cost(self):
         """Total operating cost per year.
            SolarPVUtil 'Operating Cost'!K19:K64
@@ -169,7 +167,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def conv_ref_cumulative_operating_cost(self):
         """Cumulative operating cost.
            SolarPVUtil 'Operating Cost'!L19:L64
@@ -180,7 +178,7 @@ class OperatingCost(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def marginal_annual_operating_cost(self):
         """Marginal operating cost, difference between soln_pds and conv_ref.
            SolarPVUtil 'Operating Cost'!D69:D114

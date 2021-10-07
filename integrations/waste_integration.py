@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 import pandas as pd
-from model import integration
+from meta_model import integration
 from .integration_base import *
 
 THISDIR = Path(__file__).parent
