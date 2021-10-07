@@ -9,10 +9,8 @@ which can be used instead of Drawdown's allocations. Thus, this class is named C
 from functools import lru_cache
 import pandas as pd
 from model import dd
-from model.metaclass_cache import MetaclassCache
-
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.metaclass_cache import MetaclassCache
+from meta_model.json_mixin import JsonMixin, json_func
 
 def tla_per_region(land_dist, custom_world_values=None):
     """
@@ -41,7 +39,7 @@ def tla_per_region(land_dist, custom_world_values=None):
     return df
 
 
-class CustomTLA(DataHandler, object, metaclass=MetaclassCache):
+class CustomTLA(JsonMixin, object, metaclass=MetaclassCache):
     def __init__(self, filename=None, fixed_value=None):
         """
         Class for Custom TLA data
@@ -64,6 +62,6 @@ class CustomTLA(DataHandler, object, metaclass=MetaclassCache):
         return self.df
 
     @lru_cache()
-    @data_func
+    @json_func
     def get_world_values(self):
         return self._avg_high_low()

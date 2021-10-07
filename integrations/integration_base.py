@@ -4,7 +4,7 @@ import os
 from io import StringIO
 import numpy as np
 import pandas as pd
-from model import integration
+from meta_model import integration
 from solution import factory
 from pathlib import Path
 

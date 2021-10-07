@@ -7,10 +7,9 @@ import numpy as np
 
 import model.dd
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.json_mixin import JsonMixin, json_func
 
-class FirstCost(DataHandler):
+class FirstCost(JsonMixin):
     """Implementation for the First Cost module.
 
     Arguments:
@@ -60,7 +59,7 @@ class FirstCost(DataHandler):
         self.conv_ref_first_cost_uses_tot_units = conv_ref_first_cost_uses_tot_units
 
     @lru_cache()
-    @data_func
+    @json_func
     def soln_pds_install_cost_per_iunit(self):
         """Install cost per implementation unit in Solution-PDS
            'First Cost'!C37:C82
@@ -96,7 +95,7 @@ class FirstCost(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def conv_ref_install_cost_per_iunit(self):
         """Install cost per implementation unit in Conventional-REF
            'First Cost'!O37:O82
@@ -138,7 +137,7 @@ class FirstCost(DataHandler):
         return step2
 
     @lru_cache()
-    @data_func
+    @json_func
     def soln_ref_install_cost_per_iunit(self):
         """Install cost per implementation unit in Solution-REF
            'First Cost'!L37:L82
@@ -177,7 +176,7 @@ class FirstCost(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def soln_pds_annual_world_first_cost(self):
         """Annual World First Cost (SOLUTION-PDS)
            'First Cost'!E37:E82
@@ -188,7 +187,7 @@ class FirstCost(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def soln_ref_annual_world_first_cost(self):
         """Annual World First Cost (SOLUTION-REF)
            'First Cost'!N37:N82
@@ -199,7 +198,7 @@ class FirstCost(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def conv_ref_annual_world_first_cost(self):
         """Annual World First Cost (CONVENTIONAL-REF)
            'First Cost'!Q37:Q82
@@ -215,7 +214,7 @@ class FirstCost(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def soln_pds_cumulative_install(self):
         """Cumulative Install/Implementation (SOLUTION-PDS)
            'First Cost'!F37:F82
@@ -225,7 +224,7 @@ class FirstCost(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def ref_cumulative_install(self):
         """Cumulative Install / Implementation (CONVENTIONAL-REF + SOLUTION-REF)
            'First Cost'!R37:R82

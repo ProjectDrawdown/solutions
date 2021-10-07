@@ -1,11 +1,11 @@
-""" Test for DataHandler CH4Cals being a subclass of it"""
+""" Test for JsonMixin CH4Cals being a subclass of it"""
 import pandas as pd
 import json
 from model import advanced_controls
 from model import ch4calcs
 import pytest
 
-from model.data_handler import DataHandler
+from meta_model.json_mixin import JsonMixin
 
 @pytest.mark.skip(reason="ch4 updates have broken this example")
 def test_ch4_tons_reduced():
@@ -19,7 +19,7 @@ def test_ch4_tons_reduced():
     expected = pd.DataFrame(ch4_tons_reduced_list[1:],
                             columns=ch4_tons_reduced_list[0]).set_index('Year')
 
-    is_data_handler = issubclass(type(c4), DataHandler)
+    is_data_handler = issubclass(type(c4), JsonMixin)
     json_data = c4.to_json()
     existing_key = 'ch4_tons_reduced' in json_data
 

@@ -9,9 +9,8 @@ import enum
 import pandas as pd
 from pathlib import Path
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
-from model.integration import integration_alt_file
+from meta_model.json_mixin import JsonMixin, json_func
+from meta_model.integration import integration_alt_file
 
 CO2EQ_SOURCE = enum.Enum('CO2EQ_SOURCE', 'AR5_WITH_FEEDBACK AR5_WITHOUT_FEEDBACK AR4 SAR')
 GRID_SOURCE = enum.Enum('GRID_SOURCE', 'META IPCC')
@@ -96,13 +95,13 @@ def string_to_emissions_grid_range(text):
         raise ValueError("invalid grid range name=" + str(text))
 
 
-class ElectricityGenOnGrid(DataHandler):
+class ElectricityGenOnGrid(JsonMixin):
     def __init__(self, ac, grid_emissions_version=1):
         self.ac = ac
         self.grid_emissions_version = grid_emissions_version
 
     @lru_cache()
-    @data_func
+    @json_func
     def conv_ref_grid_CO2eq_per_KWh(self):
         """Grid emission factors (kg CO2-eq per kwh) derived from the AMPERE 3
            MESSAGE Base model. Grid emission factors are fixed at 2015 levels
@@ -146,7 +145,7 @@ class ElectricityGenOnGrid(DataHandler):
 
 
     @lru_cache()
-    @data_func
+    @json_func
     def conv_ref_grid_CO2_per_KWh(self):
         """Generation mixes from the AMPERE/MESSAGE WG3 BAU scenario, direct emission
            factors by fuel from the IPCC WG3 Annex III Table A.III.2.

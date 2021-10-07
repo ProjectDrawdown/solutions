@@ -11,8 +11,8 @@ from model import dd
 from model import emissionsfactors
 from model.advanced_controls import SOLUTION_CATEGORY
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.json_mixin import JsonMixin, json_func
+
 
 @lru_cache
 def cumulative_degraded_land( 
@@ -50,7 +50,7 @@ def cumulative_degraded_land(
         df.loc[y, :] = row
     return df
 
-class UnitAdoption(DataHandler):
+class UnitAdoption(JsonMixin):
     """Implementation for the Unit Adoption module.
 
        Arguments:
@@ -94,7 +94,7 @@ class UnitAdoption(DataHandler):
         self.replacement_period_offset = replacement_period_offset
 
     @lru_cache()
-    @data_func
+    @json_func
     def ref_population(self):
         """Population by region for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!P16:Z63
@@ -107,7 +107,7 @@ class UnitAdoption(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def ref_gdp(self):
         """GDP by region for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!AB16:AL63
@@ -120,7 +120,7 @@ class UnitAdoption(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def ref_gdp_per_capita(self):
         """GDP per capita for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!AN16:AX63
@@ -130,7 +130,7 @@ class UnitAdoption(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def ref_tam_per_capita(self):
         """Total Addressable Market per capita for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!BA16:BK63
@@ -140,7 +140,7 @@ class UnitAdoption(DataHandler):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def ref_tam_per_gdp_per_capita(self):
         """Total Addressable Market per unit of GDP per capita for the reference case.
            SolarPVUtil 'Unit Adoption Calculations'!BM16:BW63

@@ -2,13 +2,10 @@
 import math
 import numpy as np
 import pandas as pd
-
 import model.dd as dd
+from meta_model.json_mixin import JsonMixin, json_func
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
-
-class SCurve(DataHandler):
+class SCurve(JsonMixin):
     def __init__(self, transition_period, sconfig):
         """S-Curve (sigmoid adoption forecast) implementation.
          Arguments:
@@ -23,7 +20,7 @@ class SCurve(DataHandler):
         self.transition_period = transition_period
         self.sconfig = sconfig
 
-    @data_func
+    @json_func
     def _sigmoid_logistic(self, base_year, last_year, base_percent, last_percent,
                           base_adoption, pds_tam_2050):
         """Logistic sigmoid for market growth estimation.
@@ -113,7 +110,7 @@ class SCurve(DataHandler):
         result.index.name = 'Year'
         return result
 
-    @data_func
+    @json_func
     def logistic_adoption(self):
         """Calculate Logistic S-Curve for a solution."""
         result = pd.DataFrame()
@@ -144,7 +141,7 @@ class SCurve(DataHandler):
         result.index.name = 'Year'
         return result
 
-    @data_func
+    @json_func
     def bass_diffusion_adoption(self):
         """Calculate Bass Diffusion S-Curve for a solution."""
         result = pd.DataFrame()

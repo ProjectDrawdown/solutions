@@ -2,12 +2,12 @@
 
 from functools import lru_cache
 from model.metaclass_cache import MetaclassCache
+from meta_model.json_mixin import JsonMixin, json_func
 import model.dd as dd
 import pandas as pd
 import numpy as np
 
-from model.data_handler import DataHandler
-from model.decorators import data_func
+
 
 pd.set_option('display.expand_frame_repr', False)
 YEARS = list(range(2012, 2061))
@@ -271,7 +271,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         return avg_df, high_df, low_df
 
     @lru_cache()
-    @data_func
+    @json_func
     def adoption_data_per_region(self):
         """ Return a dataframe of adoption data, one column per region. """
         if self.soln_adoption_custom_name.startswith('Average of All Custom'):
@@ -292,7 +292,7 @@ class CustomAdoption(object, metaclass=MetaclassCache):
         return result
 
     @lru_cache()
-    @data_func
+    @json_func
     def adoption_trend_per_region(self):
         """
         Return a dataframe of adoption trends, one column per region.

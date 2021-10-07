@@ -1,11 +1,10 @@
 """Base classes of all scenario objects"""
-import os
 import json
 import pandas as pd
 import warnings
 import numbers
 from pathlib import Path
-from model import integration
+from meta_model import integration
 from model import adoptiondata
 from model import advanced_controls
 from model import customadoption

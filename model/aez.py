@@ -29,15 +29,12 @@ import re
 import numpy as np
 import pandas as pd
 from model import dd
-from model.metaclass_cache import MetaclassCache
-
-from model.data_handler import DataHandler
-from model.decorators import data_func
+from meta_model.metaclass_cache import MetaclassCache
+from meta_model.json_mixin import JsonMixin, json_func
 
 LAND_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'land')
 
-
-class AEZ(DataHandler, object, metaclass=MetaclassCache):
+class AEZ(JsonMixin, object, metaclass=MetaclassCache):
     """The AEZ object holds various land-based information applicable to a solution, including the allocated TLA"""
 
     world_land_alloc_dict: dict[str, pd.DataFrame] = None
@@ -93,7 +90,7 @@ class AEZ(DataHandler, object, metaclass=MetaclassCache):
         self._populate_world_land_allocation()
         self._populate_solution_land_distribution()
 
-    @data_func
+    @json_func
     def get_land_distribution(self):
         """Returns relevant land data for Unit Adoption module"""
         return self.soln_land_dist_df
