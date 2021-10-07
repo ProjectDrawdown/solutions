@@ -11,7 +11,6 @@ expected_file = thisdir / 'expected.zip'
 solution_name = thisdir.parents[0].name
 
 # If there are long-running test failures that should be skipped, you can indicate them here.
-# Someday we'll have a scanner that will check for these
 SCENARIO_SKIP = None
 TEST_SKIP = None
 

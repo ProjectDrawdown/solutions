@@ -9,15 +9,17 @@ Top-level Instructions:
  * Extraction_Guide.md
  * Extraction_Guide.ipynb
 
-Core extraction code:
- * allocation_xls_extract.py
- * sma_xls_extract.py
+Core Extraction code:
  * solution_xls_extract.py
  * vma_xls_extract.py
- * world_data_xls_extract.py
+ * copy_expected_to_scenario.py: Template for updating scenarios by extracting data from from expected.zip.  Used when we make a change to scenario formats, or uncover a bug from previous extractions.
 
-Support code:
- * copy_expected_to_scenario.py: Template for adding additional datapoints to scenarios via extracting from expected.zip
+More Extraction code:
+ * allocation_xls_extract.py: this has not been used or updated in a while
+ * world_data_xls_extract.py: this has not been used or updated in a while
+ * sma_xls_extract.py:  this is a prototype, not yet in use
+
+Extraction support code:
  * util<area>.py:  Utilities for reading Excel workbooks
  * rrs<area>.py: Copied here from ../solution/rrs.py because python hates relative dependencies.
 
@@ -31,10 +33,10 @@ Tools that are helpful for debugging:
  * expected_ghost.py: Reconstruct Excel files from the expected.zip result set.
 
 # Testing
-
  * expected_result_tester.py:  The workhorse that powers testing solutions against their expected results
  * solution_test_template.py:  The standard test file for solutions
  * diff_testruns.py:  Utility to exctract just the changed success/failure cases from two test runs.
+ * skipped_tests.py: Utility to list which solutions are using the SCENARIO_SKIP or TEST_SKIP features
 
 # Oceans
 Oceans models have a completely different code base, so they also have some parallel tools:
