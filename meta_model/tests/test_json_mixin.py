@@ -1,6 +1,5 @@
 """ Test for JsonMixin CH4Cals being a subclass of it"""
 import pandas as pd
-import json
 from model import advanced_controls
 from model import ch4calcs
 import pytest

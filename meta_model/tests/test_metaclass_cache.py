@@ -1,7 +1,7 @@
 """Tests for metaclass_cache.py"""
 
 import pandas as pd
-from model.metaclass_cache import MetaclassCache
+from meta_model.metaclass_cache import MetaclassCache
 
 # test_tam.py also exercises metaclass_cache.
 
