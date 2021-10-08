@@ -10,22 +10,31 @@ import typing
 
 class ParameterField(dataclasses.Field):
     """Defines a parameter in the Parameter Collection.  Parameters have the following attributes, all of which are optional:
-     * default: default value for this parameter.  Default values should be used only for parameters that are _required_ to have a value.
+     * default: default value for this parameter.  Default values should be specified only for parameters that are _required_ to have a value.
      * title: a short descriptive name of this parameter
      * docstring: a longer explanation of the parameter
      * units: a string indicating the units this parameter is expressed in
-     * excelref: a place in the original Excel models that corresponds to this parameter
      * isglobal: if True, this is a global parameter that can be set globally.  If this parameter also has a default value, then it is always set globally.
+     * solution_types: If set, this parameter is only meaningful for the specified solution types (RRS, Land, Ocean),
+     * solutional: if True, this parameter should generally have the same value for all scenarios of the same solution.  Not enforced, but may be useful for error
+     checking or UI hinting
+     * obscure: If True, this parameter is not something that would normally be changed.  Also for UI hinting.
+     * excelref: a place in the original Excel models that corresponds to this parameter
      * global_vma: path identifier for a VMA that by default backs this parameter.  An alternate VMA may still be provided on initialization, which would
      in that case be used instead of this VMA.
      * verifier: a callable that will check (and optionally transform) the init-provided value at initialization."""
-    def __init__(self, default=None, title=None, docstring=None, units=None, excelref=None, isglobal=False, global_vma=None, verifier=None, **args):
+    def __init__(self, default=None, title=None, docstring=None, units=None, isglobal=False, 
+                    solution_types=None, solutional=False, obscure=False, excelref=None,
+                    global_vma=None, verifier=None, **args):
         metadata = {
             'title': title,
             'docscring': docstring,
             'units': units,
-            'excelref': excelref,
             'isglobal': isglobal,
+            'solution_types': solution_types,
+            'solutional': solutional,
+            'obscure': obscure,
+            'excelref': excelref,
             'global_vma': global_vma,
             'verifier': verifier
         }
@@ -121,7 +130,7 @@ class ParameterCollection:
         for fieldname in self.declared_parameters():
             current_value = getattr(self,fieldname)
             if self._is_vma_setting(current_value):
-                self._substitute_vma(fieldname, current_value, self._field_attribute(fieldname, 'global_vma'))
+                self._substitute_vma(fieldname, current_value, self.field_attribute(fieldname, 'global_vma'))
         for fieldname in self.additional_parameters:
             current_value = self.additional_parameters[fieldname]
             if self._is_vma_setting(current_value):
@@ -129,7 +138,7 @@ class ParameterCollection:
 
         # Finally, do any verification/transformation required; applies only to declared parameters
         for fieldname in self.declared_parameters():
-            verifier = self._field_attribute(fieldname,'verifier')
+            verifier = self.field_attribute(fieldname,'verifier')
             if verifier:
                 old_val = getattr(self, fieldname)
                 self.original_values[fieldname] = old_val
@@ -180,7 +189,7 @@ class ParameterCollection:
             raise(ValueError(f"VMA substitution failure for {fieldname} from {vma.title}"))
 
     @classmethod
-    def _field_attribute(cls, field_name, attribute_name):
+    def field_attribute(cls, field_name, attribute_name):
         return cls.__dataclass_fields__[field_name].metadata[attribute_name]
 
     # #################
@@ -214,7 +223,7 @@ class ParameterCollection:
  
     def copy(self, with_substitutions=None):
         """Make a copy of this parameter collection, optionally substituting some new values.
-        Note that if global values have been changed, the copy will have the new values, not the old ones.
+        Note that if global values have been changed, the copy will have the new values, not the original ones.
         If present, with_substitutions should be a dictionary mapping parameter names to new values."""
         d = self.asdict(with_vma_settings=True, with_vmas=True)
         if with_substitutions:
