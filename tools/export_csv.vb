@@ -8,7 +8,7 @@ Function Should_Export(sht) As Boolean
     ' check that the list is appropriate
     Dim skip_sheets As Variant
     export_sheets = Array("Advanced Controls", "ScenarioRecord", "Variable Meta-Analysis", _
-                          "TAM Data", "TLA Data", "AEZ Data", _
+                          "TAM Data", "TLA Data", "AEZ Data", "Data Interpolator", _
                           "Adoption Data", "Custom PDS Adoption", "Custom REF Adoption", "S-Curve Adoption", _
                           "Helper Tables", "Unit Adoption Calculations", _
                           "First Cost", "Operating Cost", "Net Profit Margin", _
