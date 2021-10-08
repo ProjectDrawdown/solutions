@@ -1,0 +1,12 @@
+Denton's Notes:
+Wind Offshore
+In Adoption Data for the World region, the three empty sources "[Source 2 - Conservative]", "[Source 5 - Ambitious]" and "[Source 6 - Ambitious]" 
+have data populated for 2012-2017. In most solutions this is not a problem because all of the sources have the same values for these years, 
+but for Wind Offshore the 100% Case source uses 41.596 while the rest use 41.604. Both round to 41.60 so Excel makes them look the same, but 
+the stddev is not zero. Therefore the denominator for the number of sources matters while calculating the stddev, and the presence of those 
+three mostly-empty sources changes the result. Clear the 2012-2017 values from those three.
+
+Also in the adoption data tab the most aggressive case was renamed "100% Case" but the formulae in EF45 is still looking for "100% RES Case". 
+Change the formula to "100% Case"
+=IF(OR($B$38="ALL SOURCES",$B$38="Baseline Cases",$B$38="Conservative Cases",$B$38="Ambitious Cases",$B$38="100% Case"),
+    $C$19,CONCATENATE("Single Source-",LEFT($C$19,1)))

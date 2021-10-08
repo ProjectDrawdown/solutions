@@ -1,0 +1,6 @@
+Denton's Notes:
+Peatlands:
+First data point in ‘Growth rate of Degraded Land’ VMA is excluded and must have its weight set to 0 to avoid bad calculation of weighted mean.
+
+Custom adoption data depends on values in Advanced controls which were slightly different from any of the saved scenarios, causing 
+a bizarre single cell failure in operating costs. Load first scenario in ScenarioRecord and save xls to avoid this.

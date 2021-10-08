@@ -1,0 +1,5 @@
+Denton's Notes:
+Conservation Agriculture
+The Custom PDS Adoption tab is initially filled with #VALUE errors, as it uses LINEST and isn't populated. Go to the 
+ScenarioRecord to load the first scenario, then switch to Custom PDS Adoption and check that it calculated, then switch 
+to the License tab as we want that to be the one which opens, then save the file.

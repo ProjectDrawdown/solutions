@@ -1,0 +1,10 @@
+Denton's Notes:
+Nuclear
+In Custom PDS Adoption the placeholder text "[Type Scenario 4 Name Here...]" in B239 was removed, which turns cell O28 into an 
+adoption scenario named "0.0"
+Restore the placeholder text in B239 before generating the Python code.
+
+ad_based_on_Greenpeace_Advanced_Revolution_Scenario.csv trends to zero in 2050, which solution_xls_extract.py turns into NaN. 
+Edit the CSV file to enter zeros 2050-2060.
+
+In Drawdown 2020, in Helper Tables C30 for 2017 does not link to the PDS cell C94, unlike all of the other energy models. Set C30 = C94.

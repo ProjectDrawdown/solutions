@@ -1,0 +1,5 @@
+Denton's Notes:
+Improved Cook Stoves
+TAM Data, China region, "Based on IEA (2013) World Energy Outlook" source trends down to 0.0 in 2053 but solution_xls_extract 
+turns this into N/A. It really should be zero, in this case. Correct the generated CSV files, adding 0.0 to the China region 
+for this source from 2053-2060.

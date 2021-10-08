@@ -1,0 +1,6 @@
+Denton's Notes:
+Insulation
+In ScenarioRecord, the NPV is recorded as 0,04 as it was saved by a research fellow in a region which uses comma as a 
+decimal separator. tools/solution_xls_extract.py actually handles this correctly and emits 0.04 for the solution it is 
+generating, but when Excel loads this scenario it turns the NPV into 40,000% and the results are comical.
+Change the NPV to 0.04 in ScenarioRecord.

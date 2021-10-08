@@ -1,0 +1,17 @@
+Denton's Notes:
+Electric Vehicles:
+In ScenarioRecord E515, E517, E535, E542, E742, E744, E762, E769 use a comma as the decimal separator as it was saved by a research 
+fellow in a region where that is the standard practice. tools/solution_xls_extract.py actually handles this correctly, but when Excel 
+loads this scenario it tries to interpret the comma as a thousands separator and the results are comical.
+
+Note that this appears to be an ongoing issue, the VBA code we had to remove in step 1 concerns language settings in Excel. However, 
+that code worked on the entire spreadsheet workbook, while here we have individual cells with different decimal separators.
+
+This is only in scenario #2 and #3. The first scenario is unaffected, presumably it was opened and saved by a research fellow in a 
+region using a period as the decimal separator. Change cells E515, E517, E535, E542, E742, E744, E762, E769 to use a period as the
+separator.
+
+Most of the Adoption Data sources have 0 adoption in 2012 - 2015, which solution_xls_extract turns into NaN (for good reason, as 
+many places in Excel return 0 when they mean NaN). Edit the ad/*.csv files to add 0 for those initial years.
+
+In Adoption Data S46:S48 replace the empty string: =IF(MIN(C46:Q46)=0,"", with =IF(MIN(C46:Q46)=0,0, and similarly for the MAX in T46:T47

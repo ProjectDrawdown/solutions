@@ -1,0 +1,17 @@
+Denton's Notes:
+LandfillMethane
+In AdoptionData for the India, EU, and USA regions, the IEA ETP [246]DS sources are named without a year. As we handle both 2016 and 2017, 
+this is a problem. The World region specifies 2016, update source names for the India, EU, and USA regions to include 2016.
+
+In Adoption Data for the USA region, 'Based on: Greenpeace Energy Revolution Scenario' appears twice in Baseline and Ambitious cases. 
+The Baseline case has no data and is an empty column, but having a duplicate confuses solution_xls_extract.py. Remove the name at 
+the top of the empty column and change it back to [Source 2 - Baseline].
+
+The "Baseline Cases", "Ambitious Cases", etc headers were removed from all regions in TAM Data, which breaks tools/solution_xls_extract 
+parsing. Copy the header from the Global region to all of the other regions.
+
+ScenarioRecord E394, E395, E621, E622, E848, and E849 pasted in the literal string "#DIV/0!". Change these to 0.0, which appears 
+to be what was intended. In Drawdown 2020 add E1075+E1076, E1302+E1303
+
+In Drawdown2020: change ScenarioRecord E1103 & E1330 to "Based on: Greenpeace 2015 Advanced Energy Revolution Scenario"
+change ScenarioRecord E649 & E876 to "Based on: AMPERE MESSAGE 450" ("Based on:" was added in Adoption Data).

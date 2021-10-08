@@ -1,0 +1,9 @@
+Denton's Notes:
+IP Forest Protection
+A number of the scenarios use a custom TLA with a fixed value. All of them have to be set to 1155.1279078572097 because the 
+functionality to populate a custom TLA value from ScenarioRecord in Excel never existed.
+
+solution/indigenouspeoplesland/ca_ref_data/custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv extracts one more digit 
+of precision for 2018 and 2019 than subsequent years, which breaks a <= check in unitadoption.py:soln_ref_new_iunits_reqd_LAND. 
+Edit the CSV file to remove the extra digit of precision from all columns, 2018&2019 should have the same values as 2020+.
+The symptom is that Unit Adoption Calculations AG199:AQ244 goes to zero in the actual results but non-zero in the expected.

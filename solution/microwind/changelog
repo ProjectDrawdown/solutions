@@ -1,0 +1,5 @@
+Denton's Notes:
+Microwind
+In the Drawdown 2020 version, the Adoption Data tab has rearranged all regions and also entered two datapoints for each region, 
+which Excel then extrapolates out to 2060. The regional results are 10x the World result, and therefore nonsensical. 
+There are also no data sources listed. Remove all of the regional datapoints.

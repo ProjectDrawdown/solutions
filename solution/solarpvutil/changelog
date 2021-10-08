@@ -1,0 +1,6 @@
+Denton's Notes:
+Solar PV Utility
+In Drawdown 2020 in the adoption data tab the most aggressive case was renamed "100% Case" but the formulae in EF45 
+is still looking for "100% RES Case". Change the formula to "100% Case"
+=IF(OR($B$38="ALL SOURCES",$B$38="Baseline Cases",$B$38="Conservative Cases",$B$38="Ambitious Cases",$B$38="100% Case"),
+    $C$19,CONCATENATE("Single Source-",LEFT($C$19,1)))
