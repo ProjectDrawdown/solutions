@@ -34,6 +34,7 @@ Tools that are helpful for debugging:
 
 # Testing
  * expected_result_tester.py:  The workhorse that powers testing solutions against their expected results
+ * summarize_expected_result.py: Utility that summarizes the expected results part of pytest output into something readable
  * solution_test_template.py:  The standard test file for solutions
  * diff_testruns.py:  Utility to exctract just the changed success/failure cases from two test runs.
  * skipped_tests.py: Utility to list which solutions are using the SCENARIO_SKIP or TEST_SKIP features

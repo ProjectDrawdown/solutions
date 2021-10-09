@@ -11,9 +11,9 @@ import numpy as np
 import pandas as pd
 import pytest
 import zipfile
-import importlib
 from tools.util import df_excel_range, cell_to_offsets
 from model import scenario
+from solution import factory
 
 
 # verbosity level 0: no "print"
@@ -963,8 +963,8 @@ def dataframes_differ(val, expt, mask=None, all_zero=True, thresh=None):
     return result if len(result) else False
 
 
-def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, test_only=None):
-    descr_base = f"Solution: {obj.name} Scenario {i}: "
+def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, test_only=None, max_errors=10):
+    errors = []
     for sheetname in verify.keys():
         if _verbosity >= 2: print(sheetname)
         arcname = f'{scenario}/{sheetname}'
@@ -973,7 +973,7 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
         
         skip_count=0
         for (cellrange, actual_df, actual_mask, expected_mask) in verify[sheetname]:
-            description = descr_base + "\n" + sheetname + " " + cellrange
+            description = f"|{sheetname} {cellrange}|"
 
             if test_only and not any( pattern in description for pattern in test_only ):
                 skip_count = skip_count + 1
@@ -1018,10 +1018,15 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
                     difflist = difflist + f"   [{r}, {c}]: expected {repr(expected)} vs actual {repr(actual)}\n"
                 if len(errs) > 10:
                     difflist = difflist + "   ....\n"
-                raise AssertionError(f"{description}\n{len(errs)}/{rsize*csize} values differ:\n" + difflist)
+                errors.append(f"{description} {len(errs)}/{rsize*csize} values differ:\n" + difflist)
+            if len(errors) >= max_errors:
+                # that's enough
+                return errors
 
         if skip_count > 0:
             if _verbosity >= 2: print(f"    **** Skipped {skip_count} tests")
+        
+    return errors
 
 def one_solution_tester(solution_name, expected_filename,
                         scenario_skip=None, test_skip=None, test_only=None):
@@ -1034,37 +1039,46 @@ def one_solution_tester(solution_name, expected_filename,
     * test_skip: an array of strings; any test matching this pattern will be skipped
     * test_only: an array of strings; _only_ tests matching this pattern will be executed.
     """
-    importname = 'solution.' + solution_name
-    m = importlib.import_module(importname)
 
+    scenario_errors = {}
+    scenario_count = 0
     with zipfile.ZipFile(expected_filename) as zf:
-        for (i, scenario_name) in enumerate(m.scenarios.keys()):
+        for (i, scenario_name) in enumerate(factory.list_scenarios(solution_name)):
             if scenario_skip and i in scenario_skip:
                 if _verbosity >= 1: print(f"**** Skipped scenario {i} '{scenario_name}'")
                 continue
             if _verbosity >= 1: print(f"Checking scenario {i}: {scenario_name}")
+            scenario_count += 1
 
-            obj = m.Scenario(scen=scenario_name)
+            obj = factory.load_scenario(solution_name, scenario_name)
             if isinstance(obj, scenario.LandScenario):
                 to_verify = LAND_solution_verify_list(obj, zf)
             else:
                 to_verify = RRS_solution_verify_list(obj, zf)
 
-            check_excel_against_object(obj, zf, scenario_name, i, to_verify, 
+            errors = check_excel_against_object(obj, zf, scenario_name, i, to_verify, 
                                        test_skip=test_skip, test_only=test_only)
+            
+            if len(errors):
+                scenario_errors[f"{i}: {scenario_name}"] = errors
+    
+    if len(scenario_errors):
+        strout = "\n".join( f"scenario {k}\n" + "\n".join( v ) for (k,v) in scenario_errors.items() )
+        raise AssertionError( f"\nSolution {solution_name} deep results\n{len(scenario_errors)}/{scenario_count} scenarios with errors:\n{strout}" )
 
 
 def key_results_tester(solution_name, expected_filename, scenario_skip=None, key_results_skip=[]):
-    importname = 'solution.' + solution_name
-    m = importlib.import_module(importname)
+    scenario_errors = {}
+    scenario_count = 0
     with zipfile.ZipFile(expected_filename) as zf:
-        for (i, scenario_name) in enumerate(m.scenarios.keys()):
+        for (i, scenario_name) in enumerate(factory.list_scenarios(solution_name)):
             if scenario_skip and i in scenario_skip:
                 if _verbosity >= 1: print(f"**** Skipped scenario {i} '{scenario_name}'")
                 continue
             if _verbosity >= 1: print(f"Checking scenario {i}: {scenario_name}")
+            scenario_count += 1
 
-            obj = m.Scenario(scen=scenario_name)
+            obj = factory.load_scenario(solution_name,scenario_name)
             ac_file = zf.open(scenario_name + "/" + 'Advanced Controls')
             df_expected = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
             key_results = obj.get_key_results()
@@ -1072,21 +1086,27 @@ def key_results_tester(solution_name, expected_filename, scenario_skip=None, key
             cols_expected_values = range(0,6)
             expected_values = [df_expected.loc[row_expected_values, col] for col in cols_expected_values]
             rel_tol = 1e-6
-            abs_tol = 1e-7
-
-            # Return 0 if expected value cannot be cast to float
-            for idx, value in enumerate(expected_values):
-                try:
-                    expected_values[idx] = float(value)
-                except:
-                    expected_values[idx] = 0.0
-                expected_values[idx] = pytest.approx(expected_values[idx], rel=rel_tol, abs=abs_tol)
+            abs_tol = 1e-4
 
             # This for loop looks nicer but it also means that the order in which items are inserted
             # into key_results and the order of key_results in the expected excel matters at testing!
+            errors = []
             for idx, item in enumerate(key_results.items()):
                 name, actual = item
                 if name in key_results_skip:
                     continue
                 expected = expected_values[idx]
-                assert actual == expected, f"EXPECTED: {expected}\nACTUAL: {actual}\n IN {name}"
+                try:
+                    expected = float(expected)
+                except:
+                    # skip this test
+                    continue
+                if actual != pytest.approx(expected, rel=rel_tol, abs=abs_tol):
+                    errors.append( f"|{name}|\n    expected: {expected:4.5F} vs actual: {actual:4.5F}")
+            if len(errors):
+                scenario_errors[f"{i}: {scenario_name}"] = errors
+    
+    if len(scenario_errors):
+        strout = "\n".join( f"scenario {k}\n" + "\n".join( v ) for (k,v) in scenario_errors.items() )
+        raise AssertionError( f"\nSolution {solution_name} key results\n{len(scenario_errors)}/{scenario_count} scenarios with errors:\n{strout}" )
+
