@@ -1,3 +1,61 @@
+"""Integrate building solutions.
+
+In total 14 solutions are part of building integration. They belong to five
+different categories: space heating, space cooling, lighting, cooking and
+water heating. Their effects are at three different levels: Building envelope,
+systems or appliances. The 14 solutions are:
+Insulation - insulation - Space heating/cooling - Building envelope
+    Insulation is the first solution to be integrated in the heating/cooling
+    chain. It is only adopted for residential floor area. Its adoption affects
+    all other heating/cooling integrations but no adjustments are made to its
+    own impact.
+Cool Roofs - coolroofs - Space heating/cooling - Building envelope
+    Cool Roofs is the second solution in the heating/cooling chain. It is
+    integrated with respect to insulation. The extent to which insulation
+    is adopted lowers the electricity saved by cool roofs and lowers its
+    heating/cooling efficiency factor.
+Green Roofs - greenroofs - Space heating/cooling - Building envelope
+    Same idea as for cool roofs.
+High Perf. Glass - residentialglass/commercialglass - Space heating/cooling - Building envelope
+    Only residential high performance glass needs to be integrated with
+    respect to insulation because insulation is only modeled for residential
+    floor area. The extent to which insulation is adopted lowers the electricity
+    saved by high performance glass and lower the fuel inputs efficiency.
+Dynamic Glass - smartglass - Space cooling/lighting - Building envelope
+    Dynamic glass also appears as smart glass in the original excel sheet.
+    Dynamic glass is only modeled for commercial buildings and is therefore
+    not integrated with insulation. It is also not integrated with high
+    performance glass. However, it needs to be integrated with commercial
+    LED adoption in the lighting chain.
+Building Automation - buildingautomation - Space heating/cooling/lighting - Systems
+    Building automatin is only for commercial buildings.
+    Building automation is among the more complicated integrations, because it
+    is integrated both inthe heating/cooling chain as well as the lighting chain.
+    In the heating/cooling chain the overlap is calculated for cool roof,
+    green roof, high perf. glass and dynamic glass. For each year, the maximum
+    overlap of these solutions is chosen. In the lighting chain, the maximum from
+    commercial LED and dynamic glass. 
+Smart thermostats - smartthermostats - space heating/cooling - Systems
+    Smart thermostats is residential only. It is integrated with respect to the
+    maximum in each year from insulation, cool roof, green roof or high performance
+    residential glass.
+District heating - districtheating - Space heating - Systems
+    District heating is not integrated.
+Heat pumps - heatpumps - Space heating - Appliances
+    Heat pumps are not integrated.
+LED - leds_commercial/leds_residential - Lighting - Appliances
+    LED lighting for commercial and residential space. This is the first step in the
+    lighting chain and is therefore not itself integrated.
+Cooking biogas - biogas - Cooking - Appliances
+    Not integrated here but TAM-limited by the amount of available waste elsewhere.
+Clean cookstoves - improvedcookstoves - Cooking - Appliances
+    Integrated elsewhere.
+Water saving home (WaSH) - waterefficiency - Water heating - Appliances
+    Not integrated here
+Solar hot water - solarhotwater - Water heating - Appliances
+    Not integrated here.
+"""
+
 from dataclasses import dataclass
 from pathlib import Path
 import pandas as pd
