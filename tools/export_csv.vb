@@ -125,3 +125,26 @@ Sub Generate_Scenario_Records()
 End Sub
 
 
+' From https://stackoverflow.com/a/6688482/1539989
+Function WorksheetExists(shtName As String, Optional wb As Workbook) As Boolean
+    Dim sht As Worksheet
+
+    If wb Is Nothing Then Set wb = ThisWorkbook
+    On Error Resume Next
+    Set sht = wb.Sheets(shtName)
+    On Error GoTo 0
+    WorksheetExists = Not sht Is Nothing
+End Function
+
+' Code a couple of Denton's Fixes
+
+Sub do_fixes()
+    ' Replace "Middle East & Africa" with "Middle East and Africa"
+    Sheets("Unit Adoption Calculations").UsedRange.Replace What:="Middle East & Africa", Replacement:="Middle East and Africa"
+
+    ' Fix the mistaken denominator in Land CO2 calcs.   $Hxx --> $Jxx
+    If WorksheetExists("AEZ Data") Then
+        Sheets("CO2 Calcs").Range("B121:AF166").Replace What:="/'AEZ Data'!$H", Replacement:="/'AEZ Data'!$J", LookAt:=xlPart
+    End If
+
+End Sub
