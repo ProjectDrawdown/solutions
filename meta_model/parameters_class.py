@@ -10,7 +10,7 @@ import typing
 
 def parameterField(default=None, title=None, docstring=None, units=None, isglobal=False, excelref=None, verifier=None, **args):
     """Defines a parameter in the Parameter Collection.  Parameters have the following attributes, all of which are optional:
-     * default: default value for this parameter.  Default values should be specified only for parameters that are _required_ to have a value.
+     * default: default value for this parameter.  default itself defaults to None.
      * title: a short descriptive name of this parameter
      * docstring: a longer explanation of the parameter
      * units: a string indicating the units this parameter is expressed in
@@ -48,6 +48,8 @@ class ParameterCollection:
     additional_parameters : typing.Dict = metaField(docstring="Additional non-declared parameters", init=True, default_factory=dict)
     metadata : typing.Dict = metaField(docstring="User-supplied metadata about parameters; not used internally",init=True,default_factory=dict)
     original_values: typing.Dict = metaField(docstring="Original inputs to parameters transformed by verifiers", default_factory=dict)
+
+    _global_init : typing.ClassVar[bool] = metaField(docstring="Flag used to control initialization of global_variables",default=False)
 
     # #################
     # Informational methods
@@ -103,6 +105,7 @@ class ParameterCollection:
 
     @classmethod
     def set_globally(cls, parameter_name: str, parameter_value: typing.Any):
+        cls._init_globals()
         assert cls.isglobal(parameter_name), f"'{parameter_name}' cannot be set globally; it is not a global parameter"
         cls.global_values[parameter_name] = parameter_value
     
@@ -114,6 +117,13 @@ class ParameterCollection:
             if cls.isglobal(f):
                 cls.global_values[f.name] = f.default
     
+    @classmethod
+    def _init_globals(cls):
+        # This will get executed only once
+        if not cls._global_init:
+            cls.reset_global_values()
+            type.__setattr__(cls,'_global_init',True)
+    
 
     # #################
     # Initial setup
@@ -121,6 +131,9 @@ class ParameterCollection:
     def __post_init__(self):
         # ParameterCollection is a frozen class, but we sneak around that during __post_init__. 
         # Substitute global values and do any required verifications/transformations
+
+        # If globals have never been initialized at all yet, initialize them now
+        self._init_globals()
 
         # Override global values that are set
         for fieldname in self.global_values:
