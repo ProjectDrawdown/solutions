@@ -1,3 +1,61 @@
+"""Integrate building solutions.
+
+In total 14 solutions are part of building integration. They belong to five
+different categories: space heating, space cooling, lighting, cooking and
+water heating. Their effects are at three different levels: Building envelope,
+systems or appliances. The 14 solutions are:
+Insulation - insulation - Space heating/cooling - Building envelope
+    Insulation is the first solution to be integrated in the heating/cooling
+    chain. It is only adopted for residential floor area. Its adoption affects
+    all other heating/cooling integrations but no adjustments are made to its
+    own impact.
+Cool Roofs - coolroofs - Space heating/cooling - Building envelope
+    Cool Roofs is the second solution in the heating/cooling chain. It is
+    integrated with respect to insulation. The extent to which insulation
+    is adopted lowers the electricity saved by cool roofs and lowers its
+    heating/cooling efficiency factor.
+Green Roofs - greenroofs - Space heating/cooling - Building envelope
+    Same idea as for cool roofs.
+High Perf. Glass - residentialglass/commercialglass - Space heating/cooling - Building envelope
+    Only residential high performance glass needs to be integrated with
+    respect to insulation because insulation is only modeled for residential
+    floor area. The extent to which insulation is adopted lowers the electricity
+    saved by high performance glass and lower the fuel inputs efficiency.
+Dynamic Glass - smartglass - Space cooling/lighting - Building envelope
+    Dynamic glass also appears as smart glass in the original excel sheet.
+    Dynamic glass is only modeled for commercial buildings and is therefore
+    not integrated with insulation. It is also not integrated with high
+    performance glass. However, it needs to be integrated with commercial
+    LED adoption in the lighting chain.
+Building Automation - buildingautomation - Space heating/cooling/lighting - Systems
+    Building automatin is only for commercial buildings.
+    Building automation is among the more complicated integrations, because it
+    is integrated both inthe heating/cooling chain as well as the lighting chain.
+    In the heating/cooling chain the overlap is calculated for cool roof,
+    green roof, high perf. glass and dynamic glass. For each year, the maximum
+    overlap of these solutions is chosen. In the lighting chain, the maximum from
+    commercial LED and dynamic glass. 
+Smart thermostats - smartthermostats - space heating/cooling - Systems
+    Smart thermostats is residential only. It is integrated with respect to the
+    maximum in each year from insulation, cool roof, green roof or high performance
+    residential glass.
+District heating - districtheating - Space heating - Systems
+    District heating is not integrated.
+Heat pumps - heatpumps - Space heating - Appliances
+    Heat pumps are not integrated.
+LED - leds_commercial/leds_residential - Lighting - Appliances
+    LED lighting for commercial and residential space. This is the first step in the
+    lighting chain and is therefore not itself integrated.
+Cooking biogas - biogas - Cooking - Appliances
+    Not integrated here but TAM-limited by the amount of available waste elsewhere.
+Clean cookstoves - improvedcookstoves - Cooking - Appliances
+    Integrated elsewhere.
+Water saving home (WaSH) - waterefficiency - Water heating - Appliances
+    Not integrated here
+Solar hot water - solarhotwater - Water heating - Appliances
+    Not integrated here.
+"""
+
 from dataclasses import dataclass
 from pathlib import Path
 import pandas as pd
@@ -54,21 +112,17 @@ class building_integration_state:
     space_heating_global_tam : pd.DataFrame = pd.read_csv(DATADIR/"space_heating_global_tam.csv", index_col="year", squeeze=False)
     water_heating_global_tam : pd.DataFrame = pd.read_csv(DATADIR/"water_heating_global_tam.csv", index_col="year", squeeze=False)
 
+    testmode = False
     adoption_dict = {}
     for key, value in building_solutions.items():
         adoption_dict[key] = load_solution_adoptions(value)[pds.upper()]
     adoption : pd.DataFrame = pd.DataFrame(data=adoption_dict)
 
-    testmode = False
     # Load test data
     if testmode:
         adoption_test : pd.DataFrame = pd.read_csv(DATADIR/f"adoption_{pds}.csv", index_col="year", squeeze=False)
         fuel_avoided_test : pd.DataFrame = pd.read_csv(DATADIR/f"fuel_avoided_{pds}.csv", index_col="year", squeeze=False)
         net_grid_electricity_test : pd.DataFrame = pd.read_csv(DATADIR/f"net_grid_electricity_{pds}.csv", index_col="year", squeeze=False)
-
-    test_adoption = False
-    if test_adoption:
-        adoption = adoption_test
 
     TWh_to_EJ : float = 3.6e-3
     EJ_to_TWh : float = 1/TWh_to_EJ
@@ -76,6 +130,10 @@ class building_integration_state:
     TJ_to_TWh : float = 1/3600
 
 ds = building_integration_state()
+
+test_adoption = False
+if test_adoption:
+    ds.adoption = ds.adoption_test
 
 def integrate():
     """Perform all steps of the integration together."""
@@ -91,7 +149,8 @@ def integrate():
         residentialglass_energy_saving +
         commercialglass_energy_saving
         )
-    return space_heating_cooling_energy_saving
+    # dynamic_glass_integration(space_heating_cooling_energy_saving)
+    return dynamic_glass_integration(space_heating_cooling_energy_saving)
 
 def insulation_integration():
     """Step 1 in integration chain. Calculate the total energy saved and split
@@ -186,8 +245,6 @@ def cool_roofs_integration():
     coolroofs.update_ac(coolroofs.ac,
                         soln_annual_energy_used=electricity_consumption_post_integration,
                         soln_fuel_efficiency_factor=thermal_efficiency_factor_integrated)
-
-
 
     return coolroofs.total_energy_saving()
 
@@ -301,45 +358,237 @@ def high_performance_glass_residential_integration():
 
 def high_performance_glass_commercial_integration():
     """No integration needed because insulation is defined only for residential buildings."""
-    commercialglass = factory.load_scenario('commercialglass', ds.pds.upper())
-    return commercialglass.total_energy_saving()
+    smartglass = factory.load_scenario('smartglass', ds.pds.upper())
+    return smartglass.total_energy_saving()
 
-def led_integration():
+def led_residential_integration():
     """Step 5. LED integration."""
-    pass
+    leds_residential = factory.load_scenario('leds_residential', ds.pds.upper())
 
-def dynamic_glass_integration():
+    return leds_residential.soln_net_energy_grid_impact() * ds.TWh_to_EJ
+
+def led_commercial_integration():
+    """Step 5. LED integration."""
+    leds_commercial = factory.load_scenario('leds_commercial', ds.pds.upper())
+
+    return leds_commercial.soln_net_energy_grid_impact() * ds.TWh_to_EJ
+
+def dynamic_glass_integration(space_heating_cooling_energy_saved):
     """Step 6. Dynamic glass integration. Depends on both high performance glass
     and LED. Commercial only."""
-    pass
+    # TODO
+
+    smartglass = factory.load_scenario('smartglass', ds.pds.upper())
+
+    adoption_overlap = (
+        ds.adoption['Commercial LED (Excludes Household LED)'] / 
+        ds.lighting_global_tam['Lighting Demand - Commercial - Case 1 - Average'] * 
+        ds.adoption['Dynamic Glass (Commercial Only)'])
+
+    electricity_consumption_conventional = smartglass.ac.conv_annual_energy_used
+    electricity_consumption_solution = smartglass.ac.soln_annual_energy_used
+
+    electricity_end_use_shares_heating_cooling = 0.293
+    electricity_end_use_shares_lighting = 0.236
+
+    # This one should depend on smart glass integration with respect to insulation
+    # Is 0 because insulation is residential and smartglass is commercial.
+    average_reduction_electricity_efficiency_insulation = 0.0
+
+    led_reduces_smart_glass_electricity_impact = 0.5
+
+    average_reduction_electricity_efficiency_led_commercial = (
+        (adoption_overlap.loc[2020:2050] / ds.adoption["Dynamic Glass (Commercial Only)"].loc[2020:2050]).mean() * 
+        led_reduces_smart_glass_electricity_impact
+        )
+    
+
+
+    electricity_consumption_integrated = (
+        electricity_consumption_conventional -
+        (electricity_consumption_conventional - electricity_consumption_solution) *
+        (
+            (1 - electricity_end_use_shares_heating_cooling - electricity_end_use_shares_lighting) +
+            electricity_end_use_shares_heating_cooling * 
+            (1 - average_reduction_electricity_efficiency_insulation) +
+            electricity_end_use_shares_lighting * (1 - average_reduction_electricity_efficiency_led_commercial)
+        )
+    )
+
+    return smartglass.total_energy_saving()
 
 def building_automation_integration():
     """Step 7. Building automation. Depends on dynamic glass."""
-    pass
+
+    buildingautomation = factory.load_scenario('buildingautomation', ds.pds.upper())
+
+    numstories_comm = 1.58
+
+    possible_overlap = ((ds.adoption['Cool Roofs'] + ds.adoption['Green Roofs']) / 1e6 * 
+        ds.roof_area_global_tam['Roof Area - Residential - Case 1 - Average'] / ds.roof_area_global_tam['Roof Area - Residential - Case 1 - Average'] * numstories_comm
+        )
+    columns_max = pd.DataFrame({'col1':possible_overlap, 
+                                'col2': ds.adoption['High Performance Glass- Commercial Model'],
+                                'col3': ds.adoption['Insulation (Residential Only)']}).max(axis=1)
+    adoption_overlap = columns_max / ds.floor_area_global_tam['Residential - Average'] * ds.adoption['Building Automation (Commercial Only)']
+
+    roof_glass_electricity_impact = 0.5
+    roof_glass_fuel_impact = 0.5
+
+    average_change_heating_electricity_efficiency = (
+        (adoption_overlap.loc[2020:2050] / ds.adoption['Building Automation (Commercial Only)'].loc[2020:2050]).mean() * 
+        roof_glass_electricity_impact
+        )
+
+    average_change_fuel_efficiency = (
+        (adoption_overlap.loc[2020:2050] / ds.adoption['Building Automation (Commercial Only)'].loc[2020:2050]).mean() * 
+        roof_glass_fuel_impact)
+
+    fuel_efficiency_factor = buildingautomation.ac.soln_fuel_efficiency_factor
+    electrical_efficiency_factor = buildingautomation.ac.soln_energy_efficiency_factor
+
+    # TODO Locate these in the sollutions!
+    electricity_end_use_shares_heating_cooling = 0.296
+    electricity_end_use_shares_lighting = 0.236
+    lighting_energy_impact = 0.326
+
+    electrical_efficiency_factor_integrated = (
+        electrical_efficiency_factor * ((1 - electricity_end_use_shares_heating_cooling - electricity_end_use_shares_lighting)) + 
+        electricity_end_use_shares_heating_cooling * (1 - average_change_heating_electricity_efficiency) + 
+        electricity_end_use_shares_lighting * (1 - lighting_energy_impact)
+    )
+
+    fuel_efficiency_factor_integrated = fuel_efficiency_factor * (1 - average_change_fuel_efficiency)
+
+    buildingautomation.update_ac(buildingautomation.ac,
+                soln_fuel_efficiency_factor=fuel_efficiency_factor_integrated,
+                soln_energy_efficiency_factor=electrical_efficiency_factor_integrated)
+
+    # TODO take care of the sign change in net_impact!
+    return buildingautomation.total_energy_saving()
 
 def smart_thermostat_integration():
     """Step 8. Smart thermostat. Depends on building automation"""
-    pass
+    # =MAX($L6,($U6+$AE6)/10^6*TAM_RoofArea!$C21/TAM_RoofArea!$O21*NumStories_RES,$AR6)/TAM_Area!$J33*AI62
+    # =MAX(($U6+$AE6)/10^6*TAM_RoofArea!$I21/TAM_RoofArea!$O21*NumStories_Comm,$BB6,$L62)/TAM_Area!$R33*Y62
+
+    smartthermostats = factory.load_scenario('smartthermostats', ds.pds.upper())
+
+    numstories_res = 1.58
+
+    possible_overlap = ((ds.adoption['Cool Roofs'] + ds.adoption['Green Roofs']) / 1e6 * 
+        ds.roof_area_global_tam['Roof Area - Residential - Case 1 - Average'] / ds.roof_area_global_tam['Roof Area - Residential - Case 1 - Average'] * numstories_res
+        )
+
+    columns_max = pd.DataFrame({'col1':possible_overlap, 
+                                'col2': ds.adoption['High Performance Glass- Commercial Model'],
+                                'col3': ds.adoption['Insulation (Residential Only)']}).max(axis=1)
+
+    adoption_overlap = columns_max / ds.floor_area_global_tam['Residential - Average'] * ds.adoption['Smart Thermostats (Residential Only)']
+
+    roof_glass_electricity_impact = 0.5
+    roof_glass_fuel_impact = 0.5
+
+    average_change_electricity_efficiency = (
+        (adoption_overlap.loc[2020:2050] / ds.adoption['Smart Thermostats (Residential Only)'].loc[2020:2050]).mean() * 
+        roof_glass_electricity_impact
+        )
+
+    average_change_fuel_efficiency = (
+        (adoption_overlap.loc[2020:2050] / ds.adoption['Smart Thermostats (Residential Only)'].loc[2020:2050]).mean() * 
+        roof_glass_fuel_impact)
+
+    fuel_efficiency_factor = smartthermostats.ac.soln_fuel_efficiency_factor
+    electrical_efficiency_factor = smartthermostats.ac.soln_energy_efficiency_factor
+
+    electrical_efficiency_factor_integrated = (
+        electrical_efficiency_factor * (1 - average_change_electricity_efficiency)
+        )
+
+    fuel_efficiency_factor_integrated = fuel_efficiency_factor * (1 - average_change_fuel_efficiency)
+
+    smartthermostats.update_ac(smartthermostats.ac,
+                soln_fuel_efficiency_factor=fuel_efficiency_factor_integrated,
+                soln_energy_efficiency_factor=electrical_efficiency_factor_integrated)
+    
+    return smartthermostats.total_energy_saving()
 
 def heat_pumps_integration():
     """Step 9. Heat pumpts. Depends on smart thermostat."""
-    pass
+    heatpumps = factory.load_scenario('heatpumps', ds.pds.upper())
+
+    return heatpumps.total_energy_saving()
 
 def district_heating_integration():
     """Step 10. District heating. Depends on heat pumps."""
-    pass
+    districtheating = factory.load_scenario('districtheating', ds.pds.upper())
 
-def cooking_biogas_integration():
-    """Step 11. Cooking biogas. No upstream dependency."""
-    pass
+    return districtheating.total_energy_saving()
 
-def clean_stoves_integration():
-    """Step 12. Clean stoves. Depends on cooking biogas."""
-    pass
+def building_automation_integration_lighting():
+    buildingautomation = factory.load_scenario('buildingautomation', ds.pds.upper())
 
-def low_flow_fixtures_integration():
-    """Step 13. Lo-flow fixtures. No upstream dependency."""
-    pass
+    lighting = ds.adoption['Commercial LED (Excludes Household LED)'] / ds.lighting_global_tam['Lighting Demand - Commercial - Case 1 - Average']
+
+    glass = ds.adoption['Smart Glass (Commercial Only)'] / ds.floor_area_global_tam['Commercial - Average']
+
+    columns_max = pd.DataFrame({'col1':lighting, 
+                            'col2': glass}).max(axis=1)
+
+    overlap = columns_max * ds.adoption['Building Automation  (Commercial Only)']
+
+    commercial_led_and_glass_reduce_bas_electricity_impact = 0.5
+
+    average_reduction_lighting_electrical_efficiency = (
+        (overlap.loc[2020:2050] / ds.adoption["Building Automation  (Commercial Only)"].loc[2020:2050]).mean() * 
+        commercial_led_and_glass_reduce_bas_electricity_impact
+        )
+
+    electricity_end_use_shares_heating_cooling = 0.296
+    electricity_end_use_shares_lighting = 0.236
+
+    roof_glass_electricity_impact = 0.5
+
+    average_change_heating_electricity_efficiency = (
+        (overlap.loc[2020:2050] / ds.adoption['Building Automation (Commercial Only)'].loc[2020:2050]).mean() * 
+        roof_glass_electricity_impact
+        )
+
+    electrical_efficiency_factor = buildingautomation.ac.soln_energy_efficiency_factor
+
+    electrical_efficiency_factor_integrated = (
+        electrical_efficiency_factor * (
+            (1 - electricity_end_use_shares_heating_cooling - electricity_end_use_shares_lighting) +
+            electricity_end_use_shares_heating_cooling * (
+                1 - average_change_heating_electricity_efficiency
+            ) +
+            electricity_end_use_shares_lighting * (
+                1 - average_reduction_lighting_electrical_efficiency
+            )
+        )
+    )
+
+    buildingautomation.update_ac(buildingautomation.ac,
+            soln_energy_efficiency_factor=electrical_efficiency_factor_integrated)
+    
+    return buildingautomation.total_energy_saving()
+
+def water_saving_home():
+    waterefficiency = factory.load_scenario('waterefficiency', ds.pds.upper())
+    return waterefficiency.total_energy_saving()
 
 def solar_hw_integration():
     """Step 14. Solar HW. Depends on low flow fixtures."""
+    solarhotwater = factory.load_scenario('solarhotwater', ds.pds.upper())
+    return solarhotwater.total_energy_saving()
+
+def cooking_biogas_integration():
+    """Step 11. Cooking biogas. No upstream dependency."""
+    biogas = factory.load_scenario('biogas', ds.pds.upper())
+    return biogas.total_energy_saving()
+
+def clean_stoves_integration():
+    """Step 12. Clean stoves. Depends on cooking biogas."""
+    
+    improvedcookstoves = factory.load_scenario('improvedcookstoves', ds.pds.upper())
+    return improvedcookstoves.total_energy_saving()
