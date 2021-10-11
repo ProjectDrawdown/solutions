@@ -15,7 +15,7 @@ import re
 
 import pandas as pd
 from model import dd
-from model.metaclass_cache import MetaclassCache
+from meta_model.metaclass_cache import MetaclassCache
 from meta_model.json_mixin import JsonMixin, json_func
 
 OCEAN_CSV_PATH = pathlib.Path(__file__).parents[1].joinpath('data', 'ocean')

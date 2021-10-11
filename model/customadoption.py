@@ -1,7 +1,7 @@
 """ Custom PDS/REF Adoption module """
 
 from functools import lru_cache
-from model.metaclass_cache import MetaclassCache
+from meta_model.metaclass_cache import MetaclassCache
 from meta_model.json_mixin import JsonMixin, json_func
 import model.dd as dd
 import pandas as pd
@@ -26,7 +26,7 @@ def inflate_csv_data(df: pd.DataFrame) -> pd.DataFrame :
     # re-establish the column ordering
     return result[dd.REGIONS]
 
-class CustomAdoption(object, metaclass=MetaclassCache):
+class CustomAdoption(JsonMixin, metaclass=MetaclassCache):
     """
     Equivalent to Custom PDS and REF Adoption sheets in xls. Allows user to input custom adoption
     scenarios. The data can be raw or generated from a script within the solution directory.
