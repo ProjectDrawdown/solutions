@@ -312,11 +312,6 @@ def load_emissions_factors():
 
 # ########################################################################################################################
 #                                              Action
-#
-#  We're going to have an interesting dynamic here.  For waste integration we could delay updating files until the 
-#  very end.  But in this case I think we are going to end up writing out things like the updated TAM early, so that
-#  solutions will use it.  But then we want to avoid recaclculating it, if we've udpated it already.
-#  Have to think about this.
 #  
 
 def setup(year):
