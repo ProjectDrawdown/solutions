@@ -210,20 +210,23 @@ class VMAReader:
 
         df_dict = collections.OrderedDict()
         for title, location in locations_to_process:
-            df, use_weight, bound_correction, summary = self.read_single_table(
-                source_id_cell=location,
-                sheetname=sheetname,
-                fixed_summary=fixed_summary)
+            df, use_weight, bound_correction, desc, summary = (
+                self.read_single_table(
+                    source_id_cell=location,
+                    sheetname=sheetname,
+                    fixed_summary=fixed_summary))
             if df.empty:
                 # in line with our policy of setting empty tables to None
-                df_dict[title] = (None, False, False, (np.nan, np.nan, np.nan))
+                df_dict[title] = (None, False, False, "",
+                                  (np.nan, np.nan, np.nan))
             else:
                 # Process optional columns, drop if they are totally empty
                 for col in OPTIONAL_COLUMNS:
                     if df.loc[:, col].isnull().all():
                         df.drop(labels=col, axis='columns', inplace=True)
                 # Then save the table dataframe in an ordered dict by title
-                df_dict[title] = (df, use_weight, bound_correction, summary)
+                df_dict[title] = (df, use_weight, bound_correction, desc,
+                                  summary)
 
         return df_dict
 
@@ -240,8 +243,8 @@ class VMAReader:
             sheet to read from, if not the default
 
         Returns a sort of "directory dataframe", pointing to each created CSV,
-        noting the VMA title for that CSV, along with 3 booleans: has_data,
-        use_weight, and bound_correction.
+        noting the VMA title and description for that CSV, along with 3 
+        booleans: has_data, use_weight, and bound_correction.
 
         This function only reads the standard excel tabs and assumes the standard
         spacing, number of entries, etc.
@@ -251,14 +254,15 @@ class VMAReader:
 
         vma_df = pd.DataFrame(
             columns=['Filename', 'Title on xls', 'Has data?', 'Use weight?',
-                     'Bound correction?'],
+                     'Bound correction?', 'Description'],
             index=pd.Index(data=list(range(1, len(df_dict) + 1)), name='VMA number')
         )
         info_df = pd.DataFrame(columns=['Title on xls', 'Fixed Mean', 'Fixed High', 'Fixed Low'])
         info_df.index.name = 'VMA number'
 
         i = 1
-        for title, (table_df, use_weight, bound_correction, (average, high, low)) in df_dict.items():
+        for title, (table_df, use_weight, bound_correction, desc,
+                    (average, high, low)) in df_dict.items():
             path_friendly_title = ''
             if table_df is not None:
                 existing = self.find_data_csv(table_df)
@@ -276,6 +280,7 @@ class VMAReader:
                    'Has data?': False if table_df is None else True,
                    'Use weight?': use_weight,
                    'Bound correction?': bound_correction,
+                   'Description': desc,
                    }
             vma_df.loc[i, :] = row
 
@@ -393,13 +398,24 @@ class VMAReader:
         else:
             raise ValueError(f"No 'Use weight?' cell found for VMA between {last_row} and {last_row+100}")
 
-        bound_correction = None
+        # Find Explanation below table (to the left).
+        desc = ""
         for r in range(last_row, last_row + 100):
-            if sheet.cell(r, tools.util.co("X")).value == 'Low Correction?':
-                bound_correction = tools.util.convert_bool(sheet.cell(r+1, tools.util.co("X")).value)
+            if sheet.cell(r, tools.util.co("C")).value == 'Explanation:':
+                desc = sheet.cell(r, tools.util.co("D")).value
                 break
+
+        # Find 'Low Correction' below table (to the right).
+        bound_correction = None
+        bound_correction_cols = ["X", "Y"]
+        for r in range(last_row, last_row + 100):
+            for col in bound_correction_cols:
+                if sheet.cell(r, tools.util.co(col)).value == 'Low Correction?':
+                    bound_correction = tools.util.convert_bool(
+                        sheet.cell(r+1, tools.util.co(col)).value)
+                    break
         if bound_correction is None:
-            raise ValueError(f"No 'Low Correction?' cell found for VMA between {last_row} and {last_row+100} in column X")
+            raise ValueError(f"No 'Low Correction?' cell found for VMA between {last_row} and {last_row+100} in columns {bound_correction_cols}.")
         
         if fixed_summary:
             # Find the Average, High, Low cells.
@@ -423,7 +439,7 @@ class VMAReader:
         else:
             average = high = low = np.nan
 
-        return df, use_weight, bound_correction, (average, high, low)
+        return df, use_weight, bound_correction, desc, (average, high, low)
 
 
     def _find_tables(self, sheetname, start_row, max_tables):

@@ -1526,27 +1526,31 @@ def extract_vmas(f, wb, outputdir):
         os.mkdir(vma_dir_path)
     vma_r = VMAReader(wb)
     vmas = vma_r.read_xls(csv_path=vma_dir_path)
-    vma_name_to_filename = {}
+    vma_name_to_dict = {}
     f.write("VMAs = {\n")
     for _, row in vmas.iterrows():
         vma_name = row['Title on xls']
         f.write(f"    '{vma_name}': vma.VMA(\n")
         filename = row['Filename']
+        vma_out_dict = {}
         if not filename:
             f.write(f"        filename=None, use_weight={row['Use weight?']}),\n")
         else:
             if isinstance(filename, str):
                 path = f'THISDIR.joinpath("vma_data", "{filename}")'
-                vma_name_to_filename[vma_name] = filename
+                vma_out_dict["filename"] = filename
             else:
                 path = f'DATADIR.joinpath(*{filename})'
             f.write(f"        filename={path},\n")
             f.write(f"        use_weight={row['Use weight?']}),\n")
+        vma_out_dict["bound_correction"] = row['Bound correction?']
+        vma_out_dict["description"] = row['Description']
+        vma_name_to_dict[vma_name] = vma_out_dict
     f.write("}\n")
     f.write("vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))\n\n")
-    if vma_name_to_filename:
+    if vma_name_to_dict:
         write_json(filename=pathlib.Path(vma_dir_path) / 'vma_sources.json',
-                   d=vma_name_to_filename)
+                   d=vma_name_to_dict)
 
 
 def lookup_unit(tab, row, col):
