@@ -211,19 +211,19 @@ class VMA:
         df = df[valid]
         return df
 
-    def avg_high_low(self, key=None, regime=None, region=None,
+    def avg_high_low(self, statistic=None, regime=None, region=None,
                     low_sd=None, high_sd=None, discard_multiplier=None, 
                     stat_correction=None, use_weight=None, bound_correction=None):
         """
         Args:
-          key: (optional) specify 'mean', 'high' or 'low' to get single value
+          statistic: (optional) specify 'mean', 'high' or 'low' to get single value
           regime: string name of the thermal moisture regime to select sources for.
           region: string name of the world region to select sources for.
           Other parameters: explicitly override the default parameters for this VMA.
 
         Returns:
           By default returns (mean, high, low) using low_sd/high_sd.
-          If key is specified will return associated value only
+          If statistic is specified will return associated value only
         """
         # Use the parameters if provided, our defaults if not.
         low_sd = self.low_sd if low_sd is None else low_sd
@@ -278,16 +278,16 @@ class VMA:
             if low < 0 and bound_correction:
                 low = min( df['Value'] )
 
-        if key is None:
+        if statistic is None:
             return mean, high, low
-        elif key == 'high':
+        elif statistic == 'high':
             return high
-        elif key == 'mean' or key == 'average' or key == 'avg':
+        elif statistic == 'mean' or statistic == 'average' or statistic == 'avg':
             return mean
-        elif key == 'low':
+        elif statistic == 'low':
             return low
         else:
-            raise ValueError(f"invalid key: {key}. key must be 'mean', 'high', 'low' or None")
+            raise ValueError(f"invalid statistic: {statistic}. key must be 'mean', 'high', 'low' or None")
 
     def write_to_file(self, new_df):
         new_df.to_csv(path_or_buf=self.filename, index=False, encoding='utf-8')

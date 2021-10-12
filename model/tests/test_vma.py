@@ -145,12 +145,12 @@ def test_missing_columns():
 def test_avg_high_low_key():
     f = datadir.joinpath('vma1_silvopasture.csv')
     v = vma.VMA(filename=f, low_sd=1.0, high_sd=1.0)
-    avg = v.avg_high_low(key='mean')
+    avg = v.avg_high_low(statistic='mean')
     assert avg == pytest.approx(314.15)
-    low = v.avg_high_low(key='low')
+    low = v.avg_high_low(statistic='low')
     assert low == pytest.approx(178.3)
     with pytest.raises(ValueError):
-        v.avg_high_low(key='not a key')
+        v.avg_high_low(statistic='not a key')
 
 
 def test_avg_high_low_exclude():
