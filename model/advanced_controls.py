@@ -2,18 +2,13 @@ from __future__ import annotations
 import dataclasses
 import enum
 import typing
-from typing_extensions import ParamSpecKwargs
 from meta_model.parameters_class import ParameterCollection, parameterField
 from model import excel_math
 
+# ###########################################################################################################
+# Verifiers used below
+# 
 SOLUTION_CATEGORY = enum.Enum('SOLUTION_CATEGORY', 'REPLACEMENT REDUCTION NOT_APPLICABLE LAND OCEAN')
-translate_adoption_bases = {"DEFAULT Linear": "Linear", "DEFAULT S-Curve": "Logistic S-Curve"}
-valid_pds_adoption_bases = {'Linear', 'Logistic S-Curve', 'Existing Adoption Prognostications',
-                            'Customized S-Curve Adoption', 'Fully Customized PDS',
-                            'Bass Diffusion S-Curve', None}
-valid_ref_adoption_bases = {'Default', 'Custom', None}
-valid_adoption_growth = {'High', 'Medium', 'Low', None}
-
 
 def string_to_solution_category(text):
     ltext = str(text).lower()
@@ -27,10 +22,8 @@ def string_to_solution_category(text):
         return SOLUTION_CATEGORY.NOT_APPLICABLE
     raise ValueError('invalid solution category: ' + str(text))
 
-
-# embedded import avoids circular import until it can be resolved
-
 def string_to_emissions_grid_source(text):
+    # embedded import avoids circular import until it can be resolved
     from model import emissionsfactors
     return emissionsfactors.string_to_emissions_grid_source(text)
 
@@ -42,6 +35,15 @@ def string_to_co2eq_conversion(text):
     from model import emissionsfactors
     return emissionsfactors.string_to_conversion_source(text)
 
+def verify_pds_adoption_basis(text):
+    translations = {"DEFAULT Linear": "Linear", "DEFAULT S-Curve": "Logistic S-Curve"}
+    legalvalues = ['Linear', 'Logistic S-Curve', 'Existing Adoption Prognostications',
+                            'Customized S-Curve Adoption', 'Fully Customized PDS',
+                            'Bass Diffusion S-Curve']
+    text = translations.get(text,text)
+    if text is not None and text not in legalvalues:
+        raise ValueError("Invalid adoption basis: " + str(text))
+    return text
 
 # ###########################################################################################################
 #
@@ -480,7 +482,7 @@ class AdvancedControls(ParameterCollection):
     # soln_pds_adoption_regional_data: as soln_ref_adoption_regional_data.
     #   SolarPVUtil "Advanced Controls"!B246
     soln_ref_adoption_regional_data: bool = parameterField()
-    soln_pds_adoption_regional_data: bool = parameterField()
+    soln_pds_adoption_regional_data: bool = parameterField(verifier=verify_pds_adoption_basis)
 
     # soln_ref_adoption_basis: whether to use adoption_data.py or custom_adoption.py.
     #   Must be one of valid_ref_adoption_bases.  SolarPVUtil "Advanced Controls"!B279
