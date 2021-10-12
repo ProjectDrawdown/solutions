@@ -1,3 +1,4 @@
+import warnings
 import dataclasses
 import typing
 
@@ -45,11 +46,13 @@ class ParameterCollection:
     # Metafields
 
     global_values : typing.ClassVar[typing.Dict] = metaField(docstring="The globally-set values of global parameters",default={})
-    additional_parameters : typing.Dict = metaField(docstring="Additional non-declared parameters", init=True, default_factory=dict)
-    metadata : typing.Dict = metaField(docstring="User-supplied metadata about parameters; not used internally",init=True,default_factory=dict)
-    original_values: typing.Dict = metaField(docstring="Original inputs to parameters transformed by verifiers", default_factory=dict)
-
     _global_init : typing.ClassVar[bool] = metaField(docstring="Flag used to control initialization of global_variables",default=False)
+    
+    #  bookkeeping
+    vmas : typing.Dict = metaField(docstring="VMAs which supply backing information for (some) of this parameter set", init=True, default_factory=dict)
+    vma_settings: typing.Dict = metaField(docstring="VMA settings which were used to set (some) parameter values",default_factory=dict)
+    additional_parameters : typing.Dict = metaField(docstring="Additional non-declared parameters", init=True, default_factory=dict)
+    original_values: typing.Dict = metaField(docstring="Original inputs to parameters transformed by verifiers", default_factory=dict)
 
     # #################
     # Informational methods
@@ -130,7 +133,11 @@ class ParameterCollection:
 
     def __post_init__(self):
         # ParameterCollection is a frozen class, but we sneak around that during __post_init__. 
-        # Substitute global values and do any required verifications/transformations
+        # Substitute global values, vmas, and do any required verifications/transformations
+        
+        # Note the interactions between globals, vma-backed values and verifiers is not well worked out --- in theory
+        # you should be able to use them in combination, but it hasn't been tried/tested in practice.
+        # Also note: only declared parameters currently can have any of these features; 'additional' parameters do not
 
         # If globals have never been initialized at all yet, initialize them now
         self._init_globals()
@@ -139,8 +146,14 @@ class ParameterCollection:
         for fieldname in self.global_values:
             if self.global_values[fieldname] is not None:
                 object.__setattr__(self, fieldname, self.global_values[fieldname])
+        
+        # Now replace any VMA-backed parameters with their VMA-calculated value
+        for fieldname in self.declared_parameters():
+            current_value = getattr(self,fieldname)
+            if self._is_vma_setting(current_value):
+                self._substitute_vma(fieldname, current_value)
 
-        # Do any verification/transformation required; applies only to declared parameters
+        # Do any verification/transformation required
         for fieldname in self.declared_parameters():
             verifier = self.field_attribute(fieldname,'verifier')
             if verifier:
@@ -151,27 +164,70 @@ class ParameterCollection:
                 object.__setattr__(self, fieldname, verifier(old_val))
 
 
+    def _is_vma_setting(self, value):
+        """Return true if the value indicates a VMA setting.  VMA settings are indicated by a dictionary
+        with fields for what statistic is required and optional additional arguments."""
+        return isinstance(value, dict) and 'statistic' in value
+
+
+    def _substitute_vma(self, fieldname, vma_settings):
+        vma = self.vmas.get(fieldname,None)
+        desired_value = None
+        if vma is None:
+            if 'value' in vma_settings:
+                # the VMA settings came with a previous value.  use that, but warn the user.
+                warnings.warn(f"Parameter {fieldname} missing VMA; using previous value")
+                desired_value = vma_settings['value']
+            else:
+                raise ValueError(f"Parameter {fieldname} missing VMA and value")
+        else:
+            # Create the argument list for vma.avg_high_low:
+            # Remove (but remember) the 'value' field if present.
+            vma_args = vma_settings.copy()
+            if 'value' in vma_args:
+                desired_value = vma_args['value']
+                del(vma_args['value'])
+
+            # Get the VMA value with those args.
+            try:
+                desired_value = vma.avg_high_low(**vma_args)
+            except Exception as e:
+                warnings.warn(f"VMA {vma.title} failed to return value ({str(e)}")
+            
+        # desired_value may have been set by the vma, or by the 'value' field in the settings
+        # either way, we're happy.
+        if desired_value is not None:
+            self.vma_settings[fieldname] = vma_settings
+            object.__setattr__(self, fieldname, desired_value)
+        else:
+            raise(ValueError(f"VMA substitution failure for {fieldname} from {vma.title}"))
+
+
     # #################
     # Representation, Serialization
 
-    def asdict(self):
-        """Return a dictionary form of this object, with its current values.  Suitable for using with json.dump"""
+    def asdict(self, preserve_vma_settings=False, force_defaults=False):
+        """Return a dictionary form of this object, with its current values.  Suitable for using with json.dump.
+        preserve_vma_settings outputs the original vma settings if there were any,
+        force_defaults outputs the values of parameters whose value is the default value; leaving this False
+        prevents output of a lot of empty fields, focusing on the ones that have actually been set."""
         result = {}
         for f in self.declared_parameters():
             val = self.original_values.get(f,None) or getattr(self,f)
-            if val is not None:
+            if preserve_vma_settings and f in self.vma_settings:
+                result[f] = self.vma_settings[f].copy()
+                result[f]['value'] = val
+            elif val is not None and (force_defaults or val != self.__dataclass_fields__[f].default):
                 result[f] = val
         if len(self.additional_parameters):
             result['additional_parameters'] = self.additional_parameters.copy()
-        if len(self.metadata):
-            result['metadata'] = self.metadata.copy()
         return result
 
-    def copy(self, with_substitutions=None):
+    def copy(self, preserve_vma_settings=False, with_substitutions=None):
         """Make a copy of this parameter collection, optionally substituting some new values.
         Note that if global values have been changed, the copy will have the new values, not the original ones.
         If present, with_substitutions should be a dictionary mapping parameter names to new values."""
-        d = self.asdict()
+        d = self.asdict(preserve_vma_settings=preserve_vma_settings)
         if with_substitutions:
             for p in with_substitutions:
                 if p in self.declared_parameters():
@@ -183,10 +239,12 @@ class ParameterCollection:
         return self.__class__(**d)
    
     def __repr__(self):
-        return self.__class__.__name__ + "(\n" + ",\n    ".join( 
-            [ f"{key}={str(val)}" for key,val in self.asdict().items()]) + ")"
+        return (
+            self.__class__.__name__ + "(\n    " + 
+            ",\n    ".join( [ f"{key}={str(val)}" for key,val in self.asdict(force_defaults=True).items()]) +
+            f"{' (vmas)' if len(self.vmas) else ''})")
     
     def __str__(self):
-        return self.__class__.__name__ + "(\n" + ",\n    ".join( 
-            [ f"{p}={str(self.parameter_value(p))}" for p in self.parameter_list() if self.parameter_value(p) is not None ]) + ")"
+        return self.__class__.__name__ + "(\n    " + ",\n    ".join( 
+            [ f"{key}={str(val)}" for key,val in self.asdict().items()]) + ")"
 
