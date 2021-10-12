@@ -159,7 +159,7 @@ class Scenario(scenario.LandScenario):
         ca_pds_columns = ['Year'] + dd.REGIONS
         tla_2050 = self.tla_per_region.loc[2050, 'World']
         adoption_vma = VMAs['Current Adoption']
-        adoption_2018 = adoption_vma.avg_high_low(key='mean')
+        adoption_2018 = adoption_vma.avg_high_low(statistic='mean')
 
         # SOURCE: den Herder, M., Moreno, G., Mosquera-Losada, R. M., Palma, J. H., Sidiropoulou,
         # A., Freijanes, J. J. S., ... & Papanastasis, V. P. (2017). Current extent and
@@ -175,7 +175,7 @@ class Scenario(scenario.LandScenario):
         # Agroforestry-The Future of Global Land Use (pp. 429-453). Springer, Dordrecht.
         ds5_adoption_rate = 0.45
         pg_vma = VMAs['Total Pasture/Grazing Area']
-        pasture_grassland_area = pg_vma.avg_high_low(key='mean')
+        pasture_grassland_area = pg_vma.avg_high_low(statistic='mean')
         ds5_potential_adoption = ds5_adoption_rate * pasture_grassland_area
         ds5_adopt_2050 = 0.6 * ds5_potential_adoption
 

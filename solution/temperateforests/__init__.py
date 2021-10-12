@@ -142,7 +142,7 @@ class Scenario(scenario.LandScenario):
         title = 'Percent of Degraded Land Suitable for Intact Temperate Forest Restoration'
         intact_mha = self.ac.lookup_vma(vma_title=title)
         if intact_mha is None:
-            intact_mha = VMAs[title].avg_high_low(key='mean')
+            intact_mha = VMAs[title].avg_high_low(statistic='mean')
 
         # Max land Expected total land commited under Bonn Challenge and NY Declaration 
         max_land = 350.0

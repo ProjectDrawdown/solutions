@@ -151,8 +151,8 @@ class Scenario(scenario.LandScenario):
         ca_pds_columns = ['Year'] + dd.REGIONS
         ad_vma = VMAs['Future adoption (million hectares)']
         ad_cached = self.ac.lookup_vma(vma_title='Future adoption (million hectares)')
-        adoption_2050_mean = ad_cached if ad_cached else ad_vma.avg_high_low(key='mean')
-        adoption_2050_high = ad_vma.avg_high_low(key='high')
+        adoption_2050_mean = ad_cached if ad_cached else ad_vma.avg_high_low(statistic='mean')
+        adoption_2050_high = ad_vma.avg_high_low(statistic='high')
 
         ca_pds_data_sources = [
             {'name': 'Average growth, linear trend', 'include': True,
