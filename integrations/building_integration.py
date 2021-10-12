@@ -93,6 +93,7 @@ building_solutions_needed = {
     "Cool Roofs": "coolroofs",
     "Green Roofs": "greenroofs",
     "High Performance Glass-Residential Model": "residentialglass",
+    "High Performance Glass- Commercial Model": "commercialglass",
     "Dynamic Glass (Commercial Only)": "smartglass",
     "Building Automation (Commercial Only)": "buildingautomation",
     "Smart Thermostats (Residential Only)": "smartthermostats",
