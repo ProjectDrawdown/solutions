@@ -9,8 +9,10 @@ import glob
 import json
 import typing
 import re
+import warnings
 from pathlib import Path
 from datetime import datetime
+import numpy as np
 import pandas as pd
 import pytest
 from model import emissionsfactors as ef
@@ -1000,8 +1002,13 @@ class AdvancedControls:
             if v and not pd.isna(v.avg_high_low(key='mean')):
                 break
         else:
-            raise KeyError(f'"{vma_titles}" must be included in vmas to calculate mean/high/low.'
-                    f'vmas included: {self.vmas.keys()}')
+            if len(vma_titles) == 1:
+                needed = repr(vma_titles[0])
+            else:
+                needed = f"one of {', '.join([repr(t) for t in vma_titles])}"
+            warnings.warn(f"Expected non-empty VMA {needed}")
+            return raw_val_from_excel
+
 
         stat = stat.lower()
         self.vma_statistics[name] = longstat or stat

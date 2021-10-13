@@ -1,27 +1,54 @@
 """Implementation of the Variable Meta-Analysis module."""
 
-import io
 import math
-import pathlib
+from pathlib import Path
 import re
 import numpy as np
 import pandas as pd
-import openpyxl
-
+import json
+import warnings
 import model.dd
-from tools.vma_xls_extract import VMAReader
-
 
 VMA_columns = ['Value', 'Raw', 'Raw Units', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
 
-# Stuff I'd like to change:
-# (1) Get rid of fixed summaries.  This is just a bad idea!  Never hardwire storage of cached results
-# away from the results they are caching, it is bound to produce errors.
-# (2) Get rid of the to/from xls code.  We don't need it.
-# (3) Switch to a json-directory format, like we did for TAM and adoption
-# (4) Store the "Explanation" metadata into the "Notes" field
+
+# 1.  Get rid of fixed summaries....
 #
-# More fanciful
+# Can't get rid of this yet... some solutions still need it.  Hopefully aftr the next round of imports...
+def populate_fixed_summaries(vma_dict, filename):
+    pass
+    # """
+    # Convenience function for use by solution classes.
+    # Args:
+    #     vma_dict: dict indexed by VMA Title
+    #     filename: VMA_info CSV file with fixed summary data for Mean, High, Low
+    # Modifies the given vma_dict according to the title in the 'Title on xls'
+    # row of the 'filename' CSV, populating the vma.fixed_summary field.
+    # """
+    # vma_info_df = pd.read_csv(filename, index_col=0)
+    # for _, row in vma_info_df.iterrows():
+    #     title = row['Title on xls']
+    #     fixed_mean = row.get('Fixed Mean', np.nan)
+    #     fixed_high = row.get('Fixed High', np.nan)
+    #     fixed_low = row.get('Fixed Low', np.nan)
+    #     fixed_summary = check_fixed_summary(fixed_mean, fixed_high, fixed_low)
+    #     if fixed_summary is not None:
+    #         vma_dict[title].fixed_summary = fixed_summary
+
+
+# def check_fixed_summary(*values):
+#     """Checks that there are no NaN/None values in the given summary.
+#     Arguments:
+#         values: individually given values, e.g. check_fixed(1, 2, None)
+#     Returns:
+#         None if any value is NaN/None, otherwise a tuple of the given iterable
+#     """
+#     if any([pd.isna(value) for value in values]):
+#         return None
+#     else:
+#         return tuple(values)
+
+# Stuff that would be interesting to do:
 # (5) Instead of mean/+sd/-sd, it seems like what we really want is median/80-percentile/20-percentile
 # Then you don't need all this standard deviation and outlier management?   Weighting is still possible.
 # (6) Add all the Excel columns into the python datastructure, and create a decent in-python (in-Jupyter) browsing/editing
@@ -29,40 +56,6 @@ VMA_columns = ['Value', 'Raw', 'Raw Units', 'Weight', 'Exclude?', 'Region', 'Mai
 # (7) Along with ^^^, allow the attachment of real conversion functions.
 # (8) Enable automatic conversion of standard types units
 # (9) Enable caching of computed conversions and summaries (with save)
-
-
-
-def populate_fixed_summaries(vma_dict, filename):
-    """
-    Convenience function for use by solution classes.
-    Args:
-        vma_dict: dict indexed by VMA Title
-        filename: VMA_info CSV file with fixed summary data for Mean, High, Low
-    Modifies the given vma_dict according to the title in the 'Title on xls'
-    row of the 'filename' CSV, populating the vma.fixed_summary field.
-    """
-    vma_info_df = pd.read_csv(filename, index_col=0)
-    for _, row in vma_info_df.iterrows():
-        title = row['Title on xls']
-        fixed_mean = row.get('Fixed Mean', np.nan)
-        fixed_high = row.get('Fixed High', np.nan)
-        fixed_low = row.get('Fixed Low', np.nan)
-        fixed_summary = check_fixed_summary(fixed_mean, fixed_high, fixed_low)
-        if fixed_summary is not None:
-            vma_dict[title].fixed_summary = fixed_summary
-
-
-def check_fixed_summary(*values):
-    """Checks that there are no NaN/None values in the given summary.
-    Arguments:
-        values: individually given values, e.g. check_fixed(1, 2, None)
-    Returns:
-        None if any value is NaN/None, otherwise a tuple of the given iterable
-    """
-    if any([pd.isna(value) for value in values]):
-        return None
-    else:
-        return tuple(values)
 
 
 def convert_percentages(val):
@@ -76,7 +69,6 @@ def convert_percentages(val):
         return float(val)
     except ValueError:
         return np.inf
-
 
 def convert_NaN(val):
     """pd.apply() functions to convert NaN"""
@@ -108,15 +100,13 @@ class VMA:
 
     def __init__(self, filename, title=None, low_sd=1.0, high_sd=1.0,
                  discard_multiplier=3, stat_correction=None, use_weight=False,
-                 bound_correction=None, fixed_summary=None, 
-                 description=None, notes=None, units=None):
+                 bound_correction=None,
+                 description=None, units=None):
         """Arguments:
          filename: (string, pathlib.Path, or io.StringIO) Can be either
            * Path to a CSV file containing data sources. The CSV file must
              contain columns named "Raw Data Input", "Weight", and "Original
              Units". It can contain additional columns, which will be ignored.
-           * The xlsx/xlsm file needs to have columns structured in a certain
-             way, see VMAReader.df_template for more information.
            * io.StringIO objects are processed as if they are opened CSV files
          title: string, name of the VMA to extract from an Excel file. This
            value is unused if filename is a CSV. Will raise an AssertionError
@@ -129,10 +119,7 @@ class VMA:
          use_weight: if true, use weights provided with the VMA to bias the mean.
          bound_correction: if true, and the low value calculated with standard deviation would be negative, 
          use min instead of sd on on the lower value.
-         fixed_summary: if present, should be a tuple to use for (mean, high, low) instead
-           of calculating those values
          description: optional description of what this VMA describes
-         notes: optional notes that add more details
          units: the units to use for this VMA; retrieved from datafile by default
         """
         self.filename = filename
@@ -143,10 +130,7 @@ class VMA:
         self.stat_correction = stat_correction
         self.use_weight = use_weight
         self.bound_correction = bound_correction
-        # TODO notes exist in the Excel files and should be retrieved.
-        # TODO description does not exist, but it should!
         self.description = description
-        self.notes = notes
         self.units = normalize_units(units)
 
         # COMMENT: this initialization condition below is weird, since it defaults to making stat_correction True
@@ -160,29 +144,22 @@ class VMA:
         # VMA initialization in the existing code to determine if they are using the "trick" to set stat_correction 
         # to True, instead of explicitly setting stat_correction directly.  (Given that I never see stat_correction
         # in initializers, I expect this is happening a lot.)
+        #
+        # Update: the reason this is probably done this way is because the setting for stat_correction isn't on the
+        # VMA page, it is on the AC page where the VMA is used.  Complex to update the code to extract this properly for now.
+        
         if stat_correction is None:
             # Excel does not discard outliers if weights are used, we do the same by default.
             self.stat_correction = not use_weight
         else:
             self.stat_correction = stat_correction
 
-        self.fixed_summary = fixed_summary
         self.df = pd.DataFrame(columns=VMA_columns)
 
         if filename:
-            # Turn strings into pathlib
-            if isinstance(filename, str):
-                filename = pathlib.Path(filename)
-
-            # Instantiate VMA with various file types
-            if isinstance(filename, io.StringIO) or filename.suffix == '.csv':
-                self._read_csv(filename=filename)
-            elif filename.suffix == '.xlsx' or filename.suffix == '.xlsm':
-                self._read_xls(filename=filename, title=title)
-            else:
-                raise ValueError(
-                    f'{filename!r} is not a recognized filetype for vma.VMA'
-                )
+            if isinstance(filename,str):   # don't convert StringIO!
+                filename = Path(filename)
+            self._read_csv(filename=filename)
         else:
             self.source_data = pd.DataFrame()
 
@@ -200,43 +177,7 @@ class VMA:
                              na_values=['#DIV/0!', '#REF!'])
         self._convert_from_human_readable(csv_df, filename)
 
-    def _read_xls(self, filename, title, sheetname=None, read_fixed_summary=None):
-        """
-        Read a properly formatted xlsx/xlsm file (with a Variable
-        Meta-analysis sheet) to instantiate this VMA.
-
-        Arguments:
-            filename: pathlib.Path to an Excel file
-            title: string matching VMA name in the Variable Meta-analysis sheet
-            sheetname: sheet to read VMA from, if not one of the standard ones
-            read_fixed_summary: whether to include the fixed summaries from the file or not
-
-        Populates self.source_data, self.df, and self.fixed_summary if the
-        required values are present.
-        """
-        workbook = openpyxl.load_workbook(filename=filename,data_only=True,keep_links=False)
-        vma_reader = VMAReader(workbook)
-
-        # Pull the desired table from this workbook
-        try:
-            (xl_df, use_weight, summary) = \
-                vma_reader.xls_df_dict(sheetname=sheetname, title=title, fixed_summary=read_fixed_summary)[title]
-        except KeyError:
-            # The title wasn't available in the given workbook. Read all titles
-            # to give the user a hint.
-            full_dict = vma_reader.xls_df_dict(sheetname=sheetname)
-            raise ValueError(
-                f"Title {title!r} not available in {filename}\nOptions\n\t" + \
-                "\n\t".join(full_dict.keys())
-            )
-
-        self._convert_from_human_readable(xl_df, filename)
-
-        # Populate the self.fixed_summary field if the values are valid
-        fixed_summary = check_fixed_summary(*summary)
-        if fixed_summary is not None:
-            self.fixed_summary = fixed_summary
-
+ 
     def _convert_from_human_readable(self, readable_df, filename):
         """
         Converts a known set of readable column names to a known column set. A
@@ -246,7 +187,7 @@ class VMA:
         Arguments:
             readable_df: dataframe (from CSV or Excel file) using the standard
                 long-form column names
-            filename: pathlib.Path to source file, passed through for error
+            filename: Path to source file, passed through for error
                 transparency purposes
 
         Populates self.source_data with readable_df directly. Populates self.df
@@ -339,9 +280,7 @@ class VMA:
             all_weights = self.df['Weight'].fillna(1.0)
             M = (all_weights != 0).sum()
 
-        if self.fixed_summary is not None:
-            (mean, high, low) = self.fixed_summary
-        elif self.df.empty:
+        if self.df.empty:
             mean = high = low = np.nan
         else:
             df = self._discard_outliers(discard_multiplier) if stat_correction else self.df
@@ -392,3 +331,59 @@ class VMA:
 
     def reload_from_file(self):
         self._read_csv(filename=self.filename)
+    
+    def essential_parameters(self):
+        """Return a dictionary of "essential" parameters, that is parameters whose value differs from the default"""
+        result = {}
+        result['title'] = self.title
+        if isinstance(self.filename, Path): result['filename'] = str(self.filename)
+        if self.low_sd != 1.0: result['low_sd'] = self.low_sd
+        if self.high_sd != 1.0: result['high_sd'] = self.high_sd
+        if self.discard_multiplier != 3: result['discard_multiplier'] = self.discard_multiplier
+        # Currently skip this since it is *always* calculated indirectly (and probalby sometimes wrongly)
+        # if self.stat_correction: result['stat_correction'] = True
+        if self.use_weight: result['use_weight'] = True
+        if self.bound_correction: result['bound_correction'] = True
+        if self.description is not None and self.description != "": result['description'] = self.description
+        if self.units is not None and self.units != "": result['units'] = self.units
+        return result
+ 
+
+    @classmethod
+    def load_vma_directory(cls, directoryfile):
+        """Load and return an array of VMAs that are defined in a directory json-file"""
+        directoryfile = Path(directoryfile)
+        directorycontent = json.loads(directoryfile.read_text(encoding='utf-8'))
+        result = {}
+        for vmatitle in directorycontent.keys():
+            vmargs = directorycontent[vmatitle]
+            if not vmargs.get('filename',False):
+                warnings.warn(f"Skipping VMA {vmatitle} because no filename found")
+                continue
+            vmargs['filename'] = directoryfile.with_name(vmargs['filename'])
+            vmargs['title']=vmatitle
+            vma = cls(**vmargs)
+            result[vmatitle]=vma
+        return result
+
+    @classmethod
+    def write_vma_directory(cls, vmacollection, directory):
+        """Write out the directory file for this collection of VMAs.  The directory file will only
+        have entries for VMAs that have files _in this directory_.  Global VMAs, if present, will be omitted (and a warning will be issued)."""
+        directory = Path(directory).resolve()
+        directoryinfo = {}
+        for title, vma in vmacollection.items():
+            params = vma.essential_parameters()
+            if 'filename' not in params:
+                continue
+            filename = Path(params['filename'])
+            if filename.parent.resolve() != directory:
+                warnings.warn(f"Skipping VMA {title} that is in {filename.parent.resolve()}")
+                continue
+            params['filename'] = filename.name # remove directory info
+            if not params.get('title',False):
+                params['title'] = title
+            directoryinfo[title] = params
+        directoryfile = Path(directory)/"vma_sources.json"
+        directoryfile.write_text(json.dumps(directoryinfo, indent=2))
+
