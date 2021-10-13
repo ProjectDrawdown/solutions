@@ -99,7 +99,7 @@ def get_rrs_scenarios(wb, solution_category):
             # Note this is hidden text.
             s['creation_date'] = xls(sr_tab, row, co("B"))  
             # Throw an exception if the date is not in the expected format.
-            datetime.datetime.strptime(s['creation_date'], "%Y-%m-%d %H:%M:%S")
+            _scenario_creation_date_from_str(s['creation_date'])
             s['description'] = xls(sr_tab, row + 1, co("E"))
 
             report_years = xls(sr_tab, row + 2, co("E"))  # E:2 from top of scenario
@@ -309,7 +309,7 @@ def get_land_scenarios(wb, solution_category):
             # Note this is hidden text.
             s['creation_date'] = xls(sr_tab, row, co("B"))  
             # Throw an exception if the date is not in the expected format.
-            datetime.datetime.strptime(s['creation_date'], "%Y-%m-%d %H:%M:%S")
+            _scenario_creation_date_from_str(s['creation_date'])
             
             s['description'] = xls(sr_tab, row + 1, co("E"))
             report_years = xls(sr_tab, row + 2, co("E"))
@@ -542,10 +542,10 @@ def json_dumps_default(obj):
 
 
 
-def write_scenario(filename, s):
-    """Write out the advanced_controls entries for a given scenario."""
+def write_json(filename, d):
+    """Write out the given dict to the given Path."""
     with filename.open(mode='w', encoding='utf-8') as f:
-        json.dump(obj=s, fp=f, indent=4, default=json_dumps_default)
+        json.dump(obj=d, fp=f, indent=4, default=json_dumps_default)
 
 
 
@@ -912,6 +912,7 @@ def write_ad(f, wb, outputdir):
                     f.write("                  '" + source + "': THISDIR.joinpath('ad', '" + filename + "'),\n")
                 f.write("              },\n")
         f.write("            },\n")
+    
     f.write("        }\n")
     f.write("        self.ad = adoptiondata.AdoptionData(ac=self.ac, data_sources=ad_data_sources,\n")
     regional = convert_bool(xls(a, 'B30')) and convert_bool(xls(a, 'B31'))
@@ -1425,6 +1426,13 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
                 cases[region_name] = sources
     else:
         cases = tmp_cases
+    if cases:
+        out_prefix = prefix
+        # The prefixes come in as 'tam_' or 'tam_pds'.
+        if out_prefix == 'tam_':
+            out_prefix = 'tam_ref_'
+        write_json(filename=pathlib.Path(outputdir) /
+                   f'{out_prefix}sources.json', d=cases)
     return cases
 
 
@@ -1476,6 +1484,11 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
         if not skip:
             scenarios.append({'name': name, 'filename': filename,
                 'description': description})
+    if scenarios:
+        assert prefix == 'custom_pds_ad_', prefix
+        out_prefix = 'ca_pds_'
+        write_json(filename=pathlib.Path(outputdir) /
+                   f'{out_prefix}sources.json', d=scenarios)
     return scenarios, multipliers
 
 
@@ -1513,21 +1526,32 @@ def extract_vmas(f, wb, outputdir):
         os.mkdir(vma_dir_path)
     vma_r = VMAReader(wb)
     vmas = vma_r.read_xls(csv_path=vma_dir_path)
+    vma_name_to_dict = {}
     f.write("VMAs = {\n")
     for _, row in vmas.iterrows():
-        f.write(f"    '{row['Title on xls']}': vma.VMA(\n")
+        vma_name = row['Title on xls']
+        f.write(f"    '{vma_name}': vma.VMA(\n")
         filename = row['Filename']
+        vma_out_dict = {}
         if not filename:
             f.write(f"        filename=None, use_weight={row['Use weight?']}),\n")
         else:
             if isinstance(filename, str):
                 path = f'THISDIR.joinpath("vma_data", "{filename}")'
+                vma_out_dict["filename"] = filename
             else:
                 path = f'DATADIR.joinpath(*{filename})'
             f.write(f"        filename={path},\n")
             f.write(f"        use_weight={row['Use weight?']}),\n")
+        vma_out_dict["bound_correction"] = row['Bound correction?']
+        vma_out_dict["description"] = row['Description']
+        if "filename" in vma_out_dict:
+            vma_name_to_dict[vma_name] = vma_out_dict
     f.write("}\n")
     f.write("vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))\n\n")
+    if vma_name_to_dict:
+        write_json(filename=pathlib.Path(vma_dir_path) / 'vma_sources.json',
+                   d=vma_name_to_dict)
 
 
 def lookup_unit(tab, row, col):
@@ -1592,6 +1616,32 @@ def find_RRS_solution_category(wb):
     return None
 
 
+def _scenario_creation_date_from_str(s):
+  date_format = "%Y-%m-%d %H:%M:%S"
+  return datetime.datetime.strptime(s, date_format)
+
+    
+def _scenarios_from_ac_dir(ac_path):
+    """Returns all scenarios in ac_path, and earliest creation date."""
+    names = []
+    creation_dates = []
+    for jsonfile in ac_path.glob('*.json'):
+        d = json.loads( jsonfile.read_text(encoding='utf-8') )
+        if 'name' not in d:
+            # Not in expected ac format.
+            continue
+        names.append(d['name'])
+
+        if 'creation_date' not in d:
+            # Not in expected ac format.
+            continue
+        creation_dates.append(_scenario_creation_date_from_str(
+            d['creation_date']))
+
+    if names:
+        return names, min(creation_dates)
+    else:
+        return [], None
 
 
 warn_counts = {
@@ -1599,7 +1649,7 @@ warn_counts = {
 }
 
 def output_solution_python_file(outputdir, xl_filename):
-    """Extract relevant fields from Excel file and output a Python class.
+    """Excel file -> generated Python code + many data files.
 
        Arguments:
          outputdir: directory to put output in.
@@ -1615,6 +1665,10 @@ def output_solution_python_file(outputdir, xl_filename):
     if not os.path.exists(outputdir):
         os.mkdir(outputdir)
     py_filename = os.path.join(outputdir, '__init__.py')
+    if os.path.exists(py_filename):
+        py_filename = os.path.join(outputdir, '__init__.py.UPDATED')
+        print(f'Generating new code at {py_filename} - please merge by '
+              'hand with __init__.py')
 
     wb = openpyxl.load_workbook(filename=xl_filename,data_only=True,keep_links=False)
     ac_tab = wb['Advanced Controls']
@@ -1713,10 +1767,18 @@ def output_solution_python_file(outputdir, xl_filename):
             has_harvest = True
 
     p = pathlib.Path(f'{outputdir}/ac')
+
     p.mkdir(parents=False, exist_ok=True)
+    prev_scenarios, min_creation_date = _scenarios_from_ac_dir(p)
     for name, s in scenarios.items():
+        if min_creation_date:
+            creation_date = _scenario_creation_date_from_str(s['creation_date'])
+            if creation_date < min_creation_date:
+                print(f'Skipping scenario {name}, earlier than existing '
+                      'scenarios.')
+                continue
         fname = p.joinpath(re.sub(r"['\"\n()\\/\.]", "", name).replace(' ', '_').strip() + '.json')
-        write_scenario(filename=fname, s=s)
+        write_json(filename=fname, d=s)
     f.write("scenarios = ac.load_scenarios_from_json("
         "directory=THISDIR.joinpath('ac'), vmas=VMAs)\n")
     f.write("\n")
