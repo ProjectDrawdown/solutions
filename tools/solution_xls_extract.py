@@ -1545,7 +1545,8 @@ def extract_vmas(f, wb, outputdir):
             f.write(f"        use_weight={row['Use weight?']}),\n")
         vma_out_dict["bound_correction"] = row['Bound correction?']
         vma_out_dict["description"] = row['Description']
-        vma_name_to_dict[vma_name] = vma_out_dict
+        if "filename" in vma_out_dict:
+            vma_name_to_dict[vma_name] = vma_out_dict
     f.write("}\n")
     f.write("vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))\n\n")
     if vma_name_to_dict:

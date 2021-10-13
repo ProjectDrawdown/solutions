@@ -403,6 +403,8 @@ class VMAReader:
         for r in range(last_row, last_row + 100):
             if sheet.cell(r, tools.util.co("C")).value == 'Explanation:':
                 desc = sheet.cell(r, tools.util.co("D")).value
+                if desc is None:
+                    desc = ""
                 break
 
         # Find 'Low Correction' below table (to the right).
