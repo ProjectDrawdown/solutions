@@ -148,3 +148,8 @@ Sub do_fixes()
     End If
 
 End Sub
+
+Sub do_all()
+    Call do_fixes
+    Call Generate_Scenario_Records
+End Sub
