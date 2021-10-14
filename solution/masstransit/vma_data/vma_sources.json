@@ -1,0 +1,137 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "Pkm (urban)"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Person-trip (urban)"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Pkm (urban)/Person-trip (urban)"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Pkm (urban)/Person-trip (urban)"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Pkm (urban)/Person-trip (urban)/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Pkm (urban)/Person-trip (urban)/year"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Pkm (urban)"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Pkm (urban)"
+  },
+  "CONVENTIONAL Fixed Operating Cost (FOM)": {
+    "title": "CONVENTIONAL Fixed Operating Cost (FOM)",
+    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
+    "stat_correction": true,
+    "units": "US2014$/Person-trip (urban)"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "title": "SOLUTION Total Energy Used per Functional Unit",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/Pkm (urban)"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "Liter/Pkm (urban)"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Direct Emissions per Functional Unit": {
+    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
+    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/Pkm (urban)"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "title": "SOLUTION Direct Emissions per Functional Unit",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/Pkm (urban)"
+  },
+  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
+    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/Pkm (urban)"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "title": "SOLUTION Indirect CO2 Emissions per Unit",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/Pkm (urban)"
+  },
+  "Car Insurance Costs": {
+    "title": "Car Insurance Costs",
+    "filename": "Car_Insurance_Costs.csv",
+    "stat_correction": true,
+    "units": "US$2014/trip"
+  },
+  "Car Purchase (First) Costs": {
+    "title": "Car Purchase (First) Costs",
+    "filename": "Car_Purchase_First_Costs.csv",
+    "use_weight": true,
+    "units": "US$2014/person trip"
+  },
+  "Car Occupancy Rates": {
+    "title": "Car Occupancy Rates",
+    "filename": "Car_Occupancy_Rates.csv",
+    "stat_correction": true
+  },
+  "Car Lifetime in Vehicle-km": {
+    "title": "Car Lifetime in Vehicle-km",
+    "filename": "Car_Lifetime_in_Vehicle_km.csv",
+    "stat_correction": true
+  },
+  "Discount Rates - Household": {
+    "title": "Discount Rates - Household",
+    "filename": "Discount_Rates_Household.csv",
+    "stat_correction": true
+  },
+  "Black Carbon GWP": {
+    "title": "Black Carbon GWP",
+    "filename": "Black_Carbon_GWP.csv",
+    "stat_correction": true,
+    "units": "CO2 eq"
+  },
+  "Diesel Share of Global Car Fleet": {
+    "title": "Diesel Share of Global Car Fleet",
+    "filename": "Diesel_Share_of_Global_Car_Fleet.csv",
+    "stat_correction": true,
+    "units": "Percent"
+  }
+}

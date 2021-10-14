@@ -1,0 +1,117 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "MMt Cement"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/MMt Cement"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/MMt Cement"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "MMt Cement/MMt Cement"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "MMt Cement/MMt Cement"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "MMt Cement/MMt Cement/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "MMt Cement/MMt Cement/year"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/MMt Cement"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "title": "SOLUTION Total Energy Used per Functional Unit",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/MMt Cement"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TJ/MMt Cement"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Direct Emissions per Functional Unit": {
+    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
+    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/MMt Cement"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "title": "SOLUTION Direct Emissions per Functional Unit",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/MMt Cement"
+  },
+  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
+    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/MMt Cement"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "title": "SOLUTION Indirect CO2 Emissions per Unit",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/MMt Cement"
+  },
+  "Discount Rate - Commercial": {
+    "title": "Discount Rate - Commercial",
+    "filename": "Discount_Rate_Commercial.csv",
+    "stat_correction": true
+  },
+  "Clinker to Cement Ratio in Year 2": {
+    "title": "Clinker to Cement Ratio in Year 2",
+    "filename": "Clinker_to_Cement_Ratio_in_Year_2.csv",
+    "use_weight": true
+  },
+  "Clinker to Cement Ratio of Conventional Technology": {
+    "title": "Clinker to Cement Ratio of Conventional Technology",
+    "filename": "Clinker_to_Cement_Ratio_of_Conventional_Technology.csv",
+    "stat_correction": true
+  },
+  "Clinker Ratio Range Selection": {
+    "title": "Clinker Ratio Range Selection",
+    "filename": "Clinker_Ratio_Range_Selection.csv",
+    "stat_correction": true
+  },
+  "Percent Adoption of Blended Cements in Year 2 (2050)": {
+    "title": "Percent Adoption of Blended Cements in Year 2 (2050)",
+    "filename": "Percent_Adoption_of_Blended_Cements_in_Year_2_2050.csv",
+    "stat_correction": true
+  }
+}

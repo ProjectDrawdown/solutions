@@ -1,0 +1,132 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "passenger-km"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Car"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Car"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "passenger-km/Car"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "passenger-km/Car"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "passenger-km/Car/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "passenger-km/Car/year"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/passenger-km"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/passenger-km"
+  },
+  "CONVENTIONAL Fixed Operating Cost (FOM)": {
+    "title": "CONVENTIONAL Fixed Operating Cost (FOM)",
+    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
+    "stat_correction": true,
+    "units": "US2014$/year/Car"
+  },
+  "SOLUTION Fixed Operating Cost (FOM)": {
+    "title": "SOLUTION Fixed Operating Cost (FOM)",
+    "filename": "SOLUTION_Fixed_Operating_Cost_FOM.csv",
+    "stat_correction": true,
+    "units": "US2014$/year/Car"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "Liter/passenger-km"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
+    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/Car"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "title": "SOLUTION Indirect CO2 Emissions per Unit",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/Car"
+  },
+  "Urban Travel TAM - Current": {
+    "title": "Urban Travel TAM - Current",
+    "filename": "Urban_Travel_TAM_Current.csv",
+    "stat_correction": true
+  },
+  "Urban Travel TAM - Projected": {
+    "title": "Urban Travel TAM - Projected",
+    "filename": "Urban_Travel_TAM_Projected.csv",
+    "stat_correction": true
+  },
+  "Interurban Travel TAM - Current": {
+    "title": "Interurban Travel TAM - Current",
+    "filename": "Interurban_Travel_TAM_Current.csv",
+    "stat_correction": true
+  },
+  "Interurban Travel TAM - Projected": {
+    "title": "Interurban Travel TAM - Projected",
+    "filename": "Interurban_Travel_TAM_Projected.csv",
+    "stat_correction": true
+  },
+  "Average Global Car Occupancy - Conventional": {
+    "title": "Average Global Car Occupancy - Conventional",
+    "filename": "Average_Global_Car_Occupancy_Conventional.csv",
+    "stat_correction": true
+  },
+  "Discount Rate: Households": {
+    "title": "Discount Rate: Households",
+    "filename": "Discount_Rate_Households.csv",
+    "stat_correction": true
+  },
+  "Learning Rate": {
+    "title": "Learning Rate",
+    "filename": "Learning_Rate.csv",
+    "stat_correction": true
+  },
+  "Average Global Car Occupancy - Solution": {
+    "title": "Average Global Car Occupancy - Solution",
+    "filename": "Average_Global_Car_Occupancy_Solution.csv",
+    "stat_correction": true
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "Kilo Tonnes (Recoverable refrigerant)"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Kilo Tonnes (Recoverable refrigerant)/Kilo Tonnes (Refrigerant destroyed and avoided)"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Kilo Tonnes (Recoverable refrigerant)/Kilo Tonnes (Refrigerant destroyed and avoided)"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Kilo Tonnes (Recoverable refrigerant)/Kilo Tonnes (Refrigerant destroyed and avoided)/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Kilo Tonnes (Recoverable refrigerant)/Kilo Tonnes (Refrigerant destroyed and avoided)/year"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Kilo Tonnes (Recoverable refrigerant)"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "title": "SOLUTION Total Energy Used per Functional Unit",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/Kilo Tonnes (Recoverable refrigerant)"
+  },
+  "CONVENTIONAL Direct Emissions per Functional Unit": {
+    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
+    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/Kilo Tonnes (Recoverable refrigerant)"
+  }
+}

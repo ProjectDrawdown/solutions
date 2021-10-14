@@ -1,0 +1,71 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million tonne-kms"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Truck"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "million tonne-kms/Truck"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "million tonne-kms/Truck"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "million tonne-kms/Truck/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "million tonne-kms/Truck/year"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "Liter/million tonne-kms"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Average Utilization Rate (by Weight)": {
+    "title": "Average Utilization Rate (by Weight)",
+    "filename": "Average_Utilization_Rate_by_Weight.csv",
+    "stat_correction": true
+  },
+  "Average Long Haul Truck Capacity": {
+    "title": "Average Long Haul Truck Capacity",
+    "filename": "Average_Long_Haul_Truck_Capacity.csv",
+    "stat_correction": true,
+    "units": "tonnes"
+  },
+  "Average Truck Lifetime": {
+    "title": "Average Truck Lifetime",
+    "filename": "Average_Truck_Lifetime.csv",
+    "stat_correction": true
+  },
+  "Discount Rate: Commercial / Industry": {
+    "title": "Discount Rate: Commercial / Industry",
+    "filename": "Discount_Rate_Commercial_Industry.csv",
+    "stat_correction": true
+  }
+}

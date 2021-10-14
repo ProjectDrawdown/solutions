@@ -1,0 +1,133 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "TWh"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US$2014/kW"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/kW"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "TWh/TW"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "TWh/TW/year"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "US$2014/kWh"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/kWh"
+  },
+  "SOLUTION Fixed Operating Cost (FOM)": {
+    "title": "SOLUTION Fixed Operating Cost (FOM)",
+    "filename": "SOLUTION_Fixed_Operating_Cost_FOM.csv",
+    "stat_correction": true,
+    "units": "US$2014/kW"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "title": "SOLUTION Direct Emissions per Functional Unit",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/TWh"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "title": "SOLUTION Indirect CO2 Emissions per Unit",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/TWh"
+  },
+  "CH4-CO2eq Tons Reduced": {
+    "title": "CH4-CO2eq Tons Reduced",
+    "filename": "CH4_CO2eq_Tons_Reduced.csv",
+    "stat_correction": true,
+    "units": "t CH4-CO2eq per TWh"
+  },
+  "Weighted Average CONVENTIONAL Plant Efficiency": {
+    "title": "Weighted Average CONVENTIONAL Plant Efficiency",
+    "filename": "Weighted_Average_CONVENTIONAL_Plant_Efficiency.csv",
+    "use_weight": true,
+    "units": "%"
+  },
+  "Coal Plant Efficiency": {
+    "title": "Coal Plant Efficiency",
+    "filename": "Coal_Plant_Efficiency.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Natural Gas Plant Efficiency": {
+    "title": "Natural Gas Plant Efficiency",
+    "filename": "Natural_Gas_Plant_Efficiency.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Biomass Plant Efficiency": {
+    "title": "Biomass Plant Efficiency",
+    "filename": "Biomass_Plant_Efficiency.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Learning Rate": {
+    "title": "Learning Rate",
+    "filename": "Learning_Rate.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Biomass Prices": {
+    "title": "Biomass Prices",
+    "filename": "Biomass_Prices.csv",
+    "stat_correction": true,
+    "units": "US$2014 per kWh"
+  },
+  "Other emissions from biomass plants": {
+    "title": "Other emissions from biomass plants",
+    "filename": "Other_emissions_from_biomass_plants.csv",
+    "stat_correction": true
+  },
+  "Thermal efficiency of biomass plants": {
+    "title": "Thermal efficiency of biomass plants",
+    "filename": "Thermal_efficiency_of_biomass_plants.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CO2-eq reduced": {
+    "title": "CO2-eq reduced",
+    "filename": "CO2_eq_reduced.csv",
+    "stat_correction": true,
+    "units": "t CO2eq per TWh"
+  },
+  "Conversion from kWh to MMT of different biomass types": {
+    "title": "Conversion from kWh to MMT of different biomass types",
+    "filename": "Conversion_from_kWh_to_MMT_of_different_biomass_types.csv",
+    "stat_correction": true,
+    "units": "TWh"
+  },
+  "British Thermal Units for Bioenergy Crops": {
+    "title": "British Thermal Units for Bioenergy Crops",
+    "filename": "British_Thermal_Units_for_Bioenergy_Crops.csv",
+    "stat_correction": true,
+    "units": "Btu/t"
+  }
+}

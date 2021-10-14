@@ -1,0 +1,98 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "Million Households"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Million Households"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Million Households"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "use_weight": true,
+    "units": "Million Households/Million Households"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Million Households/Million Households"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Million Households"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Million Households"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/Million Households"
+  },
+  "SOLUTION Energy Efficiency Factor": {
+    "title": "SOLUTION Energy Efficiency Factor",
+    "filename": "SOLUTION_Energy_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "TJ/Million Households"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Residential Electricity Price": {
+    "title": "Residential Electricity Price",
+    "filename": "Residential_Electricity_Price.csv",
+    "stat_correction": true,
+    "units": "US$2014/TWh"
+  },
+  "Residential Fuel Price for Natural Gas": {
+    "title": "Residential Fuel Price for Natural Gas",
+    "filename": "Residential_Fuel_Price_for_Natural_Gas.csv",
+    "stat_correction": true,
+    "units": "US$2014/TJ"
+  },
+  "Learning Rates for Air Conditioners": {
+    "title": "Learning Rates for Air Conditioners",
+    "filename": "Learning_Rates_for_Air_Conditioners.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Energy Consumed for Space Heating per Functional Unit - CONVENTIONAL": {
+    "title": "Energy Consumed for Space Heating per Functional Unit - CONVENTIONAL",
+    "filename": "Energy_Consumed_for_Space_Heating_per_Functional_Unit_CONVENTIONAL.csv",
+    "use_weight": true,
+    "units": "TWh/million HH/yr"
+  },
+  "Electricty Consumed for Space Cooling per Functional Unit - CONVENTIONAL": {
+    "title": "Electricty Consumed for Space Cooling per Functional Unit - CONVENTIONAL",
+    "filename": "Electricty_Consumed_for_Space_Cooling_per_Functional_Unit_CONVENTIONAL.csv",
+    "use_weight": true,
+    "units": "TWh/million HH/yr"
+  }
+}

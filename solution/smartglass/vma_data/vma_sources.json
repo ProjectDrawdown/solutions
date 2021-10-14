@@ -1,0 +1,70 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million m2 commercial floor space"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/million m2 commercial floor space"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/million m2 commercial floor space"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "million m2 commercial floor space/million m2 commercial floor space"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "million m2 commercial floor space/million m2 commercial floor space"
+  },
+  "Commercial Window to Floor Area Ratio": {
+    "title": "Commercial Window to Floor Area Ratio",
+    "filename": "Commercial_Window_to_Floor_Area_Ratio.csv",
+    "stat_correction": true,
+    "units": "(ratio)"
+  },
+  "Energy Efficiency of Cooling with Smart Glass": {
+    "title": "Energy Efficiency of Cooling with Smart Glass",
+    "filename": "Energy_Efficiency_of_Cooling_with_Smart_Glass.csv",
+    "stat_correction": true
+  },
+  "Energy Efficiency of Lighting with Smart Glass": {
+    "title": "Energy Efficiency of Lighting with Smart Glass",
+    "filename": "Energy_Efficiency_of_Lighting_with_Smart_Glass.csv",
+    "stat_correction": true
+  },
+  "Average Energy for Commercial Cooling per Floor Area": {
+    "title": "Average Energy for Commercial Cooling per Floor Area",
+    "filename": "Average_Energy_for_Commercial_Cooling_per_Floor_Area.csv",
+    "stat_correction": true,
+    "units": "TWh/million m2 of commercial area/yr"
+  },
+  "Average Energy for Commercial Lighting per Floor Area": {
+    "title": "Average Energy for Commercial Lighting per Floor Area",
+    "filename": "Average_Energy_for_Commercial_Lighting_per_Floor_Area.csv",
+    "stat_correction": true,
+    "units": "TWh/million m2 of commercial area/yr"
+  },
+  "Learning Rate for Similar Technology (A/C units)": {
+    "title": "Learning Rate for Similar Technology (A/C units)",
+    "filename": "Learning_Rate_for_Similar_Technology_A_C_units.csv",
+    "stat_correction": true
+  },
+  "Discount Rate - Commercial": {
+    "title": "Discount Rate - Commercial",
+    "filename": "Discount_Rate_Commercial.csv",
+    "stat_correction": true
+  }
+}

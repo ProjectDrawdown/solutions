@@ -1,0 +1,74 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "TWh"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US$2014/kW"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/kW"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "TWh/TW"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "TWh/TW/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "TWh/TW/year"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/kWh"
+  },
+  "SOLUTION Fixed Operating Cost (FOM)": {
+    "title": "SOLUTION Fixed Operating Cost (FOM)",
+    "filename": "SOLUTION_Fixed_Operating_Cost_FOM.csv",
+    "stat_correction": true,
+    "units": "US$2014/kW"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "title": "SOLUTION Indirect CO2 Emissions per Unit",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/TWh"
+  },
+  "2005-2014 Average CONVENTIONAL Fuel Price per functional unit": {
+    "title": "2005-2014 Average CONVENTIONAL Fuel Price per functional unit",
+    "filename": "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit.csv",
+    "use_weight": true,
+    "units": "$US2014/kWh"
+  },
+  "Coal Plant Efficiency": {
+    "title": "Coal Plant Efficiency",
+    "filename": "Coal_Plant_Efficiency.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Natural Gas Plant Efficiency": {
+    "title": "Natural Gas Plant Efficiency",
+    "filename": "Natural_Gas_Plant_Efficiency.csv",
+    "stat_correction": true,
+    "units": "%"
+  }
+}

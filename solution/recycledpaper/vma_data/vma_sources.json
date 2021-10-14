@@ -1,0 +1,80 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "Million Metric Tonnes of Paper Produced"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Million Metric Tonnes of Recycled Paper Produced"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Million Metric Tonnes of Recycled Paper Produced"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Million Metric Tonnes of Paper Produced/Million Metric Tonnes of Recycled Paper Produced"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Million Metric Tonnes of Paper Produced/Million Metric Tonnes of Recycled Paper Produced"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Million Metric Tonnes of Paper Produced/Million Metric Tonnes of Recycled Paper Produced/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Million Metric Tonnes of Paper Produced/Million Metric Tonnes of Recycled Paper Produced/year"
+  },
+  "CONVENTIONAL Direct Emissions per Functional Unit": {
+    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
+    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/Million Metric Tonnes of Paper Produced"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "title": "SOLUTION Direct Emissions per Functional Unit",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/Million Metric Tonnes of Paper Produced"
+  },
+  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
+    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/Million Metric Tonnes of Paper Produced"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "title": "SOLUTION Indirect CO2 Emissions per Unit",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/Million Metric Tonnes of Paper Produced"
+  },
+  "Indirect CO2 Emissions per CONVENTIONAL - Transport and Retail": {
+    "title": "Indirect CO2 Emissions per CONVENTIONAL - Transport and Retail",
+    "filename": "Indirect_CO2_Emissions_per_CONVENTIONAL_Transport_and_Retail.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/million metric tons paper"
+  },
+  "Indirect CO2 Emissions per SOLUTION - Transport and Retail": {
+    "title": "Indirect CO2 Emissions per SOLUTION - Transport and Retail",
+    "filename": "Indirect_CO2_Emissions_per_SOLUTION_Transport_and_Retail.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/million metric tons paper"
+  }
+}

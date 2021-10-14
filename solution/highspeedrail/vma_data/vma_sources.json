@@ -1,0 +1,109 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "billion passenger-km"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/HSR: km of track OR Air: Available Seat-km (ASK)"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "billion passenger-km/HSR: km of track OR Air: Available Seat-km (ASK)"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "billion passenger-km/HSR: km of track OR Air: Available Seat-km (ASK)"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "billion passenger-km/HSR: km of track OR Air: Available Seat-km (ASK)/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "billion passenger-km/HSR: km of track OR Air: Available Seat-km (ASK)/year"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/billion passenger-km"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/billion passenger-km"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "title": "SOLUTION Total Energy Used per Functional Unit",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/billion passenger-km"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "Liter/billion passenger-km"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
+    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/billion passenger-km"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "title": "SOLUTION Indirect CO2 Emissions per Unit",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/billion passenger-km"
+  },
+  "Discount Rate - Governments": {
+    "title": "Discount Rate - Governments",
+    "filename": "Discount_Rate_Governments.csv",
+    "use_weight": true
+  },
+  "Airport Operating Costs": {
+    "title": "Airport Operating Costs",
+    "filename": "Airport_Operating_Costs.csv",
+    "stat_correction": true,
+    "units": "US2014$/billion passenger-km"
+  },
+  "Airline Operating Costs": {
+    "title": "Airline Operating Costs",
+    "filename": "Airline_Operating_Costs.csv",
+    "stat_correction": true,
+    "units": "US2014$/billion passenger-km"
+  },
+  "HSR Rolling Stock Running Costs- Europe": {
+    "title": "HSR Rolling Stock Running Costs- Europe",
+    "filename": "HSR_Rolling_Stock_Running_Costs_Europe.csv",
+    "stat_correction": true,
+    "units": "US2014$/billion passenger-km"
+  },
+  "HSR Infrastructure Cost - Europe": {
+    "title": "HSR Infrastructure Cost - Europe",
+    "filename": "HSR_Infrastructure_Cost_Europe.csv",
+    "stat_correction": true,
+    "units": "US2014$/billion passenger-km"
+  }
+}
