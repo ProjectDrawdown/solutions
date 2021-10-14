@@ -12,42 +12,6 @@ import model.dd
 VMA_columns = ['Value', 'Raw', 'Raw Units', 'Weight', 'Exclude?', 'Region', 'Main Region', 'TMR']
 
 
-# 1.  Get rid of fixed summaries....
-#
-# Can't get rid of this yet... some solutions still need it.  Hopefully aftr the next round of imports...
-def populate_fixed_summaries(vma_dict, filename):
-    pass
-    # """
-    # Convenience function for use by solution classes.
-    # Args:
-    #     vma_dict: dict indexed by VMA Title
-    #     filename: VMA_info CSV file with fixed summary data for Mean, High, Low
-    # Modifies the given vma_dict according to the title in the 'Title on xls'
-    # row of the 'filename' CSV, populating the vma.fixed_summary field.
-    # """
-    # vma_info_df = pd.read_csv(filename, index_col=0)
-    # for _, row in vma_info_df.iterrows():
-    #     title = row['Title on xls']
-    #     fixed_mean = row.get('Fixed Mean', np.nan)
-    #     fixed_high = row.get('Fixed High', np.nan)
-    #     fixed_low = row.get('Fixed Low', np.nan)
-    #     fixed_summary = check_fixed_summary(fixed_mean, fixed_high, fixed_low)
-    #     if fixed_summary is not None:
-    #         vma_dict[title].fixed_summary = fixed_summary
-
-
-# def check_fixed_summary(*values):
-#     """Checks that there are no NaN/None values in the given summary.
-#     Arguments:
-#         values: individually given values, e.g. check_fixed(1, 2, None)
-#     Returns:
-#         None if any value is NaN/None, otherwise a tuple of the given iterable
-#     """
-#     if any([pd.isna(value) for value in values]):
-#         return None
-#     else:
-#         return tuple(values)
-
 # Stuff that would be interesting to do:
 # (5) Instead of mean/+sd/-sd, it seems like what we really want is median/80-percentile/20-percentile
 # Then you don't need all this standard deviation and outlier management?   Weighting is still possible.
