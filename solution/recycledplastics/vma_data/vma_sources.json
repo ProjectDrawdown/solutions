@@ -1,0 +1,38 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "MMt Plastic Production"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/MMt Plastic Production"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/MMt Plastic Production"
+  },
+  "CONVENTIONAL Direct Emissions per Functional Unit": {
+    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
+    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/MMt Plastic Production"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "title": "SOLUTION Direct Emissions per Functional Unit",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/MMt Plastic Production"
+  },
+  "Recycling Yield": {
+    "title": "Recycling Yield",
+    "filename": "Recycling_Yield.csv",
+    "stat_correction": true,
+    "units": "%"
+  }
+}

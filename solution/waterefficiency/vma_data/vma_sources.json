@@ -1,0 +1,104 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "Giga-Liter Water"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Million Low Flow Fixtures"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Million Low Flow Fixtures"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Giga-Liter Water/Million Low Flow Fixtures"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Giga-Liter Water/Million Low Flow Fixtures"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Giga-Liter Water/Million Low Flow Fixtures/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Giga-Liter Water/Million Low Flow Fixtures/year"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Giga-Liter Water"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/Giga-Liter Water"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TJ/Giga-Liter Water"
+  },
+  "Installation Cost for Fixtures": {
+    "title": "Installation Cost for Fixtures",
+    "filename": "Installation_Cost_for_Fixtures.csv",
+    "use_weight": true,
+    "units": "US$/million low flow fixtures"
+  },
+  "Gini Coefficient for GDP per Capita": {
+    "title": "Gini Coefficient for GDP per Capita",
+    "filename": "Gini_Coefficient_for_GDP_per_Capita.csv",
+    "stat_correction": true,
+    "units": "(ratio)"
+  },
+  "Percentage of Water Saved (Perc. Of Annual Domestic Water Demand)": {
+    "title": "Percentage of Water Saved (Perc. Of Annual Domestic Water Demand)",
+    "filename": "Percentage_of_Water_Saved_Perc_Of_Annual_Domestic_Water_Demand.csv",
+    "stat_correction": true,
+    "units": "Percent"
+  },
+  "Number of Low-Flow Taps per Person": {
+    "title": "Number of Low-Flow Taps per Person",
+    "filename": "Number_of_Low_Flow_Taps_per_Person.csv",
+    "stat_correction": true,
+    "units": "domestic taps per person"
+  },
+  "Number of Low-Flow Showerheads per Person": {
+    "title": "Number of Low-Flow Showerheads per Person",
+    "filename": "Number_of_Low_Flow_Showerheads_per_Person.csv",
+    "stat_correction": true,
+    "units": "domestic showerheads per person"
+  },
+  "Persons per Household": {
+    "title": "Persons per Household",
+    "filename": "Persons_per_Household.csv",
+    "use_weight": true,
+    "units": "persons per HH"
+  },
+  "Purchase & Install Cost of Conventional Fixtures": {
+    "title": "Purchase & Install Cost of Conventional Fixtures",
+    "filename": "Purchase_Install_Cost_of_Conventional_Fixtures.csv",
+    "stat_correction": true,
+    "units": "US$2014/million fixtures"
+  }
+}

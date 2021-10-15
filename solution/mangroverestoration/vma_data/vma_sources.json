@@ -1,0 +1,38 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million hectares"
+  },
+  "t CO2 Reduced per Land Unit": {
+    "title": "t CO2 Reduced per Land Unit",
+    "filename": "t_CO2_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2/ha/year"
+  },
+  "Sequestration Rates": {
+    "title": "Sequestration Rates",
+    "filename": "Sequestration_Rates.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Growth Rate of Land Degradation": {
+    "title": "Growth Rate of Land Degradation",
+    "filename": "Growth_Rate_of_Land_Degradation.csv",
+    "stat_correction": true,
+    "units": "% Annually"
+  },
+  "t C storage in Protected Landtype": {
+    "title": "t C storage in Protected Landtype",
+    "filename": "t_C_storage_in_Protected_Landtype.csv",
+    "stat_correction": true,
+    "units": "t C/ha"
+  },
+  "Total Available Land": {
+    "title": "Total Available Land",
+    "filename": "Total_Available_Land.csv",
+    "stat_correction": true,
+    "units": "Mha"
+  }
+}

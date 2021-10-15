@@ -1,0 +1,70 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million tonne-km"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/km of track converted"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "million tonne-km/km of track converted"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "million tonne-km/km of track converted"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "million tonne-km/km of track converted/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "million tonne-km/km of track converted/year"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "title": "SOLUTION Total Energy Used per Functional Unit",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/million tonne-km"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "Liter/million tonne-km"
+  },
+  "Discount Rate - Commercial/Industry": {
+    "title": "Discount Rate - Commercial/Industry",
+    "filename": "Discount_Rate_Commercial_Industry.csv",
+    "stat_correction": true
+  },
+  "Discount Rate - Government": {
+    "title": "Discount Rate - Government",
+    "filename": "Discount_Rate_Government.csv",
+    "use_weight": true
+  },
+  "Diesel Train Efficiency": {
+    "title": "Diesel Train Efficiency",
+    "filename": "Diesel_Train_Efficiency.csv",
+    "stat_correction": true
+  },
+  "Electric Train Efficiency": {
+    "title": "Electric Train Efficiency",
+    "filename": "Electric_Train_Efficiency.csv",
+    "stat_correction": true
+  }
+}

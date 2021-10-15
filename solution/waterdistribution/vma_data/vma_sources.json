@@ -1,0 +1,110 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "Million m3 of Water produced"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Million m3 Produced with Pressure Management and Active Leak Control"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "years"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "years"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "years"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "years"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Million m3 of Water produced"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Million m3 of Water produced"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "TWh/Million m3 of Water produced"
+  },
+  "SOLUTION Energy Efficiency Factor": {
+    "title": "SOLUTION Energy Efficiency Factor",
+    "filename": "SOLUTION_Energy_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Per Capita Water Production by Utilities": {
+    "title": "Per Capita Water Production by Utilities",
+    "filename": "Per_Capita_Water_Production_by_Utilities.csv",
+    "use_weight": true,
+    "units": "million m3/person/year"
+  },
+  "% Water distributed using Gravity": {
+    "title": "% Water distributed using Gravity",
+    "filename": "Water_distributed_using_Gravity.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "% Urban population served with piped water": {
+    "title": "% Urban population served with piped water",
+    "filename": "Urban_population_served_with_piped_water.csv",
+    "use_weight": true
+  },
+  "% Rural population served with piped water": {
+    "title": "% Rural population served with piped water",
+    "filename": "Rural_population_served_with_piped_water.csv",
+    "use_weight": true
+  },
+  "% of Electricity based pumping using SURFACE source of water": {
+    "title": "% of Electricity based pumping using SURFACE source of water",
+    "filename": "of_Electricity_based_pumping_using_SURFACE_source_of_water.csv",
+    "stat_correction": true
+  },
+  "% of Electricity based pumping using GROUND source of water (or from lower altitudes)": {
+    "title": "% of Electricity based pumping using GROUND source of water (or from lower altitudes)",
+    "filename": "of_Electricity_based_pumping_using_GROUND_source_of_water_or_from_lower_altitudes.csv",
+    "stat_correction": true
+  },
+  "% of Electricity based pumping using  DESALINATION(or energy intensive methods)": {
+    "title": "% of Electricity based pumping using  DESALINATION(or energy intensive methods)",
+    "filename": "of_Electricity_based_pumping_using_DESALINATION_or_energy_intensive_methods.csv",
+    "stat_correction": true
+  },
+  "Non Revenue Water": {
+    "title": "Non Revenue Water",
+    "filename": "Non_Revenue_Water.csv",
+    "stat_correction": true
+  },
+  "Real Losses Saved from Solution": {
+    "title": "Real Losses Saved from Solution",
+    "filename": "Real_Losses_Saved_from_Solution.csv",
+    "stat_correction": true,
+    "units": "%"
+  }
+}

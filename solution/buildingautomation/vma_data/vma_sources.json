@@ -1,0 +1,125 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million m2 commercial floor space"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/million m2 commercial floor space"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/million m2 commercial floor space"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "years"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "years"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "million m2 commercial floor space/million m2 commercial floor space/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "million m2 commercial floor space/million m2 commercial floor space/year"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/million m2 commercial floor space"
+  },
+  "SOLUTION Energy Efficiency Factor": {
+    "title": "SOLUTION Energy Efficiency Factor",
+    "filename": "SOLUTION_Energy_Efficiency_Factor.csv",
+    "use_weight": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TJ/million m2 commercial floor space"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "use_weight": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Revenue per Functional Unit": {
+    "title": "CONVENTIONAL Revenue per Functional Unit",
+    "filename": "CONVENTIONAL_Revenue_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014 per million m2 commercial floor space"
+  },
+  "Commercial Building Energy Consumption (kWh/m2/yr) (Weighted Average by Region)": {
+    "title": "Commercial Building Energy Consumption (kWh/m2/yr) (Weighted Average by Region)",
+    "filename": "Commercial_Building_Energy_Consumption_kWh_m2_yr_Weighted_Average_by_Region.csv",
+    "use_weight": true,
+    "units": "kWh/m2/yr"
+  },
+  "Commercial Building Energy Consumption for Thermal Purposes (Heating and Cooling) (% of total)": {
+    "title": "Commercial Building Energy Consumption for Thermal Purposes (Heating and Cooling) (% of total)",
+    "filename": "Commercial_Building_Energy_Consumption_for_Thermal_Purposes_Heating_and_Cooling_of_total.csv",
+    "use_weight": true
+  },
+  "Commercial Building Energy Consumption for Non-Thermal Purposes (all other end-uses) (% of total)": {
+    "title": "Commercial Building Energy Consumption for Non-Thermal Purposes (all other end-uses) (% of total)",
+    "filename": "Commercial_Building_Energy_Consumption_for_Non_Thermal_Purposes_all_other_end_uses_of_total.csv",
+    "use_weight": true
+  },
+  "Commercial Building Electricity Consumption for Space Heating (% of total)": {
+    "title": "Commercial Building Electricity Consumption for Space Heating (% of total)",
+    "filename": "Commercial_Building_Electricity_Consumption_for_Space_Heating_of_total.csv",
+    "use_weight": true
+  },
+  "Commercial Building Electricity Consumption for Cooling (% of total)": {
+    "title": "Commercial Building Electricity Consumption for Cooling (% of total)",
+    "filename": "Commercial_Building_Electricity_Consumption_for_Cooling_of_total.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Commercial Building Fuel Consumption for Space Heating (% of total Space Heating/Cooling)": {
+    "title": "Commercial Building Fuel Consumption for Space Heating (% of total Space Heating/Cooling)",
+    "filename": "Commercial_Building_Fuel_Consumption_for_Space_Heating_of_total_Space_Heating_Cooling.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "BAS Efficiency Factors for Non-Thermal Efficiency (Electricity End-Uses)": {
+    "title": "BAS Efficiency Factors for Non-Thermal Efficiency (Electricity End-Uses)",
+    "filename": "BAS_Efficiency_Factors_for_Non_Thermal_Efficiency_Electricity_End_Uses.csv",
+    "use_weight": true,
+    "units": "%"
+  },
+  "BAS Efficiency Factors for Thermal Efficiency (Heating/Cooling End-Uses)": {
+    "title": "BAS Efficiency Factors for Thermal Efficiency (Heating/Cooling End-Uses)",
+    "filename": "BAS_Efficiency_Factors_for_Thermal_Efficiency_Heating_Cooling_End_Uses.csv",
+    "use_weight": true,
+    "units": "%"
+  },
+  "Discount Rates - Commercial": {
+    "title": "Discount Rates - Commercial",
+    "filename": "Discount_Rates_Commercial.csv",
+    "stat_correction": true,
+    "units": "%"
+  }
+}

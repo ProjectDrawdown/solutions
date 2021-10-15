@@ -1,0 +1,26 @@
+{
+  "Sequestration Rates": {
+    "title": "Sequestration Rates",
+    "filename": "Sequestration_Rates.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Percent of Degraded Land Suitable for Intact Tropical Forest Restoration": {
+    "title": "Percent of Degraded Land Suitable for Intact Tropical Forest Restoration",
+    "filename": "Percent_of_Degraded_Land_Suitable_for_Intact_Tropical_Forest_Restoration.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Root:shoot ratio of degraded forest": {
+    "title": "Root:shoot ratio of degraded forest",
+    "filename": "Root_shoot_ratio_of_degraded_forest.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Start Carbon storage in Base year": {
+    "title": "Start Carbon storage in Base year",
+    "filename": "Start_Carbon_storage_in_Base_year.csv",
+    "stat_correction": true,
+    "units": "t C ha/yr"
+  }
+}

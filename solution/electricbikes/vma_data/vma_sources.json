@@ -1,0 +1,147 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "Billion PKM"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/MWh of Battery Equivalent"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/MWh of Battery Equivalent"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "use_weight": true,
+    "units": "Billion PKM/MWh of Battery Equivalent"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "use_weight": true,
+    "units": "Billion PKM/MWh of Battery Equivalent"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Billion PKM/MWh of Battery Equivalent/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "Billion PKM/MWh of Battery Equivalent/year"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Billion PKM"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/Billion PKM"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "title": "SOLUTION Total Energy Used per Functional Unit",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/Billion PKM"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "Liter/Billion PKM"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
+    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/Billion PKM"
+  },
+  "Indirect CO2 Emissions per SOLUTION Unit (Select on Advanced Controls)": {
+    "title": "Indirect CO2 Emissions per SOLUTION Unit (Select on Advanced Controls)",
+    "filename": "Indirect_CO2_Emissions_per_SOLUTION_Unit_Select_on_Advanced_Controls.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/Billion PKM"
+  },
+  "Average Car Occupancy": {
+    "title": "Average Car Occupancy",
+    "filename": "Average_Car_Occupancy.csv",
+    "stat_correction": true
+  },
+  "Average Car Lifetime": {
+    "title": "Average Car Lifetime",
+    "filename": "Average_Car_Lifetime.csv",
+    "stat_correction": true,
+    "units": "pass-km"
+  },
+  "Discount Rates - Households": {
+    "title": "Discount Rates - Households",
+    "filename": "Discount_Rates_Households.csv",
+    "stat_correction": true,
+    "units": "Percent"
+  },
+  "Average Annual Passenger-km per Car": {
+    "title": "Average Annual Passenger-km per Car",
+    "filename": "Average_Annual_Passenger_km_per_Car.csv",
+    "stat_correction": true
+  },
+  "First Cost of ICE Car": {
+    "title": "First Cost of ICE Car",
+    "filename": "First_Cost_of_ICE_Car.csv",
+    "use_weight": true,
+    "units": "US2014$/vehicle"
+  },
+  "Average Bike Pass-km per Year": {
+    "title": "Average Bike Pass-km per Year",
+    "filename": "Average_Bike_Pass_km_per_Year.csv",
+    "stat_correction": true
+  },
+  "E-bike Battery Size": {
+    "title": "E-bike Battery Size",
+    "filename": "E_bike_Battery_Size.csv",
+    "use_weight": true
+  },
+  "E-bike Work Rate": {
+    "title": "E-bike Work Rate",
+    "filename": "E_bike_Work_Rate.csv",
+    "stat_correction": true,
+    "units": "Wh/km"
+  },
+  "Percentage of E-bike Rides with 2 Riders": {
+    "title": "Percentage of E-bike Rides with 2 Riders",
+    "filename": "Percentage_of_E_bike_Rides_with_2_Riders.csv",
+    "stat_correction": true
+  },
+  "Fuel Consumed per pkm - CONVENTIONAL": {
+    "title": "Fuel Consumed per pkm - CONVENTIONAL",
+    "filename": "Fuel_Consumed_per_pkm_CONVENTIONAL.csv",
+    "stat_correction": true,
+    "units": "Liter/Billion PKM"
+  },
+  "Car Maintenance  Cost per Functional Unit": {
+    "title": "Car Maintenance  Cost per Functional Unit",
+    "filename": "Car_Maintenance_Cost_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Billion PKM"
+  }
+}

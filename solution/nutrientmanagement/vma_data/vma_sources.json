@@ -1,0 +1,43 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million hectares"
+  },
+  "CONVENTIONAL Operating Cost per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Operating Cost per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Operating Cost per Functional Unit per Annum": {
+    "title": "SOLUTION Operating Cost per Functional Unit per Annum",
+    "filename": "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "t CO2 Reduced per Land Unit": {
+    "title": "t CO2 Reduced per Land Unit",
+    "filename": "t_CO2_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2/ha/yr"
+  },
+  "t N2O-CO2-eq Reduced per Land Unit": {
+    "title": "t N2O-CO2-eq Reduced per Land Unit",
+    "filename": "t_N2O_CO2_eq_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t N2O-CO2-eq/ha/yr"
+  },
+  "Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE": {
+    "title": "Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE",
+    "filename": "Indirect_CO2_Emissions_per_CONVENTIONAL_Implementation_OR_functional_Unit_CHOOSE_ONLY_ONE.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/ha/yr"
+  },
+  "CO2-eq reduced during the N-fertlizer production - ammonia synthesis": {
+    "title": "CO2-eq reduced during the N-fertlizer production - ammonia synthesis",
+    "filename": "CO2_eq_reduced_during_the_N_fertlizer_production_ammonia_synthesis.csv",
+    "stat_correction": true
+  }
+}

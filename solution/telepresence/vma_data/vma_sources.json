@@ -1,0 +1,125 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "passenger-km/pkm equivalent"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Active VC user or Trip"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Active VC user or Trip"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "passenger-km/pkm equivalent/Active VC user or Trip"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "passenger-km/pkm equivalent/Active VC user or Trip"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "passenger-km/pkm equivalent/Active VC user or Trip/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "passenger-km/pkm equivalent/Active VC user or Trip/year"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/passenger-km/pkm equivalent"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/passenger-km/pkm equivalent"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "title": "SOLUTION Total Energy Used per Functional Unit",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "TWh/passenger-km/pkm equivalent"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "Liter/passenger-km/pkm equivalent"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
+    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/passenger-km/pkm equivalent"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "title": "SOLUTION Indirect CO2 Emissions per Unit",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/passenger-km/pkm equivalent"
+  },
+  "Total Number of Air Business Trips Annually": {
+    "title": "Total Number of Air Business Trips Annually",
+    "filename": "Total_Number_of_Air_Business_Trips_Annually.csv",
+    "stat_correction": true
+  },
+  "Share of Business Travel": {
+    "title": "Share of Business Travel",
+    "filename": "Share_of_Business_Travel.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Bandwidth Cost": {
+    "title": "Bandwidth Cost",
+    "filename": "Bandwidth_Cost.csv",
+    "use_weight": true,
+    "units": "US$2014/VC user/yr"
+  },
+  "Annual Maintenance Cost": {
+    "title": "Annual Maintenance Cost",
+    "filename": "Annual_Maintenance_Cost.csv",
+    "use_weight": true,
+    "units": "US$2014/VC user/yr"
+  },
+  "Global Adoption by 2050": {
+    "title": "Global Adoption by 2050",
+    "filename": "Global_Adoption_by_2050.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Discount Rates - Commercial": {
+    "title": "Discount Rates - Commercial",
+    "filename": "Discount_Rates_Commercial.csv",
+    "stat_correction": true
+  },
+  "Estimated Rebound/ Induced Demand": {
+    "title": "Estimated Rebound/ Induced Demand",
+    "filename": "Estimated_Rebound_Induced_Demand.csv",
+    "stat_correction": true
+  }
+}

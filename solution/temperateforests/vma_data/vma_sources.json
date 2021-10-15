@@ -1,0 +1,13 @@
+{
+  "Sequestration Rates": {
+    "title": "Sequestration Rates",
+    "filename": "Sequestration_Rates.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Percent of Degraded Land Suitable for Intact Temperate Forest Restoration": {
+    "title": "Percent of Degraded Land Suitable for Intact Temperate Forest Restoration",
+    "filename": "Percent_of_Degraded_Land_Suitable_for_Intact_Temperate_Forest_Restoration.csv",
+    "stat_correction": true
+  }
+}

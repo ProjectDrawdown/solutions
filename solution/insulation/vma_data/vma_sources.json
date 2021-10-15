@@ -1,0 +1,108 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates"
+  },
+  "SOLUTION Energy Efficiency Factor": {
+    "title": "SOLUTION Energy Efficiency Factor",
+    "filename": "SOLUTION_Energy_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TJ/Million m2 of Comm.+Resid. Floor Area Equiv. for Cold Climates"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Threshold  Avg. Annual Temperature Gradient of Cooling": {
+    "title": "Threshold  Avg. Annual Temperature Gradient of Cooling",
+    "filename": "Threshold_Avg_Annual_Temperature_Gradient_of_Cooling.csv",
+    "stat_correction": true,
+    "units": "Degrees C or Kelvin"
+  },
+  "Average Commercial Building Wall Height": {
+    "title": "Average Commercial Building Wall Height",
+    "filename": "Average_Commercial_Building_Wall_Height.csv",
+    "stat_correction": true,
+    "units": "meter"
+  },
+  "Average Residential Building Wall Height": {
+    "title": "Average Residential Building Wall Height",
+    "filename": "Average_Residential_Building_Wall_Height.csv",
+    "stat_correction": true,
+    "units": "meter"
+  },
+  "Average Commercial Building Floor Count": {
+    "title": "Average Commercial Building Floor Count",
+    "filename": "Average_Commercial_Building_Floor_Count.csv",
+    "stat_correction": true,
+    "units": "floors"
+  },
+  "Average Residential Building Floor Count": {
+    "title": "Average Residential Building Floor Count",
+    "filename": "Average_Residential_Building_Floor_Count.csv",
+    "stat_correction": true,
+    "units": "floors"
+  },
+  "Individual Commercial:Residential Building Floor Area Ratio": {
+    "title": "Individual Commercial:Residential Building Floor Area Ratio",
+    "filename": "Individual_Commercial_Residential_Building_Floor_Area_Ratio.csv",
+    "stat_correction": true,
+    "units": "(none)"
+  },
+  "Conventional Insulation R-value for Cold Latitudes": {
+    "title": "Conventional Insulation R-value for Cold Latitudes",
+    "filename": "Conventional_Insulation_R_value_for_Cold_Latitudes.csv",
+    "stat_correction": true,
+    "units": "K.m2/W"
+  },
+  "Solution Insulation R-value for Cold Latitudes": {
+    "title": "Solution Insulation R-value for Cold Latitudes",
+    "filename": "Solution_Insulation_R_value_for_Cold_Latitudes.csv",
+    "stat_correction": true,
+    "units": "K.m2/W"
+  },
+  "Surface Area per Floor Area Ratio": {
+    "title": "Surface Area per Floor Area Ratio",
+    "filename": "Surface_Area_per_Floor_Area_Ratio.csv",
+    "stat_correction": true,
+    "units": "(none)"
+  },
+  "Discount Rate - Households": {
+    "title": "Discount Rate - Households",
+    "filename": "Discount_Rate_Households.csv",
+    "stat_correction": true
+  },
+  "Envelope Surface Area per Floor Area Ratio": {
+    "title": "Envelope Surface Area per Floor Area Ratio",
+    "filename": "Envelope_Surface_Area_per_Floor_Area_Ratio.csv",
+    "stat_correction": true
+  }
+}

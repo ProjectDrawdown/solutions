@@ -1,0 +1,74 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "units": "million sq-meters"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "units": "US2014$/million sq-meters"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "units": "US2014$/million sq-meters"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "units": "million sq-meters/million sq-meters"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "units": "million sq-meters/million sq-meters"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+    "units": "TWh/million sq-meters"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "title": "SOLUTION Total Energy Used per Functional Unit",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+    "units": "TWh/million sq-meters"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "units": "TJ/million sq-meters"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "units": "%"
+  },
+  "Heating Energy Efficiency": {
+    "title": "Heating Energy Efficiency",
+    "filename": "Heating_Energy_Efficiency.csv"
+  },
+  "Cooling Energy Efficiency": {
+    "title": "Cooling Energy Efficiency",
+    "filename": "Cooling_Energy_Efficiency.csv"
+  },
+  "Average Energy for Space Cooling per Floor Area": {
+    "title": "Average Energy for Space Cooling per Floor Area",
+    "filename": "Average_Energy_for_Space_Cooling_per_Floor_Area.csv",
+    "units": "kWh/m2"
+  },
+  "Average Energy for Space Heating per Floor Area": {
+    "title": "Average Energy for Space Heating per Floor Area",
+    "filename": "Average_Energy_for_Space_Heating_per_Floor_Area.csv",
+    "units": "kWh/m2"
+  },
+  "Discount Rate - Households": {
+    "title": "Discount Rate - Households",
+    "filename": "Discount_Rate_Households.csv"
+  },
+  "Residential Window to Floor Ratio": {
+    "title": "Residential Window to Floor Ratio",
+    "filename": "Residential_Window_to_Floor_Ratio.csv",
+    "use_weight": true
+  }
+}

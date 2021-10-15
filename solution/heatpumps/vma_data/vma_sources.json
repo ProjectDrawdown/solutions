@@ -1,0 +1,118 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "TWh (th)"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Installation Units"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Installation Units"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "TWh (th)/Installation Units"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "TWh (th)/Installation Units"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "TWh (th)/Installation Units/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "TWh (th)/Installation Units/year"
+  },
+  "CONVENTIONAL Fixed Operating Cost (FOM)": {
+    "title": "CONVENTIONAL Fixed Operating Cost (FOM)",
+    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
+    "use_weight": true,
+    "units": "US2014$/Installation Units"
+  },
+  "SOLUTION Fixed Operating Cost (FOM)": {
+    "title": "SOLUTION Fixed Operating Cost (FOM)",
+    "filename": "SOLUTION_Fixed_Operating_Cost_FOM.csv",
+    "use_weight": true,
+    "units": "US2014$/Installation Units"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/TWh (th)"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "title": "SOLUTION Total Energy Used per Functional Unit",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/TWh (th)"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TJ/TWh (th)"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "TAM Share from Space Heating": {
+    "title": "TAM Share from Space Heating",
+    "filename": "TAM_Share_from_Space_Heating.csv",
+    "stat_correction": true
+  },
+  "High Efficiency Heat Pump Coefficient of Performance": {
+    "title": "High Efficiency Heat Pump Coefficient of Performance",
+    "filename": "High_Efficiency_Heat_Pump_Coefficient_of_Performance.csv",
+    "stat_correction": true
+  },
+  "Average Size of Heat Pumps (residential) Units": {
+    "title": "Average Size of Heat Pumps (residential) Units",
+    "filename": "Average_Size_of_Heat_Pumps_residential_Units.csv",
+    "stat_correction": true,
+    "units": "kW"
+  },
+  "Average Size of Heat Pumps (commercial) Units": {
+    "title": "Average Size of Heat Pumps (commercial) Units",
+    "filename": "Average_Size_of_Heat_Pumps_commercial_Units.csv",
+    "stat_correction": true,
+    "units": "kW"
+  },
+  "Average Size of Conventional Technologies": {
+    "title": "Average Size of Conventional Technologies",
+    "filename": "Average_Size_of_Conventional_Technologies.csv",
+    "use_weight": true,
+    "units": "kW"
+  },
+  "Learning Rate": {
+    "title": "Learning Rate",
+    "filename": "Learning_Rate.csv",
+    "stat_correction": true
+  },
+  "Discount Rate": {
+    "title": "Discount Rate",
+    "filename": "Discount_Rate.csv",
+    "use_weight": true
+  }
+}

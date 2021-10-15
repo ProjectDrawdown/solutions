@@ -1,0 +1,110 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million hectares"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha"
+  },
+  "CONVENTIONAL Operating Cost per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Operating Cost per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Operating Cost per Functional Unit per Annum": {
+    "title": "SOLUTION Operating Cost per Functional Unit per Annum",
+    "filename": "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "CONVENTIONAL Net Profit Margin per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Net Profit Margin per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Net Profit Margin per Functional Unit per Annum": {
+    "title": "SOLUTION Net Profit Margin per Functional Unit per Annum",
+    "filename": "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Energy Efficiency Factor": {
+    "title": "SOLUTION Energy Efficiency Factor",
+    "filename": "SOLUTION_Energy_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Total Energy Used per SOLUTION functional unit": {
+    "title": "Total Energy Used per SOLUTION functional unit",
+    "filename": "Total_Energy_Used_per_SOLUTION_functional_unit.csv",
+    "stat_correction": true,
+    "units": "TWh/ha/year"
+  },
+  "t CO2-eq (Aggregate emissions) Reduced per Land Unit": {
+    "title": "t CO2-eq (Aggregate emissions) Reduced per Land Unit",
+    "filename": "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/ha/year"
+  },
+  "t CO2 Reduced per Land Unit": {
+    "title": "t CO2 Reduced per Land Unit",
+    "filename": "t_CO2_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2/ha"
+  },
+  "t N2O-CO2-eq Reduced per Land Unit": {
+    "title": "t N2O-CO2-eq Reduced per Land Unit",
+    "filename": "t_N2O_CO2_eq_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t N2O-CO2-eq/ha"
+  },
+  "Sequestration Rates": {
+    "title": "Sequestration Rates",
+    "filename": "Sequestration_Rates.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing": {
+    "title": "Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing",
+    "filename": "Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing.csv",
+    "stat_correction": true,
+    "units": "t C/ha"
+  },
+  "Rotational length (years)": {
+    "title": "Rotational length (years)",
+    "filename": "Rotational_length_years.csv",
+    "stat_correction": true,
+    "units": "years"
+  },
+  "Carbon content in biomass (%)": {
+    "title": "Carbon content in biomass (%)",
+    "filename": "Carbon_content_in_biomass.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Future adoption (million hectares)": {
+    "title": "Future adoption (million hectares)",
+    "filename": "Future_adoption_million_hectares.csv",
+    "stat_correction": true,
+    "units": "Million Hectares"
+  },
+  "DM above ground biomass harvest yield (t/year )": {
+    "title": "DM above ground biomass harvest yield (t/year )",
+    "filename": "DM_above_ground_biomass_harvest_yield_t_year.csv",
+    "stat_correction": true,
+    "units": "t/jha"
+  },
+  "Weight for financial variable on degraded area": {
+    "title": "Weight for financial variable on degraded area",
+    "filename": "Weight_for_financial_variable_on_degraded_area.csv",
+    "stat_correction": true,
+    "units": "%"
+  }
+}

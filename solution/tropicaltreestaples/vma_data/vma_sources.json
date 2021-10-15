@@ -1,0 +1,66 @@
+{
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha"
+  },
+  "CONVENTIONAL Operating Cost per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Operating Cost per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Operating Cost per Functional Unit per Annum": {
+    "title": "SOLUTION Operating Cost per Functional Unit per Annum",
+    "filename": "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "CONVENTIONAL Net Profit Margin per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Net Profit Margin per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Net Profit Margin per Functional Unit per Annum": {
+    "title": "SOLUTION Net Profit Margin per Functional Unit per Annum",
+    "filename": "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "Yield from CONVENTIONAL Practice": {
+    "title": "Yield from CONVENTIONAL Practice",
+    "filename": "Yield_from_CONVENTIONAL_Practice.csv",
+    "stat_correction": true,
+    "units": "DM tons fodder/ha/yr"
+  },
+  "Sequestration Rates": {
+    "title": "Sequestration Rates",
+    "filename": "Sequestration_Rates.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Yield of Annual Staple Crops": {
+    "title": "Yield of Annual Staple Crops",
+    "filename": "Yield_of_Annual_Staple_Crops.csv",
+    "stat_correction": true
+  },
+  "Yield of Perennial Staple Crops": {
+    "title": "Yield of Perennial Staple Crops",
+    "filename": "Yield_of_Perennial_Staple_Crops.csv",
+    "stat_correction": true
+  },
+  "C sequestered in above-ground biomass (AGB)": {
+    "title": "C sequestered in above-ground biomass (AGB)",
+    "filename": "C_sequestered_in_above_ground_biomass_AGB.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Weight for financial variable on degraded area": {
+    "title": "Weight for financial variable on degraded area",
+    "filename": "Weight_for_financial_variable_on_degraded_area.csv",
+    "stat_correction": true,
+    "units": "%"
+  }
+}

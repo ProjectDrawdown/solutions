@@ -1,0 +1,73 @@
+{
+  "2005-2014 Average CONVENTIONAL Fuel Price per functional unit": {
+    "title": "2005-2014 Average CONVENTIONAL Fuel Price per functional unit",
+    "filename": "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit.csv",
+    "use_weight": true,
+    "units": "$US2014/kWh"
+  },
+  "Coal Plant Efficiency": {
+    "title": "Coal Plant Efficiency",
+    "filename": "Coal_Plant_Efficiency.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "TWh/TW/year"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US$2014/kW"
+  },
+  "CONVENTIONAL Fixed Operating Cost (FOM)": {
+    "title": "CONVENTIONAL Fixed Operating Cost (FOM)",
+    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
+    "use_weight": true,
+    "units": "US$2014/kW"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "use_weight": true,
+    "units": "TWh/TW"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "US$2014/kWh"
+  },
+  "Discount Rate: Commercial / Industry": {
+    "title": "Discount Rate: Commercial / Industry",
+    "filename": "Discount_Rate_Commercial_Industry.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Kerosene (Heating Oil) Spot Price": {
+    "title": "Kerosene (Heating Oil) Spot Price",
+    "filename": "Kerosene_Heating_Oil_Spot_Price.csv",
+    "stat_correction": true
+  },
+  "Natural Gas Plant Efficiency": {
+    "title": "Natural Gas Plant Efficiency",
+    "filename": "Natural_Gas_Plant_Efficiency.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Oil Plant Efficiency": {
+    "title": "Oil Plant Efficiency",
+    "filename": "Oil_Plant_Efficiency.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Weighted Average CONVENTIONAL Plant Efficiency": {
+    "title": "Weighted Average CONVENTIONAL Plant Efficiency",
+    "filename": "Weighted_Average_CONVENTIONAL_Plant_Efficiency.csv",
+    "use_weight": true,
+    "units": "%"
+  }
+}

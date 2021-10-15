@@ -1,0 +1,117 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "billion pass-km"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/trip"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "billion pass-km/trip"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "billion pass-km/trip"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "billion pass-km/trip/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "billion pass-km/trip/year"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/billion pass-km"
+  },
+  "CONVENTIONAL Fixed Operating Cost (FOM)": {
+    "title": "CONVENTIONAL Fixed Operating Cost (FOM)",
+    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
+    "stat_correction": true,
+    "units": "US2014$/trip"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "Liter/billion pass-km"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
+    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/billion pass-km"
+  },
+  "Normal Car Occupancy": {
+    "title": "Normal Car Occupancy",
+    "filename": "Normal_Car_Occupancy.csv",
+    "stat_correction": true,
+    "units": "Persons/vehicle"
+  },
+  "Threshold City Density for Marked Increase in Walking": {
+    "title": "Threshold City Density for Marked Increase in Walking",
+    "filename": "Threshold_City_Density_for_Marked_Increase_in_Walking.csv",
+    "stat_correction": true
+  },
+  "Walking Mode Share of Dense Cities": {
+    "title": "Walking Mode Share of Dense Cities",
+    "filename": "Walking_Mode_Share_of_Dense_Cities.csv",
+    "stat_correction": true
+  },
+  "Walking Mode Share of non-dense Cities": {
+    "title": "Walking Mode Share of non-dense Cities",
+    "filename": "Walking_Mode_Share_of_non_dense_Cities.csv",
+    "stat_correction": true
+  },
+  "ICE Car Lifetime": {
+    "title": "ICE Car Lifetime",
+    "filename": "ICE_Car_Lifetime.csv",
+    "stat_correction": true,
+    "units": "billion pkm"
+  },
+  "Discount Rates - Households": {
+    "title": "Discount Rates - Households",
+    "filename": "Discount_Rates_Households.csv",
+    "stat_correction": true
+  },
+  "Car Depreciation (First) Costs": {
+    "title": "Car Depreciation (First) Costs",
+    "filename": "Car_Depreciation_First_Costs.csv",
+    "use_weight": true,
+    "units": "US$2014/trip"
+  },
+  "Car Insurance Costs": {
+    "title": "Car Insurance Costs",
+    "filename": "Car_Insurance_Costs.csv",
+    "stat_correction": true,
+    "units": "US$2014/trip"
+  },
+  "Annual Rate of Urban Density Decline": {
+    "title": "Annual Rate of Urban Density Decline",
+    "filename": "Annual_Rate_of_Urban_Density_Decline.csv",
+    "stat_correction": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million hectares"
+  },
+  "t CO2-eq (Aggregate emissions) Reduced per Land Unit": {
+    "title": "t CO2-eq (Aggregate emissions) Reduced per Land Unit",
+    "filename": "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/ha/year"
+  },
+  "t CO2 Reduced per Land Unit": {
+    "title": "t CO2 Reduced per Land Unit",
+    "filename": "t_CO2_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2/ha"
+  }
+}

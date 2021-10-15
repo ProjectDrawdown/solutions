@@ -1,0 +1,95 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "Billion passenger km"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Aircraft"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Billion passenger km/Aircraft"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Billion passenger km/Aircraft"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "Billion passenger km/Aircraft/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "Billion passenger km/Aircraft/year"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "Liter/Billion passenger km"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Average Seat Capacity - Single Aisle": {
+    "title": "Average Seat Capacity - Single Aisle",
+    "filename": "Average_Seat_Capacity_Single_Aisle.csv",
+    "stat_correction": true
+  },
+  "Average Stage Length Flown of Total Operating Fleet in the world (Distances traveled from takeoff to landing)": {
+    "title": "Average Stage Length Flown of Total Operating Fleet in the world (Distances traveled from takeoff to landing)",
+    "filename": "Average_Stage_Length_Flown_of_Total_Operating_Fleet_in_the_world_Distances_traveled_from_takeoff_to_landing.csv",
+    "stat_correction": true
+  },
+  "Average fleet-wide working hours per day": {
+    "title": "Average fleet-wide working hours per day",
+    "filename": "Average_fleet_wide_working_hours_per_day.csv",
+    "stat_correction": true
+  },
+  "Average time (hrs) between consecutive flights)": {
+    "title": "Average time (hrs) between consecutive flights)",
+    "filename": "Average_time_hrs_between_consecutive_flights.csv",
+    "stat_correction": true
+  },
+  "Average Cruise Speed - Single Aisle": {
+    "title": "Average Cruise Speed - Single Aisle",
+    "filename": "Average_Cruise_Speed_Single_Aisle.csv",
+    "stat_correction": true
+  },
+  "Solution Load Factor": {
+    "title": "Solution Load Factor",
+    "filename": "Solution_Load_Factor.csv",
+    "stat_correction": true
+  },
+  "Discount Rate - Commercial": {
+    "title": "Discount Rate - Commercial",
+    "filename": "Discount_Rate_Commercial.csv",
+    "stat_correction": true
+  },
+  "Average Seat Capacity - Twin Aisle": {
+    "title": "Average Seat Capacity - Twin Aisle",
+    "filename": "Average_Seat_Capacity_Twin_Aisle.csv",
+    "stat_correction": true
+  },
+  "Average Cruise Speed - Twin Aisle": {
+    "title": "Average Cruise Speed - Twin Aisle",
+    "filename": "Average_Cruise_Speed_Twin_Aisle.csv",
+    "stat_correction": true
+  }
+}

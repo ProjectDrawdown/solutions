@@ -1,0 +1,86 @@
+{
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha"
+  },
+  "CONVENTIONAL Operating Cost per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Operating Cost per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Operating Cost per Functional Unit per Annum": {
+    "title": "SOLUTION Operating Cost per Functional Unit per Annum",
+    "filename": "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "CONVENTIONAL Net Profit Margin per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Net Profit Margin per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Net Profit Margin per Functional Unit per Annum": {
+    "title": "SOLUTION Net Profit Margin per Functional Unit per Annum",
+    "filename": "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "t CO2-eq (Aggregate emissions) Reduced per Land Unit": {
+    "title": "t CO2-eq (Aggregate emissions) Reduced per Land Unit",
+    "filename": "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/ha/year"
+  },
+  "Sequestration Rates": {
+    "title": "Sequestration Rates",
+    "filename": "Sequestration_Rates.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing": {
+    "title": "Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing",
+    "filename": "Sequestered_Carbon_NOT_Emitted_after_Cyclical_Harvesting_Clearing.csv",
+    "stat_correction": true,
+    "units": "t C/ha"
+  },
+  "Rotational length (years)": {
+    "title": "Rotational length (years)",
+    "filename": "Rotational_length_years.csv",
+    "stat_correction": true,
+    "units": "years"
+  },
+  "Carbon content in biomass (%)": {
+    "title": "Carbon content in biomass (%)",
+    "filename": "Carbon_content_in_biomass.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Aboveground Biomass (AGB)": {
+    "title": "Aboveground Biomass (AGB)",
+    "filename": "Aboveground_Biomass_AGB.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Soil Organic Carbon (SOC)": {
+    "title": "Soil Organic Carbon (SOC)",
+    "filename": "Soil_Organic_Carbon_SOC.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Weight for financial variable on degraded area": {
+    "title": "Weight for financial variable on degraded area",
+    "filename": "Weight_for_financial_variable_on_degraded_area.csv",
+    "stat_correction": true,
+    "units": "%"
+  }
+}

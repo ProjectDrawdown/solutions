@@ -1,0 +1,68 @@
+{
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha"
+  },
+  "CONVENTIONAL Operating Cost per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Operating Cost per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Operating Cost per Functional Unit per Annum": {
+    "title": "SOLUTION Operating Cost per Functional Unit per Annum",
+    "filename": "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "CONVENTIONAL Net Profit Margin per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Net Profit Margin per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Net Profit Margin per Functional Unit per Annum": {
+    "title": "SOLUTION Net Profit Margin per Functional Unit per Annum",
+    "filename": "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "Yield from CONVENTIONAL Practice": {
+    "title": "Yield from CONVENTIONAL Practice",
+    "filename": "Yield_from_CONVENTIONAL_Practice.csv",
+    "use_weight": true,
+    "units": "DM tons fodder/ha/yr"
+  },
+  "Sequestration Rates": {
+    "title": "Sequestration Rates",
+    "filename": "Sequestration_Rates.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Above-Ground Biomass C Sequestration": {
+    "title": "Above-Ground Biomass C Sequestration",
+    "filename": "Above_Ground_Biomass_C_Sequestration.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Below-Ground Biomass C Sequestration": {
+    "title": "Below-Ground Biomass C Sequestration",
+    "filename": "Below_Ground_Biomass_C_Sequestration.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Soil Organic Carbon C Sequestration": {
+    "title": "Soil Organic Carbon C Sequestration",
+    "filename": "Soil_Organic_Carbon_C_Sequestration.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Book Edition 1 TLA": {
+    "title": "Book Edition 1 TLA",
+    "filename": "Book_Edition_1_TLA.csv",
+    "stat_correction": true,
+    "units": "million hectares"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "MMt of Plastic Produced Annually"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/MMt of Plastic Produced Annually"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/MMt of Plastic Produced Annually"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "MMt of Plastic Produced Annually/MMt of Plastic Produced Annually/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "MMt of Plastic Produced Annually/MMt of Plastic Produced Annually/year"
+  },
+  "CONVENTIONAL Direct Emissions per Functional Unit": {
+    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
+    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/MMt of Plastic Produced Annually"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "title": "SOLUTION Direct Emissions per Functional Unit",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/MMt of Plastic Produced Annually"
+  },
+  "Life cycle difference in GHG per kg of polymer for biopolymers compared to traditional polymers (kg CO2 eq/kg)": {
+    "title": "Life cycle difference in GHG per kg of polymer for biopolymers compared to traditional polymers (kg CO2 eq/kg)",
+    "filename": "Life_cycle_difference_in_GHG_per_kg_of_polymer_for_biopolymers_compared_to_traditional_polymers_kg_CO2_eq_kg.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/MMT polymers"
+  },
+  "Feedstock:MMT Bioplastic Constraint": {
+    "title": "Feedstock:MMT Bioplastic Constraint",
+    "filename": "Feedstock_MMT_Bioplastic_Constraint.csv",
+    "stat_correction": true
+  }
+}

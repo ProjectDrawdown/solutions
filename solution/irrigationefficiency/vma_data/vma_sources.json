@@ -1,0 +1,76 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million hectares"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha"
+  },
+  "CONVENTIONAL Operating Cost per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Operating Cost per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Operating Cost per Functional Unit per Annum": {
+    "title": "SOLUTION Operating Cost per Functional Unit per Annum",
+    "filename": "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "Electricty Consumed per CONVENTIONAL Functional Unit": {
+    "title": "Electricty Consumed per CONVENTIONAL Functional Unit",
+    "filename": "Electricty_Consumed_per_CONVENTIONAL_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "TWh/ha/year"
+  },
+  "Total Energy Used per SOLUTION functional unit": {
+    "title": "Total Energy Used per SOLUTION functional unit",
+    "filename": "Total_Energy_Used_per_SOLUTION_functional_unit.csv",
+    "stat_correction": true,
+    "units": "TWh/yr"
+  },
+  "Total Irrigated Area": {
+    "title": "Total Irrigated Area",
+    "filename": "Total_Irrigated_Area.csv",
+    "stat_correction": true
+  },
+  "Conventional Irrigation Efficiency": {
+    "title": "Conventional Irrigation Efficiency",
+    "filename": "Conventional_Irrigation_Efficiency.csv",
+    "stat_correction": true
+  },
+  "Sprinkler Irrigation efficiency": {
+    "title": "Sprinkler Irrigation efficiency",
+    "filename": "Sprinkler_Irrigation_efficiency.csv",
+    "stat_correction": true
+  },
+  "Drip Irrigation efficiency": {
+    "title": "Drip Irrigation efficiency",
+    "filename": "Drip_Irrigation_efficiency.csv",
+    "stat_correction": true
+  },
+  "Energy needed to irrigate 1 ha (kWh/ha) Sprinkler": {
+    "title": "Energy needed to irrigate 1 ha (kWh/ha) Sprinkler",
+    "filename": "Energy_needed_to_irrigate_1_ha_kWh_ha_Sprinkler.csv",
+    "stat_correction": true,
+    "units": "KWH/ha"
+  },
+  "Energy needed to irrigate 1 ha (kWh/ha) Drip": {
+    "title": "Energy needed to irrigate 1 ha (kWh/ha) Drip",
+    "filename": "Energy_needed_to_irrigate_1_ha_kWh_ha_Drip.csv",
+    "stat_correction": true,
+    "units": "KWH/ha"
+  }
+}

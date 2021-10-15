@@ -1,0 +1,114 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "TWh thermal"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Number of ICS"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/Number of ICS"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "title": "CONVENTIONAL Lifetime Capacity",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+    "use_weight": true,
+    "units": "TWh thermal/Number of ICS"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "TWh thermal/Number of ICS"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "title": "CONVENTIONAL Average Annual Use",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "TWh thermal/Number of ICS/year"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "use_weight": true,
+    "units": "TWh thermal/Number of ICS/year"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/TWh thermal"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "US2014$/TWh thermal"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "TJ/TWh thermal"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "title": "SOLUTION Fuel Efficiency Factor",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+    "use_weight": true,
+    "units": "%"
+  },
+  "CONVENTIONAL Direct Emissions per Functional Unit": {
+    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
+    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/TWh thermal"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "title": "SOLUTION Direct Emissions per Functional Unit",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+    "use_weight": true,
+    "units": "t CO2-eq/TWh thermal"
+  },
+  "t CO2 eq per Metric ton of fuel": {
+    "title": "t CO2 eq per Metric ton of fuel",
+    "filename": "t_CO2_eq_per_Metric_ton_of_fuel.csv",
+    "use_weight": true,
+    "units": "t CO2eq/ton fuel"
+  },
+  "PM2.5 for traditional stove": {
+    "title": "PM2.5 for traditional stove",
+    "filename": "PM2_5_for_traditional_stove.csv",
+    "use_weight": true,
+    "units": "ton/Twhth"
+  },
+  "PM 2.5 for improved stove": {
+    "title": "PM 2.5 for improved stove",
+    "filename": "PM_2_5_for_improved_stove.csv",
+    "stat_correction": true,
+    "units": "ton/Twhth"
+  },
+  "Black carbon GWP": {
+    "title": "Black carbon GWP",
+    "filename": "Black_carbon_GWP.csv",
+    "stat_correction": true,
+    "units": "CO2 eq"
+  },
+  "Adoption Data Low Sensitivity around Mean": {
+    "title": "Adoption Data Low Sensitivity around Mean",
+    "filename": "Adoption_Data_Low_Sensitivity_around_Mean.csv",
+    "stat_correction": true
+  },
+  "Adoption Data High Sensitivity around Mean": {
+    "title": "Adoption Data High Sensitivity around Mean",
+    "filename": "Adoption_Data_High_Sensitivity_around_Mean.csv",
+    "stat_correction": true
+  }
+}
