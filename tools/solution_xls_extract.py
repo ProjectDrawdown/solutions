@@ -28,7 +28,6 @@ import openpyxl
 import numpy as np
 import pandas as pd
 import pytest
-from . import rrs
 
 from tools.util import convert_bool, xls, xli, xln, co
 from tools.vma_xls_extract import VMAReader
@@ -559,14 +558,13 @@ def write_tam(f, wb, outputdir, is_elecgen=False):
 
     tm_tab = wb['TAM Data']
     lk = lambda x : xls(tm_tab, x)
-    f.write( "        # TAM\n")
  
     # Instructions for persons doing the extract to look for and set abnormal parameters.  We could write the code to do this automatically, of course...
-    f.write( "        # Instructions: Set TAM override parameters appropriately if any of these vary from the standard (then delete these comments):")
-    f.write(f"        # trend (3rd Poly): {lk('B19')} {lk('L17')} {lk('L20')} {lk('L23')} {lk('L26')} {lk('L29')} {lk('L32')} {lk('L35')} {lk('L38')} {lk('L41')}")
-    f.write(f"        # growth (medium): {lk('C19')} {lk('M17')} {lk('M20')} {lk('M23')} {lk('M26')} {lk('M29')} {lk('M32')} {lk('M35')} {lk('M38')} {lk('M41')}")
-    f.write(f"        # low_sd_mult (1.0): {lk('B25')} {lk('Q17')} {lk('Q20')} {lk('Q23')} {lk('Q26')} {lk('Q29')} {lk('Q32')} {lk('Q35')} {lk('Q38')} {lk('Q41')}")
-    f.write(f"        # high_sd_mult (1.0): {lk('B24')} {lk('Q16')} {lk('Q19')} {lk('Q22')} {lk('Q25')} {lk('Q28')} {lk('Q31')} {lk('Q34')} {lk('Q37')} {lk('Q40')}") 
+    f.write( "        # Instructions: Set TAM override parameters appropriately if any of these vary from the standard (then delete these comments):\n")
+    f.write(f"        # trend (3rd Poly): {lk('B19')} {lk('L17')} {lk('L20')} {lk('L23')} {lk('L26')} {lk('L29')} {lk('L32')} {lk('L35')} {lk('L38')} {lk('L41')}\n")
+    f.write(f"        # growth (medium): {lk('C19')} {lk('M17')} {lk('M20')} {lk('M23')} {lk('M26')} {lk('M29')} {lk('M32')} {lk('M35')} {lk('M38')} {lk('M41')}\n")
+    f.write(f"        # low_sd_mult (1.0): {lk('B25')} {lk('Q17')} {lk('Q20')} {lk('Q23')} {lk('Q26')} {lk('Q29')} {lk('Q32')} {lk('Q35')} {lk('Q38')} {lk('Q41')}\n")
+    f.write(f"        # high_sd_mult (1.0): {lk('B24')} {lk('Q16')} {lk('Q19')} {lk('Q22')} {lk('Q25')} {lk('Q28')} {lk('Q31')} {lk('Q34')} {lk('Q37')} {lk('Q40')}\n") 
 
     if is_elecgen:  # Special case energy solutions, because they use shared data sources.
         f.write("        self._ref_tam_sources = scenario.load_sources(rrs.energy_ref_tam(),'*')\n")
@@ -1418,7 +1416,7 @@ def extract_custom_tla(wb, outputdir):
         df.to_csv(os.path.join(outputdir, 'custom_tla_data.csv'), index=True, header=True, encoding='utf-8')
 
 
-def extract_vmas(f, wb, outputdir):
+def extract_vmas(f, wb, outputdir, is_elec=False):
     """Extract VMAs from an Excel file.
        Arguments:
          f: output __init__.py file
@@ -1431,20 +1429,28 @@ def extract_vmas(f, wb, outputdir):
     vma_r = VMAReader(wb)
     vmas = vma_r.read_xls(csv_path=vma_dir_path)
     vma_name_to_dict = {}
-    f.write("VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data'/'vma_sources.json')\n")
     for _, row in vmas.iterrows():
         vma_name = row['Title on xls']
         filename = row['Filename']
-        if not isinstance(filename, str):
-            continue
+
+        if is_elec and 'CONVENTIONAL' in vma_name:
+            continue    # don't list shared VMAs
+        if not isinstance(filename, str) or not filename: 
+            continue    # don't list non-existent VMAs
+
         vma_out_dict = {}
         vma_out_dict["filename"] = filename
         vma_out_dict['use_weight'] = row['Use weight?']
         vma_out_dict["bound_correction"] = row['Bound correction?']
         vma_out_dict["description"] = row['Description']
         vma_name_to_dict[vma_name] = vma_out_dict
-    write_json(filename=pathlib.Path(vma_dir_path) / 'vma_sources.json',
+    write_json(filename=pathlib.Path(vma_dir_path)/'vma_sources.json',
                    d=vma_name_to_dict)
+    if is_elec:
+        f.write("VMAs = (vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json') | \n")
+        f.write("        vma.VMA.load_vma_directory(DATADIR/'energy/vma_data/vma_sources.json'))\n")
+    else:
+        f.write("VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')\n")
 
 
 def lookup_unit(tab, row, col):
@@ -1535,6 +1541,48 @@ def _scenarios_from_ac_dir(ac_path):
         return names, min(creation_dates)
     else:
         return [], None
+
+
+def link_vma(tab, row, col):
+    """
+    Certain AdvancedControls inputs are linked to the mean, high or low value of their
+    corresponding VMA tables. In the Excel ScenarioRecord, the cell value will look like:
+    'Val:(328.415857769938) Formula:=C80'
+    We can infer the chosen statistic from the cell reference. If there is no forumla we
+    return the cell value as a float with no reference to the VMA result.
+    Args:
+      tab: the Sheet object to use
+      row: numeric row number to look at
+      col: numeric column number to look at
+
+    Returns:
+      'mean', 'high' or 'low' or raw value if no formula in cell
+    """
+
+    cell_value = xls(tab, row, col)
+    if cell_value == '':
+        return 0.0
+
+    if 'Formula:=' not in cell_value:  # No formula present
+        return xln(tab, row, col)
+    else: # formula is present
+        float_val = convert_sr_float(tab, row, col)
+
+        # detect the standard statistics by the row number they reference
+        if True in [cell_value.endswith(x) for x in ['80', '95', '101', '116', '146', '161', '175', '189', '140']]:
+            return {'value': float_val, 'statistic': 'mean'}
+        elif True in [cell_value.endswith(x) for x in ['81', '96', '102', '117', '147', '162', '176', '190', '141']]:
+            return {'value': float_val, 'statistic': 'high'}
+        elif True in [cell_value.endswith(x) for x in ['82', '97', '103', '118', '148', '163', '177', '191', '142']]:
+            return {'value': float_val, 'statistic': 'low'}
+        
+        else: # not a standard formula, pass along the entire expression
+            formula = cell_value.split(':=')[1]
+            # Denise 7/21 turned off this warning because we get it too often.
+            # Do a hack-y accumulator instead.
+            #warnings.warn(f'formula "{formula}" in {col}:{str(row)} not recognised - using value')
+            warn_counts['unknown_formula'] = warn_counts['unknown_formula'] + 1
+            return {'value': float_val, 'xls cell formula': formula}
 
 
 warn_counts = {
@@ -1785,47 +1833,6 @@ def output_solution_python_file(outputdir, xl_filename):
     if warn_counts['unknown_formula'] > 0:
         warnings.warn(f"Extraction encountered {warn_counts['unknown_formula']} unknown formulas in values on ScenarioRecord tab")
 
-
-def link_vma(tab, row, col):
-    """
-    Certain AdvancedControls inputs are linked to the mean, high or low value of their
-    corresponding VMA tables. In the Excel ScenarioRecord, the cell value will look like:
-    'Val:(328.415857769938) Formula:=C80'
-    We can infer the chosen statistic from the cell reference. If there is no forumla we
-    return the cell value as a float with no reference to the VMA result.
-    Args:
-      tab: the Sheet object to use
-      row: numeric row number to look at
-      col: numeric column number to look at
-
-    Returns:
-      'mean', 'high' or 'low' or raw value if no formula in cell
-    """
-
-    cell_value = xls(tab, row, col)
-    if cell_value == '':
-        return 0.0
-
-    if 'Formula:=' not in cell_value:  # No formula present
-        return {'value': xln(tab, row, col), 'statistic': ''}
-    else: # formula is present
-        float_val = convert_sr_float(tab, row, col)
-
-        # detect the standard statistics by the row number they reference
-        if True in [cell_value.endswith(x) for x in ['80', '95', '101', '116', '146', '161', '175', '189', '140']]:
-            return {'value': float_val, 'statistic': 'mean'}
-        elif True in [cell_value.endswith(x) for x in ['81', '96', '102', '117', '147', '162', '176', '190', '141']]:
-            return {'value': float_val, 'statistic': 'high'}
-        elif True in [cell_value.endswith(x) for x in ['82', '97', '103', '118', '148', '163', '177', '191', '142']]:
-            return {'value': float_val, 'statistic': 'low'}
-        
-        else: # not a standard formula, pass along the entire expression
-            formula = cell_value.split(':=')[1]
-            # Denise 7/21 turned off this warning because we get it too often.
-            # Do a hack-y accumulator instead.
-            #warnings.warn(f'formula "{formula}" in {col}:{str(row)} not recognised - using value')
-            warn_counts['unknown_formula'] = warn_counts['unknown_formula'] + 1
-            return {'value': float_val, 'xls cell formula': formula}
 
 
 if __name__ == "__main__":
