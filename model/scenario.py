@@ -1,5 +1,4 @@
 """Base classes of all scenario objects"""
-import os
 import json
 import pandas as pd
 import warnings
@@ -42,7 +41,13 @@ class Scenario:
     module_name: str
     """The name of the solution module (e.g. 'hcrecycling')"""
     scenario: str
-    """The name of the scenario """
+    """The name of the scenario"""
+    base_year: int
+    """The base year for prognostication for this scenario.  The base year may be in the past, but it marks the 
+    dividing line between what is considered 'historical' data vs 'prognosticated' data."""
+    # Commentary: currently base year is assigned by each model, and does not vary across scenarios, since this
+    # is the way the Excel models worked.  What we need, though, is to think through how base year should vary,
+    # and what should depend on it.
 
     ac: advanced_controls.AdvancedControls = None
     """The parameters that define this scenario"""
@@ -61,7 +66,7 @@ class Scenario:
 
     
     ##############################################################################################################
-    # Initialization
+    # Initialize AC
 
     def initialize_ac(self, scenario_name_or_ac, scenario_list, default_scenario_name):
         """Initialize the advanced controls object for this scenario based on the various cases.
@@ -79,8 +84,10 @@ class Scenario:
                 self.scenario = alt_scenario
 
             self.ac = scenario_list[self.scenario]
-
+    
+    ##############################################################################################################
     # Initialize Adoption
+
     # Control of adoption initialization is a combination of the contents of the ac parameters
     # and the settings of these fields by the subclass
     _ref_ca_sources = None  
@@ -95,7 +102,15 @@ class Scenario:
         """Initialize the pds and ref adoption bases for this scenario to one of 
         several different types, depending on the parameters of the scenario.
         Note this function only initializes the base ref and pds adoptions: the HelperTables
-        object ht still needs to be initialized after."""
+        object ht still needs to be initialized after.
+        
+        Also note: if an individual solution class needs to do its own custom adoption
+        initialization, it should do that _before_ calling `initialize_adoption_bases`.
+        `initialize_adoption_bases` will not overwrite `self.ad`, `self.pds_ca`, etc., if they
+        have already been initialized (except in the case of a user-supplied adoption, which
+        does override all other options).
+        
+        Returns a set of data values that are used to initialize the Helper Tables object"""
 
         # ###  Reference Adoption
 
@@ -107,6 +122,7 @@ class Scenario:
                 total_adoption_limit= self.adoption_limit()
             )
             self.ac.soln_ref_adoption_basis = "Custom"
+            ref_adoption = self.ref_ca.adoption_data_per_region()
         
         elif self.ac.soln_ref_adoption_basis == "Custom" and not self.ref_ca:
             if not self._ref_ca_sources:
@@ -116,6 +132,10 @@ class Scenario:
                 soln_adoption_custom_name = self.ac.soln_ref_adoption_custom_name,
                 total_adoption_limit = self.adoption_limit()
             )
+            ref_adoption = self.ref_ca.adoption_data_per_region()
+        else:
+            ref_adoption = None
+
         # For default reference adoption, we do nothing; HelperTables will
         # do all the work.
 
@@ -130,38 +150,65 @@ class Scenario:
                total_adoption_limit = self.adoption_limit()
             )
             # override the AC setting, so the rest of the code will use this adoption.
+            # TODO BUG!  ac is frozen class.  Has this ever actually been called?
             self.ac.soln_pds_adoption_basis='Fully Customized PDS'      
         
-        elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS' and not self.pds_ca:
-            # scenarios can paramaterize which solutions should be included in the customized PDS
-            sources = self._pds_ca_sources
-            if self.ac.soln_pds_adoption_scenarios_included:
-                sources = sources.copy()
-                for (i,s) in enumerate(sources):
-                    s['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
-            
-            self.pds_ca = customadoption.CustomAdoption(
-                data_sources = sources,
-                soln_adoption_custom_name = self.ac.soln_pds_adoption_custom_name,
-                high_sd_mult = self._pds_ca_settings['high_sd_mult'],
-                low_sd_mult = self._pds_ca_settings['low_sd_mult'],
-                total_adoption_limit = self.adoption_limit()
-            )
+        if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
+            if not self.pds_ca:
+                # scenarios can paramaterize which solutions should be included in the customized PDS
+                sources = self._pds_ca_sources
+                if self.ac.soln_pds_adoption_scenarios_included:
+                    sources = sources.copy()
+                    for (i,s) in enumerate(sources):
+                        s['include'] = (i in self.ac.soln_pds_adoption_scenarios_included)
+                
+                self.pds_ca = customadoption.CustomAdoption(
+                    data_sources = sources,
+                    soln_adoption_custom_name = self.ac.soln_pds_adoption_custom_name,
+                    high_sd_mult = self._pds_ca_settings['high_sd_mult'],
+                    low_sd_mult = self._pds_ca_settings['low_sd_mult'],
+                    total_adoption_limit = self.adoption_limit()
+                )
+            pds_adoption = self.pds_ca.adoption_data_per_region()
+            pds_trend = self.pds_ca.adoption_trend_per_region()
+            pds_single_source = False
         
-        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications' and not self.ad:
-            overrides = [('trend','World',self.ac.soln_pds_adoption_prognostication_trend),
-                         ('growth','World',self.ac.soln_pds_adoption_prognostication_growth)]
-            overrides.extend(self._pds_ad_settings['config_overrides'] or [])
-            adconfig = adoptiondata.make_adoption_config(overrides=overrides)
-            self.ad = adoptiondata.AdoptionData(
-                ac = self.ac,
-                data_sources = self._pds_ad_sources,
-                adconfig = adconfig,
-                main_includes_regional = self._pds_ad_settings['main_includes_regional'],
-                groups_include_hundred_percent = self._pds_ad_settings['groups_include_hundred_percent']
-            )
-        # else PASS
-        # for now, classes are responsible for initializing s-curves themselves.
+        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
+            if not self.ad:
+                overrides = [('trend','World',self.ac.soln_pds_adoption_prognostication_trend),
+                            ('growth','World',self.ac.soln_pds_adoption_prognostication_growth)]
+                overrides.extend(self._pds_ad_settings['config_overrides'] or [])
+                adconfig = adoptiondata.make_adoption_config(overrides=overrides)
+                self.ad = adoptiondata.AdoptionData(
+                    ac = self.ac,
+                    data_sources = self._pds_ad_sources,
+                    adconfig = adconfig,
+                    main_includes_regional = self._pds_ad_settings['main_includes_regional'],
+                    groups_include_hundred_percent = self._pds_ad_settings['groups_include_hundred_percent']
+                )
+            pds_adoption = self.ad.adoption_trend_per_region()
+            pds_trend = self.ad.adoption_trend_per_region()
+            pds_single_source = self.ad.adoption_is_single_source()
+        
+        elif self.ac.soln_pds_adoption_basis in ['Logistic S-Curve', 'Bass Diffusion S-Curve']:
+            if not self.sc:
+                try:
+                    tamdata = self.tm.pds_tam_per_region()
+                except:
+                    raise ValueError("S-Curve Adoption is currently only available with models that use TAMs (RRS models)")
+                sconfig = s_curve.make_scurve_config(self.base_year, tamdata, self.ac.as_dict())
+                # Note: hard-wiring the SCurve transition period parameter for now.  It should be a scenario attribute, but isn't currently.
+                self.sc = s_curve.SCurve(sconfig)
+            pds_adoption = (self.sc.logistic_adoption() 
+                            if self.ac.soln_pds_adoption_basis == 'Logistic S-Curve' else
+                            self.sc.bass_diffusion_adoption())
+            pds_trend = None
+            pds_single_source = False
+        
+        # else: ??  We don't issue an error here because (a) AC already checks this condition and (b) in the
+        # future some solutions might have their own unique options that we don't know about.
+        
+        return (ref_adoption, pds_adoption, pds_trend, pds_single_source)
 
 
     def adoption_limit(self):
@@ -238,20 +285,18 @@ class Scenario:
                   self.ua.soln_pds_net_grid_electricity_units_used())
         result.name = "soln_net_grid_energy_impact"
         return result
-    
-    ##############################################################################################################
-    #   
-    # Integration support.  This is limited and hacky at this time.
-    #
-
+       
     def total_energy_saving(self) -> pd.DataFrame:
         """Total energy saved by solution in EJ"""
         TWh_to_EJ = 3.6e-3
         TJ_to_EJ = 1e-6
 
         return self.ua.soln_pds_fuel_units_avoided() * TJ_to_EJ - self.soln_net_energy_grid_impact() * TWh_to_EJ
-
-
+    
+    ##############################################################################################################
+    #   
+    # Integration support.  This is limited and hacky at this time.
+    #
   
     @classmethod
     def scenario_path(cls):

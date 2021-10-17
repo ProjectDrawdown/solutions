@@ -205,28 +205,28 @@ def get_rrs_scenarios(wb, solution_category):
                 s_curve_type = xls(sr_tab, row + 181, co("E"))
                 if s_curve_type == 'Alternate S-Curve (Bass Model)':
                     s['soln_pds_adoption_basis'] = 'Bass Diffusion S-Curve'
-                    s['pds_adoption_s_curve_innovation'] = [
-                        ('World', convert_sr_float(sr_tab, row + 170, co("G"))),
-                        ('OECD90', convert_sr_float(sr_tab, row + 171, co("G"))),
-                        ('Eastern Europe', convert_sr_float(sr_tab, row + 172, co("G"))),
-                        ('Asia (Sans Japan)', convert_sr_float(sr_tab, row + 173, co("G"))),
-                        ('Middle East and Africa', convert_sr_float(sr_tab, row + 174, co("G"))),
-                        ('Latin America', convert_sr_float(sr_tab, row + 175, co("G"))),
-                        ('China', convert_sr_float(sr_tab, row + 176, co("G"))),
-                        ('India', convert_sr_float(sr_tab, row + 177, co("G"))),
-                        ('EU', convert_sr_float(sr_tab, row + 178, co("G"))),
-                        ('USA', convert_sr_float(sr_tab, row + 179, co("G")))]
-                    s['pds_adoption_s_curve_imitation'] = [
-                        ('World', convert_sr_float(sr_tab, row + 170, co("H"))),
-                        ('OECD90', convert_sr_float(sr_tab, row + 171, co("H"))),
-                        ('Eastern Europe', convert_sr_float(sr_tab, row + 172, co("H"))),
-                        ('Asia (Sans Japan)', convert_sr_float(sr_tab, row + 173, co("H"))),
-                        ('Middle East and Africa', convert_sr_float(sr_tab, row + 174, co("H"))),
-                        ('Latin America', convert_sr_float(sr_tab, row + 175, co("H"))),
-                        ('China', convert_sr_float(sr_tab, row + 176, co("H"))),
-                        ('India', convert_sr_float(sr_tab, row + 177, co("H"))),
-                        ('EU', convert_sr_float(sr_tab, row + 178, co("H"))),
-                        ('USA', convert_sr_float(sr_tab, row + 179, co("H")))]
+                    s['pds_adoption_s_curve_innovation'] = {
+                        'World': convert_sr_float(sr_tab, row + 170, co("G")),
+                        'OECD90': convert_sr_float(sr_tab, row + 171, co("G")),
+                        'Eastern Europe': convert_sr_float(sr_tab, row + 172, co("G")),
+                        'Asia (Sans Japan)': convert_sr_float(sr_tab, row + 173, co("G")),
+                        'Middle East and Africa': convert_sr_float(sr_tab, row + 174, co("G")),
+                        'Latin America': convert_sr_float(sr_tab, row + 175, co("G")),
+                        'China': convert_sr_float(sr_tab, row + 176, co("G")),
+                        'India': convert_sr_float(sr_tab, row + 177, co("G")),
+                        'EU': convert_sr_float(sr_tab, row + 178, co("G")),
+                        'USA': convert_sr_float(sr_tab, row + 179, co("G"))}
+                    s['pds_adoption_s_curve_imitation'] = {
+                        'World': convert_sr_float(sr_tab, row + 170, co("H")),
+                        'OECD90': convert_sr_float(sr_tab, row + 171, co("H")),
+                        'Eastern Europe': convert_sr_float(sr_tab, row + 172, co("H")),
+                        'Asia (Sans Japan)': convert_sr_float(sr_tab, row + 173, co("H")),
+                        'Middle East and Africa': convert_sr_float(sr_tab, row + 174, co("H")),
+                        'Latin America': convert_sr_float(sr_tab, row + 175, co("H")),
+                        'China': convert_sr_float(sr_tab, row + 176, co("H")),
+                        'India': convert_sr_float(sr_tab, row + 177, co("H")),
+                        'EU': convert_sr_float(sr_tab, row + 178, co("H")),
+                        'USA': convert_sr_float(sr_tab, row + 179, co("H"))}
                 elif s_curve_type == 'Default S-Curve (Logistic Model)':
                     s['soln_pds_adoption_basis'] = 'Logistic S-Curve'
                 else:
@@ -548,145 +548,56 @@ def write_json(filename, d):
         json.dump(obj=d, fp=f, indent=4, default=json_dumps_default)
 
 
-
-def recursive_keys(sources):
-    result = {}
-    for k in sources.keys():
-        try:
-            value = recursive_keys(sources[k])
-        except AttributeError:
-            value = None
-        result[k] = value
-    return result
-
-
-def abandon_files(sources, outputdir):
-    """We're not going to use the extracted files after all, remove them."""
-    for (key, filename) in sources.items():
-        try:
-            abandon_files(sources=sources[key], outputdir=outputdir)
-        except AttributeError:
-            try:
-                fullpath = os.path.join(outputdir, filename)
-                os.unlink(fullpath)
-            except FileNotFoundError:
-                pass
-
-
-
-
-def write_tam(f, wb, outputdir):
+def write_tam(f, wb, outputdir, is_elecgen=False):
     """Generate the TAM section of a solution.
        Arguments:
          f - file-like object for output
          wb - an Excel workbook as returned by openpyxl
          outputdir: name of directory to write CSV files to.
+         is_elecgen: True if this is an electricity generation model
     """
 
     tm_tab = wb['TAM Data']
-    f.write( "        tamconfig_list = [\n")
-    f.write( "            ['param', 'World', 'PDS World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',\n")
-    f.write( "                'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],\n")
+    lk = lambda x : xls(tm_tab, x)
+    f.write( "        # TAM\n")
  
-    f.write( "            ['source_until_2014', self.ac.source_until_2014, self.ac.source_until_2014,\n")
-    f.write(f"                '{xls(tm_tab, 'V16')}', '{xls(tm_tab, 'V19')}', '{xls(tm_tab, 'V22')}', '{xls(tm_tab, 'V25')}',")
-    f.write(f" '{xls(tm_tab, 'V28')}', '{xls(tm_tab, 'V31')}',\n")
-    f.write(f"                '{xls(tm_tab, 'V34')}', '{xls(tm_tab, 'V37')}', '{xls(tm_tab, 'V40')}' ],\n")
+    # Instructions for persons doing the extract to look for and set abnormal parameters.  We could write the code to do this automatically, of course...
+    f.write( "        # Instructions: Set TAM override parameters appropriately if any of these vary from the standard (then delete these comments):")
+    f.write(f"        # trend (3rd Poly): {lk('B19')} {lk('L17')} {lk('L20')} {lk('L23')} {lk('L26')} {lk('L29')} {lk('L32')} {lk('L35')} {lk('L38')} {lk('L41')}")
+    f.write(f"        # growth (medium): {lk('C19')} {lk('M17')} {lk('M20')} {lk('M23')} {lk('M26')} {lk('M29')} {lk('M32')} {lk('M35')} {lk('M38')} {lk('M41')}")
+    f.write(f"        # low_sd_mult (1.0): {lk('B25')} {lk('Q17')} {lk('Q20')} {lk('Q23')} {lk('Q26')} {lk('Q29')} {lk('Q32')} {lk('Q35')} {lk('Q38')} {lk('Q41')}")
+    f.write(f"        # high_sd_mult (1.0): {lk('B24')} {lk('Q16')} {lk('Q19')} {lk('Q22')} {lk('Q25')} {lk('Q28')} {lk('Q31')} {lk('Q34')} {lk('Q37')} {lk('Q40')}") 
 
-    f.write( "            ['source_after_2014', self.ac.ref_source_post_2014, self.ac.pds_source_post_2014,\n")
-    f.write(f"                '{xls(tm_tab, 'V16')}', '{xls(tm_tab, 'V19')}', '{xls(tm_tab, 'V22')}', '{xls(tm_tab, 'V25')}',")
-    f.write(f" '{xls(tm_tab, 'V28')}', '{xls(tm_tab, 'V31')}',\n")
-    f.write(f"                '{xls(tm_tab, 'V34')}', '{xls(tm_tab, 'V37')}', '{xls(tm_tab, 'V40')}' ],\n")
-
-    # One might assume PDS_World for trend and growth would use self.ac.soln_pds_adoption_prognostication_*,
-    # but that is not what the TAM Data in Excel does. EA104 references B19 and C19, the World trend and growth.
-
-    # Denise 7/21.  Per Chad, are no regional variations in these TAM settings, so I'm going to simplify this code a little bit.
-    # This will become wrong if we ever are parsing excel that *does* have regional TAM variations.
-    val = "'" + xls(tm_tab, 'B19') + "'"
-    f.write(f"            ['trend', {val}, {val}, {val}, {val}, {val},\n")
-    f.write(f"              {val}, {val}, {val}, {val}, {val}, {val}],\n")
-
-    val = "'" + xls(tm_tab, 'C19') + "'"
-    f.write(f"            ['growth', {val}, {val}, {val}, {val}, {val},\n")
-    f.write(f"              {val}, {val}, {val}, {val}, {val}, {val}],\n")   
-
-    val = xls(tm_tab, 'B25')
-    f.write(f"            ['low_sd_mult', {val}, {val}, {val}, {val}, {val}, {val}, {val}, {val}, {val}, {val}, {val}],\n")
-
-    val = xls(tm_tab, 'B24')
-    f.write(f"            ['high_sd_mult', {val}, {val}, {val}, {val}, {val}, {val}, {val}, {val}, {val}, {val}, {val}]]\n")
-
-    f.write("        tamconfig = pd.DataFrame(tamconfig_list[1:], columns=tamconfig_list[0]).set_index('param')\n")
-
-    # See extract_xource_data for the definition of these line numbers
-    tam_regions = {'World': 44, 'OECD90': 162, 'Eastern Europe': 226,
-                   'Asia (Sans Japan)': 289, 'Middle East and Africa': 352, 'Latin America': 415,
-                   'China': 478, 'India': 542, 'EU': 606, 'USA': 671}
-    tamoutputdir = os.path.join(outputdir, 'tam')
-    os.makedirs(tamoutputdir, exist_ok=True)
-    ref_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
-                                      outputdir=tamoutputdir, prefix='tam_')
-    if recursive_keys(ref_sources) == recursive_keys(rrs.energy_tam_1_ref_data_sources):
-        arg_ref = 'rrs.energy_tam_1_ref_data_sources'
-        abandon_files(ref_sources, outputdir=tamoutputdir)
-    elif recursive_keys(ref_sources) == recursive_keys(rrs.energy_tam_2_ref_data_sources):
-        arg_ref = 'rrs.energy_tam_2_ref_data_sources'
-        abandon_files(ref_sources, outputdir=tamoutputdir)
+    if is_elecgen:  # Special case energy solutions, because they use shared data sources.
+        f.write("        self._ref_tam_sources = scenario.load_sources(rrs.energy_ref_tam(),'*')\n")
+        f.write("        self._pds_tam_sources = scenario.load_sources(rrs.energy_pds_tam(),'*')\n")
     else:
-        f.write("        tam_ref_data_sources = {\n")
-        for region, cases in ref_sources.items():
-            f.write("              '" + region + "': {\n")
-            for (case, sources) in cases.items():
-                if isinstance(sources, str):
-                    f.write("                  '" + case + "': THISDIR.joinpath('tam', '" + sources + "'),\n")
-                else:
-                    f.write("                  '" + case + "': {\n")
-                    for (source, filename) in sources.items():
-                        f.write("                  '" + source + "': THISDIR.joinpath('tam', '" + filename + "'),\n")
-                    f.write("              },\n")
-            f.write("            },\n")
-        f.write("        }\n")
-        arg_ref = 'tam_ref_data_sources'
+        # Extract the data sources
+        # See extract_source_data for the definition of these line numbers
+        tam_regions = {'World': 44, 'OECD90': 162, 'Eastern Europe': 226,
+                    'Asia (Sans Japan)': 289, 'Middle East and Africa': 352, 'Latin America': 415,
+                    'China': 478, 'India': 542, 'EU': 606, 'USA': 671}
+        tamoutputdir = os.path.join(outputdir, 'tam')
+        os.makedirs(tamoutputdir, exist_ok=True)
+        ref_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
+                                        outputdir=tamoutputdir, prefix='tam_')
 
-    tam_regions = {'World': 102}
-    pds_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
-                                      outputdir=tamoutputdir, prefix='tam_pds_')
-    if recursive_keys(pds_sources) == recursive_keys(rrs.energy_tam_1_pds_data_sources):
-        # the source names are the same for energy_tam_1 & 2, distinguish them here.
-        plausible_2060 = xln(tm_tab, 'L152')
-        if plausible_2060 == pytest.approx(54539.190092617995):
-            arg_pds = 'rrs.energy_tam_2_pds_data_sources'
-        elif plausible_2060 == pytest.approx(60153.728317538):
-            arg_pds = 'rrs.energy_tam_1_pds_data_sources'
+        write_json(filename=pathlib.Path(tamoutputdir)/'tam_ref_sources.json', d=ref_sources)
+        f.write("        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam/tam_ref_sources.json','*')\n")
+
+        tam_regions = {'World': 102}
+        pds_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
+                                        outputdir=tamoutputdir, prefix='tam_pds_')
+        if pds_sources:
+            write_json(filename=pathlib.Path(tamoutputdir)/'tam_pds_sources.json', d=ref_sources)
+            f.write("        self._pds_tam_sources = scenario.load_sources(THISDIR/'tam/tam_pds_sources.json','*')\n")
         else:
-            raise ValueError(f"Unknown Energy TAM, Plausible World 2060 = {plausible_2060}")
-        abandon_files(pds_sources, outputdir=tamoutputdir)
-    elif not pds_sources:
-        arg_pds = 'tam_ref_data_sources'
-    else:
-        f.write("        tam_pds_data_sources = {\n")
-        for region, cases in pds_sources.items():
-            f.write("            '" + region + "': {\n")
-            for (case, sources) in cases.items():
-                if isinstance(sources, str):
-                    f.write("                    '" + case + "': THISDIR.joinpath('tam', '" + sources + "'),\n")
-                else:
-                    f.write("                    '" + case + "': {\n")
-                    for (source, filename) in sources.items():
-                        f.write("                      '" + source + "': THISDIR.joinpath('tam', '" + filename + "'),\n")
-                    f.write("              },\n")
-            f.write("            },\n")
-        f.write("        }\n")
-        arg_pds = 'tam_pds_data_sources'
+            f.write("        self._pds_tam_sources = self._ref_tam_sources\n")
 
     regional = convert_bool(xls(tm_tab, 'B29')) and convert_bool(xls(tm_tab, 'B30'))
-    f.write("        self.tm = tam.TAM(tamconfig=tamconfig, tam_ref_data_sources=" + arg_ref + ",\n")
-    if regional:
-        f.write("            main_includes_regional=True,\n")
-    f.write("            tam_pds_data_sources=" + arg_pds + ")\n")
-    f.write("        ref_tam_per_region=self.tm.ref_tam_per_region()\n")
-    f.write("        pds_tam_per_region=self.tm.pds_tam_per_region()\n")
+    f.write(f"        self.set_tam({'main_includes_regional=True' if regional else ''})\n")
+    f.write( "        ref_tam_per_region=self.tm.ref_tam_per_region()\n")
+    f.write( "        pds_tam_per_region=self.tm.pds_tam_per_region()\n")
     f.write("\n")
 
 
@@ -1426,13 +1337,6 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
                 cases[region_name] = sources
     else:
         cases = tmp_cases
-    if cases:
-        out_prefix = prefix
-        # The prefixes come in as 'tam_' or 'tam_pds'.
-        if out_prefix == 'tam_':
-            out_prefix = 'tam_ref_'
-        write_json(filename=pathlib.Path(outputdir) /
-                   f'{out_prefix}sources.json', d=cases)
     return cases
 
 
@@ -1666,9 +1570,11 @@ def output_solution_python_file(outputdir, xl_filename):
             'AEZ Data' in wb.sheetnames):
         is_rrs = False
         is_land = True
+        is_elecgen = False
     elif 'RRS' in xl_filename or 'TAM Data' in wb.sheetnames:
         is_rrs = True
         is_land = False
+        is_elecgen = ('ElectricityGenerationSolution' in wb['Advanced Controls']['B1'].value)
     else:
         raise ValueError('Cannot determine solution category')
     has_tam = is_rrs
@@ -1792,7 +1698,7 @@ def output_solution_python_file(outputdir, xl_filename):
     f.write("\n")
     if has_tam:
         f.write("        # TAM\n")
-        write_tam(f=f, wb=wb, outputdir=outputdir)
+        write_tam(f=f, wb=wb, outputdir=outputdir, is_elecgen=is_elecgen)
     elif is_land:
         f.write("        # TLA\n")
         write_aez(f=f, wb=wb)
