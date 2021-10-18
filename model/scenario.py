@@ -44,7 +44,8 @@ class Scenario:
     """The name of the scenario"""
     base_year: int
     """The base year for prognostication for this scenario.  The base year may be in the past, but it marks the 
-    dividing line between what is considered 'historical' data vs 'prognosticated' data."""
+    dividing line between what is considered 'historical' data vs 'prognosticated' data.
+    It is also the starting point for all cumulative operations (total emissions, etc.)"""
     # Commentary: currently base year is assigned by each model, and does not vary across scenarios, since this
     # is the way the Excel models worked.  What we need, though, is to think through how base year should vary,
     # and what should depend on it.
@@ -94,7 +95,7 @@ class Scenario:
     _pds_ca_sources = None 
     _pds_ca_settings = { 'high_sd_mult' : 1.0, 'low_sd_mult' : 1.0 }
     _pds_ad_sources = None
-    _pds_ad_settings = { 'main_includes_regional' : True, 'groups_include_hundred_percent': True,
+    _pds_ad_settings = { 'main_includes_regional' : False, 'groups_include_hundred_percent': True,
         'config_overrides' : None }
     
 
@@ -197,12 +198,11 @@ class Scenario:
                 except:
                     raise ValueError("S-Curve Adoption is currently only available with models that use TAMs (RRS models)")
                 sconfig = s_curve.make_scurve_config(self.base_year, tamdata, self.ac.as_dict())
-                # Note: hard-wiring the SCurve transition period parameter for now.  It should be a scenario attribute, but isn't currently.
                 self.sc = s_curve.SCurve(sconfig)
-            pds_adoption = (self.sc.logistic_adoption() 
+            pds_adoption = None
+            pds_trend = (self.sc.logistic_adoption() 
                             if self.ac.soln_pds_adoption_basis == 'Logistic S-Curve' else
                             self.sc.bass_diffusion_adoption())
-            pds_trend = None
             pds_single_source = False
         
         # else: ??  We don't issue an error here because (a) AC already checks this condition and (b) in the
