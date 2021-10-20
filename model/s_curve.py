@@ -57,7 +57,7 @@ class SCurve(DataHandler):
           last_pds_tam (float): total addressible market in the last year.
         """
         result = pd.DataFrame(dtype=np.float64)
-        for year in range(base_year, dd.CORE_END_YEAR + 1):
+        for year in range(dd.AD_START_YEAR, dd.AD_END_YEAR + 1):
             # the First Half function from Building Automation Systems "S Curve"!AH24:
             # =(((1-AH$18)/(1+EXP(-((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))
             #     *($AG24-(LN(1/AH$18-1)/((LN(1/AH$18-1)-LN(1/AH$21-1))/(AH$20-AH$17))+AH$17))))
@@ -167,10 +167,17 @@ class SCurve(DataHandler):
             Q = self.sconfig.loc[region, 'imitation']
             base_year = self.sconfig.loc[region, 'base_year']
             result.loc[base_year, region] = prev = self.sconfig.loc[region, 'base_adoption']
-            for year in range(base_year + 1, dd.CORE_END_YEAR + 1):
+            for year in range(base_year + 1, dd.AD_END_YEAR + 1):
                 b = prev + (P + (Q * prev / M)) * (M - prev)
                 result.loc[year, region] = b
                 prev = b
+            if base_year > dd.AD_START_YEAR:
+                prev = self.sconfig.loc[region, 'base_adoption']
+                for year in range(base_year-1,dd.AD_START_YEAR-1,-1):
+                    b = prev - (P + (Q * prev / M)) * (M - prev)
+                    result.loc[year, region] = b
+                    prev = b       
+                result.sort_index(inplace=True)         
         result.name = 'bass_diffusion_adoption'
         result.index.name = 'Year'
         return result

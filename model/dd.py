@@ -2,8 +2,12 @@
 import pandas.api.types
 
 # time ranges
+# CORE START YEAR is used for financial calcs
+# AD_START_YEAR is used for TAM and Adoptions
 CORE_START_YEAR = 2015
 CORE_END_YEAR = 2060
+AD_START_YEAR = 2014
+AD_END_YEAR = 2060
 
 
 REGIONS = [
