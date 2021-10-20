@@ -161,8 +161,8 @@ class Scenario(scenario.LandScenario):
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
-            use_first_pds_datapoint_main=True,
-            adoption_base_year=2018,
+            copy_pds_world_too=True,
+            copy_through_year=2018,
             copy_pds_to_ref=True,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)

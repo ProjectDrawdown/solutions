@@ -19,7 +19,7 @@ def share_prefixes(error_list):
 
 # this works because we put some structure in the output for the main solution tests
 
-def summarize_results(input, verbose=False):
+def summarize_results(input, verbose=False, module=None):
     textlines = input.read().splitlines()
     
     solname_test = None
@@ -30,17 +30,18 @@ def summarize_results(input, verbose=False):
         if not line.startswith("E   "):
             # if we've just exited an error output block, print solution results
             if solname_test:  # print results and reset
-                if verbose:
-                    print(solname_test + "\n    " + "\n    ".join( [scenario + ":" + share_prefixes(error_accum[scenario]) for scenario in error_accum.keys()] ))
-                else:
-                    # dedup error list over all scenarios
-                    allerrs = set()
-                    allerrs.update( *error_accum.values() )
-                    allers = list(allerrs)
-                    cnt = len(allers)
-                    if cnt > 8:
-                        allers = allers[:8] + ["..."]
-                    print(f"{solname_test}:\t{len(error_accum)}S/{cnt}E " + share_prefixes(allerrs))
+                if module and module in solname_test:
+                    if verbose:
+                        print(solname_test + "\n    " + "\n    ".join( [scenario + ":" + share_prefixes(error_accum[scenario]) for scenario in error_accum.keys()] ))
+                    else:
+                        # dedup error list over all scenarios
+                        allerrs = set()
+                        allerrs.update( *error_accum.values() )
+                        allers = list(allerrs)
+                        cnt = len(allers)
+                        if cnt > 8:
+                            allers = allers[:8] + ["..."]
+                        print(f"{solname_test}:\t{len(error_accum)}S/{cnt}E " + share_prefixes(allerrs))
                 # reset
                 solname_test = scenario_name = None
                 error_accum = {}
@@ -65,6 +66,7 @@ if __name__ == "__main__":
         description='Summarize expected result tests from test output file.')
     parser.add_argument('testfile', nargs='?', type=argparse.FileType('r'), default=sys.stdin)
     parser.add_argument('-v', '--verbose', action='store_true', help='List tests as well as counts')
+    parser.add_argument('-m', '--module', default=None, help="Restrict output to matching module")
     args = parser.parse_args()
 
-    summarize_results(args.testfile, args.verbose)
+    summarize_results(args.testfile, args.verbose, args.module)

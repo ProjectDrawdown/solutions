@@ -117,48 +117,6 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "ALL SOURCES",
     "pds_source_post_2014": "ALL SOURCES",
-    "pds_base_adoption": [
-        [
-            "World",
-            0.6794492428871898
-        ],
-        [
-            "OECD90",
-            0.3191954710617667
-        ],
-        [
-            "Eastern Europe",
-            0.10696600912194591
-        ],
-        [
-            "Asia (Sans Japan)",
-            0.14940816617982913
-        ],
-        [
-            "Middle East and Africa",
-            0.05052731382746539
-        ],
-        [
-            "Latin America",
-            0.028682249324419262
-        ],
-        [
-            "China",
-            0.27338382605688477
-        ],
-        [
-            "India",
-            0.06226876414656746
-        ],
-        [
-            "EU",
-            0.08601359398921465
-        ],
-        [
-            "USA",
-            0.12076301805261236
-        ]
-    ],
     "soln_pds_adoption_basis": "DEFAULT Linear",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": [

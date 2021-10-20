@@ -1064,7 +1064,8 @@ def one_solution_tester(solution_name, expected_filename,
     
     if len(scenario_errors):
         strout = "\n".join( f"scenario {k}\n" + "\n".join( v ) for (k,v) in scenario_errors.items() )
-        raise AssertionError( f"\nSolution {solution_name} deep results\n{len(scenario_errors)}/{scenario_count} scenarios with errors:\n{strout}" )
+        strout = f"\nSolution {solution_name} deep results\n{len(scenario_errors)}/{scenario_count} scenarios with errors:\n{strout}"
+        raise AssertionError( strout )
 
 
 def key_results_tester(solution_name, expected_filename, scenario_skip=None, key_results_skip=[]):
@@ -1108,5 +1109,6 @@ def key_results_tester(solution_name, expected_filename, scenario_skip=None, key
     
     if len(scenario_errors):
         strout = "\n".join( f"scenario {k}\n" + "\n".join( v ) for (k,v) in scenario_errors.items() )
-        raise AssertionError( f"\nSolution {solution_name} key results\n{len(scenario_errors)}/{scenario_count} scenarios with errors:\n{strout}" )
+        strout = f"\nSolution {solution_name} key results\n{len(scenario_errors)}/{scenario_count} scenarios with errors:\n{strout}"
+        raise AssertionError( strout )
 

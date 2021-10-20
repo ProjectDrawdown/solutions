@@ -111,9 +111,8 @@ class Scenario(scenario.RRSScenario):
             copy_pds_to_ref=False,
             copy_pds_datapoint=True,
             copy_ref_datapoint=True,
-            copy_datapoint_to_year=2014,
-            use_first_pds_datapoint_main=True,
-            use_first_ref_datapoint_main=True,
+            copy_pds_world_too=True,
+            copy_ref_world_too=True,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 

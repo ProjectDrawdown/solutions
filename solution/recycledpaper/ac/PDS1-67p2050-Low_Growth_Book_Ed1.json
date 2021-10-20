@@ -117,48 +117,6 @@
     "source_until_2014": "See McKinnsey & Co 2013 sheet (annual growth after 2030 2,7%",
     "ref_source_post_2014": "Maximum Cases",
     "pds_source_post_2014": "Maximum Cases",
-    "pds_base_adoption": [
-        [
-            "World",
-            207.0
-        ],
-        [
-            "OECD90",
-            125.0
-        ],
-        [
-            "Eastern Europe",
-            6.3
-        ],
-        [
-            "Asia (Sans Japan)",
-            78.0
-        ],
-        [
-            "Middle East and Africa",
-            2.75
-        ],
-        [
-            "Latin America",
-            12.21
-        ],
-        [
-            "China",
-            44.0
-        ],
-        [
-            "India",
-            3.0
-        ],
-        [
-            "EU",
-            69.0
-        ],
-        [
-            "USA",
-            46.5
-        ]
-    ],
     "soln_pds_adoption_basis": "Existing Adoption Prognostications",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": [

@@ -13,6 +13,11 @@ from model import s_curve
 from model import tam
 from solution import factory
 
+# This is a nice central point to put this 
+# These warnings occur because of NaN in the data.  It doesn't seem to affect results.
+warnings.filterwarnings("ignore",message=".*invalid value.*",module=".*numpy.*")
+warnings.filterwarnings("ignore",message=".*invalid value.*",module=".*pandas.*")
+
 
 # A note on how the Scenario inheritance structure works:
 # Solutions have a great deal of code in common, but also may differ in details to almost
@@ -122,7 +127,8 @@ class Scenario:
                 soln_adoption_custom_name ='Inline Ref Adoption',
                 total_adoption_limit= self.adoption_limit()
             )
-            self.ac.soln_ref_adoption_basis = "Custom"
+            # Modify the AC in place --- only do this during __init__!
+            self.ac = self.ac.with_modifications(soln_ref_adoption_basis="Custom")
             ref_adoption = self.ref_ca.adoption_data_per_region()
         
         elif self.ac.soln_ref_adoption_basis == "Custom" and not self.ref_ca:
@@ -151,9 +157,10 @@ class Scenario:
                total_adoption_limit = self.adoption_limit()
             )
             # override the AC setting, so the rest of the code will use this adoption.
-            # TODO BUG!  ac is frozen class.  Has this ever actually been called?
-            self.ac.soln_pds_adoption_basis='Fully Customized PDS'      
-        
+            # only do this during __init__!
+            self.ac = self.ac.with_modifications(soln_pds_adoption_basis='Fully Customized PDS')   
+
+        pds_adoption = pds_trend = pds_single_source = None
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
             if not self.pds_ca:
                 # scenarios can paramaterize which solutions should be included in the customized PDS
@@ -187,19 +194,14 @@ class Scenario:
                     main_includes_regional = self._pds_ad_settings['main_includes_regional'],
                     groups_include_hundred_percent = self._pds_ad_settings['groups_include_hundred_percent']
                 )
-            pds_adoption = self.ad.adoption_trend_per_region()
+            pds_adoption = self.ad.adoption_data_per_region()
             pds_trend = self.ad.adoption_trend_per_region()
             pds_single_source = self.ad.adoption_is_single_source()
         
         elif self.ac.soln_pds_adoption_basis in ['Logistic S-Curve', 'Bass Diffusion S-Curve']:
             if not self.sc:
-                try:
-                    tamdata = self.tm.pds_tam_per_region()
-                except:
-                    raise ValueError("S-Curve Adoption is currently only available with models that use TAMs (RRS models)")
-                sconfig = s_curve.make_scurve_config(self.base_year, tamdata, self.ac.as_dict())
+                sconfig = s_curve.make_scurve_config(self.base_year, self.adoption_limit(), self.ac.as_dict())
                 self.sc = s_curve.SCurve(sconfig)
-            pds_adoption = None
             pds_trend = (self.sc.logistic_adoption() 
                             if self.ac.soln_pds_adoption_basis == 'Logistic S-Curve' else
                             self.sc.bass_diffusion_adoption())
@@ -310,7 +312,6 @@ class Scenario:
                 if x['name'] == name:
                     return x['filename'] if 'filename' in x else None
         return None
-
 
     @classmethod
     def update_ac(cls, ac, **newvals):

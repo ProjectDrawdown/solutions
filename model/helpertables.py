@@ -21,15 +21,13 @@ class HelperTables:
             pds_adoption_trend_per_region=None, 
             ref_adoption_limits=None, 
             pds_adoption_limits=None,
-
             copy_ref_datapoint=True,
             copy_pds_datapoint=True,
-            copy_datapoint_to_year=None,
             copy_ref_world_too=False,
-            copy_pds_world_too=False,  
+            copy_pds_world_too=True,  
             copy_pds_to_ref=False,         
             copy_through_year=None,
-            pds_adoption_is_single_source=False, **old_args):
+            pds_adoption_is_single_source=False):
         """
         Helper Tables are the final step in constructing Adoption Prognostications.  The select between
         the different types of REF and PDS adoption that can be configured, and they handle the 
@@ -76,14 +74,11 @@ class HelperTables:
            row of the REF _table_ instead of the PDS current adoption.  Look at the actual row number of the Excel
            formula to see which kind of copy is being done. Default: True
         
-         * copy_datapoint_to_year: The year in which the datapoint gets copied _to_.  Defaults to the base adoption year.
-           But there are also models that copy it to the year 2014, even if that is not the base adoption year.
-           Affects both copy_ref_datapoint and copy_pds_datapoint.
-        
          * copy_pds_world_too: This parameter determines whether copy_pds_datapoint applies to the first (main
            region) column or not.  If True, copy_pds_datapoint overrides the first column.  If False, 
-           copy_pds_datapoint only overrides regional data.  Default: False
-         * copy_ref_world_too: Ditto but for ref.  Default: False
+           copy_pds_datapoint only overrides regional data.  Default: True
+
+         * copy_ref_world_too: Ditto but for ref.  Default: False  (Note opposite default value)
         
          * copy_pds_to_ref: In some models, World data (only) is copied from the PDS model to the REF model for 
            years before base year. This can be detected in the Excel by formula of the form =Cxx in the first
@@ -94,7 +89,8 @@ class HelperTables:
            year (that is, it treats the pds data as historical data which is copied to ref).
          
          * pds_adoption_is_single_source: (bool): whether the adoption data comes from a single source
-           or multiple, to determine how to handle stddev.   See the inline comment.
+           or multiple, to determine how to handle stddev.   Only affectes Existing Prognostications.
+           See the inline comment.
         
         """
         self.ac = ac
@@ -109,20 +105,20 @@ class HelperTables:
         # We define base year by what the REF adoption does.
         # PDS may use a different year in its datapoints, but that use should be only internal
         # to any processing it does; HT will ignore it.
-        self.adoption_base_year = ref_datapoints.first_valid_index()
+        self.adoption_base_year = ref_datapoints.first_valid_index() if ref_datapoints is not None else 2014
 
         self.copy_ref_datapoint = copy_ref_datapoint
         self.copy_pds_datapoint = copy_pds_datapoint
-        self.copy_datapoint_to_year = copy_datapoint_to_year or self.adoption_base_year
         self.copy_pds_world_too = copy_pds_world_too
         self.copy_ref_world_too = copy_ref_world_too
         self.copy_pds_to_ref = copy_pds_to_ref
-        # Note prameter rename, so as not to conflict with defined function
         self.copy_through_year = copy_through_year or self.adoption_base_year
         self.pds_adoption_is_single_source = pds_adoption_is_single_source
 
-        self.ref_datapoints.iloc[1] = self.ref_datapoints.iloc[1].fillna(0.0)
-        self.pds_datapoints.iloc[1] = self.pds_datapoints.iloc[1].fillna(0.0)
+        if self.ref_datapoints is not None:
+            self.ref_datapoints.iloc[1] = self.ref_datapoints.iloc[1].fillna(0.0)
+        if self.pds_datapoints is not None:
+            self.pds_datapoints.iloc[1] = self.pds_datapoints.iloc[1].fillna(0.0)
 
 
     def ref_adoption_type(self):
@@ -148,8 +144,7 @@ class HelperTables:
             assert self.ref_adoption_data_per_region is not None
             adoption = self.ref_adoption_data_per_region.loc[2014:, :].copy(deep=True)
         else:
-            last_year = dd.CORE_END_YEAR
-            adoption = self._linear_forecast(2014, last_year, self.ref_datapoints)
+            adoption = self._linear_forecast(dd.AD_START_YEAR, dd.AD_END_YEAR, self.ref_datapoints)
         #print(f"REF A: {adoption.loc[2014,'World']}")
 
         # cannot exceed tam or tla
@@ -179,12 +174,13 @@ class HelperTables:
             # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.i71c3bhbim59
             adoption.iloc[0, 1:] = self.ref_datapoints.iloc[0, 1:]
             #print(f"REF B: {adoption.loc[2014,'World']}")
-        elif self.copy_ref_datapoint:
-            copy_year = self.copy_datapoint_to_year
+        
+        if self.copy_ref_datapoint:
+            # copy datapoint affects the first row, regardless of base_year
             override = self.ref_datapoints.iloc[0]
             if not self.copy_ref_world_too:
                 override = override[1:]  # Remove main region (World) from series
-            adoption.loc[copy_year].update(override)
+            adoption.loc[2014].update(override)
             #print(f"REF C: {adoption.loc[2014,'World']}")
 
         if not suppress_override and self.ac.ref_adoption_use_pds_years:
@@ -235,12 +231,10 @@ class HelperTables:
            SolarPVUtil 'Helper Tables'!B90:L137
         """
         main_region = dd.REGIONS[0]
-        first_year = self.pds_datapoints.first_valid_index()
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
             adoption = self.pds_adoption_data_per_region.loc[2014:, :].copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Linear':
-            last_year = dd.CORE_END_YEAR
-            adoption = self._linear_forecast(first_year, last_year, self.pds_datapoints)
+            adoption = self._linear_forecast(dd.AD_START_YEAR, dd.AD_END_YEAR, self.pds_datapoints)
         elif 'S-Curve' in self.ac.soln_pds_adoption_basis:
             adoption = self.pds_adoption_trend_per_region.copy(deep=True)
         elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
@@ -277,18 +271,15 @@ class HelperTables:
             #print(f"D: {adoption.loc[2014,'World']}")
 
         if self.copy_pds_datapoint:
-            #breakpoint()
-
             #print(f"params are {self.copy_pds_datapoint} and {self.copy_pds_world_too}")
-            copy_year = self.copy_datapoint_to_year
+            #copy pds datapoint always affects year 2014, regardless of base_year
             if self.copy_pds_datapoint == 'Ref Table':
-                override = self.soln_ref_funits_adopted(suppress_override=True).loc[copy_year]
+                override = self.soln_ref_funits_adopted(suppress_override=True).loc[2014]
             else:
                 override = self.pds_datapoints.iloc[0]
-
             if not self.copy_pds_world_too:
                 override = override[1:]  # Remove main region (World) from series
-            adoption.loc[copy_year].update(override)
+            adoption.loc[2014].update(override)
             #print(f"E: {adoption.loc[2014,'World']}")
 
         adoption.name = "soln_pds_funits_adopted"

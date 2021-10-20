@@ -273,18 +273,18 @@ class Scenario(scenario.LandScenario):
         ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
         ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
         ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
-        use_first_pds_datapoint_main = False
+        copy_pds_world_too = False
         if (self.ac.name == 'PDS-100p2050-Optimum' or
                 self.ac.name == 'PDS-100p2050-Optimum-Jan2019' or
                 self.ac.name == 'PDS-97p2050-Drawdown-Jan2019'):
-            use_first_pds_datapoint_main = True
+            copy_pds_world_too = True
         self.ht = helpertables.HelperTables(ac=self.ac,
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
             ref_adoption_data_per_region=ref_adoption_data_per_region,
-            use_first_pds_datapoint_main=use_first_pds_datapoint_main,
-            adoption_base_year=2018,
+            copy_pds_world_too=copy_pds_world_too,
+            copy_through_year=2018,
             copy_pds_to_ref=False, copy_ref_datapoint=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)

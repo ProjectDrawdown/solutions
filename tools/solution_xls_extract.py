@@ -28,7 +28,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tools.util import convert_bool, xls, xli, xln, co
+from tools.util import convert_bool, xls, xli, xln, co, find_in_column
 from tools.vma_xls_extract import VMAReader
 from model import advanced_controls as ac
 
@@ -855,6 +855,7 @@ def write_ht(f, wb):
          has_single_source: whether to emit a pds_adoption_is_single_source arg
     """
     h = wb['Helper Tables']
+    ref_initial_year = h['B21'].value
     pds_initial_year = h['B85'].value
 
     tam_or_tla = 'ref_tam_per_region' if not is_land else 'self.tla_per_region'
@@ -889,34 +890,79 @@ def write_ht(f, wb):
         f.write( "            ref_adoption_limits=ref_tam_per_region,\n")
         f.write( "            pds_adoption_limits=pds_tam_per_region,\n")
     f.write( "            pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
-    f.write( "            pds_adoption_is_single_source=pds_adoption_is_single_source,\n")
 
+    # Assess the Quirks Parameters
+    # Note that we could do a more reliable job here by utilizing the fact that openpyxl can
+    # read the formulas of the cells, not just their contents.  Just don't have time to do that now.
 
-    # first_world_pds_datapoint = xli(h, 'C85')
-    # first_world_pds_yearly_result = xli(h, 'C91')
-    # use_first_pds_datapoint_main = (first_world_pds_datapoint == first_world_pds_yearly_result)
-    # copy_pds_to_ref = True
-    # for pds, ref in [('C91', 'C27'), ('C92', 'C28'), ('C93', 'C29'), ('C94', 'C30')]:
-    #     if xli(h, pds) != xli(h, ref):
-    #         copy_pds_to_ref = False
+    v = lambda r, c: h.cell(r,c).value  # shortcut, and skip the data cleaning in this case
 
-    # f.write( "            # Quirks Parameters.  The generator tries to guess these correctly, but can get\n")
-    # f.write( "            # it wrong.  See the documentation for HelperTables.__init__() to understand\n")
-    # f.write( "            # exactly what these mean, and how to set them if they aren't working right.\n")
-    # f.write( "            # (For test errors occurring in HelperTables, this is the first thing to check).\n")    
+    # check if pds is being copied to ref
+    # First check if there are any Y-PDS type values --- that would give us a false positive, and a circular
+    # calculation to boot (discovered the hard way)
+    copy_pds_to_ref = False
+    ac = wb['Advanced Controls']
+    start_row = find_in_column(ac, co("F"), "Adjustment?", 250)
+    assert start_row, "Couldn't find Adjustment? column on AC sheet"
+    y_pds = False
+    for row in range(start_row+1,start_row+5):
+        if xls(ac,row,co("F")) != "N":
+            y_pds = True
+            break
+
+    # If there were no Y-PDS in the way, we detect copy_pds_to_ref by looking for shared values
+    # in the two tables.
+    if not y_pds:  
+        offset = 0
+        # we actually start at row 2015, because 2014 treatment sometimes has other issues
+        while v(28+offset, co("C")) == v(92+offset, co("C")):
+            offset += 1
+        copy_pds_to_ref = (offset > 0)
+        copy_through_year = 2014+offset
+
+    # Now, lets check the behavior of the first rows of both tables
+    # the default _is_ to copy, so we are looking for evidence that we should not
+    copy_ref = True
+    copy_ref_world_too = False
+    base_row = 27 + (ref_initial_year - 2014)  # where would we be copying to?
+    for col in range(co("D"),co("L")+1):
+        if v(19,col) != v(base_row,col):
+            copy_ref = False
+            break
+    if copy_ref and v(19,co("C")) == v(base_row,co("C")):
+        copy_ref_world_too = True
     
-    # f.write(f"            use_first_pds_datapoint_main={use_first_pds_datapoint_main},\n")
-    # # if adoption_base_year:
-    # #f.write(f"            adoption_base_year=self.base_year,\n")
+    copy_pds = True
+    copy_pds_world_too = False
+    base_row = 91 + (pds_initial_year - 2014)
+    for col in range(co("D"),co("L")+1):
+        if v(85,col) != v(base_row,col):
+            copy_pds = False
+            break
+    if copy_pds and v(85,co("C")) == v(base_row,co("C")):
+        copy_pds_world_too = True
+
+    f.write( "            # Quirks Parameters.  The generator tries to guess these correctly, but can get\n")
+    f.write( "            # it wrong.  See the documentation for HelperTables.__init__() to understand\n")
+    f.write( "            # exactly what the paramaters do, and how to set them.\n")
     
-    # f.write(f"            copy_pds_to_ref={copy_pds_to_ref},\n")
-    # f.write( "            copy_ref_datapoint=False\n")
-    # f.write( "            copy_pds_datapoint=False,\n")
-    f.write("            copy_through_year=None)\n")
+    f.write(f"            copy_pds_to_ref={copy_pds_to_ref},\n")
+    if copy_pds_to_ref:
+        f.write(f"            copy_through_year={copy_through_year},\n")
+    f.write(f"            copy_ref_datapoint={copy_ref},\n")
+    if copy_ref:
+        f.write(f"            copy_ref_world_too={copy_ref_world_too},\n")
+    f.write(f"            copy_pds_datapoint={copy_pds},\n")
+    if copy_pds:
+        f.write(f"            copy_pds_world_too={copy_pds_world_too},\n")
+
+    f.write( "            pds_adoption_is_single_source=pds_adoption_is_single_source)\n")
+    f.write( "\n")
 
 
 def write_ef(f, wb):
     """Write out the Emissions Factors module for this solution class."""
+    f.write("        # Emissions: if this is an older model, you may need to set a data version to make tests pass.\n")
     f.write("        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)\n")
     f.write("\n")
 
@@ -1513,7 +1559,7 @@ def output_solution_python_file(outputdir, xl_filename):
         os.mkdir(outputdir)
     py_filename = os.path.join(outputdir, '__init__.py')
     if os.path.exists(py_filename):
-        py_filename = os.path.join(outputdir, '__init__.py.UPDATED')
+        py_filename = os.path.join(outputdir, '__init__UPDATED.py')
         print(f'Generating new code at {py_filename} - please merge by '
               'hand with __init__.py')
 
@@ -1660,6 +1706,9 @@ def output_solution_python_file(outputdir, xl_filename):
     f.write("\n")
 
     write_ht(f=f, wb=wb)
+
+    f.write("        # DERIVED VALUES\n")
+    f.write("\n")
     write_ef(f=f, wb=wb)
     write_ua(f=f, wb=wb)
     write_fc(f=f, wb=wb)
