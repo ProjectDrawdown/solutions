@@ -984,6 +984,8 @@ def write_ua(f, wb, is_rrs=True):
     if 'Repeated First Cost to Maintaining Implementation Units' in xls(ac_tab, 'A43'):
         repeated_cost_for_iunits = convert_bool(xls(ac_tab, 'C43'))
         f.write("            repeated_cost_for_iunits=" + str(repeated_cost_for_iunits) + ",\n")
+    f.write("            # Quirks parameters\n")
+    f.write("            replacement_period_offset=0,\n")
     # If S135 == D135 (for all regions), then it must not be adding in 'Advanced Controls'!C62
     bug_cfunits_double_count = False
     for i in range(0, 9):
@@ -1251,6 +1253,7 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
         for col in range(2, tab.max_column):
             if tab.cell(line+1, col).value == 'Functional Unit':
                 break
+            breakpoint()
             case = xls(tab, case_line, col)
             if case != '':
                 case = normalize_case_name(case)

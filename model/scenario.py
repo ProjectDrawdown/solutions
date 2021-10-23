@@ -102,6 +102,7 @@ class Scenario:
     _pds_ad_sources = None
     _pds_ad_settings = { 'main_includes_regional' : False, 'groups_include_hundred_percent': True,
         'config_overrides' : None }
+    _pds_sc_settings = { 'use_tam_2014': True }
     
 
     def initialize_adoption_bases(self):
@@ -200,7 +201,8 @@ class Scenario:
         
         elif self.ac.soln_pds_adoption_basis in ['Logistic S-Curve', 'Bass Diffusion S-Curve']:
             if not self.sc:
-                sconfig = s_curve.make_scurve_config(self.base_year, self.adoption_limit(), self.ac.as_dict())
+                sconfig = s_curve.make_scurve_config(self.base_year, self.adoption_limit(), self.ac.as_dict(),
+                                                     use_tam_2014 = self._pds_sc_settings['use_tam_2014'])
                 self.sc = s_curve.SCurve(sconfig)
             pds_trend = (self.sc.logistic_adoption() 
                             if self.ac.soln_pds_adoption_basis == 'Logistic S-Curve' else

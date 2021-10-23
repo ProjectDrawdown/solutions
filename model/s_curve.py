@@ -6,10 +6,12 @@ import model.dd as dd
 from model.data_handler import DataHandler
 from model.decorators import data_func
 
-def make_scurve_config(base_year, tamdata, configdict, end_year=2050):
+def make_scurve_config(base_year, tamdata, configdict, end_year=2050, use_tam_2014=False):
     """Create a configuration for a standard S-Curve or Bass Diffusion S-Curve.  Configdict should contain required parameters
     'ref_base_adoption', 'pds_adoption_final_percentage', and for Bass Diffusion S-Curves may also contain 'pds_adoption_s_curve_innovation'
-    and 'pds_adoption_s_curve_imitation'.  These are all AC fields, and can be obtained via ac.asdict()."""
+    and 'pds_adoption_s_curve_imitation'.  These are all AC fields, and can be obtained via ac.asdict().
+    Parameter use_tam_2014 is a quirks parameter to match a bug in the Excel that uses the TAM from the year 2014 instead of base_year
+    as it ought to."""
     sconfig = pd.DataFrame({'base_year': base_year, 'end_year': end_year}, index=dd.REGIONS)
     sconfig['base_adoption'] = pd.Series(configdict['ref_base_adoption'])
     sconfig['base_percent'] = sconfig['base_adoption'] / tamdata.loc[base_year]
@@ -19,6 +21,10 @@ def make_scurve_config(base_year, tamdata, configdict, end_year=2050):
         sconfig['innovation'] = pd.Series(configdict['pds_adoption_s_curve_innovation'])
     if 'pds_adoption_s_curve_imitation' in configdict:
         sconfig['imitation'] = pd.Series(configdict['pds_adoption_s_curve_imitation'])
+    
+    if use_tam_2014:
+        # Excel bug calulates base_adoption from TAM[2014] instead of TAM[base_year].  For compatibility, we can do the same
+        sconfig['base_adoption'] = sconfig['base_percent'] *  tamdata.loc[2014]
     return sconfig
 
 class SCurve(DataHandler):
