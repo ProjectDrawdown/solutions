@@ -702,7 +702,7 @@ def get_filename_for_source(sourcename, prefix=''):
     return prefix + filename + '.csv'
 
 
-def write_tam(f, wb, outputdir, is_elecgen=False):
+def write_tam(f, wb, outputdir):
     """Generate the TAM section of a solution.
        Arguments:
          f - file-like object for output
@@ -726,13 +726,6 @@ def write_tam(f, wb, outputdir, is_elecgen=False):
         f.write("        self._ref_tam_sources = scenario.load_sources(rrs.energy_ref_tam(),'*')\n")
         f.write("        self._pds_tam_sources = scenario.load_sources(rrs.energy_pds_tam(),'*')\n")
     else:
-        # Is it really stupid to write comments in the code about bugs, rather than fixing the bugs?
-        # Yes, yes, it is.
-        f.write( "        # Also, there is currently a bug in the code that generates the TAM json file, which\n")
-        f.write( "        # causes some sources to be assigned to the empty case.  Please check if this is\n")
-        f.write( "        # occurring, and if so, put the sources in the case where they belong.\n")
-        f.write( "\n")
-
         # Extract the data sources
         # See extract_source_data for the definition of these line numbers
         tam_regions = {'World': 44, 'OECD90': 162, 'Eastern Europe': 226,
@@ -807,20 +800,24 @@ def write_ad(f, wb, outputdir):
         # Extract the fit parameters and output them for users to double check that they don't need
         # special handling
         f.write( "        # Instructions: Set AD override parameters appropriately if any of these regional values vary from the standard\n")
-        f.write( "        # (then delete these comments):\n")
         f.write(f"        # trend (3rd Poly): {lk('L17')} {lk('L20')} {lk('L26')} {lk('L29')} {lk('L32')} {lk('L35')} {lk('L38')} {lk('L41')}\n")
         f.write(f"        # growth (medium): {lk('M17')} {lk('M20')} {lk('M23')} {lk('M26')} {lk('M29')} {lk('M32')} {lk('M35')} {lk('M38')} {lk('M41')}\n")
         if xls(a, 'R17') == 'S.D.':
             f.write(f"        # low_sd_mult (1.0): {lk('Q17')} {lk('Q20')} {lk('Q23')} {lk('Q26')} {lk('Q29')} {lk('Q32')} {lk('Q35')} {lk('Q38')} {lk('Q41')}\n")
             f.write(f"        # high_sd_mult (1.0): {lk('Q16')} {lk('Q19')} {lk('Q22')} {lk('Q25')} {lk('Q28')} {lk('Q31')} {lk('Q34')} {lk('Q37')} {lk('Q40')}\n") 
+        f.write("\n")
 
         regional = convert_bool(xls(a, 'B30')) and convert_bool(xls(a, 'B31'))
+        if regional or is_elecgen:
+            f.write("        # other AD parameter overrides\n")
         if regional:
             f.write("        self._pds_ad_settings['main_includes_regional'] = True\n") 
         if is_elecgen:
-            f.write("        # Quirks parameter should apply to energy solutions only (remove once ")
+            f.write("        # groups_include_hundred_percent is a quirks parameter that should apply to energy solutions only\n")
             f.write("        self._pds_ad_settings['groups_include_hundred_percent'] = False\n")
         f.write("        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad/ad_sources.json', '*')\n")
+
+        write_json(filename=Path(outputdir)/'ad/ad_sources.json', d=sources)
 
 
 def write_ca(case, f, wb, outputdir):
@@ -924,22 +921,20 @@ def write_ht(f, wb):
     # the default _is_ to copy, so we are looking for evidence that we should not
     copy_ref = True
     copy_ref_world_too = False
-    base_row = 27 + (ref_initial_year - 2014)  # where would we be copying to?
     for col in range(co("D"),co("L")+1):
-        if v(19,col) != v(base_row,col):
+        if v(19,col) != v(27,col):
             copy_ref = False
             break
-    if copy_ref and v(19,co("C")) == v(base_row,co("C")):
+    if copy_ref and v(19,co("C")) == v(27,co("C")):
         copy_ref_world_too = True
     
     copy_pds = True
     copy_pds_world_too = False
-    base_row = 91 + (pds_initial_year - 2014)
     for col in range(co("D"),co("L")+1):
-        if v(85,col) != v(base_row,col):
+        if v(85,col) != v(91,col):
             copy_pds = False
             break
-    if copy_pds and v(85,co("C")) == v(base_row,co("C")):
+    if copy_pds and v(85,co("C")) == v(91,co("C")):
         copy_pds_world_too = True
 
     f.write( "            # Quirks Parameters.  The generator tries to guess these correctly, but can get\n")
@@ -1003,8 +998,8 @@ def write_fc(f, wb):
     """Code generate the First Code module for this solution class."""
     fc_tab = wb['First Cost']
     f.write("        self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=" + xls(fc_tab, 'C25') + ",\n")
-    f.write("            ref_learning_increase_mult=" + xls(fc_tab, 'D25') +
-            ", conv_learning_increase_mult=" + xls(fc_tab, 'E25') + ",\n")
+    f.write("            ref_learning_increase_mult=" + xls(fc_tab, 'D25') + ",\n")
+    f.write("            conv_learning_increase_mult=" + xls(fc_tab, 'E25') + ",\n")
     f.write("            soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,\n")
     f.write("            soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,\n")
     f.write("            conv_ref_tot_iunits=conv_ref_tot_iunits,\n")
@@ -1248,30 +1243,32 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
     tmp_cases = {}
     tab = wb[sheet_name]
     case_line = regions['World']
+    # Walk through the case line of each region and recover the mapping of cases
+    # to sources.
     for (region, line) in regions.items():
-        case = ''
-        for col in range(2, tab.max_column):
+        current_case = ''
+        for col in range(3, tab.max_column):
             if tab.cell(line+1, col).value == 'Functional Unit':
                 break
-            breakpoint()
-            case = xls(tab, case_line, col)
-            if case != '':
-                case = normalize_case_name(case)
+            # Cases are in merged cells, which in openpyxl return a value for the
+            # first cell in the range and empty later.  So keep track of the most recent
+            # case we have seen, and switch it when we see a new one.
+            maybe_new_case = xls(tab, case_line, col)
+            if maybe_new_case != '':
+                current_case = normalize_case_name(maybe_new_case)
             # it is important to get the source name from the regional_data.columns here, not re-read
             # the source_name from Excel, because some solutions like Composting have duplicate
             # column names and pd.read_excel automatically appends ".1" and ".2" to make them unique.
             source_name = region_data[region].columns[col - 3]  
-                 # col is the excel index, which is 1-based and has 2 columns to the left, so -3
-                 # gives the equivalent df index.
             filename = sources.get(source_name, None)
             if source_name is not None and filename is not None:
                 key = 'Region: ' + region
                 region_cases = tmp_cases.get(key, dict())
                 tmp_cases[key] = region_cases
-                s = region_cases.get(case, dict())
+                s = region_cases.get(current_case, dict())
                 if source_name not in s:
                     s[source_name] = filename
-                    region_cases[case] = s
+                    region_cases[current_case] = s
 
     # suppress regions which are a subset of World.
     if 'Region: World' in tmp_cases:
@@ -1563,8 +1560,7 @@ def output_solution_python_file(outputdir, xl_filename):
     py_filename = os.path.join(outputdir, '__init__.py')
     if os.path.exists(py_filename):
         py_filename = os.path.join(outputdir, '__init__UPDATED.py')
-        print(f'Generating new code at {py_filename} - please merge by '
-              'hand with __init__.py')
+        print(f'Generating new code at {py_filename} - please merge by hand with __init__.py')
 
     wb = openpyxl.load_workbook(filename=xl_filename,data_only=True,keep_links=False)
     ac_tab = wb['Advanced Controls']
@@ -1581,15 +1577,13 @@ def output_solution_python_file(outputdir, xl_filename):
     else:
         raise ValueError('Cannot determine solution category')
     has_tam = is_rrs
-
-    # We take the adoption base year to be ref base year, which is also that HT expects.
     adoption_base_year = wb['Helper Tables']['B21'].value
 
     f = open(py_filename, 'w', encoding='utf-8')
 
     solution_name = xls(ac_tab, 'C40')
-    f.write('#' + str(solution_name) + ' solution model.\n')
-    f.write('#   Originally exported from: ' + os.path.basename(xl_filename) + '\n')
+    f.write('# ' + str(solution_name) + ' solution model.\n')
+    f.write('# Originally exported from: ' + os.path.basename(xl_filename) + '\n')
     f.write('\n')
     f.write('from pathlib import Path\n')
     f.write('import numpy as np\n')
