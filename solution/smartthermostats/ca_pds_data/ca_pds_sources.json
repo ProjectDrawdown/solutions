@@ -1,37 +1,27 @@
 [
-  {
-    "name": "Aggressive, Low",
-    "include": true,
-    "filename": "custom_pds_ad_Aggressive_Low.csv"
-  },
-  {
-    "name": "Conservative, Low",
-    "include": true,
-    "filename": "custom_pds_ad_Conservative_Low.csv"
-  },
-  {
-    "name": "Aggressive, high",
-    "include": true,
-    "filename": "custom_pds_ad_Aggressive_high.csv"
-  },
-  {
-    "name": "Aggressive, high, early",
-    "include": true,
-    "filename": "custom_pds_ad_Aggressive_high_early.csv"
-  },
-  {
-    "name": "Drawdown Book Ed.1 Scenario 1",
-    "include": false,
-    "filename": "custom_pds_ad_Drawdown_Book_Ed_1_Scenario_1.csv"
-  },
-  {
-    "name": "Drawdown Book Ed.1 Scenario 2",
-    "include": false,
-    "filename": "custom_pds_ad_Drawdown_Book_Ed_1_Scenario_2.csv"
-  },
-  {
-    "name": "Drawdown Book Ed.1 Scenario 3",
-    "include": false,
-    "filename": "custom_pds_ad_Drawdown_Book_Ed_1_Scenario_3.csv"
-  }
+    {
+        "name": "Projected Based on Berg Insight (2016)",
+        "filename": "ca_pds_Projected_based_on_Berg_Insight_2016.csv",
+        "description": "The process for creating these customized adoption projections is explained below: \n\nStep 1: Collect data from sources and ensure converted units are cumulative adoption in millions of thermostats (asusmes to be 1 thermostat per household => millions of households) . 'Source 1' is from Berg Insight (2015)\n \nStep 2: Using the datapoints for each year available, interpolate on the Data Interpolator with the best fit that seems to fit within the TAM (so in some cases, the adoptions surpassed 7 billion households, which is impossible even in 2060) , and alternative interpolations were used instead). The interpolated values are returned to returned to the Custom Adoption based on GDP sheet.\n\nStep 3: This adoption data are copied to the 'Custom PDS Adoption' Sheet, and details are explained there. \n\nStep 4: On the 'Advanced Controls' sheet, under Adoption Scenario Inputs, 'Fully Customized PDS' is selected, referencing the data listed on 'Custom Adoption'."
+    },
+    {
+        "name": "Projected Based on Bloomberg (Stubbe, 2018)",
+        "filename": "ca_pds_Projected_based_on_Bloomberg_Stubbe_2018.csv",
+        "description": "The process for creating these customized adoption projections is explained below: \n\nStep 1: Collect data from sources and ensure converted units are cumulative adoption in millions of thermostats (asusmes to be 1 thermostat per household => millions of households) . 'Source 2' is from Bloomberg BusinessWeek 2018. \n \nStep 2: Using the datapoints for each year available, interpolate on the Data Interpolator with the best fit that seems to fit within the TAM (so in some cases, the adoptions surpassed 7 billion households, which is impossible even in 2060) , and alternative interpolations were used instead). The interpolated values are returned to the Custom Adoption based on GDP sheet\n\nStep 3: This adoption data are copied to the 'Custom PDS Adoption' Sheet. \n\nStep 4: On the 'Advanced Controls' sheet, under Adoption Scenario Inputs, 'Fully Customized PDS' is selected, referencing the data listed on 'Custom Adoption'."
+    },
+    {
+        "name": "Drawdown Book Ed.1 Scenario 1",
+        "filename": "ca_pds_Drawdown_Book_Ed_1_Scenario_1.csv",
+        "description": "The Drawdown Book Edition 1 model has very similar projections as those in this model, but some of the inputs used for those projections have changed. We record them here to allow the user to reproduce the results calculated for the book printing."
+    },
+    {
+        "name": "Drawdown Book Ed.1 Scenario 2",
+        "filename": "ca_pds_Drawdown_Book_Ed_1_Scenario_2.csv",
+        "description": "The Drawdown Book Edition 1 model has very similar projections as those in this model, but some of the inputs used for those projections have changed. We record them here to allow the user to reproduce the results calculated for the book printing."
+    },
+    {
+        "name": "Drawdown Book Ed.1 Scenario 3",
+        "filename": "ca_pds_Drawdown_Book_Ed_1_Scenario_3.csv",
+        "description": "The Drawdown Book Edition 1 model has very similar projections as those in this model, but some of the inputs used for those projections have changed. We record them here to allow the user to reproduce the results calculated for the book printing."
+    }
 ]

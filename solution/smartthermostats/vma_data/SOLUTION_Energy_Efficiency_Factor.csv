@@ -1,5 +1,7 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Nest Labs White Paper 2015 (MyEnergy Pilot),https://nest.com/downloads/press/documents/energy-savings-white-paper.pdf,USA,,,2015,,,%,0.155,%,,,
-"Nest Labs White Paper 2015 (Indiana Utility Pilot), average",https://nest.com/downloads/press/documents/energy-savings-white-paper.pdf,USA,,,2015,,,%,0.139,%,,,
-Carrier Côr Thermostat (third-party study),http://dms.hvacpartners.com/docs/1009/public/02/tp-wem-01pd.pdf,,,,2012,,,%,0.2,%,,,
-"Urban and Roth (2014), p. 29, mean value",https://www.energystar.gov/sites/default/files/specs/Nest%20Supplementary%20Comments.pdf,USA,"Washington, D.C.",,2014,,,%,0.18,%,,,
+Nest Labs White Paper 2015 (MyEnergy Pilot),https://nest.com/downloads/press/documents/energy-savings-white-paper.pdf,OECD90,USA,3 - For Profit,2015,,15.5,%,0.155,%,,,
+"Nest Labs White Paper 2015 (Indiana Utility Pilot), average",https://nest.com/downloads/press/documents/energy-savings-white-paper.pdf,OECD90,USA,3 - For Profit,2015,,13.9,%,0.139,%,,,
+Carrier Côr Thermostat (third-party study),http://dms.hvacpartners.com/docs/1009/public/02/tp-wem-01pd.pdf,OECD90,USA,3 - For Profit,2012,,20.0,%,0.2,%,,,
+"Urban and Roth (2014), p. 29, mean value",https://www.energystar.gov/sites/default/files/specs/Nest%20Supplementary%20Comments.pdf,OECD90,USA,1  - Peer Reviewed,2014,,18.0,%,0.18,%,,,
+"Ford, R., Pritoni, M., Sanguinetti, A., & Karlin, B. (2017). Categories and functionality of smart home technology for energy management. Building and Environment",https://doi.org/10.1016/j.buildenv.2017.07.020,OECD90,USA,1  - Peer Reviewed,2017,,18.0,%,0.18,%,,,
+"Kamel et al (2019). State-of-the-Art Review of Energy Smart Homes. Journal of Architectural Engineering, 25(1), 03118001",https://doi.org/10.1061/(ASCE)AE.1943-5568.0000337,OECD90,USA,1  - Peer Reviewed,2019,,40.0,%,0.4,%,,,
