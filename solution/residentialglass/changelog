@@ -1,8 +1,8 @@
 Setting specific parameters for Helper Tables and Unit Adoption were what it
 took to get it working:
 Helper Tables:
-    use_first_pds_datapoint_main=True,
-    use_first_ref_datapoint_main=False,
+    copy_pds_world_too=True,
+    copy_ref_world_too=False,
     copy_pds_to_ref=False,
     copy_ref_datapoint=False,
     copy_pds_datapoint='Ref Table',

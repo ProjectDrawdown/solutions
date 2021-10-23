@@ -14,7 +14,7 @@ def test_sigmoid_logistic():
     # values from Building Automation System "S Curve Adoption"!AH17:AH22
     result = sc._sigmoid_logistic(base_year=2014, last_year=2050,
                                   base_percent=0.346959145052, last_percent=0.95,
-                                  base_adoption=16577.8259167003, pds_tam_2050=77969.4257883872)
+                                  base_adoption=16577.8259167003, last_pds_tam=77969.4257883872)
     expected = pd.DataFrame(world_sigmoid_logistic_list[1:],
                             columns=world_sigmoid_logistic_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
@@ -27,13 +27,13 @@ def test_sigmoid_logistic_100_percent_final_adoption():
     # values from Building Automation System "S Curve Adoption"!AJ17:AJ22
     result = sc._sigmoid_logistic(base_year=2014, last_year=2050,
                                   base_percent=0.677494504097, last_percent=1.0,
-                                  base_adoption=14915.990000000000, pds_tam_2050=30578.7612542884)
+                                  base_adoption=14915.990000000000, last_pds_tam=30578.7612542884)
     expected = pd.DataFrame(OECD90_sigmoid_logistic_list[1:],
                             columns=OECD90_sigmoid_logistic_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     result = sc._sigmoid_logistic(base_year=2014, last_year=2050,
                                   base_percent=0.677494504097, last_percent=0.999999999999,
-                                  base_adoption=14915.990000000000, pds_tam_2050=30578.7612542884)
+                                  base_adoption=14915.990000000000, last_pds_tam=30578.7612542884)
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
@@ -43,14 +43,14 @@ def test_sigmoid_logistic_divide_by_zero():
     sc = s_curve.SCurve(transition_period=None, sconfig=None)
     result = sc._sigmoid_logistic(base_year=2014, last_year=2050,
                                   base_percent=0.1, last_percent=0.0,
-                                  base_adoption=1000.0, pds_tam_2050=1000.0)
+                                  base_adoption=1000.0, last_pds_tam=1000.0)
     expected = pd.DataFrame(nan_sigmoid_logistic_list[1:],
                             columns=nan_sigmoid_logistic_list[0]).set_index('Year')
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
     with pytest.warns(None) as warnings:
         result = sc._sigmoid_logistic(base_year=2014, last_year=2050,
                                       base_percent=np.float64(0.1), last_percent=np.float64(0.0),
-                                      base_adoption=1000.0, pds_tam_2050=1000.0)
+                                      base_adoption=1000.0, last_pds_tam=1000.0)
     assert len(warnings) == 0
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
@@ -69,7 +69,7 @@ def test_logistic_adoption():
         ['EU', 2014, 2050, 0.482603137947, 1.0, 3622.85, 11003.3574757203],
         ['USA', 2014, 2050, 0.445634302889, 1.0, 11293.14, 36879.9583966390]],
         columns=['region', 'base_year', 'last_year', 'base_percent', 'last_percent',
-                 'base_adoption', 'pds_tam_2050']).set_index('region')
+                 'base_adoption', 'last_pds_tam']).set_index('region')
     sc = s_curve.SCurve(transition_period=16, sconfig=sconfig)
     result = sc.logistic_adoption()
     expected = pd.DataFrame(logistic_s_curve_adoption_list[1:],
@@ -95,7 +95,7 @@ def test_bass_diffusion():
         ['EU', 2014, 2050, 0.0, 0.0, 59700.4155768868, 0.0011209600, 0.1033334410],
         ['USA', 2014, 2050, 0.0, 0.0, 64756.7863759130, 0.0011209600, 0.1033334410]],
         columns=['region', 'base_year', 'last_year', 'base_percent', 'base_adoption',
-                 'pds_tam_2050', 'innovation', 'imitation']).set_index('region')
+                 'last_pds_tam', 'innovation', 'imitation']).set_index('region')
     sc = s_curve.SCurve(transition_period=None, sconfig=sconfig)
     result = sc.bass_diffusion_adoption()
     expected = pd.DataFrame(bass_diffusion_adoption_list[1:],
@@ -119,7 +119,7 @@ def test_bass_diffusion_regions_NaN():
         ['EU', 2014, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
         ['USA', 2014, 2050, 0.0, 0.0, 0.0, 0.0, 0.0]],
         columns=['region', 'base_year', 'last_year', 'base_percent', 'base_adoption',
-                 'pds_tam_2050', 'innovation', 'imitation']).set_index('region')
+                 'last_pds_tam', 'innovation', 'imitation']).set_index('region')
     sc = s_curve.SCurve(transition_period=None, sconfig=sconfig)
     result = sc.bass_diffusion_adoption()
     expected = pd.DataFrame(bass_diffusion_adoption_regions_NaN_list[1:],
@@ -128,6 +128,27 @@ def test_bass_diffusion_regions_NaN():
     pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
+def test_bass_diffusion_base_year_2018():
+    # From SmartThermostats 2021
+    sconfig = pd.DataFrame([
+        ['World', 2018, 2050, 0.031982286536317, 29.0761830722887, 2512.33209193275, 0.001677824, 0.246469535],
+        ['OECD90', 2018, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ['Eastern Europe', 2018, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ['Asia (Sans Japan)', 2018, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ['Middle East and Africa', 2018, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ['Latin America', 2018, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ['China', 2018, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ['India', 2018, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ['EU', 2018, 2050, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ['USA', 2018, 2050, 0.0, 0.0, 0.0, 0.0, 0.0]],
+    columns=['region', 'base_year', 'last_year', 'base_percent', 'base_adoption',
+                 'last_pds_tam', 'innovation', 'imitation']).set_index('region')
+    sc = s_curve.SCurve(sconfig=sconfig)
+    result = sc.bass_diffusion_adoption()
+    expected = pd.DataFrame(bass_diffusion_base_year_2018_list[1:],
+                            columns=bass_diffusion_base_year_2018_list[0]).set_index('Year')
+    expected.name = 'bass_diffusion_adoption'
+    pd.testing.assert_frame_equal(result, expected, check_exact=False)
 
 
 # Building Automation System "S Curve"!AH24:AI70
@@ -501,3 +522,55 @@ bass_diffusion_adoption_regions_NaN_list = [
 
     [2060, 452.7311352662340, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
      np.nan]]
+
+# Bioplastics "S Curve Adoption"!A129:K176
+bass_diffusion_base_year_2018_list = [
+    ["Year", "World", "OECD90", "Eastern Europe", "Asia (Sans Japan)", "Middle East and Africa",
+     "Latin America", "China", "India", "EU", "USA"],
+    [2014, -2.099620134] + [np.nan] * 9,
+    [2015, 2.800368639] + [np.nan] * 9,
+    [2016, 9.27846538] + [np.nan] * 9,
+    [2017, 17.82626281] + [np.nan] * 9,
+    [2018, 29.07618307] + [0.0] * 9,
+    [2019, 40.32610334] + [np.nan] * 9,
+    [2020, 54.25331424] + [np.nan] * 9,
+    [2021, 71.4605658] + [np.nan] * 9,
+    [2022, 92.66779254] + [np.nan] * 9,
+    [2023, 118.7249017] + [np.nan] * 9,
+    [2024, 150.6201913] + [np.nan] * 9,
+    [2025, 189.4803886] + [np.nan] * 9,
+    [2026, 236.5566624] + [np.nan] * 9,
+    [2027, 293.189223] + [np.nan] * 9,
+    [2028, 360.7417636] + [np.nan] * 9,
+    [2029, 440.4968967] + [np.nan] * 9,
+    [2030, 533.5063029] + [np.nan] * 9,
+    [2031, 640.3962668] + [np.nan] * 9,
+    [2032, 761.1420893] + [np.nan] * 9,
+    [2033, 894.8433776] + [np.nan] * 9,
+    [2034, 1039.552708] + [np.nan] * 9,
+    [2035, 1192.223938] + [np.nan] * 9,
+    [2036, 1348.841071] + [np.nan] * 9,
+    [2037, 1504.753954] + [np.nan] * 9,
+    [2038, 1655.185401] + [np.nan] * 9,
+    [2039, 1795.807121] + [np.nan] * 9,
+    [2040, 1923.243578] + [np.nan] * 9,
+    [2041, 2035.37981] + [np.nan] * 9,
+    [2042, 2131.417246] + [np.nan] * 9,
+    [2043, 2211.705766] + [np.nan] * 9,
+    [2044, 2277.43914] + [np.nan] * 9,
+    [2045, 2330.314353] + [np.nan] * 9,
+    [2046, 2372.231348] + [np.nan] * 9,
+    [2047, 2405.071373] + [np.nan] * 9,
+    [2048, 2430.559166] + [np.nan] * 9,
+    [2049, 2450.194899] + [np.nan] * 9,
+    [2050, 2465.235297] + [np.nan] * 9,
+    [2051, 2476.704638] + [np.nan] * 9,
+    [2052, 2485.420971] + [np.nan] * 9,
+    [2053, 2492.027847] + [np.nan] * 9,
+    [2054, 2497.025847] + [np.nan] * 9,
+    [2055, 2500.801068] + [np.nan] * 9,
+    [2056, 2503.649417] + [np.nan] * 9,
+    [2057, 2505.796604] + [np.nan] * 9,
+    [2058, 2507.414177] + [np.nan] * 9,
+    [2059, 2508.632172] + [np.nan] * 9,
+    [2060, 2509.548955] + [np.nan] * 9]

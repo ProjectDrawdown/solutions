@@ -563,28 +563,24 @@ class AdvancedControls:
     ref_adoption_use_pds_years: typing.List[int] = dataclasses.field(default_factory=list)
     pds_adoption_use_ref_years: typing.List[int] = dataclasses.field(default_factory=list)
 
-    # pds_base_adoption: OBSOLETE a list of (region, float) tuples of the base adoption for the
-    #   PDS calculations. For example: [('World', 150000000.0), ('OECD90', 90000000.0), ...]
-    #   SolarPVUtil "ScenarioRecord" rows 151 - 160.
-    #   This is being replaced by ref_base_adoption, once we regenerate all solutions.
     # ref_base_adoption: a dict of region: float values of the base adoption for the REF
     #   calculations. For example: {'World': 150000000.0, 'OECD90': 90000000.0, ...}
     #   SolarPVUtil "ScenarioRecord" rows 151 - 160.
-    # pds_adoption_final_percentage: a list of (region, %) tuples of the final adoption
-    #   percentage for the PDS calculations. For example: [('World', 0.54), ('OECD90', 0.60), ...]
+    # pds_adoption_final_percentage: a dict of region: % tuples of the final adoption
+    #   percentage for the PDS calculations. For example: {'World': 0.54, 'OECD90': 0.60, ...}
     #   SolarPVUtil "ScenarioRecord" rows 170 - 179.
-    pds_base_adoption: typing.List[tuple] = None
-    ref_base_adoption: typing.Dict = None
-    pds_adoption_final_percentage: typing.List[tuple] = None
 
-    # pds_adoption_s_curve_innovation: a list of (region, float) tuples of the innovation
+    ref_base_adoption: typing.Dict = None
+    pds_adoption_final_percentage: typing.Dict = None
+
+    # pds_adoption_s_curve_innovation: a dict of region:float values of the innovation
     #   factor used in the Bass Diffusion S-Curve model.
     #   SolarPVUtil "ScenarioRecord" rows 170 - 179.
-    # pds_adoption_s_curve_imitation: a list of (region, float) tuples of the innovation
+    # pds_adoption_s_curve_imitation: a dict of region:float values of the innovation
     #   factor used in the Bass Diffusion S-Curve model.
     #   SolarPVUtil "ScenarioRecord" rows 170 - 179.
-    pds_adoption_s_curve_innovation: typing.List[tuple] = None
-    pds_adoption_s_curve_imitation: typing.List[tuple] = None
+    pds_adoption_s_curve_innovation: typing.Dict = None
+    pds_adoption_s_curve_imitation: typing.Dict = None
 
     # LAND only
     tco2eq_reduced_per_land_unit: typing.Any = dataclasses.field(default=None, metadata={

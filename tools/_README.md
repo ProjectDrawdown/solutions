@@ -21,7 +21,6 @@ More Extraction code:
 
 Extraction support code:
  * util<area>.py:  Utilities for reading Excel workbooks
- * rrs<area>.py: Copied here from ../solution/rrs.py because python hates relative dependencies.
 
 Creating Expected Result Sets:
  * CREATING_EXPECTED_ZIP.md: documents the process

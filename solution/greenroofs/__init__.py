@@ -77,8 +77,8 @@ class Scenario(scenario.RRSScenario):
             ['EU', 2014, 2050],
             ['USA', 2014, 2050]]
         sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0]).set_index('region')
-        sconfig['pds_tam_2050'] = pds_tam_per_region.loc[[2050]].T
-        sc_regions, sc_percentages = zip(*self.ac.pds_base_adoption)
+        sconfig['last_pds_tam'] = pds_tam_per_region.loc[[2050]].T
+        sc_regions, sc_percentages = zip(*self.ac.ref_base_adoption)
         sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))
         sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]
         sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)

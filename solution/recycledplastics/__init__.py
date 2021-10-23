@@ -108,8 +108,7 @@ class Scenario(scenario.RRSScenario):
             copy_ref_datapoint=False,
             copy_pds_to_ref=False,
             copy_pds_datapoint='Ref Table',
-            use_first_pds_datapoint_main=True,
-            copy_datapoint_to_year=2014,
+            copy_pds_world_too=True,
             # end manually set options
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)

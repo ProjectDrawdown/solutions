@@ -97,7 +97,7 @@ def string_to_emissions_grid_range(text):
 
 
 class ElectricityGenOnGrid(DataHandler):
-    def __init__(self, ac, grid_emissions_version=1):
+    def __init__(self, ac, grid_emissions_version="current"):
         self.ac = ac
         self.grid_emissions_version = grid_emissions_version
 
