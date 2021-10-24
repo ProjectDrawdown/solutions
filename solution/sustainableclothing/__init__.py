@@ -126,7 +126,7 @@ class Scenario(scenario.RRSScenario):
         # # Fix the value for the 2014 World Data
         # self.ht.pds_adoption_data_per_region.loc[2014, "World"] = 0.050691647   
                 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=ref_tam_per_region,

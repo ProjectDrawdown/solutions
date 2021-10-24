@@ -53,10 +53,13 @@ def annual_breakout(
     if not has_var_costs and not fixed_oper_cost_per_iunit:
         return breakout
 
+    # supply a reasonable value if none provided; this matches the requested default in the Excel
+    if lifetime_replacement == 0:
+        lifetime_replacement = 100
+
     for year in range(first_year, last_year + 1):
         # within the years of interest, assume replacement of worn out equipment.
         lifetime = lifetime_replacement
-        assert lifetime_replacement != 0, 'Cannot have a lifetime replacement of 0 and non-zero operating costs'
         while math.ceil(lifetime) < (last_year + 1 - year):
             lifetime += lifetime_replacement
 
@@ -399,7 +402,7 @@ class OperatingCost(DataHandler):
         result.name = 'soln_vs_conv_single_iunit_cashflow'
 
         soln_lifetime = self.ac.soln_lifetime_replacement
-        if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None:
+        if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None and self.ac.conv_avg_annual_use != 0:
             conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use  # RRS
         else:
             conv_usage_mult = 1  # LAND
@@ -510,7 +513,7 @@ class OperatingCost(DataHandler):
         result.name = 'soln_only_single_iunit_cashflow'
 
         soln_lifetime = self.ac.soln_lifetime_replacement
-        if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None:
+        if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None and self.ac.conv_avg_annual_use != 0:
             conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use  # RRS
         else:
             conv_usage_mult = 1  # LAND

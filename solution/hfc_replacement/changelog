@@ -1,3 +1,10 @@
+24.10.2021 denise
+I fixed the erroneous space in the expect.zip file, so that scenario can now be loaded.
+If this solution is extracted again, it will need to be redone: after running the macros, find
+the index file and hand-edit it to remove the space.
+I also added checks to the model financial analysis code so that no exceptions are raised
+(and thus the modification to expected_result_tester is no longer required.)
+I haven't checked or verified any of the other issues.
 26.08.2021 danielmk
 hfc_replacement initial Python port.
 Automated extraction worked only partially with hfc_replacement. For example, 

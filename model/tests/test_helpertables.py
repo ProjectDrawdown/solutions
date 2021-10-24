@@ -710,17 +710,19 @@ def test_soln_use_first_pds_datapoint_not_2014():
     ht_pds_datapoints = ht_ref_datapoints
     ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen,
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-            copy_pds_world_too=True)
+            copy_pds_datapoint=True, copy_pds_world_too=True)
     result = ht.soln_pds_funits_adopted()
+    # even when first datapoint is not 2014, copy_pds_datapoint copies to 2014
     for region in regions:
-        assert int(result.loc[2020, region]) == 1000
+        assert int(result.loc[2014, region]) == 1000
+    
     ht = helpertables.HelperTables(ac, pds_adoption_data_per_region=custom_scen,
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-            copy_pds_world_too=False)
+            copy_pds_datapoint=True, copy_pds_world_too=False)
     result = ht.soln_pds_funits_adopted()
-    assert int(result.loc[2020, regions[0]]) != 1000
+    assert int(result.loc[2014, regions[0]]) != 1000
     for region in regions[1:]:
-        assert int(result.loc[2020, region]) == 1000
+        assert int(result.loc[2014, region]) == 1000
 
 
 def test_copy_ref_datapoint():
