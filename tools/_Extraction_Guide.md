@@ -49,6 +49,8 @@ For Excel Workbooks that follow the standard Project Drawdown templates, extract
 
 * Debug 'deep' test failures in the order they occur.  Within these tests, test order follows the execution order of the process (which is also the order of the sections in the `_init_.py`), so earlier errors tend to cascade to create later ones.
 
+* If the solution had previously skipped tests, "unskip" the tests at least temporarily to check that the behavior after a new extraction.  The test may magically work now, or there could be a deeper problem that would not be discovered without this check.
+
 ### If you see...
 
 * Errors about missing sources usually indicate old scenarios that should be deleted.

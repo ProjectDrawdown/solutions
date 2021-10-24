@@ -1,5 +1,6 @@
 """Compare two test runs and report the deltas"""
 from sys import argv
+import re
 from collections import OrderedDict
 
 def build_dict(lines):
@@ -42,7 +43,17 @@ def build_diff(file1, file2):
         if len(line) == 0: break
         print(line)
     print("================================================================================\n")
-    
+
+    # Look for exceptions in the 2nd file, since they tend to indicate deeper problems
+    accum = []
+    for (i, ln) in enumerate(lines2):
+        if re.match("E   \w+Error",ln) and not ln.startswith("E   AssertionError"):
+            accum.append("Probable exception at line " + str(i+1))
+    if len(accum):
+        print("PROBABLE EXCEPTIONS\n")
+        for x in accum:
+            print(x)
+
     d1 = build_dict(lines1)
     d2 = build_dict(lines2)
 
@@ -70,7 +81,6 @@ def build_diff(file1, file2):
         print("\nNEW ITEMS:\n")
         for name in addedkeys:
             print(name + " / " + d2[name])       
-
 
 if __name__ == "__main__":
     build_diff(argv[1], argv[2])
