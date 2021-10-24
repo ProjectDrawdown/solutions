@@ -585,11 +585,14 @@ def normalize_source_name(sourcename):
     }
     if not sourcename:  # don't do anything with empty data
         return sourcename
+        
+    # Remove the empty template columns
+    if re.search(r'\[Source \d+', sourcename.strip()):
+        return None
+
     normalized = sourcename.replace("'", "").replace('\n', ' ').strip()
     if normalized in special_cases:
         return special_cases[normalized]
-    if re.search(r'\[Source \d+', sourcename):
-        return None
 
     # handle duplicate column names where xlrd appends an integer.
     suffix = ''
@@ -1595,6 +1598,7 @@ def output_solution_python_file(outputdir, xl_filename):
         f.write('from model import aez\n')
     f.write('from model import ch4calcs\n')
     f.write('from model import co2calcs\n')
+    f.write('from model import conversions\n')
     f.write('from model import customadoption\n')
     f.write('from model import dd\n')
     f.write('from model import emissionsfactors\n')
