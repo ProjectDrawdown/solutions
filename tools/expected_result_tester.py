@@ -583,15 +583,14 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
 def verify_helper_tables(obj, verify, include_regional_data=True):
     """Verified tables in Helper Tables."""
     verify['Helper Tables'] = []
+    verify['Helper Tables'].append(
+            ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None, None))
     if include_regional_data:
         verify['Helper Tables'].append(
                 ('B91:L137', obj.ht.soln_pds_funits_adopted().reset_index(), None, None))
     else:
         verify['Helper Tables'].append(
                 ('B91:C137', obj.ht.soln_pds_funits_adopted().loc[:, 'World'].reset_index(), None, None))
-    verify['Helper Tables'].append(
-            ('B27:L73', obj.ht.soln_ref_funits_adopted().reset_index(), None, None))
-
     return verify
 
 
@@ -856,9 +855,7 @@ def RRS_solution_verify_list(obj, zip_f):
     verify_unit_adoption_calculations(obj, verify, include_regional_data=include_regional_data,
                      soln_type='RRS')
     verify_first_cost(obj, verify)
-    # DMK 25.08. hfc_replacement does not support financial analysis. 
-    if not obj.name == 'Refrigerant Management - HFC Replacement':
-        verify_operating_cost(obj, verify)
+    verify_operating_cost(obj, verify)
 
     cell = excel_read_cell_any_scenario(
         zip_f=zip_f, sheetname='CO2 Calcs', cell='S343')

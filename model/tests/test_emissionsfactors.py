@@ -54,45 +54,63 @@ def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh():
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2025, "OECD90"] == pytest.approx(0.454068989)
     assert table.loc[2020, 'World'] == pytest.approx(0.483415642)
+    
     ac = advanced_controls.AdvancedControls(
             emissions_grid_source="ipcc_only", emissions_grid_range="low")
     eg = ef.ElectricityGenOnGrid(ac=ac)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2020, 'World'] == pytest.approx(0.416520905)
+    
     ac = advanced_controls.AdvancedControls(
             emissions_grid_source="ipcc_only", emissions_grid_range="high")
     eg = ef.ElectricityGenOnGrid(ac=ac)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2020, 'World'] == pytest.approx(0.952177536)
+    
     ac = advanced_controls.AdvancedControls(
             emissions_grid_source="meta-analysis", emissions_grid_range="mean")
-    eg = ef.ElectricityGenOnGrid(ac=ac)
+    eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=1)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2020, 'World'] == pytest.approx(0.581083120)
+    
     ac = advanced_controls.AdvancedControls(
             emissions_grid_source="meta-analysis", emissions_grid_range="low")
-    eg = ef.ElectricityGenOnGrid(ac=ac)
+    eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=1)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2020, 'World'] == pytest.approx(0.446005409)
+    
     ac = advanced_controls.AdvancedControls(
             emissions_grid_source="meta-analysis", emissions_grid_range="high")
-    eg = ef.ElectricityGenOnGrid(ac=ac)
+    eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=1)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2020, 'World'] == pytest.approx(0.726403172)
+    
     ac = advanced_controls.AdvancedControls(
             emissions_grid_source="meta-analysis", emissions_grid_range="mean")
     eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=2)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2033, 'World'] == pytest.approx(0.5546363024)
+    
     ac = advanced_controls.AdvancedControls(
             emissions_grid_source="meta-analysis", emissions_grid_range="mean")
     eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=3)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2043, 'World'] == pytest.approx(0.52233785855)
+    
     eg = ef.ElectricityGenOnGrid(ac=ac, grid_emissions_version=4)
     table = eg.conv_ref_grid_CO2eq_per_KWh()
     assert table.loc[2042, 'World'] == pytest.approx(0.52865037213)
 
+def test_emissions_grid_current():
+    # Test that default and current both load, and are the same
+    ac = advanced_controls.AdvancedControls(
+            emissions_grid_source="meta-analysis", emissions_grid_range="low")
+    eg_default = ef.ElectricityGenOnGrid(ac=ac)
+    table = eg_default.conv_ref_grid_CO2eq_per_KWh()
+
+    eg_current = ef.ElectricityGenOnGrid(ac=ac,grid_emissions_version="current")
+    table_2 = eg_current.conv_ref_grid_CO2eq_per_KWh()
+    assert table.loc[2040,'World'] == table_2.loc[2040,'World']
 
 def test_ElectricityGenOnGrid_conv_ref_grid_CO2eq_per_KWh_invalid_range():
     with pytest.raises(ValueError):

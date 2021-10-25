@@ -257,12 +257,9 @@ class VMAReader:
                      'Bound correction?', 'Description'],
             index=pd.Index(data=list(range(1, len(df_dict) + 1)), name='VMA number')
         )
-        info_df = pd.DataFrame(columns=['Title on xls', 'Fixed Mean', 'Fixed High', 'Fixed Low'])
-        info_df.index.name = 'VMA number'
 
         i = 1
-        for title, (table_df, use_weight, bound_correction, desc,
-                    (average, high, low)) in df_dict.items():
+        for title, (table_df, use_weight, bound_correction, desc, _) in df_dict.items():
             path_friendly_title = ''
             if table_df is not None:
                 existing = self.find_data_csv(table_df)
@@ -283,19 +280,7 @@ class VMAReader:
                    'Description': desc,
                    }
             vma_df.loc[i, :] = row
-
-            if not pd.isna(average) or not pd.isna(high) or not pd.isna(low):
-                row = {'Title on xls': title,
-                       'Fixed Mean': average,
-                       'Fixed High': high,
-                       'Fixed Low': low}
-                info_df.loc[i, :] = row
-
-            # Bookkeep to track our position in vma_df, info_df
             i += 1
-
-        if csv_path is not None:
-            info_df.to_csv(os.path.join(csv_path, 'VMA_info.csv'))
 
         return vma_df
 

@@ -144,7 +144,7 @@ class Scenario(scenario.RRSScenario):
                 pds_adoption_is_single_source=pds_adoption_is_single_source,
                 copy_ref_world_too=True)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
                 ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,

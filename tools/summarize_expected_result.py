@@ -26,11 +26,11 @@ def summarize_results(input, verbose=False, module=None):
     scenario_name = None
     error_accum = {}
 
-    for line in textlines:
+    for (i, line) in enumerate(textlines):
         if not line.startswith("E   "):
             # if we've just exited an error output block, print solution results
             if solname_test:  # print results and reset
-                if module and module in solname_test:
+                if module is None or module in solname_test:
                     if verbose:
                         print(solname_test + "\n    " + "\n    ".join( [scenario + ":" + share_prefixes(error_accum[scenario]) for scenario in error_accum.keys()] ))
                     else:
@@ -58,8 +58,10 @@ def summarize_results(input, verbose=False, module=None):
                 end = line.find("|",6)
                 testname = line[5:end]
                 error_accum[scenario_name].append(testname)
+            elif re.match("E   \w+Error",line) and not line.startswith("E   AssertionError"):
+                # we threw an exception.  We should report that.
+                print(f"Probable exception at line {i+1}")
                     
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

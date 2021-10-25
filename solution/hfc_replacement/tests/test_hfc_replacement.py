@@ -12,10 +12,9 @@ solution_name = thisdir.parents[0].name
 
 
 # If there are long-running test failures that should be skipped, you can indicate them here.
-# Someday we'll have a scanner that will check for these
-SCENARIO_SKIP = ['PDS2-82p2050-Median', 1, 'PDS3-97p2050-Upper', 2]
-TEST_SKIP = ['First Cost', 'Operating Cost', 'Net Profit Margin', 'Unit Adoption']
-# 'S-Curve', 'Unit Adoption Calculations', 
+# HFC model doesn't have financial analysis in place.
+SCENARIO_SKIP = [] #['PDS2-82p2050-Median', 1, 'PDS3-97p2050-Upper', 2]
+TEST_SKIP = ['First Cost', 'Operating Cost', 'Net Profit Margin']
 
 def test_loader():
     """Test that the solution can load the defined scenarios"""

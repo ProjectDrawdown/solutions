@@ -378,13 +378,7 @@ class UnitAdoption(DataHandler):
             # the 2014 soln_pds_cumulative_funits, which ends up double counting 2014.
             # We optionally enable this bug-for-bug compatibility.
             # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.z9hqutnbnigx
-            idx = first_year.first_valid_index()
-            if self.ac is not None and self.ac.ref_base_adoption is not None:
-                # solutions updated for Drawdown 2020 have a ref_base_adoption dict
-                omit_main = pd.DataFrame(self.ac.ref_base_adoption, index=[idx])
-            else:
-                # Solutions not yet updated fall back to the original code here
-                omit_main = self.soln_pds_funits_adopted.iloc[[0], :].fillna(0.0).copy(deep=True)
+            omit_main = self.soln_pds_funits_adopted.iloc[[0], :].fillna(0.0).copy(deep=True)
             omit_main.index.name = 'Year'
             main_region = dd.REGIONS[0]
             omit_main[main_region] = 0.0
