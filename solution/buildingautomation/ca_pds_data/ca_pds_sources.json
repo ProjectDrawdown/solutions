@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Correlation Between BAS Floor area and BEMS Sales",
+        "filename": "ca_pds_Correlation_Between_BAS_Floor_area_and_BEMS_Sales.csv",
+        "description": "This scenario was created on the Adoption Factoring Sheet. Due to a lack of data for the total commercial floor space with BAS both regionally and globally, the sheet was used to calculate the BEMS sales for each region based on data from Memoori (2013). Next, interpolated data from three different CBECSurveys was included in order to interpolate the adoption of BAS in the U.S. (which is the only country/region for which we have reliable data in our implementation/functional unit). After interpolating cumulative adoption, net annual adoption was calculated. The hope was to be able to create a ratio between net annual adoption of BAS and BEMS sales in the chart to the left. Using these ratios, net annual adoption for each region was calculated. These values were then used to interpolate net annual adoption in order to find when net annual adoption reached zero (working backwards). After determining this, the next step was to then add up the net annual adoption for each region to see if cumulative adoption could be calculated in this way."
+    },
+    {
+        "name": "PDS1 - Project Drawdown Assumption based on S-Curve growth in Regions to 2050.",
+        "filename": "ca_pds_PDS1_Project_Drawdown_Assumption_based_on_SCurve_growth_in_Regions_to_2050_.csv",
+        "description": "Estimating the 2050 Adoptions (in Percent) for the regions with noticeable current adoptions, we interpolate from the current adoptions to these 2050 estimates using an S-Curve adoption in each Region.\nEach Region is assumed an adoption by 2050 in relation to other regions, and adoptions are based on Logistic S-Curves developed individually per region. These are summed to get global total. The regional assumptions are: OECD90 - 100%, EEurope - 50% of Current EU level = 21.3%, Asia sansJapan - Meet current US level = 44.8%, MiddleE+Africa -20% of Current EU level = 8.5% and LatAm - 50% of current US level = 22.4%.  The efficiency inputs were adjusted according to the Buildings Integration sequence to account for interaction effects among solutions."
+    },
+    {
+        "name": "PDS2 - Project Drawdown Assumption based on S-Curve growth in Regions to 2050.",
+        "filename": "ca_pds_PDS2_Project_Drawdown_Assumption_based_on_SCurve_growth_in_Regions_to_2050_.csv",
+        "description": "Estimating the 2050 Adoptions (in Percent) for the regions with noticeable current adoptions, we interpolate from the current adoptions to these 2050 estimates using an S-Curve adoption in each Region.\nEach Region is assumed an adoption by 2050, and adoptions are based on Logistic S-Curves developed individually per region. These are summed to get global total. The regional assumptions are: OECD90 - 100%, EEurope - 50%, Asia sansJapan - 80%, MiddleE+Africa -50%, and LatAm - 50%. The efficiency inputs were adjusted according to the Buildings Integration sequence to account for interaction effects among solutions."
+    }
+]
