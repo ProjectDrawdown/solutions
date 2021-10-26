@@ -471,12 +471,13 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
     soln_net_annual_funits_adopted_mask = (m | regional_mask) if regional_mask is not None else m
 
     verify['Unit Adoption Calculations'].extend([
-            ('P17:Z63', obj.ua.ref_population().reset_index(), None, None),
-            ('AB17:AL63', obj.ua.ref_gdp().reset_index(), None, None),
-            ('AN17:AX63', obj.ua.ref_gdp_per_capita().reset_index(), None, None),
-            ('P69:Z115', obj.ua.pds_population().reset_index(), None, None),
-            ('AB69:AL115', obj.ua.pds_gdp().reset_index(), None, None),
-            ('AN69:AX115', obj.ua.pds_gdp_per_capita().reset_index(), None, None),
+            # These are not actually _used_ by the solution model, so they don't need to be tested for each solution.
+            # ('P17:Z63', obj.ua.ref_population().reset_index(), None, None),
+            # ('AB17:AL63', obj.ua.ref_gdp().reset_index(), None, None),
+            # ('AN17:AX63', obj.ua.ref_gdp_per_capita().reset_index(), None, None),
+            # ('P69:Z115', obj.ua.pds_population().reset_index(), None, None),
+            # ('AB69:AL115', obj.ua.pds_gdp().reset_index(), None, None),
+            # ('AN69:AX115', obj.ua.pds_gdp_per_capita().reset_index(), None, None),
             ('AG199:AQ244', obj.ua.soln_ref_new_iunits_reqd().reset_index(), None, None),
             ('B252:L298', obj.ua.soln_net_annual_funits_adopted().reset_index(), soln_net_annual_funits_adopted_mask, None),
             ('Q252:AA298', obj.ua.conv_ref_tot_iunits().reset_index(), ref_tam_mask, None),
@@ -516,13 +517,14 @@ def verify_unit_adoption_calculations(obj, verify, include_regional_data=True, s
         soln_pds_direct_co2_emissions_saved_mask = (m | regional_mask) if regional_mask is not None else m
 
         verify['Unit Adoption Calculations'].extend([
-                ('BA17:BK63', obj.ua.ref_tam_per_capita().reset_index(), None, None),
-                ('BM17:BW63', obj.ua.ref_tam_per_gdp_per_capita().reset_index(), None, None),
-                ('BY17:CI63', obj.ua.ref_tam_growth().reset_index(), None, None),
-                ('BA69:BK115', obj.ua.pds_tam_per_capita().reset_index(), None, None),
-                ('BM69:BW115', obj.ua.pds_tam_per_gdp_per_capita().reset_index(), None, None),
-                ('BY69:CI115', obj.ua.pds_tam_growth().reset_index(), None, None),
-                # ('B135:L181' tested in 'Helper Tables'!C91)
+                # These are not actually _used_ by the solution model, so no need to test each one
+                # ('BA17:BK63', obj.ua.ref_tam_per_capita().reset_index(), None, None),
+                # ('BM17:BW63', obj.ua.ref_tam_per_gdp_per_capita().reset_index(), None, None),
+                # ('BY17:CI63', obj.ua.ref_tam_growth().reset_index(), None, None),
+                # ('BA69:BK115', obj.ua.pds_tam_per_capita().reset_index(), None, None),
+                # ('BM69:BW115', obj.ua.pds_tam_per_gdp_per_capita().reset_index(), None, None),
+                # ('BY69:CI115', obj.ua.pds_tam_growth().reset_index(), None, None),
+                # 'B135:L181' tested in 'Helper Tables'!C91)
                 ('Q135:AA181', obj.ua.soln_pds_cumulative_funits().reset_index(), soln_pds_cumulative_funits_mask, "Excel_NaN"),
                 ('AX136:BH182', obj.ua.soln_pds_tot_iunits_reqd().reset_index(), regional_mask, None),
                 ('AG137:AQ182', obj.ua.soln_pds_new_iunits_reqd().reset_index(), regional_mask, None),
