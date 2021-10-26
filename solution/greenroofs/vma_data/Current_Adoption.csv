@@ -1,14 +1,14 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Greenroofs.com (accessed July 2015),,World,,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-Greenroofs.com (accessed July 2015),,OECD90,,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-Greenroofs.com (accessed July 2015),,Eastern Europe,,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-Greenroofs.com (accessed July 2015),,Asia (Sans Japan),,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-Greenroofs.com (accessed July 2015),,Middle East and Africa,,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-Greenroofs.com (accessed July 2015),,Latin America,,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-Greenroofs.com (accessed July 2015),,China,,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-Greenroofs.com (accessed July 2015),,India,,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-Greenroofs.com (accessed July 2015),,EU,,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-Greenroofs.com (accessed July 2015),,USA,,,2014,,,m2,,"Residential and Commercial roof area, m2",,,
-http://www.greenroofs.com/content/guest_features011.htm,,China,,,2012,,,m2,,"Residential and Commercial roof area, m2",,,
-"Munteanu, Green Roof Copenhagen",,OECD90,Germany,,2012,,,m2,,"Residential and Commercial roof area, m2",,,
-British Embassy Budapest,,Eastern Europe,Hungary,,1999,,,m2,,"Residential and Commercial roof area, m2",,,
+Greenroofs.com (accessed July 2015),,World,,,2014,,3195228.0,m2,,"Residential and Commercial roof area, m2",,,True
+Greenroofs.com (accessed July 2015),,OECD90,,,2014,,2681588.0,m2,,"Residential and Commercial roof area, m2",,,True
+Greenroofs.com (accessed July 2015),,Eastern Europe,,,2014,,1574.0,m2,,"Residential and Commercial roof area, m2",,,True
+Greenroofs.com (accessed July 2015),,Asia (Sans Japan),,,2014,,423599.0,m2,,"Residential and Commercial roof area, m2",,,True
+Greenroofs.com (accessed July 2015),,Middle East and Africa,,,2014,,1759.0,m2,,"Residential and Commercial roof area, m2",,,True
+Greenroofs.com (accessed July 2015),,Latin America,,,2014,,66398.0,m2,,"Residential and Commercial roof area, m2",,,True
+Greenroofs.com (accessed July 2015),,China,,,2014,,79211.0,m2,,"Residential and Commercial roof area, m2",,,True
+Greenroofs.com (accessed July 2015),,India,,,2014,,1070.0,m2,,"Residential and Commercial roof area, m2",,,True
+Greenroofs.com (accessed July 2015),,EU,,,2014,,512051.0,m2,,"Residential and Commercial roof area, m2",,,True
+Greenroofs.com (accessed July 2015),,USA,,,2014,,1532448.0,m2,,"Residential and Commercial roof area, m2",,,True
+http://www.greenroofs.com/content/guest_features011.htm,,China,,,2012,,10000000.0,m2,,"Residential and Commercial roof area, m2",,,True
+"Munteanu, Green Roof Copenhagen",,OECD90,Germany,,2012,,86000000.0,m2,,"Residential and Commercial roof area, m2",,,True
+British Embassy Budapest,,Eastern Europe,Hungary,,1999,,2000000.0,m2,,"Residential and Commercial roof area, m2",,,True

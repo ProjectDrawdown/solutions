@@ -1,11 +1,5 @@
 {
-  "Baseline Cases": {
-    "Custom (See TAM Factoring) based on  http://www.gbpn.org/databases-tools/mrv-tool/methodology.": "tam_Custom_See_TAM_Factoring_based_on_httpwww_gbpn_orgdatabasestoolsmrvtoolmethodology_.csv",
-    "Based on GBPN - BEST PRACTICE POLICIES FOR LOW CARBON & ENERGY BUILDINGS BASED ON SCENARIO ANALYSIS May 2012": "tam_based_on_GBPN_BEST_PRACTICE_POLICIES_FOR_LOW_CARBON_ENERGY_BUILDINGS_BASED_ON_SCENARIO_A_c7e92439.csv",
-    "IEA (2013)": "tam_IEA_2013.csv"
-  },
-  "Conservative Cases": {
-    "McKinsey": "tam_McKinsey.csv",
-    "Navigant (2014)": "tam_Navigant_2014.csv"
-  }
+    "Baseline Cases": {
+        "Based on BldgSector TAM v1.1:  See \"Roof TAM Calculaltion\"": "tam_based_on_BldgSector_TAM_v1_1_See_Roof_TAM_Calculaltion.csv"
+    }
 }
