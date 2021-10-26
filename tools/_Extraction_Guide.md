@@ -65,6 +65,10 @@ For Excel Workbooks that follow the standard Project Drawdown templates, extract
 
 Always comment in the test file why you added a test to the skip list.
 
+### Brand New Experimental Tool
+
+Since many issues that arise have to do with how adoptions are calculated (culminating in the dreaded Helper Tables module), I thought: why not see if we can't short-circuit all that by directly converting the _output_ of the Excel Helper Tables tab into a "Fully Custom PDS" type adoption?  So I built a tool to do that, called `convert_to_cpds`.  This is brand-new and hasn't been battle-tested yet.  But it may be a way to make some intractable solutions tractable, at the cost of losing the history of how the adoption was derived.
+
 ## Instructions for Using Macros for Creating Zip File
 
 #### Step 1: Insert the export macro into the workbook.
