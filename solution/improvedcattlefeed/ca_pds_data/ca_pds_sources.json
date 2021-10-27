@@ -1,0 +1,37 @@
+[
+    {
+        "name": "LimitedAdoption26%",
+        "filename": "ca_pds_LimitedAdoption26.csv",
+        "description": "Adoption of the solution is STAGNANT in developing countries (8% Asia, 7% Middle East and Africa, 8% Latin America), but there is some LIMITED adoption within developed countries (44% OECD90 and 41% Eastern Europe). Total Global Adoption is 26% of TAM in 2050 using a linear trend from 21% global adoption in 2014. Limited adoption assumes grazing and mixed systems can improve adoption by 10%. And feedlots by 5%."
+    },
+    {
+        "name": "LimitedAdoption31%",
+        "filename": "ca_pds_LimitedAdoption31.csv",
+        "description": "Adoption of the solution is LIMITED in developing countries (27% Asia, 26% Middle East and Africa, 27% Latin America), but STAGNANT within developed countries (35% OECD90 and 32% Eastern Europe). Total Global Adoption is 31% of TAM in 2050 using a linear trend from 21% global adoption in 2014. Limited adoption assumes grazing and mixed systems can improve adoption by 20%. And feedlots by 10%. This essentially fills the gap between Developing Nations and those that are already Developed."
+    },
+    {
+        "name": "MediumAdoption35%",
+        "filename": "ca_pds_MediumAdoption35.csv",
+        "description": "Adoption of the solution is LIMITED  in developing countries (27% Asia, 26% Middle East and Africa, 27% Latin America), and also LIMITED within developed countries (44% OECD90 and 41% Eastern Europe). Total Global Adoption is 35% of TAM in 2050 using a linear trend from 21% global adoption in 2014. Limited adoption assumes grazing and mixed systems can improve adoption by 20% and feedlots by 10% in Developing Nations. Limited adoption assumes grazing and mixed systems can improve adoption by 10% and feedlots by 5% in Developed Nations."
+    },
+    {
+        "name": "MediumAdoption45%",
+        "filename": "ca_pds_MediumAdoption45.csv",
+        "description": "Adoption of the solution is LIMITED  in developing countries (27% Asia, 26% Middle East and Africa, 27% Latin America), but AMBITIOUS within developed countries (63% OECD90 and 61% Eastern Europe). Total Global Adoption is 45% of TAM in 2050 using a linear trend from 21% global adoption in 2014. Limited adoption assumes grazing and mixed systems can improve adoption by 20% and feedlots by 10% in Developing Nations. Ambitious adoption assumes grazing and mixed systems can improve adoption by 30% and feedlots by 15% in Developed Nations."
+    },
+    {
+        "name": "HighAdoption48%",
+        "filename": "ca_pds_HighAdoption48.csv",
+        "description": "Adoption of the solution is AMBITIOUS  in developing countries (52% Asia, 51% Middle East and Africa, 52% Latin America), but LIMITED within developed countries (44% OECD90 and 41% Eastern Europe). Total Global Adoption is 48% of TAM in 2050 using a linear trend from 21% global adoption in 2014. Ambitious adoption assumes grazing and mixed systems can improve adoption by 45% and feedlots by 25% in Developing Nations. Limited adoption assumes grazing and mixed systems can improve adoption by 10% and feedlots by 5% in Developed Nations. However, no system can exceed 75% adoption."
+    },
+    {
+        "name": "HighAdoption57%",
+        "filename": "ca_pds_HighAdoption57.csv",
+        "description": "Adoption of the solution is AMBITIOUS  in developing countries (52% Asia, 51% Middle East and Africa, 52% Latin America), and AMBITIOUS within developed countries (63% OECD90 and 61% Eastern Europe). Total Global Adoption is 57% of TAM in 2050 using a linear trend from 21% global adoption in 2014. Ambitious adoption assumes grazing and mixed systems can improve adoption by 45% and feedlots by 25% in Developing Nations. Ambitious adoption assumes grazing and mixed systems can improve adoption by 30% and feedlots by 15% in Developed Nations. However, no system can exceed 75% adoption."
+    },
+    {
+        "name": "MaxAdoption75%",
+        "filename": "ca_pds_MaxAdoption75.csv",
+        "description": "Adoption of the solution is at it's maximum. Total Global Adoption is 75% of TAM in 2050 using a linear trend from 21% global adoption in 2014. We assume a maximum of 75% because sources suggest at least 20-25% of the cattle diet should come from high-fiber roughages to maintain the animal's digestive health. This 25% wont be addressable with an improved feed quality solution."
+    }
+]
