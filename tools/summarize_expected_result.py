@@ -60,7 +60,7 @@ def summarize_results(input, verbose=False, module=None):
                 error_accum[scenario_name].append(testname)
             elif re.match("E   \w+Error",line) and not line.startswith("E   AssertionError"):
                 # we threw an exception.  We should report that.
-                print(f"Probable exception at line {i+1}")
+                print(f"Probable exception at line {i+1}: {line}")
                     
 
 if __name__ == "__main__":
