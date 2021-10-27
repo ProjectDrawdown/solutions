@@ -12,13 +12,14 @@ This is the complete extraction process.  Parts of it are coded for you in the `
 
   1. Obtain one of the Project Drawdown workbooks from PD, via hackathon, etc. 
   2. Set up a development environment following the instructions in `README.md`
-  3. Create the `expected.zip` test file (see instructions below).
-  4. Run through the extraction steps in the `_Tools` notebook
-  5. Run the solution tests, and fix issues (see hints below)
-  6. Document any modifications you had to make to solution code in a `changelog` file in the solution directory
-  7. Create a PR (Pull Request) for the results.
+  3. Open your Excel workbook, find the scenario list, and shorten it to three (details below)
+  4. If it hasn't been done already, create the `expected.zip` test file (see instructions below).
+  5. Run through the extraction steps in the `_Tools` notebook
+  6. Run the solution tests, and fix issues (see hints below)
+  7. Document any modifications you had to make to solution code in a `changelog` file in the solution directory
+  8. Create a PR (Pull Request) for the results.
 
-Note: it is _not_ reqired that the tests in step (5) run clean in order to PR the results.  Some bugs that we are addressing are
+Note: it is _not_ reqired that the tests in step (6) run clean in order to PR the results.  Some bugs that we are addressing are
 systematic, and it makes more sense to commit the extracted model so they can be considered together.
 But every model should be able to load cleanly: it should be possible to load every scenario (that is kept) without raising exceptions.
 
@@ -69,6 +70,11 @@ Always comment in the test file why you added a test to the skip list.
 
 Since many issues that arise have to do with how adoptions are calculated (culminating in the dreaded Helper Tables module), I thought: why not see if we can't short-circuit all that by directly converting the _output_ of the Excel Helper Tables tab into a "Fully Custom PDS" type adoption?  So I built a tool to do that, called `convert_to_cpds`.  This is brand-new and hasn't been battle-tested yet.  But it may be a way to make some intractable solutions tractable, at the cost of losing the history of how the adoption was derived.
 
+## Instructions for Modifying the Workbook Before Use
+
+We want to limit the number of scenarios that we have to deal with.  Previously we did this after extraction, but it makes more sense to do it beforehand.
+To do this, open the Excel spreadsheet and switch to the ScenarioRecord tab.  Scroll to the top.  You will see that there is a gab of hidden rows between 10 and 237.  Select the rows on both sides and unhide them (`right-click-menu>Unhide`).  Now scroll to the right, and you will see a gap between columns AQ and AS.  Select those columns and Unhide again.  You have now revealed the top-secret cells that make the list in the dropdown box!  Clear the contents of all but the last three scenarios in that list.  From here you can pop straight into creating the zip file (next section), or save the workbook and do that later.
+
 ## Instructions for Using Macros for Creating Zip File
 
 #### Step 1: Insert the export macro into the workbook.
@@ -91,4 +97,8 @@ The export process takes a while (a few minutes on my powerful laptop), during w
 jump around between pages a lot.  It will prompt you when it switches to a new scenario.  (It is possible to modify the notebook to disable the prompt, but I find it easier just to click OK a few times.)
 If it runs successfully, there should be no errors, and control should return to your cursor.
 
-Save and close the workbook (the macro updates a few things in the spreadsheet, so make sure this is the version you use for extraction).  Continue with the extraction instructions in the section above.
+*Save and close the workbook* (the macro updates a few things in the spreadsheet, so make sure this is the version you use for extraction).  Continue with the extraction instructions in the section above.
+
+#### Step 3: Turn all the little files into a Zip.
+
+Code to do this can be found in `_Tools.ipynb`
