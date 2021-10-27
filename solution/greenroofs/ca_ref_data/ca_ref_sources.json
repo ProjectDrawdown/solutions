@@ -1,0 +1,7 @@
+[
+    {
+        "name": "Custom REF Scenario Using Historical Estimates for Early Years",
+        "filename": "ca_ref_Custom_REF_Scenario_Using_Historical_Estimates_for_Early_Years.csv",
+        "description": "We take the Historical estimates of adoption for years up to 2018 and then use the Default Drawdown assumption of fixed percent adoption for the future years using the 2018 percent adoption of the TAM."
+    }
+]

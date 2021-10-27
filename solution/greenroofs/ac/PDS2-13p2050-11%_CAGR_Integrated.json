@@ -1,33 +1,57 @@
 {
-    "name": "PDS1-58p2050-based on Berg Insight (Integrated)",
+    "name": "PDS2-13p2050-11% CAGR Integrated",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "creation_date": "2019-11-25 08:52:57",
-    "description": "Using historical and 2020 forecast data from Berg Insight's market report, the adoption is interpolated and extrapolated for all missing years with a polynomial curve. The efficiency inputs were adjusted according to the Buildings Integration sequence to account for interaction effects among solutions.",
+    "creation_date": "2021-09-02 09:51:24",
+    "description": "Adoption is ~13% of TAM in 2050.  Based on S-Curve corresponding approx. with 11% CAGR from 2014-2050. This scenario has been integrated with other building solutions.",
     "report_start_year": 2020,
     "report_end_year": 2050,
-    "conv_2014_cost": 38.4248067633253,
+    "conv_2014_cost": {
+        "value": 37.6550896583333,
+        "statistic": "mean"
+    },
     "conv_first_cost_efficiency_rate": 0.0,
-    "conv_lifetime_capacity": 23.75,
+    "conv_lifetime_capacity": 18.5,
     "conv_avg_annual_use": 1.0,
-    "conv_var_oper_cost_per_funit": 738.936667283452,
+    "conv_var_oper_cost_per_funit": {
+        "value": 2.400953832474,
+        "statistic": "mean"
+    },
     "conv_fixed_oper_cost_per_iunit": 0.0,
     "conv_fuel_cost_per_funit": 0.0,
-    "pds_2014_cost": 181.99313841901605,
-    "ref_2014_cost": 181.99313841901605,
-    "soln_first_cost_efficiency_rate": 0.13,
+    "pds_2014_cost": {
+        "value": 195.394529849152,
+        "statistic": "mean"
+    },
+    "ref_2014_cost": {
+        "value": 195.394529849152,
+        "statistic": "mean"
+    },
+    "soln_first_cost_efficiency_rate": 0.0,
     "soln_first_cost_below_conv": true,
-    "soln_lifetime_capacity": 10.0,
+    "soln_lifetime_capacity": {
+        "value": 38.3333333333333,
+        "statistic": "mean"
+    },
     "soln_avg_annual_use": 1.0,
-    "soln_var_oper_cost_per_funit": 660.4113228072591,
+    "soln_var_oper_cost_per_funit": {
+        "value": 3.11246171943871,
+        "statistic": "mean"
+    },
     "soln_fixed_oper_cost_per_iunit": 0.0,
     "soln_fuel_cost_per_funit": 0.0,
-    "npv_discount_rate": 0.04,
-    "conv_annual_energy_used": 2.3240931447627027,
-    "soln_energy_efficiency_factor": 0.15158852275687523,
-    "soln_annual_energy_used": 0.0,
-    "conv_fuel_consumed_per_funit": 23658.76830368019,
-    "soln_fuel_efficiency_factor": 0.11449440714036033,
+    "npv_discount_rate": 0.04510295,
+    "conv_annual_energy_used": {
+        "value": 4.31814615971233e-08,
+        "statistic": "mean"
+    },
+    "soln_energy_efficiency_factor": 0.0,
+    "soln_annual_energy_used": 4.193568583625941e-08,
+    "conv_fuel_consumed_per_funit": {
+        "value": 0.000262679830711027,
+        "statistic": "mean"
+    },
+    "soln_fuel_efficiency_factor": 0.053780191344515345,
     "conv_fuel_emissions_factor": 87.03609646633511,
     "soln_fuel_emissions_factor": 87.03609646633511,
     "conv_emissions_per_funit": 0.0,
@@ -44,24 +68,10 @@
     "emissions_grid_source": "Meta-Analysis",
     "emissions_grid_range": "Mean",
     "source_until_2014": "ALL SOURCES",
-    "ref_source_post_2014": "Baseline Cases",
-    "pds_source_post_2014": "Baseline Cases",
+    "ref_source_post_2014": "ALL SOURCES",
+    "pds_source_post_2014": "ALL SOURCES",
     "ref_base_adoption": {
-        "World": 37.2,
-        "OECD90": 0.0,
-        "Eastern Europe": 0.0,
-        "Asia (Sans Japan)": 0.0,
-        "Middle East and Africa": 0.0,
-        "Latin America": 0.0,
-        "China": 0.0,
-        "India": 0.0,
-        "EU": 14.5,
-        "USA": 22.7
-    },
-    "soln_pds_adoption_basis": "Fully Customized PDS",
-    "soln_pds_adoption_regional_data": false,
-    "pds_adoption_final_percentage": {
-        "World": 0.0,
+        "World": 198000000.0,
         "OECD90": 0.0,
         "Eastern Europe": 0.0,
         "Asia (Sans Japan)": 0.0,
@@ -72,17 +82,26 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Projected Based on Berg Insight (2016)",
-    "soln_pds_adoption_scenarios_included": [],
+    "soln_pds_adoption_basis": "Logistic S-Curve",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": {
+        "World": 0.1111,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
-        2014,
         2015,
         2016,
         2017,
-        2018,
-        2019,
-        2020
+        2018
     ]
 }

@@ -1,12 +1,17 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Roofing Installers - Industry Data,http://www.roofing-installers.com/cost-to-install-roofing,,,,,,,US$2014 per q. ft.,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
-Roofing Installers - Industry Data,http://www.roofing-installers.com/cost-to-install-roofing,,,,,,,US$2014 per q. ft.,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
-Homewyse,http://www.homewyse.com/services/cost_to_install_shingle_roof.html,,,,,,,US$2014 per q. ft.,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
-Homewyse,http://www.homewyse.com/services/cost_to_install_shingle_roof.html,,,,,,,US$2014 per q. ft.,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
-i3 Missoula; MCPS,ftp://ftp.ci.missoula.mt.us/Packets/Council/2013/130805/Presentation%20Green%20Roof.pdf,,,,,,,US$2014 per q. ft.,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
-i3 Missoula; MCPS,ftp://ftp.ci.missoula.mt.us/Packets/Council/2013/130805/Presentation%20Green%20Roof.pdf,,,,,,,US$2014 per q. ft.,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
-"Julian Sproul, Man Pun Wan, Benjamin H. Mandel,∗ , Arthur H. Rosenfeld, Energy and Buildings 71 (2014) 20–27",,,,1  - Peer Reviewed,2014.0,,,US$2014per sq. m,,"US2014$/Residential and Commercial roof area,  m2",,,
-"R.S. Means, Building Construction Cost Data 21st Annual Edition, 2002.",,,,,2002.0,,,US$2002per sq. m,0.0,"US2014$/Residential and Commercial roof area,  m2",,TPO,
-"Carter, et al., 2008",,,,,2008.0,,,US$2008/per sq. m,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
-"Clark et al., 2008",,,,,2008.0,,,US$2008/per sq. m,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
-"Nui et al., ",,,,,2010.0,,,US$20010/per sq. m,0.0,"US2014$/Residential and Commercial roof area,  m2",,,
+Roofing Installers - Industry Data,http://www.roofing-installers.com/cost-to-install-roofing,,,,,,2.0,US$2014 per q. ft.,21.5278,"US2014$/Residential and Commercial roof area,  m2",,,True
+Roofing Installers - Industry Data,http://www.roofing-installers.com/cost-to-install-roofing,,,,,,3.5,US$2014 per q. ft.,37.673649999999995,"US2014$/Residential and Commercial roof area,  m2",,,True
+Homewyse,http://www.homewyse.com/services/cost_to_install_shingle_roof.html,,,,,,5.76,US$2014 per q. ft.,62.000063999999995,"US2014$/Residential and Commercial roof area,  m2",,,True
+Homewyse,http://www.homewyse.com/services/cost_to_install_shingle_roof.html,,,,,,9.19,US$2014 per q. ft.,98.92024099999999,"US2014$/Residential and Commercial roof area,  m2",,,True
+i3 Missoula; MCPS,ftp://ftp.ci.missoula.mt.us/Packets/Council/2013/130805/Presentation%20Green%20Roof.pdf,,,,,,7.0,US$2014 per q. ft.,75.34729999999999,"US2014$/Residential and Commercial roof area,  m2",,,True
+i3 Missoula; MCPS,ftp://ftp.ci.missoula.mt.us/Packets/Council/2013/130805/Presentation%20Green%20Roof.pdf,,,,,,10.0,US$2014 per q. ft.,107.639,"US2014$/Residential and Commercial roof area,  m2",,,True
+"Julian Sproul, Man Pun Wan, Benjamin H. Mandel,∗ , Arthur H. Rosenfeld, Energy and Buildings 71 (2014) 20–27",,,,1  - Peer Reviewed,2014.0,,22.0,US$2014per sq. m,,"US2014$/Residential and Commercial roof area,  m2",,,True
+"R.S. Means, Building Construction Cost Data 21st Annual Edition, 2002.",,,,,2002.0,,20.0,US$2002per sq. m,26.400000000000002,"US2014$/Residential and Commercial roof area,  m2",,TPO,
+"Carter, et al., 2008",,,,,2008.0,,83.78,US$2008/per sq. m,92.15800000000002,"US2014$/Residential and Commercial roof area,  m2",,,True
+"Clark et al., 2008",,,,,2008.0,,167.0,US$2008/per sq. m,183.70000000000002,"US2014$/Residential and Commercial roof area,  m2",,,True
+"Nui et al., ",,,,,2010.0,,242.0,US$2010/per sq. m,263.78000000000003,"US2014$/Residential and Commercial roof area,  m2",,,True
+Roofing Installers - Industry Data,http://www.roofing-installers.com/cost-to-install-roofing,,,5 - Not Verified,,,2.0,US$2014 per q. ft.,21.5278,"US2014$/Residential and Commercial roof area,  m2",,,
+"Julian Sproul, Man Pun Wan, Benjamin H. Mandel,∗ , Arthur H. Rosenfeld, Energy and Buildings 71 (2014) 20–27",https://linkinghub.elsevier.com/retrieve/pii/S0378778813007652,,,1  - Peer Reviewed,2014.0,,22.0,US$2014per sq. m,,"US2014$/Residential and Commercial roof area,  m2",,,
+"R.S. Means, Building Construction Cost Data 21st Annual Edition, 2002.",,,,2 - Public Sector/ Multilateral Agency,2002.0,,20.0,US$2002per sq. m,26.400000000000002,"US2014$/Residential and Commercial roof area,  m2",,,
+US GSA. (2011). The_Benefits_and_Challenges_of_Green_Roofs_on_Public_and_Commercial_Buildings.pdf. Retrieved from https://www.gsa.gov/cdnstatic/The_Benefits_and_Challenges_of_Green_Roofs_on_Public_and_Commercial_Buildings.pdf,https://www.gsa.gov/cdnstatic/The_Benefits_and_Challenges_of_Green_Roofs_on_Public_and_Commercial_Buildings.pdf,OECD90,USA,2 - Public Sector/ Multilateral Agency,2011.0,,8.99,US$2011/ft2,101.60583405,"US2014$/Residential and Commercial roof area,  m2",,,
+"Moseley, D., Miller, C., Bell, C., Weeks, K., Bass, B., & Berghage, R. (2013). walmart-2013-green-roof-report.pdf. Retrieved April 1, 2019, from http://cdn.corporate.walmart.com/95/ab/ecb63ba44f51bec6f9aa42c73a9e/walmart-2013-green-roof-report.pdf",http://cdn.corporate.walmart.com/95/ab/ecb63ba44f51bec6f9aa42c73a9e/walmart-2013-green-roof-report.pdf,OECD90,USA,3 - For Profit,2013.0,,2.55,US$2013/ft2,27.996903899999996,"US2014$/Residential and Commercial roof area,  m2",,,

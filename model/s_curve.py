@@ -33,7 +33,7 @@ class SCurve(DataHandler):
          Arguments:
            transition_period (int): number of years of transition period, must be an even number.
            sconfig: Pandas dataframe with columns:
-             'base_year', 'last_year', 'base_percent', 'last_percent',
+             'base_year', 'end_year', 'base_percent', 'last_percent',
              'base_adoption', 'last_pds_tam',
              (needed for Bass Diffusion model): 'M', 'P', 'Q'
             and rows for each region:
@@ -137,7 +137,7 @@ class SCurve(DataHandler):
         """Calculate Logistic S-Curve for a solution."""
         result = pd.DataFrame()
         for region in self.sconfig.index:
-            last_year = self.sconfig.loc[region, 'last_year']
+            last_year = self.sconfig.loc[region, 'end_year']
             last_percent = self.sconfig.loc[region, 'last_percent']
             df = self._sigmoid_logistic(
                 base_year=self.sconfig.loc[region, 'base_year'],
