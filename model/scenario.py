@@ -89,7 +89,8 @@ class Scenario:
             if alt_scenario in scenario_list:
                 self.scenario = alt_scenario
 
-            self.ac = scenario_list[self.scenario]
+            self.ac = scenario_list.get(self.scenario)
+            assert self.ac, (self.scenario, sorted(scenario_list.keys()))
     
     ##############################################################################################################
     # Initialize Adoption

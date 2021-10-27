@@ -41,6 +41,9 @@ def _load_module(solution):
     """Return the Scenario class and list of scenarios."""
     importname = 'solution.' + solution
     m = importlib.import_module(importname)
+    # If the module was already imported (even with an error), the above
+    # call is a no-op. Force a reload.
+    importlib.reload(m)
     return m
 
 def all_solutions_scenarios():
