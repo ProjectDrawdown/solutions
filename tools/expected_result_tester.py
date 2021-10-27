@@ -6,6 +6,7 @@ same reasons.
 """
 # pylint: disable=line-too-long
 
+import re
 import functools
 import numpy as np
 import pandas as pd
@@ -921,6 +922,26 @@ def LAND_solution_verify_list(obj, zip_f):
     return verify
 
 
+def find_expected_scenario_in_zip(scenario_name, zip_f):
+    """Find the name of the scenario as the zip file understands it"""
+    # Sometimes special characters mess up a direct match
+    # First try: match the cleaning done by the macro
+    zip_names = zip_f.namelist()
+    zip_name = scenario_name.replace("/","").replace("'","").strip()
+    # Straightforward case: the names are identical
+    if f"{zip_name}/ScenarioRecord" in zip_names:
+        return zip_name
+    else:
+        # Strip out all non-alpha numeric characters and match accordingly
+        # A false positive is possible here, but unlikely.
+        zip_name = re.sub(r'\W+', '', scenario_name) + "ScenarioRecord"
+        for name in zip_names:
+            stripped_name = re.sub(r'\W+', '', name)
+            if stripped_name == zip_name:
+                # return the _zipfile's_ version of this name
+                return name.split('/')[0]
+    raise ValueError(f"Could not find scenario {scenario_name} in expected.zip")
+
 def approx_compare(val, expt, all_zero=True, thresh=None):
     """Return True if val is equal 'or very close to' expected value expt.
     If all_zero is True (the default), 0, NaN, None and the empty string are all treated as equal.
@@ -966,9 +987,10 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
     errors = []
     for sheetname in verify.keys():
         if _verbosity >= 2: print(sheetname)
-        arcname = f'{scenario}/{sheetname}'
+        expected_scenario_name = find_expected_scenario_in_zip(scenario, zip_f)
+        arcname = f'{expected_scenario_name}/{sheetname}'
         with zip_f.open(name=arcname) as zip_csv_f:
-            sheet_df = pd.read_csv(zip_csv_f, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
+            sheet_df = pd.read_csv(zip_csv_f, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)']) 
         
         skip_count=0
         for (cellrange, actual_df, actual_mask, expected_mask) in verify[sheetname]:
@@ -1079,7 +1101,8 @@ def key_results_tester(solution_name, expected_filename, scenario_skip=None, key
             scenario_count += 1
 
             obj = factory.load_scenario(solution_name,scenario_name)
-            ac_file = zf.open(scenario_name + "/" + 'Advanced Controls')
+            expected_scenario_name = find_expected_scenario_in_zip(scenario_name, zf)
+            ac_file = zf.open(expected_scenario_name + "/" + 'Advanced Controls')
             df_expected = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
             key_results = obj.get_key_results()
             row_expected_values = 3

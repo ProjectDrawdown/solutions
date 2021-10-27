@@ -97,6 +97,9 @@ Sub Generate_Scenario_Records()
             Sheets("ScenarioRecord").Activate
             Range("$B$9").Value = scenario
             Call LoadScenario_Click
+
+            ' remove special characters that will mess up the zip archive
+            clean_scenario_name = Trim(Replace(Replace(scenario, "'",""), "/", ""))
             
             ' Write out the sheets
             For Each x In Worksheets
@@ -108,7 +111,7 @@ Sub Generate_Scenario_Records()
                     
                     ' Add to index
                     index_sheet.Cells(counter, 1) = fname
-                    index_sheet.Cells(counter, 2) = scenario
+                    index_sheet.Cells(counter, 2) = clean_scenario_name
                     index_sheet.Cells(counter, 3) = x.Name
                 End If
             Next
