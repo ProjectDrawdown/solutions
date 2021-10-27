@@ -1,9 +1,9 @@
 {
-    "name": "PDS1-58p2050-based on Berg Insight (Integrated)",
+    "name": "PDS2-59p2050-Bloomberg's Estimate (Integrated)",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "creation_date": "2019-11-25 08:52:57",
-    "description": "Using historical and 2020 forecast data from Berg Insight's market report, the adoption is interpolated and extrapolated for all missing years with a polynomial curve. The efficiency inputs were adjusted according to the Buildings Integration sequence to account for interaction effects among solutions.",
+    "creation_date": "2021-09-13 20:15:55",
+    "description": "Using historical and forecast adoption from Bloomberg BusinessWeek (Stubbe, 2018), the adoption is projected using polynomial extrapolation to 2060. This scenario was integrated with other solutions.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": 38.4248067633253,
@@ -24,10 +24,10 @@
     "soln_fuel_cost_per_funit": 0.0,
     "npv_discount_rate": 0.04,
     "conv_annual_energy_used": 2.3240931447627027,
-    "soln_energy_efficiency_factor": 0.15158852275687523,
+    "soln_energy_efficiency_factor": 0.14038709347227227,
     "soln_annual_energy_used": 0.0,
     "conv_fuel_consumed_per_funit": 23658.76830368019,
-    "soln_fuel_efficiency_factor": 0.11449440714036033,
+    "soln_fuel_efficiency_factor": 0.10603399746196915,
     "conv_fuel_emissions_factor": 87.03609646633511,
     "soln_fuel_emissions_factor": 87.03609646633511,
     "conv_emissions_per_funit": 0.0,
@@ -72,7 +72,7 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Projected Based on Berg Insight (2016)",
+    "soln_pds_adoption_custom_name": "Projected Based on Bloomberg (Stubbe, 2018)",
     "soln_pds_adoption_scenarios_included": [],
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
@@ -81,8 +81,6 @@
         2015,
         2016,
         2017,
-        2018,
-        2019,
-        2020
+        2018
     ]
 }

@@ -1,5 +1,5 @@
-#Smart Thermostats solution model.
-#   Originally exported from: SmartThermostats-RRSv1.1b-Oct2019.xlsm
+# Smart Thermostats solution model.
+# Originally exported from: SmartThermostats-RRSv1.1b-Aug21.xlsm
 
 from pathlib import Path
 import numpy as np
@@ -9,6 +9,7 @@ from model import adoptiondata
 from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
+from model import conversions
 from model import customadoption
 from model import dd
 from model import emissionsfactors
@@ -40,11 +41,9 @@ scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)
 
 # These are the "default" scenarios to use for each of the drawdown categories.
 # They should be set to the most recent "official" set"
-PDS1 = "PDS1-58p2050-based on Berg Insight (Integrated)"
-PDS2 = "PDS2-63p2050-based on Bloomberg (Integrated)"
-PDS3 = "PDS3-98p2050-Bass Diffusion (Integrated)"
-
-
+PDS1 = "PDS1-55p2050-Berg Insight's Estimate (Integrated)"
+PDS2 = "PDS2-59p2050-Bloomberg's Estimate (Integrated)"
+PDS3 = "PDS3-98p2050-BassDiffusion Estimate (Integrated)"
 
 class Scenario(scenario.RRSScenario):
     name = name
@@ -65,10 +64,6 @@ class Scenario(scenario.RRSScenario):
         # growth (medium): Medium Medium Medium Medium Medium Medium Medium Medium Medium Medium
         # low_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
         # high_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
-
-        # Also, there is currently a bug in the code that generates the TAM json file, which
-        # causes some sources to be assigned to the empty case.  Please check if this is
-        # occurring, and if so, put the sources in the case where they belong.
 
         self._ref_tam_sources = scenario.load_sources(THISDIR/'tam/tam_ref_sources.json','*')
         self._pds_tam_sources = self._ref_tam_sources
@@ -125,15 +120,17 @@ class Scenario(scenario.RRSScenario):
             pds_total_adoption_units=pds_tam_per_region,
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-            bug_cfunits_double_count=True,
-            replacement_period_offset=0)
+            # Quirks parameters
+            replacement_period_offset=0,
+            bug_cfunits_double_count=True)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
         conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
         soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()
 
         self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=2,
-            ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+            ref_learning_increase_mult=2,
+            conv_learning_increase_mult=2,
             soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
             soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
             conv_ref_tot_iunits=conv_ref_tot_iunits,

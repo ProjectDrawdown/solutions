@@ -1,9 +1,9 @@
 {
-    "name": "PDS3-98p2050-Bass Diffusion (Integrated)",
+    "name": "PDS1-55p2050-Berg Insight's Estimate (Integrated)",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "creation_date": "2019-11-25 09:05:10",
-    "description": "Taking Recommended Bass Diffusion model parameters from literature with adjustments that correspond to Cellphone diffusion in Western Europe, the adoption projection of Smart Thermostats is calculated. The efficiency inputs were adjusted according to the Buildings Integration sequence to account for interaction effects among solutions.",
+    "creation_date": "2021-09-13 20:13:58",
+    "description": "Using historical and 2020 forecast data from Berg Insight's market report, the adoption is interpolated and extrapolated for all missing years with a polynomial curve. Scenario Integrated with other solutions.",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "conv_2014_cost": 38.4248067633253,
@@ -24,10 +24,10 @@
     "soln_fuel_cost_per_funit": 0.0,
     "npv_discount_rate": 0.04,
     "conv_annual_energy_used": 2.3240931447627027,
-    "soln_energy_efficiency_factor": 0.12929180638272422,
+    "soln_energy_efficiency_factor": 0.1522496125640733,
     "soln_annual_energy_used": 0.0,
     "conv_fuel_consumed_per_funit": 23658.76830368019,
-    "soln_fuel_efficiency_factor": 0.09765375670055385,
+    "soln_fuel_efficiency_factor": 0.11499372650943335,
     "conv_fuel_emissions_factor": 87.03609646633511,
     "soln_fuel_emissions_factor": 87.03609646633511,
     "conv_emissions_per_funit": 0.0,
@@ -58,10 +58,10 @@
         "EU": 14.5,
         "USA": 22.7
     },
-    "soln_pds_adoption_basis": "Bass Diffusion S-Curve",
+    "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": {
-        "World": 1.0,
+        "World": 0.0,
         "OECD90": 0.0,
         "Eastern Europe": 0.0,
         "Asia (Sans Japan)": 0.0,
@@ -72,30 +72,8 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "pds_adoption_s_curve_innovation": {
-        "World": 0.0016778240000000003,
-        "OECD90": 0.00112096,
-        "Eastern Europe": 0.00112096,
-        "Asia (Sans Japan)": 0.00112096,
-        "Middle East and Africa": 0.00112096,
-        "Latin America": 0.00112096,
-        "China": 0.00112096,
-        "India": 0.00112096,
-        "EU": 0.00112096,
-        "USA": 0.00112096
-    },
-    "pds_adoption_s_curve_imitation": {
-        "World": 0.24646953499999996,
-        "OECD90": 0.103333441,
-        "Eastern Europe": 0.103333441,
-        "Asia (Sans Japan)": 0.103333441,
-        "Middle East and Africa": 0.103333441,
-        "Latin America": 0.103333441,
-        "China": 0.103333441,
-        "India": 0.103333441,
-        "EU": 0.103333441,
-        "USA": 0.103333441
-    },
+    "soln_pds_adoption_custom_name": "Projected Based on Berg Insight (2016)",
+    "soln_pds_adoption_scenarios_included": [],
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
     "pds_adoption_use_ref_years": [
@@ -103,6 +81,8 @@
         2015,
         2016,
         2017,
-        2018
+        2018,
+        2019,
+        2020
     ]
 }
