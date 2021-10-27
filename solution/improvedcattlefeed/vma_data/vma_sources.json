@@ -1,0 +1,68 @@
+{
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Total Adoption is the sum of the adoption of Roughages (legumes, silages) as well as, By-products and Concentrates (grains, brans, soybean meals). Calculations are made in the \"rations\" tab"
+    },
+    "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "It is assumed that all conventional systems consist of soybean meal and corn. Costs reflect the cost to produce or purchase feed. Important conversions: 3.2 kg of protein in 100 kg of milk"
+    },
+    "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Costs reflect the cost to produce or purchase feed. Important conversions: 0.453 kg in a pound.    |.    0.032 kg of protein in 1 kg of milk. We also assume an average cow will produce 31.52 kg of milk per day. The benefit-cost ratio (BCR) is the ratio of the present value of the benefits to the present value of the costs. Costs were calculated as production costs (baseline scenario) plus costs involving the implementation of the mitigation strategy while benefits were calculated as total revenue from meat output within a year. It was assumed that meat output was on carcass weight basis. It was assumed that Bone Free Meat/Carcass Weight = 0.75; kg protein/kg meat = 0.2113"
+    },
+    "SOLUTION Revenue from Increased Milk Yield": {
+        "filename": "SOLUTION_Revenue_from_Increased_Milk_Yield.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "All values are savings. (Assume net earnings per cow to be $102 each year, determined by a farmgate price of $24.48 per 100 kg milk where each cow is averaging 416.9 kg milk.)"
+    },
+    "CONVENTIONAL Direct Emissions per Functional Unit": {
+        "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": true,
+        "description": "Enteric CH4 Fermentaion emissions are considered direct emissions |.  Convert kg to tonnes by a factor of 0.001, Weight raw data based on total protein allocated to specific animal product and region. Weights are drawn from the \"GHGsources\" tab.  "
+    },
+    "SOLUTION Direct Emissions per Functional Unit": {
+        "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": true,
+        "description": "Enteric CH4 Fermentation emissions are considered direct emissions"
+    },
+    "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+        "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Indirect CO2 emissions related to Feed production, transport, and processing"
+    },
+    "SOLUTION Indirect CO2 Emissions per Unit": {
+        "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": false,
+        "bound_correction": true,
+        "description": "Indirect CO2 emissions related to Feed production, transport, and processing"
+    },
+    "CH4-CO2eq Tons Reduced": {
+        "filename": "CH4_CO2eq_Tons_Reduced.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "If literature notes a change in methane emissions from enteric fermentation, they are recorded here.  Weight raw data based on total protein allocated to specific animal product and region. Weights are drawn from the \"GHGsources\" tab."
+    },
+    "CONVENTIONAL Milk Yield": {
+        "filename": "CONVENTIONAL_Milk_Yield.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Increased Milk Yield": {
+        "filename": "SOLUTION_Increased_Milk_Yield.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    }
+}

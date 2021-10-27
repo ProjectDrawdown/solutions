@@ -48,7 +48,7 @@ def build_diff(file1, file2):
     accum = []
     for (i, ln) in enumerate(lines2):
         if re.match("E   \w+Error",ln) and not ln.startswith("E   AssertionError"):
-            accum.append("Probable exception at line " + str(i+1))
+            accum.append("Probable exception at line " + str(i+1) + " " + ln)
     if len(accum):
         print("PROBABLE EXCEPTIONS\n")
         for x in accum:

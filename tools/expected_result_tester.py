@@ -23,6 +23,11 @@ from solution import factory
 
 _verbosity = 1
 
+# Maximum number of errors to return for a single scenario.
+# Run speed and output volume vs. completeness of information tradeoff.
+# Value < 0 ==> return all errors
+_max_errors = -1
+
 
 def verify_aez_data(obj, verify, cohort):
     """Verified tables in AEZ Data."""
@@ -983,7 +988,7 @@ def dataframes_differ(val, expt, mask=None, all_zero=True, thresh=None):
     return result if len(result) else False
 
 
-def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, test_only=None, max_errors=10):
+def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, test_only=None):
     errors = []
     for sheetname in verify.keys():
         if _verbosity >= 2: print(sheetname)
@@ -1040,7 +1045,7 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
                 if len(errs) > 10:
                     difflist = difflist + "   ....\n"
                 errors.append(f"{description} {len(errs)}/{rsize*csize} values differ:\n" + difflist)
-            if len(errors) >= max_errors:
+            if len(errors) >= _max_errors:
                 # that's enough
                 return errors
 

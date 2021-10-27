@@ -6,17 +6,17 @@ import model.dd as dd
 from model.data_handler import DataHandler
 from model.decorators import data_func
 
-def make_scurve_config(base_year, tamdata, configdict, end_year=2050, use_tam_2014=False):
+def make_scurve_config(base_year, tamdata, configdict, last_year=2050, use_tam_2014=False):
     """Create a configuration for a standard S-Curve or Bass Diffusion S-Curve.  Configdict should contain required parameters
     'ref_base_adoption', 'pds_adoption_final_percentage', and for Bass Diffusion S-Curves may also contain 'pds_adoption_s_curve_innovation'
     and 'pds_adoption_s_curve_imitation'.  These are all AC fields, and can be obtained via ac.asdict().
     Parameter use_tam_2014 is a quirks parameter to match a bug in the Excel that uses the TAM from the year 2014 instead of base_year
     as it ought to."""
-    sconfig = pd.DataFrame({'base_year': base_year, 'end_year': end_year}, index=dd.REGIONS)
+    sconfig = pd.DataFrame({'base_year': base_year, 'last_year': last_year}, index=dd.REGIONS)
     sconfig['base_adoption'] = pd.Series(configdict['ref_base_adoption'])
     sconfig['base_percent'] = sconfig['base_adoption'] / tamdata.loc[base_year]
     sconfig['last_percent'] = pd.Series(configdict['pds_adoption_final_percentage'])
-    sconfig['last_pds_tam'] = tamdata.loc[[end_year]].T
+    sconfig['last_pds_tam'] = tamdata.loc[[last_year]].T
     if 'pds_adoption_s_curve_innovation' in configdict:
         sconfig['innovation'] = pd.Series(configdict['pds_adoption_s_curve_innovation'])
     if 'pds_adoption_s_curve_imitation' in configdict:
@@ -33,7 +33,7 @@ class SCurve(DataHandler):
          Arguments:
            transition_period (int): number of years of transition period, must be an even number.
            sconfig: Pandas dataframe with columns:
-             'base_year', 'end_year', 'base_percent', 'last_percent',
+             'base_year', 'last_year', 'base_percent', 'last_percent',
              'base_adoption', 'last_pds_tam',
              (needed for Bass Diffusion model): 'M', 'P', 'Q'
             and rows for each region:
@@ -137,7 +137,7 @@ class SCurve(DataHandler):
         """Calculate Logistic S-Curve for a solution."""
         result = pd.DataFrame()
         for region in self.sconfig.index:
-            last_year = self.sconfig.loc[region, 'end_year']
+            last_year = self.sconfig.loc[region, 'last_year']
             last_percent = self.sconfig.loc[region, 'last_percent']
             df = self._sigmoid_logistic(
                 base_year=self.sconfig.loc[region, 'base_year'],

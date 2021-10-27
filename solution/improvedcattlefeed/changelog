@@ -1,0 +1,28 @@
+Original import, 10/2021:
+I had to change the name of the "pds_source_post_2014" field in all the scenarios.  
+As extracted it was something like "Tam Drawdown: ALL SOURCES", and I changed it to "ALL SOURCES"
+The extracted value gave a "no such source" error.
+
+Also, the regional tables in the TAM data had formulas in the empty columns, which was making the
+columns read at zero, throwing off all the min/max/sd type calculations to the right.
+This is clearly wrong, so I cleared the contents of those columns in the Excel, then re-extracted
+the expected.zip file.  This magically fixed all test errors.
+A final thing I did was add one line to the CO2 calcs initialization:  as generated, it read:
+
+        self.c2 = co2calcs.CO2Calcs(ac=self.ac,
+            ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+            soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
+            ....
+
+I changed it to read:
+
+        self.c2 = co2calcs.CO2Calcs(ac=self.ac,
+            ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+            ch4_megatons_avoided_or_reduced=self.c4.ch4_megatons_avoided_or_reduced(),
+            soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
+            ....
+
+I did this because this is what Kristina did for solutions that produce greenhouse gasses directly (which
+this one does).  In this case, however, it doesn't seem to have changed the results at all, and the
+tests are still passing.  (Note: I didn't add a N2O handler because this solution doesn't involve directly
+N2O emissions, at least not according to the ac.n2o_co2_per_funit value.)
