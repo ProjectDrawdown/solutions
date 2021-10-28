@@ -77,7 +77,7 @@ def convert_to_cpds(solution, scenarios_to_convert, root=None):
                         lastnonzeroindex = col[col!=0].index[-1]
                         if lastnonzeroindex < lastindex:
                             print(f"Warning: scenario {ac['name']}, region {r}: adoption goes to zero or NaN, not sure which.\nWriting as NaN, correct manually.")
-                            effectiveadoption[lastnonzeroindex+1:,r] = np.NaN
+                            effectiveadoption.loc[lastnonzeroindex+1:,r] = np.NaN
 
                 # name for this new adoption
                 adoption_name = ac['name'] + '_ca'
@@ -100,10 +100,11 @@ def convert_to_cpds(solution, scenarios_to_convert, root=None):
                 ac["soln_pds_adoption_regional_data"] = False
                 ac["pds_adoption_use_ref_years"] = []
 
-                acfile.write_text(json.dumps(ac,indent=2), encoding='utf-8')
+                acfile.write_text(json.dumps(ac,indent=4), encoding='utf-8')
     
-    datadirectoryfile.write_text(json.dumps(datadirectory, indent=2), encoding='utf-8')
-    print("\nScenarios saved and data directory updated.  You may need to update the __init__.py file.")
+    datadirectoryfile.write_text(json.dumps(datadirectory, indent=4), encoding='utf-8')
+    print("\nScenarios saved and data directory updated.")
+    print("You may need to update the __init__.py file and you will need to add adoptions to skipped tests.")
 
                 
 

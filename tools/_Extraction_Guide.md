@@ -52,11 +52,15 @@ For Excel Workbooks that follow the standard Project Drawdown templates, extract
 
 * If the solution had previously skipped tests, "unskip" the tests at least temporarily to check that the behavior after a new extraction.  The test may magically work now, or there could be a deeper problem that would not be discovered without this check.
 
+* When you have a deep test failure, look at which data values are affected: if it is specific rows or columns, or the whole table.  That can give you clues as to what might be going wrong.
+
 ### If you see...
 
 * Errors about missing sources usually indicate old scenarios that should be deleted.
 * Test failures in TAM or Adoption sections may indicate that some data got garbled.  Check that the directory file or fiels (e.g. `tam/tam_ref_sources.json`) appear well formed.  Also verify that there are no non-standard settings in the "fit" parameters (all the 3rd Poly, etc., stuff at the top of the Excel sheet).
 * Test failures in Helper Tables.  This is by far the most troublesome section, because the Excel is already very complicated and because some Excel models have been hand-altered.  Usually you have to look at the formulas in the top row and left column of the two tables on the Helper Tables sheet, and compare what you see to the quirks parameters documented in HelperTables.py.
+* Lots and lots of errors in Unit Adoption, and they look kinda sorta like off-by-one-row errors, but not quite... Try setting the quirks parameter replacement_period_offset to 1 and see if that helps.  I don't have a test for this yet, but you should definitely be able to tell which way is correct.
+* Errors in CO2 or CH4 results:  ignore these currently.  Our code is no longer working the same as the Excel code for this, and I don't know enough to debug what is or isn't correct behavior.
 
 ### You can skip a test if...
 

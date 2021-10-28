@@ -1,0 +1,62 @@
+{
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Note: Sources 1  - 19 were taken from the Large Methane Digester Solution. See \"Manure Agric Sheet\" in Large Methane Digester Solution model for parameters used  here to convert TWh to Manure.  2014 values in the  Large Methane Digester Solutiion were obtained by applying 70% share to the total generation from IRENA (2016) to represent Agriculture and wastewater only.  Share in total Bioenergy of biogas (if in the results of the sources) produced from Agriculture and Wastewater (WBA, 2013)= 70%\nThe latest 2014-2018 values are based off of IRENA 2019 Renewable Enery Statistics. A  18% share of bigoas in bioenergy is applied, then a 70.2% of biogas is allocated to methane digesters (produced from agriculture and wastewaster). The statistic is based on European and US data. Please see \"2020 Adoption Calcs\" for more info."
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CONVENTIONAL Direct Emissions per Functional Unit": {
+        "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Direct Emissions per Functional Unit": {
+        "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Indirect CO2 Emissions per Unit": {
+        "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CH4-CO2eq Tons Reduced": {
+        "filename": "CH4_CO2eq_Tons_Reduced.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Note: Cross-check the elements that go into this value calculatedby AgStar before inclusion."
+    },
+    "SOLUTION Revenue per Functional Unit": {
+        "filename": "SOLUTION_Revenue_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Indirect N2O Emissions per CONVENTIONAL Functional Unit": {
+        "filename": "Indirect_N2O_Emissions_per_CONVENTIONAL_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "GHG-CO2eq tons reduced": {
+        "filename": "GHG_CO2eq_tons_reduced.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Notes: The GHG reductions in MTCO2 eq was obtained from ICF (2013), Exhibit 3-D-1: Covered Lagoon Digester with Flare Only or Flare and Electricity Generation. The number of animals on a farm was multplied by the quantity of manure excreted and recovered for each species for 365 days/year. For cows, this was 68 kg manure / day x 85% recovery and for pigs,  7 kg manure /day x 80% recovery ."
+    }
+}
