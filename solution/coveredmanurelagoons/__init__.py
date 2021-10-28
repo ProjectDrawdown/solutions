@@ -114,7 +114,7 @@ class Scenario(scenario.RRSScenario):
         # DERIVED VALUES
 
         # Emissions: if this is an older model, you may need to set a data version to make tests pass.
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac,grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=ref_tam_per_region,
@@ -123,7 +123,7 @@ class Scenario(scenario.RRSScenario):
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
             repeated_cost_for_iunits=False,
             # Quirks parameters
-            replacement_period_offset=0,
+            replacement_period_offset=1,
             bug_cfunits_double_count=False)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()

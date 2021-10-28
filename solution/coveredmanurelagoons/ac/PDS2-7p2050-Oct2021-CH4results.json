@@ -62,7 +62,7 @@
         "USA": 0.0
     },
     "soln_pds_adoption_basis": "Fully Customized PDS",
-    "soln_pds_adoption_regional_data": true,
+    "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": {
         "World": 0.0,
         "OECD90": 0.0,
@@ -75,7 +75,7 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "Average of All Custom PDS Scenarios",
+    "soln_pds_adoption_custom_name": "PDS2-7p2050-Oct2021-CH4results_ca",
     "soln_pds_adoption_scenarios_included": [
         0,
         1,
@@ -87,8 +87,5 @@
     ],
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [
-        2014,
-        2015
-    ]
+    "pds_adoption_use_ref_years": []
 }

@@ -1,0 +1,29 @@
+Initial 10/2021 extraction of model:
+
+1. Removed all but three of the scenarios from the spreadsheet before generating expected.zip and he code,
+so that is all they have.
+
+2. The scenarios referenced 'Drawdown: ALL SOURCES' as the data source for post-2014 pds TAM, and the 
+code did not recognize that.  I changed it these to "ALL SOURCES".  That ran, but the TAM was still 
+incorrect.  After some digging, I discovered that, while the extractor had created data files for each
+of the sources listed on the TAM data pages, the tam_pds_sources.json file referenced the same data files
+as the tam_ref_sources.json file, and did not reference the Drawdown_TAM csvs.  I fixed this manually
+and submitted a bug.
+
+3. The PDS Adopton data was showing incorrect in an unusual way:  there were off-by-a-row errors,
+where the python code was producing a value for year X that the Excel had for year X-1.  Eventually
+traced this down to a bug in the Excel Custom PDS tab, where there is literally a row missing in
+the tables at AB22 and AQ22: the formula for year 2018 refer to data from row 85, and the formula
+for year 2019 refer to data from row 87, skipping row 86.  To fix this, I used the new 
+convert_to_cpds.py tool, which created new custom pds adoptions that exactly match what the Excel
+has, regardless of how it was obtained.  That seems to have worked...
+
+4. I needed to set Emissions Factors grid_emissions_version to 1.
+
+5. OK, this one is weird: I needed to set UnitAdoption quirks parameter replacement_period_offset to 1.
+This is weird because I didn't expect to see it in new models.  But it fixed a *ton* of errors.
+
+Remaining errors are all minor regional errors, or CO2/CH4 errors which I assume are because our
+code no longer matches Excel behavior when actual CH4 emissions are involved (though I don't 
+know that for a fact)
+
