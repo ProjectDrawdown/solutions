@@ -41,6 +41,15 @@ def _load_module(solution):
     """Return the Scenario class and list of scenarios."""
     importname = 'solution.' + solution
     m = importlib.import_module(importname)
+
+    # This reload is gratuitous for the first time you import a module m,
+    # but makes it possible to reload it if you've updated it, like so:
+    # 1. re-import this module (factory), which clears its lru cache but
+    #    not Python's internal cache of imported modules.
+    # 2. re-import m (using this method), which first calls import_module -
+    #    a no-op because Python remembers it - but then calls 'reload' below
+    #    which causes an actual reload.
+    importlib.reload(m)
     return m
 
 def all_solutions_scenarios():
