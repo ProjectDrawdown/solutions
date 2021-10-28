@@ -570,6 +570,7 @@ def normalize_source_name(sourcename):
         'Based on: Greenpeace Reference Scenario': 'Based on: Greenpeace 2015 Reference',
         'Conservative: Based on- Greenpeace 2015 Reference': 'Based on: Greenpeace 2015 Reference',
         '100% REN: Based on- Greenpeace Advanced [R]evolution': 'Based on: Greenpeace 2015 Advanced Revolution',
+        'Drawdown TAM: ALL SOURCES': 'ALL SOURCES',
         'Drawdown TAM: Baseline Cases': 'Baseline Cases',
         'Drawdown TAM: Conservative Cases': 'Conservative Cases',
         'Drawdown TAM: Ambitious Cases': 'Ambitious Cases',

@@ -1045,7 +1045,7 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
                 if len(errs) > 10:
                     difflist = difflist + "   ....\n"
                 errors.append(f"{description} {len(errs)}/{rsize*csize} values differ:\n" + difflist)
-            if len(errors) >= _max_errors:
+            if _max_errors > 0 and len(errors) >= _max_errors:
                 # that's enough
                 return errors
 
