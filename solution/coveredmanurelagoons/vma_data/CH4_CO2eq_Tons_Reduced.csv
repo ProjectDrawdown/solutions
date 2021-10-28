@@ -1,0 +1,31 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+,,,,,,,,,,t CH4-CO2eq per MMT Manure,,"Dairy, uncovered lagoon to covered",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD90,USA,,,,4002.460092288,MTCO2e/yr,466226.3643052838,t CH4-CO2eq per MMT Manure,,"Pig, covered lagoon, fully flared",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD90,USA,,,,4002.460092288,MTCO2e/yr,466226.364305284,t CH4-CO2eq per MMT Manure,,"Pig, covered lagoon, fully flared",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD90,USA,,,,8013.288966144,MTCO2e/yr,345300.666020761,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, fully flared",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD90,USA,,,,12019.933449216,MTCO2e/yr,345300.6660207612,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, fully flared",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD90,USA,,,,5809.14087936,MTCO2e/yr,344192.35432525957,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, fully flared",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD90,USA,,,,2913.923260416,MTCO2e/yr,345300.6660207613,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, fully flared",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD91,USA,,,,7649.048558592,MTCO2e/yr,345300.66602076124,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, fully flared",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD92,USA,,,,7267.15086336,MTCO2e/yr,344463.7087434232,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, fully flared",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD93,USA,,,,29283.9705726137,MTCO2e/yr,497458.18677657,t CH4-CO2eq per MMT Manure,,"Pig, covered lagoon, pipeline gas",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD94,USA,,,,14387.784152864,MTCO2e/yr,497458.18677657,t CH4-CO2eq per MMT Manure,,"Pig, covered lagoon, pipeline gas",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD95,USA,,,,21352.8952091975,MTCO2e/yr,497458.18677657,t CH4-CO2eq per MMT Manure,,"Pig, covered lagoon, pipeline gas",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD96,USA,,,,32537.7450806818,MTCO2e/yr,497458.18677657,t CH4-CO2eq per MMT Manure,,"Pig, covered lagoon, pipeline gas",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD97,USA,,,,25115.0719841513,MTCO2e/yr,497458.18677657,t CH4-CO2eq per MMT Manure,,"Pig, covered lagoon, pipeline gas",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD98,USA,,,,34692.8872557888,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD99,USA,,,,21077.7152549472,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD100,USA,,,,58946.152831632,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD101,USA,,,,72918.5742435744,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD102,USA,,,,20307.6443021299,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD103,USA,,,,52714.1353268736,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD104,USA,,,,16671.639184704,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD105,USA,,,,84152.083503744,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD106,USA,,,,83834.5284716544,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD107,USA,,,,39694.3790112,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD108,USA,,,,55167.2479497658,MTCO2e/yr,376303.540893966,t CH4-CO2eq per MMT Manure,,"Dairy, covered lagoon, CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD109,USA,,,,11429.6874336828,MTCO2e/yr,532554.6283516354,t CH4-CO2eq per MMT Manure,,"Swine, Boiler/Furnace fuel; CNG",True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD110,USA,,,,34137.165949632,MTCO2e/yr,376303.5408939659,t CH4-CO2eq per MMT Manure,,Boiler/Furnace fuel; CNG,True
+USEPA AgSTAR (2021) ,https://www.epa.gov/agstar/livestock-anaerobic-digester-database,OECD111,USA,,,,66289.612948704,MTCO2e/yr,376303.5408939659,t CH4-CO2eq per MMT Manure,,Boiler/Furnace fuel; CNG,True
+,,,,,,,,,,t CH4-CO2eq per MMT Manure,,,True
+,,,,,,,,,,t CH4-CO2eq per MMT Manure,,,True
