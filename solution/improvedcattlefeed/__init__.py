@@ -113,7 +113,7 @@ class Scenario(scenario.RRSScenario):
         # DERIVED VALUES
 
         # Emissions: if this is an older model, you may need to set a data version to make tests pass.
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac,grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=ref_tam_per_region,
@@ -122,7 +122,7 @@ class Scenario(scenario.RRSScenario):
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
             repeated_cost_for_iunits=False,
             # Quirks parameters
-            replacement_period_offset=0,
+            replacement_period_offset=1,
             bug_cfunits_double_count=False)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
@@ -158,7 +158,7 @@ class Scenario(scenario.RRSScenario):
 
         self.c2 = co2calcs.CO2Calcs(ac=self.ac,
             ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
-            ch4_megatons_avoided_or_reduced=self.c4.ch4_megatons_avoided_or_reduced(),
+            #ch4_megatons_avoided_or_reduced=self.c4.ch4_megatons_avoided_or_reduced(),
             soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
             soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
             soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),

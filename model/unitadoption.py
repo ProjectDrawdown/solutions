@@ -53,28 +53,27 @@ def cumulative_degraded_land(
 class UnitAdoption(DataHandler):
     """Implementation for the Unit Adoption module.
 
-       Arguments:
-         ac: advanced_controls.py object, settings to control model operation.
-         soln_ref_funits_adopted: Annual functional units adopted in the Reference scenario.
-         soln_pds_funits_adopted: Annual functional units adopted in the PDS scenario.
-         ref_total_adoption_units: dataframe of TAM/TLA/TOA per region for the Reference scenario.
-         pds_total_adoption_units: dataframe of TAM/TLA/TOA per region for the PDS scenario.
-
-         repeated_cost_for_iunits (bool): whether there is a repeated first cost to
+    Arguments:
+        ac: advanced_controls.py object, settings to control model operation.
+        soln_ref_funits_adopted: Annual functional units adopted in the Reference scenario.
+        soln_pds_funits_adopted: Annual functional units adopted in the PDS scenario.
+        ref_total_adoption_units: dataframe of TAM/TLA/TOA per region for the Reference scenario.
+        pds_total_adoption_units: dataframe of TAM/TLA/TOA per region for the PDS scenario.
+        repeated_cost_for_iunits (bool): whether there is a repeated first cost to
            maintaining implementation units at a specified level in
            soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, & conv_ref_new_iunits.
-         electricity_unit_factor (float): a factor to multiply the electricity-related
+        electricity_unit_factor (float): a factor to multiply the electricity-related
            results by. For example, Land solutions typically multiply by 1e6 because their
            basic land unit is a million hectares but the electricity use (for irrigation, etc)
            is calculated per hectare.
         
-        Excel matching options:
-         bug_cfunits_double_count (bool): enable bug-for-bug compatibility
-         replacement_period_offset:  I'm not sure why, but the existing code added '1' in a number of places
-           to replacement periods, and the resulting code passes tests for a number of solutions.
-           It does not match the current Excel spreadsheets I am looking at in 2021, and it doesn't make sense.
-           But I'm giving in and making it a parameter defaulting to 1 for backwards compatibility, and set to
-           0 for new models where it is breaking things.
+    Quirks options:
+        bug_cfunits_double_count (bool): enable bug-for-bug compatibility
+        replacement_period_offset:  There are two different formulas used by the Excel for
+          calculating replacement period, which differ by a constant '1' added in some places to the
+          code.  I don't really understand this (the added constant doesn't make sense to me),
+          but it is clear that different models need this set differently.  I'm setting the default
+          to 1 because that was the original behavior.  The other used value is 0.
     """
 
     def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted,
