@@ -752,7 +752,7 @@ def write_tam(f, wb, outputdir):
         pds_sources = extract_source_data(wb=wb, sheet_name='TAM Data', regions=tam_regions,
                                         outputdir=tamoutputdir, prefix='tam_pds_')
         if pds_sources:
-            write_json(filename=Path(tamoutputdir)/'tam_pds_sources.json', d=ref_sources)
+            write_json(filename=Path(tamoutputdir)/'tam_pds_sources.json', d=pds_sources)
             f.write("        self._pds_tam_sources = scenario.load_sources(THISDIR/'tam/tam_pds_sources.json','*')\n")
         else:
             f.write("        self._pds_tam_sources = self._ref_tam_sources\n")
@@ -861,7 +861,6 @@ def write_ht(f, wb):
          has_single_source: whether to emit a pds_adoption_is_single_source arg
     """
     h = wb['Helper Tables']
-    ref_initial_year = h['B21'].value
     pds_initial_year = h['B85'].value
 
     tam_or_tla = 'ref_tam_per_region' if not is_land else 'self.tla_per_region'
@@ -945,6 +944,17 @@ def write_ht(f, wb):
             break
     if copy_pds and v(85,co("C")) == v(91,co("C")):
         copy_pds_world_too = True
+    
+    # There's one more possibility to check: pds first row might be reading from ref first row
+    if not copy_pds:
+        rt = True
+        for col in range(co("D"),co("L")+1):
+            if v(91,col) != v(27,col):
+                rt = False
+                break
+        if rt:
+            copy_pds = "'Ref Table'"
+            copy_pds_world_too = (v(91,co("C")) == v(27,co("C")))
 
     f.write( "            # Quirks Parameters.  The generator tries to guess these correctly, but can get\n")
     f.write( "            # it wrong.  See the documentation for HelperTables.__init__() to understand\n")
