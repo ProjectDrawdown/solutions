@@ -1,30 +1,27 @@
 [
-  {
-    "name": "PDS2-Based on IEA (2017) B2DS",
-    "include": true,
-    "description": "In this Scenario, we incorporate the highest published stock scenario of EV's currently in the literature: the IEA B2DS scenario of 2017. We take the Beyond 2 Degree Scenario projections from the IEA of number of EV's in the global fleet, convert to estimated passenger-km with a fixed factor and we interpolate and extrapolate to estimate missing years with a 3rd degree polynomial curve fit. We then limit this to the total projected TAM each year after higher priority solutions have supplied their full projection in PDS2 (Higher priority solutions are: Walkable Cities, Bike Infrastructure, E-Bikes, Mass Transit and Carsharing/Ridesharing) "
-  },
-  {
-    "name": "PDS3-Based on Replacing All Retired Cars from Survival Analysis",
-    "include": true,
-    "description": "In this Optimum Scenario, to estimate the Fastest that a New Car Technology can Diffuse into the Global Fleet - assuming that from time of car replacement, new technology is used. Weibull distributions are assumed using the Weibull Survival data from ICCT Global Roadmap model v1.0 for 6 countries (China, USA, Canada, Brazil, Mexico and India). Using these, we estimate the proportion of cars in each country that are scrapped or retired X years after purchase date (0 <= X <= 40). Combining this with vehicle sales data for each of the selected countries (mainly from OICA database), we estimate how many cars should be retiring each year. Assuming the average retiring rate of these selected countries applies to entire world, we scale up the retired cars to global fleet and then convert from cars to pass-km. We then limit this to the total projected TAM each year after higher priority solutions have supplied their full projection in PDS3 (Higher priority solutions are: Walkable Cities, Bike Infrastructure, E-Bikes, Mass Transit and Carsharing/Ridesharing) "
-  },
-  {
-    "name": "Book Ed.1 Scenario 1",
-    "include": false,
-    "description": "Starting with the IEA 2DS Projection of EV in the Global stock, we interpolate and apply a fixed car occupancy to 2050. Minor adjustments are made to early years to ensure smoothness of the adoption curve. ",
-    "filename": "custom_pds_ad_Book_Ed_1_Scenario_1.csv"
-  },
-  {
-    "name": "Book Ed.1 Scenario 2",
-    "include": false,
-    "description": "Using the IEA's Energy Technology Perspectives 2012 projections of EV sales' growth, we project the sales and then global EV stock. Assuming the ICCT's global car occupancy average and a 50% growth in this occupancy by 2050, we estimate the total passenger-km of EV during the period of analysis. ",
-    "filename": "custom_pds_ad_Book_Ed_1_Scenario_2.csv"
-  },
-  {
-    "name": "Book Ed.1 Scenario 3",
-    "include": false,
-    "description": "Using the IEA's Energy Technology Perspectives 2012 projections of EV sales' growth, we project the sales and then global EV stock. Assuming twice the ICCT's global car occupancy average, we estimate the total passenger-km of EV during the period of analysis. ",
-    "filename": "custom_pds_ad_Book_Ed_1_Scenario_3.csv"
-  }
+    {
+        "name": "PDS2-Based on IEA (2017) B2DS",
+        "filename": "ca_pds_PDS2based_on_IEA_2017_B2DS.csv",
+        "description": "In this Scenario, we incorporate the highest published stock scenario of EV's currently in the literature: the IEA B2DS scenario of 2017.We take the Beyond 2 Degree Scenario projections from the IEA of number of EV's in the global fleet, convert to estimated passenger-km with a fixed factor and we interpolate and extrapolate to estimate missing years with a 3rd degree polynomial curve fit. This solution must then be limited using the Integrated TAM (See TAM Data) which shows remaining mobility after higher priority solutions have supplied their full projection in PDS2 (Higher priority solutions are: Walkable Cities, Bike Infrastructure, E-Bikes, Mass Transit and Carsharing/Ridesharing)"
+    },
+    {
+        "name": "PDS3-Based on Replacing All Retired Cars from Survival Analysis",
+        "filename": "ca_pds_PDS3based_on_Replacing_All_Retired_Cars_from_Survival_Analysis.csv",
+        "description": "In this Optimum Scenario, to estimate the Fastest that a New Car Technology can Diffuse into the Global Fleet - assuming that from time of car replacement, new technology is used. Weibull distributions are assumed using the Weibull Survival data from ICCT Global Roadmap model v1.0 for 7 countries plus the EU+EFTA (China, USA, Canada, Brazil, Mexico, Japan, India and EU+EFTA). Using these, we estimate the proportion of cars in each country/region that are scrapped or retired X years after purchase date (0 <= X <= 40). Combining this with vehicle sales data for each of the selected countries (mainly from OICA database), we estimate how many cars should be retiring each year. Assuming the average retiring rate of these selected countries applies to entire world, we scale up the retired cars to global fleet (70% of global sales are already included) and then convert from cars to pass-km. We then limit this to the total projected TAM each year after higher priority solutions have supplied their full projection in PDS3 by choosing an Integrated TAM on TAM Data (PDS3) (Higher priority solutions are: Walkable Cities, Bike Infrastructure, E-Bikes, Mass Transit and Carsharing/Ridesharing)."
+    },
+    {
+        "name": "Book Ed.1 Scenario 1",
+        "filename": "ca_pds_Book_Ed_1_Scenario_1.csv",
+        "description": "Starting with the IEA 2DS Projection of EV in the Global stock, we interpolate and apply a fixed car occupancy to 2050. Minor adjustments are made to early years to ensure smoothness of the adoption curve."
+    },
+    {
+        "name": "Book Ed.1 Scenario 2",
+        "filename": "ca_pds_Book_Ed_1_Scenario_2.csv",
+        "description": "Using the IEA's Energy Technology Perspectives 2012 projections of EV sales' growth, we project the sales and then global EV stock. Assuming the ICCT's global car occupancy average and a 50% growth in this occupancy by 2050, we estimate the total passenger-km of EV during the period of analysis."
+    },
+    {
+        "name": "Book Ed.1 Scenario 3",
+        "filename": "ca_pds_Book_Ed_1_Scenario_3.csv",
+        "description": "Using the IEA's Energy Technology Perspectives 2012 projections of EV sales' growth, we project the sales and then global EV stock. Assuming twice the ICCT's global car occupancy average, we estimate the total passenger-km of EV during the period of analysis."
+    }
 ]

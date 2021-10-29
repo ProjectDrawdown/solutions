@@ -1,129 +1,140 @@
 {
-  "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "billion passenger-km"
-  },
-  "CONVENTIONAL First Cost per Implementation Unit": {
-    "title": "CONVENTIONAL First Cost per Implementation Unit",
-    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
-    "use_weight": true,
-    "units": "US2014$/vehicle"
-  },
-  "SOLUTION First Cost per Implementation Unit": {
-    "title": "SOLUTION First Cost per Implementation Unit",
-    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
-    "use_weight": true,
-    "units": "US2014$/vehicle"
-  },
-  "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "billion passenger-km/vehicle"
-  },
-  "SOLUTION Lifetime Capacity": {
-    "title": "SOLUTION Lifetime Capacity",
-    "filename": "SOLUTION_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "billion passenger-km/vehicle"
-  },
-  "CONVENTIONAL Average Annual Use": {
-    "title": "CONVENTIONAL Average Annual Use",
-    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "billion passenger-km/vehicle/year"
-  },
-  "SOLUTION Average Annual Use": {
-    "title": "SOLUTION Average Annual Use",
-    "filename": "SOLUTION_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "billion passenger-km/vehicle/year"
-  },
-  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
-    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
-    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/billion passenger-km"
-  },
-  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
-    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
-    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
-    "use_weight": true,
-    "units": "US2014$/billion passenger-km"
-  },
-  "CONVENTIONAL Fixed Operating Cost (FOM)": {
-    "title": "CONVENTIONAL Fixed Operating Cost (FOM)",
-    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
-    "stat_correction": true,
-    "units": "US2014$/year/vehicle"
-  },
-  "SOLUTION Fixed Operating Cost (FOM)": {
-    "title": "SOLUTION Fixed Operating Cost (FOM)",
-    "filename": "SOLUTION_Fixed_Operating_Cost_FOM.csv",
-    "stat_correction": true,
-    "units": "US2014$/year/vehicle"
-  },
-  "SOLUTION Total Energy Used per Functional Unit": {
-    "title": "SOLUTION Total Energy Used per Functional Unit",
-    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
-    "use_weight": true,
-    "units": "TWh/billion passenger-km"
-  },
-  "CONVENTIONAL Fuel Consumed per Functional Unit": {
-    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
-    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "Liter/billion passenger-km"
-  },
-  "SOLUTION Fuel Efficiency Factor": {
-    "title": "SOLUTION Fuel Efficiency Factor",
-    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
-    "use_weight": true,
-    "units": "%"
-  },
-  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
-    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
-    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/vehicle"
-  },
-  "SOLUTION Indirect CO2 Emissions per Unit": {
-    "title": "SOLUTION Indirect CO2 Emissions per Unit",
-    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
-    "use_weight": true,
-    "units": "t CO2-eq/vehicle"
-  },
-  "SOLUTION Car Occupancy": {
-    "title": "SOLUTION Car Occupancy",
-    "filename": "SOLUTION_Car_Occupancy.csv",
-    "stat_correction": true
-  },
-  "Fraction of BEV+PHEV market that is BEV": {
-    "title": "Fraction of BEV+PHEV market that is BEV",
-    "filename": "Fraction_of_BEV_PHEV_market_that_is_BEV.csv",
-    "stat_correction": true
-  },
-  "Discount Rates - Households": {
-    "title": "Discount Rates - Households",
-    "filename": "Discount_Rates_Households.csv",
-    "stat_correction": true
-  },
-  "CONVENTIONAL Car Occupancy": {
-    "title": "CONVENTIONAL Car Occupancy",
-    "filename": "CONVENTIONAL_Car_Occupancy.csv",
-    "stat_correction": true
-  },
-  "EV Learning Rate": {
-    "title": "EV Learning Rate",
-    "filename": "EV_Learning_Rate.csv",
-    "stat_correction": true,
-    "units": "%"
-  },
-  "Average Annual EV Car Vehicle km": {
-    "title": "Average Annual EV Car Vehicle km",
-    "filename": "Average_Annual_EV_Car_Vehicle_km.csv",
-    "stat_correction": true
-  }
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This value in C12 is extracted from figure, the new global ev outlook 2021 release new data. So this model exclude global EV outlook 2020 value."
+    },
+    "CONVENTIONAL First Cost per Implementation Unit": {
+        "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Due to the complexity and the rapid changes in the car markets for all technologies, the prices are weighted across both regions and vehicular segments/models as far as available data allow. The Raw data take into account the segment weighting and the \"Weight\" column takes into account share of global sales (using GFEI 2017 data - IEA and ICCT (2019), \"Fuel Economy in Major Car Markets\", IEA, Paris, www.iea.org/topics/transport/gfei/report/). Due to lack of aggregate data on China, top sellign models were priced, weighted, and included. Total China weight = total Global weight of Chinese Auto Sales. (In the updated model, the weight were ignored because the sum of total weight does not equal to 1)"
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "With the raw price data from the EIA available at (Link: http://www.eia.gov/beta/aeo/#/?id=114-AEO2015&cases=ref2015, Accessed June 15, 2016), we extracted the four light duty vehicle types shown above and obtained base year prices for each. We also collected prices for the same vehicle in a variety of countries on numbeo.com and used that to create a price multiplier to convert from average US vehicle price  to average global prices. The raw data above already includes this multiplier. Due to the complexity and the rapid changes in the car markets for all technologies, the prices are weighted across both regions and vehicular segments as far as available data allow. The Raw data take into account the segment weighting and the \"Weight\" column takes into account share of global sales (using GFEI 2017 data - IEA and ICCT (2019), \"Fuel Economy in Major Car Markets\", IEA, Paris, www.iea.org/topics/transport/gfei/report/) (In the updated model, the weight were ignored because the sum of total weight does not equal to 1)"
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The data on EV battery life is very limited (there are more estimates than measurement of actual experienced lifetimes), and it is very likely that it will grow overtime, and so we have decided to leave the research above as a limited collection of available research, but maintain equivalence between the lifetime of an ICE vehicle and an BEV/PHEV. Hence for model input, we use the ICE lifetime."
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "ICCT calculates the weighted average of 16 countries and regions using data from the IEA and national country statistics."
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "ICCT calculates the weighted average of 16 countries and regions using data from the IEA and national country statistics. This value is input in an Additional Variable to allow easy varying in scenarios such as those with significant amounts of Car sharing where annual usage is very high. It allows us to vary the car occupancy (Ride Sharing) independently of the vehicle usage (Car Sharing)."
+    },
+    "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Operating costs are taken here as only Maintenance costs. Fuel costs are entered in the model on the Advanced Controls separately. Excluded values represent older data points from sources that have been updated."
+    },
+    "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Operating costs are taken here as only Maintenance costs. Fuel costs are entered in the model on the Advanced Controls separately."
+    },
+    "CONVENTIONAL Fixed Operating Cost (FOM)": {
+        "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This is estimated insurance rates for cars. Exchange Rates obtained from www.xe.com on 16Jan2017. Monthly insurance converted to yearly. We assume that EV and ICE have same insurance rates."
+    },
+    "SOLUTION Fixed Operating Cost (FOM)": {
+        "filename": "SOLUTION_Fixed_Operating_Cost_FOM.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This is estimated insurance rates for electric cars. The insurance value were further updated. Exchange Rates obtained from www.xe.com on 16Jan2017. I use the exchange rate provided by master model. Monthly insurance converted to yearly. We assume that EV and ICE have same insurance rates."
+    },
+    "SOLUTION Total Energy Used per Functional Unit": {
+        "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Based on IEA Data from the ETP (2016) report on Electric Vehicles (both Battery (BEV) and Plug-in (PHEV)), the marketshare of BEV within the total electric vehicle market has been about 57% for 2013, 2014 and 2015. This ratio is used at the weighting for all vehicles (set on Advanced Controls). Total marketshare for all BEV's must sum to this value, and total PHEV marketshare must sum to 1 minus this value."
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "For UMTRI, which tracks the sales weighted US fuel economy, we averaged the last 12 months available (until the latest data of May 2016). Atabani's work requires some interpretation. The Japanese figure is an estimate for 2015 by the Japanese car manufacturers association, but as the Japanese Government's fuel economy targets are mandatory, we can take this as given. The European figure is an average of 2006 performance range limits (9.8-16.4km/l). Note that it's appropriate to use an old source for some estimates if they are for \"new Car Sales\" in a region as the average age for a fleet ranges from around 5 (China) to 7.5 (EU) to 11 (USA)."
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Note that this variable measures how much fuel is saved for each pkm of travel when switching from an ICE Car to an EV (BEV, PHEV). The EV includes both technologies appropriately weighted with another variable. For a BEV - 100% of fuel is saved, and replaced with 100% electricity (defined in another variable). For PHEV, the fraction of fuel saved depends on the fraction of the time that the PHEV runs on fuel (hybrid, ICE) and on the fuel consumption during that time."
+    },
+    "CONVENTIONAL Direct Emissions per Functional Unit": {
+        "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "A flat lifetime of 200,000km is used."
+    },
+    "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+        "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "For raw data normalized per vehicle-km, a flat lifetime of 200,000km is used."
+    },
+    "SOLUTION Indirect CO2 Emissions per Unit": {
+        "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "200,000veh-km lifetime assumed for all vehicles. Based on IEA Data from the ETP (2016) report on Electric Vehicles (both Battery (BEV) and Plug-in (PHEV)), the marketshare of BEV within the total electric vehicle market has been about 57% for 2013, 2014 and 2015. This ratio is used at the weighting for all vehicles (set on Advanced Controls). Total marketshare for all BEV's must sum to this value, and total PHEV marketshare must sum to 1 minus this value."
+    },
+    "SOLUTION Car Occupancy": {
+        "filename": "SOLUTION_Car_Occupancy.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "ICCT used weighted averages of 16 world regions captured with IEA and local transportation authority data. We split the Conventional and Solution occupancies to be able to model different occupancies for each for difference scenarios."
+    },
+    "Fraction of BEV+PHEV market that is BEV": {
+        "filename": "Fraction_of_BEV_PHEV_market_that_is_BEV.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Based on IEA Data from the ETP (2016) report on Electric Vehicles (both Battery (BEV) and Plug-in (PHEV)), the marketshare of BEV within the total electric vehicle market has been about 57% for 2013, 2014 and 2015 (after dropping from 100% in 2005). The report also notes that the share of BEV's vs PHEV's is highly dependent on the government's incentives for each in each country. We may expect that due to increased investment, reductions in energy usage and fuel usage and increases in climate concerns, the share could level off at 60%."
+    },
+    "Discount Rates - Households": {
+        "filename": "Discount_Rates_Households.csv",
+        "use_weight": false,
+        "bound_correction": true,
+        "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a household level. The household level discount rate is directly related to decision-making at a household level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments.  Discount rates reported in the literature that are used for policy decisions are not necessarily relevant for evaluating household level financial investment decisions.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis."
+    },
+    "CONVENTIONAL Car Occupancy": {
+        "filename": "CONVENTIONAL_Car_Occupancy.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "ICCT used weighted averages of 16 world regions captured with IEA and local transportation authority data. We split the Conventional and Solution occupancies to be able to model different occupancies for each for difference scenarios."
+    },
+    "EV Learning Rate": {
+        "filename": "EV_Learning_Rate.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The old model use the conservative Learning Rate(2%) based on source 1-2. I updated the values of learning rate and found 2% is too low. So I updated the EV learning rate based on extra 13 sources I found and use the updated EV learning rate in updated mdoel."
+    },
+    "Average Annual EV Car Vehicle km": {
+        "filename": "Average_Annual_EV_Car_Vehicle_km.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "ICCT calculates the weighted average of 16 countries and regions using data from the IEA and national country statistics."
+    }
 }

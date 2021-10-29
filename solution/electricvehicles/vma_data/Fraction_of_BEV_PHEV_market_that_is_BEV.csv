@@ -1,2 +1,9 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
 Drawdown Team assumption based on Historical Electric vehicle stock data from IEA (2016),http://www.iea.org/etp/etp2016/,World,,5 - Not Verified,2016,,0.6,Percent,,,,,
+Kane (2021) Europe Became The World's Biggest Plug-In Electric Car Market In 2020,https://insideevs.com/news/482202/europe-world-biggest-plugin-electric-car-market-2020/,OECD90,Europe,5 - Not Verified,2020,,0.564,Percent,,,,,
+Wagner (2021) Norway: PHEV and BEV market share 2009-2020,https://www.statista.com/statistics/1029909/market-share-of-electric-cars-in-norway/,OECD90,Norway ,2 - Public Sector/ Multilateral Agency,2019,,0.559,Percent,,,,,
+Wong (2020)  Electric vehicle market in China - statistics & facts,https://www.statista.com/topics/5623/electric-vehicle-market-in-china/,China,China,5 - Not Verified,2020,,0.78,Percent,,,,,
+"Goosen, 2017  Top 10 EV Markets: Is PHEV’s gaining market share?",https://wattev2buy.com/top-10-ev-markets-is-phev-gaining-market-share/,World,,5 - Not Verified,2017,,0.6104,Percent,,,,,
+Nextgreencar (2021) Electric vehicle market statistics 2021 - How many electric vehicles have been sold in the UK?,https://nextgreencar.com/electric-cars/statistics/,OECD90,UK,6 - Not Verified,2020,,0.559,Percent,,,,,
+"Bloomberg NEF, “Electric Vehicle Outlook 2020,” 2020",https://about.bnef.com/electric-vehicle-outlook/,World,World,2 - Public Sector/ Multilateral Agency,2019,,0.5734050730207534,Percent,,,,,
+IEA(2021). Global EV Outlook,,World,World,2 - Public Sector/ Multilateral Agency,2020,,0.6744994555027144,Percent,,,,"PHEV:969034, BEV:2008024, sale units in IEA website",

@@ -1,23 +1,20 @@
-"""Electric Vehicles solution model.
-   Excel filename: EVs-Modelv1.1c-Apr2020.xlsm
-"""
+# Electric Vehicles solution model.
+# Originally exported from: EVes-Modelv1.1cOct4CommonData.xlsm
 
-import pathlib
-
+from pathlib import Path
 import numpy as np
 import pandas as pd
-import openpyxl
 
 from model import adoptiondata
 from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
+from model import conversions
 from model import customadoption
 from model import dd
 from model import emissionsfactors
 from model import firstcost
 from model import helpertables
-from model import interpolation
 from model import operatingcost
 from model import s_curve
 from model import scenario
@@ -26,8 +23,8 @@ from model import vma
 from model import tam
 from solution import rrs
 
-DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
-THISDIR = pathlib.Path(__file__).parents[0]
+DATADIR = Path(__file__).parents[2]/'data'
+THISDIR = Path(__file__).parent
 VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
@@ -40,13 +37,13 @@ units = {
 name = 'Electric Vehicles'
 solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 
-scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)
 
 # These are the "default" scenarios to use for each of the drawdown categories.
 # They should be set to the most recent "official" set"
-PDS1 = "PDS1-16p2050-with IEA 2DS (Integrated)"
-PDS2 = "PDS2-23p2050-using IEA B2DS (Integrated)"
-PDS3 = "PDS3-18p2050-Survival Analysis (Integrated)"
+PDS1 = "PDS1-21p2050-ComDat-FullyIntegrated"
+PDS2 = "PDS2-33p2050-ComDat-FullyIntegrated"
+PDS3 = "PDS3-92p2050-ComData-FullyIntegrated"
 
 class Scenario(scenario.RRSScenario):
     name = name
@@ -54,121 +51,78 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
     module_name = THISDIR.stem
+    base_year = 2018
 
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
-        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
-        self._pds_tam_sources = self._ref_tam_sources
+
+        # Instructions: Set TAM override parameters appropriately if any of these vary from the standard (then delete these comments):
+        # trend (3rd Poly): 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly
+        # growth (medium): Medium Medium Medium Medium Medium Medium Medium Medium Medium Medium
+        # low_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
+        # high_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
+
+        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam/tam_ref_sources.json','*')
+        self._pds_tam_sources = scenario.load_sources(THISDIR/'tam/tam_pds_sources.json','*')
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
         # ADOPTION
-        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
-        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
+        # Instructions: Set AD override parameters appropriately if any of these regional values vary from the standard
+        # trend (3rd Poly): 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly
+        # growth (medium): Medium Medium Medium Medium Medium Medium Medium Medium Medium
+        # low_sd_mult (1.0): 1 1 1 1 1 1 1 1 1
+        # high_sd_mult (1.0): 1 1 1 1 1 1 1 1 1
 
-        # Data about EV Sales comes from sheets from the original Excel implementation
-        wb = openpyxl.load_workbook(filename=THISDIR.joinpath('electricvehicledata.xlsx'), data_only=True)
-        raw_sales = pd.read_excel(wb, sheet_name='EV Sales', header=0, index_col=0,
-                usecols='A:K', dtype='float', engine='openpyxl', skiprows=7, nrows=43)
-        ev_sales = raw_sales.rename(axis='columns', mapper={
-            'World ': 'World',
-            'OECD90 (US, EU Japan, Canada)': 'OECD90',
-            'Asia sans Japan (China, India & Other.)': 'Asia (Sans Japan)',
-            'Middle East & Africa': 'Middle East and Africa'}).fillna(0.0)
-        lifetime = int(np.ceil(self.ac.soln_lifetime_replacement))
-        sales_extended = ev_sales.copy()
-        for year in range(2051, 2061):
-            sales_extended.loc[year, :] = 0.0
-        vehicle_retirements = sales_extended.shift(periods=lifetime, fill_value=0.0)
-        ev_stock = (ev_sales - vehicle_retirements).cumsum()
-        pass_km_adoption = ev_stock * self.ac.soln_avg_annual_use
+        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad/ad_sources.json', '*')
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data/ca_pds_sources.json', 'filename')
+        self._ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data/ca_ref_sources.json', 'filename')
+        (ref_adoption_data_per_region,
+         pds_adoption_data_per_region,
+         pds_adoption_trend_per_region,
+         pds_adoption_is_single_source) = self.initialize_adoption_bases()
 
-        # Data Source 1
-        # EVs.xlsm 'Data Interpolation'!H1181, Adoption Data
-        # Based on IEA EV Outlook, 2017 - B2DS Scenario
-        predict = pd.Series([16.7014449161593, 35.1749574468086, 49.2449404255312,
-                635.494231205675, 2239.47229078014, 5072.22886382977],
-                index=[2014, 2015, 2016, 2020, 2025, 2030])
-        pass_km_predicted = interpolation.poly_degree3_trend(predict)['adoption']
-        pass_km_predicted.update(predict)
-        integration_pds2 = pd.read_csv(THISDIR.joinpath('tam', 'integration_PDS2.csv'),
-                skipinitialspace=True, comment='#', index_col=0)
-        tam_limit_pds2 = integration_pds2['URBAN'] + (0.3 * integration_pds2['NONURBAN'])
-        world = pd.concat([pass_km_adoption.loc[2012:2019, 'World'], pass_km_predicted.loc[2020:]])
-        ds1_df = pd.DataFrame(0, columns=dd.REGIONS, index=range(2012, 2061))
-        ds1_df['World'] = world.clip(upper=tam_limit_pds2, axis=0)
-
-        # Data Source 2
-        raw = pd.read_excel(wb, sheet_name='Vehicle Survival', header=0, index_col=None,
-                usecols='D:AR', dtype='float', engine='openpyxl', skiprows=8, nrows=5).T
-        survival_ds2 = pd.concat([ev_stock.loc[:2019, 'World'], raw[3]])
-        capture_pct_ds2 = raw[4]
-        car_usage = 15765.0  # https://theicct.org/global-transportation-roadmap-model (now 404s)
-        car_occupancy = self.ac.lookup_vma(vma_title='Current Average Car Occupancy')
-        survival_ad_ds2 = survival_ds2 * car_usage * car_occupancy / 1e9
-        replace_ds2 = (survival_ds2 * capture_pct_ds2).cumsum().subtract(vehicle_retirements['World'], fill_value=0.0)
-        pass_km_potential_ds2 = replace_ds2 * self.ac.conv_avg_annual_use
-        adoption_ds2 = pd.concat([survival_ad_ds2.loc[:2019], pass_km_potential_ds2.loc[2020:]])
-        integration_pds3 = pd.read_csv(THISDIR.joinpath('tam', 'integration_PDS3.csv'),
-                skipinitialspace=True, comment='#', index_col=0)
-        tam_limit_pds3 = integration_pds3['URBAN'] + (0.3 * integration_pds3['NONURBAN'])
-        ds2_df = pd.DataFrame(0, columns=dd.REGIONS, index=range(2012, 2061))
-        ds2_df['World'] = adoption_ds2.clip(upper=tam_limit_pds3, axis=0)
-
-        ca_pds_data_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
-        ca_pds_data_sources[0]['dataframe'] = ds1_df
-        ca_pds_data_sources[1]['dataframe'] = ds2_df
-        
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
-        self.initialize_adoption_bases()
-        ref_adoption_data_per_region = None
-
-        if False:
-            # One may wonder why this is here. This file was code generated.
-            # This 'if False' allows subsequent conditions to all be elif.
-            pass
-        elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-            pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
-            pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-            pds_adoption_is_single_source = None
-        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
-            pds_adoption_data_per_region = self.ad.adoption_data_per_region()
-            pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
-            pds_adoption_is_single_source = self.ad.adoption_is_single_source()
-
-        ht_ref_adoption_initial = pd.Series(
-            list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)
-        ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
-            ref_tam_per_region.loc[2018])
+        final_year=2050  # Currently fixed for all models; may be variable in the future.
+        ht_ref_adoption_initial = pd.Series(self.ac.ref_base_adoption)
+        ht_ref_adoption_final = (ref_tam_per_region.loc[final_year] * 
+            (ht_ref_adoption_initial / ref_tam_per_region.loc[self.base_year]))
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_ref_datapoints.loc[2018] = ht_ref_adoption_initial
-        ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
+        ht_ref_datapoints.loc[self.base_year] = ht_ref_adoption_initial
+        ht_ref_datapoints.loc[final_year] = ht_ref_adoption_final
+        pds_initial_year = 2018  # sometimes, but rarely, different than self.base_year
+                                # Excel 'Helper Tables'!B85
         ht_pds_adoption_initial = ht_ref_adoption_initial
-        ht_pds_adoption_final_percentage = pd.Series(
-            list(self.ac.pds_adoption_final_percentage.values()),
-            index=list(self.ac.pds_adoption_final_percentage.keys()))
-        ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
+        ht_pds_adoption_final_percentage = pd.Series(self.ac.pds_adoption_final_percentage)
+        ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[final_year]
         ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_pds_datapoints.loc[2018] = ht_pds_adoption_initial
-        ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
+        ht_pds_datapoints.loc[pds_initial_year] = ht_pds_adoption_initial
+        ht_pds_datapoints.loc[final_year] = ht_pds_adoption_final
         self.ht = helpertables.HelperTables(ac=self.ac,
-            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+            ref_datapoints=ht_ref_datapoints,
+            pds_datapoints=ht_pds_datapoints,
+            ref_adoption_data_per_region=ref_adoption_data_per_region,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
-            ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-            copy_pds_to_ref=False, copy_ref_datapoint=False, copy_pds_datapoint=False,
+            ref_adoption_limits=ref_tam_per_region,
+            pds_adoption_limits=pds_tam_per_region,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+            # Quirks Parameters.  The generator tries to guess these correctly, but can get
+            # it wrong.  See the documentation for HelperTables.__init__() to understand
+            # exactly what the paramaters do, and how to set them.
+            copy_pds_to_ref=False,
+            copy_ref_datapoint=False,
+            copy_ref_world_too=False,
+            copy_pds_datapoint='Ref Table',
+            copy_pds_world_too=True,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=3)
+        # DERIVED VALUES
+
+        # Emissions: if this is an older model, you may need to set a data version to make tests pass.
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=ref_tam_per_region,
@@ -176,6 +130,8 @@ class Scenario(scenario.RRSScenario):
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
             repeated_cost_for_iunits=False,
+            # Quirks parameters
+            replacement_period_offset=0,
             bug_cfunits_double_count=False)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
@@ -183,14 +139,15 @@ class Scenario(scenario.RRSScenario):
         soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()
 
         self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=2,
-            ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+            ref_learning_increase_mult=2,
+            conv_learning_increase_mult=2,
             soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
             soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
             conv_ref_tot_iunits=conv_ref_tot_iunits,
             soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
             soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
             conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-            fc_convert_iunit_factor=1.0)
+            fc_convert_iunit_factor=1)
 
         self.oc = operatingcost.OperatingCost(ac=self.ac,
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -203,7 +160,7 @@ class Scenario(scenario.RRSScenario):
             single_iunit_purchase_year=2017,
             soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
             conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-            conversion_factor=1.0)
+            conversion_factor=1)
 
         self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
@@ -226,3 +183,4 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
+

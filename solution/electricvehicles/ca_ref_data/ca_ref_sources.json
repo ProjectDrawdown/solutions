@@ -1,0 +1,7 @@
+[
+    {
+        "name": "Default REF Projection with Adjustment for Recent Historical Adoptions",
+        "filename": "ca_ref_Default_REF_Projection_with_Adjustment_for_Recent_Historical_Adoptions.csv",
+        "description": "We take the Default Project Drawdown REF adoption using Average Baseline TAM data and then adjust the years 2012-2018 to be the estimated historical adoptions from the Pass-KmAdoption tab."
+    }
+]

@@ -1,14 +1,17 @@
 {
-  "Baseline Cases": {
-    "Based on IEA Reference Tech Scenario- 2017": "ad_based_on_IEA_Reference_Tech_Scenario_2017.csv"
-  },
-  "Conservative Cases": {
-    "Based on OPEC World Energy Outlook 2016": "ad_based_on_OPEC_World_Energy_Outlook_2016.csv",
-    "Based on The Paris Declaration as Cited in (IEA, 2017- EV Outlook)": "ad_based_on_The_Paris_Declaration_as_Cited_in_IEA_2017_EV_Outlook.csv"
-  },
-  "Ambitious Cases": {
-    "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
-    "Based on Bloomberg New Energy Finance - EV Outlook 2017": "ad_based_on_Bloomberg_New_Energy_Finance_EV_Outlook_2017.csv",
-    "Based on IEA Beyond 2DS/B2DS Scenario": "ad_based_on_IEA_Beyond_2DSB2DS_Scenario.csv"
-  }
+    "Baseline Cases": {
+        "Based on IEA Reference Tech Scenario- 2017": "ad_based_on_IEA_Reference_Tech_Scenario_2017.csv",
+        "Based on ITF reshape+ & IEA EV30@30 (2021)": "ad_based_on_ITF_reshape_IEA_EV3030_2021.csv",
+        "Based on The Paris Declaration as Cited in (IEA, 2017- EV Outlook)": "ad_based_on_The_Paris_Declaration_as_Cited_in_IEA_2017_EV_Outlook.csv"
+    },
+    "Conservative Cases": {
+        "Based on OPEC World Energy Outlook 2016": "ad_based_on_OPEC_World_Energy_Outlook_2016.csv",
+        "Based on ITF recover & IEA EV30@30 (2021)": "ad_based_on_ITF_recover_IEA_EV3030_2021.csv",
+        "OPEC World Oil Outlook 2020": "ad_OPEC_World_Oil_Outlook_2020.csv"
+    },
+    "Ambitious Cases": {
+        "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
+        "Bloomberg New Energy Finance - EV Outlook 2020": "ad_Bloomberg_New_Energy_Finance_EV_Outlook_2020.csv",
+        "Based on IEA Beyond 2DS/B2DS Scenario (2017)": "ad_based_on_IEA_Beyond_2DSB2DS_Scenario_2017.csv"
+    }
 }
