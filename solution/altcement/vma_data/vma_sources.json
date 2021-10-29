@@ -1,117 +1,122 @@
 {
-  "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "MMt Cement"
-  },
-  "CONVENTIONAL First Cost per Implementation Unit": {
-    "title": "CONVENTIONAL First Cost per Implementation Unit",
-    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/MMt Cement"
-  },
-  "SOLUTION First Cost per Implementation Unit": {
-    "title": "SOLUTION First Cost per Implementation Unit",
-    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/MMt Cement"
-  },
-  "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "MMt Cement/MMt Cement"
-  },
-  "SOLUTION Lifetime Capacity": {
-    "title": "SOLUTION Lifetime Capacity",
-    "filename": "SOLUTION_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "MMt Cement/MMt Cement"
-  },
-  "CONVENTIONAL Average Annual Use": {
-    "title": "CONVENTIONAL Average Annual Use",
-    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "MMt Cement/MMt Cement/year"
-  },
-  "SOLUTION Average Annual Use": {
-    "title": "SOLUTION Average Annual Use",
-    "filename": "SOLUTION_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "MMt Cement/MMt Cement/year"
-  },
-  "CONVENTIONAL Total Energy Used per Functional Unit": {
-    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
-    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TWh/MMt Cement"
-  },
-  "SOLUTION Total Energy Used per Functional Unit": {
-    "title": "SOLUTION Total Energy Used per Functional Unit",
-    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TWh/MMt Cement"
-  },
-  "CONVENTIONAL Fuel Consumed per Functional Unit": {
-    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
-    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TJ/MMt Cement"
-  },
-  "SOLUTION Fuel Efficiency Factor": {
-    "title": "SOLUTION Fuel Efficiency Factor",
-    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
-    "stat_correction": true,
-    "units": "%"
-  },
-  "CONVENTIONAL Direct Emissions per Functional Unit": {
-    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
-    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/MMt Cement"
-  },
-  "SOLUTION Direct Emissions per Functional Unit": {
-    "title": "SOLUTION Direct Emissions per Functional Unit",
-    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/MMt Cement"
-  },
-  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
-    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
-    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/MMt Cement"
-  },
-  "SOLUTION Indirect CO2 Emissions per Unit": {
-    "title": "SOLUTION Indirect CO2 Emissions per Unit",
-    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/MMt Cement"
-  },
-  "Discount Rate - Commercial": {
-    "title": "Discount Rate - Commercial",
-    "filename": "Discount_Rate_Commercial.csv",
-    "stat_correction": true
-  },
-  "Clinker to Cement Ratio in Year 2": {
-    "title": "Clinker to Cement Ratio in Year 2",
-    "filename": "Clinker_to_Cement_Ratio_in_Year_2.csv",
-    "use_weight": true
-  },
-  "Clinker to Cement Ratio of Conventional Technology": {
-    "title": "Clinker to Cement Ratio of Conventional Technology",
-    "filename": "Clinker_to_Cement_Ratio_of_Conventional_Technology.csv",
-    "stat_correction": true
-  },
-  "Clinker Ratio Range Selection": {
-    "title": "Clinker Ratio Range Selection",
-    "filename": "Clinker_Ratio_Range_Selection.csv",
-    "stat_correction": true
-  },
-  "Percent Adoption of Blended Cements in Year 2 (2050)": {
-    "title": "Percent Adoption of Blended Cements in Year 2 (2050)",
-    "filename": "Percent_Adoption_of_Blended_Cements_in_Year_2_2050.csv",
-    "stat_correction": true
-  }
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Current adoption is modeled by an additional variable: clinker/cement ratio of conventional technology."
+    },
+    "CONVENTIONAL First Cost per Implementation Unit": {
+        "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Price of cement in base year. Data are collected from various regions of the world to represent current prices. Data from 2019 represent average clinker ratios for the year in which data was collected for \"general purpose cement\". The price of cement fluctuates widely based upon availability and location, thus additional data should be added when this model is updated next."
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Data for the price of CEM II - CEM V is difficult to find, Thus, data is collected form companies (when willing to provide it), and some peer reviewed studies. Due to the variability of cement in demand for materials other than clinker and transportation distances, prices vary widely. Yet, prices for blended cements are roughly equivalent to those of high clinker cements. Cost data for manufacturing efficiencies was not readily found, thus it is assumed that the cost is equivalent between the two technologies. Some entries have been excluded due to problematic conversions to required units, age of reference, or assumption of outlier status."
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Considering the lack of confirmed higher longevity of Alternative cement when compared to OPC, the two are assumed to have equal lifetimes at 30 years."
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Considering the lack of confirmed higher longevity of Alternative cement when compared to OPC, the two are assumed to have equal lifetimes at 30 years."
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The assumed conventional option is pure OPC with no fly ash or other major constituents, hence the ratio of 1 functional unit (1 MMt cement) to 1 implementation unit (1 MMt clinker) is assumed 1. In reality, this is possibly lower at 95%."
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Since the solution implementation unit is the blended cement, the number of units of \"any cement\" (functional unit) in 1 ton (1 MMt) of \"Alternative cement\" is 1. This therefore is the model's input. "
+    },
+    "CONVENTIONAL Total Energy Used per Functional Unit": {
+        "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Electricity is needed in the cement manufacturing process for raw material extraction, raw material preparation, clinker production, fuel grinding, cement grinding, and packing. Depending upon the grinding technology, the total electricity demand varies. The conventional technology represents the current state of cement manufacturing process. Significant progress has been made since 1999 to reduce the electricity consumption as the world's weighted average has transitioned from dry kilns to wet kilns). Thus, data from 1999 is not included. The GNR (2016) report represents data from over regions across the world, and was representative of 19% of total cement production in 2016. This world-wide study is the basis of the IEA report as well for conventional technology."
+    },
+    "SOLUTION Total Energy Used per Functional Unit": {
+        "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The solution technology includes the adoption of more efficient manufacturing processes which reduces the electricity intensity of cement manufacturing. Modern grinding technologies (e.g. high pressure grinding rolls and vertical roll mills) have lower energy demands. Adoption of Alternative Cements includes the adoption of more efficient cement production, meaning that the energy to produce a functional unit of cement decreases, as represented by this variable. Note that the conversion from clinker to cement is required."
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "While electricity is required to produce cement, fuel is needed to produce clinker. Fuel is used to calcinate limestone to produce calcium oxide, one of the primary minerals of clinker. Depending upon the kiln technology used, the thermal intensity of clinker varies significantly. The existing weighted average for clinker fuel intensity is summarized by the GNR report.  Note that many sources report the thermal intensity of clinker, yet a conversion to cement is required, so the clinker/cement ratio must also be known for that study, which is typically not the case."
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "By using more efficient kiln technology, such as minimizing heat losses and conversion from wet kilns to dry kilns with precalciners, the fuel consumption can be reduced. Based upon efficiency estimates from the IEA and CSI, a thermal efficiency for the solution technology is estimated here."
+    },
+    "CONVENTIONAL Direct Emissions per Functional Unit": {
+        "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The chemical process of breaking up CaCO3 (calcium carbonate) into CO2 and CaO (lime) is separate and apart from the energy used in heating kilns. This direct emission is associated with clinker production. The process is a chemical process, which has a simple calculation methodology of the molar ratio between calcium carbonate and carbon dioxide. Multiplying this ratio by the clinker ratio in year 1 provides the direct emissions. Other data, while correct, does not assume the same clinker to cement ratio and is not compatible with the current modeling technique. The IPCC calculated value aligns closely with the IEA value."
+    },
+    "SOLUTION Direct Emissions per Functional Unit": {
+        "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The emissions factor for clinker is applied to the Year 2 clinker ratio to quantity the direct (process) emissions from blended cement production (which still uses clinker). The clinker to cement ratio is input on the Advanced Controls tab of the model. The IEA data is excluded since it uses a different clinker/cement ratio than in present model."
+    },
+    "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+        "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Carbon emissions associated with other elements of cement, such as fly ash, slag, pozzolans, or calcined clays are included in the Indirect Emissions calculation. Since all clinker emissions are captured, the indirect emissions are calculated by (1-clinker ratio in the respective year). Data for all values is averaged, since weighting of non-clinker material is not known. The transition between using waste materials such as fly ash, slag, or silica fume to calcined clays is not modeled. If more data becomes available, or is available regionally for the market share of each component, then a weighting scheme can be applied to the non-clinker components of cement. "
+    },
+    "SOLUTION Indirect CO2 Emissions per Unit": {
+        "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Carbon emissions associated with other elements of cement, such as fly ash, slag, pozzolans, or calcined clays are included in the Indirect Emissions calculation. Since all clinker emissions are captured, the indirect emissions are calculated by (1-clinker ratio in the respective year). Data for all values is averaged, since weighting of non-clinker material is not known. Yet, for a particular investigation, weights can be added to represent use of one supplementary cementitious material rather than another. For instance, if calcined clays in LC3 cements are expected to be adopted more often, then a higher weight can be added to that variable input."
+    },
+    "Discount Rate - Commercial": {
+        "filename": "Discount_Rate_Commercial.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a Commercial / Industrial level. The Commercial / Industrial level discount rate is directly related to decision-making at a Commercial / Industrial level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments available to larger commercial / industrial entities such as multinational corporations or corporate utility enterprises.  Discount rates reported in the literature that are used for policy decisions are not necessarily equivalent to Commercial / Industrial level financial investment decisions, but oftentimes are not distinguished and may be conflated.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis."
+    },
+    "Clinker to Cement Ratio in Year 2": {
+        "filename": "Clinker_to_Cement_Ratio_in_Year_2.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "This is the clinker to cement ratio for OPC that is expected for the Solution Technology. Weights from CEMBUREAU data accessed from Tennis, P. D. (n.d.). Portland-Limestone Cements: History, Performance, and Specifications. Retrieved from http://onlinepubs.trb.org/onlinepubs/webinars/121113.pdf. It is assumed that slag cements (CEM III and CEM IV) will only be used in specialty applications and not be widespread due to both their performance and a decline in material precursors (slag) over time. Growth in CEM V (ternary blended cements, such as LC3) are expected to grow significantly from 1.8% in 2004 to 58% as described in Miller et al. 2018 (Miller, S. A., John, V. M., Pacca, S. A., & Horvath, A. (2018). Carbon dioxide reduction potential in the global cement industry by 2050. Cement and Concrete Research, 114, 115\u2013124. https://doi.org/10.1016/j.cemconres.2017.08.026)\n\nSince there are ranges for the solution technology based upon the standards, the values have been separated into either being \"High\" (maximum), \"Medium\" (average), or \"Low\" (minimum). To control which range is being selected, use Cell G192 on Advanced Controls. It will then exclude or include the appropriate data. "
+    },
+    "Clinker to Cement Ratio of Conventional Technology": {
+        "filename": "Clinker_to_Cement_Ratio_of_Conventional_Technology.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The conventional technology has a different clinker to cement ratio, and is used by the REF scenario. The values are collected from the IEA, CSI, and WBCSD. The clinker to cement ratio is reported by the IEA for various regions, and that data is excluded from the model as it's weighted average is represented by the \"World\" value as reported by the IEA. For a regional model, the appropriate region can be selected from the VMA."
+    },
+    "Clinker Ratio Range Selection": {
+        "filename": "Clinker_Ratio_Range_Selection.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This variable is a toggle on Advanced Controls to select either the high, medium, or low range of the solution technology clinker replacements. This variable is used to develop the PDS scenarios"
+    },
+    "Percent Adoption of Blended Cements in Year 2 (2050)": {
+        "filename": "Percent_Adoption_of_Blended_Cements_in_Year_2_2050.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    }
 }

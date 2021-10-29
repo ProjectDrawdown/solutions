@@ -1,1 +1,3 @@
-Deleted scenarios that seemed to be redundant.  It also fixed the test, so that's not a bad thing.
+Re-import Models 2021:
+Was able to get rid of the specialized code and do a normal customized pds.
+Had to set one quirks parameter (copy_pds_datapoint="Ref Table") and everything went like magic (OMG)
