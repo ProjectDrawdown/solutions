@@ -949,7 +949,10 @@ def find_expected_scenario_in_zip(scenario_name, zip_f):
             if stripped_name == zip_name:
                 # return the _zipfile's_ version of this name
                 return name.split('/')[0]
-    raise ValueError(f"Could not find scenario {scenario_name} in expected.zip")
+
+    candidates = [z for z in zip_names
+                  if "/ScenarioRecord" in z]
+    raise ValueError(f"Could not find scenario {scenario_name} in expected.zip: {sorted(candidates)}")
 
 def approx_compare(val, expt, all_zero=True, thresh=None):
     """Return True if val is equal 'or very close to' expected value expt.
