@@ -10,10 +10,10 @@ thisdir = Path(__file__).parents[0]
 expected_file = thisdir / 'expected.zip'
 solution_name = thisdir.parents[0].name
 
-# Skipping some small regional errors, and CO2/CH4 errors b/c the code is dfferent now
+# Skipping some small regional errors
 SCENARIO_SKIP = None
 TEST_SKIP = ['Helper Tables B27:L73', 'Unit Adoption Calculations Q198:AA244', 'Unit Adoption Calculations AX198:BH244',
-             'Unit Adoption Calculations BF308:BP354','CO2 Calcs A172:F217','CH4 Calcs']
+             'Unit Adoption Calculations BF308:BP354']
 
 def test_loader():
     """Test that the solution can load the defined scenarios"""
