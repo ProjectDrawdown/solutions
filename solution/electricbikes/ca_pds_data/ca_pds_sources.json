@@ -1,14 +1,12 @@
 [
-  {
-    "name": "Book Ed.1 Scenario 1",
-    "include": true,
-    "description": "Using estimated projections of e-bike sales from Navigant, and Bloomberg, along with estimated growth rates of sales for missing years, and assumed bike lifetimes (really battery lifetimes as these dominate), estimated e-bike stocks are developed for each Drawdown region (OECD90, Eastern Europe, Asia sans Japan, Middle East and Africa and Latin America). These are assumed to each have a fixed number of passenger-km per year based on 10 km per workday and 5km per weekend day with a ridership of 1.05 considering the popularity of multiple riders on Chinese e-bikes. the resulting passenger-km are summed for global results. ",
-    "filename": "custom_pds_ad_Book_Ed_1_Scenario_1.csv"
-  },
-  {
-    "name": "Book Ed.1 Scenario 2",
-    "include": true,
-    "description": "Using estimated projections of e-bike pass-km of ITDP/UCD, best fit curves were developed using 3rd degree polynomial functions. ",
-    "filename": "custom_pds_ad_Book_Ed_1_Scenario_2.csv"
-  }
+    {
+        "name": "Book Ed.1 Scenario 1",
+        "filename": "ca_pds_Book_Ed_1_Scenario_1.csv",
+        "description": "Using estimated projections of e-bike sales from Navigant, and Bloomberg, along with estimated growth rates of sales for missing years, and assumed bike lifetimes (really battery lifetimes as these dominate), estimated e-bike stocks are developed for each Drawdown region (OECD90, Eastern Europe, Asia sans Japan, Middle East and Africa and Latin America). These are assumed to each have a fixed number of passenger-km per year based on 10 km per workday and 5km per weekend day with a ridership of 1.05 considering the popularity of multiple riders on Chinese e-bikes. the resulting passenger-km are summed for global results."
+    },
+    {
+        "name": "Book Ed.1 Scenario 2",
+        "filename": "ca_pds_Book_Ed_1_Scenario_2.csv",
+        "description": "Using estimated projections of e-bike pass-km of ITDP/UCD, best fit curves were developed using 3rd degree polynomial functions."
+    }
 ]

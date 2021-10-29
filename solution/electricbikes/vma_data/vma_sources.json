@@ -1,147 +1,158 @@
 {
-  "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "Billion PKM"
-  },
-  "CONVENTIONAL First Cost per Implementation Unit": {
-    "title": "CONVENTIONAL First Cost per Implementation Unit",
-    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
-    "use_weight": true,
-    "units": "US2014$/MWh of Battery Equivalent"
-  },
-  "SOLUTION First Cost per Implementation Unit": {
-    "title": "SOLUTION First Cost per Implementation Unit",
-    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
-    "use_weight": true,
-    "units": "US2014$/MWh of Battery Equivalent"
-  },
-  "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
-    "use_weight": true,
-    "units": "Billion PKM/MWh of Battery Equivalent"
-  },
-  "SOLUTION Lifetime Capacity": {
-    "title": "SOLUTION Lifetime Capacity",
-    "filename": "SOLUTION_Lifetime_Capacity.csv",
-    "use_weight": true,
-    "units": "Billion PKM/MWh of Battery Equivalent"
-  },
-  "CONVENTIONAL Average Annual Use": {
-    "title": "CONVENTIONAL Average Annual Use",
-    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "Billion PKM/MWh of Battery Equivalent/year"
-  },
-  "SOLUTION Average Annual Use": {
-    "title": "SOLUTION Average Annual Use",
-    "filename": "SOLUTION_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "Billion PKM/MWh of Battery Equivalent/year"
-  },
-  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
-    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
-    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
-    "use_weight": true,
-    "units": "US2014$/Billion PKM"
-  },
-  "CONVENTIONAL Total Energy Used per Functional Unit": {
-    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
-    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TWh/Billion PKM"
-  },
-  "SOLUTION Total Energy Used per Functional Unit": {
-    "title": "SOLUTION Total Energy Used per Functional Unit",
-    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TWh/Billion PKM"
-  },
-  "CONVENTIONAL Fuel Consumed per Functional Unit": {
-    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
-    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "Liter/Billion PKM"
-  },
-  "SOLUTION Fuel Efficiency Factor": {
-    "title": "SOLUTION Fuel Efficiency Factor",
-    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
-    "stat_correction": true,
-    "units": "%"
-  },
-  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
-    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
-    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
-    "use_weight": true,
-    "units": "t CO2-eq/Billion PKM"
-  },
-  "Indirect CO2 Emissions per SOLUTION Unit (Select on Advanced Controls)": {
-    "title": "Indirect CO2 Emissions per SOLUTION Unit (Select on Advanced Controls)",
-    "filename": "Indirect_CO2_Emissions_per_SOLUTION_Unit_Select_on_Advanced_Controls.csv",
-    "use_weight": true,
-    "units": "t CO2-eq/Billion PKM"
-  },
-  "Average Car Occupancy": {
-    "title": "Average Car Occupancy",
-    "filename": "Average_Car_Occupancy.csv",
-    "stat_correction": true
-  },
-  "Average Car Lifetime": {
-    "title": "Average Car Lifetime",
-    "filename": "Average_Car_Lifetime.csv",
-    "stat_correction": true,
-    "units": "pass-km"
-  },
-  "Discount Rates - Households": {
-    "title": "Discount Rates - Households",
-    "filename": "Discount_Rates_Households.csv",
-    "stat_correction": true,
-    "units": "Percent"
-  },
-  "Average Annual Passenger-km per Car": {
-    "title": "Average Annual Passenger-km per Car",
-    "filename": "Average_Annual_Passenger_km_per_Car.csv",
-    "stat_correction": true
-  },
-  "First Cost of ICE Car": {
-    "title": "First Cost of ICE Car",
-    "filename": "First_Cost_of_ICE_Car.csv",
-    "use_weight": true,
-    "units": "US2014$/vehicle"
-  },
-  "Average Bike Pass-km per Year": {
-    "title": "Average Bike Pass-km per Year",
-    "filename": "Average_Bike_Pass_km_per_Year.csv",
-    "stat_correction": true
-  },
-  "E-bike Battery Size": {
-    "title": "E-bike Battery Size",
-    "filename": "E_bike_Battery_Size.csv",
-    "use_weight": true
-  },
-  "E-bike Work Rate": {
-    "title": "E-bike Work Rate",
-    "filename": "E_bike_Work_Rate.csv",
-    "stat_correction": true,
-    "units": "Wh/km"
-  },
-  "Percentage of E-bike Rides with 2 Riders": {
-    "title": "Percentage of E-bike Rides with 2 Riders",
-    "filename": "Percentage_of_E_bike_Rides_with_2_Riders.csv",
-    "stat_correction": true
-  },
-  "Fuel Consumed per pkm - CONVENTIONAL": {
-    "title": "Fuel Consumed per pkm - CONVENTIONAL",
-    "filename": "Fuel_Consumed_per_pkm_CONVENTIONAL.csv",
-    "stat_correction": true,
-    "units": "Liter/Billion PKM"
-  },
-  "Car Maintenance  Cost per Functional Unit": {
-    "title": "Car Maintenance  Cost per Functional Unit",
-    "filename": "Car_Maintenance_Cost_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/Billion PKM"
-  }
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CONVENTIONAL First Cost per Implementation Unit": {
+        "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": true,
+        "bound_correction": true,
+        "description": "Concept: One MWh of installed battery pack (1 MWh(i) ) provides batteries for around 2800 bikes (each with 349 Wh packs), with each bike assumed to run a fixed average number of pkm per year. So In total 1 MWh(i) of battery packs allows for just over 8 million pkm per year. Numbers may change, but concept remains.\n\nit is known that E-bikes replace a range of modes, so the existing (non-e-bike) modeshares are used as a composite Conventional alternative that is replaced by each 1 MWh(i) unit of E-bike. Regional usage and cost data on Public transit, bicycle, motorbike (2Wheeler/2W) were combined with private car data to estimate the Amortized first cost for this composite conventional alternative.\nThe composite conventional cost takes into account the first costs for each mode normalized by the mobility that it provides (i.e. amortized), and combined according to the current non-ebike mode shares. The conversion multiplies the cost per pkm by the number of pkm that 1 MWh(i) can generate in a year (see above).\n\nCalculation for each Region (conversion in blue): sum_over_modes[ Modal first cost/ total lifetime pkm of 1 vehicle * modeshare] * number of pkm from 1 MWh(i) - see Conventional Costs sheet"
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Concept: One MWh of installed battery pack (1 MWh(i) ) provides batteries for around 2800 bikes (each with 349 Wh packs), with each bike assumed to run a fixed average number of pkm per year. So In total 1 MWh of battery packs allows for just over 8 million pkm per year. Numbers may change, but concept remains. We use the e-bike price and the average battery size.\nWeight: SLA batteries are 10% of the market, Li-ion are 90%. Each percentage is split among the number of sources. Four Li-ion sources means 11/4 = weight of 0.0275. Three SLA sources means 89/3 = weight of .2967.\nNumbers may change, but concept remains."
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The First cost calculation (See above) uses Amortized first costs for a Composite Conventional Alternative made of all replaced modes (cars, Public transit, bicycles, motorbikes, walk etc.) The amortization process is simply a division of the costs by the total lifetime mobility (in pkm) of the modes weighted by the modeshare. This cost therefore is scaled to the number of pkm that 1 MWh(i) battery can generate on e-bikes and is defined by the mobility, not a physical vehicle unit (think Mobility as a Service). This means that the lifetime of the Conventional Alternative is only the lifetime of pkms which is entered as \"1 year\" in the model = same as the Average Annual Use. "
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Concept: One MWh of installed battery pack (1 MWh(i) ) provides batteries for around 2800 bikes (each with 349 Wh packs), with each bike assumed to run a fixed average number of pkm per year. So In total 1 MWh of battery packs allows for just over 8 million pkm per year. Numbers may change, but concept remains.\n\n Calculation: (cycles * bike batt capacity * riders per bike / battery work rate.) * 10^6 / 10^9 / bike batt capacity\nWeight is based on market share of Li-ion and SLA batteries."
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Concept: One MWh of installed battery pack (1 MWh(i) ) provides batteries for around 2800 bikes (each with 349 Wh packs), with each bike assumed to run a fixed average number of pkm per year. So In total 1 MWh of battery packs allows for just over 8 million pkm per year. Numbers may change, but concept remains. See Average Annual Use for Solution.\n\n The Conventional Implementation unit (a composite of multiple modes) is costed using amortization of individual modes and therefore is only relevant for a defined number of pkms produced each year (made to equal to what 1 MWh(i) of battery can produce). The conventional average annual use and the lifetime capacity are therefore the same."
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "From available sources, we estimate the use rate of e-bikes. in one case it's a bottom up: daily use -> annual use divided by batt capacity\nOther options are top down: using total estimated e-bike mobility divided by total battery capacity of a given number of bikes.\n\nNB: we cannot use the bike work rate since this is in Wh(e)/bike-km not Wh(i). Wh(e) = Wh(i) * #battery fill cycles assuming that batteries are used until almost empty, and are fully refilled before subsequent use.\n* Wh(i) = Wh of installed battery capacity, Wh(e) = Wh of electricity\n"
+    },
+    "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Weights similar to variable 4. "
+    },
+    "CONVENTIONAL Total Energy Used per Functional Unit": {
+        "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Total Energy Used per Functional Unit": {
+        "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Bike energy work rate assumed to be bike-km, but some bikes have 2 riders."
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+        "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Weights and conversion calculation similar to variable 4. Note that for the Drawdown book edition 1, this variable was input in tons CO2e per implementation unit, but the updated scenarios use tons of CO2e per billion passenger-km."
+    },
+    "Indirect CO2 Emissions per SOLUTION Unit (Select on Advanced Controls)": {
+        "filename": "Indirect_CO2_Emissions_per_SOLUTION_Unit_Select_on_Advanced_Controls.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The (e) script represents actual electricity consumed, the (i) represents a battery capacity installed. \nAssumed that indirect emissions of bike batteries are same as those from car batteries, and that all energy usage is from a globally-typical grid with REF emissions over 2020-2050. Weights based on estimated battery market share for e-bikes. "
+    },
+    "Average Car Occupancy": {
+        "filename": "Average_Car_Occupancy.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Average Car Lifetime": {
+        "filename": "Average_Car_Lifetime.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Discount Rates - Households": {
+        "filename": "Discount_Rates_Households.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a household level. The household level discount rate is directly related to decision-making at a household level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments.  Discount rates reported in the literature that are used for policy decisions are not necessarily relevant for evaluating household level financial investment decisions.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis."
+    },
+    "Average Annual Passenger-km per Car": {
+        "filename": "Average_Annual_Passenger_km_per_Car.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "ICCT calculates the weighted average of 16 countries and regions using data from the IEA and national country statistics."
+    },
+    "First Cost of ICE Car": {
+        "filename": "First_Cost_of_ICE_Car.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Due to the complexity and the rapid changes in the car markets for all technologies, the prices are weighted across both regions and vehicular segments/models as far as available data allow. The Raw data take into account the segment weighting and the \"Weight\" column takes into account share of global sales (using GFEI 2017 data - IEA and ICCT (2019), \"Fuel Economy in Major Car Markets\", IEA, Paris, www.iea.org/topics/transport/gfei/report/). Due to lack of aggregate data on China, top selling models were priced, weighted, and included. Total China weight = total Global weight of Chinese Auto Sales."
+    },
+    "Average Bike Pass-km per Year": {
+        "filename": "Average_Bike_Pass_km_per_Year.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "E-bike Battery Size": {
+        "filename": "E_bike_Battery_Size.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Weight is based on market share of Li-ion and SLA batteries."
+    },
+    "E-bike Work Rate": {
+        "filename": "E_bike_Work_Rate.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Conversion Calculation includes 90% (source 85%-95%) battery discharge efficiency Liu, 2021  SLA 80%-85% Li-ion 85%-95% model assumes SLA phases out"
+    },
+    "Percentage of E-bike Rides with 2 Riders": {
+        "filename": "Percentage_of_E_bike_Rides_with_2_Riders.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Fuel Consumed per pkm - CONVENTIONAL": {
+        "filename": "Fuel_Consumed_per_pkm_CONVENTIONAL.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Car Maintenance  Cost per Functional Unit": {
+        "filename": "Car_Maintenance_Cost_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This is only Maintenance Cost. Fuel Costs are entered into model separately. Excluded values represent older data points from sources that have been updated."
+    },
+    "Car Insurance Costs": {
+        "filename": "Car_Insurance_Costs.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This is estimated insurance rates for cars. Monthly insurance converted by dividing by estimated average monthly pass-km travelled using data from ICCT (2012): 15,765 v-km per year average globally, and 1.57 persons/vehicle average globally."
+    }
 }

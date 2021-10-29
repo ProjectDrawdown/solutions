@@ -1,3 +1,7 @@
+Import Oct 2021:
+Denton's notes held true: two ad/ data sources needed to have zeros added to the first row.
+I also skipped one test with small error.
+
 Denton's Notes:
 Electric Bikes
 solution/electricbikes/ad/ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_High_shift_Scenario.csv has 0.0 

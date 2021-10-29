@@ -1,14 +1,12 @@
 [
-  {
-    "name": "Book Reference Scenario",
-    "include": true,
-    "description": "The previously developed Reference scenario, as with most Drawdown models, is based on the TAM data and modeling. Therefore as thse inputs have changed in the new model, the Reference adoption is also different. The previous reference adoption is recorded here for the Book Scenarios. ",
-    "filename": "custom_ref_ad_Book_Reference_Scenario.csv"
-  },
-  {
-    "name": "Default REF Projection with Adjustment for Recent Historical Adoptions",
-    "include": true,
-    "description": "We take the Default Project Drawdown REF adoption using Average Baseline TAM data and then adjust the years 2012-2018 to be the estimated historical adoptions from the Modeshare URBAN tab. ",
-    "filename": "custom_ref_ad_Default_REF_Projection_with_Adjustment_for_Recent_Historical_Adoptions.csv"
-  }
+    {
+        "name": "Book Reference Scenario",
+        "filename": "ca_ref_Book_Reference_Scenario.csv",
+        "description": "The previously developed Reference scenario, as with most Drawdown models, is based on the TAM data and modeling. Therefore as thse inputs have changed in the new model, the Reference adoption is also different. The previous reference adoption is recorded here for the Book Scenarios."
+    },
+    {
+        "name": "Default REF Projection with Adjustment for Recent Historical Adoptions",
+        "filename": "ca_ref_Default_REF_Projection_with_Adjustment_for_Recent_Historical_Adoptions.csv",
+        "description": "We take the Default Project Drawdown REF adoption using Average Baseline TAM data and then adjust the years 2012-2018 to be the estimated historical adoptions from the Modeshare URBAN tab."
+    }
 ]

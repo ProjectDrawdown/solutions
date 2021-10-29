@@ -1,2 +1,4 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
 Project Drawdown Assumption,,World,,5 - Not Verified,2016,,0.05,Percent,,,,,
+"China Urban Public Transport Association, Hangzhou Urban and Rural Construction Committee, and Zhejiang University 2013",,China,China,2 - Public Sector/ Multilateral Agency,2013,,1.15,person/e-bike,0.1499999999999999,percent,,calcuation: 1*(1-x)+2x=1.15,
+ITF,https://www.itf-oecd.org/sites/default/files/life-cycle-assessment-calculations-2020.xlsx,World,,2 - Public Sector/ Multilateral Agency,2020,,0.0,,,,,,1.0

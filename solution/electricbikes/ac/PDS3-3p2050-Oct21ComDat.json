@@ -1,0 +1,131 @@
+{
+    "name": "PDS3-3p2050-Oct21ComDat",
+    "solution_category": "reduction",
+    "vmas": "VMAs",
+    "creation_date": "2021-10-14 06:48:37",
+    "description": "Ambitious as maximum",
+    "report_start_year": 2020,
+    "report_end_year": 2050,
+    "conv_2014_cost": {
+        "value": 194936.44113584,
+        "statistic": "mean"
+    },
+    "conv_first_cost_efficiency_rate": 0.0,
+    "conv_lifetime_capacity": {
+        "value": 0.00604942912725678,
+        "statistic": "mean"
+    },
+    "conv_avg_annual_use": {
+        "value": 0.00604942912725678,
+        "statistic": "mean"
+    },
+    "conv_var_oper_cost_per_funit": {
+        "value": 52200584.7908078,
+        "statistic": "mean"
+    },
+    "conv_fixed_oper_cost_per_iunit": 0.0,
+    "conv_fuel_cost_per_funit": 1.03565602100573,
+    "pds_2014_cost": {
+        "value": 491576.323101949,
+        "statistic": "mean"
+    },
+    "ref_2014_cost": {
+        "value": 491576.323101949,
+        "statistic": "mean"
+    },
+    "soln_first_cost_efficiency_rate": 0.06,
+    "soln_first_cost_below_conv": true,
+    "soln_lifetime_capacity": {
+        "value": 0.0780412713550903,
+        "statistic": "mean"
+    },
+    "soln_avg_annual_use": {
+        "value": 0.00714613024045396,
+        "statistic": "mean"
+    },
+    "soln_var_oper_cost_per_funit": 0.0,
+    "soln_fixed_oper_cost_per_iunit": 0.0,
+    "soln_fuel_cost_per_funit": 827511.409972955,
+    "npv_discount_rate": 0.04224,
+    "conv_annual_energy_used": {
+        "value": 0.00427239175234806,
+        "statistic": "mean"
+    },
+    "soln_energy_efficiency_factor": 0.0,
+    "soln_annual_energy_used": {
+        "value": 0.00595342457369499,
+        "statistic": "mean"
+    },
+    "conv_fuel_consumed_per_funit": {
+        "value": 33665812.3190583,
+        "statistic": "mean"
+    },
+    "soln_fuel_efficiency_factor": {
+        "value": 1.0,
+        "statistic": "mean"
+    },
+    "conv_fuel_emissions_factor": {
+        "value": 0.002273941593,
+        "xls cell formula": "I145"
+    },
+    "soln_fuel_emissions_factor": 0.0,
+    "conv_emissions_per_funit": 0.0,
+    "soln_emissions_per_funit": 0.0,
+    "conv_indirect_co2_per_unit": {
+        "value": 15674.4704570792,
+        "statistic": "mean"
+    },
+    "soln_indirect_co2_per_iunit": {
+        "value": 4579.45019361445,
+        "statistic": "mean"
+    },
+    "conv_indirect_co2_is_iunits": false,
+    "ch4_co2_per_funit": 0.0,
+    "ch4_is_co2eq": true,
+    "n2o_co2_per_funit": 0.0,
+    "n2o_is_co2eq": true,
+    "co2eq_conversion_source": "AR5 with feedback",
+    "emissions_use_co2eq": true,
+    "emissions_grid_source": "Meta-Analysis",
+    "emissions_grid_range": "Mean",
+    "source_until_2014": "ALL SOURCES",
+    "ref_source_post_2014": "Ambitious Cases",
+    "pds_source_post_2014": "Ambitious Cases",
+    "ref_base_adoption": {
+        "World": 288.5,
+        "OECD90": 34.003967957322146,
+        "Eastern Europe": 3.636411924317727,
+        "Asia (Sans Japan)": 112.25345376475707,
+        "Middle East and Africa": 12.42901856394792,
+        "Latin America": 24.937721744592636,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_basis": "Existing Adoption Prognostications",
+    "soln_pds_adoption_regional_data": false,
+    "pds_adoption_final_percentage": {
+        "World": 0.0,
+        "OECD90": 0.0,
+        "Eastern Europe": 0.0,
+        "Asia (Sans Japan)": 0.0,
+        "Middle East and Africa": 0.0,
+        "Latin America": 0.0,
+        "China": 0.0,
+        "India": 0.0,
+        "EU": 0.0,
+        "USA": 0.0
+    },
+    "soln_pds_adoption_prognostication_source": "Ambitious Cases",
+    "soln_pds_adoption_prognostication_trend": "3rd Poly",
+    "soln_pds_adoption_prognostication_growth": "Medium",
+    "soln_ref_adoption_basis": "Default",
+    "soln_ref_adoption_regional_data": false,
+    "pds_adoption_use_ref_years": [
+        2015,
+        2016,
+        2017,
+        2018
+    ]
+}
