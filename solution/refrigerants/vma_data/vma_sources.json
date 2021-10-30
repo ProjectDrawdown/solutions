@@ -1,50 +1,50 @@
 {
-  "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "Kilo Tonnes (Recoverable refrigerant)"
-  },
-  "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "Kilo Tonnes (Recoverable refrigerant)/Kilo Tonnes (Refrigerant destroyed and avoided)"
-  },
-  "SOLUTION Lifetime Capacity": {
-    "title": "SOLUTION Lifetime Capacity",
-    "filename": "SOLUTION_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "Kilo Tonnes (Recoverable refrigerant)/Kilo Tonnes (Refrigerant destroyed and avoided)"
-  },
-  "CONVENTIONAL Average Annual Use": {
-    "title": "CONVENTIONAL Average Annual Use",
-    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "Kilo Tonnes (Recoverable refrigerant)/Kilo Tonnes (Refrigerant destroyed and avoided)/year"
-  },
-  "SOLUTION Average Annual Use": {
-    "title": "SOLUTION Average Annual Use",
-    "filename": "SOLUTION_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "Kilo Tonnes (Recoverable refrigerant)/Kilo Tonnes (Refrigerant destroyed and avoided)/year"
-  },
-  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
-    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
-    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/Kilo Tonnes (Recoverable refrigerant)"
-  },
-  "SOLUTION Total Energy Used per Functional Unit": {
-    "title": "SOLUTION Total Energy Used per Functional Unit",
-    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TWh/Kilo Tonnes (Recoverable refrigerant)"
-  },
-  "CONVENTIONAL Direct Emissions per Functional Unit": {
-    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
-    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/Kilo Tonnes (Recoverable refrigerant)"
-  }
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Estimated for 2014 as average of calculated values for 2010 and 2020. See sheet 'Ref Estimates' for details."
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "N/A - value 1 is used because physical functional unit is same as physical implementation unit"
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "N/A - value 1 is used because physical functional unit is same as physical implementation unit"
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "N/A - functional unit and implementation unit are equivalent volumes.  No use or conversion is needed.  \"1\" is used in the assumption for calculation purposes."
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This is not needed for this solution as the definition of the solution is a combination of practices that include destroying recovered gases and removing oversharged appliances to reduce leakage for gases in use."
+    },
+    "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Average per unit cost of good practices and End of Life (EOL) recovery is used.  This is calculated on sheet 'Cost.'   Only operating costs are considered.  An average cost is calculated by assessing decadal average operating costs for both recovery/destruction and leakage remediation through removal of in-use gases."
+    },
+    "SOLUTION Total Energy Used per Functional Unit": {
+        "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "There are various methods used to destroy recovered refrigerant gases that are not recycled.  Electricity is often used in these processes.  These data points are used to calculate an average cost. Only commercial technologies were included."
+    },
+    "CONVENTIONAL Direct Emissions per Functional Unit": {
+        "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Average GWP calculated by averaging GWP of HFC (the dominant Refrigerant Gas captured in the Solution period of study).  All gas volumes (kton) calculated in the TAM and adoption scenarios are normalized by this figure."
+    }
 }

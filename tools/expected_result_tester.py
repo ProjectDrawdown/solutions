@@ -1002,7 +1002,7 @@ def check_excel_against_object(obj, zip_f, scenario, i, verify, test_skip=None, 
         expected_scenario_name = find_expected_scenario_in_zip(scenario, zip_f)
         arcname = f'{expected_scenario_name}/{sheetname}'
         with zip_f.open(name=arcname) as zip_csv_f:
-            sheet_df = pd.read_csv(zip_csv_f, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)']) 
+            sheet_df = pd.read_csv(zip_csv_f, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)', '#NUM!']) 
         
         skip_count=0
         for (cellrange, actual_df, actual_mask, expected_mask) in verify[sheetname]:
@@ -1115,7 +1115,7 @@ def key_results_tester(solution_name, expected_filename, scenario_skip=None, key
             obj = factory.load_scenario(solution_name,scenario_name)
             expected_scenario_name = find_expected_scenario_in_zip(scenario_name, zf)
             ac_file = zf.open(expected_scenario_name + "/" + 'Advanced Controls')
-            df_expected = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)'])
+            df_expected = pd.read_csv(ac_file, header=None, na_values=['#REF!', '#DIV/0!', '#VALUE!', '(N/A)','#NUM!'])
             key_results = obj.get_key_results()
             row_expected_values = 3
             cols_expected_values = range(0,6)

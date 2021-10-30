@@ -1,0 +1,4 @@
+This solution has only a single scenario, which is used in all PDS1, 2 and 3 results.
+Also, it required setting custom TAM parameters, as it uses a High growth model.
+Note: when you have to set a custom paramter for 'World', you also need to set it
+for 'PDS World' as well, which isn't obvious.
