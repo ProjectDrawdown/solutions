@@ -371,18 +371,18 @@ class UnitAdoption(DataHandler):
         """Cumulative Functional Units Utilized.
            SolarPVUtil 'Unit Adoption Calculations'!Q134:AA181
         """
-        first_year = self.soln_pds_funits_adopted.fillna(0.0)
+        funits_adopted = self.soln_pds_funits_adopted.copy().fillna(0.0)
         if self.bug_cfunits_double_count:
             # in a number of older solutions, 'Advanced Controls'!$C$61:C70 is added to
             # the 2014 soln_pds_cumulative_funits, which ends up double counting 2014.
             # We optionally enable this bug-for-bug compatibility.
             # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.z9hqutnbnigx
-            omit_main = self.soln_pds_funits_adopted.iloc[[0], :].fillna(0.0).copy(deep=True)
-            omit_main.index.name = 'Year'
-            main_region = dd.REGIONS[0]
-            omit_main[main_region] = 0.0
-            first_year = first_year.add(omit_main, fill_value=0)
-        result = first_year.cumsum(axis=0, skipna=False)
+            # Note we actually have to fetch the initial adoption from ac here, since that amount may be different
+            # than pds_funits_adopted number (in the case of a custom adoption, for example)
+            added_adoption = pd.Series(self.ac.ref_base_adoption)
+            added_adoption['World'] = 0.0
+            funits_adopted.iloc[0] = funits_adopted.iloc[0] + added_adoption
+        result = funits_adopted.cumsum(axis=0, skipna=False)
         result.name = "soln_pds_cumulative_funits"
         return result
 
