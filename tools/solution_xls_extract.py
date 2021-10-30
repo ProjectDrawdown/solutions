@@ -13,6 +13,7 @@
 """
 
 import argparse
+from ctypes import c_int
 import datetime
 import hashlib
 import json
@@ -693,22 +694,31 @@ def normalize_unit(tab, row, col):
 
 
 
-def get_filename_for_source(sourcename, prefix=''):
-    """Return string to use for the filename for known sources."""
-    if re.search(r'\[Source \d+', sourcename):
-        return None
-    if re.search(r'Drawdown TAM: \[Source \d+', sourcename):
-        return None
-
+def get_filename_for_source(sourcename, prefix='', suffix='.csv'):
+    """Return string to use for the filename for a given source title."""
     filename = sourcename.strip()
     filename = re.sub(r"[^\w\s\.]", '', filename)
     filename = re.sub(r"\s+", '_', filename)
     filename = re.sub(r"\.+", '_', filename)
-    filename = filename.replace('Based_on_', 'based_on_')
-    if len(filename) > 96:
-        h = hashlib.sha256(filename.encode('utf-8')).hexdigest()[-8:]
-        filename = filename[:88] + '_' + h
-    return prefix + filename + '.csv'
+    filename = filename.replace('Based_on_', 'bon_')
+    if len(filename) > 20:
+        h = hashlib.sha256(sourcename.encode('utf-8')).hexdigest()[-8:]
+        filename = filename[:18] + '_' + h
+    return prefix + filename + suffix
+
+def get_unique_filename_for_source(sourcename, existing_names, prefix='', suffix='.csv'):
+    """Return a name for source that does not already exist in existing_names"""
+    existing_names = [p.name if isinstance(p,Path) else p for p in existing_names]
+
+    p = Path(get_filename_for_source(sourcename, prefix, suffix))
+    filename = p.name
+    stem = p.stem
+    suffix = p.suffix
+    cnt = 1
+    while filename in existing_names:
+        filename = stem + "_" + str(cnt) + suffix
+        cnt += 1
+    return filename
 
 
 def write_tam(f, wb, outputdir):
@@ -1230,22 +1240,28 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
     for source_name in list(sources.keys()):
         if not source_name:
             continue
+        # Skip template sources
+        if "[Source " in source_name:
+            continue
+
         df = pd.DataFrame()
         for region in region_data.keys():
             if source_name in region_data[region].columns:
                 df[region] = region_data[region].loc[:, source_name]
             else:
                 df[region] = np.nan
-        filename = get_filename_for_source(source_name, prefix=prefix)
-        if df.empty or df.isna().all(axis=None, skipna=False) or not filename:
+        
+
+        if df.empty or df.isna().all(axis=None, skipna=False):
             del sources[source_name]
             continue
+
         df.index = df.index.astype(int)
         df.index.name = 'Year'
 
         zero_adoption_ok = outputdir.parent.name in zero_adoption_solutions
         if not zero_adoption_ok:
-            # In the Excel implementation, adoption data of 0.0 is treated the same as N/A,
+            # In the Excel implementation, adoption data of 0.0 is treatePath(d the same as N/A,
             # no data available. We don't want to implement adoptiondata.py the same way, we
             # want to be able to express the difference between a solution which did not
             # exist prior to year N, and therefore had 0.0 adoption, from a solution which
@@ -1255,6 +1271,7 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
             # data at that location.
             df.replace(to_replace=0.0, value=np.nan, inplace=True)
 
+        filename = get_unique_filename_for_source(source_name, list(sources.values()), prefix=prefix)
         outputfile = outputdir/filename
         df.to_csv(outputfile, header=True, encoding='utf-8')
         sources[source_name] = filename
@@ -1316,14 +1333,15 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
     multipliers = {'high': xli(custom_ad_tab, 'AO25'),
                    'low': xli(custom_ad_tab, 'AO26')}
     scenarios = []
+    filenames = []
     # Look for the list of scenarios in the minitable in columns 'N:O'
     for srow in range(20, 36):
         if not re.search(r"Scenario \d+", xls(custom_ad_tab, srow, co("N"))):
             continue
         name = normalize_source_name(xls(custom_ad_tab, srow, co("O")))
-        filename = get_filename_for_source(name, prefix=prefix+'_')
-        if not filename:   # This skips all the "[Type scenario name here]" lines
+        if name is None:  # filters out empty template columns
             continue
+        filename = get_unique_filename_for_source(name, filenames, prefix=prefix+'_')
         skip = True
         description = ''
 
@@ -1349,6 +1367,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
                         break
                 break
         if not skip:
+            filenames.append(filename)
             scenarios.append({'name': name, 'filename': filename,
                 'description': description})
     if scenarios:
@@ -1570,26 +1589,36 @@ def output_solution_python_file(outputdir, xl_filename):
     global is_land
     global is_elecgen
  
-    # We may get arguments as strings or PATH objects; make them strings here.
-    outputdir = str(outputdir)
-    xl_filename = str(xl_filename)
+    # We may get arguments as strings or PATH objects; make them Paths here.
+    outputdir = Path(outputdir)
+    xl_filename = Path(xl_filename)
 
-    if not os.path.exists(outputdir):
-        os.mkdir(outputdir)
-    py_filename = os.path.join(outputdir, '__init__.py')
-    if os.path.exists(py_filename):
-        py_filename = os.path.join(outputdir, '__init__UPDATED.py')
+    outputdir.mkdir(exist_ok=True)
+
+    # Get and hang on to the old min scenario creation date
+    ac_dir = outputdir/'ac'
+    ac_dir.mkdir(parents=False, exist_ok=True)
+    _, min_creation_date = _scenarios_from_ac_dir(ac_dir)
+    
+    # Clean out all old data files.
+    for d in ['ac','ad','ca_pds_data','ca_ref_data','tam','vma_data']:
+        for f in outputdir.glob(f"{d}/*"):
+            f.unlink()
+
+    py_filename = outputdir/'__init__.py'
+    if py_filename.is_file():
+        py_filename = outputdir/'__init__UPDATED.py'
         print(f'Generating new code at {py_filename} - please merge by hand with __init__.py')
 
     wb = openpyxl.load_workbook(filename=xl_filename,data_only=True,keep_links=False)
     ac_tab = wb['Advanced Controls']
 
-    if ('BIOSEQ' in xl_filename or 'PDLAND' in xl_filename or 'L-Use' in xl_filename or
-            'AEZ Data' in wb.sheetnames):
+    xln = xl_filename.stem
+    if ('BIOSEQ' in xln or 'PDLAND' in xln or 'L-Use' in xln or 'AEZ Data' in wb.sheetnames):
         is_rrs = False
         is_land = True
         is_elecgen = False
-    elif 'RRS' in xl_filename or 'TAM Data' in wb.sheetnames:
+    elif 'RRS' in xln or 'TAM Data' in wb.sheetnames:
         is_rrs = True
         is_land = False
         is_elecgen = ('ElectricityGenerationSolution' in wb['Advanced Controls']['B1'].value)
@@ -1598,11 +1627,11 @@ def output_solution_python_file(outputdir, xl_filename):
     has_tam = is_rrs
     adoption_base_year = wb['Helper Tables']['B21'].value
 
-    f = open(py_filename, 'w', encoding='utf-8')
+    f = open(str(py_filename), 'w', encoding='utf-8')
 
     solution_name = xls(ac_tab, 'C40')
     f.write('# ' + str(solution_name) + ' solution model.\n')
-    f.write('# Originally exported from: ' + os.path.basename(xl_filename) + '\n')
+    f.write('# Originally exported from: ' + xl_filename.name + '\n')
     f.write('\n')
     f.write('from pathlib import Path\n')
     f.write('import numpy as np\n')
@@ -1646,7 +1675,7 @@ def output_solution_python_file(outputdir, xl_filename):
 
     f.write("DATADIR = Path(__file__).parents[2]/'data'\n")
     f.write("THISDIR = Path(__file__).parent\n")
-    extract_vmas(f=f, wb=wb, outputdir=outputdir)
+    extract_vmas(f=f, wb=wb, outputdir=str(outputdir))
     if is_rrs:
         write_units_rrs(f=f, wb=wb)
     if is_land:
@@ -1661,17 +1690,14 @@ def output_solution_python_file(outputdir, xl_filename):
     for s in scenarios.values():
         if s.get('use_custom_tla', ''):
             if not 'custom_tla_fixed_value' in s:
-                extract_custom_tla(wb, outputdir=outputdir)
+                extract_custom_tla(wb, outputdir=str(outputdir))
             use_custom_tla = True
         if 'delay_protection_1yr' in s.keys():
             is_protect = True
         if 'carbon_not_emitted_after_harvesting' in s.keys():
             has_harvest = True
 
-    p = Path(f'{outputdir}/ac')
-
-    p.mkdir(parents=False, exist_ok=True)
-    prev_scenarios, min_creation_date = _scenarios_from_ac_dir(p)
+    acs = []
     for name, s in scenarios.items():
         if min_creation_date:
             creation_date = _scenario_creation_date_from_str(s['creation_date'])
@@ -1679,8 +1705,9 @@ def output_solution_python_file(outputdir, xl_filename):
                 print(f'Skipping scenario {name}, earlier than existing '
                       'scenarios.')
                 continue
-        fname = p.joinpath(re.sub(r"['\"\n()\\/\.]", "", name).replace(' ', '_').strip() + '.json')
-        write_json(filename=fname, d=s)
+        fname = get_unique_filename_for_source(name, acs, suffix=".json")
+        acs.append(fname)
+        write_json(filename=ac_dir/fname, d=s)
     f.write("scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)\n")
     f.write("\n")
 
@@ -1704,7 +1731,7 @@ def output_solution_python_file(outputdir, xl_filename):
     f.write( "\n")
     if has_tam:
         f.write("        # TAM\n")
-        write_tam(f=f, wb=wb, outputdir=outputdir)
+        write_tam(f=f, wb=wb, outputdir=str(outputdir))
     elif is_land:
         f.write("        # TLA\n")
         write_aez(f=f, wb=wb, use_custom_tla=use_custom_tla)
@@ -1712,9 +1739,9 @@ def output_solution_python_file(outputdir, xl_filename):
     f.write("        # ADOPTION\n")
 
     # If needed, write out the data files, and emit the code to load the data from them
-    write_ad(f=f, wb=wb, outputdir=outputdir)
-    write_ca(case='PDS', f=f, wb=wb, outputdir=outputdir)
-    write_ca(case='REF', f=f, wb=wb, outputdir=outputdir)
+    write_ad(f=f, wb=wb, outputdir=str(outputdir))
+    write_ca(case='PDS', f=f, wb=wb, outputdir=str(outputdir))
+    write_ca(case='REF', f=f, wb=wb, outputdir=str(outputdir))
 
     f.write("        (ref_adoption_data_per_region,\n")
     f.write("         pds_adoption_data_per_region,\n")
