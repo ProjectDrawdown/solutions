@@ -1,14 +1,12 @@
 [
-  {
-    "name": "Drawdown Book Reference Scenario",
-    "include": true,
-    "description": "This scenario uses the inputs that were used for the Scenario developed for the Drawdown Book Edition 1. The scenario assumes a fixed percent of the TAM is adopted for Efficient trucks as the TAM grows. ",
-    "filename": "custom_ref_ad_Drawdown_Book_Reference_Scenario.csv"
-  },
-  {
-    "name": "Efficient Truck Share of Market is Fixed",
-    "include": true,
-    "description": "Drawdown calculations for REF adoption of Efficient Trucks based on fixed percent of growth of trucking. The 2014 - 2018 values are taken from estimates of historical data ",
-    "filename": "custom_ref_ad_Efficient_Truck_Share_of_Market_is_Fixed.csv"
-  }
+    {
+        "name": "Drawdown Book Reference Scenario",
+        "filename": "ca_ref_Drawdown_Book_Refe_02f0ccf3.csv",
+        "description": "This scenario uses the inputs that were used for the Scenario developed for the Drawdown Book Edition 1. The scenario assumes a fixed percent of the TAM is adopted for Efficient trucks as the TAM grows."
+    },
+    {
+        "name": "Efficient Truck Share of Market is Fixed",
+        "filename": "ca_ref_Efficient_Truck_Sh_6e2948d0.csv",
+        "description": "Drawdown calculations for REF adoption of Efficient Trucks based on fixed percent of growth of trucking. The 2014 - 2018 values are taken from estimates of historical data"
+    }
 ]

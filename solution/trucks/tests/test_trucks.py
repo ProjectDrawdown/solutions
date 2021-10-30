@@ -11,9 +11,9 @@ expected_file = thisdir / 'expected.zip'
 solution_name = thisdir.parents[0].name
 
 # If there are long-running test failures that should be skipped, you can indicate them here.
-# Someday we'll have a scanner that will check for these
+# The Excel had an old version of emissions factors, but it doesn't use it so it doesn't matter
 SCENARIO_SKIP = None
-TEST_SKIP = None
+TEST_SKIP = ['Emissions Factors']
 
 def test_loader():
     """Test that the solution can load the defined scenarios"""

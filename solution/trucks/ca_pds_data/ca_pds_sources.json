@@ -1,0 +1,27 @@
+[
+    {
+        "name": "PDS1 - Based on ICCT+RMI Freight Work Adoption estimates",
+        "filename": "ca_pds_PDS1_bon_ICCTRMI_F_73fa92f5.csv",
+        "description": "ICCT estimates the total freight work each five years, and RMI estimates that by 2050 50% of trucks globally may have efficient technologies. We therefore interpolate and extrapolate ICCT's freight work data and project linear adoption globally from current adoption of truck freight work (approximately 5%) to RMI's projection in 2050."
+    },
+    {
+        "name": "PDS2 - Based on an ICCT Truck Sales extrapolation",
+        "filename": "ca_pds_PDS2_bon_an_ICCT_T_a2702de9.csv",
+        "description": "We use the number of truck sales estimated for each of ICCT's 16 regions (interpolated and extrapolated for each) to estimate the number of truck with efficiency packages installed. ICCT has an estimate of the year when truck fuel efficiency legislation becomes mandatory for each region."
+    },
+    {
+        "name": "PDS3 - Based on IEA Freight Work - 100% Adoption of Trucks by 2035",
+        "filename": "ca_pds_PDS3_bon_IEA_Freig_b69ab75c.csv",
+        "description": "IEA\"s estimated Truck freight work data are interpolated and extrapolated and we apply an increasing fraction of adoption rising to 100% in 2050."
+    },
+    {
+        "name": "Book Ed.1 Scenario 1",
+        "filename": "ca_pds_Book_Ed_1_Scenario_1.csv",
+        "description": "ICCT estimates the total freight work each five years, and RMI estimates that by 2050 50% of trucks globally may have efficient technologies. We therefore interpolate and extrapolate ICCT's freight work data and project linear adoption globally from current adoption of truck freight work (approximately 5%) to RMI's projection in 2050."
+    },
+    {
+        "name": "Book Ed.1 Scenario 3",
+        "filename": "ca_pds_Book_Ed_1_Scenario_3.csv",
+        "description": "IEA\"s estimated Truck freight work data are interpolated and extrapolated and we apply an increasing fraction of adoption rising to 100% (of global truck freight market only) in 2050."
+    }
+]

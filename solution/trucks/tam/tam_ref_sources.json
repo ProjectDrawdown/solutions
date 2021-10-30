@@ -1,11 +1,11 @@
 {
-  "Baseline Cases": {
-    "Based on: IEA ETP 2014 6DS": "tam_based_on_IEA_ETP_2014_6DS.csv"
-  },
-  "Conservative Cases": {
-    "Based on: IEA ETP 2014 4DS": "tam_based_on_IEA_ETP_2014_4DS.csv"
-  },
-  "Ambitious Cases": {
-    "Based on: IEA ETP 2014 2DS": "tam_based_on_IEA_ETP_2014_2DS.csv"
-  }
+    "Baseline Cases": {
+        "Combined (Summed) from Several Sources for Each Mode  (Shipping-4, Land-2, Air-3) -  See Project Drawdown Integration Documentation - Highest Ranges": "tam_Combined_Summed_fr_60ac4ce6.csv"
+    },
+    "Conservative Cases": {
+        "Combined (Summed) from Several Sources for Each Mode  (Shipping-4, Land-1, Air-2) -  See Project Drawdown Integration Documentation - Middle Ranges": "tam_Combined_Summed_fr_e2d304e0.csv"
+    },
+    "Ambitious Cases": {
+        "Combined (Summed) from Several Sources for Each Mode  (Shipping-5, Land-1, Air-2) -  See Project Drawdown Integration Documentation - Lowest Ranges": "tam_Combined_Summed_fr_e44dae38.csv"
+    }
 }

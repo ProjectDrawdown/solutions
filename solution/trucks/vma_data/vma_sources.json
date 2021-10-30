@@ -1,71 +1,74 @@
 {
-  "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "million tonne-kms"
-  },
-  "SOLUTION First Cost per Implementation Unit": {
-    "title": "SOLUTION First Cost per Implementation Unit",
-    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/Truck"
-  },
-  "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "million tonne-kms/Truck"
-  },
-  "SOLUTION Lifetime Capacity": {
-    "title": "SOLUTION Lifetime Capacity",
-    "filename": "SOLUTION_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "million tonne-kms/Truck"
-  },
-  "CONVENTIONAL Average Annual Use": {
-    "title": "CONVENTIONAL Average Annual Use",
-    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "million tonne-kms/Truck/year"
-  },
-  "SOLUTION Average Annual Use": {
-    "title": "SOLUTION Average Annual Use",
-    "filename": "SOLUTION_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "million tonne-kms/Truck/year"
-  },
-  "CONVENTIONAL Fuel Consumed per Functional Unit": {
-    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
-    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "Liter/million tonne-kms"
-  },
-  "SOLUTION Fuel Efficiency Factor": {
-    "title": "SOLUTION Fuel Efficiency Factor",
-    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
-    "stat_correction": true,
-    "units": "%"
-  },
-  "Average Utilization Rate (by Weight)": {
-    "title": "Average Utilization Rate (by Weight)",
-    "filename": "Average_Utilization_Rate_by_Weight.csv",
-    "stat_correction": true
-  },
-  "Average Long Haul Truck Capacity": {
-    "title": "Average Long Haul Truck Capacity",
-    "filename": "Average_Long_Haul_Truck_Capacity.csv",
-    "stat_correction": true,
-    "units": "tonnes"
-  },
-  "Average Truck Lifetime": {
-    "title": "Average Truck Lifetime",
-    "filename": "Average_Truck_Lifetime.csv",
-    "stat_correction": true
-  },
-  "Discount Rate: Commercial / Industry": {
-    "title": "Discount Rate: Commercial / Industry",
-    "filename": "Discount_Rate_Commercial_Industry.csv",
-    "stat_correction": true
-  }
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "These costs represent the additional costs to making a conventional truck more efficient which include those detailed on the Technologies sheet."
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "We assume that the technologies are applied to the standard truck at an additional cost, and that they last as long as the truck, hence when the truck is replaced, the technologies need to be applied to the new truck as before. Hence the annual usage  (and capacity) of the technolgoies is the same as the annual usage (and capacity) of the truck."
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The fuel savings assume the technologies listed on the Technologies sheet are applied to a conventional truck, and show the change in fuel consumotion that results."
+    },
+    "Average Utilization Rate (by Weight)": {
+        "filename": "Average_Utilization_Rate_by_Weight.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Average Long Haul Truck Capacity": {
+        "filename": "Average_Long_Haul_Truck_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Average Truck Lifetime": {
+        "filename": "Average_Truck_Lifetime.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Discount Rate: Commercial / Industry": {
+        "filename": "Discount_Rate_Commercial_Industry.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a Commercial / Industrial level. The Commercial / Industrial level discount rate is directly related to decision-making at a Commercial / Industrial level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments available to larger commericial / industrial entities such as multinational corporations or corporate utility enterprises.  Discount rates reported in the literature that are used for policy decisions are not necessarily equivalent to Commercial / Industrial level financial investment decisions, but oftentimes are not distiguished and may be conflated.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis."
+    }
 }
