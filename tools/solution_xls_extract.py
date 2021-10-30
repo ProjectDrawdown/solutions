@@ -560,8 +560,17 @@ def normalize_source_name(sourcename):
        +-------------------+-------------------+-----------------------------+---------+
        |   Baseline Cases  |  Ambitious Cases  |     Conservative Cases      |100% REN |
        +-------------------+-------------------+-----------------------------+---------+
-       | source2 | source1 | source3 | Source 4| surce5  | source6 | source7 | source8 |
-    """
+       | source2 | source1 | source3 | Source 4| surce5  | source6 | source7 | source8 | 
+    """   
+    # Update 2021: This list isn't "forward compatible", so I've turned off the exceptions.
+    # When we encounter a case where mis-naming is occurring, we should add it to the list,
+    # but otherwise allow unfamiliar names through.
+    # I'm also concerned that new names might _erroneously_ match one of the if clauses below
+    # and get incorrectly renamed.
+    # I think a better approach would be to check for "suspiciously close" names and warn
+    # the user, and have the user fix the misnaming in the Excel first.  But no time to
+    # implement that now.
+    
     special_cases = {
         'Based on: Greenpeace (2015) Reference': 'Based on: Greenpeace 2015 Reference',
         'Greenpeace 2015 Reference Scenario': 'Based on: Greenpeace 2015 Reference',
@@ -612,7 +621,7 @@ def normalize_source_name(sourcename):
         if 'BASELINE' in name: return 'Based on: CES ITU AMPERE Baseline' + suffix
         if '550' in name: return 'Based on: CES ITU AMPERE 550' + suffix
         if '450' in name: return 'Based on: CES ITU AMPERE 450' + suffix
-        raise ValueError('Unknown UN CES ITU AMPERE source: ' + sourcename)
+        #raise ValueError('Unknown UN CES ITU AMPERE source: ' + sourcename)
     if 'IEA' in name and 'ETP' in name:
         if '2014' in name and '2DS' in name: return 'Based on: IEA ETP 2014 2DS' + suffix
         if '2014' in name and '4DS' in name: return 'Based on: IEA ETP 2014 4DS' + suffix
@@ -632,22 +641,22 @@ def normalize_source_name(sourcename):
         if '2017' in name and '2DS' in name: return 'Based on: IEA ETP 2017 2DS' + suffix
         if '2017' in name and '4DS' in name: return 'Based on: IEA ETP 2017 4DS' + suffix
         if '2017' in name and '6DS' in name: return 'Based on: IEA ETP 2017 6DS' + suffix
-        raise ValueError('Unknown IEA ETP source: ' + sourcename)
+        #raise ValueError('Unknown IEA ETP source: ' + sourcename)
     if 'AMPERE' in name and 'MESSAGE' in name:
         if '450' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO 450' + suffix
         if '550' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO 550' + suffix
         if 'REF' in name: return 'Based on: AMPERE 2014 MESSAGE MACRO Reference' + suffix
-        raise ValueError('Unknown AMPERE MESSAGE-MACRO source: ' + sourcename)
+        #raise ValueError('Unknown AMPERE MESSAGE-MACRO source: ' + sourcename)
     if 'AMPERE' in name and 'IMAGE' in name:
         if '450' in name: return 'Based on: AMPERE 2014 IMAGE TIMER 450' + suffix
         if '550' in name: return 'Based on: AMPERE 2014 IMAGE TIMER 550' + suffix
         if 'REF' in name: return 'Based on: AMPERE 2014 IMAGE TIMER Reference' + suffix
-        raise ValueError('Unknown AMPERE IMAGE-TIMER source: ' + sourcename)
+        #raise ValueError('Unknown AMPERE IMAGE-TIMER source: ' + sourcename)
     if 'AMPERE' in name and 'GEM' in name and 'E3' in name:
         if '450' in name: return 'Based on: AMPERE 2014 GEM E3 450' + suffix
         if '550' in name: return 'Based on: AMPERE 2014 GEM E3 550' + suffix
         if 'REF' in name: return 'Based on: AMPERE 2014 GEM E3 Reference' + suffix
-        raise ValueError('Unknown AMPERE GEM E3 source: ' + sourcename)
+        #raise ValueError('Unknown AMPERE GEM E3 source: ' + sourcename)
     if 'GREENPEACE' in name and 'ENERGY' in name:
         if 'ADVANCED' in name and 'DRAWDOWN-PERENNIALS' in name:
             return 'Based on: Greenpeace 2015 Advanced Revolution with Drawdown perennials' + suffix
@@ -656,11 +665,11 @@ def normalize_source_name(sourcename):
             return 'Based on: Greenpeace 2015 Energy Revolution with Drawdown perennials' + suffix
         if 'REVOLUTION' in name: return 'Based on: Greenpeace 2015 Energy Revolution' + suffix
         if 'REFERENCE' in name: return 'Based on: Greenpeace 2015 Reference' + suffix
-        raise ValueError('Unknown Greenpeace Energy source: ' + sourcename)
+       # raise ValueError('Unknown Greenpeace Energy source: ' + sourcename)
     if 'GREENPEACE' in name and 'THERMAL' in name:
         if 'MODERATE' in name: return 'Based on: Greenpeace 2016 Solar Thermal Moderate' + suffix
         if 'ADVANCED' in name: return 'Based on: Greenpeace 2016 Solar Thermal Advanced' + suffix
-        raise ValueError('Unknown Greenpeace Solar Thermal source: ' + sourcename)
+        #raise ValueError('Unknown Greenpeace Solar Thermal source: ' + sourcename)
     return unicodedata.normalize('NFC', normalized)
 
 def normalize_case_name(name):
@@ -1607,8 +1616,8 @@ def output_solution_python_file(outputdir, xl_filename):
 
     py_filename = outputdir/'__init__.py'
     if py_filename.is_file():
-        py_filename = outputdir/'__init__UPDATED.py'
-        print(f'Generating new code at {py_filename} - please merge by hand with __init__.py')
+        py_filename.rename(py_filename.with_stem("__init__OLD"))
+        print(f'Moved existing __init__.py file to __init__OLD.py.  Please compare and merge as needed.')
 
     wb = openpyxl.load_workbook(filename=xl_filename,data_only=True,keep_links=False)
     ac_tab = wb['Advanced Controls']
