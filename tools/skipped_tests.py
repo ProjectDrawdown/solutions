@@ -1,5 +1,10 @@
 """Find and list skipped expected_result tests"""
 from pathlib import Path
+import argparse
+
+parser = argparse.ArgumentParser(description='Show which solutions use the test skipping feature.')
+parser.add_argument('-v', '--verbose', action='store_true', help='show actual skips')
+args = parser.parse_args()
 
 def whats_there(pattern, text):
     """Return what's on the end of the line after pattern in text"""
@@ -29,14 +34,20 @@ for p in solution_root.glob('*/tests/test_*.py'):
         print("Error, could not find SCENARIO_SKIP in {p.name}")
 
     if "None" not in skipping:
-        skips.append("scenarios")
+        if args.verbose:
+            print(f"{solution_name} skips scenarios {skipping}")
+        else:
+            skips.append("scenarios")
     
     skipping = whats_there("\nTEST_SKIP", text)
     if skipping is None:
         print("Error, could not find TEST_SKIP in {p.name}")
     
     if "None" not in skipping:
-        skips.append("tests")
+        if args.verbose:
+            print(f"{solution_name} skips tests {skipping}")
+        else:
+            skips.append("tests")
     
     if len(skips):
         print(f"{solution_name} skips {', '.join(skips)}")
