@@ -1,3 +1,5 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"CO2list - 40"" bus",http://www.co2list.org/files/carbon.htm,World,,5 - Not Verified,,,54.31745557142858,g CO2e/pass-mile,3.375130212771699e-05,t CO2-eq/ Pkm (urban),,,
-"CO2list - rail - BART, com.rail, MBTA green, SF muni",http://www.co2list.org/files/carbon.htm,World,,5 - Not Verified,,,5.69,g CO2e/pass-mile,3.5356020838304304e-06,t CO2-eq/ Pkm (urban),,,
+"CO2list - 40"" bus",http://www.co2list.org/files/carbon.htm,World,,5 - Not Verified,,,54.31745557142858,g CO2e/pass-mile,3.375130212771699e-05,t CO2-eq/ Pkm (urban),,,True
+"CO2list - rail - BART, com.rail, MBTA green, SF muni",http://www.co2list.org/files/carbon.htm,World,,5 - Not Verified,,,5.69,g CO2e/pass-mile,3.5356020838304304e-06,t CO2-eq/ Pkm (urban),,,True
+ITF,https://www.itf-oecd.org/sites/default/files/life-cycle-assessment-calculations-2020.xlsx,World,,2 - Public Sector/ Multilateral Agency,2020.0,,8.0,g CO2-e/PKM,8e-06,t CO2-eq/ Pkm (urban),0.303,Bus ICE 92% of PT,
+ITF,https://www.itf-oecd.org/sites/default/files/life-cycle-assessment-calculations-2020.xlsx,World,,2 - Public Sector/ Multilateral Agency,2020.0,,2.0,g CO2-e/PKM,2e-06,t CO2-eq/ Pkm (urban),0.026,Metro 8% of PT,

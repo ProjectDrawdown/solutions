@@ -1,137 +1,140 @@
 {
-  "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "Pkm (urban)"
-  },
-  "CONVENTIONAL First Cost per Implementation Unit": {
-    "title": "CONVENTIONAL First Cost per Implementation Unit",
-    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/Person-trip (urban)"
-  },
-  "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "Pkm (urban)/Person-trip (urban)"
-  },
-  "SOLUTION Lifetime Capacity": {
-    "title": "SOLUTION Lifetime Capacity",
-    "filename": "SOLUTION_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "Pkm (urban)/Person-trip (urban)"
-  },
-  "CONVENTIONAL Average Annual Use": {
-    "title": "CONVENTIONAL Average Annual Use",
-    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "Pkm (urban)/Person-trip (urban)/year"
-  },
-  "SOLUTION Average Annual Use": {
-    "title": "SOLUTION Average Annual Use",
-    "filename": "SOLUTION_Average_Annual_Use.csv",
-    "stat_correction": true,
-    "units": "Pkm (urban)/Person-trip (urban)/year"
-  },
-  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
-    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
-    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/Pkm (urban)"
-  },
-  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
-    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
-    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
-    "use_weight": true,
-    "units": "US2014$/Pkm (urban)"
-  },
-  "CONVENTIONAL Fixed Operating Cost (FOM)": {
-    "title": "CONVENTIONAL Fixed Operating Cost (FOM)",
-    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
-    "stat_correction": true,
-    "units": "US2014$/Person-trip (urban)"
-  },
-  "SOLUTION Total Energy Used per Functional Unit": {
-    "title": "SOLUTION Total Energy Used per Functional Unit",
-    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TWh/Pkm (urban)"
-  },
-  "CONVENTIONAL Fuel Consumed per Functional Unit": {
-    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
-    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "Liter/Pkm (urban)"
-  },
-  "SOLUTION Fuel Efficiency Factor": {
-    "title": "SOLUTION Fuel Efficiency Factor",
-    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
-    "stat_correction": true,
-    "units": "%"
-  },
-  "CONVENTIONAL Direct Emissions per Functional Unit": {
-    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
-    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
-    "use_weight": true,
-    "units": "t CO2-eq/Pkm (urban)"
-  },
-  "SOLUTION Direct Emissions per Functional Unit": {
-    "title": "SOLUTION Direct Emissions per Functional Unit",
-    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
-    "use_weight": true,
-    "units": "t CO2-eq/Pkm (urban)"
-  },
-  "CONVENTIONAL Indirect CO2 Emissions per Unit": {
-    "title": "CONVENTIONAL Indirect CO2 Emissions per Unit",
-    "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/Pkm (urban)"
-  },
-  "SOLUTION Indirect CO2 Emissions per Unit": {
-    "title": "SOLUTION Indirect CO2 Emissions per Unit",
-    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/Pkm (urban)"
-  },
-  "Car Insurance Costs": {
-    "title": "Car Insurance Costs",
-    "filename": "Car_Insurance_Costs.csv",
-    "stat_correction": true,
-    "units": "US$2014/trip"
-  },
-  "Car Purchase (First) Costs": {
-    "title": "Car Purchase (First) Costs",
-    "filename": "Car_Purchase_First_Costs.csv",
-    "use_weight": true,
-    "units": "US$2014/person trip"
-  },
-  "Car Occupancy Rates": {
-    "title": "Car Occupancy Rates",
-    "filename": "Car_Occupancy_Rates.csv",
-    "stat_correction": true
-  },
-  "Car Lifetime in Vehicle-km": {
-    "title": "Car Lifetime in Vehicle-km",
-    "filename": "Car_Lifetime_in_Vehicle_km.csv",
-    "stat_correction": true
-  },
-  "Discount Rates - Household": {
-    "title": "Discount Rates - Household",
-    "filename": "Discount_Rates_Household.csv",
-    "stat_correction": true
-  },
-  "Black Carbon GWP": {
-    "title": "Black Carbon GWP",
-    "filename": "Black_Carbon_GWP.csv",
-    "stat_correction": true,
-    "units": "CO2 eq"
-  },
-  "Diesel Share of Global Car Fleet": {
-    "title": "Diesel Share of Global Car Fleet",
-    "filename": "Diesel_Share_of_Global_Car_Fleet.csv",
-    "stat_correction": true,
-    "units": "Percent"
-  }
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CONVENTIONAL First Cost per Implementation Unit": {
+        "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Data is captured in the model as a car depreciation cost and included in the Fixed Operating Cost of Conventional (along with insurance)."
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Lifetime Capacity is total number of pkm you get per implementation unit (trip) hence: lifetime capacity is pkms per 1 trip, it is only used once."
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Lifetime Capacity is total number of pkm you get per implementation unit (trip) hence: lifetime capacity is pkms per 1 trip, it is only used once."
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Lifetime Capacity is total number of pkm you get per implementation unit (trip) each year, hence: lifetime capacity is pkms per 1 trip. Lifetime Capacity and Average Annual Use (pkm/trip) are the same, because each trip can only be used once"
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Lifetime Capacity is total number of pkm you get per implementation unit (trip) each year, hence: lifetime capacity is pkms per 1 trip. Lifetime Capacity and Average Annual Use (pkm/trip) are the same, because each trip can only be used once"
+    },
+    "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Operating costs are taken here as only Maintenance costs. Fuel costs are entered in the model on the Advanced Controls separately. Excluded values represent older data points from sources that have been updated."
+    },
+    "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Average ticket price is estimated through weighting regional ticket prices by pkm volume. Then it is divided by the average transit trip length."
+    },
+    "CONVENTIONAL Fixed Operating Cost (FOM)": {
+        "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The firsts costs for the conventional are entered into the model as per-trip costs to more fairly match them to the costs of Mass Transit (per trip only). The impact of this change is to slightly alter the "
+    },
+    "SOLUTION Total Energy Used per Functional Unit": {
+        "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": true,
+        "description": "For UMTRI, which tracks the sales weighted US fuel economy, we averaged the last 12 months available (until the latest data of May 2016). Atabani's work requires some interpretation. The Japanese figure is an estimate for 2015 by the Japanese car manufacturers association, but as the Japanese Government's fuel economy targets are mandatory, we can take this as given. The European figure is an average of 2006 performance range limits (9.8-16.4km/l). Note that it's appropriate to use an old source for some estimates if they are for \"new Car Sales\" in a region as the average age for a fleet ranges from around 5 (China) to 7.5 (EU) to 11 (USA)."
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": true,
+        "description": ""
+    },
+    "CONVENTIONAL Direct Emissions per Functional Unit": {
+        "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Previous versions included this variable. As black carbon emissions are only from diesel engines and some diesel fule, all of which have mostly regulated, it is now excluded. Here we include data on black carbon (BC) emissions considering its status as second place global warming contributor before Methane. We attempt to normalize over and beyond Organic Carbon (OC) emissions where possible since OC acts as a global cooing agent and is often emitted at same time as BC. It's important to note though that BC:OC is emitted at 9:1 in diesel engines, so BC dominates diesel engines across the transportation spectrum."
+    },
+    "SOLUTION Direct Emissions per Functional Unit": {
+        "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Previous versions included this variable. As black carbon emissions are only from diesel engines and some diesel fule, all of which have mostly regulated, it is now excluded. Here we include data on black carbon (BC) emissions considering its status as second place global warming contributor before Methane. We attempt to normalize over and beyond Organic Carbon (OC) emissions where possible since OC acts as a global cooing agent and is often emitted at same time as BC. It's important to note though that BC:OC is emitted at 9:1 in diesel engines, so BC dominates diesel engines across the transportation spectrum."
+    },
+    "CONVENTIONAL Indirect CO2 Emissions per Unit": {
+        "filename": "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Indirect CO2 Emissions per Unit": {
+        "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Car Insurance Costs": {
+        "filename": "Car_Insurance_Costs.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This variable is a component of conventional first costs. This is estimated insurance rates for cars. Exchange Rates obtained from www.xe.com on 16Jan2017. Monthly insurance converted by dividing by estimated average monthly pass-km travelled using data from ICCT (2012): 15,765 v-km per year average globally, and 1.57 persons/vehicle average globally."
+    },
+    "Car Purchase (First) Costs": {
+        "filename": "Car_Purchase_First_Costs.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Due to the complexity and the rapid changes in the car markets for all technologies, the prices are weighted across both regions and vehicular segments/models as far as available data allow. The Raw data take into account the segment weighting and the \"Weight\" column takes into account share of global sales (using GFEI 2017 data - IEA and ICCT (2019), \"Fuel Economy in Major Car Markets\", IEA, Paris, www.iea.org/topics/transport/gfei/report/). Due to lack of aggregate data on China, top sellign models were priced, weighted, and included. Total China weight = total Global weight of Chinese Auto Sales."
+    },
+    "Car Occupancy Rates": {
+        "filename": "Car_Occupancy_Rates.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Car Lifetime in Vehicle-km": {
+        "filename": "Car_Lifetime_in_Vehicle_km.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Discount Rates - Household": {
+        "filename": "Discount_Rates_Household.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a household level. The household level discount rate is directly related to decision-making at a household level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments.  Discount rates reported in the literature that are used for policy decisions are not necessarily relevant for evaluating household level financial investment decisions.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis."
+    },
+    "Black Carbon GWP": {
+        "filename": "Black_Carbon_GWP.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Global warming potential for black carbon has been obtained from various sources and an average value is used to calculate CO2 equivalent from diesel vehicle emissions"
+    },
+    "Diesel Share of Global Car Fleet": {
+        "filename": "Diesel_Share_of_Global_Car_Fleet.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "In order to understand how much black carbon is reduced from replacing passenger cars (which is mainly through diesel cars) we need to understand what fraction of the fleet is diesel."
+    }
 }
