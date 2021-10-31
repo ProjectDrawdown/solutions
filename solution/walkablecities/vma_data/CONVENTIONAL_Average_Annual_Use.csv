@@ -1,2 +1,3 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,World,,5 - Not Verified,2015,,9.0,vkm per trip,1.4162003604e-08,billion pass-km/trip/year,,,
+ITDP-UCDavis (2015) A Global High Shift Cycling Scenario,https://www.itdp.org/a-global-high-shift-cycling-scenario/,World,,5 - Not Verified,2015,,9.0,vkm per trip,1.3187624581112343e-08,billion pass-km/trip/year,,,
+Department for Transport,https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/906276/national-travel-survey-2019.pdf,OECD90,England,,2020,,8.4,vkm per trip,1.2308449609038188e-08,billion pass-km/trip/year,,,

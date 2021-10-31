@@ -1618,7 +1618,7 @@ def output_solution_python_file(outputdir, xl_filename):
     if py_filename.is_file():
         newoldfile = py_filename.with_stem(f"__init__OLD_{datetime.datetime.now().strftime('%H%M%S')}")
         py_filename.rename(newoldfile)
-        print(f'Moved existing __init__.py file to {newoldfile}.  Please compare and merge as needed.')
+        print(f'Moved existing __init__.py file to {newoldfile.name}.  Please compare and merge as needed.')
 
     wb = openpyxl.load_workbook(filename=xl_filename,data_only=True,keep_links=False)
     ac_tab = wb['Advanced Controls']

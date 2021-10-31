@@ -1,20 +1,17 @@
 [
-  {
-    "name": "Custom REF Scenario 1: Fixed Passenger-km Annual after 2014",
-    "include": true,
-    "description": "Taking the estimated passenger-km adoption value from 2014, we hold that constant out to 2050 which assumes that the total amount of walking remains constant despite increasing populations. The rapid rise in populations generally happens in developing countries, and as these countries urbanise and get wealthier, there is a large trend towards increased motorization following the historical patterns of Western Nations. This then, although a pessimistic case, is not unrealistic. ",
-    "filename": "custom_ref_ad_Custom_REF_Scenario_1_Fixed_Passengerkm_Annual_after_2018.csv"
-  },
-  {
-    "name": "Reference Growth in Walking",
-    "include": true,
-    "description": "Here the Drawdown Model of Urban density for 1,737 cities across the world in the Demographia Dataset was used to develop a reasonable Reference Scenario for Walking out to the end of the analysis period. While full details are described in the [Mobility Output] sheet, here is the summary: The urban density of these cities (representing 57% of the world urban population), was obtained from the data source and projected out to 2050 using an assumed global urban density change as listed below. Research on walking in cities indicates that higher density is correlated with more walking, so an assumed walking mode share in cities with at least the minimum threshold urban density, and another assumed walking mode share for cities below this threshold were together used to estimate the average walking for each city in each year (considering that density change is assumed). The total walking mobility in these cities was summed and then scaled linearly to 100% of the global urban population. This projection to 2050 was then interpolated and extrapolated to develop a smooth curve for the entire analysis period. Also taken into account: increasing urban population, assumed fixed total mobility per capita, recent historical walking estimates have been used (2012-2018) instead of curve fit. ",
-    "filename": "custom_ref_ad_Reference_Growth_in_Walking.csv"
-  },
-  {
-    "name": "ITDP/ UCDavis (2015) Global Highshift Cycling Scenario - Baseline Case for Walking",
-    "include": true,
-    "description": "The Source listed below estimated a Baseline Walking Case which generally shows an increae in walking, but not in line with total mobility increase, so the walking mode share declines over time. The source published data in 5-year increments, these have been interpolated for missing years (on Data- Interpolator) and pasted here. ",
-    "filename": "custom_ref_ad_ITDP_UCDavis_2015_Global_Highshift_Cycling_Scenario_Baseline_Case_for_Walking.csv"
-  }
+    {
+        "name": "Custom REF Scenario 1: Fixed Passenger-km Annual after 2018",
+        "filename": "ca_ref_Custom_REF_Scenari_e5660d16.csv",
+        "description": "Taking the estimated passenger-km adoption value from 2014, we hold that constant out to 2050 which assumes that the total amount of walking remains constant despite increasing populations. The rapid rise in populations generally happens in developing countries, and as these countries urbanise and get wealthier, there is a large trend towards increased motorization following the historical patterns of Western Nations. This then, although a pessimistic case, is not unrealistic."
+    },
+    {
+        "name": "Reference Growth in Walking",
+        "filename": "ca_ref_Reference_Growth_i_fc6f421d.csv",
+        "description": "Here the Drawdown Model of Urban density for 1,737 cities across the world in the Demographia Dataset was used to develop a reasonable Reference Scenario for Walking out to the end of the analysis period. While full details are described in the [Mobility Output] sheet, here is the summary: The urban density of these cities (representing 57% of the world urban population), was obtained from the data source and projected out to 2050 using an assumed global urban density change as listed below. Research on walking in cities indicates that higher density is correlated with more walking, so an assumed walking mode share in cities with at least the minimum threshold urban density, and another assumed walking mode share for cities below this threshold were together used to estimate the average walking for each city in each year (considering that density change is assumed). The total walking mobility in these cities was summed and then scaled linearly to 100% of the global urban population. This projection to 2050 was then interpolated and extrapolated to develop a smooth curve for the entire analysis period. Also taken into account: increasing urban population, assumed fixed total mobility per capita, recent historical walking estimates have been used (2012-2018) instead of curve fit."
+    },
+    {
+        "name": "ITDP/ UCDavis (2015) Global Highshift Cycling Scenario - Baseline Case for Walking",
+        "filename": "ca_ref_ITDP_UCDavis_2015__e4a37250.csv",
+        "description": "The Source listed below estimated a Baseline Walking Case which generally shows an increae in walking, but not in line with total mobility increase, so the walking mode share declines over time. The source published data in 5-year increments, these have been interpolated for missing years (on Data-Interpolator) and pasted here."
+    }
 ]
