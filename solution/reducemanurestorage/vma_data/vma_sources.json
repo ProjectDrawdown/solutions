@@ -1,0 +1,62 @@
+{
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Note: 1 cubic ft manure = 62 lbs (1 cubic meter manure = 993.12 kg)"
+    },
+    "CONVENTIONAL Direct Emissions per Functional Unit": {
+        "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Direct Emissions per Functional Unit": {
+        "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CH4-CO2eq Tons Reduced": {
+        "filename": "CH4_CO2eq_Tons_Reduced.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Revenue per Functional Unit": {
+        "filename": "SOLUTION_Revenue_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "N2O Emissions per CONVENTIONAL Functional Unit": {
+        "filename": "N2O_Emissions_per_CONVENTIONAL_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CO2 Emissions per CONVENTIONAL Functional Unit": {
+        "filename": "CO2_Emissions_per_CONVENTIONAL_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    }
+}

@@ -1,0 +1,105 @@
+{
+    "Baseline Cases": {
+        "Reference1": "tam_Reference1.csv",
+        "Reference2": "tam_Reference2.csv"
+    },
+    "Conservative Cases": {
+        "Plausible": "tam_Plausible.csv"
+    },
+    "Ambitious Cases": {
+        "Drawdown": "tam_Drawdown.csv"
+    },
+    "Maximum Cases": {
+        "Optimum": "tam_Optimum.csv"
+    },
+    "Region: OECD90": {
+        "Baseline Cases": {
+            "Reference 1": "tam_Reference_1.csv",
+            "Reference 2": "tam_Reference_2.csv"
+        },
+        "Conservative Cases": {
+            "Plausible": "tam_Plausible.csv"
+        },
+        "Ambitious Cases": {
+            "Drawdown": "tam_Drawdown.csv"
+        },
+        "Maximum Cases": {
+            "Optimum": "tam_Optimum.csv"
+        }
+    },
+    "Region: Eastern Europe": {
+        "Baseline Cases": {
+            "Reference 1": "tam_Reference_1.csv",
+            "Reference 2": "tam_Reference_2.csv"
+        },
+        "Conservative Cases": {
+            "Plausible": "tam_Plausible.csv"
+        },
+        "Ambitious Cases": {
+            "Drawdown": "tam_Drawdown.csv"
+        },
+        "Maximum Cases": {
+            "Optimum": "tam_Optimum.csv"
+        }
+    },
+    "Region: Asia (Sans Japan)": {
+        "Baseline Cases": {
+            "Reference 1": "tam_Reference_1.csv",
+            "Reference 2": "tam_Reference_2.csv"
+        },
+        "Conservative Cases": {
+            "Plausible": "tam_Plausible.csv"
+        },
+        "Ambitious Cases": {
+            "Drawdown": "tam_Drawdown.csv"
+        },
+        "Maximum Cases": {
+            "Optimum": "tam_Optimum.csv"
+        }
+    },
+    "Region: Middle East and Africa": {
+        "Baseline Cases": {
+            "Reference 1": "tam_Reference_1.csv",
+            "Reference 2": "tam_Reference_2.csv"
+        },
+        "Conservative Cases": {
+            "Plausible": "tam_Plausible.csv"
+        },
+        "Ambitious Cases": {
+            "Drawdown": "tam_Drawdown.csv"
+        },
+        "Maximum Cases": {
+            "Optimum": "tam_Optimum.csv"
+        }
+    },
+    "Region: Latin America": {
+        "Baseline Cases": {
+            "Reference 1": "tam_Reference_1.csv",
+            "Reference 2": "tam_Reference_2.csv"
+        },
+        "Conservative Cases": {
+            "Plausible": "tam_Plausible.csv"
+        },
+        "Ambitious Cases": {
+            "Drawdown": "tam_Drawdown.csv"
+        },
+        "Maximum Cases": {
+            "Optimum": "tam_Optimum.csv"
+        }
+    },
+    "Region: China": {
+        "Baseline Cases": {
+            "Reference 1": "tam_Reference_1.csv",
+            "Reference 2": "tam_Reference_2.csv"
+        },
+        "Conservative Cases": {
+            "Plausible": "tam_Plausible.csv"
+        },
+        "Ambitious Cases": {
+            "Drawdown": "tam_Drawdown.csv"
+        },
+        "Maximum Cases": {
+            "Optimum": "tam_Optimum.csv"
+        }
+    }
+}
