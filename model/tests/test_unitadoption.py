@@ -286,7 +286,12 @@ def test_soln_pds_cumulative_funits_bug_behavior():
         [2016, 272.03, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [2017, 383.31, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
     soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
-    ua = unitadoption.UnitAdoption(ac=None,
+    dummyac = advanced_controls.AdvancedControls(ref_base_adoption={
+                'World': 12.63, 'OECD90': 75, 'Eastern Europe': 0.33, 'Asia (Sans Japan)': 21.07,
+                'Middle East and Africa': 1.58, 'Latin America': 14.65, 'China': 14.97,
+                'India': 2.75, 'EU': 55.27, 'USA': 13.12
+            })
+    ua = unitadoption.UnitAdoption(ac=dummyac,
             ref_total_adoption_units=None, pds_total_adoption_units=None,
             soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
             bug_cfunits_double_count=True)
@@ -301,7 +306,7 @@ def test_soln_pds_cumulative_funits_bug_behavior():
     expected.name = "soln_pds_cumulative_funits"
     pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
 
-    ua = unitadoption.UnitAdoption(ac=None,
+    ua = unitadoption.UnitAdoption(ac=dummyac,
             ref_total_adoption_units=None, pds_total_adoption_units=None,
             soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
             bug_cfunits_double_count=False)
@@ -319,6 +324,11 @@ def test_soln_pds_cumulative_funits_bug_behavior():
 
 
 def test_soln_pds_cumulative_funits_missing_data():
+    dummyac = advanced_controls.AdvancedControls(ref_base_adoption={
+        'World': 100, 'OECD90': 10, 'Eastern Europe': 20, 'Asia (Sans Japan)': 30,
+        'Middle East and Africa': 40, 'Latin America': 50, 'China': 60,
+        'India': 10, 'EU': 20, 'USA': 30
+    })
     funits = [
         ['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
             'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
@@ -327,17 +337,17 @@ def test_soln_pds_cumulative_funits_missing_data():
         [2016, 272.03, np.nan, 1.0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
         [2017, 383.31, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
     soln_pds_funits_adopted = pd.DataFrame(funits[1:], columns=funits[0]).set_index('Year')
-    ua = unitadoption.UnitAdoption(ac=None,
+    ua = unitadoption.UnitAdoption(ac=dummyac,
             ref_total_adoption_units=None, pds_total_adoption_units=None,
             soln_pds_funits_adopted=soln_pds_funits_adopted, soln_ref_funits_adopted=None,
             bug_cfunits_double_count=True)
     result = ua.soln_pds_cumulative_funits()
     v = [['Year', 'World', 'OECD90', 'Eastern Europe', 'Asia (Sans Japan)',
           'Middle East and Africa', 'Latin America', 'China', 'India', 'EU', 'USA'],
-         [2014, 112.63, 150.00, 0.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
-         [2015, 288.87, 151.00, 0.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
-         [2016, 560.90, 151.00, 1.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24],
-         [2017, 944.21, 151.00, 1.66, 42.14, 3.16, 29.30, 29.94, 5.50, 110.54, 26.24]]
+         [2014, 112.63, 85.00, 20.33, 51.07, 41.58, 64.65, 74.97, 12.75, 75.27, 43.12],
+         [2015, 288.87, 86.00, 20.33, 51.07, 41.58, 64.65, 74.97, 12.75, 75.27, 43.12],
+         [2016, 560.90, 86.00, 21.33, 51.07, 41.58, 64.65, 74.97, 12.75, 75.27, 43.12],
+         [2017, 944.21, 86.00, 21.33, 51.07, 41.58, 64.65, 74.97, 12.75, 75.27, 43.12]]
     expected = pd.DataFrame(v[1:], columns=v[0]).set_index('Year')
     expected.name = "soln_pds_cumulative_funits"
     pd.testing.assert_frame_equal(result.iloc[0:5], expected, check_exact=False)
