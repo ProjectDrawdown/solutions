@@ -949,10 +949,10 @@ def write_ht(f, wb):
     copy_ref = True
     copy_ref_world_too = False
     for col in range(co("D"),co("L")+1):
-        if v(19,col) != v(27,col):
+        if v(21,col) != v(27,col):
             copy_ref = False
             break
-    if copy_ref and v(19,co("C")) == v(27,co("C")):
+    if copy_ref and v(21,co("C")) == v(27,co("C")):
         copy_ref_world_too = True
     
     copy_pds = True
@@ -1616,8 +1616,9 @@ def output_solution_python_file(outputdir, xl_filename):
 
     py_filename = outputdir/'__init__.py'
     if py_filename.is_file():
-        py_filename.rename(py_filename.with_stem("__init__OLD"))
-        print(f'Moved existing __init__.py file to __init__OLD.py.  Please compare and merge as needed.')
+        newoldfile = py_filename.with_stem(f"__init__OLD_{datetime.datetime.now().strftime('%H%M%S')}")
+        py_filename.rename(newoldfile)
+        print(f'Moved existing __init__.py file to {newoldfile}.  Please compare and merge as needed.')
 
     wb = openpyxl.load_workbook(filename=xl_filename,data_only=True,keep_links=False)
     ac_tab = wb['Advanced Controls']
