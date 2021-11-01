@@ -1,2 +1,6 @@
+10/2021
+Had to delect a malformed header on the adoption page (perhaps related to the prior comment below?):
+AdoptionData!B105 had the value #REF!, which got turned into nan, which caused the extractor to break
+when it tried to treat it as a string.
 8/2021
 Fixed load failure that occurred because the Adoption had been renamed; corrected the name in the scenario.

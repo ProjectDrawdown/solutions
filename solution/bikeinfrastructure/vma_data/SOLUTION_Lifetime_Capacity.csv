@@ -1,2 +1,4 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Project Drawdown Assumption,http://www.asphaltpavement.org/index.php?option=com_content&task=view&id=379&Itemid=862,World,,,,,40.0,years,0.20665210037485615,billion passenger-km/bike lane km/ car lane km,,,
+Project Drawdown Assumption,http://www.asphaltpavement.org/index.php?option=com_content&task=view&id=379&Itemid=862,World,,,,,40.0,years,0.1090628303020137,billion passenger-km/bike lane km/ car lane km,,,
+Wisconsin DOT,https://wisconsindot.gov/rdwy/fdm/11.pdf,World,,,2021.0,,22.5,years,0.06134784204488271,billion passenger-km/bike lane km/ car lane km,,,
+Wisconsin DOT,https://wisconsindot.gov/rdwy/fdm/11.pdf,World,,,2021.0,,18.0,years,0.04907827363590617,billion passenger-km/bike lane km/ car lane km,,,

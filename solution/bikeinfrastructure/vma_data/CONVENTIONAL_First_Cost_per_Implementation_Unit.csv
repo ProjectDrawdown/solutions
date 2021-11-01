@@ -1,14 +1,19 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Garner, G.",http://www.worldwatch.org/node/6456,OECD90,USA,,2010,,50000000.0,US$2010,13625000.000000002,US2014$/bike lane km/ car lane km,,,
-San Francisco Bicycle Coalition ,http://www.sfbike.org/news/biking-by-the-numbers/,OECD90,"San Francisco, CA",,2014,,571066667.0,US$2014/mile,88711093.93019764,US2014$/bike lane km/ car lane km,,,
-US DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 8,OECD90,USA,,2005,,10000000.0,US$2005/mile,1879647.8565179352,US2014$/bike lane km/ car lane km,,,
-US DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 8,OECD90,USA,,2005,,3173000.0,US$2000/mile,675276.6965919032,US2014$/bike lane km/ car lane km,,,
-Florida DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 10,OECD90,Florida,,2003,,5384563.0,US$2007/mile,953556.514331305,US2014$/bike lane km/ car lane km,,,
-"Doll, C. and Essen, H. ",http://ec.europa.eu/transport/themes/sustainable/studies/doc/2008_road_infrastructure_costs_and_revenues.pdf ,OECD90,"Austria, Germany, Italy, Spain and France",,2008,,700000.0,2008 Euros,283244.5,US2014$/bike lane km/ car lane km,,,
-Florida DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 10,OECD90,Florida,,2003,,4765100.0,US$2003/centerlane mile,954888.9174719637,US2014$/bike lane km/ car lane km,,,
-Florida DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 15,OECD90,Florida,,2003,,2821800.0,US$2003/centerlane mile,565466.7367573371,US2014$/bike lane km/ car lane km,,,
-Virginia DOT,http://www.virginiadot.org/business/Gasb34-methodology.asp,OECD90,Virginia,,2000,,779775.0,US$2000/ mile,165951.42958870198,US2014$/bike lane km/ car lane km,,,
-World Bank Reports,http://www.worldbank.org/transport/roads/c&m_docs/kmcosts.pdf,World,,,2000,,866000.0,US$2000/km,296605.0,US2014$/bike lane km/ car lane km,,,
-America Economia,http://www.americaeconomia.com/politica-sociedad/politica/ministro-de-transportes-del-peru-el-reto-para-proxima-gestion-sera-comple,Latin America,Peru,,2011,,900000.0,US$2011/km,236250.0,US2014$/bike lane km/ car lane km,,,
-African Roads Revolution,http://www.roadsevolution.com/news-and-media/media-centre/news/item/in-nigeria-a-kilometre-of-road-costs-n1bn-against-world-bank-s-n238m-benchmark,Middle East and Africa,South Africa,,2014,,194000.0,US$2014/km,48500.0,US2014$/bike lane km/ car lane km,,,
-African Roads Revolution,http://www.roadsevolution.com/news-and-media/media-centre/news/item/in-nigeria-a-kilometre-of-road-costs-n1bn-against-world-bank-s-n238m-benchmark,Middle East and Africa,Nigeria,,2014,,234000000.0,Nigerian Naira/km,339592.5,US2014$/bike lane km/ car lane km,,,
+"Garner, G.",http://www.worldwatch.org/node/6456,OECD90,USA,,2010,,50000000.0,US$2010,13625000.000000002,US2014$/bike lane km/ car lane km,,,True
+San Francisco Bicycle Coalition ,http://www.sfbike.org/news/biking-by-the-numbers/,OECD90,"San Francisco, CA",,2014,,571066667.0,US$2014/mile,229760678.534112,US2014$/bike lane km/ car lane km,,,True
+US DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 8,OECD90,USA,,2005,,10000000.0,US$2005/mile,4868265.600000001,US2014$/bike lane km/ car lane km,,,True
+US DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 8,OECD90,USA,,2005,,3173000.0,US$2000/mile,1748958.6153600002,US2014$/bike lane km/ car lane km,,,True
+Florida DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 10,OECD90,Florida,,2003,,5384563.0,US$2007/mile,2469700.0346515197,US2014$/bike lane km/ car lane km,,,True
+"Doll, C. and Essen, H. ",http://ec.europa.eu/transport/themes/sustainable/studies/doc/2008_road_infrastructure_costs_and_revenues.pdf ,OECD90,"Austria, Germany, Italy, Spain and France",,2008,,700000.0,2008 Euros,283244.5,US2014$/bike lane km/ car lane km,,,True
+Florida DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 10,OECD90,Florida,,2003,,4765100.0,US$2003/centerlane mile,2473150.9429440005,US2014$/bike lane km/ car lane km,,,True
+Florida DOT (as referenced in the VTPI),http://www.vtpi.org/tca/tca0506.pdf. P. 15,OECD90,Florida,,2003,,2821800.0,US$2003/centerlane mile,1464552.124992,US2014$/bike lane km/ car lane km,,,True
+Virginia DOT,http://www.virginiadot.org/business/Gasb34-methodology.asp,OECD90,Virginia,,2000,,779775.0,US$2000/ mile,429812.22952800005,US2014$/bike lane km/ car lane km,,,True
+World Bank Reports,http://www.worldbank.org/transport/roads/c&m_docs/kmcosts.pdf,World,,,2000,,866000.0,US$2000/km,296605.0,US2014$/bike lane km/ car lane km,,,True
+America Economia,http://www.americaeconomia.com/politica-sociedad/politica/ministro-de-transportes-del-peru-el-reto-para-proxima-gestion-sera-comple,Latin America,Peru,,2011,,900000.0,US$2011/km,236250.0,US2014$/bike lane km/ car lane km,,,True
+World Bank Reports,https://openknowledge.worldbank.org/bitstream/handle/10986/22664/The0cost0of0ro0dle0income0countries.pdf,Middle East and Africa,South Africa,,2014,,194000.0,US$2014/km,48500.0,US2014$/bike lane km/ car lane km,,,
+World Bank Reports,https://openknowledge.worldbank.org/bitstream/handle/10986/22664/The0cost0of0ro0dle0income0countries.pdf,Middle East and Africa,Nigeria,,2014,,234000000.0,Nigerian Naira/km,339592.5,US2014$/bike lane km/ car lane km,,,
+World Bank Reports,https://www.doingbusiness.org/en/reports/thematic-reports/road-costs-knowledge-system,World,WB projects,,2018,,5255247.21108603,US$2018/m,1987512.6334043385,US2014$/bike lane km/ car lane km,,,
+World Bank Reports,https://www.doingbusiness.org/en/reports/thematic-reports/road-costs-knowledge-system,World,WB projects,,2021,,1347454.40132462,US$2018/m,509601.64917066175,US2014$/bike lane km/ car lane km,,,
+ARTBA,https://www.artba.org/about/faq/,OECD90,United States,,2019,,4000000.0,US$2019/m,1512783.3599999999,US2014$/bike lane km/ car lane km,,,
+ARTBA,https://www.artba.org/about/faq/,OECD90,United States,,2019,,9000000.0,US$2019/m,3222711.3600000003,US2014$/bike lane km/ car lane km,,,
+FL DOT,https://www.fdot.gov/programmanagement/estimates/lre/costpermilemodels/cpmsummary.shtm,OECD90,Florida,,2020,,6422264.56,US$2020/m,2428873.73997143,US2014$/bike lane km/ car lane km,,,
