@@ -97,14 +97,30 @@ class Scenario:
 
     # Control of adoption initialization is a combination of the contents of the ac parameters
     # and the settings of these fields by the subclass
+
     _ref_ca_sources = None  
     _pds_ca_sources = None 
-    _pds_ca_settings = { 'high_sd_mult' : 1.0, 'low_sd_mult' : 1.0 }
     _pds_ad_sources = None
+    _pds_ca_settings = { 'high_sd_mult' : 1.0, 'low_sd_mult' : 1.0 }
     _pds_ad_settings = { 'main_includes_regional' : False, 'groups_include_hundred_percent': True,
         'config_overrides' : None }
     _pds_sc_settings = { 'use_tam_2014': True }
+     # Note: to function properly, you have to *assign* to the the previous fields, not *modify* them.
+    # (if you modify them, they remain class fields, and the modification will affect all scenarios).
+    # The convenience functions that follow will helpfully do this for you.
     
+    def pds_ca_overrides(self, sd_high_mult=1.0, sd_low_mult=1.0):
+        """Set values to override the default ca settings"""
+        self._pds_ca_settings = { 'high_sd_mult': sd_high_mult, 'low_sd_mult': sd_low_mult}
+    def pds_ad_overrides(self, main_includes_regional=False, groups_include_hundred_percent=True, config_overrides=None):
+        """config_overrides: list( tuple(param, region, value) ), where region may be '*' to change all regions"""
+        self._pds_ad_settings = {
+            'main_includes_regional': main_includes_regional,
+            'groups_include_hundred_percent': groups_include_hundred_percent,
+            'config_overrides': config_overrides
+        }
+    def pds_sc_overrides(self, use_tam_2014: True):
+        self._pds_sc_settings = { 'use_tam_2014': use_tam_2014 }
 
     def initialize_adoption_bases(self):
         """Initialize the pds and ref adoption bases for this scenario to one of 

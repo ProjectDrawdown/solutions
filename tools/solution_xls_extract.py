@@ -838,11 +838,14 @@ def write_ad(f, wb, outputdir):
         regional = convert_bool(xls(a, 'B30')) and convert_bool(xls(a, 'B31'))
         if regional or is_elecgen:
             f.write("        # other AD parameter overrides\n")
-        if regional:
-            f.write("        self._pds_ad_settings['main_includes_regional'] = True\n") 
-        if is_elecgen:
+        if regional and is_elecgen:
             f.write("        # groups_include_hundred_percent is a quirks parameter that should apply to energy solutions only\n")
-            f.write("        self._pds_ad_settings['groups_include_hundred_percent'] = False\n")
+            f.write("        self.pds_ad_overrides(main_includes_regional=True, groups_include_hundred_percent=False)\n")
+        elif regional:
+            f.write("        self.pds_ad_overrides(main_includes_regional=True)\n") 
+        elif is_elecgen:
+            f.write("        # groups_include_hundred_percent is a quirks parameter that should apply to energy solutions only\n")
+            f.write("        self.pds_ad_overrides(groups_include_hundred_percent=False)\n")
         f.write("        self._pds_ad_sources = scenario.load_sources(THISDIR/'ad/ad_sources.json', '*')\n")
 
         write_json(filename=Path(outputdir)/'ad/ad_sources.json', d=sources)

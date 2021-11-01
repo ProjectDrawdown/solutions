@@ -39,6 +39,9 @@ def make_tam_config(tam_config_array=None, overrides=None) -> pd.DataFrame:
                 tamconfig.loc[param] = val
             else:
                 tamconfig.loc[param,region] = val
+                # World and PDS World always have the same value
+                if region == 'World':
+                    tamconfig.loc[param,'PDS World'] = val
     return tamconfig
 
 
