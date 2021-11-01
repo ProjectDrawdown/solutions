@@ -70,7 +70,6 @@ class Scenario(scenario.RRSScenario):
         self._ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
         self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
         self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-        self._pds_ad_settings['main_includes_regional'] = False
         self.initialize_adoption_bases()
         if self.ac.soln_ref_adoption_basis == 'Custom':
             ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()

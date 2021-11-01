@@ -66,8 +66,7 @@ class Scenario(scenario.RRSScenario):
 
         # ADOPTION
         self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-        self._pds_ad_settings['config_overrides'] = [('low_sd_mult','World',0.25), ('high_sd_mult','World',0.8)]
-        self._pds_ad_settings['main_includes_regional'] = False
+        self.pds_ad_overrides(config_overrides=[('low_sd_mult','World',0.25), ('high_sd_mult','World',0.8)])
         self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 

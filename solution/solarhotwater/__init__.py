@@ -67,7 +67,6 @@ class Scenario(scenario.RRSScenario):
         # ADOPTION
         self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
         self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-        self._pds_ad_settings['main_includes_regional'] = False
         self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 

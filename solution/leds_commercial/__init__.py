@@ -66,8 +66,7 @@ class Scenario(scenario.RRSScenario):
 
         # ADOPTION
         self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-        self._pds_ad_settings['config_overrides'] = [('growth','Asia (Sans Japan)','Low')]
-        self._pds_ad_settings['main_includes_regional'] = False
+        self.pds_ad_overrides(config_overrides=[('growth','Asia (Sans Japan)','Low')])
         self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
