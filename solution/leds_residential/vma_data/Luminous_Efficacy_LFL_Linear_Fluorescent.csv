@@ -1,6 +1,6 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"LFL, T8 tri-phosphor MELISA Model (see above table)",,OECD90,EU,,,,,"lm/W, lamp",0.0,,,,
-"LFL, Book: S. Kitsinelis (2011) Light sources (table 3.1 & Appendix A)",,World,,,,,,"lm/W, lamp",80.5,,,,
-"MCKinsey, 2011, Data for FL (light source)",,World,,,,,,"lm/W, lamp",0.0,,,,
-"US DOE, 2014, Data for LFL system (incl. ballast losses)",,OECD90,USA,,2014.0,,,"lm/W, lamp & ballast",,,,Already includes ballast losses,
-"IEA, 2006, FL tube",,World,,,2006.0,,,"lm/W, lamp",75.44,,,,
+"LFL, T8 tri-phosphor MELISA Model (see above table)",,OECD90,EU,,,,80.0,"lm/W, lamp",73.60000000000001,,,,
+"LFL, Book: S. Kitsinelis (2011) Light sources (table 3.1 & Appendix A)",,World,,,,,55…120,"lm/W, lamp",80.5,,,,
+"MCKinsey, 2011, Data for FL (light source)",,World,,,,,70.0,"lm/W, lamp",64.4,,,,
+"US DOE, 2014, Data for LFL system (incl. ballast losses)",,OECD90,USA,,2014,,108.0,"lm/W, lamp & ballast",,,,Already includes ballast losses,
+"IEA, 2006, FL tube",,World,,,2006,,60…104,"lm/W, lamp",75.44,,,,
