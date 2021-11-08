@@ -13,9 +13,7 @@
 """
 
 import argparse
-from ctypes import c_int
 import datetime
-import hashlib
 import json
 import os.path
 from pathlib import Path
@@ -29,8 +27,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tools.util import convert_bool, xls, xli, xln, co, find_in_column
-from tools.vma_xls_extract import VMAReader
+import tools.vma_xls_extract as vxe
+from tools.util import convert_bool, xls, xli, xln, co, find_in_column, to_unique_filename
 from model import advanced_controls as ac
 
 
@@ -703,33 +701,6 @@ def normalize_unit(tab, row, col):
 
 
 
-def get_filename_for_source(sourcename, prefix='', suffix='.csv'):
-    """Return string to use for the filename for a given source title."""
-    filename = sourcename.strip()
-    filename = re.sub(r"[^\w\s\.]", '', filename)
-    filename = re.sub(r"\s+", '_', filename)
-    filename = re.sub(r"\.+", '_', filename)
-    filename = filename.replace('Based_on_', 'bon_')
-    if len(filename) > 20:
-        h = hashlib.sha256(sourcename.encode('utf-8')).hexdigest()[-8:]
-        filename = filename[:18] + '_' + h
-    return prefix + filename + suffix
-
-def get_unique_filename_for_source(sourcename, existing_names, prefix='', suffix='.csv'):
-    """Return a name for source that does not already exist in existing_names"""
-    existing_names = [p.name if isinstance(p,Path) else p for p in existing_names]
-
-    p = Path(get_filename_for_source(sourcename, prefix, suffix))
-    filename = p.name
-    stem = p.stem
-    suffix = p.suffix
-    cnt = 1
-    while filename in existing_names:
-        filename = stem + "_" + str(cnt) + suffix
-        cnt += 1
-    return filename
-
-
 def write_tam(f, wb, outputdir):
     """Generate the TAM section of a solution.
        Arguments:
@@ -1283,7 +1254,7 @@ def extract_source_data(wb, sheet_name, regions, outputdir, prefix):
             # data at that location.
             df.replace(to_replace=0.0, value=np.nan, inplace=True)
 
-        filename = get_unique_filename_for_source(source_name, list(sources.values()), prefix=prefix)
+        filename = to_unique_filename(source_name, list(sources.values()), prefix=prefix)
         outputfile = outputdir/filename
         df.to_csv(outputfile, header=True, encoding='utf-8')
         sources[source_name] = filename
@@ -1353,7 +1324,7 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
         name = normalize_source_name(xls(custom_ad_tab, srow, co("O")))
         if name is None:  # filters out empty template columns
             continue
-        filename = get_unique_filename_for_source(name, filenames, prefix=prefix+'_')
+        filename = to_unique_filename(name, filenames, prefix=prefix+'_')
         skip = True
         description = ''
 
@@ -1419,25 +1390,17 @@ def extract_vmas(f, wb, outputdir):
     vma_dir_path = os.path.join(outputdir, 'vma_data')
     if not os.path.exists(vma_dir_path):
         os.mkdir(vma_dir_path)
-    vma_r = VMAReader(wb)
-    vmas = vma_r.read_xls(csv_path=vma_dir_path)
-    vma_name_to_dict = {}
-    for _, row in vmas.iterrows():
-        vma_name = row['Title on xls']
-        filename = row['Filename']
+    
+    vma_page = wb[vxe.get_vma_sheet(wb)]
+    vma_data = vxe.extract_vmas(vma_page)
+    # In some cases we want to remove shared VMAs from our list.
+    # Currently that only applies to the electricity generation solutions, but we expect to apply it
+    # to others (like transportation) in the future.
+    if is_elecgen:
+        vma_data = [vd for vd in vma_data if 'CONVENTIONAL' not in vd['name']]
 
-        if is_elecgen and 'CONVENTIONAL' in vma_name:
-            continue    # don't list shared VMAs
-        if not isinstance(filename, str) or not filename: 
-            continue    # don't list non-existent VMAs
-
-        vma_out_dict = {}
-        vma_out_dict["filename"] = filename
-        vma_out_dict['use_weight'] = row['Use weight?']
-        vma_out_dict["bound_correction"] = row['Bound correction?']
-        vma_out_dict["description"] = row['Description']
-        vma_name_to_dict[vma_name] = vma_out_dict
-    write_json(filename=Path(vma_dir_path)/'vma_sources.json', d=vma_name_to_dict)
+    vxe.write_vmas(vma_data, vma_dir_path)
+    
     if is_elecgen:
         f.write("VMAs = (vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json') | \n")
         f.write("        vma.VMA.load_vma_directory(DATADIR/'energy/vma_data/vma_sources.json'))\n")
@@ -1718,7 +1681,7 @@ def output_solution_python_file(outputdir, xl_filename):
                 print(f'Skipping scenario {name}, earlier than existing '
                       'scenarios.')
                 continue
-        fname = get_unique_filename_for_source(name, acs, suffix=".json")
+        fname = to_unique_filename(name, acs, suffix=".json")
         acs.append(fname)
         write_json(filename=ac_dir/fname, d=s)
     f.write("scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)\n")
