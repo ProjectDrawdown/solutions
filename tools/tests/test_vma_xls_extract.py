@@ -5,7 +5,7 @@ import openpyxl
 
 thisdir = Path(__file__).parent
 wb = openpyxl.load_workbook(thisdir/'silvopasture_vma.xlsx', data_only=True, keep_links=False)
-ws = wb[vxe.get_vma_sheet(wb)]
+ws = vxe.get_vma_sheet(wb)
 vma_data = vxe.extract_vmas(ws)
 
 def find_vma_by_name(d, name):

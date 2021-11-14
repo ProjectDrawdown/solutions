@@ -27,17 +27,17 @@ STANDARD_COLUMNS = [
 def get_vma_sheet(wb):
     """Return the preferred VMA worksheet in this workbook"""
     if "Variable Meta-analysis-DD" in wb.sheetnames:
-        return "Variable Meta-analysis-DD"
+        return wb["Variable Meta-analysis-DD"]
     if "Variable Meta-analysis" in wb.sheetnames:
-        return "Variable Meta-analysis"
-    return None
+        return wb["Variable Meta-analysis"]
+    raise ValueError("No Variable Meta-analysis sheet found")
 
 
 def extract_vmas(ws, start_column=co("C"), start_row=40):
     """Extract all the non-empty VMAs on the worksheet. Parameters start_column and/or 
     start_row may be set to alternate values if the sheet is not formatted
-    in the usual way.  Returns an array of the vmas read, including their data table."""
-    tableinfo = find_vma_tables(ws, start_row=start_row, start_column=start_column)
+    in the usual way.  Returns an array of information about the vmas read, including their data table."""
+    tableinfo = locate_vma_tables(ws, start_row=start_row, start_column=start_column)
     results = []
     for loc in tableinfo:
         d = get_vma_table_info(ws,*loc)
@@ -69,7 +69,7 @@ def write_vmas(vmas_data, outputdir):
     (outputdir/"vma_sources.json").write_text(json.dumps(dirinfo,indent=2))   
 
 
-def find_vma_tables(ws, start_row, start_column):
+def locate_vma_tables(ws, start_row, start_column):
     """Locate the VMAs on a worksheet, starting from the given row and column.
     The column must be the leftmost column of the VMA table proper (the one which
     contains the first column heading).  Returns a list of 
@@ -87,7 +87,7 @@ def find_vma_tables(ws, start_row, start_column):
 
     firstrow = find_in_column(ws, start_column, STANDARD_COLUMNS[0], start_row)
     if firstrow is None:
-        raise ValueError("Unable to find any VMA tables on Excel page")
+        raise ValueError(f"Unable to find any VMA tables on Excel page [{ws.title}]")
 
     lastcol = find_in_row(ws, firstrow, "Exclude Data?", start_column)
     if lastcol is None:
@@ -96,11 +96,11 @@ def find_vma_tables(ws, start_row, start_column):
             if "Exclude" in str(ws.cell[firstrow, i].value):
                 lastcol = i
         else:
-            raise ValueError("Unable to find last column of VMA table at " + str(firstrow))
+            raise ValueError(f"Unable to find 'Exclude Data?' column of VMA table at {firstrow} [{ws.title}]")
     
     checkcol = find_in_row(ws, firstrow, "Conversion calculation**", start_column)
     if checkcol is None:
-        raise ValueError("Unable to find 'Conversion calculation column' in VMA at " + str(firstrow))
+        raise ValueError(f"Unable to find 'Conversion calculation column' in VMA at {firstrow} [{ws.title}]")
 
     result = []
     while firstrow is not None:
@@ -109,7 +109,7 @@ def find_vma_tables(ws, start_row, start_column):
         next_firstrow = find_in_column(ws, start_column, STANDARD_COLUMNS[0], start_row=firstrow+1)
         lastrow = find_in_column(ws, checkcol, "**Add calc above", start_row=firstrow+1, end_row=next_firstrow)
         if lastrow is None:
-            raise ValueError("Unable to find end of VMA table at " + str(firstrow))
+            raise ValueError(f"Unable to find end of VMA table at {firstrow} [{ws.title}]")
         result.append((firstrow, start_column, lastrow-1, lastcol))
         firstrow = next_firstrow
     
@@ -134,7 +134,7 @@ def get_vma_table_info(ws, firstrow, firstcol, lastrow, lastcol):
         if name:
             break
     else:
-        raise ValueError("Unable to find name of VMA at " + str(firstrow))
+        raise ValueError(f"Unable to find name of VMA at {firstrow} [{ws.title}]")
     
     if name.startswith("VARIABLE"):
         return None
@@ -143,13 +143,13 @@ def get_vma_table_info(ws, firstrow, firstcol, lastrow, lastcol):
     # use weight
     row = find_in_column(ws, lastcol+1, "Use weight?", start_row=lastrow)
     if row is None or row-lastrow > 12:
-        raise ValueError("Unable to locate 'Use Weight?' of VMA at " + str(firstrow))
+        raise ValueError("Unable to locate 'Use Weight?' of VMA at {firstrow} [{ws.title}]")
     result['use_weight'] = convert_bool(xls(ws, row+1, lastcol+1))
 
     # bound correction
     col = find_in_row(ws, lastrow+2, "Low Correction?", start_col=lastcol)
     if col is None or col-lastcol > 10:
-        raise ValueError("Unable to locate 'Low Correction?' of VMA at " + str(firstrow))
+        raise ValueError(f"Unable to locate 'Low Correction?' of VMA at {firstrow} [{ws.title}]")
     result['bound_correction'] = convert_bool(xls(ws,lastrow+3,col))
 
     # description
@@ -162,7 +162,7 @@ def get_vma_table_info(ws, firstrow, firstcol, lastrow, lastcol):
     # units
     col = find_in_row(ws, firstrow, "Common Units", start_col=firstcol)
     if col is None or col > lastcol:
-        raise ValueError("Unable to locate units column of VMA at " + str(firstrow))
+        raise ValueError(f"Unable to locate units column of VMA at {firstrow} [{ws.title}]")
     result['units'] = xls(ws, firstrow+1, col)
 
     return result
@@ -187,7 +187,7 @@ def get_vma_table_data(ws, firstrow, firstcol, lastrow, lastcol, drop_extra_cols
     # complaining is a good idea because we really do expect to get them all.
     if len(df.columns) < len(STANDARD_COLUMNS):
         missing = set(STANDARD_COLUMNS) - set(df.columns)
-        raise ValueError(f"VMA table at {firstrow} missing column(s) {str(missing)}")
+        raise ValueError(f"VMA table at {firstrow} missing column(s) {str(missing)} [{ws.title}]")
 
     # drop rows we don't want.
     # keep a row only if it has a value in at least one of the 'Raw Data Input' or 'Conversion calculation' columns
