@@ -11,7 +11,7 @@ import json
 from io import StringIO
 
 import fair
-from fair.RCPs import rcp3pd, rcp45, rcp6, rcp85
+from fair.RCPs import rcp26, rcp45, rcp60, rcp85
 import numpy as np
 import pandas as pd
 import model.advanced_controls
@@ -707,7 +707,7 @@ class CO2Calcs(DataHandler):
              3: Change in temperature since pre-industrial time in Celsius
              4: RCP emissions (39 individual gases)
         """
-        emissions = rcp3pd.Emissions.emissions
+        emissions = rcp26.Emissions.emissions
         rcpemissions = pd.DataFrame(emissions, index = range(1765,2501),
                                        columns=['Year', 'FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
                                                 'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
@@ -723,13 +723,13 @@ class CO2Calcs(DataHandler):
         rcpemissions.name = 'FaIR_CFT_baseline_emis_rcp3'
         
         (C,F,T) = fair.forward.fair_scm(emissions=emissions)
-        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp3pd.Emissions.year)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp26.Emissions.year)
         result1.index.name="Year"
         result1.name = 'FaIR_CFT_baseline_conc_rcp3'
-        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp3pd.Emissions.year)
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp26.Emissions.year)
         result2.index.name="Year"
         result2.name = 'FaIR_CFT_baseline_forc_rcp3'
-        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp3pd.Emissions.year)
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp26.Emissions.year)
         result3.index.name="Year"
         result3.name = 'FaIR_CFT_baseline_temp_rcp3' 
         return result1, result2, result3, rcpemissions
@@ -793,7 +793,7 @@ class CO2Calcs(DataHandler):
              3: Change in temperature since pre-industrial time in Celsius
              4: RCP emissions (39 individual gases)
         """   
-        emissions = rcp6.Emissions.emissions
+        emissions = rcp60.Emissions.emissions
         rcpemissions = pd.DataFrame(emissions, index = range(1765,2501),
                                        columns=['Year', 'FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
                                                 'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
@@ -809,13 +809,13 @@ class CO2Calcs(DataHandler):
         rcpemissions.name = 'FaIR_CFT_baseline_emis_rcp6'
         
         (C,F,T) = fair.forward.fair_scm(emissions=emissions)
-        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp6.Emissions.year)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp60.Emissions.year)
         result1.index.name="Year"
         result1.name = 'FaIR_CFT_baseline_conc_rcp6'
-        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp6.Emissions.year)
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp60.Emissions.year)
         result2.index.name="Year"
         result2.name = 'FaIR_CFT_baseline_forc_rcp6'
-        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp6.Emissions.year)
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp60.Emissions.year)
         result3.index.name="Year"
         result3.name = 'FaIR_CFT_baseline_temp_rcp6' 
         return result1, result2, result3, rcpemissions
@@ -928,7 +928,7 @@ class CO2Calcs(DataHandler):
         # Call on the solution emission reductions
         annual_reductions = self.ghg_emissions_reductions_global_annual()
         # Call on the RCP scenario
-        rcpemissions = rcp3pd.Emissions.emissions
+        rcpemissions = rcp26.Emissions.emissions
         rcpemissionsnew = pd.DataFrame(rcpemissions, index = range(1765,2501),
                                        columns=['Year','FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
                                                 'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
@@ -956,13 +956,13 @@ class CO2Calcs(DataHandler):
         
         emissionsnew = rcpemissionsnew.to_numpy()
         (C,F,T) = fair.forward.fair_scm(emissions=emissionsnew)
-        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp3pd.Emissions.year)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp26.Emissions.year)
         result1.index.name="Year"
         result1.name = 'FaIR_CFT_Drawdown_conc_rcp3'
-        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp3pd.Emissions.year)
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp26.Emissions.year)
         result2.index.name="Year"
         result2.name = 'FaIR_CFT_Drawdown_forc_rcp3'
-        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp3pd.Emissions.year)
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp26.Emissions.year)
         result3.index.name="Year"
         result3.name = 'FaIR_CFT_Drawdown_temp_rcp3' 
         return result1, result2, result3, rcpemissionsnew
@@ -1044,7 +1044,7 @@ class CO2Calcs(DataHandler):
         # Call on the solution emission reductions
         annual_reductions = self.ghg_emissions_reductions_global_annual()
         # Call on the RCP scenario
-        rcpemissions = rcp6.Emissions.emissions
+        rcpemissions = rcp60.Emissions.emissions
         rcpemissionsnew = pd.DataFrame(rcpemissions, index = range(1765,2501),
                                        columns=['Year','FossilCO2 (Gt-C)', 'OtherCO2 (Gt-C)', 'CH4 (Mt-CH4)',
                                                 'N2O (Mt-N2O)', 'SOx (Mt-S)', 'CO (Mt-CO)', 'NMVOC (Mt)',
@@ -1072,13 +1072,13 @@ class CO2Calcs(DataHandler):
         
         emissionsnew = rcpemissionsnew.to_numpy()
         (C,F,T) = fair.forward.fair_scm(emissions=emissionsnew)
-        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp6.Emissions.year)
+        result1 = pd.DataFrame({'CO2(ppm)': C[:,0,], 'CH4(ppb)': C[:,1,], 'N2O(ppb)': C[:,2,]}, index=rcp60.Emissions.year)
         result1.index.name="Year"
         result1.name = 'FaIR_CFT_Drawdown_conc_rcp6'
-        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp6.Emissions.year)
+        result2 = pd.DataFrame({'CO2(Wm-2)': F[:,0,], 'CH4(Wm-2)': F[:,1,], 'N2O(Wm-2)': F[:,2,], 'others(Wm-2)': np.sum(F, axis=1)-F[:,0,]-F[:,1,]-F[:,2,], 'total(Wm-2)': np.sum(F, axis=1)}, index=rcp60.Emissions.year)
         result2.index.name="Year"
         result2.name = 'FaIR_CFT_Drawdown_forc_rcp6'
-        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp6.Emissions.year)
+        result3 = pd.DataFrame({'TempAnomaly(C)': T}, index=rcp60.Emissions.year)
         result3.index.name="Year"
         result3.name = 'FaIR_CFT_Drawdown_temp_rcp6' 
         return result1, result2, result3, rcpemissionsnew 
