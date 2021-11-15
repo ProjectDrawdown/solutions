@@ -1394,7 +1394,7 @@ def extract_vmas(f, wb, outputdir):
     vma_page = vxe.get_vma_sheet(wb)
     vma_data = vxe.extract_vmas(vma_page)
     if len(vma_data) < 10:
-        warnings.warn(f"Only {len(vma_data)} VMAs were found on {vma_page.name}.  This is unusual; check to make sure all the expected VMAs were extracted.")
+        warnings.warn(f"Only {len(vma_data)} VMAs were found on {vma_page.title}.  This is unusual; check to make sure all the expected VMAs were extracted.")
         
     # In some cases we want to remove shared VMAs from our list.
     # Currently that only applies to the electricity generation solutions, but we expect to apply it
