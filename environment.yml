@@ -11,6 +11,6 @@ dependencies:
   - pytest
   - pip
   - pip:
-    - fair
+    - fair>=1.6.4
     - numpy-financial
     - openpyxl
