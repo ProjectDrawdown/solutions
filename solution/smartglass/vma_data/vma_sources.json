@@ -1,70 +1,140 @@
 {
-  "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "million m2 commercial floor space"
-  },
-  "CONVENTIONAL First Cost per Implementation Unit": {
-    "title": "CONVENTIONAL First Cost per Implementation Unit",
-    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/million m2 commercial floor space"
-  },
-  "SOLUTION First Cost per Implementation Unit": {
-    "title": "SOLUTION First Cost per Implementation Unit",
-    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/million m2 commercial floor space"
-  },
-  "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "million m2 commercial floor space/million m2 commercial floor space"
-  },
-  "SOLUTION Lifetime Capacity": {
-    "title": "SOLUTION Lifetime Capacity",
-    "filename": "SOLUTION_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "million m2 commercial floor space/million m2 commercial floor space"
-  },
-  "Commercial Window to Floor Area Ratio": {
-    "title": "Commercial Window to Floor Area Ratio",
-    "filename": "Commercial_Window_to_Floor_Area_Ratio.csv",
-    "stat_correction": true,
-    "units": "(ratio)"
-  },
-  "Energy Efficiency of Cooling with Smart Glass": {
-    "title": "Energy Efficiency of Cooling with Smart Glass",
-    "filename": "Energy_Efficiency_of_Cooling_with_Smart_Glass.csv",
-    "stat_correction": true
-  },
-  "Energy Efficiency of Lighting with Smart Glass": {
-    "title": "Energy Efficiency of Lighting with Smart Glass",
-    "filename": "Energy_Efficiency_of_Lighting_with_Smart_Glass.csv",
-    "stat_correction": true
-  },
-  "Average Energy for Commercial Cooling per Floor Area": {
-    "title": "Average Energy for Commercial Cooling per Floor Area",
-    "filename": "Average_Energy_for_Commercial_Cooling_per_Floor_Area.csv",
-    "stat_correction": true,
-    "units": "TWh/million m2 of commercial area/yr"
-  },
-  "Average Energy for Commercial Lighting per Floor Area": {
-    "title": "Average Energy for Commercial Lighting per Floor Area",
-    "filename": "Average_Energy_for_Commercial_Lighting_per_Floor_Area.csv",
-    "stat_correction": true,
-    "units": "TWh/million m2 of commercial area/yr"
-  },
-  "Learning Rate for Similar Technology (A/C units)": {
-    "title": "Learning Rate for Similar Technology (A/C units)",
-    "filename": "Learning_Rate_for_Similar_Technology_A_C_units.csv",
-    "stat_correction": true
-  },
-  "Discount Rate - Commercial": {
-    "title": "Discount Rate - Commercial",
-    "filename": "Discount_Rate_Commercial.csv",
-    "stat_correction": true
-  }
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "For energy implications, we focus on the architectural/buildings smart glass market. Smart glass sales have been chiefly to the automotive market recently however, so we need to take that into account in the estimations above. Additionally, the functional unit of the model is m2 of commercial floor area with the solution implemented which is assumed linear in total glazed area. The ratio of glazed area to floor area is assumed fixed and set on Advanced Controls. The total smart glass market is dominated by the automotive market, and so this fraction is removed from the raw data above using the data from http://www.bccresearch.com/market-research/advanced-materials/smart-glass-technologies-avm065a.html "
+    },
+    "CONVENTIONAL First Cost per Implementation Unit": {
+        "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "There is a wide variety in prices because the prices sometimes includes installation and sometimes it doesn't. It's not clear from all references, so we average all values."
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "There is a wide variety in prices since the technology is new, but also because the prices sometimes includes installation and sometimes it doesn't. It's not clear from all references, so we average all values."
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The design life of the conventional technology is the same as the design life of the solution technology. The solution technology has been designed to have an equivalent lifespan as the conventional solution."
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The design life of the conventional technology is the same as the design life of the solution technology. The solution technology has been designed to have an equivalent lifespan as the conventional solution."
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The standard Drawdown model requires an estimate of how many functional units can be produced by each implementation unit per year, but since in this model, those two units are the same, we enter \"1\"."
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The standard Drawdown model requires an estimate of how many functional units can be produced by each implementation unit per year, but since in this model, those two units are the same, we enter \"1\"."
+    },
+    "CONVENTIONAL Total Energy Used per Functional Unit": {
+        "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Energy Efficiency Factor": {
+        "filename": "SOLUTION_Energy_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Total Energy Used per Functional Unit": {
+        "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "While electrochromic windows require electricity usage in order to operate, the cost and electricity usage are not included in this model because of it's relative low significance as compared to the total energy consumption of buildings."
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "No fuel data are entered at this point in the model, but fuel costs and fuel emissions factors are entered directly on the Advanced Controls tab."
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "No fuel data are entered at this point in the model, but fuel costs and fuel emissions factors are entered directly on the Advanced Controls tab."
+    },
+    "Link to WinFloorArea Sheet": {
+        "filename": "Link_to_WinFloorArea_Sheet.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Department of Energy Reference Buildings (detailed in Deru et al 2011) are used as the representative buildings for commercial spaces. The weightings factors are derrived from the weighted average of each buildng type as explained in Table 42 of Deru et al 2011. Weighting factors in addition to calculation of the building geometries are summarized in the WinFloorArea additional sheet. The window to floor area ratio is scaled by 0.75 to represent installing dynamic windows only on 3 facades of the building which can be adjusted in cell L863. Installing windows on more facades does not increase the energy savings potential and has the potential (depending on the climate zone) to reduce the energy savings of the building."
+    },
+    "Energy Efficiency of Cooling with Smart Glass": {
+        "filename": "Energy_Efficiency_of_Cooling_with_Smart_Glass.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "A custom Drawdown analysis is performed for the energy savings potential of EC implementation. See the EnergySavingsFactoring data sheet for a detailed description for how the meta-analysis is performed."
+    },
+    "Energy Efficiency of Lighting with Smart Glass": {
+        "filename": "Energy_Efficiency_of_Lighting_with_Smart_Glass.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "A custom Drawdown analysis is performed for the energy savings potential of EC implementation. See the EnergySavingsFactoring data sheet for a detailed description for how the meta-analysis is performed."
+    },
+    "Average Energy for Commercial Cooling per Floor Area": {
+        "filename": "Average_Energy_for_Commercial_Cooling_per_Floor_Area.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Average energy consumption for cooling in commercial buildings. Data is converted frorm original unit (kWh/sq-ft/yr or PJ) to TWh/million m2 of commerial area/year based upon the appropriate conversion factors. "
+    },
+    "Average Energy for Commercial Lighting per Floor Area": {
+        "filename": "Average_Energy_for_Commercial_Lighting_per_Floor_Area.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Average energy consumption for lighting in commercial buildings. Data is converted frorm original unit (kWh/sq-ft/yr or PJ) to TWh/million m2 of commerial area/year based upon the appropriate conversion factors. "
+    },
+    "Learning Rate for Similar Technology (A/C units)": {
+        "filename": "Learning_Rate_for_Similar_Technology_A_C_units.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This variable was originally created to input learning curve estimates for several different residential energy demand technologies, ranging from air conditioners to light fixtures and televisions, but the assumption was made to use 'Room Air Conditioners' as a proxy for smart thermostats, as both are modular devices used to control room temperature (space heating/cooling), and the retail prices (first cost) for room air conditioners are more comparable to those for smart thermostats than any of the other technologies. NOTE: individual sources not stored in Zotero but instead cited from: Weiss, M., Junginger, M., Patel, M. K., & Blok, K. (2010). A review of experience curve analyses for energy demand technologies. Technological Forecasting and Social Change, 77(3), 411\u2013428. https://doi.org/10.1016/j.techfore.2009.10.009. This source is in Zotero."
+    },
+    "Discount Rate - Commercial": {
+        "filename": "Discount_Rate_Commercial.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a Commercial / Industrial level. The Commercial / Industrial level discount rate is directly related to decision-making at a Commercial / Industrial level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments available to larger commericial / industrial entities such as multinational corporations or corporate utility enterprises.  Discount rates reported in the literature that are used for policy decisions are not necessarily equivalent to Commercial / Industrial level financial investment decisions, but oftentimes are not distiguished and may be conflated.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis."
+    },
+    "PERCENT OF BUILDING IN PERIMETER SPACE": {
+        "filename": "PERCENT_OF_BUILDING_IN_PERIMETER_SPACE.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Not all of a building is in the perimeter space of a building, in which energy savings are realized when implementing electrochromic windows. As such, it is necessary to scale the whole building energy reduction by the amount of floor space that is in the perimeter zone. This variable represents the amount of floor space wthin a commercial building that is in ther perimeter zone. This data is used in the EnergySavingsFactoring sheet"
+    },
+    "Energy Efficiency of Heating with Smart Glass": {
+        "filename": "Energy_Efficiency_of_Heating_with_Smart_Glass.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "A custom Drawdown analysis is performed for the energy savings potential of EC implementation. See the EnergySavingsFactoring data sheet for a detailed description for how the meta-analysis is performed."
+    },
+    "Average Energy for Commercial Heating per Floor Area": {
+        "filename": "Average_Energy_for_Commercial_Heating_per_Floor_Area.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Average energy consumption for space heating in commercial buildings. Data is converted frorm original unit (kWh/sq-ft/yr or PJ) to TWh/million m2 of commerial area/year based upon the appropriate conversion factors. "
+    },
+    "Share of Commercial Building Heating Supplied by Electricity": {
+        "filename": "Share_of_Commercial_Building_Heating_Supplied_by_Electricity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "To split the heating by global fuel and heating by electricity, this Commercial Building final energy market share is used. This split allows the efficiency impact of Smart Glasss on electricity for heating (and cooling and lighting) to be independently estimated to the impact on fuel (for heating only)."
+    }
 }
