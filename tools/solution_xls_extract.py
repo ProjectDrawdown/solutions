@@ -596,6 +596,15 @@ def normalize_source_name(sourcename):
         'Based on average of: LUT/EWG (2019) -100% RES; Ecofys (2018) - 1.5ºC and Greenpeace (2015) Advanced [R]evolution': 'Based on average of: LUT/EWG 2019 100% RES, Ecofys 2018 1.5C and Greenpeace 2015 Advanced Revolution',
         'FAO 2015 (Sum of all regions)': 'FAO 2015',  # Afforestation Drawdown 2020
         'FAO 2010 (Sum of all regions)': 'FAO 2010',  # Bamboo Drawdown 2020
+
+        # 2021 Elecgen TAMs, renamed to something more convenient
+        "Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario": "PD Integrated TAM - Plausible Scenario",
+        "Drawdown TAM: Drawdown TAM - 100%RES - Drawdown Scenario": "PD Integrated TAM - Drawdown Scenario",
+        "Drawdown TAM: Drawdown TAM - 100%RES - Optimum Scenario": "PD Integrated TAM - Optimum Scenario",
+        # WasteToEnergy has their own names.... 
+        "Drawdown TAM: PlausibleScenario INTEGRATED TAM": "PD Integrated TAM - Plausible Scenario",
+        "Drawdown TAM: Drawdown Scenario TAM (based on the 100% RES cases)": "PD Integrated TAM - Drawdown Scenario",
+        "Drawdown TAM: Optimum Scenario TAM (based on the 100% RES cases)": "PD Integrated TAM - Optimum Scenario",
     }
     if not sourcename:  # don't do anything with empty data
         return sourcename
@@ -916,7 +925,7 @@ def write_ht(f, wb):
         while v(28+offset, co("C")) == v(92+offset, co("C")):
             offset += 1
         copy_pds_to_ref = (offset > 0)
-        copy_through_year = 2014+offset
+        copy_through_year = 2015+offset
 
     # Now, lets check the behavior of the first rows of both tables
     # the default _is_ to copy, so we are looking for evidence that we should not
