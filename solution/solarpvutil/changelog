@@ -1,3 +1,27 @@
+Nov 2021 update
+
+1) The VMA Solar PV Module Learning Rate at row 1272 is malformed: it has been extended by one
+line, overwriting the '**Add calc above' that the VMA reader looks for to find the end of the
+table.  Insert a new line afterwards and add the '**Add calc above' text where it belongs.  You
+will also have to adjust the table at right so that the summary block begins on the correct
+line, or you will get errors about not being able to convert 'Average' to a boolean, or to be
+able to find the lower bound.
+
+2) The original PDS TAM data sources have names that are both long and confusing, like this:
+    Drawdown TAM: Drawdown TAM - 100%RES - Drawdown Scenario
+In the official data sources, I simplified the names down to this:
+    PD Integrated TAM - Drawdown Scenario
+I ended up adding code to the extractor to automatically rename these TAM sources to these names,
+but next iteration, this should be examined again.
+
+3) Denton's comment below still applies.  It has a weird effect, though: it causes the adoption to
+be interpreted as a single source, which is arguably a more sensible thing than treating it as
+a group.  Still, fixed it the same way that he did.
+
+4) The ref helper tables were off by a bit, because the percentage calculation is being taken from 2014
+instead of the base year, which is 2018.  Fixed this by changing the year on line 95 to 2014.
+
+
 Denton's Notes:
 Solar PV Utility
 In Drawdown 2020 in the adoption data tab the most aggressive case was renamed "100% Case" but the formulae in EF45 

@@ -1,7 +1,7 @@
 {
   "Ambitious Cases": {
-    "Drawdown TAM: Drawdown TAM - Post Integration - Plausible Scenario": "PDS_plausible_scenario_current.csv",
-    "Drawdown TAM: Drawdown TAM - Post Integration - Drawdown Scenario": "PDS_drawdown_scenario_current.csv",
-    "Drawdown TAM: Drawdown TAM - Post Integration - Optimum Scenario": "PDS_optimum_scenario_current.csv"
+    "PD Integrated TAM - Plausible Scenario": "PDS_plausible_scenario_current.csv",
+    "PD Integrated TAM - Drawdown Scenario": "PDS_drawdown_scenario_current.csv",
+    "PD Integrated TAM - Optimum Scenario": "PDS_optimum_scenario_current.csv"
   }
 }
