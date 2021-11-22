@@ -1,8 +1,9 @@
 {
-    "name": "PDS-97p2050-Scenario3_CustomPDS_high_Jun2020",
+    "name": "PDS-84p2050-drawdown-customPDS-avg-Apr2020",
     "solution_category": "land",
     "vmas": "VMAs",
-    "description": "updated result for core paper",
+    "creation_date": "2020-03-31 21:47:46",
+    "description": "updated results with updated TLA as per the updated AEZ model",
     "report_start_year": 2020,
     "report_end_year": 2050,
     "use_custom_tla": false,
@@ -32,7 +33,7 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "High of All Custom Scenarios",
+    "soln_pds_adoption_custom_name": "Average of All Custom Scenarios",
     "soln_pds_adoption_scenarios_included": [
         0,
         1,
@@ -78,12 +79,8 @@
     "land_annual_emissons_lifetime": 100.0,
     "conv_annual_energy_used": 0.0,
     "soln_annual_energy_used": 0.0,
-    "seq_rate_global": {
-        "value": 0.0,
-        "statistic": ""
-    },
+    "seq_rate_global": 0.0,
     "carbon_not_emitted_after_harvesting": 0.0,
     "disturbance_rate": 0.0,
-    "harvest_frequency": 100.0,
-    "creation_date": "2020-06-22 14:58:36"
+    "harvest_frequency": 100.0
 }

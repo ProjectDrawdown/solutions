@@ -1,37 +1,37 @@
 [
-  {
-    "name": "65% TLA by 2040",
-    "description": "Scenario 1 is based on Indonesia and the UK comitments on peatland restoration. In the case of Indonesia, the comitment is to restore 2 Mha of degraded peatland by 2020 which represents 49% of degraded peatland area. The Uks Peatland strategy aims for Two million hectares of peatland in good condition, under restoration or being sustainably managed by 2040. representing 96% of degraded peatland area. The weighted average of both comitments is 65% of degraded peatland area. We take a conservative approach and assume it will be achieved in 2040 and scale up the 65% comitment to the world. See page TLA- Adoption Calc for more info ",
-    "filename": "custom_pds_ad_65_TLA_by_2040.csv"
-  },
-  {
-    "name": "70% TLA by 2050",
-    "description": "Linear increase to 70% of TLA by 2050 ",
-    "filename": "custom_pds_ad_70_TLA_by_2050.csv"
-  },
-  {
-    "name": "80% TLA by 2050",
-    "description": "Linear increase to 80% of TLA by 2050 ",
-    "filename": "custom_pds_ad_80_TLA_by_2050.csv"
-  },
-  {
-    "name": "90% TLA by 2050",
-    "description": "Linear increase to 90% of TLA by 2050 ",
-    "filename": "custom_pds_ad_90_TLA_by_2050.csv"
-  },
-  {
-    "name": "100% TLA by 2050",
-    "description": "Linear increase to 100% TLA by 2050 ",
-    "filename": "custom_pds_ad_100_TLA_by_2050.csv"
-  },
-  {
-    "name": "UK 2040 restoration target scaled worldwide",
-    "description": "UKs peatland target of restoring 2 Mha of peatlands by 2040 represents 96% of degraded peatland area. This scenario applies this percentage to the TLA assuming a linear increase up to 2040 ",
-    "filename": "custom_pds_ad_UK_2040_restoration_target_scaled_worldwide.csv"
-  },
-  {
-    "name": "Indonesia national commitment scaled worldwide",
-    "description": "Indonesias restoration target of 2 Mha by 2020 represents 49% total degraded area. Given the ambitous target we assume a more conservative time frame and scale up a linear increase up to 49% restored TLA by 2040 ",
-    "filename": "custom_pds_ad_Indonesia_national_commitment_scaled_worldwide.csv"
-  }
+    {
+        "name": "65% TLA by 2040",
+        "filename": "ca_pds_65_TLA_by_2040.csv",
+        "description": "Scenario 1 is based on Indonesia and the UK comitments on peatland restoration. In the case of Indonesia, the comitment is to restore 2 Mha of degraded peatland by 2020 which represents 49% of degraded peatland area. The Uk's Peatland strategy aims for \u201cTwo million hectares of peatland in good condition, under restoration or being sustainably managed by 2040.\u201d representing 96% of degraded peatland area. The weighted average of both comitments is 65% of degraded peatland area. We take a conservative approach and assume it will be achieved in 2040 and scale up the 65% comitment to the world. See page TLA- Adoption Calc for more info"
+    },
+    {
+        "name": "70% TLA by 2050",
+        "filename": "ca_pds_70_TLA_by_2050.csv",
+        "description": "Linear increase to 70% of TLA by 2050"
+    },
+    {
+        "name": "80% TLA by 2050",
+        "filename": "ca_pds_80_TLA_by_2050.csv",
+        "description": "Linear increase to 80% of TLA by 2050"
+    },
+    {
+        "name": "90% TLA by 2050",
+        "filename": "ca_pds_90_TLA_by_2050.csv",
+        "description": "Linear increase to 90% of TLA by 2050"
+    },
+    {
+        "name": "100% TLA by 2050",
+        "filename": "ca_pds_100_TLA_by_2050.csv",
+        "description": "Linear increase to 100% TLA by 2050"
+    },
+    {
+        "name": "UK 2040 restoration target scaled worldwide",
+        "filename": "ca_pds_UK_2040_restora_73b3c21e.csv",
+        "description": "UK's peatland target of restoring 2 Mha of peatlands by 2040 represents 96% of degraded peatland area. This scenario applies this percentage to the TLA assuming a linear increase up to 2040"
+    },
+    {
+        "name": "Indonesia national commitment scaled worldwide",
+        "filename": "ca_pds_Indonesia_natio_a20bc8e1.csv",
+        "description": "Indonesia's restoration target of 2 Mha by 2020 represents 49% total degraded area. Given the ambitous target we assume a more conservative time frame and scale up a linear increase up to 49% restored TLA by 2040"
+    }
 ]

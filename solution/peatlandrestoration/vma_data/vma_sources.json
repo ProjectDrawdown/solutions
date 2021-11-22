@@ -1,20 +1,23 @@
 {
   "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "million hectares"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Literature on global restored peatland area is scarce. A recent overview on progress on peatland restoration in Western Europe over the past 25 years refers to the EU-LIFE programme investment of over 165 Mill. EUR with the aim to restore 913 km2 of peatland are in Western Europe but doesn\u2019t clarify how much of that target has been actually achieved (Andersen et al., 2017). At present, the current adoption in 2014 is assumed to be zero, like in other restoration solutions.",
+    "units": "million hectares",
+    "filename": "Current_Adoption.csv"
   },
   "t CO2-eq (Aggregate emissions) Reduced per Land Unit": {
-    "title": "t CO2-eq (Aggregate emissions) Reduced per Land Unit",
-    "filename": "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/ha/year"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "t CO2-eq / ha / year",
+    "filename": "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv"
   },
   "t CO2 Reduced per Land Unit": {
-    "title": "t CO2 Reduced per Land Unit",
-    "filename": "t_CO2_Reduced_per_Land_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2/ha"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "t CO2 / ha",
+    "filename": "t_CO2_Reduced_per_Land_Unit.csv"
   }
 }
