@@ -306,6 +306,9 @@ def get_land_scenarios(wb, solution_category):
          dict of scenario name to advanced controls dict, suitable for writing to ac/*.json files.
     """
     sr_tab = wb['ScenarioRecord']
+    # Scenario_list is the list scenarios in the dropdown.  We look to see that the scenario name is in this list,
+    # because we may pre-filter that list before extraction.   tab[ref:ref] returns list of tuples, hence the double dereference
+    scenario_list=[x.value for y in sr_tab['AR13':'AR91'] for x in y if x.value]
     scenarios = {}
     for row in range(sr_tab.min_row, sr_tab.max_row):
         col_d = xls(sr_tab, row, co("D"))
@@ -314,6 +317,8 @@ def get_land_scenarios(wb, solution_category):
             # start of scenario block
             scenario_name = col_e
             if 'broken' in scenario_name:
+                continue
+            if scenario_name not in scenario_list:
                 continue
             s = {}
 
@@ -983,7 +988,7 @@ def write_ef(f, wb):
     f.write("\n")
 
 
-def write_ua(f, wb, is_rrs=True):
+def write_ua(f, wb):
     """Write out the Unit Adoption module for this solution class."""
     ua_tab = wb['Unit Adoption Calculations']
     ac_tab = wb['Advanced Controls']

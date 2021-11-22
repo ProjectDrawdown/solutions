@@ -604,11 +604,16 @@ def verify_helper_tables(obj, verify, include_regional_data=True):
 
 def verify_emissions_factors(obj, verify):
     """Verified tables in Emissions Factors."""
-    verify['Emissions Factors'] = [
-            ('A12:K57', obj.ef.conv_ref_grid_CO2eq_per_KWh().reset_index(), None, None),
-            ('A67:K112', obj.ef.conv_ref_grid_CO2_per_KWh().reset_index(), None, None),
-            ]
-    return verify
+    # I'm turning this off, because (a) it is just a table of data, and (b) in the solutions where it is different 
+    # that is generally because the model doesn't use electricity at all.  If the solution  _does_ use electricity,
+    # that will show up in other errors quickly enough. -- denise 11/21
+    # 
+    # verify['Emissions Factors'] = [
+    #         ('A12:K57', obj.ef.conv_ref_grid_CO2eq_per_KWh().reset_index(), None, None),
+    #         ('A67:K112', obj.ef.conv_ref_grid_CO2_per_KWh().reset_index(), None, None),
+    #         ]
+    # return verify
+    return []
 
 
 def verify_first_cost(obj, verify):
