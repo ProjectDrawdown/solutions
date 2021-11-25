@@ -13,7 +13,7 @@ jobs:
   copy-job:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout dvelop
+      - name: checkout develop
         uses: actions/checkout@v2
 
       - name: copy Documentation folder
@@ -39,4 +39,4 @@ jobs:
         uses: EndBug/add-and-commit@v7
         with:
           add: docs
-          branch: gh-pages
+          branch: gh_pages
