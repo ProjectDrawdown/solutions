@@ -10,7 +10,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  copy-job:
+  build-job:
     runs-on: ubuntu-latest
     steps:
       - name: checkout develop
@@ -21,10 +21,21 @@ jobs:
         with:
           name: docs
           path: Documentation/
+      
+      - name: set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      
+      - name: install dependencies 
+        run: pip install pdoc -r requirements.txt
+      
+      - name: did something?
+        run: pdoc --version
 
-  paste-job:
+  publish-job:
     runs-on: ubuntu-latest
-    needs: copy-job
+    needs: build-job
     steps:
       - name: checkout gh_pages
         uses: actions/checkout@v2
