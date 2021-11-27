@@ -1,7 +1,0 @@
-{
-  "World": {
-    "lowGWP-lower": "ad_lowGWPlower_Velders_et_al_2015.csv",
-    "lowGWP-upper": "ad_lowGWPupper_Velders_et_al_2015.csv",
-    "Mean lowGWP": "ad_Mean_lowGWP_Velders_et_al_2015.csv"
-  }
-}

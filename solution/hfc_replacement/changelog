@@ -1,3 +1,18 @@
+November 2021 denise
+
+Importing the new version.  The weirdness Daniel encountered with adoptions seems to have
+been removed --- this was a very vanilla import: a couple of TAM parameters and some
+changed helper tables quirks.
+
+Several changes to the general code allow hfc_replacement to past tests:
+- The zip extractor was changed (some time ago) to handle special characters in names
+- I changed the "approx equal" test in the expected result tester to allow inf == nan
+- I changed code in operatingcost.py that used first_valid_index() to use dd.CORE_START instead
+(first_valid_index was returning null because there was no valid data in the table)
+
+With these changes, the tests are clean and none need to be skipped.
+
+
 24.10.2021 denise
 I fixed the erroneous space in the expect.zip file, so that scenario can now be loaded.
 If this solution is extracted again, it will need to be redone: after running the macros, find
