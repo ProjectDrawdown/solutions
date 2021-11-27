@@ -961,19 +961,22 @@ def find_expected_scenario_in_zip(scenario_name, zip_f):
 
 def approx_compare(val, expt, all_zero=True, thresh=None):
     """Return True if val is equal 'or very close to' expected value expt.
-    If all_zero is True (the default), 0, NaN, None and the empty string are all treated as equal.
+    If all_zero is True (the default), 0, NaN, None, np.inf and the empty string are all treated as equal.
     If thresh is provided, it overrides the default threshold to compare two floating point numbers.    
     """
-    # This implementation is derived from the old test_excel_integration.compare_dataframes,
+    # Note: This implementation is derived from the old test_excel_integration.compare_dataframes,
     # but it is not 100% identical.  The differences might matter, TBD
+    # Note: all_zero compares 0 ~ NAN and also inf ~ NAN... but also 0 ~ inf, which is somewhat 
+    # questionable.  Teasing these apart would make the code more complex, however, so leaving it this way.
 
     thresh = thresh or 1e-4  # for the purposes of comparing to Excel, this is sufficient!
 
-    pseudo_zero = lambda x : x == 0 or x == '' or x is None or (isinstance(x,float) and np.isnan(x)) or x == pytest.approx(0.0, abs=thresh)
+    pseudo_zero = lambda x :  (x == 0 or x == '' or x is None or (isinstance(x,float) and np.isnan(x)) or 
+        x == np.inf or x == pytest.approx(0.0, abs=thresh))
 
     if isinstance(val, str) and isinstance(expt, str):
         return (val == expt)
-    
+
     if all_zero and pseudo_zero(val):
         return pseudo_zero(expt)
 
