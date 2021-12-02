@@ -43,6 +43,9 @@ warnings.filterwarnings("ignore",module=".*openpyxl.*")
 # "actual zero" from zero used as "no data"
 zero_adoption_solutions = ['nuclear', 'cars', 'geothermal', 'improvedcookstoves', 'waterefficiency']
 
+# Shared globals
+# File name (as Path)
+filename = None
 
 # Type of solution
 is_rrs = False
@@ -856,7 +859,7 @@ def write_ca(case, f, wb, outputdir):
             f.write( "       # Check older versions of this file, or similar solution types, to determine if\n")
             f.write( "       # this code must be replaced with completely custom code.\n") 
         if multipliers['high'] != 1.0 or multipliers['low'] != 1.0:
-            f.write(f"        self._{lcase}_ca_settings = \{ 'hi_sd_mult': {multipliers['high']}, 'low_sd_mult': {multipliers['low']} \}\n")  
+            f.write(f"        self._{lcase}_ca_settings = {{ 'high_sd_mult': {multipliers['high']}, 'low_sd_mult': {multipliers['low']} }}\n")  
         f.write(f"        self._{lcase}_ca_sources = scenario.load_sources(THISDIR/'{prefix}_data/{prefix}_sources.json', 'filename')\n")    
 
 
@@ -904,69 +907,42 @@ def write_ht(f, wb):
     f.write( "            pds_adoption_trend_per_region=pds_adoption_trend_per_region,\n")
 
     # Assess the Quirks Parameters
-    # Note that we could do a more reliable job here by utilizing the fact that openpyxl can
-    # read the formulas of the cells, not just their contents.  Just don't have time to do that now.
+    # We do this the best and most reliable way: by looking at the formulas themselves.
+    # To do this, we need to open the workbook a second time, in formula mode.
+    wb2 = openpyxl.load_workbook(filename, read_only=True, keep_links=False)
+    try:
+        wsformulas = wb2['Helper Tables']
+        ref_toprow = [x.value for x in wsformulas['C27':'L27'][0]]
+        pds_toprow = [x.value for x in wsformulas['C91':'L91'][0]]
+        ref_firstcol = [x[0].value for x in wsformulas['C27':'C43']] # through 2030, which is far enough
+    finally:
+        wb2.close()
 
-    v = lambda r, c: h.cell(r,c).value  # shortcut, and skip the data cleaning in this case
-
+    copy_ref = False
+    copy_pds = False
     # check if pds is being copied to ref
-    # First check if there are any Y-PDS type values --- that would give us a false positive, and a circular
-    # calculation to boot (discovered the hard way)
-    copy_pds_to_ref = False
-    ac = wb['Advanced Controls']
-    start_row = find_in_column(ac, co("F"), "Adjustment?", 250)
-    assert start_row, "Couldn't find Adjustment? column on AC sheet"
-    y_pds = False
-    for row in range(start_row+1,start_row+5):
-        if xls(ac,row,co("F")) != "N":
-            y_pds = True
-            break
+    offset = 0
+    while ref_firstcol[offset].startswith('=C'):
+        offset += 1
+    copy_pds_to_ref = (offset > 0)
+    copy_through_year = 2014 + offset
 
-    # If there were no Y-PDS in the way, we detect copy_pds_to_ref by looking for shared values
-    # in the two tables.
-    if not y_pds:  
-        offset = 0
-        # we actually start at row 2015, because 2014 treatment sometimes has other issues
-        while v(28+offset, co("C")) == v(92+offset, co("C")):
-            offset += 1
-        copy_pds_to_ref = (offset > 0)
-        copy_through_year = 2015+offset
+    # check the behavior of the first rows of both tables
+    # we don't actually have to check all the values, just the first two
+    if ref_toprow[1] == '=D21':
+        copy_ref = True
+        copy_ref_world_too = (ref_toprow[0] == '=C21')
 
-    # Now, lets check the behavior of the first rows of both tables
-    # the default _is_ to copy, so we are looking for evidence that we should not
-    copy_ref = True
-    copy_ref_world_too = False
-    for col in range(co("D"),co("L")+1):
-        if v(21,col) != v(27,col):
-            copy_ref = False
-            break
-    if copy_ref and v(21,co("C")) == v(27,co("C")):
-        copy_ref_world_too = True
+    if pds_toprow[1] == '=D85':
+        copy_pds = True
+        copy_pds_world_too = (pds_toprow[0] == '=C85')
     
-    copy_pds = True
-    copy_pds_world_too = False
-    for col in range(co("D"),co("L")+1):
-        if v(85,col) != v(91,col):
-            copy_pds = False
-            break
-    if copy_pds and v(85,co("C")) == v(91,co("C")):
-        copy_pds_world_too = True
-    
-    # There's one more possibility to check: pds first row might be reading from ref first row
-    if not copy_pds:
-        rt = True
-        for col in range(co("D"),co("L")+1):
-            if v(91,col) != v(27,col):
-                rt = False
-                break
-        if rt:
-            copy_pds = "'Ref Table'"
-            copy_pds_world_too = (v(91,co("C")) == v(27,co("C")))
+    elif pds_toprow[1] == '=D27':
+        copy_pds = '"Ref Table"'
+        copy_pds_world_too = (pds_toprow[0] == '=C27')
 
-    f.write( "            # Quirks Parameters.  The generator tries to guess these correctly, but can get\n")
-    f.write( "            # it wrong.  See the documentation for HelperTables.__init__() to understand\n")
-    f.write( "            # exactly what the paramaters do, and how to set them.\n")
-    
+    f.write( "            # Quirks Parameters.  The extractor should get these right in most cases.\n")
+    f.write( "            # If it fails, check the documentation for HelperTables.__init__() to see how these are used.\n")
     f.write(f"            copy_pds_to_ref={copy_pds_to_ref},\n")
     if copy_pds_to_ref:
         f.write(f"            copy_through_year={copy_through_year},\n")
@@ -1327,8 +1303,8 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
     custom_ad_tab = wb[sheet_name]
 
     assert xls(custom_ad_tab, 'AN25') == 'High'
-    multipliers = {'high': xli(custom_ad_tab, 'AO25'),
-                   'low': xli(custom_ad_tab, 'AO26')}
+    multipliers = {'high': xln(custom_ad_tab, 'AO25'),
+                   'low': xln(custom_ad_tab, 'AO26')}
     scenarios = []
     filenames = []
     # Look for the list of scenarios in the minitable in columns 'N:O'
@@ -1352,10 +1328,12 @@ def extract_custom_adoption(wb, outputdir, sheet_name, prefix):
                 df.rename(mapper={'Middle East & Africa': 'Middle East and Africa',
                           'Asia (sans Japan)': 'Asia (Sans Japan)'},
                           axis='columns', inplace=True)
+                # only write this out if there is some actual data here.
                 if not df.dropna(how='all', axis=1).dropna(how='all', axis=0).empty:
                     outputdir.mkdir(exist_ok=True)
                     df.to_csv(outputdir/filename, index=True, header=True, encoding='utf-8')
                     skip = False
+                # see if we can find the description too.
                 for offset in range(0, 3):
                     # TODO: deal with unicode on windows here.
                     # looking for the big yellow box.
@@ -1570,20 +1548,18 @@ warn_counts = {
 
 def output_solution_python_file(outputdir, xl_filename):
     """Excel file -> generated Python code + many data files.
-
-       Arguments:
-         outputdir: directory to put output in.
-         xl_filename: an Excel file to open, can be xls/xlsm/etc.
-           Note that we cannot run Macros from xlsm files, only read values.
+    outputdir: directory to put output in.
+    xl_filename: excel file of model
     """
     warn_counts['unknown_formula'] = 0 # reset counter
+    global filename
     global is_rrs
     global is_land
     global is_elecgen
  
-    # We may get arguments as strings or PATH objects; make them Paths here.
+    # We may get arguments as strings or PATH objects; make them consistent here
+    filename = Path(xl_filename)
     outputdir = Path(outputdir)
-    xl_filename = Path(xl_filename)
 
     outputdir.mkdir(exist_ok=True)
 
@@ -1603,163 +1579,167 @@ def output_solution_python_file(outputdir, xl_filename):
         py_filename.rename(newoldfile)
         print(f'Moved existing __init__.py file to {newoldfile.name}.  Please compare and merge as needed.')
 
-    wb = openpyxl.load_workbook(filename=xl_filename,data_only=True,keep_links=False)
-    ac_tab = wb['Advanced Controls']
+    wb = openpyxl.load_workbook(filename=filename,data_only=True,keep_links=False)
 
-    xln = xl_filename.stem
-    if ('BIOSEQ' in xln or 'PDLAND' in xln or 'L-Use' in xln or 'AEZ Data' in wb.sheetnames):
-        is_rrs = False
-        is_land = True
-        is_elecgen = False
-    elif 'RRS' in xln or 'TAM Data' in wb.sheetnames:
-        is_rrs = True
-        is_land = False
-        is_elecgen = ('ElectricityGenerationSolution' in wb['Advanced Controls']['B1'].value)
-    else:
-        raise ValueError('Cannot determine solution category')
-    has_tam = is_rrs
-    adoption_base_year = wb['Helper Tables']['B21'].value
+    try:
+        ac_tab = wb['Advanced Controls']
 
-    f = open(str(py_filename), 'w', encoding='utf-8')
+        xln = filename.stem
+        if ('BIOSEQ' in xln or 'PDLAND' in xln or 'L-Use' in xln or 'AEZ Data' in wb.sheetnames):
+            is_rrs = False
+            is_land = True
+            is_elecgen = False
+        elif 'RRS' in xln or 'TAM Data' in wb.sheetnames:
+            is_rrs = True
+            is_land = False
+            is_elecgen = ('ElectricityGenerationSolution' in wb['Advanced Controls']['B1'].value)
+        else:
+            raise ValueError('Cannot determine solution category')
+        has_tam = is_rrs
+        adoption_base_year = wb['Helper Tables']['B21'].value
 
-    solution_name = xls(ac_tab, 'C40')
-    f.write('# ' + str(solution_name) + ' solution model.\n')
-    f.write('# Originally exported from: ' + xl_filename.name + '\n')
-    f.write('\n')
-    f.write('from pathlib import Path\n')
-    f.write('import numpy as np\n')
-    f.write('import pandas as pd\n')
-    f.write('\n')
-    f.write('from model import adoptiondata\n')
-    f.write('from model import advanced_controls as ac\n')
-    if is_land:
-        f.write('from model import aez\n')
-    f.write('from model import ch4calcs\n')
-    f.write('from model import co2calcs\n')
-    f.write('from model import conversions\n')
-    f.write('from model import customadoption\n')
-    f.write('from model import dd\n')
-    f.write('from model import emissionsfactors\n')
-    f.write('from model import firstcost\n')
-    f.write('from model import helpertables\n')
-    f.write('from model import operatingcost\n')
-    f.write('from model import s_curve\n')
-    f.write('from model import scenario\n')
-    f.write('from model import unitadoption\n')
-    f.write('from model import vma\n')
+        f = open(str(py_filename), 'w', encoding='utf-8')
 
-    if has_tam:
-        f.write('from model import tam\n')
-    elif is_land:
-        f.write('from model import tla\n')
+        solution_name = xls(ac_tab, 'C40')
+        f.write('# ' + str(solution_name) + ' solution model.\n')
+        f.write('# Originally exported from: ' + filename.name + '\n')
+        f.write('\n')
+        f.write('from pathlib import Path\n')
+        f.write('import numpy as np\n')
+        f.write('import pandas as pd\n')
+        f.write('\n')
+        f.write('from model import adoptiondata\n')
+        f.write('from model import advanced_controls as ac\n')
+        if is_land:
+            f.write('from model import aez\n')
+        f.write('from model import ch4calcs\n')
+        f.write('from model import co2calcs\n')
+        f.write('from model import conversions\n')
+        f.write('from model import customadoption\n')
+        f.write('from model import dd\n')
+        f.write('from model import emissionsfactors\n')
+        f.write('from model import firstcost\n')
+        f.write('from model import helpertables\n')
+        f.write('from model import operatingcost\n')
+        f.write('from model import s_curve\n')
+        f.write('from model import scenario\n')
+        f.write('from model import unitadoption\n')
+        f.write('from model import vma\n')
 
-    if is_rrs:
-        f.write('from solution import rrs\n\n')
-        sc = ac.string_to_solution_category(find_RRS_solution_category(wb=wb))
-        solution_category = f'ac.SOLUTION_CATEGORY.{ac.solution_category_to_string(sc).upper()}'
-        scenarios = get_rrs_scenarios(wb=wb, solution_category=sc)
-    elif is_land:
-        f.write('from model import conversions\n\n')
-        sc = ac.string_to_solution_category('LAND')
-        solution_category = 'ac.SOLUTION_CATEGORY.LAND'
-        scenarios = get_land_scenarios(wb=wb, solution_category=sc)
-    else:
-        scenarios = {}
+        if has_tam:
+            f.write('from model import tam\n')
+        elif is_land:
+            f.write('from model import tla\n')
 
-    f.write("DATADIR = Path(__file__).parents[2]/'data'\n")
-    f.write("THISDIR = Path(__file__).parent\n")
-    extract_vmas(f=f, wb=wb, outputdir=str(outputdir))
-    if is_rrs:
-        write_units_rrs(f=f, wb=wb)
-    if is_land:
-        write_units_land(f=f, wb=wb)
-    f.write(f"name = '{solution_name}'\n")
-    f.write(f"solution_category = {solution_category}\n")
-    f.write("\n")
+        if is_rrs:
+            f.write('from solution import rrs\n\n')
+            sc = ac.string_to_solution_category(find_RRS_solution_category(wb=wb))
+            solution_category = f'ac.SOLUTION_CATEGORY.{ac.solution_category_to_string(sc).upper()}'
+            scenarios = get_rrs_scenarios(wb=wb, solution_category=sc)
+        elif is_land:
+            f.write('from model import conversions\n\n')
+            sc = ac.string_to_solution_category('LAND')
+            solution_category = 'ac.SOLUTION_CATEGORY.LAND'
+            scenarios = get_land_scenarios(wb=wb, solution_category=sc)
+        else:
+            scenarios = {}
 
-    is_protect = False
-    has_harvest = False
-    use_custom_tla = False
-    for s in scenarios.values():
-        if s.get('use_custom_tla', ''):
-            if not 'custom_tla_fixed_value' in s:
-                extract_custom_tla(wb, outputdir=str(outputdir))
-            use_custom_tla = True
-        if 'delay_protection_1yr' in s.keys():
-            is_protect = True
-        if 'carbon_not_emitted_after_harvesting' in s.keys():
-            has_harvest = True
-
-    acs = []
-    for name, s in scenarios.items():
-        if min_creation_date:
-            creation_date = _scenario_creation_date_from_str(s['creation_date'])
-            if creation_date < min_creation_date:
-                print(f'Skipping scenario {name}, earlier than existing '
-                      'scenarios.')
-                continue
-        fname = to_unique_filename(name, acs, suffix=".json")
-        acs.append(fname)
-        write_json(filename=ac_dir/fname, d=s)
-    f.write("scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)\n")
-    f.write("\n")
-
-    f.write('# These are the "default" scenarios to use for each of the drawdown categories.\n')
-    f.write('# They should be set to the most recent "official" set"\n')
-    f.write('PDS1 = "NOT SET"\n')
-    f.write('PDS2 = "NOT SET"\n')
-    f.write('PDS3 = "NOT SET"\n\n')
-
-    f.write(f"class Scenario(scenario.{'Land' if is_land else 'RRS'}Scenario):\n")
-    f.write( "    name = name\n")
-    f.write( "    units = units\n")
-    f.write( "    vmas = VMAs\n")
-    f.write( "    solution_category = solution_category\n")
-    f.write( "    module_name = THISDIR.stem\n")
-    f.write(f"    base_year = {adoption_base_year}\n")
-    f.write( "\n")
-    f.write( "    def __init__(self, scen=None):\n")
-    f.write( "        # AC\n")
-    f.write( "        self.initialize_ac(scen, scenarios, PDS2)\n")
-    f.write( "\n")
-    if has_tam:
-        f.write("        # TAM\n")
-        write_tam(f=f, wb=wb, outputdir=str(outputdir))
-    elif is_land:
-        f.write("        # TLA\n")
-        write_aez(f=f, wb=wb, use_custom_tla=use_custom_tla)
-
-    f.write("        # ADOPTION\n")
-
-    # If needed, write out the data files, and emit the code to load the data from them
-    write_ad(f=f, wb=wb, outputdir=str(outputdir))
-    write_ca(case='PDS', f=f, wb=wb, outputdir=str(outputdir))
-    write_ca(case='REF', f=f, wb=wb, outputdir=str(outputdir))
-
-    f.write("        (ref_adoption_data_per_region,\n")
-    f.write("         pds_adoption_data_per_region,\n")
-    f.write("         pds_adoption_trend_per_region,\n")
-    f.write("         pds_adoption_is_single_source) = self.initialize_adoption_bases()\n")
-    f.write("\n")
-
-    write_ht(f=f, wb=wb)
-
-    f.write("        # DERIVED VALUES\n")
-    f.write("\n")
-    write_ef(f=f, wb=wb)
-    write_ua(f=f, wb=wb)
-    write_fc(f=f, wb=wb)
-    write_oc(f=f, wb=wb)
-
-    write_c2_c4(f=f, is_protect=is_protect, has_harvest=has_harvest)
-
-    if is_rrs:
-        f.write("        self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],\n")
-        f.write("            soln_avg_annual_use=self.ac.soln_avg_annual_use,\n")
-        f.write("            conv_avg_annual_use=self.ac.conv_avg_annual_use)\n")
+        f.write("DATADIR = Path(__file__).parents[2]/'data'\n")
+        f.write("THISDIR = Path(__file__).parent\n")
+        extract_vmas(f=f, wb=wb, outputdir=str(outputdir))
+        if is_rrs:
+            write_units_rrs(f=f, wb=wb)
+        if is_land:
+            write_units_land(f=f, wb=wb)
+        f.write(f"name = '{solution_name}'\n")
+        f.write(f"solution_category = {solution_category}\n")
         f.write("\n")
 
-    f.close()
+        is_protect = False
+        has_harvest = False
+        use_custom_tla = False
+        for s in scenarios.values():
+            if s.get('use_custom_tla', ''):
+                if not 'custom_tla_fixed_value' in s:
+                    extract_custom_tla(wb, outputdir=str(outputdir))
+                use_custom_tla = True
+            if 'delay_protection_1yr' in s.keys():
+                is_protect = True
+            if 'carbon_not_emitted_after_harvesting' in s.keys():
+                has_harvest = True
+
+        acs = []
+        for name, s in scenarios.items():
+            if min_creation_date:
+                creation_date = _scenario_creation_date_from_str(s['creation_date'])
+                if creation_date < min_creation_date:
+                    print(f'Skipping scenario {name}, earlier than existing '
+                        'scenarios.')
+                    continue
+            fname = to_unique_filename(name, acs, suffix=".json")
+            acs.append(fname)
+            write_json(filename=ac_dir/fname, d=s)
+        f.write("scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)\n")
+        f.write("\n")
+
+        f.write('# These are the "default" scenarios to use for each of the drawdown categories.\n')
+        f.write('# They should be set to the most recent "official" set"\n')
+        f.write('PDS1 = "NOT SET"\n')
+        f.write('PDS2 = "NOT SET"\n')
+        f.write('PDS3 = "NOT SET"\n\n')
+
+        f.write(f"class Scenario(scenario.{'Land' if is_land else 'RRS'}Scenario):\n")
+        f.write( "    name = name\n")
+        f.write( "    units = units\n")
+        f.write( "    vmas = VMAs\n")
+        f.write( "    solution_category = solution_category\n")
+        f.write( "    module_name = THISDIR.stem\n")
+        f.write(f"    base_year = {adoption_base_year}\n")
+        f.write( "\n")
+        f.write( "    def __init__(self, scen=None):\n")
+        f.write( "        # AC\n")
+        f.write( "        self.initialize_ac(scen, scenarios, PDS2)\n")
+        f.write( "\n")
+        if has_tam:
+            f.write("        # TAM\n")
+            write_tam(f=f, wb=wb, outputdir=str(outputdir))
+        elif is_land:
+            f.write("        # TLA\n")
+            write_aez(f=f, wb=wb, use_custom_tla=use_custom_tla)
+
+        f.write("        # ADOPTION\n")
+
+        # If needed, write out the data files, and emit the code to load the data from them
+        write_ad(f=f, wb=wb, outputdir=str(outputdir))
+        write_ca(case='PDS', f=f, wb=wb, outputdir=str(outputdir))
+        write_ca(case='REF', f=f, wb=wb, outputdir=str(outputdir))
+
+        f.write("        (ref_adoption_data_per_region,\n")
+        f.write("         pds_adoption_data_per_region,\n")
+        f.write("         pds_adoption_trend_per_region,\n")
+        f.write("         pds_adoption_is_single_source) = self.initialize_adoption_bases()\n")
+        f.write("\n")
+
+        write_ht(f=f, wb=wb)
+
+        f.write("        # DERIVED VALUES\n")
+        f.write("\n")
+        write_ef(f=f, wb=wb)
+        write_ua(f=f, wb=wb)
+        write_fc(f=f, wb=wb)
+        write_oc(f=f, wb=wb)
+
+        write_c2_c4(f=f, is_protect=is_protect, has_harvest=has_harvest)
+
+        if is_rrs:
+            f.write("        self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],\n")
+            f.write("            soln_avg_annual_use=self.ac.soln_avg_annual_use,\n")
+            f.write("            conv_avg_annual_use=self.ac.conv_avg_annual_use)\n")
+            f.write("\n")
+    finally:
+        wb.close()
+        f.close()
+     
     if warn_counts['unknown_formula'] > 0:
         warnings.warn(f"Extraction encountered {warn_counts['unknown_formula']} unknown formulas in values on ScenarioRecord tab")
 
