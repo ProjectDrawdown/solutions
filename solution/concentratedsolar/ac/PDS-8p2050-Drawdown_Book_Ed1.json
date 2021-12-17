@@ -178,10 +178,5 @@
     "soln_pds_adoption_prognostication_growth": "Medium",
     "soln_ref_adoption_basis": "Default",
     "soln_ref_adoption_regional_data": false,
-    "pds_adoption_use_ref_years": [
-        2015,
-        2016,
-        2017
-    ],
     "creation_date": "2019-01-13 15:30:01"
 }
