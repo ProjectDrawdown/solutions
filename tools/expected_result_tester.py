@@ -1150,7 +1150,7 @@ def key_results_tester(solution_name, expected_filename, scenario_skip=None, key
                 scenario_errors[f"{i}: {scenario_name}"] = errors
     
     if len(scenario_errors):
-        strout = "\n".join( f"scenario {k}\n" + "\n".join( v ) for (k,v) in scenario_errors.items() )
+        strout = "\n".join( f"\nscenario {k}\n" + "\n".join( v ) for (k,v) in scenario_errors.items() )
         strout = f"\nSolution {solution_name} key results\n{len(scenario_errors)}/{scenario_count} scenarios with errors:\n{strout}"
         raise AssertionError( strout )
 

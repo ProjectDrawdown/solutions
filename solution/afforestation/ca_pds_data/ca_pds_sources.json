@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Regional linear trend",
+        "filename": "ca_pds_Regional_linear_trend.csv",
+        "description": "Future forest plantation area is projected based on country level data available for the year 1990, 2000, 2005, and 2010 from the FAO's Forest Resource Assessment report from 2015. \nCountry level data about planted forest area from 1990 - 2014 was aggregated at the regional level (for details see hidden \"HistoricAndProjectedData\" sheet). This data was then used to project future adoption using a linear trend."
+    },
+    {
+        "name": "Regional max linear trend",
+        "filename": "ca_pds_Regional_max_li_7aaa1fe6.csv",
+        "description": "Future forest plantation area is projected based on country level data available for the year 1990, 2000, 2005, and 2010 from the FAO's Forest Resource Assessment report from 2015. Country level data about planted forest area from 1990 - 2014 was aggregated at the regional level, and used to determine regional annual growth rates. For details about the calculations of regional rates see hidden \"HistoricAndProjectedData\" sheet).\n\nIn this scenario, regional future adoption of forest plantations is projected based on the maximum historical regional growth rate reported in the respective region (between 1990 - 2014). For each region, future adoption projected based on the maximum linear regional trend between any two given time periods."
+    },
+    {
+        "name": "50% of the max historical annual afforestation rate across the regions",
+        "filename": "ca_pds_50_of_the_max_h_056a1704.csv",
+        "description": "Future forest plantation area is projected based on country level data available for the year 1990, 2000, 2005, and 2010 from the FAO's Forest Resource Assessment report from 2015. Country level data about planted forest area from 1990 - 2014 was aggregated at the regional level, and used to determine regional annual growth rates. For details about the calculations of regional rates see hidden \"HistoricAndProjectedData\" sheet).\n\nIn this scenario, regional future adoption of forest plantations is projected based on the maximum historical regional growth rate across all regions (between 1990 - 2014), which occurred in Asia (0.57 Mha annual increase between 2010 -2014). \nFor the ASIA region this same rate (0.57 Mha annual increase) is used for projecting the future adoption of forest plantation. For all other regions half of this growth rate is applied (0.29 Mha annual increase)."
+    },
+    {
+        "name": "100% of the max historical annual afforestation rate across the regions",
+        "filename": "ca_pds_100_of_the_max__e1b0a8dd.csv",
+        "description": "Future forest plantation area is projected based on country level data available for the year 1990, 2000, 2005, and 2010 from the FAO's Forest Resource Assessment report from 2015. Country level data about planted forest area from 1990 - 2014 was aggregated at the regional level, and used to determine regional annual growth rates. For details about the calculations of regional rates see hidden \"HistoricAndProjectedData\" sheet).\n\nIn this scenario, regional future adoption of forest plantations is projected based on the maximum historical regional growth rate across all regions (between 1990 - 2014), which occurred in Asia (0.57 Mha increase between 2010 -2014). \nTo project future adoption of forest plantations, this rate was applied to all regions, including Asia (0.57 Mha annual increase)."
+    },
+    {
+        "name": "200% increase for Asia and 100% for the other regions",
+        "filename": "ca_pds_200_increase_fo_92fe11c9.csv",
+        "description": "Future forest plantation area is projected based on country level data available for the year 1990, 2000, 2005, and 2010 from the FAO's Forest Resource Assessment report from 2015. Country level data about planted forest area from 1990 - 2014 was aggregated at the regional level, and used to determine regional annual growth rates. For details about the calculations of regional rates see hidden \"HistoricAndProjectedData\" sheet).\n\nIn this scenario, regional future adoption of forest plantations is projected based on the maximum historical regional growth rate across all regions (between 1990 - 2014), which occurred in Asia (0.57 Mha increase between 2010 -2014). \nTo project future adoption of forest plantations, this rate was applied to all regions (0.57 Mha annual increase) except for Asia region where the rate was doubled (1.14 Mha annual increase)."
+    },
+    {
+        "name": "Conservative growth projection based on Kreidenweis et al. (2016)",
+        "filename": "ca_pds_Conservative_gr_b187395c.csv",
+        "description": "This projection of future adoption of afforestation is based on Kreidenweis et al. (2016)'s \"global afforestation\" scenario, which assumes 1614 Mha total afforested area by 2050. \nWe calculated the proportion of this projection based on the percent of afforestation to the total TLA set for the biomass crops as per 2019 land allocation model.  This proportion was applied to TLA set for this solution allocated on forest AEZs."
+    },
+    {
+        "name": "High growth projection based on Kreidenweis et al. (2016)",
+        "filename": "ca_pds_High_growth_pro_747e6a30.csv",
+        "description": "This projection of future adoption of afforestation is based on Kreidenweis et al. (2016)'s \"global afforestation\" scenario, which assumes 1614 Mha total afforested area by 2050. \nWe calculated the proportion of this projection to the total TLA set for the biomass crops as per 2019 land allocation model.  This proportion was applied to TLA set for this solution allocated on forest AEZs."
+    },
+    {
+        "name": "Linear projections based on  Evans (2009) publication",
+        "filename": "ca_pds_Linear_projecti_0c41bb37.csv",
+        "description": "Projections of future adoption of forest plantations are based on the total predicted area of planted forest in 2030 (344.5 Mha), as reported by Evans (2009), see Table 5.5. The predictions are made according to two scenarios (Scenario 2: \"Business as Usual\" and Scenario 3: \"Higher Productivity\") described in Table 5.2 of the publication."
+    }
+]
