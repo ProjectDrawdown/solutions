@@ -1,5 +1,4 @@
-#!/bin/bash
-set -x
+#!/bin/bash -x
 ################################################################################
 # File:    buildDocs.sh
 # Purpose: Script that builds our documentation using sphinx and updates GitHub
@@ -12,12 +11,13 @@ set -x
 # Version: 0.1
 ################################################################################
  
-###################
-# INSTALL DEPENDS #
-###################
+########################
+# INSTALL DEPENDENCIES #
+########################
  
 apt-get update
-apt-get -y install git rsync python3-sphinx python3-sphinx-rtd-theme
+apt-get -y install git rsync python3-Sphinx
+pip install furo -r requirements.txt
  
 #####################
 # DECLARE VARIABLES #
