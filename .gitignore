@@ -22,3 +22,6 @@ Local*.ipynb
 build/
 dist/
 *.egg-info/
+
+_build/
+_codetoc/
