@@ -29,12 +29,6 @@ jobs:
         ls -la
         chmod +x Documentation/sphinx/builddocs.sh
       shell: bash
- 
-    - name: Where are we
-      run: |
-       pwd
-       ls -la
-      shell: bash
       
     - name: Execute script to build our documentation and update pages
       env:

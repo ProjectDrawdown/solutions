@@ -16,7 +16,7 @@
 ########################
  
 apt-get update
-apt-get -y install git rsync python3-Sphinx
+apt-get -y install python3-pip python3-sphinx
 pip install furo -r requirements.txt
  
 #####################
@@ -44,7 +44,7 @@ git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
  
 docroot=`mktemp -d`
-rsync -av "docs/_build/html/" "${docroot}/"
+cp -a "Documentation/sphinx/_build/html/" "${docroot}/"
  
 pushd "${docroot}"
  
