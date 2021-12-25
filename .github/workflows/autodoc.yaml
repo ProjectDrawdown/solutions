@@ -14,7 +14,7 @@ jobs:
  
     steps:
  
-    - name: Prereqs
+    - name: Install git and clone repository
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
@@ -26,5 +26,5 @@ jobs:
     - name: Execute script to build our documentation and update pages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: "./Documentation/sphinx/buildDocs.sh"
+      run: "./solutions/Documentation/sphinx/buildDocs.sh"
       shell: bash
