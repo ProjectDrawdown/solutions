@@ -1,14 +1,13 @@
-#!/bin/bash -x
+#!/bin/bash -x -e
 ################################################################################
-# File:    buildDocs.sh
+# File:    builddocs.sh
 # Purpose: Script that builds our documentation using sphinx and updates GitHub
 #          Pages. This script is executed by:
 #            .github/workflows/docs_pages_workflow.yml
 #
-# Authors: Michael Altfield <michael@michaelaltfield.net>
+# Based on:
+# Original Authors: Michael Altfield <michael@michaelaltfield.net>
 # Created: 2020-07-17
-# Updated: 2020-07-17
-# Version: 0.1
 ################################################################################
  
 ########################
@@ -17,14 +16,15 @@
  
 apt-get update
 apt-get -y install python3-pip python3-sphinx
-pip install furo -r requirements.txt
+python3 -m pip install furo -r requirements.txt
  
 #####################
 # DECLARE VARIABLES #
 #####################
  
 pwd
-ls -lah
+# Sphinx root in this project
+docs="Documentation/sphinx"
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
  
 ##############
@@ -33,8 +33,8 @@ export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
  
 # build our documentation with sphinx (see docs/conf.py)
 # * https://www.sphinx-doc.org/en/master/usage/quickstart.html#running-the-build
-make -C docs clean
-make -C docs html
+make -C "${docs}" clean
+make -C "${docs}" html
  
 #######################
 # Update GitHub Pages #
@@ -43,10 +43,10 @@ make -C docs html
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
  
-docroot=`mktemp -d`
-cp -a "Documentation/sphinx/_build/html/" "${docroot}/"
+htmlsrc=`mktemp -d`
+cp -a "${docs}/_build/html/" "${htmlsrc}/"
  
-pushd "${docroot}"
+pushd "${htmlsrc}"
  
 # don't bother maintaining history; just generate fresh
 git init
