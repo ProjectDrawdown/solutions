@@ -1,4 +1,4 @@
-#!/bin/bash -x -e
+#!/bin/bash
 ################################################################################
 # File:    builddocs.sh
 # Purpose: Script that builds our documentation using sphinx and updates GitHub
@@ -9,7 +9,9 @@
 # Original Authors: Michael Altfield <michael@michaelaltfield.net>
 # Created: 2020-07-17
 ################################################################################
- 
+set -x
+set -e 
+
 ########################
 # INSTALL DEPENDENCIES #
 ########################
