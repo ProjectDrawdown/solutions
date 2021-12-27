@@ -11,14 +11,6 @@
 ################################################################################
 set -x
 set -e 
-
-########################
-# INSTALL DEPENDENCIES #
-########################
- 
-apt-get update
-apt-get -y install python3-pip python3-sphinx
-python3 -m pip install furo -r requirements.txt
  
 #####################
 # DECLARE VARIABLES #

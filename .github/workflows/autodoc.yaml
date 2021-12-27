@@ -10,18 +10,17 @@ jobs:
  
   build_docs_job:
     runs-on: ubuntu-latest
-    container: debian:buster-slim
  
     steps:
- 
-    - name: Install git and clone repository
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        apt-get update
-        apt-get install -y git
-        git clone --depth 1 "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
-      shell: bash
+    - name: Get repo
+      uses: actions/checkout@v2
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+        cache: 'pip'
+    - name: install our dependencies
+      run: pip install furo -r requirements.txt
     
     - name: Check
       run: |
