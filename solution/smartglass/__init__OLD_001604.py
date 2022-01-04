@@ -61,17 +61,16 @@ class Scenario(scenario.RRSScenario):
 
         # Instructions: Set TAM override parameters appropriately if any of these vary from the standard (then delete these comments):
         # trend (3rd Poly): 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly
-        # growth (medium): Medium Medium Medium Medium Medium Medium Medium Medium Medium Medium
+        # growth (medium): High Medium Medium Medium Medium Medium Medium Medium Medium Medium
         # low_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
         # high_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
 
         self._ref_tam_sources = scenario.load_sources(THISDIR/'tam/tam_ref_sources.json','*')
         self._pds_tam_sources = self._ref_tam_sources
-        # tam_config_values = [
-        #     ('trend','OECD90','Linear'),
-        # ]
-        # self.set_tam(config_values=tam_config_values)
-        self.set_tam()
+        tam_config_values = [
+            ('growth','World','Medium'),
+        ]
+        self.set_tam(config_values=tam_config_values)
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
@@ -112,7 +111,7 @@ class Scenario(scenario.RRSScenario):
             copy_ref_datapoint=True,
             copy_ref_world_too=False,
             copy_pds_datapoint='Ref Table',
-            # copy_pds_world_too=True,
+            copy_pds_world_too=True,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
         # DERIVED VALUES
