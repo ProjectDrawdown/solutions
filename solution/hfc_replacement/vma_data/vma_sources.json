@@ -1,14 +1,1 @@
-{
-  "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "kton refrigerant"
-  },
-  "CONVENTIONAL Direct Emissions per Functional Unit": {
-    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
-    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "t CO2-eq/kton refrigerant"
-  }
-}
+{}

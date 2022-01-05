@@ -14,7 +14,6 @@ import zipfile
 
 from model import dd
 from tools import util
-from tools import solution_xls_extract as sxe
 
 def _update_directory(datadirectory, entry):
     """Add the entry to the datadirectory if it is a new one, or update the existing one if not."""
@@ -83,7 +82,7 @@ def convert_to_cpds(solution, scenarios_to_convert, root=None):
                 adoption_name = ac['name'] + '_ca'
 
                 # output adoption data and update directory
-                adoption_filename = datadir / sxe.get_filename_for_source(adoption_name)
+                adoption_filename = datadir / util.to_filename(adoption_name)
                 effectiveadoption.to_csv(adoption_filename)
                 _update_directory(datadirectory, {
                     "name": adoption_name,

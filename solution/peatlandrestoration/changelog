@@ -1,3 +1,8 @@
+Nov 2021
+
+The extractor sets the copy_pds_to_ref quirk unnecessarily, because the common values are all zeros.
+I deleted those params.  (Same was true before, actually, I just hadn't noticed it.)
+
 August 2021
 
 Fixed "by accident":  Removing older scenarios means that the remaining scenarios have the same values

@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Ambitious Cases (Legacy Book and December 2018 Update)",
+        "filename": "ca_pds_Ambitious_Cases_76212dd3.csv",
+        "description": "Scenario including all of the 11 Ambitious scenarios collected for the book and on the 2018 update."
+    },
+    {
+        "name": "Baseline Cases (Legacy Book and December 2018 Update)",
+        "filename": "ca_pds_Baseline_Cases__726985de.csv",
+        "description": "Scenario including all of the 9 Baseline scenarios collected for the book and on the 2018 update."
+    },
+    {
+        "name": "Conservative Cases (Legacy Book and December 2018 Update)",
+        "filename": "ca_pds_Conservative_Ca_a7f3b100.csv",
+        "description": "Scenario including all of the 7 Conservative scenarios collected for the book and on the 2018 update."
+    },
+    {
+        "name": "100% Renewable Energy Sources Scenario",
+        "filename": "ca_pds_100_Renewable_E_4d193fb9.csv",
+        "description": "Scenario including  the 3 100% RES scenarios collected for the book and on the 2018 update."
+    }
+]

@@ -328,7 +328,7 @@ class OperatingCost(DataHandler):
         """
         result = self.soln_ref_annual_world_first_cost + self.conv_ref_annual_world_first_cost
         result = result - self.soln_pds_annual_world_first_cost
-        index = pd.RangeIndex(result.first_valid_index(), 2140)
+        index = pd.RangeIndex(dd.CORE_START_YEAR, 2140)
         result = result.reindex(index=index)
         # Excel returns 0.0 for years after self.ac.report_end_year
         result.loc[self.ac.report_end_year + 1:] = 0.0
@@ -345,7 +345,7 @@ class OperatingCost(DataHandler):
         conv_ref_lifetime_cost = self.conv_ref_annual_breakout().sum(axis=1)
         soln_pds_lifetime_cost = self.soln_pds_annual_breakout().sum(axis=1)
         result = conv_ref_lifetime_cost - soln_pds_lifetime_cost
-        index = pd.RangeIndex(result.first_valid_index(), 2140)
+        index = pd.RangeIndex(dd.CORE_START_YEAR, 2140)
         result = result.reindex(index)
         result.name = 'soln_marginal_operating_cost_savings'
         return result
@@ -358,7 +358,7 @@ class OperatingCost(DataHandler):
            SolarPVUtil 'Operating Cost'!D126:D250
         """
         result = self.soln_marginal_first_cost() + self.soln_marginal_operating_cost_savings()
-        index = pd.RangeIndex(result.first_valid_index(), 2140)
+        index = pd.RangeIndex(dd.CORE_START_YEAR, 2140)
         result = result.reindex(index)
         result.name = 'soln_net_cash_flow'
         return result

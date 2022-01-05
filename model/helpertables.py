@@ -129,15 +129,11 @@ class HelperTables:
     
 
     @lru_cache()
-    def soln_ref_funits_adopted(self, suppress_override=False):
+    def soln_ref_funits_adopted(self, suppress_recursion=False):
         """Cumulative Adoption in funits, interpolated between two ref_datapoints.
+        suppress_recursion: used to avoid potential infinite loops between pds and ref adoption calculations.
 
-           Arguments:
-             suppress_override: disable ref_adoption_use_pds_years processing. This is
-               used to avoid an infinite loop if both pds_adoption_use_ref_years and
-               ref_adoption_use_pds_years are set.
-
-           SolarPVUtil 'Helper Tables'!B26:L73
+        SolarPVUtil 'Helper Tables'!B26:L73
         """
 
         if self.ac.soln_ref_adoption_basis == 'Custom':
@@ -161,9 +157,9 @@ class HelperTables:
                                             self.ref_adoption_limits['World'].fillna(0.0)],
                                             axis=0)
 
-        if self.copy_through_year > 2014 and self.copy_pds_to_ref:
+        if self.copy_through_year > 2014 and self.copy_pds_to_ref and not suppress_recursion:
             # The Drawdown 2020 models get REF data for the World region for 2014-2018 from PDS.
-            funits = self.soln_pds_funits_adopted(suppress_override=True)
+            funits = self.soln_pds_funits_adopted(suppress_recursion=True)
             main_region = list(adoption.columns)[0]
             years = np.arange(2014, self.copy_through_year)
             adoption.loc[years, main_region] = funits.loc[years, main_region]
@@ -183,10 +179,10 @@ class HelperTables:
             adoption.loc[2014].update(override)
             #print(f"REF C: {adoption.loc[2014,'World']}")
 
-        if not suppress_override and self.ac.ref_adoption_use_pds_years:
+        if not suppress_recursion and self.ac.ref_adoption_use_pds_years:
             # This option is currently never used.
             y = self.ac.ref_adoption_use_pds_years
-            adoption.update(self.soln_pds_funits_adopted(suppress_override=True).loc[y, 'World'])
+            adoption.update(self.soln_pds_funits_adopted(suppress_recursion=True).loc[y, 'World'])
             #print(f"REF D: {adoption.loc[2014,'World']}")
 
         adoption.name = "soln_ref_funits_adopted"
@@ -220,15 +216,11 @@ class HelperTables:
         return adoption
 
     @lru_cache()
-    def soln_pds_funits_adopted(self, suppress_override=False):
+    def soln_pds_funits_adopted(self, suppress_recursion=False):
         """Cumulative Adoption in funits in the PDS.
+        suppress_recursion: used to avoid potential infinite loops between pds and ref adoption calculations.
 
-           Arguments:
-             suppress_override: disable pds_adoption_use_ref_years processing. This is
-               used to avoid an infinite loop if both pds_adoption_use_ref_years and
-               ref_adoption_use_pds_years are set.
-
-           SolarPVUtil 'Helper Tables'!B90:L137
+        SolarPVUtil 'Helper Tables'!B90:L137
         """
         main_region = dd.REGIONS[0]
         if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
@@ -265,16 +257,16 @@ class HelperTables:
                                                 pds_adoption_limits_extended[main_region].fillna(0.0)], axis=0)
             #print(f"C: {adoption.loc[2014,'World']}")
 
-        if not suppress_override and self.ac.pds_adoption_use_ref_years:
+        if not suppress_recursion and self.ac.pds_adoption_use_ref_years:
             y = self.ac.pds_adoption_use_ref_years
-            adoption.update(self.soln_ref_funits_adopted(suppress_override=True).loc[y, main_region])
+            adoption.update(self.soln_ref_funits_adopted(suppress_recursion=True).loc[y, main_region])
             #print(f"D: {adoption.loc[2014,'World']}")
 
         if self.copy_pds_datapoint:
             #print(f"params are {self.copy_pds_datapoint} and {self.copy_pds_world_too}")
             #copy pds datapoint always affects year 2014, regardless of base_year
             if self.copy_pds_datapoint == 'Ref Table':
-                override = self.soln_ref_funits_adopted(suppress_override=True).loc[2014]
+                override = adoption.loc[2014] if suppress_recursion else self.soln_ref_funits_adopted(suppress_recursion=True).loc[2014]
             else:
                 override = self.pds_datapoints.iloc[0]
             if not self.copy_pds_world_too:

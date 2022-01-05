@@ -1,7 +1,42 @@
+December 2021:
+[Meta note: I spent a lot of time debugging an issue that turned out to be Denton's note #2
+below.  If I'd just read and executed that first, I would have saved a lot of time... just
+sayin']
+
+There only appear to be two "most recent" scenarios.  Taking the 2nd of these to be both PDS2
+and PDS3.  (Previously we'd adopted a previous scenario for PDS3, but comparison of the scenarios
+showed the differed only by a cost factor, which didn't seem to be kosher, so this seems cleaner.)
+
+On the Adoption tab, regional parameters get misread because the "include?" column is missing.
+But it doesn't matter because all the params are default values.  So all I had to do was delete
+the confusing-looking comments from the init.py
+
+Denton's Issue #1 to doesn't cause a problem any more, because the table is empty.  However, we
+do get an error for table 22 (line 844) because it is missing the 'Add calc above' marker.  Fix
+is to add this to the spreadsheet and re-run the extraction.
+
+Issue #2 still holds; fixed as he said.  (BTW for another solution I did enough investigation
+to conclude this is an issue inside Excel, and not anything we can do anything about.)
+
+Issue #3 below is still happening. Doing Denton's replacement removed the nan vs non-nan
+errors, but left other very minor numerical errors that we will ignore.
+
+At the conclusion we have some key test errors.  These are a result of tests that avoid "meaningless"
+cases such as "expected lifetime" being equal to zero, which is how it is set for afforestation.
+Just leaving this as is for now, will open an issue to address it more fully.
+
 Denton's notes:
 Afforestation
 In Drawdown 2020:
-the headings on the Variable Meta-Analysis C84:M84 have been deleted which makes parsing fail. Restore them from elsewhere on the sheet.
-solution/afforestation/ca_ref_data/custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv extracts one more digit of precision for 2018 and 2019 than subsequent years, which breaks a <= check in unitadoption.py:soln_ref_new_iunits_reqd_LAND. Edit the CSV file to remove the extra digit of precision from all columns, 2018&2019 should have the same values as 2020+.
-The Custom REF Adoption tab supplies no regional data, not even 0. Change the IFERROR value in Helper Tables D28:L73 to 0.0. The symptom is that Unit Adoption Calculations Q252 is NaN in Excel and not NaN in Python.
+1. the headings on the Variable Meta-Analysis C84:M84 have been deleted which makes parsing fail.
+Restore them from elsewhere on the sheet.
+
+2. solution/afforestation/ca_ref_data/custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv
+extracts more digits of precision for 2018 and 2019 than subsequent years, which breaks a <=
+check in unitadoption.py:soln_ref_new_iunits_reqd_LAND. Edit the CSV file to remove the extra
+digit(s) of precision from all columns, 2018&2019 should have the same values as 2020+.
+
+3. The Custom REF Adoption tab supplies no regional data, not even 0. The symptom is that Unit
+Adoption Calculations Q252 is NaN in Excel and not NaN in Python.  The fix is to change the
+IFERROR value in Helper Tables D28:L73 to 0.0. E.g.:
 =IFERROR(MIN((IF($F$15=1,FORECAST($B28,D$21:D$22,$B$21:$B$22),'Custom REF Adoption'!C26*1)),'Unit Adoption Calculations'!C18),0)

@@ -1,73 +1,72 @@
 {
-  "2005-2014 Average CONVENTIONAL Fuel Price per functional unit": {
-    "title": "2005-2014 Average CONVENTIONAL Fuel Price per functional unit",
-    "filename": "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit.csv",
-    "use_weight": true,
-    "units": "$US2014/kWh"
-  },
-  "Coal Plant Efficiency": {
-    "title": "Coal Plant Efficiency",
-    "filename": "Coal_Plant_Efficiency.csv",
-    "stat_correction": true,
-    "units": "%"
-  },
-  "CONVENTIONAL Average Annual Use": {
-    "title": "CONVENTIONAL Average Annual Use",
-    "filename": "CONVENTIONAL_Average_Annual_Use.csv",
-    "use_weight": true,
-    "units": "TWh/TW/year"
-  },
   "CONVENTIONAL First Cost per Implementation Unit": {
-    "title": "CONVENTIONAL First Cost per Implementation Unit",
-    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
     "use_weight": true,
-    "units": "US$2014/kW"
-  },
-  "CONVENTIONAL Fixed Operating Cost (FOM)": {
-    "title": "CONVENTIONAL Fixed Operating Cost (FOM)",
-    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv",
-    "use_weight": true,
-    "units": "US$2014/kW"
+    "bound_correction": false,
+    "description": "The value for CONVENTIONAL First Cost is calculated by taking the weighted average of first cost values for conventional electricity generating technologies that will be directly replaced by the solution. The weight is the percentage share, for the given technology, of total global generatiion in 2014. These figures on historical generation for for 2018 were interpolated  by Project Drawdown based on historical figures and future adoption scenarios [See ELC Integration Model for more details]. NOTE: the IPCC uses the following sources for calculating minimum, median, and maximum First Cost for coal and natural gas: \nCoal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).\nGas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).",
+    "units": "US$2014/kW",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"
   },
   "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
     "use_weight": true,
-    "units": "TWh/TW"
+    "bound_correction": false,
+    "description": "The value for Lifetime Capacity - Conventional is calculated by taking the weighted average of lifetime capacity values (kWh/kW) for conventional electricity generating technologies that will be directly replaced by the solution. Raw data inputs in years are converted to kWh/kW by multiplying by the Average Annual Use - Conventional variable. The weight is the percentage share, for the given technology, of total global generation. These figures on historical generation for for 2018 were interpolated  by Project Drawdown based on historical figures and future adoption scenarios [See ELC Integration Model for more details]. NOTE: the IPCC uses the following sources for Lifetime Capacity for coal and natural gas: \nCoal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).\nGas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).",
+    "units": "TWh/TW",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "The raw data input for Average Annual Use - Conventional is a capacity factor value that is converted to average annual use (TWh/TW/) by multiplying capacity factor by total hours/year (8760). A weight is then applied in order to create a weighted average value for all conventional sources that will be replaced by this solution. The weight is the percentage share, for the given technology, of total global generation.  These figures on historical generation for for 2018 were interpolated  by Project Drawdown based on historical figures and future adoption scenarios [See ELC Integration Model for more details].",
+    "units": "TWh/TW/year",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv"
   },
   "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
-    "title": "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit",
-    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
     "use_weight": true,
-    "units": "US$2014/kWh"
+    "bound_correction": false,
+    "description": "The value for CONVENTIONAL Variable Operation & Maintenance (VOM) Cost is calculated per functional unit (i.e. per hour of operation). According to PJM (2011), VOM costs include expenses such as air filter replacements, inspections and overhauls, water treatment expenses, catalyst replacements, and major overhaul expenses. Given that these can occur in some cases over a number of years, the costs are divided by hours of operation to derive a cost per hour of operation, which is why these costs are reported in MWh. The MWh values for the IPCC minimum, median, and maximum VOM costs are input and then converted to kWh values.  These figures on historical generation for for 2018 were interpolated  by Project Drawdown based on historical figures and future adoption scenarios [See ELC Integration Model for more details]. NOTE: the IPCC uses the following sources for calculating minimum, median, and maximum First Cost for coal and natural gas: \nCoal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).\nGas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013). Source for PJM definition: https://pjm.com/~/media/committees-groups/subcommittees/cds/20110228/20110228-item-06a-cds-educational-paper-for-vom.ashx",
+    "units": "US$2014/kWh",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Fu_1a410c96.csv"
   },
-  "Discount Rate: Commercial / Industry": {
-    "title": "Discount Rate: Commercial / Industry",
-    "filename": "Discount_Rate_Commercial_Industry.csv",
-    "stat_correction": true,
-    "units": "%"
+  "CONVENTIONAL Fixed Operating Cost (FOM)": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "The value for Conventional Fixed Operation & Maintenance (FOM) Cost is calculated per implementation unit (i.e. per kW of installed capacity). FOM costs can include expenses such as day-to-day preventative and corrective maintenance, labor costs, asset and site management, and maintaining health and safety, among others. These figures on historical generation for for 2018 were interpolated  by Project Drawdown based on historical figures and future adoption scenarios [See ELC Integration Model for more details].. NOTE: the IPCC uses the following sources for calculating minimum, median, and maximum fixed annual opeartion and maintenance costs for coal and natural gas: \nCoal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).\nGas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).",
+    "units": "US$2014/kW",
+    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv"
   },
-  "Kerosene (Heating Oil) Spot Price": {
-    "title": "Kerosene (Heating Oil) Spot Price",
-    "filename": "Kerosene_Heating_Oil_Spot_Price.csv",
-    "stat_correction": true
-  },
-  "Natural Gas Plant Efficiency": {
-    "title": "Natural Gas Plant Efficiency",
-    "filename": "Natural_Gas_Plant_Efficiency.csv",
-    "stat_correction": true,
-    "units": "%"
-  },
-  "Oil Plant Efficiency": {
-    "title": "Oil Plant Efficiency",
-    "filename": "Oil_Plant_Efficiency.csv",
-    "stat_correction": true,
-    "units": "%"
+  "2005-2014 Average CONVENTIONAL Fuel Price per functional unit": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "Coal (original units - short ton) is converted to a kWh value assuming a power plant heat rate of 10,080 Btu/kWh (from EIA Power plant heat rates source). Both prices are weighted based on the percentage, for the given technology, of total global generation. These values (TWh) are based on the IEA 2016 Energy Technology Perspectives (ETP) scenario. (EIA):https://www.eia.gov/tools/faqs/faq.cfm?id=667&t=2",
+    "units": "$US2014/kWh",
+    "filename": "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_f_61da7eda.csv"
   },
   "Weighted Average CONVENTIONAL Plant Efficiency": {
-    "title": "Weighted Average CONVENTIONAL Plant Efficiency",
-    "filename": "Weighted_Average_CONVENTIONAL_Plant_Efficiency.csv",
     "use_weight": true,
-    "units": "%"
+    "bound_correction": false,
+    "description": "This variable creates a weighted average CONVENTIONAL Plant Efficiency by applying a weight to averaged plant efficiency data for coal and natural gas (see two variables below). The weights are based on the percentage, for the given technology, of total global generation. These values (TWh) are based on the IEA 2016 Energy Technology Perspectives (ETP) scenario.",
+    "units": "%",
+    "filename": "Weighted_Average_CONVENTIONAL_Plant_Efficiency.csv"
+  },
+  "Coal Plant Efficiency": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "For the IEA data, a lower heating value (LHV) is used. The average EIA data from 2004-2014 is reported in Btu/kWh, and this average is converted to an efficiency measure by dividing the equivalent Btu content of a kWh of electricity (which is 3,412 Btu) by the raw data input (see: https://www.eia.gov/tools/faqs/faq.cfm?id=667&t=2). For the IPCC data, minimum, median, and maximum values are included.NOTE: the IPCC uses the following sources for calculating minimum, median, and maximum fixed annual opeartion and maintenance costs for coal and natural gas: \nCoal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).\nGas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).",
+    "units": "%",
+    "filename": "Coal_Plant_Efficiency.csv"
+  },
+  "Natural Gas Plant Efficiency": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "For the IEA data, minimum and maximum lower heating values (LHV) are included. The average EIA data from 2004-2014 is reported in Btu/kWh, and this average is converted to an efficiency measure by dividing the equivalent Btu content of a kWh of electricity (which is 3,412 Btu) by the raw data input (see: https://www.eia.gov/tools/faqs/faq.cfm?id=667&t=2). For the IPCC data, minimum, median, and maximum values are included. NOTE: the IPCC uses the following sources for calculating minimum, median, and maximum fixed annual opeartion and maintenance costs for coal and natural gas: \nCoal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).\nGas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).",
+    "units": "%",
+    "filename": "Natural_Gas_Plant_Efficiency.csv"
+  },
+  "Oil Plant Efficiency": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "%",
+    "filename": "Oil_Plant_Efficiency.csv"
   }
 }

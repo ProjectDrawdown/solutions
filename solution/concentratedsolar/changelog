@@ -1,4 +1,7 @@
 Deleted the three 2020 scenarios since one of them broke with a missing TAM.
+Two of the scenarios had pds adoption overrides set, in spite of the model using copy_pds_to_ref.  When we disallowed recursion
+between pds/ref helpertables functionality, this broke.  I fixed it by removing the adoption overrides ("pds_adoption_use_ref_years"),
+which weren't accomplishing anything useful anyway.
 
 Denton's Notes:
 Concentrated Solar
