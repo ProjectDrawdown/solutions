@@ -31,10 +31,6 @@ import tools.vma_xls_extract as vxe
 from tools.util import convert_bool, xls, xli, xln, co, find_in_column, to_unique_filename
 from model import advanced_controls as ac
 
-
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 1000)
 warnings.filterwarnings("ignore",module=".*openpyxl.*")
 
 # Some constants to monitor for updates:

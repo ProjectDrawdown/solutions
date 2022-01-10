@@ -1,8 +1,8 @@
 """Project Drawdown Land Utilities for Solutions.
 There are three kinds of land divisions recognized within Project Drawdown:
- * Regions:  these are the geo-political regions such as OECD90 and Latin America
- * Thermal-Moisture Regimes, aka TMR: designations such as Boreal-Humid, etc.
- * AEZs: this is a custom PD analysis of land areas combining land type, soil quality and slope steepness
+* Regions:  these are the geo-political regions such as OECD90 and Latin America
+* Thermal-Moisture Regimes, aka TMR: designations such as Boreal-Humid, etc.
+* AEZs: this is a custom PD analysis of land areas combining land type, soil quality and slope steepness
  
 Geographical analysis to create a cross-correlation between these three dimensions has been done,
 and the original work is available at [https://github.com/ProjectDrawdown/spatial-aez].

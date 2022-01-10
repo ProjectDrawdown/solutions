@@ -1,6 +1,4 @@
-"""CO2 Calcs module.
-
-Computes reductions for CO2 and total GHGs in CO2-equivalent emissions.
+"""Computes reductions for CO2 and total GHGs in CO2-equivalent emissions.
 """
 
 from functools import lru_cache, wraps
@@ -100,28 +98,8 @@ def co2_ppm_calculator_cached(
 # CO2 MODULE IMPORTS
 
 class CO2Calcs(DataHandler):
-    """CO2 Calcs module.
-        Arguments:
-          ac: advanced_cost.py object, storing settings to control model operation.
-          ch4_ppb_calculator:
-          ch4_megatons_avoided_or_reduced:
-          n2o_megatons_avoided_or_reduced:
-          soln_pds_net_grid_electricity_units_saved:
-          soln_pds_net_grid_electricity_units_used:
-          soln_pds_direct_co2_emissions_saved:
-          soln_pds_direct_ch4_co2_emissions_saved:
-          soln_pds_direct_n2o_co2_emissions_saved:
-          soln_pds_new_iunits_reqd:
-          soln_ref_new_iunits_reqd:
-          conv_ref_new_iunits:
-          conv_ref_grid_CO2_per_KWh:
-          conv_ref_grid_CO2eq_per_KWh:
-          soln_net_annual_funits_adopted:
-          fuel_in_liters:
-          annual_land_area_harvested: (from unit adoption calcs)
-          regime_distribution: (land/ocean distribution from aez/dez data)
-      """
-
+    """Computes reductions for CO2 and total GHGs in CO2-equivalent emissions.
+    """
     def __init__(self, ac, soln_net_annual_funits_adopted=None, ch4_ppb_calculator=None,
                  ch4_megatons_avoided_or_reduced=None,
                  n2o_megatons_avoided_or_reduced=None,
@@ -177,28 +155,30 @@ class CO2Calcs(DataHandler):
 
 
 
-###########----############----############----############----############
-# CO2 EMISSIONS CALCULATIONS
+    ###########----############----############----############----############
+    # CO2 EMISSIONS CALCULATIONS
 
     @lru_cache()
     @data_func
     def co2_mmt_reduced(self):
         """CO2 MMT Reduced
-           Annual CO2 reductions by region and year are calculated by adding reduced emissions
-           derived from the electric grid, the replaced emissions derived from clean renewables,
-           the net direct emissions derived from non-electric/non-fuel consumption, and the reduced
-           emissions derived from fuel efficiency, and then subtracting the net indirect emissions.
-           Most solutions will not utilize all of the defined factors.
 
-           NOTE: The emissions values used are from the regional future grid BAU CO2 emission
-           intensity values (by year) from the AMPERE 3 MESSAGE Base model used in the IPCC 5th
-           Assessment Report WG3.
+        Annual CO2 reductions by region and year are calculated by adding reduced emissions
+        derived from the electric grid, the replaced emissions derived from clean renewables,
+        the net direct emissions derived from non-electric/non-fuel consumption, and the reduced
+        emissions derived from fuel efficiency, and then subtracting the net indirect emissions.
+        Most solutions will not utilize all of the defined factors.
 
-           CO2 MMT Reduced = (Grid Emissions Reduced + Grid Emissions Replaced -
-             Grid Emissions by Solution) + Fuel Emissions Avoided + Direct Emissions Reduced -
-             Net Indirect Emissions
-           SolarPVUtil 'CO2 Calcs'!A9:K55
+        NOTE: The emissions values used are from the regional future grid BAU CO2 emission
+        intensity values (by year) from the AMPERE 3 MESSAGE Base model used in the IPCC 5th
+        Assessment Report WG3.
+
+        | CO2 MMT Reduced = 
+        |    (Grid Emissions Reduced + Grid Emissions Replaced - Grid Emissions by Solution) +  
+        |    Fuel Emissions Avoided + Direct Emissions Reduced - Net Indirect Emissions
+        
         """
+        # SolarPVUtil 'CO2 Calcs'!A9:K55
         co2_reduced_grid_emissions = self.co2_reduced_grid_emissions()
         m = pd.DataFrame(0.0, columns=co2_reduced_grid_emissions.columns.copy(),
                          index=co2_reduced_grid_emissions.index.copy(), dtype=np.float64)
@@ -218,19 +198,20 @@ class CO2Calcs(DataHandler):
     @data_func
     def co2eq_mmt_reduced(self):
         """CO2-eq MMT Reduced
-           Annual CO2-eq reductions by region are calculated by multiplying the estimated energy
-           unit savings by region by the emission factor of the energy unit in question by region
-           and year. In this sample the values used are the regional future grid BAU CO2-eq emission
-           intensity values (by year) from the AMPERE 3 MESSAGE Base model used in the IPCC 5th
-           Assessment Report WG3.
+        
+        Annual CO2-eq reductions by region are calculated by multiplying the estimated energy
+        unit savings by region by the emission factor of the energy unit in question by region
+        and year. In this sample the values used are the regional future grid BAU CO2-eq emission
+        intensity values (by year) from the AMPERE 3 MESSAGE Base model used in the IPCC 5th
+        Assessment Report WG3.
 
-           Reduced Grid MMT CO2-eq Emissions = NEU(t) * EF(e,t)
+        | Reduced Grid MMT CO2-eq Emissions = NEU(t) * EF(e,t)
+        | where:
+        |   NEU(t) = Net Energy Units at time, t
+        |   EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
 
-           where
-              NEU(t) = Net Energy Units at time, t
-              EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
-           SolarPVUtil 'CO2 Calcs'!A64:K110
         """
+        # SolarPVUtil 'CO2 Calcs'!A64:K110
         s = self.ac.report_start_year
         e = self.ac.report_end_year
         if (self.ac.solution_category != model.advanced_controls.SOLUTION_CATEGORY.LAND and
@@ -275,19 +256,20 @@ class CO2Calcs(DataHandler):
     @data_func
     def co2only_mmt_reduced(self):
         """CO2 MMT Reduced
-           Annual CO2 reductions by region are calculated by multiplying the estimated energy
-           unit savings by region by the emission factor of the energy unit in question by region
-           and year. In this sample the values used are the regional future grid BAU CO2-eq emission
-           intensity values (by year) from the AMPERE 3 MESSAGE Base model used in the IPCC 5th
-           Assessment Report WG3.
 
-           Reduced Grid MMT CO2 Emissions = NEU(t) * EF(e,t)
+        Annual CO2 reductions by region are calculated by multiplying the estimated energy
+        unit savings by region by the emission factor of the energy unit in question by region
+        and year. In this sample the values used are the regional future grid BAU CO2-eq emission
+        intensity values (by year) from the AMPERE 3 MESSAGE Base model used in the IPCC 5th
+        Assessment Report WG3.
 
-           where
-              NEU(t) = Net Energy Units at time, t
-              EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
-           SolarPVUtil 'CO2 Calcs'!A64:K110
+        Reduced Grid MMT CO2 Emissions = NEU(t) * EF(e,t)
+
+        where
+            NEU(t) = Net Energy Units at time, t
+            EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
         """
+        # SolarPVUtil 'CO2 Calcs'!A64:K110
         s = self.ac.report_start_year
         e = self.ac.report_end_year
         if (self.ac.solution_category != model.advanced_controls.SOLUTION_CATEGORY.LAND and
@@ -332,9 +314,9 @@ class CO2Calcs(DataHandler):
     def co2_sequestered_global(self):
         """
         Total Carbon Sequestration (World section only)
-        Returns DataFrame of net annual sequestration by thermal moisture region.
-        Tropical Forests 'CO2 Calcs'!A119:G166 (Land models)
+        Returns DataFrame of net annual sequestration by thermal moisture region.       
         """
+        # Tropical Forests 'CO2 Calcs'!A119:G166 (Land models)
 
         if self.regimes is None:
             return None
@@ -404,18 +386,17 @@ class CO2Calcs(DataHandler):
     def co2_ppm_calculator(self):
         """CO2 parts per million reduction over time calculator.
 
-           Each yearly reduction in CO2 (in million metric ton - MMT) is modeled as a
-           discrete avoided pulse. A Simplified atmospheric lifetime function for CO2 is
-           taken from Myhrvald and Caldeira (2012) based on the Bern Carbon Cycle model.
-           Atmospheric tons of CO2 are converted to parts per million CO2 based on the
-           molar mass of CO2 and the moles of atmosphere. CO2-eq emissions are treated
-           as CO2 for simplicity and due to the lack of detailed information on emissions
-           of other GHGs. If these other GHGs are a significant part of overall reductions,
-           this model may not be appropriate.
-
-           SolarPVUtil 'CO2 Calcs'!A119:AW165 (RRS)
-           Conservation Agriculture 'CO2 Calcs'!A172:AW218 (Land)
+        Each yearly reduction in CO2 (in million metric ton - MMT) is modeled as a
+        discrete avoided pulse. A Simplified atmospheric lifetime function for CO2 is
+        taken from Myhrvald and Caldeira (2012) based on the Bern Carbon Cycle model.
+        Atmospheric tons of CO2 are converted to parts per million CO2 based on the
+        molar mass of CO2 and the moles of atmosphere. CO2-eq emissions are treated
+        as CO2 for simplicity and due to the lack of detailed information on emissions
+        of other GHGs. If these other GHGs are a significant part of overall reductions,
+        this model may not be appropriate.
         """
+        #  SolarPVUtil 'CO2 Calcs'!A119:AW165 (RRS)
+        #  Conservation Agriculture 'CO2 Calcs'!A172:AW218 (Land)
 
         if self.ac.emissions_use_co2eq:
             co2_vals = self.co2eq_mmt_reduced()['World']
@@ -455,22 +436,24 @@ class CO2Calcs(DataHandler):
     def co2_reduced_grid_emissions(self):
         """Reduced Grid Emissions = NE(t) * EF(e,t)
 
-           where
-              NE(t) = Net Energy Units at time, t
-              EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
-           SolarPVUtil 'CO2 Calcs'!A234:K280
+        where
+            NE(t) = Net Energy Units at time, t 
+            EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
+
         """
+        # SolarPVUtil 'CO2 Calcs'!A234:K280
         return self.soln_pds_net_grid_electricity_units_saved * self.conv_ref_grid_CO2_per_KWh
 
     @lru_cache()
     @data_func
     def co2_replaced_grid_emissions(self):
         """CO2 Replaced Grid Emissions = NAFU(Sol,t) * EF(e,t)  (i.e. only direct emissions)
-           where
-              NAFU(Sol,t) = Net annual functional units captured by solution at time, t
-              EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
-           SolarPVUtil 'CO2 Calcs'!R234:AB280
+        where
+            NAFU(Sol,t) = Net annual functional units captured by solution at time, t 
+            EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
+
         """
+        #  SolarPVUtil 'CO2 Calcs'!R234:AB280
         if self.ac.solution_category == model.advanced_controls.SOLUTION_CATEGORY.REPLACEMENT:
             return self.soln_net_annual_funits_adopted * self.conv_ref_grid_CO2_per_KWh
         else:
@@ -482,11 +465,12 @@ class CO2Calcs(DataHandler):
     def co2_increased_grid_usage_emissions(self):
         """Increased Grid Emissions (MMT CO2e) = NEU(t) * EF(e,t)
 
-           where
-              NEU(t) = Net Energy Units Used at time, t
-              EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
-           SolarPVUtil 'CO2 Calcs'!AI234:AS280
+        where
+            NEU(t) = Net Energy Units Used at time, t 
+            EF(e,t) = CO2 Emissions Factor of REF energy grid at time, t
+
         """
+        # SolarPVUtil 'CO2 Calcs'!AI234:AS280
         return self.soln_pds_net_grid_electricity_units_used * self.conv_ref_grid_CO2_per_KWh
 
 
@@ -496,11 +480,12 @@ class CO2Calcs(DataHandler):
         """Reduced Grid MMT CO2-eq Emissions = NEU(t) * EF(e,t)
 
            where
-              NEU(t) = Net Energy Units at time, t
+              NEU(t) = Net Energy Units at time, t 
               EF(e,t) = CO2-eq Emissions Factor of REF energy grid at time, t
-           SolarPVUtil 'CO2 Calcs'!A288:K334
-           Irrigation Efficiency 'CO2 Calcs'!A365:K411
+
         """
+        # SolarPVUtil 'CO2 Calcs'!A288:K334
+        # Irrigation Efficiency 'CO2 Calcs'!A365:K411
         if (self.soln_pds_net_grid_electricity_units_saved is None or
             self.conv_ref_grid_CO2eq_per_KWh is None):
             return None
@@ -632,8 +617,8 @@ class CO2Calcs(DataHandler):
 
 
 
-###########----############----############----############----############
-# UTILIZATION OF THE FaIR SIMPLE CLIMATE MODEL
+    ###########----############----############----############----############
+    # UTILIZATION OF THE FaIR SIMPLE CLIMATE MODEL
 
     @data_func
     def FaIR_CFT_baseline_co2eq(self):
@@ -924,6 +909,7 @@ class CO2Calcs(DataHandler):
                  CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
              3: Change in temperature since pre-industrial time in Celsius
              4: RCP emissions (39 individual gases)
+
         """   
         # Call on the solution emission reductions
         annual_reductions = self.ghg_emissions_reductions_global_annual()
@@ -982,6 +968,7 @@ class CO2Calcs(DataHandler):
                  CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
              3: Change in temperature since pre-industrial time in Celsius
              4: RCP emissions (39 individual gases)
+
         """   
         # Call on the solution emission reductions
         annual_reductions = self.ghg_emissions_reductions_global_annual()
@@ -1040,6 +1027,7 @@ class CO2Calcs(DataHandler):
                  CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
              3: Change in temperature since pre-industrial time in Celsius
              4: RCP emissions (39 individual gases)
+
         """   
         # Call on the solution emission reductions
         annual_reductions = self.ghg_emissions_reductions_global_annual()
@@ -1098,6 +1086,7 @@ class CO2Calcs(DataHandler):
                  CO2(Wm-2), CH4(Wm-2), N2O(Wm-2), others(Wm-2), total(Wm-2)
              3: Change in temperature since pre-industrial time in Celsius
              4: RCP emissions (39 individual gases)
+
         """   
         # Call on the solution emission reductions
         annual_reductions = self.ghg_emissions_reductions_global_annual()

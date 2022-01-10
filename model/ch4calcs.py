@@ -1,8 +1,5 @@
-"""CH4 Calcs module.
-
-Computes reductions for methane in individual gas units and CO2-equivalent emissions.
+"""Computes reductions for methane in individual gas units and CO2-equivalent emissions.
 """
-
 from functools import lru_cache
 import numpy as np
 import pandas as pd
@@ -11,19 +8,15 @@ from model.data_handler import DataHandler
 from model.decorators import data_func
 from model import emissionsfactors
 
-
-
 class CH4Calcs(DataHandler):
-    """CH4 Calcs module.
-         Arguments:
-           ac: advanced_cost.py object, storing settings to control model operation.
-           soln_net_annual_funits_adopted: annual functional/land units
-           soln_pds_direct_ch4_co2_emissions_saved: direct CH4 emissions avoided per land unit
-             (not used for RRS).
-      """
-
     def __init__(self, ac, soln_net_annual_funits_adopted,
                  soln_pds_direct_ch4_co2_emissions_saved=None):
+        """CH4 Calcs initalization.
+        Arguments:
+           ac: advanced_cost.py object, storing settings to control model operation.
+           soln_net_annual_funits_adopted: annual functional/land units
+           soln_pds_direct_ch4_co2_emissions_saved: direct CH4 emissions avoided per land unit (not used for RRS).
+        """
 
         self.soln_net_annual_funits_adopted = soln_net_annual_funits_adopted
         self.soln_pds_direct_ch4_co2_emissions_saved = soln_pds_direct_ch4_co2_emissions_saved
