@@ -23,5 +23,6 @@ build/
 dist/
 *.egg-info/
 
-_html/
+Documentation/autodocs/_html/
+Documentation/autodocs/search.js
 

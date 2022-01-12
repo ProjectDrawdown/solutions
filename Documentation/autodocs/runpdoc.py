@@ -3,18 +3,18 @@ import sys
 import importlib
 from pathlib import Path
 
-# Add the root directory to path, which we need in order to import the code.
+# Add the root directory to path, which we will need in order to import code.
 root = Path(__file__).parents[2]
 sys.path.append(str(root))
 
 # We do our own code interaction with pdoc so that we can customize some things, in particular
-# do the module index the way we would like it.  This is a combination of our own code
-# and our own templates.
+# do the module index the way we would like it.
 # (And FWIW, it is a *whole* lot easier to customize pdoc than to try to untangle sphinx!)
 
 
 if __name__ == "__main__":
     
+    # Configuration and set up.
     outdir = Path(__file__).with_name("_html")
     outdir.mkdir(exist_ok=True)
 
@@ -23,7 +23,9 @@ if __name__ == "__main__":
         show_source=False,
         template_directory=str(templatedir)
     )
+    #pdoc.render.env.add_extension("jinja2.ext.debug")
 
+    # Collect all the modules.
     # Notes: 
     # 
     # We're only retrieving modules one level deep in the folder.  This conveniently
@@ -35,25 +37,26 @@ if __name__ == "__main__":
     # 
     module_names = sorted(["model."+m.stem for m in (root/"model").glob('[!_]*.py')])
 
-    # By default, pdoc puts only the index of the current module on a module page.  We want a 
-    # sphinx-like index of all the modules.  So we accumulate that ourselves here.
+    # Parsing phase
+    # pdoc usually processes one file at a time.  We want to put the full index on every
+    # page, so to do that we parse all files before rendering any of them.
 
     pmodules = []
     for mname in module_names:
         m = importlib.import_module(mname)
         pmodules.append(pdoc.doc.Module(m))
 
-    #pdoc.render.env.add_extension("jinja2.ext.debug")
+    # Rendering phase
+    # Add the complete set of doc objects to the template environment.
     pdoc.render.env.globals["pmodules"] = pmodules
-    for mname, doc in zip(module_names, pmodules):
-        out = pdoc.render.html_module(module=doc, all_modules=module_names)
-        (outdir/(mname+".html")).write_text(out, encoding="utf-8")
 
-    # for mname in modules:
-    #     print(mname)
-    #     m = importlib.import_module("model."+mname)
-    #     doc = pdoc.doc.Module(m)
-    #     out = pdoc.render.html_module(module=doc, all_modules=[])
-    #     (outdir/(mname+".html")).write_text(out, encoding="utf-8")
+    for doc in pmodules:
+        out = pdoc.render.html_module(module=doc, all_modules=module_names)
+        (outdir/(doc.name+".html")).write_bytes(out.encode())
+
+    search = pdoc.render.search_index(dict(zip(module_names,pmodules)))
+    if search:
+        # For some reason, this gets loaded from one directory up?
+        (outdir/"../search.js").resolve().write_bytes(search.encode())
 
     print("done")
