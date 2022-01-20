@@ -23,7 +23,7 @@ if __name__ == "__main__":
         show_source=False,
         template_directory=str(templatedir)
     )
-    #pdoc.render.env.add_extension("jinja2.ext.debug")
+    pdoc.render.env.add_extension("jinja2.ext.debug")
 
     # Collect all the modules.
     # Notes: 

@@ -1,0 +1,236 @@
+{# Nav pane, shared across multiple pages.
+   Reorganized relative to pdoc standard, principally by adding submenus for
+   all modules. #}
+
+{% set li_no = namespace(n=0) %}
+
+{# Custom handling of Enums #}
+{% macro is_enum(m) %}
+    {% if m.type == "class" and 'enum.Enum' is in(m.bases | first) %}
+        true
+    {% endif %}
+{% endmacro %}
+
+{% macro is_public(m) %}
+    {# An error occurs using the inherited is_public here, probably because it is a defaultmacro?
+        In any case, the easiest thing to do was to copy it.
+    #}
+    {% if not doc.name.startswith("_") %}
+        {# members not starting with an underscore are considered public by default #}
+        true
+    {% elif doc.name == "__init__" %}
+        {# the constructor is our special case which we also treat as public #}
+        true
+    {% elif doc.name == "__doc__" %}
+        {# Sometimes we have __doc__ in __all__, which we want to exclude for pdoc's purposes. #}
+        {# https://github.com/mitmproxy/pdoc/issues/235 #}
+    {% elif doc.qualname is in(module.obj.__all__ or []) %}
+        {# members starting with an underscore are still public if mentioned in __all__ #}
+        true
+    {% endif %}
+{% endmacro %}
+
+{% macro show_in_nav(m) %}
+    {% if is_public(m) and m.name != "__init__" %}
+        true
+    {% endif %}
+{% endmacro %}
+
+{% macro has_nav_children(m) %}
+    {% if m.type is in(["class", "module"]) and not (is_enum(m)|trim) %}
+        {% for x in m.own_members if show_in_nav(x)|trim %}
+            1
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+{% macro index_entry(m) %}
+    {% set closable = "closable" if has_nav_children(m)|trim else "" %}
+    {% set li_no.n = li_no.n + 1 %}
+    <li class="{{closable}}" id="i{{li_no.n}}">
+        {% if closable %}
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+        {% else %}
+            <span class="spacer"></span>
+        {% endif %}
+        {# Special cases #}
+        {% if is_enum(m)|trim %}
+            <span class="navitem enum">{{- m.taken_from |link(text=m.name) -}}</span>
+        {% elif m.type == "module" %}
+            <span class="navitem module">{{- m.taken_from |link(text=m.fullname) -}}</span>
+        {# General case #}
+        {% else %}
+            <span class="navitem {{ m.type }}">{{- m.taken_from|link(text=m.name) -}}</span>
+        {% endif %}
+        {# Nested members #}
+        {% if has_nav_children(m)|trim %}
+            <ul>
+            {% for x in m.own_members if show_in_nav(x)|trim %}
+                {{ index_entry(x) | indent(4) }}
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+
+{% macro shared_nav() %}
+    <nav class="pdoc">
+        <label id="navtoggle" for="togglestate" class="pdoc-button">{% include 'navtoggle.svg' %}</label>
+        <input id="togglestate" type="checkbox">
+        <div>
+            {% block nav_title %}
+                {% if logo %}
+                    {% if logo_link %}<a href="{{ logo_link }}">{% endif %}
+                    <img src="{{ logo }}" class="logo" alt="project logo"/>
+                    {% if logo_link %}</a>{% endif %}
+                {% endif %}
+            {% endblock %}
+
+            {% block search_box %}
+                {% if search and all_modules|length > 1 %}
+                    {# we set a pattern here so that we can use the :valid CSS selector #}
+                    <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
+                            pattern=".+" required>
+                {% endif %}
+            {% endblock %}
+
+            <h2> API Documentation </h2>
+            <div class='allbuttons'>
+                <button onclick="closeAll()" aria-label="show sublists">((-))</button>
+                <button onclick="openAll()" aria-label="hide sublists">((+))</button>
+            </div>
+            <ul class="memberlist">
+            {% for mod in pmodules %}
+                {{ index_entry(mod) }}
+            {% endfor %}
+            </ul>
+
+            {% block nav_footer %}
+                {% if footer_text %}
+                <footer>{{ footer_text }}</footer>
+                {% endif %}
+            {% endblock %}
+
+            {% block attribution %}
+                <div class="attribution">
+                    built with <a href="https://pdoc.dev">pdoc</a>
+                </div>
+            {% endblock %}
+        </div>
+    </nav>
+    {# Manage nav open/close #}
+    <script>
+function closestAncestor(elem, selec) {
+    p = elem.parentNode;
+    if (!p || ! p.matches ) { return null; }
+    if (p.matches(selec)) { return p; }
+    return closestAncestor(p, selec);
+}
+function toggleClose(elem) {
+    closestAncestor(elem, '.closable').toggleAttribute('closed');
+    rememberOpenClose();
+}
+function openAll() {
+    items = document.querySelectorAll('nav .memberlist > .closable');
+    [...items].map(n => n.removeAttribute('closed'));
+    rememberOpenClose();
+}
+function closeAll() {
+    items = document.querySelectorAll('nav .memberlist > .closable');
+    [...items].map(n => n.setAttribute('closed',true));
+    rememberOpenClose();
+}
+function rememberOpenClose() {
+    items = document.querySelectorAll('nav .closable[closed]');
+    window.localStorage['closeditems'] = [...items].map(n=>n.id).join();
+}
+function ensureVisible(elem) {
+    elem.removeAttribute('closed');
+    p = closestAncestor(elem,'.closable');
+    if (p) { ensureVisible(p); }
+}
+function restoreNav() {
+    ids = window.localStorage['closeditems'];
+    if (ids) {
+        ids.split(',').map(n=>document.getElementById(n).setAttribute('closed',true));
+    }
+    mainelem = document.querySelector(window.location.hash);
+    navitem = document.querySelector('nav a[href="'+window.location.hash+'"]');
+    if (navitem) {
+        ensureVisible(navitem);
+        setTimeout(() => { /* give the DOM time to settle */
+            navitem.scrollIntoView();
+            /* the nav scroll ^^^ can interfere with the main scroll,
+               so repeat the main scroll vvv */
+            if (mainelem) { mainelem.scrollIntoView(); }},
+            100);
+    }
+}
+if (document.readyState === 'loading') {  // Loading hasn't finished yet
+    document.addEventListener('DOMContentLoaded', restoreNav);
+} else {  // `DOMContentLoaded` has already fired
+    restoreNav();
+}
+    </script>
+{% endmacro %}
+
+
+{# Styling additions / overrides #}
+{% macro shared_nav_style() %}
+    {% filter minify_css %}
+    <style> /* local overrides */
+    .pdoc {
+        --kw: #1659c5;
+    }
+    nav.pdoc ul.memberlist {
+        white-space:  nowrap;
+        line-height: 110%;
+    }
+    nav.pdoc .module {
+        font-weight: bold;
+    }
+
+    nav.pdoc a {
+        display: inline !important;
+    }
+    nav.pdoc li span.class::before {
+        content:  "" !important;
+    }
+    nav.pdoc .class a::before {
+        content: "class ";
+        color: var(--kw);
+    }
+    nav.pdoc .enum a::before {
+        content: "enum ";
+        color: var(--kw);
+    }
+
+    /* open/close buttons */
+    /* spacer always present; invisible/empty except when open/closable */
+    nav.pdoc li > .spacer::before {
+        content: "";
+        display: inline-block;
+        width: 0.5em;
+    }
+    nav.pdoc li.closable > .spacer.closebutton::before {
+        content: "-";
+        cursor:  pointer;
+    }
+    nav.pdoc li.closable[closed] > .spacer.closebutton::before {
+        content: "+";
+        cursor: pointer;
+    }
+    nav.pdoc li.closable[closed] > ul {
+        display: none;
+    }
+    nav.pdoc .allbuttons button {
+        background-color: transparent;
+        border: none;
+    }
+    nav.pdoc .allbuttons button:hover {
+        background-color: var(--nav-hover);
+    }
+    </style>
+    {% endfilter %}
+{% endmacro %}
