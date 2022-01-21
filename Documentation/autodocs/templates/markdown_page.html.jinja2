@@ -1,0 +1,35 @@
+{% extends "default/module.html.jinja2" %}
+
+{% block title %}
+{{ doc_title }}
+{% endblock %}
+
+{% import 'nav.jinja2' as nv with context %}
+{% block style %}
+    {{ super() }}
+    {{ nv.shared_nav_style() }}
+{% endblock style %}
+
+{% block body %}
+    {{ nv.shared_nav() }}
+
+    <main class="pdoc">
+        <div class='doc_location'>{{doc_loc}}</div>
+        {% autoescape false %}
+        {{ the_doc | to_html }}
+        {% endautoescape %}
+        <style>
+            .doc_location {
+                position: relative;
+                top: -15px;
+                color: var(--accent2);
+            }
+        </style>
+    </main>
+
+    {% block search_js %}
+        {% if search and all_modules|length > 1 %}
+            {% include "search.html.jinja2" %}
+        {% endif %}
+    {% endblock %}
+{% endblock body %}

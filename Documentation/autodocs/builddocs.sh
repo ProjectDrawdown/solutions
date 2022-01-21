@@ -16,19 +16,15 @@ set -e
 # DECLARE VARIABLES #
 #####################
  
-pwd
-# Sphinx root in this project
-docs="Documentation/sphinx"
+# path of the pdoc folder
+docs="Documentation/autodocs"
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
  
 ##############
 # BUILD DOCS #
 ##############
- 
-# build our documentation with sphinx (see docs/conf.py)
-# * https://www.sphinx-doc.org/en/master/usage/quickstart.html#running-the-build
-make -C "${docs}" clean
-make -C "${docs}" html
+
+python3 "${docs}/runpdoc.py"
  
 #######################
 # Update GitHub Pages #
@@ -38,7 +34,8 @@ git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
  
 htmlsrc=`mktemp -d`
-cp -a "${docs}/_build/html/" "${htmlsrc}/"
+cp -a "${docs}/_build/html/*" "${htmlsrc}/"
+cp -a "${docs}/images" "${htmlsrc}/"
  
 pushd "${htmlsrc}"
  

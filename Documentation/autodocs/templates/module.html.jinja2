@@ -1,0 +1,24 @@
+{% extends "default/module.html.jinja2" %}
+
+{#
+    Do not print decorators
+#}
+{% macro decorators(doc) %}
+{% endmacro %}
+
+{#
+    Do not print inherited members
+#}
+{% macro inherited(cls) %}
+{% endmacro %}
+
+
+{% import 'nav.jinja2' as nv with context %}
+{% block nav %}
+    {{ nv.shared_nav() }}
+{% endblock nav %}
+
+{% block style %}
+    {{ super() }}
+    {{ nv.shared_nav_style() }}
+{% endblock style %}
