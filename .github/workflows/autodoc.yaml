@@ -20,17 +20,17 @@ jobs:
         python-version: '3.9'
         cache: 'pip'
     - name: install our dependencies
-      run: pip install furo -r requirements.txt
+      run: pip install pdoc -r requirements.txt
     
     - name: Check
       run: |
         pwd
         ls -la
-        chmod +x Documentation/sphinx/builddocs.sh
+        chmod +x Documentation/autodocs/builddocs.sh
       shell: bash
       
     - name: Execute script to build our documentation and update pages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: "./Documentation/sphinx/builddocs.sh"
+      run: "./Documentation/autodocs/builddocs.sh"
       shell: bash
