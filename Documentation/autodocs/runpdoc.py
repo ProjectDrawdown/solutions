@@ -34,6 +34,8 @@ if __name__ == "__main__":
     templatedir = Path(__file__).with_name("templates")
     pdoc.render.configure(
         show_source=False,
+        logo="https://projectdrawdown.github.io/solutions/images/tree.svg",
+        logo_link="https://projectdrawdown.github.io/solutions/",
         template_directory=str(templatedir)
     )
     #pdoc.render.env.add_extension("jinja2.ext.debug")
@@ -76,7 +78,9 @@ if __name__ == "__main__":
     # Render module pages
     for doc in pmodules:
         out = pdoc.render.html_module(module=doc, all_modules=module_names)
-        (outdir/(doc.name+".html")).write_bytes(out.encode())
+        target_path = outdir/(doc.fullname.replace(".","/")+".html")
+        target_path.parent.mkdir(parents=True,exist_ok=True)
+        target_path.write_bytes(out.encode())
 
     # Render general documentation pages
     # We switch to almost native jinja2 here, since this is not pdoc API stuff.
@@ -89,10 +93,12 @@ if __name__ == "__main__":
         (outdir/outfile).write_bytes(hcontent.encode())
 
     # Render search code
+    # Someday we might want to change this to enable searching the top-level docs
+    # too, but that is way too much trouble at the present time.
     search = pdoc.render.search_index(dict(zip(module_names,pmodules)))
     if search:
-        # For some reason, this gets loaded from one directory up?
-        (outdir/"../search.js").resolve().write_bytes(search.encode())
+        (outdir/"search.js").write_bytes(search.encode())
 
 
     print("done")
+    exit(0)

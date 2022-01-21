@@ -1,4 +1,5 @@
-This directory contains the code that generates the online version of the documentation at TBD.
+This directory contains the code that generates the online version of the documentation at
+[https://projectdrawdown.github.io/solutions/].
 
 The builddocs.sh script is run automatically by Github Actions whenever changes are published to the 
 develop branch. The script saves the resulting html into the `gh-pages` branch (and should never be checked in to any other

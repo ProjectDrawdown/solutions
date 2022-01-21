@@ -35,6 +35,7 @@ git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
  
 htmlsrc=`mktemp -d`
 cp -a "${docs}/_build/html/*" "${htmlsrc}/"
+cp -a "${docs}/images" "${htmlsrc}/"
  
 pushd "${htmlsrc}"
  

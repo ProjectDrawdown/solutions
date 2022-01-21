@@ -44,6 +44,24 @@
     {% endif %}
 {% endmacro %}
 
+
+{# pdoc stuff does relative linking between multiple modules, but
+   we also need to be able to link the top-level docs from any module #}
+{% macro top_link(tl) %}
+    {% set cnt = module.fullname.split(".") | length %}
+    {# Someday figure out how to do this correctly #}
+    {% if cnt == 2 %}
+        ../{{- tl -}}
+    {% elif cnt == 3 %}
+        ../../{{- tl -}}
+    {% elif cnt == 4 %}
+        ../../../{{- tl -}}
+    {% else %}
+        {{- tl -}}
+    {% endif %}
+
+{% endmacro %}
+
 {% macro index_entry(m) %}
     {% set closable = "closable" if has_nav_children(m)|trim else "" %}
     {% set li_no.n = li_no.n + 1 %}
@@ -55,9 +73,9 @@
         {% endif %}
         {# Special cases #}
         {% if is_enum(m)|trim %}
-            <span class="navitem enum">{{- m.taken_from |link(text=m.name) -}}</span>
+            <span class="navitem enum">{{- m.taken_from|link(text=m.name) -}}</span>
         {% elif m.type == "module" %}
-            <span class="navitem module">{{- m.taken_from |link(text=m.fullname) -}}</span>
+            <span class="navitem module">{{- m.taken_from|link(text=m.fullname) -}}</span>
         {# General case #}
         {% else %}
             <span class="navitem {{ m.type }}">{{- m.taken_from|link(text=m.name) -}}</span>
@@ -66,7 +84,7 @@
         {% if has_nav_children(m)|trim %}
             <ul>
             {% for x in m.own_members if show_in_nav(x)|trim %}
-                {{ index_entry(x) | indent(4) }}
+                {{ index_entry(x) | indent }}
             {% endfor %}
             </ul>
         {% endif %}
@@ -91,11 +109,10 @@
             <h2> Overview Documentation </h2>
             <ul class="doclist">
                 {% for name, ignore, link in all_docs %}
-                    <li><a href="{{link}}">{{name}}</a></li>
+                    <li><a href="{{- top_link(link) -}}">{{name}}</a></li>
                 {% endfor %}
             </ul>
             {% endif %}
-
 
             <h2> API Documentation </h2>
             {% block search_box %}
@@ -150,36 +167,45 @@ function closeAll() {
     [...items].map(n => n.setAttribute('closed',true));
     rememberOpenClose();
 }
+function ensureVisible(elem,save=true) {
+    elem.removeAttribute('closed');
+    p = closestAncestor(elem,'.closable');
+    if (p) { ensureVisible(p,false); }
+    if (save) { rememberOpenClose(); }
+}
 function rememberOpenClose() {
     items = document.querySelectorAll('nav .closable[closed]');
     window.localStorage['closeditems'] = [...items].map(n=>n.id).join();
-}
-function ensureVisible(elem) {
-    elem.removeAttribute('closed');
-    p = closestAncestor(elem,'.closable');
-    if (p) { ensureVisible(p); }
 }
 function restoreNav() {
     ids = window.localStorage['closeditems'];
     if (ids) {
         ids.split(',').map(n=>document.getElementById(n).setAttribute('closed',true));
     }
-    mainelem = document.querySelector(window.location.hash);
-    navitem = document.querySelector('nav a[href="'+window.location.hash+'"]');
-    if (navitem) {
-        ensureVisible(navitem);
-        setTimeout(() => { /* give the DOM time to settle */
-            navitem.scrollIntoView();
-            /* the nav scroll ^^^ can interfere with the main scroll,
-               so repeat the main scroll vvv */
-            if (mainelem) { mainelem.scrollIntoView(); }},
-            100);
+    if (window.location.hash) {
+        mainelem = document.querySelector(window.location.hash);
+        navitem = document.querySelector('nav a[href="'+window.location.hash+'"]');
+        if (navitem) {
+            ensureVisible(navitem);
+            setTimeout(() => { /* give the DOM time to settle */
+                navitem.scrollIntoView();
+                /* the nav scroll ^^^ can interfere with the main scroll,
+                   so repeat the main scroll vvv */
+                if (mainelem) { mainelem.scrollIntoView(); }},
+                100);
+        }
     }
 }
+function addClickOpen() {
+    /* Add a handler to the actual navigable items so that clicking on them directly also opens them */
+    items = document.querySelectorAll('nav .closable > .navitem a');
+    [...items].map(n => n.addEventListener('click', ()=>{ ensureVisible(n);} ));
+}
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
-    document.addEventListener('DOMContentLoaded', restoreNav);
+    document.addEventListener('DOMContentLoaded', () => {restoreNav(); addClickOpen();});
 } else {  // `DOMContentLoaded` has already fired
     restoreNav();
+    addClickOpen();
 }
     </script>
 {% endmacro %}
