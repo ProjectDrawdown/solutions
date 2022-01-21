@@ -17,4 +17,8 @@ directory.
 python runpdoc.py 
 ```
 
+The `rundoc.py` script is also where to customize what documentation is created.  In particular, you can customize
+* The list of documents to include in the top section
+* The list of modules to include in the API section
+
 Credits to Michael Altfield, whose article [Continuous Documentation: Hosting Read the Docs on GitHub Pages](https://tech.michaelaltfield.net/2020/07/18/sphinx-rtd-github-pages-1/) is the basis for how this process works.

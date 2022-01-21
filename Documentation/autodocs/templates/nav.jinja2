@@ -11,7 +11,7 @@
     {% endif %}
 {% endmacro %}
 
-{% macro is_public(m) %}
+{% macro is_public(doc) %}
     {# An error occurs using the inherited is_public here, probably because it is a defaultmacro?
         In any case, the easiest thing to do was to copy it.
     #}
@@ -87,15 +87,25 @@
                 {% endif %}
             {% endblock %}
 
+            {% if all_docs | length %}
+            <h2> Overview Documentation </h2>
+            <ul class="doclist">
+                {% for name, ignore, link in all_docs %}
+                    <li><a href="{{link}}">{{name}}</a></li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+
+            <h2> API Documentation </h2>
             {% block search_box %}
                 {% if search and all_modules|length > 1 %}
                     {# we set a pattern here so that we can use the :valid CSS selector #}
-                    <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
+                    <input type="search" placeholder="Search API..." role="searchbox" aria-label="search"
                             pattern=".+" required>
                 {% endif %}
             {% endblock %}
 
-            <h2> API Documentation </h2>
             <div class='allbuttons'>
                 <button onclick="closeAll()" aria-label="show sublists">((-))</button>
                 <button onclick="openAll()" aria-label="hide sublists">((+))</button>
@@ -119,7 +129,6 @@
             {% endblock %}
         </div>
     </nav>
-    {# Manage nav open/close #}
     <script>
 function closestAncestor(elem, selec) {
     p = elem.parentNode;
@@ -176,12 +185,20 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 {% endmacro %}
 
 
-{# Styling additions / overrides #}
 {% macro shared_nav_style() %}
     {% filter minify_css %}
     <style> /* local overrides */
     .pdoc {
         --kw: #1659c5;
+    }
+    nav.pdoc h2 {
+        font-size: 140%;
+    }
+    nav.pdoc ul.doclist {
+        white-space: nowrap;
+        line-height: 110%;
+        margin-left: 0.5em;
+        font-weight: bold;
     }
     nav.pdoc ul.memberlist {
         white-space:  nowrap;
@@ -223,6 +240,10 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
     }
     nav.pdoc li.closable[closed] > ul {
         display: none;
+    }
+    nav.pdoc .allbuttons {
+        margin-top: 1em;
+        margin-left: 0.4em;
     }
     nav.pdoc .allbuttons button {
         background-color: transparent;
