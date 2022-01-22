@@ -15,16 +15,14 @@ set -e
 #####################
 # DECLARE VARIABLES #
 #####################
- 
-# path of the pdoc folder
-docs="Documentation/autodocs"
+
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
  
 ##############
 # BUILD DOCS #
 ##############
 
-python3 "${docs}/runpdoc.py"
+python3 Documentation/autodocs/runpdoc.py
  
 #######################
 # Update GitHub Pages #
@@ -34,8 +32,8 @@ git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
  
 htmlsrc=`mktemp -d`
-cp -a "${docs}/_html/*" "${htmlsrc}/"
-cp -a "${docs}/../images" "${htmlsrc}/"
+cp -a Documentation/autodocs/_html/* "${htmlsrc}/"
+cp -a Documentation/images "${htmlsrc}/"
  
 pushd "${htmlsrc}"
  
