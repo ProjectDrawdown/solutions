@@ -67,11 +67,11 @@ class Scenario(scenario.RRSScenario):
 
         self._ref_tam_sources = scenario.load_sources(THISDIR/'tam/tam_ref_sources.json','*')
         self._pds_tam_sources = self._ref_tam_sources
-        # tam_config_values = [
-        #     ('trend','OECD90','Linear'),
-        # ]
-        # self.set_tam(config_values=tam_config_values)
-        self.set_tam()
+
+        oecd_tam = "Drawdown Integration Buildings TAM Analysis (Commercial Average) - See TAM Selection Sheet"
+        tam_overrides = [('source_util_2014','OECD90',oecd_tam),('source_after_2014','OECD90', oecd_tam)]
+        self.set_tam(config_values=tam_overrides)
+        
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
@@ -109,7 +109,7 @@ class Scenario(scenario.RRSScenario):
             # it wrong.  See the documentation for HelperTables.__init__() to understand
             # exactly what the paramaters do, and how to set them.
             copy_pds_to_ref=False,
-            copy_ref_datapoint=True,
+            copy_ref_datapoint=False,
             copy_ref_world_too=False,
             copy_pds_datapoint='Ref Table',
             # copy_pds_world_too=True,
@@ -176,7 +176,7 @@ class Scenario(scenario.RRSScenario):
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
             fuel_in_liters=False)
 
-        self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
+        self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2015, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
 
