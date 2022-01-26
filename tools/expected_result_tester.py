@@ -6,6 +6,7 @@ same reasons.
 """
 # pylint: disable=line-too-long
 
+from os import error
 import re
 import functools
 import numpy as np
