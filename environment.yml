@@ -14,3 +14,4 @@ dependencies:
     - fair>=1.6.4
     - numpy-financial
     - openpyxl
+    - units-of-measure>=0.0.1rc2
