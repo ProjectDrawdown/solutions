@@ -7,15 +7,28 @@ from fractions import Fraction
 from unitsofmeasure import decprefix, no_prefix, scalar, Unit, UnitMap
 from unitsofmeasure.base import kg
 
-_fraction_1k = Fraction(1000, 1)
+_FRACTION_1K = Fraction(1000, 1)
 
 # mass
-Gt = Unit("Gt", "gigatonne", kg.dimension, decprefix.G, _fraction_1k)
-Mt = Unit("Mt", "megatonne", kg.dimension, decprefix.M, _fraction_1k)
-kt = Unit("kt", "kilotonne", kg.dimension, decprefix.k, _fraction_1k)
+Gt = Unit("Gt", "gigatonne", kg.dimension, decprefix.G, _FRACTION_1K)
+Mt = Unit("Mt", "megatonne", kg.dimension, decprefix.M, _FRACTION_1K)
+kt = Unit("kt", "kilotonne", kg.dimension, decprefix.k, _FRACTION_1K)
 
 # scalar
 ppm = Unit("ppm", "parts per million", scalar, no_prefix, Fraction(1, 1_000_000))
 ppb = Unit("ppb", "parts per billion", scalar, no_prefix, Fraction(1, 1_000_000_000))
 
-unit_map = UnitMap()
+unit_map = UnitMap[Unit]() # instantiate our own default unit map
+
+# re-implemented here to use our own default map
+def map_to_unit(unit: Unit, map: UnitMap = unit_map): # -> ((o: object) -> object) requires Python 3.11
+    """Decorate functions or classes with units."""
+    def wrap(o: object) -> object:
+        map.map_to_unit(o, unit)
+        return o
+    return wrap
+
+# re-implemented here to use our own default map
+def get_unit_of(o: object, map: UnitMap = unit_map) -> Unit:
+    """Get unit of object from map."""
+    return map.get_unit_of(o)
