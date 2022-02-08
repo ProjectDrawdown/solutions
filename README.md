@@ -62,7 +62,6 @@ A good way to explore the code is to start jupyter notebook
 ```
 
 then click on `Start_Here.ipynb` to try out a few things.
-Also, be sure to check out some of the documentation in the [Documentation](Documentation) folder.
 
 
 ## Minimal Environment
@@ -86,6 +85,10 @@ If you would like to use this project as a dependency in _your_ code, you can do
 
 ---
 
+## Documentation
+
+The main code documentation can be found at https://projectdrawdown.github.io/.  There is additional documentation and some examples in the [Documentation](https://github.com/ProjectDrawdown/solutions/tree/develop/Documentation) folder
+
 ## License
 The python code for the model engine is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at [https://github.com/ProjectDrawdown/solutions](https://github.com/ProjectDrawdown/solutions). No part of this Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
 
@@ -98,7 +101,7 @@ questions you have.
 
 ## Contributing
 We would love to have your help.
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines for contributing to this project.
+Please see [CONTRIBUTING.md](https://github.com/ProjectDrawdown/solutions/blob/develop/CONTRIBUTING.md) for guidelines for contributing to this project.
 
 ## Acknowledgements
 

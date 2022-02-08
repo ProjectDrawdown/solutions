@@ -8,6 +8,11 @@
 {% block style %}
     {{ super() }}
     {{ nv.shared_nav_style() }}
+    <style>
+        main.pdoc a {
+            text-decoration: underline !important;
+        }
+    </style>
 {% endblock style %}
 
 {% block body %}
