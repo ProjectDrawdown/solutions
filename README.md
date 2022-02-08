@@ -61,10 +61,10 @@ A good way to explore the code is to start jupyter notebook
       $ jupyter notebook
 ```
 
-then click on `Start_Here.ipynb` to try out a few things.
+then click on `Start_Here.ipynb` to try out a few things.   (Note: the use of jupyter notebook is not a requirement to use the system; use whatever python
+development environment is comfortable for you.)
 
-
-## Minimal Environment
+### Minimal Environment
 
 A more minimal environment is available for deployment using [pip](https://pip.pypa.io/en/stable/user_guide/).  This installs this project and its depencies in your current python environment, but no extra tools:
 
@@ -72,10 +72,10 @@ A more minimal environment is available for deployment using [pip](https://pip.p
       $ pip install -r requirements.txt
 ```
 
-Python 3.9 is recommended.
+Python 3.9 is required.
 
 
-## Using Project Drawdown Solutions as a package
+### Using Project Drawdown Solutions as a package
 
 If you would like to use this project as a dependency in _your_ code, you can do so by including the following line in your requirements.txt file:
 
@@ -83,11 +83,12 @@ If you would like to use this project as a dependency in _your_ code, you can do
       git+git://github.com/ProjectDrawdown/solutions@develop
 ```
 
----
 
 ## Documentation
 
-The main code documentation can be found at https://projectdrawdown.github.io/.  There is additional documentation and some examples in the [Documentation](https://github.com/ProjectDrawdown/solutions/tree/develop/Documentation) folder
+The main code documentation can be found at [https://projectdrawdown.github.io/solutions](https://projectdrawdown.github.io/solutions).  Additional documentation and some examples are in the [Documentation](https://github.com/ProjectDrawdown/solutions/tree/develop/Documentation) folder.
+
+---
 
 ## License
 The python code for the model engine is licensed under the GNU Affero General Public license and subject to the license terms in the LICENSE file found in the top-level directory of this distribution and at [https://github.com/ProjectDrawdown/solutions](https://github.com/ProjectDrawdown/solutions). No part of this Project, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the LICENSE file.
