@@ -56,6 +56,7 @@ if __name__ == "__main__":
     # The order of this list is the order in which they will be shown in the nav.
     doc_list = [
         ('Top', root/'Documentation/Top.md', 'index.html'),
+        ('Main Readme', root/'README.md', 'drawdown_solutions.html'),
         ('FAQ', root/'Documentation/Solution_Model_FAQ.md', "faq.html"),
         ('Tools Readme', root/"tools/_README.md", 'tools.html'),
     ]
