@@ -1,4 +1,5 @@
-"""Computes reductions for methane in individual gas units and CO2-equivalent emissions.
+"""Computes reductions in CH4 emission over time.
+Converts between tons CH4 and CO2e.
 """
 from functools import lru_cache
 import numpy as np
@@ -11,11 +12,11 @@ from model import emissionsfactors
 class CH4Calcs(DataHandler):
     def __init__(self, ac, soln_net_annual_funits_adopted,
                  soln_pds_direct_ch4_co2_emissions_saved=None):
-        """CH4 Calcs initalization.
-        Arguments:
-           ac: advanced_cost.py object, storing settings to control model operation.
-           soln_net_annual_funits_adopted: annual functional/land units
-           soln_pds_direct_ch4_co2_emissions_saved: direct CH4 emissions avoided per land unit (not used for RRS).
+        """
+        Args:
+           ac: an advanced_controls object
+           soln_net_annual_funits_adopted (series): functional units adopted each year
+           soln_pds_direct_ch4_co2_emissions_saved (float): direct CH4 emissions avoided per land unit (used for Land models only).
         """
 
         self.soln_net_annual_funits_adopted = soln_net_annual_funits_adopted
@@ -76,7 +77,7 @@ class CH4Calcs(DataHandler):
 
     @lru_cache()
     def ch4_megatons_avoided_or_reduced(self):
-        """CH4 emissions avoided or reduced, in megatons per year (units needed for the FaIR model). A key result!
+        """CH4 emissions avoided or reduced, in megatons per year (units needed for the FaIR model).
         """
         if self.soln_pds_direct_ch4_co2_emissions_saved is not None:
             ch4_tons = self.avoided_direct_emissions_ch4_land()
@@ -90,6 +91,7 @@ class CH4Calcs(DataHandler):
     @lru_cache()
     def ch4_ppb_calculator(self):
         """Parts Per Billion reduction calculator for CH4.
+
            Each yearly reduction in CH4 (in metric tons) is modeled as a discrete avoided pulse.
            A Simplified atmospheric lifetime function for CH4 is taken from Myhrvald and Caldeira
            (2012). Atmospheric tons of CH4 are converted to parts per billion CH4 based on the

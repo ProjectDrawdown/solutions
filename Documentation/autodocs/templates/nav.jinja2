@@ -93,59 +93,55 @@
 
 
 {% macro shared_nav() %}
-    <nav class="pdoc">
-        <label id="navtoggle" for="togglestate" class="pdoc-button">{% include 'resources/navtoggle.svg' %}</label>
-        <input id="togglestate" type="checkbox">
-        <div>
-            {% block nav_title %}
-                {% if logo %}
-                    {% if logo_link %}<a href="{{ logo_link }}">{% endif %}
-                    <img src="{{ logo }}" class="logo" alt="project logo"/>
-                    {% if logo_link %}</a>{% endif %}
-                {% endif %}
-            {% endblock %}
-
-            {% if all_docs | length %}
-            <h2> Overview Documentation </h2>
-            <ul class="doclist">
-                {% for name, ignore, link in all_docs %}
-                    <li><a href="{{- top_link(link) -}}">{{name}}</a></li>
-                {% endfor %}
-            </ul>
+    <div>
+        {% block nav_title %}
+            {% if logo %}
+                {% if logo_link %}<a href="{{ logo_link }}">{% endif %}
+                <img src="{{ logo }}" class="logo" alt="project logo"/>
+                {% if logo_link %}</a>{% endif %}
             {% endif %}
+        {% endblock %}
 
-            <h2> API Documentation </h2>
-            {% block search_box %}
-                {% if search and all_modules|length > 1 %}
-                    {# we set a pattern here so that we can use the :valid CSS selector #}
-                    <input type="search" placeholder="Search API..." role="searchbox" aria-label="search"
-                            pattern=".+" required>
-                {% endif %}
-            {% endblock %}
-
-            <div class='allbuttons'>
-                <button onclick="closeAll()" aria-label="show sublists">((-))</button>
-                <button onclick="openAll()" aria-label="hide sublists">((+))</button>
-            </div>
-            <ul class="memberlist">
-            {% for mod in pmodules %}
-                {{ index_entry(mod) }}
+        {% if all_docs | length %}
+        <h2> Overview Documentation </h2>
+        <ul class="doclist">
+            {% for name, ignore, link in all_docs %}
+                <li><a href="{{- top_link(link) -}}">{{name}}</a></li>
             {% endfor %}
-            </ul>
+        </ul>
+        {% endif %}
 
-            {% block nav_footer %}
-                {% if footer_text %}
-                <footer>{{ footer_text }}</footer>
-                {% endif %}
-            {% endblock %}
+        <h2> API Documentation </h2>
+        {% block search_box %}
+            {% if search and all_modules|length > 1 %}
+                {# we set a pattern here so that we can use the :valid CSS selector #}
+                <input type="search" placeholder="Search API..." role="searchbox" aria-label="search"
+                        pattern=".+" required>
+            {% endif %}
+        {% endblock %}
 
-            {% block attribution %}
-                <div class="attribution">
-                    built with <a href="https://pdoc.dev">pdoc</a>
-                </div>
-            {% endblock %}
+        <div class='allbuttons'>
+            <button onclick="closeAll()" aria-label="show sublists">((-))</button>
+            <button onclick="openAll()" aria-label="hide sublists">((+))</button>
         </div>
-    </nav>
+        <ul class="memberlist">
+        {% for mod in pmodules %}
+            {{ index_entry(mod) }}
+        {% endfor %}
+        </ul>
+
+        {% block nav_footer %}
+            {% if footer_text %}
+            <footer>{{ footer_text }}</footer>
+            {% endif %}
+        {% endblock %}
+
+        {% block attribution %}
+            <div class="attribution">
+                built with <a href="https://pdoc.dev">pdoc</a>
+            </div>
+        {% endblock %}
+    </div>
     <script>
 function closestAncestor(elem, selec) {
     p = elem.parentNode;

@@ -21,6 +21,9 @@ The _core results_ of a solution are:
  * The "Operating Cost" (OC).  This captures the ongoing expenses of operating the technology over time.
  * The CO2 emissions resulting from the technology use (C2).  {Need to clarify where this is positive vs. negative.}
 
+## Background on class/field/method naming
+
+The solutions code was created as a mostly direct translation from the original Project Drawdown Excel workbooks.  Most things are named identically to the corresponding tabs/column headings/etc. in Excel.  This makes it easy for someone familiar with the Excel to follow the correspondence, but results in names that are less intuitive for anyone else.  (Co-winners of the least-useful naming prize: HelperTables and UnitAdoption.)  We plan to migrate names to be more intuitive over time.
 
 ## VMAs
 
@@ -30,14 +33,15 @@ Think of VMA as "parameter of the model".
 
 Sometimes there are VMAs that have no sources listed.  Those really are "just parameters".
 
-## RRS vs. Land
+## RRS vs. Land vs. Ocean
 
 RRS (Reduction and Replacement) solutions focus on reducing the demand for some GHG-producing product (e.g. electricity), or on replacing the production with a cleaner method or alternative.
 
 Land solutions may perform RRS-like functions, but they also require land, and usually land of a certain type or climate.
 
-The primary distinction in the models is that RRS models model adoption as a proportion of the TAM, while Land models model adoption as a
-proportion of available (suitable) land.
+The primary distinction in the models is that RRS models model adoption as a proportion of the TAM, while Land models model adoption as a proportion of available (suitable) land.
+
+Oceans are yet another set of models, similar to Land models, but in the Ocean.  The Oceans models have been implemented entirely differently from the Land/RSS models (in fact they are a prototype for the eventual future of all models), so most of what you see in the rest of this documentation does not apply to them.  See (TBD) for a high-level discussion of the Ocean model implementation.
 
 
 ## TAM/TLA and Adoption modeling
@@ -82,6 +86,14 @@ Adoptions and Scenarios are sometimes but not always placed on a scale of three:
 
 This scale will appear somewhere within the name, e.g. you might see a Scenario named `PDS-7p2050-Plausible2020`, but it is not a formal attribute of the model.
 
+## What is a Quirk?
+
+Quirks and quirks parameters refer to aspects of the code that are implemented in order to match quirky (or outright buggy) behavior in the original Excel models.
+Implementation of the quirks allows us to test-check the Excel and Python models against each other.  But most users should ignore them.
+
+# Rewrite needed
+
+Items in this section are out of date and need to be rewritten.
 
 ## How do I change the parameters of the solution?
 

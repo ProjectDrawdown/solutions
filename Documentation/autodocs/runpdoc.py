@@ -33,7 +33,10 @@ if __name__ == "__main__":
 
     templatedir = Path(__file__).with_name("templates")
     pdoc.render.configure(
+        docformat="google",
         show_source=False,
+        # favicon won't work locally, but will when deployed
+        favicon="images/favicon.png",
         logo="https://projectdrawdown.github.io/solutions/images/tree.svg",
         logo_link="https://projectdrawdown.github.io/solutions/",
         template_directory=str(templatedir)
