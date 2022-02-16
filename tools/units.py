@@ -18,7 +18,7 @@ kt = Unit("kt", "kilotonne", kg.dimension, decprefix.k, _FRACTION_1K)
 ppm = Unit("ppm", "parts per million", SCALAR, PREFIX_1, Fraction(1, 1_000_000))
 ppb = Unit("ppb", "parts per billion", SCALAR, PREFIX_1, Fraction(1, 1_000_000_000))
 
-unit_map = UnitMap[Unit]() # instantiate our own default unit map
+unit_map = UnitMap() # instantiate our own default unit map
 
 # re-implemented here to use our own default map
 def map_to_unit(unit: Unit, map: UnitMap = unit_map): # -> ((o: object) -> object) requires Python 3.11
