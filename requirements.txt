@@ -4,4 +4,4 @@ pandas==1.2.4
 openpyxl
 pytest
 pyyaml
-units-of-measure==0.0.1rc4
+units-of-measure~=1.0
