@@ -1,2 +1,14 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Drawdown Team assumptions based on review of aircraft models,,World,Single Aisle Aircraft,,,,150.0,seats,,,,,
+Drawdown Team assumptions based on review of aircraft models,,World,Single Aisle Aircraft,,,,150.0,seats,,,,,False
+Boeing website,,World,Single Aisle Aircraft Boeing 737 Max 7,,2021.0,,145.5,seats,,,,,False
+Boeing website,,World,Single Aisle Aircraft Boeing 737 Max 8,,2021.0,,170.0,seats,,,,,False
+"Massachusetts Institute of Technology. 2021. “Global Airline Industry Program: Airline Data Project.” Retrieved September 22, 2021 ",https://web.mit.edu/airlinedata/www/Aircraft&Related.html,World,Single Aisle Aircraft,,2019.0,,174.0,seats,,,,,False
+"Massachusetts Institute of Technology. 2021. “Global Airline Industry Program: Airline Data Project.” Retrieved September 22, 2021 ",https://web.mit.edu/airlinedata/www/Aircraft&Related.html,World,Single Aisle Aircraft,,2019.0,,134.0,seats,,,,,False
+Statista. 2020a. “Brazilian Airlines’ Aircraft by Number of Seats 2019.,https://www-statista-com.ezproxy.gavilan.edu/statistics/875307/brazil-airlines-aircraft-share-number-passenger-seats/,OECD90,Brazil,,2019.0,,145.73417721518987,seats,,,,,False
+"Kito, Minami. 2021. “Impact of Aircraft Lifetime Change on Lifecycle CO2 Emissions and Costs in Japan.” Ecological Economics 188:107104",,OECD90,Japan,,2020.0,,146.0,seats,,,,A320,False
+"Kito, Minami. 2021. “Impact of Aircraft Lifetime Change on Lifecycle CO2 Emissions and Costs in Japan.” Ecological Economics 188:107104",,OECD90,Japan,,2020.0,,166.0,seats,,,,B737-700,False
+"Kito, Minami. 2021. “Impact of Aircraft Lifetime Change on Lifecycle CO2 Emissions and Costs in Japan.” Ecological Economics 188:107104",,OECD90,Japan,,2020.0,,122.0,seats,,,,B737-800,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,180.0,seats,,,,A320neo,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,174.0,seats,,,,B737-800,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,140.0,seats,,,,B737-700,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,187.0,seats,,,,B737-900,False
