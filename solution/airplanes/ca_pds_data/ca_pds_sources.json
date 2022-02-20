@@ -1,32 +1,42 @@
 [
-  {
-    "name": "PDS1 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 13%",
-    "include": true,
-    "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality. 100 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 1SD below the average estimated efficiency improvement (~13%). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually. ",
-    "filename": "custom_pds_ad_PDS1_Drawdown_Projection_of_Production_of_Efficient_Aircraft_of_Airbus_and_Boeing_and_Th_0625227c.csv"
-  },
-  {
-    "name": "PDS2 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 18%",
-    "include": true,
-    "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality.  100 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 18% more efficient). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually. Global Load factor of solution aircraft increases to 83% (current US average). ",
-    "filename": "custom_pds_ad_PDS2_Drawdown_Projection_of_Production_of_Efficient_Aircraft_of_Airbus_and_Boeing_and_Th_c6a70599.csv"
-  },
-  {
-    "name": "PDS3 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 20%",
-    "include": true,
-    "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality.  1000 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 20% more efficient). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually. Global Load factor of solution aircraft increases to 83%. ",
-    "filename": "custom_pds_ad_PDS3_Drawdown_Projection_of_Production_of_Efficient_Aircraft_of_Airbus_and_Boeing_and_Th_42d0f286.csv"
-  },
-  {
-    "name": "Book Ed.1 Scenario 1",
-    "include": false,
-    "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of aircraft switching to 100% \"efficient models\" over the short future. Aircraft older than a certain number of years (around 25) are retired. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks. We assume that the production rate of these players remains constant. ",
-    "filename": "custom_pds_ad_Book_Ed_1_Scenario_1.csv"
-  },
-  {
-    "name": "Book Ed.1 Scenario 2",
-    "include": false,
-    "description": "Taking the production rate of aircraft, and the estimated number of orders for aircraft by the two major suppliers - Airbus and Boeing, we project the production of aircraft switching to 100% \"efficient models\" over the short future. We include a small number of retrofits which would be for engines, lightweighting and other adjustments to make up the 15% efficiency improvement expected from a whole new aircraft. Aircraft older than a certain number of years (around 25) are retired. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks. We assume that the production rate of these players remains constant, but that an additional competitive manufacturer is able to add to production later in 2025(for single aisle)/2035(for twin aisle) and produce comparable aircraft. ",
-    "filename": "custom_pds_ad_Book_Ed_1_Scenario_2.csv"
-  }
+    {
+        "name": "PDS1 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 13%",
+        "filename": "ca_pds_PDS1_Drawdown_P_48107c2d.csv",
+        "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality. 100 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 1SD below the average estimated efficiency improvement (~13%). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually."
+    },
+    {
+        "name": "PDS2 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 18%",
+        "filename": "ca_pds_PDS2_Drawdown_P_809bf5c6.csv",
+        "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality.  100 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 16.3% more efficient). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually. Global Load factor of solution aircraft increases to 83% (current US average)."
+    },
+    {
+        "name": "PDS3 - Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 20%",
+        "filename": "ca_pds_PDS3_Drawdown_P_482fb34e.csv",
+        "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality.  1000 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 20% more efficient). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually. Global Load factor of solution aircraft increases to 85.5%. However there is less flying overall with the Ambitious TAM, so efficient aircraft have a reduced overall impact in favour of alternatives."
+    },
+    {
+        "name": "Book Ed.1 Scenario 1",
+        "filename": "ca_pds_Book_Ed_1_Scenario_1.csv",
+        "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of aircraft switching to 100% \"efficient models\" over the short future. Aircraft older than a certain number of years (around 25) are retired. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks. We assume that the production rate of these players remains constant."
+    },
+    {
+        "name": "Book Ed.1 Scenario 2",
+        "filename": "ca_pds_Book_Ed_1_Scenario_2.csv",
+        "description": "Taking the production rate of aircraft, and the estimated number of orders for aircraft by the two major suppliers - Airbus and Boeing, we project the production of aircraft switching to 100% \"efficient models\" over the short future. We include a small number of retrofits which would be for engines, lightweighting and other adjustments to make up the 13% efficiency improvement expected from a whole new aircraft. Aircraft older than a certain number of years (around 25) are retired. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks. We assume that the production rate of these players remains constant, but that an additional competitive manufacturer is able to add to production later in 2025(for single aisle)/2035(for twin aisle) and produce comparable aircraft."
+    },
+    {
+        "name": "PDS1 - New Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 13%",
+        "filename": "ca_pds_PDS1_New_Drawdo_785d473a.csv",
+        "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality. 100 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 1SD below the average estimated efficiency improvement (~13%). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually."
+    },
+    {
+        "name": "PDS2 - New Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 16.3%",
+        "filename": "ca_pds_PDS2_New_Drawdo_29324a0b.csv",
+        "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality.  100 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 16.3% more efficient). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually. Global Load factor of solution aircraft increases to 80% (the mean value of all data points )."
+    },
+    {
+        "name": "PDS3 - New Drawdown Projection of Production of Efficient Aircraft of Airbus and Boeing and Third Manufacturer at 20%",
+        "filename": "ca_pds_PDS3_New_Drawdo_7773e38a.csv",
+        "description": "Taking the production rate of aircraft  by the two major suppliers - Airbus and Boeing, we project the production of \"efficient model\" aircraft over the future. We also assume that a third manufacturer enters the market (possibly COMAC or UAC) in 2025 and produces first single aisle then twin aisle aircraft of competitive quality.  1000 aircraft per year are retrofitted to equivalent new-aircraft efficiency. Each aircraft in the fleet is assumed to work around  an average number of passenger-km per year according to an estimate for each of single aisle and twin aisle from our brief schedule calculations including downtime for maintenance checks, and new models are 20% more efficient). We assume that the production rate of the big players remains constant, but that the newcomer increases production annually. Global Load factor of solution aircraft increases to 85.5%."
+    }
 ]
