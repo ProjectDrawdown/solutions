@@ -1,38 +1,47 @@
 [
-  {
-    "name": "PDS1 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - Mean of projected EEOI values",
-    "include": true,
-    "description": "We take the mean estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2014. ",
-    "filename": "custom_pds_ad_PDS1_Drawdown_Team_Calculations_based_on_Projections_from_Smith_et_al_2014_3rd_GHG_Repor_3eb1a907.csv"
-  },
-  {
-    "name": "PDS2 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - 1 StDev more Ambitious than mean in EEOI terms",
-    "include": true,
-    "description": "We take (1 standard deviation below the mean of) the estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non- efficient) ship is one that has average efficiency in 2014. ",
-    "filename": "custom_pds_ad_PDS2_Drawdown_Team_Calculations_based_on_Projections_from_Smith_et_al_2014_3rd_GHG_Repor_e1bf2fbd.csv"
-  },
-  {
-    "name": "PDS3 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - most ambitious values from all scenarios",
-    "include": true,
-    "description": "We take the lowest estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2014. ",
-    "filename": "custom_pds_ad_PDS3_Drawdown_Team_Calculations_based_on_Projections_from_Smith_et_al_2014_3rd_GHG_Repor_40d75a6d.csv"
-  },
-  {
-    "name": "Drawdown Book Edition 1 Scenario 1",
-    "include": false,
-    "description": "We take the mean estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2008. This scenario follows the same process as PDS 1 above, but uses the inputs from the model of the Drawdown Book edition 1, hence gets different results. ",
-    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv"
-  },
-  {
-    "name": "Drawdown Book Edition 1 Scenario 2",
-    "include": false,
-    "description": "We take (1 standard deviation below the mean of) the estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non- efficient) ship is one that has average efficiency in 2008. This scenario follows the same process as PDS 1 above, but uses the inputs from the model of the Drawdown Book edition 1, hence gets different results. ",
-    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_2.csv"
-  },
-  {
-    "name": "Drawdown Book Edition 1 Scenario 3",
-    "include": false,
-    "description": "We take the lowest estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2008. This scenario follows the same process as PDS 1 above, but uses the inputs from the model of the Drawdown Book edition 1, hence gets different results. ",
-    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_3.csv"
-  }
+    {
+        "name": "PDS1 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - Mean of projected EEOI values",
+        "filename": "ca_pds_PDS1_Drawdown_T_41714f7f.csv",
+        "description": "We take the mean estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2014."
+    },
+    {
+        "name": "PDS2 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - 1 StDev more Ambitious than mean in EEOI terms",
+        "filename": "ca_pds_PDS2_Drawdown_T_f2f0560d.csv",
+        "description": "We take (1 standard deviation below the mean of) the estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2014."
+    },
+    {
+        "name": "PDS3 - Drawdown Team Calculations based on Projections from Smith et al (2014) - 3rd GHG Report of the IMO - most ambitious values from all scenarios",
+        "filename": "ca_pds_PDS3_Drawdown_T_8882cc41.csv",
+        "description": "We take the lowest estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2014."
+    },
+    {
+        "name": "Drawdown Book Edition 1 Scenario 1",
+        "filename": "ca_pds_Drawdown_Book_E_d3f337c3.csv",
+        "description": "We take the mean estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2008. This scenario follows the same process as PDS 1 above, but uses the inputs from the model of the Drawdown Book edition 1, hence gets different results."
+    },
+    {
+        "name": "Drawdown Book Edition 1 Scenario 2",
+        "filename": "ca_pds_Drawdown_Book_E_e41811c6.csv",
+        "description": "We take (1 standard deviation below the mean of) the estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2008. This scenario follows the same process as PDS 1 above, but uses the inputs from the model of the Drawdown Book edition 1, hence gets different results."
+    },
+    {
+        "name": "Drawdown Book Edition 1 Scenario 3",
+        "filename": "ca_pds_Drawdown_Book_E_4ee95316.csv",
+        "description": "We take the lowest estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2008. This scenario follows the same process as PDS 1 above, but uses the inputs from the model of the Drawdown Book edition 1, hence gets different results."
+    },
+    {
+        "name": "PDS1 - New Drawdown Team Calculations based on Projections from 4th GHG Report of the IMO - Mean of projected EEOI values",
+        "filename": "ca_pds_PDS1_New_Drawdo_4c8af107.csv",
+        "description": "We take the mean estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), , 4th GHG IMO STUDY(2020),interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2014."
+    },
+    {
+        "name": "PDS2 - New Drawdown Team Calculations based on Projections from trd GHG Report of the IMO(2020) - 1 StDev more Ambitious than mean in EEOI terms",
+        "filename": "ca_pds_PDS2_New_Drawdo_d35df2e2.csv",
+        "description": "We take (1 standard deviation below the mean of) the estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), 4th GHG IMO STUDY, interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2014."
+    },
+    {
+        "name": "PDS3 - New Drawdown Team Calculations based on Projections from 4th GHG Report of the IMO - most ambitious values from all scenarios",
+        "filename": "ca_pds_PDS3_New_Drawdo_fc5e6159.csv",
+        "description": "We take 1.5 Standard Deviations below the mean of the estimates of EEOI (Energy Efficiency Operations Index in gCO2/ton-nmile) as projected by  several studies referenced in the 3rd GHG IMO Study (Smith et al, 2014), , 4th GHG IMO STUDY(2020),interpolate for missing years and convert them to Estimated ton-nautical mile adoptions assuming that an efficient ship is one that adopts a fixed set of 17 technologies and slow steaming, and a conventional (non-efficient) ship is one that has average efficiency in 2014."
+    }
 ]

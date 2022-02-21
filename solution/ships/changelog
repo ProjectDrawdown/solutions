@@ -6,3 +6,6 @@ empty after the historical years, which causes the SD calculation to croak.
 I am not going to fix this because the next version of the ship model has 
 different data and different scenarios, and I suspect those will fix
 the issue. 
+
+Update 2/2022:
+...And it is true, the new scenarios pass with no difficulties.
