@@ -1,0 +1,26 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Yates 2013. PLA Pellets (corn),Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.010  ,World,,1  - Peer Reviewed,2013,,44.43000000000001,MJ/kg,12.34166667654,TWh/MMt of Plastic Produced Annually,,,True
+Yates 2013. PLA Containers (corn),Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.011,World,,1  - Peer Reviewed,2013,,46.73333333333333,MJ/kg,12.981481491866663,TWh/MMt of Plastic Produced Annually,,,True
+Yates 2013. PLA water bottles (corn),Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.012,World,,1  - Peer Reviewed,2013,,55.4,MJ/kg,15.388888901199996,TWh/MMt of Plastic Produced Annually,,,True
+Yates 2013. PHA (corn),Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.013,World,,1  - Peer Reviewed,2013,,56.58571428571429,MJ/kg,15.718253980828571,TWh/MMt of Plastic Produced Annually,,,True
+Yates 2013. PHA (sugar beet),Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.013,World,,1  - Peer Reviewed,2013,,80.0,MJ/kg,22.22222224,TWh/MMt of Plastic Produced Annually,,,True
+Yates 2013. PHA (sugarcane),Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.013,World,,1  - Peer Reviewed,2013,,11.000000000000002,MJ/kg,3.055555558,TWh/MMt of Plastic Produced Annually,,,True
+Yates 2013. PHA (soybean oil),Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.013,World,,1  - Peer Reviewed,2013,,52.0,MJ/kg,14.444444455999998,TWh/MMt of Plastic Produced Annually,,,True
+Dornburg 2008. TPS (corn),Dornburg (2008) http://doi.org/10.1162/108819803323059424 ,World,,1  - Peer Reviewed,2008,,26.549999999999997,MJ/kg,7.375000005899999,TWh/MMt of Plastic Produced Annually,,,True
+Dornburg 2008. PLA pellets (corn),Dornburg (2008) http://doi.org/10.1162/108819803323059424 ,World,,1  - Peer Reviewed,2008,,57.0,MJ/kg,15.833333346,TWh/MMt of Plastic Produced Annually,,,True
+Dornburg 2008. PHA Pellets (corn),Dornburg (2008) http://doi.org/10.1162/108819803323059424 ,World,,1  - Peer Reviewed,2008,,73.55,MJ/kg,20.430555571899998,TWh/MMt of Plastic Produced Annually,,,True
+Dornburg 2008. BioPP (corn),Dornburg (2008) http://doi.org/10.1162/108819803323059424 ,World,,1  - Peer Reviewed,2008,,39.5,MJ/kg,10.972222230999998,TWh/MMt of Plastic Produced Annually,,,True
+Broeren 2017. Starch Plastics,Broeren (2017) https://doi.org/10.1016/j.resconrec.2017.09.001,World,,1  - Peer Reviewed,2017,,52.5,MJ/kg,14.583333345,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012. PHA (corn),Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,58.875,MJ/kg,16.35416667975,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012. PLA (corn),Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,45.0,MJ/kg,12.500000009999999,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012. BioPE (corn),Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,43.4,MJ/kg,12.055555565199999,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012. BioPE (sugarcane),Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,9.1,MJ/kg,2.5277777797999996,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012. BioPP (corn),Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,42.0,MJ/kg,11.666666675999998,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012. BioPET (corn),Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,58.7,MJ/kg,16.3055555686,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012. BioPET (sugarcane),Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,51.3,MJ/kg,14.250000011399997,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012. BioPTT (corn),Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,69.8,MJ/kg,19.3888889044,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012. PBS (corn),Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,78.5,MJ/kg,21.805555573,TWh/MMt of Plastic Produced Annually,,,True
+Shen 2012. BioPET (corn),Shen (2012) doi.org/10.1002/bbb.1368,World,,1  - Peer Reviewed,2012,,59.0,MJ/kg,16.388888901999998,TWh/MMt of Plastic Produced Annually,,,True
+Shen 2012. BioPET (sugarcane),Shen (2012) doi.org/10.1002/bbb.1368,World,,1  - Peer Reviewed,2012,,51.0,MJ/kg,14.166666677999999,TWh/MMt of Plastic Produced Annually,,,True
+Shen 2012. PLA (corn),Shen (2012) doi.org/10.1002/bbb.1368,World,,1  - Peer Reviewed,2012,,42.0,MJ/kg,11.666666675999998,TWh/MMt of Plastic Produced Annually,,,True
+Shen 2012. PLA (sugarcane) ,Shen (2012) doi.org/10.1002/bbb.1368,World,,1  - Peer Reviewed,2012,,31.0,MJ/kg,8.611111118,TWh/MMt of Plastic Produced Annually,,,True

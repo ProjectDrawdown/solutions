@@ -1,7 +1,9 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"average from Market Prices Chart, ptonline",,World,,5 - Not Verified,2011,,,US$2011/kg,0.0,US2014$/MMt of Plastic Produced Annually,,Traditional Plastics,
-"average from Market Prices Chart, ptonline",,World,,5 - Not Verified,2014,,,US$2014/kg,0.0,US2014$/MMt of Plastic Produced Annually,,Traditional Plastics,
-"Biron 2012, based on oil price $150/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,PP,
-"Biron 2012, based on oil price $300/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,"PP, Excluded due to excessive oil assumption input",1.0
-"Biron 2012, historical modeling, low","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,PP,
-"Biron 2012, historical modeling, high","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2020,,,US$2012/kg,0.0,US2014$/MMt of Plastic Produced Annually,,PP,
+"average from Market Prices Chart, ptonline",,World,,5 - Not Verified,2011,,1.81,US$2011/kg,1864300000.0,US2014$/MMt of Plastic Produced Annually,,Traditional Plastics,False
+"average from Market Prices Chart, ptonline",,World,,5 - Not Verified,2014,,2.024,US$2014/kg,2024000000.0,US2014$/MMt of Plastic Produced Annually,,Traditional Plastics,False
+"Biron 2012, based on oil price $150/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2012,,1.8,US$2012/kg,1854000000.0,US2014$/MMt of Plastic Produced Annually,,PP,False
+"Biron 2012, based on oil price $300/barrel","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2012,,8.75,US$2012/kg,9012500000.0,US2014$/MMt of Plastic Produced Annually,,"PP, Excluded due to excessive oil assumption input",True
+"Biron 2012, historical modeling, low","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2012,,1.4,US$2012/kg,1441999999.9999998,US2014$/MMt of Plastic Produced Annually,,PP,False
+"Biron 2012, historical modeling, high","Biron, M. (2012). Thermoplastics and thermoplastic composites. William Andrew.",World,,5 - Not Verified,2012,,2.2,US$2012/kg,2266000000.0,US2014$/MMt of Plastic Produced Annually,,PP,False
+Rorrer 2017 rPET,Rorrer et al. 2017,,,,2017,,0.51,US$2018/lb ,1124356619.9927726,US2014$/MMt of Plastic Produced Annually,,,False
+Rorrer 2017 virgin PET resin,Rorrer et al. 2017,,,,2017,,0.81,US$2018/lb ,1785742867.0473447,US2014$/MMt of Plastic Produced Annually,,,False
