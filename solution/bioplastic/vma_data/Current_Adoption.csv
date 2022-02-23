@@ -1,3 +1,4 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-European Bioplastics Facts and Figures  (2013),european-bioplastics.org,World,,3 - For Profit,2013,,,Mt,,MMt of Plastic Produced Annually,,,
-European Bioplastics Facts and Figures  (2014),european-bioplastics.org,World,,3 - For Profit,2014,,,Mt,,MMt of Plastic Produced Annually,,,
+European Bioplastics Facts and Figures  (2013),european-bioplastics.org,World,,3 - For Profit,2013,,1.62,Mt,,MMt of Plastic Produced Annually,,,False
+European Bioplastics Facts and Figures  (2014),european-bioplastics.org,World,,3 - For Profit,2014,,1.67,Mt,,MMt of Plastic Produced Annually,,,False
+European Bioplastics Facts and Figures  (2018),european-bioplastics.org,World,,3 - For Profit,2018,,2.11,MMt,2.11,MMt of Plastic Produced Annually,,,False

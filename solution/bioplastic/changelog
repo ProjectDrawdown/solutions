@@ -1,0 +1,10 @@
+Update 2/2022 --- updating to 2021 model
+
+Custom adoption is computed (you can see, for example, formulas in cells B571:B613, which is
+the custom adoption for PDS3).  The fix to this is manually load each scenario, and copy the
+custom adoption data (from the custom adoption tab or the helper tables tab) to the
+corresponding custom adoption csv file.
+
+
+
+

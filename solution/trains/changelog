@@ -4,3 +4,6 @@ Update Operating Cost C257:AV257 and C394:AV394 to include a MAX(..., 0) in the 
 which fails the comparison with 0.0 and makes the result not match Python in ways we don't want to emulate.
 =IF($C$258*MAX((ROUNDUP(C255,0)-C255),0)=0,$C$258,($C$258*((ROUNDUP(C255,0)-C255))))
 =IF($C$395*MAX((ROUNDUP(C392,0)-C392),0)=0,$C$395,($C$395*((ROUNDUP(C392,0)-C392))))
+
+Update 2022:
+Denton's notes as usual prove correct.  With his fix in place, tests pass cleanly.

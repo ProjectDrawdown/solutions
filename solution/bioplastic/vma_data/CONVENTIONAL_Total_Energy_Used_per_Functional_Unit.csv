@@ -1,0 +1,13 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Yates 2013. PET,Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.010  ,World,,1  - Peer Reviewed,2013,,82.3,MJ/kg,22.861111129399998,TWh/MMt of Plastic Produced Annually,,,True
+Yates 2013. PS,Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.010  ,World,,1  - Peer Reviewed,2013,,87.4,MJ/kg,24.2777777972,TWh/MMt of Plastic Produced Annually,,,True
+Yates 2013. HDPE,Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.010  ,World,,1  - Peer Reviewed,2013,,76.7,MJ/kg,21.3055555726,TWh/MMt of Plastic Produced Annually,,,True
+Yates 2013. PP,Yates (2013) http://doi.org/10.1016/j.resconrec.2013.06.010  ,World,,1  - Peer Reviewed,2013,,73.4,MJ/kg,20.3888889052,TWh/MMt of Plastic Produced Annually,,,True
+Dornburg 2008. LDPE,Dornburg (2008) http://doi.org/10.1162/108819803323059424 ,World,,1  - Peer Reviewed,2008,,80.6,MJ/kg,22.388888906799995,TWh/MMt of Plastic Produced Annually,,,True
+Dornburg 2008. HDPE,Dornburg (2008) http://doi.org/10.1162/108819803323059424 ,World,,1  - Peer Reviewed,2008,,79.9,MJ/kg,22.194444462199996,TWh/MMt of Plastic Produced Annually,,,True
+Dornburg 2008. FR PP,Dornburg (2008) http://doi.org/10.1162/108819803323059424 ,World,,1  - Peer Reviewed,2008,,96.4,MJ/kg,26.777777799200003,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012 - PE,Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,74.7,MJ/kg,20.750000016599998,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012 - PP,Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,73.4,MJ/kg,20.3888889052,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012 - PET,Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,69.4,MJ/kg,19.277777793200002,TWh/MMt of Plastic Produced Annually,,,True
+Chen 2012 - PTT,Chen (2012) https://doi.org/10.1021/cr200162d ,World,,1  - Peer Reviewed,2012,,84.45,MJ/kg,23.4583333521,TWh/MMt of Plastic Produced Annually,,,True
+Shen 2012 - PET ,Shen (2012) doi.org/10.1002/bbb.1372,World,,1  - Peer Reviewed,2012,,67.0,MJ/kg,18.611111125999997,TWh/MMt of Plastic Produced Annually,,,True

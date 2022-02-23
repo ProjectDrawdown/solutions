@@ -1,3 +1,7 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Smith et al., 2014;  pg 154",Sheet 'Conventional'  for calculation of conversion factor,,Global ,,2014,,25.0,years,34.62518245159868,Billion Ton - nmiles/Ship,,,
-MEPC  2011; pg 67,Sheet 'Conventional'  for calculation of conversion factor,,,,,,30.0,years,41.55021894191842,Billion Ton - nmiles/Ship,,,1.0
+"Smith et al., 2014;  pg 154",Sheet 'Conventional'  for calculation of conversion factor,,Global ,,2014.0,,25.0,years,21.83322923173017,Billion Ton - nmiles/Ship,,,False
+MEPC  2011; pg 67,Sheet 'Conventional'  for calculation of conversion factor,,,,,,30.0,years,26.199875078076204,Billion Ton - nmiles/Ship,,,True
+"shippipedia, 2020, life cycle of a ship",http://www.shippipedia.com/life-cycle-of-a-ship/,World,Global,2 - Public Sector/ Multilateral Agency,2020.0,,27.5,years,24.016552154903188,Billion Ton - nmiles/Ship,,The lifespan is around 25-30 in the source,False
+O Dinu and A M Ilie 2015 IOP Conf. Ser.: Mater. Sci. Eng. 95 012067,,World,Global,1  - Peer Reviewed,2015.0,,27.5,years,24.016552154903188,Billion Ton - nmiles/Ship,,The lifespan is around 25-30 in the source,False
+"Shipping market review, 2021",,World,,,2021.0,,25.0,years,21.83322923173017,Billion Ton - nmiles/Ship,,,False
+"Shipping market review, 2021",,World,,,2021.0,,30.0,years,26.199875078076204,Billion Ton - nmiles/Ship,,,False

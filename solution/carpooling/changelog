@@ -1,0 +1,14 @@
+Update 2/2022 --- importing 2021 model
+
+VMA "Current Average Car Occupancy" has the "use weights" flag set, but doesn't provide
+weights.  Our code throws an exception in this case.  I suspect the variable is not used, so
+the easy fix is to set the use weights flag to false in vma_sources.json
+
+All scenarios use custom PDS adoption and (an ongoing pattern) those are computed.  You could
+fix this with the convert_to_cpds tool, but I chose to do it manually:  load each erring
+scenario, then copy the data from the appropriate custom pds data table into the corresponding
+.csv file.
+
+I also deleted the older custom pds data tables (the ones for the book scenarios): removed the
+entries from the ca_pds_sources.json and deleted the files.  This wasn't necessary, but makes
+keeps the data stored smaller.
