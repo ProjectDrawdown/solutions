@@ -87,7 +87,7 @@ class Scenario(scenario.LandScenario):
         # FAOSTAT, accessed in 2018
 
         # 2050 medium adoption value based on historical data interpolation, based on FAOSTAT data
-        ds1_adoption_data = self.ad.adoption_data(region='World')
+        ds1_adoption_data = self.ad.adoption_sources(region='World')
         ds1_ad_2050 = ds1_adoption_data.loc[2050, 'FAOSTAT 2016 + Literature (Exponential)']
         ds1_percent = ds1_ad_2050 / tla_2050['World']
 
@@ -107,7 +107,7 @@ class Scenario(scenario.LandScenario):
 
         # 2050 average adoption value based on historical data interpolation,
         # based on FAOSTAT data (without TLA limitation)
-        ds2_adoption_data = self.ad.adoption_data(region='World')
+        ds2_adoption_data = self.ad.adoption_sources(region='World')
         ds2_ad_2050 = ds2_adoption_data.loc[2050, 'FAOSTAT 2016 + Literature (2nd order)']
         ds2_percent = ds2_ad_2050 / tla_2050['World']
 
@@ -127,7 +127,7 @@ class Scenario(scenario.LandScenario):
 
         # 2050 minimum adoption value based on historical data interpolation,
         # based on FAOSTAT data (without TLA limitation)
-        ds3_adoption_data = self.ad.adoption_data(region='World')
+        ds3_adoption_data = self.ad.adoption_sources(region='World')
         ds3_ad_2050 = ds3_adoption_data.loc[2050, 'FAOSTAT 2016 + Literature (linear)']
         ds3_percent = ds3_ad_2050 / tla_2050['World']
 

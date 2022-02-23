@@ -1,5 +1,17 @@
-"""Implements the Advanced Controls, settings which have a default
-   but can be overridden to fit particular needs.
+"""
+An Advanced Controls object contains all the parameters for a given Scenario.
+
+There is a 1:1 relationship between Advanced Controls objects and Scenario objects: each scenario has its Advanced
+Controls object in its `ac` field.  You can think of a Scenario as: a Solution (the model and code) +
+the Advanced Controls (all the customized settings).
+
+The Advanced Controls class has a field for every parameter that is used by any Solution, but not all
+Solutions use all parameters.  (As a simple example, RSS type Solutions do not use parameters related to Land usage.)
+You can see which parameters a specific Solution uses by looking at the saved advanced controls objects in the 'ac'
+subdirectory of the solution definition.
+
+Advanced Controls objects are frozen (immutable).  To "change" a parameter value, you need to construct a new
+AdvancedControls/Scenario combination.
 """
 
 from __future__ import annotations
@@ -31,7 +43,7 @@ valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
 @dataclasses.dataclass(eq=True, frozen=True)
 class AdvancedControls:
-    """Advanced Controls module, with settings impacting other modules."""
+    """An immutable dictionary-like object of parameter values for a specific scenario."""
 
     # solution_category (SOLUTION_CATEGORY): Whether the solution is primarily REDUCTION of
     #   emissions from an existing technology, REPLACEMENT of a technology to one with lower

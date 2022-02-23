@@ -108,14 +108,14 @@ class Scenario(scenario.LandScenario):
         # Data Source 1
         lin = 'Willer 2018 SEI calc RA lin'
         ds1_percent = {
-                'OECD90': self.ad.adoption_data(region='OECD90').loc[2050, lin] / world_2014,
-                'Eastern Europe': self.ad.adoption_data(
+                'OECD90': self.ad.adoption_sources(region='OECD90').loc[2050, lin] / world_2014,
+                'Eastern Europe': self.ad.adoption_sources(
                     region='Eastern Europe').loc[2050, lin] / world_2014,
-                'Asia (Sans Japan)': self.ad.adoption_data(
+                'Asia (Sans Japan)': self.ad.adoption_sources(
                     region='Asia (Sans Japan)').loc[2050, lin] / world_2014,
-                'Middle East and Africa': self.ad.adoption_data(
+                'Middle East and Africa': self.ad.adoption_sources(
                     region='Middle East and Africa').loc[2050, lin] / world_2014,
-                'Latin America': self.ad.adoption_data(
+                'Latin America': self.ad.adoption_sources(
                     region='Latin America').loc[2050, lin] / world_2014,
                 'China': 0.0, 'India': 0.0, 'EU': 0.0, 'USA': 0.0}
         ds1_regen = 0.2  # RA adoption in addition to organic agriculture adoption
@@ -126,14 +126,14 @@ class Scenario(scenario.LandScenario):
         ply = 'Willer 2018 SEI calc RA 3rd poly'
         exp = 'Willer 2018 SEI calc RA exp'
         ds2_percent = {
-                'OECD90': self.ad.adoption_data(region='OECD90').loc[2050, ply] / world_2014,
-                'Eastern Europe': self.ad.adoption_data(
+                'OECD90': self.ad.adoption_sources(region='OECD90').loc[2050, ply] / world_2014,
+                'Eastern Europe': self.ad.adoption_sources(
                     region='Eastern Europe').loc[2050, exp] / world_2014,
-                'Asia (Sans Japan)': self.ad.adoption_data(
+                'Asia (Sans Japan)': self.ad.adoption_sources(
                     region='Asia (Sans Japan)').loc[2050, ply] / world_2014,
-                'Middle East and Africa': self.ad.adoption_data(
+                'Middle East and Africa': self.ad.adoption_sources(
                     region='Middle East and Africa').loc[2050, exp] / world_2014,
-                'Latin America': self.ad.adoption_data(
+                'Latin America': self.ad.adoption_sources(
                     region='Latin America').loc[2050, ply] / world_2014,
                 'China': 0.0, 'India': 0.0, 'EU': 0.0, 'USA': 0.0}
         ds2_regen = 0.2  # RA adoption in addition to organic agriculture adoption
