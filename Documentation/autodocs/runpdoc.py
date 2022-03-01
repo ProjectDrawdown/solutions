@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import pdoc
 import sys
 import importlib
@@ -69,19 +70,19 @@ if __name__ == "__main__":
     # pdoc usually processes one file at a time.  We want to put the full index on every
     # page, so to do that we parse all files before rendering any of them.
 
-    pmodules = []
+    all_modules = OrderedDict()
     for mname in module_names:
         m = importlib.import_module(mname)
-        pmodules.append(pdoc.doc.Module(m))
+        all_modules[mname] = pdoc.doc.Module(m)
 
     # Rendering phase
     # Add the complete sets of docs objects to the template environment.
-    pdoc.render.env.globals["pmodules"] = pmodules
+    pdoc.render.env.globals["pmodules"] = all_modules.values()
     pdoc.render.env.globals["all_docs"] = doc_list
 
     # Render module pages
-    for doc in pmodules:
-        out = pdoc.render.html_module(module=doc, all_modules=module_names)
+    for doc in all_modules.values():
+        out = pdoc.render.html_module(module=doc, all_modules=all_modules)
         target_path = outdir/(doc.fullname.replace(".","/")+".html")
         target_path.parent.mkdir(parents=True,exist_ok=True)
         target_path.write_bytes(out.encode())
@@ -99,7 +100,7 @@ if __name__ == "__main__":
     # Render search code
     # Someday we might want to change this to enable searching the top-level docs
     # too, but that is way too much trouble at the present time.
-    search = pdoc.render.search_index(dict(zip(module_names,pmodules)))
+    search = pdoc.render.search_index(all_modules)
     if search:
         (outdir/"search.js").write_bytes(search.encode())
 
