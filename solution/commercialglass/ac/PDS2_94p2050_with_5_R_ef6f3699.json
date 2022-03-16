@@ -1,44 +1,24 @@
 {
-    "name": "PDS1-89p2050-Based on 2.75% Retrofit Rate",
+    "name": "PDS2-94p2050-with 5% Retrofit Rate - Integrated",
     "solution_category": "reduction",
     "vmas": "VMAs",
-    "description": "Description:",
+    "creation_date": "2021-09-02 10:49:25",
+    "description": "A 5.0% retrofit rate is applied to all existing construction and new construction is assumed to primarily use the solution technology. The Integrated Drawdown Buildings Commercial non-OECD90 TAM is used.",
     "report_start_year": 2020,
     "report_end_year": 2050,
-    "conv_2014_cost": {
-        "value": 10136482.236379055,
-        "statistic": ""
-    },
+    "conv_2014_cost": 10136482.236379055,
     "conv_first_cost_efficiency_rate": 0.0,
-    "conv_lifetime_capacity": {
-        "value": 31.97222222222222,
-        "statistic": ""
-    },
-    "conv_avg_annual_use": {
-        "value": 1.0,
-        "statistic": ""
-    },
+    "conv_lifetime_capacity": 31.97222222222222,
+    "conv_avg_annual_use": 1.0,
     "conv_var_oper_cost_per_funit": 0.0,
     "conv_fixed_oper_cost_per_iunit": 0.0,
     "conv_fuel_cost_per_funit": 6541663.58105588,
-    "pds_2014_cost": {
-        "value": 48821682.98784008,
-        "statistic": ""
-    },
-    "ref_2014_cost": {
-        "value": 48821682.98784008,
-        "statistic": ""
-    },
+    "pds_2014_cost": 48821682.98784008,
+    "ref_2014_cost": 48821682.98784008,
     "soln_first_cost_efficiency_rate": 0.0,
     "soln_first_cost_below_conv": true,
-    "soln_lifetime_capacity": {
-        "value": 31.97222222222222,
-        "statistic": ""
-    },
-    "soln_avg_annual_use": {
-        "value": 1.0,
-        "statistic": ""
-    },
+    "soln_lifetime_capacity": 31.97222222222222,
+    "soln_avg_annual_use": 1.0,
     "soln_var_oper_cost_per_funit": 0.0,
     "soln_fixed_oper_cost_per_iunit": 0.0,
     "soln_fuel_cost_per_funit": 6057649.97249655,
@@ -60,14 +40,8 @@
         "value": 0.0827777777777778,
         "xls cell formula": "D192"
     },
-    "conv_fuel_emissions_factor": {
-        "value": 87.03609646633511,
-        "statistic": ""
-    },
-    "soln_fuel_emissions_factor": {
-        "value": 87.03609646633511,
-        "statistic": ""
-    },
+    "conv_fuel_emissions_factor": 87.03609646633511,
+    "soln_fuel_emissions_factor": 87.03609646633511,
     "conv_emissions_per_funit": 0.0,
     "soln_emissions_per_funit": 0.0,
     "conv_indirect_co2_per_unit": 0.0,
@@ -110,7 +84,7 @@
         "EU": 0.0,
         "USA": 0.0
     },
-    "soln_pds_adoption_custom_name": "2.75% building stock retrofit rate",
+    "soln_pds_adoption_custom_name": "5.0% building stock retrofit rate",
     "soln_pds_adoption_scenarios_included": [
         0,
         1,
@@ -124,6 +98,5 @@
         9
     ],
     "soln_ref_adoption_basis": "Default",
-    "soln_ref_adoption_regional_data": false,
-    "creation_date": "2019-11-13 13:22:13"
+    "soln_ref_adoption_regional_data": false
 }

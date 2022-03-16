@@ -1,88 +1,107 @@
 {
   "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "stat_correction": true,
-    "units": "million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Little data outside of the EU and USA exist for the percentage of building stock with high-performance static (solution technology) and single-pane windows (conventional technology). An adoption for the current year was estimated.",
+    "units": "million sq-meters",
+    "filename": "Current_Adoption.csv"
   },
   "CONVENTIONAL First Cost per Implementation Unit": {
-    "title": "CONVENTIONAL First Cost per Implementation Unit",
-    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "US2014$/million sq-meters",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"
   },
   "SOLUTION First Cost per Implementation Unit": {
-    "title": "SOLUTION First Cost per Implementation Unit",
-    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
-    "stat_correction": true,
-    "units": "US2014$/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "US2014$/million sq-meters",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv"
   },
   "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "million sq-meters/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The controlling aspect of a commercial window's lifespan is the type of frame used. Single-pane (conventional technology) and High-Performance Static windows (solution technology) are each designed to have the same lifetime, so the data is duplicated for each variable",
+    "units": "million sq-meters/million sq-meters",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv"
   },
   "SOLUTION Lifetime Capacity": {
-    "title": "SOLUTION Lifetime Capacity",
-    "filename": "SOLUTION_Lifetime_Capacity.csv",
-    "stat_correction": true,
-    "units": "million sq-meters/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The controlling aspect of a commercial window's lifespan is the type of frame used. Single-pane (conventional technology) and High-Performance Static windows (solution technology) are each designed to have the same lifetime, so the data is duplicated for each variable",
+    "units": "million sq-meters/million sq-meters",
+    "filename": "SOLUTION_Lifetime_Capacity.csv"
   },
   "CONVENTIONAL Total Energy Used per Functional Unit": {
-    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
-    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TWh/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "TWh/million sq-meters",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv"
   },
   "SOLUTION Total Energy Used per Functional Unit": {
-    "title": "SOLUTION Total Energy Used per Functional Unit",
-    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TWh/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "TWh/million sq-meters",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv"
   },
   "CONVENTIONAL Fuel Consumed per Functional Unit": {
-    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
-    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
-    "stat_correction": true,
-    "units": "TJ/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "TJ/ million sq-meters",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"
   },
   "SOLUTION Fuel Efficiency Factor": {
-    "title": "SOLUTION Fuel Efficiency Factor",
-    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
-    "stat_correction": true,
-    "units": "%"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "%",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv"
   },
   "Heating Energy Efficiency": {
-    "title": "Heating Energy Efficiency",
-    "filename": "Heating_Energy_Efficiency.csv",
-    "stat_correction": true
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Heating_Energy_Efficiency.csv"
   },
   "Cooling Energy Efficiency": {
-    "title": "Cooling Energy Efficiency",
-    "filename": "Cooling_Energy_Efficiency.csv",
-    "stat_correction": true
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "",
+    "units": "",
+    "filename": "Cooling_Energy_Efficiency.csv"
   },
   "Average Energy for Space Cooling per Floor Area": {
-    "title": "Average Energy for Space Cooling per Floor Area",
-    "filename": "Average_Energy_for_Space_Cooling_per_Floor_Area.csv",
-    "stat_correction": true,
-    "units": "kWh/m2"
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "Cooling energy intensity is incorporated from the Integrated Drawdown Buildings TAM. Additional data sources from global locations are also considered.",
+    "units": "kWh/m2",
+    "filename": "Average_Energy_for_Space_Cooling_per_Floor_Area.csv"
   },
   "Average Energy for Space Heating per Floor Area": {
-    "title": "Average Energy for Space Heating per Floor Area",
-    "filename": "Average_Energy_for_Space_Heating_per_Floor_Area.csv",
-    "stat_correction": true,
-    "units": "kWh/m2"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Heating energy intensity is incorporated from the Integrated Drawdown Buildings TAM.",
+    "units": "kWh/m2",
+    "filename": "Average_Energy_for_Space_Heating_per_Floor_Area.csv"
   },
   "Discount Rate: Commercial / Industry": {
-    "title": "Discount Rate: Commercial / Industry",
-    "filename": "Discount_Rate_Commercial_Industry.csv",
-    "stat_correction": true
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a Commercial / Industrial level. The Commercial / Industrial level discount rate is directly related to decision-making at a Commercial / Industrial level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments available to larger commercial / industrial entities such as multinational corporations or corporate utility enterprises.  Discount rates reported in the literature that are used for policy decisions are not necessarily equivalent to Commercial / Industrial level financial investment decisions, but oftentimes are not distinguished and may be conflated.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis.",
+    "units": "",
+    "filename": "Discount_Rate_Commercial_Industry.csv"
   },
   "Commercial Window to Floor Ratio": {
-    "title": "Commercial Window to Floor Ratio",
-    "filename": "Commercial_Window_to_Floor_Ratio.csv",
-    "use_weight": true
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "Department of Energy Reference Buildings (detailed in Deru et al 2011) are used as the representative buildings for commercial spaces. The weightings factors are derived from the weighted average of each building type as explained in Table 42 of Deru et al 2011.",
+    "units": "",
+    "filename": "Commercial_Window_to_Floor_Ratio.csv"
   }
 }
