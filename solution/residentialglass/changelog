@@ -12,3 +12,5 @@ Unit Adoption:
 
 Deleted 2/3 of the scenarios.  Some were known to be broken, and generally it wasn't
 clear that they were useful.
+
+2022-03-18 gerald-scharitzer Update to 2021-08 did not need additional changes.
