@@ -1,74 +1,107 @@
 {
   "Current Adoption": {
-    "title": "Current Adoption",
-    "filename": "Current_Adoption.csv",
-    "units": "million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Little data outside of the EU and USA exist for the percentage of building stock with high-performance static (solution technology) and single-pane windows (conventional technology). The average for India and China was collected and assumed relevant for all other data-poor regions, and the regional sum was used for the Globe.",
+    "units": "million sq-meters",
+    "filename": "Current_Adoption.csv"
   },
   "CONVENTIONAL First Cost per Implementation Unit": {
-    "title": "CONVENTIONAL First Cost per Implementation Unit",
-    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
-    "units": "US2014$/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "US2014$/million sq-meters",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"
   },
   "SOLUTION First Cost per Implementation Unit": {
-    "title": "SOLUTION First Cost per Implementation Unit",
-    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
-    "units": "US2014$/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "US2014$/million sq-meters",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv"
   },
   "CONVENTIONAL Lifetime Capacity": {
-    "title": "CONVENTIONAL Lifetime Capacity",
-    "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
-    "units": "million sq-meters/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The controlling aspect of a residential window's lifespan is the type of frame used. Single-pane (conventional technology) and High-Performance Static windows (solution technology) are each designed to have the same lifetime, so the data is duplicated for each variable",
+    "units": "million sq-meters/million sq-meters",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv"
   },
   "SOLUTION Lifetime Capacity": {
-    "title": "SOLUTION Lifetime Capacity",
-    "filename": "SOLUTION_Lifetime_Capacity.csv",
-    "units": "million sq-meters/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The controlling aspect of a residential window's lifespan is the type of frame used. Single-pane (conventional technology) and High-Performance Static windows (solution technology) are each designed to have the same lifetime, so the data is duplicated for each variable",
+    "units": "million sq-meters/million sq-meters",
+    "filename": "SOLUTION_Lifetime_Capacity.csv"
   },
   "CONVENTIONAL Total Energy Used per Functional Unit": {
-    "title": "CONVENTIONAL Total Energy Used per Functional Unit",
-    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
-    "units": "TWh/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "TWh/million sq-meters",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv"
   },
   "SOLUTION Total Energy Used per Functional Unit": {
-    "title": "SOLUTION Total Energy Used per Functional Unit",
-    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
-    "units": "TWh/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "TWh/million sq-meters",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv"
   },
   "CONVENTIONAL Fuel Consumed per Functional Unit": {
-    "title": "CONVENTIONAL Fuel Consumed per Functional Unit",
-    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
-    "units": "TJ/million sq-meters"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "TJ/ million sq-meters",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"
   },
   "SOLUTION Fuel Efficiency Factor": {
-    "title": "SOLUTION Fuel Efficiency Factor",
-    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
-    "units": "%"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "%",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv"
   },
   "Heating Energy Efficiency": {
-    "title": "Heating Energy Efficiency",
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Energy efficiencies are separated by heating and cooling energy. Where energy metrics were presented together, see the notes for how the separation was determined.",
+    "units": "",
     "filename": "Heating_Energy_Efficiency.csv"
   },
   "Cooling Energy Efficiency": {
-    "title": "Cooling Energy Efficiency",
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "Energy efficiencies are separated by heating and cooling energy. Where energy metrics were presented together, see the notes for how the separation was determined.",
+    "units": "",
     "filename": "Cooling_Energy_Efficiency.csv"
   },
   "Average Energy for Space Cooling per Floor Area": {
-    "title": "Average Energy for Space Cooling per Floor Area",
-    "filename": "Average_Energy_for_Space_Cooling_per_Floor_Area.csv",
-    "units": "kWh/m2"
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "Cooling energy intensity is incorporated from the Integrated Drawdown Buildings TAM. Additional data sources from global locations are also considered.",
+    "units": "kWh/m2",
+    "filename": "Average_Energy_for_Space_Cooling_per_Floor_Area.csv"
   },
   "Average Energy for Space Heating per Floor Area": {
-    "title": "Average Energy for Space Heating per Floor Area",
-    "filename": "Average_Energy_for_Space_Heating_per_Floor_Area.csv",
-    "units": "kWh/m2"
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Heating energy intensity is incorporated from the Integrated Drawdown Buildings TAM.",
+    "units": "kWh/m2",
+    "filename": "Average_Energy_for_Space_Heating_per_Floor_Area.csv"
   },
   "Discount Rate - Households": {
-    "title": "Discount Rate - Households",
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a household level. The household level discount rate is directly related to decision-making at a household level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments.  Discount rates reported in the literature that are used for policy decisions are not necessarily relevant for evaluating household level financial investment decisions.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis.",
+    "units": "",
     "filename": "Discount_Rate_Households.csv"
   },
   "Residential Window to Floor Ratio": {
-    "title": "Residential Window to Floor Ratio",
-    "filename": "Residential_Window_to_Floor_Ratio.csv",
-    "use_weight": true
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "Residential building data. The ratio is calculated by dividing the window area by the total conditioned floor area. Weights are applied for the percentage of floor area that is either single-family or multi-family as presented by the GBPN 2012 report (Best practice policies for low carbon and energy buildings)",
+    "units": "",
+    "filename": "Residential_Window_to_Floor_Ratio.csv"
   }
 }
